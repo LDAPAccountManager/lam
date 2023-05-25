@@ -2671,137 +2671,27 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$attributes, $readOnlyFields);
 		$this->addMultiValueSelfServiceTextField($return, 'labeledURI', _('Web site'), $fields,
 			$attributes, $readOnlyFields, false, false, 'labeledURI');
+		$this->addSimpleSelfServiceTextField($return, 'telephoneNumber', _('Telephone number'), $fields,
+			$attributes, $readOnlyFields, false, false, 'telephoneNumber');
+		$this->addSimpleSelfServiceTextField($return, 'homePhone', _('Home telephone number'), $fields,
+			$attributes, $readOnlyFields, false, false, 'homePhone');
+		$this->addSimpleSelfServiceTextField($return, 'mobile', _('Mobile telephone number'), $fields,
+			$attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'faxNumber', _('Fax number'), $fields,
+			$attributes, $readOnlyFields, false, false, 'facsimileTelephoneNumber');
+		$this->addSimpleSelfServiceTextField($return, 'pager', _('Pager'), $fields,
+			$attributes, $readOnlyFields);
+		$this->addMultiValueSelfServiceTextField($return, 'street', _('Street'), $fields,
+			$attributes, $readOnlyFields);
+		$this->addMultiValueSelfServiceTextField($return, 'postalAddress', _('Postal address'), $fields,
+			$attributes, $readOnlyFields, false, true, 'postalAddress');
+		$this->addMultiValueSelfServiceTextField($return, 'registeredAddress', _('Registered address'), $fields,
+			$attributes, $readOnlyFields, false, true, 'registeredAddress');
+		$this->addMultiValueSelfServiceTextField($return, 'postalCode', _('Postal code'), $fields,
+			$attributes, $readOnlyFields, false, false, 'postalCode');
+		$this->addMultiValueSelfServiceTextField($return, 'postOfficeBox', _('Post office box'), $fields,
+			$attributes, $readOnlyFields, false, false, 'postOfficeBox');
 
-		if (in_array('telephoneNumber', $fields)) {
-			$telephoneNumber = '';
-			if (isset($attributes['telephoneNumber'][0])) {
-				$telephoneNumber = $attributes['telephoneNumber'][0];
-			}
-			$telephoneNumberField = new htmlInputField('inetOrgPerson_telephoneNumber', $telephoneNumber);
-			if (in_array('telephoneNumber', $readOnlyFields)) {
-				$telephoneNumberField = new htmlOutputText($telephoneNumber);
-			}
-			$return['telephoneNumber'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('telephoneNumber', _('Telephone number'))), $telephoneNumberField
-			);
-		}
-		if (in_array('homePhone', $fields)) {
-			$homePhone = '';
-			if (isset($attributes['homePhone'][0])) {
-				$homePhone = $attributes['homePhone'][0];
-			}
-			$homePhoneField = new htmlInputField('inetOrgPerson_homePhone', $homePhone);
-			if (in_array('homePhone', $readOnlyFields)) {
-				$homePhoneField = new htmlOutputText($homePhone);
-			}
-			$return['homePhone'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('homePhone', _('Home telephone number'))), $homePhoneField
-			);
-		}
-		if (in_array('mobile', $fields)) {
-			$mobile = '';
-			if (isset($attributes['mobile'][0])) {
-				$mobile = $attributes['mobile'][0];
-			}
-			$mobileField = new htmlInputField('inetOrgPerson_mobile', $mobile);
-			if (in_array('mobile', $readOnlyFields)) {
-				$mobileField = new htmlOutputText($mobile);
-			}
-			$return['mobile'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('mobile', _('Mobile telephone number'))), $mobileField
-			);
-		}
-		if (in_array('faxNumber', $fields)) {
-			$faxNumber = '';
-			if (isset($attributes['facsimileTelephoneNumber'][0])) {
-				$faxNumber = $attributes['facsimileTelephoneNumber'][0];
-			}
-			$faxNumberField = new htmlInputField('inetOrgPerson_faxNumber', $faxNumber);
-			if (in_array('faxNumber', $readOnlyFields)) {
-				$faxNumberField = new htmlOutputText($faxNumber);
-			}
-			$return['faxNumber'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('faxNumber', _('Fax number'))), $faxNumberField
-			);
-		}
-		if (in_array('pager', $fields)) {
-			$pager = '';
-			if (isset($attributes['pager'][0])) {
-				$pager = $attributes['pager'][0];
-			}
-			$pagerField = new htmlInputField('inetOrgPerson_pager', $pager);
-			if (in_array('pager', $readOnlyFields)) {
-				$pagerField = new htmlOutputText($pager);
-			}
-			$return['pager'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('pager', _('Pager'))), $pagerField
-			);
-		}
-		if (in_array('street', $fields)) {
-			$street = '';
-			if (isset($attributes['street'][0])) {
-				$street = $attributes['street'][0];
-			}
-			$streetField = new htmlInputField('inetOrgPerson_street', $street);
-			if (in_array('street', $readOnlyFields)) {
-				$streetField = new htmlOutputText($street);
-			}
-			$return['street'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('street', _('Street'))), $streetField
-			);
-		}
-		if (in_array('postalAddress', $fields)) {
-			$postalAddress = '';
-			if (isset($attributes['postalAddress'][0])) {
-				$postalAddress = $attributes['postalAddress'][0];
-			}
-			$postalAddressField = new htmlInputField('inetOrgPerson_postalAddress', $postalAddress);
-			if (in_array('postalAddress', $readOnlyFields)) {
-				$postalAddressField = new htmlOutputText($postalAddress);
-			}
-			$return['postalAddress'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('postalAddress', _('Postal address'))), $postalAddressField
-			);
-		}
-		if (in_array('registeredAddress', $fields)) {
-			$registeredAddress = '';
-			if (isset($attributes['registeredAddress'][0])) {
-				$registeredAddress = $attributes['registeredAddress'][0];
-			}
-			$registeredAddressField = new htmlInputField('inetOrgPerson_registeredAddress', $registeredAddress);
-			if (in_array('registeredAddress', $readOnlyFields)) {
-				$registeredAddressField = new htmlOutputText($registeredAddress);
-			}
-			$return['registeredAddress'] = new htmlResponsiveRow(
-				new htmlOutputText(_('Registered address')), $registeredAddressField
-			);
-		}
-		if (in_array('postalCode', $fields)) {
-			$postalCode = '';
-			if (isset($attributes['postalCode'][0])) {
-				$postalCode = $attributes['postalCode'][0];
-			}
-			$postalCodeField = new htmlInputField('inetOrgPerson_postalCode', $postalCode);
-			if (in_array('postalCode', $readOnlyFields)) {
-				$postalCodeField = new htmlOutputText($postalCode);
-			}
-			$return['postalCode'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('postalCode', _('Postal code'))), $postalCodeField
-			);
-		}
-		if (in_array('postOfficeBox', $fields)) {
-			$postOfficeBox = '';
-			if (isset($attributes['postOfficeBox'][0])) {
-				$postOfficeBox = $attributes['postOfficeBox'][0];
-			}
-			$postOfficeBoxField = new htmlInputField('inetOrgPerson_postOfficeBox', $postOfficeBox);
-			if (in_array('postOfficeBox', $readOnlyFields)) {
-				$postOfficeBoxField = new htmlOutputText($postOfficeBox);
-			}
-			$return['postOfficeBox'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('postOfficeBox', _('Post office box'))), $postOfficeBoxField
-			);
-		}
 		if (in_array('roomNumber', $fields)) {
 			$roomNumber = '';
 			if (isset($attributes['roomNumber'][0])) {
@@ -3361,152 +3251,34 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$readOnlyFields, 'email', $this->messages['email'][0]);
 		$this->checkMultiValueSelfServiceTextField($return, 'labeledURI', $attributes, $fields,
 			$readOnlyFields, null, null, null, 'labeledURI');
+		$this->checkSimpleSelfServiceTextField($return, 'telephoneNumber', $attributes, $fields,
+			$readOnlyFields, 'telephone', $this->messages['telephoneNumber'][0], null,
+			'telephoneNumber');
+		$this->checkSimpleSelfServiceTextField($return, 'homePhone', $attributes, $fields,
+			$readOnlyFields, 'telephone', $this->messages['homePhone'][0], null,
+			'homePhone');
+		$this->checkSimpleSelfServiceTextField($return, 'faxNumber', $attributes, $fields,
+			$readOnlyFields, 'telephone', $this->messages['facsimileTelephoneNumber'][0], null,
+			'facsimileTelephoneNumber');
+		$this->checkSimpleSelfServiceTextField($return, 'mobile', $attributes, $fields,
+			$readOnlyFields, 'telephone', $this->messages['mobileTelephone'][0]);
+		$this->checkSimpleSelfServiceTextField($return, 'pager', $attributes, $fields,
+			$readOnlyFields, 'telephone', $this->messages['pager'][0]);
+		$this->checkMultiValueSelfServiceTextField($return, 'street', $attributes, $fields,
+			$readOnlyFields, 'street', $this->messages['street'][0]);
+		$this->checkMultiValueSelfServiceTextField($return, 'postalAddress', $attributes, $fields,
+			$readOnlyFields, 'postalAddress', $this->messages['postalAddress'][0], null,
+			'postalAddress');
+		$this->checkMultiValueSelfServiceTextField($return, 'registeredAddress', $attributes, $fields,
+			$readOnlyFields, 'postalAddress', $this->messages['registeredAddress'][0], null,
+			'registeredAddress');
+		$this->checkMultiValueSelfServiceTextField($return, 'postalCode', $attributes, $fields,
+			$readOnlyFields, 'postalCode', $this->messages['postalCode'][0], null,
+			'postalCode');
+		$this->checkMultiValueSelfServiceTextField($return, 'postOfficeBox', $attributes, $fields,
+			$readOnlyFields, null, null, null,
+			'postOfficeBox');
 
-		// telephone number
-		if (in_array('telephoneNumber', $fields) && !in_array('telephoneNumber', $readOnlyFields)) {
-			$attributeNames[] = 'telephoneNumber';
-			if (isset($_POST['inetOrgPerson_telephoneNumber']) && ($_POST['inetOrgPerson_telephoneNumber'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_telephoneNumber'], 'telephone')) {
-					$return['messages'][] = $this->messages['telephoneNumber'][0];
-				}
-				else {
-					$attributesNew['telephoneNumber'][0] = $_POST['inetOrgPerson_telephoneNumber'];
-				}
-			}
-			elseif (isset($attributes['telephoneNumber'])) {
-				unset($attributesNew['telephoneNumber']);
-			}
-		}
-		// home telephone number
-		if (in_array('homePhone', $fields) && !in_array('homePhone', $readOnlyFields)) {
-			$attributeNames[] = 'homePhone';
-			if (isset($_POST['inetOrgPerson_homePhone']) && ($_POST['inetOrgPerson_homePhone'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_homePhone'], 'telephone')) {
-					$return['messages'][] = $this->messages['homePhone'][0];
-				}
-				else {
-					$attributesNew['homePhone'][0] = $_POST['inetOrgPerson_homePhone'];
-				}
-			}
-			elseif (isset($attributes['homePhone'])) {
-				unset($attributesNew['homePhone']);
-			}
-		}
-		// fax number
-		if (in_array('faxNumber', $fields) && !in_array('faxNumber', $readOnlyFields)) {
-			$attributeNames[] = 'facsimileTelephoneNumber';
-			if (isset($_POST['inetOrgPerson_faxNumber']) && ($_POST['inetOrgPerson_faxNumber'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_faxNumber'], 'telephone')) {
-					$return['messages'][] = $this->messages['facsimileNumber'][0];
-				}
-				else {
-					$attributesNew['facsimileTelephoneNumber'][0] = $_POST['inetOrgPerson_faxNumber'];
-				}
-			}
-			elseif (isset($attributes['facsimileTelephoneNumber'])) {
-				$attributesNew['facsimileTelephoneNumber'] = array();
-			}
-		}
-		// mobile telephone number
-		if (in_array('mobile', $fields) && !in_array('mobile', $readOnlyFields)) {
-			$attributeNames[] = 'mobile';
-			if (isset($_POST['inetOrgPerson_mobile']) && ($_POST['inetOrgPerson_mobile'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_mobile'], 'telephone')) {
-					$return['messages'][] = $this->messages['mobileTelephone'][0];
-				}
-				else {
-					$attributesNew['mobile'][0] = $_POST['inetOrgPerson_mobile'];
-				}
-			}
-			elseif (isset($attributes['mobile'])) {
-				unset($attributesNew['mobile']);
-			}
-		}
-		// pager
-		if (in_array('pager', $fields) && !in_array('pager', $readOnlyFields)) {
-			$attributeNames[] = 'pager';
-			if (isset($_POST['inetOrgPerson_pager']) && ($_POST['inetOrgPerson_pager'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_pager'], 'telephone')) {
-					$return['messages'][] = $this->messages['pager'][0];
-				}
-				else {
-					$attributesNew['pager'][0] = $_POST['inetOrgPerson_pager'];
-				}
-			}
-			elseif (isset($attributes['pager'])) {
-				unset($attributesNew['pager']);
-			}
-		}
-		// street
-		if (in_array('street', $fields) && !in_array('street', $readOnlyFields)) {
-			$attributeNames[] = 'street';
-			if (isset($_POST['inetOrgPerson_street']) && ($_POST['inetOrgPerson_street'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_street'], 'street')) {
-					$return['messages'][] = $this->messages['street'][0];
-				}
-				else {
-					$attributesNew['street'][0] = $_POST['inetOrgPerson_street'];
-				}
-			}
-			elseif (isset($attributes['street'])) {
-				unset($attributesNew['street']);
-			}
-		}
-		// postal address
-		if (in_array('postalAddress', $fields) && !in_array('postalAddress', $readOnlyFields)) {
-			$attributeNames[] = 'postalAddress';
-			if (isset($_POST['inetOrgPerson_postalAddress']) && ($_POST['inetOrgPerson_postalAddress'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_postalAddress'], 'postalAddress')) {
-					$return['messages'][] = $this->messages['postalAddress'][0];
-				}
-				else {
-					$attributesNew['postalAddress'][0] = $_POST['inetOrgPerson_postalAddress'];
-				}
-			}
-			elseif (isset($attributes['postalAddress'])) {
-				$attributesNew['postalAddress'] = array();
-			}
-		}
-		// registered address
-		if (in_array('registeredAddress', $fields) && !in_array('registeredAddress', $readOnlyFields)) {
-			$attributeNames[] = 'registeredAddress';
-			if (isset($_POST['inetOrgPerson_registeredAddress']) && ($_POST['inetOrgPerson_registeredAddress'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_registeredAddress'], 'postalAddress')) {
-					$return['messages'][] = $this->messages['registeredAddress'][0];
-				}
-				else {
-					$attributesNew['registeredAddress'][0] = $_POST['inetOrgPerson_registeredAddress'];
-				}
-			}
-			elseif (isset($attributes['registeredAddress'])) {
-				$attributesNew['registeredAddress'] = array();
-			}
-		}
-		// postal code
-		if (in_array('postalCode', $fields) && !in_array('postalCode', $readOnlyFields)) {
-			$attributeNames[] = 'postalCode';
-			if (isset($_POST['inetOrgPerson_postalCode']) && ($_POST['inetOrgPerson_postalCode'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_postalCode'], 'postalCode')) {
-					$return['messages'][] = $this->messages['postalCode'][0];
-				}
-				else {
-					$attributesNew['postalCode'][0] = $_POST['inetOrgPerson_postalCode'];
-				}
-			}
-			elseif (isset($attributes['postalCode'])) {
-				unset($attributesNew['postalCode']);
-			}
-		}
-		// post office box
-		if (in_array('postOfficeBox', $fields) && !in_array('postOfficeBox', $readOnlyFields)) {
-			$attributeNames[] = 'postOfficeBox';
-			if (isset($_POST['inetOrgPerson_postOfficeBox']) && ($_POST['inetOrgPerson_postOfficeBox'] != '')) {
-				$attributesNew['postOfficeBox'][0] = $_POST['inetOrgPerson_postOfficeBox'];
-			}
-			elseif (isset($attributes['postOfficeBox'])) {
-				unset($attributesNew['postOfficeBox']);
-			}
-		}
 		// room number
 		if (in_array('roomNumber', $fields) && !in_array('roomNumber', $readOnlyFields)) {
 			$attributeNames[] = 'roomNumber';
