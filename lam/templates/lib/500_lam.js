@@ -1665,7 +1665,7 @@ window.lam.selfservice = window.lam.selfservice || {};
  * @param delButton delete button that was clicked
  */
 window.lam.selfservice.delMultiValue = function(fieldNamePrefix, delButton) {
-	const fields = document.querySelectorAll("input[name^='" + fieldNamePrefix + "']");
+	const fields = document.querySelectorAll("input[name^='" + fieldNamePrefix + "'], textarea[name^='" + fieldNamePrefix + "']");
 	const isOnlyOneField = (fields.length === 1);
 	if (!isOnlyOneField) {
 		// move add button if present
@@ -1695,7 +1695,7 @@ window.lam.selfservice.delMultiValue = function(fieldNamePrefix, delButton) {
  * @param addButton add button that was clicked
  */
 window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
-	const fields = document.querySelectorAll("input[name^='" + fieldNamePrefix + "']");
+	const fields = document.querySelectorAll("input[name^='" + fieldNamePrefix + "'], textarea[name^='" + fieldNamePrefix + "']");
 	// get next field number
 	const lastFieldName = fields[fields.length - 1].name;
 	const lastFieldNameIndex = lastFieldName.substring(fieldNamePrefix.length);
@@ -1708,7 +1708,7 @@ window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
 	const row = parent.parentElement;
 	const clone = row.cloneNode(true);
 	row.parentElement.append(clone);
-	const cloneInput = clone.querySelector("input[name^='" + fieldNamePrefix + "']");
+	const cloneInput = clone.querySelector("input[name^='" + fieldNamePrefix + "'], textarea[name^='" + fieldNamePrefix + "']");
 	cloneInput.name = fieldNamePrefix + newFieldNameIndex;
 	cloneInput.id = fieldNamePrefix + newFieldNameIndex;
 	cloneInput.value = '';
