@@ -78,6 +78,8 @@ abstract class htmlElement {
 	protected $tableCellCssClasses = array();
 	/** data attributes */
 	private $dataAttributes = array();
+	/** accessibility label */
+	private ?string $accessibilityLabel = null;
 
 	/**
 	 * Prints the HTML code for this element.
@@ -202,6 +204,27 @@ abstract class htmlElement {
 			$result .= ' data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
 		}
 		return $result;
+	}
+
+	/**
+	 * Sets the accessibility label.
+	 *
+	 * @param string|null $accessibilityLabel label
+	 */
+	public function setAccessibilityLabel(?string $accessibilityLabel): void {
+		$this->accessibilityLabel = $accessibilityLabel;
+	}
+
+	/**
+	 * Returns the markup for the accessibility data.
+	 *
+	 * @return string markup to be included in HTML tag (starting with space)
+	 */
+	public function getAccessibilityMarkup(): string {
+		if (empty($this->accessibilityLabel)) {
+			return '';
+		}
+		return ' aria-label="' . htmlspecialchars($this->accessibilityLabel) . '"';
 	}
 
 }
@@ -647,7 +670,7 @@ class htmlInputField extends htmlElement {
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $required
 			. $min . $max . $step . $validationPattern . $size . $fieldTabIndex . $onKeyPress . $onKeyUp
-			. $onInput . $title . $disabled
+			. $onInput . $title . $disabled . $this->getAccessibilityMarkup()
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/search-color.svg"

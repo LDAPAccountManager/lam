@@ -1817,14 +1817,17 @@ abstract class baseModule {
 	 * @param array $readOnlyFields list of read-only fields
 	 * @param boolean $required field is required
 	 * @param boolean $isTextArea display as text area
+	 * @param string $attributeName attribute name (defaults to $name)
 	 */
-	protected function addMultiValueSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false) {
+	protected function addMultiValueSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes,
+		&$readOnlyFields, $required = false, $isTextArea = false, $attributeName = null) {
 		if (!in_array($name, $fields)) {
 			return;
 		}
+		$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
 		$values = array();
-		if (isset($attributes[$name][0])) {
-			$values = $attributes[$name];
+		if (isset($attributes[$ldapAttrName][0])) {
+			$values = $attributes[$ldapAttrName];
 		}
 		$readOnly = in_array($name, $readOnlyFields);
 		$field = new htmlResponsiveRow();
@@ -1840,26 +1843,29 @@ abstract class baseModule {
 					$inputField = new htmlInputField($fieldNamePrefix . $i, $value);
 					$inputField->setRequired($required);
 					$inputField->setFieldSize(null);
+					$inputField->setAccessibilityLabel($this->getSelfServiceLabel($name, $label));
 				}
 				else {
 					$inputField = new htmlInputTextarea($fieldNamePrefix . $i, $value, null, null);
 				}
-				$fieldRow->add($inputField, 9);
-				if (!empty($value)) {
-					$linkGroup = new htmlGroup();
+				$fieldRow->add($inputField, 9, 10);
+				$linkGroup = new htmlGroup();
+				if ($value !== '') {
 					$delLink = new htmlLink(null, '#', '../../graphics/del.svg');
 					$delLink->setOnClick('window.lam.selfservice.delMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
 					$delLink->setCSSClasses(array('del-link icon'));
+					$delLink->setTitle(_('Delete'));
 					$linkGroup->addElement($delLink);
-					if ($i === (sizeof($values) - 1)) {
-						$addLink = new htmlLink(null, '#', '../../graphics/add.svg');
-						$addLink->setOnClick('window.lam.selfservice.addMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
-						$addLink->setCSSClasses(array('add-link icon', 'margin-left5'));
-						$linkGroup->addElement($addLink);
-					}
-					$fieldRow->add($linkGroup, 3);
 				}
-				$field->add($fieldRow, 12);
+				if ($i === (sizeof($values) - 1)) {
+					$addLink = new htmlLink(null, '#', '../../graphics/add.svg');
+					$addLink->setOnClick('window.lam.selfservice.addMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
+					$addLink->setCSSClasses(array('add-link icon', 'margin-left5'));
+					$addLink->setTitle(_('Add'));
+					$linkGroup->addElement($addLink);
+				}
+				$fieldRow->add($linkGroup, 3, 2);
+				$field->add($fieldRow);
 			}
 		}
 		else {
@@ -1893,28 +1899,41 @@ abstract class baseModule {
 	 * @param string $fields input fields
 	 * @param array $readOnlyFields list of read-only fields
 	 * @param String $validationID validation ID for get_preg()
+	 * @param array $validationMessage validation message data (defaults to $this->messages[$name][0])
+	 * @param array $requiredMessage message data when no value is set by user (no check if null)
+	 * @param string $attributeName attribute name (defaults to $name)
 	 */
-	protected function checkMultiValueSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields, $validationID = null) {
+	protected function checkMultiValueSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields,
+		$validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
 			$fieldName = get_class($this) . '_' . $name;
+			$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
 			$valuesNew = array();
 			foreach ($_POST as $postKey => $postValue) {
 				if (strpos($postKey, $fieldName) === false) {
 					continue;
 				}
-				if (empty($postValue)) {
+				if ($postValue === '') {
 					continue;
 				}
 				if (($validationID != null) && !get_preg($postValue, $validationID)) {
-					$container['messages'][] = $this->messages[$name][0];
+					if ($validationMessage !== null) {
+						$container['messages'][] = $validationMessage;
+					}
+					else {
+						$container['messages'][] = $this->messages[$name][0];
+					}
 					return;
 				}
 				$valuesNew[] = $postValue;
 			}
-			$valuesOld = isset($attributes[$name]) ? $attributes[$name] : array();
+			if (empty($valuesNew) && ($requiredMessage !== null)) {
+				$container['messages'][] = $requiredMessage;
+			}
+			$valuesOld = isset($attributes[$ldapAttrName]) ? $attributes[$ldapAttrName] : array();
 			$intersect = array_intersect($valuesOld, $valuesNew);
 			if ((sizeof($valuesOld) != sizeof($valuesNew)) || (sizeof($intersect) != sizeof($valuesOld))) {
-				$container['mod'][$name] = $valuesNew;
+				$container['mod'][$ldapAttrName] = $valuesNew;
 			}
 		}
 	}

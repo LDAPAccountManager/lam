@@ -2669,20 +2669,9 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$attributes, $readOnlyFields, true, false, 'sn');
 		$this->addSimpleSelfServiceTextField($return, 'mail', _('Email address'), $fields,
 			$attributes, $readOnlyFields);
+		$this->addMultiValueSelfServiceTextField($return, 'labeledURI', _('Web site'), $fields,
+			$attributes, $readOnlyFields, false, false, 'labeledURI');
 
-		if (in_array('labeledURI', $fields)) {
-			$labeledURI = '';
-			if (isset($attributes['labeledURI'][0])) {
-				$labeledURI = implode('; ', $attributes['labeledURI']);
-			}
-			$labeledURIField = new htmlInputField('inetOrgPerson_labeledURI', $labeledURI);
-			if (in_array('labeledURI', $readOnlyFields)) {
-				$labeledURIField = new htmlOutputText($labeledURI);
-			}
-			$return['labeledURI'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('labeledURI', _('Web site'))), $labeledURIField
-			);
-		}
 		if (in_array('telephoneNumber', $fields)) {
 			$telephoneNumber = '';
 			if (isset($attributes['telephoneNumber'][0])) {
@@ -3370,17 +3359,9 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			'sn');
 		$this->checkSimpleSelfServiceTextField($return, 'mail', $attributes, $fields,
 			$readOnlyFields, 'email', $this->messages['email'][0]);
+		$this->checkMultiValueSelfServiceTextField($return, 'labeledURI', $attributes, $fields,
+			$readOnlyFields, null, null, null, 'labeledURI');
 
-		// labeledURI
-		if (in_array('labeledURI', $fields) && !in_array('labeledURI', $readOnlyFields)) {
-			$attributeNames[] = 'labeledURI';
-			if (isset($_POST['inetOrgPerson_labeledURI']) && ($_POST['inetOrgPerson_labeledURI'] != '')) {
-				$attributesNew['labeledURI'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_labeledURI']);
-			}
-			elseif (isset($attributes['labeledURI'])) {
-				unset($attributesNew['labeledURI']);
-			}
-		}
 		// telephone number
 		if (in_array('telephoneNumber', $fields) && !in_array('telephoneNumber', $readOnlyFields)) {
 			$attributeNames[] = 'telephoneNumber';
