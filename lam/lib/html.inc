@@ -2528,7 +2528,8 @@ class htmlInputTextarea extends htmlElement {
 		}
 		$classes = ' class="' . implode(' ', $classList) . '"';
 		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount .
-			$rowCount . $this->getDataAttributesAsString() . $required . $disabled . '>' . $this->value . '</textarea>';
+			$rowCount . $this->getDataAttributesAsString() . $this->getAccessibilityMarkup() . $required . $disabled . '>' .
+			$this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
 

@@ -1843,11 +1843,11 @@ abstract class baseModule {
 					$inputField = new htmlInputField($fieldNamePrefix . $i, $value);
 					$inputField->setRequired($required);
 					$inputField->setFieldSize(null);
-					$inputField->setAccessibilityLabel($this->getSelfServiceLabel($name, $label));
 				}
 				else {
 					$inputField = new htmlInputTextarea($fieldNamePrefix . $i, $value, null, null);
 				}
+				$inputField->setAccessibilityLabel($this->getSelfServiceLabel($name, $label));
 				$fieldRow->add($inputField, 9, 10);
 				$linkGroup = new htmlGroup();
 				if ($value !== '') {
