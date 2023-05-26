@@ -2719,45 +2719,14 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$return['jpegPhoto'] = $photoRow;
 			}
 		}
-		if (in_array('departmentNumber', $fields)) {
-			$departmentNumber = '';
-			if (isset($attributes['departmentNumber'][0])) {
-				$departmentNumber = implode('; ', $attributes['departmentNumber']);
-			}
-			$departmentNumberField = new htmlInputField('inetOrgPerson_departmentNumber', $departmentNumber);
-			if (in_array('departmentNumber', $readOnlyFields)) {
-				$departmentNumberField = new htmlOutputText($departmentNumber);
-			}
-			$return['departmentNumber'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('departmentNumber', _('Department'))), $departmentNumberField
-			);
-		}
-		if (in_array('initials', $fields)) {
-			$initials = '';
-			if (isset($attributes['initials'][0])) {
-				$initials = implode('; ', $attributes['initials']);
-			}
-			$initialsField = new htmlInputField('inetOrgPerson_initials', $initials);
-			if (in_array('initials', $readOnlyFields)) {
-				$initialsField = new htmlOutputText($initials);
-			}
-			$return['initials'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('initials', _('Initials'))), $initialsField
-			);
-		}
-		if (in_array('title', $fields)) {
-			$title = '';
-			if (isset($attributes['title'][0])) {
-				$title = $attributes['title'][0];
-			}
-			$titleField = new htmlInputField('inetOrgPerson_title', $title);
-			if (in_array('title', $readOnlyFields)) {
-				$titleField = new htmlOutputText($title);
-			}
-			$return['title'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('title', _('Job title'))), $titleField
-			);
-		}
+
+		$this->addMultiValueSelfServiceTextField($return, 'departmentNumber', _('Department'), $fields,
+			$attributes, $readOnlyFields, false, false, 'departmentNumber');
+		$this->addSimpleSelfServiceTextField($return, 'initials', _('Initials'), $fields,
+			$attributes, $readOnlyFields);
+		$this->addMultiValueSelfServiceTextField($return, 'title', _('Job title'), $fields,
+			$attributes, $readOnlyFields);
+
 		if (in_array('userCertificate', $fields)) {
 			$userCertificates = array();
 			if (isset($attributes['userCertificate'][0])) {
@@ -2817,7 +2786,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$oField->setSortElements(false);
 			}
 			$return['o'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('o', _('Organisation'))), $oField
+				new htmlLabel('inetOrgPerson_o', $this->getSelfServiceLabel('o', _('Organisation'))), $oField
 			);
 		}
 		// ou
@@ -2855,50 +2824,16 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$ouField->setSortElements(false);
 			}
 			$return['ou'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('ou', _('Organisational unit'))), $ouField
+				new htmlLabel('inetOrgPerson_ou', $this->getSelfServiceLabel('ou', _('Organisational unit'))), $ouField
 			);
 		}
-		// description
-		if (in_array('description', $fields)) {
-			$description = '';
-			if (isset($attributes['description'][0])) {
-				$description = $attributes['description'][0];
-			}
-			$descriptionField = new htmlInputField('inetOrgPerson_description', $description);
-			if (in_array('description', $readOnlyFields)) {
-				$descriptionField = new htmlOutputText($description);
-			}
-			$return['description'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('description', _('Description'))), $descriptionField
-			);
-		}
-		// uid
-		if (in_array('uid', $fields)) {
-			$uid = '';
-			if (isset($attributes['uid'][0])) {
-				$uid = $attributes['uid'][0];
-			}
-			$uidField = new htmlInputField('inetOrgPerson_uid', $uid);
-			if (in_array('uid', $readOnlyFields)) {
-				$uidField = new htmlOutputText($uid);
-			}
-			$return['uid'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('uid', _('User name'))), $uidField
-			);
-		}
-		if (in_array('displayName', $fields)) {
-			$displayName = '';
-			if (isset($attributes['displayName'][0])) {
-				$displayName = $attributes['displayName'][0];
-			}
-			$displayNameField = new htmlInputField('inetOrgPerson_displayName', $displayName);
-			if (in_array('displayName', $readOnlyFields)) {
-				$displayNameField = new htmlOutputText($displayName);
-			}
-			$return['displayName'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('displayName', _('Display name'))), $displayNameField
-			);
-		}
+
+		$this->addMultiValueSelfServiceTextField($return, 'description', _('Description'), $fields,
+			$attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'uid', _('User name'), $fields,
+			$attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'displayName', _('Display name'), $fields,
+			$attributes, $readOnlyFields, false, false, 'displayName');
 		return $return;
 	}
 
@@ -3269,41 +3204,15 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				}
 			}
 		}
-		// departments
-		if (in_array('departmentNumber', $fields) && !in_array('departmentNumber', $readOnlyFields)) {
-			$attributeNames[] = 'departmentNumber';
-			if (isset($_POST['inetOrgPerson_departmentNumber']) && ($_POST['inetOrgPerson_departmentNumber'] != '')) {
-				$attributesNew['departmentNumber'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_departmentNumber']);
-			}
-			elseif (isset($attributes['departmentNumber'])) {
-				unset($attributesNew['departmentNumber']);
-			}
-		}
-		// initials
-		if (in_array('initials', $fields) && !in_array('initials', $readOnlyFields)) {
-			$attributeNames[] = 'initials';
-			if (isset($_POST['inetOrgPerson_initials']) && ($_POST['inetOrgPerson_initials'] != '')) {
-				$attributesNew['initials'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_initials']);
-			}
-			elseif (isset($attributes['initials'])) {
-				unset($attributesNew['initials']);
-			}
-		}
-		// title
-		if (in_array('title', $fields) && !in_array('title', $readOnlyFields)) {
-			$attributeNames[] = 'title';
-			if (isset($_POST['inetOrgPerson_title']) && ($_POST['inetOrgPerson_title'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_title'], 'title')) {
-					$return['messages'][] = $this->messages['title'][0];
-				}
-				else {
-					$attributesNew['title'][0] = $_POST['inetOrgPerson_title'];
-				}
-			}
-			elseif (isset($attributes['title'])) {
-				unset($attributesNew['title']);
-			}
-		}
+
+		$this->checkMultiValueSelfServiceTextField($return, 'departmentNumber', $attributes, $fields,
+			$readOnlyFields, null, null, null,
+			'departmentNumber');
+		$this->checkSimpleSelfServiceTextField($return, 'initials', $attributes, $fields,
+			$readOnlyFields);
+		$this->checkMultiValueSelfServiceTextField($return, 'title', $attributes, $fields,
+			$readOnlyFields, 'title', $this->messages['title'][0]);
+
 		// user certificates
 		if (in_array('userCertificate', $fields)) {
 			$userCertificates = $_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST];
@@ -3317,16 +3226,6 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			}
 			elseif (isset($attributesNew[$userCertificatesAttrName])) {
 				unset($attributesNew[$userCertificatesAttrName]);
-			}
-		}
-		// description
-		if (in_array('description', $fields) && !in_array('description', $readOnlyFields)) {
-			$attributeNames[] = 'description';
-			if (!empty($_POST['inetOrgPerson_description'])) {
-				$attributesNew['description'][0] = $_POST['inetOrgPerson_description'];
-			}
-			elseif (isset($attributes['description'])) {
-				unset($attributesNew['description']);
 			}
 		}
 		// ou
@@ -3349,31 +3248,14 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				unset($attributesNew['o']);
 			}
 		}
-		// uid
-		if (in_array('uid', $fields) && !in_array('uid', $readOnlyFields)) {
-			$attributeNames[] = 'uid';
-			if (isset($_POST['inetOrgPerson_uid']) && ($_POST['inetOrgPerson_uid'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_uid'], 'username')) {
-					$return['messages'][] = $this->messages['uid'][0];
-				}
-				else {
-					$attributesNew['uid'][0] = $_POST['inetOrgPerson_uid'];
-				}
-			}
-			elseif (isset($attributes['uid'])) {
-				unset($attributesNew['uid']);
-			}
-		}
-		// display name
-		if (in_array('displayName', $fields) && !in_array('displayName', $readOnlyFields)) {
-			$attributeNames[] = 'displayName';
-			if (!empty($_POST['inetOrgPerson_displayName'])) {
-				$attributesNew['displayName'][0] = $_POST['inetOrgPerson_displayName'];
-			}
-			elseif (isset($attributes['displayName'])) {
-				unset($attributesNew['displayName']);
-			}
-		}
+
+		$this->checkMultiValueSelfServiceTextField($return, 'description', $attributes, $fields,
+			$readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'uid', $attributes, $fields,
+			$readOnlyFields, 'username', $this->messages['uid'][0]);
+		$this->checkSimpleSelfServiceTextField($return, 'displayName', $attributes, $fields,
+			$readOnlyFields, null, null, null, 'displayName');
+
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
 			$attrName = $attributeNames[$i];
