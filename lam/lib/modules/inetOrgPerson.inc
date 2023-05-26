@@ -2691,85 +2691,19 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$attributes, $readOnlyFields, false, false, 'postalCode');
 		$this->addMultiValueSelfServiceTextField($return, 'postOfficeBox', _('Post office box'), $fields,
 			$attributes, $readOnlyFields, false, false, 'postOfficeBox');
+		$this->addSimpleSelfServiceTextField($return, 'roomNumber', _('Room number'), $fields,
+			$attributes, $readOnlyFields, true, false, 'roomNumber');
+		$this->addMultiValueSelfServiceTextField($return, 'location', _('Location'), $fields,
+			$attributes, $readOnlyFields, false, false, 'l');
+		$this->addMultiValueSelfServiceTextField($return, 'state', _('State'), $fields,
+			$attributes, $readOnlyFields, false, false, 'st');
+		$this->addSimpleSelfServiceTextField($return, 'carLicense', _('Car license'), $fields,
+			$attributes, $readOnlyFields, true, false, 'carLicense');
+		$this->addMultiValueSelfServiceTextField($return, 'officeName', _('Office name'), $fields,
+			$attributes, $readOnlyFields, false, false, 'physicalDeliveryOfficeName');
+		$this->addMultiValueSelfServiceTextField($return, 'businessCategory', _('Business category'), $fields,
+			$attributes, $readOnlyFields, false, false, 'businessCategory');
 
-		if (in_array('roomNumber', $fields)) {
-			$roomNumber = '';
-			if (isset($attributes['roomNumber'][0])) {
-				$roomNumber = $attributes['roomNumber'][0];
-			}
-			$roomNumberField = new htmlInputField('inetOrgPerson_roomNumber', $roomNumber);
-			if (in_array('roomNumber', $readOnlyFields)) {
-				$roomNumberField = new htmlOutputText($roomNumber);
-			}
-			$return['roomNumber'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('roomNumber', _('Room number'))), $roomNumberField
-			);
-		}
-		if (in_array('location', $fields)) {
-			$l = '';
-			if (isset($attributes['l'][0])) {
-				$l = $attributes['l'][0];
-			}
-			$lField = new htmlInputField('inetOrgPerson_location', $l);
-			if (in_array('location', $readOnlyFields)) {
-				$lField = new htmlOutputText($l);
-			}
-			$return['location'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('location', _('Location'))), $lField
-			);
-		}
-		if (in_array('state', $fields)) {
-			$st = '';
-			if (isset($attributes['st'][0])) {
-				$st = $attributes['st'][0];
-			}
-			$stField = new htmlInputField('inetOrgPerson_state', $st);
-			if (in_array('state', $readOnlyFields)) {
-				$stField = new htmlOutputText($st);
-			}
-			$return['state'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('state', _('State'))), $stField
-			);
-		}
-		if (in_array('carLicense', $fields)) {
-			$carLicense = '';
-			if (isset($attributes['carLicense'][0])) {
-				$carLicense = $attributes['carLicense'][0];
-			}
-			$carLicenseField = new htmlInputField('inetOrgPerson_carLicense', $carLicense);
-			if (in_array('carLicense', $readOnlyFields)) {
-				$carLicenseField = new htmlOutputText($carLicense);
-			}
-			$return['carLicense'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('carLicense', _('Car license'))), $carLicenseField
-			);
-		}
-		if (in_array('officeName', $fields)) {
-			$physicalDeliveryOfficeName = '';
-			if (isset($attributes['physicalDeliveryOfficeName'][0])) {
-				$physicalDeliveryOfficeName = $attributes['physicalDeliveryOfficeName'][0];
-			}
-			$physicalDeliveryOfficeNameField = new htmlInputField('inetOrgPerson_officeName', $physicalDeliveryOfficeName);
-			if (in_array('officeName', $readOnlyFields)) {
-				$physicalDeliveryOfficeNameField = new htmlOutputText($physicalDeliveryOfficeName);
-			}
-			$return['officeName'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('officeName', _('Office name'))), $physicalDeliveryOfficeNameField
-			);
-		}
-		if (in_array('businessCategory', $fields)) {
-			$businessCategory = '';
-			if (isset($attributes['businessCategory'][0])) {
-				$businessCategory = $attributes['businessCategory'][0];
-			}
-			$businessCategoryField = new htmlInputField('inetOrgPerson_businessCategory', $businessCategory);
-			if (in_array('businessCategory', $readOnlyFields)) {
-				$businessCategoryField = new htmlOutputText($businessCategory);
-			}
-			$return['businessCategory'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('businessCategory', _('Business category'))), $businessCategoryField
-			);
-		}
 		if (in_array('jpegPhoto', $fields)) {
 			$_SESSION[self::SESS_PHOTO] = null;
 			if (isset($attributes['jpegPhoto'][0])) {
@@ -3278,72 +3212,25 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$this->checkMultiValueSelfServiceTextField($return, 'postOfficeBox', $attributes, $fields,
 			$readOnlyFields, null, null, null,
 			'postOfficeBox');
+		$this->checkSimpleSelfServiceTextField($return, 'roomNumber', $attributes, $fields,
+			$readOnlyFields, null, null, null,
+			'roomNumber');
+		$this->checkMultiValueSelfServiceTextField($return, 'location', $attributes, $fields,
+			$readOnlyFields, null, null, null,
+			'l');
+		$this->checkMultiValueSelfServiceTextField($return, 'state', $attributes, $fields,
+			$readOnlyFields, null, null, null,
+			'st');
+		$this->checkSimpleSelfServiceTextField($return, 'carLicense', $attributes, $fields,
+			$readOnlyFields, null, null, null,
+			'carLicense');
+		$this->checkMultiValueSelfServiceTextField($return, 'officeName', $attributes, $fields,
+			$readOnlyFields, null, null, null,
+			'physicalDeliveryOfficeName');
+		$this->checkMultiValueSelfServiceTextField($return, 'businessCategory', $attributes, $fields,
+			$readOnlyFields, 'businessCategory', $this->messages['businessCategory'][0], null,
+			'businessCategory');
 
-		// room number
-		if (in_array('roomNumber', $fields) && !in_array('roomNumber', $readOnlyFields)) {
-			$attributeNames[] = 'roomNumber';
-			if (isset($_POST['inetOrgPerson_roomNumber']) && ($_POST['inetOrgPerson_roomNumber'] != '')) {
-				$attributesNew['roomNumber'][0] = $_POST['inetOrgPerson_roomNumber'];
-			}
-			elseif (isset($attributes['roomNumber'])) {
-				unset($attributesNew['roomNumber']);
-			}
-		}
-		// l
-		if (in_array('location', $fields) && !in_array('location', $readOnlyFields)) {
-			$attributeNames[] = 'l';
-			if (isset($_POST['inetOrgPerson_location']) && ($_POST['inetOrgPerson_location'] != '')) {
-				$attributesNew['l'][0] = $_POST['inetOrgPerson_location'];
-			}
-			elseif (isset($attributes['l'])) {
-				unset($attributesNew['l']);
-			}
-		}
-		// st
-		if (in_array('state', $fields) && !in_array('state', $readOnlyFields)) {
-			$attributeNames[] = 'st';
-			if (isset($_POST['inetOrgPerson_state']) && ($_POST['inetOrgPerson_state'] != '')) {
-				$attributesNew['st'][0] = $_POST['inetOrgPerson_state'];
-			}
-			elseif (isset($attributes['st'])) {
-				unset($attributesNew['st']);
-			}
-		}
-		// car license
-		if (in_array('carLicense', $fields) && !in_array('carLicense', $readOnlyFields)) {
-			$attributeNames[] = 'carLicense';
-			if (isset($_POST['inetOrgPerson_carLicense']) && ($_POST['inetOrgPerson_carLicense'] != '')) {
-				$attributesNew['carLicense'][0] = $_POST['inetOrgPerson_carLicense'];
-			}
-			elseif (isset($attributes['carLicense'])) {
-				unset($attributesNew['carLicense']);
-			}
-		}
-		// office name
-		if (in_array('officeName', $fields) && !in_array('officeName', $readOnlyFields)) {
-			$attributeNames[] = 'physicalDeliveryOfficeName';
-			if (isset($_POST['inetOrgPerson_officeName']) && ($_POST['inetOrgPerson_officeName'] != '')) {
-				$attributesNew['physicalDeliveryOfficeName'][0] = $_POST['inetOrgPerson_officeName'];
-			}
-			elseif (isset($attributes['physicalDeliveryOfficeName'])) {
-				unset($attributesNew['physicalDeliveryOfficeName']);
-			}
-		}
-		// business category
-		if (in_array('businessCategory', $fields) && !in_array('businessCategory', $readOnlyFields)) {
-			$attributeNames[] = 'businessCategory';
-			if (isset($_POST['inetOrgPerson_businessCategory']) && ($_POST['inetOrgPerson_businessCategory'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_businessCategory'], 'businessCategory')) {
-					$return['messages'][] = $this->messages['businessCategory'][0];
-				}
-				else {
-					$attributesNew['businessCategory'][0] = $_POST['inetOrgPerson_businessCategory'];
-				}
-			}
-			elseif (isset($attributes['businessCategory'])) {
-				unset($attributesNew['businessCategory']);
-			}
-		}
 		// photo
 		if (in_array('jpegPhoto', $fields) && !in_array('jpegPhoto', $readOnlyFields)) {
 			$data = $_SESSION[self::SESS_PHOTO];
