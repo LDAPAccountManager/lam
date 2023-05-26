@@ -3364,20 +3364,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		if ($passwordChangeOnly) {
 			return $return; // only password fields as long no LDAP content can be read
 		}
-		if (in_array('cn', $fields)) {
-			$cn = '';
-			if (isset($attributes['cn'][0])) {
-				$cn = $attributes['cn'][0];
-			}
-			$cnField = new htmlInputField('posixAccount_cn', $cn);
-			if (in_array('cn', $readOnlyFields)) {
-				$cnField = new htmlOutputText($cn);
-			}
-			$row = new htmlResponsiveRow();
-			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('cn', _('Common name'))));
-			$row->addField($cnField);
-			$return['cn'] = $row;
-		}
+		$this->addSimpleSelfServiceTextField($return, 'cn', _('Common name'), $fields, $attributes,
+			$readOnlyFields, true);
 		if (in_array('loginShell', $fields)) {
 			$shelllist = $this->getShells(); // list of all valid shells
 			$loginShell = '';
@@ -3500,19 +3488,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			}
 		}
 		// cn
-		if (in_array('cn', $fields) && !in_array('cn', $readOnlyFields)) {
-			if (isset($_POST['posixAccount_cn']) && ($_POST['posixAccount_cn'] != '')) {
-				if (!get_preg($_POST['posixAccount_cn'], 'cn')) {
-					$return['messages'][] = $this->messages['cn'][0];
-				}
-				else if (!isset($attributes['cn']) || ($attributes['cn'][0] != $_POST['posixAccount_cn'])) {
-					$return['mod']['cn'][0] = $_POST['posixAccount_cn'];
-				}
-			}
-			else {
-				$return['messages'][] = $this->messages['cn'][0];
-			}
-		}
+		$this->checkSimpleSelfServiceTextField($return, 'cn', $attributes, $fields, $readOnlyFields,
+			'cn', $this->messages['cn'][0], $this->messages['cn'][0]);
 		// shell
 		if (in_array('loginShell', $fields) && !in_array('loginShell', $readOnlyFields)) {
 			$shelllist = $this->getShells(); // list of all valid shells
