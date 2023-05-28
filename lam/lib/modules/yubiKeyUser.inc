@@ -319,6 +319,7 @@ class yubiKeyUser extends baseModule {
 				$keyInput = new htmlInputField('yubiKeyId_' . $i, $keys[$i]);
 				$keyInput->setFieldMaxLength(12);
 				$keyInput->setCSSClasses(array('lam-prevent-enter'));
+				$keyInput->setAccessibilityLabel($this->getSelfServiceLabel('yubiKeyId', _('YubiKey ids')));
 				$group->addElement($keyInput);
 				$delLink = new htmlLink('', '#', '../../graphics/del.svg');
 				$delLink->setTitle(_('Delete'));

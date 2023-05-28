@@ -670,7 +670,9 @@ class kolabUser extends baseModule {
 				$delegateContainer->addElement(new htmlOutputText($kolabDelegate[$i]));
 				if (!in_array('kolabDelegate', $readOnlyFields)) {
 					$delegateGroup = new htmlGroup();
-					$delegateGroup->addElement(new htmlInputCheckbox('delDelegate_' . $i, false));
+					$delCheckbox = new htmlInputCheckbox('delDelegate_' . $i, false);
+					$delCheckbox->setAccessibilityLabel(_('Delete'));
+					$delegateGroup->addElement($delCheckbox);
 					$delegateGroup->addElement(new htmlOutputText(_('Delete')));
 					$delegateContainer->addElement(new htmlDiv(null, $delegateGroup, array('nowrap')));
 				}
@@ -682,7 +684,9 @@ class kolabUser extends baseModule {
 				$delegateSelect->setHasDescriptiveElements(true);
 				$delegateContainer->addElement($delegateSelect);
 				$delegateAddGroup = new htmlGroup();
-				$delegateAddGroup->addElement(new htmlInputCheckbox('new_delegate', false));
+				$addCheckbox = new htmlInputCheckbox('new_delegate', false);
+				$addCheckbox->setAccessibilityLabel(_("Add"));
+				$delegateAddGroup->addElement($addCheckbox);
 				$delegateAddGroup->addElement(new htmlOutputText(_("Add")));
 				$delegateContainer->addElement(new htmlDiv(null, $delegateAddGroup, array('nowrap')));
 			}
@@ -718,10 +722,14 @@ class kolabUser extends baseModule {
 				$parts = explode(":", $attributes['kolabInvitationPolicy'][$i]);
 				if (sizeof($parts) == 2) {
 					if (!in_array('kolabDelegate', $readOnlyFields)) {
-						$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
+						$newPolicyInput = new htmlInputField('invPol1' . $i, $parts[0]);
+						$newPolicyInput->setAccessibilityLabel(_('Invitation policy'));
+						$invitationContainer->addElement($newPolicyInput);
 						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
 						$invPolGroup = new htmlGroup();
-						$invPolGroup->addElement(new htmlInputCheckbox('delInvPol' . $i, false));
+						$delCheckbox = new htmlInputCheckbox('delInvPol' . $i, false);
+						$delCheckbox->setAccessibilityLabel(_("Remove"));
+						$invPolGroup->addElement($delCheckbox);
 						$invPolGroup->addElement(new htmlOutputText(_("Remove")));
 						$invitationContainer->addElement(new htmlDiv(null, $invPolGroup, array('nowrap')), true);
 					}
@@ -733,10 +741,14 @@ class kolabUser extends baseModule {
 			}
 			// input box for new invitation policy
 			if (!in_array('kolabDelegate', $readOnlyFields)) {
-				$invitationContainer->addElement(new htmlInputField('invPol1', ''));
+				$policyInput = new htmlInputField('invPol1', '');
+				$policyInput->setAccessibilityLabel(_('Invitation policy'));
+				$invitationContainer->addElement($policyInput);
 				$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
 				$invPolAddGroup = new htmlGroup();
-				$invPolAddGroup->addElement(new htmlInputCheckbox('addInvPol', false));
+				$addPolicyCheckbox = new htmlInputCheckbox('addInvPol', false);
+				$addPolicyCheckbox->setAccessibilityLabel(_("Add"));
+				$invPolAddGroup->addElement($addPolicyCheckbox);
 				$invPolAddGroup->addElement(new htmlOutputText(_("Add")));
 				$invitationContainer->addElement(new htmlDiv(null, $invPolAddGroup, array('nowrap')), true);
 			}
