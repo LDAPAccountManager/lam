@@ -2197,17 +2197,15 @@ window.lam.treeview = window.lam.treeview || {};
  * @param callback callback function
  */
 window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) {
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = node.id;
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=getNodes",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', node.id);
+	fetch('../misc/ajax.php?function=treeview&command=getNodes', {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		callback.call(this, jsonData);
 	})
@@ -2222,19 +2220,17 @@ window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) 
  * @param tree tree
  */
 window.lam.treeview.createNode = function (tokenName, tokenValue, node, tree) {
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = node.id;
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=getObjectClasses",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', node.id);
+	fetch('../misc/ajax.php?function=treeview&command=createNewNode&step=getObjectClasses', {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		jQuery('#ldap_actionarea').html(jsonData.content);
+		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
 	});
 }
 
@@ -2247,20 +2243,23 @@ window.lam.treeview.createNode = function (tokenName, tokenValue, node, tree) {
  */
 window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenName, tokenValue) {
 	event.preventDefault();
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = jQuery('#parentDn').val();
-	data["objectClasses"] = jQuery('#objectClasses').val();
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=checkObjectClasses",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', document.getElementById('parentDn').value);
+	const selectedOptions = document.getElementById('objectClasses').selectedOptions;
+	let objectClasses = [];
+	for (const selectedOption of selectedOptions) {
+		objectClasses.push(selectedOption.value);
+	}
+	data.append('objectClasses', objectClasses.join(','))
+	fetch('../misc/ajax.php?function=treeview&command=createNewNode&step=checkObjectClasses', {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		jQuery('#ldap_actionarea').html(jsonData.content);
+		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
 		window.lam.treeview.addFileInputListeners();
 	});
 }
@@ -2856,24 +2855,22 @@ window.lam.treeview.cutNode = function(node, tree) {
  * @param tree tree
  */
 window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
-	var dn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+	const dn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
 	tree.deselect_all();
-	var oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
-	var action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
-	var targetDn = node.id;
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = dn;
-	data["targetDn"] = targetDn;
-	data["action"] = action;
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=paste",
-		method: "POST",
-		data: data
+	const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
+	const action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
+	const targetDn = node.id;
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', dn);
+	data.append('targetDn', targetDn);
+	data.append('action', action);
+	fetch('../misc/ajax.php?function=treeview&command=paste', {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		if (jsonData.error) {
 			jQuery('#ldap_actionarea_messages').html(jsonData.error);
@@ -2887,7 +2884,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 		tree.open_node(targetDn);
 		tree.select_node(targetDn);
 		if (action == 'CUT') {
-			var parentDn = tree.get_parent(dn);
+			const parentDn = tree.get_parent(dn);
 			tree.refresh_node(parentDn);
 		}
 		window.lam.treeview.contextMenuPasteDisabled = true;

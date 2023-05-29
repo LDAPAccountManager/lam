@@ -1081,7 +1081,7 @@ class TreeView {
 	 */
 	private function createNewNodeCheckObjectClassesStep(string $dn, ?string $errorMessage = null, ?string $rdnAttribute = null, ?array $attributes = null): string {
 		if ($attributes === null) {
-			$objectClasses = $_POST['objectClasses'];
+			$objectClasses = explode(',', $_POST['objectClasses']);
 		}
 		else {
 			$objectClasses = $attributes['objectClass'];
