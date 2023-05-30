@@ -2273,42 +2273,36 @@ window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenNa
  */
 window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, tokenValue) {
 	event.preventDefault();
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	var parentDn = jQuery('#parentDn').val();
-	data["dn"] = parentDn;
-	data["rdn"] = jQuery('#rdn').val();
-	data["objectClasses"] = jQuery('#objectClasses').val();
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	const parentDn = document.getElementById('parentDn').value;
+	data.append('dn', parentDn);
+	data.append('rdn', document.getElementById('rdn').value);
+	data.append('objectClasses', document.getElementById('objectClasses').value)
 	// clear old values in data
-	jQuery('.single-input').each(
-		function() {
-			var input = jQuery(this);
-			input.attr('data-value-orig', '');
+	document.querySelectorAll('.single-input').forEach(item => {
+			item.dataset.valueOrig = '';
 		}
 	);
-	jQuery('.multi-input').each(
-		function() {
-			var input = jQuery(this);
-			input.attr('data-value-orig', '');
+	document.querySelectorAll('.multi-input').forEach(item => {
+			item.dataset.valueOrig = '';
 		}
 	);
 	// get attribute values
-	var attributeChanges = window.lam.treeview.findAttributeChanges();
-	data["attributes"] = JSON.stringify(attributeChanges);
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=checkAttributes",
-		method: "POST",
-		data: data
+	const attributeChanges = window.lam.treeview.findAttributeChanges();
+	data.append('attributes', JSON.stringify(attributeChanges));
+	fetch("../misc/ajax.php?function=treeview&command=createNewNode&step=checkAttributes", {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		jQuery('#ldap_actionarea').html(jsonData.content);
-		var tree = jQuery.jstree.reference("#ldap_tree");
+		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
+		const tree = jQuery.jstree.reference("#ldap_tree");
 		tree.refresh_node(parentDn);
 		tree.open_node(parentDn);
-		jQuery("#ldap_actionarea").scrollTop(0);
+		document.getElementById("ldap_actionarea").scrollTop = 0;
 	});
 }
 
