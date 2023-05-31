@@ -2320,9 +2320,9 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
  * @param errorTitle dialog title in case of error
  */
 window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, okText, cancelText, title, errorOkText, errorTitle) {
-	var parent = node.parent;
-	var textSpan = jQuery('#treeview_delete_dlg').find('.treeview-delete-entry');
-	textSpan.text(node.text);
+	const parent = node.parent;
+	const textSpan = document.querySelector('.treeview-delete-entry');
+	textSpan.innerText = node.text;
 	const dialogContent = document.getElementById('treeview_delete_dlg').cloneNode(true);
 	dialogContent.classList.remove('hidden');
 	Swal.fire({
@@ -2334,28 +2334,26 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 		width: '48em'
 	}).then(result => {
 		if (result.isConfirmed) {
-			let data = {
-				jsonInput: ""
-			};
-			data[tokenName] = tokenValue;
-			data["dn"] = node.id;
-			jQuery.ajax({
-				url: "../misc/ajax.php?function=treeview&command=deleteNode",
-				method: "POST",
-				data: data
+			let data = new FormData();
+			data.append(tokenName, tokenValue);
+			data.append('dn', node.id)
+			fetch("../misc/ajax.php?function=treeview&command=deleteNode", {
+				method: 'POST',
+				body: data
 			})
-			.done(function(jsonData) {
+			.then(async response => {
+				const jsonData = await response.json();
 				window.lam.treeview.checkSession(jsonData);
 				tree.refresh_node(parent);
-				var node = tree.get_node(parent, false);
+				const node = tree.get_node(parent, false);
 				window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
 				if (jsonData['errors']) {
-					var errTextTitle = jsonData['errors'][0][1];
-					var textSpanErrorTitle = jQuery('#treeview_error_dlg').find('.treeview-error-title');
-					textSpanErrorTitle.text(errTextTitle);
-					var errText = jsonData['errors'][0][2];
-					var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
-					textSpanErrorText.text(errText);
+					const errTextTitle = jsonData['errors'][0][1];
+					const textSpanErrorTitle = document.querySelector('.treeview-error-title');
+					textSpanErrorTitle.innerText = errTextTitle;
+					const errText = jsonData['errors'][0][2];
+					const textSpanErrorText = document.querySelector('.treeview-error-text');
+					textSpanErrorText.innerText = errText;
 					window.lam.dialog.showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
 				}
 			});

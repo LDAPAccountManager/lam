@@ -244,7 +244,7 @@ function showTree(): void {
 	$deleteDialogEntryText->setCSSClasses(array('treeview-delete-entry'));
 	$deleteDialogContent->add($deleteDialogEntryText, 12);
 	$deleteDialogDiv = new htmlDiv('treeview_delete_dlg', $deleteDialogContent, array('hidden'));
-	$row->add($deleteDialogDiv, 12);
+	$row->add($deleteDialogDiv);
 
 	$errorDialogContent = new htmlResponsiveRow();
 	$errorDialogEntryTitle = new htmlOutputText('');
