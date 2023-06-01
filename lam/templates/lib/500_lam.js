@@ -2753,26 +2753,24 @@ window.lam.treeview.search = function (tokenName, tokenValue, dn) {
  */
 window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) {
 	event.preventDefault();
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = dn;
-	data["scope"] = jQuery('#scope').val();
-	data["filter"] = jQuery('#filter').val();
-	data["attributes"] = jQuery('#attributes').val();
-	data["orderBy"] = jQuery('#orderBy').val();
-	data["limit"] = jQuery('#limit').val();
-	data["format"] = jQuery('#format').val();
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=searchResults",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', dn);
+	data.append('scope', document.getElementById('scope').value);
+	data.append('filter', document.getElementById('filter').value);
+	data.append('attributes', document.getElementById('attributes').value);
+	data.append('orderBy', document.getElementById('orderBy').value);
+	data.append('limit', document.getElementById('limit').value);
+	data.append('format', document.getElementById('format').value);
+	fetch("../misc/ajax.php?function=treeview&command=searchResults", {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		jQuery('#ldap_actionarea').html(jsonData.content);
-		jQuery("#ldap_actionarea").scrollTop(0);
+		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
+		document.getElementById("ldap_actionarea").scrollTop = 0;
 	});
 }
 
