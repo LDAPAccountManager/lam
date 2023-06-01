@@ -1205,10 +1205,9 @@ window.lam.account.addDefaultProfileListener = function() {
 	const defaultProfileLink = document.getElementById('lam-make-default-profile');
 	if (defaultProfileLink) {
 		defaultProfileLink.addEventListener('click', function() {
-			const link = $(this);
-			const typeId = link.data('typeid');
-			const name = link.data('name');
-			const okText = link.data('ok');
+			const typeId = this.dataset.typeid;
+			const name = this.dataset.name;
+			const okText = this.dataset.ok;
 			let date = new Date();
 	        date.setTime(date.getTime() + (365*24*60*60*1000));
 	        document.cookie = 'defaultProfile_' + typeId + '=' + name + '; expires=' + date.toUTCString();
