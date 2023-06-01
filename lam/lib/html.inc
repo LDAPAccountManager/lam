@@ -695,15 +695,13 @@ class htmlInputField extends htmlElement {
 			$calendarWithTime = $this->calendarFormatWithTime ? "enableTime: true, " : "";
 			$calendarWithSeconds = $this->calendarFormatWithSeconds ? "enableSeconds: true, " : "";
 			echo '<script type="text/javascript">
-				jQuery(function() {
-					$("#' . $this->fieldName . '").flatpickr({
-						dateFormat: "' . $this->calendarFormat . '",
-						hourIncrement: 1,
-						minuteIncrement: 1,
-						time_24hr: true,
-						' . $calendarWithTime . $calendarWithSeconds . '
-						locale: "' . $locale . '"
-					});
+				flatpickr("#' . $this->fieldName . '", {
+					dateFormat: "' . $this->calendarFormat . '",
+					hourIncrement: 1,
+					minuteIncrement: 1,
+					time_24hr: true,
+					' . $calendarWithTime . $calendarWithSeconds . '
+					locale: "' . $locale . '"
 				});
 				</script>
 			';
