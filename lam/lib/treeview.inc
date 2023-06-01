@@ -374,7 +374,7 @@ class TreeView {
 		ksort($attributes);
 		$schemaAttributes = $this->getSchemaAttributes();
 		$objectClasses = $attributes['objectclass'];
-		$highlighted = (empty($_POST['highlight'])) ? array() : $_POST['highlight'];
+		$highlighted = (empty($_POST['highlight'])) ? array() : explode(',', $_POST['highlight']);
 		foreach ($attributes as $attributeName => $values) {
 			$schemaAttribute = null;
 			if (isset($schemaAttributes[$attributeName])) {

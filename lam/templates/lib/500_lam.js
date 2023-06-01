@@ -2370,24 +2370,22 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
  * @param attributesToHighlight attributes to highlight
  */
 window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messages, attributesToHighlight) {
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = dn;
-	data["highlight"] = attributesToHighlight;
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=getNodeContent",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', dn);
+	data.append('highlight', (attributesToHighlight) ? attributesToHighlight : '');
+	fetch("../misc/ajax.php?function=treeview&command=getNodeContent", {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		jQuery('#ldap_actionarea').html(jsonData.content);
+		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
 		if (messages) {
-			jQuery('#ldap_actionarea_messages').html(messages);
+			document.getElementById('ldap_actionarea_messages').innerHTML = messages;
 		}
-		jQuery("#ldap_actionarea").scrollTop(0);
+		document.getElementById("ldap_actionarea").scrollTop = 0;
 		window.lam.html.activateLightboxes();
 		window.lam.treeview.addFileInputListeners();
 	});
@@ -2426,25 +2424,23 @@ window.lam.treeview.addFileInputListeners = function () {
  */
 window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn) {
 	event.preventDefault();
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = dn;
-	var attributeChanges = window.lam.treeview.findAttributeChanges();
-	var attributesToHighlight = Object.keys(attributeChanges);
-	data["changes"] = JSON.stringify(attributeChanges);
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=saveAttributes",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', dn);
+	const attributeChanges = window.lam.treeview.findAttributeChanges();
+	const attributesToHighlight = Object.keys(attributeChanges).join(',');
+	data.append('changes', JSON.stringify(attributeChanges));
+	fetch("../misc/ajax.php?function=treeview&command=saveAttributes", {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		if (jsonData['newDn']) {
-			var tree = jQuery.jstree.reference("#ldap_tree");
+		if (jsonData.newDn) {
+			const tree = jQuery.jstree.reference("#ldap_tree");
 			tree.refresh_node(jsonData['parent']);
-			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData['newDn'], jsonData.result, attributesToHighlight);
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData.newDn, jsonData.result, attributesToHighlight);
 		}
 		else {
 			window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
@@ -2710,19 +2706,17 @@ window.lam.treeview.addAttributeField = function (event, select) {
  */
 window.lam.treeview.getInternalAttributesContent = function (event, tokenName, tokenValue, dn) {
 	event.preventDefault();
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = dn;
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=getInternalAttributesContent",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', dn);
+	fetch("../misc/ajax.php?function=treeview&command=getInternalAttributesContent", {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		jQuery('#actionarea-internal-attributes').html(jsonData.content);
+		document.getElementById('actionarea-internal-attributes').innerHTML = jsonData.content;
 	});
 }
 
@@ -2734,20 +2728,18 @@ window.lam.treeview.getInternalAttributesContent = function (event, tokenName, t
  * @param dn DN (base64 encoded)
  */
 window.lam.treeview.search = function (tokenName, tokenValue, dn) {
-	var data = {
-		jsonInput: ""
-	};
-	data[tokenName] = tokenValue;
-	data["dn"] = dn;
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=search",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dn', dn);
+	fetch("../misc/ajax.php?function=treeview&command=search", {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		jQuery('#ldap_actionarea').html(jsonData.content);
-		jQuery("#ldap_actionarea").scrollTop(0);
+		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
+		document.getElementById("ldap_actionarea").scrollTop = 0;
 	});
 }
 
