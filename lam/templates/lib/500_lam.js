@@ -2781,14 +2781,14 @@ window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) 
  * @param ids array of node IDs.
  */
 window.lam.treeview.openInitial = function(tree, ids) {
-	if (ids.length == 0) {
+	if (ids.length === 0) {
 		return;
 	}
-	var firstNodeId = ids.shift();
+	const firstNodeId = ids.shift();
 	tree.open_node(firstNodeId, function() {
 		window.lam.treeview.openInitial(tree, ids);
 	});
-	if (ids.length == 0) {
+	if (ids.length === 0) {
 		tree.select_node(firstNodeId);
 	}
 }
@@ -2854,7 +2854,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		if (jsonData.error) {
-			jQuery('#ldap_actionarea_messages').html(jsonData.error);
+			document.getElementById('ldap_actionarea_messages').innerHTML = jsonData.error;
 			return;
 		}
 		tree.set_icon(dn, oldIcon);
