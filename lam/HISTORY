@@ -30,6 +30,7 @@
    -> SameSite value for cookies changed to Lax to not break Okta/OpenID
    -> Unix users: file upload did not always set memberUid in group (218)
 
+
 13.12.2022 8.2
   - PHP 7.4 required
   - Usability improvements
