@@ -272,7 +272,9 @@ class kolabUser extends baseModule {
 					}
 				}
 			}
-			$invitationContainer->addElement(new htmlTableExtendedSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol), _('Anyone'), 'invPol'), true);
+			$invitationContainer->addElement(new htmlOutputText(_('Anyone')));
+			$invitationContainer->addElement(new htmlSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol)));
+			$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
 			// other invitation policies
 			if (isset($this->attributes['kolabInvitationPolicy'])) {
 				for ($i = 0; $i < sizeof($this->attributes['kolabInvitationPolicy']); $i++) {
@@ -710,11 +712,11 @@ class kolabUser extends baseModule {
 					break;
 				}
 			}
-			if (!in_array('kolabDelegate', $readOnlyFields)) {
-				$invitationContainer->addElement(new htmlTableExtendedSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol), _('Anyone')), true);
+			$invitationContainer->addElement(new htmlOutputText(_('Anyone')));
+			if (!in_array('kolabInvitationPolicy', $readOnlyFields)) {
+				$invitationContainer->addElement(new htmlSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol)), true);
 			}
 			else {
-				$invitationContainer->addElement(new htmlOutputText(_('Anyone')));
 				$invitationContainer->addElement(new htmlOutputText($defaultInvPol), true);
 			}
 			// other invitation policies

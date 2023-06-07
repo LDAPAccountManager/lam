@@ -1698,61 +1698,6 @@ class htmlSelect extends htmlElement {
 
 }
 
-/**
- * Select with label and help link.
- *
- * @package metaHTML
- */
-class htmlTableExtendedSelect extends htmlSelect {
-
-	/** descriptive label */
-	private $label;
-	/** help ID */
-	private $helpID;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param String $name element name
-	 * @param array $elements list of elememts
-	 * @param array $selectedElements list of selected elements
-	 * @param String $label descriptive label
-	 * @param String $helpID help ID (optional, default none)
-	 * @param int $size size (optional, default = 1)
-	 */
-	function __construct($name, $elements, $selectedElements, $label, $helpID = null, $size = 1) {
-		parent::__construct($name, $elements, $selectedElements, $size);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo '<div class="nowrap">';
-		echo $this->label;
-		echo '</div>';
-		echo "\n</td>\n<td>\n";
-		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		// print help link
-		if ($this->helpID != null) {
-			echo "\n</td>\n<td>\n";
-			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		}
-		return $return;
-	}
-
-}
 
 /**
  * Represents a radio selection.
