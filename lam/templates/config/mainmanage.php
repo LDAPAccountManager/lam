@@ -27,6 +27,7 @@ use \htmlResponsiveInputField;
 use \htmlDiv;
 use \htmlHiddenInput;
 use LAMException;
+use LamTemporaryFilesManager;
 use PDO;
 
 /*
@@ -473,7 +474,8 @@ if (isset($_POST['submitFormData'])) {
 	$sslDelSaveGroup->addElement(new htmlSpacer('5px', null));
 	// delete+download button
 	if ($sslFileName != null) {
-		$sslDownloadBtn = new htmlLink('', '../../tmp/' . $sslFileName, '../../graphics/save.svg');
+		$temporaryFilesManager = new LamTemporaryFilesManager();
+		$sslDownloadBtn = new htmlLink('', $temporaryFilesManager->getDownloadLink($sslFileName), '../../graphics/save.svg');
 		$sslDownloadBtn->setTargetWindow('_blank');
 		$sslDownloadBtn->setTitle(_('Download CA certificates'));
 		$sslDownloadBtn->setCSSClasses(array('icon'));

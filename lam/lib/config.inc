@@ -3672,7 +3672,7 @@ class LAMCfgMain {
 	 * Returns the name of a temporary file in tmp that contains the SSL certificate.
 	 * The file contains either the stored data in serverCerts or the uploaded data.
 	 *
-	 * @return String file name or null if no certificate was set
+	 * @return string|null file name or null if no certificate was set
 	 */
 	public function getSSLCaCertTempFileName() {
 		if ($this->delSSLCaCert) {
@@ -3684,18 +3684,19 @@ class LAMCfgMain {
 			return null;
 		}
 		// write to temp file
-		$fileName = time() . generateRandomText() . '.pem';
-		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
-		$handle = @fopen($path, "wb");
-		@chmod($path, 0600);
-		if ($handle) {
-			$content = fputs($handle, $content);
+		try {
+			$temporaryFilesManager = new LamTemporaryFilesManager();
+			$fileName = $temporaryFilesManager->registerTemporaryFile('.pem');
+			$handle = $temporaryFilesManager->openTemporaryFileForWrite($fileName);
+			fputs($handle, $content);
 			fclose($handle);
+			return $fileName;
 		}
-		else {
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, 'Unable to store SSL CA file: ' . $e->getTitle());
 			return null;
 		}
-		return $fileName;
+		return null;
 	}
 
 	/**

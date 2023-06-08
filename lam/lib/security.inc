@@ -101,7 +101,7 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 		ini_set('display_errors', 'On');
 	}
 	// check session id
-	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
+	if (!isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
 		// session id is invalid
 		logNewMessage(LOG_WARNING, "Invalid session ID, access denied (" . getClientIPForLogging() . ")");
 		if ($redirectToLogin) {
@@ -805,3 +805,119 @@ function lamLogRemoteMessage($level, $message, $cfgMain) {
 			break;
 	}
 }
+
+/**
+ * Manages temporary files.
+ */
+class LamTemporaryFilesManager {
+
+	const SESSION_KEY = 'sec_registered_tmp_files';
+
+	/**
+	 * Creates a temporary file and registers it for the current session.
+	 *
+	 * @param string $extension file extension (including ".", e.g. ".svg")
+	 * @param string $prefix file prefix (default: empty)
+	 * @return string file name
+	 * @throws LAMException unable to create temporary file
+	 */
+	public function registerTemporaryFile(string $extension, string $prefix = ''): string {
+		$fileName = $prefix . time() . generateRandomText() . $extension;
+		if (!$this->isValidFileName($fileName)) {
+			throw new LAMException(_('Unable to create temporary file.'));
+		}
+		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+		$handle = @fopen($path, "wb");
+		if ($handle) {
+			@chmod($path, 0600);
+			fclose($handle);
+			$_SESSION[self::SESSION_KEY][] = $fileName;
+		return $fileName;
+		}
+		throw new LAMException(_('Unable to create temporary file.'));
+	}
+
+	/**
+	 * Opens a temporary file for reading.
+	 *
+	 * @param string $fileName file name
+	 * @return resource file handle
+	 * @throws LAMException unable to open file
+	 */
+	public function openTemporaryFileForRead(string $fileName) {
+		if (!$this->isRegisteredFile($fileName)) {
+			throw new LAMException(_('Unable to read file.'));
+		}
+		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+		$handle = @fopen($path, "r");
+		if ($handle) {
+			return $handle;
+		}
+		throw new LAMException(_('Unable to read file.'));
+	}
+
+	/**
+	 * Opens a temporary file for writing.
+	 *
+	 * @param string $fileName file name
+	 * @return resource file handle
+	 * @throws LAMException unable to open file
+	 */
+	public function openTemporaryFileForWrite(string $fileName) {
+		if (!$this->isRegisteredFile($fileName)) {
+			throw new LAMException(_('Unable to read file.'));
+		}
+		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+		$handle = @fopen($path, "wb");
+		if ($handle) {
+			return $handle;
+		}
+		throw new LAMException(_('Unable to read file.'));
+	}
+
+	/**
+	 * Checks if the given file name is valid and registered.
+	 *
+	 * @param string $fileName file name
+	 * @return bool is valid
+	 */
+	public function isRegisteredFile(string $fileName): bool {
+		return $this->isValidFileName($fileName)
+			&& !empty($_SESSION[self::SESSION_KEY])
+			&& in_array($fileName, $_SESSION[self::SESSION_KEY]);
+	}
+
+	/**
+	 * Checks if the given file name contains no special characters.
+	 *
+	 * @param string $fileName file name
+	 * @return bool is valid
+	 */
+	private function isValidFileName(string $fileName): bool {
+		return preg_match('/^[a-zA-Z0-9\\._-]+$/', $fileName);
+	}
+
+	/**
+	 * Returns the download link to a file.
+	 *
+	 * @param string $fileName file name
+	 * @param string $prefix prefix to folder "templates" (e.g. "../../" if called from templates/config/sub, default: "../")
+	 * @return string download link
+	 * @throws LAMException error reading file
+	 */
+	public function getDownloadLink(string $fileName, string $prefix = '../'): string {
+		if (!$this->isRegisteredFile($fileName)) {
+			throw new LAMException(_('Unable to read file.'));
+		}
+		return $prefix . 'misc/download.php?file=' . $fileName;
+	}
+
+	/**
+	 * Deletes all registered files of the user.
+	 */
+	public function deleteAllRegisteredFiles(): void {
+		// TODO
+	}
+
+}
+
