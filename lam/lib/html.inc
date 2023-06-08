@@ -3800,9 +3800,9 @@ class htmlSortableList extends htmlElement {
  */
 class htmlAccordion extends htmlElement {
 
-	private $id = null;
-	private $elements = null;
-	private $openInitial = '1';
+	private $id;
+	private $elements;
+	private $openInitial;
 
 	/**
 	 * Constructor.
@@ -3811,7 +3811,7 @@ class htmlAccordion extends htmlElement {
 	 * @param array $elements list of content elements array('title' => htmlElement)
 	 * @param String $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
 	 */
-	function __construct($id, $elements, $openInitial = '0') {
+	function __construct($id, $elements, $openInitial = 0) {
 		$this->id = $id;
 		$this->elements = $elements;
 		$this->openInitial = $openInitial;
@@ -3839,7 +3839,7 @@ class htmlAccordion extends htmlElement {
 		foreach ($this->elements as $label => $content) {
 			$activeClassButton = '';
 			$activeClassContent = '';
-			if ($contentIndex == $active) {
+			if ($contentIndex === $active) {
 				$activeClassButton = 'lam-accordion-button-active';
 				$activeClassContent = 'lam-accordion-content-active';
 			}

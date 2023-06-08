@@ -275,7 +275,7 @@ for ($i = 0; $i < 5; $i++) {
 	$accordionElementsContent->add(new htmlResponsiveInputTextarea('acc1i3' . $i, '', 20, 3, 'Text area'));
 	$accordionElementsMulti['Accordion ' . $i] = $accordionElementsContent;
 }
-$row->add(new htmlAccordion('acc_multi', $accordionElementsMulti));
+$row->add(new htmlAccordion('acc_multi', $accordionElementsMulti, 2));
 
 $row->add(new htmlSpacer(null, '5rem'));
 

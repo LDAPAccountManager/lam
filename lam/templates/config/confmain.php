@@ -234,6 +234,46 @@ if (isLAMProVersion()) {
 	$row->add($accessSelect, 12);
 }
 
+$row->addVerticalSpacer('1rem');
+// login method
+$loginOptions = array(
+	_('Fixed list') => LAMConfig::LOGIN_LIST,
+	_('LDAP search') => LAMConfig::LOGIN_SEARCH
+);
+$loginSelect = new htmlResponsiveSelect('loginMethod', $loginOptions, array($conf->getLoginMethod()), _("Login method"), '220');
+$loginSelect->setHasDescriptiveElements(true);
+$loginSelect->setTableRowsToHide(array(
+	LAMConfig::LOGIN_LIST => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication'),
+	LAMConfig::LOGIN_SEARCH => array('admins')
+));
+$loginSelect->setTableRowsToShow(array(
+	LAMConfig::LOGIN_LIST => array('admins'),
+	LAMConfig::LOGIN_SEARCH => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication')
+));
+$row->add($loginSelect);
+// admin list
+$adminText = implode("\n", explode(";", $conf->get_Adminstring()));
+$adminTextInput = new htmlResponsiveInputTextarea('admins', $adminText, '50', '3', _("List of valid users"), '207');
+$adminTextInput->setRequired(true);
+$row->add($adminTextInput);
+// search suffix
+$searchSuffixInput = new htmlResponsiveInputField(_("LDAP suffix"), 'loginSearchSuffix', $conf->getLoginSearchSuffix(), '221');
+$searchSuffixInput->setRequired(true);
+$row->add($searchSuffixInput);
+// login search filter
+$searchFilterInput = new htmlResponsiveInputField(_("LDAP filter"), 'loginSearchFilter', $conf->getLoginSearchFilter(), '221');
+$searchFilterInput->setRequired(true);
+$row->add($searchFilterInput);
+// login search bind user
+$row->add(new htmlResponsiveInputField(_("Bind user"), 'loginSearchDN', $conf->getLoginSearchDN(), '224'), 12);
+// login search bind password
+$searchPasswordInput = new htmlResponsiveInputField(_("Bind password"), 'loginSearchPassword', $conf->getLoginSearchPassword(), '224');
+$searchPasswordInput->setIsPassword(true);
+$row->add($searchPasswordInput);
+// HTTP authentication
+$row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223'), 12);
+$row->addVerticalSpacer('1rem');
+
 // advanced options
 $advancedOptionsContent = new htmlResponsiveRow();
 // display name
@@ -294,43 +334,46 @@ $row->add(new htmlResponsiveSelect('timeZone', $timezones, array($conf->getTimeZ
 
 $row->addVerticalSpacer('2rem');
 
-// lamdaemon settings
-$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/script.svg', null, true), 12);
-$row->add(new htmlResponsiveInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), 12);
-$row->add(new htmlResponsiveInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), 12);
-
-$row->add(new htmlResponsiveInputField(_('User name'), 'scriptuser', $conf->getScriptUserName(), '284'), 12);
-$row->add(new htmlResponsiveInputField(_('SSH key file'), 'scriptkey', $conf->getScriptSSHKey(), '285'), 12);
-$sshKeyPassword = new htmlResponsiveInputField(_('SSH key password'), 'scriptkeypassword', $conf->getScriptSSHKeyPassword(), '286');
-$sshKeyPassword->setIsPassword(true);
-$row->add($sshKeyPassword, 12);
-
+// tool settings
+$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/configure.svg',null, true), 12);
+$toolSettings = $conf->getToolSettings();
+$tools = getTools();
+$row->add(new htmlOutputText(_('Hidden tools')), 12);
 $row->addVerticalSpacer('0.5rem');
-$lamdaemonRightsLabel = new htmlGroup();
-$lamdaemonRightsLabel->addElement(new htmlOutputText(_("Rights for the home directory")));
-$lamdaemonRightsLabel->addElement(new htmlSpacer('0.2rem', null));
-$lamdaemonRightsLabel->addElement(new htmlHelpLink('219'));
-$row->addLabel($lamdaemonRightsLabel, 12, 6);
-$chmod = $conf->get_scriptRights();
-$rightsTable = new htmlTable();
-$rightsTable->setCSSClasses(array('padding5'));
-$rightsTable->addElement(new htmlOutputText(''));
-$rightsTable->addElement(new htmlOutputText(_("Read")));
-$rightsTable->addElement(new htmlOutputText(_("Write")));
-$rightsTable->addElement(new htmlOutputText(_("Execute")), true);
-$rightsTable->addElement(new htmlOutputText(_("Owner")));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_owr', checkChmod("read","owner", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_oww', checkChmod("write","owner", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_owe', checkChmod("execute","owner", $chmod)), true);
-$rightsTable->addElement(new htmlOutputText(_("Group")));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_grr', checkChmod("read","group", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_grw', checkChmod("write","group", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_gre', checkChmod("execute","group", $chmod)), true);
-$rightsTable->addElement(new htmlOutputText(_("Other")));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_otr', checkChmod("read","other", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_otw', checkChmod("write","other", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_ote', checkChmod("execute","other", $chmod)), true);
-$row->addField($rightsTable, 12, 6);
+$hideableTools = 0;
+foreach ($tools as $tool) {
+	if (!$tool->isHideable()) {
+		continue;
+	}
+	$hideableTools++;
+	$toolClass = get_class($tool);
+	if ($toolClass === false) {
+		continue;
+	}
+	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
+	$selected = false;
+	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
+		$selected = true;
+	}
+	$row->add(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, true), 12, 4);
+}
+for ($i = $hideableTools % 3; $i < 3; $i++) {
+	$row->add(new htmlOutputText(''), 0, 4);
+}
+$toolConfigOptionTypes = array();
+foreach ($tools as $tool) {
+	$toolConfigContent = $tool->getConfigOptions($toolSettings);
+	if ($toolConfigContent !== null) {
+		ob_start();
+		$dummyIndex = 1;
+		$optionTypes = parseHtml(null, $tool->getConfigOptions($toolSettings), array(), true, $dummyIndex, 'user');
+		ob_end_clean();
+		$toolConfigOptionTypes = array_merge($toolConfigOptionTypes, $optionTypes);
+		$row->addVerticalSpacer('1rem');
+		$row->add($toolConfigContent, 12);
+	}
+}
+$_SESSION['confmain_toolTypes'] = $toolConfigOptionTypes;
 
 $row->addVerticalSpacer('2rem');
 
@@ -398,90 +441,48 @@ if (isLAMProVersion()) {
 	$row->addVerticalSpacer('2rem');
 }
 
-// tool settings
-$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/configure.svg',null, true), 12);
-$toolSettings = $conf->getToolSettings();
-$tools = getTools();
-$row->add(new htmlOutputText(_('Hidden tools')), 12);
+// lamdaemon settings
+$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/script.svg', null, true), 12);
+$row->add(new htmlResponsiveInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), 12);
+$row->add(new htmlResponsiveInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), 12);
+
+$row->add(new htmlResponsiveInputField(_('User name'), 'scriptuser', $conf->getScriptUserName(), '284'), 12);
+$row->add(new htmlResponsiveInputField(_('SSH key file'), 'scriptkey', $conf->getScriptSSHKey(), '285'), 12);
+$sshKeyPassword = new htmlResponsiveInputField(_('SSH key password'), 'scriptkeypassword', $conf->getScriptSSHKeyPassword(), '286');
+$sshKeyPassword->setIsPassword(true);
+$row->add($sshKeyPassword, 12);
+
 $row->addVerticalSpacer('0.5rem');
-$hideableTools = 0;
-foreach ($tools as $tool) {
-	if (!$tool->isHideable()) {
-	    continue;
-    }
-	$hideableTools++;
-	$toolClass = get_class($tool);
-	if ($toolClass === false) {
-	    continue;
-    }
-	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
-	$selected = false;
-	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
-		$selected = true;
-	}
-	$row->add(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, true), 12, 4);
-}
-for ($i = $hideableTools % 3; $i < 3; $i++) {
-	$row->add(new htmlOutputText(''), 0, 4);
-}
-$toolConfigOptionTypes = array();
-foreach ($tools as $tool) {
-	$toolConfigContent = $tool->getConfigOptions($toolSettings);
-	if ($toolConfigContent !== null) {
-		ob_start();
-		$dummyIndex = 1;
-		$optionTypes = parseHtml(null, $tool->getConfigOptions($toolSettings), array(), true, $dummyIndex, 'user');
-		ob_end_clean();
-        $toolConfigOptionTypes = array_merge($toolConfigOptionTypes, $optionTypes);
-        $row->addVerticalSpacer('1rem');
-		$row->add($toolConfigContent, 12);
-	}
-}
-$_SESSION['confmain_toolTypes'] = $toolConfigOptionTypes;
+$lamdaemonRightsLabel = new htmlGroup();
+$lamdaemonRightsLabel->addElement(new htmlOutputText(_("Rights for the home directory")));
+$lamdaemonRightsLabel->addElement(new htmlSpacer('0.2rem', null));
+$lamdaemonRightsLabel->addElement(new htmlHelpLink('219'));
+$row->addLabel($lamdaemonRightsLabel, 12, 6);
+$chmod = $conf->get_scriptRights();
+$rightsTable = new htmlTable();
+$rightsTable->setCSSClasses(array('padding5'));
+$rightsTable->addElement(new htmlOutputText(''));
+$rightsTable->addElement(new htmlOutputText(_("Read")));
+$rightsTable->addElement(new htmlOutputText(_("Write")));
+$rightsTable->addElement(new htmlOutputText(_("Execute")), true);
+$rightsTable->addElement(new htmlOutputText(_("Owner")));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_owr', checkChmod("read","owner", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_oww', checkChmod("write","owner", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_owe', checkChmod("execute","owner", $chmod)), true);
+$rightsTable->addElement(new htmlOutputText(_("Group")));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_grr', checkChmod("read","group", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_grw', checkChmod("write","group", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_gre', checkChmod("execute","group", $chmod)), true);
+$rightsTable->addElement(new htmlOutputText(_("Other")));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_otr', checkChmod("read","other", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_otw', checkChmod("write","other", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_ote', checkChmod("execute","other", $chmod)), true);
+$row->addField($rightsTable, 12, 6);
 
 $row->addVerticalSpacer('2rem');
 
 // security settings
 $row->add(new htmlSubTitle(_("Security settings"), '../../graphics/locked.svg', null, true), 12);
-// login method
-$loginOptions = array(
-	_('Fixed list') => LAMConfig::LOGIN_LIST,
-	_('LDAP search') => LAMConfig::LOGIN_SEARCH
-);
-$loginSelect = new htmlResponsiveSelect('loginMethod', $loginOptions, array($conf->getLoginMethod()), _("Login method"), '220');
-$loginSelect->setHasDescriptiveElements(true);
-$loginSelect->setTableRowsToHide(array(
-	LAMConfig::LOGIN_LIST => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication'),
-	LAMConfig::LOGIN_SEARCH => array('admins')
-));
-$loginSelect->setTableRowsToShow(array(
-	LAMConfig::LOGIN_LIST => array('admins'),
-	LAMConfig::LOGIN_SEARCH => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication')
-));
-$row->add($loginSelect, 12);
-// admin list
-$adminText = implode("\n", explode(";", $conf->get_Adminstring()));
-$adminTextInput = new htmlResponsiveInputTextarea('admins', $adminText, '50', '3', _("List of valid users"), '207');
-$adminTextInput->setRequired(true);
-$row->add($adminTextInput, 12);
-// search suffix
-$searchSuffixInput = new htmlResponsiveInputField(_("LDAP suffix"), 'loginSearchSuffix', $conf->getLoginSearchSuffix(), '221');
-$searchSuffixInput->setRequired(true);
-$row->add($searchSuffixInput, 12);
-// login search filter
-$searchFilterInput = new htmlResponsiveInputField(_("LDAP filter"), 'loginSearchFilter', $conf->getLoginSearchFilter(), '221');
-$searchFilterInput->setRequired(true);
-$row->add($searchFilterInput, 12);
-// login search bind user
-$row->add(new htmlResponsiveInputField(_("Bind user"), 'loginSearchDN', $conf->getLoginSearchDN(), '224'), 12);
-// login search bind password
-$searchPasswordInput = new htmlResponsiveInputField(_("Bind password"), 'loginSearchPassword', $conf->getLoginSearchPassword(), '224');
-$searchPasswordInput->setIsPassword(true);
-$row->add($searchPasswordInput, 12);
-// HTTP authentication
-$row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223'), 12);
-$row->addVerticalSpacer('1rem');
-
 // password policy override
 $row->add(new htmlSubTitle(_("Global password policy override"), '../../graphics/locked.svg'));
 $optionsPwdLength = array('');
