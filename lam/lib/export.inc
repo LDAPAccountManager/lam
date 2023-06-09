@@ -2,10 +2,12 @@
 namespace LAM\TOOLS\IMPORT_EXPORT;
 use \htmlStatusMessage;
 use \LAMException;
+use LamTemporaryFilesManager;
+
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018  Roland Gruber
+ Copyright (C) 2018 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -161,6 +163,7 @@ class Exporter {
 	 * Writes the entries to file/response and prints JSON.
 	 *
 	 * @param array $entries LDAP entries
+	 * @throws LAMException error writing PDF
 	 */
 	private function writeDataAndReturnJson(&$entries) {
 		$lineEnding = ($this->ending === 'windows') ? "\r\n" : "\n";
@@ -174,13 +177,13 @@ class Exporter {
 			throw new LAMException(_('Invalid format'));
 		}
 		if ($this->saveAsFile) {
-			$filename = '../../tmp/' . generateRandomText() . time() .'.' . $this->format;
-			$handle = fopen($filename, 'w');
-			chmod($filename, 0640);
+			$temporaryFilesManager = new LamTemporaryFilesManager();
+			$filename = $temporaryFilesManager->registerTemporaryFile('.' . $this->format);
+			$handle = $temporaryFilesManager->openTemporaryFileForWrite($filename);
 			fwrite($handle, $output);
 			fclose($handle);
 			return json_encode(array(
-				Exporter::FILE => $filename,
+				Exporter::FILE => $temporaryFilesManager->getDownloadLink($filename),
 				Exporter::STATUS => 'done'
 			));
 		}

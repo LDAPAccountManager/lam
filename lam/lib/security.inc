@@ -909,6 +909,21 @@ class LamTemporaryFilesManager {
 		if (!$this->isRegisteredFile($fileName)) {
 			throw new LAMException(_('Unable to read file.'));
 		}
+		return $prefix . 'misc/download.php?file=' . $fileName . '&download=true';
+	}
+
+	/**
+	 * Returns the plain link to a file.
+	 *
+	 * @param string $fileName file name
+	 * @param string $prefix prefix to folder "templates" (e.g. "../../" if called from templates/config/sub, default: "../")
+	 * @return string download link
+	 * @throws LAMException error reading file
+	 */
+	public function getResourceLink(string $fileName, string $prefix = '../'): string {
+		if (!$this->isRegisteredFile($fileName)) {
+			throw new LAMException(_('Unable to read file.'));
+		}
 		return $prefix . 'misc/download.php?file=' . $fileName;
 	}
 

@@ -60,7 +60,9 @@ try {
 	$fileName = $_GET[$fileParamName];
 	$handle = $temporaryFilesManager->openTemporaryFileForRead($fileName);
 	setMimeType($fileName);
-	header('content-disposition: attachment; filename="' . $fileName . '"');
+	if (isset($_GET['download']) && ($_GET['download'] === 'true')) {
+		header('content-disposition: attachment; filename="' . $fileName . '"');
+	}
 	$content = fread($handle, 100000);
 	while (($content !== false) && ($content !== '')) {
 		echo $content;
@@ -83,6 +85,10 @@ function setMimeType(string $fileName): void {
 	$extension = substr($fileName, strrpos($fileName, '.') + 1);
 	$mimeType = null;
 	switch ($extension) {
+		case 'csv':
+			$mimeType = 'text/csv; charset=UTF-8';
+			break;
+		case 'ldif':
 		case 'pem':
 			$mimeType = 'text/plain; charset=UTF-8';
 			break;
