@@ -54,6 +54,10 @@ if (isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] === true)) {
 	}
 }
 
+// clean temporary files
+$temporaryFilesManager = new LamTemporaryFilesManager();
+$temporaryFilesManager->deleteAllRegisteredFiles();
+
 setlanguage();
 
 // destroy session
@@ -62,4 +66,3 @@ unset($_SESSION);
 
 // redirect to login page
 metaRefresh('login.php');
-?>

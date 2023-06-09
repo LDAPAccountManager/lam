@@ -931,7 +931,19 @@ class LamTemporaryFilesManager {
 	 * Deletes all registered files of the user.
 	 */
 	public function deleteAllRegisteredFiles(): void {
-		// TODO
+		if (empty($_SESSION[self::SESSION_KEY])) {
+			return;
+		}
+		foreach ($_SESSION[self::SESSION_KEY] as $fileName) {
+			if (!$this->isValidFileName($fileName)) {
+				continue;
+			}
+			$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+			if (file_exists($path)) {
+				unlink($path);
+			}
+		}
+		unset($_SESSION[self::SESSION_KEY]);
 	}
 
 }

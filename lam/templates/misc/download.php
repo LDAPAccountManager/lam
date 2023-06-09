@@ -88,9 +88,15 @@ function setMimeType(string $fileName): void {
 		case 'csv':
 			$mimeType = 'text/csv; charset=UTF-8';
 			break;
+		case 'jpg':
+			$mimeType = 'image/jpeg';
+			break;
 		case 'ldif':
 		case 'pem':
 			$mimeType = 'text/plain; charset=UTF-8';
+			break;
+		case 'svg':
+			$mimeType = 'image/svg+xml';
 			break;
 	}
 	if ($mimeType !== null) {

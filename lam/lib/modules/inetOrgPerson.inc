@@ -1608,11 +1608,17 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$photoFile = '../../graphics/user.svg';
 			$noPhoto = true;
 			if (isset($this->attributes['jpegPhoto'][0])) {
-				$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
-				$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
-				fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
-				fclose ($outjpeg);
-				$photoFile = '../../tmp/' . $jpeg_filename;
+				try {
+					$temporaryFilesManager = new LamTemporaryFilesManager();
+					$jpeg_filename = $temporaryFilesManager->registerTemporaryFile('.jpg');
+					$handle = $temporaryFilesManager->openTemporaryFileForWrite($jpeg_filename);
+					fwrite($handle, $this->attributes['jpegPhoto'][0]);
+					fclose($handle);
+					$photoFile = $temporaryFilesManager->getResourceLink($jpeg_filename);
+				}
+				catch (LAMException $e) {
+					logNewMessage(LOG_ERR, $e->getTitle());
+				}
 				$noPhoto = false;
 			}
 			$img = new htmlImage($photoFile);
