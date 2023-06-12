@@ -2991,19 +2991,20 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * This also includes the file upload.
 	 *
 	 * @return htmlTable certificate content
+	 * @throws LAMException
 	 */
 	private function getSelfServiceUserCertificates() {
 		$userCertificates = $_SESSION[self::SESS_CERTIFICATES_LIST];
 		$content = new htmlGroup();
 		if (sizeof($userCertificates) > 0) {
 			$certTable = new htmlResponsiveRow();
+			$tempFilesManager = new LamTemporaryFilesManager();
 			for ($i = 0; $i < sizeof($userCertificates); $i++) {
 				$group = new htmlGroup();
-				$filename = 'userCertificate_' . generateRandomText() . '.der';
-				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
+				$filename = $tempFilesManager->registerTemporaryFile('.der', 'userCertificate_');
+				$out = $tempFilesManager->openTemporaryFileForWrite($filename);
 				fwrite($out, $userCertificates[$i]);
 				fclose ($out);
-				$path = '../../tmp/' . $filename;
 				$pem = @chunk_split(@base64_encode($userCertificates[$i]), 64, "\n");
 				if (!empty($pem)) {
 					$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
@@ -3020,7 +3021,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 						$group->addElement(new htmlSpacer('5px', null));
 					}
 				}
-				$saveLink = new htmlLink('', $path, '../../graphics/save.svg');
+				$saveLink = new htmlLink('', $tempFilesManager->getDownloadLink($filename), '../../graphics/save.svg');
 				$saveLink->setTitle(_('Save'));
 				$saveLink->setTargetWindow('_blank');
 				$saveLink->setCSSClasses(array('icon'));
