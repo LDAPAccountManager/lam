@@ -87,15 +87,15 @@
   </section>
 
   <section id="selinux">
-    <title>Selinux</title>
+    <title>SELinux</title>
 
-    <para>In case your server has selinux installed you might need to extend
-    the selinux ruleset. E.g. your webserver might not be allowed to write in
+    <para>In case your server has SELinux installed you might need to extend
+    the SELinux ruleset. E.g. your webserver might not be allowed to write in
     /var/lib.</para>
 
-    <para><emphasis role="bold">Read selinux status</emphasis></para>
+    <para><emphasis role="bold">Read SELinux status</emphasis></para>
 
-    <para>The following command will tell you if selinux is running in
+    <para>The following command will tell you if SELinux is running in
     Enforcing or Permissive mode.</para>
 
     <para>Enforcing: access that does not match rules is denied</para>
@@ -105,7 +105,7 @@
 
     <programlisting>getenforce</programlisting>
 
-    <para><emphasis role="bold">Set selinux to Permissive
+    <para><emphasis role="bold">Set SELinux to Permissive
     mode</emphasis></para>
 
     <para>This will just log any access violations. You will need this to get
@@ -116,15 +116,15 @@
     <para>Now do any actions inside LAM that you need for your daily work
     (e.g. edit server profiles, manage LDAP entries, ...).</para>
 
-    <para><emphasis role="bold">Extend selinux rules</emphasis></para>
+    <para><emphasis role="bold">Extend SELinux rules</emphasis></para>
 
-    <para>Selinux now has logged any violations to audit.log. You can use this
+    <para>SELinux now has logged any violations to audit.log. You can use this
     now to extend your ruleset and enable enforcing later.</para>
 
     <para>The following example is for httpd. You can also adapt it to e.g.
     nginx.</para>
 
-    <programlisting># build additional selinux rules from audit.log
+    <programlisting># build additional SELinux rules from audit.log
 grep httpd /var/log/audit/audit.log | audit2allow -m httpdlocal -o httpdlocal.te
 </programlisting>
 
@@ -159,7 +159,7 @@ semodule -i httpdlocal.pp</programlisting>
 
     <programlisting>setenforce Enforcing</programlisting>
 
-    <para>LAM should now work as expected with active selinux.</para>
+    <para>LAM should now work as expected with active SELinux.</para>
   </section>
 
   <section>

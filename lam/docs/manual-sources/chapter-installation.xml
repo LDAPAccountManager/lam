@@ -61,8 +61,8 @@
       <para>OpenSSL will be used to store your LDAP password encrypted in the
       session file.</para>
 
-      <para>Please note that LAM does not ship with a selinux policy. Please
-      disable selinux or <link linkend="selinux">create your own
+      <para>Please note that LAM does not ship with a SELinux policy. Please
+      disable SELinux or <link linkend="selinux">create your own
       policy</link>.</para>
 
       <para>See <link linkend="a_schema">LDAP schema fles</link> for
