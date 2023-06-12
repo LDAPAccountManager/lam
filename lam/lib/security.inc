@@ -909,7 +909,8 @@ class LamTemporaryFilesManager {
 		if (!$this->isRegisteredFile($fileName)) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		return $prefix . 'misc/download.php?file=' . $fileName . '&download=true';
+		$selfServicePart = isSelfService() ? '&selfservice=true' : '';
+		return $prefix . 'misc/download.php?file=' . $fileName . '&download=true' . $selfServicePart;
 	}
 
 	/**
@@ -924,7 +925,8 @@ class LamTemporaryFilesManager {
 		if (!$this->isRegisteredFile($fileName)) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		return $prefix . 'misc/download.php?file=' . $fileName;
+		$selfServicePart = isSelfService() ? '&selfservice=true' : '';
+		return $prefix . 'misc/download.php?file=' . $fileName . $selfServicePart;
 	}
 
 	/**

@@ -1123,7 +1123,12 @@ class accountContainer {
 			echo "<div class=\"lam-vertical-tab-content fullwidth module-content-row\">\n";
 			// content area
 			// display html-code from modules
-			$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
+			try {
+				$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_' . $this->subpage));
+			}
+			catch (LAMException $e) {
+				$return = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			}
 			$y = 5000;
 			parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type->getScope());
 			echo "</div>\n";

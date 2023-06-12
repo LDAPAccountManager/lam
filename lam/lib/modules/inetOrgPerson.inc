@@ -1760,19 +1760,25 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
 		}
 		else {
-			$container->add(new htmlSubTitle(_('Crop image')), 12);
-			$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
-			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
-			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
-			fclose ($outjpeg);
-			$photoFile = '../../tmp/' . $jpeg_filename;
-			$img = new htmlImage($photoFile);
-			$img->setCSSClasses(array('photo'));
-			$img->enableCropping();
-			$container->add($img, 12);
+			$container->add(new htmlSubTitle(_('Crop image')));
+			try {
+				$tempFilesManager = new LamTemporaryFilesManager();
+				$jpeg_filename = $tempFilesManager->registerTemporaryFile('.jpg');
+				$handle = $tempFilesManager->openTemporaryFileForWrite($jpeg_filename);
+				fwrite($handle, $this->attributes['jpegPhoto'][0]);
+				fclose($handle);
+				$photoFile = $tempFilesManager->getResourceLink($jpeg_filename);
+				$img = new htmlImage($photoFile);
+				$img->setCSSClasses(array('photo'));
+				$img->enableCropping();
+				$container->add($img);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle());
+			}
 			$container->addVerticalSpacer('1rem');
 			$doneButton = new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done'));
-			$container->add($doneButton, 12);
+			$container->add($doneButton);
 		}
 		return $container;
 	}
@@ -1892,14 +1898,13 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		if (isset($this->attributes['userCertificate;binary'])) {
 			$table = new htmlTable();
 			$table->colspan = 10;
+			$temFilesManager = new LamTemporaryFilesManager();
 			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
-				$filename = 'userCertificate_' . generateRandomText() . '.der';
-				$pathOut = dirname(__FILE__) . '/../../tmp/' . $filename;
-				$out = @fopen($pathOut, "wb");
-				@chmod($pathOut, 0640);
+				$filename = $temFilesManager->registerTemporaryFile('.der');
+				$out = $temFilesManager->openTemporaryFileForWrite($filename);
 				fwrite($out, $this->attributes['userCertificate;binary'][$i]);
 				fclose ($out);
-				$path = '../../tmp/' . $filename;
+				$path = $temFilesManager->getDownloadLink($filename);
 				$link = new htmlLink('', $path, '../../graphics/save.svg');
 				$link->setTargetWindow('_blank');
 				$link->setCSSClasses(array('icon'));
@@ -2849,27 +2854,29 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @param boolean $readOnly content is read-only
 	 * @param boolean $crop enable cropping
 	 * @return htmlResponsiveRow content
+	 * @throws LAMException error displaying page
 	 */
 	private function getSelfServicePhoto($readOnly, $crop) {
 		$photo = $_SESSION[self::SESS_PHOTO];
 		$row = new htmlResponsiveRow();
 		if (!empty($photo)) {
-			$jpeg_filename = 'jpegPhoto_' . generateRandomText() . '.jpg';
-			$outjpeg = fopen(realpath('../../') . '/tmp/' . $jpeg_filename, "wb");
-			fwrite($outjpeg, $photo);
-			fclose ($outjpeg);
-			$photoFile = '../../tmp/' . $jpeg_filename;
+			$tempFilesManager = new LamTemporaryFilesManager();
+			$fileName = $tempFilesManager->registerTemporaryFile('.jpg');
+			$handle = $tempFilesManager->openTemporaryFileForWrite($fileName);
+			fwrite($handle, $photo);
+			fclose ($handle);
+			$photoFile = $tempFilesManager->getResourceLink($fileName);
 			$img = new htmlImage($photoFile, null, null, $this->getSelfServiceLabel('jpegPhoto', _('Photo')));
 			$img->setCSSClasses(array('photo'));
 			if ($crop) {
 				$img->enableCropping();
 			}
-			$row->add($img, 12);
+			$row->add($img);
 			if (!$readOnly) {
 				$row->addVerticalSpacer('0.5rem');
 				$deleteButton = new htmlLink(_('Delete'), '#', '../../graphics/del.svg', true);
 				$deleteButton->setOnClick('inetOrgPersonDeletePhoto(); return false;');
-				$row->add($deleteButton, 12);
+				$row->add($deleteButton);
 			}
 			$row->addVerticalSpacer('0.5rem');
 		}
@@ -2886,7 +2893,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$webcamContent->addVerticalSpacer('0.5rem');
 		$errorMessage = new htmlStatusMessage('ERROR', '');
 		$errorMessage->setCSSClasses(array('hidden', 'lam-webcam-message'));
-		$webcamContent->add($errorMessage, 12);
+		$webcamContent->add($errorMessage);
 		$webcamContent->addVerticalSpacer('0.5rem');
 		$captureButton = new htmlLink(_('Use webcam'), '#', '../../graphics/webcam.png', true);
 		$captureButton->setId('btn_lam-webcam-capture');
@@ -2907,7 +2914,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$webcamContent->add($canvas, 12);
 		$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, array('hidden'));
 		$webcamContent->addVerticalSpacer('1rem');
-		$row->add($webcamDiv, 12);
+		$row->add($webcamDiv);
 		return $row;
 	}
 
