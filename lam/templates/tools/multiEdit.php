@@ -21,6 +21,7 @@ use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
 use \htmlResponsiveTable;
 use LAM\TOOLS\TREEVIEW\TreeViewTool;
+use LamTemporaryFilesManager;
 
 /*
 
@@ -472,12 +473,13 @@ function dryRun(): array {
 	$container->addElement(new htmlOutputText(_('Dry run finished.')), true);
 	$container->addVerticalSpace('20px');
 	// store LDIF
-	$filename = 'ldif_' . generateRandomText() . '.ldif';
-	$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
+	$tempFilesManager = new LamTemporaryFilesManager();
+	$fileName = $tempFilesManager->registerTemporaryFile('.ldif', 'ldif_');
+	$out = $tempFilesManager->openTemporaryFileForWrite($fileName);
 	if ($out !== false) {
 		fwrite($out, $ldif);
 		$container->addElement(new htmlOutputText(_('LDIF file')), true);
-		$ldifLink = new htmlLink($filename, '../../tmp/' . $filename);
+		$ldifLink = new htmlLink($fileName, $tempFilesManager->getDownloadLink($fileName));
 		$ldifLink->setTargetWindow('_blank');
 		$container->addElement($ldifLink, true);
 		$container->addVerticalSpace('20px');

@@ -26,6 +26,7 @@ use htmlTitle;
 use LAM\SCHEMA\AttributeType;
 use LAM\SCHEMA\ObjectClass;
 use LAMException;
+use LamTemporaryFilesManager;
 use function LAM\SCHEMA\get_schema_attributes;
 use function LAM\SCHEMA\get_schema_objectclasses;
 
@@ -633,6 +634,7 @@ class TreeView {
 	 * @param AttributeType|null $schemaAttribute schema attribute
 	 * @param int $index value position
 	 * @return htmlElement input field
+	 * @throws LAMException error generating field
 	 */
 	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine,
 	                                        bool $isSingleValue, ?AttributeType $schemaAttribute, int $index): htmlElement {
@@ -732,15 +734,17 @@ class TreeView {
 	 * @param string $attributeName attribute name
 	 * @param string $value value
 	 * @param bool $required required
+	 * @param int $index index
 	 * @return htmlElement input field
+	 * @throws LAMException error writing image file
 	 */
 	private function getAttributeJpegInputField(string $attributeName, string $value, bool $required, int $index): htmlElement {
-		$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
-		$outJpeg = @fopen(__DIR__ . '/../tmp/' . $jpeg_filename, "wb");
-		fwrite($outJpeg, $value);
-		fclose ($outJpeg);
-		$photoFile = '../../tmp/' . $jpeg_filename;
-		$image = new htmlImage($photoFile);
+		$tempFilesManager = new LamTemporaryFilesManager();
+		$fileName = $tempFilesManager->registerTemporaryFile('.jpg');
+		$handle = $tempFilesManager->openTemporaryFileForWrite($fileName);
+		fwrite($handle, $value);
+		fclose ($handle);
+		$image = new htmlImage($tempFilesManager->getResourceLink($fileName));
 		$image->enableLightbox();
 		$image->setCSSClasses(array('thumbnail', 'image-input'));
 		$image->addDataAttribute('attr-name', $attributeName);
