@@ -4110,11 +4110,12 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 							}
 						}
 					}
-					$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
-					$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
-					fwrite($outjpeg, $entry[$attribute][0]);
-					fclose ($outjpeg);
-					$photoFile = '../../tmp/' . $jpeg_filename;
+					$tempFilesManager = new LamTemporaryFilesManager();
+					$fileName = $tempFilesManager->registerTemporaryFile('.jpg');
+					$handle = $tempFilesManager->openTemporaryFileForWrite($fileName);
+					fwrite($handle, $entry[$attribute][0]);
+					fclose ($handle);
+					$photoFile = $tempFilesManager->getResourceLink($fileName);
 					$image = new htmlImage($photoFile);
 					$image->enableLightbox();
 					$image->setCSSClasses(array('thumbnail'));

@@ -7,6 +7,8 @@ use \htmlOutputText;
 use \htmlButton;
 use \htmlHiddenInput;
 use \htmlResponsiveRow;
+use LamTemporaryFilesManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -268,7 +270,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$_SESSION['mass_pdf']['structure'] = $_POST['pdfStructure'];
 					$_SESSION['mass_pdf']['font'] = $_POST['pdf_font'];
 					$_SESSION['mass_pdf']['counter'] = 0;
-					$_SESSION['mass_pdf']['file'] = '../../tmp/lam_pdf_' . generateRandomText() . '.zip';
+					$tempFilesManager = new LamTemporaryFilesManager();
+					$_SESSION['mass_pdf']['file'] = $tempFilesManager->registerTemporaryFile('.zip');
 				}
 				else {
 					$_SESSION['mass_pdf']['structure'] = null;

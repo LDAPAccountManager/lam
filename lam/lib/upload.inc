@@ -1,11 +1,12 @@
 <?php
 namespace LAM\UPLOAD;
+use LamTemporaryFilesManager;
 use ZipArchive;
 use accountContainer;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2020  Roland Gruber
+ Copyright (C) 2016 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -287,15 +288,16 @@ class Uploader {
 		$pdfStructure = $_SESSION['mass_pdf']['structure'];
 		$font = $_SESSION['mass_pdf']['font'];
 		$pdfZip = new ZipArchive();
+		$tempFilesManager = new LamTemporaryFilesManager();
 		if ($_SESSION['mass_pdf']['counter'] == 0) {
-			$pdfZipResult = @$pdfZip->open($_SESSION['mass_pdf']['file'], ZipArchive::CREATE);
+			$pdfZipResult = @$pdfZip->open($tempFilesManager->getFileSystemPath($file), ZipArchive::OVERWRITE);
 			if (!$pdfZipResult === true) {
-				$_SESSION['mass_errors'][] = array('ERROR', _('Unable to create ZIP file for PDF export.'), $file);
+				$_SESSION['mass_errors'][] = array('ERROR', _('Unable to create ZIP file for PDF export.'));
 				$_SESSION['mass_pdf']['finished'] = true;
 			}
 		}
 		else {
-			@$pdfZip->open($_SESSION['mass_pdf']['file']);
+			@$pdfZip->open($tempFilesManager->getFileSystemPath($file));
 		}
 		while (!isset($_SESSION['mass_pdf']['finished']) && ($this->endTime > time())) {
 			$attrs = $this->accounts[$_SESSION['mass_pdf']['counter']];

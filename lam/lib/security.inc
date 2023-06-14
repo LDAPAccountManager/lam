@@ -848,7 +848,7 @@ class LamTemporaryFilesManager {
 		if (!$this->isRegisteredFile($fileName)) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+		$path = $this->getFileSystemPath($fileName);
 		$handle = @fopen($path, "r");
 		if ($handle) {
 			return $handle;
@@ -867,7 +867,7 @@ class LamTemporaryFilesManager {
 		if (!$this->isRegisteredFile($fileName)) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+		$path = $this->getFileSystemPath($fileName);
 		$handle = @fopen($path, "wb");
 		if ($handle) {
 			return $handle;
@@ -940,12 +940,27 @@ class LamTemporaryFilesManager {
 			if (!$this->isValidFileName($fileName)) {
 				continue;
 			}
-			$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+			$path = $this->getFileSystemPath($fileName);
 			if (file_exists($path)) {
 				unlink($path);
 			}
 		}
 		unset($_SESSION[self::SESSION_KEY]);
+	}
+
+	/**
+	 * Returns the raw path on file system.
+	 * Only to be used if download/resource link cannot be used.
+	 *
+	 * @param string $fileName file name
+	 * @return string path on file system
+	 * @throws LAMException
+	 */
+	public function getFileSystemPath(string $fileName): string {
+		if (!$this->isValidFileName($fileName) || !$this->isRegisteredFile($fileName)) {
+			throw new LAMException(_('Unable to read file.'));
+		}
+		return dirname(__FILE__) . '/../tmp/' . $fileName;
 	}
 
 }
