@@ -2,6 +2,7 @@
 namespace LAM\PDF;
 use LAM\ImageUtils\ImageManipulationFactory;
 use LAMException;
+use LamTemporaryFilesManager;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -167,15 +168,14 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 
 	$out = $pdf->Output('out.pdf', 'S');
 	if (!$returnAsString) {
-		// use timestamp and random number from ldap.inc as filename so it should be unique.
-		$filename = '../../tmp/' . generateRandomText() . time() .'.pdf';
+		$tempFilesManager = new LamTemporaryFilesManager();
+		$fileName = $tempFilesManager->registerTemporaryFile('.pdf');
 		// Save PDF
-		$handle = fopen($filename, 'w');
-		chmod($filename, 0640);
+		$handle = $tempFilesManager->openTemporaryFileForWrite($fileName);
 		fwrite($handle, $out);
 		fclose($handle);
 		// return PDF file name
-		return $filename;
+		return $fileName;
 	}
 	else {
 		return $out;

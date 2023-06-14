@@ -811,12 +811,12 @@ class lamList {
 			    $pdfStruct = $_POST['pdf_structure'];
 			    $pdfFont = $_POST['pdf_font'];
 			    $option = $_POST['createFor'];
-			    $filename = '';
+			    $fileName = '';
 			    // create for clicked account
 			    if ($option == 'DN') {
 				    $_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
 				    $_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
-				    $filename = createModulePDF(array($_SESSION["accountPDF"]), $pdfStruct, $pdfFont);
+				    $fileName = createModulePDF(array($_SESSION["accountPDF"]), $pdfStruct, $pdfFont);
 				    unset($_SESSION["accountPDF"]);
 			    } // create for all selected accounts
                 elseif ($option == 'SELECTED') {
@@ -830,7 +830,7 @@ class lamList {
 					    $list[$i] = $_SESSION["accountPDF-$i"];
 				    }
 				    if (sizeof($list) > 0) {
-					    $filename = createModulePDF($list, $pdfStruct, $pdfFont);
+					    $fileName = createModulePDF($list, $pdfStruct, $pdfFont);
 					    for ($i = 0; $i < sizeof($accounts); $i++) {
 						    unset($_SESSION["accountPDF-$i"]);
 					    }
@@ -845,18 +845,19 @@ class lamList {
 					    $list[$i] = $_SESSION["accountPDF-$i"];
 				    }
 				    if (sizeof($list) > 0) {
-					    $filename = createModulePDF($list, $pdfStruct, $pdfFont);
+					    $fileName = createModulePDF($list, $pdfStruct, $pdfFont);
 					    for ($i = 0; $i < $entriesCount; $i++) {
 						    // clean session
 						    unset($_SESSION["accountPDF-$i"]);
 					    }
 				    }
 			    } elseif ($option == 'SESSION') {
-				    $filename = createModulePDF(array($_SESSION[$_POST['PDFSessionID']]), $pdfStruct, $pdfFont);
+				    $fileName = createModulePDF(array($_SESSION[$_POST['PDFSessionID']]), $pdfStruct, $pdfFont);
 				    unset($_SESSION[$_POST['PDFSessionID']]);
 			    }
-			    if ($filename != '') {
-				    return new htmlJavaScript("window.open('" . $filename . "', '_blank');");
+			    if (!empty($fileName)) {
+			        $tempFilesManager = new LamTemporaryFilesManager();
+				    return new htmlJavaScript("window.open('" . $tempFilesManager->getDownloadLink($fileName) . "', '_blank');");
 			    }
 		    }
 		    catch (LAMException $e) {
