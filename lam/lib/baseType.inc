@@ -170,19 +170,24 @@ class baseType {
 		}
 		$accountStatus = new AccountStatus($details);
 		$mainIcon = 'unlocked.svg';
+		$altText = _('Unlocked');
 		if ($accountStatus->isLocked()) {
 			$mainIcon = 'locked.svg';
+			$altText = _('Locked');
 		}
 		elseif ($accountStatus->isPartiallyLocked()) {
 			$mainIcon = 'partiallyLocked.svg';
+			$altText = _('Partially locked');
 		}
 		elseif ($accountStatus->isExpired()) {
 			$mainIcon = 'expired.svg';
+			$altText = _('Expired');
 		}
 		elseif ($accountStatus->isPartiallyExpired()) {
 			$mainIcon = 'expired.svg';
+			$altText = _('Expired');
 		}
-		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
+		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16, $altText);
 		if (!empty($accountStatus->getDetails()) || !empty($lockableOptions)) {
 			$detailsTable = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
