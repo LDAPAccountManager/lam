@@ -98,6 +98,9 @@ function setMimeType(string $fileName): void {
 		case 'svg':
 			$mimeType = 'image/svg+xml';
 			break;
+		case 'zip':
+			$mimeType = 'application/zip';
+			break;
 	}
 	if ($mimeType !== null) {
 		header('Content-Type: ' . $mimeType);

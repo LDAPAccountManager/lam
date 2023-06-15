@@ -1574,11 +1574,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$photoFile = '../../graphics/user.svg';
 			$noPhoto = true;
 			if (isset($this->attributes['jpegPhoto'][0])) {
-				$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
-				$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
+				$tempFilesManager = new LamTemporaryFilesManager();
+				$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
+				$outjpeg = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
 				fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
 				fclose ($outjpeg);
-				$photoFile = '../../tmp/' . $jpeg_filename;
+				$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
 				$noPhoto = false;
 			}
 			$img = new htmlImage($photoFile);
@@ -2384,16 +2385,17 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
 		}
 		else {
-			$container->add(new htmlSubTitle(_('Crop image')), 12);
-			$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
-			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
-			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
-			fclose ($outjpeg);
-			$photoFile = '../../tmp/' . $jpeg_filename;
+			$container->add(new htmlSubTitle(_('Crop image')));
+			$tempFilesManager = new LamTemporaryFilesManager();
+			$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
+			$handle = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
+			fwrite($handle, $this->attributes['jpegPhoto'][0]);
+			fclose ($handle);
+			$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
 			$img = new htmlImage($photoFile);
 			$img->setCSSClasses(array('photo'));
 			$img->enableCropping();
-			$container->add($img, 12);
+			$container->add($img);
 			$container->addVerticalSpacer('2rem');
 			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done')), 12);
 		}
@@ -4585,11 +4587,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 							}
 						}
 					}
-					$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
-					$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
-					fwrite($outjpeg, $entry[$attribute][0]);
-					fclose ($outjpeg);
-					$photoFile = '../../tmp/' . $jpeg_filename;
+					$tempFilesManager = new LamTemporaryFilesManager();
+					$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
+					$handle = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
+					fwrite($handle, $entry[$attribute][0]);
+					fclose ($handle);
+					$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
 					$image = new htmlImage($photoFile);
 					$image->enableLightbox();
 					$image->setCSSClasses(array('thumbnail'));
