@@ -85,6 +85,9 @@ function setMimeType(string $fileName): void {
 	$extension = substr($fileName, strrpos($fileName, '.') + 1);
 	$mimeType = null;
 	switch ($extension) {
+		case 'crt':
+			$mimeType = 'application/x-x509-user-cert';
+			break;
 		case 'csv':
 			$mimeType = 'text/csv; charset=UTF-8';
 			break;
