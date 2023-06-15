@@ -1,3 +1,7 @@
+September 2023
+  - Accessibility improvements
+
+
 06.06.2023 8.4
   - Duo 2FA: switch to frameless login and support for universal prompt
   - Docker: support for linux/arm64 (Apple Silicon)

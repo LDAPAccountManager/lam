@@ -187,7 +187,8 @@ class baseType {
 			$mainIcon = 'expired.svg';
 			$altText = _('Expired');
 		}
-		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16, $altText);
+		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, null, null, $altText);
+		$statusIcon->setCSSClasses(array('icon'));
 		if (!empty($accountStatus->getDetails()) || !empty($lockableOptions)) {
 			$detailsTable = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
@@ -215,7 +216,7 @@ class baseType {
 			$statusIcon->setHelpData(_('Account status'), $detailsTable);
 			if (checkIfWriteAccessIsAllowed($container->get_type()->getScope())) {
 				$statusIcon->setOnClick("window.lam.dialog.showModal('.modal-account-status')");
-				$statusIcon->setCSSClasses(array('clickable'));
+				$statusIcon->setCSSClasses(array('clickable', 'icon'));
 			}
 		}
 		$statusContent->addElement($statusIcon);

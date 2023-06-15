@@ -894,6 +894,11 @@ img.clickable {
 	cursor: pointer;
 }
 
+img.icon {
+	width: var(--lam-icon-size);
+	height: var(--lam-icon-size);
+}
+
 div.confModList {
 	max-height: 300px;
 	overflow-y: auto;

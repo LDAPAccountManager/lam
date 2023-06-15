@@ -639,20 +639,20 @@ class lamList {
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.svg');
 		$editLink->setTitle(_("Edit"));
-		$editLink->setCSSClasses(array('lam-margin-smaller'));
+		$editLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
 		$element->addElement($editLink);
 		// delete link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.svg');
 			$deleteLink->setTitle(_("Delete"));
-			$deleteLink->setCSSClasses(array('lam-margin-smaller'));
+			$deleteLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
 			$element->addElement($deleteLink);
 		}
 		// copy link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$copyLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&copyDn='" . rawurlencode($account['dn']) . "'", '../../graphics/copy.svg');
 			$copyLink->setTitle(_("Copy"));
-			$copyLink->setCSSClasses(array('lam-margin-smaller'));
+			$copyLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
 			$element->addElement($copyLink);
 		}
 		// PDF button
@@ -668,7 +668,7 @@ class lamList {
         if (isLAMProVersion() && $this->supportsPasswordQuickChange && checkIfPasswordChangeIsAllowed()) {
 	        $pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/key.svg');
 	        $pwdChangeButton->setTitle(_('Change password'));
-	        $pwdChangeButton->setCSSClasses(array('lam-margin-smaller'));
+	        $pwdChangeButton->setCSSClasses(array('lam-margin-smaller', 'icon'));
 	        $element->addElement($pwdChangeButton);
         }
 		// additional tools
@@ -676,7 +676,7 @@ class lamList {
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
 			$toolLink->setTitle($tools[$i]->getName());
-			$toolLink->setCSSClasses(array('lam-margin-smaller'));
+			$toolLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
 			$element->addElement($toolLink);
 		}
 	}
@@ -1525,7 +1525,8 @@ class lamList {
 			$mainIcon = 'expired.svg';
 			$altText = _('Expired');
 		}
-		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16, $altText);
+		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, null, null, $altText);
+		$statusIcon->setCSSClasses(array('icon'));
 		if (!empty($accountStatus->getDetails())) {
 			$detailsTable = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
