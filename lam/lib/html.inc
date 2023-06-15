@@ -3218,7 +3218,10 @@ class htmlLink extends htmlElement {
 	 * @return string alt value
 	 */
 	protected function getAlt() {
-		return $this->text;
+		if (!empty($this->text)) {
+			return $this->text;
+		}
+		return $this->title;
 	}
 
 	/**
