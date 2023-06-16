@@ -105,18 +105,6 @@ class range extends baseModule {
 				"Headline" => _("Range to"),
 				"Text" => _("The ending IP address of the range.")
 			),
-			'drop_range' => array(
-				"Headline" => _("Delete range"),
-				"Text" => _("Deletes an IP range.")
-			),
-			'add_range' => array(
-				"Headline" => _("New range"),
-				"Text" => _("Adds input fields for a new IP range.")
-			),
-			'add_pool' => array(
-				"Headline" => _("New pool"),
-				"Text" => _("Adds a new range pool.")
-			),
 			'poolName' => array(
 				"Headline" => _("Name"), 'attr' => 'cn',
 				"Text" => _("The pool's name.")
@@ -125,7 +113,7 @@ class range extends baseModule {
 				"Headline" => _("Failover peer"), 'attr' => 'dhcpStatements',
 				"Text" => _("The pool's failover peer.")
 			),
-			);
+		);
 
 		// available PDF fields
 		$return['PDF_fields'] = array('ranges' => _('Ranges'));
@@ -479,9 +467,9 @@ class range extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$return = new htmlTable();
-		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
-			$return->addElement(new htmlStatusMessage('INFO', _("Please fill out the DHCP settings first.")));
+		$return = new htmlResponsiveRow();
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] == "") {
+			$return->add(new htmlStatusMessage('INFO', _("Please fill out the DHCP settings first.")));
 			return $return;
         }
 
@@ -506,10 +494,11 @@ class range extends baseModule {
 					$error = _("The range conflicts with another range.");
 				}
 			}
-			$fromInput = new htmlTableExtendedInputField(_('Range from'), 'range_start_'.$id, $this->ranges[$id]['range_start'], 'range_from');
-			$fromInput->setRequired(true);
-			$return->addElement($fromInput);
-			$return->addElement(new htmlOutputText($error), true);
+			$fromInput = new htmlResponsiveInputField(_('Range from'), 'range_start_'.$id, $this->ranges[$id]['range_start'], 'range_from', true);
+			$return->add($fromInput);
+			if (!empty($error)) {
+				$return->add(new htmlOutputText($error));
+			}
 			// Range end
 			$error = "";
 			if (isset($this->ranges[$id]['range_end']) && !empty($this->ranges[$id]['range_end'])) {
@@ -519,37 +508,30 @@ class range extends baseModule {
 					$error = _("The IP does not match the subnet.");
 				}
 			}
-			$toInput = new htmlTableExtendedInputField(_('Range to'), 'range_end_'.$id, $this->ranges[$id]['range_end'], 'range_to');
-			$toInput->setRequired(true);
-			$return->addElement($toInput);
-			$return->addElement(new htmlOutputText($error), true);
+			$toInput = new htmlResponsiveInputField(_('Range to'), 'range_end_'.$id, $this->ranges[$id]['range_end'], 'range_to', true);
+			$return->add($toInput);
+			if (!empty($error)) {
+				$return->add(new htmlOutputText($error));
+			}
 			// Drop range:
 			$dropButton = new htmlButton('drop_range_'.$id, _('Delete range'));
-			$dropButton->colspan = 2;
 			$dropButton->setCSSClasses(array('lam-danger'));
-			$return->addElement($dropButton);
-			$return->addElement(new htmlHelpLink('drop_range'), true);
+			$return->add($dropButton, 12, 12, 12, 'text-center');
 
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 		}
 
 		// add new range
 		$addButton = new htmlButton('add_range', _('New range'));
-		$addButton->colspan = 2;
-		$return->addElement($addButton);
-		$return->addElement(new htmlHelpLink('add_range'), true);
+		$return->add($addButton);
 
 		// pools
 		if (!empty($this->poolsNew)) {
-			$return->addElement(new htmlSubTitle(_('Pools')), true);
+			$return->add(new htmlSubTitle(_('Pools')));
 			foreach ($this->poolsNew as $index => $poolAttrs) {
 				$cn = !empty($poolAttrs['cn'][0]) ? $poolAttrs['cn'][0] : '';
-				$nameField = new htmlTableExtendedInputField(_('Name'), 'pool_cn_' . $index, $cn, 'poolName');
-				$nameField->setRequired(true);
-				$return->addElement($nameField);
-				$delPoolButton = new htmlButton('del_pool_' . $index, _('Delete pool'));
-				$delPoolButton->setCSSClasses(array('lam-danger'));
-				$return->addElement($delPoolButton, true);
+				$nameField = new htmlResponsiveInputField(_('Name'), 'pool_cn_' . $index, $cn, 'poolName', true);
+				$return->add($nameField);
 				$peer = '';
 				if (!empty($poolAttrs['dhcpstatements'])) {
 					foreach ($poolAttrs['dhcpstatements'] as $statement) {
@@ -558,18 +540,19 @@ class range extends baseModule {
 						}
 					}
 				}
-				$return->addElement(new htmlTableExtendedInputField(_('Failover peer'), 'pool_peer_' . $index, $peer, 'poolPeer'), true);
-				$return->addVerticalSpace('10px');
+				$return->add(new htmlResponsiveInputField(_('Failover peer'), 'pool_peer_' . $index, $peer, 'poolPeer'));
+				$delPoolButton = new htmlButton('del_pool_' . $index, _('Delete pool'));
+				$delPoolButton->setCSSClasses(array('lam-danger'));
+				$return->add($delPoolButton, 12, 12, 12, 'text-center');
+				$return->addVerticalSpacer('2rem');
 				if (!empty($poolAttrs['dhcprange'])) {
 					foreach ($poolAttrs['dhcprange'] as $rIndex => $range) {
 						$range = explode(' ', $range);
 						$from = !empty($range[0]) ? $range[0] : '';
 						$to = !empty($range[1]) ? $range[1] : '';
-						$fromInput = new htmlTableExtendedInputField(_('Range from'), 'pool_from_' . $index . '_' . $rIndex, $from, 'range_from');
-						$fromInput->setRequired(true);
-						$toInput = new htmlTableExtendedInputField(_('Range to'), 'pool_to_' . $index . '_' . $rIndex, $to, 'range_to');
-						$toInput->setRequired(true);
-						$return->addElement($fromInput);
+						$fromInput = new htmlResponsiveInputField(_('Range from'), 'pool_from_' . $index . '_' . $rIndex, $from, 'range_from', true);
+						$toInput = new htmlResponsiveInputField(_('Range to'), 'pool_to_' . $index . '_' . $rIndex, $to, 'range_to', true);
+						$return->add($fromInput);
 						$message = '';
 						if (!empty($from) && $this->processed) {
 							if (!check_ip($from)) {
@@ -585,8 +568,10 @@ class range extends baseModule {
 								$message = _("The range conflicts with another range.");
 							}
 						}
-						$return->addElement(new htmlOutputText($message), true);
-						$return->addElement($toInput);
+						$return->add($toInput);
+						if (!empty($message)) {
+							$return->add(new htmlOutputText($message));
+						}
 						$message = '';
 						if (!empty($to) && $this->processed) {
 							if (!check_ip($to)) {
@@ -596,31 +581,28 @@ class range extends baseModule {
 								$message = _("The IP does not match the subnet.");
 							}
 						}
-						$return->addElement(new htmlOutputText($message), true);
+						if (!empty($message)) {
+							$return->add(new htmlOutputText($message));
+						}
 						// drop range
 						$dropButton = new htmlButton('drop_poolrange_' . $index . '_' . $rIndex, _('Delete range'));
-						$dropButton->colspan = 2;
 						$dropButton->setCSSClasses(array('lam-danger'));
-						$return->addElement($dropButton);
-						$return->addElement(new htmlHelpLink('drop_range'), true);
-						$return->addElement(new htmlSpacer(null, '10px'), true);
+						$return->add($dropButton, 12, 12, 12, 'text-center');
+						$return->addVerticalSpacer('4rem');
 					}
 				}
 				// add new range
 				$newButton = new htmlButton('add_poolrange_' . $index, _('New range'));
-				$newButton->colspan = 2;
-				$return->addElement($newButton);
-				$return->addElement(new htmlHelpLink('add_range'), true);
-				$return->addVerticalSpace('20px');
+				$return->add($newButton);
+				$return->addVerticalSpacer('4rem');
 			}
-			$return->addVerticalSpace('20px');
+			$return->addVerticalSpacer('4rem');
 		}
 
 		// add new range pool
 		$addButton = new htmlButton('add_pool', _('New pool'));
-		$addButton->colspan = 2;
-		$return->addElement($addButton);
-		$return->addElement(new htmlHelpLink('add_pool'), true);
+		$return->add($addButton);
+		$return->addVerticalSpacer('4rem');
 
 		return $return;
 	}
