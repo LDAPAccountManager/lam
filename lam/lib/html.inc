@@ -269,17 +269,8 @@ class htmlTable extends htmlElement {
 	 * @param boolean $isTableHeadElement specifies if this is a head or body element (default: body)
 	 */
 	public function addElement($element, $newLine = false, $isTableHeadElement = false) {
-		// add row element
-		if ($element instanceof htmlTableRow) {
-			// check if a row needs to be closed
-			if ($this->rowOpen) {
-				$this->elements[] = "</tr>\n";
-				$this->rowOpen = false;
-			}
-			$this->elements[] = $element;
-		}
 		// add cell element
-		elseif ($element instanceof htmlElement) {
+		if ($element instanceof htmlElement) {
 			// check if a row needs to be opened
 			if (!$this->rowOpen) {
 				$this->elements[] = "<tr>\n";
@@ -414,60 +405,6 @@ class htmlTable extends htmlElement {
 			$this->rowOpen = false;
 		}
 		$this->elements = array_merge($this->elements, $table->elements);
-	}
-
-}
-
-/**
- * A row inside a htmlTable.
- *
- * @see htmlTable
- * @package metaHTML
- */
-class htmlTableRow extends htmlElement {
-
-	/** table cells */
-	private $cells;
-
-	/**
-	 * Constructor
-	 *
-	 * @param array $cells list of htmlElements
-	 * @see htmlElement
-	 */
-	public function __construct($cells) {
-		$this->cells = $cells;
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$types = array();
-		$classAttr = '';
-		if (sizeof($this->cssClasses) > 0) {
-			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
-		}
-		echo "<tr" . $classAttr . ">\n";
-			for ($i = 0; $i < sizeof($this->cells); $i++) {
-				// check if alignment option was given
-				$align = $this->cells[$i]->getAlignmentString();
-				$colspan = $this->cells[$i]->getColspanString();
-				$rowspan = $this->cells[$i]->getRowspanString();
-				echo "<td $align $colspan $rowspan>\n";
-				$types = array_merge($types, $this->cells[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
-				echo "</td>\n";
-			}
-		echo "</tr>";
-		return $types;
 	}
 
 }

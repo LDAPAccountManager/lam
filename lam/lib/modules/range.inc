@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2022  Roland Gruber
+                2008 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -845,12 +845,10 @@ class range extends baseModule {
 					foreach($entry['dhcprange'] AS $value) {
 						if (!empty($value) && !is_numeric($value)) {
 							$ex = explode(" ", $value);
-							$row = new htmlTableRow(
-								array(
-									new htmlOutputText($ex[0]),
-									new htmlOutputText(' - '),
-									new htmlOutputText($ex[1])
-								)
+							$row = array(
+								new htmlOutputText($ex[0]),
+								new htmlOutputText(' - '),
+								new htmlOutputText($ex[1])
 							);
 							$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
 						}
@@ -863,12 +861,10 @@ class range extends baseModule {
 						foreach($pool['dhcprange'] AS $value) {
 							if (!empty($value) && !is_numeric($value)) {
 								$ex = explode(" ", $value);
-								$row = new htmlTableRow(
-									array(
-										new htmlOutputText($ex[0]),
-										new htmlOutputText(' - '),
-										new htmlOutputText($ex[1])
-									)
+								$row = array(
+									new htmlOutputText($ex[0]),
+									new htmlOutputText(' - '),
+									new htmlOutputText($ex[1])
 								);
 								$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
 							}
@@ -876,7 +872,9 @@ class range extends baseModule {
 					}
 					uksort($ranges, 'strnatcasecmp');
 					foreach ($ranges as $row) {
-						$table->addElement($row);
+						$table->addElement($row[0]);
+						$table->addElement($row[1]);
+						$table->addElement($row[2], true);
 					}
 					return $table;
 				}
