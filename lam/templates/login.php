@@ -1,6 +1,7 @@
 <?php
 namespace LAM\LOGIN;
 use htmlLabel;
+use htmlResponsiveSelect;
 use LAM\ENV\LAMLicenseValidator;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \LAMConfig;
@@ -405,10 +406,9 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 						$serverUrlDiv = new htmlDiv(null, $serverUrl);
 						$serverUrlDiv->setCSSClasses(array('text-left', 'margin3'));
 						$row->addField($serverUrlDiv);
-						$row->addLabel(new htmlOutputText(_("Server profile")));
-						$profileSelect = new htmlSelect('profile', $profiles, array($_SESSION['config']->getName()));
+						$profileSelect = new htmlResponsiveSelect('profile', $profiles, array($_SESSION['config']->getName()), _("Server profile"));
 						$profileSelect->setOnchangeEvent('loginProfileChanged(this)');
-						$row->addField($profileSelect);
+						$row->add($profileSelect);
 
 						parseHtml(null, $row, array(), true, $tabindex, 'user');
 					?>
@@ -461,10 +461,16 @@ function displayLoginHeader() : void {
                         ?>
                 </span>
             </a>
+            <?php
+            if (!isLAMProVersion()) {
+            ?>
             <span class="hide-on-mobile lam-margin-small">
                         &nbsp;&nbsp;&nbsp;&nbsp;
-			    <a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
+			    <a href="http://www.ldap-account-manager.org/lamcms/lamPro"><?php echo _("Want more features? Get LAM Pro!"); ?></a>
 			</span>
+            <?php
+            }
+            ?>
         </div>
         <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
             <img class="align-middle" width="16" height="16" alt="menu" src="../graphics/menu.svg">

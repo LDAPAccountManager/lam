@@ -370,6 +370,7 @@ class lamList {
 					$navInput->setMinimumAndMaximumNumber(1, $pageCount);
 					$navInput->setCSSClasses(array('listPageInput'));
 					$navInput->setOnKeyPress('listPageNumberKeyPress(\'' . $url . '\', event);');
+					$navInput->setAccessibilityLabel(_('Page'));
 					$navGroup->addElement($navInput);
 				}
 				else {
@@ -453,26 +454,32 @@ class lamList {
 				if ($this->sortDirection < 0) {
 				    $down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
 				    $down->setCSSClasses(array('icon noMarginSides'));
+				    $down->setTitle(_('Sort ascending'));
 					$buttons->addElement($down);
 					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
 					$up->setCSSClasses(array('icon icon-active noMarginSides'));
+					$up->setTitle(_('Sort descending'));
 					$buttons->addElement($up);
 				}
 				else {
 					$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
 					$down->setCSSClasses(array('icon icon-active noMarginSides'));
+					$down->setTitle(_('Sort ascending'));
 					$buttons->addElement($down);
 					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
 					$up->setCSSClasses(array('icon noMarginSides'));
+					$up->setTitle(_('Sort descending'));
 					$buttons->addElement($up);
 				}
 			}
 			else {
 				$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
 				$down->setCSSClasses(array('icon noMarginSides'));
+				$down->setTitle(_('Sort ascending'));
 				$buttons->addElement($down);
 				$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
 				$up->setCSSClasses(array('icon noMarginSides'));
+				$up->setTitle(_('Sort descending'));
 				$buttons->addElement($up);
 			}
 			$sortElements[] = $buttons;
@@ -490,6 +497,7 @@ class lamList {
 		$selectAll = new htmlInputCheckbox('tableSelectAll', false);
 		$selectAll->setCSSClasses(array('align-middle'));
 		$selectAll->setOnClick('list_switchAccountSelection();');
+		$selectAll->setTitle(_('Select all'));
 		$actionElement->addElement($selectAll);
 		$actionElement->addElement(new htmlSpacer('1rem', null));
 		$actionElement->addElement(new htmlOutputText(_('Filter')));
@@ -534,6 +542,7 @@ class lamList {
 		$filterInput = new htmlInputField('filter' . $attrName, $value, null);
 		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
 		$filterInput->setFieldSize(null);
+		$filterInput->setTitle(_('Filter'));
 		return $filterInput;
 	}
 
@@ -558,6 +567,7 @@ class lamList {
 		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
 		$filterInput->setHasDescriptiveElements(true);
 		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
+		$filterInput->setAccessibilityLabel(_('Filter'));
 		return $filterInput;
 	}
 
@@ -608,6 +618,7 @@ class lamList {
 			$checkbox = new htmlInputCheckbox($rowID, false);
 			$checkbox->setOnClick("list_click('" . $rowID . "');");
 			$checkbox->setCSSClasses(array('accountBoxUnchecked align-middle'));
+			$checkbox->setTitle(_('Select'));
 			$actionElement->addElement($checkbox);
 			$actionElement->addElement(new htmlSpacer('0.5rem', null));
 			$rowNumber = $i - $table_begin + 2;
@@ -975,6 +986,7 @@ class lamList {
 			$suffixSelect->setRightToLeftTextDirection(true);
 			$suffixSelect->setSortElements(false);
 			$suffixSelect->setHasDescriptiveElements(true);
+			$suffixSelect->setAccessibilityLabel(_('Suffix'));
 			$group->addElement($suffixSelect);
 		}
 		return $group;

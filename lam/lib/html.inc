@@ -1273,7 +1273,7 @@ class htmlAccountPageButton extends htmlButton {
 class htmlSelect extends htmlElement {
 
 	/** name of select field */
-	private $name;
+	protected $name;
 	/** size */
 	private $size;
 	/** allows multi-selection */
@@ -1388,7 +1388,7 @@ class htmlSelect extends htmlElement {
 			echo '<div class="hidden">';
 		}
 		// print select box
-		echo '<select' . $this->getDataAttributesAsString() . $class . $style
+		echo '<select' . $this->getDataAttributesAsString() . $this->getAccessibilityMarkup() . $class . $style
 				. $name . $size . $multi . $disabled . $onchange
 				. ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
@@ -2078,6 +2078,8 @@ class htmlInputCheckbox extends htmlElement {
 	protected $elementsToDisable = array();
 	/** onclick event code */
 	private $onClick;
+	/** title */
+	private ?string $title = null;
 
 
 	/**
@@ -2114,6 +2116,10 @@ class htmlInputCheckbox extends htmlElement {
 		$checked = '';
 		if ($this->checked) {
 			$checked = ' checked';
+		}
+		$title = '';
+		if ($this->title !== null) {
+			$title = ' title="' . $this->title . '"';
 		}
 		$tabindexValue = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
@@ -2210,7 +2216,7 @@ class htmlInputCheckbox extends htmlElement {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
 		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $classes . $tabindexValue
-			. $this->getAccessibilityMarkup() . $onChange . $onClick . $checked . $disabled . '>';
+			. $this->getAccessibilityMarkup() . $onChange . $onClick . $title . $checked . $disabled . '>';
 		echo $script;
 		if ($this->transient) {
 			return array();
@@ -2309,6 +2315,15 @@ class htmlInputCheckbox extends htmlElement {
 	 */
 	protected function getName(): string {
 		return $this->name;
+	}
+
+	/**
+	 * Sets the title.
+	 *
+	 * @param string|null $title title
+	 */
+	public function setTitle(?string $title): void {
+		$this->title = $title;
 	}
 
 }
@@ -4367,7 +4382,7 @@ class htmlResponsiveSelect extends htmlSelect {
 		$row = new htmlResponsiveRow();
 		// label text
 		$labelGroup = new htmlGroup();
-		$labelGroup->addElement(new htmlOutputText($this->label));
+		$labelGroup->addElement(new htmlLabel($this->name, $this->label));
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
