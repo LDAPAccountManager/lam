@@ -1404,6 +1404,7 @@ class accountContainer {
 			if (sizeof($profilelist) > 0) {
 				$profilesSelect = new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile));
 				$profilesSelect->setCSSClasses(array('auto-width'));
+				$profilesSelect->setAccessibilityLabel(_('Profile name'));
 				$rightGroup->addElement($profilesSelect);
 				$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
 				if (!$this->isNewAccount) {

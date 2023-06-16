@@ -1451,6 +1451,7 @@ abstract class baseModule {
 			for ($i = 0; $i < sizeof($values); $i++) {
 				if (!$isTextArea) {
 					$input = new htmlInputField($attrName . '_' . $i, $values[$i]);
+					$input->setAccessibilityLabel($label);
 					if (!empty($cssClasses)) {
 						$input->setCSSClasses(array($cssClasses));
 					}
@@ -1482,11 +1483,13 @@ abstract class baseModule {
 				if (!empty($values[$i])) {
 					$delButton = new htmlButton('del_' . $attrName . '_' . $i, 'del.svg', true);
 					$delButton->setCSSClasses(array('noMarginSides'));
+					$delButton->setTitle(_('Delete'));
 					$subContainer->addElement($delButton);
 				}
 				if ($i == 0) {
 					$addButton = new htmlButton('add_' . $attrName, 'add.svg', true);
 					$addButton->setCSSClasses(array('noMarginSides'));
+					$addButton->setTitle(_('Add'));
 					$subContainer->addElement($addButton);
 					$subContainer->addElement($help);
 				}
