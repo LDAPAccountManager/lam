@@ -1396,6 +1396,9 @@ abstract class baseModule {
 	protected function processSimpleTextInput($attrName, &$errors, $required = false, $validationID = null) {
 		if ((!isset($_POST[$attrName]) || ($_POST[$attrName] === '')) && isset($this->attributes[$attrName][0])) {
 			unset($this->attributes[$attrName][0]);
+			if ($required) {
+				$errors[] = $this->messages[$attrName][0];
+			}
 			return;
 		}
 		$this->attributes[$attrName][0] = isset($_POST[$attrName]) ? $_POST[$attrName] : '';
