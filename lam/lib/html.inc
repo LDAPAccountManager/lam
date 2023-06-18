@@ -901,67 +901,6 @@ class htmlInputField extends htmlElement {
 }
 
 /**
- * An extended input field that combines label, input field and help.
- *
- * @package metaHTML
- */
-class htmlTableExtendedInputField extends htmlInputField {
-
-	/** Descriptive label */
-	private $label;
-	/** help ID */
-	private $helpID;
-
-	/**
-	 * Constructor
-	 *
-	 * @param String $label descriptive label
-	 * @param String $fieldName unique field name
-	 * @param String $fieldValue value of input field (optional)
-	 * @param String $helpID help ID (optional)
-	 * @param boolean $required input required
-	 */
-	function __construct($label, $fieldName, $fieldValue = null, $helpID = null, $required = false) {
-		parent::__construct($fieldName, $fieldValue);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
-		$this->required = $required;
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		// print label text
-		echo '<div class="nowrap">';
-		echo $this->label;
-		if ($this->required) {
-			echo htmlGetRequiredMarker();
-		}
-		echo '</div>';
-		echo "\n</td>\n<td>\n";
-		// print input field
-		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		// print help link
-		if ($this->helpID != null) {
-			echo "\n</td>\n<td>\n";
-			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		}
-		return $return;
-	}
-
-}
-
-/**
  * Renders a help link.
  *
  * @package metaHTML
