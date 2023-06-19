@@ -964,7 +964,9 @@ class TreeView {
 				continue;
 			}
 			$schemaAttribute = $schemaAttributes[$attributeName];
-			if ($schemaAttribute->isBinary() && (strpos($attributeName, ';binary') === false)) {
+			if ($schemaAttribute->isBinary()
+				&& (strpos($attributeName, ';binary') === false)
+				&& ($schemaAttribute->getSyntaxOID() === '1.3.6.1.4.1.1466.115.121.1.8')) {
 				$ldapChanges[$attributeName . ';binary'] = $value;
 				unset($ldapChanges[$attributeName]);
 			}
