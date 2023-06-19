@@ -919,8 +919,8 @@ class TreeView {
 			}
 		}
 		if (!empty($ldapChanges)) {
+			$this->handleSpecialAttributes($dn, $ldapChanges, $attributes, $schemaAttributes);
 			logNewMessage(LOG_DEBUG, 'LDAP changes to DN ' . $dn . ': ' . print_r($ldapChanges, true));
-			$this->handleSpecialAttributes($dn, $ldapChanges, $attributes);
 			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);
 			if ($saved) {
 				$message = new htmlStatusMessage('INFO', _('All changes were successful.'));
@@ -944,8 +944,9 @@ class TreeView {
 	 * @param string $dn DN
 	 * @param array $ldapChanges changes
 	 * @param array $attributes original attributes
+	 * @param array $schemaAttributes schema definition for attributes
 	 */
-	private function handleSpecialAttributes(string $dn, array &$ldapChanges, array $attributes): void {
+	private function handleSpecialAttributes(string $dn, array &$ldapChanges, array $attributes, array $schemaAttributes): void {
 		// olcModuleLoad is add-only
 		if (isset($ldapChanges['olcmoduleload']) && isset($attributes['olcmoduleload'])) {
 			$newModules = array_delete($attributes['olcmoduleload'], $ldapChanges['olcmoduleload']);
@@ -955,6 +956,17 @@ class TreeView {
 				if (!$isOk) {
 					logNewMessage(LOG_ERR, 'Changing olcmoduleload at ' . $dn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 				}
+			}
+		}
+		// add ";binary" to binary attributes
+		foreach ($ldapChanges as $attributeName => $value) {
+			if (!isset($schemaAttributes[$attributeName])) {
+				continue;
+			}
+			$schemaAttribute = $schemaAttributes[$attributeName];
+			if ($schemaAttribute->isBinary() && (strpos($attributeName, ';binary') === false)) {
+				$ldapChanges[$attributeName . ';binary'] = $value;
+				unset($ldapChanges[$attributeName]);
 			}
 		}
 	}
