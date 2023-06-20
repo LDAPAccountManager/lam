@@ -2395,23 +2395,20 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
  * Adds a listener to each file input to write the file content to a data attribute.
  */
 window.lam.treeview.addFileInputListeners = function () {
-	jQuery('.image-upload').each(
-		function () {
-			var input = jQuery(this);
-			input.change(function () {
-				var files = input[0].files;
-				if (!files[0]) {
-					return;
-				}
-				var reader = new FileReader();
-				reader.onload = function () {
-					var content = btoa(reader.result);
-					input.attr('data-binary', content);
-				};
-				reader.readAsBinaryString(files[0]);
-			});
-		}
-	);
+	document.querySelectorAll('.image-upload').forEach(input => {
+		input.addEventListener('change', function () {
+			const files = input.files;
+			if (!files[0]) {
+				return;
+			}
+			const reader = new FileReader();
+			reader.onload = function () {
+				const content = btoa(reader.result);
+				input.dataset.dataBinary = content;
+			};
+			reader.readAsBinaryString(files[0]);
+		});
+	});
 }
 
 /**
@@ -2560,7 +2557,7 @@ window.lam.treeview.findAttributeChanges = function () {
 	jQuery('.image-upload').each(
 		function() {
 			var input = jQuery(this);
-			var content = input.attr('data-binary');
+			var content = this.dataset.dataBinary;
 			if (!content) {
 				return;
 			}
