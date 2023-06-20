@@ -373,11 +373,15 @@ class TreeView {
 		$attributes = ldapGetDN($dn, array('*'));
 		unset($attributes['dn']);
 		ksort($attributes);
+		logNewMessage(LOG_DEBUG, 'LDAP attributes for ' . $dn . ': ' . print_r($attributes, true));
 		$schemaAttributes = $this->getSchemaAttributes();
 		$objectClasses = $attributes['objectclass'];
 		$highlighted = (empty($_POST['highlight'])) ? array() : explode(',', $_POST['highlight']);
 		foreach ($attributes as $attributeName => $values) {
 			$schemaAttribute = null;
+			if (strpos($attributeName, ';binary') !== false) {
+				$attributeName = substr($attributeName, 0, -1 * strlen(';binary'));
+			}
 			if (isset($schemaAttributes[$attributeName])) {
 				$schemaAttribute = $schemaAttributes[$attributeName];
 				$attributeName = $schemaAttribute->getName();
