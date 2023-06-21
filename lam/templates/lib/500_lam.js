@@ -2388,6 +2388,7 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 		document.getElementById("ldap_actionarea").scrollTop = 0;
 		window.lam.html.activateLightboxes();
 		window.lam.treeview.addFileInputListeners();
+		window.lam.treeview.activateSortableInputs();
 	});
 }
 
@@ -2408,6 +2409,23 @@ window.lam.treeview.addFileInputListeners = function () {
 			};
 			reader.readAsBinaryString(files[0]);
 		});
+	});
+}
+
+/**
+ * Activates the sortable feature for lists.
+ */
+window.lam.treeview.activateSortableInputs = function () {
+	document.querySelectorAll('.tree-attribute-sorted-list').forEach(list => {
+		const listId = list.id;
+		Sortable.create(
+			document.getElementById(listId),
+			{
+				onUpdate: function() {
+					window.lam.treeview.updateAttributePositionData(listId);
+				}
+			}
+		);
 	});
 }
 
