@@ -1958,21 +1958,24 @@
 
       <itemizedlist>
         <listitem>
-          <para>dd.mm.yy: 31.12.2016</para>
+          <para>d.m.Y: 31.12.2025</para>
         </listitem>
 
         <listitem>
-          <para>yy-mm-dd: 2016-12-31</para>
+          <para>Y-m-d: 2025-12-31</para>
         </listitem>
 
         <listitem>
-          <para>d M, y: 31 Dec, 16</para>
+          <para>d M, y: 31 Dec, 25</para>
         </listitem>
 
         <listitem>
-          <para>d MM, y: 31 December, 2016</para>
+          <para>d MM, Y: 31 December, 2025</para>
         </listitem>
       </itemizedlist>
+
+      <para>You can escape wildcards with "\". E.g. "d.m.Y \d" will result in
+      "31.12.2025 d".</para>
 
       <screenshot>
         <mediaobject>
