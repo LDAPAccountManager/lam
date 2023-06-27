@@ -2,6 +2,7 @@ September 2023
   - Accessibility improvements
   - LAM Pro:
    -> Custom fields: support "\" in date regex for text fields
+   -> MIT Kerberos: replaced realm setting in profile editor with user name (e.g. to be able set "$user@LAM.LOCAL")
 
 
 06.06.2023 8.4
