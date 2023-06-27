@@ -810,6 +810,7 @@ class htmlInputField extends htmlElement {
 		$format = str_replace('yy', 'Y', $format);
 		$format = str_replace('dd', 'd', $format);
 		$format = str_replace('mm', 'm', $format);
+		$format = str_replace('\\', '\\\\', $format);
 		$this->calendarFormat = $format;
 	}
 

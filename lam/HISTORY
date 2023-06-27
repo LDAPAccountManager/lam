@@ -1,5 +1,7 @@
 September 2023
   - Accessibility improvements
+  - LAM Pro:
+   -> Custom fields: support "\" in date regex for text fields
 
 
 06.06.2023 8.4
