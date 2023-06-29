@@ -2277,7 +2277,7 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 	const parentDn = document.getElementById('parentDn').value;
 	data.append('dn', parentDn);
 	data.append('rdn', document.getElementById('rdn').value);
-	data.append('objectClasses', document.getElementById('objectClasses').value)
+	data.append('objectClasses', document.getElementById('objectClasses').value);
 	// clear old values in data
 	document.querySelectorAll('.single-input').forEach(item => {
 			item.dataset.valueOrig = '';
