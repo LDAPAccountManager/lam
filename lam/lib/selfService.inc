@@ -759,9 +759,9 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationSecretKey = '';
 	public $twoFactorAuthenticationAttribute = 'uid';
 	public $twoFactorAuthenticationDomain = '';
-	public string $twoFactorAllowToRememberDevice = 'false';
-	public string $twoFactorRememberDeviceDuration = '28800';
-	public string $twoFactorRememberDevicePassword = '';
+	public $twoFactorAllowToRememberDevice = 'false';
+	public $twoFactorRememberDeviceDuration = '28800';
+	public $twoFactorRememberDevicePassword = '';
 
 	/** provider for captcha (-/google/hCaptcha/friendlyCaptcha) */
 	public $captchaProvider = '-';
