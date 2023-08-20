@@ -15,7 +15,7 @@ services:
       - LDAP_SERVER=${LDAP_SERVER}
       - LDAP_DOMAIN=${LDAP_DOMAIN}
       - LDAP_BASE_DN=${LDAP_BASE_DN}
-      - ADMIN_USER=cn=admin,${LDAP_BASE_DN}
+      - LDAP_USER=cn=admin,${LDAP_BASE_DN}
       - DEBUG=true
     hostname: ldap-account-manager
   ldap:
