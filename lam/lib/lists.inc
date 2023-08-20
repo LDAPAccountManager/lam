@@ -751,6 +751,9 @@ class lamList {
 		if ($attribute === self::ATTR_ACCOUNT_STATUS) {
 			return $this->getAccountStatus($entry);
 		}
+		if (($attribute === 'dn') && is_string($entry[$attribute])) {
+		    return new htmlOutputText(getAbstractDN($entry[$attribute]));
+        }
 		// print all attribute entries separated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
