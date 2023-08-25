@@ -557,8 +557,6 @@ class htmlInputField extends htmlElement {
 		if ($this->fieldSize != null) {
 			$size = ' size="' . $this->fieldSize . '"';
 		}
-		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
-		$tabindex++;
 		$inputType = $this->type;
 		if ($this->isPassword) {
 			$inputType = 'password';
@@ -606,7 +604,7 @@ class htmlInputField extends htmlElement {
 			echo '<span class="nowrap">';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $required
-			. $min . $max . $step . $validationPattern . $size . $fieldTabIndex . $onKeyPress . $onKeyUp
+			. $min . $max . $step . $validationPattern . $size . $onKeyPress . $onKeyUp
 			. $onInput . $title . $disabled . $this->getAccessibilityMarkup()
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
@@ -1012,8 +1010,6 @@ class htmlButton extends htmlElement {
 			logNewMessage(LOG_ERR, 'Meta HTML: Requested button in restricted mode.');
 			return array();
 		}
-		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
-		$tabindex++;
 		$style = '';
 		$classList = $this->cssClasses;
 		$class = '';
@@ -1058,11 +1054,11 @@ class htmlButton extends htmlElement {
 		}
 		$id = ' id="btn_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name) . '"';
 		if ($this->isImageButton) {
-			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class
+			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $style . $class
 				. $title . $disabled . $noFormValidation . $this->getDataAttributesAsString() . '>';
 		}
 		else {
-			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled
+			echo '<button' . $id . $name . $type . $onClick . $style . $class . $title . $disabled
 				. $noFormValidation . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
 		}
 		return array($this->name => 'submit');
@@ -1266,9 +1262,7 @@ class htmlSelect extends htmlElement {
 		}
 		// print select box
 		echo '<select' . $this->getDataAttributesAsString() . $this->getAccessibilityMarkup() . $class . $style
-				. $name . $size . $multi . $disabled . $onchange
-				. ' tabindex="' . $tabindex . "\">\n";
-		$tabindex++;
+				. $name . $size . $multi . $disabled . $onchange . ">\n";
 		if ($this->containsOptgroups) {
 			foreach ($this->elements as $label => $elements) {
 				if (sizeof($elements) > 0) {
@@ -1667,9 +1661,8 @@ class htmlRadio extends htmlElement {
 			if ($value == $this->selectedElement) {
 				$selected = ' checked';
 			}
-			echo '<input type="radio" id="' . $this->name . $counter . '"' . $name . $disabled . $selected . $onchange . ' value="' . $value . '" tabindex="' . $tabindex . '"> ' . $label;
+			echo '<input type="radio" id="' . $this->name . $counter . '"' . $name . $disabled . $selected . $onchange . ' value="' . $value . '"> ' . $label;
 			echo '</div>';
-			$tabindex++;
 			$counter++;
 		}
 		return array($this->name => 'select');
@@ -1998,8 +1991,6 @@ class htmlInputCheckbox extends htmlElement {
 		if ($this->title !== null) {
 			$title = ' title="' . $this->title . '"';
 		}
-		$tabindexValue = ' tabindex="' . $tabindex . '"';
-		$tabindex++;
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -2092,7 +2083,7 @@ class htmlInputCheckbox extends htmlElement {
 		if (!empty($this->onClick)) {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
-		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $classes . $tabindexValue
+		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $classes
 			. $this->getAccessibilityMarkup() . $onChange . $onClick . $title . $checked . $disabled . '>';
 		echo $script;
 		if ($this->transient) {
@@ -2242,8 +2233,6 @@ class htmlInputFileUpload extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$tabindexValue = ' tabindex="' . $tabindex . '"';
-		$tabindex++;
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -2260,7 +2249,7 @@ class htmlInputFileUpload extends htmlElement {
 		if (!empty($this->cssClasses)) {
 			$classValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $classValue .
+		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $classValue .
 			$onChange . $disabled . $required . $this->getDataAttributesAsString() . '>';
 		return array($this->name => 'file');
 	}
@@ -2348,8 +2337,6 @@ class htmlInputTextarea extends htmlElement {
 		}
 		$colCount = ($this->colCount != null) ? ' cols="' . $this->colCount . '"' : '';
 		$rowCount = ($this->rowCount != null) ? ' rows="' . $this->rowCount . '"' : '';
-		$tabindexValue = ' tabindex="' . $tabindex . '"';
-		$tabindex++;
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -2363,7 +2350,7 @@ class htmlInputTextarea extends htmlElement {
 			$required = ' required';
 		}
 		$classes = ' class="' . implode(' ', $classList) . '"';
-		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount .
+		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $classes . $colCount .
 			$rowCount . $this->getDataAttributesAsString() . $this->getAccessibilityMarkup() . $required . $disabled . '>' .
 			$this->value . '</textarea>';
 		return array($this->name => 'textarea');
@@ -2430,13 +2417,11 @@ class htmlInputColorPicker extends htmlElement {
 	 * @see htmlElement::generateHTML()
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$tabindexValue = ' tabindex="' . $tabindex . '"';
-		$tabindex++;
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="color" value="' . $this->color . '" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $disabled . '>';
+		echo '<input type="color" value="' . $this->color . '" id="' . $this->name . '" name="' . $this->name . '"' . $disabled . '>';
 		return array($this->name => 'file');
 	}
 

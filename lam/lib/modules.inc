@@ -738,7 +738,7 @@ function printHelpLink($entry, $number, $module = '', $scope = '', $classes = ar
 		$selfServiceOption = '&amp;selfService=1';
 	}
 	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . $selfServiceOption . "\" ";
-		echo "target=\"help\">";
+		echo "target=\"help\" tabindex=\"-1\">";
 		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle help-icon\" src=\"../${helpPath}graphics/help.svg\" alt=\"" . _('Help') . "\" width=\"16px\" height=\"16px\">";
 	echo "</a>";
 }
@@ -1552,8 +1552,6 @@ class accountContainer {
 	 * Prints the HTML code of the module tabs.
 	 */
 	private function printModuleTabs() {
-		// $x is used to count up tabindex
-		$x=1;
 		echo '<ul class="lam-vertical-tabs-navigation">';
 		// Loop for each module
 		for ($i = 0; $i < count($this->order); $i++) {
@@ -1571,7 +1569,6 @@ class accountContainer {
 			// print button
 			echo '<li class="lam-vertical-tabs ' . $activatedClass . '">';
 			echo "<button class=\"lam-account-type " . $activatedClass . "\" name=\"form_main_".$this->order[$i]."\"";
-			echo " tabindex=$x";
 			if ($buttonStatus == 'disabled') {
 				echo " disabled";
 			}
@@ -1587,7 +1584,6 @@ class accountContainer {
 			echo '<span>';
 			echo "&nbsp;</button>\n";
 			echo "</li>\n";
-			$x++;
 		}
 		echo '</ul>';
 	}
