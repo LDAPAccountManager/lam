@@ -1434,16 +1434,16 @@ function testSmtpConnection(string $server, string $user, string $password, stri
 			$mailer->SMTPAuth = true;
 			$mailer->Username = $user;
 			$mailer->Password = $password;
-			$mailEncryption = $encryption;
-			if (empty($mailEncryption) || ($mailEncryption === LAMCfgMain::SMTP_TLS)) {
-				$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-			}
-			elseif ($mailEncryption === LAMCfgMain::SMTP_SSL) {
-				$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-			}
-			else {
-				$mailer->SMTPAutoTLS = false;
-			}
+		}
+		$mailEncryption = $encryption;
+		if (empty($mailEncryption) || ($mailEncryption === LAMCfgMain::SMTP_TLS)) {
+			$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+		}
+		elseif ($mailEncryption === LAMCfgMain::SMTP_SSL) {
+			$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+		}
+		else {
+			$mailer->SMTPAutoTLS = false;
 		}
 		$mailer->CharSet = PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
 		$mailer->Timeout = 30;
