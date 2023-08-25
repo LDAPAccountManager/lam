@@ -36,3 +36,4 @@ parameters:
 		- '#Parameter \#2 \$args of function call_user_func_array expects array<int\|string, mixed>, mixed given.#'
 		- '#Parameter \#1 \$input of method LAM\\AJAX\\Ajax::managePasswordChange\(\) expects array, mixed given.#'
 		- '#Parameter \#1 \$input of method LAM\\AJAX\\Ajax::checkPasswordStrength\(\) expects array, mixed given.#'
+		- '#Cannot access offset non-falsy-string on array<int\|string, string>\|object.#'
