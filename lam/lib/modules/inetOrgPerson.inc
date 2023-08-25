@@ -1337,12 +1337,16 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 					}
 				}
 				else {
-					$addressContainer->addElement(new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3));
+					$postalAddressTextarea = new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3);
+					$postalAddressTextarea->setAccessibilityLabel(_('Postal address'));
+					$addressContainer->addElement($postalAddressTextarea);
 					if ($i < (sizeof($postalAddresses) - 1)) {
 						$addressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 					else {
-						$addressContainer->addElement(new htmlButton('addPostalAddress', 'add.svg', true));
+						$addButton = new htmlButton('addPostalAddress', 'add.svg', true);
+						$addButton->setTitle(_('Add'));
+						$addressContainer->addElement($addButton);
 						$addressHelp = new htmlHelpLink('postalAddress');
 						$addressContainer->addElement($addressHelp);
 					}
@@ -1374,12 +1378,16 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 					}
 				}
 				else {
-					$registeredAddressContainer->addElement(new htmlInputTextarea('registeredAddress' . $i, $registeredAddresses[$i], 30, 3));
+					$registeredAddressTextarea = new htmlInputTextarea('registeredAddress' . $i, $registeredAddresses[$i], 30, 3);
+					$registeredAddressTextarea->setAccessibilityLabel(_('Registered address'));
+					$registeredAddressContainer->addElement($registeredAddressTextarea);
 					if ($i < (sizeof($registeredAddresses) - 1)) {
 						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 					else {
-						$registeredAddressContainer->addElement(new htmlButton('addRegisteredAddress', 'add.svg', true));
+						$addButton = new htmlButton('addRegisteredAddress', 'add.svg', true);
+						$addButton->setTitle(_('Add'));
+						$registeredAddressContainer->addElement($addButton);
 						$registeredAddressHelp = new htmlHelpLink('registeredAddress');
 						$registeredAddressContainer->addElement($registeredAddressHelp);
 					}
