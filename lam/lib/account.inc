@@ -1546,16 +1546,16 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 				$mailer->SMTPAuth = true;
 				$mailer->Username = $cfgMain->mailUser;
 				$mailer->Password = $cfgMain->mailPassword;
-				$mailEncryption = $cfgMain->mailEncryption;
-				if (empty($mailEncryption) || ($mailEncryption === LAMCfgMain::SMTP_TLS)) {
-					$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-				}
-				elseif ($mailEncryption === LAMCfgMain::SMTP_SSL) {
-					$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-				}
-				else {
-					$mailer->SMTPAutoTLS = false;
-				}
+			}
+			$mailEncryption = $cfgMain->mailEncryption;
+			if (empty($mailEncryption) || ($mailEncryption === LAMCfgMain::SMTP_TLS)) {
+				$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+			}
+			elseif ($mailEncryption === LAMCfgMain::SMTP_SSL) {
+				$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+			}
+			else {
+				$mailer->SMTPAutoTLS = false;
 			}
 		}
 		$mailer->CharSet = PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
