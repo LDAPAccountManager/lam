@@ -1,4 +1,5 @@
 September 2023
+  - Multi edit tool: allow attribute placeholders in values
   - Accessibility improvements
   - LAM Pro:
    -> Custom fields: support "\" in date regex for text fields

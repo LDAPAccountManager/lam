@@ -59,6 +59,8 @@ include_once(__DIR__ . "/../../lib/config.inc");
 include_once(__DIR__ . "/../../lib/ldap.inc");
 /** used to print status messages */
 include_once(__DIR__ . "/../../lib/status.inc");
+/** multi edit functions */
+include_once(__DIR__ . "/../../lib/multiEditTool.inc");
 
 // start session
 startSecureSession();
@@ -337,8 +339,10 @@ function readLDAPData(): array {
 	foreach ($operations as $op) {
 		if (!in_array(strtolower($op[1]), $attributes)) {
 			$attributes[] = strtolower($op[1]);
+			$attributes = array_merge($attributes, extractWildcards($op[2]));
 		}
 	}
+	$attributes = array_values(array_unique($attributes));
 	// run LDAP query
 	$results = searchLDAP($suffix, $filter, $attributes);
 	// print error message if no data returned
@@ -379,7 +383,7 @@ function generateActions(): array {
 		foreach ($_SESSION['multiEdit_operations'] as $op) {
 			$opType = $op[0];
 			$attr = $op[1];
-			$val = $op[2];
+			$val = replaceWildcards($op[2], $entry);
 			switch ($opType) {
 				case ADD:
 					if (empty($entry[$attr]) || !in_array_ignore_case($val, $entry[$attr])) {

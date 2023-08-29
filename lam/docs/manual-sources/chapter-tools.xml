@@ -257,6 +257,86 @@
     cannot add an object class and a required attribute at the same
     time.</para>
 
+    <para>You can use the following wildcards to use existing attribute data
+    of the entries:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>%attribute%: attribute value</para>
+      </listitem>
+
+      <listitem>
+        <para>@attribute@: first character of attribute</para>
+      </listitem>
+
+      <listitem>
+        <para>?attribute?: first character of attribute in lower case</para>
+      </listitem>
+
+      <listitem>
+        <para>!attribute!: first character of attribute in upper case</para>
+      </listitem>
+
+      <listitem>
+        <para>??attribute??: attribute in lower case</para>
+      </listitem>
+
+      <listitem>
+        <para>!!attribute!!: attribute in upper case</para>
+      </listitem>
+
+      <listitem>
+        <para>((attribute)): space if attribute is set</para>
+      </listitem>
+
+      <listitem>
+        <para>§attribute|;§; attribute values separated by ";" (you can set
+        other separators if you want)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Examples for attributes gn="Steve", sn="Miller" and
+    memberUid=("user1", "user2") (specified value -&gt; resulting LDAP
+    value):</para>
+
+    <table frame="box" rules="all">
+      <caption/>
+
+      <thead>
+        <tr align="center">
+          <th>Value</th>
+
+          <th>Resulting LDAP value</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>my value</td>
+
+          <td>my value</td>
+        </tr>
+
+        <tr>
+          <td>%gn%</td>
+
+          <td>Steve</td>
+        </tr>
+
+        <tr>
+          <td>%gn%((gn))%sn%</td>
+
+          <td>Steve Miller (would be "Miller" if gn is empty)</td>
+        </tr>
+
+        <tr>
+          <td>§memberUid|, §</td>
+
+          <td>user1, user2</td>
+        </tr>
+      </tbody>
+    </table>
+
     <screenshot>
       <mediaobject>
         <imageobject>
