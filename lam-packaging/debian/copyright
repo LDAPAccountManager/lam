@@ -1168,7 +1168,7 @@ lib/3rdParty/composer/voku                                           B  2019 Lar
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs
 lib/3rdParty/composer/web-token                                      B        Florent Morselli
 lib/3rdParty/composer/webklex                                        B  2016  Webklex
-lib/3rdParty/tcpdf                                                   D  2020  Nicola Asuni - Tecnick.com LTD
+lib/3rdParty/tcpdf                                                   D  2022  Nicola Asuni - Tecnick.com LTD
 lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
 templates/lib/*jquery*.js                                            B  2018  jQuery Foundation and other contributors
