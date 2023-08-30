@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '515c04fa1cb6ca63b5a0d01717fab1e318f2371e',
+    'reference' => 'bd0d460d7c89e127e6d2c56e1696351c78a73574',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '515c04fa1cb6ca63b5a0d01717fab1e318f2371e',
+      'reference' => 'bd0d460d7c89e127e6d2c56e1696351c78a73574',
     ),
     'beberlei/assert' => 
     array (
@@ -243,12 +243,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.8.0',
-      'version' => '6.8.0.0',
+      'pretty_version' => 'v6.8.1',
+      'version' => '6.8.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'df16b615e371d81fb79e506277faea67a1be18f1',
+      'reference' => 'e88da8d679acc3824ff231fdc553565b802ac016',
     ),
     'phpseclib/phpseclib' => 
     array (
@@ -315,8 +315,8 @@
     array (
       'provided' => 
       array (
-        0 => '*',
-        1 => '1.0',
+        0 => '1.0',
+        1 => '*',
       ),
     ),
     'psr/http-server-handler' => 
