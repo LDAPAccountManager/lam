@@ -18,6 +18,7 @@ use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositorySet;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
+use Composer\Util\Filesystem;
 use Http\Discovery\ClassDiscovery;
 
 /**
@@ -44,14 +45,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private const PROVIDE_RULES = [
         'php-http/async-client-implementation' => [
-            'symfony/http-client' => ['guzzlehttp/promises', 'php-http/message-factory', 'psr/http-factory-implementation'],
+            'symfony/http-client:>=6.3' => ['guzzlehttp/promises', 'psr/http-factory-implementation', 'php-http/httplug'],
+            'symfony/http-client' => ['guzzlehttp/promises', 'php-http/message-factory', 'psr/http-factory-implementation', 'php-http/httplug'],
             'php-http/guzzle7-adapter' => [],
             'php-http/guzzle6-adapter' => [],
             'php-http/curl-client' => [],
             'php-http/react-adapter' => [],
         ],
         'php-http/client-implementation' => [
-            'symfony/http-client' => ['php-http/message-factory', 'psr/http-factory-implementation'],
+            'symfony/http-client:>=6.3' => ['psr/http-factory-implementation', 'php-http/httplug'],
+            'symfony/http-client' => ['php-http/message-factory', 'psr/http-factory-implementation', 'php-http/httplug'],
             'php-http/guzzle7-adapter' => [],
             'php-http/guzzle6-adapter' => [],
             'php-http/cakephp-adapter' => [],
@@ -62,7 +65,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             'kriswallsmith/buzz:^1' => [],
         ],
         'psr/http-client-implementation' => [
-            'symfony/http-client' => ['psr/http-factory-implementation'],
+            'symfony/http-client' => ['psr/http-factory-implementation', 'psr/http-client'],
             'guzzlehttp/guzzle' => [],
             'kriswallsmith/buzz:^1' => [],
         ],
@@ -75,10 +78,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             'slim/psr7' => [],
             'laminas/laminas-diactoros' => [],
             'phalcon/cphalcon:^4' => [],
-            'zendframework/zend-diactoros:>=2' => [],
             'http-interop/http-factory-guzzle' => [],
             'http-interop/http-factory-diactoros' => [],
             'http-interop/http-factory-slim' => [],
+            'httpsoft/http-message' => [],
         ],
     ];
 
@@ -96,13 +99,33 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         'php-http/buzz-adapter' => 'kriswallsmith/buzz:^0.15.1',
         'php-http/artax-adapter' => 'amphp/artax:^3',
         'http-interop/http-factory-guzzle' => 'guzzlehttp/psr7:^1',
-        'http-interop/http-factory-diactoros' => 'zendframework/zend-diactoros:^1',
         'http-interop/http-factory-slim' => 'slim/slim:^3',
+    ];
+
+    private const INTERFACE_MAP = [
+        'php-http/async-client-implementation' => [
+            'Http\Client\HttpAsyncClient',
+        ],
+        'php-http/client-implementation' => [
+            'Http\Client\HttpClient',
+        ],
+        'psr/http-client-implementation' => [
+            'Psr\Http\Client\ClientInterface',
+        ],
+        'psr/http-factory-implementation' => [
+            'Psr\Http\Message\RequestFactoryInterface',
+            'Psr\Http\Message\ResponseFactoryInterface',
+            'Psr\Http\Message\ServerRequestFactoryInterface',
+            'Psr\Http\Message\StreamFactoryInterface',
+            'Psr\Http\Message\UploadedFileFactoryInterface',
+            'Psr\Http\Message\UriFactoryInterface',
+        ],
     ];
 
     public static function getSubscribedEvents(): array
     {
         return [
+            ScriptEvents::PRE_AUTOLOAD_DUMP => 'preAutoloadDump',
             ScriptEvents::POST_UPDATE_CMD => 'postUpdate',
         ];
     }
@@ -127,8 +150,18 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $composer->getPackage()->getRequires(),
             $composer->getPackage()->getDevRequires(),
         ];
+        $pinnedAbstractions = [];
+        $pinned = $composer->getPackage()->getExtra()['discovery'] ?? [];
+        foreach (self::INTERFACE_MAP as $abstraction => $interfaces) {
+            foreach (isset($pinned[$abstraction]) ? [] : $interfaces as $interface) {
+                if (!isset($pinned[$interface])) {
+                    continue 2;
+                }
+            }
+            $pinnedAbstractions[$abstraction] = true;
+        }
 
-        $missingRequires = $this->getMissingRequires($repo, $requires, 'project' === $composer->getPackage()->getType());
+        $missingRequires = $this->getMissingRequires($repo, $requires, 'project' === $composer->getPackage()->getType(), $pinnedAbstractions);
         $missingRequires = [
             'require' => array_fill_keys(array_merge([], ...array_values($missingRequires[0])), '*'),
             'require-dev' => array_fill_keys(array_merge([], ...array_values($missingRequires[1])), '*'),
@@ -207,7 +240,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
     }
 
-    public function getMissingRequires(InstalledRepositoryInterface $repo, array $requires, bool $isProject): array
+    public function getMissingRequires(InstalledRepositoryInterface $repo, array $requires, bool $isProject, array $pinnedAbstractions): array
     {
         $allPackages = [];
         $devPackages = method_exists($repo, 'getDevPackageNames') ? array_fill_keys($repo->getDevPackageNames(), true) : [];
@@ -247,7 +280,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $rules = array_intersect_key(self::PROVIDE_RULES, $rules);
 
             while ($rules) {
-                $abstractions[] = $abstraction = key($rules);
+                $abstraction = key($rules);
+
+                if (isset($pinnedAbstractions[$abstraction])) {
+                    unset($rules[$abstraction]);
+                    continue;
+                }
+
+                $abstractions[] = $abstraction;
 
                 foreach (array_shift($rules) as $candidate => $deps) {
                     [$candidate, $version] = explode(':', $candidate, 2) + [1 => null];
@@ -312,21 +352,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 }
 
                 $dep = key($candidates);
+                [$dep] = explode(':', $dep, 2);
                 $missingRequires[$dev][$abstraction] = [$dep];
 
                 if ($isProject && !$dev && isset($devPackages[$dep])) {
                     $missingRequires[2][$abstraction][] = $dep;
-                }
-
-                foreach (current($candidates) as $dep) {
-                    if (isset(self::PROVIDE_RULES[$dep])) {
-                        $abstractions[] = $dep;
-                    } elseif (!isset($allPackages[$dep])) {
-                        $missingRequires[$dev][$abstraction][] = $dep;
-                    } elseif ($isProject && !$dev && isset($devPackages[$dep])) {
-                        $missingRequires[0][$abstraction][] = $dep;
-                        $missingRequires[2][$abstraction][] = $dep;
-                    }
                 }
             }
         }
@@ -334,6 +364,70 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $missingRequires[1] = array_diff_key($missingRequires[1], $missingRequires[0]);
 
         return $missingRequires;
+    }
+
+    public function preAutoloadDump(Event $event)
+    {
+        $filesystem = new Filesystem();
+        // Double realpath() on purpose, see https://bugs.php.net/72738
+        $vendorDir = $filesystem->normalizePath(realpath(realpath($event->getComposer()->getConfig()->get('vendor-dir'))));
+        $filesystem->ensureDirectoryExists($vendorDir.'/composer');
+        $pinned = $event->getComposer()->getPackage()->getExtra()['discovery'] ?? [];
+        $candidates = [];
+
+        $allInterfaces = array_merge(...array_values(self::INTERFACE_MAP));
+        foreach ($pinned as $abstraction => $class) {
+            if (isset(self::INTERFACE_MAP[$abstraction])) {
+                $interfaces = self::INTERFACE_MAP[$abstraction];
+            } elseif (false !== $k = array_search($abstraction, $allInterfaces, true)) {
+                $interfaces = [$allInterfaces[$k]];
+            } else {
+                throw new \UnexpectedValueException(sprintf('Invalid "extra.discovery" pinned in composer.json: "%s" is not one of ["%s"].', $abstraction, implode('", "', array_keys(self::INTERFACE_MAP))));
+            }
+
+            foreach ($interfaces as $interface) {
+                $candidates[] = sprintf("case %s: return [['class' => %s]];\n", var_export($interface, true), var_export($class, true));
+            }
+        }
+
+        $file = $vendorDir.'/composer/GeneratedDiscoveryStrategy.php';
+
+        if (!$candidates) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+
+            return;
+        }
+
+        $candidates = implode('            ', $candidates);
+        $code = <<<EOPHP
+<?php
+
+namespace Http\Discovery\Strategy;
+
+class GeneratedDiscoveryStrategy implements DiscoveryStrategy
+{
+    public static function getCandidates(\$type)
+    {
+        switch (\$type) {
+            $candidates
+            default: return [];
+        }
+    }
+}
+
+EOPHP
+        ;
+
+        if (!file_exists($file) || $code !== file_get_contents($file)) {
+            file_put_contents($file, $code);
+        }
+
+        $rootPackage = $event->getComposer()->getPackage();
+        $autoload = $rootPackage->getAutoload();
+        $autoload['classmap'][] = $vendorDir.'/composer/GeneratedDiscoveryStrategy.php';
+        $rootPackage->setAutoload($autoload);
     }
 
     private function updateComposerJson(array $missingRequires, bool $sortPackages)

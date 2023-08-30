@@ -1,5 +1,35 @@
 # Change Log
 
+## 1.19.1 - 2023-07-11
+
+- [#250](https://github.com/php-http/discovery/pull/250) - Fix: Buzz client instantiation using deprecated Message Factory Discovery, use PSR-17 factory discovery instead.
+
+## 1.19.0 - 2023-06-19
+
+- [#249](https://github.com/php-http/discovery/pull/249) - Have composer plugin correctly install Symfony http client when nothing explicitly requires psr 18 resp. httplug.
+- [#241](https://github.com/php-http/discovery/pull/241) - Support discovering PSR-17 factories of `httpsoft/http-message` package
+
+## 1.18.1 - 2023-05-17
+
+- [#242](https://github.com/php-http/discovery/pull/242) - Better exception message when no legacy php-http message factories can be built. Also needs php-http/message-factory package and they are deprecated in favor of PSR-17 anyways.
+
+## 1.18.0 - 2023-05-03
+
+- [#235](https://github.com/php-http/discovery/pull/235) - Deprecate HttpClientDiscovery, use Psr18ClientDiscovery instead
+- [#238](https://github.com/php-http/discovery/pull/238) - Skip requiring php-http/message-factory when installing symfony/http-client 6.3+
+- [#239](https://github.com/php-http/discovery/pull/239) - Skip auto-installing when the root package's extra.discovery is enough
+
+## 1.17.0 - 2023-04-26
+
+- [#230](https://github.com/php-http/discovery/pull/230) - Add Psr18Client to make it straightforward to use PSR-18
+- [#232](https://github.com/php-http/discovery/pull/232) - Allow pinning the preferred implementations in composer.json
+- [#233](https://github.com/php-http/discovery/pull/233) - Fix Psr17Factory::createServerRequestFromGlobals() when uploaded files have been moved
+
+## 1.16.0 - 2023-04-26
+
+- [#225](https://github.com/php-http/discovery/pull/225) - Remove support for the abandoned Zend Diactoros which has been replaced with Laminas Diactoros; marked the zend library as conflict in composer.json to avoid confusion
+- [#227](https://github.com/php-http/discovery/pull/227) - Fix handling requests with nested files
+
 ## 1.15.3 - 2023-03-31
 
 - [#224](https://github.com/php-http/discovery/pull/224) - Fix regression with Magento classloader
@@ -31,7 +61,7 @@
 
 ## 1.14.1 - 2021-09-18
 
-- [#199](https://github.com/php-http/discovery/pull/199) - Fixes message factory discovery for `laminas-diactoros ^2.7` 
+- [#199](https://github.com/php-http/discovery/pull/199) - Fixes message factory discovery for `laminas-diactoros ^2.7`
 
 ## 1.14.0 - 2021-06-21
 

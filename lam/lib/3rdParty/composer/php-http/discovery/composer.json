@@ -33,7 +33,10 @@
     "autoload": {
         "psr-4": {
             "Http\\Discovery\\": "src/"
-        }
+        },
+        "exclude-from-classmap": [
+            "src/Composer/Plugin.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -52,7 +55,8 @@
         "plugin-optional": true
     },
     "conflict": {
-        "nyholm/psr7": "<1.0"
+        "nyholm/psr7": "<1.0",
+        "zendframework/zend-diactoros": "*"
     },
     "prefer-stable": true,
     "minimum-stability": "beta"
