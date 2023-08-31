@@ -157,6 +157,10 @@
 }
 .flatpickr-months .flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   text-decoration: none;
   cursor: pointer;
   position: absolute;

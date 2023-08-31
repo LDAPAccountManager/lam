@@ -103,6 +103,16 @@ $textDisabled = new htmlInputField('text2', 'Some text');
 $textDisabled->setIsEnabled(false);
 $row->addField($textDisabled);
 
+$row->addLabel(new htmlOutputText('Date select'));
+$textDateSelect = new htmlInputField('textDateSelect', '2023-05-30');
+$textDateSelect->showCalendar('Y-m-d');
+$row->addField($textDateSelect);
+
+$row->addLabel(new htmlOutputText('Time select'));
+$textTimeSelect = new htmlInputField('textTimeSelect', '2023-05-30 23:45:50');
+$textTimeSelect->showCalendar('Y-m-d H:i:S', true, true);
+$row->addField($textTimeSelect);
+
 $row->addLabel(new htmlOutputText('Default'));
 $row->addField(new htmlInputTextarea('textarea1', 'Some text', 50, 5));
 

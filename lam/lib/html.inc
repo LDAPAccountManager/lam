@@ -618,14 +618,16 @@ class htmlInputField extends htmlElement {
 		// calendar
 		if ($this->showCalendar) {
 			$locale = 'en';
-			$sessionLanguage = $_SESSION['language'];
-			$sessionLanguage = str_replace('.utf8', '', $sessionLanguage);
-			if ($sessionLanguage === 'zh_TW') {
-				$locale = 'zh_tw';
-			}
-			else {
-				$sessionLanguageParts = explode('_', $sessionLanguage);
-				$locale = $sessionLanguageParts[0];
+			if (!empty($_SESSION['language'])) {
+				$sessionLanguage = $_SESSION['language'];
+				$sessionLanguage = str_replace('.utf8', '', $sessionLanguage);
+				if ($sessionLanguage === 'zh_TW') {
+					$locale = 'zh_tw';
+				}
+				else {
+					$sessionLanguageParts = explode('_', $sessionLanguage);
+					$locale = $sessionLanguageParts[0];
+				}
 			}
 			$calendarWithTime = $this->calendarFormatWithTime ? "enableTime: true, " : "";
 			$calendarWithSeconds = $this->calendarFormatWithSeconds ? "enableSeconds: true, " : "";
@@ -797,7 +799,7 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Shows a calendar when the field is selected.
 	 *
-	 * @param String $format calendar format (e.g. Y-m-d)
+	 * @param String $format calendar format (e.g. "Y-m-d" or "Y-m-d H:i:S")
 	 * @param bool $withTime activate time selection
 	 * @param bool $withSeconds show seconds
 	 */
