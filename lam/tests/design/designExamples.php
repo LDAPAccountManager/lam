@@ -320,6 +320,18 @@ $sortableList2 = new htmlSortableList($listElements, 'sortableList2');
 $sortableList2->setCSSClasses(array('module-list'));
 $row->add($sortableList2);
 
+$row->add(new htmlSubTitle('Alert'));
+
+$row->addLabel(new htmlOutputText('Info dialog'));
+$infoDialog = new htmlButton('infoDialog', 'Click me');
+$infoDialog->setOnClick('window.lam.dialog.showInfo(\'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna\', \'Ok\');');
+$row->addField($infoDialog);
+
+$row->addLabel(new htmlOutputText('Error dialog'));
+$infoDialog = new htmlButton('errorDialog', 'Click me');
+$infoDialog->setOnClick('window.lam.dialog.showError(\'Some title\', \'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna\', \'Ok\');');
+$row->addField($infoDialog);
+
 
 $row->add(new htmlSpacer(null, '20rem'));
 
