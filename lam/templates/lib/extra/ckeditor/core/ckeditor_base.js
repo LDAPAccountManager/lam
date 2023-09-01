@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -64,6 +64,11 @@ if ( !window.CKEDITOR ) {
 			 *
 			 *		alert( CKEDITOR.rnd ); // e.g. 319
 			 *
+			 * Generated integer is not cryptographically secure. It has been deprecated to
+			 * prevent using it in a security-sensitive context by accident.
+			 * Use `window.crypto.getRandomValues()` native browser method instead.
+			 *
+			 * @deprecated 4.18.0
 			 * @property {Number}
 			 */
 			rnd: Math.floor( Math.random() * ( 999 /*Max*/ - 100 /*Min*/ + 1 ) ) + 100 /*Min*/,
@@ -174,11 +179,30 @@ if ( !window.CKEDITOR ) {
 				if ( resource.indexOf( ':/' ) == -1 && resource.indexOf( '/' ) !== 0 )
 					resource = this.basePath + resource;
 
-				// Add the timestamp, except for directories.
-				if ( this.timestamp && resource.charAt( resource.length - 1 ) != '/' && !( /[&?]t=/ ).test( resource ) )
-					resource += ( resource.indexOf( '?' ) >= 0 ? '&' : '?' ) + 't=' + this.timestamp;
+				resource = this.appendTimestamp( resource );
 
 				return resource;
+			},
+
+			/**
+			 * Appends {@link CKEDITOR#timestamp} to the provided URL as querystring parameter ("t").
+			 *
+			 * Leaves the URL unchanged if it is a directory URL or it already contains querystring parameter.
+			 *
+			 * @since 4.17.2
+			 * @param {String} resource The resource URL to which the timestamp should be appended.
+			 * @returns {String} The resource URL with cache key appended whenever possible.
+			 */
+			appendTimestamp: function( resource ) {
+				if ( !this.timestamp ||
+					resource.charAt( resource.length - 1 ) === '/' ||
+					( /[&?]t=/ ).test( resource )
+				) {
+					return resource;
+				}
+
+				var concatenateSign = resource.indexOf( '?' ) >= 0 ? '&' : '?';
+				return resource + concatenateSign + 't=' + this.timestamp;
 			},
 
 			/**

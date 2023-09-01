@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@
  */
 CKEDITOR.lang[ 'hu' ] = {
 	// ARIA description.
+	application: 'Rich Text Editor', // MISSING
 	editor: 'HTML szerkesztő',
 	editorPanel: 'HTML szerkesztő panel',
 
@@ -34,7 +35,6 @@ CKEDITOR.lang[ 'hu' ] = {
 		upload: 'Feltöltés',
 		uploadSubmit: 'Küldés a szerverre',
 		image: 'Kép',
-		flash: 'Flash',
 		form: 'Űrlap',
 		checkbox: 'Jelölőnégyzet',
 		radio: 'Választógomb',
@@ -61,7 +61,7 @@ CKEDITOR.lang[ 'hu' ] = {
 		preview: 'Előnézet',
 		resize: 'Húzza az átméretezéshez',
 		generalTab: 'Általános',
-		advancedTab: 'További opciók',
+		advancedTab: 'Speciális',
 		validateNumberFailed: 'A mezőbe csak számokat írhat.',
 		confirmNewPage: 'Minden nem mentett változás el fog veszni! Biztosan be szeretné tölteni az oldalt?',
 		confirmCancel: 'Pár beállítást megváltoztatott. Biztosan be szeretné zárni az ablakot?',
@@ -143,5 +143,12 @@ CKEDITOR.lang[ 'hu' ] = {
 		keyboardShortcut: 'Gyorsbillentyű',
 
 		optionDefault: 'Alapértelmezett'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

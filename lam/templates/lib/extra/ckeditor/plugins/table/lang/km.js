@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'table', 'km', {
 	border: 'ទំហំ​បន្ទាត់​ស៊ុម',
@@ -27,6 +27,8 @@ CKEDITOR.plugins.setLang( 'table', 'km', {
 		borderColor: 'ពណ៌​បន្ទាត់​ស៊ុម',
 		data: 'ទិន្នន័យ',
 		header: 'ក្បាល',
+		columnHeader: 'Column Header', // MISSING
+		rowHeader: 'Row Header', // MISSING
 		yes: 'ព្រម',
 		no: 'ទេ',
 		invalidWidth: 'ទទឹង​ក្រឡា​ត្រូវ​តែ​ជា​លេខ។',

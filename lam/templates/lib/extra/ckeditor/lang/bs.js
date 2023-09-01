@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,8 @@
  */
 CKEDITOR.lang[ 'bs' ] = {
 	// ARIA description.
-	editor: 'Rich Text Editor', // MISSING
+	application: 'Rich Text Editor', // MISSING
+	editor: 'Editor', // MISSING
 	editorPanel: 'Rich Text Editor panel', // MISSING
 
 	// Common messages and labels.
@@ -34,13 +35,12 @@ CKEDITOR.lang[ 'bs' ] = {
 		upload: 'Šalji',
 		uploadSubmit: 'Šalji na server',
 		image: 'Slika',
-		flash: 'Flash', // MISSING
-		form: 'Form', // MISSING
+		form: 'Forma',
 		checkbox: 'Checkbox', // MISSING
 		radio: 'Radio Button', // MISSING
-		textField: 'Text Field', // MISSING
+		textField: 'Polje za unos teksta',
 		textarea: 'Textarea', // MISSING
-		hiddenField: 'Hidden Field', // MISSING
+		hiddenField: 'Skriveno polje',
 		button: 'Button',
 		select: 'Selection Field', // MISSING
 		imageButton: 'Image Button', // MISSING
@@ -57,15 +57,15 @@ CKEDITOR.lang[ 'bs' ] = {
 		cssStyle: 'Stil',
 		ok: 'OK',
 		cancel: 'Odustani',
-		close: 'Close', // MISSING
+		close: 'Zatvori',
 		preview: 'Prikaži',
-		resize: 'Resize', // MISSING
-		generalTab: 'General', // MISSING
+		resize: 'Promijeni veličinu',
+		generalTab: 'Generalno',
 		advancedTab: 'Naprednije',
-		validateNumberFailed: 'This value is not a number.', // MISSING
-		confirmNewPage: 'Any unsaved changes to this content will be lost. Are you sure you want to load new page?', // MISSING
-		confirmCancel: 'You have changed some options. Are you sure you want to close the dialog window?', // MISSING
-		options: 'Options', // MISSING
+		validateNumberFailed: 'Unesena vrijednost nije broj',
+		confirmNewPage: 'Nesačuvane izmjene će biti izgubljene. Da li ste sigurni da želite otvoriti novu stranicu ?',
+		confirmCancel: 'Napravili ste par izmjena. Da li želite zatvoriti prozor ?',
+		options: 'Opcije',
 		target: 'Prozor',
 		targetNew: 'New Window (_blank)', // MISSING
 		targetTop: 'Topmost Window (_top)', // MISSING
@@ -84,22 +84,22 @@ CKEDITOR.lang[ 'bs' ] = {
 		justify: 'Puno poravnanje',
 		alignLeft: 'Lijevo poravnanje',
 		alignRight: 'Desno poravnanje',
-		alignCenter: 'Align Center', // MISSING
+		alignCenter: 'Centriranje',
 		alignTop: 'Vrh',
 		alignMiddle: 'Sredina',
 		alignBottom: 'Dno',
-		alignNone: 'None', // MISSING
-		invalidValue: 'Invalid value.', // MISSING
-		invalidHeight: 'Height must be a number.', // MISSING
-		invalidWidth: 'Width must be a number.', // MISSING
-		invalidLength: 'Value specified for the "%1" field must be a positive number with or without a valid measurement unit (%2).', // MISSING
-		invalidCssLength: 'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
-		invalidHtmlLength: 'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).', // MISSING
-		invalidInlineStyle: 'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.', // MISSING
-		cssLengthTooltip: 'Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+		alignNone: 'Bez poravnanja',
+		invalidValue: 'Nepravilna vrijednost',
+		invalidHeight: 'Vrijednost visine mora biti broj.',
+		invalidWidth: 'Vrijednost širine mora biti broj.',
+		invalidLength: 'Vrijednost za "%1" polje mora biti pozitivan broj ili bez ispravne mjerne jedinice (%2).',
+		invalidCssLength: 'Vrijednost za "%1" polje mora biti pozitivan broj ili bez validne CSS mjerne jedinice (px, %, in, cm, mm, em, ex, pt ili pc).',
+		invalidHtmlLength: 'Vrijednost za "%1" polje mora biti pozitivan broj ili bez validne HTML mjerne jedinice (px ili %).',
+		invalidInlineStyle: 'Vrijednost za inline stil mora sadržavati jedan ili više parova u formatu "name: value", razdvojenih tačka-zarezom.',
+		cssLengthTooltip: 'Unesite vrijednost u pikselima ili kao broj sa ispravnom CSS jedinicom (px, %, in, cm, mm, em, ex, pt ili pc).',
 
 		// Put the voice-only part of the label in the span.
-		unavailable: '%1<span class="cke_accessibility">, unavailable</span>', // MISSING
+		unavailable: '$1<span class="cke_accessibility">, nedostupno</span>',
 
 		// Keyboard keys translations used for creating shortcuts descriptions in tooltips, context menus and ARIA labels.
 		keyboard: {
@@ -142,6 +142,13 @@ CKEDITOR.lang[ 'bs' ] = {
 		// Prepended to ARIA labels with shortcuts.
 		keyboardShortcut: 'Keyboard shortcut', // MISSING
 
-		optionDefault: 'Default' // MISSING
+		optionDefault: 'Zadano'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

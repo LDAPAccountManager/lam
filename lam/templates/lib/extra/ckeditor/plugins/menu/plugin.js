@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 CKEDITOR.plugins.add( 'menu', {
@@ -609,5 +609,5 @@ CKEDITOR.plugins.add( 'menu', {
 CKEDITOR.config.menu_groups = 'clipboard,' +
 	'form,' +
 	'tablecell,tablecellproperties,tablerow,tablecolumn,table,' +
-	'anchor,link,image,flash,' +
+	'anchor,link,image,' +
 	'checkbox,radio,textfield,hiddenfield,imagebutton,button,select,textarea,div';

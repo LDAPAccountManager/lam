@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'table', 'es-mx', {
 	border: 'Tamaño del borde',
@@ -27,6 +27,8 @@ CKEDITOR.plugins.setLang( 'table', 'es-mx', {
 		borderColor: 'Color de borde',
 		data: 'Datos',
 		header: 'Encabezado',
+		columnHeader: 'Column Header', // MISSING
+		rowHeader: 'Row Header', // MISSING
 		yes: 'Si',
 		no: 'No',
 		invalidWidth: 'El ancho de la celda debe ser un número entero.',

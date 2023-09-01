@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 /**
@@ -1928,6 +1928,9 @@
 			}
 			this._.initialSetData = false;
 
+			// Unprotect comments, to get rid of additional characters (#4777).
+			data = this.editor.dataProcessor.unprotectRealComments( data );
+
 			// Unescape protected content to prevent double escaping and corruption of content (#4060, #4509).
 			data = this.editor.dataProcessor.unprotectSource( data );
 			data = this.editor.dataProcessor.toHtml( data, {
@@ -2031,7 +2034,8 @@
 				} else if ( widgetDef.template ) {
 					// ... or create a brand-new widget from template.
 					var defaults = typeof widgetDef.defaults == 'function' ? widgetDef.defaults() : widgetDef.defaults,
-						element = CKEDITOR.dom.element.createFromHtml( widgetDef.template.output( defaults ), editor.document ),
+						templateData = CKEDITOR.tools.object.merge( defaults || {}, commandData && commandData.startupData || {} ),
+						element = CKEDITOR.dom.element.createFromHtml( widgetDef.template.output( templateData ), editor.document ),
 						instance,
 						wrapper = editor.widgets.wrapElement( element, widgetDef.name ),
 						temp = new CKEDITOR.dom.documentFragment( wrapper.getDocument() );
@@ -3056,8 +3060,9 @@
 						} );
 
 						// If widget did not have data-cke-widget attribute before upcasting remove it.
-						if ( widgetElement.attributes[ 'data-cke-widget-keep-attr' ] != '1' )
+						if ( widgetElement && widgetElement.attributes[ 'data-cke-widget-keep-attr' ] != '1' ) {
 							delete widgetElement.attributes[ 'data-widget' ];
+						}
 					}
 				}
 				// Nested editable.
@@ -3113,7 +3118,16 @@
 				if ( !retElement )
 					retElement = widgetElement;
 
-				toBe.wrapper.replaceWith( retElement );
+				// In some edge cases (especially applying formating
+				// at the boundary of the inline editable) the widget
+				// is going to be duplicated (split in half).
+				// In that case there won't be a retElement
+				// and we can safely remove such doppelganger widget (#698).
+				if ( retElement ) {
+					toBe.wrapper.replaceWith( retElement );
+				} else {
+					toBe.wrapper.remove();
+				}
 			}
 		}, null, null, 13 );
 
@@ -3297,8 +3311,7 @@
 
 		undoManager.addFilterRule( function( data ) {
 			return data.replace( /\s*cke_widget_selected/g, '' )
-				.replace( /\s*cke_widget_focused/g, '' )
-				.replace( /<span[^>]*cke_widget_drag_handler_container[^>]*.*?<\/span>/gmi, '' );
+				.replace( /\s*cke_widget_focused/g, '' );
 		} );
 	}
 
@@ -3485,6 +3498,42 @@
 		}
 	} );
 
+	function insertLine( widget, position ) {
+		var elementTag = decodeEnterMode( widget.editor.config.enterMode ),
+			newElement = new CKEDITOR.dom.element( elementTag );
+
+		// Avoid nesting <br> inside <br>.
+		if ( elementTag !== 'br' ) {
+			newElement.appendBogus();
+		}
+
+		if ( position === 'after' ) {
+			newElement.insertAfter( widget.wrapper );
+		} else {
+			newElement.insertBefore( widget.wrapper );
+		}
+
+		select( newElement );
+
+		function decodeEnterMode( option ) {
+			if ( option == CKEDITOR.ENTER_BR ) {
+				return 'br';
+			} else if ( option == CKEDITOR.ENTER_DIV ) {
+				return 'div';
+			}
+
+			// Default option - CKEDITOR.ENTER_P.
+			return 'p';
+		}
+
+		function select( element ) {
+			var newRange = widget.editor.createRange();
+
+			newRange.setStart( element, 0 );
+			widget.editor.getSelection().selectRanges( [ newRange ] );
+		}
+	}
+
 	function copyWidgets( editor, isCut ) {
 		var focused = editor.widgets.focused,
 			isWholeSelection,
@@ -3598,6 +3647,9 @@
 	}
 
 	function setupWidget( widget, widgetDef ) {
+		var keystrokeInsertLineBefore = widget.editor.config.widget_keystrokeInsertLineBefore,
+			keystrokeInsertLineAfter = widget.editor.config.widget_keystrokeInsertLineAfter;
+
 		setupWrapper( widget );
 		setupParts( widget );
 		setupEditables( widget );
@@ -3626,16 +3678,28 @@
 		widget.on( 'key', function( evt ) {
 			var keyCode = evt.data.keyCode;
 
+			// Insert a new paragraph before the widget (#4467).
+			if ( keyCode == keystrokeInsertLineBefore ) {
+				insertLine( widget, 'before' );
+				widget.editor.fire( 'saveSnapshot' );
+			}
+			// Insert a new paragraph after the widget (#4467).
+			else if ( keyCode == keystrokeInsertLineAfter ) {
+				insertLine( widget, 'after' );
+				widget.editor.fire( 'saveSnapshot' );
+			}
 			// ENTER.
-			if ( keyCode == 13 ) {
+			else if ( keyCode == 13 ) {
 				widget.edit();
-				// CTRL+C or CTRL+X.
-			} else if ( keyCode == CKEDITOR.CTRL + 67 || keyCode == CKEDITOR.CTRL + 88 ) {
+			}
+			// CTRL+C or CTRL+X.
+			else if ( keyCode == CKEDITOR.CTRL + 67 || keyCode == CKEDITOR.CTRL + 88 ) {
 				copyWidgets( widget.editor, keyCode == CKEDITOR.CTRL + 88 );
 				return; // Do not preventDefault.
-				// Pass chosen keystrokes to other plugins or default fake sel handlers.
-				// Pass all CTRL/ALT keystrokes.
-			} else if ( keyCode in keystrokesNotBlockedByWidget ||
+			}
+			// Pass all CTRL/ALT keystrokes.
+			// Pass chosen keystrokes to other plugins or default fake sel handlers.
+			else if ( keyCode in keystrokesNotBlockedByWidget ||
 				( CKEDITOR.CTRL & keyCode ) ||
 				( CKEDITOR.ALT & keyCode ) ) {
 				return;
@@ -4692,7 +4756,7 @@
 /**
  * If set to `true`, the widget's element will be covered with a transparent mask.
  * This will prevent its content from being clickable, which matters in case
- * of special elements like embedded Flash or iframes that generate a separate "context".
+ * of special elements like embedded iframes that generate a separate "context".
  *
  * If the value is a `string` type, then the partial mask covering only the given widget part
  * is created instead. The `string` mask should point to the name of one of the widget {@link CKEDITOR.plugins.widget#parts parts}.
@@ -4874,3 +4938,27 @@
  *
  * @property {String} pathName
  */
+
+/**
+ * Defines the keyboard shortcut for inserting a line before selected widget. Default combination
+ * is `Shift+Alt+Enter`. New element tag is based on {@link CKEDITOR.config#enterMode} option.
+ *
+ *		config.widget_keystrokeInsertLineBefore = 'CKEDITOR.SHIFT + 38'; // Shift + Arrow Up
+ *
+ * @since 4.17.0
+ * @cfg {Number} [widget_keystrokeInsertLineBefore=CKEDITOR.SHIFT+CKEDITOR.ALT+13]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.widget_keystrokeInsertLineBefore = CKEDITOR.SHIFT + CKEDITOR.ALT + 13;
+
+/**
+ * Defines the keyboard shortcut for inserting a line after selected widget. Default combination
+ * is `Shift+Enter`. New element tag is based on {@link CKEDITOR.config#enterMode} option.
+ *
+ *		config.widget_keystrokeInsertLineAfter = 'CKEDITOR.SHIFT + 40'; // Shift + Arrow Down
+ *
+ * @since 4.17.0
+ * @cfg {Number} [widget_keystrokeInsertLineAfter=CKEDITOR.SHIFT+13]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.widget_keystrokeInsertLineAfter = CKEDITOR.SHIFT + 13;

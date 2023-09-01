@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'tr', {
 	acccessKey: 'Erişim Tuşu',
@@ -13,6 +13,7 @@ CKEDITOR.plugins.setLang( 'link', 'tr', {
 		title: 'Bağlantı Özellikleri',
 		name: 'Bağlantı Adı',
 		errorName: 'Lütfen bağlantı için ad giriniz',
+		errorWhitespace: 'Anchor name cannot contain space characters', // MISSING
 		remove: 'Bağlantıyı Kaldır'
 	},
 	anchorId: 'Eleman Kimlik Numarası ile',

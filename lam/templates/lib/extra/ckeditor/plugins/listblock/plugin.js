@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 CKEDITOR.plugins.add( 'listblock', {
@@ -14,6 +14,7 @@ CKEDITOR.plugins.add( 'listblock', {
 					' draggable="false"' +
 					' ondragstart="return false;"' + // Draggable attribute is buggy on Firefox.
 					' href="javascript:void(\'{val}\')" ' +
+					' {language}' +
 					' onclick="{onclick}CKEDITOR.tools.callFunction({clickFn},\'{val}\'); return false;"' + // https://dev.ckeditor.com/ticket/188
 						' role="option">' +
 					'{text}' +
@@ -83,7 +84,7 @@ CKEDITOR.plugins.add( 'listblock', {
 			},
 
 			proto: {
-				add: function( value, html, title ) {
+				add: function( value, html, title, language ) {
 					var id = CKEDITOR.tools.getNextId();
 
 					if ( !this._.started ) {
@@ -101,7 +102,8 @@ CKEDITOR.plugins.add( 'listblock', {
 							'return false;" onmouseup="CKEDITOR.tools.getMouseButton(event)===CKEDITOR.MOUSE_BUTTON_LEFT&&' : '',
 						clickFn: this._.getClick(),
 						title: CKEDITOR.tools.htmlEncodeAttr( title || value ),
-						text: html || value
+						text: html || value,
+						language: language ? 'lang="' + language + '"' : ''
 					};
 
 					this._.pendingList.push( listItem.output( data ) );
@@ -182,14 +184,6 @@ CKEDITOR.plugins.add( 'listblock', {
 
 					this.element.getDocument().getById( itemId + '_option' ).setAttribute( 'aria-selected', true );
 					this.onMark && this.onMark( item );
-				},
-
-				markFirstDisplayed: function() {
-					var context = this;
-					this._.markFirstDisplayed( function() {
-						if ( !context.multiSelect )
-							context.unmarkAll();
-					} );
 				},
 
 				unmark: function( value ) {

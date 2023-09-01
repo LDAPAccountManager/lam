@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -117,7 +117,17 @@
 			return false;
 		}
 
-		if ( range.endOffset === 0 ) {
+		// The endContainer might be a text inside li element (in IE8).
+		var isInList = range.endContainer.is ?
+			range.endContainer.is( 'li' ) :
+			range.endContainer.getParent().is && range.endContainer.getParent().is( 'li' );
+
+		// Prevent optimization in lists (#4931).
+		if ( isInList ) {
+			return false;
+		}
+
+		if ( range.endOffset === 0 )  {
 			return true;
 		}
 

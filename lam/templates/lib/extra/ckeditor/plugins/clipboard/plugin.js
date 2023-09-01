@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 /**
@@ -124,6 +124,10 @@
 		// jscs:enable maximumLineLength
 		icons: 'copy,copy-rtl,cut,cut-rtl,paste,paste-rtl', // %REMOVE_LINE_CORE%
 		hidpi: true, // %REMOVE_LINE_CORE%
+
+		// File matchers registered by CKEDITOR.plugins.clipboard#addFileMatcher method.
+		_supportedFileMatchers: [],
+
 		init: function( editor ) {
 			var filterType,
 				filtersFactory = filtersFactoryFactory( editor );
@@ -146,62 +150,155 @@
 
 			CKEDITOR.dialog.add( 'paste', CKEDITOR.getUrl( this.path + 'dialogs/paste.js' ) );
 
-			// Convert image file (if present) to base64 string for Firefox. Do it as the first
-			// step as the conversion is asynchronous and should hold all further paste processing.
-			if ( CKEDITOR.env.gecko ) {
-				var supportedImageTypes = [ 'image/png', 'image/jpeg', 'image/gif' ],
-					latestId;
+			// Handle file paste for modern browsers except IE<10, as it does not support
+			// custom MIME types in clipboard (#4612).
+			var isFilePasteSupported = CKEDITOR.plugins.clipboard.isCustomDataTypesSupported || CKEDITOR.plugins.clipboard.isFileApiSupported,
+				latestId;
 
-				editor.on( 'paste', function( evt ) {
-					var dataObj = evt.data,
-						data = dataObj.dataValue,
-						dataTransfer = dataObj.dataTransfer;
+			// Display notification for unsupported file types (#5095).
+			CKEDITOR.plugins.clipboard.addFileMatcher( editor, testImageBase64Support );
+			editor.on( 'paste', function( evt ) {
+				if ( !isFilePasteSupported ) {
+					return;
+				}
 
-					// If data empty check for image content inside data transfer. https://dev.ckeditor.com/ticket/16705
-					if ( !data && dataObj.method == 'paste' && isFileData( dataTransfer ) ) {
-						var file = dataTransfer.getFile( 0 );
+				var dataObj = evt.data,
+					data = dataObj.dataValue,
+					dataTransfer = dataObj.dataTransfer;
 
-						if ( CKEDITOR.tools.indexOf( supportedImageTypes, file.type ) != -1 ) {
-							var fileReader = new FileReader();
+				// Only handle files if there is no data value provided that should take precedence over files.
+				if ( data ) {
+					return;
+				}
 
-							// Convert image file to img tag with base64 image.
-							fileReader.addEventListener( 'load', function() {
-								evt.data.dataValue = '<img src="' + fileReader.result + '" />';
-								editor.fire( 'paste', evt.data );
-							}, false );
+				var unsupportedFileTypes = [];
+				for ( var i = 0; i < dataTransfer.getFilesCount(); i++ ) {
+					var file = dataTransfer.getFile( i );
 
-							// Proceed with normal flow if reading file was aborted.
-							fileReader.addEventListener( 'abort', function() {
-								editor.fire( 'paste', evt.data );
-							}, false );
-
-							// Proceed with normal flow if reading file failed.
-							fileReader.addEventListener( 'error', function() {
-								editor.fire( 'paste', evt.data );
-							}, false );
-
-							fileReader.readAsDataURL( file );
-
-							latestId = dataObj.dataTransfer.id;
-
-							evt.stop();
-						}
+					if ( !isFileTypeSupported( file ) ) {
+						unsupportedFileTypes.push( file.type );
 					}
-				}, null, null, 1 );
+				}
+
+				displayUnsupportedFileTypesNotification( unsupportedFileTypes );
+			}, null, null, 1 );
+
+			// Convert image file (if present) to base64 string.
+			// Do it as the first step as the conversion is asynchronous and should hold all further paste processing.
+			editor.on( 'paste', function( evt ) {
+				if ( !isFilePasteSupported || !editor.config.clipboard_handleImages ) {
+					return;
+				}
+
+				var dataObj = evt.data,
+					data = dataObj.dataValue,
+					dataTransfer = dataObj.dataTransfer;
+
+				// If data empty check for image content inside data transfer. https://dev.ckeditor.com/ticket/16705
+				// Allow both dragging and dropping and pasting images as base64 (#4681).
+				if ( data || !isFileData( evt, dataTransfer ) ) {
+					return;
+				}
+
+				var file = dataTransfer.getFile( 0 );
+
+				if ( !testImageBase64Support( file ) ) {
+					return;
+				}
+
+				var fileReader = new FileReader();
+
+				// Convert image file to img tag with base64 image.
+				fileReader.addEventListener( 'load', function() {
+					evt.data.dataValue = '<img src="' + fileReader.result + '" />';
+					editor.fire( 'paste', evt.data );
+				}, false );
+
+				// Proceed with normal flow if reading file was aborted.
+				fileReader.addEventListener( 'abort', function() {
+					// (#4681)
+					setCustomIEEventAttribute( evt );
+					editor.fire( 'paste', evt.data );
+				}, false );
+
+				// Proceed with normal flow if reading file failed.
+				fileReader.addEventListener( 'error', function() {
+					// (#4681)
+					setCustomIEEventAttribute( evt );
+					editor.fire( 'paste', evt.data );
+				}, false );
+
+				fileReader.readAsDataURL( file );
+
+				latestId = dataObj.dataTransfer.id;
+
+				evt.stop();
+			}, null, null, 1 );
+
+			function testImageBase64Support( file ) {
+				// Check if turning images into base64 is disabled (#5431).
+				if ( !editor.config.clipboard_handleImages ) {
+					return false;
+				}
+
+				var supportedImageTypes = [ 'image/png', 'image/jpeg', 'image/gif' ];
+				return CKEDITOR.tools.indexOf( supportedImageTypes, file.type ) !== -1;
+			}
+
+			function isFileTypeSupported( file ) {
+				var clipboardMatchers = editor.plugins.clipboard._supportedFileMatchers;
+				return CKEDITOR.tools.array.some( clipboardMatchers, function( matcher ) {
+					return matcher( file );
+				} );
+			}
+
+			function displayUnsupportedFileTypesNotification( fileTypes ) {
+				if ( !fileTypes.length ) {
+					return;
+				}
+
+				fileTypes = CKEDITOR.tools.array.unique( fileTypes );
+				// Make sure to remove unknown file types.
+				fileTypes = CKEDITOR.tools.array.filter( fileTypes, function( fileType ) {
+					return !!CKEDITOR.tools.trim( fileType );
+				} );
+
+				var unsupportedTypeMsg = createNotificationMessage( fileTypes.join( ', ' ) );
+				editor.showNotification( unsupportedTypeMsg, 'info', editor.config.clipboard_notificationDuration );
+			}
+
+			// Prepare content for unsupported file extension notification (#4750).
+			function createNotificationMessage( fileType ) {
+				if ( !fileType ) {
+					return editor.lang.clipboard.fileWithoutFormatNotSupportedNotification;
+				}
+
+				return editor.lang.clipboard.fileFormatNotSupportedNotification.
+					replace( /\${formats\}/g, '<em>' + fileType + '</em>' );
 			}
 
 			// Only dataTransfer objects containing only file should be considered
 			// to image pasting (#3585, #3625).
-			function isFileData( dataTransfer ) {
-				if ( !dataTransfer || latestId === dataTransfer.id ) {
+			function isFileData( evt, dataTransfer ) {
+				// Checking for fileTransferCancel on IE to prevent comparing empty string
+				// from dataTransfer.id and falling into infinite loop (#4681).
+				if ( CKEDITOR.env.ie && evt.data.fileTransferCancel ) {
 					return false;
 				}
 
-				var types = dataTransfer.getTypes(),
-					isFileOnly = types.length === 1 && types[ 0 ] === 'Files',
-					containsFile = dataTransfer.getFilesCount() === 1;
+				if ( !CKEDITOR.env.ie && ( !dataTransfer || latestId === dataTransfer.id ) ) {
+					return false;
+				}
 
-				return isFileOnly && containsFile;
+				return dataTransfer.isFileTransfer() && dataTransfer.getFilesCount() === 1;
+			}
+
+			// To avoid falling into an infinite loop on IE10+ when the image loading state is other than `load`
+			// add a custom data attribute.
+			function setCustomIEEventAttribute( evt ) {
+				if ( CKEDITOR.env.ie ) {
+					evt.data.fileTransferCancel = true;
+				}
 			}
 
 			editor.on( 'paste', function( evt ) {
@@ -423,9 +520,11 @@
 		// Because of FF bug we need to use this hack, otherwise cursor is hidden
 		// or it is not possible to move it (https://dev.ckeditor.com/ticket/12420).
 		// Also, check that editor.toolbox exists, because the toolbar plugin might not be loaded (https://dev.ckeditor.com/ticket/13305).
+		// And don't forget to put focus back into the editor (#4855)!
 		if ( CKEDITOR.env.gecko && data.method == 'drop' && editor.toolbox ) {
 			editor.once( 'afterPaste', function() {
 				editor.toolbox.focus();
+				editor.focus();
 			} );
 		}
 
@@ -1647,7 +1746,31 @@
 	 */
 	CKEDITOR.plugins.clipboard = {
 		/**
-		 * It returns `true` if the environment allows to set the data on copy or cut manually. This value is `false` in:
+		 * Adds a file matcher verifying whether a file should be supported via clipboard operations.
+		 *
+		 * In case of pasting or dragging and dropping unsupported files,
+		 * the clipboard plugin will show a notification informing a user that a given file type is not supported.
+		 *
+		 * ```javascript
+		 * CKEDITOR.plugins.clipboard.addFileMatcher( editor, function( file ) {
+		 * 	var supportedImageTypes = [ 'image/png', 'image/jpeg', 'image/gif' ];
+		 * 	return CKEDITOR.tools.indexOf( supportedImageTypes, file.type ) !== -1;
+		 * } );
+		 * ```
+		 *
+		 * **Note:** This feature will not cancel the `paste` event in case of an unsupported file.
+		 * It is the integrator's responsibility to properly handle incorrect files
+		 * (e.g. by verifying if the file should be indeed uploaded via upload integrations).
+		 *
+		 * @since 4.19.0
+		 * @param {CKEDITOR.editor} editor The editor instance.
+		 * @param {Function} matcher File matcher.
+		 */
+		addFileMatcher: function( editor, matcher ) {
+			editor.plugins.clipboard._supportedFileMatchers.push( matcher );
+		},
+		/**
+		 * It returns `true` if the environment allows setting the data on copy or cut manually. This value is `false` in:
 		 * * Internet Explorer &mdash; because this browser shows the security dialog window when the script tries to set clipboard data.
 		 * * Older iOS (below version 13) &mdash; because custom data is not saved to clipboard there.
 		 *
@@ -2338,9 +2461,9 @@
 
 		this._ = {
 			metaRegExp: /^<meta.*?>/i,
-			bodyRegExp: /<body(?:[\s\S]*?)>([\s\S]*)<\/body>/i,
 			fragmentRegExp: /\s*<!--StartFragment-->|<!--EndFragment-->\s*/g,
 
+			types: [],
 			data: {},
 			files: [],
 
@@ -2354,6 +2477,9 @@
 					return 'Text'; // IE support only Text and URL;
 				} else if ( type == 'url' ) {
 					return 'URL'; // IE support only Text and URL;
+				} else if ( type === 'files' ) {
+					// Do not normalize Files type (#4604).
+					return 'Files';
 				} else {
 					return type;
 				}
@@ -2594,7 +2720,7 @@
 			}
 
 			var that = this,
-				i, file;
+				i, file, files;
 
 			function getAndSetData( type ) {
 				type = that._.normalizeType( type );
@@ -2610,6 +2736,9 @@
 				if ( data ) {
 					that._.data[ type ] = data;
 				}
+
+				// Cache type itself (#4604).
+				that._.types.push( type );
 			}
 
 			// Copy data.
@@ -2626,13 +2755,15 @@
 
 			// Copy files references.
 			file = this._getImageFromClipboard();
-			if ( ( this.$ && this.$.files ) || file ) {
+			// Only access .files once - it's expensive in Chrome (#4807).
+			files = this.$ && this.$.files || null;
+			if ( files || file ) {
 				this._.files = [];
 
 				// Edge have empty files property with no length (https://dev.ckeditor.com/ticket/13755).
-				if ( this.$.files && this.$.files.length ) {
-					for ( i = 0; i < this.$.files.length; i++ ) {
-						this._.files.push( this.$.files[ i ] );
+				if ( files && files.length ) {
+					for ( i = 0; i < files.length; i++ ) {
+						this._.files.push( files[ i ] );
 					}
 				}
 
@@ -2654,8 +2785,10 @@
 				return this._.files.length;
 			}
 
-			if ( this.$ && this.$.files && this.$.files.length ) {
-				return this.$.files.length;
+			// Only access .files once - it's expensive in Chrome (#4807).
+			var files = this.$ && this.$.files || null;
+			if ( files && files.length ) {
+				return files.length;
 			}
 
 			return this._getImageFromClipboard() ? 1 : 0;
@@ -2672,12 +2805,30 @@
 				return this._.files[ i ];
 			}
 
-			if ( this.$ && this.$.files && this.$.files.length ) {
-				return this.$.files[ i ];
+			// Only access .files once - it's expensive in Chrome (#4807).
+			var files = this.$ && this.$.files || null;
+			if ( files && files.length ) {
+				return files[ i ];
 			}
 
 			// File or null if the file was not found.
 			return i === 0 ? this._getImageFromClipboard() : undefined;
+		},
+
+		/**
+		 * Checks if the data transfer contains only files.
+		 *
+		 * @since 4.17.0
+		 * @returns {Boolean} `true` if the object contains only files.
+		 */
+		isFileTransfer: function() {
+			var types = this.getTypes(),
+				// Firefox uses application/x-moz-file type for dropped local files.
+				filteredTypes = CKEDITOR.tools.array.filter( types, function( type ) {
+					return type !== 'application/x-moz-file';
+				} );
+
+			return filteredTypes.length === 1 && filteredTypes[ 0 ].toLowerCase() === 'files';
 		},
 
 		/**
@@ -2733,6 +2884,10 @@
 		 * @returns {String[]}
 		 */
 		getTypes: function() {
+			if ( this._.types.length > 0 ) {
+				return this._.types;
+			}
+
 			if ( !this.$ || !this.$.types ) {
 				return [];
 			}
@@ -2781,21 +2936,43 @@
 
 			// Passed HTML may be empty or null. There is no need to strip such values (#1299).
 			if ( result && result.length ) {
+				result = extractBodyContent( result );
+
 				// See https://dev.ckeditor.com/ticket/13583 for more details.
 				// Additionally https://dev.ckeditor.com/ticket/16847 adds a flag allowing to get the whole, original content.
 				result = result.replace( this._.metaRegExp, '' );
 
-				// Keep only contents of the <body> element
-				var match = this._.bodyRegExp.exec( result );
-				if ( match && match.length ) {
-					result = match[ 1 ];
-
-					// Remove also comments.
-					result = result.replace( this._.fragmentRegExp, '' );
-				}
+				// Remove also comments.
+				result = result.replace( this._.fragmentRegExp, '' );
 			}
 
 			return result;
+
+			function extractBodyContent( html ) {
+				var parser = new CKEDITOR.htmlParser(),
+					start,
+					end;
+
+				parser.onTagOpen = function( name ) {
+					if ( name === 'body' ) {
+						start = parser._.htmlPartsRegex.lastIndex;
+					}
+				};
+
+				parser.onTagClose = function( name ) {
+					if ( name === 'body' ) {
+						end = parser._.htmlPartsRegex.lastIndex;
+					}
+				};
+
+				parser.parse( html );
+
+				if ( typeof start !== 'number' || typeof end !== 'number' ) {
+					return html;
+				}
+
+				return html.substring( start, end ).replace( /<\/body\s*>$/gi, '' );
+			}
 		}
 	};
 
@@ -3381,3 +3558,13 @@
  * @member CKEDITOR.config
  */
 CKEDITOR.config.clipboard_notificationDuration = 10000;
+
+/**
+ * Whether to use clipboard plugin to handle image pasting and dropping,
+ * turning images into base64 strings on browsers supporting the File API.
+ *
+ * @since 4.17.0
+ * @cfg {Boolean} [clipboard_handleImages=true]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.clipboard_handleImages = true;

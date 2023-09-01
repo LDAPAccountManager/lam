@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'es', {
 	acccessKey: 'Tecla de Acceso',
@@ -13,14 +13,15 @@ CKEDITOR.plugins.setLang( 'link', 'es', {
 		title: 'Propiedades de Referencia',
 		name: 'Nombre de la Referencia',
 		errorName: 'Por favor, complete el nombre de la Referencia',
+		errorWhitespace: 'Anchor name cannot contain space characters', // MISSING
 		remove: 'Quitar Referencia'
 	},
 	anchorId: 'Por ID de elemento',
 	anchorName: 'Por Nombre de Referencia',
 	charset: 'Fuente de caracteres vinculado',
 	cssClasses: 'Clases de hojas de estilo',
-	download: 'Force Download', // MISSING
-	displayText: 'Display Text', // MISSING
+	download: 'Forzar la descarga',
+	displayText: 'Mostrar texto',
 	emailAddress: 'Dirección de E-Mail',
 	emailBody: 'Cuerpo del Mensaje',
 	emailSubject: 'Título del Mensaje',
@@ -35,7 +36,7 @@ CKEDITOR.plugins.setLang( 'link', 'es', {
 	noAnchors: '(No hay referencias disponibles en el documento)',
 	noEmail: 'Por favor escriba la dirección de e-mail',
 	noUrl: 'Por favor escriba el vínculo URL',
-	noTel: 'Please type the phone number', // MISSING
+	noTel: 'Por favor ingrese el numero de telefono',
 	other: '<otro>',
 	phoneNumber: 'Phone number', // MISSING
 	popupDependent: 'Dependiente (Netscape)',
@@ -62,7 +63,7 @@ CKEDITOR.plugins.setLang( 'link', 'es', {
 	toAnchor: 'Referencia en esta página',
 	toEmail: 'E-Mail',
 	toUrl: 'URL',
-	toPhone: 'Phone', // MISSING
+	toPhone: 'Teléfono',
 	toolbar: 'Insertar/Editar Vínculo',
 	type: 'Tipo de vínculo',
 	unlink: 'Eliminar Vínculo',

@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'table', 'oc', {
 	border: 'Talha de la bordadura',
@@ -27,6 +27,8 @@ CKEDITOR.plugins.setLang( 'table', 'oc', {
 		borderColor: 'Color de bordadura',
 		data: 'Donadas',
 		header: 'Entèsta',
+		columnHeader: 'Column Header', // MISSING
+		rowHeader: 'Row Header', // MISSING
 		yes: 'Òc',
 		no: 'Non',
 		invalidWidth: 'La largor de la cellula deu èsser un nombre.',

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,11 +29,36 @@ CKEDITOR.replaceClass = 'ckeditor';
 	 *		var textarea = document.body.appendChild( document.createElement( 'textarea' ) );
 	 *		CKEDITOR.replace( textarea );
 	 *
+	 * Since 4.17 this function also supports the {@glink features/delayed_creation Delayed Editor Creation} feature
+	 * allowing to postpone the editor initialization.
+	 *
+	 * Since 4.19 if the editor has been configured to use the {@glink features/delayed_creation Delayed Editor Creation}
+	 * feature and the editor has not been initialized yet, this function will return a handle allowing
+	 * to cancel the interval set by the {@link CKEDITOR.config#delayIfDetached} and
+	 * {@link CKEDITOR.config#delayIfDetached_interval} options.
+	 *
+	 * ```javascript
+	 * var cancelInterval = CKEDITOR.replace( 'editor', {
+	 * 	delayIfDetached: true,
+	 * 	delayIfDetached_interval: 50 // Default value, you can skip that option.
+	 * } );
+	 *
+	 * cancelInterval(); // Cancel editor initialization if needed.
+	 * ```
+	 *
+	 * It is recommended to use this function to prevent potential memory leaks. Use it if you know
+	 * that the editor host element will never be attached to the DOM. As an example, execute cancel handle
+	 * in your component cleanup logic (e.g. `onDestroy` lifecycle methods in popular frontend frameworks).
+	 *
+	 * Read more about this feature in the {@glink features/delayed_creation documentation}.
+	 *
 	 * @param {Object/String} element The DOM element (textarea), its ID, or name.
 	 * @param {Object} [config] The specific configuration to apply to this
 	 * editor instance. Configuration set here will override the global CKEditor settings
 	 * (see {@link CKEDITOR.config}).
-	 * @returns {CKEDITOR.editor} The editor instance created.
+	 * @returns {CKEDITOR.editor/Function/null} The editor instance or a cancellation function.
+	 * If {@glink features/delayed_creation Delayed Editor Creation} feature has not been set and
+	 * element is missing in DOM, this function will return `null`.
 	 */
 	CKEDITOR.replace = function( element, config ) {
 		return createInstance( element, config, null, CKEDITOR.ELEMENT_MODE_REPLACE );
@@ -58,12 +83,37 @@ CKEDITOR.replaceClass = 'ckeditor';
 	 *			</body>
 	 *		</html>
 	 *
+	 * Since 4.17 this function also supports the {@glink features/delayed_creation Delayed Editor Creation} feature
+	 * allowing to postpone the editor initialization.
+	 *
+	 * Since 4.19 if the editor has been configured to use the {@glink features/delayed_creation Delayed Editor Creation}
+	 * feature and the editor has not been initialized yet, this function will return a handle allowing
+	 * to cancel the interval set by the {@link CKEDITOR.config#delayIfDetached} and
+	 * {@link CKEDITOR.config#delayIfDetached_interval} options.
+	 *
+	 * ```javascript
+	 * var cancelInterval = CKEDITOR.appendTo( 'editorSpace', {
+	 * 	delayIfDetached: true,
+	 * 	delayIfDetached_interval: 50 // Default value, you can skip that option.
+	 * } );
+	 *
+	 * cancelInterval(); // Cancel editor initialization if needed.
+	 * ```
+	 *
+	 * It is recommended to use this function to prevent potential memory leaks. Use it if you know
+	 * that the editor host element will never be attached to the DOM. As an example, execute cancel handle
+	 * in your component cleanup logic (e.g. `onDestroy` lifecycle methods in popular frontend frameworks).
+	 *
+	 * Read more about this feature in the {@glink features/delayed_creation documentation}.
+	 *
 	 * @param {Object/String} element The DOM element, its ID, or name.
 	 * @param {Object} [config] The specific configuration to apply to this
 	 * editor instance. Configuration set here will override the global CKEditor settings
 	 * (see {@link CKEDITOR.config}).
 	 * @param {String} [data] Since 3.3. Initial value for the instance.
-	 * @returns {CKEDITOR.editor} The editor instance created.
+	 * @returns {CKEDITOR.editor/Function/null} The editor instance or a cancelation function.
+	 * If {@glink features/delayed_creation Delayed Editor Creation} feature has not been set and
+	 * element is missing in DOM, this function will return `null`.
 	 */
 	CKEDITOR.appendTo = function( element, config, data ) {
 		return createInstance( element, config, data, CKEDITOR.ELEMENT_MODE_APPENDTO );
@@ -107,6 +157,10 @@ CKEDITOR.replaceClass = 'ckeditor';
 	 *				</script>
 	 *			</body>
 	 *		</html>
+	 *
+	 * Since 4.17 this function also supports the {@glink features/delayed_creation Delayed Editor Creation} feature
+	 * allowing to postpone the editor initialization.
+	 * Read more about this feature in the {@glink features/delayed_creation documentation}.
 	 *
 	 * @param {String} [className] The `<textarea>` class name.
 	 * @param {Function} [evaluator] An evaluation function that must return `true` for a `<textarea>`
@@ -260,7 +314,7 @@ CKEDITOR.replaceClass = 'ckeditor';
 	 * ```
 	 *
 	 * @param {Number/String} width The new width. It can be an integer denoting a value
-	 * in pixels or a CSS size value with unit.
+	 * in pixels or a CSS size value with unit. When null is passed, the value will not be set.
 	 * @param {Number/String} height The new height. It can be an integer denoting a value
 	 * in pixels or a CSS size value with unit.
 	 * @param {Boolean} [isContentHeight] Indicates that the provided height is to
@@ -343,6 +397,11 @@ CKEDITOR.replaceClass = 'ckeditor';
 			return null;
 		}
 
+		// (#4461)
+		if ( CKEDITOR.editor.shouldDelayEditorCreation( element, config ) ) {
+			return CKEDITOR.editor.initializeDelayedEditorCreation( element, config, 'replace' );
+		}
+
 		// Create the editor instance.
 		var editor = new CKEDITOR.editor( config, element, mode );
 
@@ -421,9 +480,9 @@ CKEDITOR.replaceClass = 'ckeditor';
 				' dir="{langDir}"' +
 				' lang="{langCode}"' +
 				' role="application"' +
-				( editor.title ? ' aria-labelledby="cke_{name}_arialbl"' : '' ) +
+				( editor.applicationTitle ? ' aria-labelledby="cke_{name}_arialbl"' : '' ) +
 				'>' +
-				( editor.title ? '<span id="cke_{name}_arialbl" class="cke_voice_label">{voiceLabel}</span>' : '' ) +
+				( editor.applicationTitle ? '<span id="cke_{name}_arialbl" class="cke_voice_label">{voiceLabel}</span>' : '' ) +
 				'<{outerEl} class="cke_inner cke_reset" role="presentation">' +
 					'{topHtml}' +
 					'<{outerEl} id="{contentId}" class="cke_contents cke_reset" role="presentation"></{outerEl}>' +
@@ -436,7 +495,7 @@ CKEDITOR.replaceClass = 'ckeditor';
 			name: name,
 			langDir: editor.lang.dir,
 			langCode: editor.langCode,
-			voiceLabel: editor.title,
+			voiceLabel: editor.applicationTitle,
 			topHtml: topHtml ? '<span id="' + editor.ui.spaceId( 'top' ) + '" class="cke_top cke_reset_all" role="presentation" style="height:auto">' + topHtml + '</span>' : '',
 			contentId: editor.ui.spaceId( 'contents' ),
 			bottomHtml: bottomHtml ? '<span id="' + editor.ui.spaceId( 'bottom' ) + '" class="cke_bottom cke_reset_all" role="presentation">' + bottomHtml + '</span>' : '',

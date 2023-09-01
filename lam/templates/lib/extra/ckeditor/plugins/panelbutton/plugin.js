@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 CKEDITOR.plugins.add( 'panelbutton', {
@@ -78,6 +78,7 @@ CKEDITOR.plugins.add( 'panelbutton', {
 					var panelDefinition = this._.panelDefinition,
 						panelBlockDefinition = this._.panelDefinition.block,
 						panelParentElement = panelDefinition.parent || CKEDITOR.document.getBody(),
+						buttonElement = CKEDITOR.document.getById( this._.id ),
 						panel = this._.panel = new CKEDITOR.ui.floatPanel( editor, panelParentElement, panelDefinition ),
 						block = panel.addBlock( _.id, panelBlockDefinition ),
 						me = this,
@@ -89,6 +90,9 @@ CKEDITOR.plugins.add( 'panelbutton', {
 						}
 
 						me.setState( CKEDITOR.TRISTATE_ON );
+
+						// Indicates that panel button is open (#421, #5144).
+						buttonElement.setAttribute( 'aria-expanded', 'true' );
 
 						_.on = 1;
 
@@ -112,6 +116,9 @@ CKEDITOR.plugins.add( 'panelbutton', {
 						}
 
 						_.on = 0;
+
+						// Indicates that panel button is closed (#421, #5144).
+						buttonElement.setAttribute( 'aria-expanded', 'false' );
 
 						if ( !preventOnClose && me.onClose ) {
 							me.onClose();

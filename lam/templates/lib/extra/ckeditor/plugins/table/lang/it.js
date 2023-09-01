@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'table', 'it', {
 	border: 'Dimensione bordo',
@@ -27,6 +27,8 @@ CKEDITOR.plugins.setLang( 'table', 'it', {
 		borderColor: 'Colore del Bordo',
 		data: 'Dati',
 		header: 'Intestazione',
+		columnHeader: 'Intestazione colonna',
+		rowHeader: 'Intestazione riga',
 		yes: 'Si',
 		no: 'No',
 		invalidWidth: 'La larghezza della cella dev\'essere un numero.',

@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'clipboard', 'et', {
 	copy: 'Kopeeri',
@@ -10,5 +10,7 @@ CKEDITOR.plugins.setLang( 'clipboard', 'et', {
 	paste: 'Aseta',
 	pasteNotification: 'Asetamiseks vajuta %1. Sinu brauser ei toeta asetamist tööriistariba nupu või kontekstimenüü valikuga.',
 	pasteArea: 'Asetamise ala',
-	pasteMsg: 'Aseta sisu alumisse kasti ja vajuta OK nupule.'
+	pasteMsg: 'Aseta sisu alumisse kasti ja vajuta OK nupule.',
+	fileFormatNotSupportedNotification: 'The ${formats} file format(s) are not supported.', // MISSING
+	fileWithoutFormatNotSupportedNotification: 'The file format is not supported.' // MISSING
 } );

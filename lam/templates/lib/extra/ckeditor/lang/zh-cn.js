@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,8 @@
  */
 CKEDITOR.lang[ 'zh-cn' ] = {
 	// ARIA description.
-	editor: '所见即所得编辑器',
+	application: '富文本编辑器',
+	editor: '编辑器',
 	editorPanel: '所见即所得编辑器面板',
 
 	// Common messages and labels.
@@ -34,7 +35,6 @@ CKEDITOR.lang[ 'zh-cn' ] = {
 		upload: '上传',
 		uploadSubmit: '上传到服务器',
 		image: '图像',
-		flash: 'Flash',
 		form: '表单',
 		checkbox: '复选框',
 		radio: '单选按钮',
@@ -143,5 +143,12 @@ CKEDITOR.lang[ 'zh-cn' ] = {
 		keyboardShortcut: '快捷键',
 
 		optionDefault: '默认'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

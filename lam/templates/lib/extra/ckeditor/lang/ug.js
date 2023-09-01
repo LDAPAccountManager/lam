@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,6 +18,7 @@
  */
 CKEDITOR.lang[ 'ug' ] = {
 	// ARIA description.
+	application: 'مول تېكست تەھرىرلىگۈچ',
 	editor: 'تەھرىرلىگۈچ',
 	editorPanel: 'مول تېكست تەھرىرلىگۈچ تاختىسى',
 
@@ -33,7 +34,6 @@ CKEDITOR.lang[ 'ug' ] = {
 		upload: 'يۈكلە',
 		uploadSubmit: 'مۇلازىمېتىرغا يۈكلە',
 		image: 'سۈرەت',
-		flash: 'چاقماق',
 		form: 'جەدۋەل',
 		checkbox: 'كۆپ تاللاش رامكىسى',
 		radio: 'يەككە تاللاش توپچىسى',
@@ -83,7 +83,7 @@ CKEDITOR.lang[ 'ug' ] = {
 		justify: 'ئىككى تەرەپتىن توغرىلا',
 		alignLeft: 'سولغا توغرىلا',
 		alignRight: 'ئوڭغا توغرىلا',
-		alignCenter: 'Align Center', // MISSING
+		alignCenter: 'ئوتتۇرىغا توغرىلا',
 		alignTop: 'ئۈستى',
 		alignMiddle: 'ئوتتۇرا',
 		alignBottom: 'ئاستى',
@@ -142,5 +142,12 @@ CKEDITOR.lang[ 'ug' ] = {
 		keyboardShortcut: 'تېزلەتمە كونۇپكا',
 
 		optionDefault: 'سۈكۈتتىكى'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

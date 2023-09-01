@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'clipboard', 'da', {
 	copy: 'Kopiér',
@@ -10,5 +10,7 @@ CKEDITOR.plugins.setLang( 'clipboard', 'da', {
 	paste: 'Indsæt',
 	pasteNotification: 'Tryk %1 for at sætte ind. Din browser understøtter ikke indsættelse med værktøjslinje knappen eller kontekst menuen.',
 	pasteArea: 'Indsættelses område',
-	pasteMsg: 'Indsæt dit indhold i området nedenfor og tryk OK.'
+	pasteMsg: 'Indsæt dit indhold i området nedenfor og tryk OK.',
+	fileFormatNotSupportedNotification: 'The ${formats} file format(s) are not supported.', // MISSING
+	fileWithoutFormatNotSupportedNotification: 'The file format is not supported.' // MISSING
 } );

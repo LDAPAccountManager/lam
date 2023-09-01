@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'ru', {
 	acccessKey: 'Клавиша доступа',
@@ -13,6 +13,7 @@ CKEDITOR.plugins.setLang( 'link', 'ru', {
 		title: 'Свойства якоря',
 		name: 'Имя якоря',
 		errorName: 'Пожалуйста, введите имя якоря',
+		errorWhitespace: 'Anchor name cannot contain space characters', // MISSING
 		remove: 'Удалить якорь'
 	},
 	anchorId: 'По идентификатору',

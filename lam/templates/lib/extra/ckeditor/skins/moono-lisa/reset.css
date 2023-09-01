@@ -1,6 +1,6 @@
 /*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 
 /*
@@ -107,6 +107,11 @@ https://ckeditor.com/docs/ckeditor4/latest/guide/skin_sdk_reset.html
 .cke_reset_all select
 {
 	box-sizing: border-box;
+}
+
+.cke_reset_all select[multiple] option:checked
+{
+	background-color: rgb(206, 206, 206);
 }
 
 .cke_reset_all table

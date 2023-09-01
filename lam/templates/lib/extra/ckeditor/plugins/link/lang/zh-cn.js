@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'zh-cn', {
 	acccessKey: '访问键',
@@ -13,6 +13,7 @@ CKEDITOR.plugins.setLang( 'link', 'zh-cn', {
 		title: '锚点链接属性',
 		name: '锚点名称',
 		errorName: '请输入锚点名称',
+		errorWhitespace: 'Anchor name cannot contain space characters', // MISSING
 		remove: '删除锚点'
 	},
 	anchorId: '按锚点 ID',

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -628,7 +628,8 @@
 		function isEmptyElement( element ) {
 			var text = element.$.textContent === undefined ? element.$.innerText : element.$.textContent;
 
-			return text === '';
+			// Check if the element does not contain a widget to prevent removal of the body element. (#5125)
+			return text === '' && !isWidget( element.getFirst() );
 		}
 
 		function isEmptyBlock( block ) {
@@ -1250,7 +1251,7 @@
 	 * @method
 	 * @member CKEDITOR.editor
 	 * @param {Boolean} forceRealSelection Return real selection, instead of saved or fake one.
-	 * @returns {CKEDITOR.dom.selection} A selection object or null if not available for the moment.
+	 * @returns {CKEDITOR.dom.selection/null} A selection object or null if not available for the moment.
 	 */
 	CKEDITOR.editor.prototype.getSelection = function( forceRealSelection ) {
 
@@ -1260,7 +1261,8 @@
 
 		// Editable element might be absent or editor might not be in a wysiwyg mode.
 		var editable = this.editable();
-		return editable && this.mode == 'wysiwyg' ? new CKEDITOR.dom.selection( editable ) : null;
+
+		return editable && this.mode == 'wysiwyg' && this.status !== 'recreating' ? new CKEDITOR.dom.selection( editable ) : null;
 	};
 
 	/**

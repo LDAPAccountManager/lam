@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,6 +18,7 @@
  */
 CKEDITOR.lang[ 'ku' ] = {
 	// ARIA description.
+	application: 'Rich Text Editor', // MISSING
 	editor: 'سەرنووسەی دەقی تەواو',
 	editorPanel: 'بڕگەی سەرنووسەی دەقی تەواو',
 
@@ -33,7 +34,6 @@ CKEDITOR.lang[ 'ku' ] = {
 		upload: 'بارکردن',
 		uploadSubmit: 'ناردنی بۆ ڕاژە',
 		image: 'وێنە',
-		flash: 'فلاش',
 		form: 'داڕشتە',
 		checkbox: 'خانەی نیشانکردن',
 		radio: 'جێگرەوەی دوگمە',
@@ -142,5 +142,12 @@ CKEDITOR.lang[ 'ku' ] = {
 		keyboardShortcut: 'کورتبڕی تەختەکلیل',
 
 		optionDefault: 'هەمیشەیی'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

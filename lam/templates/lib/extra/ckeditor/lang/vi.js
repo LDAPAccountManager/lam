@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@
  */
 CKEDITOR.lang[ 'vi' ] = {
 	// ARIA description.
+	application: 'Rich Text Editor', // MISSING
 	editor: 'Bộ soạn thảo văn bản có định dạng',
 	editorPanel: 'Bảng điều khiển Rich Text Editor',
 
@@ -34,7 +35,6 @@ CKEDITOR.lang[ 'vi' ] = {
 		upload: 'Tải lên',
 		uploadSubmit: 'Tải lên máy chủ',
 		image: 'Hình ảnh',
-		flash: 'Flash',
 		form: 'Biểu mẫu',
 		checkbox: 'Nút kiểm',
 		radio: 'Nút chọn',
@@ -143,5 +143,12 @@ CKEDITOR.lang[ 'vi' ] = {
 		keyboardShortcut: 'Phím tắt',
 
 		optionDefault: 'Mặc định'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

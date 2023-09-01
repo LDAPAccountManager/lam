@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'clipboard', 'lv', {
 	copy: 'Kopēt',
@@ -10,5 +10,7 @@ CKEDITOR.plugins.setLang( 'clipboard', 'lv', {
 	paste: 'Ielīmēt',
 	pasteNotification: 'Nospied %1 lai ielīmētu. Tavs pārlūks neatbalsta ielīmēšanu ar rīkjoslas pogām vai uznirstošās izvēlnes opciju.',
 	pasteArea: 'Ielīmēšanas zona',
-	pasteMsg: 'Ielīmē saturu zemāk esošajā laukā un nospied OK.'
+	pasteMsg: 'Ielīmē saturu zemāk esošajā laukā un nospied OK.',
+	fileFormatNotSupportedNotification: 'The ${formats} file format(s) are not supported.', // MISSING
+	fileWithoutFormatNotSupportedNotification: 'The file format is not supported.' // MISSING
 } );

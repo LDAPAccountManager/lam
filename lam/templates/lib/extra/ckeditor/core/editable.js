@@ -1,11 +1,16 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 ( function() {
 	var isNotWhitespace, isNotBookmark, isEmpty, isBogus, emptyParagraphRegexp,
-		insert, fixTableAfterContentsDeletion, fixListAfterContentsDelete, getHtmlFromRangeHelpers, extractHtmlFromRangeHelpers;
+		insert, fixTableAfterContentsDeletion, fixListAfterContentsDelete, getHtmlFromRangeHelpers, extractHtmlFromRangeHelpers,
+		listTypes = {
+			ul: 1,
+			ol: 1,
+			dl: 1
+		};
 
 	/**
 	 * Editable class which provides all editing related activities by
@@ -527,7 +532,10 @@
 			 * @param {Boolean} isReadOnly
 			 */
 			setReadOnly: function( isReadOnly ) {
-				this.setAttribute( 'contenteditable', !isReadOnly );
+				this.setAttribute( 'contenteditable', String( !isReadOnly ) );
+
+				// Update also aria-readonly attribute (#1904).
+				this.setAttribute( 'aria-readonly', String( isReadOnly ) );
 			},
 
 			/**
@@ -1032,22 +1040,40 @@
 							block,
 							parent,
 							next,
-							rtl = keyCode == 8;
+							rtl = keyCode == 8,
+							isMultipleListSelection = false;
 
+						// [IE<11] Remove selected image/anchor/etc here to avoid going back in history. (https://dev.ckeditor.com/ticket/10055)
+						if ( CKEDITOR.env.ie && CKEDITOR.env.version < 11 && sel.getSelectedElement() ) {
+							selected = sel.getSelectedElement();
+						// Check it selection contain list or table.
+						} else if ( isListOrTableInSelection( sel ) ) {
+							// Check whether selection starts at the beginnig of the list and ends at the other list (#4875).
+							// Lists needs to be extrated later on after saving snapshot image, otherwise some UI artifacts like
+							// magicline may affect list range (#5068).
+							isMultipleListSelection = areMultipleListsInRange( range );
 
-						if (
-								// [IE<11] Remove selected image/anchor/etc here to avoid going back in history. (https://dev.ckeditor.com/ticket/10055)
-								( CKEDITOR.env.ie && CKEDITOR.env.version < 11 && ( selected = sel.getSelectedElement() ) ) ||
+							if ( !isMultipleListSelection ) {
 								// Remove the entire list/table on fully selected content. (https://dev.ckeditor.com/ticket/7645)
-								( selected = getSelectedTableList( sel ) ) ) {
+								selected = getSelectedTableList( sel );
+							}
+						}
+
+						if ( selected || isMultipleListSelection ) {
 							// Make undo snapshot.
 							editor.fire( 'saveSnapshot' );
 
-							// Delete any element that 'hasLayout' (e.g. hr,table) in IE8 will
-							// break up the selection, safely manage it here. (https://dev.ckeditor.com/ticket/4795)
-							range.moveToPosition( selected, CKEDITOR.POSITION_BEFORE_START );
-							// Remove the control manually.
-							selected.remove();
+							if ( isMultipleListSelection ) {
+								selected = getRangeForSelectedLists( range );
+								selected.deleteContents();
+							} else {
+								// Delete any element that 'hasLayout' (e.g. hr,table) in IE8 will
+								// break up the selection, safely manage it here. (https://dev.ckeditor.com/ticket/4795)
+								range.moveToPosition( selected, CKEDITOR.POSITION_BEFORE_START );
+								// Remove the control manually.
+								selected.remove();
+							}
+
 							range.select();
 
 							editor.fire( 'saveSnapshot' );
@@ -1218,7 +1244,8 @@
 							startPath = range.startPath();
 
 						if ( range.collapsed ) {
-							if ( !mergeBlocksCollapsedSelection( editor, range, backspace, startPath ) ) {
+							// Skip inner range trimming (#3819).
+							if ( !mergeBlocksCollapsedSelection( editor, range, backspace, startPath, true ) ) {
 								return;
 							}
 						} else {
@@ -1373,7 +1400,10 @@
 
 				editable.changeAttr( 'role', 'textbox' );
 				editable.changeAttr( 'aria-multiline', 'true' ); // (#1034)
-				editable.changeAttr( 'aria-label', ariaLabel );
+
+				if ( ariaLabel ) {
+					editable.changeAttr( 'aria-label', ariaLabel );
+				}
 
 				if ( ariaLabel )
 					editable.changeAttr( 'title', ariaLabel );
@@ -1543,15 +1573,21 @@
 		return false;
 	}
 
+	function isListOrTableInSelection( selection ) {
+		var range = selection.getRanges()[ 0 ],
+			path = range.startPath(),
+			structural = { table: 1, ul: 1, ol: 1, dl: 1 };
+
+		return !!path.contains( structural );
+	}
+
 	// Check if the entire table/list contents is selected.
 	function getSelectedTableList( sel ) {
 		var selected,
 			range = sel.getRanges()[ 0 ],
-			editable = sel.root,
-			path = range.startPath(),
-			structural = { table: 1, ul: 1, ol: 1, dl: 1 };
+			editable = sel.root;
 
-		if ( path.contains( structural ) ) {
+		if ( isListOrTableInSelection( sel ) ) {
 			// Clone the original range.
 			var walkerRng = range.clone();
 
@@ -1604,6 +1640,7 @@
 		return null;
 
 		function guard( forwardGuard ) {
+			var structural = { table: 1, ul: 1, ol: 1, dl: 1 };
 			return function( node, isWalkOut ) {
 				// Save the encountered node as selected if going down the DOM structure
 				// and the node is structured element.
@@ -1617,6 +1654,72 @@
 					return false;
 			};
 		}
+	}
+
+	function areMultipleListsInRange( range ) {
+		// We know that we are in the list so now we must check if there is another one.
+		var walker = new CKEDITOR.dom.walker( range ),
+			element = range.collapsed ? range.startContainer : walker.next(),
+			isIncludingNestedList = false;
+
+		if ( !startsAtFirstListItem( range ) ) {
+			return;
+		}
+
+		// Walk through all the items in the range to find nested lists.
+		while ( element && !isIncludingNestedList ) {
+			var tagName = element.$.nodeName.toLowerCase();
+
+			isIncludingNestedList = !!listTypes[ tagName ];
+
+			element = walker.next();
+		}
+
+		// Special case for nested list
+		// [] - selection
+		// ...
+		// <li>list item 1</li>
+		// 	<ul>
+		// 		<li>[list item 1_1</li>
+		// 		<li>list item 1_2</li>
+		// 	</ul>
+		// <li>list item 2]</li>
+		var startBlockChildCount = getParentBlockChildCount( range.startPath() ),
+			endBlockChildCount = getParentBlockChildCount( range.endPath() );
+
+		return isIncludingNestedList || ( startBlockChildCount !== endBlockChildCount );
+	}
+
+	// Check if element is the first item in the list.
+	function startsAtFirstListItem( range ) {
+		// Selection should start at the beginning of the list item (#5068).
+		if ( !range.checkStartOfBlock() ) {
+			return false;
+		}
+
+		var possibleListItems = [ 'dd', 'dt', 'li' ],
+			block = range.startPath().block || range.startPath().blockLimit,
+			blockName = block.getName(),
+			isListItem = CKEDITOR.tools.array.indexOf( possibleListItems, blockName ) !== -1;
+
+		return isListItem && block.getPrevious() === null;
+	}
+
+	function getParentBlockChildCount( path ) {
+		return path.block.getParent().getChildCount();
+	}
+
+	function getRangeForSelectedLists( range ) {
+		var list = range.startContainer.getAscendant( listTypes, true );
+
+		if ( !list ) {
+			return null;
+		}
+
+		range.setStart( list, 0 );
+		range.enlarge( CKEDITOR.ENLARGE_ELEMENT );
+
+		return range;
 	}
 
 	// Whether in given context (pathBlock, pathBlockLimit and editor settings)
@@ -1896,7 +1999,10 @@
 
 			nodesData = extractNodesData( that.dataWrapper, that );
 
-			removeBrsAdjacentToPastedBlocks( nodesData, range );
+			// Keep br's when CKEDITOR.ENTER_BR is active for proper spacing. (#3858)
+			if ( that.editor.enterMode !== CKEDITOR.ENTER_BR ) {
+				removeBrsAdjacentToPastedBlocks( nodesData, range );
+			}
 
 			for ( ; nodeIndex < nodesData.length; nodeIndex++ ) {
 				nodeData = nodesData[ nodeIndex ];
@@ -2556,7 +2662,7 @@
 		};
 	} )();
 
-	function mergeBlocksCollapsedSelection( editor, range, backspace, startPath ) {
+	function mergeBlocksCollapsedSelection( editor, range, backspace, startPath, skipRangeTrimming ) {
 		var startBlock = startPath.block;
 
 		// Selection must be collapsed and to be anchored in a block.
@@ -2565,7 +2671,7 @@
 
 		// Exclude cases where, i.e. if pressed arrow key, selection
 		// would move within the same block (merge inside a block).
-		if ( !range[ backspace ? 'checkStartOfBlock' : 'checkEndOfBlock' ]() )
+		if ( !range[ backspace ? 'checkStartOfBlock' : 'checkEndOfBlock' ]( skipRangeTrimming ) )
 			return false;
 
 		// Make sure, there's an editable position to put selection,

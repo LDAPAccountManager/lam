@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,8 @@
  */
 CKEDITOR.lang[ 'it' ] = {
 	// ARIA description.
-	editor: 'Rich Text Editor',
+	application: 'Rich Text Editor',
+	editor: 'Editor',
 	editorPanel: 'Pannello Rich Text Editor',
 
 	// Common messages and labels.
@@ -34,7 +35,6 @@ CKEDITOR.lang[ 'it' ] = {
 		upload: 'Carica',
 		uploadSubmit: 'Invia al server',
 		image: 'Immagine',
-		flash: 'Oggetto Flash',
 		form: 'Modulo',
 		checkbox: 'Checkbox',
 		radio: 'Radio Button',
@@ -143,5 +143,12 @@ CKEDITOR.lang[ 'it' ] = {
 		keyboardShortcut: 'Scorciatoia da tastiera',
 
 		optionDefault: 'Predefinito'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

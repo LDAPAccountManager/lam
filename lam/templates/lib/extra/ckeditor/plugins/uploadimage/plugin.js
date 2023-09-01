@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 'use strict';
@@ -57,9 +57,16 @@
 				return;
 			}
 
+			// (#5333)
+			if ( editor.config.clipboard_handleImages ) {
+				editor.config.clipboard_handleImages = false;
+
+				CKEDITOR.warn( 'clipboard-image-handling-disabled', { editor: editor.name, plugin: 'uploadimage' } );
+			}
+
 			// Handle images which are available in the dataTransfer.
 			fileTools.addUploadWidget( editor, 'uploadimage', {
-				supportedTypes: /image\/(jpeg|png|gif|bmp)/,
+				supportedTypes: editor.config.uploadImage_supportedTypes,
 
 				uploadUrl: uploadUrl,
 
@@ -151,4 +158,19 @@
 	 * @cfg {String} [imageUploadUrl='' (empty string = disabled)]
 	 * @member CKEDITOR.config
 	 */
+
+	/**
+	 * A regular expression that defines which image types are supported
+	 * by the [Upload Image](https://ckeditor.com/cke4/addon/uploadimage) plugin.
+	 *
+	 * ```javascript
+	 * // Accepts only png and jpeg image types.
+	 * config.uploadImage_supportedTypes = /image\/(png|jpeg)/;
+	 * ```
+	 *
+	 * @since 4.21.0
+	 * @cfg {RegExp} [uploadImage_supportedTypes=/image\/(jpeg|png|gif|bmp)/]
+	 * @member CKEDITOR.config
+	 */
+	CKEDITOR.config.uploadImage_supportedTypes = /image\/(jpeg|png|gif|bmp)/;
 } )();

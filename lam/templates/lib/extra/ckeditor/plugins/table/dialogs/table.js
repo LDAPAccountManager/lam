@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 ( function() {
@@ -53,6 +53,11 @@
 		var editable = editor.editable();
 
 		var dialogadvtab = editor.plugins.dialogadvtab;
+
+
+		function shouldReplaceThByTd( cell, headers, index ) {
+			return cell.type == CKEDITOR.NODE_ELEMENT && ( !headers || index !== 0 );
+		}
 
 		return {
 			title: editor.lang.table.title,
@@ -198,9 +203,13 @@
 							theRow = thead.getFirst();
 							for ( i = 0; i < theRow.getChildCount(); i++ ) {
 								var newCell = theRow.getChild( i );
-								if ( newCell.type == CKEDITOR.NODE_ELEMENT ) {
+								// In case when header is replaced to td element,
+								// check if the replaced cell should contain a 'row' scope (#2881).
+								if ( shouldReplaceThByTd( newCell, headers, i ) ) {
 									newCell.renameNode( 'td' );
 									newCell.removeAttribute( 'scope' );
+								} else {
+									newCell.setAttribute( 'scope', 'row' );
 								}
 							}
 
@@ -215,7 +224,13 @@
 						for ( row = 0; row < table.$.rows.length; row++ ) {
 							newCell = new CKEDITOR.dom.element( table.$.rows[ row ].cells[ 0 ] );
 							newCell.renameNode( 'th' );
-							newCell.setAttribute( 'scope', 'row' );
+
+							// If "both" is set, the first cell in table head should have scope "col"(#2996).
+							if ( headers === 'both' && row === 0 ) {
+								newCell.setAttribute( 'scope', 'col' );
+							} else {
+								newCell.setAttribute( 'scope', 'row' );
+							}
 						}
 					}
 

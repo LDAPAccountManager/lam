@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'table', 'id', {
 	border: 'Ukuran batas',
@@ -27,6 +27,8 @@ CKEDITOR.plugins.setLang( 'table', 'id', {
 		borderColor: 'Warna Batasan',
 		data: 'Data',
 		header: 'Header',
+		columnHeader: 'Column Header', // MISSING
+		rowHeader: 'Row Header', // MISSING
 		yes: 'Ya',
 		no: 'Tidak',
 		invalidWidth: 'Lebar sel harus sebuah angka.',

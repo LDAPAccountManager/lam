@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'table', 'zh-cn', {
 	border: '边框',
@@ -27,6 +27,8 @@ CKEDITOR.plugins.setLang( 'table', 'zh-cn', {
 		borderColor: '边框颜色',
 		data: '数据',
 		header: '表头',
+		columnHeader: 'Column Header', // MISSING
+		rowHeader: 'Row Header', // MISSING
 		yes: '是',
 		no: '否',
 		invalidWidth: '单元格宽度必须为数字格式',

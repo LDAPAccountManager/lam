@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'km', {
 	acccessKey: 'សោរ​ចូល',
@@ -13,6 +13,7 @@ CKEDITOR.plugins.setLang( 'link', 'km', {
 		title: 'លក្ខណៈ​យុថ្កា',
 		name: 'ឈ្មោះ​យុថ្កា',
 		errorName: 'សូម​បញ្ចូល​ឈ្មោះ​យុថ្កា',
+		errorWhitespace: 'Anchor name cannot contain space characters', // MISSING
 		remove: 'ដក​យុថ្កា​ចេញ'
 	},
 	anchorId: 'តាម ID ធាតុ',

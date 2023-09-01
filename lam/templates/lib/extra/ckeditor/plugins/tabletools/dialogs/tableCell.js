@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
@@ -119,18 +119,53 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 			{
 				type: 'select',
 				id: 'cellType',
-				requiredContent: 'th',
+				requiredContent: 'th[scope]',
 				label: langCell.cellType,
 				'default': 'td',
-				items: [
-					[ langCell.data, 'td' ],
-					[ langCell.header, 'th' ]
-				],
+				items: getAvailableCellTypes( editor ),
 				setup: setupCells( function( selectedCell ) {
-					return selectedCell.getName();
+					var cellName = selectedCell.getName(),
+						scope = selectedCell.getAttribute( 'scope' );
+
+					if ( cellName === 'td' ) {
+						return 'td';
+					}
+
+					switch ( scope ) {
+						case 'row':
+							return 'thr';
+						case 'col':
+							return 'thc';
+						default:
+							return 'th';
+					}
 				} ),
 				commit: function( selectedCell ) {
-					selectedCell.renameNode( this.getValue() );
+					var nameToProps = {
+						'td': {
+							name: 'td'
+						},
+						'th': {
+							name: 'th'
+						},
+						'thc': {
+							name: 'th',
+							scope: 'col'
+						},
+						'thr': {
+							name: 'th',
+							scope: 'row'
+						}
+					},
+					selectedProps = nameToProps[ this.getValue() ];
+
+					selectedCell.renameNode( selectedProps.name );
+
+					if ( selectedProps.scope ) {
+						selectedCell.setAttribute( 'scope', selectedProps.scope );
+					} else {
+						selectedCell.removeAttribute( 'scope' );
+					}
 				}
 			},
 			createSpacer( 'th' ),
@@ -537,5 +572,20 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 		} else if ( property == 'border-color' ) {
 			selectedCell.removeAttribute( 'borderColor' );
 		}
+	}
+
+	function getAvailableCellTypes( editor ) {
+		if ( editor.config.tabletools_scopedHeaders ) {
+			return [
+				[ langCell.data, 'td' ],
+				[ langCell.columnHeader, 'thc' ],
+				[ langCell.rowHeader, 'thr' ]
+			];
+		}
+
+		return [
+			[ langCell.data, 'td' ],
+			[ langCell.header, 'th' ]
+		];
 	}
 } );

@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'ro', {
 	acccessKey: 'Tasta de acces',
@@ -13,6 +13,7 @@ CKEDITOR.plugins.setLang( 'link', 'ro', {
 		title: 'Proprietăţi ancoră',
 		name: 'Numele ancorei',
 		errorName: 'Vă rugăm scrieţi numele ancorei',
+		errorWhitespace: 'Anchor name cannot contain space characters', // MISSING
 		remove: 'Elimină ancora'
 	},
 	anchorId: 'după Id-ul elementului',

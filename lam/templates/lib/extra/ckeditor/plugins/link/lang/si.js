@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'si', {
 	acccessKey: 'ප්‍රවේශ  යතුර',
@@ -13,6 +13,7 @@ CKEDITOR.plugins.setLang( 'link', 'si', {
 		title: 'ආධාරක ',
 		name: 'ආධාරකයේ නාමය',
 		errorName: 'කරුණාකර ආධාරකයේ නාමය ඇතුල් කරන්න',
+		errorWhitespace: 'Anchor name cannot contain space characters', // MISSING
 		remove: 'ආධාරකය ඉවත් කිරීම'
 	},
 	anchorId: 'By Element Id', // MISSING

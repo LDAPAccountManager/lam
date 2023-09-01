@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'link', 'it', {
 	acccessKey: 'Scorciatoia da tastiera',
@@ -13,6 +13,7 @@ CKEDITOR.plugins.setLang( 'link', 'it', {
 		title: 'Proprietà ancora',
 		name: 'Nome ancora',
 		errorName: 'Inserici il nome dell\'ancora',
+		errorWhitespace: 'Il nome delle ancore non può contenere caratteri di spaziatura',
 		remove: 'Rimuovi l\'ancora'
 	},
 	anchorId: 'Per id elemento',

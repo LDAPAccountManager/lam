@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'clipboard', 'pt-br', {
 	copy: 'Copiar',
@@ -10,5 +10,7 @@ CKEDITOR.plugins.setLang( 'clipboard', 'pt-br', {
 	paste: 'Colar',
 	pasteNotification: 'Pressione %1 para colar. Seu navegador não permite colar pelos botões da barra de tarefas ou pelo menu de contexto.',
 	pasteArea: 'Área para Colar',
-	pasteMsg: 'Cole o conteúdo na área abaixo e pressione OK.'
+	pasteMsg: 'Cole o conteúdo na área abaixo e pressione OK.',
+	fileFormatNotSupportedNotification: 'Os formatos de arquivo ${formats} não são suportados.',
+	fileWithoutFormatNotSupportedNotification: 'Formato de arquivo não suportado.'
 } );

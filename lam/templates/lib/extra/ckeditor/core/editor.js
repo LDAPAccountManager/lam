@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -109,6 +109,7 @@
 		 *	* **unloaded**: The initial state &mdash; the editor instance was initialized,
 		 *	but its components (configuration, plugins, language files) are not loaded yet.
 		 *	* **loaded**: The editor components were loaded &mdash; see the {@link CKEDITOR.editor#loaded} event.
+		 *	* **recreating**: The editor editable area is recreating due to iframe reloading &mdash; see the {@link CKEDITOR.config#observableParent} configuration option.
 		 *	* **ready**: The editor is fully initialized and ready &mdash; see the {@link CKEDITOR.editor#instanceReady} event.
 		 *	* **destroyed**: The editor was destroyed &mdash; see the {@link CKEDITOR.editor#method-destroy} method.
 		 *
@@ -423,7 +424,8 @@
 
 	function loadLang( editor ) {
 		CKEDITOR.lang.load( editor.config.language, editor.config.defaultLanguage, function( languageCode, lang ) {
-			var configTitle = editor.config.title;
+			var configTitle = editor.config.title,
+				configApplicationTitle = editor.config.applicationTitle;
 
 			/**
 			 * The code for the language resources that have been loaded
@@ -461,6 +463,21 @@
 			 * @property {String/Boolean}
 			 */
 			editor.title = typeof configTitle == 'string' || configTitle === false ? configTitle : [ editor.lang.editor, editor.name ].join( ', ' );
+
+			/**
+			 * Indicates the human-readable title of this editor's application (the website's region
+			 * that contains the editor and its whole UI). Although this is a read-only property,
+			 * it can be initialized with {@link CKEDITOR.config#applicationTitle}.
+			 *
+			 * **Note:** Please do not confuse this property with {@link CKEDITOR.editor#name editor.name}
+			 * which identifies the literal instance in the {@link CKEDITOR#instances}.
+			 *
+			 * @since 4.19.0
+			 * @readonly
+			 * @property {String/Boolean}
+			 */
+			editor.applicationTitle = typeof configApplicationTitle == 'string' || configApplicationTitle === false ?
+				configApplicationTitle : [ editor.lang.application, editor.name ].join( ', ' );
 
 			if ( !editor.config.contentsLangDirection ) {
 				// Fallback to either the editable element direction or editor UI direction depending on creators.
@@ -683,10 +700,14 @@
 		// 2. <td>[Cell]</td> (IE8-, Safari)
 		function isSelectedCell( range ) {
 			var start = range.startContainer,
-				end = range.endContainer;
+				end = range.endContainer,
+				startIsTr = start.is && start.is( 'tr' ),
+				startIsTd = start.is && start.is( 'td' ),
+				startIsTdWithEqualChildCount = startIsTd && start.equals( end ) && range.endOffset === start.getChildCount(),
+				// (#4952)
+				startIsTdAndIncludeOnlyImage = startIsTd && start.getChildCount() === 1 && start.getChildren().getItem( 0 ).getName() === 'img';
 
-			if ( start.is && ( start.is( 'tr' ) ||
-				( start.is( 'td' ) && start.equals( end ) && range.endOffset === start.getChildCount() ) ) ) {
+			if ( startIsTr || ( startIsTdWithEqualChildCount && !startIsTdAndIncludeOnlyImage ) ) {
 				return true;
 			}
 
@@ -1648,6 +1669,114 @@
 
 		return element;
 	};
+
+	/**
+	 * Initializes delayed editor creation based on provided configuration.
+	 *
+	 * If the {@link CKEDITOR.config#delayIfDetached_callback} function is declared, it will be invoked with a single argument:
+	 *
+	 * * A callback, that should be called to create editor.
+	 *
+	 * Otherwise, it periodically (with `setInterval()` calls) checks if element is attached to DOM and creates editor automatically.
+	 * The interval can be canceled by executing a callback function (a handle) clearing the interval.
+	 *
+	 * ```js
+	 *	CKEDITOR.inline( detachedEditorElement, {
+	 *		delayIfDetached: true,
+	 *		delayIfDetached_callback: registerCallback
+	 *	} );
+	 * ```
+	 *
+	 * @private
+	 * @since 4.17.0
+	 * @static
+	 * @member CKEDITOR.editor
+	 * @param {CKEDITOR.dom.element} element The DOM element on which editor should be initialized.
+	 * @param {Object} config The specific configuration to apply to the editor instance.
+	 * Configuration set here will override the global CKEditor settings.
+	 * @param {String} editorCreationMethod Creator function that should be used to initialize editor (inline/replace).
+	 * @returns {Function/null} A handle allowing to cancel delayed editor initialization creation
+	 * or null if {@link CKEDITOR.config#delayIfDetached_callback} option is set.
+	 */
+	CKEDITOR.editor.initializeDelayedEditorCreation = function( element, config, editorCreationMethod ) {
+		if ( config.delayIfDetached_callback ) {
+			CKEDITOR.warn( 'editor-delayed-creation', {
+				method: 'callback'
+			} );
+
+			config.delayIfDetached_callback( function() {
+				CKEDITOR[ editorCreationMethod ]( element, config );
+
+				CKEDITOR.warn( 'editor-delayed-creation-success', {
+					method: 'callback'
+				} );
+			} );
+
+			return null;
+		}
+
+		var interval = config.delayIfDetached_interval === undefined ?
+			CKEDITOR.config.delayIfDetached_interval
+			: config.delayIfDetached_interval;
+
+		CKEDITOR.warn( 'editor-delayed-creation', {
+			method: 'interval - ' + interval + ' ms'
+		} );
+
+		var intervalId = setInterval( function() {
+			if ( !element.isDetached() ) {
+				clearInterval( intervalId );
+
+				CKEDITOR[ editorCreationMethod ]( element, config );
+
+				CKEDITOR.warn( 'editor-delayed-creation-success', {
+					method: 'interval - ' + interval + ' ms'
+				} );
+			}
+		}, interval );
+
+		return function() {
+			clearInterval( intervalId );
+		};
+	};
+
+	/**
+	 * Whether editor creation should be delayed.
+	 *
+	 * @private
+	 * @since 4.17.0
+	 * @static
+	 * @member CKEDITOR.editor
+	 * @param {CKEDITOR.dom.element} element The DOM element on which editor should be initialized.
+	 * @param {Object} config Editor configuration.
+	 * @returns {Boolean} True if creation should be delayed.
+	 */
+	CKEDITOR.editor.shouldDelayEditorCreation = function( element, config ) {
+		CKEDITOR.editor.mergeDelayedCreationConfigs( config );
+		return config && config.delayIfDetached && element.isDetached();
+	};
+
+	/**
+	 * Merges user provided configuration options for delayed creation with {@link CKEDITOR.config default config}.
+	 *
+	 * User provided options are the preferred ones.
+	 *
+	 * @private
+	 * @since 4.17.0
+	 * @static
+	 * @member CKEDITOR.editor
+	 * @param {Object} userConfig Config provided by the user to create editor.
+	 */
+	CKEDITOR.editor.mergeDelayedCreationConfigs = function( userConfig ) {
+		if ( !userConfig ) {
+			return;
+		}
+
+		userConfig.delayIfDetached = typeof userConfig.delayIfDetached === 'boolean' ? userConfig.delayIfDetached : CKEDITOR.config.delayIfDetached;
+		userConfig.delayIfDetached_interval = isNaN( userConfig.delayIfDetached_interval ) ? CKEDITOR.config.delayIfDetached_interval : userConfig.delayIfDetached_interval;
+		userConfig.delayIfDetached_callback = userConfig.delayIfDetached_callback || CKEDITOR.config.delayIfDetached_callback;
+	};
+
 } )();
 
 /**
@@ -1754,12 +1883,48 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  *		config.title = false;
  *
  * See also:
- *
- * * CKEDITOR.editor#name
  * * CKEDITOR.editor#title
+ * * CKEDITOR.editor#name
+ * * CKEDITOR.editor#applicationTitle
+ * * CKEDITOR.config#applicationTitle
  *
  * @since 4.2.0
  * @cfg {String/Boolean} [title=based on editor.name]
+ * @member CKEDITOR.config
+ */
+
+/**
+ * Customizes the {@link CKEDITOR.editor#applicationTitle human-readable title} of the application for this
+ * editor. This title is used as a label for the whole website's region containing the editor with its toolbars and other
+ * UI parts. Application title impacts various
+ * [accessibility aspects](#!/guide/dev_a11y-section-announcing-the-editor-on-the-page),
+ * e.g. it is commonly used by screen readers for distinguishing editor instances and for navigation.
+ * Accepted values are a string or `false`.
+ *
+ * **Note:** When `config.applicationTitle` is set globally, the same value will be applied to all editor instances
+ * loaded with this config. This may adversely affect accessibility as screen reader users will be unable
+ * to distinguish particular editor instances and navigate between them.
+ *
+ * **Note:** Setting `config.applicationTitle = false` may also impair accessibility in a similar way.
+ *
+ * **Note:** Please do not confuse this property with {@link CKEDITOR.editor#name}
+ * which identifies the instance in the {@link CKEDITOR#instances} literal.
+ *
+ *		// Set the application title to 'My WYSIWYG'.
+ *		config.applicationTitle = 'My WYSIWYG';
+ *
+ *		// Do not add the application title.
+ *		config.applicationTitle = false;
+ *
+ * See also:
+ *
+ * * CKEDITOR.editor#applicationTitle
+ * * CKEDITOR.editor#name
+ * * CKEDITOR.editor#title
+ * * CKEDITOR.config#title
+ *
+ * @since 4.19.0
+ * @cfg {String/Boolean} [applicationTitle=based on editor.name]
  * @member CKEDITOR.config
  */
 
@@ -2228,3 +2393,61 @@ CKEDITOR.ELEMENT_MODE_INLINE = 3;
  * @event contentDomInvalidated
  * @param {CKEDITOR.editor} editor This editor instance.
  */
+
+/**
+ * If set to `true`, editor will be only created when its root element is attached to DOM.
+ * In case the element is detached, the editor will wait for the element to be attached and initialized then.
+ *
+ * For more control over the entire process refer to {@link CKEDITOR.config#delayIfDetached_callback}
+ * and {@link CKEDITOR.config#delayIfDetached_interval} configuration options.
+ *
+ *		config.delayIfDetached = true;
+ *
+ * @since 4.17.0
+ * @cfg {Boolean} [delayIfDetached=false]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.delayIfDetached = false;
+
+/**
+ * Function used to initialize delayed editor creation.
+ *
+ * It accepts a single `callback` argument. A `callback` argument is another function that triggers editor creation.
+ * This allows to store the editor creation function (`callback`) and invoke it whenever necessary instead of periodically
+ * check if element is attached to DOM to improve performance.
+ *
+ * Used only if {@link CKEDITOR.config#delayIfDetached} is set to `true`.
+ *
+ * **Note**: This function (`callback`) should be called only if editor target element is reattached to DOM.
+ *
+ * If this option is defined, editor will not run the default {@link CKEDITOR.config#delayIfDetached_interval interval checks}.
+ *
+ *		// Store the reference to the editor creation function.
+ *		var resumeEditorCreation;
+ *
+ *		config.delayIfDetached_callback = function( createEditor ) {
+ *			resumeEditorCreation = createEditor;
+ *		};
+ *
+ *		// Create editor calling `resumeEditorCreation()` whenever you choose (e.g. on button click).
+ *		resumeEditorCreation();
+ *
+ * @since 4.17.0
+ * @cfg {Function} [delayIfDetached_callback = undefined]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.delayIfDetached_callback = undefined;
+
+/**
+ * The amount of time (in milliseconds) between consecutive checks whether editor's target element is attached to DOM.
+ *
+ * Used only if {@link CKEDITOR.config#delayIfDetached} is set to `true` and
+ * {@link CKEDITOR.config#delayIfDetached_callback delayIfDetached_callback} not set.
+ *
+ *		config.delayIfDetached_interval = 2000; // Try to create editor every 2 seconds.
+ *
+ * @since 4.17.0
+ * @cfg {Number} [delayIfDetached_interval=50]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.delayIfDetached_interval = 50;

@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'table', 'zh', {
 	border: '框線大小',
@@ -27,6 +27,8 @@ CKEDITOR.plugins.setLang( 'table', 'zh', {
 		borderColor: '框線顏色',
 		data: '資料',
 		header: '頁首',
+		columnHeader: '欄標題',
+		rowHeader: '列標題',
 		yes: '是',
 		no: '否',
 		invalidWidth: '儲存格寬度必須為數字。',
@@ -50,7 +52,7 @@ CKEDITOR.plugins.setLang( 'table', 'zh', {
 	headersColumn: '第一列',
 	headersNone: '無',
 	headersRow: '第一行',
-	heightUnit: 'height unit', // MISSING
+	heightUnit: '高度單位',
 	invalidBorder: '框線大小必須是整數。',
 	invalidCellPadding: '儲存格邊距必須為正數。',
 	invalidCellSpacing: '儲存格間距必須為正數。',

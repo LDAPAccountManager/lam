@@ -1,7 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+'use strict';
 
 /**
  * Represents a delimited piece of content in a DOM Document.
@@ -176,7 +178,6 @@ CKEDITOR.dom.range = function( root ) {
 	//   param (see range.deleteContents or range.extractContents).
 	//   See comments in mergeAndUpdate because this is lots of fun too.
 	function execContentsAction( range, action, docFrag, mergeThen, cloneId ) {
-		'use strict';
 
 		range.optimizeBookmark();
 
@@ -1182,29 +1183,29 @@ CKEDITOR.dom.range = function( root ) {
 		},
 
 		/**
+		 * Change start/end container to its parent or to a new node created from container split.
+		 *
+		 * Works on the container if it is a {@link CKEDITOR#NODE_TEXT text node} and the range is collapsed
+		 * or start/end is not ignored.
+		 *
 		 * @param {Boolean} [ignoreStart=false]
 		 * @param {Boolean} [ignoreEnd=false]
-		 * @todo precise desc/algorithm
 		 */
 		trim: function( ignoreStart, ignoreEnd ) {
 			var startContainer = this.startContainer,
 				startOffset = this.startOffset,
 				collapsed = this.collapsed;
+
 			if ( ( !ignoreStart || collapsed ) && startContainer && startContainer.type == CKEDITOR.NODE_TEXT ) {
-				// If the offset is zero, we just insert the new node before
-				// the start.
 				if ( !startOffset ) {
 					startOffset = startContainer.getIndex();
 					startContainer = startContainer.getParent();
 				}
-				// If the offset is at the end, we'll insert it after the text
-				// node.
 				else if ( startOffset >= startContainer.getLength() ) {
 					startOffset = startContainer.getIndex() + 1;
 					startContainer = startContainer.getParent();
 				}
-				// In other case, we split the text node and insert the new
-				// node at the split point.
+				// Split the text node and point to the new node at split point.
 				else {
 					var nextText = startContainer.split( startOffset );
 
@@ -1230,20 +1231,15 @@ CKEDITOR.dom.range = function( root ) {
 			var endOffset = this.endOffset;
 
 			if ( !( ignoreEnd || collapsed ) && endContainer && endContainer.type == CKEDITOR.NODE_TEXT ) {
-				// If the offset is zero, we just insert the new node before
-				// the start.
 				if ( !endOffset ) {
 					endOffset = endContainer.getIndex();
 					endContainer = endContainer.getParent();
 				}
-				// If the offset is at the end, we'll insert it after the text
-				// node.
 				else if ( endOffset >= endContainer.getLength() ) {
 					endOffset = endContainer.getIndex() + 1;
 					endContainer = endContainer.getParent();
 				}
-				// In other case, we split the text node and insert the new
-				// node at the split point.
+				// Split the text node and point to the new node at split point.
 				else {
 					endContainer.split( endOffset );
 
@@ -1263,7 +1259,9 @@ CKEDITOR.dom.range = function( root ) {
 		 * @param {Boolean} [excludeBrs=false] Whether include line-breaks when expanding.
 		 */
 		enlarge: function( unit, excludeBrs ) {
-			var leadingWhitespaceRegex = new RegExp( /[^\s\ufeff]/ );
+			var leadingWhitespaceRegex = new RegExp( /[^\s\ufeff]/ ),
+				siblingText,
+				boundary;
 
 			switch ( unit ) {
 				case CKEDITOR.ENLARGE_INLINE:
@@ -1277,8 +1275,7 @@ CKEDITOR.dom.range = function( root ) {
 
 					// Get the common ancestor.
 					var commonAncestor = this.getCommonAncestor();
-
-					var boundary = this.root;
+					boundary = this.root;
 
 					// For each boundary
 					//		a. Depending on its position, find out the first node to be checked (a sibling) or,
@@ -1295,7 +1292,6 @@ CKEDITOR.dom.range = function( root ) {
 					// is available before it.
 					var needsWhiteSpace = false;
 					var isWhiteSpace;
-					var siblingText;
 
 					// Process the start boundary.
 
@@ -1362,7 +1358,7 @@ CKEDITOR.dom.range = function( root ) {
 							sibling = enlargeable.getPrevious();
 						}
 
-						// Check all sibling nodes preceeding the enlargeable
+						// Check all sibling nodes preceding the enlargeable
 						// node. The node wil lbe enlarged only if none of them
 						// blocks it.
 						while ( sibling ) {
@@ -1467,53 +1463,6 @@ CKEDITOR.dom.range = function( root ) {
 					enlargeable = sibling = null;
 					commonReached = needsWhiteSpace = false;
 
-					// Function check if there are only whitespaces from the given starting point
-					// (startContainer and startOffset) till the end on block.
-					// Examples ("[" is the start point):
-					//  - <p>foo[ </p>           - will return true,
-					//  - <p><b>foo[ </b> </p>   - will return true,
-					//  - <p>foo[ bar</p>        - will return false,
-					//  - <p><b>foo[ </b>bar</p> - will return false,
-					//  - <p>foo[ <b></b></p>    - will return false.
-					function onlyWhiteSpaces( startContainer, startOffset ) {
-						// We need to enlarge range if there is white space at the end of the block,
-						// because it is not displayed in WYSIWYG mode and user can not select it. So
-						// "<p>foo[bar] </p>" should be changed to "<p>foo[bar ]</p>". On the other hand
-						// we should do nothing if we are not at the end of the block, so this should not
-						// be changed: "<p><i>[foo] </i>bar</p>".
-						var walkerRange = new CKEDITOR.dom.range( boundary );
-						walkerRange.setStart( startContainer, startOffset );
-						// The guard will find the end of range so I put boundary here.
-						walkerRange.setEndAt( boundary, CKEDITOR.POSITION_BEFORE_END );
-
-						var walker = new CKEDITOR.dom.walker( walkerRange ),
-							node;
-
-						walker.guard = function( node ) {
-							// Stop if you exit block.
-							return !( node.type == CKEDITOR.NODE_ELEMENT && node.isBlockBoundary() );
-						};
-
-						while ( ( node = walker.next() ) ) {
-							if ( node.type != CKEDITOR.NODE_TEXT ) {
-								// Stop if you enter to any node (walker.next() will return node only
-								// it goes out, not if it is go into node).
-								return false;
-							} else {
-								// Trim the first node to startOffset.
-								if ( node != startContainer )
-									siblingText = node.getText();
-								else
-									siblingText = node.substring( startOffset );
-
-								// Check if it is white space.
-								if ( leadingWhitespaceRegex.test( siblingText ) )
-									return false;
-							}
-						}
-
-						return true;
-					}
 
 					if ( container.type == CKEDITOR.NODE_TEXT ) {
 						// Check if there is only white space after the offset.
@@ -1534,7 +1483,7 @@ CKEDITOR.dom.range = function( root ) {
 							} else {
 								// If we are in the middle on text node and there are only whitespaces
 								// till the end of block, we should enlarge element.
-								if ( onlyWhiteSpaces( container, offset ) )
+								if ( onlyWhiteSpaces( container, offset, boundary ) )
 									enlargeable = container.getParent();
 							}
 						}
@@ -1575,7 +1524,7 @@ CKEDITOR.dom.range = function( root ) {
 
 								// Check if there are not whitespace characters till the end of editable.
 								// If so stop expanding.
-								if ( !onlyWhiteSpaces( sibling, 0 ) )
+								if ( !onlyWhiteSpaces( sibling, 0, boundary ) )
 									sibling = null;
 
 								isWhiteSpace = /^[\s\ufeff]/.test( siblingText );
@@ -1768,6 +1717,54 @@ CKEDITOR.dom.range = function( root ) {
 			function getValidEnlargeable( enlargeable ) {
 				return enlargeable && enlargeable.type == CKEDITOR.NODE_ELEMENT && enlargeable.hasAttribute( 'contenteditable' ) ?
 					null : enlargeable;
+			}
+
+			// Function check if there are only whitespaces from the given starting point
+			// (startContainer and startOffset) till the end on block.
+			// Examples ("[" is the start point):
+			//  - <p>foo[ </p>           - will return true,
+			//  - <p><b>foo[ </b> </p>   - will return true,
+			//  - <p>foo[ bar</p>        - will return false,
+			//  - <p><b>foo[ </b>bar</p> - will return false,
+			//  - <p>foo[ <b></b></p>    - will return false.
+			function onlyWhiteSpaces( startContainer, startOffset, boundary ) {
+				// We need to enlarge range if there is white space at the end of the block,
+				// because it is not displayed in WYSIWYG mode and user can not select it. So
+				// "<p>foo[bar] </p>" should be changed to "<p>foo[bar ]</p>". On the other hand
+				// we should do nothing if we are not at the end of the block, so this should not
+				// be changed: "<p><i>[foo] </i>bar</p>".
+				var walkerRange = new CKEDITOR.dom.range( boundary );
+				walkerRange.setStart( startContainer, startOffset );
+				// The guard will find the end of range so I put boundary here.
+				walkerRange.setEndAt( boundary, CKEDITOR.POSITION_BEFORE_END );
+
+				var walker = new CKEDITOR.dom.walker( walkerRange ),
+					node;
+
+				walker.guard = function( node ) {
+					// Stop if you exit block.
+					return !( node.type == CKEDITOR.NODE_ELEMENT && node.isBlockBoundary() );
+				};
+
+				while ( ( node = walker.next() ) ) {
+					if ( node.type != CKEDITOR.NODE_TEXT ) {
+						// Stop if you enter to any node (walker.next() will return node only
+						// it goes out, not if it is go into node).
+						return false;
+					} else {
+						// Trim the first node to startOffset.
+						if ( node != startContainer )
+							siblingText = node.getText();
+						else
+							siblingText = node.substring( startOffset );
+
+						// Check if it is white space.
+						if ( leadingWhitespaceRegex.test( siblingText ) )
+							return false;
+					}
+				}
+
+				return true;
 			}
 		},
 
@@ -2395,13 +2392,15 @@ CKEDITOR.dom.range = function( root ) {
 		},
 
 		/**
+		 * Verifies whether range starts on non-text or non-inline element.
+		 *
 		 * **Note:** Calls to this function may produce changes to the DOM. The range may
 		 * be updated to reflect such changes.
 		 *
+		 * @param {Boolean} skipTrimming Whether range trim should be skipped.
 		 * @returns {Boolean}
-		 * @todo
 		 */
-		checkStartOfBlock: function() {
+		checkStartOfBlock: function( skipTrimming ) {
 			var startContainer = this.startContainer,
 				startOffset = this.startOffset;
 
@@ -2413,10 +2412,13 @@ CKEDITOR.dom.range = function( root ) {
 					this.trim( 0, 1 );
 			}
 
-			// Anticipate the trim() call here, so the walker will not make
-			// changes to the DOM, which would not get reflected into this
-			// range otherwise.
-			this.trim();
+			// Trimming text node may produce unwanted `&nbsp;` at the beginning of splitted node (#3819).
+			if ( !skipTrimming ) {
+				// Anticipate the trim() call here, so the walker will not make
+				// changes to the DOM, which would not get reflected into this
+				// range otherwise.
+				this.trim();
+			}
 
 			// We need to grab the block element holding the start boundary, so
 			// let's use an element path for it.
@@ -2434,13 +2436,15 @@ CKEDITOR.dom.range = function( root ) {
 		},
 
 		/**
+		 * Verifies whether range ends on non-text or non-inline element.
+		 *
 		 * **Note:** Calls to this function may produce changes to the DOM. The range may
 		 * be updated to reflect such changes.
 		 *
+		 * @param {Boolean} skipTrimming Whether range trim should be skipped.
 		 * @returns {Boolean}
-		 * @todo
 		 */
-		checkEndOfBlock: function() {
+		checkEndOfBlock: function( skipTrimming ) {
 			var endContainer = this.endContainer,
 				endOffset = this.endOffset;
 
@@ -2452,10 +2456,13 @@ CKEDITOR.dom.range = function( root ) {
 					this.trim( 1, 0 );
 			}
 
-			// Anticipate the trim() call here, so the walker will not make
-			// changes to the DOM, which would not get reflected into this
-			// range otherwise.
-			this.trim();
+			// Trimming text node may produce unwanted `&nbsp;` at the beginning of splitted node (#3819).
+			if ( !skipTrimming ) {
+				// Anticipate the trim() call here, so the walker will not make
+				// changes to the DOM, which would not get reflected into this
+				// range otherwise.
+				this.trim();
+			}
 
 			// We need to grab the block element holding the start boundary, so
 			// let's use an element path for it.
@@ -2905,7 +2912,7 @@ CKEDITOR.dom.range = function( root ) {
 		 * @returns {CKEDITOR.dom.rect[]}
 		 */
 		getClientRects: ( function() {
-			if ( this.document.getSelection !== undefined ) {
+			if ( document.getSelection !== undefined ) {
 				return function( isAbsolute ) {
 					// We need to create native range so we can call native getClientRects.
 					var range = this.root.getDocument().$.createRange(),

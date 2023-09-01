@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 ( function() {
@@ -24,12 +24,12 @@
 	function selectNextCellCommand( backward ) {
 		return {
 			editorFocus: false,
-			canUndo: false,
+			canUndo: true,
 			modes: { wysiwyg: 1 },
 			exec: function( editor ) {
 				if ( editor.editable().hasFocus ) {
 					var sel = editor.getSelection(),
-						path = new CKEDITOR.dom.elementPath( sel.getCommonAncestor(), sel.root ),
+						path = new CKEDITOR.dom.elementPath( sel.getStartElement(), sel.root ),
 						cell;
 
 					if ( ( cell = path.contains( { td: 1, th: 1 }, 1 ) ) ) {
@@ -266,7 +266,7 @@ CKEDITOR.dom.element.prototype.focusPrevious = function( ignoreChildren, indexTo
 };
 
 /**
- * Intructs the editor to add a number of spaces (`&nbsp;`) to the text when
+ * Instructs the editor to add a number of spaces (`&nbsp;`) to the text when
  * hitting the <kbd>Tab</kbd> key. If set to zero, the <kbd>Tab</kbd> key will be used to move the
  * cursor focus to the next element in the page, out of the editor focus.
  *

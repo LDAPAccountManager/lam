@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 ( function() {
@@ -141,14 +141,14 @@
 
 		};
 
-		/**
+		/*
 		 * A range of cursors which represent a trunk of characters which try to
 		 * match, it has the same length as the pattern  string.
 		 *
 		 * **Note:** This class isn't accessible from global scope.
 		 *
 		 * @private
-		 * @class CKEDITOR.plugins.find.characterRange
+		 * @class characterRange
 		 * @constructor Creates a characterRange class instance.
 		 */
 		var characterRange = function( characterWalker, rangeLength ) {
@@ -162,7 +162,7 @@
 		};
 
 		characterRange.prototype = {
-			/**
+			/*
 			 * Translate this range to {@link CKEDITOR.dom.range}.
 			 */
 			toDomRange: function() {
@@ -185,7 +185,7 @@
 				return range;
 			},
 
-			/**
+			/*
 			 * Reflect the latest changes from dom range.
 			 */
 			updateFromDomRange: function( domRange ) {
@@ -212,7 +212,7 @@
 				return this._.isMatched;
 			},
 
-			/**
+			/*
 			 * Hightlight the current matched chunk of text.
 			 */
 			highlight: function() {
@@ -241,7 +241,7 @@
 				this.updateFromDomRange( range );
 			},
 
-			/**
+			/*
 			 * Remove highlighted find result.
 			 */
 			removeHighlight: function() {
@@ -363,7 +363,9 @@
 					c = c.toLowerCase();
 
 				while ( true ) {
-					if ( c == this._.pattern.charAt( this._.state ) ) {
+					var currentPatternCharacter = this._.pattern.charAt( this._.state );
+					// #4987
+					if ( compareCharacterWithPattern( c, currentPatternCharacter ) ) {
 						this._.state++;
 						if ( this._.state == this._.pattern.length ) {
 							this._.state = 0;
@@ -373,7 +375,7 @@
 					} else if ( !this._.state ) {
 						return KMP_NOMATCH;
 					} else {
-						this._.state = this._.overlap[this._.state];
+						this._.state = this._.overlap[ this._.state ];
 					}
 				}
 			},
@@ -384,13 +386,27 @@
 		};
 
 		var wordSeparatorRegex = /[.,"'?!;: \u0085\u00a0\u1680\u280e\u2028\u2029\u202f\u205f\u3000]/;
+		var spaceSeparatorRegex = /[\u0020\u00a0\u1680\u202f\u205f\u3000\u2000-\u200a]/;
+		var consecutiveWhitespaceRegex = /[\u0020\u00a0\u1680\u202f\u205f\u3000\u2000-\u200a]{2,}/g;
+		var nonBreakingSpace = '\xA0';
 
-		var isWordSeparator = function( c ) {
+		function isWordSeparator( c ) {
 			if ( !c )
 				return true;
 			var code = c.charCodeAt( 0 );
 			return ( code >= 9 && code <= 0xd ) || ( code >= 0x2000 && code <= 0x200a ) || wordSeparatorRegex.test( c );
-		};
+		}
+
+		function compareCharacterWithPattern( character, currentPatternCharacter ) {
+			if ( character == currentPatternCharacter ) {
+				return true;
+			}
+
+			var isCharacterASpaceSeparator = spaceSeparatorRegex.test( character ),
+				isPatternCharacterASpaceSeparator = spaceSeparatorRegex.test( currentPatternCharacter );
+
+			return isCharacterASpaceSeparator && isPatternCharacterASpaceSeparator;
+		}
 
 		var finder = {
 			searchRange: null,
@@ -472,8 +488,9 @@
 				if ( this.matchRange && this.matchRange.isMatched() && !this.matchRange._.isReplaced && !this.matchRange.isReadOnly() && !matchOptionsChanged ) {
 					// Turn off highlight for a while when saving snapshots.
 					this.matchRange.removeHighlight();
-					var domRange = this.matchRange.toDomRange();
-					var text = editor.document.createText( newString );
+					var domRange = this.matchRange.toDomRange(),
+						text = createTextNodeWithPreservedSpaces( editor, newString );
+
 					if ( !isReplaceAll ) {
 						// Save undo snaps before and after the replacement.
 						var selection = editor.getSelection();
@@ -539,7 +556,9 @@
 			return searchRange;
 		}
 
-		var lang = editor.lang.find;
+		var lang = editor.lang.find,
+			ENTER_KEY = 13;
+
 		return {
 			title: lang.title,
 			resizable: CKEDITOR.DIALOG_RESIZE_NONE,
@@ -565,7 +584,16 @@
 						label: lang.findWhat,
 						isChanged: false,
 						labelLayout: 'horizontal',
-						accessKey: 'F'
+						accessKey: 'F',
+						onKeyDown: function( evt ) {
+							var keystroke = evt.data.getKeystroke();
+
+							if ( keystroke !== ENTER_KEY ) {
+								return;
+							}
+
+							execFind( this.getDialog() );
+						}
 					},
 					{
 						type: 'button',
@@ -574,15 +602,7 @@
 						style: 'width:100%',
 						label: lang.find,
 						onClick: function() {
-							var dialog = this.getDialog();
-							if ( !finder.find(
-								dialog.getValueOf( 'find', 'txtFindFind' ),
-								dialog.getValueOf( 'find', 'txtFindCaseChk' ),
-								dialog.getValueOf( 'find', 'txtFindWordChk' ),
-								dialog.getValueOf( 'find', 'txtFindCyclic' )
-							) ) {
-								alert( lang.notFoundMsg ); // jshint ignore:line
-							}
+							execFind( this.getDialog() );
 						}
 					} ]
 				},
@@ -629,7 +649,16 @@
 						label: lang.findWhat,
 						isChanged: false,
 						labelLayout: 'horizontal',
-						accessKey: 'F'
+						accessKey: 'F',
+						onKeyDown: function( evt ) {
+							var keystroke = evt.data.getKeystroke();
+
+							if ( keystroke !== ENTER_KEY ) {
+								return;
+							}
+
+							execFindInReplace( this.getDialog() );
+						}
 					},
 					{
 						type: 'button',
@@ -638,17 +667,7 @@
 						style: 'width:100%',
 						label: lang.replace,
 						onClick: function() {
-							var dialog = this.getDialog();
-							if ( !finder.replace(
-								dialog,
-								dialog.getValueOf( 'replace', 'txtFindReplace' ),
-								dialog.getValueOf( 'replace', 'txtReplace' ),
-								dialog.getValueOf( 'replace', 'txtReplaceCaseChk' ),
-								dialog.getValueOf( 'replace', 'txtReplaceWordChk' ),
-								dialog.getValueOf( 'replace', 'txtReplaceCyclic' )
-							) ) {
-								alert( lang.notFoundMsg ); // jshint ignore:line
-							}
+							execReplace( this.getDialog() );
 						}
 					} ]
 				},
@@ -661,7 +680,16 @@
 						label: lang.replaceWith,
 						isChanged: false,
 						labelLayout: 'horizontal',
-						accessKey: 'R'
+						accessKey: 'R',
+						onKeyDown: function( evt ) {
+							var keystroke = evt.data.getKeystroke();
+
+							if ( keystroke !== ENTER_KEY ) {
+								return;
+							}
+
+							execReplace( this.getDialog() );
+						}
 					},
 					{
 						type: 'button',
@@ -682,17 +710,7 @@
 								finder.matchRange = null;
 							}
 							editor.fire( 'saveSnapshot' );
-							while ( finder.replace(
-								dialog,
-								dialog.getValueOf( 'replace', 'txtFindReplace' ),
-								dialog.getValueOf( 'replace', 'txtReplace' ),
-								dialog.getValueOf( 'replace', 'txtReplaceCaseChk' ),
-								dialog.getValueOf( 'replace', 'txtReplaceWordChk' ),
-								false,
-								true
-							) ) {
-
-							}
+							execReplaceAll( dialog );
 
 							if ( finder.replaceCounter ) {
 								alert( lang.replaceSuccessMsg.replace( /%1/, finder.replaceCounter ) ); // jshint ignore:line
@@ -812,6 +830,68 @@
 				}
 			}
 		};
+
+		function execFind( dialog ) {
+			if ( !finder.find(
+				dialog.getValueOf( 'find', 'txtFindFind' ),
+				dialog.getValueOf( 'find', 'txtFindCaseChk' ),
+				dialog.getValueOf( 'find', 'txtFindWordChk' ),
+				dialog.getValueOf( 'find', 'txtFindCyclic' )
+			) ) {
+				alert( lang.notFoundMsg ); // jshint ignore:line
+			}
+
+		}
+
+		function execFindInReplace( dialog ) {
+			if ( !finder.find(
+				dialog.getValueOf( 'replace', 'txtFindReplace' ),
+				dialog.getValueOf( 'replace', 'txtReplaceCaseChk' ),
+				dialog.getValueOf( 'replace', 'txtReplaceWordChk' ),
+				dialog.getValueOf( 'replace', 'txtReplaceCyclic' )
+			) ) {
+				alert( lang.notFoundMsg ); // jshint ignore:line
+			}
+		}
+
+		function execReplace( dialog ) {
+			if ( !finder.replace(
+				dialog,
+				dialog.getValueOf( 'replace', 'txtFindReplace' ),
+				dialog.getValueOf( 'replace', 'txtReplace' ),
+				dialog.getValueOf( 'replace', 'txtReplaceCaseChk' ),
+				dialog.getValueOf( 'replace', 'txtReplaceWordChk' ),
+				dialog.getValueOf( 'replace', 'txtReplaceCyclic' )
+			) ) {
+				alert( lang.notFoundMsg ); // jshint ignore:line
+			}
+		}
+
+		function execReplaceAll( dialog ) {
+			while ( finder.replace(
+				dialog,
+				dialog.getValueOf( 'replace', 'txtFindReplace' ),
+				dialog.getValueOf( 'replace', 'txtReplace' ),
+				dialog.getValueOf( 'replace', 'txtReplaceCaseChk' ),
+				dialog.getValueOf( 'replace', 'txtReplaceWordChk' ),
+				false,
+				true
+			) ) {}
+		}
+
+		function createTextNodeWithPreservedSpaces( editor, text ) {
+			var textWithPreservedSpaces = text.replace( consecutiveWhitespaceRegex,
+				function( whitespace ) {
+					var whitespaceArray = whitespace.split( '' ),
+						newSpaces = CKEDITOR.tools.array.map( whitespaceArray, function( space, i ) {
+							return i % 2 === 0 ? nonBreakingSpace : space;
+						} );
+
+					return newSpaces.join( '' );
+				} );
+
+			return editor.document.createText( textWithPreservedSpaces );
+		}
 	}
 
 	CKEDITOR.dialog.add( 'find', findDialog );

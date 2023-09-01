@@ -29,7 +29,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'about', groups: [ 'about' ] }
 	];
 
-	config.removeButtons = 'About,Templates,Preview,Save,NewPage,ExportPdf,Print,PasteFromWord,PasteText,Find,Replace,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,Flash,Smiley,PageBreak,ShowBlocks';
+	config.removeButtons = 'About,Templates,Preview,Save,NewPage,Print,PasteFromWord,PasteText,Find,Replace,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,Flash,PageBreak,ShowBlocks';
 
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';

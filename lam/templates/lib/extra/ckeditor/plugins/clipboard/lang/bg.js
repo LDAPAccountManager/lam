@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'clipboard', 'bg', {
 	copy: 'Копирай',
@@ -10,5 +10,7 @@ CKEDITOR.plugins.setLang( 'clipboard', 'bg', {
 	paste: 'Вмъкни',
 	pasteNotification: 'Натиснете %1 за да вмъкнете. Вашият браузър не поддържа поставяне с бутон от лентата с инструменти или от контекстното меню.',
 	pasteArea: 'Зона за поставяне',
-	pasteMsg: 'Поставете съдържанието в зоната отдолу и натиснете OK.'
+	pasteMsg: 'Поставете съдържанието в зоната отдолу и натиснете OK.',
+	fileFormatNotSupportedNotification: 'The ${formats} file format(s) are not supported.', // MISSING
+	fileWithoutFormatNotSupportedNotification: 'The file format is not supported.' // MISSING
 } );

@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 /**
@@ -9,7 +9,6 @@
 
 ( function() {
 	function getAlignment( element, useComputedState ) {
-		useComputedState = useComputedState === undefined || useComputedState;
 
 		var align;
 		if ( useComputedState )
@@ -139,7 +138,6 @@
 				iterator, block;
 
 			var useComputedState = editor.config.useComputedState;
-			useComputedState = useComputedState === undefined || useComputedState;
 
 			for ( var i = ranges.length - 1; i >= 0; i-- ) {
 				iterator = ranges[ i ].createIterator();
@@ -228,21 +226,25 @@
 
 			if ( editor.ui.addButton ) {
 				editor.ui.addButton( 'JustifyLeft', {
+					isToggle: true,
 					label: editor.lang.common.alignLeft,
 					command: 'justifyleft',
 					toolbar: 'align,10'
 				} );
 				editor.ui.addButton( 'JustifyCenter', {
+					isToggle: true,
 					label: editor.lang.common.center,
 					command: 'justifycenter',
 					toolbar: 'align,20'
 				} );
 				editor.ui.addButton( 'JustifyRight', {
+					isToggle: true,
 					label: editor.lang.common.alignRight,
 					command: 'justifyright',
 					toolbar: 'align,30'
 				} );
 				editor.ui.addButton( 'JustifyBlock', {
+					isToggle: true,
 					label: editor.lang.common.justify,
 					command: 'justifyblock',
 					toolbar: 'align,40'

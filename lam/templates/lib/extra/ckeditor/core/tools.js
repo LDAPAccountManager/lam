@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -38,6 +38,78 @@
 			} else {
 				return namedEntities[ code ];
 			}
+		},
+		// This is the polyill for the CSS.escape for IE. (#681)
+		// https://github.com/mathiasbynens/CSS.escape/blob/master/css.escape.js
+		cssEscapeForIE = function( selector ) {
+			var stringifiedSelector = String( selector ),
+				selectorLength = stringifiedSelector.length,
+				index = -1,
+				codeUnit,
+				result = '',
+				firstCodeUnit = stringifiedSelector.charCodeAt( 0 ),
+				UTF16 = {
+					NULL: 0x0000,
+					START_OF_HEADING: 0x0001,
+					UNIT_SEPARATOR: 0x001F,
+					DELETE: 0x007F,
+					DIGIT_ZERO: 0x0030,
+					DIGIT_NINE: 0x0039,
+					HYPHEN_MINUS: 0x002D,
+					LOW_LINE: 0x005F,
+					START_OF_LATIN_1_SUPPLEMENT: 0x0080,
+					CAPITAL_LETTER_A: 0x0041,
+					CAPITAL_LETTER_Z: 0x005A,
+					SMALL_LETTER_A: 0x0061,
+					SMALL_LETTER_Z: 0x007A
+				};
+
+			// Helper function to check if value is in the range.
+			function isInRange( value, min, max ) {
+				return value >= min && value <= max;
+			}
+
+			while ( ++index < selectorLength ) {
+				codeUnit = stringifiedSelector.charCodeAt( index );
+
+				if ( codeUnit == UTF16.NULL ) {
+					result += '\uFFFD';
+					continue;
+				}
+
+				if ( codeUnit == UTF16.DELETE ||
+					isInRange( codeUnit, UTF16.START_OF_HEADING, UTF16.UNIT_SEPARATOR ) ||
+					( index == 0 && isInRange( codeUnit, UTF16.DIGIT_ZERO, UTF16.DIGIT_NINE ) ) ||
+					( index == 1 && isInRange( codeUnit, UTF16.DIGIT_ZERO, UTF16.DIGIT_NINE ) && firstCodeUnit == UTF16.HYPHEN_MINUS )
+				) {
+					// https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
+					result += '\\' + codeUnit.toString( 16 ) + ' ';
+					continue;
+				}
+
+				if ( index == 0 && selectorLength == 1 && codeUnit == UTF16.HYPHEN_MINUS ) {
+					result += '\\' + stringifiedSelector.charAt( index );
+					continue;
+				}
+
+				if (
+					codeUnit >= UTF16.START_OF_LATIN_1_SUPPLEMENT ||
+					codeUnit == UTF16.HYPHEN_MINUS ||
+					codeUnit == UTF16.LOW_LINE ||
+					isInRange( codeUnit, UTF16.DIGIT_ZERO, UTF16.DIGIT_NINE ) ||
+					isInRange( codeUnit, UTF16.CAPITAL_LETTER_A, UTF16.CAPITAL_LETTER_Z ) ||
+					isInRange( codeUnit, UTF16.SMALL_LETTER_A, UTF16.SMALL_LETTER_Z )
+				) {
+					// the character itself
+					result += stringifiedSelector.charAt( index );
+					continue;
+				}
+
+				// Otherwise, the escaped character.
+				// https://drafts.csswg.org/cssom/#escape-a-character
+				result += '\\' + stringifiedSelector.charAt( index );
+			}
+			return result;
 		};
 
 	CKEDITOR.on( 'reset', function() {
@@ -352,10 +424,12 @@
 			for ( var i = 0; i < css.length; i++ ) {
 				if ( ( item = css[ i ] ) ) {
 					// Is CSS style text ?
-					if ( /@import|[{}]/.test( item ) )
+					if ( /@import|[{}]/.test( item ) ) {
 						retval.push( '<style>' + item + '</style>' );
-					else
+					} else {
+						item = CKEDITOR.appendTimestamp( item );
 						retval.push( '<link type="text/css" rel=stylesheet href="' + item + '">' );
+					}
 				}
 			}
 			return retval.join( '' );
@@ -579,6 +653,33 @@
 				else
 					func.apply( scope );
 			}, milliseconds || 0 );
+		},
+
+		/**
+		 * Returns a new debounced version of the passed function that will postpone
+		 * its execution until the given milliseconds have elapsed since the last time it was invoked.
+		 *
+		 * @since 4.19.1
+		 * @param {Function} func The function to be executed.
+		 * @param {Number} [milliseconds=0] The amount of time (in milliseconds) to wait
+		 * to fire the function execution.
+		 * @returns {Function}
+		 */
+		debounce: function( func, milliseconds ) {
+			var timeout;
+
+			return function() {
+				var context = this,
+					args = arguments;
+
+				var later = function() {
+					timeout = null;
+					func.apply( context, args );
+				};
+
+				clearTimeout( timeout );
+				timeout = setTimeout( later, milliseconds );
+			};
 		},
 
 		/**
@@ -897,13 +998,16 @@
 		 * @returns {Number/String} A number representing the length in pixels or a string with a percentage value.
 		 */
 		convertToPx: ( function() {
-			var calculator;
+			var calculator,
+				boundingClientRect;
 
 			return function( cssLength ) {
-				if ( !calculator ) {
+				// Recreate calculator whenever it was externally manipulated (#5158).
+				if ( !calculator || calculator.isDetached() ) {
 					calculator = CKEDITOR.dom.element.createFromHtml( '<div style="position:absolute;left:-9999px;' +
 						'top:-9999px;margin:0px;padding:0px;border:0px;"' +
 						'></div>', CKEDITOR.document );
+
 					CKEDITOR.document.getBody().append( calculator );
 				}
 
@@ -916,7 +1020,9 @@
 					}
 
 					calculator.setStyle( 'width', cssLength );
-					ret = calculator.$.clientWidth;
+					boundingClientRect = calculator.getClientRect();
+
+					ret = Math.round( boundingClientRect.width );
 
 					if ( isNegative ) {
 						return -ret;
@@ -1547,12 +1653,8 @@
 				return CSS.escape( selector );
 			}
 
-			// Simple leading digit escape.
-			if ( !isNaN( parseInt( selector.charAt( 0 ), 10 ) ) ) {
-				return '\\3' + selector.charAt( 0 ) + ' ' + selector.substring( 1, selector.length );
-			}
-
-			return selector;
+			// (#681)
+			return cssEscapeForIE( selector );
 		},
 
 		/**

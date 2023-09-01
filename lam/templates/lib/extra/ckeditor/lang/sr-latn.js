@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,8 @@
  */
 CKEDITOR.lang[ 'sr-latn' ] = {
 	// ARIA description.
-	editor: 'Bogati uređivač teksta',
+	application: 'Uređivač bogatog teksta',
+	editor: 'Uređivač ',
 	editorPanel: 'Bogati uređivač panel',
 
 	// Common messages and labels.
@@ -34,7 +35,6 @@ CKEDITOR.lang[ 'sr-latn' ] = {
 		upload: 'Pošalji',
 		uploadSubmit: 'Pošalji na server',
 		image: 'Slika',
-		flash: 'Fleš',
 		form: 'Formular',
 		checkbox: 'Polje za potvrdu',
 		radio: 'Radio-dugme',
@@ -143,5 +143,12 @@ CKEDITOR.lang[ 'sr-latn' ] = {
 		keyboardShortcut: 'Taster za prečicu',
 
 		optionDefault: 'Оsnovni'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

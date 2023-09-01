@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 ( function() {
@@ -381,6 +381,9 @@
 	function fakeSelectionDragHandler( evt ) {
 		var table = evt.data.getTarget().getAscendant( 'table', true );
 
+		// Prevent table selection during dragging. (#547)
+		fakeSelection.active = false;
+
 		// (#2945)
 		if ( table && table.hasAttribute( ignoredTableAttribute ) ) {
 			return;
@@ -391,10 +394,6 @@
 		if ( !cell || cell.hasClass( fakeSelectedClass ) ) {
 			return;
 		}
-
-		// We're not supporting dragging in our table selection for the time being.
-		evt.cancel();
-		evt.data.preventDefault();
 	}
 
 	function copyTable( editor, isCut ) {
@@ -789,6 +788,11 @@
 			return;
 		}
 
+		// #(547)
+		if ( evt.data.method === 'drop' ) {
+			return;
+		}
+
 		selectedTable = selectedCells[ 0 ].getAscendant( 'table' );
 		tableSel = new TableSelection( getSelectedCells( selection, selectedTable ) );
 
@@ -917,8 +921,11 @@
 		editor.on( 'afterCommandExec', function( evt ) {
 			if ( CKEDITOR.tools.array.indexOf( cmds, evt.data.name ) !== -1 ) {
 				callback( editor, evt.data );
+
 			}
-		} );
+		// This listener is connected with undo plugin listener and require a higher priority
+		// than the listener in undo plugin to create a correct undo step (#4284).
+		}, null, null, 9 );
 	}
 
 	/**
@@ -1142,6 +1149,21 @@
 				}
 			}
 
+			function getTableKeyUpListener( editor ) {
+				return function( evt ) {
+					var key = evt.data.getKey(),
+						selection = editor.getSelection();
+
+					// Handle only Tab key in table selection.
+					if ( key !== 9 || !selection.isInTable() ) {
+						return;
+					}
+
+					// Restore fake selection after pressing Tab (#4802).
+					restoreFakeSelection( editor );
+				};
+			}
+
 			function clearCellInRange( range ) {
 				var node = range.getEnclosedNode();
 
@@ -1165,6 +1187,7 @@
 			var editable = editor.editable();
 			editable.attachListener( editable, 'keydown', getTableOnKeyDownListener( editor ), null, null, -1 );
 			editable.attachListener( editable, 'keypress', tableKeyPressListener, null, null, -1 );
+			editable.attachListener( editable, 'keyup', getTableKeyUpListener( editor ), null, null, -1 );
 		}
 	};
 

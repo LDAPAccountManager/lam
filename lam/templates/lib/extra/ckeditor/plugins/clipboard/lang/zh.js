@@ -1,6 +1,6 @@
-/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/*
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'clipboard', 'zh', {
 	copy: '複製',
@@ -10,5 +10,7 @@ CKEDITOR.plugins.setLang( 'clipboard', 'zh', {
 	paste: '貼上',
 	pasteNotification: '請按下「%1」貼上。您的瀏覽器不支援工具列按鈕或是內容功能表選項。',
 	pasteArea: '貼上區',
-	pasteMsg: '請將您的內容貼於下方區域中並按下「OK」。'
+	pasteMsg: '請將您的內容貼於下方區域中並按下「OK」。',
+	fileFormatNotSupportedNotification: '不支援 ${formats} 檔案格式。',
+	fileWithoutFormatNotSupportedNotification: '檔案格式不支援。'
 } );

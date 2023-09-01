@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@
  */
 CKEDITOR.lang[ 'en-gb' ] = {
 	// ARIA description.
+	application: 'Rich Text Editor', // MISSING
 	editor: 'Rich Text Editor',
 	editorPanel: 'Rich Text Editor panel',
 
@@ -34,7 +35,6 @@ CKEDITOR.lang[ 'en-gb' ] = {
 		upload: 'Upload',
 		uploadSubmit: 'Send it to the Server',
 		image: 'Image',
-		flash: 'Flash',
 		form: 'Form',
 		checkbox: 'Checkbox',
 		radio: 'Radio Button',
@@ -80,11 +80,11 @@ CKEDITOR.lang[ 'en-gb' ] = {
 		align: 'Align',
 		left: 'Left', // MISSING
 		right: 'Right', // MISSING
-		center: 'Center', // MISSING
+		center: 'Centre',
 		justify: 'Justify', // MISSING
 		alignLeft: 'Align Left', // MISSING
 		alignRight: 'Align Right', // MISSING
-		alignCenter: 'Align Center', // MISSING
+		alignCenter: 'Align Centre',
 		alignTop: 'Top',
 		alignMiddle: 'Middle',
 		alignBottom: 'Bottom',
@@ -143,5 +143,12 @@ CKEDITOR.lang[ 'en-gb' ] = {
 		keyboardShortcut: 'Keyboard shortcut', // MISSING
 
 		optionDefault: 'Default' // MISSING
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

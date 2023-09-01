@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
 */
 CKEDITOR.plugins.setLang( 'colorbutton', 'cs', {
 	auto: 'Automaticky',
@@ -29,7 +29,7 @@ CKEDITOR.plugins.setLang( 'colorbutton', 'cs', {
 		'0FF': 'Azurová',
 		'00F': 'Modrá',
 		EE82EE: 'Fialová',
-		A9A9A9: 'Kalně šedá',
+		A9A9A9: 'Tmavě šedá',
 		FFA07A: 'Světle lososová',
 		FFA500: 'Oranžová',
 		FFFF00: 'Žlutá',

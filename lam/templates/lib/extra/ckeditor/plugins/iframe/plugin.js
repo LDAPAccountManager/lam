@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 ( function() {
@@ -26,7 +26,7 @@
 		init: function( editor ) {
 			var pluginName = 'iframe',
 				lang = editor.lang.iframe,
-				allowed = 'iframe[align,longdesc,tabindex,frameborder,height,name,scrolling,src,title,width]';
+				allowed = 'iframe[align,longdesc,tabindex,frameborder,height,name,scrolling,src,title,width,sandbox]';
 
 			if ( editor.plugins.dialogadvtab )
 				allowed += ';iframe' + editor.plugins.dialogadvtab.allowedContent( { id: 1, classes: 1, styles: 1 } );
@@ -75,11 +75,68 @@
 				dataFilter.addRules( {
 					elements: {
 						iframe: function( element ) {
+							var attributes = editor.plugins.iframe._.getIframeAttributes( editor, element );
+
+							if ( attributes !== undefined ) {
+								element.attributes = CKEDITOR.tools.object.merge( element.attributes, attributes );
+							}
+
 							return editor.createFakeParserElement( element, 'cke_iframe', 'iframe', true );
 						}
 					}
 				} );
 			}
+		},
+		_: {
+			getIframeAttributes: function( editor, iframe ) {
+				var attributes = editor.config.iframe_attributes;
+
+				if ( typeof attributes === 'function' ) {
+					return attributes( iframe );
+				} else if ( typeof attributes === 'object' ) {
+					return attributes;
+				}
+			}
 		}
 	} );
 } )();
+
+/**
+ * Indicates the default iframe attributes.
+ *
+ * Starting from v4.21, iframe elements are sandboxed to secure web pages without proper
+ * [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) configuration.
+ *
+ * **NOTE:** Disabling that option may open your application to security vulnerabilities.
+ * If, for some reason, you need to enable it, make sure to properly
+ * configure [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
+ * on your web page or use function-based configuration to allow trusted iframe elements only.
+ *
+ * Function-based configuration example:
+ *
+ * ```javascript
+ * config.iframe_attributes = function( iframe ) {
+ *     var youtubeOrigin = 'https://www.youtube.com'
+ *
+ *     if ( youtubeOrigin.indexOf( iframe.attributes.src ) !== -1 ) {
+ *         return { sandbox: "allow-scripts allow-same-origin" }
+ *     }
+ *
+ *     return: { sandbox: "" };
+ * }
+ * ```
+ *
+ * Object-based configuration example:
+ *
+ * ```javascript
+ * config.iframe_attributes = {
+ *     sandbox: 'allow-scripts allow-same-origin',
+ *     allow: 'autoplay'
+ * }
+ * ```
+ *
+ * @since 4.21.0
+ * @cfg {Function/Object} [iframe_attributes = { sandbox: '' }]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.iframe_attributes = { sandbox: '' };

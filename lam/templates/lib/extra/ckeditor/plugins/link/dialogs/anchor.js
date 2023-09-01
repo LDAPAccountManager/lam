@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 CKEDITOR.dialog.add( 'anchor', function( editor ) {
@@ -30,10 +30,35 @@ CKEDITOR.dialog.add( 'anchor', function( editor ) {
 			element = element.getParent();
 		}
 
+		// If anchor exists and has any styles find the closest parent <a> tag. (#3863)
+		if ( element && !element.is( 'a' ) ) {
+			element = element.getAscendant( 'a' ) || element;
+		}
+
 		if ( element && element.type === CKEDITOR.NODE_ELEMENT &&
 			( element.data( 'cke-real-element-type' ) === 'anchor' || element.is( 'a' ) ) ) {
 			return element;
 		}
+	}
+
+	function removeAnchorsWithinRange( range ) {
+		var newRange = range.clone();
+		newRange.enlarge( CKEDITOR.ENLARGE_ELEMENT );
+
+		var walker = new CKEDITOR.dom.walker( newRange ),
+			element = newRange.collapsed ? newRange.startContainer : walker.next(),
+			bookmark = range.createBookmark();
+
+		while ( element ) {
+			if ( element.type === CKEDITOR.NODE_ELEMENT && element.getAttribute( 'data-cke-saved-name' ) ) {
+				element.remove( true );
+				// Reset the walker and start from beginning, to check if element has more nested anchors.
+				// Without it, next element is null, so there might be space to more nested elements.
+				walker.reset();
+			}
+			element = walker.next();
+		}
+		range.moveToBookmark( bookmark );
 	}
 
 	return {
@@ -76,6 +101,8 @@ CKEDITOR.dialog.add( 'anchor', function( editor ) {
 					if ( CKEDITOR.env.ie && CKEDITOR.env.version < 9 )
 						attributes[ 'class' ] = 'cke_anchor';
 
+					// (#4728)
+					removeAnchorsWithinRange( range );
 					// Apply style.
 					var style = new CKEDITOR.style( { element: 'a', attributes: attributes } );
 					style.type = CKEDITOR.STYLE_INLINE;
@@ -109,10 +136,23 @@ CKEDITOR.dialog.add( 'anchor', function( editor ) {
 				label: editor.lang.link.anchor.name,
 				required: true,
 				validate: function() {
-					if ( !this.getValue() ) {
+					// https://html.spec.whatwg.org/multipage/dom.html#global-attributes
+					// The id attribute value must not contain any space characters (#5305).
+					// [ space, tabulation, line feed, new line, form feed, carriage return ]
+					var disallowedWhitespacesRegex = /[\u0020\u0009\u000a\u000c\u000d]/g,
+						content = this.getValue();
+
+					if ( !content ) {
 						alert( editor.lang.link.anchor.errorName ); // jshint ignore:line
 						return false;
 					}
+
+					// Disallow creating anchors with space characters (#5305).
+					if ( disallowedWhitespacesRegex.test( content ) ) {
+						alert( editor.lang.link.anchor.errorWhitespace ); // jshint ignore:line
+						return false;
+					}
+
 					return true;
 				}
 			} ]

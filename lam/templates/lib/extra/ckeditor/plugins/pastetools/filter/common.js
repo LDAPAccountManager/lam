@@ -1,6 +1,6 @@
-/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+﻿/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 /* globals CKEDITOR */
@@ -1201,6 +1201,9 @@
 	 *	// Disable removing `margin:0`, `margin-left:0`, etc.
 	 *	config.pasteTools_keepZeroMargins = true;
 	 * ```
+	 *
+	 * **Note**: Please remember to update the {@glink guide/dev_advanced_content_filter Advanced Content Filter}
+	 * when you want to keep margins that other plugins don't use like `top` and `bottom`.
 	 *
 	 * @since 4.13.0
 	 * @cfg {Boolean} [pasteTools_keepZeroMargins=false]

@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 /**
@@ -158,7 +158,7 @@
 					contentTransformations: contentTransformations,
 
 					panel: {
-						css: CKEDITOR.skin.getPath( 'editor' ),
+						css: [ CKEDITOR.skin.getPath( 'editor' ) ].concat( config.colorButton_contentsCss ),
 						attributes: { role: 'listbox', 'aria-label': lang.panelTitle }
 					},
 
@@ -191,6 +191,9 @@
 
 						// The block should not have scrollbars (https://dev.ckeditor.com/ticket/5933, https://dev.ckeditor.com/ticket/6056)
 						block.element.getDocument().getBody().setStyle( 'overflow', 'hidden' );
+
+						// First render of panel have a scrollbar, but it shouldn't (#4247).
+						block.element.getAscendant( { html: 1 } ).setStyle( 'overflow', 'hidden' );
 
 						CKEDITOR.ui.fire( 'ready', this );
 
@@ -1004,3 +1007,17 @@ CKEDITOR.config.colorButton_historyRowLimit = 1;
  * @member CKEDITOR.config
  */
 CKEDITOR.config.colorButton_renderContentColors = true;
+
+/**
+ * The CSS file(s) to be used to apply the style to the color button menu content.
+ *
+ * ```javascript
+ * config.colorButton_contentsCss = '/css/myfile.css';
+ * config.colorButton_contentsCss = [ '/css/myfile.css', '/css/anotherfile.css' ];
+ * ```
+ *
+ * @since 4.20.2
+ * @cfg {String/String[]} [colorButton_contentsCss]
+ * @member CKEDITOR.config
+ */
+CKEDITOR.config.colorButton_contentsCss = [];

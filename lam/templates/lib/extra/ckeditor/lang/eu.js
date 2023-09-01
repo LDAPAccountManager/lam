@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@
  */
 CKEDITOR.lang[ 'eu' ] = {
 	// ARIA description.
+	application: 'Rich Text Editor', // MISSING
 	editor: 'Testu aberastuaren editorea',
 	editorPanel: 'Testu aberastuaren editorearen panela',
 
@@ -34,7 +35,6 @@ CKEDITOR.lang[ 'eu' ] = {
 		upload: 'Kargatu',
 		uploadSubmit: 'Bidali zerbitzarira',
 		image: 'Irudia',
-		flash: 'Flash',
 		form: 'Formularioa',
 		checkbox: 'Kontrol-laukia',
 		radio: 'Aukera-botoia',
@@ -143,5 +143,12 @@ CKEDITOR.lang[ 'eu' ] = {
 		keyboardShortcut: 'Laster-tekla',
 
 		optionDefault: 'Lehenetsia'
+	},
+
+	versionCheck: {
+		notificationMessage: 'This CKEditor %current version is not secure. Consider <a target="_blank" href="%link">upgrading to the latest one</a>, %latest.', // MISSING
+		consoleMessage: 'This CKEditor %current version is not secure. Consider upgrading to the latest one, %latest: %link', // MISSING
+		aboutDialogInsecureMessage: 'This CKEditor %current version is not secure.<br>Consider upgrading to the latest one, %latest:<br><a target="_blank" href="%link">%link</a>', // MISSING
+		aboutDialogUpgradeMessage: 'Consider upgrading to the latest editor version, %latest:<br><a target="_blank" href="%link">%link</a>' // MISSING
 	}
 };

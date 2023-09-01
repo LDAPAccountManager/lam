@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * CKEditor 4 LTS ("Long Term Support") is available under the terms of the Extended Support Model.
  */
 
 /**
@@ -52,25 +52,9 @@
 	 */
 	CKEDITOR.plugins.print = {
 		exec: function( editor ) {
-			var previewWindow = CKEDITOR.plugins.preview.createPreview( editor ),
-				nativePreviewWindow;
+			CKEDITOR.plugins.preview.createPreview( editor, function( previewWindow ) {
+				var nativePreviewWindow = previewWindow.$;
 
-			if ( !previewWindow ) {
-				return;
-			}
-
-			nativePreviewWindow = previewWindow.$;
-
-			// In several browsers (e.g. Safari or Chrome on Linux) print command
-			// seems to be blocking loading of the preview page. Because of that
-			// print must be performed after the document is complete.
-			if ( nativePreviewWindow.document.readyState === 'complete' ) {
-				return print();
-			}
-
-			previewWindow.once( 'load', print );
-
-			function print() {
 				if ( CKEDITOR.env.gecko ) {
 					nativePreviewWindow.print();
 				} else {
@@ -78,7 +62,7 @@
 				}
 
 				nativePreviewWindow.close();
-			}
+			} );
 		},
 		canUndo: false,
 		readOnly: 1,
