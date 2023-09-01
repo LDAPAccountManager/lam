@@ -332,6 +332,13 @@ $infoDialog = new htmlButton('errorDialog', 'Click me');
 $infoDialog->setOnClick('window.lam.dialog.showError(\'Some title\', \'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna\', \'Ok\');');
 $row->addField($infoDialog);
 
+$row->add(new htmlSubTitle('WYSIWYG editor'));
+
+$row->addLabel(new htmlOutputText('WYSIWYG'));
+$textAreaWysiwyg = new htmlInputTextarea('textareaWysiwyg', 'This is a <b>test</b>', 50, 5);
+$textAreaWysiwyg->setIsRichEdit(true);
+$row->addField($textAreaWysiwyg);
+
 
 $row->add(new htmlSpacer(null, '20rem'));
 
@@ -341,5 +348,6 @@ $tabindex = 1;
 parseHtml(null, $form, array(), false, $tabindex, 'user');
 
 ?>
+<script type="text/javascript" src="../../templates/lib/extra/ckeditor/ckeditor.js"></script>
 </body>
 </html>
