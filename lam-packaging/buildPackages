@@ -76,7 +76,7 @@ rm -r lam/tests
 rm -f lam/lib/3rdParty/tcpdf/fonts/*.ttf
 rm -r lam/templates/lib/extra/ckeditor/plugins/*/dev
 rm -r lam/lib/3rdParty/composer/nesbot/carbon/bin
-chmod -R -x lam/lib/3rdParty
+chmod -R -x+X lam/lib/3rdParty
 rm lam/composer*
 find . -name .svnignore -exec rm {} \;
 find . -name .gitignore -exec rm {} \;
