@@ -3,7 +3,7 @@ services:
   ldap-account-manager:
     build:
       context: .
-    image: ldapaccountmanager/lam:8.4
+    image: ldapaccountmanager/lam:8.5.RC1
     restart: unless-stopped
     ports:
       - "8080:80"
