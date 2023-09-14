@@ -155,7 +155,30 @@
 </literallayout><para><emphasis role="bold">Note:</emphasis> The RPM packages
                 do not contain a dependency to PHP due to the various package
                 names for it. Please make sure that you install Apache/Nginx
-                with PHP.</para></entry>
+                with PHP.</para><para>Example installation for Apache + PHP 8
+                on OpenSuse 15:</para><itemizedlist>
+                    <listitem>
+                      <para>zypper install apache2 php8 apache2-mod_php8
+                      php8-ldap php8-zip php8-soap php8-gd php8-curl php8-gmp
+                      php8-mbstring php8-sqlite php8-mysql php8-gettext</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>systemctl enable apache2</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>systemctl start apache2</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>firewall-cmd --add-service=http --permanent</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>firewall-cmd --reload</para>
+                    </listitem>
+                  </itemizedlist></entry>
               </row>
             </tbody>
           </tgroup>
