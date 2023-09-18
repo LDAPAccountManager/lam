@@ -3220,6 +3220,42 @@ window.lam.smtp.test = function(event, tokenName, tokenValue, okText) {
 	});
 }
 
+window.lam.richEdit = window.lam.richEdit || {};
+
+window.lam.richEdit.init = function() {
+	const richEditorInputs = document.getElementsByClassName('lam-rich-edit');
+	Array.from(richEditorInputs).forEach(function (richInput) {
+		CKEDITOR.replace(richInput, {
+			plugins: 'dialogui,dialog,basicstyles,blockquote,notification,button,toolbar,clipboard,panel,floatpanel,menu,contextmenu,resize,elementspath'
+				+ ',enterkey,entities,popup,filetools,filebrowser,floatingspace,listblock,richcombo,format,horizontalrule,htmlwriter,wysiwygarea,image,indent'
+				+ ',indentlist,fakeobjects,link,list,magicline,maximize,pastetext,removeformat,showborders,sourcearea,specialchar,menubutton,stylescombo,tab'
+				+ ',table,tabletools,tableselection,undo,lineutils,widgetselection,widget,notificationaggregator,iframe,justify,font,panelbutton,colordialog,colorbutton',
+
+			toolbarGroups: [
+				{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+				{ name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+				{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+				{ name: 'forms', groups: [ 'forms' ] },
+				{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+				{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+				{ name: 'links', groups: [ 'links' ] },
+				{ name: 'insert', groups: [ 'insert' ] },
+				{ name: 'colors', groups: [ 'colors' ] },
+				{ name: 'tools', groups: [ 'tools' ] },
+				{ name: 'styles', groups: [ 'styles' ] },
+				{ name: 'others', groups: [ 'others' ] }
+			],
+
+			removeButtons: 'About,Templates,Preview,Save,NewPage,Print,PasteFromWord,PasteText,Find,Replace,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,Flash,PageBreak,ShowBlocks',
+
+			// Set the most common block elements.
+			format_tags: 'p;h1;h2;h3;pre',
+
+			height: 200
+		});
+	});
+}
+
 
 jQuery(document).ready(function() {
 	window.lam.form.autoTrim();
@@ -3236,6 +3272,7 @@ jQuery(document).ready(function() {
 	window.lam.tabs.init();
 	window.lam.accordion.init();
 	window.lam.tooltip.init();
+	window.lam.richEdit.init();
 });
 
 /**

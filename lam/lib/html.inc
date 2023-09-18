@@ -2345,7 +2345,7 @@ class htmlInputTextarea extends htmlElement {
 		}
 		$classList = $this->cssClasses;
 		if ($this->richEdit) {
-			$classList[] = 'ckeditor';
+			$classList[] = 'lam-rich-edit';
 		}
 		$required = '';
 		if ($this->required) {
@@ -2369,7 +2369,7 @@ class htmlInputTextarea extends htmlElement {
 
 	/**
 	 * Specifies if the textarea should be displayed with a WYSIWYG editor.
-	 * <br>This requires that the page which displays the textarea also includes the ckeditor JS.
+	 * <br>This requires that the page which displays the textarea also includes the JS for the rich editing.
 	 * <br>Rich editing is disabled by default.
 	 *
 	 * @param boolean $richEdit rich edit or standard
