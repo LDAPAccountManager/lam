@@ -9,6 +9,14 @@ fi
 . /usr/share/debconf/confmodule
 db_version 2.0 || [ $? -lt 30 ]
 
+# 3rd party libs
+jsThirdPartyLibs='ckeditor jstree'
+for jsThirdPartyLib in $jsThirdPartyLibs; do
+	if [ ! -L /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib} ] ; then
+		ln -s /usr/share/javascript/${jsThirdPartyLib} /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}
+	fi
+done
+
 cd /usr/share/ldap-account-manager/config-samples/profiles
 files=`ls -a default.*`
 for file in $files; do

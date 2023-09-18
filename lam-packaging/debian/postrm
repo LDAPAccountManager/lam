@@ -50,6 +50,15 @@ if [ -f /usr/share/debconf/confmodule ]; then
 		done
 	fi
 
+	# 3rd party libs
+	jsThirdPartyLibs='ckeditor jstree'
+	for jsThirdPartyLib in $jsThirdPartyLibs; do
+		if [ -L /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib} ] ; then
+			rm /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}
+		fi
+	done
+
+
 	set -e
 	if [ "$1" = "purge" ]; then
 		rm -r -f /usr/share/ldap-account-manager

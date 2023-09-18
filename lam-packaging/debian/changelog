@@ -1,6 +1,8 @@
 ldap-account-manager (8.5.RC1-1) unstable; urgency=medium
 
   * new upstream release
+  * Fix "Multiple embeded and minified javascript library" by linking
+    directory (Closes: #1042528)
 
  -- Roland Gruber <post@rolandgruber.de>  Fri, 08 Sep 2023 16:01:22 +0200
 

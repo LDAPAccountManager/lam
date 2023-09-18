@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+if [ "$1" != "upgrade" ]; then
+    exit 0
+fi
+
+# 3rd party libs
+jsThirdPartyLibs='ckeditor jstree'
+for jsThirdPartyLib in $jsThirdPartyLibs; do
+	if [ -L /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib} ] ; then
+		rm /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}
+	fi
+done
+
+#DEBHELPER#
