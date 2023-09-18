@@ -3222,6 +3222,9 @@ window.lam.smtp.test = function(event, tokenName, tokenValue, okText) {
 
 window.lam.richEdit = window.lam.richEdit || {};
 
+/**
+ * Inits the rich-text editors.
+ */
 window.lam.richEdit.init = function() {
 	const richEditorInputs = document.getElementsByClassName('lam-rich-edit');
 	Array.from(richEditorInputs).forEach(function (richInput) {
