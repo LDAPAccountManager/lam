@@ -198,7 +198,7 @@ if (isset($_POST['delete'])) {
 	$allErrors = array();
 	foreach ($_SESSION['delete_dn'] as $deleteDN) {
 		// Set to true if an real error has happened
-		$stopprocessing = false;
+		$stopProcessing = false;
 		// First load DN.
 		$_SESSION[$sessionKey]->load_account($deleteDN);
 		// get commands and changes of each attribute
@@ -212,20 +212,20 @@ if (isset($_POST['delete'])) {
             $messages = $modules[$singlemodule]->preDeleteActions();
             foreach ($messages as $message) {
                 $errors[] = $message;
-                if ($message[0] == 'ERROR') {
+                if ($message[0] === 'ERROR') {
                     $success = false;
                     $allOk = false;
                 }
-                elseif ($message[0] == 'WARN') {
+                elseif ($message[0] === 'WARN') {
                     $allOk = false;
                 }
             }
             if (!$success) {
-                $stopprocessing = true;
+                $stopProcessing = true;
                 break;
             }
         }
-		if (!$stopprocessing) {
+		if (!$stopProcessing) {
 			// load attributes
 			foreach ($moduleNames as $singlemodule) {
 				// load changes
@@ -251,64 +251,69 @@ if (isset($_POST['delete'])) {
 					foreach ($attributes[$dn]['errors'] as $singleerror) {
 						$errors[] = $singleerror;
 						if ($singleerror[0] == 'ERROR') {
-							$stopprocessing = true;
+							$stopProcessing = true;
 							$allOk = false;
 						}
 					}
 				}
-				if (!$stopprocessing) {
+				if (!$stopProcessing) {
 					// modify attributes
 					if (isset($attributes[$dn]['modify'])) {
 						$success = ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
 						if (!$success) {
 							$errors[] = array ('ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
-							$stopprocessing = true;
+							$stopProcessing = true;
 							$allOk = false;
 						}
 					}
 					// add attributes
-					if (isset($attributes[$dn]['add']) && !$stopprocessing) {
+					if (isset($attributes[$dn]['add']) && !$stopProcessing) {
 						$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, $attributes[$dn]['add']);
 						if (!$success) {
 							$errors[] = array ('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
-							$stopprocessing = true;
+							$stopProcessing = true;
 							$allOk = false;
 						}
 					}
 					// remove attributes
-					if (isset($attributes[$dn]['remove']) && !$stopprocessing) {
+					if (isset($attributes[$dn]['remove']) && !$stopProcessing) {
 						$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, $attributes[$dn]['remove']);
 						if (!$success) {
 							$errors[] = array ('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
-							$stopprocessing = true;
+							$stopProcessing = true;
 							$allOk = false;
 						}
 					}
 				}
 			}
 		}
-		if (!$stopprocessing) {
+		if (!$stopProcessing) {
 			$recursive = !$_SESSION[$sessionKey]->hasOnlyVirtualChildren();
 			$messages = deleteDN($deleteDN, $recursive);
-			$errors = array_merge($errors, $messages);
-			if (sizeof($errors) > 0) {
-				$stopprocessing = true;
-				$allOk = false;
+			foreach ($messages as $message) {
+				$errors[] = $message;
+				if ($message[0] === 'ERROR') {
+					$stopProcessing = true;
+					$allOk = false;
+				}
+				elseif ($message[0] === 'WARN') {
+					$allOk = false;
+                }
 			}
 		}
 		// post delete actions
-		if (!$stopprocessing) {
+		if (!$stopProcessing) {
 			foreach ($moduleNames as $singlemodule) {
 				$messages = $modules[$singlemodule]->postDeleteActions();
 				foreach ($messages as $message) {
 					$errors[] = $message;
-					if (($message[0] == 'ERROR') || ($message[0] == 'WARN')) {
+					if (($message[0] === 'ERROR') || ($message[0] === 'WARN')) {
 						$allOk = false;
 					}
 				}
 			}
 		}
-		if (!$stopprocessing) {
+		if (!$stopProcessing) {
 			$container->add(new htmlOutputText(sprintf(_('Deleted DN: %s'), $deleteDN)), 12);
 			foreach ($errors as $error) {
 				$container->add(htmlStatusMessage::fromParamArray($error), 12);
