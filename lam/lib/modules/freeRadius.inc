@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2022  Roland Gruber
+  Copyright (C) 2011 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -133,9 +133,16 @@ class freeRadius extends baseModule {
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
-			));
+			),
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
+			),
+		);
 		// profile settings
 		$profileElements = array();
+		// auto add extension
+		$profileElements[] = new htmlResponsiveInputCheckbox('freeRadius_addExt', false, _('Automatically add this extension'), 'autoAdd');
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPNetmask')) {
 			$profileElements[] = new htmlResponsiveInputField(_('Net mask'), 'freeRadius_radiusFramedIPNetmask', null, 'radiusFramedIPNetmask');
 			$return['profile_checks']['freeRadius_radiusFramedIPNetmask'] = array(
@@ -749,6 +756,12 @@ class freeRadius extends baseModule {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
+		// add extension
+		if (isset($profile['freeRadius_addExt'][0]) && ($profile['freeRadius_addExt'][0] === "true")) {
+			if (!in_array('radiusprofile', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'radiusprofile';
+			}
+		}
 		// group names
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')
 			&& isset($profile['freeRadius_radiusGroupName'][0])
