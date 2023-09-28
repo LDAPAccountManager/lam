@@ -400,8 +400,12 @@ class PdfStructurePersistenceManager {
 		}
 		$logos = $this->getPdfTemplateLogoNames();
 		$existingLogos = $this->getPdfLogos($confName);
+		$existingLogoNames = array();
+		foreach ($existingLogos as $existingLogo) {
+			$existingLogoNames[] = $existingLogo->getName();
+		}
 		foreach ($logos as $logo) {
-			if (!in_array($logo, $existingLogos)) {
+			if (!in_array($logo, $existingLogoNames)) {
 				$binary = $this->getPdfTemplateLogoBinary($logo);
 				$this->savePdfLogo($confName, $logo, $binary);
 			}
