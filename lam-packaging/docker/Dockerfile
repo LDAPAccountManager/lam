@@ -85,6 +85,8 @@ RUN apt-get install --no-install-recommends -y \
         wget \
         libldap-common \
         gettext \
+        ckeditor \
+        libjs-jquery-jstree \
     && \
     rm /etc/apache2/sites-enabled/*default* && \
     rm -rf /var/cache/apt /var/lib/apt/lists/*
