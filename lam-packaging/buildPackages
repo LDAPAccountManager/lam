@@ -42,12 +42,7 @@ function minifyCSS {
 	echo "Minify CSS files in $dir"
 	local outFile=$dir/100_lam.${VERSION}.min.css
 	local files=`ls $dir/*.css`
-  extraOptions=''
-  cleancss --help | grep -e '--skip-rebase' > /dev/null
-  if [ $? -eq 0 ]; then
-    extraOptions='--skip-rebase'
-  fi
-	cat $files | cleancss $extraOptions -o $outFile
+	cat $files | cleancss -o $outFile
 	rm $files
 	# add final new line to supress Debian warnings
 	echo "" >> $outFile
