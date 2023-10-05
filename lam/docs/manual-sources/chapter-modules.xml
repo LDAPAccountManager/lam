@@ -1769,7 +1769,7 @@
       <title>FreeRadius</title>
 
       <para>FreeRadius is a software that implements the RADIUS authentication
-      protocol. LAM allows you to mange several of the FreeRadius
+      protocol. LAM allows you to manage several of the FreeRadius
       attributes.</para>
 
       <para>To activate the FreeRadius plugin please activate the FreeRadius
@@ -4041,7 +4041,7 @@ AuthorizedKeysCommandUser root</literallayout>
   <section>
     <title>DHCP</title>
 
-    <para>You can mange your DHCP server with LAM. It supports to manage
+    <para>You can manage your DHCP server with LAM. It supports to manage
     subnets, fixed IP entries, IP ranges and DDNS.</para>
 
     <para><emphasis role="bold">Configuration</emphasis></para>

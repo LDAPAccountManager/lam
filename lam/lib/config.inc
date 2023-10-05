@@ -1702,7 +1702,7 @@ class LAMConfig {
 	}
 
 	/**
-	 * Returns the list of configureed servers.
+	 * Returns the list of configured servers.
 	 *
 	 * @return RemoteServerConfiguration[] servers
 	 */

@@ -1350,7 +1350,7 @@ class htmlSelect extends htmlElement {
 	}
 
 	/**
-	 * Specifies if the elements are just a simple list or an assoziative array (default: simple list).
+	 * Specifies if the elements are just a simple list or an associative array (default: simple list).
 	 *
 	 * @param boolean $hasDescriptiveElements activates descriptive elements
 	 */
@@ -4215,7 +4215,7 @@ class htmlResponsiveSelect extends htmlSelect {
 	 * Constructor.
 	 *
 	 * @param String $name element name
-	 * @param array $elements list of elememts
+	 * @param array $elements list of elements
 	 * @param array $selectedElements list of selected elements
 	 * @param String $label descriptive label
 	 * @param String|array $helpID help ID or array of help ID + module name (optional)
@@ -4302,7 +4302,7 @@ class htmlResponsiveRadio extends htmlRadio {
 	 * Constructor.
 	 *
 	 * @param String $name element name
-	 * @param array $elements list of elememts
+	 * @param array $elements list of elements
 	 * @param array $selectedElements list of selected elements
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID (optional, default none)

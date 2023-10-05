@@ -632,7 +632,7 @@
 
         <para>LAM Pro can optionally display a captcha to verify that logins
         are not from robots. Captchas will be displayed when you tick the
-        chekbox to secure login with a captcha. The supported captcha
+        checkbox to secure login with a captcha. The supported captcha
         providers are:</para>
 
         <para><emphasis role="bold">Google reCAPTCHA</emphasis></para>
@@ -1471,7 +1471,7 @@
       resets are not from robots. The captcha provider is configured on
       "General settings" tab.</para>
 
-      <para>Captchas will be displayed when you tick the chekbox to use a
+      <para>Captchas will be displayed when you tick the checkbox to use a
       captcha.</para>
 
       <mediaobject>
@@ -1831,7 +1831,7 @@
       registrations are not from robots. The captcha provider is configured on
       "General settings" tab.</para>
 
-      <para>Captchas will be displayed when you tick the chekbox to use a
+      <para>Captchas will be displayed when you tick the checkbox to use a
       captcha.</para>
 
       <screenshot>

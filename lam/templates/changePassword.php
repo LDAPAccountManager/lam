@@ -77,7 +77,7 @@ if (isset($_POST['changePassword'])) {
 		printContent($message);
 		exit();
 	}
-	// check passsword strength
+	// check password strength
 	$userDn = $_SESSION['ldap']->getUserName();
 	$additionalAttrs = array();
 	$rdnAttr = extractRDNAttribute($userDn);

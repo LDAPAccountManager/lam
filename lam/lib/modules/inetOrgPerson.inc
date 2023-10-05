@@ -3785,7 +3785,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	/**
 	 * Returns if the Unix module is also active.
 	 *
-	 * @param string[] $modules active account mdules
+	 * @param string[] $modules active account modules
 	 * @return boolean Unix is active
 	 */
 	private function isUnixActive($modules = null) {
@@ -3802,7 +3802,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	/**
 	 * Returns if the Samba 3 module is also active.
 	 *
-	 * @param string[] $modules active account mdules
+	 * @param string[] $modules active account modules
 	 * @return boolean Samba 3 is active
 	 */
 	private function isSamba3Active($modules = null) {

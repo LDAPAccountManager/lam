@@ -1280,7 +1280,7 @@ class accountContainer {
 				$return['messages'] .= StatusMessage('ERROR', _('Passwords are different!'), '', array(), true);
 				$return['errorsOccurred'] = 'true';
 			}
-			// check passsword strength
+			// check password strength
 			$pwdPolicyResult = checkPasswordStrength($password1, null, null);
 			if ($pwdPolicyResult !== true) {
 				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', array(), true);
