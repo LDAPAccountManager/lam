@@ -760,7 +760,7 @@
         <title>4.9 -&gt; 5.0</title>
 
         <para>Samba 3: If you used logon hours then you need to set the
-        correct time zone on tab "Generel settings" in server profile.</para>
+        correct time zone on tab "General settings" in server profile.</para>
       </section>
 
       <section>
