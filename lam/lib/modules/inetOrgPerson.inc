@@ -1195,7 +1195,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	function display_html_attributes() {
 		$this->initCache();
-        $keysToReplace = array('mail', 'description', 'postalAddress', 'cn',
+        $keysToReplace = array('mail', 'description', 'postalAddress', 'uid', 'cn',
             'registeredAddress', 'labeledURI');
         if ($this->isUnixActive()) {
             $keysToReplace[] = 'uid';
@@ -2129,6 +2129,9 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
 		$profileElements = array();
 		if (!$this->isUnixActive($modules)) {
+			$profileElements[] = new htmlResponsiveInputField(_('User name'), 'inetOrgPerson_uid', null, 'uid');
+		}
+		if (!$this->isUnixActive($modules)) {
 			$profileElements[] = new htmlResponsiveInputField(_('Common name'), 'inetOrgPerson_cn', null, 'cn');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
@@ -2212,6 +2215,9 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
+		if (!$this->isUnixActive() && !empty($profile['inetOrgPerson_uid'][0])) {
+			$this->attributes['uid'][0] = $profile['inetOrgPerson_uid'][0];
+		}
 		if (!$this->isUnixActive() && !empty($profile['inetOrgPerson_cn'][0])) {
 			$this->attributes['cn'][0] = $profile['inetOrgPerson_cn'][0];
 		}
