@@ -113,7 +113,7 @@ RUN wget https://letsencrypt.org/certs/isrgrootx1.pem \
     update-ca-certificates
 
 # install LAM
-RUN wget http://prdownloads.sourceforge.net/lam/ldap-account-manager_${LAM_RELEASE}-1_all.deb?download \
+RUN wget https://github.com/LDAPAccountManager/lam/releases/download/${LAM_RELEASE}/ldap-account-manager_${LAM_RELEASE}-1_all.deb \
     -O /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
     dpkg -i /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
     rm -f /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb
