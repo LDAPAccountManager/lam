@@ -28,7 +28,7 @@ if [ "${LAM_DISABLE_TLS_CHECK:-}" = "true" ]; then
   fi
 fi
 
-sed -i -f- /etc/php/7.4/apache2/php.ini <<- EOF
+sed -i -f- /etc/php/8.2/apache2/php.ini <<- EOF
     s|^max_execution_time =.*|max_execution_time = 60|;
     s|^post_max_size =.*|post_max_size = 100M|;
     s|^upload_max_filesize =.*|upload_max_filesize = 100M|;

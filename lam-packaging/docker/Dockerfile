@@ -26,7 +26,7 @@
 #  See possible environment variables here: https://github.com/LDAPAccountManager/lam/blob/develop/lam-packaging/docker/.env
 #
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
 ARG LAM_RELEASE=8.5

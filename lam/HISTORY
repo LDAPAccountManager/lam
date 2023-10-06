@@ -1,3 +1,7 @@
+December 2023 8.6
+ - Docker: upgrade to Debian 12
+
+
 29.09.2023 8.5
   - Multi edit tool: allow attribute placeholders in values
   - Accessibility improvements
