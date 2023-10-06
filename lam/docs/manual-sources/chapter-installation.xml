@@ -15,7 +15,7 @@
       <itemizedlist>
         <listitem>
           <para>Apache/Nginx webserver (SSL recommended) with PHP module (PHP
-          (&gt;= 7.4.0) with ldap, gettext, xml, openssl and optional
+          (&gt;= 8.0.2) with ldap, gettext, xml, openssl and optional
           OpenSSL)</para>
         </listitem>
 
@@ -353,7 +353,7 @@
       <section>
         <title>PHP</title>
 
-        <para>LAM runs with PHP 7 (&gt;= 7.4.0). Needed changes in your
+        <para>LAM runs with PHP 8 (&gt;= 8.0.2). Needed changes in your
         php.ini:</para>
 
         <para>memory_limit = 128M</para>
@@ -609,7 +609,7 @@
       intermediate release.</para>
 
       <section>
-        <title>8.1 -&gt; 8.5</title>
+        <title>8.1 -&gt; 8.6</title>
 
         <para>No actions required.</para>
       </section>

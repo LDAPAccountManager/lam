@@ -1,4 +1,5 @@
 December 2023 8.6
+ - LAM requires PHP 8.0.2 or later
  - Docker: upgrade to Debian 12
 
 

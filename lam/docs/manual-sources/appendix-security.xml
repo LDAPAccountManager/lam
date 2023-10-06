@@ -441,9 +441,9 @@ semodule -i httpdlocal.pp</programlisting>
         ...
 }</programlisting>
 
-      <para>The included config file uses PHP 7.4. In case you run with PHP 8
+      <para>The included config file uses PHP 8.2. In case you run with a different PHP version
       please update the parameter "fastcgi_pass" to e.g.
-      "/var/run/php/php8.1-fpm.sock".</para>
+      "/var/run/php/php8.3-fpm.sock".</para>
     </section>
 
     <section>

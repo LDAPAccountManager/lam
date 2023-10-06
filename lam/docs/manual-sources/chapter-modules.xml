@@ -6328,12 +6328,6 @@ OK (10 msec)</programlisting>
 
     <itemizedlist>
       <listitem>
-        <para>PHP 7.2 or later: the module will not be shown if you use an
-        older PHP version since the required LDAP commands are not
-        supported.</para>
-      </listitem>
-
-      <listitem>
         <para>LDAP server with DDS (Dynamic Directory Services) support: your
         LDAP server needs to be configured to allow auto deletion of entries.
         See e.g. <ulink

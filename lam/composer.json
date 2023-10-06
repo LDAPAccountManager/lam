@@ -2,7 +2,7 @@
   "config": {
     "vendor-dir": "lib/3rdParty/composer",
     "platform": {
-      "php": "7.4"
+      "php": "8.0.2"
     }
   },
   "require" : {
