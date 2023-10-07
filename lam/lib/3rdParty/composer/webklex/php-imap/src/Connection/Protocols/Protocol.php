@@ -25,40 +25,40 @@ abstract class Protocol implements ProtocolInterface {
     /**
      * Default connection timeout in seconds
      */
-    protected $connection_timeout = 30;
+    protected int $connection_timeout = 30;
 
     /**
      * @var boolean
      */
-    protected $debug = false;
+    protected bool $debug = false;
 
     /**
      * @var boolean
      */
-    protected $enable_uid_cache = true;
+    protected bool $enable_uid_cache = true;
 
     /**
-     * @var false|\IMAP\Connection|resource
+     * @var resource
      */
     public $stream = false;
 
     /**
      * Connection encryption method
-     * @var mixed $encryption
+     * @var string $encryption
      */
-    protected $encryption = false;
+    protected string $encryption = "";
 
     /**
      * Set to false to ignore SSL certificate validation
      * @var bool
      */
-    protected $cert_validation = true;
+    protected bool $cert_validation = true;
 
     /**
      * Proxy settings
      * @var array
      */
-    protected $proxy = [
+    protected array $proxy = [
         'socket' => null,
         'request_fulluri' => false,
         'username' => null,
@@ -68,16 +68,16 @@ abstract class Protocol implements ProtocolInterface {
     /**
      * Cache for uid of active folder.
      *
-     * @var null|array
+     * @var array
      */
-    protected $uid_cache = null;
+    protected array $uid_cache = [];
 
     /**
      * Get an available cryptographic method
      *
      * @return int
      */
-    public function getCryptoMethod() {
+    public function getCryptoMethod(): int {
         // Allow the best TLS version(s) we can
         $cryptoMethod = STREAM_CRYPTO_METHOD_TLS_CLIENT;
 
@@ -95,18 +95,18 @@ abstract class Protocol implements ProtocolInterface {
     /**
      * Enable SSL certificate validation
      *
-     * @return $this
+     * @return Protocol
      */
-    public function enableCertValidation() {
+    public function enableCertValidation(): Protocol {
         $this->cert_validation = true;
         return $this;
     }
 
     /**
      * Disable SSL certificate validation
-     * @return $this
+     * @return Protocol
      */
-    public function disableCertValidation() {
+    public function disableCertValidation(): Protocol {
         $this->cert_validation = false;
         return $this;
     }
@@ -115,9 +115,9 @@ abstract class Protocol implements ProtocolInterface {
      * Set SSL certificate validation
      * @var int $cert_validation
      *
-     * @return $this
+     * @return Protocol
      */
-    public function setCertValidation($cert_validation) {
+    public function setCertValidation(int $cert_validation): Protocol {
         $this->cert_validation = $cert_validation;
         return $this;
     }
@@ -127,7 +127,7 @@ abstract class Protocol implements ProtocolInterface {
      *
      * @return bool
      */
-    public function getCertValidation() {
+    public function getCertValidation(): bool {
         return $this->cert_validation;
     }
 
@@ -135,9 +135,9 @@ abstract class Protocol implements ProtocolInterface {
      * Set connection proxy settings
      * @var array $options
      *
-     * @return $this
+     * @return Protocol
      */
-    public function setProxy($options) {
+    public function setProxy(array $options): Protocol {
         foreach ($this->proxy as $key => $val) {
             if (isset($options[$key])) {
                 $this->proxy[$key] = $options[$key];
@@ -152,19 +152,19 @@ abstract class Protocol implements ProtocolInterface {
      *
      * @return array
      */
-    public function getProxy() {
+    public function getProxy(): array {
         return $this->proxy;
     }
 
     /**
      * Prepare socket options
-     * @var string $transport
-     *
      * @return array
+     *@var string $transport
+     *
      */
-    private function defaultSocketOptions($transport) {
+    private function defaultSocketOptions(string $transport): array {
         $options = [];
-        if ($this->encryption != false) {
+        if ($this->encryption) {
             $options["ssl"] = [
                 'verify_peer_name' => $this->getCertValidation(),
                 'verify_peer'      => $this->getCertValidation(),
@@ -194,10 +194,10 @@ abstract class Protocol implements ProtocolInterface {
      * @param int $port of IMAP server, default is 143 (993 for ssl)
      * @param int $timeout timeout in seconds for initiating session
      *
-     * @return resource|boolean The socket created.
+     * @return resource The socket created.
      * @throws ConnectionFailedException
      */
-    protected function createStream($transport, $host, $port, $timeout) {
+    public function createStream($transport, string $host, int $port, int $timeout) {
         $socket = "$transport://$host:$port";
         $stream = stream_socket_client($socket, $errno, $errstr, $timeout,
             STREAM_CLIENT_CONNECT,
@@ -216,20 +216,22 @@ abstract class Protocol implements ProtocolInterface {
     }
 
     /**
+     * Get the current connection timeout
+     *
      * @return int
      */
-    public function getConnectionTimeout() {
+    public function getConnectionTimeout(): int {
         return $this->connection_timeout;
     }
 
     /**
+     * Set the connection timeout
      * @param int $connection_timeout
+     *
      * @return Protocol
      */
-    public function setConnectionTimeout($connection_timeout) {
-        if ($connection_timeout !== null) {
-            $this->connection_timeout = $connection_timeout;
-        }
+    public function setConnectionTimeout(int $connection_timeout): Protocol {
+        $this->connection_timeout = $connection_timeout;
         return $this;
     }
 
@@ -239,7 +241,7 @@ abstract class Protocol implements ProtocolInterface {
      *
      * @return string
      */
-    public function getUIDKey($uid) {
+    public function getUIDKey(int|string $uid): string {
         if ($uid == IMAP::ST_UID || $uid == IMAP::FT_UID) {
             return "UID";
         }
@@ -250,7 +252,14 @@ abstract class Protocol implements ProtocolInterface {
         return "";
     }
 
-    public function buildUIDCommand($command, $uid) {
+    /**
+     * Build a UID / MSGN command
+     * @param string $command
+     * @param int|string $uid
+     *
+     * @return string
+     */
+    public function buildUIDCommand(string $command, int|string $uid): string {
         return trim($this->getUIDKey($uid)." ".$command);
     }
 
@@ -259,9 +268,9 @@ abstract class Protocol implements ProtocolInterface {
      *
      * @param array|null $uids
      */
-    public function setUidCache($uids) {
+    public function setUidCache(?array $uids) {
         if (is_null($uids)) {
-            $this->uid_cache = null;
+            $this->uid_cache = [];
             return;
         }
 
@@ -269,17 +278,89 @@ abstract class Protocol implements ProtocolInterface {
 
         $uid_cache = [];
         foreach ($uids as $uid) {
-            $uid_cache[$messageNumber++] = $uid;
+            $uid_cache[$messageNumber++] = (int)$uid;
         }
 
         $this->uid_cache = $uid_cache;
     }
 
-    public function enableUidCache() {
+    /**
+     * Enable the uid cache
+     *
+     * @return void
+     */
+    public function enableUidCache(): void {
         $this->enable_uid_cache = true;
     }
 
-    public function disableUidCache() {
+    /**
+     * Disable the uid cache
+     *
+     * @return void
+     */
+    public function disableUidCache(): void {
         $this->enable_uid_cache = false;
+    }
+
+    /**
+     * Set the encryption method
+     * @param string $encryption
+     *
+     * @return void
+     */
+    public function setEncryption(string $encryption): void {
+        $this->encryption = $encryption;
+    }
+
+    /**
+     * Get the encryption method
+     * @return string
+     */
+    public function getEncryption(): string {
+        return $this->encryption;
+    }
+
+    /**
+     * Check if the current session is connected
+     *
+     * @return bool
+     */
+    public function connected(): bool {
+        return (bool)$this->stream;
+    }
+
+    /**
+     * Retrieves header/meta data from the resource stream
+     *
+     * @return array
+     */
+    public function meta(): array {
+        if (!$this->stream) {
+            return [
+                "crypto"       => [
+                    "protocol"       => "",
+                    "cipher_name"    => "",
+                    "cipher_bits"    => 0,
+                    "cipher_version" => "",
+                ],
+                "timed_out"    => true,
+                "blocked"      => true,
+                "eof"          => true,
+                "stream_type"  => "tcp_socket/unknown",
+                "mode"         => "c",
+                "unread_bytes" => 0,
+                "seekable"     => false,
+            ];
+        }
+        return stream_get_meta_data($this->stream);
+    }
+
+    /**
+     * Get the resource stream
+     *
+     * @return mixed
+     */
+    public function getStream(): mixed {
+        return $this->stream;
     }
 }

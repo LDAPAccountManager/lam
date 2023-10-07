@@ -27,22 +27,22 @@ class Address {
      * @var string $mail
      * @var string $full
      */
-    public $personal = "";
-    public $mailbox = "";
-    public $host = "";
-    public $mail = "";
-    public $full = "";
+    public string $personal = "";
+    public string $mailbox = "";
+    public string $host = "";
+    public string $mail = "";
+    public string $full = "";
 
     /**
      * Address constructor.
-     * @param object   $object
+     * @param object $object
      */
-    public function __construct($object) {
-        if (property_exists($object, "personal")){ $this->personal = $object->personal; }
-        if (property_exists($object, "mailbox")){ $this->mailbox = $object->mailbox; }
-        if (property_exists($object, "host")){ $this->host = $object->host; }
-        if (property_exists($object, "mail")){ $this->mail = $object->mail; }
-        if (property_exists($object, "full")){ $this->full = $object->full; }
+    public function __construct(object $object) {
+        if (property_exists($object, "personal")){ $this->personal = $object->personal ?? ''; }
+        if (property_exists($object, "mailbox")){ $this->mailbox = $object->mailbox ?? ''; }
+        if (property_exists($object, "host")){ $this->host = $object->host ?? ''; }
+        if (property_exists($object, "mail")){ $this->mail = $object->mail ?? ''; }
+        if (property_exists($object, "full")){ $this->full = $object->full ?? ''; }
     }
 
 

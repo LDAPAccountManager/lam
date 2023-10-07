@@ -22,14 +22,14 @@ use Webklex\PHPIMAP\Attachment;
 class AttachmentMask extends Mask {
 
     /** @var Attachment $parent */
-    protected $parent;
+    protected mixed $parent;
 
     /**
      * Get the attachment content base64 encoded
      *
      * @return string|null
      */
-    public function getContentBase64Encoded() {
+    public function getContentBase64Encoded(): ?string {
         return base64_encode($this->parent->content);
     }
 
@@ -38,7 +38,7 @@ class AttachmentMask extends Mask {
      *
      * @return string|null
      */
-    public function getImageSrc() {
+    public function getImageSrc(): ?string {
         return 'data:'.$this->parent->content_type.';base64,'.$this->getContentBase64Encoded();
     }
 }

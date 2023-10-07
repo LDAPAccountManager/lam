@@ -13,8 +13,17 @@
 namespace Webklex\PHPIMAP;
 
 use Carbon\Carbon;
+use Webklex\PHPIMAP\Connection\Protocols\Response;
+use Webklex\PHPIMAP\Exceptions\AuthFailedException;
 use Webklex\PHPIMAP\Exceptions\ConnectionFailedException;
+use Webklex\PHPIMAP\Exceptions\EventNotFoundException;
+use Webklex\PHPIMAP\Exceptions\FolderFetchingException;
+use Webklex\PHPIMAP\Exceptions\ImapBadRequestException;
+use Webklex\PHPIMAP\Exceptions\ImapServerErrorException;
+use Webklex\PHPIMAP\Exceptions\InvalidMessageDateException;
+use Webklex\PHPIMAP\Exceptions\MessageNotFoundException;
 use Webklex\PHPIMAP\Exceptions\NotSupportedCapabilityException;
+use Webklex\PHPIMAP\Exceptions\ResponseException;
 use Webklex\PHPIMAP\Exceptions\RuntimeException;
 use Webklex\PHPIMAP\Query\WhereQuery;
 use Webklex\PHPIMAP\Support\FolderCollection;
@@ -33,57 +42,57 @@ class Folder {
      *
      * @var Client
      */
-    protected $client;
+    protected Client $client;
 
     /**
      * Folder full path
      *
      * @var string
      */
-    public $path;
+    public string $path;
 
     /**
      * Folder name
      *
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
-     * Folder fullname
+     * Folder full name
      *
      * @var string
      */
-    public $full_name;
+    public string $full_name;
 
     /**
      * Children folders
      *
-     * @var FolderCollection|array
+     * @var FolderCollection
      */
-    public $children = [];
+    public FolderCollection $children;
 
     /**
      * Delimiter for folder
      *
      * @var string
      */
-    public $delimiter;
+    public string $delimiter;
 
     /**
-     * Indicates if folder can't containg any "children".
+     * Indicates if folder can't contain any "children".
      * CreateFolder won't work on this folder.
      *
      * @var boolean
      */
-    public $no_inferiors;
+    public bool $no_inferiors;
 
     /**
      * Indicates if folder is only container, not a mailbox - you can't open it.
      *
      * @var boolean
      */
-    public $no_select;
+    public bool $no_select;
 
     /**
      * Indicates if folder is marked. This means that it may contain new messages since the last time it was checked.
@@ -91,26 +100,26 @@ class Folder {
      *
      * @var boolean
      */
-    public $marked;
+    public bool $marked;
 
     /**
-     * Indicates if folder containg any "children".
+     * Indicates if folder contains any "children".
      * Not provided by all IMAP servers.
      *
      * @var boolean
      */
-    public $has_children;
+    public bool $has_children;
 
     /**
-     * Indicates if folder refers to other.
+     * Indicates if folder refers to others.
      * Not provided by all IMAP servers.
      *
      * @var boolean
      */
-    public $referral;
+    public bool $referral;
 
     /** @var array */
-    public $status;
+    public array $status;
 
     /**
      * Folder constructor.
@@ -126,9 +135,11 @@ class Folder {
         $this->events["folder"] = $client->getDefaultEvents("folder");
 
         $this->setDelimiter($delimiter);
-        $this->path      = $folder_name;
-        $this->full_name  = $this->decodeName($folder_name);
-        $this->name      = $this->getSimpleName($this->delimiter, $this->full_name);
+        $this->path = $folder_name;
+        $this->full_name = $this->decodeName($folder_name);
+        $this->name = $this->getSimpleName($this->delimiter, $this->full_name);
+        $this->children = new FolderCollection();
+        $this->has_children = false;
 
         $this->parseAttributes($attributes);
     }
@@ -138,8 +149,12 @@ class Folder {
      * @param string[] $extensions
      *
      * @return WhereQuery
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ConnectionFailedException
+     * @throws ResponseException
      */
     public function query(array $extensions = []): WhereQuery {
         $this->getClient()->checkConnection();
@@ -154,8 +169,12 @@ class Folder {
      * @param string[] $extensions
      *
      * @return WhereQuery
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ConnectionFailedException
+     * @throws ResponseException
      */
     public function search(array $extensions = []): WhereQuery {
         return $this->query($extensions);
@@ -166,8 +185,12 @@ class Folder {
      * @param string[] $extensions
      *
      * @return WhereQuery
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ConnectionFailedException
+     * @throws ResponseException
      */
     public function messages(array $extensions = []): WhereQuery {
         return $this->query($extensions);
@@ -184,14 +207,23 @@ class Folder {
 
     /**
      * Set children.
-     * @param FolderCollection|array $children
+     * @param FolderCollection $children
      *
-     * @return self
+     * @return Folder
      */
-    public function setChildren($children = []): Folder {
+    public function setChildren(FolderCollection $children): Folder {
         $this->children = $children;
 
         return $this;
+    }
+
+    /**
+     * Get children.
+     *
+     * @return FolderCollection
+     */
+    public function getChildren(): FolderCollection {
+        return $this->children;
     }
 
     /**
@@ -199,10 +231,15 @@ class Folder {
      * It converts UTF7-IMAP encoding to UTF-8.
      * @param $name
      *
-     * @return array|false|string|string[]|null
+     * @return string|array|bool|string[]|null
      */
-    protected function decodeName($name) {
-        return mb_convert_encoding($name, "UTF-8", "UTF7-IMAP");
+    protected function decodeName($name): string|array|bool|null {
+        $parts = [];
+        foreach (explode($this->delimiter, $name) as $item) {
+            $parts[] = EncodingAliases::convert($item, "UTF7-IMAP", "UTF-8");
+        }
+
+        return implode($this->delimiter, $parts);
     }
 
     /**
@@ -210,11 +247,10 @@ class Folder {
      * @param $delimiter
      * @param $full_name
      *
-     * @return mixed
+     * @return string|bool
      */
-    protected function getSimpleName($delimiter, $full_name) {
+    protected function getSimpleName($delimiter, $full_name): string|bool {
         $arr = explode($delimiter, $full_name);
-
         return end($arr);
     }
 
@@ -222,11 +258,11 @@ class Folder {
      * Parse attributes and set it to object properties.
      * @param $attributes
      */
-    protected function parseAttributes($attributes) {
+    protected function parseAttributes($attributes): void {
         $this->no_inferiors = in_array('\NoInferiors', $attributes);
-        $this->no_select    = in_array('\NoSelect', $attributes);
-        $this->marked       = in_array('\Marked', $attributes);
-        $this->referral     = in_array('\Referral', $attributes);
+        $this->no_select = in_array('\NoSelect', $attributes);
+        $this->marked = in_array('\Marked', $attributes);
+        $this->referral = in_array('\Referral', $attributes);
         $this->has_children = in_array('\HasChildren', $attributes);
     }
 
@@ -235,16 +271,20 @@ class Folder {
      * @param string $new_name
      * @param boolean $expunge
      *
-     * @return bool
+     * @return array
      * @throws ConnectionFailedException
-     * @throws Exceptions\EventNotFoundException
-     * @throws Exceptions\FolderFetchingException
-     * @throws Exceptions\RuntimeException
+     * @throws EventNotFoundException
+     * @throws FolderFetchingException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
-    public function move(string $new_name, bool $expunge = true): bool {
+    public function move(string $new_name, bool $expunge = true): array {
         $this->client->checkConnection();
-        $status = $this->client->getConnection()->renameFolder($this->full_name, $new_name);
-        if($expunge) $this->client->expunge();
+        $status = $this->client->getConnection()->renameFolder($this->full_name, $new_name)->validatedData();
+        if ($expunge) $this->client->expunge();
 
         $folder = $this->client->getFolder($new_name);
         $event = $this->getEvent("folder", "moved");
@@ -259,39 +299,48 @@ class Folder {
      *
      * @return array
      * @throws ConnectionFailedException
-     * @throws Exceptions\InvalidMessageDateException
-     * @throws Exceptions\MessageNotFoundException
-     * @throws Exceptions\RuntimeException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws InvalidMessageDateException
+     * @throws MessageNotFoundException
+     * @throws ResponseException
      */
     public function overview(string $sequence = null): array {
         $this->client->openFolder($this->path);
         $sequence = $sequence === null ? "1:*" : $sequence;
-        $uid = ClientManager::get('options.sequence', IMAP::ST_MSGN) == IMAP::ST_UID;
-        return $this->client->getConnection()->overview($sequence, $uid);
+        $uid = ClientManager::get('options.sequence', IMAP::ST_MSGN);
+        $response = $this->client->getConnection()->overview($sequence, $uid);
+        return $response->validatedData();
     }
 
     /**
      * Append a string message to the current mailbox
      * @param string $message
      * @param array|null $options
-     * @param string|null|Carbon $internal_date
+     * @param string|Carbon|null $internal_date
      *
-     * @return bool
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @return array
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
-    public function appendMessage(string $message, array $options = null, $internal_date = null): bool {
+    public function appendMessage(string $message, array $options = null, Carbon|string $internal_date = null): array {
         /**
          * Check if $internal_date is parsed. If it is null it should not be set. Otherwise, the message can't be stored.
          * If this parameter is set, it will set the INTERNALDATE on the appended message. The parameter should be a
          * date string that conforms to the rfc2060 specifications for a date_time value or be a Carbon object.
          */
 
-        if ($internal_date instanceof Carbon){
+        if ($internal_date instanceof Carbon) {
             $internal_date = $internal_date->format('d-M-Y H:i:s O');
         }
 
-        return $this->client->getConnection()->appendMessage($this->path, $message, $options, $internal_date);
+        return $this->client->getConnection()->appendMessage($this->path, $message, $options, $internal_date)->validatedData();
     }
 
     /**
@@ -299,13 +348,17 @@ class Folder {
      * @param string $new_name
      * @param boolean $expunge
      *
-     * @return bool
+     * @return array
      * @throws ConnectionFailedException
-     * @throws Exceptions\EventNotFoundException
-     * @throws Exceptions\FolderFetchingException
-     * @throws Exceptions\RuntimeException
+     * @throws EventNotFoundException
+     * @throws FolderFetchingException
+     * @throws RuntimeException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
-    public function rename(string $new_name, bool $expunge = true): bool {
+    public function rename(string $new_name, bool $expunge = true): array {
         return $this->move($new_name, $expunge);
     }
 
@@ -313,14 +366,22 @@ class Folder {
      * Delete the current folder
      * @param boolean $expunge
      *
-     * @return bool
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
-     * @throws Exceptions\EventNotFoundException
+     * @return array
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws EventNotFoundException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
-    public function delete(bool $expunge = true): bool {
-        $status = $this->client->getConnection()->deleteFolder($this->path);
-        if($expunge) $this->client->expunge();
+    public function delete(bool $expunge = true): array {
+        $status = $this->client->getConnection()->deleteFolder($this->path)->validatedData();
+        if ($this->client->getActiveFolder() == $this->path){
+            $this->client->setActiveFolder(null);
+        }
+
+        if ($expunge) $this->client->expunge();
 
         $event = $this->getEvent("folder", "deleted");
         $event::dispatch($this);
@@ -331,90 +392,101 @@ class Folder {
     /**
      * Subscribe the current folder
      *
-     * @return bool
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @return array
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
-    public function subscribe(): bool {
+    public function subscribe(): array {
         $this->client->openFolder($this->path);
-        return $this->client->getConnection()->subscribeFolder($this->path);
+        return $this->client->getConnection()->subscribeFolder($this->path)->validatedData();
     }
 
     /**
      * Unsubscribe the current folder
      *
-     * @return bool
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @return array
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
-    public function unsubscribe(): bool {
+    public function unsubscribe(): array {
         $this->client->openFolder($this->path);
-        return $this->client->getConnection()->unsubscribeFolder($this->path);
+        return $this->client->getConnection()->unsubscribeFolder($this->path)->validatedData();
     }
 
     /**
      * Idle the current connection
-     * @param callable $callback
+     * @param callable $callback function(Message $message) gets called if a new message is received
      * @param integer $timeout max 1740 seconds - recommended by rfc2177 §3. Should not be lower than the servers "* OK Still here" message interval
-     * @param boolean $auto_reconnect try to reconnect on connection close (@deprecated is no longer required)
      *
      * @throws ConnectionFailedException
-     * @throws Exceptions\InvalidMessageDateException
-     * @throws Exceptions\MessageContentFetchingException
-     * @throws Exceptions\MessageHeaderFetchingException
-     * @throws Exceptions\RuntimeException
-     * @throws Exceptions\EventNotFoundException
-     * @throws Exceptions\MessageFlagException
-     * @throws Exceptions\MessageNotFoundException
-     * @throws Exceptions\NotSupportedCapabilityException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws NotSupportedCapabilityException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws ResponseException
      */
-    public function idle(callable $callback, int $timeout = 300, bool $auto_reconnect = false) {
+    public function idle(callable $callback, int $timeout = 300): void {
         $this->client->setTimeout($timeout);
-        if (!in_array("IDLE", $this->client->getConnection()->getCapabilities())) {
-            throw new NotSupportedCapabilityException("IMAP server does not support IDLE");
+
+        if (!in_array("IDLE", $this->client->getConnection()->getCapabilities()->validatedData())) {
+            throw new Exceptions\NotSupportedCapabilityException("IMAP server does not support IDLE");
         }
-        $this->client->openFolder($this->path, true);
-        $connection = $this->client->getConnection();
-        $connection->idle();
+
+        $idle_client = $this->client->clone();
+        $idle_client->connect();
+        $idle_client->openFolder($this->path, true);
+        $idle_client->getConnection()->idle();
+
+        $last_action = Carbon::now()->addSeconds($timeout);
 
         $sequence = ClientManager::get('options.sequence', IMAP::ST_MSGN);
 
         while (true) {
-            try {
-                // This polymorphic call is fine - Protocol::idle() will throw an exception beforehand
-                $line = $connection->nextLine();
+            // This polymorphic call is fine - Protocol::idle() will throw an exception beforehand
+            $line = $idle_client->getConnection()->nextLine(Response::empty());
 
-                if (($pos = strpos($line, "EXISTS")) !== false) {
-                    $connection->done();
-                    $msgn = (int) substr($line, 2, $pos -2);
+            if (($pos = strpos($line, "EXISTS")) !== false) {
+                $msgn = (int)substr($line, 2, $pos - 2);
 
-                    $this->client->openFolder($this->path, true);
-                    $message = $this->query()->getMessageByMsgn($msgn);
-                    $message->setSequence($sequence);
-                    $callback($message);
+                // Check if the stream is still alive or should be considered stale
+                if (!$this->client->isConnected() || $last_action->isBefore(Carbon::now())) {
+                    // Reset the connection before interacting with it. Otherwise, the resource might be stale which
+                    // would result in a stuck interaction. If you know of a way of detecting a stale resource, please
+                    // feel free to improve this logic. I tried a lot but nothing seem to work reliably...
+                    // Things that didn't work:
+                    //      - Closing the resource with fclose()
+                    //      - Verifying the resource with stream_get_meta_data()
+                    //      - Bool validating the resource stream (e.g.: (bool)$stream)
+                    //      - Sending a NOOP command
+                    //      - Sending a null package
+                    //      - Reading a null package
+                    //      - Catching the fs warning
 
-                    $event = $this->getEvent("message", "new");
-                    $event::dispatch($message);
-                    $connection->idle();
-                } elseif (strpos($line, "OK") === false) {
-                    $connection->done();
-                    $connection->idle();
+                    // This polymorphic call is fine - Protocol::idle() will throw an exception beforehand
+                    $this->client->getConnection()->reset();
+                    // Establish a new connection
+                    $this->client->connect();
                 }
-            }catch (Exceptions\RuntimeException $e) {
-                if(strpos($e->getMessage(), "empty response") >= 0 && $connection->connected()) {
-                    $connection->done();
-                    $connection->idle();
-                    continue;
-                }
-                if(strpos($e->getMessage(), "connection closed") === false) {
-                    throw $e;
-                }
+                $last_action = Carbon::now()->addSeconds($timeout);
 
-                $this->client->reconnect();
+                // Always reopen the folder - otherwise the new message number isn't known to the current remote session
                 $this->client->openFolder($this->path, true);
 
-                $connection = $this->client->getConnection();
-                $connection->idle();
+                $message = $this->query()->getMessageByMsgn($msgn);
+                $message->setSequence($sequence);
+                $callback($message);
+
+                $event = $this->getEvent("message", "new");
+                $event::dispatch($message);
             }
         }
     }
@@ -423,19 +495,26 @@ class Folder {
      * Get folder status information
      *
      * @return array
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
     public function getStatus(): array {
         return $this->examine();
     }
 
     /**
-     * @throws RuntimeException
      * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
-    public function loadStatus(): Folder
-    {
+    public function loadStatus(): Folder {
         $this->status = $this->getStatus();
         return $this;
     }
@@ -444,12 +523,30 @@ class Folder {
      * Examine the current folder
      *
      * @return array
-     * @throws Exceptions\ConnectionFailedException
-     * @throws Exceptions\RuntimeException
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws RuntimeException
+     * @throws AuthFailedException
+     * @throws ResponseException
      */
     public function examine(): array {
-        $result = $this->client->getConnection()->examineFolder($this->path);
-        return is_array($result) ? $result : [];
+        return $this->client->getConnection()->examineFolder($this->path)->validatedData();
+    }
+
+    /**
+     * Select the current folder
+     *
+     * @return array
+     * @throws AuthFailedException
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws ResponseException
+     * @throws RuntimeException
+     */
+    public function select(): array {
+        return $this->client->getConnection()->selectFolder($this->path)->validatedData();
     }
 
     /**
@@ -465,8 +562,8 @@ class Folder {
      * Set the delimiter
      * @param $delimiter
      */
-    public function setDelimiter($delimiter){
-        if(in_array($delimiter, [null, '', ' ', false]) === true) {
+    public function setDelimiter($delimiter): void {
+        if (in_array($delimiter, [null, '', ' ', false]) === true) {
             $delimiter = ClientManager::get('options.delimiter', '/');
         }
 

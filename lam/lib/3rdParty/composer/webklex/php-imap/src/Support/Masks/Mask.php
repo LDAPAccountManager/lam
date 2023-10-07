@@ -27,14 +27,14 @@ class Mask {
      *
      * @var array $attributes
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
      * Parent instance
      *
-     * @var object $parent
+     * @var mixed $parent
      */
-    protected $parent;
+    protected mixed $parent;
 
     /**
      * Mask constructor.
@@ -53,7 +53,7 @@ class Mask {
     /**
      * Boot method made to be used by any custom mask
      */
-    protected function boot(){}
+    protected function boot(): void {}
 
     /**
      * Call dynamic attribute setter and getter methods and inherit the parent calls
@@ -119,9 +119,9 @@ class Mask {
     /**
      * Get the parent instance
      *
-     * @return object
+     * @return mixed
      */
-    public function getParent(){
+    public function getParent(): mixed {
         return $this->parent;
     }
 
