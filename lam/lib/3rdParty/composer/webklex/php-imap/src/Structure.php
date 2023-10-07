@@ -28,33 +28,33 @@ class Structure {
      *
      * @var string $raw
      */
-    public $raw = "";
+    public string $raw = "";
 
     /**
      * @var Header $header
      */
-    private $header = null;
+    private Header $header;
 
     /**
      * Message type (if multipart or not)
      *
      * @var int $type
      */
-    public $type = IMAP::MESSAGE_TYPE_TEXT;
+    public int $type = IMAP::MESSAGE_TYPE_TEXT;
 
     /**
      * All available parts
      *
      * @var Part[] $parts
      */
-    public $parts = [];
+    public array $parts = [];
 
     /**
      * Config holder
      *
      * @var array $config
      */
-    protected $config = [];
+    protected array $config = [];
 
     /**
      * Structure constructor.
@@ -77,7 +77,7 @@ class Structure {
      * @throws MessageContentFetchingException
      * @throws InvalidMessageDateException
      */
-    protected function parse(){
+    protected function parse(): void {
         $this->findContentType();
         $this->parts = $this->find_parts();
     }
@@ -85,9 +85,8 @@ class Structure {
     /**
      * Determine the message content type
      */
-    public function findContentType(){
-        $content_type = $this->header->get("content_type");
-        $content_type = (is_array($content_type)) ? implode(' ', $content_type) : $content_type;
+    public function findContentType(): void {
+        $content_type = $this->header->get("content_type")->first();
         if($content_type && stripos($content_type, 'multipart') === 0) {
             $this->type = IMAP::MESSAGE_TYPE_MULTIPART;
         }else{
@@ -96,7 +95,7 @@ class Structure {
     }
 
     /**
-     * Find all available headers and return the left over body segment
+     * Find all available headers and return the leftover body segment
      * @var string $context
      * @var integer $part_number
      *
@@ -115,6 +114,7 @@ class Structure {
         if (($boundary = $headers->getBoundary()) !== null) {
             return $this->detectParts($boundary, $body, $part_number);
         }
+
         return [new Part($body, $headers, $part_number)];
     }
 
@@ -131,7 +131,7 @@ class Structure {
         $final_parts = [];
         foreach($base_parts as $ctx) {
             $ctx = substr($ctx, 2);
-            if ($ctx !== "--" && $ctx != "") {
+            if ($ctx !== "--" && $ctx != "" && $ctx != "\r\n") {
                 $parts = $this->parsePart($ctx, $part_number);
                 foreach ($parts as $part) {
                     $final_parts[] = $part;
@@ -160,15 +160,5 @@ class Structure {
         }
 
         return [new Part($this->raw, $this->header)];
-    }
-
-    /**
-     * Try to find a boundary if possible
-     *
-     * @return string|null
-     * @Depricated since version 2.4.4
-     */
-    public function getBoundary(){
-        return $this->header->getBoundary();
     }
 }

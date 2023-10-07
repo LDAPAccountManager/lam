@@ -58,7 +58,7 @@ class WhereQuery extends Query {
     /**
      * @var array $available_criteria
      */
-    protected $available_criteria = [
+    protected array $available_criteria = [
         'OR', 'AND',
         'ALL', 'ANSWERED', 'BCC', 'BEFORE', 'BODY', 'CC', 'DELETED', 'FLAGGED', 'FROM', 'KEYWORD',
         'NEW', 'NOT', 'OLD', 'ON', 'RECENT', 'SEEN', 'SINCE', 'SUBJECT', 'TEXT', 'TO',
@@ -74,7 +74,7 @@ class WhereQuery extends Query {
      * @throws InvalidWhereQueryCriteriaException
      * @throws MethodNotFoundException
      */
-    public function __call(string $name, $arguments) {
+    public function __call(string $name, ?array $arguments) {
         $that = $this;
 
         $name = Str::camel($name);
@@ -84,7 +84,7 @@ class WhereQuery extends Query {
             $name = substr($name, 3);
         }
 
-        if (strpos(strtolower($name), "where") === false) {
+        if (!str_contains(strtolower($name), "where")) {
             $method = 'where' . ucfirst($name);
         } else {
             $method = lcfirst($name);
@@ -106,7 +106,7 @@ class WhereQuery extends Query {
      */
     protected function validate_criteria($criteria): string {
         $command = strtoupper($criteria);
-        if (substr($command, 0, 7) === "CUSTOM ") {
+        if (str_starts_with($command, "CUSTOM ")) {
             return substr($criteria, 7);
         }
         if (in_array($command, $this->available_criteria) === false) {
@@ -119,7 +119,7 @@ class WhereQuery extends Query {
     /**
      * Register search parameters
      * @param mixed $criteria
-     * @param null $value
+     * @param mixed $value
      *
      * @return $this
      * @throws InvalidWhereQueryCriteriaException
@@ -132,7 +132,7 @@ class WhereQuery extends Query {
      * $query->where(["FROM" => "someone@email.tld", "SEEN"]);
      * $query->where("FROM", "someone@email.tld")->where("SEEN");
      */
-    public function where($criteria, $value = null): WhereQuery {
+    public function where(mixed $criteria, mixed $value = null): WhereQuery {
         if (is_array($criteria)) {
             foreach ($criteria as $key => $value) {
                 if (is_numeric($key)) {
@@ -155,11 +155,11 @@ class WhereQuery extends Query {
      *
      * @throws InvalidWhereQueryCriteriaException
      */
-    protected function push_search_criteria(string $criteria, $value){
+    protected function push_search_criteria(string $criteria, mixed $value){
         $criteria = $this->validate_criteria($criteria);
         $value = $this->parse_value($value);
 
-        if ($value === null || $value === '') {
+        if ($value === '') {
             $this->query->push([$criteria]);
         } else {
             $this->query->push([$criteria, $value]);
@@ -167,7 +167,7 @@ class WhereQuery extends Query {
     }
 
     /**
-     * @param Closure $closure
+     * @param Closure|null $closure
      *
      * @return $this
      */
@@ -179,7 +179,7 @@ class WhereQuery extends Query {
     }
 
     /**
-     * @param Closure $closure
+     * @param Closure|null $closure
      *
      * @return $this
      */
@@ -222,7 +222,7 @@ class WhereQuery extends Query {
      * @throws InvalidWhereQueryCriteriaException
      * @throws MessageSearchValidationException
      */
-    public function whereBefore($value): WhereQuery {
+    public function whereBefore(mixed $value): WhereQuery {
         $date = $this->parse_date($value);
         return $this->where('BEFORE', $date);
     }
@@ -316,7 +316,7 @@ class WhereQuery extends Query {
      * @throws MessageSearchValidationException
      * @throws InvalidWhereQueryCriteriaException
      */
-    public function whereOn($value): WhereQuery {
+    public function whereOn(mixed $value): WhereQuery {
         $date = $this->parse_date($value);
         return $this->where('ON', $date);
     }
@@ -344,7 +344,7 @@ class WhereQuery extends Query {
      * @throws MessageSearchValidationException
      * @throws InvalidWhereQueryCriteriaException
      */
-    public function whereSince($value): WhereQuery {
+    public function whereSince(mixed $value): WhereQuery {
         $date = $this->parse_date($value);
         return $this->where('SINCE', $date);
     }
@@ -489,7 +489,7 @@ class WhereQuery extends Query {
      * @return WhereQuery
      * @throws InvalidWhereQueryCriteriaException
      */
-    public function whereUid($uid): WhereQuery {
+    public function whereUid(int|string $uid): WhereQuery {
         return $this->where('UID', $uid);
     }
 
@@ -513,9 +513,9 @@ class WhereQuery extends Query {
      * @param mixed $value
      * @param callable $callback
      * @param callable|null $default
-     * @return $this|mixed
+     * @return $this|null
      */
-    public function when($value, callable $callback, $default = null) {
+    public function when(mixed $value, callable $callback, ?callable $default = null): mixed {
         if ($value) {
             return $callback($this, $value) ?: $this;
         } elseif ($default) {
@@ -534,7 +534,7 @@ class WhereQuery extends Query {
      * @param callable|null $default
      * @return $this|mixed
      */
-    public function unless($value, callable $callback, $default = null) {
+    public function unless(mixed $value, callable $callback, ?callable $default = null): mixed {
         if (!$value) {
             return $callback($this, $value) ?: $this;
         } elseif ($default) {
@@ -542,5 +542,14 @@ class WhereQuery extends Query {
         }
 
         return $this;
+    }
+
+    /**
+     * Get all available search criteria
+     *
+     * @return array|string[]
+     */
+    public function getAvailableCriteria(): array {
+        return $this->available_criteria;
     }
 }

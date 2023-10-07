@@ -940,7 +940,7 @@ class imapAccess extends baseModule {
 	 */
 	private function isMailboxExisting($client, string $path): bool {
 		$list = $client->getConnection()->folders($path);
-		return is_array($list) && (sizeof($list) >= 1);
+		return ($list !== null) && is_array($list->data()) && (sizeof($list->data()) >= 1);
 	}
 
 	/**
@@ -952,13 +952,19 @@ class imapAccess extends baseModule {
 	 */
 	private function getQuota($client, string $user): array {
 		$user = $client->getConnection()->escapeString($user);
-		$quota = $client->getConnection()->requestAndResponse('GETQUOTA', array($user));
 		$quota_values = array();
-		if (isset($quota[0][2][0]) && ($quota[0][2][0] === 'STORAGE')) {
-			$quota_values = array(
-				self::QUOTA_LIMIT => $quota[0][2][2],
-				self::QUOTA_USAGE => $quota[0][2][1],
-			);
+		try {
+			$quota = $client->getConnection()->requestAndResponse('GETQUOTA', array($user));
+			$quota = $quota->data();
+			if (isset($quota[0][2][0]) && ($quota[0][2][0] === 'STORAGE')) {
+				$quota_values = array(
+					self::QUOTA_LIMIT => $quota[0][2][2],
+					self::QUOTA_USAGE => $quota[0][2][1],
+				);
+			}
+		}
+		catch (Exception $e) {
+			logNewMessage(LOG_DEBUG, 'Unable to read quote of ' . $user . ': ' . $e->getMessage());
 		}
 		return $quota_values;
 	}
@@ -975,6 +981,7 @@ class imapAccess extends baseModule {
 	private function runSetQuotaCommand($client, string $user, string $value): void {
 		$user = $client->getConnection()->escapeString($user);
 		$result = $client->getConnection()->requestAndResponse('SETQUOTA', array($user, '(STORAGE ' . $value . ')'));
+		$result = $result->data();
 		if (isset($result[0][0]) && ($result[0][0] === 'OK')) {
 			return;
 		}
@@ -994,11 +1001,12 @@ class imapAccess extends baseModule {
 		$userEscaped = $client->getConnection()->escapeString($user);
 		$adminUser = $client->getConnection()->escapeString($this->getAdminUser());
 		$result = $client->getConnection()->requestAndResponse('SETACL', array($userEscaped, $adminUser, '+c'));
+		$result = $result->data();
 		if (!isset($result[0][0]) || ($result[0][0] !== 'OK')) {
 			throw new LAMException(null);
 		}
 		$result = $client->getConnection()->deleteFolder($user);
-		if (!$result) {
+		if (!$result->successful()) {
 			throw new LAMException(null);
 		}
 	}
