@@ -75,9 +75,8 @@ class WebauthnProviderTest extends TestCase {
 		$row = new \htmlResponsiveRow();
 
 		$provider->addCustomInput($row, 'userDn');
-		$tabindex = 0;
 		ob_start();
-		$row->generateHTML(null, array(), array(), false, $tabindex, null);
+		$row->generateHTML(null, array(), array(), false, null);
 		$html = ob_get_contents();
 		ob_end_clean();
 		$this->assertStringContainsString('skip_webauthn', $html);

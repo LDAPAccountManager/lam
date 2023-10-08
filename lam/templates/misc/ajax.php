@@ -322,9 +322,8 @@ class Ajax {
 			$row->add($table, 12);
 		}
 		$row->addVerticalSpacer('2rem');
-		$tabindex = 10000;
 		ob_start();
-		$row->generateHTML(null, array(), array(), false, $tabindex, null);
+		$row->generateHTML(null, array(), array(), false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo json_encode(array('content' => $content));
@@ -352,8 +351,7 @@ class Ajax {
 		$row->add($message, 12);
 		$row->addVerticalSpacer('2rem');
 		ob_start();
-		$tabindex = 50000;
-		$row->generateHTML(null, array(), array(), true, $tabindex, null);
+		$row->generateHTML(null, array(), array(), true, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo json_encode(array('content' => $content));

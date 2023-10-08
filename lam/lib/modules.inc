@@ -677,18 +677,17 @@ function getRequiredExtensions() {
 * @param mixed $input htmlElement or array of htmlElement elements
 * @param array $values List of values which override the defaults in $input (name => value)
 * @param boolean $restricted If true then no buttons will be displayed
-* @param integer $tabindex Start value of tabulator index for input fields
 * @param string $scope Account type
 * @return array List of input field names and their type (name => type)
 */
-function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
+function parseHtml($module, $input, $values, $restricted, $scope) {
 	if ($input instanceof htmlElement) {
-		return $input->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		return $input->generateHTML($module, $input, $values, $restricted, $scope);
 	}
 	if (is_array($input) && (sizeof($input) > 0)) {
 		$return = array();
 		for ($i = 0; $i < sizeof($input); $i++) {
-			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
+			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $scope));
 		}
 		return $return;
 	}
