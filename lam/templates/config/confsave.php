@@ -73,13 +73,11 @@ $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 try {
 	$serverProfilePersistenceManager->saveProfile($conf, $confName);
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "' . htmlspecialchars($confName) . '", "' . _('Ok') . '", "../login.php")');
-	$tabIndex = 0;
-	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+	parseHtml(null, $scriptTag, array(), false, null);
 }
 catch (LAMException $e) {
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . htmlspecialchars($e->getTitle()) . '", "' . htmlspecialchars($e->getMessage()) . '", "' . _('Ok') . '", "../login.php")');
-	$tabIndex = 0;
-	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+	parseHtml(null, $scriptTag, array(), false, null);
 }
 finally {
 	// remove settings from session

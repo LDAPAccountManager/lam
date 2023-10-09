@@ -89,7 +89,6 @@ if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) ==
 	die();
 }
 
-$tabindex = 1;
 if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$typeId = $_GET['type'];
 	$type = $typeManager->getConfiguredType($typeId);
@@ -138,13 +137,13 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	addSecurityTokenToMetaHTML($container);
 	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
 	$container->addVerticalSpacer('1rem');
-	parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
+	parseHtml(null, $container, array(), false, $type->getScope());
 	// Print delete rows from modules
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
 	$values = array();
 	foreach ($modules as $module) {
 		$module = \moduleCache::getModule($module, $type->getScope());
-		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $tabindex, $type->getScope());
+		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $type->getScope());
 	}
 	$buttonContainer = new htmlResponsiveRow();
 	$buttonContainer->addVerticalSpacer('1rem');
@@ -157,7 +156,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$buttonGroup->addElement($cancelButton);
 	$buttonContainer->add($buttonGroup, 12);
 	$buttonContainer->addVerticalSpacer('1rem');
-	parseHtml(null, $buttonContainer, array(), false, $tabindex, $type->getScope());
+	parseHtml(null, $buttonContainer, array(), false, $type->getScope());
 	echo "</form>\n";
 	echo "</div>\n";
 	include '../lib/adminFooter.inc';
@@ -331,7 +330,7 @@ if (isset($_POST['delete'])) {
 	$buttonName = $allOk ? 'cancelAllOk' : 'cancel';
 	$container->add(new htmlButton($buttonName, _('Back to list')), 12);
 	$container->addVerticalSpacer('1rem');
-	parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
+	parseHtml(null, $container, array(), false, $type->getScope());
 	echo "</div>\n";
 	echo "</form>\n";
 	?>

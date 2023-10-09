@@ -1111,7 +1111,7 @@ class accountContainer {
 		$titleBarContainer->add($titleBarSuffixRdn);
 
 		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar'));
-		parseHtml(null, $titleBarDiv, array(), false, $tabindex, $this->type->getScope());
+		parseHtml(null, $titleBarDiv, array(), false, $this->type->getScope());
 
 		echo '<div id="lamVerticalTabs" class="lam-vertical-tab-container">';
 		echo '<table class="lam-vertical-tabs fullwidth">';
@@ -1128,8 +1128,7 @@ class accountContainer {
 			catch (LAMException $e) {
 				$return = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
-			$y = 5000;
-			parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type->getScope());
+			parseHtml($this->order[$this->current_page], $return, array(), false, $this->type->getScope());
 			echo "</div>\n";
 			echo '</td>';
 			echo '</tr>';
@@ -1235,9 +1234,8 @@ class accountContainer {
 		$buttonGroup->addElement($cancelButton);
 		$container->add($buttonGroup);
 		// generate HTML
-		$tabindex = 2000;
 		if ($printContainer) {
-			parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
+			parseHtml(null, $container, array(), false, $this->type->getScope());
 		}
 		echo "</div>\n";
 		echo "</div>\n";
@@ -1418,7 +1416,7 @@ class accountContainer {
 		}
 		$row->add($rightGroup, 12, 3, 3, 'text-right');
 
-		parseHtml(null, $row, array(), false, $tabindex, $this->type->getScope());
+		parseHtml(null, $row, array(), false, $this->type->getScope());
 	}
 
 	/**
@@ -1513,8 +1511,7 @@ class accountContainer {
 		$buttonGroup->addElement($backToEditButton);
 		$container->add($buttonGroup);
 
-		$tabindex = 1;
-		parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
+		parseHtml(null, $container, array(), false, $this->type->getScope());
 
 		echo "</div>\n";
 		$this->printPageFooter();

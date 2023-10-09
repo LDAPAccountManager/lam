@@ -148,8 +148,6 @@ if (isset($_REQUEST['type'])) {
 echo '<div class="smallPaddingContent">';
 echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 
-$tabindex = 1;
-
 $row = new htmlResponsiveRow();
 $row->add(new htmlTitle(_("Account creation via file upload")), 12);
 $row->add(new htmlOutputText(_("Here you can create multiple accounts by providing a CSV file.")), 12);
@@ -240,7 +238,7 @@ if (!empty($types)) {
 }
 
 addSecurityTokenToMetaHTML($row);
-parseHtml(null, $row, array(), false, $tabindex, 'user');
+parseHtml(null, $row, array(), false, 'user');
 
 ?>
 <script type="text/javascript">
@@ -454,7 +452,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	}
 
 	addSecurityTokenToMetaHTML($row);
-	parseHtml(null, $row, array(), false, $tabindex, $scope);
+	parseHtml(null, $row, array(), false, $scope);
 
 	echo "</form>\n";
 

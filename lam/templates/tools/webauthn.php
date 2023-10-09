@@ -61,7 +61,6 @@ setlanguage();
 include __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="smallPaddingContent">';
 echo "<form id='webauthnform' action=\"webauthn.php\" method=\"post\">\n";
-$tabindex = 1;
 $container = new htmlResponsiveRow();
 
 $container->add(new htmlTitle(_("WebAuthn devices")), 12);
@@ -148,7 +147,7 @@ $container->add($confirmationDiv, 12);
 
 addSecurityTokenToMetaHTML($container);
 
-parseHtml(null, $container, array(), false, $tabindex, 'user');
+parseHtml(null, $container, array(), false, 'user');
 
 echo '</form>';
 echo '</div>';

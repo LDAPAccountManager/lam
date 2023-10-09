@@ -3386,8 +3386,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$contentElement = $this->getSelfServiceUserCertificates();
 			ob_end_clean();
 			ob_start();
-			$tabindex = 999;
-			parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+			parseHtml(null, $contentElement, array(), true, $this->get_scope());
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -3428,8 +3427,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$contentElement = $this->getSelfServicePhoto(false, true);
 			ob_end_clean();
 			ob_start();
-			$tabindex = 999;
-			parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+			parseHtml(null, $contentElement, array(), true, $this->get_scope());
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -3448,8 +3446,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$contentElement = $this->getSelfServicePhoto(false, false);
 		ob_end_clean();
 		ob_start();
-		$tabindex = 999;
-		parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+		parseHtml(null, $contentElement, array(), true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(
@@ -3476,8 +3473,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$contentElement = $this->getSelfServiceUserCertificates();
 		ob_end_clean();
 		ob_start();
-		$tabindex = 999;
-		parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+		parseHtml(null, $contentElement, array(), true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(

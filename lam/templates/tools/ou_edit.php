@@ -127,7 +127,6 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				include '../../lib/adminHeader.inc';
 				echo '<div class="smallPaddingContent">';
 				echo "<form action=\"ou_edit.php\" method=\"post\">\n";
-				$tabindex = 1;
 				$container = new htmlResponsiveRow();
 				$label = new htmlOutputText(_("Do you really want to delete this OU?"));
 				$label->colspan = 5;
@@ -147,7 +146,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$container->add(new htmlHiddenInput('deleteOU', 'submit'), 12);
 				$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']), 12);
 				addSecurityTokenToMetaHTML($container);
-				parseHtml(null, $container, array(), false, $tabindex, 'user');
+				parseHtml(null, $container, array(), false, 'user');
 				echo "</form>";
 				echo '</div>';
 				include '../../lib/adminFooter.inc';
@@ -174,7 +173,6 @@ function display_main(?string $message, ?string $error): void {
 	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 
-	$tabindex = 1;
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("OU editor")), 12);
 	if ($error !== null) {
@@ -246,7 +244,7 @@ function display_main(?string $message, ?string $error): void {
 	}
 
 	addSecurityTokenToMetaHTML($container);
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 	echo '</div>';
 	include __DIR__ . '/../../lib/adminFooter.inc';

@@ -45,7 +45,6 @@ setlanguage();
 
 echo $_SESSION['header'];
 printHeaderContents(_("Configuration overview"), '../..');
-$tabindex = 0;
 $content = new htmlResponsiveRow();
 
 ?>
@@ -115,7 +114,7 @@ $content = new htmlResponsiveRow();
 		$content->add(new htmlLink(_("Back to login"), '../login.php'), 12);
 		$content->addVerticalSpacer('2rem');
 
-		parseHtml(null, $content, array(), true, $tabindex, null);
+		parseHtml(null, $content, array(), true, null);
 
 		?>
 

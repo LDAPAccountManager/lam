@@ -172,7 +172,7 @@ function printImportTabContent(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 
@@ -188,7 +188,7 @@ function printImportTabProcessing(&$tabindex): void {
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
-		parseHtml(null, $container, array(), false, $tabindex, 'user');
+		parseHtml(null, $container, array(), false, 'user');
 		printImportTabContent($tabindex);
 		return;
 	}
@@ -217,7 +217,7 @@ function printImportTabProcessing(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 
@@ -312,7 +312,7 @@ function printExportTabContent(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 
@@ -378,7 +378,7 @@ function printExportTabProcessing(&$tabindex): void {
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
-		parseHtml(null, $container, array(), false, $tabindex, 'user');
+		parseHtml(null, $container, array(), false, 'user');
 		printExportTabContent($tabindex);
 		return;
 	}
@@ -418,7 +418,7 @@ function printExportTabProcessing(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 

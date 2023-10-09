@@ -67,8 +67,6 @@ if (!empty($_GET['display']) && in_array($_GET['display'], $availableViews)) {
 	$selectedView = $_GET['display'];
 }
 
-$tabindex = 1;
-
 $row = new htmlResponsiveRow();
 $row->add(new htmlTitle(_('Schema browser')));
 $row->addVerticalSpacer('2rem');
@@ -93,7 +91,7 @@ elseif( $selectedView == 'objectClass' ) {
 	displayObjectClassList($row);
 }
 
-parseHtml(null, $row, array(), false, $tabindex, 'user');
+parseHtml(null, $row, array(), false, 'user');
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

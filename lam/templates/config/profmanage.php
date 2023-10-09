@@ -206,7 +206,6 @@ printJsIncludes('../..');
 		<!-- form for adding/renaming/deleting profiles -->
 		<form id="profileForm" name="profileForm" action="profmanage.php" method="post">
 <?php
-$tabindex = 1;
 
 $row = new htmlResponsiveRow();
 
@@ -329,7 +328,7 @@ $row->addVerticalSpacer('2rem');
 $backLink = new htmlLink(_("Back to profile login"), 'conflogin.php');
 $row->add($backLink, 12, 12, 12, 'text-left');
 
-parseHtml('', new htmlDiv(null, $row, array('centeredTable')), array(), false, $tabindex, 'user');
+parseHtml('', new htmlDiv(null, $row, array('centeredTable')), array(), false, 'user');
 
 ?>
 		</form>

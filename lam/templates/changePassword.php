@@ -139,8 +139,7 @@ function printContent($message = null, $showPasswordInputs = true): void {
 		addSecurityTokenToMetaHTML($container);
 	}
 
-	$tabindex = 1;
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 
 	echo "</form><br>\n";
 	echo "</div>\n";

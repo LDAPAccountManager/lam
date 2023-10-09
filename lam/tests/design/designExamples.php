@@ -344,8 +344,7 @@ $row->add(new htmlSpacer(null, '20rem'));
 
 $form = new htmlForm('formname', 'designExamples.php', $row);
 
-$tabindex = 1;
-parseHtml(null, $form, array(), false, $tabindex, 'user');
+parseHtml(null, $form, array(), false, 'user');
 
 ?>
 <script type="text/javascript" src="../../templates/lib/extra/ckeditor/ckeditor.js"></script>

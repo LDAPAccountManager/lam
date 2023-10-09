@@ -498,9 +498,8 @@ class Ajax {
 			$row->add($button, 12, 3, 3, 'text-left');
 			$mainRow->add($row, 12);
 		}
-		$tabindex = 1000;
 		ob_start();
-		parseHtml(null, $mainRow, array(), false, $tabindex, 'user');
+		parseHtml(null, $mainRow, array(), false, 'user');
 		$out = ob_get_contents();
 		ob_end_clean();
 		if ($out === false) {
@@ -560,9 +559,8 @@ class Ajax {
 			$text->setCSSClasses(array('text-center', 'display-as-block', 'text-error'));
 		}
 		$resultRow->add($text);
-		$tabindex = 9999;
 		ob_start();
-		parseHtml(null, $resultRow, array(), false, $tabindex, 'user');
+		parseHtml(null, $resultRow, array(), false, 'user');
 		$out = ob_get_contents();
 		ob_end_clean();
 		$result = array('resultHtml' => $out);

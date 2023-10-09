@@ -96,7 +96,6 @@ $monitorEntries = array_change_key_case($monitorEntries, CASE_LOWER);
 
 include __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="smallPaddingContent">';
-$tabindex = 1;
 $container = new htmlResponsiveRow();
 
 $container->add(new htmlTitle(_("Server information")), 12);
@@ -361,9 +360,7 @@ elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
 	}
 }
 
-parseHtml(null, $container, array(), true, $tabindex, 'user');
+parseHtml(null, $container, array(), true, 'user');
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
-
-?>

@@ -160,8 +160,7 @@ printHeaderContents(_("Login"), '../..');
 		$div = new htmlDiv(null, $group);
 		$div->setCSSClasses(array('centeredTable'));
 
-		$tabindex = 1;
-		parseHtml(null, $div, array(), false, $tabindex, 'user');
+		parseHtml(null, $div, array(), false, 'user');
 		?>
 		</td></tr>
 		</table>
