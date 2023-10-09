@@ -7,7 +7,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2022  Roland Gruber
+  Copyright (C) 2005 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -579,8 +579,7 @@ class ldapPublicKey extends baseModule {
 				$contentElement = $this->getSelfServiceKeys();
 				ob_end_clean();
 				ob_start();
-				$tabindex = 999;
-				parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+				parseHtml(null, $contentElement, array(), true, $this->get_scope());
 				$content = ob_get_contents();
 				ob_end_clean();
 				$jsonReturn = array(
@@ -639,8 +638,7 @@ class ldapPublicKey extends baseModule {
 			$contentElement = $this->getSelfServiceKeys();
 			ob_end_clean();
 			ob_start();
-			$tabindex = 999;
-			parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+			parseHtml(null, $contentElement, array(), true, $this->get_scope());
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -671,8 +669,7 @@ class ldapPublicKey extends baseModule {
 		$contentElement = $this->getSelfServiceKeys();
 		ob_end_clean();
 		ob_start();
-		$tabindex = 999;
-		parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+		parseHtml(null, $contentElement, array(), true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(

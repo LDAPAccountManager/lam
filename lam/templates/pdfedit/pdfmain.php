@@ -446,8 +446,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 
 		$container->addVerticalSpacer('4rem');
 		// generate content
-		$tabindex = 1;
-		parseHtml(null, $container, array(), false, $tabindex, 'user');
+		parseHtml(null, $container, array(), false, 'user');
 
 		echo "</form>\n";
 
@@ -477,7 +476,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         $logoExportForm = new htmlForm('logoExportForm', 'pdfmain.php', $logoExportFormContent);
         $logoExportDialog = new htmlDiv('logoExportDiv', $logoExportForm, array('hidden'));
         $container->add($logoExportDialog, 12);
-    	parseHtml(null, $container, array(), false, $tabindex, 'user');
+    	parseHtml(null, $container, array(), false, 'user');
 
         // import logo form
         $container = new htmlResponsiveRow();
@@ -506,7 +505,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         $logoImportForm = new htmlForm('logoImportForm', 'pdfmain.php', $logoImportFormContent);
         $logoImportDialog = new htmlDiv('logoImportDiv', $logoImportForm, array('hidden'));
         $container->add($logoImportDialog, 12);
-        parseHtml(null, $container, array(), false, $tabindex, 'user');
+        parseHtml(null, $container, array(), false, 'user');
 
 	    foreach ($templateClasses as $templateClass) {
 			$typeId = $templateClass['typeId'];
@@ -553,7 +552,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$containerStructures->add(new htmlHiddenInput('typeId', $typeId), 12);
 			addSecurityTokenToMetaHTML($containerStructures);
 
-			parseHtml(null, $containerStructures, array(), false, $tabindex, 'user');
+			parseHtml(null, $containerStructures, array(), false, 'user');
 
 			echo '</form>';
 			echo "</div>\n";
@@ -598,7 +597,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'), 12);
 			addSecurityTokenToMetaHTML($containerTarget);
 
-			parseHtml(null, $containerTarget, array(), false, $tabindex, 'user');
+			parseHtml(null, $containerTarget, array(), false, 'user');
 
 			echo '</form>';
 			echo "</div>\n";
@@ -649,7 +648,7 @@ if (!empty($globalDeletableTemplates)) {
     $container->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'));
     $container->addVerticalSpacer('1rem');
     $globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'pdfmain.php', $container);
-    parseHtml(null, $globalTemplateDeleteForm, array(), false, $tabindex, 'user');
+    parseHtml(null, $globalTemplateDeleteForm, array(), false, 'user');
 }
 
 // delete global PDF logos
@@ -672,7 +671,7 @@ if (!empty($globalPdfLogos)) {
 	$container->add(new htmlHiddenInput('deleteGlobalLogo', 'true'));
 	$container->addVerticalSpacer('1rem');
 	$globalLogoDeleteForm = new htmlForm('deleteGlobalLogoForm', 'pdfmain.php', $container);
-	parseHtml(null, $globalLogoDeleteForm, array(), false, $tabindex, 'user');
+	parseHtml(null, $globalLogoDeleteForm, array(), false, 'user');
 }
 
 echo "</div>\n";

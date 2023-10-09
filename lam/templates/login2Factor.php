@@ -53,7 +53,6 @@ setlanguage();
 $config = $_SESSION['config'];
 $password = $_SESSION['ldap']->getPassword();
 $user = $_SESSION['ldap']->getUserName();
-$tabIndex = 1;
 
 // get serials
 try {
@@ -70,7 +69,7 @@ catch (Exception $e) {
 	logNewMessage(LOG_ERR, 'Unable to get 2-factor serials for ' . $user . ' ' . $e->getMessage());
 	printHeader();
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication.") . '", "", "' . _('Ok') . '", "login.php")');
-	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+	parseHtml(null, $scriptTag, array(), false, null);
 	printFooter();
 	die();
 }
@@ -96,7 +95,7 @@ if (empty($serials) && $config->getTwoFactorAuthenticationOptional()) {
 if (empty($serials)) {
     printHeader();
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication because no tokens were found.") . '", "", "' . _('Ok') . '", "login.php")');
-	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+	parseHtml(null, $scriptTag, array(), false, null);
 	printFooter();
 	die();
 }
@@ -232,9 +231,8 @@ echo $config->getTwoFactorAuthenticationCaption();
 	$row->add($logout);
 	$group->addElement($row);
 
-	$tabindex = 1;
 	addSecurityTokenToMetaHTML($group);
-	parseHtml(null, $group, array(), false, $tabindex, 'user');
+	parseHtml(null, $group, array(), false, 'user');
 
 ?>
 	</div>

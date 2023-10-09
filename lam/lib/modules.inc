@@ -677,18 +677,17 @@ function getRequiredExtensions() {
 * @param mixed $input htmlElement or array of htmlElement elements
 * @param array $values List of values which override the defaults in $input (name => value)
 * @param boolean $restricted If true then no buttons will be displayed
-* @param integer $tabindex Start value of tabulator index for input fields
 * @param string $scope Account type
 * @return array List of input field names and their type (name => type)
 */
-function parseHtml($module, $input, $values, $restricted, &$tabindex, $scope) {
+function parseHtml($module, $input, $values, $restricted, $scope) {
 	if ($input instanceof htmlElement) {
-		return $input->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		return $input->generateHTML($module, $input, $values, $restricted, $scope);
 	}
 	if (is_array($input) && (sizeof($input) > 0)) {
 		$return = array();
 		for ($i = 0; $i < sizeof($input); $i++) {
-			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
+			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $scope));
 		}
 		return $return;
 	}
@@ -1059,7 +1058,6 @@ class accountContainer {
 	 * @param array $result list of messages
 	 */
 	private function printModuleContent($result) {
-		$tabindex = 1;
 		$this->printPageHeader();
 		$this->printPasswordPromt();
 		// display error messages
@@ -1071,7 +1069,7 @@ class accountContainer {
 		echo '<div id="passwordMessageArea"></div>';
 		echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		echo "<tr><td style=\"padding: 5px 0px 0px 0px;\">\n";
-		$this->printCommonControls($tabindex);
+		$this->printCommonControls();
 		echo "</td></tr>\n";
 		echo "<tr valign=\"top\"><td style=\"padding: 15px;\">";
 		// print title bar
@@ -1112,7 +1110,7 @@ class accountContainer {
 		$titleBarContainer->add($titleBarSuffixRdn);
 
 		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar'));
-		parseHtml(null, $titleBarDiv, array(), false, $tabindex, $this->type->getScope());
+		parseHtml(null, $titleBarDiv, array(), false, $this->type->getScope());
 
 		echo '<div id="lamVerticalTabs" class="lam-vertical-tab-container">';
 		echo '<table class="lam-vertical-tabs fullwidth">';
@@ -1129,8 +1127,7 @@ class accountContainer {
 			catch (LAMException $e) {
 				$return = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
-			$y = 5000;
-			parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type->getScope());
+			parseHtml($this->order[$this->current_page], $return, array(), false, $this->type->getScope());
 			echo "</div>\n";
 			echo '</td>';
 			echo '</tr>';
@@ -1236,9 +1233,8 @@ class accountContainer {
 		$buttonGroup->addElement($cancelButton);
 		$container->add($buttonGroup);
 		// generate HTML
-		$tabindex = 2000;
 		if ($printContainer) {
-			parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
+			parseHtml(null, $container, array(), false, $this->type->getScope());
 		}
 		echo "</div>\n";
 		echo "</div>\n";
@@ -1354,10 +1350,8 @@ class accountContainer {
 
 	/**
 	 * Prints common controls like the save button and the ou selection.
-	 *
-	 * @param int $tabindex tabindex for GUI elements
 	 */
-	private function printCommonControls(&$tabindex) {
+	private function printCommonControls(): void {
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(array('maxrow'));
 		$leftButtonGroup = new htmlGroup();
@@ -1419,7 +1413,7 @@ class accountContainer {
 		}
 		$row->add($rightGroup, 12, 3, 3, 'text-right');
 
-		parseHtml(null, $row, array(), false, $tabindex, $this->type->getScope());
+		parseHtml(null, $row, array(), false, $this->type->getScope());
 	}
 
 	/**
@@ -1514,8 +1508,7 @@ class accountContainer {
 		$buttonGroup->addElement($backToEditButton);
 		$container->add($buttonGroup);
 
-		$tabindex = 1;
-		parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
+		parseHtml(null, $container, array(), false, $this->type->getScope());
 
 		echo "</div>\n";
 		$this->printPageFooter();

@@ -266,7 +266,6 @@ function showTree(): void {
 	$pwdCheckDiv = new htmlDiv('lam-pwd-check-dialog', $pwdCheckRow, array('hidden'));
 	$row->add($pwdCheckDiv);
 
-	$tabIndex = 1;
 	$form = new htmlForm('actionarea', 'treeView.php', $row);
-	parseHtml(null, $form, array(), true, $tabIndex, null);
+	parseHtml(null, $form, array(), true, null);
 }

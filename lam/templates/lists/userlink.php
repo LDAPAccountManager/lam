@@ -66,8 +66,7 @@ else {
 	$container->add(new htmlStatusMessage("ERROR", _("This user was not found!"), htmlspecialchars($user)), 12);
 	$container->addVerticalSpacer('1rem');
 	$container->add(new \htmlLink(_("Back to group list"), 'javascript:history.back()'), 12);
-	$tabindex = 1;
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	include __DIR__ . '/../../lib/adminFooter.inc';
 }
 

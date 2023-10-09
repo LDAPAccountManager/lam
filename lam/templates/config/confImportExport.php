@@ -159,7 +159,6 @@ printHeaderContents(_("Import and export configuration"), '../..');
      * @param htmlStatusMessage $message message to show if any error occurred
      */
 	function showLoginDialog($message = null): void {
-    	$tabindex = 0;
 		$content = new htmlResponsiveRow();
 		$loginContent = new htmlResponsiveRow();
 		$loginContent->setCSSClasses(array('maxrow fullwidth roundedShadowBox spacing5'));
@@ -177,7 +176,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 
 		$content->add($loginContent, 12);
 
-		parseHtml(null, $content, array(), false, $tabindex, null);
+		parseHtml(null, $content, array(), false, null);
 		renderBackLink();
 	}
 
@@ -185,12 +184,11 @@ printHeaderContents(_("Import and export configuration"), '../..');
      * Renders the link back to login page.
      */
 	function renderBackLink(): void {
-		$tabindex = 0;
 		$content = new htmlResponsiveRow();
         $content->addVerticalSpacer('2rem');
         $content->add(new htmlLink(_('Back to login'), '../login.php'), 12);
 		$content->addVerticalSpacer('1rem');
-		parseHtml(null, $content, array(), false, $tabindex, null);
+		parseHtml(null, $content, array(), false, null);
     }
 
     /**
@@ -213,7 +211,6 @@ printHeaderContents(_("Import and export configuration"), '../..');
      * Displays the import/export functions.
      */
     function displayImportExport(): void {
-	    $tabindex = 0;
 	    $content = new htmlResponsiveRow();
 
 	    $content->add(new htmlSubTitle(_('Export')), 12);
@@ -224,7 +221,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	    $content->add(new htmlSubTitle(_('Import')), 12);
 	    renderImportPart($content);
 
-	    parseHtml(null, $content, array(), false, $tabindex, null);
+	    parseHtml(null, $content, array(), false, null);
 	    renderBackLink();
     }
 

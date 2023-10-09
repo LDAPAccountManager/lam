@@ -140,8 +140,7 @@ $legendContainer->addElement(new htmlHelpLink('237'));
 $container->add($legendContainer, 12);
 $container->add(new htmlHiddenInput('postAvailable', 'yes'), 12);
 
-$tabindex = 1;
-parseHtml(null, $container, array(), false, $tabindex, 'user');
+parseHtml(null, $container, array(), false, 'user');
 
 echo "</div></div>";
 
@@ -153,7 +152,7 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
+parseHtml(null, $buttonContainer, array(), false, 'user');
 
 if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position

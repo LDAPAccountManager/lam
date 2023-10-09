@@ -146,7 +146,6 @@ $old_options = $conf->get_moduleSettings();
 
 
 // display module boxes
-$tabindex = 1;
 $modules = array_keys($options);
 $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
@@ -170,7 +169,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	else {
 		$row->add($options[$modules[$i]], 12);
 	}
-	$configTypes = parseHtml($modules[$i], $row, $old_options, false, $tabindex, null);
+	$configTypes = parseHtml($modules[$i], $row, $old_options, false, null);
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "<br>";
 }
@@ -187,7 +186,7 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, $tabindex, null);
+parseHtml(null, $buttonContainer, array(), false, null);
 
 if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position

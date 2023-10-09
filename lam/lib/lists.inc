@@ -119,9 +119,6 @@ class lamList {
 	/** configuration options */
 	private $configOptions;
 
-	/** tabindex for GUI elements */
-	protected $tabindex = 1;
-
 	/** defines if the server side filter changed */
 	protected $serverSideFilterChanged;
 
@@ -193,7 +190,6 @@ class lamList {
 	 * Prints the HTML code to display the list view.
 	 */
 	public function showPage() {
-		$this->tabindex = 1;
 		// do POST actions
 		$postFragment = $this->listDoPost();
 		// update filter
@@ -216,7 +212,7 @@ class lamList {
 		}
 		// insert HTML fragment from listDoPost
         if ($postFragment !== null) {
-            parseHtml('', $postFragment, array(), true, $this->tabindex, $this->type->getScope());
+            parseHtml('', $postFragment, array(), true, $this->type->getScope());
         }
 		// config dialog
 		$this->listPrintConfigurationPage();
@@ -398,7 +394,7 @@ class lamList {
 			}
 		}
 		$row->add($navGroup, 12, 6, 6, 'responsiveLabel');
-		parseHtml(null, $row, array(), false, $this->tabindex, $this->type->getScope());
+		parseHtml(null, $row, array(), false, $this->type->getScope());
 	}
 
 	/**
@@ -435,7 +431,7 @@ class lamList {
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
 
-		parseHtml(null, $table, array(), false, $this->tabindex, $scope);
+		parseHtml(null, $table, array(), false, $scope);
 	}
 
 	/**
@@ -967,7 +963,7 @@ class lamList {
 		$container->add(new htmlHiddenInput('clickedAccount', $id), 0);
 		addSecurityTokenToMetaHTML($container);
 
-		parseHtml(null, $container, array(), false, $this->tabindex, $this->type->getScope());
+		parseHtml(null, $container, array(), false, $this->type->getScope());
 
 		$this->printFooter();
 	}
@@ -999,7 +995,6 @@ class lamList {
 	 * Prints the create and delete buttons.
 	 *
 	 * @param boolean $createOnly true if only the create button should be displayed
-	 * @param int $tabindex HTML tabindex counter
 	 */
 	protected function listPrintButtons($createOnly) {
 		$row = new htmlResponsiveRow();
@@ -1044,7 +1039,7 @@ class lamList {
 		$this->addExtraInputElementsToTopArea($left, $right);
 		$row->add($left, 12, 6, 6, 'text-left');
 		$row->add($right, 12, 6, 6, 'text-right');
-		parseHtml(null, $row, array(), false, $this->tabindex, $this->type->getScope());
+		parseHtml(null, $row, array(), false, $this->type->getScope());
 	}
 
 	/**
@@ -1065,7 +1060,7 @@ class lamList {
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(array('maxrow'));
 		$row->add(new htmlTitle($this->type->getAlias()));
-		parseHtml(null, $row, array(), true, $this->tabindex, null);
+		parseHtml(null, $row, array(), true, null);
 		$this->printHeaderContent();
 	}
 
@@ -1425,7 +1420,7 @@ class lamList {
 		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'), 12);
 		addSecurityTokenToMetaHTML($configContainer);
 
-		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type->getScope());
+		parseHtml('', $configContainer, array(), false, $this->type->getScope());
 
 		echo '</form>';
 		echo "</div>\n";

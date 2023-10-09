@@ -151,7 +151,6 @@ echo "<form action=\"conftypes.php\" method=\"post\" novalidate=\"novalidate\">\
 
 printConfigurationPageTabs(ConfigurationPageTab::TYPES);
 
-$tabindex = 1;
 $row = new htmlResponsiveRow();
 
 // show available types
@@ -174,7 +173,7 @@ if (sizeof($availableScopes) > 0) {
 	}
 	$row->addVerticalSpacer('2rem');
 }
-parseHtml(null, $row, array(), false, $tabindex, 'user');
+parseHtml(null, $row, array(), false, 'user');
 
 $container = new htmlResponsiveRow();
 
@@ -256,8 +255,7 @@ if (sizeof($activeTypes) > 0) {
 			}
 			// save option types to session
 			ob_start();
-			$dummyIndex = 1;
-			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, array(), true, $dummyIndex, 'user');
+			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, array(), true, 'user');
 			ob_end_clean();
 			$_SESSION['conftypes_optionTypes'] = array_merge($_SESSION['conftypes_optionTypes'], $typeConfigOptionTypes);
 		}
@@ -306,7 +304,7 @@ foreach ($_SESSION['conftypes_optionTypes'] as $key => $value) {
 		$dynamicTypeOptions[$key] = explode(LAMConfig::LINE_SEPARATOR, $typeSettings[$key]);
 	}
 }
-parseHtml(null, $container, $dynamicTypeOptions, false, $tabindex, 'user');
+parseHtml(null, $container, $dynamicTypeOptions, false, 'user');
 
 echo "</div></div>";
 
@@ -320,7 +318,7 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
+parseHtml(null, $buttonContainer, array(), false, 'user');
 
 echo "</form>\n";
 echo "</body>\n";

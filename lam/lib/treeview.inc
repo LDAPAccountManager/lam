@@ -457,9 +457,8 @@ class TreeView {
 		$internalAttributesContent->add($internalAttributesButton, 12);
 		$internalAttributesDiv = new htmlDiv('actionarea-internal-attributes', $internalAttributesContent);
 		$row->add($internalAttributesDiv, 12);
-		$tabindex = 1;
 		ob_start();
-		parseHtml(null, $row, array(), false, $tabindex, null);
+		parseHtml(null, $row, array(), false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -826,9 +825,8 @@ class TreeView {
 			$row->addField(new htmlOutputText(implode(', ', $values)));
 			$row->addVerticalSpacer('0.5rem');
 		}
-		$tabindex = 1;
 		ob_start();
-		parseHtml(null, $row, array(), false, $tabindex, null);
+		parseHtml(null, $row, array(), false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -933,9 +931,8 @@ class TreeView {
 				$message = new htmlStatusMessage('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 		}
-		$tabIndex = 1;
 		ob_start();
-		parseHtml(null, $message, array(), true, $tabIndex, null);
+		parseHtml(null, $message, array(), true, null);
 		$messageContent = ob_get_contents();
 		ob_end_clean();
 		$jsonData['result'] = $messageContent;
@@ -1085,8 +1082,7 @@ class TreeView {
 		$row->add(new htmlOutputText(_('Hint: You must choose exactly one structural object class (shown in bold above)')), 12);
 		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)), 12);
 		ob_start();
-		$tabIndex = 1;
-		parseHtml(null, $row, array(), false, $tabIndex, '');
+		parseHtml(null, $row, array(), false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1210,8 +1206,7 @@ class TreeView {
 		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
 		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)));
 		ob_start();
-		$tabIndex = 1;
-		parseHtml(null, $row, array(), false, $tabIndex, '');
+		parseHtml(null, $row, array(), false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1425,8 +1420,7 @@ class TreeView {
 		$nextButton->setOnClick('window.lam.treeview.searchResults(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		ob_start();
-		$tabIndex = 1;
-		parseHtml(null, $row, array(), false, $tabIndex, '');
+		parseHtml(null, $row, array(), false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1518,8 +1512,7 @@ class TreeView {
 			$row->addVerticalSpacer('1rem');
 		}
 		ob_start();
-		$tabIndex = 1;
-		parseHtml(null, $row, array(), false, $tabIndex, '');
+		parseHtml(null, $row, array(), false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1554,8 +1547,7 @@ class TreeView {
 		$table->setCSSClasses(array('colored--table'));
 		$row->add($table);
 		ob_start();
-		$tabIndex = 1;
-		parseHtml(null, $row, array(), false, $tabIndex, '');
+		parseHtml(null, $row, array(), false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1596,8 +1588,7 @@ class TreeView {
 						$row->add(new htmlStatusMessage($error[0], $error[1], isset($error[2]) ? $error[2] : null));
 					}
 					ob_start();
-					$tabIndex = 1;
-					parseHtml(null, $row, array(), false, $tabIndex, '');
+					parseHtml(null, $row, array(), false, '');
 					$content = ob_get_contents();
 					ob_end_clean();
 					return json_encode(array('error' => $content));
@@ -1607,8 +1598,7 @@ class TreeView {
 		catch (LAMException $e) {
 			$message = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			ob_start();
-			$tabIndex = 1;
-			parseHtml(null, $message, array(), false, $tabIndex, '');
+			parseHtml(null, $message, array(), false, '');
 			$content = ob_get_contents();
 			ob_end_clean();
 			return json_encode(array('error' => $content));

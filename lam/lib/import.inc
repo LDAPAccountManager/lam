@@ -382,9 +382,8 @@ class Importer {
 	 */
 	public static function formatMessage($type, $title, $message) {
 		$msg = new htmlStatusMessage($type, $title, $message);
-		$tabindex = 0;
 		ob_start();
-		$msg->generateHTML(null, array($msg), array(), true, $tabindex, 'user');
+		$msg->generateHTML(null, array($msg), array(), true, 'user');
 		$data = ob_get_contents();
 		ob_clean();
 		return $data;

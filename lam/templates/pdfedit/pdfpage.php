@@ -471,8 +471,7 @@ $buttonContainer->add(new htmlHiddenInput('form_submit', 'true'), 4);
 $container->add($buttonContainer, 12);
 addSecurityTokenToMetaHTML($container);
 
-$tabindex = 1;
-parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
+parseHtml(null, $container, array(), false, $type->getScope());
 
 if ((sizeof($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position

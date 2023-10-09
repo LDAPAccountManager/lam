@@ -492,8 +492,7 @@ class yubiKeyUser extends baseModule {
 				$contentElement = $this->getSelfServiceKeys();
 				ob_end_clean();
 				ob_start();
-				$tabindex = 999;
-				parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+				parseHtml(null, $contentElement, array(), true, $this->get_scope());
 				$content = ob_get_contents();
 				ob_end_clean();
 				$jsonReturn = array(
@@ -523,8 +522,7 @@ class yubiKeyUser extends baseModule {
 		$contentElement = $this->getSelfServiceKeys();
 		ob_end_clean();
 		ob_start();
-		$tabindex = 999;
-		parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+		parseHtml(null, $contentElement, array(), true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(

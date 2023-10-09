@@ -163,9 +163,6 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 }
 
 
-// index for tab order
-$tabindex = 1;
-
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
 echo "<body>\n";
@@ -365,8 +362,7 @@ foreach ($tools as $tool) {
 	$toolConfigContent = $tool->getConfigOptions($toolSettings);
 	if ($toolConfigContent !== null) {
 		ob_start();
-		$dummyIndex = 1;
-		$optionTypes = parseHtml(null, $tool->getConfigOptions($toolSettings), array(), true, $dummyIndex, 'user');
+		$optionTypes = parseHtml(null, $tool->getConfigOptions($toolSettings), array(), true, 'user');
 		ob_end_clean();
 		$toolConfigOptionTypes = array_merge($toolConfigOptionTypes, $optionTypes);
 		$row->addVerticalSpacer('1rem');
@@ -586,7 +582,7 @@ $row->add($password2, 12);
 
 $row->addVerticalSpacer('2rem');
 
-parseHtml(null, $row, array(), false, $tabindex, 'user');
+parseHtml(null, $row, array(), false, 'user');
 
 echo "</div></div>";
 
@@ -598,7 +594,7 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
+parseHtml(null, $buttonContainer, array(), false, 'user');
 
 ?>
 </form>

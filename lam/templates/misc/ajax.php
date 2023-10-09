@@ -322,9 +322,8 @@ class Ajax {
 			$row->add($table, 12);
 		}
 		$row->addVerticalSpacer('2rem');
-		$tabindex = 10000;
 		ob_start();
-		$row->generateHTML(null, array(), array(), false, $tabindex, null);
+		$row->generateHTML(null, array(), array(), false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo json_encode(array('content' => $content));
@@ -352,8 +351,7 @@ class Ajax {
 		$row->add($message, 12);
 		$row->addVerticalSpacer('2rem');
 		ob_start();
-		$tabindex = 50000;
-		$row->generateHTML(null, array(), array(), true, $tabindex, null);
+		$row->generateHTML(null, array(), array(), true, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo json_encode(array('content' => $content));
@@ -500,9 +498,8 @@ class Ajax {
 			$row->add($button, 12, 3, 3, 'text-left');
 			$mainRow->add($row, 12);
 		}
-		$tabindex = 1000;
 		ob_start();
-		parseHtml(null, $mainRow, array(), false, $tabindex, 'user');
+		parseHtml(null, $mainRow, array(), false, 'user');
 		$out = ob_get_contents();
 		ob_end_clean();
 		if ($out === false) {
@@ -562,9 +559,8 @@ class Ajax {
 			$text->setCSSClasses(array('text-center', 'display-as-block', 'text-error'));
 		}
 		$resultRow->add($text);
-		$tabindex = 9999;
 		ob_start();
-		parseHtml(null, $resultRow, array(), false, $tabindex, 'user');
+		parseHtml(null, $resultRow, array(), false, 'user');
 		$out = ob_get_contents();
 		ob_end_clean();
 		$result = array('resultHtml' => $out);

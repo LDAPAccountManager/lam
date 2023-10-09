@@ -83,7 +83,6 @@ printHeaderContents(_("Login"), '../..');
 if (sizeof($files) < 1) {
 	$message = new htmlStatusMessage('INFO', _("No server profiles found. Please create one."));
 }
-$tabindex = 1;
 ?>
 	</head>
 	<body>
@@ -169,7 +168,7 @@ $tabindex = 1;
 		$backLink = new htmlLink(_("Back to login"), '../login.php');
 		$row->add($backLink, 12, 12, 12, 'text-left');
 
-		parseHtml(null, new htmlDiv(null, $row, array('centeredTable')), array(), false, $tabindex, 'user');
+		parseHtml(null, new htmlDiv(null, $row, array('centeredTable')), array(), false, 'user');
 
 		?>
 		</form>

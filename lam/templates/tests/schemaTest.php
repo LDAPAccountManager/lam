@@ -97,8 +97,7 @@ else {
 	}
 }
 
-$tabindex = 1;
-parseHtml(null, $container, array(), true, $tabindex, 'user');
+parseHtml(null, $container, array(), true, 'user');
 
 echo "</div>\n";
 include '../../lib/adminFooter.inc';

@@ -190,8 +190,6 @@ if (isset($_GET['edit'])) {
 	$profName = $_GET['edit'];
 }
 
-$tabindex = 1;
-
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_("Profile editor")), 12);
 
@@ -229,7 +227,7 @@ $container->add(new htmlResponsiveSelect('ldap_rdn', $rdns, $selectedRDN, _("RDN
 
 $container->addVerticalSpacer('2rem');
 
-$_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $tabindex, $type->getScope());
+$_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $type->getScope());
 
 // display module options
 foreach ($options as $moduleName => $moduleOptions) {
@@ -246,7 +244,7 @@ foreach ($options as $moduleName => $moduleOptions) {
 	$modContainer->add(new htmlSubTitle(getModuleAlias($moduleName, $type->getScope()), $icon, null, true), 12);
 	$modContainer->add($moduleOptions, 12);
 	$modContainer->addVerticalSpacer('2rem');
-	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $modContainer, $old_options, false, $tabindex, $type->getScope()));
+	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $modContainer, $old_options, false, $type->getScope()));
 }
 
 // profile name and submit/abort buttons
@@ -260,7 +258,7 @@ $cancelButton->disableFormValidation();
 $buttonTable->addField($cancelButton);
 $buttonTable->add(new htmlHiddenInput('accounttype', $type->getId()), 0);
 
-$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $tabindex, $type->getScope()));
+$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $type->getScope()));
 
 ?>
 </form>

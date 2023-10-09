@@ -105,7 +105,6 @@ function displayStartPage(): void {
 	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = array();
-	$tabindex = 1;
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Multi edit")), 12);
 	// LDAP suffix
@@ -216,7 +215,7 @@ function displayStartPage(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 	echo '</div>';
 	include __DIR__ . '/../../lib/adminFooter.inc';
@@ -493,8 +492,7 @@ function dryRun(): array {
 		fclose ($out);
 	}
 	ob_start();
-	$tabindex = 1;
-	parseHtml(null, $container, array(), true, $tabindex, 'user');
+	parseHtml(null, $container, array(), true, 'user');
 	$content = ob_get_contents();
 	ob_end_clean();
 	return array(
@@ -596,9 +594,8 @@ function doModify(): array {
  * @return string HTML code
  */
 function getMessageHTML(htmlStatusMessage $msg): string {
-	$tabindex = 0;
 	ob_start();
-	parseHtml(null, $msg, array(), true, $tabindex, 'user');
+	parseHtml(null, $msg, array(), true, 'user');
 	$content = ob_get_contents();
 	ob_end_clean();
 	if ($content === false) {

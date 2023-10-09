@@ -88,7 +88,6 @@ if (isset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR])) {
 }
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-$tabindex = 1;
 
 $tabImportClass = 'lam-tab-active';
 $tabExportClass = '';
@@ -112,20 +111,20 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 		<div class="lam-tab-content <?php echo $tabImportClass; ?>" id="tab-import" data-tabid="1">
 			<?php
 				if (isset($_POST['submitImport'])) {
-					printImportTabProcessing($tabindex);
+					printImportTabProcessing();
 				}
 				else {
-					printImportTabContent($tabindex);
+					printImportTabContent();
 				}
 			?>
 		</div>
 		<div class="lam-tab-content <?php echo $tabExportClass; ?>" id="tab-export" data-tabid="2">
 			<?php
 				if (isset($_POST['submitExport'])) {
-					printExportTabProcessing($tabindex);
+					printExportTabProcessing();
 				}
 				else {
-					printExportTabContent($tabindex);
+					printExportTabContent();
 				}
 			?>
 		</div>
@@ -136,10 +135,8 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 
 /**
  * Prints the content area for the import tab.
- *
- * @param int $tabindex tabindex
  */
-function printImportTabContent(&$tabindex): void {
+function printImportTabContent(): void {
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Import")), 12);
@@ -172,24 +169,22 @@ function printImportTabContent(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 
 /**
  * Prints the content area for the import tab during processing state.
- *
- * @param int $tabindex tabindex
  */
-function printImportTabProcessing(&$tabindex): void {
+function printImportTabProcessing(): void {
 	try {
 		checkImportData();
 	}
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
-		parseHtml(null, $container, array(), false, $tabindex, 'user');
-		printImportTabContent($tabindex);
+		parseHtml(null, $container, array(), false, 'user');
+		printImportTabContent();
 		return;
 	}
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
@@ -217,7 +212,7 @@ function printImportTabProcessing(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 
@@ -255,10 +250,8 @@ function checkImportData(): void {
 
 /**
  * Prints the content area for the export tab.
- *
- * @param int $tabindex tabindex
  */
-function printExportTabContent(&$tabindex): void {
+function printExportTabContent(): void {
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php?tab=export\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Export")), 12);
@@ -312,7 +305,7 @@ function printExportTabContent(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 
@@ -368,18 +361,16 @@ function isValidExportDn(string $dn): bool {
 
 /**
  * Prints the content area for the export tab during processing state.
- *
- * @param int $tabindex tabindex
  */
-function printExportTabProcessing(&$tabindex): void {
+function printExportTabProcessing(): void {
 	try {
 		checkExportData();
 	}
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
-		parseHtml(null, $container, array(), false, $tabindex, 'user');
-		printExportTabContent($tabindex);
+		parseHtml(null, $container, array(), false, 'user');
+		printExportTabContent();
 		return;
 	}
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php?tab=export\" method=\"post\">\n";
@@ -418,7 +409,7 @@ function printExportTabProcessing(&$tabindex): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $container, array(), false, 'user');
 	echo "</form>\n";
 }
 

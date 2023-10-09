@@ -350,8 +350,7 @@ if (isset($_POST['submitFormData'])) {
 		$cfg->save();
 		if (sizeof($errors) == 0) {
 			$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
-			$tabIndex = 0;
-			parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+			parseHtml(null, $scriptTag, array(), false, null);
 			echo '</body></html>';
 			exit();
 		}
@@ -362,8 +361,6 @@ if (isset($_POST['submitFormData'])) {
 <form class="text-center" enctype="multipart/form-data" action="mainmanage.php" method="post" novalidate="novalidate">
 
 	<?php
-	$tabindex = 1;
-
 	$row = new htmlResponsiveRow();
 	$row->add(new htmlTitle(_('General settings')), 12);
 
@@ -684,7 +681,7 @@ if (isset($_POST['submitFormData'])) {
 
 	$box = new htmlDiv(null, $row);
 	$box->setCSSClasses(array('roundedShadowBox'));
-	parseHtml(null, $box, array(), false, $tabindex, 'user');
+	parseHtml(null, $box, array(), false, 'user');
 
 
 	/**

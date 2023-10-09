@@ -113,13 +113,12 @@ class htmlFriendlyCaptcha extends htmlElement {
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
 	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
 	 * @param string $scope Account type
 	 * @return array List of input field names and their type (name => type)
 	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+	function generateHTML($module, $input, $values, $restricted, $scope) {
 		$script = new htmlScript('../lib/extra/friendlyCaptcha/friendlyCaptcha-0.9.13.js');
-		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		$script->generateHTML($module, $input, $values, $restricted, $scope);
 		echo '<div class="frc-captcha" data-sitekey="' . $this->key . '"></div>';
 		return array();
 	}

@@ -64,8 +64,7 @@ $container->addVerticalSpacer('2rem');
 $container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/search-color.svg'), 12, 4);
 $container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);
 
-$tabindex = 1;
-parseHtml(null, $container, array(), true, $tabindex, 'user');
+parseHtml(null, $container, array(), true, 'user');
 
 echo "</div>\n";
 include '../../lib/adminFooter.inc';
