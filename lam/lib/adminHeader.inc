@@ -179,7 +179,6 @@ function printHeader(string $headerPrefix): void {
 			$toolDiv = new htmlDiv('lam-navigation-tools', $toolEntriesDiv, array('lam-navigation-layer zeroHeight'));
 			$toolGroup->addElement($toolDiv);
 
-			$tabIndex = 0;
 			parseHtml(null, $toolGroup, array(), false, null);
 		}
 		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {

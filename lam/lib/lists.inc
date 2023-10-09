@@ -119,9 +119,6 @@ class lamList {
 	/** configuration options */
 	private $configOptions;
 
-	/** tabindex for GUI elements */
-	protected $tabindex = 1;
-
 	/** defines if the server side filter changed */
 	protected $serverSideFilterChanged;
 
@@ -193,7 +190,6 @@ class lamList {
 	 * Prints the HTML code to display the list view.
 	 */
 	public function showPage() {
-		$this->tabindex = 1;
 		// do POST actions
 		$postFragment = $this->listDoPost();
 		// update filter
@@ -999,7 +995,6 @@ class lamList {
 	 * Prints the create and delete buttons.
 	 *
 	 * @param boolean $createOnly true if only the create button should be displayed
-	 * @param int $tabindex HTML tabindex counter
 	 */
 	protected function listPrintButtons($createOnly) {
 		$row = new htmlResponsiveRow();

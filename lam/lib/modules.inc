@@ -1058,7 +1058,6 @@ class accountContainer {
 	 * @param array $result list of messages
 	 */
 	private function printModuleContent($result) {
-		$tabindex = 1;
 		$this->printPageHeader();
 		$this->printPasswordPromt();
 		// display error messages
@@ -1070,7 +1069,7 @@ class accountContainer {
 		echo '<div id="passwordMessageArea"></div>';
 		echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		echo "<tr><td style=\"padding: 5px 0px 0px 0px;\">\n";
-		$this->printCommonControls($tabindex);
+		$this->printCommonControls();
 		echo "</td></tr>\n";
 		echo "<tr valign=\"top\"><td style=\"padding: 15px;\">";
 		// print title bar
@@ -1351,10 +1350,8 @@ class accountContainer {
 
 	/**
 	 * Prints common controls like the save button and the ou selection.
-	 *
-	 * @param int $tabindex tabindex for GUI elements
 	 */
-	private function printCommonControls(&$tabindex) {
+	private function printCommonControls(): void {
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(array('maxrow'));
 		$leftButtonGroup = new htmlGroup();

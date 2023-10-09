@@ -231,7 +231,6 @@ echo $config->getTwoFactorAuthenticationCaption();
 	$row->add($logout);
 	$group->addElement($row);
 
-	$tabindex = 1;
 	addSecurityTokenToMetaHTML($group);
 	parseHtml(null, $group, array(), false, 'user');
 

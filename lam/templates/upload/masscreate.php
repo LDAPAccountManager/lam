@@ -267,7 +267,6 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$modules = array_keys($columns);
 
 	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
-	$tabindex = 1;
 	$row = new htmlResponsiveRow();
 	$row->setCSSClasses(array('maxrow'));
 

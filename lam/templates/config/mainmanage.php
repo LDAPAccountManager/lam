@@ -361,8 +361,6 @@ if (isset($_POST['submitFormData'])) {
 <form class="text-center" enctype="multipart/form-data" action="mainmanage.php" method="post" novalidate="novalidate">
 
 	<?php
-	$tabindex = 1;
-
 	$row = new htmlResponsiveRow();
 	$row->add(new htmlTitle(_('General settings')), 12);
 
