@@ -9458,7 +9458,7 @@ msgstr "Período de notificación"
 #: ../lib/modules/qmailUser.inc:1201 ../lib/modules/freeRadius.inc:916
 #: ../lib/modules/shadowAccount.inc:1176 ../lib/modules/windowsUser.inc:5103
 msgid "Notify users about account expiration"
-msgstr "Notificar a los usuarios el vencimiento de la contraseña"
+msgstr "Notificar a los usuarios el vencimiento de la cuenta"
 
 #: ../lib/modules/locking389ds.inc:718 ../lib/modules/ppolicyUser.inc:732
 #: ../lib/modules/shadowAccount.inc:1074 ../lib/modules/windowsUser.inc:4661
