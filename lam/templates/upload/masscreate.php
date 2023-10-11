@@ -181,7 +181,7 @@ foreach ($types as $type) {
 	}
 	$innerRow = new htmlResponsiveRow();
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
-	foreach ($modules as $m => $moduleName) {
+	foreach ($modules as $moduleName) {
 		$moduleGroup = new htmlGroup();
 		$module = moduleCache::getModule($moduleName, $type->getScope());
 		$iconImage = $module->getIcon();

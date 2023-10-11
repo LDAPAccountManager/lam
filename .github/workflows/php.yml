@@ -53,6 +53,9 @@ jobs:
     - name: PHPStan
       run: ./vendor/bin/phpstan --xdebug
 
+    - name: Rector
+      run: ./vendor/bin/rector process --dry-run
+
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:

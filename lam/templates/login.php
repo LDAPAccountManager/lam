@@ -212,12 +212,8 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
     // save both in cookie
 	$cookieOptions = lamDefaultCookieOptions();
 	$cookieOptions['expires'] = 0;
-	if ($key !== false) {
-		setcookie("Key", base64_encode($key), $cookieOptions);
-    }
-	if ($iv !== false) {
-		setcookie("IV", base64_encode($iv), $cookieOptions);
-    }
+	setcookie("Key", base64_encode($key), $cookieOptions);
+	setcookie("IV", base64_encode($iv), $cookieOptions);
 
 	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 	$profiles = $serverProfilePersistenceManager->getProfiles();

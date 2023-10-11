@@ -43,7 +43,7 @@ class ConfigDataExporterTest extends TestCase {
 		);
 		$accountProfileData = array(
 			'profile1' => array('user' => array('default' => array('key' => 'value'))),
-			'profile1' => array(
+			'profile2' => array(
 				'user' => array('default' => array('key' => 'value')),
 				'group' => array('default' => array('key' => 'value')),
 			),
@@ -57,7 +57,7 @@ class ConfigDataExporterTest extends TestCase {
 				'user' => array(
 					'default' => array('key' => 'value'))
 			)),
-			'profile1' => array('structures' => array(
+			'profile2' => array('structures' => array(
 				'user' => array('default' => array('key' => 'value')),
 				'group' => array('default' => array('key' => 'value')),
 			)),
