@@ -75,8 +75,7 @@ class WebauthnManagerTest extends TestCase {
 		$cfgMain = new LAMCfgMain();
 		$cfgMain->passwordMinLength = 3;
 		$logFile = tmpfile();
-		$logFilePath = stream_get_meta_data($logFile)['uri'];
-		$cfgMain->logDestination = $logFilePath;
+		$cfgMain->logDestination = stream_get_meta_data($logFile)['uri'];
 		$_SESSION['cfgMain'] = $cfgMain;
 
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();

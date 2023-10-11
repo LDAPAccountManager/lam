@@ -34,12 +34,12 @@ include_once 'lam/lib/security.inc';
  */
 class SecurityTest extends TestCase {
 
-	private $cfg = null;
+	private $cfg;
 
 	/**
 	 * @var LAMConfig
 	 */
-	private $serverProfile = null;
+	private $serverProfile;
 
 	protected function setUp(): void {
 		testCreateDefaultConfig();

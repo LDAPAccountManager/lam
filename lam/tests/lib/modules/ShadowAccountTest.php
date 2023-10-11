@@ -131,7 +131,7 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 		const WARNING = '14';
 
 		private $options = array();
-		private $resultLog = null;
+		private $resultLog;
 
 		public function setUp(): void {
 			$this->job = $this->getMockBuilder('ShadowAccountPasswordNotifyJob')

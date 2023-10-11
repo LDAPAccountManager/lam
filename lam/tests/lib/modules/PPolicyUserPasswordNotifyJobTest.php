@@ -45,7 +45,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		const ONE_YEAR_POLICY = 'cn=policy1,dc=test';
 
 		private $options = array();
-		private $resultLog = null;
+		private $resultLog;
 
 		protected function setUp(): void {
 			$this->job = $this->getMockBuilder('PPolicyPasswordNotifyJob')
@@ -142,7 +142,6 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		}
 
 		public function testAlreadyWarned() {
-			$now = new DateTime('now', getTimeZone());
 			$date = new DateTime('now', new DateTimeZone('UTC'));
 			$date->sub(new DateInterval('P360D'));
 			$this->job->method('getDBLastPwdChangeTime')->willReturn($date->format('YmdHis') . 'Z');
@@ -162,7 +161,6 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		}
 
 		public function testWarning() {
-			$now = new DateTime('now', getTimeZone());
 			$date = new DateTime('now', new DateTimeZone('UTC'));
 			$date->sub(new DateInterval('P360D'));
 			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');
@@ -182,7 +180,6 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		}
 
 		public function testWarningDryRun() {
-			$now = new DateTime('now', getTimeZone());
 			$date = new DateTime('now', new DateTimeZone('UTC'));
 			$date->sub(new DateInterval('P360D'));
 			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');

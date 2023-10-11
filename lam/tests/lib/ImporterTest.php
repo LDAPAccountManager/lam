@@ -145,7 +145,7 @@ class ImporterTest extends TestCase {
 		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com - changetype: invalid');
 
 		$importer = new Importer();
-		$tasks = $importer->getTasks($lines);
+		$importer->getTasks($lines);
 	}
 
 	/**
@@ -182,7 +182,7 @@ class ImporterTest extends TestCase {
 		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
-		$tasks = $importer->getTasks($lines);
+		$importer->getTasks($lines);
 	}
 
 	/**
@@ -201,7 +201,7 @@ class ImporterTest extends TestCase {
 		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
-		$tasks = $importer->getTasks($lines);
+		$importer->getTasks($lines);
 	}
 
 	/**
@@ -239,7 +239,7 @@ class ImporterTest extends TestCase {
 		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
-		$tasks = $importer->getTasks($lines);
+		$importer->getTasks($lines);
 	}
 
 	/**
@@ -275,7 +275,7 @@ class ImporterTest extends TestCase {
 		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
-		$tasks = $importer->getTasks($lines);
+		$importer->getTasks($lines);
 	}
 
 	/**
@@ -295,7 +295,7 @@ class ImporterTest extends TestCase {
 		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
-		$tasks = $importer->getTasks($lines);
+		$importer->getTasks($lines);
 	}
 
 	/**
