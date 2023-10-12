@@ -229,20 +229,18 @@ if (isset($_POST['delete'])) {
 			foreach ($moduleNames as $singlemodule) {
 				// load changes
 				$temp = $modules[$singlemodule]->delete_attributes();
-				if (is_array($temp)) {
-					// merge changes
-					$DNs = array_keys($temp);
-					$attributes = array_merge_recursive($temp, $attributes);
-					foreach ($DNs as $dn) {
-						$ops = array_keys($temp[$dn]);
-						foreach ($ops as $op) {
-							$attrs = array_keys($temp[$dn][$op]);
-							foreach ($attrs as $attribute) {
-								$attributes[$dn][$op][$attribute] = array_unique($attributes[$dn][$op][$attribute]);
-							}
-						}
-					}
-				}
+                // merge changes
+                $DNs = array_keys($temp);
+                $attributes = array_merge_recursive($temp, $attributes);
+                foreach ($DNs as $dn) {
+                    $ops = array_keys($temp[$dn]);
+                    foreach ($ops as $op) {
+                        $attrs = array_keys($temp[$dn][$op]);
+                        foreach ($attrs as $attribute) {
+                            $attributes[$dn][$op][$attribute] = array_unique($attributes[$dn][$op][$attribute]);
+                        }
+                    }
+                }
 			}
 			$DNs = array_keys($attributes);
 			foreach ($DNs as $dn) {

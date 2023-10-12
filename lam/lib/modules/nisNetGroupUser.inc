@@ -386,18 +386,17 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
-	* Additional LDAP operations on delete.
-	*
-	* @return List of LDAP operations, same as for save_attributes()
-	*/
-	function delete_attributes() {
+	 * {@inheritDoc}
+	 * @see baseModule::delete_attributes()
+	 */
+	function delete_attributes(): array {
 		$uid = $this->getUid();
 		if (empty($uid)) {
-			return array();
+			return [];
 		}
-		$return = array();
+		$return = [];
 		// remove from NIS netgroups
-		$changes = array();
+		$changes = [];
 		foreach ($this->groups as $group) {
 			$changes[$group['dn']][] = $this->createNetGroupValue($group, $uid);
 		}

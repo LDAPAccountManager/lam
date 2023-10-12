@@ -1268,10 +1268,10 @@ abstract class baseModule {
 	* <br>
 	* It allows additional LDAP changes when an account is deleted.
 	*
-	* @return List of LDAP operations, same as for save_attributes()
+	* @return array of LDAP operations, same as for save_attributes()
 	*/
-	public function delete_attributes() {
-		return 0;
+	public function delete_attributes(): array {
+		return [];
 	}
 
 	/**

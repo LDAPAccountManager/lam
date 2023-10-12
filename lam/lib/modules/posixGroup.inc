@@ -164,12 +164,11 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	* Checks if the group which should be deleted is still used as primary group.
-	*
-	* @return List of LDAP operations, same as for save_attributes()
-	*/
-	function delete_attributes() {
-		$return = array();
+	 * {@inheritDoc}
+	 * @see baseModule::delete_attributes()
+	 */
+	function delete_attributes(): array {
+		$return = [];
 		$result = searchLDAPByFilter('(&(objectClass=posixAccount)(gidNumber=' . $this->attributes['gidNumber'][0] . '))', array('dn'), array('user', 'host'));
 		if (sizeof($result) > 0) {
 			$max = 5;

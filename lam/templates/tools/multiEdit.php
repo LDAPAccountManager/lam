@@ -479,18 +479,16 @@ function dryRun(): array {
 	$tempFilesManager = new LamTemporaryFilesManager();
 	$fileName = $tempFilesManager->registerTemporaryFile('.ldif', 'ldif_');
 	$out = $tempFilesManager->openTemporaryFileForWrite($fileName);
-	if ($out !== false) {
-		fwrite($out, $ldif);
-		$container->addElement(new htmlOutputText(_('LDIF file')), true);
-		$ldifLink = new htmlLink($fileName, $tempFilesManager->getDownloadLink($fileName));
-		$ldifLink->setTargetWindow('_blank');
-		$container->addElement($ldifLink, true);
-		$container->addVerticalSpace('20px');
-		$container->addElement(new htmlOutputText(_('Log output')), true);
-		$container->addElement(new htmlInputTextarea('log', $log, 100, 30), true);
-		// generate HTML
-		fclose ($out);
-	}
+	fwrite($out, $ldif);
+	$container->addElement(new htmlOutputText(_('LDIF file')), true);
+	$ldifLink = new htmlLink($fileName, $tempFilesManager->getDownloadLink($fileName));
+	$ldifLink->setTargetWindow('_blank');
+	$container->addElement($ldifLink, true);
+	$container->addVerticalSpace('20px');
+	$container->addElement(new htmlOutputText(_('Log output')), true);
+	$container->addElement(new htmlInputTextarea('log', $log, 100, 30), true);
+	// generate HTML
+	fclose ($out);
 	ob_start();
 	parseHtml(null, $container, array(), true, 'user');
 	$content = ob_get_contents();
