@@ -75,7 +75,7 @@ function printConfigurationPageHeaderBar($conf) {
             </span>
         </div>
 		<?php
-		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
+		if (is_dir(__DIR__ . '/../docs/manual')) {
 			?>
             <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
                 <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">

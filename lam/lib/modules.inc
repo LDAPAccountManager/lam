@@ -2920,7 +2920,7 @@ class ScopeAndModuleValidation {
 			return false;
 		}
 		if (self::$cachedScopeNames === null) {
-			$dirname = dirname(__FILE__) . "/types";
+			$dirname = __DIR__ . "/types";
 			$dir = dir($dirname);
 			$scopeNames = array();
 			while ($entry = $dir->read()) {
@@ -2948,7 +2948,7 @@ class ScopeAndModuleValidation {
 			return false;
 		}
 		if (self::$cachedModuleNames === null) {
-			$dirname = dirname(__FILE__) . "/modules";
+			$dirname = __DIR__ . "/modules";
 			$dir = dir($dirname);
 			$moduleNames = array();
 			while ($entry = $dir->read()) {

@@ -71,7 +71,7 @@ if (isLAMProVersion()) {
 
 // set session save path
 if (isFileBasedSession()) {
-	session_save_path(dirname(__FILE__) . '/../sess');
+	session_save_path(__DIR__ . '/../sess');
 }
 
 // start empty session and change ID for security reasons

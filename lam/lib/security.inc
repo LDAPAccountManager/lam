@@ -77,7 +77,7 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 		unset($_SESSION);
 	}
 	if (isFileBasedSession()) {
-		$sessionDir = dirname(__FILE__) . "/../sess";
+		$sessionDir = __DIR__ . "/../sess";
 		session_save_path($sessionDir);
 		// enable garbage collection (fix for Debian based systems)
 		if (@ini_get("session.gc_probability") == 0) {
@@ -826,7 +826,7 @@ class LamTemporaryFilesManager {
 		if (!$this->isValidFileName($fileName)) {
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
-		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
+		$path = __DIR__ . '/../tmp/' . $fileName;
 		$handle = @fopen($path, "wb");
 		if ($handle) {
 			@chmod($path, 0600);
@@ -960,7 +960,7 @@ class LamTemporaryFilesManager {
 		if (!$this->isValidFileName($fileName) || !$this->isRegisteredFile($fileName)) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		return dirname(__FILE__) . '/../tmp/' . $fileName;
+		return __DIR__ . '/../tmp/' . $fileName;
 	}
 
 }

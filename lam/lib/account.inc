@@ -1961,7 +1961,7 @@ function printHeaderContents($title, $prefix) {
 	echo $title;
 	echo "</title>\n";
 	// include CSS files
-	$cssDirName = dirname(__FILE__) . '/../style';
+	$cssDirName = __DIR__ . '/../style';
 	$cssDir = dir($cssDirName);
 	$cssFiles = array();
 	$cssEntry = $cssDir->read();
@@ -1985,7 +1985,7 @@ function printHeaderContents($title, $prefix) {
  * @param string $prefix prefix to LAM main folder (e.g. "..")
  */
 function printJsIncludes($prefix) {
-	$jsDirName = dirname(__FILE__) . '/../templates/lib';
+	$jsDirName = __DIR__ . '/../templates/lib';
 	$jsDir = dir($jsDirName);
 	$jsFiles = array();
 	$jsEntry = $jsDir->read();

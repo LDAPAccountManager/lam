@@ -843,7 +843,7 @@ class freeRadius extends baseModule {
 
 if (interface_exists('\LAM\JOB\Job', false)) {
 
-	include_once dirname(__FILE__) . '/../passwordExpirationJob.inc';
+	include_once __DIR__ . '/../passwordExpirationJob.inc';
 
 	/**
 	 * Job to delete or move users on account expiration.

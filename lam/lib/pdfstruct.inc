@@ -931,7 +931,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @return string file name
 	 */
 	private function getPdfStructureFileName(string $confName, string $typeId, string $name) : string {
-		return dirname(__FILE__) . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
+		return __DIR__ . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
 	}
 
 }

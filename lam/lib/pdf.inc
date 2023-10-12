@@ -250,7 +250,7 @@ function printTable(&$pdf, $table, $fontName) {
  * @param string $fontName font name
  */
 function printImage(&$pdf, $imageEntry, $fontName) {
-	include_once dirname(__FILE__) . '/imageutils.inc';
+	include_once __DIR__ . '/imageutils.inc';
 	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
 	$height = $imageManipulator->getHeight() / 2.9;
 	if ($height > 40) {

@@ -757,7 +757,7 @@ class PublicKeyCredentialSourceRepositorySQLite extends PublicKeyCredentialSourc
 	 * @return string the PDO URL
 	 */
 	public function getPdoUrl(): string {
-		$fileName = dirname(__FILE__) . '/../config/__lam.webauthn.sqlite';
+		$fileName = __DIR__ . '/../config/__lam.webauthn.sqlite';
 		if (!file_exists($fileName)) {
 			$handle = fopen($fileName, 'w');
 			fclose($handle);

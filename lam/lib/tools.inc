@@ -34,7 +34,7 @@
  * @return array list of LAMTool objects
  */
 function getTools() : array {
-	$toolsDirName = dirname(__FILE__) . '/tools';
+	$toolsDirName = __DIR__ . '/tools';
 	$toolsDir = dir($toolsDirName);
 	$entry = $toolsDir->read();
 	// include all files in the tools directory

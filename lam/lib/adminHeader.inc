@@ -181,7 +181,7 @@ function printHeader(string $headerPrefix): void {
 
 			parseHtml(null, $toolGroup, array(), false, null);
 		}
-		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
+		if (is_dir(__DIR__ . '/../docs/manual')) {
 			?>
             <a class="lam-menu-entry" target="_blank" href="<?php echo $headerPrefix; ?>/docs/manual/index.html">
                 <span class="padding0"><?php echo _("Help") ?></span>

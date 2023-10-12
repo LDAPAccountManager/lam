@@ -1664,7 +1664,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
 			$messages = array();
 			try {
-				include_once dirname(__FILE__) . '/../imageutils.inc';
+				include_once __DIR__ . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
 				$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
 				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
@@ -1707,7 +1707,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		// convert to JPG
 		try {
-			include_once dirname(__FILE__) . '/../imageutils.inc';
+			include_once __DIR__ . '/../imageutils.inc';
 			$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 			// resize if maximum values specified
 			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
@@ -3205,7 +3205,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			elseif (!empty($data) && (empty($attributes['jpegPhoto'][0]) || ($data != $attributes['jpegPhoto'][0]))) {
 				$moduleSettings = $this->selfServiceSettings->moduleSettings;
 				try {
-					include_once dirname(__FILE__) . '/../imageutils.inc';
+					include_once __DIR__ . '/../imageutils.inc';
 					$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 					$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
 					$data = $imageManipulator->getImageData();
@@ -3319,7 +3319,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @return array binary image data
 	 */
 	private static function resizeAndConvertImage($data, $settings) {
-		include_once dirname(__FILE__) . '/../imageutils.inc';
+		include_once __DIR__ . '/../imageutils.inc';
 		$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 		// resize if maximum values specified
 		if (!empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
@@ -3412,7 +3412,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$data = base64_decode($data);
 			}
 			try {
-				include_once dirname(__FILE__) . '/../imageutils.inc';
+				include_once __DIR__ . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 				$imageManipulator->convertToJpeg();
 				$data = $imageManipulator->getImageData();

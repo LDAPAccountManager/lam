@@ -175,7 +175,7 @@ class Ldap{
 	public function __wakeup() {
 		$this->is_connected = false;
 		// delete PDF files and images which are older than 15 min
-		$tmpDir = dirname(__FILE__) . '/../tmp/';
+		$tmpDir = __DIR__ . '/../tmp/';
 		$time = time();
 		$dir = @opendir($tmpDir);
 		$file = @readdir($dir);
@@ -190,7 +190,7 @@ class Ldap{
 		}
 		@closedir($dir);
 		// clean internal files that are older than 24 hours
-		$tmpDir = dirname(__FILE__) . '/../tmp/internal/';
+		$tmpDir = __DIR__ . '/../tmp/internal/';
 		$time = time();
 		$dir = @opendir($tmpDir);
 		$file = @readdir($dir);

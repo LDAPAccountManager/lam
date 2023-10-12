@@ -269,7 +269,7 @@ function isAccountTypeHidden($type) {
 function getLanguages() {
 	$languages = array();
 	// loading available languages from language.conf file
-	$languagefile = dirname(__FILE__) . "/../config/language";
+	$languagefile = __DIR__ . "/../config/language";
 	if(is_file($languagefile)) {
 		$file = fopen($languagefile, "r");
 		while(!feof($file)) {
@@ -3608,7 +3608,7 @@ class LAMCfgMain {
 	 * @return boolean copied
 	 */
 	public function installSampleConfig() {
-		$samplePath = dirname(dirname(__FILE__)) . '/config/config.cfg.sample';
+		$samplePath = __DIR__ . '/../config/config.cfg.sample';
 		return file_exists($samplePath) && copy($samplePath, $this->conffile);
 	}
 
@@ -3631,7 +3631,7 @@ class LAMCfgMain {
 	 * @return String file name
 	 */
 	private function getInternalSSLCaCertFileName() {
-		return dirname(__FILE__) . '/../config/serverCerts.pem';
+		return __DIR__ . '/../config/serverCerts.pem';
 	}
 
 	/**
