@@ -427,7 +427,7 @@ class ObjectClass extends SchemaItem
      *
      * @return array An array of objectClass names (strings)
      */
-	function getSupClasses()
+	function getSupClasses(): array
 	{
 		return $this->sup_classes;
 	}

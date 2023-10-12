@@ -210,13 +210,11 @@ function displayObjectClassList(htmlResponsiveRow &$row): void {
 
 	// fill child object classes
 	foreach ($objectClasses as $name => $objectClass) {
-		if (!empty($objectClass->getSupClasses())) {
-			foreach ($objectClass->getSupClasses() as $subClass) {
-				if (!isset($objectClasses[strtolower($subClass)])) {
-					continue;
-				}
-				$objectClasses[strtolower($subClass)]->addChildObjectClass($name);
+		foreach ($objectClass->getSupClasses() as $subClass) {
+			if (!isset($objectClasses[strtolower($subClass)])) {
+				continue;
 			}
+			$objectClasses[strtolower($subClass)]->addChildObjectClass($name);
 		}
 	}
 

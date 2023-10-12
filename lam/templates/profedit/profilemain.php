@@ -27,7 +27,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -346,10 +346,8 @@ foreach ($profileClasses as $profileClass) {
 		foreach ($typesImport as $typeImport) {
 			if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
 				$accountProfiles = $accountProfilePersistenceManager->getAccountProfileNames($typeImport->getId(), $profile);
-				if (!empty($accountProfiles)) {
-					foreach ($accountProfiles as $accountProfile) {
-						$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfile] = $profile . '##' . $typeImport->getId() . '##' . $accountProfile;
-					}
+				foreach ($accountProfiles as $accountProfile) {
+					$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfile] = $profile . '##' . $typeImport->getId() . '##' . $accountProfile;
 				}
 			}
 		}
