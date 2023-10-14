@@ -223,12 +223,12 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 
 		public function testWarning() {
 			$now = new DateTime('now', getTimeZone());
-			$lastChangeNow = floor($now->format('U')/3600/24);
+			$lastChange = floor($now->format('U')/3600/24) - 370;
 			$this->job->method('getDBLastPwdChangeTime')->willReturn('1');
 			$this->job->method('findUsers')->willReturn(array(array(
 					'dn' => 'cn=some,dc=dn',
-					'shadowmax' => array('10'),
-					'shadowlastchange' => array($lastChangeNow)
+					'shadowmax' => array('365'),
+					'shadowlastchange' => array($lastChange)
 			)));
 
 			$this->job->expects($this->once())->method('getDBLastPwdChangeTime');
@@ -236,6 +236,86 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->once())->method('sendMail');
 
 			$pdo = array();
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarningReachedWithShadowWarning() {
+			$now = new DateTime('now', getTimeZone());
+			$lastChange = floor($now->format('U')/3600/24) - 370;
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('1');
+			$this->job->method('findUsers')->willReturn(array(array(
+				'dn' => 'cn=some,dc=dn',
+				'shadowmax' => array('365'),
+				'shadowwarning' => '10',
+				'shadowlastchange' => array($lastChange)
+			)));
+
+			$this->job->expects($this->once())->method('getDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('sendMail');
+
+			$pdo = array();
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarningNotReachedWithShadowWarning() {
+			$now = new DateTime('now', getTimeZone());
+			$lastChange = floor($now->format('U')/3600/24) - 380;
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('1');
+			$this->job->method('findUsers')->willReturn(array(array(
+				'dn' => 'cn=some,dc=dn',
+				'shadowmax' => array('365'),
+				'shadowwarning' => '10',
+				'shadowlastchange' => array($lastChange)
+			)));
+
+			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->never())->method('sendMail');
+
+			$pdo = array();
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarningReachedWithNegativeShadowWarning() {
+			$now = new DateTime('now', getTimeZone());
+			$lastChange = floor($now->format('U')/3600/24) - 373;
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('1');
+			$this->job->method('findUsers')->willReturn(array(array(
+				'dn' => 'cn=some,dc=dn',
+				'shadowmax' => array('365'),
+				'shadowwarning' => '20',
+				'shadowlastchange' => array($lastChange)
+			)));
+
+			$this->job->expects($this->once())->method('getDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('sendMail');
+
+			$pdo = array();
+			$this->options['test_mailNotificationPeriod' . ShadowAccountPasswordNotifyJobTest::JOB_ID][0] = '-10';
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarningNotReachedWithNegativeShadowWarning() {
+			$now = new DateTime('now', getTimeZone());
+			$lastChange = floor($now->format('U')/3600/24) - 377;
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('1');
+			$this->job->method('findUsers')->willReturn(array(array(
+				'dn' => 'cn=some,dc=dn',
+				'shadowmax' => array('365'),
+				'shadowwarning' => '20',
+				'shadowlastchange' => array($lastChange)
+			)));
+
+			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->never())->method('sendMail');
+
+			$pdo = array();
+			$this->options['test_mailNotificationPeriod' . ShadowAccountPasswordNotifyJobTest::JOB_ID][0] = '-10';
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}

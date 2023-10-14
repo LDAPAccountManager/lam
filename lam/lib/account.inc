@@ -640,6 +640,9 @@ function get_preg($argument, $regexp) {
 		case "digit":		// Normal number
 					$pregexpr = '/^[[:digit:]]*$/';
 					break;
+		case "digitWithNegativeValues":		// Normal number incl. negative values
+					$pregexpr = '/^[-]?[[:digit:]]*$/';
+					break;
 		case "float":		// float value
 					$pregexpr = '/^[[:digit:]]+(\\.[[:digit:]]+)?$/';
 					break;

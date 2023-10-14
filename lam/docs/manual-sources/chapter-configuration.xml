@@ -1377,7 +1377,9 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
 
           <para>LAM calculates the expiration date based on the last password
           change and the assigned password policy (or the default policy)
-          using attributes pwdMaxAge and pwdExpireWarning.</para>
+          using attributes pwdMaxAge and pwdExpireWarning. Negative values are
+          possible to send mails when LDAP's warning time already
+          started.</para>
 
           <para>Examples:</para>
 
@@ -1584,7 +1586,8 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
 
           <para>LAM calculates the expiration date based on the last password
           change, the password warning time (attribute "shadowWarning") and
-          the specified notification period.</para>
+          the specified notification period. Negative values are possible to
+          send mails when Shadow's warning time already started.</para>
 
           <para>Examples:</para>
 

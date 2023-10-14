@@ -207,6 +207,14 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->assertEquals((7*3600*24 + 10000), $seconds);
 
 
+			$confDays = -7;
+			$policy = array('pwdmaxage' => 365 * 3600 * 24, 'pwdexpirewarning' => 10000);
+
+			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+
+			$this->assertEquals((-7*3600*24 + 10000), $seconds);
+
+
 			$confDays = 0;
 			$policy = array('pwdmaxage' => 365 * 3600 * 24, 'pwdexpirewarning' => 10000);
 
