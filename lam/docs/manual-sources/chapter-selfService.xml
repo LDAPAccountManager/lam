@@ -1379,6 +1379,9 @@
       deactivate security questions if you want to use only email
       validation.</para>
 
+      <para>The password reset must be finished by the user within 24h or the
+      process must be restarted.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
