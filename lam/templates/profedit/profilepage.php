@@ -13,7 +13,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -96,31 +96,31 @@ if (isset($_POST['abort'])) {
 
 $accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 
-$errors = array();
+$errors = [];
 
 // save button was pressed
 if (isset($_POST['save'])) {
 	// create option array to check and save
-	$options = array();
+	$options = [];
 	$opt_keys = array_keys($_SESSION['profile_types']);
 	foreach ($opt_keys as $element) {
 		// text fields
 		if ($_SESSION['profile_types'][$element] == "text") {
-			$options[$element] = array($_POST[$element]);
+			$options[$element] = [$_POST[$element]];
 		}
 		// checkboxes
 		elseif ($_SESSION['profile_types'][$element] == "checkbox") {
-			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
-			else $options[$element] = array('false');
+			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = ['true'];
+			else $options[$element] = ['false'];
 		}
 		// dropdownbox
 		elseif ($_SESSION['profile_types'][$element] == "select") {
-			$options[$element] = array($_POST[$element]);
+			$options[$element] = [$_POST[$element]];
 		}
 		// multiselect
 		elseif ($_SESSION['profile_types'][$element] == "multiselect") {
 			if (isset($_POST[$element])) $options[$element] = $_POST[$element];  // value is already an array
-			else $options[$element] = array();
+			else $options[$element] = [];
 		}
 		// textareas
 		if ($_SESSION['profile_types'][$element] == "textarea") {
@@ -138,7 +138,7 @@ if (isset($_POST['save'])) {
 	        exit();
         }
         catch (LAMException $e) {
-	        $errors[] = array("ERROR", _("Unable to save profile!"), $_POST['profname']);
+	        $errors[] = ["ERROR", _("Unable to save profile!"), $_POST['profname']];
         }
 	}
 }
@@ -156,17 +156,17 @@ if (sizeof($errors) > 0) {
 }
 
 // empty list of attribute types
-$_SESSION['profile_types'] = array();
+$_SESSION['profile_types'] = [];
 
 // get module options
 $options = getProfileOptions($type->getId());
 
 // load old profile or POST values if needed
-$old_options = array();
+$old_options = [];
 if (isset($_POST['save'])) {
 	foreach ($_POST as $key => $value) {
 		if (!is_array($value)) {
-			$old_options[$key] = array($value);
+			$old_options[$key] = [$value];
 		}
 		else {
 			$old_options[$key] = $value;
@@ -203,12 +203,12 @@ $container->addVerticalSpacer('1rem');
 // get root suffix
 $rootsuffix = $type->getSuffix();
 // get subsuffixes
-$suffixes = array('-' => '-');
+$suffixes = ['-' => '-'];
 $possibleSuffixes = $type->getSuffixList();
 foreach ($possibleSuffixes as $suffix) {
 	$suffixes[getAbstractDN($suffix)] = $suffix;
 }
-$selectedSuffix = array();
+$selectedSuffix = [];
 if (isset($old_options['ldap_suffix'][0])) {
 	$selectedSuffix[] = $old_options['ldap_suffix'][0];
 }
@@ -219,7 +219,7 @@ $suffixSelect->setRightToLeftTextDirection(true);
 $container->add($suffixSelect, 12);
 // RDNs
 $rdns = getRDNAttributes($type->getId());
-$selectedRDN = array();
+$selectedRDN = [];
 if (isset($old_options['ldap_rdn'][0])) {
 	$selectedRDN[] = $old_options['ldap_rdn'][0];
 }
@@ -237,7 +237,7 @@ foreach ($options as $moduleName => $moduleOptions) {
 	}
 	$module = new $moduleName($type->getScope());
 	$icon = $module->getIcon();
-	if (!empty($icon) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
+	if (!empty($icon) && !(str_starts_with($icon, 'http')) && !(str_starts_with($icon, '/'))) {
 		$icon = '../../graphics/' . $icon;
 	}
 	$modContainer = new htmlResponsiveRow();
@@ -250,10 +250,10 @@ foreach ($options as $moduleName => $moduleOptions) {
 // profile name and submit/abort buttons
 $buttonTable = new htmlResponsiveRow();
 $saveButton = new htmlButton('save', _('Save'));
-$saveButton->setCSSClasses(array('lam-primary fullwidth-mobile-only'));
+$saveButton->setCSSClasses(['lam-primary fullwidth-mobile-only']);
 $buttonTable->addLabel($saveButton);
 $cancelButton = new htmlButton('abort', _('Cancel'));
-$cancelButton->setCSSClasses(array('fullwidth-mobile-only'));
+$cancelButton->setCSSClasses(['fullwidth-mobile-only']);
 $cancelButton->disableFormValidation();
 $buttonTable->addField($cancelButton);
 $buttonTable->add(new htmlHiddenInput('accounttype', $type->getId()), 0);

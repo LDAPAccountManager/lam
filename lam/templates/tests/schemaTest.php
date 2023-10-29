@@ -11,7 +11,7 @@ use function \LAM\SCHEMA\get_cached_schema;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2022  Roland Gruber
+  Copyright (C) 2007 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ else {
 	}
 }
 
-parseHtml(null, $container, array(), true, 'user');
+parseHtml(null, $container, [], true, 'user');
 
 echo "</div>\n";
 include '../../lib/adminFooter.inc';
@@ -119,7 +119,7 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
 		return null;
 	}
 	$schemaClasses = get_cached_schema('objectclasses');
-	$schemaAttrs = array();
+	$schemaAttrs = [];
 	// check if object classes are supported
 	for ($o = 0; $o < sizeof($classes); $o++) {
 		if (!isset($schemaClasses[strtolower($classes[$o])])) {
@@ -130,7 +130,7 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
 	}
 	// check if attributes are supported
 	for ($a = 0; $a < sizeof($attrs); $a++) {
-		if (strpos($attrs[$a], 'INFO.') === 0) {
+		if (str_starts_with($attrs[$a], 'INFO.')) {
 			continue;
 		}
 		if (!in_array_ignore_case($attrs[$a], $schemaAttrs) && !in_array_ignore_case(str_replace(';binary', '', $attrs[$a]), $schemaAttrs)) {
@@ -150,7 +150,7 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
  * @return array<mixed> list of attribute names
  */
 function getRecursiveAttributesFromObjectClass($oClass): array {
-	$attrs = array();
+	$attrs = [];
 	$attrs = array_merge($attrs, $oClass->getMustAttrNames());
 	$attrs = array_merge($attrs, $oClass->getMayAttrNames());
 	$subClassNames = $oClass->getSupClasses();

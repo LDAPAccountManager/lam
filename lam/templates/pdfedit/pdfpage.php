@@ -24,7 +24,7 @@ use LAMException;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2022  Roland Gruber
+                2007 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ if (!empty($_POST['form_submit'])) {
 
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
-$saveErrors = array();
+$saveErrors = [];
 if(isset($_GET['submit'])) {
 	try {
 	    $pdfStructurePersistenceManager->savePdfStructure($_SESSION['config']->getName(), $type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
@@ -155,7 +155,7 @@ if(isset($_GET['submit'])) {
 		exit;
 	}
 	catch (LAMException $e) {
-		$saveErrors[] = array('ERROR', $e->getTitle(), $e->getMessage());
+		$saveErrors[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 	}
 }
 
@@ -163,10 +163,10 @@ $availablePDFFields = getAvailablePDFFields($type->getId());
 
 // Create the values for the dropdown boxes for section headline defined by
 // value entries and fetch all available modules
-$modules = array();
-$section_items_array = array();
+$modules = [];
+$section_items_array = [];
 $section_items = '';
-$sortedModules = array();
+$sortedModules = [];
 foreach($availablePDFFields as $module => $fields) {
 	if ($module != 'main') {
 		$title = getModuleAlias($module, $type->getScope());
@@ -207,11 +207,11 @@ if (sizeof($saveErrors) > 0) {
 	echo "<br>\n";
 }
 
-$newFieldFieldElements = array();
+$newFieldFieldElements = [];
 foreach($sortedModules as $module => $title) {
 	$fields = $availablePDFFields[$module];
 	if (isset($fields) && is_array($fields) && (sizeof($fields) > 0)) {
-		$moduleFields = array();
+		$moduleFields = [];
 		foreach ($fields as $field => $fieldLabel) {
 			$moduleFields[$fieldLabel] = $module . "_" . $field;
 		}
@@ -230,20 +230,20 @@ else if (isset($_POST['pdfname'])) {
 // headline
 $headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
-$logos = array(_('No logo') => 'none');
+$logos = [_('No logo') => 'none'];
 foreach($logoFiles as $logoFile) {
 	$logos[$logoFile->getName() . ' (' . $logoFile->getWidth() . ' x ' . $logoFile->getHeight() . ")"] = $logoFile->getName();
 }
-$selectedLogo = array('printLogo.jpg');
+$selectedLogo = ['printLogo.jpg'];
 if (isset($_SESSION['currentPDFStructure'])) {
-	$selectedLogo = array($_SESSION['currentPDFStructure']->getLogo());
+	$selectedLogo = [$_SESSION['currentPDFStructure']->getLogo()];
 }
 
 ?>
 	<form id="inputForm" action="pdfpage.php" method="post" onSubmit="saveScrollPosition('inputForm')">
 <?php
-$sectionElements = array();
-$nonTextSectionElements = array();
+$sectionElements = [];
+$nonTextSectionElements = [];
 
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_('PDF editor')), 12);
@@ -261,8 +261,8 @@ $foldingMarks = 'no';
 if (isset($_SESSION['currentPDFStructure'])) {
 	$foldingMarks = $_SESSION['currentPDFStructure']->getFoldingMarks();
 }
-$possibleFoldingMarks = array(_('No') => 'no', _('Yes') => 'standard');
-$foldingMarksSelect = new htmlResponsiveSelect('foldingmarks', $possibleFoldingMarks, array($foldingMarks), _('Folding marks'));
+$possibleFoldingMarks = [_('No') => 'no', _('Yes') => 'standard'];
+$foldingMarksSelect = new htmlResponsiveSelect('foldingmarks', $possibleFoldingMarks, [$foldingMarks], _('Folding marks'));
 $foldingMarksSelect->setHasDescriptiveElements(true);
 $mainContent->add($foldingMarksSelect, 12);
 $mainContent->addVerticalSpacer('3rem');
@@ -296,11 +296,11 @@ foreach ($sections as $key => $section) {
 		$structureContent->addVerticalSpacer('2rem');
 		// Section headline is a value entry
 		if($section->isAttributeTitle()) {
-			$headlineElements = array();
+			$headlineElements = [];
 			foreach($section_items_array as $item) {
 				$headlineElements[translateFieldIDToName($item, $type->getScope(), $availablePDFFields)] = '_' . $item;
 			}
-			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, array('_' . $section->getPdfKey()));
+			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, ['_' . $section->getPdfKey()]);
 			$sectionHeadlineSelect->setHasDescriptiveElements(true);
 			$structureContent->addLabel($sectionHeadlineSelect);
 		}
@@ -363,7 +363,7 @@ foreach ($sections as $key => $section) {
 		// Add current satic text for dropdown box needed for the position when inserting a new
 		// section or static text entry
 		$textSnippet = $section->getText();
-		$textSnippet = str_replace(array("\n", "\r"), array(" ", " "), $textSnippet);
+		$textSnippet = str_replace(["\n", "\r"], [" ", " "], $textSnippet);
 		$textSnippet = trim($textSnippet);
 		if (strlen($textSnippet) > 15) {
 			$textSnippet = substr($textSnippet, 0, 15) . '...';
@@ -402,11 +402,11 @@ $container->addVerticalSpacer('2rem');
 if (!empty($nonTextSectionElements)) {
 	$newFieldContainer = new htmlResponsiveRow();
 	$newFieldContainer->add(new htmlSubTitle(_('New field')), 12);
-	$newFieldFieldSelect = new htmlResponsiveSelect('new_field', $newFieldFieldElements, array(), _('Field'));
+	$newFieldFieldSelect = new htmlResponsiveSelect('new_field', $newFieldFieldElements, [], _('Field'));
 	$newFieldFieldSelect->setHasDescriptiveElements(true);
 	$newFieldFieldSelect->setContainsOptgroups(true);
 	$newFieldContainer->add($newFieldFieldSelect, 12);
-	$newFieldSectionSelect = new htmlResponsiveSelect('add_field_position', $nonTextSectionElements, array(), _('Position'));
+	$newFieldSectionSelect = new htmlResponsiveSelect('add_field_position', $nonTextSectionElements, [], _('Position'));
 	$newFieldSectionSelect->setHasDescriptiveElements(true);
 	$newFieldContainer->add($newFieldSectionSelect, 12);
 	$newFieldContainer->addLabel(new htmlOutputText('&nbsp;', false));
@@ -420,7 +420,7 @@ $newSectionContent = new htmlResponsiveRow();
 $newSectionContent->add(new htmlSubTitle(_('New section')), 12);
 // add new section with text title
 $newSectionContent->add(new htmlResponsiveInputField(_("Headline"), 'new_section_text'), 12);
-$newSectionPositionSelect1 = new htmlResponsiveSelect('add_sectionText_position', $sectionElements, array(), _('Position'));
+$newSectionPositionSelect1 = new htmlResponsiveSelect('add_sectionText_position', $sectionElements, [], _('Position'));
 $newSectionPositionSelect1->setHasDescriptiveElements(true);
 $newSectionPositionSelect1->setSortElements(false);
 $newSectionContent->add($newSectionPositionSelect1, 12);
@@ -428,11 +428,11 @@ $newSectionContent->addLabel(new htmlOutputText('&nbsp;', false));
 $newSectionContent->addField(new htmlButton('add_sectionText', _('Add')));
 $newSectionContent->addVerticalSpacer('2rem');
 // add new section with field title
-$newSectionFieldSelect = new htmlResponsiveSelect('new_section_item', $newFieldFieldElements, array(), _("Headline"));
+$newSectionFieldSelect = new htmlResponsiveSelect('new_section_item', $newFieldFieldElements, [], _("Headline"));
 $newSectionFieldSelect->setHasDescriptiveElements(true);
 $newSectionFieldSelect->setContainsOptgroups(true);
 $newSectionContent->add($newSectionFieldSelect, 12);
-$newSectionPositionSelect2 = new htmlResponsiveSelect('add_section_position', $sectionElements, array(), _('Position'));
+$newSectionPositionSelect2 = new htmlResponsiveSelect('add_section_position', $sectionElements, [], _('Position'));
 $newSectionPositionSelect2->setHasDescriptiveElements(true);
 $newSectionPositionSelect2->setSortElements(false);
 $newSectionContent->add($newSectionPositionSelect2, 12);
@@ -445,7 +445,7 @@ $container->addVerticalSpacer('1rem');
 $newTextFieldContent = new htmlResponsiveRow();
 $newTextFieldContent->add(new htmlSubTitle(_('New text area')), 12);
 $newTextFieldContent->add(new htmlResponsiveInputTextarea('text_text', '', 40, 3, _('Static text')), 12);
-$newTextFieldPositionSelect = new htmlResponsiveSelect('add_text_position', $sectionElements, array(), _('Position'));
+$newTextFieldPositionSelect = new htmlResponsiveSelect('add_text_position', $sectionElements, [], _('Position'));
 $newTextFieldPositionSelect->setHasDescriptiveElements(true);
 $newTextFieldPositionSelect->setSortElements(false);
 $newTextFieldContent->add($newTextFieldPositionSelect, 12);
@@ -457,7 +457,7 @@ $container->add($newTextFieldContent, 12);
 // buttons
 $buttonContainer = new htmlResponsiveRow();
 $saveButton = new htmlButton('submit', _("Save"));
-$saveButton->setCSSClasses(array('lam-primary'));
+$saveButton->setCSSClasses(['lam-primary']);
 $cancelButton = new htmlButton('abort', _("Cancel"));
 $cancelButton->disableFormValidation();
 $buttonGroup = new htmlGroup();
@@ -471,7 +471,7 @@ $buttonContainer->add(new htmlHiddenInput('form_submit', 'true'), 4);
 $container->add($buttonContainer, 12);
 addSecurityTokenToMetaHTML($container);
 
-parseHtml(null, $container, array(), false, $type->getScope());
+parseHtml(null, $container, [], false, $type->getScope());
 
 if ((sizeof($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
@@ -497,7 +497,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  */
 function translateFieldIDToName($id, $scope, $availablePDFFields): ?string {
 	foreach ($availablePDFFields as $module => $fields) {
-		if (!(strpos($id, $module . '_') === 0)) {
+		if (!(str_starts_with($id, $module . '_'))) {
 			continue;
 		}
 		foreach ($fields as $name => $label) {
@@ -556,7 +556,7 @@ function updateBasicSettings(PDFStructure &$structure, array $logoFiles): void {
 function updateSectionTitles(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
-		if (strpos($key, 'section_') === 0) {
+		if (str_starts_with($key, 'section_')) {
 			$pos = substr($key, strlen('section_'));
 			$sections[$pos]->setTitle($value);
 		}
@@ -578,7 +578,7 @@ function addSection(PDFStructure &$structure): void {
 		}
 		else {
 			$section = new PDFTextSection(str_replace("\r", "", $_POST['text_text']));
-			array_splice($sections, $_POST['add_text_position'], 0, array($section));
+			array_splice($sections, $_POST['add_text_position'], 0, [$section]);
 			$structure->setSections($sections);
 		}
 	}
@@ -590,14 +590,14 @@ function addSection(PDFStructure &$structure): void {
 		}
 		else {
 			$section = new PDFEntrySection($_POST['new_section_text']);
-			array_splice($sections, $_POST['add_sectionText_position'], 0, array($section));
+			array_splice($sections, $_POST['add_sectionText_position'], 0, [$section]);
 			$structure->setSections($sections);
 		}
 	}
 	// Add a new section with item as headline
 	elseif(isset($_POST['add_section'])) {
 		$section = new PDFEntrySection('_' . $_POST['new_section_item']);
-		array_splice($sections, $_POST['add_section_position'], 0, array($section));
+		array_splice($sections, $_POST['add_section_position'], 0, [$section]);
 		$structure->setSections($sections);
 	}
 }
@@ -628,14 +628,14 @@ function removeItem(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// remove section
-		if (strpos($key, 'remove_section_') === 0) {
+		if (str_starts_with($key, 'remove_section_')) {
 			$pos = substr($key, strlen('remove_section_'));
 			unset($sections[$pos]);
 			$sections = array_values($sections);
 			$structure->setSections($sections);
 		}
 		// remove section entry
-		if (strpos($key, 'remove_entry_') === 0) {
+		if (str_starts_with($key, 'remove_entry_')) {
 			$parts = substr($key, strlen('remove_entry_'));
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
@@ -658,7 +658,7 @@ function moveUp(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// move section
-		if (strpos($key, 'up_section_') === 0) {
+		if (str_starts_with($key, 'up_section_')) {
 			$pos = intval(substr($key, strlen('up_section_')));
 			$sectionTmp = $sections[$pos - 1];
 			$sections[$pos - 1] = $sections[$pos];
@@ -666,7 +666,7 @@ function moveUp(PDFStructure &$structure): void {
 			$structure->setSections($sections);
 		}
 		// move section entry
-		if (strpos($key, 'up_entry_') === 0) {
+		if (str_starts_with($key, 'up_entry_')) {
 			$parts = substr($key, strlen('up_entry_'));
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
@@ -690,7 +690,7 @@ function moveDown(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// move section
-		if (strpos($key, 'down_section_') === 0) {
+		if (str_starts_with($key, 'down_section_')) {
 			$pos = intval(substr($key, strlen('down_section_')));
 			$sectionTmp = $sections[$pos + 1];
 			$sections[$pos + 1] = $sections[$pos];
@@ -698,7 +698,7 @@ function moveDown(PDFStructure &$structure): void {
 			$structure->setSections($sections);
 		}
 		// move section entry
-		if (strpos($key, 'down_entry_') === 0) {
+		if (str_starts_with($key, 'down_entry_')) {
 			$parts = substr($key, strlen('down_entry_'));
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];

@@ -103,7 +103,7 @@ if(isset($_POST['createNewTemplate'])) {
 
 $typeManager = new TypeManager();
 $types = $typeManager->getConfiguredTypes();
-$sortedTypes = array();
+$sortedTypes = [];
 foreach ($types as $type) {
 	if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 		continue;
@@ -169,8 +169,8 @@ if (isset($_POST['deleteGlobalLogo']) && !empty($_POST['globalLogoDelete'])) {
 }
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-$serverProfiles = array();
-$configProfiles = array();
+$serverProfiles = [];
+$configProfiles = [];
 try {
 	$configProfiles = $serverProfilePersistenceManager->getProfiles();
 	foreach ($configProfiles as $profileName) {
@@ -190,10 +190,10 @@ if (!empty($_POST['import'])) {
 		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['importProfiles_' . $typeId])) {
-		$options = array();
+		$options = [];
 		foreach ($_POST['importProfiles_' . $typeId] as $importProfiles) {
 			$parts = explode('##', $importProfiles);
-			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
+			$options[] = ['conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]];
 		}
 		$errMessage = importStructures($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
@@ -212,10 +212,10 @@ if (!empty($_POST['export'])) {
 		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['exportProfiles_' . $typeId])) {
-		$options = array();
+		$options = [];
 		foreach ($_POST['exportProfiles_' . $typeId] as $importProfiles) {
 			$parts = explode('##', $importProfiles);
-			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1]);
+			$options[] = ['conf' => $parts[0], 'typeId' => $parts[1]];
 		}
 		$typeId = $_POST['typeId'];
 		$name = $_POST['name_' . $typeId];
@@ -234,7 +234,7 @@ if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FIL
 		if ($handle === false) {
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
-        $data = fread($handle, 100000000);
+        $data = fread($handle, 100_000_000);
 		if ($data === false) {
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
@@ -313,16 +313,17 @@ if (!empty($_POST['importLogoSourceProfile'])) {
 }
 
 // get list of account types
-$availableTypes = array();
-$templateClasses = array();
+$availableTypes = [];
+$templateClasses = [];
 foreach ($sortedTypes as $typeId => $title) {
 	$type = $typeManager->getConfiguredType($typeId);
-	$templateClasses[] = array(
+	$templateClasses[] = [
 		'typeId' => $type->getId(),
 		'scope' => $type->getScope(),
 		'title' => $title,
 		'icon' => $type->getIcon(),
-		'templates' => $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $type->getId()));
+		'templates' => $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $type->getId())
+    ];
 	$availableTypes[$title] = $type->getId();
 }
 // check if a template should be edited
@@ -356,7 +357,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$newProfileSelect->setHasDescriptiveElements(true);
 			$container->addLabel($newProfileSelect);
 			$createButton = new htmlButton('createNewTemplate', _('Create'));
-			$createButton->setCSSClasses(array('lam-primary'));
+			$createButton->setCSSClasses(['lam-primary']);
 			$container->addField($createButton);
 			$container->addVerticalSpacer('2rem');
 		}
@@ -380,7 +381,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" .
 										_('Cancel') . "', '" . $templateClass['typeId'] . "', '" . 'template_' .
 										$templateClass['typeId'] . "'); return false;");
-			$deleteLink->setCSSClasses(array('margin3'));
+			$deleteLink->setCSSClasses(['margin3']);
 			$buttonGroup->addElement($deleteLink);
 
 			if (count($configProfiles) > 1) {
@@ -389,7 +390,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 				$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import PDF structures") . "', '" .
 										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
 										"', 'import'); return false;");
-				$importLink->setCSSClasses(array('margin3'));
+				$importLink->setCSSClasses(['margin3']);
 				$buttonGroup->addElement($importLink);
 			}
 			$exportLink = new htmlLink(null, '#', '../../graphics/export.svg');
@@ -398,7 +399,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
 									"', 'export', '" . 'template_' . $templateClass['typeId'] . "', '" .
 									$_SESSION['config']->getName() . "'); return false;");
-			$exportLink->setCSSClasses(array('margin3'));
+			$exportLink->setCSSClasses(['margin3']);
 			$buttonGroup->addElement($exportLink);
 			$container->add($buttonGroup, 12, 4);
 			$container->addVerticalSpacer('1rem');
@@ -407,7 +408,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		// manage logos
 		$container->addVerticalSpacer('4rem');
 		$container->add(new htmlSubTitle(_('Manage logos')), 12);
-    	$logoOptions = array();
+    	$logoOptions = [];
         try {
             $logos = $pdfStructurePersistenceManager->getPdfLogos($_SESSION['config']->getName(), true);
 	        foreach ($logos as $logo) {
@@ -429,31 +430,31 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 	    $importLogoLink->setTitle(_('Import logo'));
 	    $importLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoImportDialog('" . _("Import logo") . "', '" .
             _('Ok') . "', '" . _('Cancel') . "'); return false;");
-    	$importLogoLink->setCSSClasses(array('margin3'));
+    	$importLogoLink->setCSSClasses(['margin3']);
         $logoButtonGroup->addElement($importLogoLink);
         $exportLogoLink = new htmlLink(null, '#', '../../graphics/export.svg');
 	    $exportLogoLink->setTitle(_('Export logo'));
     	$exportLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoExportDialog('" . _("Export logo") . "', '" .
             _('Ok') . "', '" . _('Cancel') . "'); return false;");
-	    $exportLogoLink->setCSSClasses(array('margin3'));
+	    $exportLogoLink->setCSSClasses(['margin3']);
 	    $logoButtonGroup->addElement($exportLogoLink);
     	$container->addField($logoButtonGroup);
 		$container->addVerticalSpacer('2rem');
 		$container->addLabel(new htmlInputFileUpload('logoUpload'));
 		$logoUpload = new htmlButton('uploadLogo', _('Upload'));
-		$logoUpload->setCSSClasses(array('lam-secondary'));
+		$logoUpload->setCSSClasses(['lam-secondary']);
 		$container->addField($logoUpload);
 
 		$container->addVerticalSpacer('4rem');
 		// generate content
-		parseHtml(null, $container, array(), false, 'user');
+		parseHtml(null, $container, [], false, 'user');
 
 		echo "</form>\n";
 
 		// export logo form
     	$container = new htmlResponsiveRow();
         $logoExportFormContent = new htmlResponsiveRow();
-        $exportOptions = array();
+        $exportOptions = [];
         foreach ($configProfiles as $profile) {
             if ($profile != $_SESSION['config']->getName()) {
                 $exportOptions[$profile] = $profile;
@@ -461,7 +462,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         }
         asort($exportOptions);
         $exportOptions['*' . _('Global templates')] = 'templates*';
-        $logoExportConfigSelect = new htmlResponsiveSelect('exportLogoTargetProfile', $exportOptions, array(), _('Target server profile'), null, 5);
+        $logoExportConfigSelect = new htmlResponsiveSelect('exportLogoTargetProfile', $exportOptions, [], _('Target server profile'), null, 5);
         $logoExportConfigSelect->setHasDescriptiveElements(true);
         $logoExportConfigSelect->setSortElements(false);
         $logoExportConfigSelect->setMultiSelect(true);
@@ -474,14 +475,14 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         $logoExportFormContent->add($logoExportFormPwd, 12);
         addSecurityTokenToMetaHTML($logoExportFormContent);
         $logoExportForm = new htmlForm('logoExportForm', 'pdfmain.php', $logoExportFormContent);
-        $logoExportDialog = new htmlDiv('logoExportDiv', $logoExportForm, array('hidden'));
+        $logoExportDialog = new htmlDiv('logoExportDiv', $logoExportForm, ['hidden']);
         $container->add($logoExportDialog, 12);
-    	parseHtml(null, $container, array(), false, 'user');
+    	parseHtml(null, $container, [], false, 'user');
 
         // import logo form
         $container = new htmlResponsiveRow();
         $logoImportFormContent = new htmlResponsiveRow();
-        $importOptions = array();
+        $importOptions = [];
         foreach ($configProfiles as $profileName) {
             if ($profileName != $_SESSION['config']->getName()) {
                 $availableLogos = $pdfStructurePersistenceManager->getPdfLogos($profileName);
@@ -491,7 +492,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
                 }
             }
         }
-        $logoImportConfigSelect = new htmlResponsiveSelect('importLogoSourceProfile', $importOptions, array(), _('PDF structures'), null, 5);
+        $logoImportConfigSelect = new htmlResponsiveSelect('importLogoSourceProfile', $importOptions, [], _('PDF structures'), null, 5);
         $logoImportConfigSelect->setHasDescriptiveElements(true);
         $logoImportConfigSelect->setContainsOptgroups(true);
         $logoImportConfigSelect->setMultiSelect(true);
@@ -503,14 +504,14 @@ include __DIR__ . '/../../lib/adminHeader.inc';
     	$logoImportFormContent->add($logoImportFormPwd, 12);
         addSecurityTokenToMetaHTML($logoImportFormContent);
         $logoImportForm = new htmlForm('logoImportForm', 'pdfmain.php', $logoImportFormContent);
-        $logoImportDialog = new htmlDiv('logoImportDiv', $logoImportForm, array('hidden'));
+        $logoImportDialog = new htmlDiv('logoImportDiv', $logoImportForm, ['hidden']);
         $container->add($logoImportDialog, 12);
-        parseHtml(null, $container, array(), false, 'user');
+        parseHtml(null, $container, [], false, 'user');
 
 	    foreach ($templateClasses as $templateClass) {
 			$typeId = $templateClass['typeId'];
 			$scope = $templateClass['scope'];
-			$importOptions = array();
+			$importOptions = [];
 			foreach ($configProfiles as $profile) {
 				$typeManagerImport = new TypeManager($serverProfiles[$profile]);
 				$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
@@ -531,7 +532,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$containerStructures = new htmlResponsiveRow();
 			$containerStructures->add(new htmlOutputText(_('PDF structures')), 12);
 
-			$select = new htmlSelect('importProfiles_' . $typeId, $importOptions, array(), count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
+			$select = new htmlSelect('importProfiles_' . $typeId, $importOptions, [], count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
 			$select->setMultiSelect(true);
 			$select->setHasDescriptiveElements(true);
 			$select->setContainsOptgroups(true);
@@ -550,7 +551,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$containerStructures->add(new htmlHiddenInput('typeId', $typeId), 12);
 			addSecurityTokenToMetaHTML($containerStructures);
 
-			parseHtml(null, $containerStructures, array(), false, 'user');
+			parseHtml(null, $containerStructures, [], false, 'user');
 
 			echo '</form>';
 			echo "</div>\n";
@@ -562,7 +563,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$containerTarget = new htmlResponsiveRow();
 
 			$containerTarget->add(new htmlOutputText(_("Target server profile")), 12);
-			$exportOptions = array();
+			$exportOptions = [];
 			foreach ($configProfiles as $profile) {
 				$typeManagerExport = new TypeManager($serverProfiles[$profile]);
 				$typesExport = $typeManagerExport->getConfiguredTypesForScope($scope);
@@ -575,7 +576,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$exportOptions['*' . _('Global templates')][_('Global templates')] = 'templates*##';
 
 			$exportSize = count($exportOptions) < 10 ? count($exportOptions, 1) : 10;
-			$select = new htmlSelect('exportProfiles_' . $typeId, $exportOptions, array(), $exportSize);
+			$select = new htmlSelect('exportProfiles_' . $typeId, $exportOptions, [], $exportSize);
 			$select->setHasDescriptiveElements(true);
 			$select->setContainsOptgroups(true);
 			$select->setMultiSelect(true);
@@ -595,7 +596,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'), 12);
 			addSecurityTokenToMetaHTML($containerTarget);
 
-			parseHtml(null, $containerTarget, array(), false, 'user');
+			parseHtml(null, $containerTarget, [], false, 'user');
 
 			echo '</form>';
 			echo "</div>\n";
@@ -614,7 +615,7 @@ echo '</form></div>';
 
 // delete global templates
 $globalTemplates = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
-$globalDeletableTemplates = array();
+$globalDeletableTemplates = [];
 foreach ($globalTemplates as $typeId => $availableTemplates) {
     if (empty($availableTemplates)) {
         continue;
@@ -631,13 +632,13 @@ if (!empty($globalDeletableTemplates)) {
 	$globalTemplatesSubtitle = new htmlSubTitle(_('Global templates'));
 	$globalTemplatesSubtitle->setHelpId('364');
     $container->add($globalTemplatesSubtitle);
-    $globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, array(), _('Delete'));
+    $globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, [], _('Delete'));
     $globalTemplatesSelect->setContainsOptgroups(true);
     $globalTemplatesSelect->setHasDescriptiveElements(true);
     $container->add($globalTemplatesSelect);
     $container->addVerticalSpacer('1rem');
     $globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
-    $globalTemplateDeleteButton->setCSSClasses(array('lam-danger'));
+    $globalTemplateDeleteButton->setCSSClasses(['lam-danger']);
     $globalTemplateDeleteButton->setOnClick("window.lam.dialog.requestPasswordAndSendForm('" . _('Do you really want to delete this profile?') . "', '" .
         _('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'globalTemplateDeletePassword', 'deleteGlobalTemplatesForm'); return false;");
     $container->addLabel(new htmlOutputText('&nbsp;', false));
@@ -646,7 +647,7 @@ if (!empty($globalDeletableTemplates)) {
     $container->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'));
     $container->addVerticalSpacer('1rem');
     $globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'pdfmain.php', $container);
-    parseHtml(null, $globalTemplateDeleteForm, array(), false, 'user');
+    parseHtml(null, $globalTemplateDeleteForm, [], false, 'user');
 }
 
 // delete global PDF logos
@@ -656,11 +657,11 @@ if (!empty($globalPdfLogos)) {
 	$globalLogosSubtitle = new htmlSubTitle(_('Global template logos'));
 	$globalLogosSubtitle->setHelpId('365');
 	$container->add($globalLogosSubtitle);
-	$globalTemplateLogosSelect = new htmlResponsiveSelect('globalLogoDelete', $globalPdfLogos, array(), _('Delete'));
+	$globalTemplateLogosSelect = new htmlResponsiveSelect('globalLogoDelete', $globalPdfLogos, [], _('Delete'));
 	$container->add($globalTemplateLogosSelect);
 	$container->addVerticalSpacer('1rem');
 	$globalLogoDeleteButton = new htmlButton('deleteGlobalLogoButton', _('Delete'));
-	$globalLogoDeleteButton->setCSSClasses(array('lam-danger'));
+	$globalLogoDeleteButton->setCSSClasses(['lam-danger']);
 	$globalLogoDeleteButton->setOnClick("window.lam.dialog.requestPasswordAndSendForm('" . _('Do you really want to delete this logo?') . "', '" .
 		_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'globalLogoDeletePassword', 'deleteGlobalLogoForm'); return false;");
 	$container->addLabel(new htmlOutputText('&nbsp;', false));
@@ -669,7 +670,7 @@ if (!empty($globalPdfLogos)) {
 	$container->add(new htmlHiddenInput('deleteGlobalLogo', 'true'));
 	$container->addVerticalSpacer('1rem');
 	$globalLogoDeleteForm = new htmlForm('deleteGlobalLogoForm', 'pdfmain.php', $container);
-	parseHtml(null, $globalLogoDeleteForm, array(), false, 'user');
+	parseHtml(null, $globalLogoDeleteForm, [], false, 'user');
 }
 
 echo "</div>\n";

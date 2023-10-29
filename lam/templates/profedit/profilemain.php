@@ -124,8 +124,8 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 }
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-$serverProfiles = array();
-$configProfiles = array();
+$serverProfiles = [];
+$configProfiles = [];
 try {
 	$configProfiles = $serverProfilePersistenceManager->getProfiles();
 	foreach ($configProfiles as $profileName) {
@@ -144,10 +144,10 @@ if (!empty($_POST['import'])) {
 		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['importProfiles'])) {
-		$options = array();
+		$options = [];
 		foreach ($_POST['importProfiles'] as $importProfiles) {
 			$parts = explode('##', $importProfiles);
-			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
+			$options[] = ['conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]];
 		}
 		$errMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
@@ -164,10 +164,10 @@ if (!empty($_POST['export'])) {
 		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['exportProfiles'])) {
-		$options = array();
+		$options = [];
 		foreach ($_POST['exportProfiles'] as $importProfiles) {
 			$parts = explode('##', $importProfiles);
-			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1]);
+			$options[] = ['conf' => $parts[0], 'typeId' => $parts[1]];
 		}
 		$typeId = $_POST['typeId'];
 		$name = $_POST['name_' . $typeId];
@@ -178,20 +178,21 @@ if (!empty($_POST['export'])) {
 	}
 }
 
-$profileClasses = array();
-$profileClassesTemp = array();
+$profileClasses = [];
+$profileClassesTemp = [];
 foreach ($types as $type) {
 	if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 		continue;
 	}
 	$profileList = $accountProfilePersistenceManager->getAccountProfileNames($type->getId(), $_SESSION['config']->getName());
 	natcasesort($profileList);
-	$profileClassesTemp[$type->getAlias()] = array(
+	$profileClassesTemp[$type->getAlias()] = [
 		'typeId' => $type->getId(),
 		'scope' => $type->getScope(),
 		'title' => $type->getAlias(),
 		'icon' => $type->getIcon(),
-		'profiles' => $profileList);
+		'profiles' => $profileList
+	];
 }
 $profileClassesKeys = array_keys($profileClassesTemp);
 natcasesort($profileClassesKeys);
@@ -233,7 +234,7 @@ if (isset($_GET['savedSuccessfully'])) {
 // new profile
 if (!empty($profileClasses)) {
 	$container->add(new htmlSubTitle(_('Create a new profile')), 12);
-	$sortedTypes = array();
+	$sortedTypes = [];
 	foreach ($profileClasses as $profileClass) {
 		$sortedTypes[$profileClass['title']] = $profileClass['typeId'];
 	}
@@ -242,7 +243,7 @@ if (!empty($profileClasses)) {
 	$newProfileSelect->setHasDescriptiveElements(true);
 	$container->addLabel($newProfileSelect);
 	$createButton = new htmlButton('createProfileButton', _('Create'));
-	$createButton->setCSSClasses(array('lam-primary'));
+	$createButton->setCSSClasses(['lam-primary']);
 	$container->addField($createButton);
 }
 
@@ -266,21 +267,21 @@ foreach ($profileClasses as $profileClass) {
 	$deleteLink = new htmlLink(null, '#', '../../graphics/del.svg');
 	$deleteLink->setTitle(_('Delete'));
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
-	$deleteLink->setCSSClasses(array('margin3'));
+	$deleteLink->setCSSClasses(['margin3']);
 	$buttonGroup->addElement($deleteLink);
 	if (count($configProfiles) > 1) {
 		$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
 		$importLink->setTitle(_('Import profiles'));
 		$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import profiles") . "', '" .
 								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import'); return false;");
-		$importLink->setCSSClasses(array('margin3'));
+		$importLink->setCSSClasses(['margin3']);
 		$buttonGroup->addElement($importLink);
 	}
 	$exportLink = new htmlLink(null, '#', '../../graphics/export.svg');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Export profile") . "', '" .
 							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
-	$exportLink->setCSSClasses(array('margin3'));
+	$exportLink->setCSSClasses(['margin3']);
 	$buttonGroup->addElement($exportLink);
 	$container->add($buttonGroup, 12, 4);
 	$container->addVerticalSpacer('1rem');
@@ -288,12 +289,12 @@ foreach ($profileClasses as $profileClass) {
 $container->addVerticalSpacer('1rem');
 
 // generate content
-parseHtml(null, $container, array(), false, 'user');
+parseHtml(null, $container, [], false, 'user');
 
 echo "</form>\n";
 
 // delete global templates
-$globalDeletableTemplates = array();
+$globalDeletableTemplates = [];
 try {
 	$globalTemplates = $accountProfilePersistenceManager->getAccountProfileTemplateNames();
 	foreach ($globalTemplates as $typeId => $availableTemplates) {
@@ -316,13 +317,13 @@ if (!empty($globalDeletableTemplates)) {
 	$globalTemplatesSubtitle = new htmlSubTitle(_('Global templates'));
 	$globalTemplatesSubtitle->setHelpId('364');
 	$container->add($globalTemplatesSubtitle);
-	$globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, array(), _('Delete'));
+	$globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, [], _('Delete'));
 	$globalTemplatesSelect->setContainsOptgroups(true);
 	$globalTemplatesSelect->setHasDescriptiveElements(true);
 	$container->add($globalTemplatesSelect);
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
-	$globalTemplateDeleteButton->setCSSClasses(array('lam-danger'));
+	$globalTemplateDeleteButton->setCSSClasses(['lam-danger']);
 	$globalTemplateDeleteButton->setOnClick("window.lam.dialog.requestPasswordAndSendForm('" . _('Do you really want to delete this profile?') . "', '" .
 		_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'globalTemplateDeletePassword', 'deleteGlobalTemplatesForm'); return false;");
 	$container->addLabel(new htmlOutputText('&nbsp;', false));
@@ -331,7 +332,7 @@ if (!empty($globalDeletableTemplates)) {
 	$container->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'));
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'profilemain.php', $container);
-	parseHtml(null, $globalTemplateDeleteForm, array(), false, 'user');
+	parseHtml(null, $globalTemplateDeleteForm, [], false, 'user');
 }
 
 echo "</div>\n";
@@ -339,7 +340,7 @@ echo "</div>\n";
 foreach ($profileClasses as $profileClass) {
 	$typeId = $profileClass['typeId'];
 	$scope = $profileClass['scope'];
-	$importOptions = array();
+	$importOptions = [];
 	foreach ($configProfiles as $profile) {
 		$typeManagerImport = new TypeManager($serverProfiles[$profile]);
 		$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
@@ -360,7 +361,7 @@ foreach ($profileClasses as $profileClass) {
 	$containerProfiles = new htmlResponsiveRow();
 	$containerProfiles->add(new htmlOutputText(_('Profiles')), 12);
 
-	$select = new htmlSelect('importProfiles', $importOptions, array(), count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
+	$select = new htmlSelect('importProfiles', $importOptions, [], count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
 	$select->setMultiSelect(true);
 	$select->setHasDescriptiveElements(true);
 	$select->setContainsOptgroups(true);
@@ -379,7 +380,7 @@ foreach ($profileClasses as $profileClass) {
 	$containerProfiles->add(new htmlHiddenInput('typeId', $typeId), 0);
 	addSecurityTokenToMetaHTML($containerProfiles);
 
-	parseHtml(null, $containerProfiles, array(), false, 'user');
+	parseHtml(null, $containerProfiles, [], false, 'user');
 
 	echo '</form>';
 	echo "</div>\n";
@@ -391,7 +392,7 @@ foreach ($profileClasses as $profileClass) {
 	$containerTarget = new htmlResponsiveRow();
 
 	$containerTarget->add(new htmlOutputText(_("Target server profile")), 12);
-	$exportOptions = array();
+	$exportOptions = [];
 	foreach ($configProfiles as $profile) {
 		$typeManagerExport = new TypeManager($serverProfiles[$profile]);
 		$typesExport = $typeManagerExport->getConfiguredTypesForScope($scope);
@@ -403,7 +404,7 @@ foreach ($profileClasses as $profileClass) {
 	}
 	$exportOptions['*' . _('Global templates')][_('Global templates')] = 'templates*##';
 
-	$select = new htmlSelect('exportProfiles', $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions, 1) : 10);
+	$select = new htmlSelect('exportProfiles', $exportOptions, [], count($exportOptions) < 10 ? count($exportOptions, 1) : 10);
 	$select->setHasDescriptiveElements(true);
 	$select->setContainsOptgroups(true);
 	$select->setMultiSelect(true);
@@ -423,7 +424,7 @@ foreach ($profileClasses as $profileClass) {
 	$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'), 0);
 	addSecurityTokenToMetaHTML($containerTarget);
 
-	parseHtml(null, $containerTarget, array(), false, 'user');
+	parseHtml(null, $containerTarget, [], false, 'user');
 
 	echo '</form>';
 	echo "</div>\n";

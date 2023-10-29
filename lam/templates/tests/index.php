@@ -7,7 +7,7 @@ use \htmlTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2021  Roland Gruber
+  Copyright (C) 2006 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ $container->addVerticalSpacer('2rem');
 $container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/search-color.svg'), 12, 4);
 $container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);
 
-parseHtml(null, $container, array(), true, 'user');
+parseHtml(null, $container, [], true, 'user');
 
 echo "</div>\n";
 include '../../lib/adminFooter.inc';

@@ -16,7 +16,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2022  Roland Gruber
+  Copyright (C) 2006 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,8 +68,8 @@ $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_("Lamdaemon test")), 12);
 
 $servers = $_SESSION['config']->getConfiguredScriptServers();
-$serverIDs = array();
-$serverTitles = array();
+$serverIDs = [];
+$serverTitles = [];
 foreach ($servers as $server) {
 	$serverName = $server->getServer();
 	$label = $server->getLabel();
@@ -84,7 +84,7 @@ if (isset($_POST['runTest'])) {
 	lamRunTestSuite($_POST['server'], $serverTitles[$_POST['server']] , isset($_POST['checkQuotas']), $container);
 }
 elseif (!empty($servers)) {
-	$serverOptions = array();
+	$serverOptions = [];
 	foreach ($servers as $server) {
 		$serverName = $server->getServer();
 		$label = $server->getLabel();
@@ -93,7 +93,7 @@ elseif (!empty($servers)) {
 		}
 		$serverOptions[$label] = $serverName;
 	}
-	$serverSelect = new htmlResponsiveSelect('server', $serverOptions, array(), _("Server"));
+	$serverSelect = new htmlResponsiveSelect('server', $serverOptions, [], _("Server"));
 	$serverSelect->setHasDescriptiveElements(true);
 	$container->add($serverSelect, 12);
 
@@ -110,7 +110,7 @@ else {
 	$container->add(new htmlStatusMessage("ERROR", _('No lamdaemon server set, please update your LAM configuration settings.')), 12);
 }
 
-parseHtml(null, $container, array(), false, 'user');
+parseHtml(null, $container, [], false, 'user');
 
 echo "</form>\n";
 echo "</div>\n";
@@ -136,7 +136,7 @@ function testRemoteCommand($command, $stopTest, $remote, $testText, $container) 
 		flush();
 		$lamdaemonOk = false;
 		$output = $remote->execute($command);
-		if ((stripos(strtolower($output), "error") === false) && ((strpos($output, 'INFO,') === 0) || (strpos($output, 'QUOTA_ENTRY') === 0))) {
+		if ((stripos(strtolower($output), "error") === false) && ((str_starts_with($output, 'INFO,')) || (str_starts_with($output, 'QUOTA_ENTRY')))) {
 			$lamdaemonOk = true;
 		}
 		if ($lamdaemonOk) {
@@ -145,7 +145,7 @@ function testRemoteCommand($command, $stopTest, $remote, $testText, $container) 
 		}
 		else {
 			$container->add(new htmlImage($failImage), 2);
-			if (!(strpos($output, 'ERROR,') === 0) && !(strpos($output, 'WARN,') === 0)) {
+			if (!(str_starts_with($output, 'ERROR,')) && !(str_starts_with($output, 'WARN,'))) {
 				// error messages from console (e.g. sudo)
 				$container->add(new htmlStatusMessage('ERROR', $output), 12, 6);
 			}
@@ -199,7 +199,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container): voi
 		$container->add(new htmlOutputText(_("No lamdaemon path set, please update your LAM configuration settings.")), 12, 6);
 		$stopTest = true;
 	}
-	elseif (substr($_SESSION['config']->get_scriptPath(), -3) != '.pl') {
+	elseif (!str_ends_with($_SESSION['config']->get_scriptPath(), '.pl')) {
 		$container->add(new htmlImage($failImage), 2);
 		$container->add(new htmlOutputText(_("Lamdaemon path does not end with \".pl\". Did you enter the full path to the script?")), 12, 6);
 		$stopTest = true;
@@ -218,7 +218,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container): voi
 		if (empty($scriptUserName)) {
 			$container->add(new htmlOutputText(_("Unix account")), 10, 4);
 			$unixOk = false;
-			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", ['uid'], 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 				if (($entry !== false) && isset($entry[0]['uid'][0])) {
