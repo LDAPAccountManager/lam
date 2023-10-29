@@ -50,6 +50,9 @@ include_once(__DIR__ . "/../../lib/security.inc");
 include_once(__DIR__ . "/../../lib/import.inc");
 /** schema for tree view */
 include_once __DIR__ . "/../../lib/schema.inc";
+/** tree view tool */
+include_once __DIR__ . "/../../lib/tools.inc";
+include_once __DIR__ . "/../../lib/tools/treeview.inc";
 
 // start session
 if (isset($_GET['selfservice'])) {
@@ -406,7 +409,7 @@ class Ajax {
 	private function dnSelection(): string {
 		$dn = trim($_POST['dn']);
 		if (empty($dn) || !get_preg($dn, 'dn')) {
-			return '';
+			$dnList = $this->getDefaultDns();
 		}
 		else {
 			$dnList = $this->getSubDns($dn);
