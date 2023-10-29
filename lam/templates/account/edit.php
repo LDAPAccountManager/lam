@@ -71,9 +71,9 @@ else {
 }
 
 // cleanup account containers in session
-$cleanupCandidates = array();
+$cleanupCandidates = [];
 foreach ($_SESSION as $key => $value) {
-	if (strpos($key, $sessionAccountPrefix) === 0) {
+	if (str_starts_with($key, $sessionAccountPrefix)) {
 		$cleanupCandidates[] = $key;
 	}
 	$candidateCount = sizeof($cleanupCandidates);
@@ -151,10 +151,10 @@ $_SESSION[$sessionKey]->continue_main();
 function cleanDn(string $dn) : string {
 	$cleanDn = str_replace("\\'", '', $dn);
 	if ($dn == $cleanDn) {
-		if (substr($cleanDn, 0, 1) === "'") {
+		if (str_starts_with($cleanDn, "'")) {
 			$cleanDn = substr($cleanDn, 1);
 		}
-		if (substr($cleanDn, -1, 1) === "'") {
+		if (str_ends_with($cleanDn, "'")) {
 			$cleanDn = substr($cleanDn, 0, -1);
 		}
 	}
