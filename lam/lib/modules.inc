@@ -842,6 +842,11 @@ class accountContainer {
 	 */
 	private $extraInfoAttributes = array();
 
+	/**
+	 * @var bool errors occurred after saving LDAP data (postModify scripts)
+	 */
+	private bool $postSaveErrorsOccurred = false;
+
 
 	/**
 	 * Returns the account module with the given class name
@@ -1356,7 +1361,7 @@ class accountContainer {
 		$row->setCSSClasses(array('maxrow'));
 		$leftButtonGroup = new htmlGroup();
 		$leftButtonGroup->alignment = htmlElement::ALIGN_LEFT;
-		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
+		if (checkIfWriteAccessIsAllowed($this->type->getId()) && !$this->postSaveErrorsOccurred) {
 			// save button
 			$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
 			$saveButton->setCSSClasses(array('fullwidth-mobile-only lam-primary'));
@@ -1391,7 +1396,7 @@ class accountContainer {
 		$row->add($leftButtonGroup, 12, 9);
 
 		$rightGroup = new htmlGroup();
-		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
+		if (checkIfWriteAccessIsAllowed($this->type->getId()) && !$this->postSaveErrorsOccurred) {
 			// profile selection
 			$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 			$profilelist = $accountProfilePersistenceManager->getAccountProfileNames($this->type->getId(), $_SESSION['config']->getName());
@@ -2157,6 +2162,11 @@ class accountContainer {
 			// post modify actions
 			foreach ($module as $singlemodule) {
 				$postMessages = $this->module[$singlemodule]->postModifyActions($this->isNewAccount, $prePostModifyAttributes);
+				foreach ($postMessages as $postMessage) {
+					if ($postMessage[0] == 'ERROR') {
+						$this->postSaveErrorsOccurred = true;
+					}
+				}
 				$errors = array_merge($errors, $postMessages);
 			}
 		}
