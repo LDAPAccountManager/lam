@@ -406,7 +406,6 @@ class Ajax {
 	private function dnSelection(): string {
 		$dn = trim($_POST['dn']);
 		if (empty($dn) || !get_preg($dn, 'dn')) {
-			$dnList = $this->getDefaultDns();
 			return '';
 		}
 		else {
@@ -414,9 +413,6 @@ class Ajax {
 		}
 		$html = $this->buildDnSelectionHtml($dnList, $dn);
 		$json = json_encode(['dialogData' => $html], JSON_THROW_ON_ERROR);
-		if ($json === false) {
-			return '';
-		}
 		return $json;
 	}
 
