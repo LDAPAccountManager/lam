@@ -69,6 +69,7 @@ try {
 		$content = fread($handle, 100000);
 	}
 } catch (LAMException $e) {
+	logNewMessage(LOG_ERR, 'Unable to open file ' . $fileName . ': ' . $e->getMessage());
 	http_response_code(403);
 	die();
 }

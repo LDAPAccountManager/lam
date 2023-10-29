@@ -61,7 +61,7 @@ setlanguage();
 include __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 
-$availableViews = array('objectClass', 'attribute', 'syntax', 'rule');
+$availableViews = ['objectClass', 'attribute', 'syntax', 'rule'];
 $selectedView = 'objectClass';
 if (!empty($_GET['display']) && in_array($_GET['display'], $availableViews)) {
 	$selectedView = $_GET['display'];
@@ -91,7 +91,7 @@ elseif( $selectedView == 'objectClass' ) {
 	displayObjectClassList($row);
 }
 
-parseHtml(null, $row, array(), false, 'user');
+parseHtml(null, $row, [], false, 'user');
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
@@ -107,21 +107,21 @@ function displaySyntaxList(htmlResponsiveRow &$row): void {
 		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
 		return;
 	}
-	$data = array();
-	$labels = array(_('Syntax OID'), _('Description'));
+	$data = [];
+	$labels = [_('Syntax OID'), _('Description')];
 	$pos = 0;
-	$highlighted = array();
+	$highlighted = [];
 	foreach( $schema_syntaxes as $syntax ) {
 		$oid = new htmlOutputText($syntax->getOID());
 		$description = new htmlOutputText($syntax->getDescription());
-		$data[] = array($oid, $description);
+		$data[] = [$oid, $description];
 		if (!empty($_GET['sel']) && ($syntax->getOID() === $_GET['sel'])) {
 			$highlighted[] = $pos;
 		}
 		$pos++;
 	}
 	$table = new htmlResponsiveTable($labels, $data, $highlighted);
-	$table->setCSSClasses(array('colored--table'));
+	$table->setCSSClasses(['colored--table']);
 	$row->add($table);
 }
 
@@ -137,11 +137,11 @@ function displayRuleList(htmlResponsiveRow &$row): void {
 		return;
 	}
     $row->addLabel(new htmlOutputText(_('Jump to a matching rule')));
-    $availableRules = array('');
+    $availableRules = [''];
     foreach ($rules as $rule) {
 		$availableRules[] = $rule->getName();
     }
-    $selectedRule = array();
+    $selectedRule = [];
     if (!empty($_GET['sel']) && in_array($_GET['sel'], $availableRules)) {
     	$selectedRule[] = $_GET['sel'];
     }
@@ -150,8 +150,8 @@ function displayRuleList(htmlResponsiveRow &$row): void {
 	$row->addField($ruleSelect);
 	$row->addVerticalSpacer('1rem');
 
-	$labels = array(_('Matching rule OID'), _('Name'), _('Used by attributes'));
-	$data = array();
+	$labels = [_('Matching rule OID'), _('Name'), _('Used by attributes')];
+	$data = [];
 	foreach ($rules as $rule) {
 		if (!empty($selectedRule) && !in_array($rule->getName(), $selectedRule)) {
 			continue;
@@ -169,10 +169,10 @@ function displayRuleList(htmlResponsiveRow &$row): void {
 		foreach ($rule->getUsedByAttrs() as $attr) {
 			$attributes->addElement(new htmlDiv(null, new htmlLink($attr, 'schema.php?display=attribute&sel=' . $attr)));
 		}
-		$data[] = array($oid, $nameText, new htmlDiv(null, $attributes, array('smallScroll')));
+		$data[] = [$oid, $nameText, new htmlDiv(null, $attributes, ['smallScroll'])];
 	}
 	$table = new htmlResponsiveTable($labels, $data);
-	$table->setCSSClasses(array('colored--table'));
+	$table->setCSSClasses(['colored--table']);
 	$row->add($table);
 }
 
@@ -188,11 +188,11 @@ function displayObjectClassList(htmlResponsiveRow &$row): void {
 		return;
 	}
     $row->addLabel(new htmlOutputText(_('Jump to an object class')));
-    $availableClasses = array(_('all') => '');
+    $availableClasses = [_('all') => ''];
     foreach ($objectClasses as $objectClass) {
 		$availableClasses[$objectClass->getName()] = $objectClass->getName();
     }
-    $selectedClass = array();
+    $selectedClass = [];
     if (isset($_GET['sel']) && (empty($_GET['sel']) || array_key_exists(strtolower($_GET['sel']), $objectClasses))) {
     	$selectedClass[0] = $_GET['sel'];
     }
@@ -282,11 +282,11 @@ function displayAttributeList(htmlResponsiveRow $row): void {
 		return;
 	}
 	$row->addLabel(new htmlOutputText(_('Jump to an attribute type')));
-	$availableAttributes = array(_('all') => '');
+	$availableAttributes = [_('all') => ''];
 	foreach ($attributes as $attribute) {
 		$availableAttributes[$attribute->getName()] = $attribute->getName();
 	}
-	$selectedAttribute = array();
+	$selectedAttribute = [];
 	if (isset($_GET['sel']) && (empty($_GET['sel']) || array_key_exists(strtolower($_GET['sel']), $attributes))) {
 		$selectedAttribute[0] = $_GET['sel'];
 	}

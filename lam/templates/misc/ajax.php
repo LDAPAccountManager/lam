@@ -19,7 +19,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2022  Roland Gruber
+  Copyright (C) 2011 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -60,9 +60,7 @@ if (isset($_GET['selfservice'])) {
 // return standard JSON response if session expired
 if (startSecureSession(false, true) === false) {
 	Ajax::setHeader();
-	echo json_encode(array(
-		'sessionExpired' => "true"
-	));
+	echo json_encode(['sessionExpired' => "true"]);
 	die();
 }
 
@@ -80,7 +78,7 @@ class Ajax {
 	 * Manages an AJAX request.
 	 */
 	public function handleRequest(): void {
-		$this->setHeader();
+		static::setHeader();
 		// check token
 		validateSecurityToken();
 		$isSelfService = isset($_GET['selfservice']);
@@ -107,7 +105,7 @@ class Ajax {
 		$function = $_GET['function'];
 
 		if (($function === 'passwordStrengthCheck') && isset($_POST['jsonInput'])) {
-			$this->checkPasswordStrength(json_decode($_POST['jsonInput'], true));
+			$this->checkPasswordStrength(json_decode($_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
 			die();
 		}
 		if ($function === 'webauthn') {
@@ -127,7 +125,7 @@ class Ajax {
 		}
 		enforceUserIsLoggedIn();
 		if (($function === 'passwordChange') && isset($_POST['jsonInput'])) {
-			$this->managePasswordChange(json_decode($_POST['jsonInput'], true));
+			self::managePasswordChange(json_decode($_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
 		}
 		elseif ($function === 'import') {
 			include_once('../../lib/import.inc');
@@ -201,7 +199,7 @@ class Ajax {
 	private static function managePasswordChange(array $input): void {
 		$sessionKey  = htmlspecialchars($_GET['editKey']);
 		$return = $_SESSION[$sessionKey]->setNewPassword($input);
-		echo json_encode($return);
+		echo json_encode($return, JSON_THROW_ON_ERROR);
 	}
 
 	/**
@@ -212,7 +210,7 @@ class Ajax {
 	private function checkPasswordStrength(array $input): void {
 		$password = $input['password'];
 		$result = checkPasswordStrength($password, null, null);
-		echo json_encode(array("result" => $result));
+		echo json_encode(["result" => $result], JSON_THROW_ON_ERROR);
 	}
 
 	/**
@@ -232,24 +230,24 @@ class Ajax {
 		$isRegistered = $webauthnManager->isRegistered($userDN);
 		if (!$isRegistered) {
 			$registrationObject = $webauthnManager->getRegistrationObject($userDN, $isSelfService);
-			$_SESSION['webauthn_registration'] = json_encode($registrationObject);
+			$_SESSION['webauthn_registration'] = json_encode($registrationObject, JSON_THROW_ON_ERROR);
 			echo json_encode(
-				array(
+				[
 					'action' => 'register',
 					'registration' => $registrationObject
-				),
-				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+				],
+				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
 			);
 		}
 		else {
 			$authenticationObject = $webauthnManager->getAuthenticationObject($userDN, $isSelfService);
-			$_SESSION['webauthn_authentication'] = json_encode($authenticationObject);
+			$_SESSION['webauthn_authentication'] = json_encode($authenticationObject, JSON_THROW_ON_ERROR);
 			echo json_encode(
-				array(
+				[
 					'action' => 'authenticate',
 					'authentication' => $authenticationObject
-				),
-				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+				],
+				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
 			);
 		}
 		die();
@@ -291,14 +289,14 @@ class Ajax {
 			$row->add(new htmlStatusMessage('INFO', _('No devices found.')), 12);
 		}
 		else {
-			$titles = array(
+			$titles = [
 				_('User'),
 				_('Name'),
 				_('Registration'),
 				_('Last use'),
 				_('Delete')
-			);
-			$data = array();
+			];
+			$data = [];
 			$id = 0;
 			foreach ($results as $result) {
 				$delButton = new htmlButton('deleteDevice' . $id, 'del.svg', true);
@@ -307,15 +305,15 @@ class Ajax {
 				$delButton->addDataAttribute('dialogtitle', _('Remove device'));
 				$delButton->addDataAttribute('oktext', _('Ok'));
 				$delButton->addDataAttribute('canceltext', _('Cancel'));
-				$delButton->setCSSClasses(array('webauthn-delete'));
+				$delButton->setCSSClasses(['webauthn-delete']);
 				$name = !empty($result['name']) ? $result['name'] : '';
-				$data[] = array(
+				$data[] = [
 					new htmlOutputText($result['dn']),
 					new htmlOutputText($name),
 					new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
 					new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),
 					$delButton
-				);
+				];
 				$id++;
 			}
 			$table = new htmlResponsiveTable($titles, $data);
@@ -323,10 +321,10 @@ class Ajax {
 		}
 		$row->addVerticalSpacer('2rem');
 		ob_start();
-		$row->generateHTML(null, array(), array(), false, null);
+		$row->generateHTML(null, [], [], false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
-		echo json_encode(array('content' => $content));
+		echo json_encode(['content' => $content], JSON_THROW_ON_ERROR);
 	}
 
 	/**
@@ -351,10 +349,10 @@ class Ajax {
 		$row->add($message, 12);
 		$row->addVerticalSpacer('2rem');
 		ob_start();
-		$row->generateHTML(null, array(), array(), true, null);
+		$row->generateHTML(null, [], [], true, null);
 		$content = ob_get_contents();
 		ob_end_clean();
-		echo json_encode(array('content' => $content));
+		echo json_encode(['content' => $content], JSON_THROW_ON_ERROR);
 	}
 
 	/**
@@ -375,7 +373,7 @@ class Ajax {
 		else {
 			logNewMessage(LOG_ERR, 'Unable to change name of ' . $dn . ' ' . $credentialId . ' to ' . $name);
 		}
-		echo json_encode(array());
+		echo json_encode([]);
 	}
 
 	/**
@@ -415,7 +413,7 @@ class Ajax {
 			$dnList = $this->getSubDns($dn);
 		}
 		$html = $this->buildDnSelectionHtml($dnList, $dn);
-		$json = json_encode(array('dialogData' => $html));
+		$json = json_encode(['dialogData' => $html], JSON_THROW_ON_ERROR);
 		if ($json === false) {
 			return '';
 		}
@@ -429,7 +427,7 @@ class Ajax {
 	 */
 	private function getDefaultDns() {
 		$typeManager = new TypeManager();
-		$baseDnList = array();
+		$baseDnList = [];
 		foreach ($typeManager->getConfiguredTypes() as $type) {
 			$suffix = $type->getSuffix();
 			if (!empty($suffix)) {
@@ -464,7 +462,7 @@ class Ajax {
 			$text = new htmlOutputText($currentDn);
 			$text->setIsBold(true);
 			$row->add($text, 12, 9);
-			$row->setCSSClasses(array('text-right'));
+			$row->setCSSClasses(['text-right']);
 			$buttonId = base64_encode($currentDn);
 			$buttonId = str_replace('=', '', $buttonId);
 			$button = new htmlButton($buttonId, _('Ok'));
@@ -476,10 +474,10 @@ class Ajax {
 			$row = new htmlResponsiveRow();
 			$row->addDataAttribute('dn', extractDNSuffix($currentDn));
 			$text = new htmlLink('..', '#');
-			$text->setCSSClasses(array('bold'));
+			$text->setCSSClasses(['bold']);
 			$text->setOnClick($onclickUp);
 			$row->add($text, 12, 9);
-			$row->setCSSClasses(array('text-right'));
+			$row->setCSSClasses(['text-right']);
 			$row->add(new htmlSpacer('16px'), 12, 3);
 			$mainRow->add($row);
 			$mainRow->addVerticalSpacer('2rem');
@@ -490,7 +488,7 @@ class Ajax {
 			$link = new htmlLink($dn, '#');
 			$link->setOnClick($onclickUp);
 			$row->add($link, 12, 9);
-			$row->setCSSClasses(array('text-right'));
+			$row->setCSSClasses(['text-right']);
 			$buttonId = base64_encode($dn);
 			$buttonId = str_replace('=', '', $buttonId);
 			$button = new htmlButton($buttonId, _('Ok'));
@@ -499,7 +497,7 @@ class Ajax {
 			$mainRow->add($row, 12);
 		}
 		ob_start();
-		parseHtml(null, $mainRow, array(), false, 'user');
+		parseHtml(null, $mainRow, [], false, 'user');
 		$out = ob_get_contents();
 		ob_end_clean();
 		if ($out === false) {
@@ -516,7 +514,7 @@ class Ajax {
 	 */
 	private function getSubDns($dn) {
 		$dnEntries = ldapListDN($dn);
-		$dnList = array();
+		$dnList = [];
 		foreach ($dnEntries as $entry) {
 			$dnList[] = $entry['dn'];
 		}
@@ -552,19 +550,19 @@ class Ajax {
 		$resultRow = new htmlResponsiveRow();
 		if ($matches) {
 			$text = new htmlOutputText(_('Password matches'));
-			$text->setCSSClasses(array('text-center', 'display-as-block', 'text-ok'));
+			$text->setCSSClasses(['text-center', 'display-as-block', 'text-ok']);
 		}
 		else {
 			$text = new htmlOutputText(_('Password does not match'));
-			$text->setCSSClasses(array('text-center', 'display-as-block', 'text-error'));
+			$text->setCSSClasses(['text-center', 'display-as-block', 'text-error']);
 		}
 		$resultRow->add($text);
 		ob_start();
-		parseHtml(null, $resultRow, array(), false, 'user');
+		parseHtml(null, $resultRow, [], false, 'user');
 		$out = ob_get_contents();
 		ob_end_clean();
-		$result = array('resultHtml' => $out);
-		echo json_encode($result);
+		$result = ['resultHtml' => $out];
+		echo json_encode($result, JSON_THROW_ON_ERROR);
 	}
 
 	/**
@@ -576,18 +574,18 @@ class Ajax {
 		$password = $_POST['password'];
 		$encryption = $_POST['encryption'];
 		if (empty($server)) {
-			$result = array('info' => _('Local SMTP server cannot be tested.'));
-			echo json_encode($result);
+			$result = ['info' => _('Local SMTP server cannot be tested.')];
+			echo json_encode($result, JSON_THROW_ON_ERROR);
 			return;
 		}
 		try {
 			testSmtpConnection($server, $user, $password, $encryption);
-			$result = array('info' => _('Connection to SMTP server was successful.'));
-			echo json_encode($result);
+			$result = ['info' => _('Connection to SMTP server was successful.')];
+			echo json_encode($result, JSON_THROW_ON_ERROR);
 		}
 		catch (LAMException $e) {
-			$result = array('error' => _('Unable to connect to SMTP server.'), 'details' => $e->getMessage());
-			echo json_encode($result);
+			$result = ['error' => _('Unable to connect to SMTP server.'), 'details' => $e->getMessage()];
+			echo json_encode($result, JSON_THROW_ON_ERROR);
 		}
 	}
 
