@@ -14,7 +14,7 @@ use \htmlResponsiveRow;
 use \htmlResponsiveInputField;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2022  Roland Gruber
+  Copyright (C) 2004 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -121,12 +121,12 @@ $typeSettings = $conf->get_typeSettings();
 $allScopes = \LAM\TYPES\getTypes();
 $typeManager = new \LAM\TYPES\TypeManager($conf);
 $activeTypes = $typeManager->getConfiguredTypes();
-$activeScopes = array();
+$activeScopes = [];
 foreach ($activeTypes as $activeType) {
 	$activeScopes[] = $activeType->getScope();
 }
 $activeScopes = array_unique($activeScopes);
-$availableScopes = array();
+$availableScopes = [];
 foreach ($allScopes as $scope) {
 	$scopeObj = new $scope(null);
 	if (!in_array($scope, $activeScopes) || $scopeObj->supportsMultipleConfigs()) {
@@ -166,18 +166,18 @@ if (sizeof($availableScopes) > 0) {
 		$availableDescriptionRow->add(new htmlOutputText($availableScope->getDescription()), 10, 10, 10, 'responsiveField');
 		$button = new htmlButton('add_' . $availableScope->getScope(), 'add.svg', true);
 		$button->setTitle(_("Add"));
-		$button->setCSSClasses(array('size16'));
+		$button->setCSSClasses(['size16']);
 		$availableDescriptionRow->add($button, 2, 2, 2, 'responsiveField');
 		$row->addField($availableDescriptionRow);
 		$row->addVerticalSpacer('1rem');
 	}
 	$row->addVerticalSpacer('2rem');
 }
-parseHtml(null, $row, array(), false, 'user');
+parseHtml(null, $row, [], false, 'user');
 
 $container = new htmlResponsiveRow();
 
-$_SESSION['conftypes_optionTypes'] = array();
+$_SESSION['conftypes_optionTypes'] = [];
 // show active types
 if (sizeof($activeTypes) > 0) {
 	$container->add(new htmlSubTitle(_("Active account types")), 12);
@@ -198,21 +198,21 @@ if (sizeof($activeTypes) > 0) {
 		if ($index > 0) {
 			$upButton = new htmlButton('moveup_'. $activeType->getId(), 'up.svg', true);
 			$upButton->setTitle(_("Up"));
-			$upButton->setCSSClasses(array('size16'));
+			$upButton->setCSSClasses(['size16']);
 			$buttons->addElement($upButton);
 		}
 		if ($index < (sizeof($activeTypes) - 1)) {
 			$upButton = new htmlButton('movedown_'. $activeType->getId(), 'down.svg', true);
 			$upButton->setTitle(_("Down"));
-			$upButton->setCSSClasses(array('size16'));
+			$upButton->setCSSClasses(['size16']);
 			$buttons->addElement($upButton);
 		}
 		// delete button
 		$delButton = new htmlButton('rem_'. $activeType->getId(), 'del.svg', true);
 		$delButton->setTitle(_("Remove this account type"));
-		$delButton->setCSSClasses(array('size16'));
+		$delButton->setCSSClasses(['size16']);
 		$buttons->addElement($delButton);
-		$buttonsDiv = new htmlDiv(null, $buttons, array('text-right'));
+		$buttonsDiv = new htmlDiv(null, $buttons, ['text-right']);
 		$descriptionRow->add($buttonsDiv, 12, 12, 3, 'responsiveLabel');
 		$container->addField($descriptionRow);
 		$container->addVerticalSpacer('0.5rem');
@@ -255,7 +255,7 @@ if (sizeof($activeTypes) > 0) {
 			}
 			// save option types to session
 			ob_start();
-			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, array(), true, 'user');
+			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, [], true, 'user');
 			ob_end_clean();
 			$_SESSION['conftypes_optionTypes'] = array_merge($_SESSION['conftypes_optionTypes'], $typeConfigOptionTypes);
 		}
@@ -268,7 +268,7 @@ if (sizeof($activeTypes) > 0) {
 				$isReadOnly = $typeSettings['readOnly_' . $activeType->getId()];
 			}
 			$readOnly = new htmlResponsiveInputCheckbox('readOnly_' . $activeType->getId(), $isReadOnly, _('Read-only'), '265');
-			$readOnly->setElementsToDisable(array('hideNewButton_' . $activeType->getId(), 'hideDeleteButton_' . $activeType->getId()));
+			$readOnly->setElementsToDisable(['hideNewButton_' . $activeType->getId(), 'hideDeleteButton_' . $activeType->getId()]);
 			$advancedOptions->add($readOnly, 12);
 		}
 		// hidden type
@@ -298,7 +298,7 @@ if (sizeof($activeTypes) > 0) {
 	}
 }
 
-$dynamicTypeOptions = array();
+$dynamicTypeOptions = [];
 foreach ($_SESSION['conftypes_optionTypes'] as $key => $value) {
 	if (isset($typeSettings[$key])) {
 		$dynamicTypeOptions[$key] = explode(LAMConfig::LINE_SEPARATOR, $typeSettings[$key]);
@@ -313,12 +313,12 @@ echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
 $buttonContainer = new htmlTable();
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 $saveButton = new htmlButton('saveSettings', _('Save'));
-$saveButton->setCSSClasses(array('lam-primary'));
+$saveButton->setCSSClasses(['lam-primary']);
 $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, 'user');
+parseHtml(null, $buttonContainer, [], false, 'user');
 
 echo "</form>\n";
 echo "</body>\n";
@@ -332,9 +332,9 @@ echo "</html>\n";
  */
 function checkInput(): array {
 	if (!isset($_POST['postAvailable'])) {
-		return array();
+		return [];
 	}
-	$errors = array();
+	$errors = [];
 	$conf = &$_SESSION['conf_config'];
 	$typeManager = new \LAM\TYPES\TypeManager($conf);
 	$typeSettings = $conf->get_typeSettings();
@@ -343,7 +343,7 @@ function checkInput(): array {
 	for ($i = 0; $i < sizeof($postKeys); $i++) {
 		$key = $postKeys[$i];
 		// check if remove button was pressed
-		if (substr($key, 0, 4) == "rem_") {
+		if (str_starts_with($key, "rem_")) {
 			$type = substr($key, 4);
 			$accountTypes = array_flip($accountTypes);
 			unset($accountTypes[$type]);
@@ -351,7 +351,7 @@ function checkInput(): array {
 			$accountTypes = array_values($accountTypes);
 		}
 	    // check if up button was pressed
-		elseif (substr($key, 0, 7) == "moveup_") {
+		elseif (str_starts_with($key, "moveup_")) {
 			$type = substr($key, 7);
 			$pos = array_search($type, $accountTypes);
 			$temp = $accountTypes[$pos - 1];
@@ -359,7 +359,7 @@ function checkInput(): array {
 			$accountTypes[$pos] = $temp;
 		}
 		// check if down button was pressed
-		elseif (substr($key, 0, 9) == "movedown_") {
+		elseif (str_starts_with($key, "movedown_")) {
 			$type = substr($key, 9);
 			$pos = array_search($type, $accountTypes);
 			$temp = $accountTypes[$pos + 1];
@@ -367,19 +367,19 @@ function checkInput(): array {
 			$accountTypes[$pos] = $temp;
 		}
 		// set suffixes
-		elseif (substr($key, 0, 7) == "suffix_") {
+		elseif (str_starts_with($key, "suffix_")) {
 			$typeSettings[$key] = trim($_POST[$key]);
 			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 7));
 			if (strlen($_POST[$key]) < 1) {
-				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), $type->getAlias());
+				$errors[] = ["ERROR", _("LDAP Suffix is invalid!"), $type->getAlias()];
 			}
 		}
 		// set attributes
-		elseif (substr($key, 0, 5) == "attr_") {
+		elseif (str_starts_with($key, "attr_")) {
 			$typeSettings[$key] = $_POST[$key];
 			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 5));
 			if (!is_string($_POST[$key]) || !preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $_POST[$key])) {
-				$errors[] = array("ERROR", _("List attributes are invalid!"), $type->getAlias());
+				$errors[] = ["ERROR", _("List attributes are invalid!"), $type->getAlias()];
 			}
 		}
 		// set filter
@@ -387,7 +387,7 @@ function checkInput(): array {
 			$typeSettings[$key] = $_POST[$key];
 		}
 		// set custom label
-		elseif (strpos($key, 'customLabel_') === 0) {
+		elseif (str_starts_with($key, 'customLabel_')) {
 			$typeSettings[$key] = $_POST[$key];
 		}
 	}
@@ -421,7 +421,7 @@ function checkInput(): array {
 	// new type
 	foreach ($_POST as $key => $value) {
 		// check if add button was pressed
-		if (substr($key, 0, 4) == "add_") {
+		if (str_starts_with($key, "add_")) {
 			$scope = substr($key, 4);
 			$accountTypes[] = $typeManager->generateNewTypeId($scope);
 		}
@@ -434,10 +434,10 @@ function checkInput(): array {
 	$conf->set_typeSettings($typeSettings);
 	$conf->set_ActiveTypes($accountTypes);
 	// check for duplicate type aliases
-	$aliasNames = array();
+	$aliasNames = [];
 	foreach ($typeManager->getConfiguredTypes() as $type) {
 		if (in_array($type->getAlias(), $aliasNames)) {
-			$errors[] = array('ERROR', _('Please set a unique label for the account types.'), htmlspecialchars($type->getAlias()));
+			$errors[] = ['ERROR', _('Please set a unique label for the account types.'), htmlspecialchars($type->getAlias())];
 		}
 		$aliasNames[] = $type->getAlias();
 	}

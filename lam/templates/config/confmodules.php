@@ -15,7 +15,7 @@ use \htmlResponsiveRow;
 use \htmlGroup;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2022  Roland Gruber
+  Copyright (C) 2004 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -140,19 +140,19 @@ $legendContainer->addElement(new htmlHelpLink('237'));
 $container->add($legendContainer, 12);
 $container->add(new htmlHiddenInput('postAvailable', 'yes'), 12);
 
-parseHtml(null, $container, array(), false, 'user');
+parseHtml(null, $container, [], false, 'user');
 
 echo "</div></div>";
 
 $buttonContainer = new htmlTable();
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 $saveButton = new htmlButton('saveSettings', _('Save'));
-$saveButton->setCSSClasses(array('lam-primary'));
+$saveButton->setCSSClasses(['lam-primary']);
 $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, 'user');
+parseHtml(null, $buttonContainer, [], false, 'user');
 
 if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
@@ -179,14 +179,14 @@ function config_showAccountModules($type, &$container): void {
 	// account modules
 	$available = getAvailableModules($type->getScope(), true);
 	$selected = $type->getModules();
-	$sortedAvailable = array();
+	$sortedAvailable = [];
 	for ($i = 0; $i < sizeof($available); $i++) {
 		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $type->getScope());
 	}
 	natcasesort($sortedAvailable);
 
 	// build options for selected and available modules
-	$selOptions = array();
+	$selOptions = [];
 	for ($i = 0; $i < sizeof($selected); $i++) {
 		if (in_array($selected[$i], $available)) {  // selected modules must be available
 			if (is_base_module($selected[$i], $type->getScope())) {  // mark base modules
@@ -197,7 +197,7 @@ function config_showAccountModules($type, &$container): void {
 			}
 		}
 	}
-	$availOptions = array();
+	$availOptions = [];
 	foreach ($sortedAvailable as $key => $value) {
 		if (! in_array($key, $selected)) {  // display non-selected modules
 			if (is_base_module($key, $type->getScope())) {  // mark base modules
@@ -220,12 +220,12 @@ function config_showAccountModules($type, &$container): void {
 	$container->addVerticalSpacer('1rem');
 	// selected modules
 	if (sizeof($selOptions) > 0) {
-		$listElements = array();
+		$listElements = [];
 		foreach ($selOptions as $key => $value) {
 			$el = new htmlTable('100%');
 			$mod = new $value($type->getScope());
 			$availModImage = new htmlImage('../../graphics/' . $mod->getIcon());
-			$availModImage->setCSSClasses(array('size16', 'margin-right5-mobile-only'));
+			$availModImage->setCSSClasses(['size16', 'margin-right5-mobile-only']);
 			$el->addElement($availModImage);
 			$el->addElement(new htmlOutputText($key));
 			$delButton = new htmlButton('del_' . $type->getId() . '_' . $value, 'del.svg', true);
@@ -235,7 +235,7 @@ function config_showAccountModules($type, &$container): void {
 		}
 		$selSortable = new htmlSortableList($listElements, $type->getId() . '_selected');
 		$selSortable->alignment = htmlElement::ALIGN_TOP;
-		$selSortable->setCSSClasses(array('module-list'));
+		$selSortable->setCSSClasses(['module-list']);
 		$selSortable->setOnUpdate('function() {updateModulePositions(\'positions_' . $type->getId() . '\', \'' . $type->getId() . '_selected' . '\');}');
 		$container->add($selSortable, 12, 6);
 	}
@@ -251,7 +251,7 @@ function config_showAccountModules($type, &$container): void {
 		foreach ($availOptions as $text => $key) {
 			$mod = new $key($type->getScope());
 			$availModImage = new htmlImage('../../graphics/' . $mod->getIcon());
-			$availModImage->setCSSClasses(array('size16', 'margin10'));
+			$availModImage->setCSSClasses(['size16', 'margin10']);
 			$availTable->addElement($availModImage);
 			$availTable->addElement(new htmlOutputText($text));
 			$addButton = new htmlButton('add_' . $type->getId() . '_' . $key, 'add.svg', true);
@@ -260,10 +260,10 @@ function config_showAccountModules($type, &$container): void {
 		}
 		$availDiv = new htmlDiv(null, $availTable);
 		$availDiv->alignment = htmlElement::ALIGN_TOP;
-		$availDiv->setCSSClasses(array('confModList'));
+		$availDiv->setCSSClasses(['confModList']);
 		$container->add($availDiv, 12, 6);
 	}
-	$positions = array();
+	$positions = [];
 	for ($i = 0; $i < sizeof($selOptions); $i++) {
 		$positions[] = $i;
 	}
@@ -279,9 +279,9 @@ function config_showAccountModules($type, &$container): void {
  */
 function checkInput(): array {
 	if (!isset($_POST['postAvailable'])) {
-		return array();
+		return [];
 	}
-	$errors = array();
+	$errors = [];
 	$conf = &$_SESSION['conf_config'];
 	$typeSettings = $conf->get_typeSettings();
 	$typeManager = new \LAM\TYPES\TypeManager($conf);
@@ -290,9 +290,9 @@ function checkInput(): array {
 		$scope = $type->getScope();
 		$typeId = $type->getId();
 		$available = getAvailableModules($scope, true);
-		$selected_temp = (isset($typeSettings['modules_' . $typeId])) ? $typeSettings['modules_' . $typeId] : '';
+		$selected_temp = $typeSettings['modules_' . $typeId] ?? '';
 		$selected_temp = explode(',', $selected_temp);
-		$selected = array();
+		$selected = [];
 		// only use available modules as selected
 		for ($i = 0; $i < sizeof($selected_temp); $i++) {
 			if (in_array($selected_temp[$i], $available)) {
@@ -303,14 +303,14 @@ function checkInput(): array {
 		$sorting = $_POST['positions_' . $typeId];
 		if (!empty($sorting)) {
 			$sorting = explode(',', $sorting);
-			$sortTmp = array();
+			$sortTmp = [];
 			foreach ($sorting as $pos) {
 				$sortTmp[] = $selected[intval($pos)];
 			}
 			$selected = $sortTmp;
 		}
 		// remove modules from selection
-		$new_selected = array();
+		$new_selected = [];
 		for ($i = 0; $i < sizeof($selected); $i++) {
 			if (!isset($_POST['del_' . $typeId . '_' . $selected[$i]])) {
 				$new_selected[] = $selected[$i];
@@ -330,16 +330,16 @@ function checkInput(): array {
 		$depends = check_module_depends($selected, getModulesDependencies($scope));
 		if ($depends !== false) {
 			for ($i = 0; $i < sizeof($depends); $i++) {
-				$errors[] = array('ERROR', $type->getAlias(), _("Unsolved dependency:") . ' ' .
-					$depends[$i][0] . " (" . $depends[$i][1] . ")");
+				$errors[] = ['ERROR', $type->getAlias(), _("Unsolved dependency:") . ' ' .
+					$depends[$i][0] . " (" . $depends[$i][1] . ")"];
 			}
 		}
 		// check conflicts
 		$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
 		if ($conflicts !== false) {
 			for ($i = 0; $i < sizeof($conflicts); $i++) {
-				$errors[] = array('ERROR', $type->getAlias(), _("Conflicting module:") . ' ' .
-					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")");
+				$errors[] = ['ERROR', $type->getAlias(), _("Conflicting module:") . ' ' .
+					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")"];
 			}
 		}
 		// check for base module
@@ -350,7 +350,7 @@ function checkInput(): array {
 			}
 		}
 		if ($baseCount != 1) {
-			$errors[] = array('ERROR', $type->getAlias(), _("No or more than one base module selected!"));
+			$errors[] = ['ERROR', $type->getAlias(), _("No or more than one base module selected!")];
 		}
 	}
 	$conf->set_typeSettings($typeSettings);

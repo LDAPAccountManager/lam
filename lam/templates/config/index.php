@@ -5,7 +5,7 @@ use htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ $content = new htmlResponsiveRow();
                 </a>
             </div>
 	        <?php
-	        if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+	        if (is_dir(__DIR__ . '/../../docs/manual')) {
 		        ?>
                 <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
                     <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
@@ -83,21 +83,21 @@ $content = new htmlResponsiveRow();
 
         <?php
         $topContent = new htmlResponsiveRow();
-        $topContent->setCSSClasses(array('maxrow fullwidth roundedShadowBox spacing5'));
+        $topContent->setCSSClasses(['maxrow fullwidth roundedShadowBox spacing5']);
         $mainCfgLink = new htmlLink(_("Edit general settings"), 'mainlogin.php', '../../graphics/configure.svg');
-        $mainCfgLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
+        $mainCfgLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
         $topContent->add($mainCfgLink, 12);
         $cfgLink = new htmlLink(_("Edit server profiles"), 'conflogin.php', '../../graphics/world.svg');
-        $cfgLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
+        $cfgLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
         $topContent->add($cfgLink, 12);
         if (isLAMProVersion()) {
         	$selfServiceLink = new htmlLink(_("Edit self service"), '../selfService/adminLogin.php', '../../graphics/people.svg');
-        	$selfServiceLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
+        	$selfServiceLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
 	        $topContent->add($selfServiceLink, 12);
         }
         $topContent->addVerticalSpacer('1rem');
         $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/export.svg');
-        $importExportLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
+        $importExportLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
         $topContent->add($importExportLink, 12);
         $content->add($topContent, 12);
         $content->addVerticalSpacer('4rem');
@@ -114,7 +114,7 @@ $content = new htmlResponsiveRow();
 		$content->add(new htmlLink(_("Back to login"), '../login.php'), 12);
 		$content->addVerticalSpacer('2rem');
 
-		parseHtml(null, $content, array(), true, null);
+		parseHtml(null, $content, [], true, null);
 
 		?>
 

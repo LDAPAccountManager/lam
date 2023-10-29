@@ -9,7 +9,7 @@ use \htmlSubTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2022  Roland Gruber
+  Copyright (C) 2009 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -131,7 +131,7 @@ $typeManager = new \LAM\TYPES\TypeManager($conf);
 $types = $typeManager->getConfiguredTypes();
 
 // get list of scopes of modules
-$scopes = array();
+$scopes = [];
 foreach ($types as $type) {
 	$mods = $conf->get_AccountModules($type->getId());
 	for ($i = 0; $i < sizeof($mods); $i++) {
@@ -147,7 +147,7 @@ $old_options = $conf->get_moduleSettings();
 
 // display module boxes
 $modules = array_keys($options);
-$_SESSION['conf_types'] = array();
+$_SESSION['conf_types'] = [];
 for ($i = 0; $i < sizeof($modules); $i++) {
 	if (empty($options[$modules[$i]])) {
 		continue;
@@ -155,7 +155,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	$module = moduleCache::getModule($modules[$i], null);
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
-		if (!(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
+		if (!(str_starts_with($iconImage, 'http')) && !(str_starts_with($iconImage, '/'))) {
 			$iconImage = '../../graphics/' . $iconImage;
 		}
 	}
@@ -181,12 +181,12 @@ echo "</div></div>";
 $buttonContainer = new htmlTable();
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 $saveButton = new htmlButton('saveSettings', _('Save'));
-$saveButton->setCSSClasses(array('lam-primary'));
+$saveButton->setCSSClasses(['lam-primary']);
 $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, null);
+parseHtml(null, $buttonContainer, [], false, null);
 
 if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
@@ -210,7 +210,7 @@ echo "</html>\n";
  */
 function checkInput(): array {
 	if (!isset($_POST['postAvailable'])) {
-		return array();
+		return [];
 	}
 	$conf = &$_SESSION['conf_config'];
 	$typeManager = new \LAM\TYPES\TypeManager($conf);
@@ -221,7 +221,7 @@ function checkInput(): array {
 	$options = extractConfigOptionsFromPOST($_SESSION['conf_types']);
 
 	// get list of scopes of modules
-	$scopes = array();
+	$scopes = [];
 	foreach ($types as $type) {
 		$mods = $conf->get_AccountModules($type->getId());
 		for ($i = 0; $i < sizeof($mods); $i++) {

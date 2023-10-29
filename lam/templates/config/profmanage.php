@@ -19,7 +19,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ setlanguage();
 
 $cfg = new LAMCfgMain();
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-$files = array();
+$files = [];
 try {
 	$files = $serverProfilePersistenceManager->getProfiles();
 }
@@ -84,7 +84,7 @@ if (isset($_POST['action'])) {
 				$serverProfilePersistenceManager->createProfileFromTemplate($_POST['addprofile'], $_POST['addTemplate'], $_POST['addpassword']);
 				$_SESSION['conf_isAuthenticated'] = $_POST['addprofile'];
 				$_SESSION['conf_config'] = $serverProfilePersistenceManager->loadProfile($_POST['addprofile']);
-				$_SESSION['conf_messages'][] = array('INFO', _("Created new profile."), $_POST['addprofile']);
+				$_SESSION['conf_messages'][] = ['INFO', _("Created new profile."), $_POST['addprofile']];
 				metaRefresh('confmain.php');
 				exit;
 			} catch (LAMException $e) {
@@ -113,7 +113,7 @@ if (isset($_POST['action'])) {
             $serverProfilePersistenceManager->deleteProfile($_POST['delfilename']);
 	        // update default profile setting if needed
 	        if ($cfg->default == $_POST['delfilename']) {
-		        $filesNew = array_delete(array($_POST['delfilename']), $files);
+		        $filesNew = array_delete([$_POST['delfilename']], $files);
 		        if (sizeof($filesNew) > 0) {
 			        sort($filesNew);
 			        $cfg->default = $filesNew[0];
@@ -183,7 +183,7 @@ printHeaderContents(_("Profile management"), '../..');
             </a>
         </div>
 		<?php
-		if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+		if (is_dir(__DIR__ . '/../../docs/manual')) {
 			?>
             <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
                 <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
@@ -233,25 +233,25 @@ $profileNewPwd2 = new htmlResponsiveInputField(_("Reenter password"), 'addpasswo
 $profileNewPwd2->setIsPassword(true);
 $profileNewPwd2->setSameValueFieldID('addpassword');
 $box->add($profileNewPwd2);
-$existing = array();
+$existing = [];
 foreach ($files as $file) {
 	$existing[$file] = $file;
 }
-$builtIn = array();
+$builtIn = [];
 foreach ($serverProfilePersistenceManager->getConfigTemplates() as $file) {
 	$builtIn[$file] = $file . '.sample';
 }
-$templates = array(
-	_('Built-in templates') => $builtIn,
-	_('Existing server profiles') => $existing,
-);
-$addTemplateSelect = new htmlResponsiveSelect('addTemplate', $templates, array('unix.sample'), _('Template'), '267');
+$templates = [
+    _('Built-in templates') => $builtIn,
+    _('Existing server profiles') => $existing
+];
+$addTemplateSelect = new htmlResponsiveSelect('addTemplate', $templates, ['unix.sample'], _('Template'), '267');
 $addTemplateSelect->setContainsOptgroups(true);
 $addTemplateSelect->setHasDescriptiveElements(true);
 $box->add($addTemplateSelect, 12);
 $box->addVerticalSpacer('0.5rem');
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
-$newProfileButton->setCSSClasses(array('lam-primary'));
+$newProfileButton->setCSSClasses(['lam-primary']);
 $newProfileButton->setOnClick("document.getElementById('action').value = 'add';"
     . "window.lam.dialog.requestPasswordAndSendForm('" . _("Add profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
@@ -260,12 +260,12 @@ $box->add(new htmlOutputText(''), 0, 6);
 
 // rename profile
 $box->add(new htmlSubTitle(_("Rename profile")));
-$box->add(new htmlResponsiveSelect('oldfilename', $files, array(), _('Profile name'), '231'), 12);
+$box->add(new htmlResponsiveSelect('oldfilename', $files, [], _('Profile name'), '231'), 12);
 $oldProfileInput = new htmlResponsiveInputField(_('New profile name'), 'renfilename');
 $box->add($oldProfileInput);
 $box->addVerticalSpacer('0.5rem');
 $renameProfileButton = new htmlButton('btnRenameProfile', _('Rename'));
-$renameProfileButton->setCSSClasses(array('lam-secondary'));
+$renameProfileButton->setCSSClasses(['lam-secondary']);
 $renameProfileButton->setOnClick("document.getElementById('action').value = 'rename';" .
     "window.lam.dialog.requestPasswordAndSendForm('" . _("Rename profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
@@ -274,10 +274,10 @@ $box->add(new htmlOutputText(''), 0, 6);
 
 // delete profile
 $box->add(new htmlSubTitle(_("Delete profile")), 12);
-$box->add(new htmlResponsiveSelect('delfilename', $files, array(), _('Profile name'), '232'), 12);
+$box->add(new htmlResponsiveSelect('delfilename', $files, [], _('Profile name'), '232'), 12);
 $box->addVerticalSpacer('0.5rem');
 $deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
-$deleteProfileButton->setCSSClasses(array('lam-danger'));
+$deleteProfileButton->setCSSClasses(['lam-danger']);
 $deleteProfileButton->setOnClick("document.getElementById('action').value = 'delete';" .
     "window.lam.dialog.requestPasswordAndSendForm('" . _("Delete profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
@@ -286,7 +286,7 @@ $box->add(new htmlOutputText(''), 0, 6);
 
 // set password
 $box->add(new htmlSubTitle(_("Set profile password")), 12);
-$box->add(new htmlResponsiveSelect('setprofile', $files, array(), _('Profile name'), '233'), 12);
+$box->add(new htmlResponsiveSelect('setprofile', $files, [], _('Profile name'), '233'), 12);
 $profileSetPwd1 = new htmlResponsiveInputField(_("Profile password"), 'setpassword');
 $profileSetPwd1->setIsPassword(true);
 $box->add($profileSetPwd1);
@@ -296,7 +296,7 @@ $profileSetPwd2->setSameValueFieldID('setpassword');
 $box->add($profileSetPwd2);
 $box->addVerticalSpacer('0.5rem');
 $setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
-$setPasswordProfileButton->setCSSClasses(array('lam-secondary'));
+$setPasswordProfileButton->setCSSClasses(['lam-secondary']);
 $setPasswordProfileButton->setOnClick("document.getElementById('action').value = 'setpass';" .
     "window.lam.dialog.requestPasswordAndSendForm('" . _("Set profile password") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
@@ -308,10 +308,10 @@ $box->add(new htmlOutputText(''), 0, 6);
 $conf = new LAMCfgMain();
 $defaultProfile = $conf->default;
 $box->add(new htmlSubTitle(_("Change default profile")));
-$box->add(new htmlResponsiveSelect('defaultfilename', $files, array($defaultProfile), _('Profile name'), '234'), 12);
+$box->add(new htmlResponsiveSelect('defaultfilename', $files, [$defaultProfile], _('Profile name'), '234'), 12);
 $box->addVerticalSpacer('0.5rem');
 $defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
-$defaultProfileButton->setCSSClasses(array('lam-secondary'));
+$defaultProfileButton->setCSSClasses(['lam-secondary']);
 $defaultProfileButton->setOnClick("document.getElementById('action').value = 'setdefault';" .
     "window.lam.dialog.requestPasswordAndSendForm('" . _("Change default profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
@@ -319,7 +319,7 @@ $box->addLabel($defaultProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
 $boxDiv = new htmlDiv(null, $box);
-$boxDiv->setCSSClasses(array('roundedShadowBox', 'limitWidth'));
+$boxDiv->setCSSClasses(['roundedShadowBox', 'limitWidth']);
 $row->add($boxDiv);
 
 $row->add(new htmlHiddenInput('action', 'none'));
@@ -328,7 +328,7 @@ $row->addVerticalSpacer('2rem');
 $backLink = new htmlLink(_("Back to profile login"), 'conflogin.php');
 $row->add($backLink, 12, 12, 12, 'text-left');
 
-parseHtml('', new htmlDiv(null, $row, array('centeredTable')), array(), false, 'user');
+parseHtml('', new htmlDiv(null, $row, ['centeredTable']), [], false, 'user');
 
 ?>
 		</form>

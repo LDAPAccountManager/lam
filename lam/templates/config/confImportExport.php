@@ -19,7 +19,7 @@ use ZipArchive;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2022  Roland Gruber
+  Copyright (C) 2020 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
             </a>
         </div>
 	    <?php
-	    if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+	    if (is_dir(__DIR__ . '/../../docs/manual')) {
 		    ?>
             <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
                 <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
@@ -161,22 +161,22 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	function showLoginDialog($message = null): void {
 		$content = new htmlResponsiveRow();
 		$loginContent = new htmlResponsiveRow();
-		$loginContent->setCSSClasses(array('maxrow fullwidth roundedShadowBox spacing5'));
+		$loginContent->setCSSClasses(['maxrow fullwidth roundedShadowBox spacing5']);
 		if ($message !== null) {
 		    $loginContent->add($message, 12);
         }
 		$pwdInput = new htmlResponsiveInputField(_("Master password"), 'password', '', '236');
 		$pwdInput->setIsPassword(true);
-		$pwdInput->setCSSClasses(array('lam-initial-focus'));
+		$pwdInput->setCSSClasses(['lam-initial-focus']);
 		$loginContent->add($pwdInput, 12);
 		$loginContent->addLabel(new htmlOutputText('&nbsp;', false));
 		$loginButton = new htmlButton('submitLogin', _("Ok"));
-		$loginButton->setCSSClasses(array('lam-primary'));
+		$loginButton->setCSSClasses(['lam-primary']);
 		$loginContent->addField($loginButton);
 
 		$content->add($loginContent, 12);
 
-		parseHtml(null, $content, array(), false, null);
+		parseHtml(null, $content, [], false, null);
 		renderBackLink();
 	}
 
@@ -188,7 +188,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
         $content->addVerticalSpacer('2rem');
         $content->add(new htmlLink(_('Back to login'), '../login.php'), 12);
 		$content->addVerticalSpacer('1rem');
-		parseHtml(null, $content, array(), false, null);
+		parseHtml(null, $content, [], false, null);
     }
 
     /**
@@ -215,13 +215,13 @@ printHeaderContents(_("Import and export configuration"), '../..');
 
 	    $content->add(new htmlSubTitle(_('Export')), 12);
 	    $exportButton = new htmlButton('exportConfig', _('Export'));
-	    $exportButton->setCSSClasses(array('lam-primary'));
+	    $exportButton->setCSSClasses(['lam-primary']);
 	    $content->add($exportButton);
 
 	    $content->add(new htmlSubTitle(_('Import')), 12);
 	    renderImportPart($content);
 
-	    parseHtml(null, $content, array(), false, null);
+	    parseHtml(null, $content, [], false, null);
 	    renderBackLink();
     }
 
@@ -232,7 +232,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
      */
     function renderImportPart($content): void {
         $validUpload = false;
-        $importSteps = array();
+        $importSteps = [];
         if (isset($_POST['importConfig'])) {
 	        try {
 	            if (empty($_FILES['import-file']['tmp_name'])) {
@@ -254,7 +254,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		            if ($handle === false) {
 						throw new LAMException(_('Unable to read import file.'));
                     }
-		            $data = fread($handle, 100000000);
+		            $data = fread($handle, 100_000_000);
 					if ($data === false) {
 						throw new LAMException(_('Unable to read import file.'));
 					}
@@ -279,7 +279,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
         if (!isset($_POST['importConfigConfirm']) && !$validUpload) {
 	        $content->add(new htmlInputFileUpload('import-file'), 12);
 	        $submitButton = new htmlButton('importConfig', _('Submit'));
-	        $submitButton->setCSSClasses(array('lam-secondary'));
+	        $submitButton->setCSSClasses(['lam-secondary']);
 	        $content->add($submitButton);
         }
         elseif (isset($_POST['importConfig'])) {
@@ -288,8 +288,8 @@ printHeaderContents(_("Import and export configuration"), '../..');
                 $stepKey = 'step_' . $importStep->getKey();
                 $stepCheckbox = new htmlResponsiveInputCheckbox($stepKey, true, $importStep->getLabel());
                 $stepCheckbox->setLabelAfterCheckbox();
-                $stepCheckbox->setCSSClasses(array('bold'));
-                $subStepIds = array();
+                $stepCheckbox->setCSSClasses(['bold']);
+                $subStepIds = [];
                 $content->add($stepCheckbox);
 	            $content->addVerticalSpacer('0.3rem');
                 foreach ($importStep->getSubSteps() as $subStep) {
@@ -304,7 +304,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
             }
             $buttonGroup = new htmlGroup();
             $importButton = new htmlButton('importConfigConfirm', _('Import'));
-            $importButton->setCSSClasses(array('lam-secondary'));
+            $importButton->setCSSClasses(['lam-secondary']);
 	        $buttonGroup->addElement($importButton);
 	        $buttonGroup->addElement(new htmlButton('importCancel', _('Cancel')));
 	        $content->add($buttonGroup);
@@ -315,7 +315,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 				if ($handle === false) {
 					throw new LAMException(_('Unable to read import file.'));
 				}
-				$data = fread($handle, 100000000);
+				$data = fread($handle, 100_000_000);
 				if ($data === false) {
 					throw new LAMException(_('Unable to read import file.'));
 				}

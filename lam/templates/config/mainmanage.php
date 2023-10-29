@@ -112,7 +112,7 @@ printHeaderContents(_("Edit general settings"), '../..');
         </a>
     </div>
 	<?php
-	if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+	if (is_dir(__DIR__ . '/../../docs/manual')) {
 		?>
         <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
             <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
@@ -130,8 +130,8 @@ printHeaderContents(_("Edit general settings"), '../..');
 // include all JavaScript files
 printJsIncludes('../..');
 
-$errors = array();
-$messages = array();
+$errors = [];
+$messages = [];
 // check if submit button was pressed
 if (isset($_POST['submitFormData'])) {
     if (extension_loaded('PDO')) {
@@ -274,7 +274,7 @@ if (isset($_POST['submitFormData'])) {
 	$cfg->passwordMustNotContainUser = isset($_POST['passwordMustNotContainUser']) && ($_POST['passwordMustNotContainUser'] == 'on') ? 'true' : 'false';
 	if (function_exists('curl_init')) {
 		$cfg->externalPwdCheckUrl = $_POST['externalPwdCheckUrl'];
-		if (!empty($cfg->externalPwdCheckUrl) && (strpos($cfg->externalPwdCheckUrl, '{SHA1PREFIX}') === false)) {
+		if (!empty($cfg->externalPwdCheckUrl) && (!str_contains($cfg->externalPwdCheckUrl, '{SHA1PREFIX}'))) {
 			$errors[] = _('The URL for the external password check is invalid.');
 		}
 	}
@@ -288,7 +288,7 @@ if (isset($_POST['submitFormData'])) {
 				$errors[] = _('Unable to create temporary file.');
 			}
 			else {
-				$data = fread($handle, 10000000);
+				$data = fread($handle, 10_000_000);
 				if ($data === false) {
 					$errors[] = _('Unable to create temporary file.');
 				}
@@ -310,7 +310,7 @@ if (isset($_POST['submitFormData'])) {
 		$messages[] = _('You might need to restart your webserver for changes to take effect.');
 	}
 	if (isset($_POST['sslCaCertImport'])) {
-		$matches = array();
+		$matches = [];
 		if (preg_match('/^ldaps:\\/\\/([a-zA-Z0-9_\\.-]+)(:([0-9]+))?$/', $_POST['serverurl'], $matches)) {
 			$port = '636';
 			if (isset($matches[3]) && !empty($matches[3])) {
@@ -329,7 +329,7 @@ if (isset($_POST['submitFormData'])) {
 		}
 	}
 	foreach ($_POST as $key => $value) {
-		if (strpos($key, 'deleteCert_') === 0) {
+		if (str_starts_with($key, 'deleteCert_')) {
 			$index = substr($key, strlen('deleteCert_'));
 			$cfg->deleteSSLCaCert($index);
 		}
@@ -350,7 +350,7 @@ if (isset($_POST['submitFormData'])) {
 		$cfg->save();
 		if (sizeof($errors) == 0) {
 			$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
-			parseHtml(null, $scriptTag, array(), false, null);
+			parseHtml(null, $scriptTag, [], false, null);
 			echo '</body></html>';
 			exit();
 		}
@@ -380,23 +380,23 @@ if (isset($_POST['submitFormData'])) {
 	// database
 	if (extension_loaded('PDO')) {
 		$row->add(new htmlSubTitle(_('Configuration storage')), 12);
-		$storageProviders = array(
-			_('Local file system') => LAMCfgMain::DATABASE_FILE_SYSTEM
-		);
+		$storageProviders = [
+            _('Local file system') => LAMCfgMain::DATABASE_FILE_SYSTEM
+        ];
 		if (in_array('mysql', PDO::getAvailableDrivers())) {
 			$storageProviders['MySQL'] = LAMCfgMain::DATABASE_MYSQL;
 		}
-		$storageProviderSelect = new htmlResponsiveSelect('configDatabaseType', $storageProviders, array($cfg->configDatabaseType), _('Database type'), '293');
+		$storageProviderSelect = new htmlResponsiveSelect('configDatabaseType', $storageProviders, [$cfg->configDatabaseType], _('Database type'), '293');
 		$storageProviderSelect->setHasDescriptiveElements(true);
-		$dbRowsToShow = array(
-		    LAMCfgMain::DATABASE_FILE_SYSTEM => array(),
-            LAMCfgMain::DATABASE_MYSQL => array('configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword')
-        );
+		$dbRowsToShow = [
+            LAMCfgMain::DATABASE_FILE_SYSTEM => [],
+            LAMCfgMain::DATABASE_MYSQL => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword']
+        ];
 		$storageProviderSelect->setTableRowsToShow($dbRowsToShow);
-		$dbRowsToHide = array(
-			LAMCfgMain::DATABASE_FILE_SYSTEM => array('configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'),
-			LAMCfgMain::DATABASE_MYSQL => array()
-        );
+		$dbRowsToHide = [
+            LAMCfgMain::DATABASE_FILE_SYSTEM => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'],
+            LAMCfgMain::DATABASE_MYSQL => []
+        ];
 		$storageProviderSelect->setTableRowsToHide($dbRowsToHide);
 		$row->add($storageProviderSelect, 12);
 		$dbHost = new htmlResponsiveInputField(_('Database host'), 'configDatabaseServer', $cfg->configDatabaseServer, '273');
@@ -420,23 +420,23 @@ if (isset($_POST['submitFormData'])) {
 	if (isLAMProVersion()) {
 		$row->add(new htmlSubTitle(_('Licence')), 12);
 		$row->add(new htmlResponsiveInputTextarea('license', implode("\n", $cfg->getLicenseLines()), '30', '10', _('Licence'), '287'), 12);
-		$warningOptions = array(
-	        _('Screen') => LAMCfgMain::LICENSE_WARNING_SCREEN,
-			_('Email') => LAMCfgMain::LICENSE_WARNING_EMAIL,
-			_('Both') => LAMCfgMain::LICENSE_WARNING_ALL,
-			_('None') => LAMCfgMain::LICENSE_WARNING_NONE,
-        );
-		$warningTypeSelect = new htmlResponsiveSelect('licenseWarningType', $warningOptions, array($cfg->getLicenseWarningType()), _('Expiration warning'), '288');
+		$warningOptions = [
+            _('Screen') => LAMCfgMain::LICENSE_WARNING_SCREEN,
+            _('Email') => LAMCfgMain::LICENSE_WARNING_EMAIL,
+            _('Both') => LAMCfgMain::LICENSE_WARNING_ALL,
+            _('None') => LAMCfgMain::LICENSE_WARNING_NONE
+        ];
+		$warningTypeSelect = new htmlResponsiveSelect('licenseWarningType', $warningOptions, [$cfg->getLicenseWarningType()], _('Expiration warning'), '288');
 		$warningTypeSelect->setHasDescriptiveElements(true);
 		$warningTypeSelect->setSortElements(false);
-		$warningTypeSelect->setTableRowsToHide(array(
-			LAMCfgMain::LICENSE_WARNING_SCREEN => array('licenseEmailFrom', 'licenseEmailTo'),
-			LAMCfgMain::LICENSE_WARNING_NONE => array('licenseEmailFrom', 'licenseEmailTo'),
-        ));
-		$warningTypeSelect->setTableRowsToShow(array(
-			LAMCfgMain::LICENSE_WARNING_EMAIL => array('licenseEmailFrom', 'licenseEmailTo'),
-			LAMCfgMain::LICENSE_WARNING_ALL => array('licenseEmailFrom', 'licenseEmailTo'),
-		));
+		$warningTypeSelect->setTableRowsToHide([
+            LAMCfgMain::LICENSE_WARNING_SCREEN => ['licenseEmailFrom', 'licenseEmailTo'],
+            LAMCfgMain::LICENSE_WARNING_NONE => ['licenseEmailFrom', 'licenseEmailTo']
+        ]);
+		$warningTypeSelect->setTableRowsToShow([
+            LAMCfgMain::LICENSE_WARNING_EMAIL => ['licenseEmailFrom', 'licenseEmailTo'],
+            LAMCfgMain::LICENSE_WARNING_ALL => ['licenseEmailFrom', 'licenseEmailTo']
+        ]);
 		$row->add($warningTypeSelect, 12);
 		$licenseFrom = new htmlResponsiveInputField(_('From address'), 'licenseEmailFrom', $cfg->licenseEmailFrom, '289');
 		$licenseFrom->setRequired(true);
@@ -450,8 +450,8 @@ if (isset($_POST['submitFormData'])) {
 
 	// security settings
 	$row->add(new htmlSubTitle(_("Security settings")), 12);
-	$options = array(5, 10, 20, 30, 60, 90, 120, 240);
-	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'));
+	$options = [5, 10, 20, 30, 60, 90, 120, 240];
+	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, [$cfg->sessionTimeout], _("Session timeout"), '238'));
 	$hideLoginErrorDetails = ($cfg->hideLoginErrorDetails === 'true');
 	$row->add(new htmlResponsiveInputCheckbox('hideLoginErrorDetails', $hideLoginErrorDetails, _('Hide LDAP details on failed login'), '257'));
 	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'));
@@ -475,7 +475,7 @@ if (isset($_POST['submitFormData'])) {
 		$sslDownloadBtn = new htmlLink('', $temporaryFilesManager->getDownloadLink($sslFileName), '../../graphics/save.svg');
 		$sslDownloadBtn->setTargetWindow('_blank');
 		$sslDownloadBtn->setTitle(_('Download CA certificates'));
-		$sslDownloadBtn->setCSSClasses(array('icon'));
+		$sslDownloadBtn->setCSSClasses(['icon']);
 		$sslDelSaveGroup->addElement($sslDownloadBtn);
 		$sslDeleteBtn = new htmlButton('sslCaCertDelete', 'del.svg', true);
 		$sslDeleteBtn->setTitle(_('Delete all CA certificates'));
@@ -498,48 +498,48 @@ if (isset($_POST['submitFormData'])) {
 
 	$sslCerts = $cfg->getSSLCaCertificates();
 	if (sizeof($sslCerts) > 0) {
-		$certsTitles = array(_('Common name'), _('Valid to'), _('Serial number'), _('Delete'));
-		$certsData = array();
+		$certsTitles = [_('Common name'), _('Valid to'), _('Serial number'), _('Delete')];
+		$certsData = [];
 		for ($i = 0; $i < sizeof($sslCerts); $i++) {
-			$serial = isset($sslCerts[$i]['serialNumber']) ? $sslCerts[$i]['serialNumber'] : '';
-			$validTo = isset($sslCerts[$i]['validTo_time_t']) ? $sslCerts[$i]['validTo_time_t'] : '';
+			$serial = $sslCerts[$i]['serialNumber'] ?? '';
+			$validTo = $sslCerts[$i]['validTo_time_t'] ?? '';
 			if (get_preg($validTo, 'digit')) {
 			    $date = DateTime::createFromFormat('U', $validTo, new DateTimeZone('UTC'));
 			    if ($date !== false) {
 					$validTo = $date->format('Y-m-d');
                 }
             }
-			$cn = isset($sslCerts[$i]['subject']['CN']) ? $sslCerts[$i]['subject']['CN'] : '';
+			$cn = $sslCerts[$i]['subject']['CN'] ?? '';
 			$delBtn = new htmlButton('deleteCert_' . $i, 'del.svg', true);
-			$certsData[] = array(
-				new htmlOutputText($cn),
-				new htmlDiv(null, new htmlOutputText($validTo), array('nowrap')),
-				new htmlOutputText($serial),
-				$delBtn
-			);
+			$certsData[] = [
+                new htmlOutputText($cn),
+                new htmlDiv(null, new htmlOutputText($validTo), ['nowrap']),
+                new htmlOutputText($serial),
+                $delBtn
+            ];
 		}
 		$certsTable = new htmlResponsiveTable($certsTitles, $certsData);
-		$certsTable->setCSSClasses(array('text-left'));
+		$certsTable->setCSSClasses(['text-left']);
 		$row->add($certsTable, 12);
 	}
 
 	// password policy
 	$row->add(new htmlSubTitle(_("Password policy")), 12);
-	$optionsPwdLength = array();
+	$optionsPwdLength = [];
 	for ($i = 0; $i <= 50; $i++) {
 		$optionsPwdLength[] = $i;
 	}
-	$options4 = array(0, 1, 2, 3, 4);
-	$row->add(new htmlResponsiveSelect('passwordMinLength', $optionsPwdLength, array($cfg->passwordMinLength), _('Minimum password length'), '242'), 12);
+	$options4 = [0, 1, 2, 3, 4];
+	$row->add(new htmlResponsiveSelect('passwordMinLength', $optionsPwdLength, [$cfg->passwordMinLength], _('Minimum password length'), '242'), 12);
 	$row->addVerticalSpacer('1rem');
-	$row->add(new htmlResponsiveSelect('passwordMinLower', $optionsPwdLength, array($cfg->passwordMinLower), _('Minimum lowercase characters'), '242'), 12);
-	$row->add(new htmlResponsiveSelect('passwordMinUpper', $optionsPwdLength, array($cfg->passwordMinUpper), _('Minimum uppercase characters'), '242'), 12);
-	$row->add(new htmlResponsiveSelect('passwordMinNumeric', $optionsPwdLength, array($cfg->passwordMinNumeric), _('Minimum numeric characters'), '242'), 12);
-	$row->add(new htmlResponsiveSelect('passwordMinSymbol', $optionsPwdLength, array($cfg->passwordMinSymbol), _('Minimum symbolic characters'), '242'), 12);
-	$row->add(new htmlResponsiveSelect('passwordMinClasses', $options4, array($cfg->passwordMinClasses), _('Minimum character classes'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinLower', $optionsPwdLength, [$cfg->passwordMinLower], _('Minimum lowercase characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinUpper', $optionsPwdLength, [$cfg->passwordMinUpper], _('Minimum uppercase characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinNumeric', $optionsPwdLength, [$cfg->passwordMinNumeric], _('Minimum numeric characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinSymbol', $optionsPwdLength, [$cfg->passwordMinSymbol], _('Minimum symbolic characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinClasses', $options4, [$cfg->passwordMinClasses], _('Minimum character classes'), '242'), 12);
 	$row->addVerticalSpacer('1rem');
-	$rulesCountOptions = array(_('all') => '-1', '3' => '3', '4' => '4');
-	$rulesCountSelect = new htmlResponsiveSelect('passwordRulesCount', $rulesCountOptions, array($cfg->checkedRulesCount), _('Number of rules that must match'), '246');
+	$rulesCountOptions = [_('all') => '-1', '3' => '3', '4' => '4'];
+	$rulesCountSelect = new htmlResponsiveSelect('passwordRulesCount', $rulesCountOptions, [$cfg->checkedRulesCount], _('Number of rules that must match'), '246');
 	$rulesCountSelect->setHasDescriptiveElements(true);
 	$row->add($rulesCountSelect, 12);
 	$passwordMustNotContainUser = ($cfg->passwordMustNotContainUser === 'true');
@@ -553,16 +553,21 @@ if (isset($_POST['submitFormData'])) {
 
 	// logging
 	$row->add(new htmlSubTitle(_("Logging")), 12);
-	$levelOptions = array(_("Debug") => LOG_DEBUG, _("Notice") => LOG_NOTICE, _("Warning") => LOG_WARNING, _("Error") => LOG_ERR);
-	$levelSelect = new htmlResponsiveSelect('logLevel', $levelOptions, array($cfg->logLevel), _("Log level"), '239');
+	$levelOptions = [
+        _("Debug") => LOG_DEBUG,
+        _("Notice") => LOG_NOTICE,
+        _("Warning") => LOG_WARNING,
+        _("Error") => LOG_ERR
+    ];
+	$levelSelect = new htmlResponsiveSelect('logLevel', $levelOptions, [$cfg->logLevel], _("Log level"), '239');
 	$levelSelect->setHasDescriptiveElements(true);
 	$row->add($levelSelect, 12);
-	$destinationOptions = array(
-		_("No logging") => "none",
-		_("System logging") => "syslog",
-		_("File") => 'file',
-		_("Remote") => 'remote',
-	);
+	$destinationOptions = [
+        _("No logging") => "none",
+        _("System logging") => "syslog",
+        _("File") => 'file',
+        _("Remote") => 'remote'
+    ];
 	$destinationSelected = 'file';
 	$destinationPath = $cfg->logDestination;
 	$destinationRemote = '';
@@ -572,33 +577,33 @@ if (isset($_POST['submitFormData'])) {
 	} elseif ($cfg->logDestination == 'SYSLOG') {
 		$destinationSelected = 'syslog';
 		$destinationPath = '';
-	} elseif (strpos($cfg->logDestination, 'REMOTE') === 0) {
+	} elseif (str_starts_with($cfg->logDestination, 'REMOTE')) {
 		$destinationSelected = 'remote';
 		$remoteParts = explode(':', $cfg->logDestination, 2);
 		$destinationRemote = empty($remoteParts[1]) ? '' : $remoteParts[1];
 		$destinationPath = '';
 	}
-	$logDestinationSelect = new htmlResponsiveSelect('logDestination', $destinationOptions, array($destinationSelected), _("Log destination"), '240');
-	$logDestinationSelect->setTableRowsToHide(array(
-		'none' => array('logFile', 'logRemote'),
-		'syslog' => array('logFile', 'logRemote'),
-		'remote' => array('logFile'),
-		'file' => array('logRemote'),
-	));
-	$logDestinationSelect->setTableRowsToShow(array(
-		'file' => array('logFile'),
-		'remote' => array('logRemote'),
-	));
+	$logDestinationSelect = new htmlResponsiveSelect('logDestination', $destinationOptions, [$destinationSelected], _("Log destination"), '240');
+	$logDestinationSelect->setTableRowsToHide([
+        'none' => ['logFile', 'logRemote'],
+        'syslog' => ['logFile', 'logRemote'],
+        'remote' => ['logFile'],
+        'file' => ['logRemote']
+    ]);
+	$logDestinationSelect->setTableRowsToShow([
+        'file' => ['logFile'],
+        'remote' => ['logRemote']
+    ]);
 	$logDestinationSelect->setHasDescriptiveElements(true);
 	$row->add($logDestinationSelect, 12);
 	$row->add(new htmlResponsiveInputField(_('File'), 'logFile', $destinationPath), 12);
 	$row->add(new htmlResponsiveInputField(_('Remote server'), 'logRemote', $destinationRemote, '251'), 12);
-	$errorLogOptions = array(
-		_('PHP system setting') => LAMCfgMain::ERROR_REPORTING_SYSTEM,
-		_('default') => LAMCfgMain::ERROR_REPORTING_DEFAULT,
-		_('all') => LAMCfgMain::ERROR_REPORTING_ALL
-	);
-	$errorLogSelect = new htmlResponsiveSelect('errorReporting', $errorLogOptions, array($cfg->errorReporting), _('PHP error reporting'), '244');
+	$errorLogOptions = [
+        _('PHP system setting') => LAMCfgMain::ERROR_REPORTING_SYSTEM,
+        _('default') => LAMCfgMain::ERROR_REPORTING_DEFAULT,
+        _('all') => LAMCfgMain::ERROR_REPORTING_ALL
+    ];
+	$errorLogSelect = new htmlResponsiveSelect('errorReporting', $errorLogOptions, [$cfg->errorReporting], _('PHP error reporting'), '244');
 	$errorLogSelect->setHasDescriptiveElements(true);
 	$row->add($errorLogSelect);
 
@@ -612,13 +617,13 @@ if (isset($_POST['submitFormData'])) {
 		$mailPassword = new htmlResponsiveInputField(_("Password"), 'mailPassword', $cfg->mailPassword, '255');
 		$mailPassword->setIsPassword(true);
 		$row->add($mailPassword);
-		$mailEncryptionOptions = array(
-	        'TLS' => LAMCfgMain::SMTP_TLS,
-			'SSL' => LAMCfgMain::SMTP_SSL,
-			_('None') => LAMCfgMain::SMTP_NONE,
-        );
+		$mailEncryptionOptions = [
+            'TLS' => LAMCfgMain::SMTP_TLS,
+            'SSL' => LAMCfgMain::SMTP_SSL,
+            _('None') => LAMCfgMain::SMTP_NONE
+        ];
 		$selectedMailEncryption = empty($cfg->mailEncryption) ? LAMCfgMain::SMTP_TLS : $cfg->mailEncryption;
-		$mailEncryptionSelect = new htmlResponsiveSelect('mailEncryption', $mailEncryptionOptions, array($selectedMailEncryption), _('Encryption protocol'), '256');
+		$mailEncryptionSelect = new htmlResponsiveSelect('mailEncryption', $mailEncryptionOptions, [$selectedMailEncryption], _('Encryption protocol'), '256');
 		$mailEncryptionSelect->setHasDescriptiveElements(true);
 		$row->add($mailEncryptionSelect);
 		addSecurityTokenToSession(false);
@@ -642,11 +647,11 @@ if (isset($_POST['submitFormData'])) {
 				$row->add($webauthnSearchField, 12);
 				$row->addVerticalSpacer('0.5rem');
 				$row->add(new htmlButton('webauthn_search', _('Search')), 12, 12, 12, 'text-center');
-				$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), array('lam-webauthn-results', 'text-left'));
+				$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), ['lam-webauthn-results', 'text-left']);
 				addSecurityTokenToSession(false);
 				$resultDiv->addDataAttribute('sec_token_value', getSecurityTokenValue());
 				$row->add($resultDiv);
-				$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), array('hidden'));
+				$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), ['hidden']);
 				$row->add($confirmationDiv);
 			}
 		}
@@ -671,7 +676,7 @@ if (isset($_POST['submitFormData'])) {
 	if ($cfg->isWritable()) {
 		$buttonTable = new htmlTable();
 		$saveButton = new htmlButton('submit', _("Save"));
-		$saveButton->setCSSClasses(array('lam-primary'));
+		$saveButton->setCSSClasses(['lam-primary']);
 		$buttonTable->addElement($saveButton);
 		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlButton('cancel', _("Cancel")));
@@ -680,8 +685,8 @@ if (isset($_POST['submitFormData'])) {
 	}
 
 	$box = new htmlDiv(null, $row);
-	$box->setCSSClasses(array('roundedShadowBox'));
-	parseHtml(null, $box, array(), false, 'user');
+	$box->setCSSClasses(['roundedShadowBox']);
+	parseHtml(null, $box, [], false, 'user');
 
 
 	/**

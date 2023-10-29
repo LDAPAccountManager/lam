@@ -39,7 +39,7 @@ if (isLAMProVersion()) {
 
 // start session
 if (isFileBasedSession()) {
-	session_save_path(dirname(__FILE__) . '/../../sess');
+	session_save_path(__DIR__ . '/../../sess');
 }
 lam_start_session();
 session_regenerate_id(true);
@@ -87,7 +87,7 @@ printHeaderContents(_("Login"), '../..');
                 </a>
             </div>
 			<?php
-			if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+			if (is_dir(__DIR__ . '/../../docs/manual')) {
 				?>
                 <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
                     <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
@@ -141,26 +141,26 @@ printHeaderContents(_("Login"), '../..');
 		$passwordField = new htmlInputField('passwd');
 		$passwordField->setFieldSize(15);
 		$passwordField->setIsPassword(true);
-		$passwordField->setCSSClasses(array('lam-initial-focus'));
+		$passwordField->setCSSClasses(['lam-initial-focus']);
 		$passwordGroup->addElement($passwordField);
 		$passwordGroup->addElement(new htmlHelpLink('236'));
 		$passwordDiv = new htmlDiv(null, $passwordGroup);
-		$passwordDiv->setCSSClasses(array('nowrap'));
+		$passwordDiv->setCSSClasses(['nowrap']);
 		$row = new htmlResponsiveRow($label, $passwordDiv);
 		$group->addElement($row);
 		// button
 		$group->addElement($spacer);
 		$okButton = new htmlButton('submit', _("Ok"));
-		$okButton->setCSSClasses(array('lam-primary'));
+		$okButton->setCSSClasses(['lam-primary']);
 		$row = new htmlResponsiveRow();
 		$row->add($okButton, 12);
-		$row->setCSSClasses(array(''));
+		$row->setCSSClasses(['']);
 		$group->addElement($row);
 
 		$div = new htmlDiv(null, $group);
-		$div->setCSSClasses(array('centeredTable'));
+		$div->setCSSClasses(['centeredTable']);
 
-		parseHtml(null, $div, array(), false, 'user');
+		parseHtml(null, $div, [], false, 'user');
 		?>
 		</td></tr>
 		</table>

@@ -15,7 +15,7 @@ use ServerProfilePersistenceManager;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ include_once('../../lib/status.inc');
 
 // start session
 if (isFileBasedSession()) {
-	session_save_path(dirname(__FILE__) . '/../../sess');
+	session_save_path(__DIR__ . '/../../sess');
 }
 lam_start_session();
 session_regenerate_id(true);
@@ -65,13 +65,13 @@ if (isset($_SESSION['conf_message'])) {
 // remove settings from session
 $sessionKeys = array_keys($_SESSION);
 for ($i = 0; $i < sizeof($sessionKeys); $i++) {
-	if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
+	if (str_starts_with($sessionKeys[$i], "conf_")) unset($_SESSION[$sessionKeys[$i]]);
 }
 
 echo $_SESSION['header'];
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-$files = array();
+$files = [];
 try {
 	$files = $serverProfilePersistenceManager->getProfiles();
 }
@@ -101,7 +101,7 @@ if (sizeof($files) < 1) {
                 </a>
             </div>
 			<?php
-			if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+			if (is_dir(__DIR__ . '/../../docs/manual')) {
 				?>
                 <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
                     <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
@@ -133,7 +133,7 @@ if (sizeof($files) < 1) {
 			$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")), 12);
 			$box->addVerticalSpacer('1.5rem');
 			$conf = new LAMCfgMain();
-			$selectedProfile = array();
+			$selectedProfile = [];
 			$profilesExisting = false;
 			$profiles = $files;
 			if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
@@ -145,11 +145,11 @@ if (sizeof($files) < 1) {
 			$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')), 12);
 			$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
 			$passwordInput->setIsPassword(true);
-			$passwordInput->setCSSClasses(array('lam-initial-focus'));
+			$passwordInput->setCSSClasses(['lam-initial-focus']);
 			$box->add($passwordInput, 12);
 			$box->addVerticalSpacer('1rem');
 			$button = new htmlButton('submit', _("Ok"));
-			$button->setCSSClasses(array('lam-primary'));
+			$button->setCSSClasses(['lam-primary']);
 			$box->addLabel($button);
 			$box->add(new htmlOutputText(''), 0, 6);
 			$box->addVerticalSpacer('1.5rem');
@@ -160,7 +160,7 @@ if (sizeof($files) < 1) {
 		$box->add($manageLink, 12, 12, 12, 'text-center');
 
 		$boxDiv = new htmlDiv(null, $box);
-		$boxDiv->setCSSClasses(array('roundedShadowBox', 'limitWidth', 'text-center'));
+		$boxDiv->setCSSClasses(['roundedShadowBox', 'limitWidth', 'text-center']);
 		$row->add($boxDiv, 12);
 
 		// back link
@@ -168,7 +168,7 @@ if (sizeof($files) < 1) {
 		$backLink = new htmlLink(_("Back to login"), '../login.php');
 		$row->add($backLink, 12, 12, 12, 'text-left');
 
-		parseHtml(null, new htmlDiv(null, $row, array('centeredTable')), array(), false, 'user');
+		parseHtml(null, new htmlDiv(null, $row, ['centeredTable']), [], false, 'user');
 
 		?>
 		</form>
