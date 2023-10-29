@@ -415,8 +415,7 @@ class Ajax {
 			$dnList = $this->getSubDns($dn);
 		}
 		$html = $this->buildDnSelectionHtml($dnList, $dn);
-		$json = json_encode(['dialogData' => $html], JSON_THROW_ON_ERROR);
-		return $json;
+		return json_encode(['dialogData' => $html], JSON_THROW_ON_ERROR);
 	}
 
 	/**
