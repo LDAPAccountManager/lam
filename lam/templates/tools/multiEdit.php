@@ -104,32 +104,32 @@ function displayStartPage(): void {
 	include __DIR__ . '/../../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
-	$errors = array();
+	$errors = [];
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Multi edit")), 12);
 	// LDAP suffix
-	$showRules = array('-' => array('otherSuffix'));
-	$hideRules = array();
+	$showRules = ['-' => ['otherSuffix']];
+	$hideRules = [];
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypes();
-	$suffixes = array();
+	$suffixes = [];
 	foreach ($types as $type) {
 		if ($type->isHidden()) {
 			continue;
 		}
 		$suffixes[$type->getAlias()] = $type->getSuffix();
-		$hideRules[$type->getSuffix()] = array('otherSuffix');
+		$hideRules[$type->getSuffix()] = ['otherSuffix'];
 	}
 	$treeSuffixes = TreeViewTool::getRootDns();
 	if (!empty($treeSuffixes)) {
 		if (sizeof($treeSuffixes) === 1) {
 			$suffixes[_('Tree view')] = $treeSuffixes[0];
-			$hideRules[$treeSuffixes[0]] = array('otherSuffix');
+			$hideRules[$treeSuffixes[0]] = ['otherSuffix'];
 		}
 		else {
 			foreach ($treeSuffixes as $treeSuffix) {
 				$suffixes[_('Tree view') . ' (' . getAbstractDN($treeSuffix) . ')'] = $treeSuffix;
-				$hideRules[$treeSuffix] = array('otherSuffix');
+				$hideRules[$treeSuffix] = ['otherSuffix'];
 			}
 		}
 	}
@@ -139,7 +139,7 @@ function displayStartPage(): void {
 	$suffixes[_('Other')] = '-';
 	$suffixValues = array_values($suffixes);
 	$valSuffix = empty($_POST['suffix']) ? $suffixValues[0] : $_POST['suffix'];
-	$suffixSelect = new htmlResponsiveSelect('suffix', $suffixes, array($valSuffix), _('LDAP suffix'), '700');
+	$suffixSelect = new htmlResponsiveSelect('suffix', $suffixes, [$valSuffix], _('LDAP suffix'), '700');
 	$suffixSelect->setHasDescriptiveElements(true);
 	$suffixSelect->setSortElements(false);
 	$suffixSelect->setTableRowsToShow($showRules);
@@ -154,17 +154,17 @@ function displayStartPage(): void {
 	$operationsTitle = new htmlSubTitle(_('Operations'));
 	$operationsTitle->setHelpId('702');
 	$container->add($operationsTitle, 12);
-	$operationsTitles = array(_('Type'), _('Attribute name'), _('Value'));
-	$data = array();
+	$operationsTitles = [_('Type'), _('Attribute name'), _('Value')];
+	$data = [];
 	$opCount = empty($_POST['opcount']) ? '3' : $_POST['opcount'];
 	if (isset($_POST['addFields'])) {
 		$opCount += 3;
 	}
-	$operations = array(_('Add') => ADD, _('Modify') => MOD, _('Delete') => DEL);
+	$operations = [_('Add') => ADD, _('Modify') => MOD, _('Delete') => DEL];
 	for ($i = 0; $i < $opCount; $i++) {
 		// operation type
 		$selOp = empty($_POST['op_' . $i]) ? ADD : $_POST['op_' . $i];
-		$opSelect = new htmlSelect('op_' . $i, $operations, array($selOp));
+		$opSelect = new htmlSelect('op_' . $i, $operations, [$selOp]);
 		$opSelect->setHasDescriptiveElements(true);
 		$data[$i][] = $opSelect;
 		// attribute name
@@ -199,11 +199,11 @@ function displayStartPage(): void {
 	$buttonGroup = new htmlGroup();
 	$buttonGroup->colspan = 3;
 	$applyButton = new htmlButton('applyChanges', _('Apply changes'));
-	$applyButton->setCSSClasses(array('lam-primary'));
+	$applyButton->setCSSClasses(['lam-primary']);
 	$buttonGroup->addElement($applyButton);
 	$buttonGroup->addElement(new htmlSpacer('10px', null));
 	$dryRunButton = new htmlButton('dryRun', _('Dry run'));
-	$dryRunButton->setCSSClasses(array('lam-secondary'));
+	$dryRunButton->setCSSClasses(['lam-secondary']);
 	$buttonGroup->addElement($dryRunButton);
 	$container->add($buttonGroup, 12);
 	$container->addVerticalSpacer('1rem');
@@ -215,7 +215,7 @@ function displayStartPage(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 	echo "</form>\n";
 	echo '</div>';
 	include __DIR__ . '/../../lib/adminFooter.inc';
@@ -243,10 +243,10 @@ function runActions(htmlResponsiveRow &$container): void {
 	// LDAP filter
 	$filter = trim($_POST['filter']);
 	// operations
-	$operations = array();
+	$operations = [];
 	for ($i = 0; $i < $_POST['opcount']; $i++) {
 		if (!empty($_POST['attr_' . $i])) {
-			$operations[] = array($_POST['op_' . $i], strtolower(trim($_POST['attr_' . $i])), trim($_POST['val_' . $i]));
+			$operations[] = [$_POST['op_' . $i], strtolower(trim($_POST['attr_' . $i])), trim($_POST['val_' . $i])];
 		}
 	}
 	if (sizeof($operations) == 0) {
@@ -258,7 +258,7 @@ function runActions(htmlResponsiveRow &$container): void {
 	$_SESSION['multiEdit_suffix'] = $suffix;
 	$_SESSION['multiEdit_filter'] = $filter;
 	$_SESSION['multiEdit_operations'] = $operations;
-	$_SESSION['multiEdit_status'] = array('stage' => STAGE_START);
+	$_SESSION['multiEdit_status'] = ['stage' => STAGE_START];
 	$_SESSION['multiEdit_dryRun'] = isset($_POST['dryRun']);
 	// disable all input elements
 	$jsContent = '
@@ -297,11 +297,11 @@ function runActions(htmlResponsiveRow &$container): void {
  * Performs the modify operations.
  */
 function runAjaxActions(): void {
-	$jsonReturn = array(
+	$jsonReturn = [
 		'status' => STAGE_START,
 		'progress' => 0,
 		'content' => ''
-	);
+	];
 	switch ($_SESSION['multiEdit_status']['stage']) {
 		case STAGE_START:
 			$jsonReturn = readLDAPData();
@@ -319,7 +319,7 @@ function runAjaxActions(): void {
 			}
 			break;
 	}
-	echo json_encode($jsonReturn);
+	echo json_encode($jsonReturn, JSON_THROW_ON_ERROR);
 }
 
 /**
@@ -334,7 +334,7 @@ function readLDAPData(): array {
 		$filter = '(objectClass=*)';
 	}
 	$operations = $_SESSION['multiEdit_operations'];
-	$attributes = array();
+	$attributes = [];
 	foreach ($operations as $op) {
 		if (!in_array(strtolower($op[1]), $attributes)) {
 			$attributes[] = strtolower($op[1]);
@@ -354,20 +354,20 @@ function readLDAPData(): array {
 			$msg = new htmlStatusMessage('ERROR', _('No objects found!'));
 		}
 		$content = getMessageHTML($msg);
-		return array(
+		return [
 			'status' => STAGE_FINISHED,
 			'progress' => 100,
 			'content' => $content
-		);
+		];
 	}
 	// save LDAP data
 	$_SESSION['multiEdit_status']['entries'] = $results;
 	$_SESSION['multiEdit_status']['stage'] = STAGE_READ_FINISHED;
-	return array(
+	return [
 		'status' => STAGE_READ_FINISHED,
 		'progress' => 10,
 		'content' => ''
-	);
+	];
 }
 
 /**
@@ -376,7 +376,7 @@ function readLDAPData(): array {
  * @return array<mixed> status
  */
 function generateActions(): array {
-	$actions = array();
+	$actions = [];
 	foreach ($_SESSION['multiEdit_status']['entries'] as $entry) {
 		$dn = $entry['dn'];
 		foreach ($_SESSION['multiEdit_operations'] as $op) {
@@ -386,25 +386,25 @@ function generateActions(): array {
 			switch ($opType) {
 				case ADD:
 					if (empty($entry[$attr]) || !in_array_ignore_case($val, $entry[$attr])) {
-						$actions[] = array(ADD, $dn, $attr, $val);
+						$actions[] = [ADD, $dn, $attr, $val];
 					}
 					break;
 				case MOD:
 					if (empty($entry[$attr])) {
 						// attribute not yet exists, add it
-						$actions[] = array(ADD, $dn, $attr, $val);
+						$actions[] = [ADD, $dn, $attr, $val];
 					}
 					elseif (!empty($entry[$attr]) && !in_array_ignore_case($val, $entry[$attr])) {
 						// attribute exists and value is not included, replace old values
-						$actions[] = array(MOD, $dn, $attr, $val);
+						$actions[] = [MOD, $dn, $attr, $val];
 					}
 					break;
 				case DEL:
 					if (empty($val) && !empty($entry[$attr])) {
-						$actions[] = array(DEL, $dn, $attr, null);
+						$actions[] = [DEL, $dn, $attr, null];
 					}
 					elseif (!empty($val) && isset($entry[$attr]) && in_array($val, $entry[$attr])) {
-						$actions[] = array(DEL, $dn, $attr, $val);
+						$actions[] = [DEL, $dn, $attr, $val];
 					}
 					break;
 			}
@@ -413,11 +413,11 @@ function generateActions(): array {
 	// save actions
 	$_SESSION['multiEdit_status']['actions'] = $actions;
 	$_SESSION['multiEdit_status']['stage'] = STAGE_ACTIONS_CALCULATED;
-	return array(
+	return [
 		'status' => STAGE_ACTIONS_CALCULATED,
 		'progress' => 20,
 		'content' => ''
-	);
+	];
 }
 
 /**
@@ -490,14 +490,14 @@ function dryRun(): array {
 	// generate HTML
 	fclose ($out);
 	ob_start();
-	parseHtml(null, $container, array(), true, 'user');
+	parseHtml(null, $container, [], true, 'user');
 	$content = ob_get_contents();
 	ob_end_clean();
-	return array(
+	return [
 		'status' => STAGE_FINISHED,
 		'progress' => 100,
 		'content' => $content
-	);
+	];
 }
 
 /**
@@ -547,18 +547,18 @@ function doModify(): array {
 		$success = false;
 		switch ($opType) {
 			case ADD:
-				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
+				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
 				break;
 			case DEL:
 				if (empty($val)) {
-					$success = ldap_modify($_SESSION['ldap']->server(), $dn, array($attr => array()));
+					$success = ldap_modify($_SESSION['ldap']->server(), $dn, [$attr => []]);
 				}
 				else {
-					$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
+					$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
 				}
 				break;
 			case MOD:
-				$success = ldap_modify($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
+				$success = ldap_modify($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
 				break;
 		}
 		if (!$success || isset($_REQUEST['multiEdit_error'])) {
@@ -571,18 +571,18 @@ function doModify(): array {
 	// check if finished
 	if ($_SESSION['multiEdit_status']['index'] == sizeof($_SESSION['multiEdit_status']['actions'])) {
 		$_SESSION['multiEdit_status']['modContent'] .= '<br><br>' . _('Finished all operations.');
-		return array(
+		return [
 			'status' => STAGE_FINISHED,
 			'progress' => 100,
 			'content' => $_SESSION['multiEdit_status']['modContent']
-		);
+		];
 	}
 	// return current status
-	return array(
+	return [
 		'status' => STAGE_WRITING,
 		'progress' => 20 + (($_SESSION['multiEdit_status']['index'] / sizeof($_SESSION['multiEdit_status']['actions'])) * 80),
 		'content' => $_SESSION['multiEdit_status']['modContent']
-	);
+	];
 }
 
 /**
@@ -593,7 +593,7 @@ function doModify(): array {
  */
 function getMessageHTML(htmlStatusMessage $msg): string {
 	ob_start();
-	parseHtml(null, $msg, array(), true, 'user');
+	parseHtml(null, $msg, [], true, 'user');
 	$content = ob_get_contents();
 	ob_end_clean();
 	if ($content === false) {

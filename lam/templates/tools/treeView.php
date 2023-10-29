@@ -11,7 +11,7 @@ use htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2022  Roland Gruber
+  Copyright (C) 2021 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
 
 function showTree(): void {
-	$openInitial = array();
+	$openInitial = [];
 	if (isset($_GET['dn'])) {
 		$initialDn = base64_decode($_GET['dn']);
 		$roots = TreeViewTool::getRootDns();
@@ -88,9 +88,9 @@ function showTree(): void {
 	}
 	$openInitialJsArray = '[' . implode(', ', $openInitial) . ']';
 	$row = new htmlResponsiveRow();
-	$row->setCSSClasses(array('maxrow'));
-	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), array('tree-view--tree')), 12, 5, 5, 'tree-left-area');
-	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), array('tree-view--actionarea')), 12, 7, 7, 'tree-right-area');
+	$row->setCSSClasses(['maxrow']);
+	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), ['tree-view--tree']), 12, 5, 5, 'tree-left-area');
+	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), ['tree-view--actionarea']), 12, 7, 7, 'tree-right-area');
 	$newMenu = '';
 	if (checkIfWriteAccessIsAllowed()) {
 		$newMenu = '"createNode": {
@@ -241,31 +241,31 @@ function showTree(): void {
 	$deleteDialogContent->add(new htmlOutputText(_('Do you really want to delete this entry?')), 12);
 	$deleteDialogContent->addVerticalSpacer('0.5rem');
 	$deleteDialogEntryText = new htmlOutputText('');
-	$deleteDialogEntryText->setCSSClasses(array('treeview-delete-entry'));
+	$deleteDialogEntryText->setCSSClasses(['treeview-delete-entry']);
 	$deleteDialogContent->add($deleteDialogEntryText, 12);
-	$deleteDialogDiv = new htmlDiv('treeview_delete_dlg', $deleteDialogContent, array('hidden'));
+	$deleteDialogDiv = new htmlDiv('treeview_delete_dlg', $deleteDialogContent, ['hidden']);
 	$row->add($deleteDialogDiv);
 
 	$errorDialogContent = new htmlResponsiveRow();
 	$errorDialogEntryTitle = new htmlOutputText('');
-	$errorDialogEntryTitle->setCSSClasses(array('treeview-error-title'));
+	$errorDialogEntryTitle->setCSSClasses(['treeview-error-title']);
 	$errorDialogContent->add($errorDialogEntryTitle, 12);
 	$errorDialogEntryText = new htmlOutputText('');
-	$errorDialogEntryText->setCSSClasses(array('treeview-error-text'));
+	$errorDialogEntryText->setCSSClasses(['treeview-error-text']);
 	$errorDialogContent->add($errorDialogEntryText, 12);
-	$errorDialogDiv = new htmlDiv('treeview_error_dlg', $errorDialogContent, array('hidden'));
+	$errorDialogDiv = new htmlDiv('treeview_error_dlg', $errorDialogContent, ['hidden']);
 	$row->add($errorDialogDiv);
 
 	$pwdCheckRow = new htmlResponsiveRow();
 	$pwdCheckInput = new htmlResponsiveInputField(_('Password'), 'lam_pwd_check');
 	$pwdCheckInput->setIsPassword(true);
-	$pwdCheckInput->setCSSClasses(array('lam_pwd_check'));
+	$pwdCheckInput->setCSSClasses(['lam_pwd_check']);
 	$pwdCheckRow->add($pwdCheckInput);
 	$pwdCheckRow->addVerticalSpacer('1rem');
 	$pwdCheckRow->add(new htmlDiv('lam-pwd-check-dialog-result', new htmlGroup()));
-	$pwdCheckDiv = new htmlDiv('lam-pwd-check-dialog', $pwdCheckRow, array('hidden'));
+	$pwdCheckDiv = new htmlDiv('lam-pwd-check-dialog', $pwdCheckRow, ['hidden']);
 	$row->add($pwdCheckDiv);
 
 	$form = new htmlForm('actionarea', 'treeView.php', $row);
-	parseHtml(null, $form, array(), true, null);
+	parseHtml(null, $form, [], true, null);
 }

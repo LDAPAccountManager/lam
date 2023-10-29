@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2021  Roland Gruber
+  Copyright (C) 2009 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ $vendorname = '';
 $vendorversion = '';
 $dynamicSubtrees = '';
 
-$result = ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', array('+', '*', 'subschemasubentry'), 0, 0, 0, LDAP_DEREF_NEVER);
+$result = ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', ['+', '*', 'subschemasubentry'], 0, 0, 0, LDAP_DEREF_NEVER);
 if ($result) {
 	$info = ldap_get_entries($_SESSION['ldap']->server(), $result);
 	if (is_array($info) && is_array($info[0])) {
@@ -87,8 +87,8 @@ if ($result) {
 }
 
 // get additional information if monitoring is enabled
-$monitorResults = searchLDAP('cn=monitor', 'objectClass=*', array('*', '+'));
-$monitorEntries = array();
+$monitorResults = searchLDAP('cn=monitor', 'objectClass=*', ['*', '+']);
+$monitorEntries = [];
 foreach ($monitorResults as $monitorResult) {
 	$monitorEntries[$monitorResult['dn']] = array_change_key_case($monitorResult, CASE_LOWER);
 }
@@ -145,7 +145,7 @@ if (isset($monitorEntries['cn=monitor']['monitoredinfo'])) {
 }
 if (isset($monitorEntries['cn=listeners,cn=monitor'])) {
 	$container->addLabel(new htmlOutputText('<b>' . _("Listeners") . '</b>', false));
-	$listeners = array();
+	$listeners = [];
 	$l = 0;
 	while (isset($monitorEntries['cn=listener ' . $l . ',cn=listeners,cn=monitor'])) {
 		$listeners[] = $monitorEntries['cn=listener ' . $l . ',cn=listeners,cn=monitor']['monitorconnectionlocaladdress'][0];
@@ -229,12 +229,12 @@ if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries
 		$container->addField(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['totalconnections'])));
 	}
 	if (isset($monitorEntries['cn=bytes,cn=statistics,cn=monitor'])) {
-		$bytes = round($monitorEntries['cn=bytes,cn=statistics,cn=monitor']['monitorcounter'][0] / 1000000, 2) . 'MB';
+		$bytes = round($monitorEntries['cn=bytes,cn=statistics,cn=monitor']['monitorcounter'][0] / 1_000_000, 2) . 'MB';
 		$container->addLabel(new htmlOutputText('<b>' . _("Bytes sent") . '</b>', false));
 		$container->addField(new htmlOutputText($bytes));
 	}
 	elseif (isset($monitorEntries['cn=monitor']['bytessent'])) { // Fedora 389
-		$bytes = round($monitorEntries['cn=monitor']['bytessent'][0] / 1000000, 2) . 'MB';
+		$bytes = round($monitorEntries['cn=monitor']['bytessent'][0] / 1_000_000, 2) . 'MB';
 		$container->addLabel(new htmlOutputText('<b>' . _("Bytes sent") . '</b>', false));
 		$container->addField(new htmlOutputText($bytes));
 	}
@@ -251,85 +251,85 @@ if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries
 // operation statistics (OpenLDAP)
 if (isset($monitorEntries['cn=operations,cn=monitor'])) {
 	$container->add(new htmlSubTitle(_('Operation statistics')), 12);
-	$data = array();
+	$data = [];
 	if (isset($monitorEntries['cn=bind,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Bind") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=bind,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=bind,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=unbind,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Unbind") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=unbind,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=unbind,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=search,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Search") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=search,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=search,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=add,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Add") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=add,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=add,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=modify,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Modify") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=modify,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=modify,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=delete,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Delete") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=delete,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=delete,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=modrdn,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Modify RDN") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=modrdn,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=modrdn,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=compare,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Compare") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=compare,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=compare,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=abandon,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Abandon") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=abandon,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=abandon,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=extended,cn=operations,cn=monitor'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Extended") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=extended,cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=extended,cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
 	if (isset($monitorEntries['cn=operations,cn=monitor']['monitoropinitiated'])) {
-		$data[] = array(
+		$data[] = [
 			new htmlOutputText('<b>' . _("Total") . '</b>', false),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=operations,cn=monitor']['monitoropinitiated'])),
 			new htmlOutputText(implode(', ', $monitorEntries['cn=operations,cn=monitor']['monitoropcompleted'])),
-		);
+		];
 	}
-	$opStats = new htmlResponsiveTable(array('', _("Initiated"), _("Completed")), $data);
+	$opStats = new htmlResponsiveTable(['', _("Initiated"), _("Completed")], $data);
 	$container->add($opStats, 12);
 }
 // operation statistics (389 server)
@@ -360,7 +360,7 @@ elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
 	}
 }
 
-parseHtml(null, $container, array(), true, 'user');
+parseHtml(null, $container, [], true, 'user');
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

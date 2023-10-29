@@ -85,7 +85,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			$found = ldapGetDN($new_dn);
 			if ($found === null) {
 				// add new ou
-				$ou = array();
+				$ou = [];
 				$ou['objectClass'] = "organizationalunit";
 				$ou['ou'] = $_POST['newOU'];
 				$ret = @ldap_add($_SESSION['ldap']->server(), $new_dn, $ou);
@@ -116,7 +116,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	// ask if user is sure to delete
 	elseif (isset($_POST['deleteOU'])) {
 		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", array(""));
+		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", [""]);
 		if ($sr === false) {
 			$error = _("OU is not empty or invalid!");
 		}
@@ -138,7 +138,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$container->addVerticalSpacer('1rem');
 				$buttonGroup = new htmlGroup();
 				$deleteButton = new htmlButton('sure', _("Delete"));
-				$deleteButton->setCSSClasses(array('lam-danger'));
+				$deleteButton->setCSSClasses(['lam-danger']);
 				$buttonGroup->addElement($deleteButton);
 				$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 				$buttonGroup->addElement(new htmlButton('abort', _("Cancel")));
@@ -146,7 +146,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$container->add(new htmlHiddenInput('deleteOU', 'submit'), 12);
 				$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']), 12);
 				addSecurityTokenToMetaHTML($container);
-				parseHtml(null, $container, array(), false, 'user');
+				parseHtml(null, $container, [], false, 'user');
 				echo "</form>";
 				echo '</div>';
 				include '../../lib/adminFooter.inc';
@@ -188,7 +188,7 @@ function display_main(?string $message, ?string $error): void {
 
 	$typeManager = new TypeManager();
 	$typeList = $typeManager->getConfiguredTypes();
-	$types = array();
+	$types = [];
 	foreach ($typeList as $type) {
 		if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 			continue;
@@ -196,12 +196,12 @@ function display_main(?string $message, ?string $error): void {
 		$types[$type->getId()] = $type->getAlias();
 	}
 	natcasesort($types);
-	$optionsToDelete = array();
-	$optionsToInsert = array();
+	$optionsToDelete = [];
+	$optionsToInsert = [];
 	foreach ($types as $typeId => $title) {
 		$type = $typeManager->getConfiguredType($typeId);
-		$elements = array();
-		$units = searchLDAP($type->getSuffix(), '(|(objectclass=organizationalunit)(objectclass=organization))', array('dn'));
+		$elements = [];
+		$units = searchLDAP($type->getSuffix(), '(|(objectclass=organizationalunit)(objectclass=organization))', ['dn']);
 		foreach ($units as $unit) {
 			$elements[getAbstractDN($unit['dn'])] = $unit['dn'];
 		}
@@ -211,7 +211,7 @@ function display_main(?string $message, ?string $error): void {
 		}
 		$optionsToInsert[$title] = $elements;
 		if (empty($optionsToInsert[$title])) {
-			$optionsToInsert[$title] = array(getAbstractDN($type->getSuffix()) => $type->getSuffix());
+			$optionsToInsert[$title] = [getAbstractDN($type->getSuffix()) => $type->getSuffix()];
 		}
 		uasort($optionsToInsert[$title], 'compareDn');
 	}
@@ -219,7 +219,7 @@ function display_main(?string $message, ?string $error): void {
 	if (!empty($optionsToInsert)) {
 		// new OU
 		$container->add(new htmlSubTitle(_("New organisational unit")));
-		$parentOUSelect = new htmlResponsiveSelect('parentOU', $optionsToInsert, array(), _('Parent DN'), '601');
+		$parentOUSelect = new htmlResponsiveSelect('parentOU', $optionsToInsert, [], _('Parent DN'), '601');
 		$parentOUSelect->setContainsOptgroups(true);
 		$parentOUSelect->setHasDescriptiveElements(true);
 		$parentOUSelect->setRightToLeftTextDirection(true);
@@ -233,7 +233,7 @@ function display_main(?string $message, ?string $error): void {
 	if (!empty($optionsToDelete)) {
 		// delete OU
 		$container->add(new htmlSubTitle(_("Delete organisational unit")));
-		$deleteableOUSelect = new htmlResponsiveSelect('deleteableOU', $optionsToDelete, array(), _('Organisational unit'), '602');
+		$deleteableOUSelect = new htmlResponsiveSelect('deleteableOU', $optionsToDelete, [], _('Organisational unit'), '602');
 		$deleteableOUSelect->setContainsOptgroups(true);
 		$deleteableOUSelect->setHasDescriptiveElements(true);
 		$deleteableOUSelect->setRightToLeftTextDirection(true);
@@ -244,7 +244,7 @@ function display_main(?string $message, ?string $error): void {
 	}
 
 	addSecurityTokenToMetaHTML($container);
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 	echo "</form>\n";
 	echo '</div>';
 	include __DIR__ . '/../../lib/adminFooter.inc';

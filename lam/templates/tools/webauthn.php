@@ -17,7 +17,7 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2022  Roland Gruber
+  Copyright (C) 2020 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ addNewDevice($container, $webauthnManager);
 $container->addVerticalSpacer('0.5rem');
 $container->add(new htmlHiddenInput('registrationData', ''), 12);
 $errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
-$errorMessageDiv->setCSSClasses(array('hidden'));
+$errorMessageDiv->setCSSClasses(['hidden']);
 $errorMessageDiv->addDataAttribute('button', _('Ok'));
 $errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
 $container->add($errorMessageDiv, 12);
@@ -84,10 +84,10 @@ $registerButton->addDataAttribute('dn', $userDn);
 $registerButton->addDataAttribute('sec_token_value', getSecurityTokenValue());
 $registerButton->addDataAttribute('sec_token_name', getSecurityTokenName());
 $registration = $webauthnManager->getRegistrationObject($userDn, false);
-$registrationJson = json_encode($registration);
+$registrationJson = json_encode($registration, JSON_THROW_ON_ERROR);
 $_SESSION['webauthn_registration'] = $registrationJson;
 $registerButton->addDataAttribute('publickey', $registrationJson);
-$registerButton->setCSSClasses(array('lam-primary'));
+$registerButton->setCSSClasses(['lam-primary']);
 $registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event, false);');
 $buttonGroup->addElement($registerButton);
 $container->add($buttonGroup, 12);
@@ -97,13 +97,13 @@ if (empty($results)) {
 	$container->add(new htmlStatusMessage('INFO', _('No devices found.')), 12);
 }
 else {
-	$titles = array(
+	$titles = [
 		_('Name'),
 		_('Save'),
 		_('Registration'),
 		_('Last use'),
 		_('Delete')
-	);
+	];
 	$data = array();
 	$id = 0;
 	foreach ($results as $result) {
@@ -121,18 +121,18 @@ else {
 		$saveButton->addDataAttribute('nameelement', 'deviceName_' . $id);
 		$saveButton->setOnClick('window.lam.webauthn.updateOwnDeviceName(event, false);');
 		$nameField = new htmlInputField('deviceName_' . $id, $result['name']);
-		$nameFieldClasses = array('maxwidth20');
+		$nameFieldClasses = ['maxwidth20'];
 		if (!empty($_GET['updated']) && ($_GET['updated'] === $credentialId)) {
 			$nameFieldClasses[] = 'markPass';
 		}
 		$nameField->setCSSClasses($nameFieldClasses);
-		$data[] = array(
+		$data[] = [
 			$nameField,
 			$saveButton,
 			new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
 			new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),
 			$delButton
-		);
+		];
 		$id++;
 	}
 	$table = new htmlResponsiveTable($titles, $data);
@@ -142,12 +142,12 @@ else {
 }
 $container->addVerticalSpacer('2rem');
 
-$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), array('hidden'));
+$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), ['hidden']);
 $container->add($confirmationDiv, 12);
 
 addSecurityTokenToMetaHTML($container);
 
-parseHtml(null, $container, array(), false, 'user');
+parseHtml(null, $container, [], false, 'user');
 
 echo '</form>';
 echo '</div>';

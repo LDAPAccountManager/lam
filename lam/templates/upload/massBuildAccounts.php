@@ -84,7 +84,7 @@ if (isset($_POST['showldif'])) {
 		unset($account['dn']);
 		$keys = array_keys($account);
 		foreach ($keys as $key) {
-			if (strpos($key, 'INFO.') === 0) {
+			if (str_starts_with($key, 'INFO.')) {
 				continue;
 			}
 			if (is_array($account[$key])) {
@@ -125,8 +125,8 @@ $container = new htmlResponsiveRow();
 $selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// check if input file is well formatted
-	$data = array();  // input values without first row
-	$ids = array();  // <column name> => <column number for $data>
+	$data = [];  // input values without first row
+	$ids = [];  // <column name> => <column number for $data>
 	// get input fields from modules
 	$uploadColumns = getUploadColumns($type, $selectedModules);
 	// read input file
@@ -144,11 +144,11 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		fclose($handle);
 	}
 
-	$errors = array();
+	$errors = [];
 
 	// check if all required columns are present
-	$checkcolumns = array();
-	$columns = array();
+	$checkcolumns = [];
+	$columns = [];
 	foreach ($uploadColumns as $uploadColumn) {
 		$columns = array_merge($columns, $uploadColumns);
 	}
@@ -158,13 +158,13 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$checkcolumns[] = $ids[$column['name']];
 			}
 			else {
-				$errors[] = array(_("A required column is missing in your CSV file."), $column['name']);
+				$errors[] = [_("A required column is missing in your CSV file."), $column['name']];
 			}
 		}
 	}
 
 	// check if all required attributes are given
-	$invalidColumns = array();
+	$invalidColumns = [];
 	$id_names = array_keys($ids);
 	foreach ($checkcolumns as $checkcolumn) {
 		foreach ($data as $dataRow) {
@@ -181,27 +181,27 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		}
 	}
 	foreach ($invalidColumns as $invalidColumn) {
-		$errors[] = array(_("One or more values of the required column \"$invalidColumn\" are missing."), "");
+		$errors[] = [_("One or more values of the required column \"$invalidColumn\" are missing."), ""];
 	}
 
 	// check if values in unique columns are correct
 	foreach ($columns as $column) {
 		if (isset($column['unique']) && ($column['unique'] === true) && isset($ids[$column['name']])) {
 			$colNumber = $ids[$column['name']];
-			$values_given = array();
+			$values_given = [];
 			foreach ($data as $dataRow) {
 				$values_given[] = $dataRow[$colNumber];
 			}
 			$values_unique = array_unique($values_given);
 			if (sizeof($values_given) != sizeof($values_unique)) {
-				$duplicates = array();
+				$duplicates = [];
 				foreach ($values_given as $key => $value) {
 					if (!isset($values_unique[$key]) && ($value !== null)) {
 						$duplicates[] = htmlspecialchars($value);
 					}
 				}
 				$duplicates = array_values(array_unique($duplicates));
-				$errors[] = array(_("This column is defined to include unique entries but duplicates were found:") . ' ' . $column['name'], implode(', ', $duplicates));
+				$errors[] = [_("This column is defined to include unique entries but duplicates were found:") . ' ' . $column['name'], implode(', ', $duplicates)];
 			}
 		}
 	}
@@ -225,7 +225,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				// set DN
 				// check against list of possible RDN attributes
 				if (!in_array($data[$i][$ids['dn_rdn']], $rdnList) || !isset($account[$data[$i][$ids['dn_rdn']]])) {
-					$errors[] = array(_('Account %s:') . ' dn_rdn ' . $account[$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
+					$errors[] = [_('Account %s:') . ' dn_rdn ' . $account[$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), [$i]];
 				}
 				else {
 					$rdnValue = $account[$data[$i][$ids['dn_rdn']]];
@@ -255,9 +255,9 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			else {
 				// store accounts in session
 				$_SESSION['mass_accounts'] = lamEncrypt(serialize($accounts));
-				$_SESSION['mass_errors'] = array();
-				$_SESSION['mass_failed'] = array();
-				$_SESSION['mass_postActions'] = array();
+				$_SESSION['mass_errors'] = [];
+				$_SESSION['mass_failed'] = [];
+				$_SESSION['mass_postActions'] = [];
 				$_SESSION['mass_data'] = lamEncrypt(serialize($data));
 				$_SESSION['mass_ids'] = $ids;
 				$_SESSION['mass_typeId'] = $type->getId();
@@ -281,10 +281,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$container->addVerticalSpacer('3rem');
 				$formRow = new htmlResponsiveRow();
 				$uploadButton = new htmlButton('upload', _("Upload accounts to LDAP"));
-				$uploadButton->setCSSClasses(array('lam-primary'));
+				$uploadButton->setCSSClasses(['lam-primary']);
 				$formRow->addLabel($uploadButton);
 				$ldifButton = new htmlButton('showldif', _("Show LDIF file"));
-				$ldifButton->setCSSClasses(array('lam-secondary'));
+				$ldifButton->setCSSClasses(['lam-secondary']);
 				$formRow->addField($ldifButton);
 				addSecurityTokenToMetaHTML($formRow);
 				$container->add(new htmlForm('uploadform', 'massBuildAccounts.php', $formRow));
@@ -305,7 +305,7 @@ else {
 	massPrintBackButton($type->getId(), $selectedModules, $container);
 }
 
-parseHtml(null, $container, array(), false, $type->getScope());
+parseHtml(null, $container, [], false, $type->getScope());
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

@@ -140,22 +140,22 @@ function printImportTabContent(): void {
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Import")), 12);
-	$sources = array(
+	$sources = [
 		_('Text input') => 'text',
 		_('File') => 'file',
-	);
+	];
 	$sourceRadio = new htmlResponsiveRadio(_('Source'), 'source', $sources, 'text');
 	$sourceRadio->setTableRowsToHide(
-		array(
+		[
 			'file' => array('text'),
 			'text' => array('file')
-		)
+		]
 	);
 	$sourceRadio->setTableRowsToShow(
-		array(
+		[
 			'text' => array('text'),
 			'file' => array('file')
-		)
+		]
 	);
 	$container->add($sourceRadio, 12);
 	$container->addVerticalSpacer('1rem');
@@ -169,7 +169,7 @@ function printImportTabContent(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 	echo "</form>\n";
 }
 
@@ -183,7 +183,7 @@ function printImportTabProcessing(): void {
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
-		parseHtml(null, $container, array(), false, 'user');
+		parseHtml(null, $container, [], false, 'user');
 		printImportTabContent();
 		return;
 	}
@@ -192,8 +192,8 @@ function printImportTabProcessing(): void {
 	$container->add(new htmlTitle(_("Import")), 12);
 
 	$container->add(new htmlDiv('statusImportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))), 12);
-	$container->add(new htmlDiv('statusImportDone', new htmlOutputText(_('Status') . ': ' . _('done')), array('hidden')), 12);
-	$container->add(new htmlDiv('statusImportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), array('hidden')), 12);
+	$container->add(new htmlDiv('statusImportDone', new htmlOutputText(_('Status') . ': ' . _('done')), ['hidden']), 12);
+	$container->add(new htmlDiv('statusImportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), ['hidden']), 12);
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlProgressbar('progressbarImport'));
 	$container->addVerticalSpacer('3rem');
@@ -212,7 +212,7 @@ function printImportTabProcessing(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 	echo "</form>\n";
 }
 
@@ -231,7 +231,7 @@ function checkImportData(): void {
 		if ($handle === false) {
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
-		$ldif = fread($handle, 100000000);
+		$ldif = fread($handle, 100_000_000);
 		if ($ldif === false) {
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
@@ -267,11 +267,11 @@ function printExportTabContent(): void {
 	$baseDnField->showDnSelection();
 	$container->add($baseDnField, 12);
 
-	$searchScopes = array(
+	$searchScopes = [
 		_('Base (base dn only)') => 'base',
 		_('One (one level beneath base)') => 'one',
 		_('Sub (entire subtree)') => 'sub'
-	);
+	];
 	$searchScopeSelect = new htmlResponsiveSelect('searchScope', $searchScopes, array('sub'), _('Search scope'));
 	$searchScopeSelect->setHasDescriptiveElements(true);
 	$searchScopeSelect->setSortElements(false);
@@ -281,19 +281,19 @@ function printExportTabContent(): void {
 	$container->add(new htmlResponsiveInputCheckbox('includeSystem', false, _('Include system attributes'), '754'), 12);
 	$container->add(new htmlResponsiveInputCheckbox('saveAsFile', false, _('Save as file')), 12);
 
-	$formats = array(
+	$formats = [
 		'CSV' => 'csv',
 		'LDIF' => 'ldif'
-	);
+	];
 	$formatSelect = new htmlResponsiveSelect('format', $formats, array('ldif'), _('Export format'));
 	$formatSelect->setHasDescriptiveElements(true);
 	$formatSelect->setSortElements(false);
 	$container->add($formatSelect, 12);
 
-	$endings = array(
+	$endings = [
 		'Windows' => 'windows',
 		'Unix' => 'unix'
-	);
+	];
 	$endingsSelect = new htmlResponsiveSelect('ending', $endings, array('unix'), _('End of line'));
 	$endingsSelect->setHasDescriptiveElements(true);
 	$endingsSelect->setSortElements(false);
@@ -305,7 +305,7 @@ function printExportTabContent(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 	echo "</form>\n";
 }
 
@@ -369,7 +369,7 @@ function printExportTabProcessing(): void {
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
-		parseHtml(null, $container, array(), false, 'user');
+		parseHtml(null, $container, [], false, 'user');
 		printExportTabContent();
 		return;
 	}
@@ -387,8 +387,8 @@ function printExportTabProcessing(): void {
 	$container->add(new htmlHiddenInput('saveAsFile', isset($_POST['saveAsFile']) && ($_POST['saveAsFile'] === 'on') ? 'true' : 'false'), 12);
 
 	$container->add(new htmlDiv('statusExportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))), 12);
-	$container->add(new htmlDiv('statusExportDone', new htmlOutputText(_('Status') . ': ' . _('done')), array('hidden')), 12);
-	$container->add(new htmlDiv('statusExportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), array('hidden')), 12);
+	$container->add(new htmlDiv('statusExportDone', new htmlOutputText(_('Status') . ': ' . _('done')), ['hidden']), 12);
+	$container->add(new htmlDiv('statusExportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), ['hidden']), 12);
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlProgressbar('progressbarExport'));
 	$container->addVerticalSpacer('3rem');
@@ -409,7 +409,7 @@ function printExportTabProcessing(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 	echo "</form>\n";
 }
 

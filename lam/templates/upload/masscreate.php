@@ -23,7 +23,7 @@ use \moduleCache;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2022  Roland Gruber
+  Copyright (C) 2004 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -118,10 +118,10 @@ if (isset($_POST['type'])) {
 	$typeId = htmlspecialchars($_POST['type']);
 	$type = $typeManager->getConfiguredType($typeId);
 	// get selected modules
-	$selectedModules = array();
+	$selectedModules = [];
 	$checkedBoxes = array_keys($_POST, 'on');
 	foreach ($checkedBoxes as $checkedBox) {
-		if (strpos($checkedBox, $typeId . '___') === 0) {
+		if (str_starts_with($checkedBox, $typeId . '___')) {
 			$selectedModules[] = substr($checkedBox, strlen($typeId) + strlen('___'));
 		}
 	}
@@ -154,7 +154,7 @@ $row->add(new htmlOutputText(_("Here you can create multiple accounts by providi
 $row->addVerticalSpacer('4rem');
 
 // account type
-$typeList = array();
+$typeList = [];
 foreach ($types as $type) {
 	$typeList[$type->getAlias()] = $type->getId();
 }
@@ -165,7 +165,7 @@ if (isset($_REQUEST['type'])) {
 elseif (!empty($types)) {
 	$selectedType = $types[0]->getId();
 }
-$typeSelect = new htmlResponsiveSelect('type', $typeList, array($selectedType), _("Account type"));
+$typeSelect = new htmlResponsiveSelect('type', $typeList, [$selectedType], _("Account type"));
 $typeSelect->setHasDescriptiveElements(true);
 $typeSelect->setOnchangeEvent('changeVisibleModules(this);');
 $row->add($typeSelect, 12);
@@ -175,7 +175,7 @@ $row->add(new htmlSubTitle(_('Selected modules')), 12);
 
 // module selection
 foreach ($types as $type) {
-	$divClasses = array('typeOptions');
+	$divClasses = ['typeOptions'];
 	if ($selectedType != $type->getId()) {
 		$divClasses[] = 'hidden';
 	}
@@ -185,11 +185,11 @@ foreach ($types as $type) {
 		$moduleGroup = new htmlGroup();
 		$module = moduleCache::getModule($moduleName, $type->getScope());
 		$iconImage = $module->getIcon();
-		if (!is_null($iconImage) && !(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
+		if (!is_null($iconImage) && !(str_starts_with($iconImage, 'http')) && !(str_starts_with($iconImage, '/'))) {
 			$iconImage = '../../graphics/' . $iconImage;
 		}
 		$image = new htmlImage($iconImage, '32px', '32px');
-		$image->setCSSClasses(array('margin3'));
+		$image->setCSSClasses(['margin3']);
 		$moduleGroup->addElement($image);
 		$enabled = true;
 		if (is_base_module($moduleName, $type->getScope())) {
@@ -233,12 +233,12 @@ foreach ($types as $type) {
 $row->addVerticalSpacer('3rem');
 if (!empty($types)) {
     $okButton = new htmlButton('submit', _('Ok'));
-    $okButton->setCSSClasses(array('lam-primary'));
+    $okButton->setCSSClasses(['lam-primary']);
 	$row->add($okButton);
 }
 
 addSecurityTokenToMetaHTML($row);
-parseHtml(null, $row, array(), false, 'user');
+parseHtml(null, $row, [], false, 'user');
 
 ?>
 <script type="text/javascript">
@@ -268,7 +268,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 
 	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
 	$row = new htmlResponsiveRow();
-	$row->setCSSClasses(array('maxrow'));
+	$row->setCSSClasses(['maxrow']);
 
 	// title
 	$row->add(new htmlTitle(_("File upload")), 12);
@@ -283,7 +283,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	// upload elements
 	$row->addLabel(new htmlOutputText(_("Download sample CSV file")));
 	$saveLink = new htmlLink('', 'masscreate.php?getCSV=1', '../../graphics/save.svg');
-	$saveLink->setCSSClasses(array('icon'));
+	$saveLink->setCSSClasses(['icon']);
 	$row->addField($saveLink);
 	$row->addVerticalSpacer('3rem');
 	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file"), null, true), 12);
@@ -299,19 +299,19 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 			$createPDF = true;
 		}
 		$pdfCheckbox = new htmlResponsiveInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
-		$pdfCheckbox->setTableRowsToShow(array('pdfStructure', 'pdf_font'));
+		$pdfCheckbox->setTableRowsToShow(['pdfStructure', 'pdf_font']);
 		$row->add($pdfCheckbox);
-		$pdfSelected = array();
+		$pdfSelected = [];
 		if (isset($_POST['pdfStructure'])) {
-			$pdfSelected = array($_POST['pdfStructure']);
+			$pdfSelected = [$_POST['pdfStructure']];
 		}
 		else if (in_array('default', $pdfStructures)) {
-			$pdfSelected = array('default');
+			$pdfSelected = ['default'];
 		}
 		$row->add(new htmlResponsiveSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')));
 		$fonts = \LAM\PDF\getPdfFonts();
-		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, array(), _('Font'), '411');
-		$fontSelection->setCSSClasses(array('lam-save-selection'));
+		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, [], _('Font'), '411');
+		$fontSelection->setCSSClasses(['lam-save-selection']);
 		$fontSelection->setHasDescriptiveElements(true);
 		$fontSelection->setSortElements(false);
 		$row->add($fontSelection, 12);
@@ -319,7 +319,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$row->addVerticalSpacer('1rem');
 
 	$uploadButton = new htmlButton('submitfile', _('Upload file and create accounts'));
-	$uploadButton->setCSSClasses(array('lam-primary'));
+	$uploadButton->setCSSClasses(['lam-primary']);
 	$row->addLabel($uploadButton);
 	$row->addField(new htmlOutputText('&nbsp;', false));
 	$row->addVerticalSpacer('2rem');
@@ -329,18 +329,18 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	// DN options
 	$dnTitle = new htmlSubTitle(_("DN settings"), '../../graphics/logo32.png');
 	$row->add($dnTitle, 12);
-	$titles = array(_('Name'), _("Identifier"), _("Example value"), _("Default value"), _("Possible values"));
-	$data = array();
+	$titles = [_('Name'), _("Identifier"), _("Example value"), _("Default value"), _("Possible values")];
+	$data = [];
 	// DN suffix
-	$dnSuffixRowCells = array();
+	$dnSuffixRowCells = [];
 	$nameGroup = new htmlGroup();
 	$help = new htmlHelpLink('361');
-	$help->setCSSClasses(array('hide-on-mobile'));
+	$help->setCSSClasses(['hide-on-mobile']);
 	$nameGroup->addElement($help);
 	$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
 	$nameGroup->addElement(new htmlOutputText(_("DN suffix")));
 	$help = new htmlHelpLink('361');
-	$help->setCSSClasses(array('hide-on-tablet'));
+	$help->setCSSClasses(['hide-on-tablet']);
 	$nameGroup->addElement($help);
 	$dnSuffixRowCells[] = $nameGroup;
 	$dnSuffixRowCells[] = new htmlOutputText('dn_suffix');
@@ -349,17 +349,17 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$dnSuffixRowCells[] = new htmlOutputText('');
 	$data[] = $dnSuffixRowCells;
 	// RDN
-	$dnRDNRowCells = array();
+	$dnRDNRowCells = [];
 	$rdnText = new htmlOutputText(_("RDN identifier"));
 	$rdnText->setMarkAsRequired(true);
 	$nameGroup = new htmlGroup();
 	$help = new htmlHelpLink('301');
-	$help->setCSSClasses(array('hide-on-mobile'));
+	$help->setCSSClasses(['hide-on-mobile']);
 	$nameGroup->addElement($help);
 	$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
 	$nameGroup->addElement($rdnText);
 	$help = new htmlHelpLink('301');
-	$help->setCSSClasses(array('hide-on-tablet'));
+	$help->setCSSClasses(['hide-on-tablet']);
 	$nameGroup->addElement($help);
 	$dnRDNRowCells[] = $nameGroup;
 	$dnRDNRowCells[] = new htmlOutputText('dn_rdn');
@@ -370,15 +370,15 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$dnRDNRowCells[] = new htmlHelpLink('301');
 	$data[] = $dnRDNRowCells;
 	// replace existing
-	$replaceRowCells = array();
+	$replaceRowCells = [];
 	$nameGroup = new htmlGroup();
 	$help = new htmlHelpLink('302');
-	$help->setCSSClasses(array('hide-on-mobile'));
+	$help->setCSSClasses(['hide-on-mobile']);
 	$nameGroup->addElement($help);
 	$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
 	$nameGroup->addElement(new htmlOutputText(_("Overwrite")));
 	$help = new htmlHelpLink('302');
-	$help->setCSSClasses(array('hide-on-tablet'));
+	$help->setCSSClasses(['hide-on-tablet']);
 	$nameGroup->addElement($help);
 	$replaceRowCells[] = $nameGroup;
 	$replaceRowCells[] = new htmlOutputText('overwrite');
@@ -388,7 +388,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$data[] = $replaceRowCells;
 
 	$table = new htmlResponsiveTable($titles, $data);
-	$table->setCSSClasses(array('alternating-color'));
+	$table->setCSSClasses(['alternating-color']);
 	$row->add($table, 12);
 
 	// module options
@@ -397,11 +397,11 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 		if (sizeof($columns[$moduleName]) < 1) {
 			continue;
 		}
-		$data = array();
+		$data = [];
 		$row->addVerticalSpacer('2rem');
 		$module = moduleCache::getModule($moduleName, $scope);
 		$icon = $module->getIcon();
-		if (!empty($icon) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
+		if (!empty($icon) && !(str_starts_with($icon, 'http')) && !(str_starts_with($icon, '/'))) {
 			$icon = '../../graphics/' . $icon;
 		}
 		$moduleTitle = new htmlSubTitle(getModuleAlias($moduleName, $scope), $icon);
@@ -412,17 +412,17 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 			if (isset($column['required']) && ($column['required'] === true)) {
 				$required = true;
 			}
-			$rowCells = array();
+			$rowCells = [];
 			$descriptionText = new htmlOutputText($column['description']);
 			$descriptionText->setMarkAsRequired($required);
 			$nameGroup = new htmlGroup();
 			$help = new htmlHelpLink($column['help'], $moduleName, $scope);
-			$help->setCSSClasses(array('hide-on-mobile'));
+			$help->setCSSClasses(['hide-on-mobile']);
 			$nameGroup->addElement($help);
 			$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
 			$nameGroup->addElement($descriptionText);
 			$help = new htmlHelpLink($column['help'], $moduleName, $scope);
-			$help->setCSSClasses(array('hide-on-tablet'));
+			$help->setCSSClasses(['hide-on-tablet']);
 			$nameGroup->addElement($help);
 			$rowCells[] = $nameGroup;
 			$rowCells[] = new htmlOutputText($column['name']);
@@ -446,18 +446,18 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 			$data[] = $rowCells;
 		}
 		$table = new htmlResponsiveTable($titles, $data);
-		$table->setCSSClasses(array('alternating-color'));
+		$table->setCSSClasses(['alternating-color']);
 		$row->add($table, 12);
 	}
 
 	addSecurityTokenToMetaHTML($row);
-	parseHtml(null, $row, array(), false, $scope);
+	parseHtml(null, $row, [], false, $scope);
 
 	echo "</form>\n";
 
 	// build sample CSV
-	$sampleCSV_head = array();
-	$sampleCSV_row = array();
+	$sampleCSV_head = [];
+	$sampleCSV_row = [];
 		// DN attributes
 		$sampleCSV_head[] = "\"dn_suffix\"";
 		$sampleCSV_head[] = "\"dn_rdn\"";
