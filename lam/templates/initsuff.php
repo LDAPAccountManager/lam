@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ if (!empty($_POST)) {
 }
 
 // check if user already pressed button
-$failedDNs = array();
+$failedDNs = [];
 if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	if (isset($_POST['add_suff'])) {
 		$newSuffixes = $_POST['new_suff'];
@@ -61,7 +61,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 		// add entries
 		foreach ($newSuffixes as $newSuffix) {
 			// check if entry is already present
-			$info = @ldap_read($_SESSION['ldap']->server(), $newSuffix, "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$info = @ldap_read($_SESSION['ldap']->server(), $newSuffix, "objectclass=*", ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
 			$res = false;
 			if ($info !== false) {
 				$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
@@ -76,7 +76,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			array_shift($tmp);
 			$end = implode(",", $tmp);
 			if ($name[0] != "ou") {  // add root entry
-				$attr = array();
+				$attr = [];
 				$attr[$name[0]] = $name[1];
 				$attr['objectClass'] = 'organization';
 				$dn = $suff;
@@ -87,7 +87,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			}
 			else {  // add organizational unit
 				$name = $name[1];
-				$attr = array();
+				$attr = [];
 				$attr['objectClass'] = "organizationalunit";
 				$attr['ou'] = $name;
 				$dn = $suff;
@@ -95,7 +95,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 					// check if we have to add parent entries
 					if (ldap_errno($_SESSION['ldap']->server()) == 32) {
 						$dnParts = explode(",", $suff);
-						$subsuffs = array();
+						$subsuffs = [];
 						// make list of subsuffixes
 						$dnPartsCount = sizeof($dnParts);
 						for ($k = 0; $k < $dnPartsCount; $k++) {
@@ -112,7 +112,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						$subsuffCount = sizeof($subsuffs);
 						for ($k = $subsuffCount - 1; $k >= 0; $k--) {
 							// check if subsuffix is present
-							$info = @ldap_read($_SESSION['ldap']->server(), $subsuffs[$k], "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+							$info = @ldap_read($_SESSION['ldap']->server(), $subsuffs[$k], "objectclass=*", ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
 							$res = false;
 							if ($info !== false) {
 								$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
@@ -121,7 +121,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 								$suffarray = explode(",", $subsuffs[$k]);
 								$headarray = explode("=", $suffarray[0]);
 								if ($headarray[0] == "ou") {  // add ou entry
-									$attr = array();
+									$attr = [];
 									$attr['objectClass'] = 'organizationalunit';
 									$attr['ou'] = $headarray[1];
 									$dn = $subsuffs[$k];
@@ -131,7 +131,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 									}
 								}
 								else {  // add root entry
-									$attr = array();
+									$attr = [];
 									$attr['objectClass'][] = 'organization';
 									$attr[$headarray[0]] = $headarray[1];
 									if ($headarray[0] == "dc") {
@@ -204,7 +204,7 @@ include __DIR__ . '/../lib/adminHeader.inc';
 	$container->add($buttonContainer, 12);
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 
 	echo "</form><br>\n";
 	echo "</div>\n";

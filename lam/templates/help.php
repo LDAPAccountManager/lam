@@ -4,7 +4,7 @@ namespace LAM\HELP;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2022  Roland Gruber
+                2008 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ if (!isset($_GET['HelpNumber'])) {
 	exit;
 }
 
-$helpEntry = array();
+$helpEntry = [];
 
 // module help
 if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
@@ -132,7 +132,7 @@ if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] 
 		$helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
 	}
 	if (!$helpEntry) {
-		$variables = array(htmlspecialchars($_GET['HelpNumber']), htmlspecialchars($moduleName));
+		$variables = [htmlspecialchars($_GET['HelpNumber']), htmlspecialchars($moduleName)];
 		$errorMessage = _("Sorry the help id '%s' is not available for the module '%s'.");
 		echoHTMLHead();
 		statusMessage("ERROR", "", $errorMessage, $variables);
@@ -144,7 +144,7 @@ if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] 
 else {
 	/* If submitted help number is not in help/help.inc print error message */
 	if (!array_key_exists($_GET['HelpNumber'], $helpArray)) {
-		$variables = array(htmlspecialchars($_GET['HelpNumber']));
+		$variables = [htmlspecialchars($_GET['HelpNumber'])];
 		$errorMessage = _("Sorry this help number ({bold}%s{endbold}) is not available.");
 		echoHTMLHead();
 		statusMessage("ERROR", "", $errorMessage, $variables);

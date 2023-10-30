@@ -11,7 +11,7 @@ use \htmlStatusMessage;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2022  Roland Gruber
+	Copyright (C) 2007 - 2023  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ if (!empty($_POST)) {
 
 $sessionAccountPrefix = 'deleteContainer';
 foreach ($_SESSION as $key => $value) {
-	if (strpos($key, $sessionAccountPrefix) === 0) {
+	if (str_starts_with($key, $sessionAccountPrefix)) {
 		unset($_SESSION[$key]);
 		logNewMessage(LOG_NOTICE, "del " . $key);
 	}
@@ -101,7 +101,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		die();
 	}
 	// Create account list
-    $users = array();
+    $users = [];
 	foreach ($_SESSION['delete_dn'] as $dn) {
 		$start = strpos ($dn, "=")+1;
 		$end = strpos ($dn, ",");
@@ -137,26 +137,26 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	addSecurityTokenToMetaHTML($container);
 	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
 	$container->addVerticalSpacer('1rem');
-	parseHtml(null, $container, array(), false, $type->getScope());
+	parseHtml(null, $container, [], false, $type->getScope());
 	// Print delete rows from modules
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
-	$values = array();
+	$values = [];
 	foreach ($modules as $module) {
 		$module = \moduleCache::getModule($module, $type->getScope());
-		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $type->getScope());
+		parseHtml($module::class, $module->display_html_delete(), $values, true, $type->getScope());
 	}
 	$buttonContainer = new htmlResponsiveRow();
 	$buttonContainer->addVerticalSpacer('1rem');
 	$buttonGroup = new htmlGroup();
 	$delButton = new htmlButton('delete', _('Delete'));
-	$delButton->setCSSClasses(array('lam-danger'));
+	$delButton->setCSSClasses(['lam-danger']);
 	$buttonGroup->addElement($delButton);
 	$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 	$cancelButton = new htmlButton('cancel', _('Cancel'));
 	$buttonGroup->addElement($cancelButton);
 	$buttonContainer->add($buttonGroup, 12);
 	$buttonContainer->addVerticalSpacer('1rem');
-	parseHtml(null, $buttonContainer, array(), false, $type->getScope());
+	parseHtml(null, $buttonContainer, [], false, $type->getScope());
 	echo "</form>\n";
 	echo "</div>\n";
 	include '../lib/adminFooter.inc';
@@ -194,7 +194,7 @@ if (isset($_POST['delete'])) {
 	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
 	// Delete dns
 	$allOk = true;
-	$allErrors = array();
+	$allErrors = [];
 	foreach ($_SESSION['delete_dn'] as $deleteDN) {
 		// Set to true if an real error has happened
 		$stopProcessing = false;
@@ -203,8 +203,8 @@ if (isset($_POST['delete'])) {
 		// get commands and changes of each attribute
 		$moduleNames = array_keys($_SESSION[$sessionKey]->getAccountModules());
 		$modules = $_SESSION[$sessionKey]->getAccountModules();
-		$attributes = array();
-		$errors = array();
+		$attributes = [];
+		$errors = [];
 		// predelete actions
         foreach ($moduleNames as $singlemodule) {
             $success = true;
@@ -258,7 +258,7 @@ if (isset($_POST['delete'])) {
 					if (isset($attributes[$dn]['modify'])) {
 						$success = ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
 						if (!$success) {
-							$errors[] = array ('ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+							$errors[] = ['ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;
 							$allOk = false;
 						}
@@ -267,7 +267,7 @@ if (isset($_POST['delete'])) {
 					if (isset($attributes[$dn]['add']) && !$stopProcessing) {
 						$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, $attributes[$dn]['add']);
 						if (!$success) {
-							$errors[] = array ('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+							$errors[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;
 							$allOk = false;
 						}
@@ -276,7 +276,7 @@ if (isset($_POST['delete'])) {
 					if (isset($attributes[$dn]['remove']) && !$stopProcessing) {
 						$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, $attributes[$dn]['remove']);
 						if (!$success) {
-							$errors[] = array ('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+							$errors[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;
 							$allOk = false;
 						}
@@ -322,13 +322,13 @@ if (isset($_POST['delete'])) {
 				$container->add(htmlStatusMessage::fromParamArray($error), 12);
 			}
 		}
-		$allErrors = array_merge($allErrors, $errors);
+		$allErrors = [...$allErrors, ...$errors];
 	}
 	$container->addVerticalSpacer('2rem');
 	$buttonName = $allOk ? 'cancelAllOk' : 'cancel';
 	$container->add(new htmlButton($buttonName, _('Back to list')), 12);
 	$container->addVerticalSpacer('1rem');
-	parseHtml(null, $container, array(), false, $type->getScope());
+	parseHtml(null, $container, [], false, $type->getScope());
 	echo "</div>\n";
 	echo "</form>\n";
 	?>
@@ -354,6 +354,6 @@ if (isset($_POST['delete'])) {
 * @return integer number of children
 */
 function getChildCount($dn) {
-	$entries = searchLDAP($dn, 'objectClass=*', array('dn'));
+	$entries = searchLDAP($dn, 'objectClass=*', ['dn']);
 	return (sizeof($entries) - 1);
 }

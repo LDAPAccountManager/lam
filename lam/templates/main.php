@@ -9,7 +9,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ $conf = $_SESSION['config'];
 // check if user password is not expired
 if (!$conf->isHidePasswordPromptForExpiredPasswords()) {
 	$userDn = $_SESSION['ldap']->getUserName();
-	$userData = ldapGetDN($userDn, array('*', '+', 'pwdReset', 'passwordExpirationTime'));
+	$userData = ldapGetDN($userDn, ['*', '+', 'pwdReset', 'passwordExpirationTime']);
 	$ldapErrorCode = ldap_errno($_SESSION['ldap']->server());
 	logNewMessage(LOG_DEBUG, 'Expired password check: Reading ' . $userDn . ' with return code ' . $ldapErrorCode . ' and data: ' . print_r($userData, true));
 	if (($ldapErrorCode != 32) && ($ldapErrorCode != 34)) {
@@ -73,12 +73,12 @@ if (!$conf->isHidePasswordPromptForExpiredPasswords()) {
 }
 
 // check if all suffixes in conf-file exist
-$new_suffs = array();
+$new_suffs = [];
 // get list of active types
 $typeManager = new TypeManager();
 $types = $typeManager->getConfiguredTypes();
 foreach ($types as $type) {
-	$info = @ldap_read($_SESSION['ldap']->server(), $type->getSuffix(), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+	$info = @ldap_read($_SESSION['ldap']->server(), $type->getSuffix(), "(objectClass=*)", ['objectClass'], 0, 0, 0, LDAP_DEREF_NEVER);
 	if (($info === false) && !in_array($type->getSuffix(), $new_suffs)) {
 		$new_suffs[] = $type->getSuffix();
 		continue;

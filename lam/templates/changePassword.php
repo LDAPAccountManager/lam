@@ -11,7 +11,7 @@ use htmlStatusMessage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2022  Roland Gruber
+  Copyright (C) 2020 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ if (isset($_POST['changePassword'])) {
 	}
 	// check password strength
 	$userDn = $_SESSION['ldap']->getUserName();
-	$additionalAttrs = array();
+	$additionalAttrs = [];
 	$rdnAttr = extractRDNAttribute($userDn);
 	$userName = null;
 	if ($rdnAttr === 'uid') {
@@ -139,7 +139,7 @@ function printContent($message = null, $showPasswordInputs = true): void {
 		addSecurityTokenToMetaHTML($container);
 	}
 
-	parseHtml(null, $container, array(), false, 'user');
+	parseHtml(null, $container, [], false, 'user');
 
 	echo "</form><br>\n";
 	echo "</div>\n";

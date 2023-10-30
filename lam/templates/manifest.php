@@ -3,7 +3,7 @@ namespace LAM\PWA;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2022  Roland Gruber
+  Copyright (C) 2019 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@ if (!headers_sent()) {
 }
 
 $baseUrl = getCallingURL();
-if (strpos($baseUrl, '/templates/manifest.php') !== false) {
+if (str_contains($baseUrl, '/templates/manifest.php')) {
 	$baseUrl = substr($baseUrl, 0, strpos($baseUrl, '/templates/manifest.php'));
-	$urlMatches = array();
+	$urlMatches = [];
 	if (preg_match('/http(s)?:\\/\\/[^\\/]+(\\/.*)$/m', $baseUrl, $urlMatches)) {
 		$baseUrl = htmlspecialchars($urlMatches[2]);
 	}

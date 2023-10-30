@@ -69,7 +69,7 @@ catch (Exception $e) {
 	logNewMessage(LOG_ERR, 'Unable to get 2-factor serials for ' . $user . ' ' . $e->getMessage());
 	printHeader();
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication.") . '", "", "' . _('Ok') . '", "login.php")');
-	parseHtml(null, $scriptTag, array(), false, null);
+	parseHtml(null, $scriptTag, [], false, null);
 	printFooter();
 	die();
 }
@@ -95,7 +95,7 @@ if (empty($serials) && $config->getTwoFactorAuthenticationOptional()) {
 if (empty($serials)) {
     printHeader();
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication because no tokens were found.") . '", "", "' . _('Ok') . '", "login.php")');
-	parseHtml(null, $scriptTag, array(), false, null);
+	parseHtml(null, $scriptTag, [], false, null);
 	printFooter();
 	die();
 }
@@ -104,8 +104,8 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) // WebAuthn
     || (isset($_GET['state']) && isset($_GET['code'])) // Okta
 	|| (isset($_GET['state']) && isset($_GET['duo_code'])) // Duo
     || (isset($_GET['session_state']) && isset($_GET['redirect_uri']))) { // OpenID
-	$twoFactorInput = isset($_POST['2factor']) ? $_POST['2factor'] : null;
-	$serial = isset($_POST['serial']) ? $_POST['serial'] : null;
+	$twoFactorInput = $_POST['2factor'] ?? null;
+	$serial = $_POST['serial'] ?? null;
 	if (!$provider->hasCustomInputForm() && (empty($twoFactorInput) || !in_array($serial, $serials))) {
 		$errorMessage = sprintf(_('Please enter "%s".'), $twoFactorLabel);
 		header("HTTP/1.1 403 Forbidden");
@@ -216,23 +216,23 @@ echo $config->getTwoFactorAuthenticationCaption();
 	$row->add(new htmlSpacer('1em', '1em'));
     if ($provider->supportsToRememberDevice()) {
         $remember = new htmlResponsiveInputCheckbox('rememberDevice', false, _('Remember device'), '560');
-        $remember->setCSSClasses(array('lam-save-selection'));
+        $remember->setCSSClasses(['lam-save-selection']);
         $row->add($remember);
         $row->add(new htmlSpacer('0.5em', '0.5em'));
     }
 	if ($provider->isShowSubmitButton()) {
 		$submit = new htmlButton('submit', _("Submit"));
-		$submit->setCSSClasses(array('fullwidth'));
+		$submit->setCSSClasses(['fullwidth']);
 		$row->add($submit, 12, 12, 12, 'fullwidth');
 		$row->add(new htmlSpacer('0.5em', '0.5em'));
 	}
 	$logout = new htmlButton('logout', _("Cancel"));
-	$logout->setCSSClasses(array('fullwidth'));
+	$logout->setCSSClasses(['fullwidth']);
 	$row->add($logout);
 	$group->addElement($row);
 
 	addSecurityTokenToMetaHTML($group);
-	parseHtml(null, $group, array(), false, 'user');
+	parseHtml(null, $group, [], false, 'user');
 
 ?>
 	</div>
