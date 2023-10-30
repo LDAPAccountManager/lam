@@ -104,7 +104,7 @@ else {
 		_('Last use'),
 		_('Delete')
 	];
-	$data = array();
+	$data = [];
 	$id = 0;
 	foreach ($results as $result) {
 		$credentialId = $result['credentialId'];

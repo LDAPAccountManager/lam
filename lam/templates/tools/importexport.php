@@ -147,14 +147,14 @@ function printImportTabContent(): void {
 	$sourceRadio = new htmlResponsiveRadio(_('Source'), 'source', $sources, 'text');
 	$sourceRadio->setTableRowsToHide(
 		[
-			'file' => array('text'),
-			'text' => array('file')
+			'file' => ['text'],
+			'text' => ['file']
 		]
 	);
 	$sourceRadio->setTableRowsToShow(
 		[
-			'text' => array('text'),
-			'file' => array('file')
+			'text' => ['text'],
+			'file' => ['file']
 		]
 	);
 	$container->add($sourceRadio, 12);
@@ -272,7 +272,7 @@ function printExportTabContent(): void {
 		_('One (one level beneath base)') => 'one',
 		_('Sub (entire subtree)') => 'sub'
 	];
-	$searchScopeSelect = new htmlResponsiveSelect('searchScope', $searchScopes, array('sub'), _('Search scope'));
+	$searchScopeSelect = new htmlResponsiveSelect('searchScope', $searchScopes, ['sub'], _('Search scope'));
 	$searchScopeSelect->setHasDescriptiveElements(true);
 	$searchScopeSelect->setSortElements(false);
 	$container->add($searchScopeSelect, 12);
@@ -285,7 +285,7 @@ function printExportTabContent(): void {
 		'CSV' => 'csv',
 		'LDIF' => 'ldif'
 	];
-	$formatSelect = new htmlResponsiveSelect('format', $formats, array('ldif'), _('Export format'));
+	$formatSelect = new htmlResponsiveSelect('format', $formats, ['ldif'], _('Export format'));
 	$formatSelect->setHasDescriptiveElements(true);
 	$formatSelect->setSortElements(false);
 	$container->add($formatSelect, 12);
@@ -294,7 +294,7 @@ function printExportTabContent(): void {
 		'Windows' => 'windows',
 		'Unix' => 'unix'
 	];
-	$endingsSelect = new htmlResponsiveSelect('ending', $endings, array('unix'), _('End of line'));
+	$endingsSelect = new htmlResponsiveSelect('ending', $endings, ['unix'], _('End of line'));
 	$endingsSelect->setHasDescriptiveElements(true);
 	$endingsSelect->setSortElements(false);
 	$container->add($endingsSelect, 12);
