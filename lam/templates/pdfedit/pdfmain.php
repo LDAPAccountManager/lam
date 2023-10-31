@@ -384,7 +384,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$deleteLink->setCSSClasses(['margin3']);
 			$buttonGroup->addElement($deleteLink);
 
-			if (count($configProfiles) > 1) {
+			if (sizeof($configProfiles) > 1) {
 				$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
 				$importLink->setTitle(_('Import PDF structures'));
 				$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import PDF structures") . "', '" .

@@ -269,7 +269,7 @@ foreach ($profileClasses as $profileClass) {
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
 	$deleteLink->setCSSClasses(['margin3']);
 	$buttonGroup->addElement($deleteLink);
-	if (count($configProfiles) > 1) {
+	if (sizeof($configProfiles) > 1) {
 		$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
 		$importLink->setTitle(_('Import profiles'));
 		$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import profiles") . "', '" .
