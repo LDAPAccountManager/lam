@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020 - 2021  Roland Gruber
+ Copyright (C) 2020 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ include_once __DIR__ . '/../../lib/config.inc';
 class LAMCfgMainTest extends TestCase {
 
 	private $conf;
-	private $file;
+	private string $file;
 
 	/**
 	 * Prepares the environment before running a test.
@@ -82,7 +82,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->conf->licenseEmailTo = 'TO';
 		$this->conf->licenseEmailFrom = 'FROM';
 		$this->conf->licenseWarningType = LAMCfgMain::LICENSE_WARNING_ALL;
-		$this->conf->setLicenseLines(array('123', '456'));
+		$this->conf->setLicenseLines(['123', '456']);
 		$this->conf->licenseEmailDateSent = $timestamp;
 
 		$this->conf->save();
@@ -93,7 +93,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals($timestamp, $this->conf->licenseEmailDateSent);
 		$this->assertTrue($this->conf->wasLicenseWarningSent($timestamp));
 		$this->assertEquals(LAMCfgMain::LICENSE_WARNING_ALL, $this->conf->licenseWarningType);
-		$this->assertEquals(array('123', '456'), $this->conf->getLicenseLines());
+		$this->assertEquals(['123', '456'], $this->conf->getLicenseLines());
 	}
 
 	/**
@@ -142,7 +142,7 @@ class LAMCfgMainTest extends TestCase {
 	 * Tests the import.
 	 */
 	public function testImportData() {
-		$importData = array();
+		$importData = [];
 		$importData['passwordMinLower'] = 3;
 		$importData['sessionTimeout'] = 240;
 		$importData['logLevel'] = LOG_ERR;
@@ -163,7 +163,7 @@ class LAMCfgMainTest extends TestCase {
 	 * Tests the import with invalid data.
 	 */
 	public function testImportData_invalid() {
-		$importData = array();
+		$importData = [];
 		$importData['passwordMinLower'] = 3;
 		$importData['sessionTimeout'] = 240;
 		$importData['logLevel'] = LOG_ERR;

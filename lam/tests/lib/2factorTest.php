@@ -36,7 +36,7 @@ require_once 'lam/lib/2factor.inc';
  */
 class TwoFactorTest extends TestCase {
 
-	const USER_NAME = 'uid=test,dc=example,dc=com';
+	public const USER_NAME = 'uid=test,dc=example,dc=com';
 
 	private ?LAMConfig $serverProfile = null;
 

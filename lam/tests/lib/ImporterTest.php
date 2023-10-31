@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2021  Roland Gruber
+  Copyright (C) 2018 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,11 +42,11 @@ class ImporterTest extends TestCase {
 	 * No LDIF at all.
 	 */
 	public function testCompletelyInvalid() {
-		$lines = array(
+		$lines = [
 			"this is no LDIF"
-		);
+		];
 
-		$this->expectException(LAMException::class, 'this is no LDIF');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -56,11 +56,11 @@ class ImporterTest extends TestCase {
 	 * Wrong format version.
 	 */
 	public function testWrongVersion() {
-		$lines = array(
+		$lines = [
 			"version: 3"
-		);
+		];
 
-		$this->expectException(LAMException::class, 'version: 3');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -70,11 +70,11 @@ class ImporterTest extends TestCase {
 	 * Multiple versions.
 	 */
 	public function testMultipleVersions() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"version: 1"
-		);
+		];
 
 		$this->expectException(LAMException::class);
 
@@ -86,10 +86,10 @@ class ImporterTest extends TestCase {
 	 * Data after version.
 	 */
 	public function testDataAfterVersion() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"some: data"
-		);
+		];
 
 		$this->expectException(LAMException::class);
 
@@ -101,13 +101,13 @@ class ImporterTest extends TestCase {
 	 * DN line without any data.
 	 */
 	public function testDnNoData() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com"
-		);
+		];
 
-		$this->expectException(LAMException::class, 'dn: uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -117,13 +117,13 @@ class ImporterTest extends TestCase {
 	 * One complete entry.
 	 */
 	public function testSingleFullEntry() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"objectClass: inetOrgPerson",
 			"uid: test",
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
@@ -134,15 +134,15 @@ class ImporterTest extends TestCase {
 	 * Change entry with invalid changetype.
 	 */
 	public function testChangeInvalidType() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: invalid",
 			"uid: test",
-		);
+		];
 
-		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com - changetype: invalid');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -152,34 +152,34 @@ class ImporterTest extends TestCase {
 	 * Change entry with add changetype.
 	 */
 	public function testChangeAdd() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: add",
 			"uid: test",
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(AddEntryTask::class, get_class($task));
+		$this->assertEquals(AddEntryTask::class, $task::class);
 	}
 
 	/**
 	 * Change entry with modrdn changetype and invalid options.
 	 */
 	public function testChangeModRdnInvalidData() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: modrdn",
 			"uid: test",
-		);
+		];
 
-		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -189,16 +189,16 @@ class ImporterTest extends TestCase {
 	 * Change entry with modrdn changetype and invalid deleteoldrdn.
 	 */
 	public function testChangeModRdnInvalidDeleteoldrdn() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: modrdn",
 			"newrdn: uid1=test",
 			"deleteoldrdn: x",
-		);
+		];
 
-		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -208,35 +208,35 @@ class ImporterTest extends TestCase {
 	 * Change entry with modrdn changetype.
 	 */
 	public function testChangeModRdn() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: modrdn",
 			"newrdn: uid1=test",
 			"deleteoldrdn: 0",
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(RenameEntryTask::class, get_class($task));
+		$this->assertEquals(RenameEntryTask::class, $task::class);
 	}
 
 	/**
 	 * Change entry with delete changetype with extra line.
 	 */
 	public function testChangeDeleteInvalid() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: delete",
 			"uid: test",
-		);
+		];
 
-		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -246,33 +246,33 @@ class ImporterTest extends TestCase {
 	 * Change entry with delete changetype.
 	 */
 	public function testChangeDelete() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: delete",
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(DeleteEntryTask::class, get_class($task));
+		$this->assertEquals(DeleteEntryTask::class, $task::class);
 	}
 
 	/**
 	 * Change entry with modify changetype with invalid operation.
 	 */
 	public function testChangeModifyInvalid() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: modify",
 			"invalid: test",
-		);
+		];
 
-		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -282,7 +282,7 @@ class ImporterTest extends TestCase {
 	 * Change entry with modify changetype and add operation.
 	 */
 	public function testChangeModifyAddInvalid() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
@@ -290,9 +290,9 @@ class ImporterTest extends TestCase {
 			"add: uid",
 			"uid: uid1",
 			"invalid: uid2"
-		);
+		];
 
-		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -302,7 +302,7 @@ class ImporterTest extends TestCase {
 	 * Change entry with modify changetype and add operation.
 	 */
 	public function testChangeModifyAdd() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
@@ -310,17 +310,17 @@ class ImporterTest extends TestCase {
 			"add: uid",
 			"uid: uid1",
 			"uid: uid2"
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(MultiTask::class, get_class($task));
+		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
 		$this->assertEquals(1, sizeof($subtasks));
 		$subTask = $subtasks[0];
-		$this->assertEquals(AddAttributesTask::class, get_class($subTask));
+		$this->assertEquals(AddAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
 		$this->assertEquals(1, sizeof($attributes));
@@ -333,7 +333,7 @@ class ImporterTest extends TestCase {
 	 * Change entry with modify changetype and two add operations.
 	 */
 	public function testChangeModifyAddTwice() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
@@ -345,17 +345,17 @@ class ImporterTest extends TestCase {
 			"add: gn",
 			"gn: name1",
 			"gn: name2"
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(MultiTask::class, get_class($task));
+		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
 		$this->assertEquals(2, sizeof($subtasks));
 		$subTask = $subtasks[0];
-		$this->assertEquals(AddAttributesTask::class, get_class($subTask));
+		$this->assertEquals(AddAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
 		$this->assertEquals(1, sizeof($attributes));
@@ -363,7 +363,7 @@ class ImporterTest extends TestCase {
 		$this->assertTrue(in_array('uid1', $attributes['uid']));
 		$this->assertTrue(in_array('uid2', $attributes['uid']));
 		$subTask = $subtasks[1];
-		$this->assertEquals(AddAttributesTask::class, get_class($subTask));
+		$this->assertEquals(AddAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
 		$this->assertEquals(1, sizeof($attributes));
@@ -376,7 +376,7 @@ class ImporterTest extends TestCase {
 	 * Change entry with modify changetype and delete operation.
 	 */
 	public function testChangeModifyDelete() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
@@ -384,17 +384,17 @@ class ImporterTest extends TestCase {
 			"delete: uid",
 			"uid: uid1",
 			"uid: uid2"
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(MultiTask::class, get_class($task));
+		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
 		$this->assertEquals(1, sizeof($subtasks));
 		$subTask = $subtasks[0];
-		$this->assertEquals(DeleteAttributesTask::class, get_class($subTask));
+		$this->assertEquals(DeleteAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
 		$this->assertEquals(1, sizeof($attributes));
@@ -407,23 +407,23 @@ class ImporterTest extends TestCase {
 	 * Change entry with modify changetype and delete operation.
 	 */
 	public function testChangeModifyDeleteAll() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
 			"changetype: modify",
 			"delete: uid",
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(MultiTask::class, get_class($task));
+		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
 		$this->assertEquals(1, sizeof($subtasks));
 		$subTask = $subtasks[0];
-		$this->assertEquals(DeleteAttributesTask::class, get_class($subTask));
+		$this->assertEquals(DeleteAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
 		$this->assertTrue(empty($attributes));
@@ -433,7 +433,7 @@ class ImporterTest extends TestCase {
 	 * Change entry with modify changetype and replace operation.
 	 */
 	public function testChangeModifyReplace() {
-		$lines = array(
+		$lines = [
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
@@ -441,17 +441,17 @@ class ImporterTest extends TestCase {
 			"replace: uid",
 			"uid: uid1",
 			"uid: uid2",
-		);
+		];
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
-		$this->assertEquals(MultiTask::class, get_class($task));
+		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
 		$this->assertEquals(1, sizeof($subtasks));
 		$subTask = $subtasks[0];
-		$this->assertEquals(ReplaceAttributesTask::class, get_class($subTask));
+		$this->assertEquals(ReplaceAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
 		$this->assertEquals(1, sizeof($attributes));

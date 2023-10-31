@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2021  Roland Gruber
+ Copyright (C) 2018 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -51,8 +51,8 @@ class AccountTest extends TestCase {
 		$this->assertEquals(7215, unformatShortFormatToSeconds('2h15s'));
 		$this->assertEquals(172815, unformatShortFormatToSeconds('2d15s'));
 		$this->assertEquals(173700, unformatShortFormatToSeconds('2d15m'));
-		$this->assertEquals(1209615, unformatShortFormatToSeconds('2w15s'));
-		$this->assertEquals(95817615, unformatShortFormatToSeconds('3y2w15s'));
+		$this->assertEquals(1_209_615, unformatShortFormatToSeconds('2w15s'));
+		$this->assertEquals(95_817_615, unformatShortFormatToSeconds('3y2w15s'));
 	}
 
 	/**
@@ -83,8 +83,8 @@ class AccountTest extends TestCase {
 		$this->assertEquals('2h15s', formatSecondsToShortFormat(7215));
 		$this->assertEquals('2d15s', formatSecondsToShortFormat(172815));
 		$this->assertEquals('2d15m', formatSecondsToShortFormat(173700));
-		$this->assertEquals('2w15s', formatSecondsToShortFormat(1209615));
-		$this->assertEquals('3y2w15s', formatSecondsToShortFormat(95817615));
+		$this->assertEquals('2w15s', formatSecondsToShortFormat(1_209_615));
+		$this->assertEquals('3y2w15s', formatSecondsToShortFormat(95_817_615));
 	}
 
 	/**
@@ -199,7 +199,7 @@ class AccountTest extends TestCase {
 	 */
 	function testPwdHash() {
 		$testPassword = '1234556';
-		$types = array('ARGON2ID', 'SSHA', 'SHA', 'SMD5', 'MD5', 'CRYPT', 'CRYPT-SHA512');
+		$types = ['ARGON2ID', 'SSHA', 'SHA', 'SMD5', 'MD5', 'CRYPT', 'CRYPT-SHA512'];
 		foreach ($types as $type) {
 			$hash = pwd_hash($testPassword, true, $type);
 			$type = getHashType($hash);
@@ -244,7 +244,7 @@ class AccountTest extends TestCase {
 
 	function testGenerateRandomPassword() {
 		global $_SESSION;
-		$_SESSION = array('cfgMain' => new LAMCfgMain());
+		$_SESSION = ['cfgMain' => new LAMCfgMain()];
 		$this->assertEquals(20, strlen(generateRandomPassword(20)));
 	}
 

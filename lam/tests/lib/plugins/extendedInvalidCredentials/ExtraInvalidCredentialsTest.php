@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2020 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -44,9 +44,9 @@ class ExtraInvalidCredentialsTest extends TestCase {
 	public function test_getExtraMessage_noMessage() {
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(array('getLdapData'))
+			->setMethods(['getLdapData'])
 			->getMock();
-		$extraInvalidCredentials->method('getLdapData')->willReturn(array());
+		$extraInvalidCredentials->method('getLdapData')->willReturn([]);
 
 		$this->assertNull($extraInvalidCredentials->getExtraMessage(null, 'testDn'));
 	}
@@ -57,13 +57,13 @@ class ExtraInvalidCredentialsTest extends TestCase {
 	public function test_getExtraMessage_ppolicy() {
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(array('getLdapData'))
+			->setMethods(['getLdapData'])
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
-			array(
+			[
 				'dn' => 'uid=test',
-				'pwdaccountlockedtime' => array('1234')
-			)
+				'pwdaccountlockedtime' => ['1234']
+			]
 		);
 
 		$this->assertNotNull($extraInvalidCredentials->getExtraMessage(null, 'testDn'));
@@ -77,13 +77,13 @@ class ExtraInvalidCredentialsTest extends TestCase {
 		$time = $time->sub(new DateInterval('P1M'));
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(array('getLdapData'))
+			->setMethods(['getLdapData'])
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
-			array(
+			[
 				'dn' => 'uid=test',
-				'krbpasswordexpiration' => array($time->format('YmdHis') . 'Z')
-			)
+				'krbpasswordexpiration' => [$time->format('YmdHis') . 'Z']
+			]
 		);
 
 		$this->assertNotNull($extraInvalidCredentials->getExtraMessage(null, 'testDn'));
@@ -97,13 +97,13 @@ class ExtraInvalidCredentialsTest extends TestCase {
 		$time = $time->sub(new DateInterval('P1M'));
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(array('getLdapData'))
+			->setMethods(['getLdapData'])
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
-			array(
+			[
 				'dn' => 'uid=test',
-				'krbprincipalexpiration' => array($time->format('YmdHis') . 'Z')
-			)
+				'krbprincipalexpiration' => [$time->format('YmdHis') . 'Z']
+			]
 		);
 
 		$this->assertNotNull($extraInvalidCredentials->getExtraMessage(null, 'testDn'));

@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2020 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -63,20 +63,20 @@ class WebauthnProviderTest extends TestCase {
 		$this->config->twoFactorAuthenticationOptional = true;
 		$manager = $this
 			->getMockBuilder(WebauthnManager::class)
-			->setMethods(array('isRegistered'))
+			->setMethods(['isRegistered'])
 			->getMock();
 		$manager->method('isRegistered')->willReturn(false);
 		$provider = $this
 			->getMockBuilder(WebauthnProvider::class)
-			->setConstructorArgs(array($this->config))
-			->setMethods(array('getWebauthnManager'))
+			->setConstructorArgs([$this->config])
+			->setMethods(['getWebauthnManager'])
 			->getMock();
 		$provider->method('getWebauthnManager')->willReturn($manager);
 		$row = new \htmlResponsiveRow();
 
 		$provider->addCustomInput($row, 'userDn');
 		ob_start();
-		$row->generateHTML(null, array(), array(), false, null);
+		$row->generateHTML(null, [], [], false, null);
 		$html = ob_get_contents();
 		ob_end_clean();
 		$this->assertStringContainsString('skip_webauthn', $html);

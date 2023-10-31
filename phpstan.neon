@@ -29,6 +29,7 @@ parameters:
 		- '#Cannot access offset .* on mixed.#'
 		- '#Cannot access offset .* on array\|int.#'
 		- '#Parameter \#1 \$haystack of function str_starts_with expects string, int\|string given.#'
+		- '#Parameter \#3 \$length of function substr expects int\|null, int<0, max>\|false given.#'
 		- '#Parameter \#1 \$string of function htmlspecialchars expects string, array<int, string>\|string given.#'
 		- '#Parameter \#1 \$name of function LAM\\ACCOUNTLIST\\search_username expects string, array<int, string>\|string given.#'
 		- '#Parameter \#1 \$array of function array_keys expects array, mixed given.#'

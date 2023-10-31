@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020 - 2021  Roland Gruber
+ Copyright (C) 2020 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ include_once __DIR__ . '/../../../lib/modules/quota.inc';
 class QuotaTest extends TestCase {
 	
 	protected function setUp(): void {
-		$_SESSION = array('language' => 'en_GB.utf8');
+		$_SESSION = ['language' => 'en_GB.utf8'];
 	}
 	
 	public function testAddBlockUnits() {

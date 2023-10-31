@@ -14,7 +14,7 @@ use \Webauthn\TrustPath\CertificateTrustPath;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2021  Roland Gruber
+  Copyright (C) 2019 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ class WebauthnManagerTest extends TestCase {
 	protected function setup(): void {
 		$this->database = $this
 			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
-			->onlyMethods(array('getPdoUrl', 'findOneByCredentialId', 'findAllForUserEntity'))
+			->onlyMethods(['getPdoUrl', 'findOneByCredentialId', 'findAllForUserEntity'])
 			->getMock();
 		$file = tmpfile();
 		$filePath = stream_get_meta_data($file)['uri'];
@@ -68,7 +68,7 @@ class WebauthnManagerTest extends TestCase {
 
 		$this->manager = $this
 			->getMockBuilder(WebauthnManager::class)
-			->onlyMethods(array('getDatabase'))
+			->onlyMethods(['getDatabase'])
 			->getMock();
 		$this->manager->method('getDatabase')->willReturn($this->database);
 
@@ -85,7 +85,7 @@ class WebauthnManagerTest extends TestCase {
 	}
 
 	public function test_getAuthenticationObject() {
-		$this->database->method('findAllForUserEntity')->willReturn(array());
+		$this->database->method('findAllForUserEntity')->willReturn([]);
 
 		$authenticationObj = $this->manager->getAuthenticationObject('uid=test,o=test', false);
 		$this->assertEquals(32, strlen($authenticationObj->getChallenge()));
@@ -99,25 +99,23 @@ class WebauthnManagerTest extends TestCase {
 	}
 
 	public function test_isRegistered_notRegistered() {
-		$this->database->method('findAllForUserEntity')->willReturn(array());
+		$this->database->method('findAllForUserEntity')->willReturn([]);
 
 		$isRegistered = $this->manager->isRegistered('uid=test,o=test');
 		$this->assertFalse($isRegistered);
 	}
 
 	public function test_isRegistered_registered() {
-		$this->database->method('findAllForUserEntity')->willReturn(array(
-			new PublicKeyCredentialSource(
+		$this->database->method('findAllForUserEntity')->willReturn([new PublicKeyCredentialSource(
 				"id1",
 				PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-				array(),
+				[],
 				"atype",
-				new CertificateTrustPath(array('x5c' => 'test')),
+				new CertificateTrustPath(['x5c' => 'test']),
 				\Ramsey\Uuid\Uuid::uuid1(),
 				"p1",
 				"uh1",
-				1)
-		));
+				1)]);
 
 		$isRegistered = $this->manager->isRegistered('uid=test,o=test');
 		$this->assertTrue($isRegistered);

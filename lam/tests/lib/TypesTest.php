@@ -6,7 +6,7 @@ use user;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2021  Roland Gruber
+  Copyright (C) 2016 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,21 +37,21 @@ class TypesTest extends TestCase {
 	private $type;
 
 	protected function setUp(): void {
-		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(array('getBaseType', 'getModules'))->getMock();
+		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(['getBaseType', 'getModules'])->getMock();
 		$scope = new user($this->type);
 		$this->type->method('getBaseType')->willReturn($scope);
-		$this->type->method('getModules')->willReturn(array('posixAccount'));
+		$this->type->method('getModules')->willReturn(['posixAccount']);
 	}
 
 	public function testPreTranslated() {
 		$attr = new ListAttribute('#uid');
-		$this->assertEquals('User name', $attr->getAlias(array('uid' => _('User name'))));
+		$this->assertEquals('User name', $attr->getAlias(['uid' => _('User name')]));
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}
 
 	public function testCustomAlias() {
 		$attr = new ListAttribute('uid:My translation');
-		$this->assertEquals('My translation', $attr->getAlias(array('uid' => _('User name'))));
+		$this->assertEquals('My translation', $attr->getAlias(['uid' => _('User name')]));
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}
 

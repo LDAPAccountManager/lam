@@ -11,7 +11,7 @@ use \Webauthn\TrustPath\CertificateTrustPath;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2021  Roland Gruber
+  Copyright (C) 2019 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,9 +40,9 @@ require_once __DIR__ . '/../../lib/webauthn.inc';
 class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 
 	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLite
+	 * @var PublicKeyCredentialSourceRepositorySQLite
 	 */
-	private $database;
+	private PublicKeyCredentialSourceRepositorySQLiteTestDb $database;
 
 	protected function setUp(): void {
 		$this->database = new PublicKeyCredentialSourceRepositorySQLiteTestDb();
@@ -73,9 +73,9 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$source1 = new PublicKeyCredentialSource(
 			"id1",
 			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
+			[],
 			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
+			new CertificateTrustPath(['x5c' => 'test']),
 			\Ramsey\Uuid\Uuid::uuid1(),
 			"p1",
 			"uh1",
@@ -84,9 +84,9 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$source2 = new PublicKeyCredentialSource(
 			"id2",
 			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
+			[],
 			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
+			new CertificateTrustPath(['x5c' => 'test']),
 			\Ramsey\Uuid\Uuid::uuid1(),
 			"p2",
 			"uh1",
@@ -95,9 +95,9 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$source3 = new PublicKeyCredentialSource(
 			"id3",
 			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
+			[],
 			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
+			new CertificateTrustPath(['x5c' => 'test']),
 			\Ramsey\Uuid\Uuid::uuid1(),
 			"p3",
 			"uh2",
@@ -120,9 +120,9 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$source1 = new PublicKeyCredentialSource(
 			"id1",
 			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
+			[],
 			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
+			new CertificateTrustPath(['x5c' => 'test']),
 			\Ramsey\Uuid\Uuid::uuid1(),
 			"p1",
 			"uh1",
@@ -135,9 +135,9 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$source1 = new PublicKeyCredentialSource(
 			"id1",
 			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
+			[],
 			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
+			new CertificateTrustPath(['x5c' => 'test']),
 			\Ramsey\Uuid\Uuid::uuid1(),
 			"p1",
 			"uh1",
@@ -152,9 +152,9 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$source1 = new PublicKeyCredentialSource(
 			"id1",
 			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
+			[],
 			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
+			new CertificateTrustPath(['x5c' => 'test']),
 			\Ramsey\Uuid\Uuid::uuid1(),
 			"p1",
 			"uh1",
@@ -168,12 +168,12 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 
 class PublicKeyCredentialSourceRepositorySQLiteTestDb extends PublicKeyCredentialSourceRepositorySQLite {
 
-	private $pdo;
+	private PDO $pdo;
 
 	public function __construct() {
-		$this->pdo = new PDO($this->getPdoUrl(), null, null, array(
+		$this->pdo = new PDO($this->getPdoUrl(), null, null, [
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-		));
+		]);
 		parent::__construct();
 	}
 	protected function getPDO(): PDO {

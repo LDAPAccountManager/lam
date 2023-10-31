@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2017 - 2021  Roland Gruber
+ Copyright (C) 2017 - 2023  Roland Gruber
  */
 
 if (is_readable('lam/lib/modules/customFields.inc')) {
@@ -24,9 +24,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '((Uid))456';
 			$originalEnd = '123((uid))';
 			$originalMultiple = '123((uid))456((uid))789';
-			$attributesSet = array('uid' => array('111'));
-			$attributesNotSet = array('uid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['uid' => ['111']];
+			$attributesNotSet = ['uid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -50,9 +50,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '%Uid%456';
 			$originalEnd = '123%uid%';
 			$originalMultiple = '123%uid%456%uid%789';
-			$attributesSet = array('uid' => array('111'));
-			$attributesNotSet = array('uid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['uid' => ['111']];
+			$attributesNotSet = ['uid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -76,9 +76,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '@Uid@456';
 			$originalEnd = '123@uid@';
 			$originalMultiple = '123@uid@456@uid@789';
-			$attributesSet = array('uid' => array('aBc'));
-			$attributesNotSet = array('uid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['uid' => ['aBc']];
+			$attributesNotSet = ['uid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -102,9 +102,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '?Uid?456';
 			$originalEnd = '123?uid?';
 			$originalMultiple = '123?uid?456?uid?789';
-			$attributesSet = array('uid' => array('Abc'));
-			$attributesNotSet = array('uid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['uid' => ['Abc']];
+			$attributesNotSet = ['uid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -128,9 +128,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '!Uid!456';
 			$originalEnd = '123!uid!';
 			$originalMultiple = '123!uid!456!uid!789';
-			$attributesSet = array('uid' => array('abc'));
-			$attributesNotSet = array('uid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['uid' => ['abc']];
+			$attributesNotSet = ['uid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -154,9 +154,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '??Uid??456';
 			$originalEnd = '123??uid??';
 			$originalMultiple = '123??uid??456??uid??789';
-			$attributesSet = array('uid' => array('Abc'));
-			$attributesNotSet = array('uid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['uid' => ['Abc']];
+			$attributesNotSet = ['uid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -180,9 +180,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '!!Uid!!456';
 			$originalEnd = '123!!uid!!';
 			$originalMultiple = '123!!uid!!456!!uid!!789';
-			$attributesSet = array('uid' => array('abc'));
-			$attributesNotSet = array('uid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['uid' => ['abc']];
+			$attributesNotSet = ['uid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -206,9 +206,9 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$originalStart = '§MemberUid|, §456';
 			$originalEnd = '123§memberUid|, §';
 			$originalMultiple = '123§memberUid|, §456§memberUid|;§789';
-			$attributesSet = array('memberUid' => array('abc', 'cde'));
-			$attributesNotSet = array('memberUid' => array(''));
-			$attributesNotSet2 = array();
+			$attributesSet = ['memberUid' => ['abc', 'cde']];
+			$attributesNotSet = ['memberUid' => ['']];
+			$attributesNotSet2 = [];
 
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet, $originalMiddle));
 			$this->assertEquals('123456', customFieldsConstantEntry::replaceWildcards($attributesNotSet2, $originalMiddle));
@@ -228,11 +228,11 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 		}
 
 		public function testReplaceWildcardsMixed() {
-			$attributes = array(
-				'uid' => array('myuser'),
-				'street' => array('some street'),
-				'memberUid' => array('abc', 'cde')
-			);
+			$attributes = [
+				'uid' => ['myuser'],
+				'street' => ['some street'],
+				'memberUid' => ['abc', 'cde']
+			];
 
 			$this->assertEquals('myuser SOME STREET S abc- cde', customFieldsConstantEntry::replaceWildcards($attributes, '%uid% !!street!! !street! §memberuid|- §'));
 			$this->assertEquals(' MMYUSER', customFieldsConstantEntry::replaceWildcards($attributes, '((uid))!uid!!!uid!!'));

@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2016  Roland Gruber
+  Copyright (C) 2014 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,52 +58,52 @@ class SecurityTest extends TestCase {
 
 	public function testMinLength() {
 		$this->cfg->passwordMinLength = 5;
-		$this->checkPwd(array('55555', '666666'), array('1', '22', '333', '4444'));
+		$this->checkPwd(['55555', '666666'], ['1', '22', '333', '4444']);
 		$this->serverProfile->setPwdPolicyMinLength('7');
-		$this->checkPwd(array('7777777'), array('1', '22', '333', '4444', '55555', '666666'));
+		$this->checkPwd(['7777777'], ['1', '22', '333', '4444', '55555', '666666']);
 		$this->serverProfile->setPwdPolicyMinLength('3');
-		$this->checkPwd(array('333', '4444', '55555', '666666', '7777777'), array('1', '22'));
+		$this->checkPwd(['333', '4444', '55555', '666666', '7777777'], ['1', '22']);
 	}
 
 	public function testMinUpper() {
 		$this->cfg->passwordMinUpper = 3;
-		$this->checkPwd(array('55A5AA55', '6BB666BB66', 'ABC'), array ('1A', '2C2C', 'AB3', '44BB'));
+		$this->checkPwd(['55A5AA55', '6BB666BB66', 'ABC'], ['1A', '2C2C', 'AB3', '44BB']);
 		$this->serverProfile->setPwdPolicyMinUppercase('5');
-		$this->checkPwd(array('5AA5AAA5', '6BBB66BBB6', 'ABCDE'), array ('1A', '2C2C', 'AB3', '44BB'));
+		$this->checkPwd(['5AA5AAA5', '6BBB66BBB6', 'ABCDE'], ['1A', '2C2C', 'AB3', '44BB']);
 		$this->serverProfile->setPwdPolicyMinUppercase('2');
-		$this->checkPwd(array('5555A5A5', '6BBB666666', 'AB'), array ('1A', '2C22', 'A33', '444B'));
+		$this->checkPwd(['5555A5A5', '6BBB666666', 'AB'], ['1A', '2C22', 'A33', '444B']);
 	}
 
 	public function testMinLower() {
 		$this->cfg->passwordMinLower = 3;
-		$this->checkPwd(array('55a5aa55', '6bb666bb66', 'abc'), array ('1a', '2c2c', 'ab3', '44bbABC'));
+		$this->checkPwd(['55a5aa55', '6bb666bb66', 'abc'], ['1a', '2c2c', 'ab3', '44bbABC']);
 		$this->serverProfile->setPwdPolicyMinLowercase('5');
-		$this->checkPwd(array('5aa5aaa5', '6bbb66bb66', 'abcde'), array ('1abcd', '2c2c', 'ab3', '44bbABC'));
+		$this->checkPwd(['5aa5aaa5', '6bbb66bb66', 'abcde'], ['1abcd', '2c2c', 'ab3', '44bbABC']);
 		$this->serverProfile->setPwdPolicyMinLowercase('2');
-		$this->checkPwd(array('5555aa55', '6bb6666b66', 'ab'), array ('1a', '2c23', 'a13', '441bABC'));
+		$this->checkPwd(['5555aa55', '6bb6666b66', 'ab'], ['1a', '2c23', 'a13', '441bABC']);
 	}
 
 	public function testMinNumeric() {
 		$this->cfg->passwordMinNumeric = 3;
-		$this->checkPwd(array('333', '4444'), array('1', '22', '33A', '44bb'));
+		$this->checkPwd(['333', '4444'], ['1', '22', '33A', '44bb']);
 		$this->serverProfile->setPwdPolicyMinNumeric('5');
-		$this->checkPwd(array('55555'), array('1', '22', '33A', '44bb', '333', '4444'));
+		$this->checkPwd(['55555'], ['1', '22', '33A', '44bb', '333', '4444']);
 		$this->serverProfile->setPwdPolicyMinNumeric('2');
-		$this->checkPwd(array('22', '33A', '44bb', '333', '4444'), array('1', 'X'));
+		$this->checkPwd(['22', '33A', '44bb', '333', '4444'], ['1', 'X']);
 	}
 
 	public function testMinSymbol() {
 		$this->cfg->passwordMinSymbol = 3;
-		$this->checkPwd(array('---', '++++'), array('1.', '2.2.', '3+3+A', '44bb'));
+		$this->checkPwd(['---', '++++'], ['1.', '2.2.', '3+3+A', '44bb']);
 		$this->serverProfile->setPwdPolicyMinSymbolic('5');
-		$this->checkPwd(array('---++', '++--++'), array('1.', '2.2.', '3+3+A--', '44bb'));
+		$this->checkPwd(['---++', '++--++'], ['1.', '2.2.', '3+3+A--', '44bb']);
 		$this->serverProfile->setPwdPolicyMinSymbolic('2');
-		$this->checkPwd(array('-1-', '+x++'), array('1.', '2.', '3+3A', '44bb'));
+		$this->checkPwd(['-1-', '+x++'], ['1.', '2.', '3+3A', '44bb']);
 	}
 
 	public function testMinClasses() {
 		$this->cfg->passwordMinClasses = 3;
-		$this->checkPwd(array('aB.', 'aB.1', 'aa.B99'), array('1', '2.', '3+-', '44bb'));
+		$this->checkPwd(['aB.', 'aB.1', 'aa.B99'], ['1', '2.', '3+-', '44bb']);
 	}
 
 	public function testRulesCount() {
@@ -114,26 +114,26 @@ class SecurityTest extends TestCase {
 		$this->cfg->passwordMinClasses = 3;
 		// all rules
 		$this->cfg->checkedRulesCount = -1;
-		$this->checkPwd(array('ABC---abc123', 'ABC123xxx.-.-'), array('1', '2.', '3+-', '44bb', 'ABCabc---22'));
+		$this->checkPwd(['ABC---abc123', 'ABC123xxx.-.-'], ['1', '2.', '3+-', '44bb', 'ABCabc---22']);
 		// at least 3 rules
 		$this->cfg->checkedRulesCount = 3;
-		$this->checkPwd(array('ABC---abc', 'ABC123.-.-', 'ABCabc-'), array('1', '2.', '3+-', '44bb', 'ABC--22'));
+		$this->checkPwd(['ABC---abc', 'ABC123.-.-', 'ABCabc-'], ['1', '2.', '3+-', '44bb', 'ABC--22']);
 	}
 
 	public function testUser() {
 		$this->cfg->passwordMustNotContainUser = 'true';
-		$this->checkPwd(array('u', 'us', 'use', 'use1r'), array('user', '2user', 'user3'), 'user');
-		$this->checkPwd(array('u', 'us', 'use', 'use1r'), array('user', '2user', 'user3', 'test'), array('user', 'test'));
+		$this->checkPwd(['u', 'us', 'use', 'use1r'], ['user', '2user', 'user3'], 'user');
+		$this->checkPwd(['u', 'us', 'use', 'use1r'], ['user', '2user', 'user3', 'test'], ['user', 'test']);
 	}
 
 	public function testUserAttributes() {
 		$this->cfg->passwordMustNotContain3Chars = 'true';
-		$this->checkPwd(array('u', 'us', 'us1e', 'us1er'), array('use', 'user', '2user', 'user3'), 'user');
+		$this->checkPwd(['u', 'us', 'us1e', 'us1er'], ['use', 'user', '2user', 'user3'], 'user');
 		$this->checkPwd(
-			array('uf', 'usfi', 'us1ela3s', 'us1er.la#st'),
-			array('use', 'user', '2user', 'user3', 'las', 'last', 'fir', 'first'),
+			['uf', 'usfi', 'us1ela3s', 'us1er.la#st'],
+			['use', 'user', '2user', 'user3', 'las', 'last', 'fir', 'first'],
 			'user',
-			array('first', 'last'));
+			['first', 'last']);
 	}
 
 	/**
@@ -169,7 +169,7 @@ class SecurityTest extends TestCase {
 			$userName = 'username';
 		}
 		if ($otherUserAttrs == null) {
-			$otherUserAttrs = array ();
+			$otherUserAttrs = [];
 		}
 		foreach ($pwdsToAccept as $pwd) {
 			$this->assertTrue(checkPasswordStrength($pwd, $userName, $otherUserAttrs));

@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2019  Roland Gruber
+  Copyright (C) 2014 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,19 +35,19 @@ if (is_readable('lam/lib/modules/sudoRole.inc')) {
 	class SudoRoleTest extends TestCase {
 
 		public function testIsValidDate() {
-			$valid = array('22.10.2014', '05.01.2013', '1.3.2014', '10.5.2014', '4.12.2015',
-						'05.01.2013 22:15', '1.3.2014 5:1', '10.5.2014 13:3', '4.12.2015 5:22');
+			$valid = ['22.10.2014', '05.01.2013', '1.3.2014', '10.5.2014', '4.12.2015',
+				'05.01.2013 22:15', '1.3.2014 5:1', '10.5.2014 13:3', '4.12.2015 5:22'];
 			foreach ($valid as $testDate) {
 				$this->assertTrue(sudoRole::isValidDate($testDate));
 			}
-			$invalid = array('10.25.2014', 'abc', '2014-10-12', '10.022014', '10:12', '22.10.2014 12');
+			$invalid = ['10.25.2014', 'abc', '2014-10-12', '10.022014', '10:12', '22.10.2014 12'];
 			foreach ($invalid as $testDate) {
 				$this->assertNotTrue(sudoRole::isValidDate($testDate), $testDate);
 			}
 		}
 
 		public function testEncodeDate() {
-			$dates = array(
+			$dates = [
 				'1.2.2014' => '20140201000000Z',
 				'10.2.2014' => '20140210000000Z',
 				'1.11.2014' => '20141101000000Z',
@@ -56,14 +56,14 @@ if (is_readable('lam/lib/modules/sudoRole.inc')) {
 				'10.2.2014 1:10' => '20140210011000Z',
 				'1.11.2014 10:2' => '20141101100200Z',
 				'20.12.2014 10:12' => '20141220101200Z',
-			);
+			];
 			foreach ($dates as $input => $output) {
 				$this->assertEquals($output, sudoRole::encodeDate($input), $input . ' ' . $output);
 			}
 		}
 
 		public function testDecodeDate() {
-			$dates = array(
+			$dates = [
 				'01.02.2014 00:00' => '20140201000000Z',
 				'10.02.2014 00:00' => '20140210000000Z',
 				'01.11.2014 00:00' => '20141101000000Z',
@@ -72,7 +72,7 @@ if (is_readable('lam/lib/modules/sudoRole.inc')) {
 				'10.02.2014 01:10' => '20140210011000Z',
 				'01.11.2014 10:02' => '20141101100200Z',
 				'20.12.2014 10:12' => '20141220101200Z',
-			);
+			];
 			foreach ($dates as $output => $input) {
 				$this->assertEquals($output, sudoRole::decodeDate($input), $input . ' ' . $output);
 			}

@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020 - 2021  Roland Gruber
+ Copyright (C) 2020 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -32,46 +32,48 @@ include_once __DIR__ . '/../../lib/persistence.inc';
 class ConfigDataExporterTest extends TestCase {
 
 	public function testExportAsJson() {
-		$mainData = array(
+		$mainData = [
 			'confMainKey1' => 'val',
 			'confMainKey2' => 4,
 			'confMainKey3' => '',
-		);
-		$profileData = array(
-			'profile1' => array('ServerURL' => 'myserver'),
-			'profile2' => array('ServerURL' => 'myserver2'),
-		);
-		$accountProfileData = array(
-			'profile1' => array('user' => array('default' => array('key' => 'value'))),
-			'profile2' => array(
-				'user' => array('default' => array('key' => 'value')),
-				'group' => array('default' => array('key' => 'value')),
-			),
-		);
-		$accountProfileTemplateData = array(
-			'user' => array('default' => array('key' => 'value')),
-			'group' => array('default' => array('key' => 'value')),
-		);
-		$pdfData = array(
-			'profile1' => array('structures' => array(
-				'user' => array(
-					'default' => array('key' => 'value'))
-			)),
-			'profile2' => array('structures' => array(
-				'user' => array('default' => array('key' => 'value')),
-				'group' => array('default' => array('key' => 'value')),
-			)),
-		);
-		$pdfTemplateData = array(
-			'user' => array('default' => array('key' => 'value')),
-			'group' => array('default' => array('key' => 'value')),
-		);
-		$selfServiceData = array(
-			'profile1' => array('key' => 'value'),
-			'profile2' => array('key' => 'value'),
-		);
-		$webauthn = array();
-		$expectedJson = json_encode(array(
+		];
+		$profileData = [
+			'profile1' => ['ServerURL' => 'myserver'],
+			'profile2' => ['ServerURL' => 'myserver2'],
+		];
+		$accountProfileData = [
+			'profile1' => ['user' => ['default' => ['key' => 'value']]],
+			'profile2' => ['user' => ['default' => ['key' => 'value']], 'group' => ['default' => ['key' => 'value']]],
+		];
+		$accountProfileTemplateData = [
+			'user' => ['default' => ['key' => 'value']],
+			'group' => ['default' => ['key' => 'value']],
+		];
+		$pdfData = [
+			'profile1' => [
+				'structures' => [
+					'user' => [
+						'default' => ['key' => 'value']
+					]
+				]
+			],
+			'profile2' => [
+				'structures' => [
+					'user' => ['default' => ['key' => 'value']],
+					'group' => ['default' => ['key' => 'value']],
+				]
+			],
+		];
+		$pdfTemplateData = [
+			'user' => ['default' => ['key' => 'value']],
+			'group' => ['default' => ['key' => 'value']],
+		];
+		$selfServiceData = [
+			'profile1' => ['key' => 'value'],
+			'profile2' => ['key' => 'value'],
+		];
+		$webauthn = [];
+		$expectedJson = json_encode([
 			'mainConfig' => $mainData,
 			'certificates' => 'certs',
 			'serverProfiles' => $profileData,
@@ -81,14 +83,14 @@ class ConfigDataExporterTest extends TestCase {
 			'pdfProfileTemplates' => $pdfTemplateData,
 			'selfServiceProfiles' => $selfServiceData,
 			'webauthn' => $webauthn,
-			'cronJobs' => array()
-		));
+			'cronJobs' => []
+		]);
 
 		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
-			->setMethods(array('_getMainConfigData', '_getCertificates', '_getServerProfiles',
+			->setMethods(['_getMainConfigData', '_getCertificates', '_getServerProfiles',
 				'_getAccountProfiles', '_getAccountProfileTemplates', '_getPdfProfiles',
 				'_getPdfProfileTemplates', '_getSelfServiceProfiles', '_getWebauthn',
-				'_getCronJobData'))
+				'_getCronJobData'])
 			->getMock();
 		$exporter->method('_getMainConfigData')->willReturn($mainData);
 		$exporter->method('_getCertificates')->willReturn('certs');
@@ -99,7 +101,7 @@ class ConfigDataExporterTest extends TestCase {
 		$exporter->method('_getPdfProfileTemplates')->willReturn($pdfTemplateData);
 		$exporter->method('_getSelfServiceProfiles')->willReturn($selfServiceData);
 		$exporter->method('_getWebauthn')->willReturn($webauthn);
-		$exporter->method('_getCronJobData')->willReturn(array());
+		$exporter->method('_getCronJobData')->willReturn([]);
 
 		$json = $exporter->exportAsJson();
 

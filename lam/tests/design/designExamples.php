@@ -51,17 +51,17 @@ $row->addField(new htmlButton('name1', 'Click me'));
 
 $row->addLabel(new htmlOutputText('Primary'));
 $primaryButton = new htmlButton('name2', 'Click me');
-$primaryButton->setCSSClasses(array('lam-primary'));
+$primaryButton->setCSSClasses(['lam-primary']);
 $row->addField($primaryButton);
 
 $row->addLabel(new htmlOutputText('Secondary'));
 $primaryButton = new htmlButton('name2a', 'Click me');
-$primaryButton->setCSSClasses(array('lam-secondary'));
+$primaryButton->setCSSClasses(['lam-secondary']);
 $row->addField($primaryButton);
 
 $row->addLabel(new htmlOutputText('Danger'));
 $primaryButton = new htmlButton('name3', 'Click me');
-$primaryButton->setCSSClasses(array('lam-danger'));
+$primaryButton->setCSSClasses(['lam-danger']);
 $row->addField($primaryButton);
 
 $row->addLabel(new htmlOutputText('Disabled'));
@@ -70,10 +70,10 @@ $buttonDisabled->setIsEnabled(false);
 $row->addField($buttonDisabled);
 
 $row->add(new htmlSubTitle('Tables'));
-$tableTitles = array('text 1', 'text 2', 'text 3', 'text 4', 'text 5');
-$tableData = array();
+$tableTitles = ['text 1', 'text 2', 'text 3', 'text 4', 'text 5'];
+$tableData = [];
 for ($rowNumber = 0; $rowNumber < 10; $rowNumber++) {
-    $tableRow = array();
+    $tableRow = [];
     for ($column = 0; $column < 5; $column++) {
         $tableRow[] = new htmlOutputText('value' . $column);
     }
@@ -85,7 +85,7 @@ $row->add($table);
 $row->addVerticalSpacer('2rem');
 $row->add(new htmlOutputText('Account list'));
 $table = new htmlResponsiveTable($tableTitles, $tableData);
-$table->setCSSClasses(array('accountlist'));
+$table->setCSSClasses(['accountlist']);
 $row->add($table);
 
 $row->add(new htmlSubTitle('Input fields'));
@@ -95,7 +95,7 @@ $row->addField(new htmlInputField('text1', 'Some text'));
 
 $row->addLabel(new htmlOutputText('Autocomplete'));
 $autocompleteInput = new htmlInputField('text1a', 'Some text');
-$autocompleteInput->enableAutocompletion(array('Some text', 'Some text2', 'Some text3', 'Some text4'));
+$autocompleteInput->enableAutocompletion(['Some text', 'Some text2', 'Some text3', 'Some text4']);
 $row->addField($autocompleteInput);
 
 $row->addLabel(new htmlOutputText('Disabled'));
@@ -132,10 +132,10 @@ $checkRow2->add($checkboxDisabled);
 $row->add($checkRow2);
 
 $row->addLabel(new htmlOutputText('Default'));
-$row->addField(new htmlRadio('radio1', array('label1' => 'value', 'label2' => 'value2'), 'value'));
+$row->addField(new htmlRadio('radio1', ['label1' => 'value', 'label2' => 'value2'], 'value'));
 
 $row->addLabel(new htmlOutputText('Disabled'));
-$radioDisabled = new htmlRadio('radio2', array('label1' => 'value', 'label2' => 'value2'), 'value');
+$radioDisabled = new htmlRadio('radio2', ['label1' => 'value', 'label2' => 'value2'], 'value');
 $radioDisabled->setIsEnabled(false);
 $row->addField($radioDisabled);
 
@@ -156,20 +156,20 @@ $colorDisabled->setIsEnabled(false);
 $row->addField($colorDisabled);
 
 $row->addLabel(new htmlOutputText('Default select'));
-$row->addField(new htmlSelect('select1', array(1, 2, 3), array(2)));
+$row->addField(new htmlSelect('select1', [1, 2, 3], [2]));
 
 $row->addLabel(new htmlOutputText('Disabled select'));
-$selectDisabled = new htmlSelect('select2', array(1, 2, 3), array(2));
+$selectDisabled = new htmlSelect('select2', [1, 2, 3], [2]);
 $selectDisabled->setIsEnabled(false);
 $row->addField($selectDisabled);
 
 $row->addLabel(new htmlOutputText('Default multiselect'));
-$multiSelect1 = new htmlSelect('select1', array("1", "2", "3"), array("1", "3"), 5);
+$multiSelect1 = new htmlSelect('select1', ["1", "2", "3"], ["1", "3"], 5);
 $multiSelect1->setMultiSelect(true);
 $row->addField($multiSelect1);
 
 $row->addLabel(new htmlOutputText('Disabled multiselect'));
-$multiSelect2 = new htmlSelect('select2', array("1", "2", "3"), array("1", "3"), 5);
+$multiSelect2 = new htmlSelect('select2', ["1", "2", "3"], ["1", "3"], 5);
 $multiSelect2->setIsEnabled(false);
 $multiSelect2->setMultiSelect(true);
 $row->addField($multiSelect2);
@@ -177,12 +177,12 @@ $row->addField($multiSelect2);
 $row->add(new htmlSpacer(null, '5rem'));
 
 $row->addLabel(new htmlOutputText('Default select filter'));
-$defaultSelectElements = array();
+$defaultSelectElements = [];
 for ($i = 0; $i < 1000; $i++) {
 	$text = str_pad($i, 4, '0', STR_PAD_LEFT);
 	$defaultSelectElements['Text ' . $text] = $text;
 }
-$row->addField(new htmlSelect('selectWithFilter', $defaultSelectElements, array('0002')));
+$row->addField(new htmlSelect('selectWithFilter', $defaultSelectElements, ['0002']));
 $row->addLabel(new htmlOutputText('Filter'));
 $selectFilter = new htmlInputField('selectFilter');
 $selectFilter->filterSelectBox('selectWithFilter');
@@ -191,12 +191,12 @@ $row->addField($selectFilter);
 $row->add(new htmlSpacer(null, '5rem'));
 
 $row->addLabel(new htmlOutputText('Default multiselect filter'));
-$defaultScrollElements = array();
+$defaultScrollElements = [];
 for ($i = 0; $i < 1000; $i++) {
     $text = str_pad($i, 4, '0', STR_PAD_LEFT);
 	$defaultScrollElements['Text ' . $text] = $text;
 }
-$scrollSelect = new htmlSelect('scrollSelect', $defaultScrollElements, array("0001", "0003", "0999"), 10);
+$scrollSelect = new htmlSelect('scrollSelect', $defaultScrollElements, ["0001", "0003", "0999"], 10);
 $scrollSelect->setHasDescriptiveElements(true);
 $scrollSelect->setMultiSelect(true);
 $row->addField($scrollSelect);
@@ -208,12 +208,12 @@ $row->addField($scrollFilter);
 $row->add(new htmlSpacer(null, '5rem'));
 
 $row->addLabel(new htmlOutputText('Dynamic multiselect filter'));
-$dynamicScrollElements = array();
+$dynamicScrollElements = [];
 for ($i = 0; $i < 100000; $i++) {
 	$text = str_pad($i, 6, '0', STR_PAD_LEFT);
 	$dynamicScrollElements['Text ' . $text] = $text;
 }
-$multiSelect3 = new htmlSelect('dynamicSelect', $dynamicScrollElements, array("000001", "000003", "099999"), 10);
+$multiSelect3 = new htmlSelect('dynamicSelect', $dynamicScrollElements, ["000001", "000003", "099999"], 10);
 $multiSelect3->setHasDescriptiveElements(true);
 $multiSelect3->setMultiSelect(true);
 $multiSelect3->enableDynamicScrolling();
@@ -257,7 +257,7 @@ $row->add(new htmlSpacer(null, '5rem'));
 
 $row->add(new htmlSubTitle('Accordion'));
 
-$accordionElementsSingle = array();
+$accordionElementsSingle = [];
 $accordionElementsSingleContent1 = new htmlResponsiveRow();
 $accordionElementsSingleContent1->add(new htmlResponsiveInputField('Input 1', 'acc1i1'));
 $accordionElementsSingleContent1->add(new htmlResponsiveInputField('Input 2', 'acc1i2'));
@@ -267,7 +267,7 @@ $row->add(new htmlAccordion('acc_single', $accordionElementsSingle));
 
 $row->add(new htmlSpacer(null, '5rem'));
 
-$accordionElementsSingleClosed = array();
+$accordionElementsSingleClosed = [];
 $accordionElementsSingleContentClosed = new htmlResponsiveRow();
 $accordionElementsSingleContentClosed->add(new htmlResponsiveInputField('Input 1', 'acc1ai1'));
 $accordionElementsSingleContentClosed->add(new htmlResponsiveInputField('Input 2', 'acc1ai2'));
@@ -277,7 +277,7 @@ $row->add(new htmlAccordion('acc_singleClosed', $accordionElementsSingleClosed, 
 
 $row->add(new htmlSpacer(null, '5rem'));
 
-$accordionElementsMulti = array();
+$accordionElementsMulti = [];
 for ($i = 0; $i < 5; $i++) {
 	$accordionElementsContent = new htmlResponsiveRow();
 	$accordionElementsContent->add(new htmlResponsiveInputField('Input 1', 'acc1i1' . $i));
@@ -291,33 +291,33 @@ $row->add(new htmlSpacer(null, '5rem'));
 
 $row->add(new htmlSubTitle('Sortable list'));
 
-$sortableList1 = new htmlSortableList(array(
+$sortableList1 = new htmlSortableList([
 	'text 1',
 	'text 2',
 	'text 3',
 	'text 4',
 	'text 5',
-), 'sortableList1');
+], 'sortableList1');
 $sortableList1->setCSSClasses(array('module-list'));
 $row->add($sortableList1);
 
 $row->add(new htmlSpacer(null, '2rem'));
 
-$listElements = array();
+$listElements = [];
 for ($i = 0; $i < 8; $i++) {
 	$el = new htmlTable('100%');
 	$image = new htmlImage('../../graphics/tux.svg');
-	$image->setCSSClasses(array('size16', 'margin-right5-mobile-only'));
+	$image->setCSSClasses(['size16', 'margin-right5-mobile-only']);
 	$el->addElement($image);
 	$el->addElement(new htmlOutputText("Text " . $i));
 	$image2 = new htmlImage('../../graphics/del.svg');
-	$image2->setCSSClasses(array('size16', 'margin-right5-mobile-only'));
+	$image2->setCSSClasses(['size16', 'margin-right5-mobile-only']);
 	$image2->alignment = htmlElement::ALIGN_RIGHT;
 	$el->addElement($image2);
 	$listElements[] = $el;
 }
 $sortableList2 = new htmlSortableList($listElements, 'sortableList2');
-$sortableList2->setCSSClasses(array('module-list'));
+$sortableList2->setCSSClasses(['module-list']);
 $row->add($sortableList2);
 
 $row->add(new htmlSubTitle('Alert'));
@@ -344,7 +344,7 @@ $row->add(new htmlSpacer(null, '20rem'));
 
 $form = new htmlForm('formname', 'designExamples.php', $row);
 
-parseHtml(null, $form, array(), false, 'user');
+parseHtml(null, $form, [], false, 'user');
 
 ?>
 <script type="text/javascript" src="../../templates/lib/extra/ckeditor/ckeditor.js"></script>

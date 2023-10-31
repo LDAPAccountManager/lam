@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2017 - 2020  Roland Gruber
+ Copyright (C) 2017 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,27 +33,27 @@ use PHPUnit\Framework\TestCase;
 	class WindowsUserTest extends TestCase {
 
 		public function test_isAccountExpired_noAttr() {
-			$attrs = array('objectClass' => array('user'));
+			$attrs = ['objectClass' => ['user']];
 
 			$this->assertFalse(windowsUser::isAccountExpired($attrs));
 		}
 
 		public function test_isAccountExpired_notExpired() {
 			$expire = $this->getTimeStamp(14);
-			$attrs = array(
-				'objectClass' => array('user'),
-				'accounTExpIRes' => array(0 => $expire)
-			);
+			$attrs = [
+				'objectClass' => ['user'],
+				'accounTExpIRes' => [0 => $expire]
+			];
 
 			$this->assertFalse(windowsUser::isAccountExpired($attrs));
 		}
 
 		public function test_isAccountExpired_expired() {
 			$expire = $this->getTimeStamp(-14);
-			$attrs = array(
-				'objectClass' => array('user'),
-				'accounTExpIRes' => array(0 => $expire)
-			);
+			$attrs = [
+				'objectClass' => ['user'],
+				'accounTExpIRes' => [0 => $expire]
+			];
 
 			$this->assertTrue(windowsUser::isAccountExpired($attrs));
 		}

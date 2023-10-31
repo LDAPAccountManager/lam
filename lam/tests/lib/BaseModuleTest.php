@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2019  Roland Gruber
+ Copyright (C) 2019 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -34,233 +34,243 @@ class BaseModuleTest extends TestCase {
 	}
 
 	function test_check_profileOptions_ext_preg() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
+			'error_message' => ['ERROR', 'error1']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('10'),
-		);
+		$options = [
+			'test_val1' => ['10'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
 	function test_check_profileOptions_ext_preg_fail() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
+			'error_message' => ['ERROR', 'error1']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('a'),
-		);
+		$options = [
+			'test_val1' => ['a'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
-		$this->assertEquals(array(array('ERROR', 'error1')), $errors);
+		$this->assertEquals([['ERROR', 'error1']], $errors);
 	}
 
 	function test_check_profileOptions_regex() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_reg1'] = array(
+		$meta['profile_checks']['test_reg1'] = [
 			'type' => 'regex',
 			'regex' => 'ab+a',
-			'error_message' => array('ERROR', 'error1'));
+			'error_message' => ['ERROR', 'error1']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_reg1' => array('abbba'),
-		);
+		$options = [
+			'test_reg1' => ['abbba'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
 	function test_check_profileOptions_regex_fail() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_reg1'] = array(
+		$meta['profile_checks']['test_reg1'] = [
 			'type' => 'regex',
 			'regex' => 'ab+a',
-			'error_message' => array('ERROR', 'error1'));
+			'error_message' => ['ERROR', 'error1']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_reg1' => array('aCa'),
-		);
+		$options = [
+			'test_reg1' => ['aCa'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
-		$this->assertEquals(array(array('ERROR', 'error1')), $errors);
+		$this->assertEquals([['ERROR', 'error1']], $errors);
 	}
 
 	function test_check_profileOptions_cmp() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
-		$meta['profile_checks']['test_val2'] = array(
+			'error_message' => ['ERROR', 'error1']];
+		$meta['profile_checks']['test_val2'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error2'));
-		$meta['profile_checks']['test_cmp'] = array(
+			'error_message' => ['ERROR', 'error2']];
+		$meta['profile_checks']['test_cmp'] = [
 			'type' => 'int_greater',
 			'cmp_name1' => 'test_val2',
 			'cmp_name2' => 'test_val1',
-			'error_message' => array('ERROR', 'errorCMP'));
+			'error_message' => ['ERROR', 'errorCMP']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('10'),
-			'test_val2' => array('20'),
-		);
+		$options = [
+			'test_val1' => ['10'],
+			'test_val2' => ['20'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
 	function test_check_profileOptions_cmp_fail_equal() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
-		$meta['profile_checks']['test_val2'] = array(
+			'error_message' => ['ERROR', 'error1']];
+		$meta['profile_checks']['test_val2'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error2'));
-		$meta['profile_checks']['test_cmp'] = array(
+			'error_message' => ['ERROR', 'error2']];
+		$meta['profile_checks']['test_cmp'] = [
 			'type' => 'int_greater',
 			'cmp_name1' => 'test_val2',
 			'cmp_name2' => 'test_val1',
-			'error_message' => array('ERROR', 'errorCMP'));
+			'error_message' => ['ERROR', 'errorCMP']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('10'),
-			'test_val2' => array('10'),
-		);
+		$options = [
+			'test_val1' => ['10'],
+			'test_val2' => ['10'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
-		$this->assertEquals(array(array('ERROR', 'errorCMP')), $errors);
+		$this->assertEquals([['ERROR', 'errorCMP']], $errors);
 	}
 
 	function test_check_profileOptions_cmp_fail_smaller() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
-		$meta['profile_checks']['test_val2'] = array(
+			'error_message' => ['ERROR', 'error1']];
+		$meta['profile_checks']['test_val2'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error2'));
-		$meta['profile_checks']['test_cmp'] = array(
+			'error_message' => ['ERROR', 'error2']];
+		$meta['profile_checks']['test_cmp'] = [
 			'type' => 'int_greater',
 			'cmp_name1' => 'test_val2',
 			'cmp_name2' => 'test_val1',
-			'error_message' => array('ERROR', 'errorCMP'));
+			'error_message' => ['ERROR', 'errorCMP']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('20'),
-			'test_val2' => array('10'),
-		);
+		$options = [
+			'test_val1' => ['20'],
+			'test_val2' => ['10'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
-		$this->assertEquals(array(array('ERROR', 'errorCMP')), $errors);
+		$this->assertEquals([['ERROR', 'errorCMP']], $errors);
 	}
 
 	function test_check_profileOptions_cmpEqual_greater() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
-		$meta['profile_checks']['test_val2'] = array(
+			'error_message' => ['ERROR', 'error1']];
+		$meta['profile_checks']['test_val2'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error2'));
-		$meta['profile_checks']['test_cmp'] = array(
+			'error_message' => ['ERROR', 'error2']];
+		$meta['profile_checks']['test_cmp'] = [
 			'type' => 'int_greaterOrEqual',
 			'cmp_name1' => 'test_val2',
 			'cmp_name2' => 'test_val1',
-			'error_message' => array('ERROR', 'errorCMP'));
+			'error_message' => ['ERROR', 'errorCMP']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('10'),
-			'test_val2' => array('20'),
-		);
+		$options = [
+			'test_val1' => ['10'],
+			'test_val2' => ['20'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
 	function test_check_profileOptions_cmpEqual_equal() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
-		$meta['profile_checks']['test_val2'] = array(
+			'error_message' => ['ERROR', 'error1']];
+		$meta['profile_checks']['test_val2'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error2'));
-		$meta['profile_checks']['test_cmp'] = array(
+			'error_message' => ['ERROR', 'error2']];
+		$meta['profile_checks']['test_cmp'] = [
 			'type' => 'int_greaterOrEqual',
 			'cmp_name1' => 'test_val2',
 			'cmp_name2' => 'test_val1',
-			'error_message' => array('ERROR', 'errorCMP'));
+			'error_message' => ['ERROR', 'errorCMP']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('10'),
-			'test_val2' => array('10'),
-		);
+		$options = [
+			'test_val1' => ['10'],
+			'test_val2' => ['10'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
 	function test_check_profileOptions_cmpEqual_fail() {
+		$meta = [];
 		$module = new baseModuleDummy('user');
 
-		$meta['profile_checks']['test_val1'] = array(
+		$meta['profile_checks']['test_val1'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error1'));
-		$meta['profile_checks']['test_val2'] = array(
+			'error_message' => ['ERROR', 'error1']];
+		$meta['profile_checks']['test_val2'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => array('ERROR', 'error2'));
-		$meta['profile_checks']['test_cmp'] = array(
+			'error_message' => ['ERROR', 'error2']];
+		$meta['profile_checks']['test_cmp'] = [
 			'type' => 'int_greaterOrEqual',
 			'cmp_name1' => 'test_val2',
 			'cmp_name2' => 'test_val1',
-			'error_message' => array('ERROR', 'errorCMP'));
+			'error_message' => ['ERROR', 'errorCMP']];
 
 		$module->setMeta($meta);
 
-		$options = array(
-			'test_val1' => array('20'),
-			'test_val2' => array('10'),
-		);
+		$options = [
+			'test_val1' => ['20'],
+			'test_val2' => ['10'],
+		];
 		$errors = $module->check_profileOptions($options, 'user1');
-		$this->assertEquals(array(array('ERROR', 'errorCMP')), $errors);
+		$this->assertEquals([['ERROR', 'errorCMP']], $errors);
 	}
 
 }

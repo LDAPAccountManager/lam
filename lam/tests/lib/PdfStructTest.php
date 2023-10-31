@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2021  Roland Gruber
+  Copyright (C) 2017 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ class PdfStructTest extends TestCase {
 	public function testRead() {
 		$file = $this->getTestFileName('test.xml');
 		$fileHandle = fopen($file, "r");
-		$originalXML = fread($fileHandle, 1000000);
+		$originalXML = fread($fileHandle, 1_000_000);
 		fclose($fileHandle);
 		$reader = new PDFStructureReader();
 		$structure = $reader->read($originalXML);
@@ -86,7 +86,7 @@ class PdfStructTest extends TestCase {
 	 * @return string file name
 	 */
 	private function getTestFileName($file): string {
-		return dirname(dirname(__FILE__)) . '/resources/pdf/' . $file;
+		return dirname(__DIR__) . '/resources/pdf/' . $file;
 	}
 
 	/**
@@ -97,7 +97,7 @@ class PdfStructTest extends TestCase {
 		$file = $this->getTestFileName('writer.xml');
 		// read input XML
 		$fileHandle = fopen($file, "r");
-		$originalXML = fread($fileHandle, 1000000);
+		$originalXML = fread($fileHandle, 1_000_000);
 		fclose($fileHandle);
 		// read structure
 		$reader = new PDFStructureReader();
@@ -125,14 +125,14 @@ class PdfStructTest extends TestCase {
 	 */
 	public function testExportPDFEntrySection() {
 		$section = new PDFEntrySection('mytitle');
-		$section->setEntries(array(new PDFSectionEntry('key1'), new PDFSectionEntry('key2')));
+		$section->setEntries([new PDFSectionEntry('key1'), new PDFSectionEntry('key2')]);
 
 		$data = $section->export();
 
-		$expected = array(
+		$expected = [
 			'title' => 'mytitle',
-			'entries' => array('key1', 'key2')
-		);
+			'entries' => ['key1', 'key2']
+		];
 
 		$this->assertEquals($expected, $data);
 	}
@@ -146,32 +146,32 @@ class PdfStructTest extends TestCase {
 		$structure->setLogo('somelogo');
 		$structure->setTitle('mytitle');
 		$entrySection = new PDFEntrySection('sometitle');
-		$entrySection->setEntries(array(new PDFSectionEntry('key1')));
-		$structure->setSections(array(
+		$entrySection->setEntries([new PDFSectionEntry('key1')]);
+		$structure->setSections([
 			new PDFTextSection('sometext'),
 			$entrySection
-		));
+		]);
 
 		$data = $structure->export();
 
-		$expected = array(
+		$expected = [
 			'title' => 'mytitle',
 			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
 			'logo' => 'somelogo',
-			'sections' => array(
-				array(
+			'sections' => [
+				[
 					'type' => 'text',
 					'data' => 'sometext'
-				),
-				array(
+				],
+				[
 					'type' => 'entry',
-					'data' => array(
+					'data' => [
 						'title' => 'sometitle',
-						'entries' => array('key1')
-					)
-				)
-			)
-		);
+						'entries' => ['key1']
+					]
+				]
+			]
+		];
 
 		$this->assertEquals($expected, $data);
 	}
@@ -180,10 +180,10 @@ class PdfStructTest extends TestCase {
 	 * Tests import in PDFEntrySection.
 	 */
 	public function testImportPDFEntrySection() {
-		$data = array(
+		$data = [
 			'title' => 'mytitle',
-			'entries' => array('e1', 'e2')
-		);
+			'entries' => ['e1', 'e2']
+		];
 
 		$section = new PDFEntrySection(null);
 		$section->import($data);
@@ -199,24 +199,24 @@ class PdfStructTest extends TestCase {
 	 * Tests the import in PDFStructure.
 	 */
 	public function testImportPDFStructure() {
-		$data = array(
+		$data = [
 			'title' => 'mytitle',
 			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
 			'logo' => 'logo',
-			'sections' => array(
-				array(
+			'sections' => [
+				[
 					'type' => 'text',
 					'data' => 'textvalue'
-				),
-				array(
+				],
+				[
 					'type' => 'entry',
-					'data' => array(
+					'data' => [
 						'title' => 'etitle',
-						'entries' => array('e1', 'e2')
-					)
-				),
-			)
-		);
+						'entries' => ['e1', 'e2']
+					]
+				],
+			]
+		];
 
 		$structure = new PDFStructure();
 		$structure->import($data);

@@ -30,7 +30,7 @@ include_once __DIR__ . '/../utils/configuration.inc';
  */
 class LAMConfigTest extends TestCase {
 
-	const FILE_NAME = 'd_lam_config_test';
+	public const FILE_NAME = 'd_lam_config_test';
 
 	/**
 	 *
@@ -195,9 +195,9 @@ class LAMConfigTest extends TestCase {
 		$valInvalid = 'admin;';
 		$this->assertFalse($this->lAMConfig->set_Adminstring($valInvalid));
 		$this->lAMConfig->set_Adminstring($val);
-		$this->assertEquals(array('cn=admin,dc=test', 'cn=admin2,dc=test'), $this->lAMConfig->get_Admins());
+		$this->assertEquals(['cn=admin,dc=test', 'cn=admin2,dc=test'], $this->lAMConfig->get_Admins());
 		$this->doSave();
-		$this->assertEquals(array('cn=admin,dc=test', 'cn=admin2,dc=test'), $this->lAMConfig->get_Admins());
+		$this->assertEquals(['cn=admin,dc=test', 'cn=admin2,dc=test'], $this->lAMConfig->get_Admins());
 	}
 
 	/**
@@ -384,7 +384,7 @@ class LAMConfigTest extends TestCase {
 	public function testAccountModules() {
 		$scope = 'user';
 		$this->assertFalse($this->lAMConfig->set_AccountModules('abc', $scope));
-		$val = array('posixAccount', 'shadowAccount');
+		$val = ['posixAccount', 'shadowAccount'];
 		$this->lAMConfig->set_AccountModules($val, $scope);
 		$this->assertEquals($val, $this->lAMConfig->get_AccountModules($scope));
 		$this->doSave();
@@ -396,7 +396,7 @@ class LAMConfigTest extends TestCase {
 	 */
 	public function testmoduleSettings() {
 		$this->assertFalse($this->lAMConfig->set_moduleSettings('abc'));
-		$val = array('posixAccount_123' => array('123'), 'shadowAccount_123' => array('123'));
+		$val = ['posixAccount_123' => ['123'], 'shadowAccount_123' => ['123']];
 		$this->lAMConfig->set_moduleSettings($val);
 		$this->assertTrue(array_key_exists('posixAccount_123', $this->lAMConfig->get_moduleSettings()));
 		$this->assertTrue(array_key_exists('shadowAccount_123', $this->lAMConfig->get_moduleSettings()));
@@ -409,7 +409,7 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->get_ActiveTypes() and LAMConfig->set_ActiveTypes()
 	 */
 	public function testActiveTypes() {
-		$val = array('user', 'group');
+		$val = ['user', 'group'];
 		$this->lAMConfig->set_ActiveTypes($val);
 		$this->assertEquals($val, $this->lAMConfig->get_ActiveTypes());
 		$this->doSave();
@@ -421,7 +421,7 @@ class LAMConfigTest extends TestCase {
 	 */
 	public function testtypeSettings() {
 		$this->assertFalse($this->lAMConfig->set_typeSettings('abc'));
-		$val = array('posixAccount_123' => '123', 'shadowAccount_123' => '123');
+		$val = ['posixAccount_123' => '123', 'shadowAccount_123' => '123'];
 		$this->lAMConfig->set_typeSettings($val);
 		$this->assertTrue(array_key_exists('posixAccount_123', $this->lAMConfig->get_typeSettings()));
 		$this->assertTrue(array_key_exists('shadowAccount_123', $this->lAMConfig->get_typeSettings()));
@@ -435,7 +435,7 @@ class LAMConfigTest extends TestCase {
 	 */
 	public function testGetToolSettings() {
 		$this->assertFalse($this->lAMConfig->setToolSettings('abc'));
-		$val = array('user_123' => '123', 'group_123' => '123');
+		$val = ['user_123' => '123', 'group_123' => '123'];
 		$this->lAMConfig->setToolSettings($val);
 		$this->assertTrue(array_key_exists('user_123', $this->lAMConfig->getToolSettings()));
 		$this->assertTrue(array_key_exists('group_123', $this->lAMConfig->getToolSettings()));
@@ -448,10 +448,10 @@ class LAMConfigTest extends TestCase {
 	 * Checks isToolActive().
 	 */
 	public function testIsToolActive() {
-		$this->lAMConfig->setToolSettings(array(
+		$this->lAMConfig->setToolSettings([
 			'tool_hide_tool1' => 'true',
 			'tool_hide_tool2' => 'false',
-		));
+		]);
 		$this->assertFalse($this->lAMConfig->isToolActive('tool1'));
 		$this->assertTrue($this->lAMConfig->isToolActive('tool2'));
 		$this->assertTrue($this->lAMConfig->isToolActive('tool3'));
@@ -857,7 +857,7 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->setJobSettings() and LAMConfig->getJobSettings()
 	 */
 	public function testJobSettings() {
-		$val = array('setting' => array('123'));
+		$val = ['setting' => ['123']];
 		$this->lAMConfig->setJobSettings($val);
 		$this->assertEquals($val, $this->lAMConfig->getJobSettings());
 		$this->doSave();
@@ -948,51 +948,51 @@ class LAMConfigTest extends TestCase {
 	public function testExportData() {
 		$this->lAMConfig->set_defaultLanguage('lang');
 		$this->lAMConfig->set_ServerURL('myserver');
-		$this->lAMConfig->set_typeSettings(array('typetest' => '1'));
-		$this->lAMConfig->set_moduleSettings(array('modtest' => '1'));
-		$this->lAMConfig->setToolSettings(array('tooltest' => '1'));
-		$this->lAMConfig->setJobSettings(array('jobtest' => '1'));
+		$this->lAMConfig->set_typeSettings(['typetest' => '1']);
+		$this->lAMConfig->set_moduleSettings(['modtest' => '1']);
+		$this->lAMConfig->setToolSettings(['tooltest' => '1']);
+		$this->lAMConfig->setJobSettings(['jobtest' => '1']);
 
 		$data = $this->lAMConfig->exportData();
 
 		$this->assertEquals('lang', $data['defaultLanguage']);
 		$this->assertEquals('myserver', $data['ServerURL']);
-		$this->assertEquals(array('typetest' => '1'), $data['typeSettings']);
-		$this->assertEquals(array('modtest' => '1'), $data['moduleSettings']);
-		$this->assertEquals(array('tooltest' => '1'), $data['toolSettings']);
-		$this->assertEquals(array('jobtest' => '1'), $data['jobSettings']);
+		$this->assertEquals(['typetest' => '1'], $data['typeSettings']);
+		$this->assertEquals(['modtest' => '1'], $data['moduleSettings']);
+		$this->assertEquals(['tooltest' => '1'], $data['toolSettings']);
+		$this->assertEquals(['jobtest' => '1'], $data['jobSettings']);
 	}
 
 	/**
 	 * Tests the import.
 	 */
 	public function testImportData() {
-		$importData = array();
+		$importData = [];
 		$importData['ServerURL'] = 'testserver';
 		$importData['defaultLanguage'] = 'de_DE.utf8';
-		$importData['typeSettings'] = array('typetest' => 'value');
-		$importData['toolSettings'] = array('tooltest' => 'value');
-		$importData['moduleSettings'] = array('modtest' => 'value');
-		$importData['jobSettings'] = array('jobtest' => 'value');
+		$importData['typeSettings'] = ['typetest' => 'value'];
+		$importData['toolSettings'] = ['tooltest' => 'value'];
+		$importData['moduleSettings'] = ['modtest' => 'value'];
+		$importData['jobSettings'] = ['jobtest' => 'value'];
 		$importData['IGNORE_ME'] = 'ignore';
 
 		$this->lAMConfig->importData($importData);
 
 		$this->assertEquals('testserver', $this->lAMConfig->get_ServerURL());
 		$this->assertEquals('de_DE.utf8', $this->lAMConfig->get_defaultLanguage());
-		$this->assertEquals(array('typetest' => 'value'), $this->lAMConfig->get_typeSettings());
-		$this->assertEquals(array('tooltest' => 'value'), $this->lAMConfig->getToolSettings());
-		$this->assertEquals(array('modtest' => 'value'), $this->lAMConfig->get_moduleSettings());
-		$this->assertEquals(array('jobtest' => 'value'), $this->lAMConfig->getJobSettings());
+		$this->assertEquals(['typetest' => 'value'], $this->lAMConfig->get_typeSettings());
+		$this->assertEquals(['tooltest' => 'value'], $this->lAMConfig->getToolSettings());
+		$this->assertEquals(['modtest' => 'value'], $this->lAMConfig->get_moduleSettings());
+		$this->assertEquals(['jobtest' => 'value'], $this->lAMConfig->getJobSettings());
 	}
 
 	/**
 	 * Tests the import with invalid data.
 	 */
 	public function testImportData_invalid() {
-		$importData = array();
+		$importData = [];
 		$importData['ServerURL'] = 'testserver';
-		$importData['typeSettings'] = array('typetest' => 'value');
+		$importData['typeSettings'] = ['typetest' => 'value'];
 		$importData['defaultLanguage'] = new LAMLanguage('de_de', 'UTF-8', 'DE');
 
 		$this->expectException(LAMException::class);

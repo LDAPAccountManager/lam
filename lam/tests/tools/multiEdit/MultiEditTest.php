@@ -24,7 +24,7 @@ namespace LAM\TOOLS\MULTI_EDIT;
 
 use PHPUnit\Framework\TestCase;
 
-include_once (dirname(__FILE__) . '/../../../lib/multiEditTool.inc');
+include_once (__DIR__ . '/../../../lib/multiEditTool.inc');
 
 /**
  * Checks code in multiEdit.php.
@@ -35,30 +35,30 @@ include_once (dirname(__FILE__) . '/../../../lib/multiEditTool.inc');
 class MultiEditTest extends TestCase {
 
 	public function testExtractWildcards() {
-		$this->assertEquals(array('abc'), extractWildcards('((abc))'));
-		$this->assertEquals(array('abc'), extractWildcards('%abc%'));
-		$this->assertEquals(array('abc'), extractWildcards('@abc@'));
-		$this->assertEquals(array('abc'), extractWildcards('??abc??'));
-		$this->assertEquals(array('abc'), extractWildcards('!!abc!!'));
-		$this->assertEquals(array('abc'), extractWildcards('?abc?'));
-		$this->assertEquals(array('abc'), extractWildcards('!abc!'));
-		$this->assertEquals(array('abc'), extractWildcards('§abc|;§'));
+		$this->assertEquals(['abc'], extractWildcards('((abc))'));
+		$this->assertEquals(['abc'], extractWildcards('%abc%'));
+		$this->assertEquals(['abc'], extractWildcards('@abc@'));
+		$this->assertEquals(['abc'], extractWildcards('??abc??'));
+		$this->assertEquals(['abc'], extractWildcards('!!abc!!'));
+		$this->assertEquals(['abc'], extractWildcards('?abc?'));
+		$this->assertEquals(['abc'], extractWildcards('!abc!'));
+		$this->assertEquals(['abc'], extractWildcards('§abc|;§'));
 
-		$this->assertEquals(array('abc', 'xyz'), extractWildcards('%abc% %xyz%'));
-		$this->assertEquals(array('abc', 'xyz'), extractWildcards('%abc% ?xyz?'));
+		$this->assertEquals(['abc', 'xyz'], extractWildcards('%abc% %xyz%'));
+		$this->assertEquals(['abc', 'xyz'], extractWildcards('%abc% ?xyz?'));
 
-		$this->assertEquals(array('abc', 'xyz'), extractWildcards('adc %abc% %xyz% 123'));
-		$this->assertEquals(array('abc', 'xyz'), extractWildcards('adc %abc% ?xyz? 123'));
+		$this->assertEquals(['abc', 'xyz'], extractWildcards('adc %abc% %xyz% 123'));
+		$this->assertEquals(['abc', 'xyz'], extractWildcards('adc %abc% ?xyz? 123'));
 	}
 
 	public function testReplaceWildcards() {
-		$entry = array(
+		$entry = [
 			'dn' => 'cn=admin,dc=example,dc=com',
 			'sn' => array('Steve'),
 			'givenName' => array('Miller'),
 			'uid' => array('smiller'),
 			'description' => array('line1', 'line2')
-		);
+		];
 		$this->assertEquals('Steve', replaceWildcards('%Sn%', $entry));
 		$this->assertEquals('S', replaceWildcards('@Sn@', $entry));
 		$this->assertEquals('s', replaceWildcards('?Sn?', $entry));

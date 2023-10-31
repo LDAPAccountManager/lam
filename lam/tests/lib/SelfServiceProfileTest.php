@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2020  Roland Gruber
+  Copyright (C) 2019 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class SelfServiceProfileTest extends TestCase {
 
 	public function testImportExport() {
 		$profile = new selfServiceProfile();
-		$moduleSettings = array('x1' => 'y1', 'x2' => 'y2');
+		$moduleSettings = ['x1' => 'y1', 'x2' => 'y2'];
 		$profile->moduleSettings = $moduleSettings;
 		$profile->baseColor = 'green';
 		$profile->language = 'de_DE@UTF8';
