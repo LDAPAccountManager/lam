@@ -32,11 +32,7 @@ class LAMConfigTest extends TestCase {
 
 	public const FILE_NAME = 'd_lam_config_test';
 
-	/**
-	 *
-	 * @var LAMConfig
-	 */
-	private $lAMConfig;
+	private ?LAMConfig $lAMConfig;
 
 	private ServerProfilePersistenceManager $serverProfilePersistenceManager;
 
