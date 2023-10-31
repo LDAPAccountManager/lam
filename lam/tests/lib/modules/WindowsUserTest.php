@@ -79,7 +79,7 @@ use PHPUnit\Framework\TestCase;
 		}
 
 		public function testWindowsManagedGroupsNotifyJob_getLastEffectiveExecutionDate() {
-			if (!interface_exists('\LAM\JOB\Job', false)) {
+			if (!interface_exists('\\' . \LAM\JOB\Job::class, false)) {
 				$this->markTestSkipped();
 				return;
 			}

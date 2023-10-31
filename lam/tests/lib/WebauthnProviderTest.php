@@ -33,9 +33,9 @@ require_once __DIR__ . '/../../lib/2factor.inc';
 class WebauthnProviderTest extends TestCase {
 
 	/**
-	 * @var TwoFactorConfiguration
+	 * @var TwoFactorConfiguration configuration for 2FA
 	 */
-	private $config;
+	private TwoFactorConfiguration $config;
 
 	protected function setUp(): void {
 		$this->config = new TwoFactorConfiguration();

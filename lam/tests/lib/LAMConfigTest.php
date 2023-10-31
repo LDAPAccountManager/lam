@@ -38,7 +38,7 @@ class LAMConfigTest extends TestCase {
 	 */
 	private $lAMConfig;
 
-	private $serverProfilePersistenceManager;
+	private ServerProfilePersistenceManager $serverProfilePersistenceManager;
 
 	/**
 	 * Prepares the environment before running a test.

@@ -459,7 +459,7 @@ $lamdaemonRightsLabel = new htmlGroup();
 $lamdaemonRightsLabel->addElement(new htmlOutputText(_("Rights for the home directory")));
 $lamdaemonRightsLabel->addElement(new htmlSpacer('0.2rem', null));
 $lamdaemonRightsLabel->addElement(new htmlHelpLink('219'));
-$row->addLabel($lamdaemonRightsLabel, 12, 6);
+$row->addLabel($lamdaemonRightsLabel);
 $chmod = $conf->get_scriptRights();
 $rightsTable = new htmlTable();
 $rightsTable->setCSSClasses(['padding5']);
@@ -479,7 +479,7 @@ $rightsTable->addElement(new htmlOutputText(_("Other")));
 $rightsTable->addElement(new htmlInputCheckbox('chmod_otr', checkChmod("read","other", $chmod)));
 $rightsTable->addElement(new htmlInputCheckbox('chmod_otw', checkChmod("write","other", $chmod)));
 $rightsTable->addElement(new htmlInputCheckbox('chmod_ote', checkChmod("execute","other", $chmod)), true);
-$row->addField($rightsTable, 12, 6);
+$row->addField($rightsTable);
 
 $row->addVerticalSpacer('2rem');
 

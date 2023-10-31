@@ -1,4 +1,6 @@
 <?php
+
+use LAM\JOB\JobResultLog;
 use PHPUnit\Framework\TestCase;
 /*
 
@@ -45,7 +47,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		public const ONE_YEAR_POLICY = 'cn=policy1,dc=test';
 
 		private array $options = [];
-		private $resultLog;
+		private JobResultLog $resultLog;
 
 		protected function setUp(): void {
 			$this->job = $this->getMockBuilder('PPolicyPasswordNotifyJob')

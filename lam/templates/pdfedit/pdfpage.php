@@ -354,7 +354,7 @@ foreach ($sections as $key => $section) {
 			}
 			$entryLinkRemove = new htmlButton('remove_entry_' . $key . '_' . $e, 'del.svg', true);
 			$entryLinkRemove->setTitle(_("Remove"));
-			$actionGroup->addElement($entryLinkRemove, true);
+			$actionGroup->addElement($entryLinkRemove);
 			$structureContent->addField($actionGroup);
 		}
 	}
@@ -385,7 +385,7 @@ foreach ($sections as $key => $section) {
 		else {
 			$actionGroup->addElement($emptyBox);
 		}
-		$actionGroup->addElement($linkRemove, true);
+		$actionGroup->addElement($linkRemove);
 		$structureContent->addField($actionGroup);
 		$structureContent->addVerticalSpacer('1rem');
 		$staticTextOutput = new htmlOutputText($section->getText());
@@ -551,7 +551,7 @@ function updateBasicSettings(PDFStructure &$structure, array $logoFiles): void {
 /**
  * Updates section titles.
  *
- * @param PDFStructure $structure
+ * @param PDFStructure $structure PDF structure
  */
 function updateSectionTitles(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
@@ -566,7 +566,7 @@ function updateSectionTitles(PDFStructure &$structure): void {
 /**
  * Adds a new section if requested.
  *
- * @param PDFStructure $structure
+ * @param PDFStructure $structure PDF structure
  */
 function addSection(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
@@ -605,7 +605,7 @@ function addSection(PDFStructure &$structure): void {
 /**
  * Adds a new entry to a section if requested.
  *
- * @param PDFStructure $structure
+ * @param PDFStructure $structure PDF structure
  */
 function addSectionEntry(PDFStructure &$structure): void {
 	if (isset($_POST['add_new_field'])) {
@@ -622,7 +622,7 @@ function addSectionEntry(PDFStructure &$structure): void {
 /**
  * Removes a section or entry if requested.
  *
- * @param PDFStructure $structure
+ * @param PDFStructure $structure PDF structure
  */
 function removeItem(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
@@ -652,7 +652,7 @@ function removeItem(PDFStructure &$structure): void {
 /**
  * Moves up a section or entry if requested.
  *
- * @param PDFStructure $structure
+ * @param PDFStructure $structure PDF structure
  */
 function moveUp(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
@@ -684,7 +684,7 @@ function moveUp(PDFStructure &$structure): void {
 /**
  * Moves down a section or entry if requested.
  *
- * @param PDFStructure $structure
+ * @param PDFStructure $structure PDF structure
  */
 function moveDown(PDFStructure &$structure): void {
 	$sections = $structure->getSections();

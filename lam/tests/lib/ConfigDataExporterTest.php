@@ -86,7 +86,7 @@ class ConfigDataExporterTest extends TestCase {
 			'cronJobs' => []
 		]);
 
-		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
+		$exporter = $this->getMockBuilder('\\' . \LAM\PERSISTENCE\ConfigDataExporter::class)
 			->setMethods(['_getMainConfigData', '_getCertificates', '_getServerProfiles',
 				'_getAccountProfiles', '_getAccountProfileTemplates', '_getPdfProfiles',
 				'_getPdfProfileTemplates', '_getSelfServiceProfiles', '_getWebauthn',

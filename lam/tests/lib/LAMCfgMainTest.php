@@ -30,7 +30,7 @@ include_once __DIR__ . '/../../lib/config.inc';
  */
 class LAMCfgMainTest extends TestCase {
 
-	private $conf;
+	private ?\LAMCfgMain $conf = null;
 	private string $file;
 
 	/**
