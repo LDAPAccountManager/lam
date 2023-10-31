@@ -54,10 +54,10 @@ class MultiEditTest extends TestCase {
 	public function testReplaceWildcards() {
 		$entry = [
 			'dn' => 'cn=admin,dc=example,dc=com',
-			'sn' => array('Steve'),
-			'givenName' => array('Miller'),
-			'uid' => array('smiller'),
-			'description' => array('line1', 'line2')
+			'sn' => ['Steve'],
+			'givenName' => ['Miller'],
+			'uid' => ['smiller'],
+			'description' => ['line1', 'line2']
 		];
 		$this->assertEquals('Steve', replaceWildcards('%Sn%', $entry));
 		$this->assertEquals('S', replaceWildcards('@Sn@', $entry));

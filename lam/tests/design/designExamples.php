@@ -298,7 +298,7 @@ $sortableList1 = new htmlSortableList([
 	'text 4',
 	'text 5',
 ], 'sortableList1');
-$sortableList1->setCSSClasses(array('module-list'));
+$sortableList1->setCSSClasses(['module-list']);
 $row->add($sortableList1);
 
 $row->add(new htmlSpacer(null, '2rem'));
