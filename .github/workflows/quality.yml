@@ -38,11 +38,17 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Run test suite
-      run: composer run-script test
+    - name: Install CodeSpell
+      run: pip install --user codespell
 
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: CodeSpell
+      run: ./codespell.sh
+
+    - name: PHPStan Version
+      run: ./vendor/bin/phpstan -V
+
+    - name: PHPStan
+      run: ./vendor/bin/phpstan --xdebug
+
+    - name: Rector
+      run: ./vendor/bin/rector process --dry-run
