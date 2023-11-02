@@ -69,7 +69,7 @@ class lamList {
 	protected $showAccountStatus = false;
 
 	/** filter value for account status */
-	protected $accountStatusFilter = null;
+	protected $accountStatusFilter;
 
 	/** Account type */
 	protected $type;

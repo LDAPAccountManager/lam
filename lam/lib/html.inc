@@ -67,11 +67,11 @@ abstract class htmlElement {
 	const ALIGN_CENTER = 4;
 
 	/** alignment when inside a table */
-	public $alignment = null;
+	public $alignment;
 	/** colspan if inside a table */
-	public $colspan = null;
+	public $colspan;
 	/** rowspan if inside a table */
-	public $rowspan = null;
+	public $rowspan;
 	/** CSS classes */
 	protected $cssClasses = array();
 	/** table cell CSS classes */
@@ -245,9 +245,9 @@ class htmlTable extends htmlElement {
 	/** specifies if currently a row is open */
 	private $rowOpen = false;
 	/** table width */
-	private $width = null;
+	private $width;
 	/** HTML ID */
-	private $id = null;
+	private $id;
 
 	/**
 	 * Constructor
@@ -423,11 +423,11 @@ class htmlInputField extends htmlElement {
 	/** field max length (default 1000) */
 	protected $fieldMaxLength = 1000;
 	/** on keypress event */
-	protected $onKeyPress = null;
+	protected $onKeyPress;
 	/** on keyupp event */
-	protected $onKeyUp = null;
+	protected $onKeyUp;
 	/** oninput event */
-	protected $onInput = null;
+	protected $onInput;
 	/** password field */
 	protected $isPassword = false;
 	/** check password strength */
@@ -457,23 +457,23 @@ class htmlInputField extends htmlElement {
 	/** calendar with seconds */
 	protected $calendarFormatWithSeconds = false;
 	/** title attribute */
-	protected $title = null;
+	protected $title;
 	/** field ID that needs to have same value (e.g. password field) */
-	protected $sameValueFieldID = null;
+	protected $sameValueFieldID;
 	/** marks the input field as auto trimmed (remove spaces at start/end) */
 	protected $autoTrim = true;
 	/** minimum value */
-	protected $minValue = null;
+	protected $minValue;
 	/** maximum value */
-	protected $maxValue = null;
+	protected $maxValue;
 	/** step for numeric values */
-	protected $stepValue = null;
+	protected $stepValue;
 	/** id */
-	protected $id = null;
+	protected $id;
 	/** input type */
 	protected $type = 'text';
 	/** validation pattern */
-	protected $validationPattern = null;
+	protected $validationPattern;
 
 	/**
 	 * Constructor
@@ -807,8 +807,7 @@ class htmlInputField extends htmlElement {
 		$format = str_replace('yy', 'Y', $format);
 		$format = str_replace('dd', 'd', $format);
 		$format = str_replace('mm', 'm', $format);
-		$format = str_replace('\\', '\\\\', $format);
-		$this->calendarFormat = $format;
+		$this->calendarFormat = str_replace('\\', '\\\\', $format);
 	}
 
 	/**
@@ -968,13 +967,13 @@ class htmlButton extends htmlElement {
 	/** image button or text button */
 	protected $isImageButton;
 	/** title */
-	private $title = null;
+	private $title;
 	/** enabled or disabled */
 	private $isEnabled = true;
 	/** onclick event */
-	private $onClick = null;
+	private $onClick;
 	/** button type (default: "submit" if no onClick and "button" with onClick) */
-	private $type = null;
+	private $type;
 	/** disable form validation */
 	private $noFormValidation = false;
 
@@ -1167,7 +1166,7 @@ class htmlSelect extends htmlElement {
 	/** transform select boxes with one element to text */
 	private $transformSingleSelect = true;
 	/** onchange event */
-	private $onchangeEvent = null;
+	private $onchangeEvent;
 	/** indicates that this field should not automatically be saved in the self service or server profile */
 	private $transient = false;
 	/** list of enclosing table rows to hide when checked */
@@ -1578,11 +1577,11 @@ class htmlRadio extends htmlElement {
 	/** elements */
 	private $elements;
 	/** selected element */
-	private $selectedElement = null;
+	private $selectedElement;
 	/** enabled or disabled */
 	private $isEnabled = true;
 	/** on change code */
-	private $onchangeEvent = null;
+	private $onchangeEvent;
 	/** list of enclosing table rows to hide when checked */
 	protected $tableRowsToHide = array();
 	/** list of enclosing table rows to show when checked */
@@ -1801,7 +1800,7 @@ class htmlOutputText extends htmlElement {
 	/** preformatted */
 	private $isPreformatted = false;
 	/** title */
-	private $title = null;
+	private $title;
 
 	/**
 	 * Constructor.
@@ -2439,7 +2438,7 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 	/** help ID */
 	private $helpID;
 	/** help module */
-	private $helpModule = null;
+	private $helpModule;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -2515,15 +2514,15 @@ class htmlImage extends htmlElement {
 	/** title */
 	private $title;
 	/** onClick event */
-	private $onClick = null;
+	private $onClick;
 	/** enable cropping */
 	private $crop = false;
 	/** enable lightbox */
 	private $lightbox = false;
 	/** @var string help popup title */
-	private $helpTitle = null;
+	private $helpTitle;
 	/** @var htmlElement help popup content	*/
-	private $helpContent = null;
+	private $helpContent;
 
 	/**
 	 * Constructor.
@@ -2674,9 +2673,9 @@ class htmlImage extends htmlElement {
 class htmlSpacer extends htmlElement {
 
 	/** width of spacer in px */
-	private $width = null;
+	private $width;
 	/** height of spacer in px */
-	private $height = null;
+	private $height;
 
 	/**
 	 * Constructor.
@@ -2772,13 +2771,10 @@ class htmlStatusMessage extends htmlElement {
 		switch ($count) {
 			case 2:
 				return new htmlStatusMessage($params[0], $params[1]);
-				break;
 			case 3:
 				return new htmlStatusMessage($params[0], $params[1], $params[2]);
-				break;
 			case 4:
 				return new htmlStatusMessage($params[0], $params[1], $params[2], $params[3]);
-				break;
 			default:
 				throw new BadMethodCallException("Invalid parameter count");
 		}
@@ -2824,7 +2820,7 @@ class htmlStatusMessage extends htmlElement {
 class htmlTitle extends htmlElement {
 
 	/** descriptive label */
-	private $label = null;
+	private $label;
 
 	/**
 	 * Constructor.
@@ -2866,15 +2862,15 @@ class htmlTitle extends htmlElement {
 class htmlSubTitle extends htmlElement {
 
 	/** descriptive label */
-	private $label = null;
+	private $label;
 	/** optional image */
-	private $image = null;
+	private $image;
 	/** optional ID for this element (e.g. to use for JavaScript) */
-	private $id = null;
+	private $id;
 	/** show large icon */
 	private $largeIcon = false;
 	/** help ID */
-	private $helpId = null;
+	private $helpId;
 
 	/**
 	 * Constructor.
@@ -2949,9 +2945,9 @@ class htmlSubTitle extends htmlElement {
 class htmlHiddenInput extends htmlElement {
 
 	/** field name */
-	private $name = null;
+	private $name;
 	/** field value */
-	private $value = null;
+	private $value;
 
 	/**
 	 * Constructor.
@@ -2990,19 +2986,19 @@ class htmlHiddenInput extends htmlElement {
 class htmlLink extends htmlElement {
 
 	/** link text */
-	private $text = null;
+	private $text;
 	/** link target */
-	protected $target = null;
+	protected $target;
 	/** optional image */
-	private $image = null;
+	private $image;
 	/** title */
-	private $title = null;
+	private $title;
 	/** target window */
-	private $targetWindow = null;
+	private $targetWindow;
 	/** onClick event */
-	private $onClick = null;
+	private $onClick;
 	/** onMouseOver event */
-	private $onMouseOver = null;
+	private $onMouseOver;
 	/** link id */
 	private $id;
 
@@ -3148,7 +3144,7 @@ class htmlLink extends htmlElement {
  */
 class htmlContentLink extends htmlLink {
 
-	private $content = null;
+	private $content;
 	private $contentText = '';
 
 	/**
@@ -3275,9 +3271,9 @@ class htmlHorizontalLine extends htmlElement {
 class htmlDiv extends htmlElement {
 
 	/** unique ID */
-	private $id = null;
+	private $id;
 	/** htmlElement that generates inner content */
-	private $content = null;
+	private $content;
 
 	/**
 	 * Constructor.
@@ -3332,11 +3328,11 @@ class htmlDiv extends htmlElement {
 class htmlSpan extends htmlElement {
 
 	/** htmlElement that generates inner content */
-	private $content = null;
+	private $content;
 	/** onclick handler */
-	private $onclick = null;
+	private $onclick;
 	/** title */
-	private $title = null;
+	private $title;
 
 	/**
 	 * Constructor.
@@ -3410,7 +3406,7 @@ class htmlSpan extends htmlElement {
 class htmlJavaScript extends htmlElement {
 
 	/** htmlElement that generates inner content */
-	private $content = null;
+	private $content;
 
 	/**
 	 * Constructor.
@@ -3449,7 +3445,7 @@ class htmlJavaScript extends htmlElement {
 class htmlIframe extends htmlElement {
 
 	/** HTML id */
-	private $id = null;
+	private $id;
 
 	/**
 	 * Constructor.
@@ -3485,7 +3481,7 @@ class htmlIframe extends htmlElement {
 class htmlScript extends htmlElement {
 
 	/** src value */
-	private $src = null;
+	private $src;
 	/** is async */
 	private $async = false;
 	/** execute after page is parsed */
@@ -3533,7 +3529,7 @@ class htmlScript extends htmlElement {
 class htmlLinkCss extends htmlElement {
 
 	/** src value */
-	private $src = null;
+	private $src;
 
 	/**
 	 * Constructor.
@@ -3574,7 +3570,7 @@ class htmlSortableList extends htmlElement {
 	/** HTML ID */
 	private $id;
 	/** on update event */
-	private $onUpdate = null;
+	private $onUpdate;
 
 	/**
 	 * Constructor.
@@ -3723,7 +3719,7 @@ class htmlResponsiveRow extends htmlElement {
 	/** @var htmlResponsiveCell[] cells */
 	private $cells = array();
 	/** HTML ID */
-	private $id = null;
+	private $id;
 
 	/**
 	 * Creates a new responsive row.
@@ -3868,10 +3864,10 @@ class htmlResponsiveRow extends htmlElement {
  */
 class htmlResponsiveCell extends htmlElement {
 
-	private $content = null;
-	private $mobile = null;
-	private $tablet = null;
-	private $desktop = null;
+	private $content;
+	private $mobile;
+	private $tablet;
+	private $desktop;
 	private $classes = '';
 
 	/**
@@ -3926,7 +3922,7 @@ class htmlResponsiveInputField extends htmlInputField {
 	/** help ID */
 	private $helpID;
 	/** help module name */
-	private $helpModule = null;
+	private $helpModule;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 	/** short label */
@@ -4014,7 +4010,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	/** help ID */
 	private $helpID;
 	/** help module */
-	private $helpModule = null;
+	private $helpModule;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -4094,7 +4090,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	/** help ID */
 	private $helpID;
 	/** help module */
-	private $helpModule = null;
+	private $helpModule;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -4174,7 +4170,7 @@ class htmlResponsiveSelect extends htmlSelect {
 	/** help ID */
 	private $helpID;
 	/** help module name */
-	private $helpModule = null;
+	private $helpModule;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 	/** short label */
@@ -4338,7 +4334,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	/** help ID */
 	private $helpID;
 	/** help module name */
-	private $helpModule = null;
+	private $helpModule;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 	/** long label */
@@ -4660,11 +4656,11 @@ class htmlVideo extends htmlElement {
 class htmlForm extends htmlElement {
 
 	/** form name */
-	private $name = null;
+	private $name;
 	/** submit target */
-	private $action = null;
+	private $action;
 	/** inner content */
-	private $content = null;
+	private $content;
 
 	/**
 	 * Constructor.

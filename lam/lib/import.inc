@@ -5,7 +5,7 @@ use \LAMException;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2021  Roland Gruber
+ Copyright (C) 2018 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -550,7 +550,7 @@ class MultiTask implements ImporterTask {
 	/**
 	 * @var string DN
 	 */
-	private $dn = null;
+	private $dn;
 
 	/**
 	 * Constructor
@@ -647,7 +647,7 @@ class DeleteAttributesTask implements ImporterTask {
 
 	private $dn = '';
 	private $attributes = array();
-	private $attributeName = null;
+	private $attributeName;
 
 	/**
 	 * Constructor

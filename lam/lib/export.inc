@@ -48,14 +48,14 @@ class Exporter {
 	const FILE = 'file';
 	const OUTPUT = 'output';
 
-	private $baseDn = null;
-	private $searchScope = null;
-	private $filter = null;
-	private $attributes = null;
+	private $baseDn;
+	private $searchScope;
+	private $filter;
+	private $attributes;
 	private $includeSystem = false;
 	private $saveAsFile = false;
-	private $format = null;
-	private $ending = null;
+	private $format;
+	private $ending;
 
 	/**
 	 * Constructor.
