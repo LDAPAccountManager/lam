@@ -78,15 +78,15 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	/** lamdaemon servers */
 	private $lamdaemonServers = array();
 	/** cache for group objects */
-	private $groupCache;
+	private $groupCache = null;
 	/** cache for group of names objects */
-	private $gonCache;
+	private $gonCache = null;
 	/** clear text password */
 	private $clearTextPassword;
 	/** caches the list of known UIDs */
-	private $cachedUIDList;
+	private $cachedUIDList = null;
 	/** caches the list of known user names */
-	private $cachedUserNameList;
+	private $cachedUserNameList = null;
 
 	/** replacements for common umlauts */
 	private $umlautReplacements = array(
@@ -634,7 +634,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		for ($i = 0; $i < sizeof($gonList); $i++) {
 			$userGoNs[] = $gonList[$i]['dn'];
 		}
-		return array_values(array_unique($userGoNs));
+		$userGoNs = array_values(array_unique($userGoNs));
+		return $userGoNs;
 	}
 
 	/**
@@ -1064,8 +1065,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-						$return[] = $singleresult;
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+							$return[] = $singleresult;
+						}
 					}
 				}
 			}
@@ -1296,8 +1299,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			if (!get_preg($this->attributes['uid'][0], 'hostname')) {
 				$errors[] = $this->messages['uid'][4];
 			}
-			$this->attributes[$homedirAttrName][0] = '/dev/null';
-			$this->attributes['loginShell'][0] = '/bin/false';
+			if (!isset($this->attributes[$homedirAttrName][0])) {
+				$this->attributes[$homedirAttrName][0] = '/dev/null';
+			}
+			if (!isset($this->attributes['loginShell'][0])) {
+				$this->attributes['loginShell'][0] = '/bin/false';
+			}
 		}
 		$attributeList = array($homedirAttrName);
 		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
@@ -1649,9 +1656,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
 							$return[] = $singleresult;
 						}
+					}
 				}
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
@@ -1678,9 +1687,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
 							$return[] = $singleresult;
 						}
+					}
 				}
 			}
 		}
@@ -3173,17 +3184,17 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	function getNextUIDs($count, &$errors, $typeId) {
 		// check if UIDs should be taken from Samba pool entry
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolUIDs($count, $typeId);
+			return $this->getNextSambaPoolUIDs($count, $errors, $typeId);
 		}
 		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolUIDs($count, $typeId);
+			return $this->getNextSambaPoolUIDs($count, $errors, $typeId);
 		}
 		// check if UIDs should be taken from domain info pool entry
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoUIDs($count, $typeId);
+			return $this->getNextDomainInfoUIDs($count, $errors, $typeId);
 		}
 		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoUIDs($count, $typeId);
+			return $this->getNextDomainInfoUIDs($count, $errors, $typeId);
 		}
 		// check if a magic number should be used
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'magicNumber')) {
@@ -3250,6 +3261,74 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			}
 		}
 		return $ret;
+	}
+
+	/**
+	 * Gets the free UID numbers from an Samba pool entry in LDAP.
+	 *
+	 * @param integer $count number of needed free UIDs.
+	 * @param array $errors list of error messages where errors can be added
+	 * @param string $typeId type id (e.g. user)
+	 * @return mixed null if no UIDs are free else an array of free UIDs
+	 */
+	private function getNextSambaPoolUIDs($count, &$errors, $typeId) {
+		if ($this->get_scope() == 'user') {
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'][0];
+		}
+		else {
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'][0];
+		}
+		$attrs = ldapGetDN($dn, array('uidNumber'));
+		if (isset($attrs['uidnumber'][0]) && ($attrs['uidnumber'][0] != '')) {
+			$newValue = $attrs['uidnumber'][0] + $count;
+			$ldapHandle = $_SESSION['ldap']->server();
+			ldap_modify($ldapHandle, $dn, array('uidnumber' => array($newValue)));
+			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
+			if (ldap_errno($ldapHandle) != 0) {
+				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
+				return null;
+			}
+			$result = array();
+			for ($i = 0; $i < $count; $i++) {
+				$result[] = $attrs['uidnumber'][0] + $i;
+			}
+			return $result;
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the free UID numbers from a domain info entry in LDAP.
+	 *
+	 * @param integer $count number of needed free UIDs.
+	 * @param array $errors list of error messages where errors can be added
+	 * @param string $typeId type id (e.g. user)
+	 * @return mixed null if no UIDs are free else an array of free UIDs
+	 */
+	private function getNextDomainInfoUIDs($count, &$errors, $typeId) {
+		if ($this->get_scope() == 'user') {
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_windowsIDPoolDNUsers'][0];
+		}
+		else {
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_windowsIDPoolDNHosts'][0];
+		}
+		$attrs = ldapGetDN($dn, array('msSFU30MaxUidNumber'));
+		if (!empty($attrs['mssfu30maxuidnumber'][0])) {
+			$newValue = $attrs['mssfu30maxuidnumber'][0] + $count;
+			$ldapHandle = $_SESSION['ldap']->server();
+			ldap_modify($ldapHandle, $dn, array('mssfu30maxuidnumber' => array($newValue)));
+			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
+			if (ldap_errno($ldapHandle) != 0) {
+				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
+				return null;
+			}
+			$result = array();
+			for ($i = 0; $i < $count; $i++) {
+				$result[] = $attrs['mssfu30maxuidnumber'][0] + $i;
+			}
+			return $result;
+		}
+		return null;
 	}
 
 	/**
