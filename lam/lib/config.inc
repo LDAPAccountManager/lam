@@ -1110,33 +1110,33 @@ class LAMConfig {
 	private $pwdResetDefaultPasswordOutput = LAMconfig::PWDRESET_DEFAULT_MAIL;
 
 	/** LDAP user for jobs */
-	private $jobsBindUser = null;
+	private $jobsBindUser;
 	/** LDAP password for jobs */
-	private $jobsBindPassword = null;
+	private $jobsBindPassword;
 	/** database type for jobs */
-	private $jobsDatabase = null;
+	private $jobsDatabase;
 	/** host of job database */
-	private $jobsDBHost = null;
+	private $jobsDBHost;
 	/** port of job database */
-	private $jobsDBPort = null;
+	private $jobsDBPort;
 	/** user of job database */
-	private $jobsDBUser = null;
+	private $jobsDBUser;
 	/** password of job database */
-	private $jobsDBPassword = null;
+	private $jobsDBPassword;
 	/** name of job database */
-	private $jobsDBName = null;
+	private $jobsDBName;
 	/** random job token */
-	private $jobToken = null;
+	private $jobToken;
 	/** job configuration */
 	private $jobSettings = array();
 
 	private $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
 	private $twoFactorAuthenticationURL = 'https://localhost';
-	private $twoFactorAuthenticationClientId = null;
-	private $twoFactorAuthenticationSecretKey = null;
-	private $twoFactorAuthenticationDomain = null;
+	private $twoFactorAuthenticationClientId;
+	private $twoFactorAuthenticationSecretKey;
+	private $twoFactorAuthenticationDomain;
 	private $twoFactorAuthenticationInsecure = false;
-	private $twoFactorAuthenticationLabel = null;
+	private $twoFactorAuthenticationLabel;
 	private $twoFactorAuthenticationOptional = false;
 	private $twoFactorAuthenticationCaption = '';
 	private $twoFactorAuthenticationAttribute = '';
@@ -3067,13 +3067,13 @@ class LAMCfgMain {
 	public $passwordMustNotContain3Chars = 'false';
 
 	/** external URL for password checking (e.g. https://domain.com/url/{SHA1}) */
-	public $externalPwdCheckUrl = null;
+	public $externalPwdCheckUrl;
 
 	/** path to config file */
 	private $conffile;
 
 	/** uploaded SSL certificate that is stored to disk on save() */
-	private $uploadedSSLCaCert = null;
+	private $uploadedSSLCaCert;
 
 	/** SSL certificate should be deleted on save() */
 	private $delSSLCaCert = false;
@@ -3238,9 +3238,7 @@ class LAMCfgMain {
 	public function importCertificates($certsContent) {
 		$fileName = $this->getSSLCaCertPath();
 		if (empty($certsContent)) {
-			if ($fileName !== null) {
-				unlink($fileName);
-			}
+			unlink($fileName);
 			return;
 		}
 		$fileName = $this->getInternalSSLCaCertFileName();
@@ -3696,7 +3694,6 @@ class LAMCfgMain {
 			logNewMessage(LOG_ERR, 'Unable to store SSL CA file: ' . $e->getTitle());
 			return null;
 		}
-		return null;
 	}
 
 	/**

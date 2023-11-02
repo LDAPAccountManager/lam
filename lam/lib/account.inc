@@ -1124,7 +1124,6 @@ function getLastLDAPError() {
 		// all ok
 		case 0:
 			return null;
-			break;
 		// size limit exceeded
 		case 4:
 			$error = array("WARN", _("LDAP sizelimit exceeded, not all entries are shown."));
@@ -1133,11 +1132,9 @@ function getLastLDAPError() {
 				$error[] = _("See the manual for instructions to solve this problem.");
 			}
 			return $error;
-			break;
 		// other errors
 		default:
 			return array("ERROR", _("LDAP search failed! Please check your preferences."), ldap_error($_SESSION["ldap"]->server()));
-		break;
 	}
 }
 
@@ -1387,8 +1384,7 @@ function extractRDN(?string $dn): ?string {
 		return null;
 	}
 	$rdn = unescapeLdapSpecialCharacters($parts[0]);
-	$rdn = str_replace(',', '\\2C', $rdn);
-	return $rdn;
+	return str_replace(',', '\\2C', $rdn);
 }
 
 /**

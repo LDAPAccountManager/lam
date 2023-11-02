@@ -535,8 +535,6 @@ class DuoProvider extends BaseProvider {
 			logNewMessage(LOG_ERR, 'DUO error: ' . $e->getMessage());
 			return false;
 		}
-		logNewMessage(LOG_ERR, 'DUO authentication failed');
-		return false;
 	}
 
 	/**
@@ -833,11 +831,10 @@ class OpenIdProvider extends BaseProvider {
 			$meta['redirect_uri'] = $_GET['redirect_uri'];
 		}
 		$clientMetadata = \Facile\OpenIDClient\Client\Metadata\ClientMetadata::fromArray($meta);
-		$client = (new \Facile\OpenIDClient\Client\ClientBuilder())
+		return (new \Facile\OpenIDClient\Client\ClientBuilder())
 			->setIssuer($issuer)
 			->setClientMetadata($clientMetadata)
 			->build();
-		return $client;
 	}
 
 	/**
@@ -1323,7 +1320,7 @@ class TwoFactorConfiguration {
 	/**
 	 * @var string|array service URL(s)
 	 */
-	public $twoFactorAuthenticationURL = null;
+	public $twoFactorAuthenticationURL;
 
 	/**
 	 * @var bool disable certificate check

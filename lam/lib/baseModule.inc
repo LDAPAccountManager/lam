@@ -7,7 +7,7 @@ use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -163,7 +163,6 @@ abstract class baseModule {
 	* @param array $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
 	*/
 	public function load_attributes($attributes) {
-		$this->attributes = array();
 		$this->attributes = array();
 		// load object classes
 		if (isset($attributes['objectClass'])) {

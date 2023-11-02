@@ -133,14 +133,6 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
              array( 2,  1, 14,  7,  4, 10,  8, 13, 15, 12,  9,  0,  3,  5,  6, 11)));
 
 	/**
-	* Fixes too large numbers
-	*/
-	private function x($i) {
-		if ($i < 0) return 4294967296 - $i;
-		else return $i;
-	}
-
-	/**
 	* @param integer count
 	* @param array $data
 	* @return array
@@ -371,5 +363,3 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 	}
 
 }
-
-?>
