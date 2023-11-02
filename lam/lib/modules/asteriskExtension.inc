@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2022  Roland Gruber
+                2009 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -834,11 +834,10 @@ class asteriskExtension extends baseModule {
             $this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskExtension_AstExtension', 'AstExtension');
 
             $extensionName = $partialAccounts[$i]['AstExtension'];
-            $astPriorityTmp = 0;
-            if(isset ($extensionNamePriorityMap[$extensionName])){
+            if (isset($extensionNamePriorityMap[$extensionName])){
                 $astPriorityTmp = $extensionNamePriorityMap[$extensionName] + 1;
                 $extensionNamePriorityMap[$extensionName] = $astPriorityTmp;
-            }else{
+            } else {
                 $astPriorityTmp = 1;
                 $extensionNamePriorityMap[$extensionName] = $astPriorityTmp;
             }
@@ -870,7 +869,6 @@ class asteriskExtension extends baseModule {
         if ($this->isMoveToNewSuffix()) {
             $oldDN = "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
             $newRDN = "cn=" . $rowOrig["cn"][0];
-            $is_rename_success = false;
             $is_rename_success = @ldap_rename($_SESSION['ldap']->server(), $oldDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
             if (!$is_rename_success) {
                 $errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->getAccountContainer()->dn_orig), getDefaultLDAPErrorString($_SESSION['ldap']->server()));

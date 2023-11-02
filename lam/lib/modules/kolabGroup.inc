@@ -35,7 +35,7 @@ use LAM\TYPES\TypeManager;
 class kolabGroup extends baseModule {
 
 	/** cache for mail attribute */
-	private $mailCache = null;
+	private $mailCache;
 
 	/**
 	* Creates a new kolabGroup object.

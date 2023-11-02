@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2022  Roland Gruber
+                2008 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -234,8 +234,6 @@ class ddns extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$errors = array();
-
 		// Main Settings and Account have to different processes.
 		if ($this->isRootNode()) {
 			// main settings:
@@ -246,10 +244,8 @@ class ddns extends baseModule {
 			if (!$this->check_if_ddns_is_enable()) {
 				return array();
 			}
-
 			$errors = $this->process_attributes_account();
 		}
-
 		return $errors;
 	}
 

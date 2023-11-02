@@ -46,7 +46,7 @@ class freeRadius extends baseModule {
 		);
 
 	/** cache for profile DNs */
-	private $profileCache = null;
+	private $profileCache;
 
 
 	/**
@@ -187,13 +187,11 @@ class freeRadius extends baseModule {
 			$profileElements[] = $profileSelect;
 			$return['profile_mappings']['freeRadius_radiusProfileDn'] = 'radiusProfileDn';
 		}
-		if (sizeof($profileElements) > 0) {
-			$profileContainer = new htmlResponsiveRow();
-			for ($i = 0; $i < sizeof($profileElements); $i++) {
-				$profileContainer->add($profileElements[$i], 12);
-			}
-			$return['profile_options'] = $profileContainer;
+		$profileContainer = new htmlResponsiveRow();
+		for ($i = 0; $i < sizeof($profileElements); $i++) {
+			$profileContainer->add($profileElements[$i], 12);
 		}
+		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = array();
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {

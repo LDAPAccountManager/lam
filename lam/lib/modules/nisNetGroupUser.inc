@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2015 - 2019  Roland Gruber
+  Copyright (C) 2015 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,9 +43,9 @@ class nisNetGroupUser extends baseModule {
 	/** list of NIS netgroups the user was memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
 	protected $groupsOrig = array();
 	/** group cache (array(array(cn => '', dn => '', nisnetgrouptriple => array()))) */
-	protected $groupCache = null;
+	protected $groupCache;
 	/** original uid */
-	protected $uidOrig = null;
+	protected $uidOrig;
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -284,7 +284,6 @@ class nisNetGroupUser extends baseModule {
 	 * @return String user ID
 	 */
 	protected function getUid() {
-		$moduleAttributes = array();
 		if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 			$moduleAttributes = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		}

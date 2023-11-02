@@ -394,7 +394,6 @@ class ldapPublicKey extends baseModule {
 	 * @return htmlJavaScript JS block
 	 */
 	private static function getSelfServiceKeysJSBlock() {
-		$keys = $_SESSION[self::SESS_KEY_LIST];
 		$content = '
 			function ldapPublicKeyDeleteKey(id) {
 				var actionJSON = {

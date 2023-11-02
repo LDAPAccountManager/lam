@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2022  Roland Gruber
+  Copyright (C) 2014 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ use \LAM\TYPES\TypeManager;
 class nisMailAliasUser extends baseModule {
 
 	/** alias cache */
-	private $cachedAliasList = null;
+	private $cachedAliasList;
 
 	/** recipient entries to delete (list of arrays: dn => attributes) */
 	private $recipientsToDelete = array();
@@ -76,17 +76,9 @@ class nisMailAliasUser extends baseModule {
 				"Headline" => _("Alias names with user name"),
 				"Text" => _('Sets the alias names linked to the current user name.')
 			),
-			'aliasUserList' => array(
-				"Headline" => _("Alias names with user name"),
-				"Text" => _('Sets the alias names linked to the current user name.') . ' ' . _("Multiple values are separated by semicolon.")
-			),
 			'aliasMail' => array(
 				"Headline" => _("Alias names with email address"),
 				"Text" => _('Sets the alias names linked to the user\'s email address.')
-			),
-			'aliasUserList' => array(
-				"Headline" => _("Alias names with email address"),
-				"Text" => _('Sets the alias names linked to the user\'s email address.') . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'suffix' => array(
 				"Headline" => _("Suffix"),
@@ -277,7 +269,7 @@ class nisMailAliasUser extends baseModule {
 			}
 			else {
 				$this->aliasesToAdd[$dn]['rfc822mailmember'] = array_values(array_delete(array($recipient), $this->aliasesToAdd[$dn]['rfc822mailmember']));
-				foreach ($this->cachedAliasList as $index => &$attrs) {
+				foreach ($this->cachedAliasList as &$attrs) {
 					if ($dn == $attrs['dn']) {
 						$attrs['rfc822mailmember'] = array_values(array_delete(array($recipient), $attrs['rfc822mailmember']));
 					}

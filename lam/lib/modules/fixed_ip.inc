@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2022  Roland Gruber
+                2008 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -60,10 +60,10 @@ class fixed_ip extends baseModule {
 	public $attributes;
 
 	/** cached host entries (list of array('cn' => ..., 'iphostnumber' => ..., 'macaddress' => ...)) */
-	private $hostCache = null;
+	private $hostCache;
 
 	/** cache for existing host entries */
-	private $existingDhcpHostsCache = null;
+	private $existingDhcpHostsCache;
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.

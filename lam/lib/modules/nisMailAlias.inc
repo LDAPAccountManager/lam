@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2022  Roland Gruber
+  Copyright (C) 2004 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@ use LAM\TYPES\ConfiguredType;
 class nisMailAlias extends baseModule {
 
 	/** mail cache */
-	private $cachedMailList = null;
+	private $cachedMailList;
 	/** user cache */
-	private $cachedUserList = null;
+	private $cachedUserList;
 	/** display limit */
 	const DISPLAY_LIMIT = 50;
 
@@ -343,7 +343,6 @@ class nisMailAlias extends baseModule {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_select($isMail) {
-		$options = array();
 		if ($isMail) {
 			$regex = 'email';
 			$options = $this->getMailList();

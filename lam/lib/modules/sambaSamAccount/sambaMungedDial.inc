@@ -263,7 +263,6 @@ class sambaMungedDial
       $this->old_behavior=true;
     }
 
-    $ctxField="";
     if($this->old_behavior) {
   	  $ctxField= substr(base64_decode($munge), (strlen(SAMBA_MUNGEDDIAL_FILEHEADER_OLD)) / 2);
     } else {
@@ -609,5 +608,3 @@ class sambaMungedDial
   	}
   }
 }
-
-?>

@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2020  Roland Gruber
+                2010 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class imapAccess extends baseModule {
 	const QUOTA_LIMIT = 'limit';
 
 	/** quota limit from profile */
-	private $profileQuotaLimit = null;
+	private $profileQuotaLimit;
 
 	/** user name */
 	private $user;
@@ -867,9 +867,9 @@ class imapAccess extends baseModule {
 								$attributes[$name] = array($value);
 							}
 						}
-						$extractErrors = $this->extractUserAndEmail($attributes);
-						if (!empty($extractErrors)) {
-							$errors = array_merge($errors, $extractErrors);
+						$extractError = $this->extractUserAndEmail($attributes);
+						if ($extractError !== null) {
+							$errors[] = $extractError;
 						}
 						$temp['users'][] = array(
 							'uid' => $this->user,

@@ -7,7 +7,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2022  Roland Gruber
+  Copyright (C) 2009 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,11 +41,11 @@ class nisnetgroup extends baseModule {
 
 	/* caches to reduce LDAP queries */
 	/** user cache */
-	private $cachedUserList = null;
+	private $cachedUserList;
 	/** host cache */
-	private $cachedHostList = null;
+	private $cachedHostList;
 	/** group cache */
-	private $cachedGroupList = null;
+	private $cachedGroupList;
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -459,7 +459,6 @@ class nisnetgroup extends baseModule {
 				break;
 			}
 		}
-		$options = array();
 		if ($selectHost) {
 			// load list with all hosts
 			$options = $this->getHostList();

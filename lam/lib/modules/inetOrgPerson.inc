@@ -47,21 +47,19 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	const STATUS_PASSWORD_LOCKED = "INETORG_PERSON_PASSWORD_LOCKED";
 
 	/** clear text password */
-	private $clearTextPassword = null;
+	private $clearTextPassword;
 	/** cache for departments */
-	private $departmentCache = null;
+	private $departmentCache;
 	/** organization cache */
-	private $oCache = null;
+	private $oCache;
 	/** organizational unit cache */
-	private $ouCache = null;
+	private $ouCache;
 	/** title cache */
-	private $titleCache = null;
+	private $titleCache;
 	/** employee type cache */
-	private $employeeTypeCache = null;
+	private $employeeTypeCache;
 	/** business category cache */
-	private $businessCategoryCache = null;
-	/** cache for email duplication checks */
-	private $emailCheckCache = array();
+	private $businessCategoryCache;
 
 	/** session variable for existing user certificates in self service */
 	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
@@ -3353,7 +3351,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$jsonReturn = $this->ajaxDeleteSelfServiceUserCertificate($jsonInput);
 			}
 			elseif ($jsonInput['action'] == 'deletePhoto') {
-				$jsonReturn = $this->ajaxDeleteSelfServicePhoto($jsonInput);
+				$jsonReturn = $this->ajaxDeleteSelfServicePhoto();
 			}
 		}
 		echo json_encode($jsonReturn);
@@ -3437,10 +3435,8 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 
 	/**
 	 * Manages the deletion of a photo.
-	 *
-	 * @param array $data JSON data
 	 */
-	private function ajaxDeleteSelfServicePhoto($data) {
+	private function ajaxDeleteSelfServicePhoto() {
 		$_SESSION[self::SESS_PHOTO] = null;
 		ob_start();
 		$contentElement = $this->getSelfServicePhoto(false, false);
