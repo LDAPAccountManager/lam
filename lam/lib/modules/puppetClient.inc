@@ -7,7 +7,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2022  Roland Gruber
+  Copyright (C) 2012 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ use LAM\TYPES\ConfiguredType;
 class puppetClient extends baseModule {
 
 	/** cache for classes */
-	private $classCache = null;
+	private $classCache;
 	/** cache for variables */
-	private $variablesCache = null;
+	private $variablesCache;
 
 	/**
 	* Creates a new authorizedServiceObject object.
@@ -430,9 +430,7 @@ class puppetClient extends baseModule {
 		$possibleParentNodes = $this->getPossibleParentNodes();
 		array_unshift($possibleParentNodes, '-');
 		$possibleParentNodes = array_values($possibleParentNodes);
-		if (sizeof($possibleParentNodes) > 0) {
-			$return->add(new htmlResponsiveSelect('puppetClient_parentnode', $possibleParentNodes, array(), _('Parent node'), 'parentnode'), 12);
-		}
+		$return->add(new htmlResponsiveSelect('puppetClient_parentnode', $possibleParentNodes, array(), _('Parent node'), 'parentnode'));
 		return $return;
 	}
 
@@ -470,7 +468,6 @@ class puppetClient extends baseModule {
 	 * @return array parent nodes (e.g. array('node1', 'node2'))
 	 */
 	private function getPossibleParentNodes() {
-		$possibleParentNodes = array();
 		$searchResult = searchLDAPByAttribute('cn', '*', 'puppetClient', array('cn'), array('host'));
 		$possibleParentNodes = array();
 		for ($i = 0; $i < sizeof($searchResult); $i++) {

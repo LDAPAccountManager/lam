@@ -78,15 +78,15 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	/** lamdaemon servers */
 	private $lamdaemonServers = array();
 	/** cache for group objects */
-	private $groupCache = null;
+	private $groupCache;
 	/** cache for group of names objects */
-	private $gonCache = null;
+	private $gonCache;
 	/** clear text password */
 	private $clearTextPassword;
 	/** caches the list of known UIDs */
-	private $cachedUIDList = null;
+	private $cachedUIDList;
 	/** caches the list of known user names */
-	private $cachedUserNameList = null;
+	private $cachedUserNameList;
 
 	/** replacements for common umlauts */
 	private $umlautReplacements = array(
@@ -634,8 +634,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		for ($i = 0; $i < sizeof($gonList); $i++) {
 			$userGoNs[] = $gonList[$i]['dn'];
 		}
-		$userGoNs = array_values(array_unique($userGoNs));
-		return $userGoNs;
+		return array_values(array_unique($userGoNs));
 	}
 
 	/**
@@ -1065,11 +1064,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (is_array($singleresult)) {
-						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
 							$return[] = $singleresult;
 						}
-					}
 				}
 			}
 		}
@@ -1656,11 +1653,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (is_array($singleresult)) {
-						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
 							$return[] = $singleresult;
 						}
-					}
 				}
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
@@ -1687,11 +1682,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (is_array($singleresult)) {
-						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
 							$return[] = $singleresult;
 						}
-					}
 				}
 			}
 		}

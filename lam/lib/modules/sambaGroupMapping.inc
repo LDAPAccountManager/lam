@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2022  Roland Gruber
+                2007 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -52,9 +52,9 @@ class sambaGroupMapping extends baseModule {
 	/** Array of sambaGroupTypes */
 	private $sambaGroupTypes;
 	/** cache for domain list */
-	private $cachedDomainList = null;
+	private $cachedDomainList;
 	/** cache for existing Samba entries (array(dn => cn)) */
-	private $sidCache = null;
+	private $sidCache;
 
 	/**
 	* Creates a new module for Samba 3 groups.

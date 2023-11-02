@@ -77,32 +77,32 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	/** original group list */
 	private $groupList_orig = array();
 	/** cache for groups */
-	private $groupCache = null;
+	private $groupCache;
 	/** host cache to reduce LDAP queries */
-	private $cachedHostList = null;
+	private $cachedHostList;
 	/** option for forcing password change, used in postModifyActions */
-	private $pwdLastSet = null;
+	private $pwdLastSet;
 	/** clear text password */
 	private $clearTextPassword;
 	/** cache for departments */
-	private $departmentCache = null;
+	private $departmentCache;
 	/** cache for department numbers */
-	private $departmentNumberCache = null;
+	private $departmentNumberCache;
 	/** organization cache */
-	private $oCache = null;
+	private $oCache;
 	/** organizational unit cache */
-	private $ouCache = null;
+	private $ouCache;
 	/** title cache */
-	private $titleCache = null;
+	private $titleCache;
 	/** employee type cache */
-	private $employeeTypeCache = null;
+	private $employeeTypeCache;
 	/** business category cache */
-	private $businessCategoryCache = null;
+	private $businessCategoryCache;
 
 	/** cache for user name */
-	private $cachedUserNameList = null;
+	private $cachedUserNameList;
 	/** cache for cn */
-	private $cachedCnList = null;
+	private $cachedCnList;
 
 
 	/**
@@ -1638,11 +1638,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		switch ($mode) {
 			case self::DISPLAY_GROUPS_CN:
 				return $cn;
-				break;
 			case self::DISPLAY_GROUPS_DN:
 			default:
 				return getAbstractDN($dn);
-				break;
 		}
 	}
 
@@ -4945,7 +4943,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$now = new DateTime('now', getTimeZone());
 			$baseDate = $this->getBaseDate($now);
 			$monthInterval = $this->getMonthInterval($options, $jobID);
-			if (!$this->shouldRun($pdo, $options, $jobID, $baseDate, $monthInterval)) {
+			if (!$this->shouldRun($pdo, $jobID, $baseDate, $monthInterval)) {
 				$this->jobResultLog->logDebug('No run needed yet');
 				return;
 			}
@@ -4975,13 +4973,12 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * Returns if the job should run.
 		 *
 		 * @param $pdo PDO
-		 * @param $options job options
 		 * @param $jobId job id
 		 * @param DateTime $baseDate base date
 		 * @param int $monthInterval month interval
 		 * @return bool should run
 		 */
-		private function shouldRun(&$pdo, $options, $jobId, $baseDate, $monthInterval) {
+		private function shouldRun(&$pdo, $jobId, $baseDate, $monthInterval) {
 			$dbLastChange = $this->getDBLastPwdChangeTime($jobId, $pdo, $jobId);
 			if (empty($dbLastChange)) {
 				return true;

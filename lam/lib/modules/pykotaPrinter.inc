@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ class pykotaPrinter extends baseModule {
 	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaPrinterName');
 
 	/** cache for existing printers (array(dn => array(cn => ..., description => ...))) */
-	private $printerCache = null;
+	private $printerCache;
 	/** printer group cache */
-	private $groupCache = null;
+	private $groupCache;
 	/** list of pass through options: label => value */
 	private $passThroughOptions;
 

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ class pykotaBillingCode extends baseModule {
 	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaBalance', 'pykotaPageCounter', 'pykotaBillingCode');
 
 	/** cache for existing codes (array(dn1 => pykotaBillingCode1, dn2 => pykotaBillingCode2)) */
-	private $codeCache = null;
+	private $codeCache;
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.

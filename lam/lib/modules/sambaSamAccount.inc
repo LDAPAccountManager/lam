@@ -79,11 +79,11 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	/** specifies if the password should be expired */
 	private $expirePassword = false;
 	/** host cache to reduce LDAP queries */
-	private $cachedHostList = null;
+	private $cachedHostList;
 	/** group cache to reduce LDAP queries */
-	private $cachedGroupSIDList = null;
+	private $cachedGroupSIDList;
 	/** cache for domain list */
-	private $cachedDomainList = null;
+	private $cachedDomainList;
 	/** delimiter for remote commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
 

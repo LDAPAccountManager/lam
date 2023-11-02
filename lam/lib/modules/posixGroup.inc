@@ -6,7 +6,7 @@ use LAM\TYPES\ConfiguredType;
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2022  Roland Gruber
+              2007 - 2023  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,11 +46,11 @@ class posixGroup extends baseModule implements passwordService {
 	/** password attribute */
 	protected $passwordAttrName = 'userPassword';
 	/** cache for existing GID numbers */
-	private $cachedGIDList = null;
+	private $cachedGIDList;
 	/** cache for existing users and their GIDs */
-	private $cachedUserToGIDList = null;
+	private $cachedUserToGIDList;
 	/** cache for existing groups */
-	private $cachedGroupNameList = null;
+	private $cachedGroupNameList;
 
 	/**
 	 * {@inheritDoc}
@@ -864,18 +864,15 @@ class posixGroup extends baseModule implements passwordService {
 							}
 						}
 					}
-					// $uids is always an array but not if no entries were found
-					if (is_array($gids)) {
-						// id-number is in use and account is a new account
-						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') {
-							$errors[] = $this->messages['gidNumber'][4];
-							unset($this->attributes['gidNumber'][0]);
-						}
-						// id-number is in use, account is existing account and id-number is not used by itself
-						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
-							$errors[] = $this->messages['gidNumber'][4];
-							$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
-						}
+					// id-number is in use and account is a new account
+					if ((in_array($this->attributes['gidNumber'][0], $gids)) && ($this->orig['gidNumber'][0] == '')) {
+						$errors[] = $this->messages['gidNumber'][4];
+						unset($this->attributes['gidNumber'][0]);
+					}
+					// id-number is in use, account is existing account and id-number is changed
+					if ((in_array($this->attributes['gidNumber'][0], $gids)) && ($this->orig['gidNumber'][0] != '') && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
+						$errors[] = $this->messages['gidNumber'][4];
+						$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
 					}
 				}
 			}
@@ -1302,7 +1299,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @param ConfiguredType $type account type
 	 * @return array list of GID numbers
 	 */
-	private function getGIDs($type) {
+	private function getGIDs(ConfiguredType $type): array {
 		if ($this->cachedGIDList != null) {
 			return $this->cachedGIDList;
 		}

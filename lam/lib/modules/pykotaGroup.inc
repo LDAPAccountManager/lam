@@ -5,7 +5,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ class pykotaGroup extends baseModule {
 	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaGroupName');
 
 	/** cache for cn attribute */
-	private $cnCache = null;
+	private $cnCache;
 	/** cache for pykotaGroupName attribute */
-	private $pykotaGroupNameCache = null;
+	private $pykotaGroupNameCache;
 	/** list of limit options label => value */
 	private $limitOptions;
 
