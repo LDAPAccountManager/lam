@@ -9,7 +9,7 @@ use LAMTool;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2022  Roland Gruber
+  Copyright (C) 2021 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ class TreeViewTool extends LAMTool {
 	/**
 	 * Returns the list of configured root DNs.
 	 *
-	 * @param array|null $settings
+	 * @param array|null $settings tool settings
 	 * @return string[] root DNs
 	 */
 	public static function getRootDns(?array $settings = null): array {
