@@ -44,9 +44,9 @@ include_once('pdf.inc');
  */
 class Uploader {
 
-	private $accounts = null;
-	private $data = null;
-	private $type = null;
+	private $accounts;
+	private $data;
+	private $type;
 	private $endTime;
 
 	const TIME_LIMIT = 10;

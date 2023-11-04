@@ -745,10 +745,9 @@ class PublicKeyCredentialSourceRepositorySQLite extends PublicKeyCredentialSourc
 	 * {@inheritDoc}
 	 */
 	protected function getPDO(): PDO {
-		$pdo = new PDO($this->getPdoUrl(), null, null, array(
+		return new PDO($this->getPdoUrl(), null, null, array(
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 		));
-		return $pdo;
 	}
 
 	/**

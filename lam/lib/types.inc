@@ -3,7 +3,7 @@ namespace LAM\TYPES;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2022  Roland Gruber
+  Copyright (C) 2005 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -103,15 +103,15 @@ class ConfiguredType {
 
 	private $id;
 
-	private $suffix = null;
+	private $suffix;
 
-	private $attributes = null;
+	private $attributes;
 
-	private $alias = null;
+	private $alias;
 
-	private $additionalLdapFilter = null;
+	private $additionalLdapFilter;
 
-	private $hidden = null;
+	private $hidden;
 
 	private $baseType;
 

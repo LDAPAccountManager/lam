@@ -72,12 +72,12 @@ class TreeView {
 	/**
 	 * @var array schema attributes
 	 */
-	private $schemaAttributes = null;
+	private $schemaAttributes;
 
 	/**
 	 * @var array schema object classes
 	 */
-	private $schemaObjectClasses = null;
+	private $schemaObjectClasses;
 
 	/**
 	 * Returns the JSON to answer an AJAX request.
@@ -132,7 +132,6 @@ class TreeView {
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
 				die;
 		}
-		return json_encode(array());
 	}
 
 	/**
@@ -645,7 +644,7 @@ class TreeView {
 			return $this->getAttributePasswordInputField($attributeName, $value, $required, $isSingleValue);
 		}
 		if ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
-			return $this->getAttributeJpegInputField($attributeName, $value, $required, $index);
+			return $this->getAttributeJpegInputField($attributeName, $value, $index);
 		}
 		if (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
 			$value = base64_encode($value);
@@ -732,16 +731,15 @@ class TreeView {
 	}
 
 	/**
-	 * Returns an input field for a JPG image attribute.
-	 *
-	 * @param string $attributeName attribute name
-	 * @param string $value value
-	 * @param bool $required required
-	 * @param int $index index
-	 * @return htmlElement input field
-	 * @throws LAMException error writing image file
-	 */
-	private function getAttributeJpegInputField(string $attributeName, string $value, bool $required, int $index): htmlElement {
+  * Returns an input field for a JPG image attribute.
+  *
+  * @param string $attributeName attribute name
+  * @param string $value value
+  * @param int $index index
+  * @return htmlElement input field
+  * @throws LAMException error writing image file
+  */
+ private function getAttributeJpegInputField(string $attributeName, string $value, int $index): htmlElement {
 		$tempFilesManager = new LamTemporaryFilesManager();
 		$fileName = $tempFilesManager->registerTemporaryFile('.jpg');
 		$handle = $tempFilesManager->openTemporaryFileForWrite($fileName);
@@ -846,46 +844,44 @@ class TreeView {
 		$changes = array_change_key_case($changes, CASE_LOWER);
 		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
 		$ldapChanges = array();
-		if (!empty($changes)) {
-			foreach ($changes as $attrName => $change) {
-				$schemaAttribute = isset($schemaAttributes[$attrName]) ? $schemaAttributes[$attrName] : null;
-				if (isset($change['new'])) {
-					$newValues = $change['new'];
-					if (isset($change['hash'])) {
-						$newValues = $this->applyPasswordHash($newValues, $change['hash']);
-					}
-					elseif (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
-						$newValues = $this->decodeBinaryAttributeValues($newValues);
-					}
-					$ldapChanges[$attrName] = $newValues;
+		foreach ($changes as $attrName => $change) {
+			$schemaAttribute = isset($schemaAttributes[$attrName]) ? $schemaAttributes[$attrName] : null;
+			if (isset($change['new'])) {
+				$newValues = $change['new'];
+				if (isset($change['hash'])) {
+					$newValues = $this->applyPasswordHash($newValues, $change['hash']);
 				}
-				if (isset($change['delete']) && isset($attributes[$attrName])) {
-					$oldValues = $attributes[$attrName];
-					$changed = false;
-					foreach ($change['delete'] as $index) {
-						if (isset($oldValues[$index])) {
-							unset($oldValues[$index]);
-							$changed = true;
-						}
-					}
-					if ($changed) {
-						if (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
-							$oldValues = $this->decodeBinaryAttributeValues($oldValues);
-						}
-						$ldapChanges[$attrName] = array_values($oldValues);
+				elseif (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
+					$newValues = $this->decodeBinaryAttributeValues($newValues);
+				}
+				$ldapChanges[$attrName] = $newValues;
+			}
+			if (isset($change['delete']) && isset($attributes[$attrName])) {
+				$oldValues = $attributes[$attrName];
+				$changed = false;
+				foreach ($change['delete'] as $index) {
+					if (isset($oldValues[$index])) {
+						unset($oldValues[$index]);
+						$changed = true;
 					}
 				}
-				if (!empty($change['upload'])) {
-					if (empty($ldapChanges[$attrName]) && !empty($attributes[$attrName])) {
-						$ldapChanges[$attrName] = $attributes[$attrName];
+				if ($changed) {
+					if (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
+						$oldValues = $this->decodeBinaryAttributeValues($oldValues);
 					}
-					$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : array();
-					if ($this->isMultiValueAttribute($oldValues, $schemaAttribute)) {
-						$ldapChanges[$attrName][] = base64_decode($change['upload']);
-					}
-					else {
-						$ldapChanges[$attrName][0] = base64_decode($change['upload']);
-					}
+					$ldapChanges[$attrName] = array_values($oldValues);
+				}
+			}
+			if (!empty($change['upload'])) {
+				if (empty($ldapChanges[$attrName]) && !empty($attributes[$attrName])) {
+					$ldapChanges[$attrName] = $attributes[$attrName];
+				}
+				$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : array();
+				if ($this->isMultiValueAttribute($oldValues, $schemaAttribute)) {
+					$ldapChanges[$attrName][] = base64_decode($change['upload']);
+				}
+				else {
+					$ldapChanges[$attrName][0] = base64_decode($change['upload']);
 				}
 			}
 		}
@@ -1226,14 +1222,11 @@ class TreeView {
 		if ($attributeNames === null) {
 			$attributeNames = array();
 		}
-		if (!empty($objectClassObject->getSupClasses())) {
-			foreach ($objectClassObject->getSupClasses() as $superClass) {
-				$attributeNames = array_merge($attributeNames, $this->getMustAttributeNamesRecursive($objectClasses, $superClass));
-			}
+		foreach ($objectClassObject->getSupClasses() as $superClass) {
+			$attributeNames = array_merge($attributeNames, $this->getMustAttributeNamesRecursive($objectClasses, $superClass));
 		}
 		$attributeNames = array_map('strtolower', $attributeNames);
-		$attributeNames = array_unique($attributeNames);
-		return $attributeNames;
+		return array_unique($attributeNames);
 	}
 
 	/**
@@ -1250,24 +1243,20 @@ class TreeView {
 		if ($attributeNames === null) {
 			$attributeNames = array();
 		}
-		if (!empty($objectClassObject->getSupClasses())) {
-			foreach ($objectClassObject->getSupClasses() as $superClass) {
-				$attributeNames = array_merge($attributeNames, $this->getMayAttributeNamesRecursive($objectClasses, $superClass));
-			}
+		foreach ($objectClassObject->getSupClasses() as $superClass) {
+			$attributeNames = array_merge($attributeNames, $this->getMayAttributeNamesRecursive($objectClasses, $superClass));
 		}
 		$attributeNames = array_map('strtolower', $attributeNames);
-		$attributeNames = array_unique($attributeNames);
-		return $attributeNames;
+		return array_unique($attributeNames);
 	}
 
 	/**
-	 * Returns the content for the check attributes step of node creation.
-	 *
-	 * @param string $dn DN
-	 * @param string|null $errorMessage error if any
-	 * @return string JSON data
-	 */
-	private function createNewNodeCheckAttributesStep(string $dn, string $errorMessage = null): string {
+  * Returns the content for the check attributes step of node creation.
+  *
+  * @param string $dn DN
+  * @return string JSON data
+  */
+ private function createNewNodeCheckAttributesStep(string $dn): string {
 		$objectClasses = $_POST['objectClasses'];
 		$rdnAttribute = $_POST['rdn'];
 		$attributeChanges = json_decode($_POST['attributes'], true);
@@ -1556,8 +1545,8 @@ class TreeView {
 	/**
 	 * Performs paste operations.
 	 *
-	 * @param string $dn
-	 * @return string
+	 * @param string $dn DN to paste
+	 * @return string JSON data
 	 */
 	private function paste(string $dn): string {
 		$targetDn = base64_decode($_POST['targetDn']);
