@@ -752,7 +752,7 @@ class selfServiceProfile {
 	public $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
 	public $twoFactorAuthenticationURL = 'https://localhost';
 	public $twoFactorAuthenticationInsecure = false;
-	public $twoFactorAuthenticationLabel = null;
+	public $twoFactorAuthenticationLabel;
 	public $twoFactorAuthenticationOptional = false;
 	public $twoFactorAuthenticationCaption = '';
 	public $twoFactorAuthenticationClientId = '';
@@ -927,7 +927,7 @@ class selfServiceProfile {
  */
 class SelfServiceLdapConnection {
 
-    private $server = null;
+    private $server;
 
     private $profile;
 

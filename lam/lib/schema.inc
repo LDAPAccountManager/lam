@@ -3,7 +3,7 @@ namespace LAM\SCHEMA;
 /*
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2021 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2023 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -287,7 +287,6 @@ class ObjectClass extends SchemaItem
      */
 	function getMustAttrs($oclasses = NULL)
 	{
-		$all_must_attrs = array();
 		$all_must_attrs = $this->must_attrs;
 		foreach( $this->sup_classes as $sup_class)
 		{
@@ -321,7 +320,6 @@ class ObjectClass extends SchemaItem
      */
 	function getMayAttrs($oclasses = NULL)
 	{
-		$all_may_attrs = array();
 		$all_may_attrs = $this->may_attrs;
 		foreach( $this->sup_classes as $sup_class_name )
 		{
@@ -1661,10 +1659,7 @@ function get_schema_attribute($attr_name, $dn=null, $use_cache=true )
 	$attr_name = real_attr_name( $attr_name );
 	$schema_attrs = get_schema_attributes($dn, $use_cache );
 	$attr_name = strtolower( $attr_name );
-	$schema_attr = isset( $schema_attrs[ $attr_name ] ) ?
-				$schema_attrs[ $attr_name ] :
-				false;
-	return $schema_attr;
+	return isset($schema_attrs[$attr_name]) ? $schema_attrs[ $attr_name ] : false;
 }
 
 /**
@@ -1773,7 +1768,7 @@ function add_aliases_to_attrs( &$attrs )
 {
 	$toaddAttrs = array();
 	// go back and add data from aliased attributeTypes
-	foreach( $attrs as $name => $attr ) {
+	foreach($attrs as $attr) {
 		$aliases = $attr->getAliases();
 		if( is_array( $aliases ) &&  count( $aliases ) > 0 ) {
 			// foreach of the attribute's aliases, create a new entry in the attrs array
@@ -1947,12 +1942,12 @@ function get_schema_matching_rules($dn=null, $use_cache=true )
 		// No MatchingRuleUse entry in the subschema, so brute-forcing
 		// the reverse-map for the "$rule->getUsedByAttrs()" data.
 		$attrs = get_schema_attributes($dn );
-		if( is_array( $attrs ) )
-			foreach( $attrs as $attr ) {
-				$rule_key = strtolower( $attr->getEquality() );
-				if( isset( $rules[ $rule_key ] ) )
-					$rules[ $rule_key ]->addUsedByAttr( $attr->getName() );
+		foreach( $attrs as $attr ) {
+			$rule_key = strtolower( $attr->getEquality() );
+			if ( isset( $rules[ $rule_key ] ) ) {
+				$rules[$rule_key]->addUsedByAttr($attr->getName());
 			}
+		}
 	}
 
 	// cache the schema to prevent multiple schema fetches from LDAP server

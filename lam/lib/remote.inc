@@ -9,7 +9,7 @@ use \phpseclib3\Exception\NoKeyLoadedException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2021  Roland Gruber
+  Copyright (C) 2017 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ class Remote {
 	}
 
 	/** SSH2 server handle */
-	private $server = null;
+	private $server;
 
 	/**
 	* Sends commands to remote script.
@@ -81,7 +81,6 @@ class Remote {
 		}
 		$this->serverConfig = $server;
 		$serverNameParts = explode(",", $this->serverConfig->getServer());
-		$handle = false;
 		if (sizeof($serverNameParts) > 1) {
 			$handle = @new SSH2($serverNameParts[0], $serverNameParts[1]);
 		}

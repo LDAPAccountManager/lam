@@ -13,7 +13,7 @@ use function PHPUnit\Framework\isEmpty;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -91,9 +91,9 @@ class AccountProfilePersistenceManager {
 	/**
 	 * Reads an account profile template.
 	 *
-	 * @param string $scope
-	 * @param string $name
-	 * @return array
+	 * @param string $scope account type
+	 * @param string $name template name
+	 * @return array template data
 	 * @throws LAMException error reading template
 	 */
 	public function loadAccountProfileTemplate(string $scope, string $name) : array {
@@ -107,8 +107,8 @@ class AccountProfilePersistenceManager {
 	/**
 	 * Writes an account profile template.
 	 *
-	 * @param string $scope
-	 * @param string $name
+	 * @param string $scope account type
+	 * @param string $name template name
 	 * @param array $data profile data
 	 * @throws LAMException error writing template
 	 */
@@ -280,9 +280,9 @@ interface AccountProfilePersistenceStrategy {
 	/**
 	 * Reads an account profile template.
 	 *
-	 * @param string $scope
-	 * @param string $name
-	 * @return array
+	 * @param string $scope account type
+	 * @param string $name template name
+	 * @return array template data
 	 * @throws LAMException error reading template
 	 */
 	public function loadAccountProfileTemplate(string $scope, string $name) : array;
@@ -290,8 +290,8 @@ interface AccountProfilePersistenceStrategy {
 	/**
 	 * Writes an account profile template.
 	 *
-	 * @param string $scope
-	 * @param string $name
+	 * @param string $scope account type
+	 * @param string $name template name
 	 * @param array $data profile data
 	 * @throws LAMException error writing template
 	 */
@@ -322,8 +322,8 @@ interface AccountProfilePersistenceStrategy {
 	/**
 	 * Writes an account profile.
 	 *
-	 * @param $typeId $scope
-	 * @param string $name
+	 * @param $typeId account type ID
+	 * @param string $name profile name
 	 * @param string $confName server profile name
 	 * @param array $data profile data
 	 * @throws LAMException error writing template

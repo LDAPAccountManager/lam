@@ -343,7 +343,7 @@ class PDFTableCell {
 	/** text alignment */
 	public $align = self::ALIGN_LEFT;
 	/** cell width (e.g. "20%") */
-	public $width = null;
+	public $width;
 	/** bold text */
 	public $bold = false;
 

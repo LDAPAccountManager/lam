@@ -27,7 +27,7 @@ include_once (dirname(__FILE__) . '/../../lib/2factor.inc');
 
 class TwoFactorProviderServiceSpy extends TwoFactorProviderService {
 
-	private $cookieValue = null;
+	private $cookieValue;
 
 	/**
 	 * @inheritDoc
