@@ -969,9 +969,9 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
  * @param String $dn DN
  * @param array $attributes list of attributes to fetch
  * @param handle $handle LDAP handle (optional for admin interface pages)
- * @return array attributes or null if not found
+ * @return ?array attributes or null if not found
  */
-function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
+function ldapGetDN($dn, $attributes = array('dn'), $handle = null): ?array {
 	if ($handle == null) {
 		$handle = getLDAPServerHandle();
 	}

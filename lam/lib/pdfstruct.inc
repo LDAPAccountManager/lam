@@ -1390,7 +1390,7 @@ class PDFStructure {
 	/** standard folding marks */
 	const FOLDING_STANDARD = 'standard';
 
-	private $logo = null;
+	private $logo;
 
 	private $title = 'LDAP Account Manager';
 

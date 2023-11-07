@@ -824,18 +824,18 @@ class accountContainer {
 	private $lastLoadedProfile = '';
 
 	/** cache for existing OUs */
-	private $cachedOUs = null;
+	private $cachedOUs;
 
 	/** icon in title bar */
-	private $titleBarIcon = null;
+	private $titleBarIcon;
 	/** main title in title bar */
-	private $titleBarTitle = null;
+	private $titleBarTitle;
 	/** subtitle in title bar */
-	private $titleBarSubtitle = null;
+	private $titleBarSubtitle;
 	/** send password via mail */
-	private $sendPasswordViaMail = null;
+	private $sendPasswordViaMail;
 	/** send password via mail to this alternate address */
-	private $sendPasswordViaMailAlternateAddress = null;
+	private $sendPasswordViaMailAlternateAddress;
 
 	/**
 	 * @var array additional attributes for pre/post actions
@@ -1164,7 +1164,7 @@ class accountContainer {
 		$container->add($pwdInput2);
 		// print force password change option
 		$forceChangeSupported = array();
-		foreach ($this->module as $name => $module) {
+		foreach ($this->module as $module) {
 			if (($module instanceof passwordService) && $module->supportsForcePasswordChange()) {
 				$forceChangeSupported[] = $module;
 			}
@@ -1603,13 +1603,13 @@ class accountContainer {
 		$attr_names = array_keys($attributes);
 		$orig_names = array_keys($orig);
 		// find deleted attributes (in $orig but no longer in $attributes)
-		foreach ($orig_names as $i => $value) {
+		foreach ($orig_names as $value) {
 			if (!isset($attributes[$value])) {
 				$torem[$value] = $orig[$value];
 			}
 		}
 		// find changed attributes
-		foreach ($attr_names as $i => $name) {
+		foreach ($attr_names as $name) {
 			// find deleted attributes
 			if (isset($orig[$name]) && is_array($orig[$name])) {
 				foreach ($orig[$name] as $value) {
@@ -1925,9 +1925,7 @@ class accountContainer {
 			}
 			// merge changes
 			$DNs = array_keys($temp);
-			if (is_array($temp)) {
-				$attributes = array_merge_recursive($temp, $attributes);
-			}
+			$attributes = array_merge_recursive($temp, $attributes);
 			for ($i = 0; $i < count($DNs); $i++) {
 				$ops = array_keys($temp[$DNs[$i]]);
 				for ($j=0; $j<count($ops); $j++) {
@@ -2346,7 +2344,7 @@ class accountContainer {
 	 */
 	public function getAccountStatus(): AccountStatus {
 		$details = array();
-		foreach ($this->module as $name => $module) {
+		foreach ($this->module as $module) {
 			if (($module instanceof AccountStatusProvider)) {
 				$details = array_merge($details, $module->getAccountStatusDetails());
 			}
@@ -2581,7 +2579,7 @@ interface AccountStatusProvider {
 	/**
 	 * Returns the list of account status detail lines.
 	 *
-	 * @param ConfiguredType $type
+	 * @param ConfiguredType $type account type
 	 * @param array|null $attributes LDAP attributes (use account container attributes if not provided)
 	 * @return AccountStatusDetails[] status details
 	 */
@@ -2912,9 +2910,9 @@ class AccountStatusDetails {
  */
 class ScopeAndModuleValidation {
 
-	private static $cachedModuleNames = null;
+	private static $cachedModuleNames;
 
-	private static $cachedScopeNames = null;
+	private static $cachedScopeNames;
 
 	const REGEX_SCOPE = "/^[a-z0-9_-]+$/i";
 	const REGEX_MODULE = "/^[a-z0-9_-]+$/i";
