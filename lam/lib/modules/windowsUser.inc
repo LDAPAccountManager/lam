@@ -3559,7 +3559,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					}
 					$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd'], $userName, $additionalAttrs);
 					if ($pwdPolicyResult === true) {
-						$this->setSelfServicePassword($return, $attributes);
+						$this->setSelfServicePassword($return);
 						$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
 					}
 					else {
@@ -3594,9 +3594,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 *
 	 * Enter description here ...
 	 * @param array $return return value for checkSelfServiceOptions() (used to add message if any)
-	 * @param array $attributes LDAP attributes
 	 */
-	private function setSelfServicePassword(&$return, $attributes) {
+	private function setSelfServicePassword(&$return) {
 		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
 		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
 		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
@@ -3940,10 +3939,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$typeManager = new TypeManager();
 		$typesUser = $typeManager->getConfiguredTypesForScope('user');
 		$suffixes = array();
-		if (!empty($typesUser)) {
-			foreach ($typesUser as $type) {
-				$suffixes[] = $type->getSuffix();
-			}
+		foreach ($typesUser as $type) {
+			$suffixes[] = $type->getSuffix();
 		}
 		$suffixes = array_unique($suffixes);
 		foreach ($suffixes as $suffix) {
@@ -3970,10 +3967,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$typeManager = new TypeManager();
 		$typesUser = $typeManager->getConfiguredTypesForScope('user');
 		$suffixes = array();
-		if (!empty($typesUser)) {
-			foreach ($typesUser as $type) {
-				$suffixes[] = $type->getSuffix();
-			}
+		foreach ($typesUser as $type) {
+			$suffixes[] = $type->getSuffix();
 		}
 		$suffixes = array_unique($suffixes);
 		foreach ($suffixes as $suffix) {

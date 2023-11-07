@@ -1223,7 +1223,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxMachine'][0]);
 		}
 		$uids = $this->getUIDs($typeId);
-		if ($this->attributes['uidNumber'][0]=='') {
+		if ($this->attributes['uidNumber'][0] == '') {
 			// No id-number given
 			if (!isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] == '')) {
 				// new account -> we have to find a free id-number
@@ -3177,17 +3177,17 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	function getNextUIDs($count, &$errors, $typeId) {
 		// check if UIDs should be taken from Samba pool entry
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolUIDs($count, $errors, $typeId);
+			return $this->getNextSambaPoolUIDs($count, $typeId);
 		}
 		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolUIDs($count, $errors, $typeId);
+			return $this->getNextSambaPoolUIDs($count, $typeId);
 		}
 		// check if UIDs should be taken from domain info pool entry
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoUIDs($count, $errors, $typeId);
+			return $this->getNextDomainInfoUIDs($count, $typeId);
 		}
 		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoUIDs($count, $errors, $typeId);
+			return $this->getNextDomainInfoUIDs($count, $typeId);
 		}
 		// check if a magic number should be used
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'magicNumber')) {
@@ -3260,11 +3260,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * Gets the free UID numbers from an Samba pool entry in LDAP.
 	 *
 	 * @param integer $count number of needed free UIDs.
-	 * @param array $errors list of error messages where errors can be added
 	 * @param string $typeId type id (e.g. user)
 	 * @return mixed null if no UIDs are free else an array of free UIDs
 	 */
-	private function getNextSambaPoolUIDs($count, &$errors, $typeId) {
+	private function getNextSambaPoolUIDs($count, $typeId) {
 		if ($this->get_scope() == 'user') {
 			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'][0];
 		}
@@ -3294,11 +3293,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * Gets the free UID numbers from a domain info entry in LDAP.
 	 *
 	 * @param integer $count number of needed free UIDs.
-	 * @param array $errors list of error messages where errors can be added
 	 * @param string $typeId type id (e.g. user)
 	 * @return mixed null if no UIDs are free else an array of free UIDs
 	 */
-	private function getNextDomainInfoUIDs($count, &$errors, $typeId) {
+	private function getNextDomainInfoUIDs($count, $typeId) {
 		if ($this->get_scope() == 'user') {
 			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_windowsIDPoolDNUsers'][0];
 		}

@@ -1131,11 +1131,11 @@ class posixGroup extends baseModule implements passwordService {
 		$typeId = $type->getId();
 		// check if UIDs should be taken from Samba pool entry
 		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolGIDs($count, $errors, $typeId);
+			return $this->getNextSambaPoolGIDs($count, $typeId);
 		}
 		// check if UIDs should be taken from domain info entry
 		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoGIDs($count, $errors, $typeId);
+			return $this->getNextDomainInfoGIDs($count, $typeId);
 		}
 		// use magic number
 		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'magicNumber')) {
@@ -1201,11 +1201,10 @@ class posixGroup extends baseModule implements passwordService {
 	 * Gets the free GID numbers from an Samba pool entry in LDAP.
 	 *
 	 * @param integer $count number of needed free GIDs.
-	 * @param array $errors list of error messages where errors can be added
 	 * @param string $typeId account type id
 	 * @return mixed null if no GIDs are free else an array of free GIDs
 	 */
-	private function getNextSambaPoolGIDs($count, &$errors, $typeId) {
+	private function getNextSambaPoolGIDs($count, $typeId) {
 		$dn = $this->moduleSettings['posixGroup_' . $typeId . '_sambaIDPoolDN'][0];
 		$attrs = ldapGetDN($dn, array('gidNumber'));
 		if (isset($attrs['gidnumber'][0]) && ($attrs['gidnumber'][0] != '')) {
@@ -1230,11 +1229,10 @@ class posixGroup extends baseModule implements passwordService {
 	 * Gets the free GID numbers from an Windows domain info entry in LDAP.
 	 *
 	 * @param integer $count number of needed free GIDs.
-	 * @param array $errors list of error messages where errors can be added
 	 * @param string $typeId account type id
 	 * @return mixed null if no GIDs are free else an array of free GIDs
 	 */
-	private function getNextDomainInfoGIDs($count, &$errors, $typeId) {
+	private function getNextDomainInfoGIDs($count, $typeId) {
 		$dn = $this->moduleSettings['posixGroup_' . $typeId . '_windowsIDPoolDN'][0];
 		$attrs = ldapGetDN($dn, array('msSFU30MaxGidNumber'));
 		if (isset($attrs['mssfu30maxgidnumber'][0]) && ($attrs['mssfu30maxgidnumber'][0] != '')) {
