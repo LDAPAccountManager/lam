@@ -124,16 +124,19 @@ if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] 
 	    die();
     }
 	if (!empty($_GET['scope'])) {
-	    $scope = $_GET['scope'];
-	    if (!ScopeAndModuleValidation::isValidScopeName($scope)) {
-		    logNewMessage(LOG_ERR, 'Invalid scope name: ' . $scope);
-		    die();
-        }
-		$helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
+		$scope = $_GET['scope'];
 	}
+	else {
+	    $scope = 'user';
+    }
+    if (!ScopeAndModuleValidation::isValidScopeName($scope)) {
+        logNewMessage(LOG_ERR, 'Invalid scope name: ' . $scope);
+        die();
+    }
+    $helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
 	if (!$helpEntry) {
 		$variables = [htmlspecialchars($_GET['HelpNumber']), htmlspecialchars($moduleName)];
-		$errorMessage = _("Sorry the help id '%s' is not available for the module '%s'.");
+		$errorMessage = _("Sorry, the help id '%s' is not available for the module '%s'.");
 		echoHTMLHead();
 		statusMessage("ERROR", "", $errorMessage, $variables);
 		echoHTMLFoot();
@@ -145,7 +148,7 @@ else {
 	/* If submitted help number is not in help/help.inc print error message */
 	if (!array_key_exists($_GET['HelpNumber'], $helpArray)) {
 		$variables = [htmlspecialchars($_GET['HelpNumber'])];
-		$errorMessage = _("Sorry this help number ({bold}%s{endbold}) is not available.");
+		$errorMessage = _("Sorry, this help number ({bold}%s{endbold}) is not available.");
 		echoHTMLHead();
 		statusMessage("ERROR", "", $errorMessage, $variables);
 		echoHTMLFoot();
