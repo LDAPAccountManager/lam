@@ -1,6 +1,8 @@
 December 2023 8.6
  - LAM requires PHP 8.0.2 or later
  - Docker: upgrade to Debian 12
+ - LAM Pro:
+  -> Custom scripts: support to specify the subtype of an account
 
 
 29.09.2023 8.5
