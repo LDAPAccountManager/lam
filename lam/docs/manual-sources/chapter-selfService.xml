@@ -2405,6 +2405,13 @@
       <screenshot>
         <graphic fileref="images/mod_openldapTotp4.png"/>
       </screenshot>
+
+      <para>On module settings tab please provide the DN of your TOTP settings
+      entry (object class "oathTOTPParams").</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_openldapTotp5.png"/>
+      </screenshot>
     </section>
   </section>
 
