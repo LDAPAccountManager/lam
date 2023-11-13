@@ -1049,6 +1049,32 @@ window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction)
 };
 
 /**
+ * Shows a confirmation message.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param divId DIV id with dialog content
+ * @param callbackFunction callback function (optional)
+ */
+window.lam.dialog.showConfirmation = function(title, okText, cancelText, divId, callbackFunction) {
+	const dialogContent = document.getElementById(divId).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: 'auto'
+	}).then(result => {
+		if (callbackFunction && result.isConfirmed) {
+			callbackFunction();
+		}
+	});
+};
+
+/**
  * Shows a simple dialog.
  *
  * @param title dialog title
