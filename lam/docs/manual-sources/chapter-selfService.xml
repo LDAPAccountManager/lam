@@ -1879,6 +1879,81 @@
     </section>
 
     <section>
+      <title>Request Access</title>
+
+      <para>Use this feature to allow your users to request access for group
+      memberships. Requests will require the approval by the group owners and
+      optionally a special approver group.</para>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>First, the request access module needs to be activated and
+      configured on tab "Module settings". Here tick "Enable request access"
+      and provide the information where your groups are located.</para>
+
+      <para>Group of names and group of unique names are supported. The LDAP
+      filter is optional, LAM will offer the user only group of (unique) names
+      that have defined owners.</para>
+
+      <para>The email body text supports wildcards. You can use mail
+      receiver's LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for
+      the user name). The requester's LDAP attributes can be used in the form
+      $$attribute$$ (e.g. $$uid$$ for the user name). Also,
+      $$requested_groups$$ will resolve to the requested groups and
+      $$requestor_notes$$ resolves to the requester's optional notes.</para>
+
+      <para>Example:</para>
+
+      <literallayout>Dear @@cn@@,
+
+a new access request was created by $$cn$$:
+
+Requested Groups
+$$requested_groups$$
+
+Reason
+$$requestor_notes$$
+
+Please open LAM Pro's self service for details.
+
+
+Best regards,
+IT team</literallayout>
+
+      <para/>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess1.png"/>
+      </screenshot>
+
+      <para>Next, the fields need to be added to the "Page layout" tab. There
+      are three fields:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Request Access: Request access - User view that allows to
+          initiate the process.</para>
+        </listitem>
+
+        <listitem>
+          <para>Request Access: Owner view - Owner view for group
+          owners.</para>
+        </listitem>
+
+        <listitem>
+          <para>Request Access: Approver view - Approver view for approver
+          group</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can set custom labels using the pencil icon.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess2.png"/>
+      </screenshot>
+    </section>
+
+    <section>
       <title>Custom fields</title>
 
       <para>This module allows you to manage LDAP attributes that are not
