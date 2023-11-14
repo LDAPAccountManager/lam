@@ -4093,6 +4093,8 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	private $helpModule;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
+	/** short label */
+	private $shortLabel = false;
 
 	/**
 	 * Constructor.
@@ -4143,7 +4145,8 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 			$helpLinkLabel->setCSSClasses($helpCssClasses);
 			$labelGroup->addElement($helpLinkLabel);
 		}
-		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		$tabletDesktopLabelColumns = $this->shortLabel ? 4 : 6;
+		$row->add($labelGroup, 12, $tabletDesktopLabelColumns, $tabletDesktopLabelColumns, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
@@ -4152,8 +4155,16 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 			$helpLink->setCSSClasses(array('align-top', 'hide-on-mobile'));
 			$fieldGroup->addElement($helpLink);
 		}
-		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
+		$row->add($fieldGroup, 12, $tabletDesktopFieldColumns, $tabletDesktopFieldColumns, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+	}
+
+	/**
+	 * Use a short label (4 columns instead of 6) for tablet/desktop.
+	 */
+	public function setShortLabel() {
+		$this->shortLabel = true;
 	}
 
 }
