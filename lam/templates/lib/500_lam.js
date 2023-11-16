@@ -1055,23 +1055,27 @@ window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction)
  * @param okText ok button text
  * @param cancelText cancel button text
  * @param divId DIV id with dialog content
- * @param callbackFunction callback function (optional)
+ * @param callbackFunction callback function (optional, gets result of preConfirmFunction as parameter)
+ * @param preConfirmFunction preConfirm function (optional)
  */
-window.lam.dialog.showConfirmation = function(title, okText, cancelText, divId, callbackFunction) {
+window.lam.dialog.showConfirmation = async function(title, okText, cancelText, divId, callbackFunction, preConfirmFunction) {
 	const dialogContent = document.getElementById(divId).cloneNode(true);
 	dialogContent.classList.remove('hidden');
-	Swal.fire({
+	let options = {
 		title: title,
 		confirmButtonText: okText,
 		cancelButtonText: cancelText,
 		showCancelButton: true,
 		html: dialogContent.outerHTML,
 		width: 'auto'
-	}).then(result => {
-		if (callbackFunction && result.isConfirmed) {
-			callbackFunction();
-		}
-	});
+	};
+	if (preConfirmFunction) {
+		options.preConfirm = preConfirmFunction;
+	}
+	const {value: formValues} = await Swal.fire(options);
+	if (callbackFunction && formValues) {
+		callbackFunction(formValues);
+	}
 };
 
 /**
