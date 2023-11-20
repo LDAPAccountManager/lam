@@ -2076,7 +2076,7 @@ class htmlInputCheckbox extends htmlElement {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
 		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $classes
-			. $this->getAccessibilityMarkup() . $onChange . $onClick . $title . $checked . $disabled . '>';
+			. $this->getAccessibilityMarkup() . $this->getDataAttributesAsString() . $onChange . $onClick . $title . $checked . $disabled . '>';
 		echo $script;
 		if ($this->transient) {
 			return array();
