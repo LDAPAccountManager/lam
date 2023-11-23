@@ -3289,6 +3289,26 @@ window.lam.richEdit.init = function() {
 	});
 }
 
+window.lam.loadingIndicator = window.lam.loadingIndicator || {};
+
+/**
+ * Starts the loading indicator.
+ */
+window.lam.loadingIndicator.start = function() {
+	Swal.fire({
+		title:"",
+		imageUrl: "../../style/loading.gif",
+		showConfirmButton: false,
+		timer: 60000,
+	});
+}
+
+/**
+ * Stops the loading indicator.
+ */
+window.lam.loadingIndicator.stop = function() {
+	Swal.close();
+}
 
 jQuery(document).ready(function() {
 	window.lam.form.autoTrim();
