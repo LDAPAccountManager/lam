@@ -2,6 +2,7 @@ December 2023 8.6
  - LAM requires PHP 8.0.2 or later
  - Docker: upgrade to Debian 12
  - LAM Pro:
+  -> Request access: new module to allow users to request group memberships
   -> Custom scripts: support to specify the subtype of an account
 
 
