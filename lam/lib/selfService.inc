@@ -100,21 +100,21 @@ function getSelfServiceFieldSettings($scope) {
 function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 	$return = array();
 	$modules = getAvailableModules($scope);
-	for ($i = 0; $i < sizeof($modules); $i++) {
-		if (!isset($fields[$modules[$i]])) {
+	foreach ($modules as $module) {
+		if (!isset($fields[$module])) {
 			continue;
 		}
-		$m = moduleCache::getModule($modules[$i], $scope);
+		$m = moduleCache::getModule($module, $scope);
 		$modReadOnlyFields = array();
 		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
 			$parts = explode('_', $readOnlyFields[$r]);
-			if ($parts[0] == $modules[$i]) {
+			if ($parts[0] == $module) {
 				$modReadOnlyFields[] = $parts[1];
 			}
 		}
-		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly, $modReadOnlyFields);
+		$code = $m->getSelfServiceOptions($fields[$module], $attributes, $passwordChangeOnly, $modReadOnlyFields);
 		if (sizeof($code) > 0) {
-			$return[$modules[$i]] = $code;
+			$return[$module] = $code;
 		}
 	}
 	return $return;

@@ -4,3 +4,4 @@ config.cfg
 /pdf/
 /profiles/
 *.sqlite
+*.sqlite-journal

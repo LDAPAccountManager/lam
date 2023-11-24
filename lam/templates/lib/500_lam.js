@@ -1049,6 +1049,36 @@ window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction)
 };
 
 /**
+ * Shows a confirmation message.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param divId DIV id with dialog content
+ * @param callbackFunction callback function (optional, gets result of preConfirmFunction as parameter)
+ * @param preConfirmFunction preConfirm function (optional)
+ */
+window.lam.dialog.showConfirmation = async function(title, okText, cancelText, divId, callbackFunction, preConfirmFunction) {
+	const dialogContent = document.getElementById(divId).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	let options = {
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: 'auto'
+	};
+	if (preConfirmFunction) {
+		options.preConfirm = preConfirmFunction;
+	}
+	const {value: formValues} = await Swal.fire(options);
+	if (callbackFunction && formValues) {
+		callbackFunction(formValues);
+	}
+};
+
+/**
  * Shows a simple dialog.
  *
  * @param title dialog title
@@ -3259,6 +3289,27 @@ window.lam.richEdit.init = function() {
 	});
 }
 
+window.lam.loadingIndicator = window.lam.loadingIndicator || {};
+
+/**
+ * Starts the loading indicator.
+ */
+window.lam.loadingIndicator.start = function() {
+	Swal.fire({
+		title:"",
+		imageUrl: "../../style/loading.gif",
+		showConfirmButton: false,
+		allowOutsideClick: false,
+		timer: 60000,
+	});
+}
+
+/**
+ * Stops the loading indicator.
+ */
+window.lam.loadingIndicator.stop = function() {
+	Swal.close();
+}
 
 jQuery(document).ready(function() {
 	window.lam.form.autoTrim();

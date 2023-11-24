@@ -44,5 +44,6 @@
 /mitKerberosPolicy.inc
 /openldapTotp.inc
 /powerDNS.inc
+/requestAccess.inc
 /simpleSecurityObject.inc
 /guacamole.inc

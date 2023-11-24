@@ -1879,6 +1879,145 @@
     </section>
 
     <section>
+      <title>Request Access</title>
+
+      <para>Use this feature to allow your users to request access for group
+      memberships. Requests will require the approval by the group owners and
+      optionally a special approver group (leave empty for owner approval
+      only).</para>
+
+      <para><emphasis role="bold">Module Configuration</emphasis></para>
+
+      <para>First, the request access module needs to be activated and
+      configured on tab "Module settings". Here tick "Enable request access"
+      and provide the information where your groups are located.</para>
+
+      <para>Group of names and group of unique names are supported. The LDAP
+      filter is optional, LAM will offer the user only group of (unique) names
+      that have defined owners.<screenshot>
+          <graphic fileref="images/mod_requestAccess1.png"/>
+        </screenshot></para>
+
+      <para><screenshot>
+          <graphic fileref="images/mod_requestAccess1a.png"/>
+        </screenshot>The email body texts support wildcards. You can use group
+      owner/approver LDAP attributes in the form @@attribute@@ (e.g. @@uid@@
+      for the user name).</para>
+
+      <para>The requester's LDAP attributes can be used in the form
+      $$attribute$$ (e.g. $$uid$$ for the user name). This is supported for
+      mails to the group owners and the approval/deny mails to the
+      requester.</para>
+
+      <para>The wildcard $$requested_groups$$ will resolve to the requested
+      groups. This is available for mails to the group owners and the
+      approval/deny mails to the requester.</para>
+
+      <para>The wildcard $$requester_notes$$ resolves to the requester's
+      optional notes. This is available for the mails to the group
+      owners.</para>
+
+      <para><emphasis role="bold">Example for owner email:</emphasis></para>
+
+      <literallayout>
+  Dear @@cn@@,
+
+  a new access request was created by $$cn$$:
+
+  Requested groups: $$requested_groups$$
+
+  Reason: $$requester_notes$$
+
+  Please open LAM Pro's self service for details.
+
+  Best regards,
+  IT team
+
+</literallayout>
+
+      <para><emphasis role="bold">Example for approver
+      email:</emphasis><literallayout>
+  Dear @@cn@@,
+
+  there are new access requests waiting for approval.
+
+  Please check here(link to self service).
+
+  Best regards,
+  IT team
+
+</literallayout></para>
+
+      <para><emphasis role="bold">Example for approved/denied request
+      email:</emphasis><literallayout>
+  Dear $$cn$$,
+
+  your access request was approved.
+  Requested groups: $$requested_groups$$
+
+  Best regards,
+  IT team
+
+</literallayout></para>
+
+      <para><emphasis role="bold">Field Configuration</emphasis></para>
+
+      <para>Next, the fields need to be added to the "Page layout" tab. There
+      are three fields:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Request Access: Request access - User view that allows to
+          initiate the process.</para>
+        </listitem>
+
+        <listitem>
+          <para>Request Access: Owner view - Owner view for group
+          owners.</para>
+        </listitem>
+
+        <listitem>
+          <para>Request Access: Approver view - Approver view for approver
+          group</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can set custom labels using the pencil icon.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess2.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Request view</emphasis></para>
+
+      <para>The user sees a button to open the new request dialog. Here the
+      groups can be selected and an optional note can be provided.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess3.png"/>
+      </screenshot>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess4.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Approval view</emphasis></para>
+
+      <para>Once the request is created, all owners of the respective groups
+      get an email notification. They can then enter self service and view
+      their open requests.</para>
+
+      <para>If an approver group is configured then its members will get an
+      email notification after owner approval. In case no approver group is
+      configured, the permissions are directly granted when the owner approves
+      the request.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess5.png"/>
+      </screenshot>
+    </section>
+
+    <section>
       <title>Custom fields</title>
 
       <para>This module allows you to manage LDAP attributes that are not
