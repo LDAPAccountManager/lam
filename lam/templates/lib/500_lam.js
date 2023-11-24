@@ -3299,6 +3299,7 @@ window.lam.loadingIndicator.start = function() {
 		title:"",
 		imageUrl: "../../style/loading.gif",
 		showConfirmButton: false,
+		allowOutsideClick: false,
 		timer: 60000,
 	});
 }
