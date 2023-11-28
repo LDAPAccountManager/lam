@@ -3654,6 +3654,7 @@ class htmlAccordion extends htmlElement {
 	private $id;
 	private $elements;
 	private $openInitial;
+	private $saveState;
 
 	/**
 	 * Constructor.
@@ -3680,23 +3681,21 @@ class htmlAccordion extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		$result = array();
-		$active = 'false';
 		if ($this->openInitial !== false) {
-			$active = $this->openInitial;
+			$this->addDataAttribute('openinitial', $this->openInitial);
 		}
-		echo '<div class="lam-accordion-container">';
+		$cssClasses = $this->getCSSClasses();
+		$cssClasses[] = 'lam-accordion-container';
+		if ($this->saveState) {
+			$this->addDataAttribute('savestate', 'true');
+		}
+		echo '<div id="' . $this->id . '" class="' . implode(' ', $cssClasses) . '"' . $this->getDataAttributesAsString() . '>';
 		$contentIndex = 0;
 		foreach ($this->elements as $label => $content) {
-			$activeClassButton = '';
-			$activeClassContent = '';
-			if ($contentIndex === $active) {
-				$activeClassButton = 'lam-accordion-button-active';
-				$activeClassContent = 'lam-accordion-content-active';
-			}
-			echo '<button id="' . $this->id . '" class="lam-accordion-button ' . $activeClassButton . '" onclick="return false;" data-index="' . $contentIndex . '">';
+			echo '<button id="' . $this->id . '_' . $contentIndex . '" class="lam-accordion-button" onclick="return false;" data-index="' . $contentIndex . '">';
 			echo $label;
 			echo '</button>';
-			echo '<div class="lam-accordion-content ' . $activeClassContent . '" data-index="' . $contentIndex . '">';
+			echo '<div class="lam-accordion-content" data-index="' . $contentIndex . '">';
 			echo '<div class="lam-accordion-content-inner">';
 			$result = array_merge($result, $content->generateHTML($module, $input, $values, $restricted, $scope));
 			echo '</div>';
@@ -3704,9 +3703,18 @@ class htmlAccordion extends htmlElement {
 			$contentIndex++;
 		}
 		$hiddenIndexId = $this->id . "_index";
-		echo '<input type="hidden" name="' . $hiddenIndexId . '" id="' . $hiddenIndexId . '" value="' . $active . '">';
+		echo '<input type="hidden" name="' . $hiddenIndexId . '" id="' . $hiddenIndexId . '" value="false">';
 		echo '</div>';
 		return $result;
+	}
+
+	/**
+	 * Saves the state of open/closed items over page reloads.
+	 *
+	 * @param bool $saveState save state
+	 */
+	public function saveState(bool $saveState = true): void {
+		$this->saveState = $saveState;
 	}
 
 }

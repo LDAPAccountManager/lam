@@ -289,6 +289,20 @@ $row->add(new htmlAccordion('acc_multi', $accordionElementsMulti, 2));
 
 $row->add(new htmlSpacer(null, '5rem'));
 
+$accordionElementsSaveState = [];
+for ($i = 0; $i < 5; $i++) {
+	$accordionElementsSaveStateContent = new htmlResponsiveRow();
+	$accordionElementsSaveStateContent->add(new htmlResponsiveInputField('Input 1', 'accSi1' . $i));
+	$accordionElementsSaveStateContent->add(new htmlResponsiveInputField('Input 2', 'accSi2' . $i));
+	$accordionElementsSaveStateContent->add(new htmlResponsiveInputTextarea('accSi3' . $i, '', 20, 3, 'Text area'));
+	$accordionElementsSaveState['Accordion with saved state ' . $i] = $accordionElementsSaveStateContent;
+}
+$saveStateAccordion = new htmlAccordion('acc_save', $accordionElementsSaveState, 2);
+$saveStateAccordion->saveState();
+$row->add($saveStateAccordion);
+
+$row->add(new htmlSpacer(null, '5rem'));
+
 $row->add(new htmlSubTitle('Sortable list'));
 
 $sortableList1 = new htmlSortableList([
