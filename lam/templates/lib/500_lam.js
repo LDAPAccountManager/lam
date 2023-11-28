@@ -3148,9 +3148,34 @@ window.lam.accordion.init = function() {
 			return false;
 		});
 	});
-	const accordionContentAreas = document.getElementsByClassName('lam-accordion-content-active');
-	Array.from(accordionContentAreas).forEach(function (contentArea) {
-		contentArea.style.maxHeight = contentArea.scrollHeight + 'px';
+	const accordions = document.getElementsByClassName('lam-accordion-container');
+	Array.from(accordions).forEach(function (accordion) {
+		const isSaveState = accordion.dataset.savestate && (accordion.dataset.savestate === 'true');
+		let openInitial = false;
+		const storageKey = 'lam_accordionStore_' + accordion.id;
+		if (isSaveState && window.localStorage.getItem(storageKey)) {
+			// load value from local storage
+			openInitial = window.localStorage.getItem(storageKey);
+		}
+		else if (accordion.dataset.openinitial) {
+			openInitial = accordion.dataset.openinitial;
+		}
+		if (openInitial !== false) {
+			accordion.querySelectorAll('.lam-accordion-button').forEach(item => {
+				const buttonIndex = item.dataset.index;
+				if (openInitial === buttonIndex) {
+					item.classList.add('lam-accordion-button-active');
+				}
+			});
+			accordion.querySelectorAll('.lam-accordion-content').forEach(item => {
+				const contentIndex = item.dataset.index;
+				if (openInitial === contentIndex) {
+					item.style.maxHeight = null;
+					item.classList.add('lam-accordion-content-active')
+					item.style.maxHeight = item.scrollHeight + 'px';
+				}
+			});
+		}
 	});
 }
 
@@ -3175,16 +3200,21 @@ window.lam.accordion.onClick = function(event, button) {
 		content.classList.add('lam-accordion-content-active')
 	}
 	const indexActive = button.dataset.index;
-	const parent = button.parentElement;
+	const accordion = button.parentElement;
+	const isSaveState = accordion.dataset.savestate && (accordion.dataset.savestate === 'true');
+	if (isSaveState) {
+		const storageKey = 'lam_accordionStore_' + accordion.id;
+		window.localStorage.setItem(storageKey, indexActive);
+	}
 	// deactivate other buttons
-	parent.querySelectorAll('.lam-accordion-button').forEach(item => {
+	accordion.querySelectorAll('.lam-accordion-button').forEach(item => {
 		const buttonIndex = item.dataset.index;
 		if (indexActive !== buttonIndex) {
 			item.classList.remove('lam-accordion-button-active');
 		}
 	});
 	// close other content areas
-	parent.querySelectorAll('.lam-accordion-content').forEach(item => {
+	accordion.querySelectorAll('.lam-accordion-content').forEach(item => {
 		const contentIndex = item.dataset.index;
 		if (indexActive !== contentIndex) {
 			item.style.maxHeight = null;
