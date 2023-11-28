@@ -4,6 +4,7 @@ December 2023 8.6
  - LAM Pro:
   -> Request access: new module to allow users to request group memberships via self service
   -> Custom scripts: support to specify the subtype of an account
+  -> Custom fields: Display groups in server profile as accordion (236)
 
 
 29.09.2023 8.5
