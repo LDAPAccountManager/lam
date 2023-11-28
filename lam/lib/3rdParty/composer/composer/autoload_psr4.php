@@ -44,7 +44,7 @@ return array(
     'Jose\\Component\\Encryption\\' => array($vendorDir . '/web-token/jwt-encryption'),
     'Jose\\Component\\Core\\' => array($vendorDir . '/web-token/jwt-core'),
     'Jose\\Component\\Checker\\' => array($vendorDir . '/web-token/jwt-checker'),
-    'Illuminate\\Support\\' => array($vendorDir . '/illuminate/conditionable', $vendorDir . '/illuminate/macroable', $vendorDir . '/illuminate/collections', $vendorDir . '/illuminate/support'),
+    'Illuminate\\Support\\' => array($vendorDir . '/illuminate/collections', $vendorDir . '/illuminate/conditionable', $vendorDir . '/illuminate/macroable', $vendorDir . '/illuminate/support'),
     'Illuminate\\Pagination\\' => array($vendorDir . '/illuminate/pagination'),
     'Illuminate\\Contracts\\' => array($vendorDir . '/illuminate/contracts'),
     'Http\\Factory\\Guzzle\\' => array($vendorDir . '/http-interop/http-factory-guzzle/src'),
