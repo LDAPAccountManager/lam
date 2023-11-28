@@ -2687,7 +2687,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// remove groups
 		for ($i = 0; $i < sizeof($toRem); $i++) {
 			if (in_array($toRem[$i], $groups)) {
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->dn_orig)));
+				// membership is removed with potentially new DN as Windows updates group automatically on user move
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->finalDN)));
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to delete user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
