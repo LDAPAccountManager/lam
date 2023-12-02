@@ -7,7 +7,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2022  Roland Gruber
+  Copyright (C) 2007 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -221,6 +221,10 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			'shadowlastchange' => array(
 				"Headline" => _("Last password change"), 'attr' => 'shadowLastChange',
 				"Text" => _("This is the date when the user changed his password. If you specify a maximum password age then you can force a password change here.")
+			),
+			'cronAddWarningPeriod' => array(
+				"Headline" => _('Add expiration warning time'), 'attr' => 'shadowWarning',
+				"Text" => _('This will add the warning period for password expiration on top.')
 			)
 		);
 		// upload fields
@@ -1075,6 +1079,16 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::getConfigOptions()
+		 */
+		public function getConfigOptions($jobID) {
+			$container = parent::getConfigOptions($jobID);
+			$container->add(new htmlResponsiveInputCheckbox($this->getConfigPrefix() . '_addWarningPeriod' . $jobID, true, _('Add expiration warning time'), ['cronAddWarningPeriod', 'shadowAccount']));
+			return $container;
+		}
+
+		/**
 		 * Searches for users in LDAP.
 		 *
 		 * @param String $jobID unique job identifier
@@ -1110,14 +1124,14 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$this->jobResultLog->logDebug($user['dn'] . ' does not expire.');
 				return;
 			}
-
-
 			// calculate time when password expires
 			$lastPwdTimeUnix = $user['shadowlastchange'][0] * 3600 * 24;
 			$lastPwdTime = new DateTime('@' . $lastPwdTimeUnix, new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Last password change on " . $lastPwdTime->format('Y-m-d'));
 			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
-			if (!empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
+			$addPasswordWarningTime = !isset($options[$this->getConfigPrefix() . '_addWarningPeriod' . $jobID][0])
+				|| ($options[$this->getConfigPrefix() . '_addWarningPeriod' . $jobID][0] === 'true');
+			if ($addPasswordWarningTime && !empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
 				$numDaysToWarn += $user['shadowwarning'][0];
 			}
 			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
