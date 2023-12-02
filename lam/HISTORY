@@ -5,6 +5,7 @@ December 2023 8.6
   -> Request access: new module to allow users to request group memberships via self service
   -> Custom scripts: support to specify the subtype of an account
   -> Custom fields: Display groups in server profile as accordion (236)
+  -> PPolicy and Shadow cron jobs for password expiration notification: added option to ignore expiration warning time
 
 
 29.09.2023 8.5

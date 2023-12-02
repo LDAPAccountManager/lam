@@ -45,6 +45,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		public const DEFAULT_POLICY = 'cn=default,dc=test';
 		public const NOEXPIRE_POLICY = 'cn=noexpire,dc=test';
 		public const ONE_YEAR_POLICY = 'cn=policy1,dc=test';
+		public const ONE_YEAR_POLICY_14_DAYS_WARNING = 'cn=policy1,dc=test';
 
 		private array $options = [];
 		private JobResultLog $resultLog;
@@ -56,9 +57,13 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->method('getConfigPrefix')->willReturn('test');
 			$this->job->method('sendMail')->willReturn(true);
 			$this->job->method('getPolicyOptions')->willReturn([
-					PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY => ['pwdmaxage' => 365 * 3600 * 24],
-					PPolicyUserPasswordNotifyJobTest::DEFAULT_POLICY => ['pwdmaxage' => 14 * 3600 * 24],
-					PPolicyUserPasswordNotifyJobTest::NOEXPIRE_POLICY => ['pwdmaxage' => 0],
+				PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY => ['pwdmaxage' => 365 * 3600 * 24],
+				PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY_14_DAYS_WARNING => [
+					'pwdmaxage' => 365 * 3600 * 24,
+					'pwdexpirewarning' => 14 * 3600 * 24
+				],
+				PPolicyUserPasswordNotifyJobTest::DEFAULT_POLICY => ['pwdmaxage' => 14 * 3600 * 24],
+				PPolicyUserPasswordNotifyJobTest::NOEXPIRE_POLICY => ['pwdmaxage' => 0],
 			]);
 			$this->options['test_mailNotificationPeriod' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = PPolicyUserPasswordNotifyJobTest::WARNING;
 			$this->options['test_mailDefaultPolicy' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = PPolicyUserPasswordNotifyJobTest::DEFAULT_POLICY;
@@ -142,6 +147,62 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->assertFalse($this->resultLog->hasError());
 		}
 
+		public function testWarningNotReached_withWarningPeriod_defaultConfig() {
+			$date = new DateTime('now', new DateTimeZone('UTC'));
+			$date->sub(new DateInterval('P335D'));
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');
+			$this->job->method('findUsers')->willReturn([[
+				'dn' => 'cn=notReached,dc=dn',
+				'pwdpolicysubentry' => [PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY_14_DAYS_WARNING],
+				'pwdchangedtime' => [$date->format('YmdHis') . 'Z'],
+			]]);
+
+			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->never())->method('sendMail');
+
+			$pdo = [];
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarningNotReached_withWarningPeriod_enabledInConfig() {
+			$this->options['test_addWarningPeriod' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = 'true';
+			$date = new DateTime('now', new DateTimeZone('UTC'));
+			$date->sub(new DateInterval('P335D'));
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');
+			$this->job->method('findUsers')->willReturn([[
+				'dn' => 'cn=notReached,dc=dn',
+				'pwdpolicysubentry' => [PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY_14_DAYS_WARNING],
+				'pwdchangedtime' => [$date->format('YmdHis') . 'Z'],
+			]]);
+
+			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->never())->method('sendMail');
+
+			$pdo = [];
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarningNotReached_withWarningPeriod_disabledInConfig() {
+			$this->options['test_addWarningPeriod' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = 'false';
+			$date = new DateTime('now', new DateTimeZone('UTC'));
+			$date->sub(new DateInterval('P345D'));
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');
+			$this->job->method('findUsers')->willReturn([[
+				'dn' => 'cn=notReached,dc=dn',
+				'pwdpolicysubentry' => [PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY_14_DAYS_WARNING],
+				'pwdchangedtime' => [$date->format('YmdHis') . 'Z'],
+			]]);
+
+			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->never())->method('sendMail');
+
+			$pdo = [];
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
 		public function testAlreadyWarned() {
 			$date = new DateTime('now', new DateTimeZone('UTC'));
 			$date->sub(new DateInterval('P360D'));
@@ -180,6 +241,65 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->assertFalse($this->resultLog->hasError());
 		}
 
+		public function testWarning_withWarningPeriod_defaultConfig() {
+			$date = new DateTime('now', new DateTimeZone('UTC'));
+			$date->sub(new DateInterval('P345D'));
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');
+			$this->job->method('findUsers')->willReturn([[
+				'dn' => 'cn=alreadyWarned,dc=dn',
+				'pwdpolicysubentry' => [PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY_14_DAYS_WARNING],
+				'pwdchangedtime' => [$date->format('YmdHis') . 'Z'],
+			]]);
+
+			$this->job->expects($this->once())->method('getDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('sendMail');
+
+			$pdo = [];
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarning_withWarningPeriod_enabledInConfig() {
+			$this->options['test_addWarningPeriod' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = 'true';
+			$date = new DateTime('now', new DateTimeZone('UTC'));
+			$date->sub(new DateInterval('P345D'));
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');
+			$this->job->method('findUsers')->willReturn([[
+				'dn' => 'cn=alreadyWarned,dc=dn',
+				'pwdpolicysubentry' => [PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY_14_DAYS_WARNING],
+				'pwdchangedtime' => [$date->format('YmdHis') . 'Z'],
+			]]);
+
+			$this->job->expects($this->once())->method('getDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('sendMail');
+
+			$pdo = [];
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
+		public function testWarning_withWarningPeriod_disabledInConfig() {
+			$this->options['test_addWarningPeriod' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = 'false';
+			$date = new DateTime('now', new DateTimeZone('UTC'));
+			$date->sub(new DateInterval('P355D'));
+			$this->job->method('getDBLastPwdChangeTime')->willReturn('20001111101010Z');
+			$this->job->method('findUsers')->willReturn([[
+				'dn' => 'cn=alreadyWarned,dc=dn',
+				'pwdpolicysubentry' => [PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY_14_DAYS_WARNING],
+				'pwdchangedtime' => [$date->format('YmdHis') . 'Z'],
+			]]);
+
+			$this->job->expects($this->once())->method('getDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
+			$this->job->expects($this->once())->method('sendMail');
+
+			$pdo = [];
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
+		}
+
 		public function testWarningDryRun() {
 			$date = new DateTime('now', new DateTimeZone('UTC'));
 			$date->sub(new DateInterval('P360D'));
@@ -203,7 +323,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$confDays = 7;
 			$policy = ['pwdmaxage' => 365 * 3600 * 24, 'pwdexpirewarning' => 10000];
 
-			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy, true);
 
 			$this->assertEquals((7*3600*24 + 10000), $seconds);
 
@@ -211,7 +331,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$confDays = -7;
 			$policy = ['pwdmaxage' => 365 * 3600 * 24, 'pwdexpirewarning' => 10000];
 
-			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy, true);
 
 			$this->assertEquals((-7*3600*24 + 10000), $seconds);
 
@@ -219,7 +339,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$confDays = 0;
 			$policy = ['pwdmaxage' => 365 * 3600 * 24, 'pwdexpirewarning' => 10000];
 
-			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy, true);
 
 			$this->assertEquals(10000, $seconds);
 
@@ -227,7 +347,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$confDays = 7;
 			$policy = ['pwdmaxage' => 365 * 3600 * 24];
 
-			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+			$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy, true);
 
 			$this->assertEquals(7*3600*24, $seconds);
 
