@@ -16,7 +16,7 @@ for jsThirdPartyLib in $jsThirdPartyLibs; do
 		ln -s /usr/share/javascript/${jsThirdPartyLib} /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}
 	fi
 done
-if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib ] ; then
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib ] ; then
 	ln -s /usr/share/php/phpseclib3 /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
 fi
 

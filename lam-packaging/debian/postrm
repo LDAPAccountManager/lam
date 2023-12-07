@@ -57,7 +57,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
 			rm /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}
 		fi
 	done
-  if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib ] ; then
+  if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib ] ; then
 	  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
   fi
 
