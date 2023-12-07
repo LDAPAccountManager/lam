@@ -17,6 +17,7 @@ Depends: php (>= 8.0.2), php-ldap,
  apache2 (>= 2.4.0) | httpd,
  gettext, fonts-dejavu,
  ckeditor (>= 4.0), libjs-jquery-jstree (>= 3.3.0),
+ php-phpseclib3,
  debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
 Recommends: php-opcache
 Suggests: ldap-server, php-mcrypt, ldap-account-manager-lamdaemon, perl

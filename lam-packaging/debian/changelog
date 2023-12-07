@@ -1,6 +1,8 @@
 ldap-account-manager (8.6.RC1-1) unstable; urgency=medium
 
   * new upstream release
+  * Fix "php-phpseclib3: CVE-2023-49316" by linking
+      directory (Closes: #1057037)
 
  -- Roland Gruber <post@rolandgruber.de>  Tue, 05 Dec 2023 07:05:16 +0100
 
