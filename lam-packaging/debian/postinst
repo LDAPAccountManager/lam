@@ -17,7 +17,7 @@ for jsThirdPartyLib in $jsThirdPartyLibs; do
 	fi
 done
 if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib ] ; then
-	ln -s /usr/share/php/phpseclib3 /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib
+	ln -s /usr/share/php/phpseclib3 /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
 fi
 
 cd /usr/share/ldap-account-manager/config-samples/profiles
