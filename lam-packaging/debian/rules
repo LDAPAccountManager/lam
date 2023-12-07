@@ -49,7 +49,7 @@ install:
 	# 3rd party libs are linked
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
 	cp -r lib/3rdParty/composer debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
-	rm -r debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/phpseclib/phpseclib
+	rm -r debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib
 	cp -r lib/3rdParty/yubico debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 	cp -r lib/3rdParty/tcpdf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 
