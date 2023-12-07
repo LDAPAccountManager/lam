@@ -218,6 +218,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'C' => 
         array (
             'Cose\\' => 5,
+            'Carbon\\Doctrine\\' => 16,
             'Carbon\\' => 7,
             'CBOR\\' => 5,
         ),
@@ -445,6 +446,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Cose\\' => 
         array (
             0 => __DIR__ . '/..' . '/web-auth/cose-lib/src',
+        ),
+        'Carbon\\Doctrine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
         ),
         'Carbon\\' => 
         array (

@@ -1141,6 +1141,7 @@ main license and authors:
 
 lib/3rdParty/composer/beberlei                                       G  2013  Benjamin Eberlei
 lib/3rdParty/composer/brick                                          B        Benjamin Morel
+lib/3rdParty/composer/carbonphp                                      B  2023  Carbon
 lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
 lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
 lib/3rdParty/composer/doctrine                                       B        Doctrine Project
