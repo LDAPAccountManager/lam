@@ -19,6 +19,12 @@ done
 if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib ] ; then
 	ln -s /usr/share/php/phpseclib3 /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
 fi
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog ] ; then
+	ln -s /usr/share/php/Monolog /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog
+fi
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr ] ; then
+	ln -s /usr/share/php/Psr /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr
+fi
 
 cd /usr/share/ldap-account-manager/config-samples/profiles
 files=`ls -a default.*`

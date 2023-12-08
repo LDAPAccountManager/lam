@@ -50,6 +50,8 @@ install:
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
 	cp -r lib/3rdParty/composer debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 	rm -r debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
+	rm -r debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog
+	rm -r debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr
 	cp -r lib/3rdParty/yubico debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 	cp -r lib/3rdParty/tcpdf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 
