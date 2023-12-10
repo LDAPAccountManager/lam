@@ -57,6 +57,21 @@ if [ -f /usr/share/debconf/confmodule ]; then
 			rm /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}
 		fi
 	done
+  if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib ] ; then
+	  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
+  fi
+  if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog ] ; then
+	  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog
+  fi
+  if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr ] ; then
+	  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr
+  fi
+  if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku ] ; then
+	  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku
+  fi
+  if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer ] ; then
+	  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer
+  fi
 
 
 	set -e

@@ -16,6 +16,21 @@ for jsThirdPartyLib in $jsThirdPartyLibs; do
 		ln -s /usr/share/javascript/${jsThirdPartyLib} /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}
 	fi
 done
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib ] ; then
+	ln -s /usr/share/php/phpseclib3 /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
+fi
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog ] ; then
+	ln -s /usr/share/php/Monolog /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog
+fi
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr ] ; then
+	ln -s /usr/share/php/Psr /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr
+fi
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku ] ; then
+	ln -s /usr/share/php/voku /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku
+fi
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer ] ; then
+	ln -s /usr/share/php/libphp-phpmailer /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer
+fi
 
 cd /usr/share/ldap-account-manager/config-samples/profiles
 files=`ls -a default.*`

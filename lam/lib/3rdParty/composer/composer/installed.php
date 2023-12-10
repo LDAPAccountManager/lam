@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => '92d08dd3e39fe7c213a5d24d3d6ffd2f6df542f4',
+        'reference' => '7a890fb7e62c4f6ccbbe0d502cd8708cadea0b90',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => '92d08dd3e39fe7c213a5d24d3d6ffd2f6df542f4',
+            'reference' => '7a890fb7e62c4f6ccbbe0d502cd8708cadea0b90',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../../../',
             'aliases' => array(),
@@ -209,9 +209,9 @@
             'dev_requirement' => false,
         ),
         'nesbot/carbon' => array(
-            'pretty_version' => '2.72.0',
-            'version' => '2.72.0.0',
-            'reference' => 'a6885fcbad2ec4360b0e200ee0da7d9b7c90786b',
+            'pretty_version' => '2.72.1',
+            'version' => '2.72.1.0',
+            'reference' => '2b3b3db0a2d0556a177392ff1a3bf5608fa09f78',
             'type' => 'library',
             'install_path' => __DIR__ . '/../nesbot/carbon',
             'aliases' => array(),
@@ -310,8 +310,8 @@
         'psr/http-client-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0',
-                1 => '*',
+                0 => '*',
+                1 => '1.0',
             ),
         ),
         'psr/http-factory' => array(
