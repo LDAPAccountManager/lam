@@ -25,5 +25,8 @@ fi
 if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku ] ; then
   rm /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku
 fi
+if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer ] ; then
+  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer
+fi
 
 #DEBHELPER#
