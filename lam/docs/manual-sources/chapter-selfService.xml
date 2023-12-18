@@ -1882,9 +1882,9 @@
       <title>Request Access</title>
 
       <para>Use this feature to allow your users to request access for group
-      memberships. Requests will require the approval by the group owners and
-      optionally a special approver group (leave empty for owner approval
-      only).</para>
+      memberships. Requests will require the approval by the group
+      owners/managers and optionally a special approver group (leave empty for
+      owner/manager approval only).</para>
 
       <para><emphasis role="bold">Module Configuration</emphasis></para>
 
@@ -1894,7 +1894,7 @@
 
       <para>Group of names and group of unique names are supported. The LDAP
       filter is optional, LAM will offer the user only group of (unique) names
-      that have defined owners.<screenshot>
+      or Windows groups that have defined owners/managers.<screenshot>
           <graphic fileref="images/mod_requestAccess1.png"/>
         </screenshot></para>
 
@@ -1906,7 +1906,7 @@
 
       <para>The requester's LDAP attributes can be used in the form
       $$attribute$$ (e.g. $$uid$$ for the user name). This is supported for
-      mails to the group owners and the approval/deny mails to the
+      mails to the group owners/managers and the approval/deny mails to the
       requester.</para>
 
       <para>The wildcard $$requested_groups$$ will resolve to the requested
@@ -1915,7 +1915,7 @@
 
       <para>The wildcard $$requester_notes$$ resolves to the requester's
       optional notes. This is available for the mails to the group
-      owners.</para>
+      owners/managers.</para>
 
       <para><emphasis role="bold">Example for owner email:</emphasis></para>
 
