@@ -173,19 +173,19 @@ class fixed_ip extends baseModule {
 	/**
 	 *
 	 * Check, if a mac address is invalid
-	 * @param mac address
+	 * @param string mac address
 	 *
-	 * @return true, if mac is invalid
+	 * @return bool true, if mac is invalid
 	 **/
-	public function check_mac($mac) {
+	public function check_mac($mac): bool {
 	    $ex = explode(":", $mac);
 		$invalid = false;
-		if (count($ex)!=6) {
+		if (count($ex) != 6) {
 		    $invalid = true;
 		}
 
 		foreach($ex AS $value) {
-			if (!preg_match("/[0-9a-fA-F][0-9a-fA-F]/", $value) || strlen($value)!="2") {
+			if (!preg_match("/[0-9a-fA-F][0-9a-fA-F]/", $value) || strlen($value) != "2") {
 				$invalid = true;
 			}
 		}
@@ -308,9 +308,9 @@ class fixed_ip extends baseModule {
 			    }
 
 				// MAC address
-				$_POST['mac_'.$id] = strtolower(trim($_POST['mac_'.$id]));
+				$_POST['mac_' . $id] = strtolower(trim($_POST['mac_' . $id]));
 
-				$invalid = $this->check_mac($_POST['mac_'.$id]);
+				$invalid = $this->check_mac($_POST['mac_' . $id]);
 				if ($invalid) {
 				    $error = true;
 				}

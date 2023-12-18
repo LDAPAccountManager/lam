@@ -2243,11 +2243,11 @@ abstract class baseModule {
 	/**
 	 * Returns the {@link accountContainer} object.
 	 *
-	 * @return accountContainer accountContainer object
+	 * @return ?accountContainer accountContainer object
 	 *
 	 * @see accountContainer
 	 */
-	protected function getAccountContainer() {
+	protected function getAccountContainer(): ?accountContainer {
 		if (isset($this->base) && isset($_SESSION[$this->base])) {
 			return $_SESSION[$this->base];
 		}
