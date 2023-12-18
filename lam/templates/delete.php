@@ -133,6 +133,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 				$container->addField(new htmlOutputText($childCount));
 			}
 		}
+		$container->addVerticalSpacer('0.5rem');
 	}
 	addSecurityTokenToMetaHTML($container);
 	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
