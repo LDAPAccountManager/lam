@@ -1,4 +1,4 @@
-ldap-account-manager (8.6.RC1-1) unstable; urgency=medium
+ldap-account-manager (8.6-1) unstable; urgency=medium
 
   * new upstream release
   * Fix "php-phpseclib3: CVE-2023-49316" by linking
@@ -6,7 +6,7 @@ ldap-account-manager (8.6.RC1-1) unstable; urgency=medium
   * Fix "Lots of embedded copies, including many that are already packaged
       in Debian" by linking directories (Closes: #1057036)
 
- -- Roland Gruber <post@rolandgruber.de>  Tue, 05 Dec 2023 07:05:16 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 18 Dec 2023 07:05:16 +0100
 
 ldap-account-manager (8.5-1) unstable; urgency=medium
 
