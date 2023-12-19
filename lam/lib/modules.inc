@@ -1189,7 +1189,7 @@ class accountContainer {
 			if ($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false') {
 				$alternateMail = '';
 				$pwdResetModule = $this->getAccountModule('passwordSelfReset');
-				if (!empty($pwdResetModule)) {
+				if ($pwdResetModule !== null) {
 					$backupMail = $pwdResetModule->getBackupEmail();
 					if (!empty($backupMail)) {
 						$alternateMail = $pwdResetModule->getBackupEmail();

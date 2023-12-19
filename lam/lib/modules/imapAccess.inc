@@ -174,9 +174,9 @@ class imapAccess extends baseModule {
 	 * Extracts user name and email address from inetOrgPerson/posixAccount/windowsUser modules.
 	 *
 	 * @param array $attrs LDAP attributes (retrieved from other account modules if empty)
-	 * @return htmlStatusMessage message if any
+	 * @return ?htmlStatusMessage message if any
 	 */
-	private function extractUserAndEmail($attrs = null) {
+	private function extractUserAndEmail($attrs = null): ?htmlStatusMessage {
 		$this->email = '';
 		if ($attrs === null) {
 			if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
@@ -211,6 +211,7 @@ class imapAccess extends baseModule {
 			$modName = ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) ? 'inetOrgPerson' : 'windowsUser';
 			return new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule($modName)->get_alias()));
 		}
+		return null;
 	}
 
 	/**

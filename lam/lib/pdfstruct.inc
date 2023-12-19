@@ -17,7 +17,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2022  Roland Gruber
+                2011 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1452,9 +1452,9 @@ class PDFStructure {
 	/**
 	 * Returns the logo file path.
 	 *
-	 * @return string logo
+	 * @return ?string logo
 	 */
-	public function getLogo() {
+	public function getLogo(): ?string {
 		return $this->logo;
 	}
 
@@ -1488,9 +1488,9 @@ class PDFStructure {
 	/**
 	 * Returns if to print folding marks.
 	 *
-	 * @return string print folding marks
+	 * @return ?string print folding marks
 	 */
-	public function getFoldingMarks() {
+	public function getFoldingMarks(): ?string {
 		return $this->foldingMarks;
 	}
 
