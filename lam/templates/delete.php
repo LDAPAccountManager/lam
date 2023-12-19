@@ -1,6 +1,7 @@
 <?php
 namespace LAM\DELETE;
 use \htmlGroup;
+use htmlJavaScript;
 use \htmlResponsiveRow;
 use \htmlButton;
 use \htmlSpacer;
@@ -329,21 +330,13 @@ if (isset($_POST['delete'])) {
 	$buttonName = $allOk ? 'cancelAllOk' : 'cancel';
 	$container->add(new htmlButton($buttonName, _('Back to list')), 12);
 	$container->addVerticalSpacer('1rem');
+	if ($allOk) {
+		$_SESSION['listRedirectMessages'] = $allErrors;
+        $container->add(new htmlJavaScript('document.getElementById("btn_cancelAllOk").click();'));
+	}
 	parseHtml(null, $container, [], false, $type->getScope());
 	echo "</div>\n";
 	echo "</form>\n";
-	?>
-	<script type="text/javascript">
-	jQuery(document).ready(function() {
-		<?php
-		if ($allOk) {
-			$_SESSION['listRedirectMessages'] = $allErrors;
-			echo "jQuery('#btn_cancelAllOk').click();";
-		}
-		?>
-	});
-	</script>
-	<?php
 	include __DIR__ . '/../lib/adminFooter.inc';
 
 }

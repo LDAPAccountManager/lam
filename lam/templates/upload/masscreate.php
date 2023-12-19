@@ -167,7 +167,7 @@ elseif (!empty($types)) {
 }
 $typeSelect = new htmlResponsiveSelect('type', $typeList, [$selectedType], _("Account type"));
 $typeSelect->setHasDescriptiveElements(true);
-$typeSelect->setOnchangeEvent('changeVisibleModules(this);');
+$typeSelect->setOnchangeEvent('window.lam.upload.changeVisibleModules(this);');
 $row->add($typeSelect, 12);
 $row->addVerticalSpacer('1rem');
 
@@ -240,14 +240,6 @@ if (!empty($types)) {
 addSecurityTokenToMetaHTML($row);
 parseHtml(null, $row, [], false, 'user');
 
-?>
-<script type="text/javascript">
-function changeVisibleModules(element) {
-	jQuery('div.typeOptions').toggle(false);
-	jQuery('div#' + element.options[element.selectedIndex].value).toggle();
-}
-</script>
-<?php
 echo "</form>\n";
 
 echo '</div>';

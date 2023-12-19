@@ -21,6 +21,10 @@ namespace LAM\UPLOAD;
 
 */
 
+use htmlDiv;
+use htmlJavaScript;
+use htmlResponsiveRow;
+
 /**
 * Creates LDAP accounts for file upload.
 *
@@ -76,15 +80,10 @@ if (!checkIfNewEntriesAreAllowed($type->getId()) || !checkIfWriteAccessIsAllowed
 	die();
 }
 
-echo '<div id="uploadContent" class="smallPaddingContent">';
-$tokenPrefix = '?' . getSecurityTokenName() . '=' . getSecurityTokenValue();
-?>
-	<script type="text/javascript">
-		jQuery(document).ready(function(){
-			window.lam.upload.continueUpload('../misc/ajax.php?function=upload&typeId=' + '<?php echo $type->getId() ?>', '<?php echo getSecurityTokenName(); ?>', '<?php echo getSecurityTokenValue(); ?>');
-		});
-	</script>
+$container = new htmlResponsiveRow();
+$javaScript = new htmlJavaScript('window.lam.upload.continueUpload(\'../misc/ajax.php?function=upload&typeId=' . $type->getId() . '\', \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
+$contentDiv = new htmlDiv('uploadContent', $javaScript, ['smallPaddingContent']);
+$container->add($contentDiv);
+parseHtml(null, $container, array(), false, null);
 
-<?php
-echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

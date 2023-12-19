@@ -872,6 +872,18 @@ window.lam.dynamicSelect.loadPreviousOptions = function(selectField, maxOptions,
 window.lam.upload = window.lam.upload || {};
 
 /**
+ * Toggles the display of selectable modules.
+ *
+ * @param selectBox account type selection
+ */
+window.lam.upload.changeVisibleModules = function(selectBox) {
+	document.querySelectorAll('div.typeOptions').forEach(item => {
+		item.classList.add('hidden');
+	});
+	document.getElementById(selectBox.options[selectBox.selectedIndex].value).classList.toggle('hidden');
+}
+
+/**
  * Continues a CSV file upload.
  *
  * @param url URL where to get status JSON
