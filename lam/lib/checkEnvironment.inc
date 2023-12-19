@@ -149,16 +149,15 @@ try {
 		$criticalErrors[] = array("ERROR", "The main config file (config.cfg) does not exist.", "Please see the manual for installation instructions.");
 	}
 	$mainConfig = new LAMCfgMain();
-	$configurationErrors = array();
 	$configurationDatabase = new ConfigurationDatabase($mainConfig);
 	$configurationDatabase->checkConnection();
 }
 catch (Exception $e) {
 	logNewMessage(LOG_ERR, 'Unable to connect to configuration database: ' . $e->getMessage());
-	$configurationErrors[] = array('ERROR', _('Unable to connect to configuration database.'));
+	$criticalErrors[] = array('ERROR', _('Unable to connect to configuration database.'));
 }
 // stop login if errors occurred
-if (!empty($criticalErrors) || !empty($configurationErrors)) {
+if (!empty($criticalErrors)) {
 	echo "<!DOCTYPE html>\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
@@ -172,10 +171,6 @@ if (!empty($criticalErrors) || !empty($configurationErrors)) {
 	}
 	foreach ($criticalErrors as $criticalError) {
 		call_user_func_array("StatusMessage", $criticalError);
-		echo "<br><br>";
-	}
-	foreach ($configurationErrors as $configurationError) {
-		call_user_func_array("StatusMessage", $configurationError);
 		echo "<br><br>";
 	}
 	echo "</body></html>";
