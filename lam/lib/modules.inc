@@ -1047,12 +1047,8 @@ class accountContainer {
 		if (!$errorsOccurred && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
 			&& isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 			// scroll to last position
-			echo '<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery(window).scrollTop(' . $_POST['scrollPositionTop'] . ');
-					jQuery(window).scrollLeft('. $_POST['scrollPositionLeft'] . ');
-			});
-			</script>';
+			$scrollJs = new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] .', ' . $_POST['scrollPositionLeft'] . ')');
+			parseHtml(null, $scrollJs, array(), false, $this->type->getScope());
 		}
 		$this->printPageFooter();
 	}
@@ -1443,7 +1439,7 @@ class accountContainer {
 			validateSecurityToken();
 		}
 		include '../../lib/adminHeader.inc';
-		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php?editKey=" . htmlspecialchars($this->base) . "\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\" novalidate=\"novalidate\">\n";
+		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php?editKey=" . htmlspecialchars($this->base) . "\" method=\"post\" onSubmit=\"window.lam.utility.saveScrollPosition('inputForm')\" autocomplete=\"off\" novalidate=\"novalidate\">\n";
 		echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 	}
 

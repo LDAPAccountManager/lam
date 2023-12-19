@@ -1,5 +1,6 @@
 <?php
 namespace LAM\TOOLS\PDF_EDITOR;
+use htmlJavaScript;
 use \htmlResponsiveRow;
 use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
@@ -240,7 +241,7 @@ if (isset($_SESSION['currentPDFStructure'])) {
 }
 
 ?>
-	<form id="inputForm" action="pdfpage.php" method="post" onSubmit="saveScrollPosition('inputForm')">
+	<form id="inputForm" action="pdfpage.php" method="post" onSubmit="window.lam.utility.saveScrollPosition('inputForm')">
 <?php
 $sectionElements = [];
 $nonTextSectionElements = [];
@@ -471,17 +472,12 @@ $buttonContainer->add(new htmlHiddenInput('form_submit', 'true'), 4);
 $container->add($buttonContainer, 12);
 addSecurityTokenToMetaHTML($container);
 
-parseHtml(null, $container, [], false, $type->getScope());
-
 if ((sizeof($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
-	echo '<script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery(window).scrollTop(' . $_POST['scrollPositionTop'] . ');
-			jQuery(window).scrollLeft('. $_POST['scrollPositionLeft'] . ');
-	});
-	</script>';
+	$container->add(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] .', ' . $_POST['scrollPositionLeft'] . ')'));
 }
+
+parseHtml(null, $container, [], false, $type->getScope());
 
 echo '</form></div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

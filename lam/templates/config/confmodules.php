@@ -1,5 +1,6 @@
 <?php
 namespace LAM\CONFIG;
+use htmlJavaScript;
 use \htmlTable;
 use \htmlOutputText;
 use \htmlHelpLink;
@@ -121,7 +122,7 @@ for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
 	call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 }
 
-echo "<form id=\"inputForm\" action=\"confmodules.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" novalidate=\"novalidate\">\n";
+echo "<form id=\"inputForm\" action=\"confmodules.php\" method=\"post\" onSubmit=\"window.lam.utility.saveScrollPosition('inputForm')\" novalidate=\"novalidate\">\n";
 
 printConfigurationPageTabs(ConfigurationPageTab::MODULES);
 
@@ -152,17 +153,13 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, [], false, 'user');
 
-if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
-	echo '<script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery(window).scrollTop(' . $_POST['scrollPositionTop'] . ');
-			jQuery(window).scrollLeft('. $_POST['scrollPositionLeft'] . ');
-	});
-	</script>';
+	$buttonContainer->addElement(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] .', ' . $_POST['scrollPositionLeft'] . ')'));
 }
+
+parseHtml(null, $buttonContainer, [], false, 'user');
 
 echo "</form>\n";
 echo "</body>\n";

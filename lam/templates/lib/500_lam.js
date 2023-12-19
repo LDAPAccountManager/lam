@@ -364,26 +364,6 @@ window.lam.profilePdfEditor.showPdfLogoImportDialog = function(title, okText, ca
 }
 
 /**
- * Stores the current scroll position in the form.
- *
- * @param formName ID of form
- */
-function saveScrollPosition(formName) {
-	const top = window.scrollY;
-	const left = window.scrollX;
-	let scrollPositionTop = document.createElement('input');
-	scrollPositionTop.name = 'scrollPositionTop';
-	scrollPositionTop.value = top;
-	scrollPositionTop.hidden = 'hidden';
-	document.forms[formName].appendChild(scrollPositionTop);
-	let scrollPositionLeft = document.createElement('input');
-	scrollPositionLeft.name = 'scrollPositionLeft';
-	scrollPositionLeft.value = left;
-	scrollPositionLeft.hidden = 'hidden';
-	document.forms[formName].appendChild(scrollPositionLeft);
-}
-
-/**
  * Shows the dialog to create a DNS zone.
  *
  * @param title dialog title
@@ -3353,7 +3333,55 @@ window.lam.loadingIndicator.stop = function() {
 	Swal.close();
 }
 
-jQuery(document).ready(function() {
+window.lam.utility = window.lam.utility || {};
+
+/**
+ * Run actions on document ready.
+ *
+ * @param callback callback function
+ */
+window.lam.utility.documentReady = function(callback) {
+	if (document.readyState !== 'loading') {
+		callback();
+	} else {
+		document.addEventListener('DOMContentLoaded', callback);
+	}
+}
+
+/**
+ * Stores the current scroll position in the form.
+ *
+ * @param formName ID of form
+ */
+window.lam.utility.saveScrollPosition = function(formName) {
+	const top = window.scrollY;
+	const left = window.scrollX;
+	let scrollPositionTop = document.createElement('input');
+	scrollPositionTop.name = 'scrollPositionTop';
+	scrollPositionTop.value = top;
+	scrollPositionTop.hidden = 'hidden';
+	document.forms[formName].appendChild(scrollPositionTop);
+	let scrollPositionLeft = document.createElement('input');
+	scrollPositionLeft.name = 'scrollPositionLeft';
+	scrollPositionLeft.value = left;
+	scrollPositionLeft.hidden = 'hidden';
+	document.forms[formName].appendChild(scrollPositionLeft);
+}
+
+/**
+ * Restores the scroll position.
+ *
+ * @param topValue top value
+ * @param leftValue left value
+ */
+window.lam.utility.restoreScrollPosition = function(topValue, leftValue) {
+	window.lam.utility.documentReady(function() {
+		window.scrollTo(leftValue, topValue);
+	});
+}
+
+
+window.lam.utility.documentReady(function() {
 	window.lam.form.autoTrim();
 	window.lam.account.addDefaultProfileListener();
 	window.lam.tools.addSavedSelectListener();
