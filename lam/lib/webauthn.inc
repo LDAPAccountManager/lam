@@ -709,7 +709,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		$pdo = $this->getPDO();
 		$statement = $pdo->prepare('delete from ' . $this->getTableName());
 		$statement->execute();
-		if (empty($data)) {
+		if ($data === null) {
 			return;
 		}
 		foreach ($data as $dbRow) {

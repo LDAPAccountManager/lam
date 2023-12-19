@@ -355,10 +355,10 @@ class nisNetGroupUser extends baseModule {
 				continue;
 			}
 			$triples = empty($current['nisnetgrouptriple']) ? array() : $current['nisnetgrouptriple'];
-			if (!empty($changeSet['del'])) {
+			if (isset($changeSet['del'])) {
 				$triples = array_delete($changeSet['del'], $triples);
 			}
-			if (!empty($changeSet['add'])) {
+			if (isset($changeSet['add'])) {
 				$triples = array_merge($changeSet['add'], $triples);
 			}
 			$triples = array_values(array_unique($triples));
