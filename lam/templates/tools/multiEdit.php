@@ -260,13 +260,6 @@ function runActions(htmlResponsiveRow &$container): void {
 	$_SESSION['multiEdit_operations'] = $operations;
 	$_SESSION['multiEdit_status'] = ['stage' => STAGE_START];
 	$_SESSION['multiEdit_dryRun'] = isset($_POST['dryRun']);
-	// disable all input elements
-	$jsContent = '
-		jQuery(\'input\').attr(\'disabled\', true);
-		jQuery(\'select\').attr(\'disabled\', true);
-		jQuery(\'button\').attr(\'disabled\', true);
-	';
-	$container->add(new htmlJavaScript($jsContent));
 	// progress area
 	$container->add(new htmlSubTitle(_('Progress')));
 	$container->add(new htmlProgressbar('progressBar'));
@@ -274,21 +267,7 @@ function runActions(htmlResponsiveRow &$container): void {
 	$container->add($progressDiv);
 	// JS block for AJAX status update
 	$ajaxBlock = '
-		jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
-
-		function handleReply(data) {
-			window.lam.progressbar.setProgress(\'progressBar\', data.progress);
-			jQuery(\'#progressArea\').html(data.content);
-			if (data.status != "finished") {
-				jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
-			}
-			else {
-				jQuery(\'input\').removeAttr(\'disabled\');
-				jQuery(\'select\').removeAttr(\'disabled\');
-				jQuery(\'button\').removeAttr(\'disabled\');
-				jQuery(\'#progressBar\').hide();
-			}
-		}
+		window.lam.multiedit.runActions();
 	';
 	$container->add(new htmlJavaScript($ajaxBlock), 12);
 }

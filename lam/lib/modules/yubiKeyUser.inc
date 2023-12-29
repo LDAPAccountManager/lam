@@ -354,20 +354,27 @@ class yubiKeyUser extends baseModule {
 					"id": id
 				};
 				for (c = 0; c < count; c++) {
-					actionJSON["yubiKeyId_" + c] = jQuery(\'#yubiKeyId_\' + c).val();
+					actionJSON["yubiKeyId_" + c] = document.getElementById(\'yubiKeyId_\' + c).value;
 				}
-				var data = {jsonInput: actionJSON};
-				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=yubiKeyUser&scope=user\',
-						data, function(data) {yubiKeyIdDeleteKeyHandleReply(data);}, \'json\');
+				let data = new FormData();
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
+				data.append("jsonInput", JSON.stringify(actionJSON));
+				fetch(\'../misc/ajax.php?selfservice=1&module=yubiKeyUser&scope=user\', {
+					method: "POST",
+					body: data
+				})
+				.then(async response => {
+					const jsonData = await response.json();
+					yubiKeyIdDeleteKeyHandleReply(jsonData);
+				});
 			}
 
 			function yubiKeyIdDeleteKeyHandleReply(data) {
 				if (data.errorsOccurred == "false") {
-					jQuery(\'#yubiKeyIdDiv\').html(data.html);
+					document.getElementById(\'yubiKeyIdDiv\').innerHTML = data.html;
 				}
 				else {
-					alert(data.errormessage);
+					window.lam.dialog.showError(data.errormessage, null, "' . _('Ok') . '");
 				}
 			}
 
@@ -376,22 +383,28 @@ class yubiKeyUser extends baseModule {
 					"action": "addKey"
 				};
 				for (c = 0; c < count; c++) {
-					actionJSON["yubiKeyId_" + c] = jQuery(\'#yubiKeyId_\' + c).val();
+					actionJSON["yubiKeyId_" + c] = document.getElementById(\'yubiKeyId_\' + c).value;
 				}
-				var data = {jsonInput: actionJSON};
-				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=yubiKeyUser&scope=user'
-					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
-					. '\', data, function(data) {yubiKeyIdAddKeyHandleReply(data);}, \'json\');
+				let data = new FormData();
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
+				data.append("jsonInput", JSON.stringify(actionJSON));
+				fetch(\'../misc/ajax.php?selfservice=1&module=yubiKeyUser&scope=user\', {
+					method: "POST",
+					body: data
+				})
+				.then(async response => {
+					const jsonData = await response.json();
+					yubiKeyIdAddKeyHandleReply(jsonData);
+				});
 			}
 
 			function yubiKeyIdAddKeyHandleReply(data) {
 				if (data.errorsOccurred == "false") {
-					jQuery(\'#yubiKeyIdDiv\').html(data.html);
+					document.getElementById(\'yubiKeyIdDiv\').innerHTML = data.html;
 					window.lam.html.preventEnter();
 				}
 				else {
-					alert(data.errormessage);
+					window.lam.dialog.showError(data.errormessage, null, "' . _('Ok') . '");
 				}
 			}
 
@@ -480,7 +493,7 @@ class yubiKeyUser extends baseModule {
 	 * This function may be called with or without an account container.
 	 */
 	public function handleAjaxRequest() {
-		$jsonInput = $_POST['jsonInput'];
+		$jsonInput = json_decode($_POST['jsonInput'], true);
 		$jsonReturn = self::invalidAjaxRequest();
 		if (isset($jsonInput['action'])) {
 			if ($jsonInput['action'] == 'deleteKey') {

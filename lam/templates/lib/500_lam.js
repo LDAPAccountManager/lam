@@ -1562,6 +1562,43 @@ window.lam.importexport.startExport = function(tokenName, tokenValue) {
 	});
 };
 
+window.lam.multiedit = window.lam.multiedit || {};
+
+window.lam.multiedit.runActions = function() {
+	// disable all input elements
+	document.querySelectorAll('input, select, button').forEach(function (item) {
+		item.disabled = true;
+	});
+	// run actions
+	fetch('multiEdit.php?ajaxStatus', {
+		method: 'GET'
+	})
+	.then(async response => {
+		const jsonData = await response.json();
+		window.lam.multiedit.runActionsHandleReply(jsonData);
+	});
+}
+
+window.lam.multiedit.runActionsHandleReply = function(data) {
+	window.lam.progressbar.setProgress('progressBar', data.progress);
+	document.getElementById('progressArea').innerHTML = data.content;
+	if (data.status != "finished") {
+		fetch('multiEdit.php?ajaxStatus', {
+			method: 'GET'
+		})
+		.then(async response => {
+			const jsonData = await response.json();
+			window.lam.multiedit.runActionsHandleReply(jsonData);
+		});
+	}
+	else {
+		document.querySelectorAll('input, select, button').forEach(function (item) {
+			item.disabled = false;
+		});
+		document.getElementById('progressBar').classList.add('hidden');
+	}
+}
+
 window.lam.html = window.lam.html || {};
 
 /**
