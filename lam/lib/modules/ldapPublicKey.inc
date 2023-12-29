@@ -405,15 +405,22 @@ class ldapPublicKey extends baseModule {
 					actionJSON["sshPublicKey_" + count] = document.getElementById(\'sshPublicKey_\' + count).value;
 					count++;
 				}
-				var data = {jsonInput: actionJSON};
-				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
-						data, function(data) {ldapPublicKeyDeleteKeyHandleReply(data);}, \'json\');
+				let data = new FormData();
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
+				data.append("jsonInput", JSON.stringify(actionJSON));
+				fetch(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\', {
+					method: "POST",
+					body: data
+				})
+				.then(async response => {
+					const jsonData = await response.json();
+					ldapPublicKeyDeleteKeyHandleReply(jsonData);
+				});
 			}
 
 			function ldapPublicKeyDeleteKeyHandleReply(data) {
 				if (data.errorsOccurred == "false") {
-					jQuery(\'#sshPublicKeyDiv\').html(data.html);
+					document.getElementById(\'sshPublicKeyDiv\').innerHTML = data.html;
 				}
 				else {
 					window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
@@ -425,18 +432,24 @@ class ldapPublicKey extends baseModule {
 					"action": "addKey"
 				};
 				for (c = 0; c < count; c++) {
-					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
+					actionJSON["sshPublicKey_" + c] = document.getElementById(\'sshPublicKey_\' + c).value;
 				}
-				var data = {jsonInput: actionJSON};
-				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user'
-					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
-					. '\', data, function(data) {ldapPublicKeyAddKeyHandleReply(data);}, \'json\');
+				let data = new FormData();
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
+				data.append("jsonInput", JSON.stringify(actionJSON));
+				fetch(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\', {
+					method: "POST",
+					body: data
+				})
+				.then(async response => {
+					const jsonData = await response.json();
+					ldapPublicKeyAddKeyHandleReply(jsonData);
+				});
 			}
 
 			function ldapPublicKeyAddKeyHandleReply(data) {
 				if (data.errorsOccurred == "false") {
-					jQuery(\'#sshPublicKeyDiv\').html(data.html);
+					document.getElementById(\'sshPublicKeyDiv\').innerHTML = data.html;
 				}
 				else {
 					window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
@@ -444,28 +457,27 @@ class ldapPublicKey extends baseModule {
 			}
 
 			const ldapPublicKeyUploadKeyFunction = function() {
-				var parameters = {
-					action: \'ajaxKeyUpload\'
-				};
+				let data = new FormData();
+				data.append("action", "ajaxKeyUpload");
 				let count = 0;
 				while (document.getElementById("sshPublicKey_" + count)) {
-					parameters["sshPublicKey_" + count] = document.getElementById(\'sshPublicKey_\' + count).value;
+					data.append("sshPublicKey_" + count, document.getElementById(\'sshPublicKey_\' + count).value);
 					count++;
 				}
-				parameters["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
 				let reader = new FileReader();
 				reader.onload = function () {
 					const content = reader.result;
-					parameters["file"] = content;
-					jQuery.ajax({
-						url: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
-						method: \'POST\',
-						data: parameters
+					data.append("file", content);
+					fetch(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\', {
+						method: "POST",
+						body: data
 					})
-					.done(function(data) {
+					.then(async response => {
+						const data = await response.json();
 						if (data.success) {
 							if (data.html) {
-								jQuery(\'#sshPublicKeyDiv\').html(data.html);
+								document.getElementById(\'sshPublicKeyDiv\').innerHTML = data.html;
 							}
 						}
 						else if (data.error) {
@@ -561,7 +573,7 @@ class ldapPublicKey extends baseModule {
 			$this->ajaxUpload();
 			return;
 		}
-		$jsonInput = $_POST['jsonInput'];
+		$jsonInput = json_decode($_POST['jsonInput'], true);
 		$jsonReturn = self::invalidAjaxRequest();
 		if (isset($jsonInput['action'])) {
 			if ($jsonInput['action'] == 'deleteKey') {
