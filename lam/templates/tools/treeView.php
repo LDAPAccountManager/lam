@@ -11,7 +11,7 @@ use htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2023  Roland Gruber
+  Copyright (C) 2021 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -186,10 +186,10 @@ function showTree(): void {
 								}
 							},';
 	$treeScript = new htmlJavaScript('
-		jQuery(document).ready(function() {
-			var maxHeight = jQuery(document).height() - jQuery("#ldap_tree").offset().top - 50;
-			jQuery("#ldap_tree").css("max-height", maxHeight);
-			jQuery("#ldap_actionarea").css("max-height", maxHeight);
+		window.lam.utility.documentReady(function() {
+			var maxHeight = document.documentElement.scrollHeight - (document.querySelector("#ldap_tree").getBoundingClientRect().top - window.scrollY) - 50;
+			document.getElementById("ldap_tree").style.maxHeight = maxHeight;
+			document.getElementById("ldap_actionarea").style.maxHeight = maxHeight;
 			window.lam.treeview.contextMenuPasteDisabled = true;
 			jQuery(\'#ldap_tree\').jstree({
 				"plugins": [
