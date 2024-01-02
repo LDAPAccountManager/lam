@@ -2942,18 +2942,19 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		$content = '
 				function inetOrgPersonUploadPhoto() {
-				var params = { action: \'ajaxPhotoUpload\' };
-				params["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
+				let params = new FormData();
+				params.append("action", "ajaxPhotoUpload");
+				params.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
 				let reader = new FileReader();
 				reader.onload = function () {
 					const content = reader.result;
-					params["file"] = btoa(content);
-					jQuery.ajax({
-						url: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
-						method: \'POST\',
-						data: params
+					params.append("file", btoa(content));
+					fetch("../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user", {
+						method: "POST",
+						body: params
 					})
-					.done(function(data) {
+					.then(async response => {
+						const data = await response.json();
 						if (data.success) {
 							if (data.html) {
 								jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
@@ -2977,15 +2978,22 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 					"action": "deletePhoto",
 					"id": id
 				};
-				var data = {jsonInput: actionJSON};
-				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
-						data, function(data) {inetOrgPersonDeletePhotoHandleReply(data);}, \'json\');
+				let data = new FormData();
+				data.append("jsonInput", JSON.stringify(actionJSON));
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
+				fetch("../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user", {
+					method: "POST",
+					body: data
+				})
+				.then(async response => {
+					const data = await response.json();
+					inetOrgPersonDeletePhotoHandleReply(data);
+				});
 			}
 
 			function inetOrgPersonDeletePhotoHandleReply(data) {
 				if (data.errorsOccurred == "false") {
-					jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
+					document.getElementById(\'inetOrgPersonPhotoUploadContent\').innerHTML = data.html;
 					window.lam.tools.webcam.init();
 				}
 				else {
@@ -3344,7 +3352,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$this->ajaxUploadPhoto();
 			return;
 		}
-		$jsonInput = $_POST['jsonInput'];
+		$jsonInput = json_decode($_POST['jsonInput'], true);
 		$jsonReturn = self::invalidAjaxRequest();
 		if (isset($jsonInput['action'])) {
 			if ($jsonInput['action'] == 'deleteCert') {

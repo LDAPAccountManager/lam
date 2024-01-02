@@ -1393,10 +1393,9 @@ window.lam.tools.webcam.uploadSelfService = function(event, tokenName, tokenValu
 		const jsonData = await response.json();
 		if (jsonData.success) {
 			if (jsonData.html) {
-				document.getElementById(contentId).innerHTML = jsonData.html;
+				jQuery('#' + contentId).html(jsonData.html);
 				window.lam.tools.webcam.init();
 			}
-			return false;
 		}
 		else if (jsonData.error) {
 			msg.querySelector('.statusTitle').innerText = jsonData.error;

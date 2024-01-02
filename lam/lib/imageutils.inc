@@ -230,7 +230,7 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * Destructor
 	 */
 	public function __destruct() {
-		if ($this->image != null) {
+		if (($this->image !== null) && ($this->image !== false)) {
 			imagedestroy($this->image);
 		}
 	}
