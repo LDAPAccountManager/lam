@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2023  Roland Gruber
+  Copyright (C) 2010 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -3636,6 +3636,7 @@ class htmlAccordion extends htmlElement {
 	private $elements;
 	private $openInitial;
 	private $saveState;
+	private bool $allowResorting = false;
 
 	/**
 	 * Constructor.
@@ -3686,6 +3687,23 @@ class htmlAccordion extends htmlElement {
 		$hiddenIndexId = $this->id . "_index";
 		echo '<input type="hidden" name="' . $hiddenIndexId . '" id="' . $hiddenIndexId . '" value="false">';
 		echo '</div>';
+		if ($this->allowResorting) {
+			$onResorting = 'onUpdate: function() {
+				window.lam.html.updateAccordionSorting("' . $this->id . '");
+			}';
+			$scriptContent = '
+			Sortable.create(
+				document.getElementById("' . $this->id . '"),
+				{
+					' . $onResorting . '
+				}
+			);';
+			$resortingGroup = new htmlGroup();
+			$script = new htmlJavaScript($scriptContent);
+			$resortingGroup->addElement($script);
+			$resortingGroup->addElement(new htmlHiddenInput($this->id . '_sorting', ''));
+			$resortingGroup->generateHTML($module, $input, $values, $restricted, $scope);
+		}
 		return $result;
 	}
 
@@ -3696,6 +3714,13 @@ class htmlAccordion extends htmlElement {
 	 */
 	public function saveState(bool $saveState = true): void {
 		$this->saveState = $saveState;
+	}
+
+	/**
+	 * Allows the user to resort the accordion elements.
+	 */
+	public function allowResorting(): void {
+		$this->allowResorting = true;
 	}
 
 }

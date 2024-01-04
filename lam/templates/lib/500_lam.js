@@ -1732,6 +1732,21 @@ window.lam.html.initCropping = function() {
 	});
 }
 
+/**
+ * Updates the field to store the sorting of an accordion.
+ *
+ * @param accordionId ID of accordion container
+ */
+window.lam.html.updateAccordionSorting = function (accordionId) {
+	const positionsField = document.getElementById(accordionId + '_sorting');
+	let positions = [];
+	document.getElementById(accordionId).querySelectorAll('.lam-accordion-button').forEach(function (item) {
+		const index = item.dataset.index;
+		positions.push(index);
+	});
+	positionsField.value = positions.join(',');
+}
+
 window.lam.selfservice = window.lam.selfservice || {};
 
 /**
