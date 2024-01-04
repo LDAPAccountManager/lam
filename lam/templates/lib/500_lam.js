@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1393,8 +1393,9 @@ window.lam.tools.webcam.uploadSelfService = function(event, tokenName, tokenValu
 		const jsonData = await response.json();
 		if (jsonData.success) {
 			if (jsonData.html) {
-				jQuery('#' + contentId).html(jsonData.html);
+				document.getElementById(contentId).innerHTML = jsonData.html;
 				window.lam.tools.webcam.init();
+				window.lam.html.initCropping();
 			}
 		}
 		else if (jsonData.error) {
