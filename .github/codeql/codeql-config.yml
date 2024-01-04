@@ -10,6 +10,7 @@ paths-ignore:
   - '**/lib/*flatpickr*.js'
   - '**/lib/*popper*.js'
   - '**/lib/*Sortable*.js'
+  - '**/lib/*cropper*.js'
   - '**/lib/*sweetalert*.js'
   - '**/lib/*tippy*.js'
 paths:
