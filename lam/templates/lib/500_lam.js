@@ -1713,6 +1713,24 @@ window.lam.html.preventEnter = function() {
 	});
 }
 
+/**
+ * Inits the cropping area on images.
+ */
+window.lam.html.initCropping = function() {
+	const image = document.querySelector('.cropperjsImage');
+	const cropper = new Cropper(image, {
+		viewMode: 1,
+		movable: false,
+		zoomable: false,
+		crop: function(event) {
+			document.getElementById('croppingDataX').value = event.detail.x;
+			document.getElementById('croppingDataY').value = event.detail.y;
+			document.getElementById('croppingDataWidth').value = event.detail.width;
+			document.getElementById('croppingDataHeight').value = event.detail.height;
+		}
+	});
+}
+
 window.lam.selfservice = window.lam.selfservice || {};
 
 /**

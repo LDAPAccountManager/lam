@@ -2598,18 +2598,7 @@ class htmlImage extends htmlElement {
 		}
 		if ($this->crop) {
 			echo '<script type="text/javascript">
-					var image = jQuery(\'.cropperjsImage\')[0];
-					var cropper = new Cropper(image, {
-						viewMode: 1,
-						movable: false,
-						zoomable: false,
-						crop: function(event) {
-							jQuery(\'#croppingDataX\').val(event.detail.x);
-							jQuery(\'#croppingDataY\').val(event.detail.y);
-							jQuery(\'#croppingDataWidth\').val(event.detail.width);
-							jQuery(\'#croppingDataHeight\').val(event.detail.height);
-						}
-					});
+					window.lam.html.initCropping();
 					</script>';
 			echo '<input id="croppingDataX" type="hidden" name="croppingDataX" value="0"/>';
 			echo '<input id="croppingDataY" type="hidden" name="croppingDataY" value="0"/>';
