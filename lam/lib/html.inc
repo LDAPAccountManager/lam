@@ -2597,14 +2597,6 @@ class htmlImage extends htmlElement {
 			echo '</a>';
 		}
 		if ($this->crop) {
-			$cropJsPath = 'templates/lib/extra/cropperjs/cropper.js';
-			if (is_file('../../templates/login.php')) {
-				$cropJsPath = '../../' . $cropJsPath;
-			}
-			else {
-				$cropJsPath = '../' . $cropJsPath;
-			}
-			echo '<script type="text/javascript" src="' . $cropJsPath . '"></script>';
 			echo '<script type="text/javascript">
 					var image = jQuery(\'.cropperjsImage\')[0];
 					var cropper = new Cropper(image, {
