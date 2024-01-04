@@ -1719,7 +1719,7 @@ window.lam.html.preventEnter = function() {
  */
 window.lam.html.initCropping = function() {
 	const image = document.querySelector('.cropperjsImage');
-	const cropper = new Cropper(image, {
+	new Cropper(image, {
 		viewMode: 1,
 		movable: false,
 		zoomable: false,
