@@ -2,7 +2,7 @@ March 2024 8.7
  - PHP 8.3 compatibility
  - LAM Pro:
   -> Request access: support Windows groups (266)
-  -> Request access: usability improvements (278)
+  -> Request access: usability improvements (278, 279)
 
 
 18.12.2023 8.6
