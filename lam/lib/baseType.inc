@@ -4,7 +4,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2023  Roland Gruber
+  Copyright (C) 2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -244,14 +244,7 @@ class baseType {
 		$onchange = '';
 		if ($hasLockOptions && $hasUnlockOptions) {
 			$radioDisabled = false;
-			$onchange = 'if (jQuery(\'#lam_accountStatusAction0:checked\').val()) {' .
-				'jQuery(\'#lam_accountStatusDialogLockDiv\').removeClass(\'hidden\');' .
-				'jQuery(\'#lam_accountStatusDialogUnlockDiv\').addClass(\'hidden\');' .
-				'}' .
-				'else {' .
-				'jQuery(\'#lam_accountStatusDialogLockDiv\').addClass(\'hidden\');' .
-				'jQuery(\'#lam_accountStatusDialogUnlockDiv\').removeClass(\'hidden\');' .
-				'};';
+			$onchange = 'window.lam.accountLists.lockUnlockRadioChange();';
 		}
 		if (!$hasUnlockOptions) {
 			$selectedRadio = 'lock';

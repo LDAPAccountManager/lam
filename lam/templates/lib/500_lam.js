@@ -64,6 +64,8 @@ function listPageNumberKeyPress(url, e) {
 	return true;
 }
 
+window.lam.accountLists = window.lam.accountLists || {};
+
 /**
  * Shows the dialog to change the list settings.
  *
@@ -71,7 +73,7 @@ function listPageNumberKeyPress(url, e) {
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
  */
-function listShowSettingsDialog(title, okText, cancelText) {
+window.lam.accountLists.listShowSettingsDialog = function (title, okText, cancelText) {
 	const dialogContent = document.getElementById('settingsDialog').cloneNode(true);
 	dialogContent.classList.remove('hidden');
 	dialogContent.firstElementChild.id = 'settingsDialogForm_dlg';
@@ -87,6 +89,20 @@ function listShowSettingsDialog(title, okText, cancelText) {
 			document.forms["settingsDialogForm_dlg"].submit();
 		}
 	});
+}
+
+/**
+ * Executed when radio buttons change for (un)locking accounts.
+ */
+window.lam.accountLists.lockUnlockRadioChange = function () {
+	if (document.querySelector('#lam_accountStatusAction0:checked')) {
+		document.getElementById('lam_accountStatusDialogLockDiv').classList.remove('hidden');
+		document.getElementById('lam_accountStatusDialogUnlockDiv').classList.add('hidden');
+	}
+	else {
+		document.getElementById('lam_accountStatusDialogLockDiv').classList.add('hidden');
+		document.getElementById('lam_accountStatusDialogUnlockDiv').classList.remove('hidden');
+	}
 }
 
 /**

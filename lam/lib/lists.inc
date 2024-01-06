@@ -1030,7 +1030,7 @@ class lamList {
 		$refreshButton->setTitle(_("Refresh"));
 		$rightButtonGroup->addElement($refreshButton);
 		$settingsLink = new htmlLink('', '#', '../../graphics/configure.svg');
-		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
+		$settingsLink->setOnClick('window.lam.accountLists.listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
 		$settingsLink->setCSSClasses(array('icon'));
 		$rightButtonGroup->addElement($settingsLink);
