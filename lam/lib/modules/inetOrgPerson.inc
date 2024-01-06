@@ -3071,15 +3071,22 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 					"action": "deleteCert",
 					"id": id
 				};
-				var data = {jsonInput: actionJSON};
-				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
-						data, function(data) {inetOrgPersonDeleteCertificateHandleReply(data);}, \'json\');
+				let data = new FormData();
+				data.append("jsonInput", JSON.stringify(actionJSON));
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
+				fetch(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\', {
+					method: "POST",
+					body: data
+				})
+				.then(async response => {
+					const jsonData = await response.json();
+					inetOrgPersonDeleteCertificateHandleReply(jsonData);
+				});
 			}
 
 			function inetOrgPersonDeleteCertificateHandleReply(data) {
 				if (data.errorsOccurred == "false") {
-					jQuery(\'#userCertificateDiv\').html(data.html);
+					document.getElementById(\'userCertificateDiv\').innerHTML = data.html;
 				}
 				else {
 					alert(data.errormessage);
@@ -3087,29 +3094,29 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			}
 
 			function inetOrgPersonUploadCert() {
-				var params = { action: \'ajaxCertUpload\' };
-				params["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				
+				let data = new FormData();
+				data.append("action", \'ajaxCertUpload\');
+				data.append("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
 				let reader = new FileReader();
 				reader.onload = function () {
 					const content = reader.result;
-					params["file"] = btoa(content);
-					jQuery.ajax({
-						url: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
-						method: \'POST\',
-						data: params
+					data.append("file", btoa(content));
+					fetch(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\', {
+						method: "POST",
+						body: data
 					})
-					.done(function(data) {
-						if (data.success) {
-							if (data.html) {
-								jQuery(\'#userCertificateDiv\').html(data.html);
+					.then(async response => {
+						const jsonData = await response.json();
+						if (jsonData.success) {
+							if (jsonData.html) {
+								document.getElementById(\'userCertificateDiv\').innerHTML = jsonData.html;
 							}
 						}
-						else if (data.error) {
-							window.lam.dialog.showInfo(data.error, "' . _('Ok') . '");
+						else if (jsonData.error) {
+							window.lam.dialog.showInfo(jsonData.error, "' . _('Ok') . '");
 						}
-						else if (data.errormessage) {
-							window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
+						else if (jsonData.errormessage) {
+							window.lam.dialog.showInfo(jsonData.errormessage, "' . _('Ok') . '");
 						}
 					});
 				};
