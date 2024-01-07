@@ -3615,8 +3615,6 @@ class htmlSortableList extends htmlElement {
 
 	/**
 	 * Sets the JS code that is executed when the element order was changed.
-	 * The code can access the variables event and ui. See JQueryUI docs for details.
-	 * ui.item.data('posOrig') will contain the original position of the moved element.
 	 *
 	 * @param String $onUpdate JS code
 	 */
