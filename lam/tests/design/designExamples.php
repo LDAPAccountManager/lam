@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2023  Roland Gruber
+  Copyright (C) 2021 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -353,6 +353,37 @@ $textAreaWysiwyg = new htmlInputTextarea('textareaWysiwyg', 'This is a <b>test</
 $textAreaWysiwyg->setIsRichEdit(true);
 $row->addField($textAreaWysiwyg);
 
+$row->add(new htmlSubTitle('Show/hide'));
+
+$showHideOptions = [
+    'Input1' => 'input1',
+	'Input2' => 'input2',
+	'Both' => 'both',
+];
+$showHideSelect = new htmlResponsiveSelect('showHideSelect', $showHideOptions, ['input1'], 'Show/hide select');
+$showHideSelect->setHasDescriptiveElements(true);
+$showHideSelect->setTableRowsToShow([
+    'input1' => ['showHideSelect_i1'],
+	'input2' => ['showHideSelect_i2'],
+	'both' => ['showHideSelect_i1', 'showHideSelect_i2'],
+]);
+$showHideSelect->setTableRowsToHide([
+	'input1' => ['showHideSelect_i2'],
+	'input2' => ['showHideSelect_i1'],
+	'both' => [],
+]);
+$row->add($showHideSelect);
+$row->add(new htmlResponsiveInputField('Input 1', 'showHideSelect_i1', ''));
+$row->add(new htmlResponsiveInputField('Input 2', 'showHideSelect_i2', ''));
+
+$row->add(new htmlSpacer(null, '3rem'));
+
+$showHideCheckbox = new htmlResponsiveInputCheckbox('showHideCheckbox', false, 'Show/hide checkbox');
+$showHideCheckbox->setTableRowsToShow(['showHideCheckbox_i1']);
+$showHideCheckbox->setTableRowsToHide(['showHideCheckbox_i2']);
+$row->add($showHideCheckbox);
+$row->add(new htmlResponsiveInputField('Input 1', 'showHideCheckbox_i1', ''));
+$row->add(new htmlResponsiveInputField('Input 2', 'showHideCheckbox_i2', ''));
 
 $row->add(new htmlSpacer(null, '20rem'));
 
