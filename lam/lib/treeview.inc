@@ -34,7 +34,7 @@ use function LAM\SCHEMA\get_schema_objectclasses;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2023  Roland Gruber
+  Copyright (C) 2021 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -873,7 +873,7 @@ class TreeView {
 				}
 			}
 			if (!empty($change['upload'])) {
-				if (empty($ldapChanges[$attrName]) && !empty($attributes[$attrName])) {
+				if (!isset($ldapChanges[$attrName]) && !empty($attributes[$attrName])) {
 					$ldapChanges[$attrName] = $attributes[$attrName];
 				}
 				$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : array();

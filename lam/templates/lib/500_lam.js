@@ -2578,16 +2578,14 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
  */
 window.lam.treeview.findAttributeChanges = function () {
 	var attributeChanges = {};
-	jQuery('.single-input').each(
-		function() {
-			var input = jQuery(this);
-			if (input.is(":hidden")) {
+	document.querySelectorAll('.single-input').forEach(input => {
+			if (window.lam.utility.isHidden(input)) {
 				return;
 			}
-			var attrName = input.data('attr-name');
+			const attrName = input.dataset.attrName;
 			// avoid type conversion in .data()
-			var valueOrig = input.attr('data-value-orig');
-			var valueNew = input.val();
+			const valueOrig = input.dataset.valueOrig;
+			const valueNew = input.value;
 			if (valueNew != valueOrig) {
 				attributeChanges[attrName] = {
 					old: [valueOrig]
@@ -2660,15 +2658,13 @@ window.lam.treeview.findAttributeChanges = function () {
 			}
 		}
 	);
-	jQuery('.image-input').each(
-		function() {
-			var input = jQuery(this);
-			var toDelete = input.attr('data-delete');
+	document.querySelectorAll('.image-input').forEach(input => {
+			const toDelete = input.dataset.delete;
 			if (toDelete !== 'true') {
 				return;
 			}
-			var attrName = input.attr('data-attr-name');
-			var attrIndex = input.attr('data-index');
+			const attrName = input.dataset.attrName;
+			const attrIndex = input.dataset.index;
 			if (!attrIndex) {
 				return;
 			}
@@ -2680,14 +2676,12 @@ window.lam.treeview.findAttributeChanges = function () {
 			}
 		}
 	);
-	jQuery('.image-upload').each(
-		function() {
-			var input = jQuery(this);
-			var content = this.dataset.dataBinary;
+	document.querySelectorAll('.image-upload').forEach(input => {
+			const content = input.dataset.dataBinary;
 			if (!content) {
 				return;
 			}
-			var attrName = input.attr('data-attr-name');
+			const attrName = input.dataset.attrName;
 			if (!attrName) {
 				return;
 			}
@@ -2710,13 +2704,15 @@ window.lam.treeview.findAttributeChanges = function () {
  */
 window.lam.treeview.clearValue = function (event, link) {
 	event.preventDefault();
-	var linkObj = jQuery(link);
-	var parentTr = jQuery(linkObj.parents('tr').get(0));
-	parentTr.find('input, textarea').val('');
-	var image = parentTr.find('.image-input');
-	if (image.length > 0) {
-		parentTr.addClass('hidden');
-		image.attr('data-delete', 'true');
+	const parentTr = link.closest('tr');
+	const input = parentTr.querySelector('input, textarea');
+	if (input !== null) {
+		input.value = '';
+	}
+	const image = parentTr.querySelector('.image-input');
+	if (image) {
+		parentTr.classList.add('hidden');
+		image.dataset.delete = 'true';
 	}
 }
 
@@ -3464,6 +3460,15 @@ window.lam.utility.restoreScrollPosition = function(topValue, leftValue) {
 	window.lam.utility.documentReady(function() {
 		window.scrollTo(leftValue, topValue);
 	});
+}
+
+/**
+ * Checks if an element is hidden.
+ *
+ * @param element element
+ */
+window.lam.utility.isHidden = function(element) {
+	return !element.offsetWidth || !element.offsetHeight || (element.getClientRects().length == 0);
 }
 
 
