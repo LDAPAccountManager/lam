@@ -1642,20 +1642,13 @@ class htmlRadio extends htmlElement {
 			elseif (!empty($showHideOnchange)) {
 				$onchange = ' onchange="' . $showHideOnchange . '"';
 			}
-			$onClick = 'onClick="
-				jQuery(\'input[name=' . $this->name . ']\').prop(\'checked\', false);
-				jQuery(\'#' . $this->name . $counter . '\').prop(\'checked\', true);
-				jQuery(\'#' . $this->name . $counter . '\').trigger(\'change\');
-				"';
-			if ($this->isEnabled === false) {
-				$onClick = '';
-			}
-			echo '<div class="nowrap" ' . $onClick . '>';
+			echo '<div class="nowrap">';
 			$selected = '';
 			if ($value == $this->selectedElement) {
 				$selected = ' checked';
 			}
-			echo '<input type="radio" id="' . $this->name . $counter . '"' . $name . $disabled . $selected . $onchange . ' value="' . $value . '"> ' . $label;
+			echo '<input type="radio" id="' . $this->name . $counter . '"' . $name . $disabled . $selected . $onchange . ' value="' . $value . '"> ';
+			echo '<label for="' . $this->name . $counter . '">' . $label . '</label>';
 			echo '</div>';
 			$counter++;
 		}
@@ -1712,15 +1705,15 @@ class htmlRadio extends htmlElement {
 		// build Java script to show/hide depending fields
 		foreach ($values as $val) {
 			// build onChange listener
-			$onChange .= 'if (jQuery(\'#' . $this->name . $counter . '\').val() == \'' . $val . '\') {';
+			$onChange .= 'if (document.getElementById(\'' . $this->name . $counter . '\').value == \'' . $val . '\') {';
 			if (isset($this->tableRowsToShow[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
-					$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$val][$i] . '\').closest(\'' . $selector . '\').removeClass(\'hidden\');';
+					$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$val][$i] . '\').closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 				}
 			}
 			if (isset($this->tableRowsToHide[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
-					$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$val][$i] . '\').closest(\'' . $selector . '\').addClass(\'hidden\');';
+					$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$val][$i] . '\').closest(\'' . $selector . '\').classList.add(\'hidden\');';
 				}
 			}
 			$onChange .= '};';
@@ -1731,17 +1724,15 @@ class htmlRadio extends htmlElement {
 	private function printInitialState() {
 		$selector = $this->getShowHideSelector();
 		// build script to set initial state
-		$script = '<script type="text/javascript">jQuery(document).ready(function() {' . "\n";
+		$script = '<script type="text/javascript">window.lam.utility.documentReady(function() {' . "\n";
 		if (isset($this->tableRowsToShow[$this->selectedElement])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElement]); $i++) {
-				$classType = 'removeClass';
-				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');' . "\n";
+				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').classList.remove(\'hidden\');' . "\n";
 			}
 		}
 		if (isset($this->tableRowsToHide[$this->selectedElement])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElement]); $i++) {
-				$classType = 'addClass';
-				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');' . "\n";
+				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').classList.add(\'hidden\');' . "\n";
 			}
 		}
 		$script .= '});</script>';
@@ -2014,7 +2005,7 @@ class htmlInputCheckbox extends htmlElement {
 			}
 			$onChange .= '};';
 			// build script to set initial state
-			$script = '<script type="text/javascript">window.lam.utility.documentReady(function() {';
+			$script .= '<script type="text/javascript">window.lam.utility.documentReady(function() {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
 				$classType = 'add';
 				if ($this->checked) {
@@ -2034,37 +2025,37 @@ class htmlInputCheckbox extends htmlElement {
 		// build Java script to enable/disable elements
 		if ((sizeof($this->elementsToEnable) > 0) || (sizeof($this->elementsToDisable) > 0)) {
 			// build onChange listener
-			$onChange .= 'if (jQuery(\'#' . $this->name . ':checked\').val() !== undefined) {';
+			$onChange .= 'if (document.querySelector(\'#' . $this->name . ':checked\') !== null) {';
 			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->elementsToEnable[$i] . '\').prop(\'disabled\', false);';
+				$onChange .= 'document.getElementById(\'' . $this->elementsToEnable[$i] . '\').disabled = false;';
 			}
 			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->elementsToDisable[$i] . '\').prop(\'disabled\', true);';
+				$onChange .= 'document.getElementById(\'' . $this->elementsToDisable[$i] . '\').disabled = true;';
 			}
 			$onChange .= '}';
 			$onChange .= 'else {';
 			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->elementsToEnable[$i] . '\').prop(\'disabled\', true);';
+				$onChange .= 'document.getElementById(\'' . $this->elementsToEnable[$i] . '\').disabled = true;';
 			}
 			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->elementsToDisable[$i] . '\').prop(\'disabled\', false);';
+				$onChange .= 'document.getElementById(\'' . $this->elementsToDisable[$i] . '\').disabled = false;';
 			}
 			$onChange .= '};';
 			// build script to set initial state
-			$script = '<script type="text/javascript">jQuery(document).ready(function() {';
+			$script .= '<script type="text/javascript">window.lam.utility.documentReady(function() {';
 			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
 				$classType = 'true';
 				if ($this->checked) {
 					$classType = 'false';
 				}
-				$script .= 'jQuery(\'#' . $this->elementsToEnable[$i] . '\').prop(\'disabled\', ' . $classType . ');';
+				$script .= 'document.getElementById(\'' . $this->elementsToEnable[$i] . '\').disabled = ' . $classType . ';';
 			}
 			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
 				$classType = 'false';
 				if ($this->checked) {
 					$classType = 'true';
 				}
-				$script .= 'jQuery(\'#' . $this->elementsToDisable[$i] . '\').prop(\'disabled\', ' . $classType . ');';
+				$script .= 'document.getElementById(\'' . $this->elementsToDisable[$i] . '\').disabled = ' . $classType . ';';
 			}
 			$script .= '});</script>';
 		}

@@ -378,12 +378,36 @@ $row->add(new htmlResponsiveInputField('Input 2', 'showHideSelect_i2', ''));
 
 $row->add(new htmlSpacer(null, '3rem'));
 
+$showHideRadio = new htmlResponsiveRadio('Show/hide radio', 'showHideRadio', $showHideOptions, 'input2');
+$showHideRadio->setTableRowsToShow([
+	'input1' => ['showHideRadio_i1'],
+	'input2' => ['showHideRadio_i2'],
+	'both' => ['showHideRadio_i1', 'showHideRadio_i2'],
+]);
+$showHideRadio->setTableRowsToHide([
+	'input1' => ['showHideRadio_i2'],
+	'input2' => ['showHideRadio_i1'],
+	'both' => [],
+]);
+$row->add($showHideRadio);
+$row->add(new htmlResponsiveInputField('Input 1', 'showHideRadio_i1', ''));
+$row->add(new htmlResponsiveInputField('Input 2', 'showHideRadio_i2', ''));
+
+$row->add(new htmlSpacer(null, '3rem'));
+
 $showHideCheckbox = new htmlResponsiveInputCheckbox('showHideCheckbox', false, 'Show/hide checkbox');
 $showHideCheckbox->setTableRowsToShow(['showHideCheckbox_i1']);
 $showHideCheckbox->setTableRowsToHide(['showHideCheckbox_i2']);
+$showHideCheckbox->setElementsToEnable(['showHideCheckbox_ie']);
+$showHideCheckbox->setElementsToDisable(['showHideCheckbox_id']);
 $row->add($showHideCheckbox);
 $row->add(new htmlResponsiveInputField('Input 1', 'showHideCheckbox_i1', ''));
 $row->add(new htmlResponsiveInputField('Input 2', 'showHideCheckbox_i2', ''));
+$row->addVerticalSpacer('0.5rem');
+$row->add(new htmlResponsiveInputField('Enabled on checked', 'showHideCheckbox_ie', ''));
+$row->add(new htmlResponsiveInputField('Disabled on checked', 'showHideCheckbox_id', ''));
+
+$row->add(new htmlSpacer(null, '3rem'));
 
 $row->add(new htmlSpacer(null, '20rem'));
 
