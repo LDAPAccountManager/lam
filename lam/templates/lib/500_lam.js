@@ -2724,13 +2724,12 @@ window.lam.treeview.clearValue = function (event, link) {
  */
 window.lam.treeview.addValue = function (event, link) {
 	event.preventDefault();
-	var linkObj = jQuery(link);
-	var parentTr = jQuery(linkObj.parents('tr').get(0));
-	var newTr = parentTr.clone();
-	var newField = newTr.find('input, textarea');
-	newField.val('');
-	newField.attr('data-value-orig', '');
-	newTr.insertAfter(parentTr);
+	const parentTr = link.closest('tr');
+	const newTr = parentTr.clone();
+	const newField = newTr.querySelector('input, textarea');
+	newField.value = '';
+	newField.dataset.valueOrig = '';
+	newTr.append(parentTr);
 }
 
 /**
