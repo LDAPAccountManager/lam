@@ -1492,12 +1492,12 @@ class htmlSelect extends htmlElement {
 			$onChange .= 'if (document.getElementById(\'' . $this->name . '\').value == \'' . $val . '\') {';
 			if (isset($this->tableRowsToShow[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
-					$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$val][$i] . '\').closest(\'' . $selector . '\').classList.remove(\'hidden\');';
+					$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 				}
 			}
 			if (isset($this->tableRowsToHide[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
-					$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$val][$i] . '\').closest(\'' . $selector . '\').classList.add(\'hidden\');';
+					$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 				}
 			}
 			$onChange .= '};';
@@ -1507,13 +1507,13 @@ class htmlSelect extends htmlElement {
 		if (isset($this->tableRowsToShow[$this->selectedElements[0]])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElements[0]]); $i++) {
 				$classType = 'remove';
-				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$this->selectedElements[0]][$i] . '\').closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');' . "\n";
+				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$this->selectedElements[0]][$i] . '\')?.closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');' . "\n";
 			}
 		}
 		if (isset($this->tableRowsToHide[$this->selectedElements[0]])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElements[0]]); $i++) {
 				$classType = 'add';
-				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$this->selectedElements[0]][$i] . '\').closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');' . "\n";
+				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$this->selectedElements[0]][$i] . '\')?.closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');' . "\n";
 			}
 		}
 		$script .= '});</script>';
@@ -1708,12 +1708,12 @@ class htmlRadio extends htmlElement {
 			$onChange .= 'if (document.getElementById(\'' . $this->name . $counter . '\').value == \'' . $val . '\') {';
 			if (isset($this->tableRowsToShow[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
-					$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$val][$i] . '\').closest(\'' . $selector . '\').classList.remove(\'hidden\');';
+					$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 				}
 			}
 			if (isset($this->tableRowsToHide[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
-					$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$val][$i] . '\').closest(\'' . $selector . '\').classList.add(\'hidden\');';
+					$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 				}
 			}
 			$onChange .= '};';
@@ -1727,12 +1727,12 @@ class htmlRadio extends htmlElement {
 		$script = '<script type="text/javascript">window.lam.utility.documentReady(function() {' . "\n";
 		if (isset($this->tableRowsToShow[$this->selectedElement])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElement]); $i++) {
-				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').classList.remove(\'hidden\');' . "\n";
+				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$this->selectedElement][$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');' . "\n";
 			}
 		}
 		if (isset($this->tableRowsToHide[$this->selectedElement])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElement]); $i++) {
-				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').classList.add(\'hidden\');' . "\n";
+				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$this->selectedElement][$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');' . "\n";
 			}
 		}
 		$script .= '});</script>';
@@ -1990,18 +1990,18 @@ class htmlInputCheckbox extends htmlElement {
 			// build onChange listener
 			$onChange .= 'if (document.querySelector(\'#' . $this->name . ':checked\') !== null) {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
-				$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').classList.remove(\'hidden\');';
+				$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
-				$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').classList.add(\'hidden\');';
+				$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 			}
 			$onChange .= '}';
 			$onChange .= 'else {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
-				$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').classList.add(\'hidden\');';
+				$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
-				$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').classList.remove(\'hidden\');';
+				$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 			}
 			$onChange .= '};';
 			// build script to set initial state
@@ -2011,14 +2011,14 @@ class htmlInputCheckbox extends htmlElement {
 				if ($this->checked) {
 					$classType = 'remove';
 				}
-				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');';
+				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\')?.closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
 				$classType = 'remove';
 				if ($this->checked) {
 					$classType = 'add';
 				}
-				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');';
+				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\')?.closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');';
 			}
 			$script .= '});</script>';
 		}

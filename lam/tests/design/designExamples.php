@@ -363,12 +363,12 @@ $showHideOptions = [
 $showHideSelect = new htmlResponsiveSelect('showHideSelect', $showHideOptions, ['input1'], 'Show/hide select');
 $showHideSelect->setHasDescriptiveElements(true);
 $showHideSelect->setTableRowsToShow([
-    'input1' => ['showHideSelect_i1'],
+    'input1' => ['showHideSelect_i1', 'invalid'],
 	'input2' => ['showHideSelect_i2'],
 	'both' => ['showHideSelect_i1', 'showHideSelect_i2'],
 ]);
 $showHideSelect->setTableRowsToHide([
-	'input1' => ['showHideSelect_i2'],
+	'input1' => ['showHideSelect_i2', 'invalid'],
 	'input2' => ['showHideSelect_i1'],
 	'both' => [],
 ]);
@@ -381,12 +381,12 @@ $row->add(new htmlSpacer(null, '3rem'));
 $showHideRadio = new htmlResponsiveRadio('Show/hide radio', 'showHideRadio', $showHideOptions, 'input2');
 $showHideRadio->setTableRowsToShow([
 	'input1' => ['showHideRadio_i1'],
-	'input2' => ['showHideRadio_i2'],
+	'input2' => ['showHideRadio_i2', 'invalid'],
 	'both' => ['showHideRadio_i1', 'showHideRadio_i2'],
 ]);
 $showHideRadio->setTableRowsToHide([
 	'input1' => ['showHideRadio_i2'],
-	'input2' => ['showHideRadio_i1'],
+	'input2' => ['showHideRadio_i1', 'invalid'],
 	'both' => [],
 ]);
 $row->add($showHideRadio);
@@ -397,7 +397,7 @@ $row->add(new htmlSpacer(null, '3rem'));
 
 $showHideCheckbox = new htmlResponsiveInputCheckbox('showHideCheckbox', false, 'Show/hide checkbox');
 $showHideCheckbox->setTableRowsToShow(['showHideCheckbox_i1']);
-$showHideCheckbox->setTableRowsToHide(['showHideCheckbox_i2']);
+$showHideCheckbox->setTableRowsToHide(['showHideCheckbox_i2', 'invalid']);
 $showHideCheckbox->setElementsToEnable(['showHideCheckbox_ie']);
 $showHideCheckbox->setElementsToDisable(['showHideCheckbox_id']);
 $row->add($showHideCheckbox);
