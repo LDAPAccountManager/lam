@@ -2725,11 +2725,11 @@ window.lam.treeview.clearValue = function (event, link) {
 window.lam.treeview.addValue = function (event, link) {
 	event.preventDefault();
 	const parentTr = link.closest('tr');
-	const newTr = parentTr.clone();
+	const newTr = parentTr.cloneNode(true);
 	const newField = newTr.querySelector('input, textarea');
 	newField.value = '';
 	newField.dataset.valueOrig = '';
-	newTr.append(parentTr);
+	parentTr.after(newTr);
 }
 
 /**
@@ -2793,24 +2793,26 @@ window.lam.treeview.updatePossibleNewAttributesRequest = null;
  */
 window.lam.treeview.addAttributeField = function (event, select) {
 	event.preventDefault();
-	var selectObj = jQuery(select);
-	var attributeParts = selectObj.val();
+	let attributeParts = select.value;
 	if (attributeParts == '') {
 		return;
 	}
-	selectObj.children('[value="' + attributeParts + '"]').remove();
+	select.options.remove(select.options.selectedIndex);
 	attributeParts = attributeParts.split('__#__');
-	var attributeName = attributeParts[0];
-	var isSingleValue = attributeParts[1];
-	var fieldType = attributeParts[2];
-	var placeHolderId = 'new-attributes-' + isSingleValue + '-' + fieldType;
-	var newContent = jQuery(jQuery('#' + placeHolderId).children('.row').get(0)).clone();
-	jQuery(newContent.children().get(0)).text(attributeName);
-	var inputField = newContent.find('input, textarea');
-	inputField.attr('data-attr-name', attributeName);
-	inputField.attr('name', 'lam_attr_' + attributeName);
-	inputField.attr('id', 'lam_attr_' + attributeName);
-	newContent.children().insertAfter(jQuery(selectObj.parents('div').get(0)));
+	const attributeName = attributeParts[0];
+	const isSingleValue = attributeParts[1];
+	const fieldType = attributeParts[2];
+	const placeHolderId = 'new-attributes-' + isSingleValue + '-' + fieldType;
+	let newContent = document.getElementById(placeHolderId).querySelector('.row').cloneNode(true);
+	newContent.children[0].innerText = attributeName;
+	const inputField = newContent.querySelector('input, textarea');
+	inputField.dataset.attrName = attributeName;
+	inputField.name = 'lam_attr_' + attributeName;
+	inputField.id = 'lam_attr_' + attributeName;
+	newContent = [...newContent.children];
+	while (newContent.length > 0) {
+		select.closest('div').after(newContent.pop());
+	}
 	window.lam.treeview.addFileInputListeners();
 }
 
