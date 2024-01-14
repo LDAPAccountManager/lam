@@ -2577,7 +2577,7 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
  * @returns list of changes
  */
 window.lam.treeview.findAttributeChanges = function () {
-	var attributeChanges = {};
+	let attributeChanges = {};
 	document.querySelectorAll('.single-input').forEach(input => {
 			if (window.lam.utility.isHidden(input)) {
 				return;
@@ -2599,17 +2599,15 @@ window.lam.treeview.findAttributeChanges = function () {
 			}
 		}
 	);
-	var lastAttrName = '';
-	var lastAttrValuesNew = [];
-	var lastAttrValuesOld = [];
-	var lastAttrHasChange = false;
-	jQuery('.multi-input').each(
-		function() {
-			var input = jQuery(this);
-			if (input.is(":hidden")) {
+	let lastAttrName = '';
+	let lastAttrValuesNew = [];
+	let lastAttrValuesOld = [];
+	let lastAttrHasChange = false;
+	document.querySelectorAll('.multi-input').forEach(input => {
+			if (window.lam.utility.isHidden(input)) {
 				return;
 			}
-			var attrName = input.data('attr-name');
+			const attrName = input.dataset.attrName;
 			if (attrName != lastAttrName) {
 				if (lastAttrHasChange) {
 					attributeChanges[lastAttrName] = {
@@ -2624,8 +2622,8 @@ window.lam.treeview.findAttributeChanges = function () {
 				lastAttrValuesOld = [];
 			}
 			// avoid type conversion in .data()
-			var valueOrig = input.attr('data-value-orig');
-			var valueNew = input.val();
+			const valueOrig = input.dataset.valueOrig;
+			const valueNew = input.value;
 			if (valueOrig != '') {
 				lastAttrValuesOld.push(valueOrig);
 			}
@@ -2643,18 +2641,16 @@ window.lam.treeview.findAttributeChanges = function () {
 			new: lastAttrValuesNew
 		};
 	}
-	jQuery('.hash-select').each(
-		function() {
-			var input = jQuery(this);
-			var attrName = input.data('attr-name');
+	document.querySelectorAll('.hash-select').forEach(input => {
+			const attrName = input.dataset.attrName;
 			if (!attributeChanges[attrName]) {
 				return;
 			}
 			if (!attributeChanges[attrName]['hash']) {
-				attributeChanges[attrName]['hash'] = [input.val()];
+				attributeChanges[attrName]['hash'] = [input.value];
 			}
 			else {
-				attributeChanges[attrName]['hash'].push(input.val());
+				attributeChanges[attrName]['hash'].push(input.value);
 			}
 		}
 	);
@@ -2757,20 +2753,18 @@ window.lam.treeview.updatePossibleNewAttributes = function(tokenName, tokenValue
 	fields.forEach(function(field) {
 		objectCLasses.push(field.value);
 	});
-	let data = {
-		jsonInput: "",
-		dn: 'none'
-	};
-	data[tokenName] = tokenValue;
-	data['objectClasses'] = objectCLasses;
-	window.lam.treeview.updatePossibleNewAttributesRequest = jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=getPossibleNewAttributes",
-		method: "POST",
-		data: data
+	let data = new FormData();
+	data.append('dn', 'none');
+	data.append(tokenName, tokenValue);
+	data.append('objectClasses', JSON.stringify(objectCLasses));
+	fetch("../misc/ajax.php?function=treeview&command=getPossibleNewAttributes", {
+		method: 'POST',
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
-		const select = document.querySelector('#newAttribute');
+		const select = document.getElementById('newAttribute');
 		select.innerHTML = '';
 		const data = jsonData['data'];
 		for (const attributeName in data) {
@@ -2809,6 +2803,12 @@ window.lam.treeview.addAttributeField = function (event, select) {
 	inputField.dataset.attrName = attributeName;
 	inputField.name = 'lam_attr_' + attributeName;
 	inputField.id = 'lam_attr_' + attributeName;
+	const hashSelect = newContent.querySelector('.hash-select');
+	if (hashSelect) {
+		hashSelect.id = 'lam_hash_' + attributeName;
+		hashSelect.name = 'lam_hash_' + attributeName;
+		hashSelect.dataset.attrName = attributeName;
+	}
 	newContent = [...newContent.children];
 	while (newContent.length > 0) {
 		select.closest('div').after(newContent.pop());

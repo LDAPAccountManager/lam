@@ -138,7 +138,7 @@ class TreeView {
 	 * Returns the JSON for the possible new attributes select.
 	 */
 	private function getPossibleNewAttributeNameOptionsJson() {
-		$objectClasses = $_POST['objectClasses'];
+		$objectClasses = json_decode($_POST['objectClasses'], true);
 		$attributeNames = $this->getPossibleNewAttributeNameOptions($objectClasses, true);
 		natcasesort($attributeNames);
 		return json_encode(array('data' => $attributeNames));
@@ -394,7 +394,7 @@ class TreeView {
 		logNewMessage(LOG_DEBUG, 'Possible new attributes for ' . $dn . ': ' . implode('; ', $possibleNewAttributes));
 		if (!empty($possibleNewAttributes)) {
 			$possibleNewAttributes = array('' => '') + $possibleNewAttributes;
-			$row->add(new htmlSubTitle(_('Add new attribute')), 12);
+			$row->add(new htmlSubTitle(_('Add new attribute')));
 			$newAttributeSelect = new htmlResponsiveSelect('newAttribute', $possibleNewAttributes, array(), _('Attribute'));
 			$newAttributeSelect->setHasDescriptiveElements(true);
 			$newAttributeSelect->setTransformSingleSelect(false);
