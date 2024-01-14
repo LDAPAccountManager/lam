@@ -391,48 +391,51 @@ class TreeView {
 
 		// add new attributes
 		$possibleNewAttributes = $this->getPossibleNewAttributeNameOptions($objectClasses);
-		logNewMessage(LOG_DEBUG, 'Possible new attributes for ' . $dn . ': ' . implode('; ', $possibleNewAttributes));
-		if (!empty($possibleNewAttributes)) {
-			$possibleNewAttributes = array('' => '') + $possibleNewAttributes;
-			$row->add(new htmlSubTitle(_('Add new attribute')));
-			$newAttributeSelect = new htmlResponsiveSelect('newAttribute', $possibleNewAttributes, array(), _('Attribute'));
-			$newAttributeSelect->setHasDescriptiveElements(true);
-			$newAttributeSelect->setTransformSingleSelect(false);
-			$newAttributeSelect->setOnchangeEvent('window.lam.treeview.addAttributeField(event, this);');
-			$row->add($newAttributeSelect, 12);
-			$newAttributesContentSingleInput = new htmlResponsiveRow();
-			$newAttributesContentSingleInput->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_INPUT_LABEL'));
-			$newAttributesContentSingleInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, false, false, null));
-			$row->add(new htmlDiv('new-attributes-single-input', $newAttributesContentSingleInput, array('hidden')), 12);
-			$newAttributesContentMultiInput = new htmlResponsiveRow();
-			$newAttributesContentMultiInput->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_INPUT_LABEL'));
-			$newAttributesContentMultiInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, true, false, null));
-			$row->add(new htmlDiv('new-attributes-multi-input', $newAttributesContentMultiInput, array('hidden')), 12);
-			$newAttributesContentSingleTextarea = new htmlResponsiveRow();
-			$newAttributesContentSingleTextarea->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_TEXTAREA_LABEL'));
-			$newAttributesContentSingleTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, false, true, null));
-			$row->add(new htmlDiv('new-attributes-single-textarea', $newAttributesContentSingleTextarea, array('hidden')), 12);
-			$newAttributesContentMultiTextarea = new htmlResponsiveRow();
-			$newAttributesContentMultiTextarea->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_TEXTAREA_LABEL'));
-			$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, true, true, null));
-			$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, array('hidden')), 12);
-			$newAttributesContentSinglePassword = new htmlResponsiveRow();
-			$newAttributesContentSinglePassword->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_PASSWORD_LABEL'));
-			$newAttributesContentSinglePassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), array(''), false, false, false, null));
-			$row->add(new htmlDiv('new-attributes-single-password', $newAttributesContentSinglePassword, array('hidden')), 12);
-			$newAttributesContentMultiPassword = new htmlResponsiveRow();
-			$newAttributesContentMultiPassword->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_PASSWORD_LABEL'));
-			$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), array(''), false, true, false, null));
-			$row->add(new htmlDiv('new-attributes-multi-password', $newAttributesContentMultiPassword, array('hidden')), 12);
-			$newAttributesContentSingleJpeg = new htmlResponsiveRow();
-			$newAttributesContentSingleJpeg->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_JPEG_LABEL'));
-			$newAttributesContentSingleJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), array(''), false, false, false, null));
-			$row->add(new htmlDiv('new-attributes-single-jpeg', $newAttributesContentSingleJpeg, array('hidden')), 12);
-			$newAttributesContentMultiJpeg = new htmlResponsiveRow();
-			$newAttributesContentMultiJpeg->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_JPEG_LABEL'));
-			$newAttributesContentMultiJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), array(''), false, true, true, null));
-			$row->add(new htmlDiv('new-attributes-multi-jpeg', $newAttributesContentMultiJpeg, array('hidden')), 12);
+		foreach (array_keys($attributes) as $attributeName) {
+			if (isset($possibleNewAttributes[$attributeName])) {
+				unset($possibleNewAttributes[$attributeName]);
+			}
 		}
+		logNewMessage(LOG_DEBUG, 'Possible new attributes for ' . $dn . ': ' . implode('; ', $possibleNewAttributes));
+		$possibleNewAttributes = array('' => '') + $possibleNewAttributes;
+		$row->add(new htmlSubTitle(_('Add new attribute')));
+		$newAttributeSelect = new htmlResponsiveSelect('newAttribute', $possibleNewAttributes, array(), _('Attribute'));
+		$newAttributeSelect->setHasDescriptiveElements(true);
+		$newAttributeSelect->setTransformSingleSelect(false);
+		$newAttributeSelect->setOnchangeEvent('window.lam.treeview.addAttributeField(event, this);');
+		$row->add($newAttributeSelect);
+		$newAttributesContentSingleInput = new htmlResponsiveRow();
+		$newAttributesContentSingleInput->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_INPUT_LABEL'));
+		$newAttributesContentSingleInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, false, false, null));
+		$row->add(new htmlDiv('new-attributes-single-input', $newAttributesContentSingleInput, array('hidden')));
+		$newAttributesContentMultiInput = new htmlResponsiveRow();
+		$newAttributesContentMultiInput->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_INPUT_LABEL'));
+		$newAttributesContentMultiInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, true, false, null));
+		$row->add(new htmlDiv('new-attributes-multi-input', $newAttributesContentMultiInput, array('hidden')));
+		$newAttributesContentSingleTextarea = new htmlResponsiveRow();
+		$newAttributesContentSingleTextarea->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_TEXTAREA_LABEL'));
+		$newAttributesContentSingleTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, false, true, null));
+		$row->add(new htmlDiv('new-attributes-single-textarea', $newAttributesContentSingleTextarea, array('hidden')));
+		$newAttributesContentMultiTextarea = new htmlResponsiveRow();
+		$newAttributesContentMultiTextarea->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_TEXTAREA_LABEL'));
+		$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, true, true, null));
+		$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, array('hidden')));
+		$newAttributesContentSinglePassword = new htmlResponsiveRow();
+		$newAttributesContentSinglePassword->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_PASSWORD_LABEL'));
+		$newAttributesContentSinglePassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), array(''), false, false, false, null));
+		$row->add(new htmlDiv('new-attributes-single-password', $newAttributesContentSinglePassword, array('hidden')));
+		$newAttributesContentMultiPassword = new htmlResponsiveRow();
+		$newAttributesContentMultiPassword->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_PASSWORD_LABEL'));
+		$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), array(''), false, true, false, null));
+		$row->add(new htmlDiv('new-attributes-multi-password', $newAttributesContentMultiPassword, array('hidden')));
+		$newAttributesContentSingleJpeg = new htmlResponsiveRow();
+		$newAttributesContentSingleJpeg->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_JPEG_LABEL'));
+		$newAttributesContentSingleJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), array(''), false, false, false, null));
+		$row->add(new htmlDiv('new-attributes-single-jpeg', $newAttributesContentSingleJpeg, array('hidden')));
+		$newAttributesContentMultiJpeg = new htmlResponsiveRow();
+		$newAttributesContentMultiJpeg->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_JPEG_LABEL'));
+		$newAttributesContentMultiJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), array(''), false, true, true, null));
+		$row->add(new htmlDiv('new-attributes-multi-jpeg', $newAttributesContentMultiJpeg, array('hidden')));
 
 		if (checkIfWriteAccessIsAllowed()) {
 			$row->addVerticalSpacer('2rem');
@@ -658,7 +661,7 @@ class TreeView {
 		$inputField->addDataAttribute('value-orig', $value);
 		$inputField->addDataAttribute('attr-name', $attributeName);
 		$cssClass = ($isSingleValue) ? 'single-input' : 'multi-input';
-		$inputField->setCSSClasses(array($cssClass));
+		$inputField->setCSSClasses([$cssClass, 'attribute-field']);
 		if ($required) {
 			$inputField->setRequired(true);
 		}
@@ -706,7 +709,7 @@ class TreeView {
 		$inputField->addDataAttribute('value-orig', $value);
 		$inputField->addDataAttribute('attr-name', $attributeName);
 		$cssClass = ($isSingleValue) ? 'single-input' : 'multi-input';
-		$inputField->setCSSClasses(array($cssClass));
+		$inputField->setCSSClasses([$cssClass, 'attribute-field']);
 		if ($required) {
 			$inputField->setRequired(true);
 		}
@@ -747,7 +750,7 @@ class TreeView {
 		fclose ($handle);
 		$image = new htmlImage($tempFilesManager->getResourceLink($fileName));
 		$image->enableLightbox();
-		$image->setCSSClasses(array('thumbnail', 'image-input'));
+		$image->setCSSClasses(array('thumbnail', 'image-input', 'attribute-field'));
 		$image->addDataAttribute('attr-name', $attributeName);
 		$image->addDataAttribute('index', $index);
 		return $image;

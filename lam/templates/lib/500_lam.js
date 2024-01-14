@@ -2766,9 +2766,18 @@ window.lam.treeview.updatePossibleNewAttributes = function(tokenName, tokenValue
 		window.lam.treeview.checkSession(jsonData);
 		const select = document.getElementById('newAttribute');
 		select.innerHTML = '';
+		const existingAttributeFieldNames = [];
+		document.querySelectorAll('.attribute-field').forEach(input => {
+			if (input.dataset.attrName) {
+				existingAttributeFieldNames.push(input.dataset.attrName);
+			}
+		});
 		const data = jsonData['data'];
 		for (const attributeName in data) {
-			var option = document.createElement('option');
+			if (existingAttributeFieldNames.includes(attributeName)) {
+				continue;
+			}
+			const option = document.createElement('option');
 			option.value = data[attributeName];
 			option.innerText = attributeName;
 			select.appendChild(option);
