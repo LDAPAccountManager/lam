@@ -5,7 +5,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -4910,7 +4910,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			foreach ($groups as $group) {
 				$groupByDn[$group['dn']] = $group;
 			}
-			$groups = null;
+			unset($groups);
 			foreach ($users as $index => $user) {
 				$managedObjectDns = $user['managedobjects'];
 				$managedGroups = array();
