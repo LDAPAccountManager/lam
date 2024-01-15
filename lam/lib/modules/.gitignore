@@ -47,3 +47,4 @@
 /requestAccess.inc
 /simpleSecurityObject.inc
 /guacamole.inc
+/lastBind.inc
