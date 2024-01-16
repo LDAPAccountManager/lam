@@ -1363,6 +1363,11 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             <para><link linkend="job_qmail_account_expire_notify">Qmail:
             Notify users about account expiration</link></para>
           </listitem>
+
+          <listitem>
+            <para><link linkend="job_lastBind_deactivate">OpenLDAP: Deactivate
+            accounts based on last successful login</link></para>
+          </listitem>
         </itemizedlist>
 
         <section id="job_ppolicy_password_expire">
@@ -2386,6 +2391,44 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
           @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
           "2016-12-31".</para>
+        </section>
+
+        <section id="job_lastBind_deactivate">
+          <title>OpenLDAP: Deactivate accounts based on last successful
+          login</title>
+
+          <para>This job deactivates all users that did not perform a
+          successful login for a given time. It requires OpenLDAP with
+          activated "lastBind" and "PPolicy" overlays.</para>
+
+          <para>You need to activate the Last login (lastBind) module for
+          users to be able to add this job.</para>
+
+          <screenshot>
+            <graphic fileref="images/mod_lastBind1.png"/>
+          </screenshot>
+
+          <para><table>
+              <title>Options</title>
+
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
+
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
+
+                  <row>
+                    <entry>Delay</entry>
+
+                    <entry>The number of days after the last successful login
+                    when to deactivate the account.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table></para>
         </section>
       </section>
 

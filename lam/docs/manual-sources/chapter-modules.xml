@@ -2416,6 +2416,24 @@ AuthorizedKeysCommandUser root</literallayout>
         <graphic fileref="images/mod_openldapTotp2.png"/>
       </screenshot>
     </section>
+
+    <section>
+      <title>Last login (LAM Pro)</title>
+
+      <para>This module shows the last successful login of the user. You can
+      setup a <link linkend="job_lastBind_deactivate">cron job to deactivate
+      inactive users</link>.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_lastBind2.png"/>
+      </screenshot>
+
+      <para/>
+
+      <screenshot>
+        <graphic fileref="images/mod_lastBind3.png"/>
+      </screenshot>
+    </section>
   </section>
 
   <section>

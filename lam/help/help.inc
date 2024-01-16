@@ -471,6 +471,10 @@ $helpArray = array (
 					"Headline" => _('Period'),
 					"Text" => _('This defines how often the email is sent (e.g. each month).')
 				),
+				'812' => array(
+					"Headline" => _('Delay'),
+					"Text" => _('Delay this action by a number of days after last successful login.')
+				),
 );
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.
