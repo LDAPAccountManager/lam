@@ -2556,7 +2556,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
     chapter</link>.</para>
   </section>
 
-  <section>
+  <section id="importExportConf">
     <title>Import and export configuration</title>
 
     <para>Here you can export and import LAM's whole configuration. You can

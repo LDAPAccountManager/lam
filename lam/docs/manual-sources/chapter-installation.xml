@@ -1001,8 +1001,12 @@
   <section>
     <title>Migration to a new server</title>
 
-    <para>To move LAM (Pro) from one server to another please follow these
-    steps:</para>
+    <para>LAM provides <link linkend="importExportConf">configuration export
+    and import</link>. Use this to transport the configuration to your new
+    server.</para>
+
+    <para>To manually move LAM (Pro) from one server to another please follow
+    these steps:</para>
 
     <orderedlist>
       <listitem>
