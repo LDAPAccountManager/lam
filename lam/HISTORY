@@ -4,6 +4,8 @@ March 2024 8.7
   -> Cron job to deactivate inactive accounts based on lastBind overlay data (265)
   -> Request access: support Windows groups (266)
   -> Request access: usability improvements (278, 279)
+ - Fixed bugs:
+  -> User self registration creates accounts only with SSHA hash (287)
 
 
 18.12.2023 8.6
