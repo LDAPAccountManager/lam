@@ -1067,7 +1067,10 @@ window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction)
  * @param preConfirmFunction preConfirm function (optional)
  */
 window.lam.dialog.showConfirmation = async function(title, okText, cancelText, divId, callbackFunction, preConfirmFunction) {
-	const dialogContent = document.getElementById(divId).cloneNode(true);
+	const div = document.getElementById(divId);
+	const dialogContent = div.cloneNode(true);
+	const divContent = div.innerHTML;
+	div.innerHTML = '';
 	dialogContent.classList.remove('hidden');
 	let options = {
 		title: title,
@@ -1084,6 +1087,7 @@ window.lam.dialog.showConfirmation = async function(title, okText, cancelText, d
 	if (callbackFunction && formValues) {
 		callbackFunction(formValues);
 	}
+	div.innerHTML = divContent;
 };
 
 /**
