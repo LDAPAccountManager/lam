@@ -1021,9 +1021,7 @@ class htmlButton extends htmlElement {
 		else {
 			$classList[] = 'margin5';
 		}
-		if (sizeof($classList) > 0) {
-			$class = ' class="' . implode(' ', $classList) . '"';
-		}
+		$class = ' class="' . implode(' ', $classList) . '"';
 		if ($this->title != null) {
 			$title = ' title="' . $this->title . '"';
 		}

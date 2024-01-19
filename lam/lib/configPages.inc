@@ -2,7 +2,7 @@
 namespace LAM\CONFIG;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2022  Roland Gruber
+  Copyright (C) 2017 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -158,5 +158,5 @@ function printConfigurationPageTabs($active) {
 	?>
 		</ul>
 		<div class="lam-tab-content lam-tab-active">
-	<?php
+<?php
 }
