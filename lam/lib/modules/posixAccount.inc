@@ -10,7 +10,7 @@ use LAM\TYPES\ConfiguredType;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2023  Roland Gruber
+    Copyright (C) 2005 - 2024  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -3977,7 +3977,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$i = strlen($userName) - 1;
 			$mark = false;
 			// Set $i to the last character which is a number in $account_new->general_username
-			while (!$mark) {
+			while (!$mark && ($i >= 0)) {
 				if (preg_match('/^([0-9])+$/', substr($userName, $i, strlen($userName) - $i))) {
 					$i--;
 				}

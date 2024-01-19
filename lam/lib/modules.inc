@@ -496,6 +496,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 	// get dependencies
 	for ($i = 0; $i < sizeof($unOrdered); $i++) {
 		$mod = moduleCache::getModule($unOrdered[$i], $type->getScope());
+		logNewMessage(LOG_DEBUG, 'Checking dependencies for ' . $unOrdered[$i]);
 		$predepends[$unOrdered[$i]] = $mod->get_uploadPreDepends();
 	}
 	// first all modules without predepends can be ordered
@@ -544,6 +545,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 	$stopUpload = false;
 	for ($i = 0; $i < sizeof($ordered); $i++) {
 		$module = new $ordered[$i]($type->getScope());
+		logNewMessage(LOG_DEBUG, 'Building data for ' . $ordered[$i]);
 		$moduleErrors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules, $type);
 		if (sizeof($moduleErrors) > 0) {
 			$errors = array_merge($errors, $moduleErrors);
@@ -571,6 +573,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 	if ($stopUpload) {
 		return false;
 	}
+	logNewMessage(LOG_DEBUG, 'Data built');
 	return $partialAccounts;
 }
 

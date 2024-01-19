@@ -130,6 +130,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// get input fields from modules
 	$uploadColumns = getUploadColumns($type, $selectedModules);
 	// read input file
+	logNewMessage(LOG_DEBUG, 'Reading CSV file');
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if ($handle !== false) {
 		$head = fgetcsv($handle, 2000);
@@ -205,6 +206,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 		}
 	}
+	logNewMessage(LOG_DEBUG, 'End of generic checks');
 
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
