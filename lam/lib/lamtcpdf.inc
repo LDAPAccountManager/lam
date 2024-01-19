@@ -1,10 +1,11 @@
 <?php
 namespace LAM\PDF;
 use LAM\ImageUtils\ImageManipulationFactory;
+use TCPDF;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2022  Roland Gruber
+  Copyright (C) 2017 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,7 +34,7 @@ include_once(__DIR__ . "/3rdParty/tcpdf/tcpdf.php");
 /** image manipulation */
 include_once(__DIR__ . "/imageutils.inc");
 
-class LAMTCPDF extends \TCPDF {
+class LAMTCPDF extends TCPDF {
 
 	/**
 	 * @var PDFStructure structure
@@ -52,7 +53,7 @@ class LAMTCPDF extends \TCPDF {
 	 * @param string $fontName font name
 	 */
 	public function __construct($structure, $fontName) {
-		parent::__construct('P', 'mm', 'A4', true, 'UTF-8', false);
+		TCPDF::__construct('P', 'mm', 'A4', true, 'UTF-8', false);
 		$this->structure = $structure;
 		$this->fontName = $fontName;
 		$this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
