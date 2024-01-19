@@ -25,7 +25,7 @@ use LAMException;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2023  Roland Gruber
+                2007 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -129,6 +129,7 @@ if (!isset($_SESSION['currentPDFStructure'])) {
 		}
 	}
 	catch (LAMException $e) {
+		logNewMessage(LOG_ERR, $e->getTitle());
 		metaRefresh('pdfmain.php?loadFailed=1&name=' . $_GET['edit']);
 		exit;
 	}

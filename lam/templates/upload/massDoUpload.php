@@ -3,7 +3,7 @@ namespace LAM\UPLOAD;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2023  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -84,6 +84,6 @@ $container = new htmlResponsiveRow();
 $javaScript = new htmlJavaScript('window.lam.upload.continueUpload(\'../misc/ajax.php?function=upload&typeId=' . $type->getId() . '\', \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 $contentDiv = new htmlDiv('uploadContent', $javaScript, ['smallPaddingContent']);
 $container->add($contentDiv);
-parseHtml(null, $container, array(), false, null);
+parseHtml(null, $container, [], false, null);
 
 include __DIR__ . '/../../lib/adminFooter.inc';

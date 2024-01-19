@@ -12,11 +12,14 @@ return static function (RectorConfig $rectorConfig): void {
 		__DIR__ . '/lam/tests',
     ]);
 
+    //$rectorConfig->fileExtensions(['php', 'inc']);
+
     $rectorConfig->skip([
         __DIR__ . '/lam/lib/3rdParty',
     ]);
 
     $rectorConfig->sets([
         SetList::DEAD_CODE,
+		LevelSetList::UP_TO_PHP_80
     ]);
 };
