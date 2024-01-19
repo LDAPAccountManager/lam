@@ -9,7 +9,7 @@ use function LAM\TYPES\getScopeFromTypeId;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ function get_ldap_filter($typeId) {
 /**
 * Returns a list of LDAP attributes which can be used to form the RDN.
 *
-* The list is already sorted by the priority given by the nodules.
+* The list is already sorted by the priority given by the modules.
 *
 * @param string $typeId account type (user, group, host)
 * @param array $selectedModules return only RDN attributes of these modules
@@ -164,7 +164,6 @@ function getRDNAttributes($typeId, $selectedModules=null) {
 	if ($selectedModules != null) {
 		$mods = $selectedModules;
 	}
-	$return = array();
 	$attrs_low = array();
 	$attrs_normal = array();
 	$attrs_high = array();
@@ -176,15 +175,13 @@ function getRDNAttributes($typeId, $selectedModules=null) {
 		// sort attributes
 		for ($k = 0; $k < sizeof($keys); $k++) {
 			switch ($attrs[$keys[$k]]) {
-				case "low":
-					$attrs_low[] = $keys[$k];
-					break;
 				case "normal":
 					$attrs_normal[] = $keys[$k];
 					break;
 				case "high":
 					$attrs_high[] = $keys[$k];
 					break;
+				case "low":
 				default:
 					$attrs_low[] = $keys[$k];
 					break;
@@ -769,7 +766,6 @@ class accountContainer {
 		$this->current_page=0;
 		$this->subpage='attributes';
 		$this->isNewAccount = false;
-		return 0;
 	}
 
 	/**
@@ -1107,6 +1103,7 @@ class accountContainer {
 		$rdnlist = getRDNAttributes($this->type->getId());
 		$rdnSelect = new htmlResponsiveSelect('accountContainerRDN', $rdnlist, array($this->rdn), _('RDN identifier'), '400');
 		$rdnSelect->setShortLabel();
+		$rdnSelect->setSortElements(false);
 		$titleBarSuffixRdn->add($rdnSelect, 12, 12, 5);
 		$titleBarContainer->add($titleBarSuffixRdn);
 

@@ -13,7 +13,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -223,7 +223,9 @@ $selectedRDN = [];
 if (isset($old_options['ldap_rdn'][0])) {
 	$selectedRDN[] = $old_options['ldap_rdn'][0];
 }
-$container->add(new htmlResponsiveSelect('ldap_rdn', $rdns, $selectedRDN, _("RDN identifier"), '301'), 12);
+$rdnSelect = new htmlResponsiveSelect('ldap_rdn', $rdns, $selectedRDN, _("RDN identifier"), '301');
+$rdnSelect->setSortElements(false);
+$container->add($rdnSelect);
 
 $container->addVerticalSpacer('2rem');
 
