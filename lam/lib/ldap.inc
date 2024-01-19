@@ -35,7 +35,7 @@ include_once(__DIR__ . "/config.inc");
 *
 * @package LDAP
 */
-class Ldap{
+class Ldap {
 
 	/** Object of Config to access preferences */
 	private $conf;
@@ -62,10 +62,6 @@ class Ldap{
 		if (is_object($config)) {
 			$this->conf = $config;
 		}
-		else {
-			return false;
-		}
-		return true;
 	}
 
 	/**
