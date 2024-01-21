@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2018  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ class kolabSharedFolderType extends baseType {
 	 */
 	public function getTitleBarTitle($container) {
 		// get attributes
-		$attributes = array();
+		$attributes = [];
 		if ($container->getAccountModule('kolabSharedFolder') != null) {
 			$attributes = $container->getAccountModule('kolabSharedFolder')->getAttributes();
 		}
@@ -125,11 +125,12 @@ class kolabSharedFolderTypeList extends lamList {
 	 */
 	function __construct($type) {
 		parent::__construct($type);
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("Shared folder count: %s"),
 			'error_noneFound' => _("No shared folders found!"),
 			'newEntry' => _("New shared folder"),
-			'deleteEntry' => _("Delete selected shared folders"));
+			'deleteEntry' => _("Delete selected shared folders")
+		];
 	}
 
 }

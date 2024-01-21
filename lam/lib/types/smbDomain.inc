@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2022  Roland Gruber
+  Copyright (C) 2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -158,11 +158,12 @@ class lamSmbDomainList extends lamList {
 	 */
 	function __construct($type) {
 		parent::__construct($type);
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("Domain count: %s"),
 			'error_noneFound' => _("No domains found!"),
 			'newEntry' => _("New domain"),
-			'deleteEntry' => _("Delete selected domains"));
+			'deleteEntry' => _("Delete selected domains")
+		];
 	}
 
 }

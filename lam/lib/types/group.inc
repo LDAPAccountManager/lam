@@ -204,7 +204,7 @@ class lamGroupList extends lamList {
 	/** Controls if primary group members needs refresh */
 	private $refresh_primary = false;
 	/** ID for config option */
-	const TRANS_PRIMARY_OPTION_NAME = "LG_TP";
+	private const TRANS_PRIMARY_OPTION_NAME = "LG_TP";
 	/** specifies if primary group members are visible */
 	private $include_primary = false;
 	/** LDAP suffix of membership types */

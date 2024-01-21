@@ -3,7 +3,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2023  Roland Gruber
+  Copyright (C) 2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -212,10 +212,10 @@ class lamUserList extends lamList {
 	private $trans_primary = false;
 
 	/** translates GID to group name */
-	private $trans_primary_hash = array();
+	private $trans_primary_hash = [];
 
 	/** ID for config option to translate primary group GIDs to group names */
-	const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
+	private const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
 
 	/**
 	 * Constructor
@@ -225,11 +225,11 @@ class lamUserList extends lamList {
 	 */
 	public function __construct($type) {
 		parent::__construct($type);
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("User count: %s"),
 			'error_noneFound' => _("No users found!"),
 			'newEntry' => _("New user"),
-			'deleteEntry' => _("Delete selected users"));
+			'deleteEntry' => _("Delete selected users")];
 	}
 
 	/**
@@ -258,9 +258,9 @@ class lamUserList extends lamList {
 	 * Refreshes the GID to group name cache.
 	 */
 	protected function refreshPrimaryGroupTranslation() {
-		$this->trans_primary_hash = array();
-		$attrs = array("cn", "gidNumber");
-		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, array('group'));
+		$this->trans_primary_hash = [];
+		$attrs = ["cn", "gidNumber"];
+		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, ['group']);
 		$entryCount = sizeof($entries);
 		for ($i = 0; $i < $entryCount; $i++) {
 			$this->trans_primary_hash[$entries[$i]['gidnumber'][0]] = $entries[$i]['cn'][0];

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2022  Roland Gruber
+  Copyright (C) 2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -179,14 +179,12 @@ class lamHostList extends lamList {
 	 */
 	function __construct($type) {
 		parent::__construct($type);
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("Host count: %s"),
 			'error_noneFound' => _("No hosts found!"),
 			'newEntry' => _("New host"),
-			'deleteEntry' => _("Delete selected hosts"));
+			'deleteEntry' => _("Delete selected hosts")
+		];
 	}
 
 }
-
-
-?>

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ class pykotaBillingCodeType extends baseType {
 	 */
 	public function getTitleBarTitle($container) {
 		// get attributes
-		$attributes = array();
+		$attributes = [];
 		if ($container->getAccountModule('pykotaBillingCode') != null) {
 			$attributes = $container->getAccountModule('pykotaBillingCode')->getAttributes();
 		}
@@ -113,7 +113,7 @@ class pykotaBillingCodeType extends baseType {
 	 */
 	public function getTitleBarSubtitle($container) {
 		// get attributes
-		$attributes = array();
+		$attributes = [];
 		if ($container->getAccountModule('pykotaBillingCode') != null) {
 			$attributes = $container->getAccountModule('pykotaBillingCode')->getAttributes();
 		}
@@ -153,14 +153,12 @@ class lamPykotaBillingCodeTypeList extends lamList {
 	 */
 	function __construct($type) {
 		parent::__construct($type);
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("Billing code count: %s"),
 			'error_noneFound' => _("No billing codes found!"),
 			'newEntry' => _("New billing code"),
-			'deleteEntry' => _("Delete selected billing codes"));
+			'deleteEntry' => _("Delete selected billing codes")
+		];
 	}
 
 }
-
-
-?>
