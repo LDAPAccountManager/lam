@@ -5,7 +5,7 @@ use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2023  Roland Gruber
+  Copyright (C) 2023 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 
 */
 
-include_once (dirname(__FILE__) . '/../../lib/2factor.inc');
+include_once __DIR__ . '/../../lib/2factor.inc';
 
 class TwoFactorProviderServiceSpy extends TwoFactorProviderService {
 

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2021  Roland Gruber
+  Copyright (C) 2014 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
 
 */
 
-include_once (dirname(__FILE__) . '/../../lib/config.inc');
-include_once (dirname(__FILE__) . '/../lib/LAMConfigTest.php');
+include_once __DIR__ . '/../../lib/config.inc';
+include_once __DIR__ . '/../lib/LAMConfigTest.php';
 
 /**
  * Creates a default configuration and adds it to $_SESSION['cfgMain'] and $_SESSION['config'].
@@ -31,7 +31,7 @@ function testCreateDefaultConfig() {
 	$cfgMain = new LAMCfgMain();
 	$cfgMain->logDestination = 'NONE';
 	$_SESSION['cfgMain'] = $cfgMain;
-	$cfgPath = dirname(__FILE__) . '/../../config/' . LAMConfigTest::FILE_NAME . '.conf';
+	$cfgPath = __DIR__ . '/../../config/' . LAMConfigTest::FILE_NAME . '.conf';
 	if (file_exists($cfgPath)) {
 		unlink($cfgPath);
 	}
