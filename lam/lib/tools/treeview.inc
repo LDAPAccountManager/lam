@@ -9,7 +9,7 @@ use LAMTool;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2023  Roland Gruber
+  Copyright (C) 2021 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ use LAMTool;
  */
 class TreeViewTool extends LAMTool {
 
-	const TREE_SUFFIX_CONFIG = 'treeViewSuffix';
+	private const TREE_SUFFIX_CONFIG = 'treeViewSuffix';
 
 	/**
 	 * {@inheritDoc}
@@ -115,11 +115,11 @@ class TreeViewTool extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function checkConfigurationOptions(array $settings): array {
-		$errors = array();
+		$errors = [];
 		$roots = self::getRootDns($settings);
 		foreach ($roots as $root) {
 			if (!get_preg($root, 'dn')) {
-				$errors[] = array('ERROR', _('Tree suffix is invalid.'), htmlspecialchars($root));
+				$errors[] = ['ERROR', _('Tree suffix is invalid.'), htmlspecialchars($root)];
 			}
 		}
 		return $errors;
@@ -132,7 +132,7 @@ class TreeViewTool extends LAMTool {
 	 * @return string[] root DNs
 	 */
 	public static function getRootDns(?array $settings = null): array {
-		$roots = array();
+		$roots = [];
 		$toolSettings = $settings;
 		if ($toolSettings === null) {
 			$toolSettings = $_SESSION['config']->getToolSettings();

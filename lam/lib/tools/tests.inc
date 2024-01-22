@@ -7,7 +7,7 @@ use LAMTool;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2022  Roland Gruber
+  Copyright (C) 2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ class toolTests extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getSubTools(): array {
-		$return = array();
+		$return = [];
 		$lamdaemonTest = new LAMSubTool();
 		$lamdaemonTest->name = _("Lamdaemon test");
 		$lamdaemonTest->link = 'tests/lamdaemonTest.php';
