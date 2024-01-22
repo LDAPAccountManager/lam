@@ -51,7 +51,7 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'mail.svg';
 		// alias name
@@ -67,7 +67,7 @@ class courierMailAlias extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array(
 			'depends' => array('nisMailAlias'),
-			'conflicts' => array()
+			'conflicts' => []
 		);
 		// managed object classes
 		$return['objectClasses'] = array('CourierMailAlias');
@@ -164,7 +164,7 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		$this->attributes['mail'][0] = $_POST['mail'];
 		if (empty($this->attributes['mail'][0]) || !get_preg($this->attributes['mail'][0], 'email')) {
 			$errors[] = $this->messages['mail'][0];
@@ -173,7 +173,7 @@ class courierMailAlias extends baseModule {
 		if (empty($this->attributes['maildrop'])) {
 			$errors[] = $this->messages['maildrop'][0];
 		}
-		$this->attributes['mailsource'] = array();
+		$this->attributes['mailsource'] = [];
 		if ($_POST['mailsource'] != "-") {
 			$this->attributes['mailsource'][0] = $_POST['mailsource'];
 		} elseif (isset($this->attributes['mailsource'])) {
@@ -187,7 +187,7 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
 		$this->addSimplePDFField($return, 'maildrop', _('Recipient address'));
 		$this->addSimplePDFField($return, 'mailsource', _('Mail source'));
@@ -199,7 +199,7 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		$possibleSources = array('esmtp', 'local');
 		for( $i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array( "courierMailAlias", $partialAccounts[$i]['objectClass'] )) {

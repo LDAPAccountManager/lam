@@ -71,13 +71,13 @@ class eduPerson extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'eduPerson.png';
 		// alias name
 		$return["alias"] = _("EDU person");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('eduPerson');
 		// managed attributes
@@ -262,7 +262,7 @@ class eduPerson extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -290,7 +290,7 @@ class eduPerson extends baseModule {
 			// principal name
 			$this->addSimpleInputTextField($return, 'eduPersonPrincipalName', _('Principal name'));
 			// primary affiliation
-			$primaryAffiliation = array();
+			$primaryAffiliation = [];
 			if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
 				$primaryAffiliation = array($this->attributes['eduPersonPrimaryAffiliation'][0]);
 			}
@@ -382,7 +382,7 @@ class eduPerson extends baseModule {
 	function process_attributes() {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'eduPerson';
-			return array();
+			return [];
 		}
 		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('eduPerson'), $this->attributes['objectClass']);
@@ -391,12 +391,12 @@ class eduPerson extends baseModule {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
 			}
-			return array();
+			return [];
 		}
 		if (!in_array('eduPerson', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		// primary affiliation
 		$this->attributes['eduPersonPrimaryAffiliation'][0] = $_POST['primaryAffiliation'];
 		// scoped affiliations
@@ -418,7 +418,7 @@ class eduPerson extends baseModule {
 			$errors[] = $this->messages['eduPersonPrincipalName'][0];
 		}
 		// affiliations
-		$this->attributes['eduPersonAffiliation'] = array();
+		$this->attributes['eduPersonAffiliation'] = [];
 		$i = 0;
 		while (isset($_POST['affiliation' . $i])) {
 			if (!isset($_POST['delAffiliation' . $i]) && ($_POST['affiliation' . $i] != '')) {
@@ -471,7 +471,7 @@ class eduPerson extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("eduPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "eduPerson";
@@ -530,9 +530,9 @@ class eduPerson extends baseModule {
 				}
 			}
 			// nick names
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_nickname', 'eduPersonNickname', null, array(), $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_nickname', 'eduPersonNickname', null, [], $messages, '/,[ ]*/');
 			// entitlements
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_entitlement', 'eduPersonEntitlement', null, array(), $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_entitlement', 'eduPersonEntitlement', null, [], $messages, '/,[ ]*/');
 			// organisation
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_orgDN', 'eduPersonOrgDN',
 				'dn', $this->messages['eduPersonOrgDN'][1], $messages);
@@ -542,7 +542,7 @@ class eduPerson extends baseModule {
 			// OUs
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_orgUnitDN', 'eduPersonOrgUnitDN', 'dn', $this->messages['eduPersonOrgUnitDN'][1], $messages, '/;[ ]*/');
 			// assurance profiles
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_assurance', 'eduPersonAssurance', null, array(), $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'eduPerson_assurance', 'eduPersonAssurance', null, [], $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}
@@ -552,7 +552,7 @@ class eduPerson extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'primaryAffiliation', _('Primary affiliation'), 'eduPersonPrimaryAffiliation');
 		$this->addSimplePDFField($return, 'scopedAffiliation', _('Scoped affiliations'), 'eduPersonScopedAffiliation');
 		$this->addSimplePDFField($return, 'principalName', _('Principal name'), 'eduPersonPrincipalName');

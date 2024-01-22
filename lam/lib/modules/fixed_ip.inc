@@ -45,7 +45,7 @@ use LAM\TYPES\ConfiguredType;
 class fixed_ip extends baseModule {
 
 	/** fixed ips */
-	public $fixed_ip = array();
+	public $fixed_ip = [];
 
 	/** already processed? */
 	public $processed = false;
@@ -54,7 +54,7 @@ class fixed_ip extends baseModule {
 	public $overlapd;
 
 	/** original IPs */
-	public $orig_ips = array();
+	public $orig_ips = [];
 
 	/** LDAP attributes */
 	public $attributes;
@@ -82,7 +82,7 @@ class fixed_ip extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// alias name
 		$return["alias"] = _("Hosts");
 		// this is a base module
@@ -92,11 +92,11 @@ class fixed_ip extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
-		$return["ldap_filter"] = array();
+		$return["ldap_filter"] = [];
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => []);
 		// managed object classes
-		$return['objectClasses'] = array();
+		$return['objectClasses'] = [];
 		// managed attributes
 		$return['attributes'] = array('dhcpOption');
 		// help Entries
@@ -167,7 +167,7 @@ class fixed_ip extends baseModule {
 	 * Reset the overlapped_range() function
 	 **/
 	 private function reset_overlapped_ip() {
-	    $this->overlapd = array();
+	    $this->overlapd = [];
 	 }
 
 	/**
@@ -233,7 +233,7 @@ class fixed_ip extends baseModule {
 			for ($i = 0; $i < sizeof($entries); $i++) {
 				$dhcphwaddress = explode(" ", $entries[$i]['dhcphwaddress'][0]);
 				$dhcphwaddress = array_pop($dhcphwaddress);
-				$dhcpstatements = array();
+				$dhcpstatements = [];
 				if (isset($entries[$i]['dhcpstatements'][0])) {
 					$dhcpstatements = $entries[$i]['dhcpstatements'];
 				}
@@ -264,7 +264,7 @@ class fixed_ip extends baseModule {
 	 */
 	private function orderByIP() {
 	    // sort by IP
-		$order = array();
+		$order = [];
 		foreach ($this->fixed_ip as $key => $value) {
 			$order[$key] = '';
 			if (!empty($value['dhcpstatements'])) {
@@ -272,7 +272,7 @@ class fixed_ip extends baseModule {
 			}
 		}
 		natcasesort($order);
-		$newVal = array();
+		$newVal = [];
 		foreach ($order as $index => $sortval) {
 			$newVal[] = $this->fixed_ip[$index];
 		}
@@ -286,7 +286,7 @@ class fixed_ip extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if ($this->isRootNode()) {
 			return $errors;
 		}
@@ -297,7 +297,7 @@ class fixed_ip extends baseModule {
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
 
 			$error = false;     // errors by process_attributes()?
-			$pcs = array();
+			$pcs = [];
 			foreach($this->fixed_ip AS $id=>$arr) {
 
 		        // Check if ip is to drop
@@ -379,7 +379,7 @@ class fixed_ip extends baseModule {
 		if (isset($_POST['add_ip']) || ($_POST['pc_add'] != '') || ($_POST['mac_add'] != '')) {
 		    // Add IP:
 		    $active = (isset($_POST['active_add']) && ($_POST['active_add'] == 'on'));
-		    $dhcpstatements = array();
+		    $dhcpstatements = [];
 		    $this->setActive($dhcpstatements, $active);
 		    $this->setIP($dhcpstatements, $_POST['ip_add']);
 			$this->fixed_ip[] = array(
@@ -409,7 +409,7 @@ class fixed_ip extends baseModule {
         }
 		$this->initCache();
        	// auto-completion for host names
-		$autoNames = array();
+		$autoNames = [];
 		if (!empty($this->hostCache) && (sizeof($this->hostCache) < 200)) {
 			foreach ($this->hostCache as $attrs) {
 				if (!empty($attrs['cn'][0])) {
@@ -419,16 +419,16 @@ class fixed_ip extends baseModule {
 			$autoNames = array_values(array_unique($autoNames));
 		}
 		$titles = array(_('IP address'), _('PC name'), _('MAC address'), _('Description'), _('Active'), ' ');
-		$data = array();
+		$data = [];
        	// Reset oberlaped ips
 		$this->reset_overlapped_ip();
 
 		// If $ranges is not a array, then create one:
 		if (!is_array($this->fixed_ip)) {
-			$this->fixed_ip = array();
+			$this->fixed_ip = [];
 		}
-		$pcs = array();
-		$messages = array();
+		$pcs = [];
+		$messages = [];
         foreach($this->fixed_ip AS $id => $arr) {
 			// pc name
 			$existsInDifferentDn = false;
@@ -478,7 +478,7 @@ class fixed_ip extends baseModule {
 				    $messages[] = new htmlStatusMessage('ERROR', _("The IP address is already in use."), htmlspecialchars($this->fixed_ip[$id]['ip']));
 				}
 			}
-			$entry = array();
+			$entry = [];
 			$entry[] = new htmlInputField('ip_'.$id, $this->fixed_ip[$id]['ip']);
 			$pcInput = new htmlInputField('pc_'.$id, $this->fixed_ip[$id]['cn']);
 			if (!empty($autoNames)) {
@@ -492,7 +492,7 @@ class fixed_ip extends baseModule {
 			$data[] = $entry;
 		}
 		// add host
-		$newEntry = array();
+		$newEntry = [];
 		$newEntry[] = new htmlInputField('ip_add');
 		$newPCInput = new htmlInputField('pc_add');
 		if (!empty($autoNames)) {
@@ -549,7 +549,7 @@ class fixed_ip extends baseModule {
 	 * @return string suggested new name
 	 */
 	private function getHostNameSuggestion($name) {
-		$matches = array();
+		$matches = [];
 		$number = 0;
 		$namePrefix = $name;
 		if (preg_match('/(.*[^0-9])([0-9]+)/', $name, $matches)) {
@@ -580,7 +580,7 @@ class fixed_ip extends baseModule {
 	public function display_html_addHost() {
 		$return = new htmlResponsiveRow();
 		$this->initCache();
-		$hostNames = array();
+		$hostNames = [];
 		$spacer = '####';
 		foreach ($this->hostCache as $host) {
 			if (!empty($host['cn'][0])) {
@@ -600,7 +600,7 @@ class fixed_ip extends baseModule {
 				$hostNames[$host['cn'][0]] = $val;
 			}
 		}
-		$select = new htmlResponsiveSelect('host', $hostNames, array(), _('Host'));
+		$select = new htmlResponsiveSelect('host', $hostNames, [], _('Host'));
 		$select->setHasDescriptiveElements(true);
 		$return->add($select, 12);
 		$return->addVerticalSpacer('2rem');
@@ -616,10 +616,10 @@ class fixed_ip extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_addHost() {
-		$errors = array();
+		$errors = [];
 		if (isset($_POST['form_subpage_fixed_ip_attributes_addHost'])) {
 			$val = explode('####', $_POST['host']);
-		    $dhcpstatements = array();
+		    $dhcpstatements = [];
 		    $this->setActive($dhcpstatements, true);
 		    $this->setIP($dhcpstatements, $val[1]);
 			$this->fixed_ip[] = array(
@@ -663,9 +663,9 @@ class fixed_ip extends baseModule {
 	public function postModifyActions($newAccount, $attributes) {
 		if (!$this->isRootNode()) {
 			$ldapSuffix = ',cn=' . $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] . ',' . $this->getAccountContainer()->get_type()->getSuffix();
-		    $add = array();
-		    $mod = array(); // DN => array(attr => values)
-		    $delete = array();
+		    $add = [];
+		    $mod = []; // DN => array(attr => values)
+		    $delete = [];
 			// Which dns are to delete and to add
 			foreach($this->orig_ips AS $id => $arr) {
 				// Exist cn still?
@@ -700,7 +700,7 @@ class fixed_ip extends baseModule {
 		    }
 
 			if (!is_array($this->fixed_ip)) {
-			    $this->fixed_ip = array();
+			    $this->fixed_ip = [];
 			}
 		    // Which entries are new:
 		    foreach($this->fixed_ip AS $id => $arr) {
@@ -720,7 +720,7 @@ class fixed_ip extends baseModule {
 			}
 
 		    foreach($add AS $id => $arr) {
-				$attr = array();
+				$attr = [];
 				$attr['cn'] = $add[$id]['cn'];
 				$attr['objectClass'][0] = 'top';
 				$attr['objectClass'][1] = 'dhcpHost';
@@ -744,7 +744,7 @@ class fixed_ip extends baseModule {
 		    	ldap_modify($_SESSION['ldap']->server(), $dn, $attrs);
 		    }
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -752,7 +752,7 @@ class fixed_ip extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		if (is_array($this->fixed_ip) && (sizeof($this->fixed_ip) > 0)) {
 			$pdfTable = new PDFTable();
 			$pdfRow = new PDFTableRow();
@@ -869,7 +869,7 @@ class fixed_ip extends baseModule {
 			return;
 		}
 		$attrs = array('cn', 'iphostnumber', 'macaddress');
-		$this->hostCache = array();
+		$this->hostCache = [];
 		$result = searchLDAPByAttribute('cn', '*', null, $attrs, array('host'));
 		foreach ($result as $attributes) {
 			$this->hostCache[] = $attributes;
@@ -894,7 +894,7 @@ class fixed_ip extends baseModule {
 			return $this->existingDhcpHostsCache;
 		}
 		$entries = searchLDAPByAttribute('cn', '*', 'dhcpHost', array('cn'), array('dhcp'));
-		$this->existingDhcpHostsCache = array();
+		$this->existingDhcpHostsCache = [];
 		foreach ($entries as $entry) {
 			$this->existingDhcpHostsCache[] = array(
 				'dn' => $entry['dn'],
@@ -922,7 +922,7 @@ class fixed_ip extends baseModule {
 				$entries = searchLDAP($entry['dn'], 'objectClass=dhcpHost', array('dhcpstatements', 'dhcphwaddress', 'cn'));
 				if (sizeof($entries) > 0) {
 					// sort by IP
-					$order = array();
+					$order = [];
 					for ($i = 0; $i < sizeof($entries); $i++) {
 						$order[$i] = '';
 						if (!empty($entries[$i]['dhcpstatements'])) {
@@ -932,7 +932,7 @@ class fixed_ip extends baseModule {
 					$group = new htmlGroup();
 					natcasesort($order);
 					for ($i = 0; $i < sizeof($order); $i++) {
-						$dhcpstatements = array();
+						$dhcpstatements = [];
 						if (isset($entries[$i]['dhcpstatements'][0])) {
 							$dhcpstatements = $entries[$i]['dhcpstatements'];
 						}

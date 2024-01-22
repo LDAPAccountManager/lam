@@ -63,13 +63,13 @@ class hostObject extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'computer.svg';
 		// alias name
 		$return["alias"] = _("Hosts");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('hostObject');
 		// managed attributes
@@ -133,7 +133,7 @@ class hostObject extends baseModule {
 	function save_attributes() {
 		if (!in_array('hostObject', $this->attributes['objectClass']) && !in_array('hostObject', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -173,12 +173,12 @@ class hostObject extends baseModule {
 			if (isset($this->attributes['host'])) {
 				unset($this->attributes['host']);
 			}
-			return array();
+			return [];
 		}
 		if (!in_array('hostObject', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		$this->processMultiValueInputTextField('host', $errors, 'hostObject');
 		return $errors;
 	}
@@ -190,7 +190,7 @@ class hostObject extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("hostObject", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "hostObject";
@@ -205,7 +205,7 @@ class hostObject extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'hosts', _('Host list'), 'host');
 		return $return;
 	}

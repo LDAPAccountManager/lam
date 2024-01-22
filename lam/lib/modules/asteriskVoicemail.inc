@@ -72,12 +72,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @return array array with meta data
 	 */
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		$return["is_base"] = false;
 		// alias name
 		$return["alias"] = _("Asterisk voicemail");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('AsteriskVoiceMail');
 		// managed attributes
@@ -238,7 +238,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -291,7 +291,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	function process_attributes() {
 		if (isset($_POST['addVoicemailObjectClass'])) {
 			$this->attributes['objectClass'][] = 'AsteriskVoiceMail';
-			return array();
+			return [];
 		}
 		// remove extension
 		elseif (isset($_POST['remVoicemailObjectClass'])) {
@@ -305,18 +305,18 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			if (isset($this->attributes['AstContext'])) {
 				unset($this->attributes['AstContext']);
 			}
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		if (!in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$this->attributes['AstVoicemailMailbox'] = array();
-		$this->attributes['AstVoicemailFullname'] = array();
-		$this->attributes['AstVoicemailEmail'] = array();
-		$this->attributes['AstVoicemailPager'] = array();
-		$this->attributes['AstVoicemailOptions'] = array();
-		$this->attributes['AstVoicemailContext'] = array();
+		$this->attributes['AstVoicemailMailbox'] = [];
+		$this->attributes['AstVoicemailFullname'] = [];
+		$this->attributes['AstVoicemailEmail'] = [];
+		$this->attributes['AstVoicemailPager'] = [];
+		$this->attributes['AstVoicemailOptions'] = [];
+		$this->attributes['AstVoicemailContext'] = [];
 
 		if (isset($_POST['AstContext'])) {
 			$this->attributes['AstContext'][0] = $_POST['AstContext'];
@@ -380,7 +380,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'AstVoicemailMailbox', _('Mailbox'));
 		$this->addSimplePDFField($return, 'AstContext', _('Account context'));
 		$this->addSimplePDFField($return, 'AstVoicemailFullname', _('Full name'));
@@ -396,7 +396,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) {
@@ -462,7 +462,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	function save_attributes() {
 		if (!in_array('AsteriskVoiceMail', $this->attributes['objectClass']) && !in_array('AsteriskVoiceMail', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
@@ -502,10 +502,10 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		if (!in_array(get_class($this), $modules)) {
-			return array();
+			return [];
 		}
 		$this->attributes['AstVoicemailPassword'][0] = $password;
-		return array();
+		return [];
 	}
 
 	/**
@@ -523,10 +523,10 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskVoiceMail', $attributes['objectClass'])) {
 			return $return;
 		}
@@ -567,7 +567,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		$options = array();
+		$options = [];
 		if (in_array_ignore_case('AsteriskVoiceMail', $this->attributes['objectClass'])) {
 			$options[] = new PasswordQuickChangeOption('syncAsteriskVoiceMail', _('Change Asterisk voicemail password'));
 		}
@@ -578,7 +578,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		$attrs = array();
+		$attrs = [];
 		if (isset($_POST['syncAsteriskVoiceMail'])) {
 			$attrs['AstVoicemailPassword'][0] = $password;
 		}
@@ -596,7 +596,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
-		return array();
+		return [];
 	}
 
 	/**

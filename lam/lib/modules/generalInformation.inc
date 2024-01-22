@@ -53,13 +53,13 @@ class generalInformation extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'info.svg';
 		// alias name
 		$return["alias"] = _("General information");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed attributes
 		$return['attributes'] = array('creatorsname', 'createtimestamp', 'modifiersname',
 			'modifytimestamp', 'hassubordinates', 'memberof');
@@ -114,7 +114,7 @@ class generalInformation extends baseModule {
 			$typeManager = new TypeManager();
 			$scopes = array('gon', 'group');
 			$types = $typeManager->getConfiguredTypesForScopes($scopes);
-			$suffixList = array();
+			$suffixList = [];
 			foreach ($types as $type) {
 				$suffix = $type->getSuffix();
 				// continue if suffixes are not unique
@@ -152,13 +152,13 @@ class generalInformation extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		return array();
+		return [];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		// no action for this module
 	}
 

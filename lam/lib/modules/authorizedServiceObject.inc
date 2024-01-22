@@ -65,13 +65,13 @@ class authorizedServiceObject extends baseModule {
     * @return array array with meta data
     */
     function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'gears-color.svg';
 		// alias name
 		$return["alias"] = _("Authorized Services");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('authorizedServiceObject');
 		// managed attributes
@@ -142,7 +142,7 @@ class authorizedServiceObject extends baseModule {
 	function save_attributes() {
 		if (!in_array('authorizedServiceObject', $this->attributes['objectClass']) && !in_array('authorizedServiceObject', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -158,7 +158,7 @@ class authorizedServiceObject extends baseModule {
 		}
 		$return = new htmlResponsiveRow();
 		if (in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
-			$autocompleteValues = array();
+			$autocompleteValues = [];
 			if (isset($this->moduleSettings['authorizedServiceObject_services'])) {
 				$autocompleteValues = $this->moduleSettings['authorizedServiceObject_services'];
 			}
@@ -186,13 +186,13 @@ class authorizedServiceObject extends baseModule {
 		if (isset($_POST['form_subpage_authorizedServiceObject_attributes_remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('authorizedServiceObject'), $this->attributes['objectClass']);
 			if (isset($this->attributes['authorizedService'])) unset($this->attributes['authorizedService']);
-			return array();
+			return [];
 		}
 		if (!in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 
-		$errors = array();
+		$errors = [];
 		$this->processMultiValueInputTextField('authorizedService', $errors, 'ascii');
 		return $errors;
 	}
@@ -202,7 +202,7 @@ class authorizedServiceObject extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("authorizedServiceObject", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "authorizedServiceObject";
@@ -217,7 +217,7 @@ class authorizedServiceObject extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		if (in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
 			$this->addSimplePDFField($return, 'authorizedService', _('Authorized Services'));
 		}

@@ -72,7 +72,7 @@ class courierMailAccount extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'mail.svg';
 		// alias name
@@ -82,7 +82,7 @@ class courierMailAccount extends baseModule {
 			'depends' => array(
 				'inetOrgPerson'
 			),
-			'conflicts' => array()
+			'conflicts' => []
 		);
 		// managed object classes
 		$return['objectClasses'] = array(
@@ -225,7 +225,7 @@ class courierMailAccount extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -316,7 +316,7 @@ class courierMailAccount extends baseModule {
 		// add extension
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'courierMailAccount';
-			return array();
+			return [];
 		}
 		// remove extension
 		elseif (isset($_POST['remObjectClass'])) {
@@ -329,14 +329,14 @@ class courierMailAccount extends baseModule {
 					unset($this->attributes[$attrName]);
 				}
 			}
-			return array();
+			return [];
 		}
 		// skip processing if extension is not active
 		if (!$this->isExtensionEnabled()) {
-			return array();
+			return [];
 		}
 		$this->getAccountContainer()->replaceWildcardsInPOST(array('homeDirectory', 'mailbox'));
-		$errors = array();
+		$errors = [];
 		// check new mailbox
 		$this->attributes['mailbox'][0] = $_POST['mailbox'];
 		// quota
@@ -446,7 +446,7 @@ class courierMailAccount extends baseModule {
 	 * {@inheritdoc}
 	 */
 	public function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'mailbox', _('Mailbox'));
 		$this->addSimplePDFField($return, 'mailhost', _('Mailbox home server'));
 		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'));
@@ -501,7 +501,7 @@ class courierMailAccount extends baseModule {
 	 * {@inheritdoc}
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("courierMailAccount", $partialAccounts[$i]['objectClass'])) {

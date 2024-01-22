@@ -135,7 +135,7 @@ class dhcp_settings extends baseModule {
 	 * @return array array with meta data
 	 */
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// alias name
 		$return["alias"] = _("DHCP settings");
 		// this is a base module
@@ -145,9 +145,9 @@ class dhcp_settings extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
-		$return["ldap_filter"] = array();
+		$return["ldap_filter"] = [];
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('top', 'dhcpOptions', 'dhcpSubnet');
 		// managed attributes
@@ -426,9 +426,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if ($this->isRootNode()
 			&& !in_array_ignore_case('dhcpService', $this->attributes['objectClass'])
 			&& !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 
 		// Check if cn is not empty
 		if (!$this->isRootNode()) {
@@ -555,11 +555,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->attributes['dhcpComments'][0] = $_POST['description'];
 
 		// extra statements
-		$extraStatements = isset($_POST['extraStatements']) ? explode("\r\n", $_POST['extraStatements']) : array();
+		$extraStatements = isset($_POST['extraStatements']) ? explode("\r\n", $_POST['extraStatements']) : [];
 		$this->setExtraStatements($extraStatements);
 
 		// extra options
-		$extraOptions = isset($_POST['extraOptions']) ? explode("\r\n", $_POST['extraOptions']) : array();
+		$extraOptions = isset($_POST['extraOptions']) ? explode("\r\n", $_POST['extraOptions']) : [];
 		$this->setExtraOptions($extraOptions);
 
 		return $errors;
@@ -660,7 +660,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if ($nodeType == '') {
 			$nodeType = 8;
 		}
-		$nodeOptions = array();
+		$nodeOptions = [];
 		foreach ($this->all_netbios_node_types as $key => $value) {
 			$nodeOptions[$value] = $key;
 		}
@@ -752,7 +752,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$unknownClients = $this->allowDenyOptions[$unknownClientsVal];
 		}
 		$authoritative = $this->isAuthoritative() ? _('Yes') : _('No');
-		$return = array();
+		$return = [];
 		$this->addPDFKeyValue($return, 'domainName', _('Domain name'), $this->getDHCPOption(self::DOMAIN_NAME));
 		$this->addPDFKeyValue($return, 'leaseTime', _('Lease time'), $this->getDefaultLeaseTime());
 		$this->addPDFKeyValue($return, 'maxLeaseTime', _('Maximum lease time'), $this->getMaxLeaseTime());
@@ -799,7 +799,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function setDHCPOption($name, $value) {
 		if (empty($this->attributes['dhcpOption'])) {
-			$this->attributes['dhcpOption'] = array();
+			$this->attributes['dhcpOption'] = [];
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpOption']); $i++) {
 			if (substr($this->attributes['dhcpOption'][$i], 0, strlen($name) + 1) == ($name . ' ')) {
@@ -837,7 +837,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function setDefaultLeaseTime($time) {
 		if (empty($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = array();
+			$this->attributes['dhcpStatements'] = [];
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 			if (substr($this->attributes['dhcpStatements'][$i], 0, 19) == (self::DEFAULT_LEASE_TIME . ' ')) {
@@ -876,7 +876,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function setUnknownClients($option) {
 		if (!isset($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = array();
+			$this->attributes['dhcpStatements'] = [];
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 			$val = $this->attributes['dhcpStatements'][$i];
@@ -915,7 +915,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function setMaxLeaseTime($time) {
 		if (!is_array($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = array();
+			$this->attributes['dhcpStatements'] = [];
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 			if (substr($this->attributes['dhcpStatements'][$i], 0, 15) == (self::MAX_LEASE_TIME . ' ')) {
@@ -951,7 +951,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function setAuthoritative(bool $isAuthoritative): void {
 		if (!is_array($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = array();
+			$this->attributes['dhcpStatements'] = [];
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 			if ($this->attributes['dhcpStatements'][$i] === self::AUTHORITATIVE) {
@@ -971,7 +971,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @return array statements
 	 */
 	private function getExtraStatements(): array {
-		$extraStatements = array();
+		$extraStatements = [];
 		if (!empty($this->attributes['dhcpStatements'])) {
 			foreach ($this->attributes['dhcpStatements'] as $statement) {
 				if (($statement !== self::AUTHORITATIVE)
@@ -992,9 +992,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function setExtraStatements(array $statements): void {
 		if (!is_array($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = array();
+			$this->attributes['dhcpStatements'] = [];
 		}
-		$toDelete = array();
+		$toDelete = [];
 		foreach ($this->attributes['dhcpStatements'] as $statement) {
 			if (($statement !== self::AUTHORITATIVE)
 				&& (strpos($statement, self::DEFAULT_LEASE_TIME) !== 0)
@@ -1013,7 +1013,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @return array options
 	 */
 	private function getExtraOptions(): array {
-		$extraOptions = array();
+		$extraOptions = [];
 		if (!empty($this->attributes['dhcpOption'])) {
 			foreach ($this->attributes['dhcpOption'] as $option) {
 				if ((strpos($option, self::DOMAIN_NAME) !== 0)
@@ -1038,9 +1038,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function setExtraOptions(array $options): void {
 		if (!is_array($this->attributes['dhcpOption'])) {
-			$this->attributes['dhcpOption'] = array();
+			$this->attributes['dhcpOption'] = [];
 		}
-		$toDelete = array();
+		$toDelete = [];
 		foreach ($this->attributes['dhcpOption'] as $option) {
 			if ((strpos($option, self::DOMAIN_NAME) !== 0)
 				&& (strpos($option, self::DOMAIN_NAME_SERVERS) !== 0)
@@ -1062,7 +1062,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("dhcpOptions", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "dhcpOptions";

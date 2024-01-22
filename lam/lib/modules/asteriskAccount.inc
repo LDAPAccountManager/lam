@@ -74,12 +74,12 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return array array with meta data
 	 */
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		$return["is_base"] = false;
 		// alias name
 		$return["alias"] = _("Asterisk");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('AsteriskSIPUser');
 		// managed attributes
@@ -586,7 +586,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -614,7 +614,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			// AMA flags
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAMAFlags')) {
 				$AstAccountAMAFlagsOptions = array('-', 'default', 'omit', 'billing', 'documentation');
-				$AstAccountAMAFlags = array();
+				$AstAccountAMAFlags = [];
 				if (isset($this->attributes['AstAccountAMAFlags'][0])) {
 					$AstAccountAMAFlags[] = $this->attributes['AstAccountAMAFlags'][0];
 					if (($this->attributes['AstAccountAMAFlags'][0] != '') && !in_array($this->attributes['AstAccountAMAFlags'][0], $AstAccountAMAFlagsOptions)) {
@@ -631,7 +631,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			// DTMF flags
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDTMFMode')) {
 				$AstAccountDTMFModeOptions = array('-', 'inband', 'rfc2833', 'info', 'auto');
-				$AstAccountDTMFMode = array();
+				$AstAccountDTMFMode = [];
 				if (isset($this->attributes['AstAccountDTMFMode'][0])) {
 					$AstAccountDTMFMode[] = $this->attributes['AstAccountDTMFMode'][0];
 					if (($this->attributes['AstAccountDTMFMode'][0] != '') && !in_array($this->attributes['AstAccountDTMFMode'][0], $AstAccountDTMFModeOptions)) {
@@ -656,7 +656,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			// insecure
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountInsecure')) {
 				$AstAccountInsecureOptions = array('-', 'port', 'invite', 'port,invite');
-				$AstAccountInsecure = array();
+				$AstAccountInsecure = [];
 				if (isset($this->attributes['AstAccountInsecure'][0])) {
 					$AstAccountInsecure[] = $this->attributes['AstAccountInsecure'][0];
 					if (($this->attributes['AstAccountInsecure'][0] != '') && !in_array($this->attributes['AstAccountInsecure'][0], $AstAccountInsecureOptions)) {
@@ -673,7 +673,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			// NAT
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountNAT')) {
 				$AstAccountNATOptions = array('-', 'yes', 'no', 'never', 'route');
-				$AstAccountNAT = array();
+				$AstAccountNAT = [];
 				if (isset($this->attributes['AstAccountNAT'][0])) {
 					$AstAccountNAT[] = $this->attributes['AstAccountNAT'][0];
 					if (($this->attributes['AstAccountNAT'][0] != '') && !in_array($this->attributes['AstAccountNAT'][0], $AstAccountNATOptions)) {
@@ -745,7 +745,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			// can call forward
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCanCallForward')) {
 				$AstAccountCanCallForwardOptions = array('-', 'yes', 'no');
-				$AstAccountCanCallForward = array();
+				$AstAccountCanCallForward = [];
 				if (isset($this->attributes['AstAccountCanCallForward'][0])) {
 					$AstAccountCanCallForward[] = $this->attributes['AstAccountCanCallForward'][0];
 					if (($this->attributes['AstAccountCanCallForward'][0] != '') && !in_array($this->attributes['AstAccountCanCallForward'][0], $AstAccountCanCallForwardOptions)) {
@@ -784,16 +784,16 @@ class asteriskAccount extends baseModule implements passwordService {
 	function process_attributes() {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'AsteriskSIPUser';
-			return array();
+			return [];
 		}
 		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
-		$this->attributes['AstAccountCallerID'] = array();
-		$this->attributes['AstAccountHost'] = array();
-		$this->attributes['AstAccountContext'] = array();
-		$this->attributes['AstAccountType'] = array();
+		$errors = [];
+		$this->attributes['AstAccountCallerID'] = [];
+		$this->attributes['AstAccountHost'] = [];
+		$this->attributes['AstAccountContext'] = [];
+		$this->attributes['AstAccountType'] = [];
 		if (isset($_POST['AstAccountCallerID'])) {
 			$this->attributes['AstAccountCallerID'][0] = $_POST['AstAccountCallerID'];
 			// check if caller ID is empty
@@ -984,7 +984,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	*/
 	function save_attributes() {
 		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
@@ -994,7 +994,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'AstAccountCallerID', _('Caller ID'));
 		$this->addSimplePDFField($return, 'AstAccountContext', _('Account context'));
 		$this->addSimplePDFField($return, 'AstAccountHost', _('Host'));
@@ -1036,7 +1036,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 		// add object class
 			if (!in_array("AsteriskSIPUser", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskSIPUser";
@@ -1148,10 +1148,10 @@ class asteriskAccount extends baseModule implements passwordService {
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		if (!in_array(get_class($this), $modules)) {
-			return array();
+			return [];
 		}
 		$this->attributes['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($this->attributes, $this->moduleSettings, $password);
-		return array();
+		return [];
 	}
 
 	/**
@@ -1195,10 +1195,10 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskSIPUser', $attributes['objectClass'])) {
 			return $return;
 		}
@@ -1294,7 +1294,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		$options = array();
+		$options = [];
 		if (in_array_ignore_case('AsteriskSIPUser', $this->attributes['objectClass'])) {
 			$options[] = new PasswordQuickChangeOption('syncAsterisk', _('Change Asterisk password'));
 		}
@@ -1305,7 +1305,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		$attrs = array();
+		$attrs = [];
 		if (isset($_POST['syncAsterisk'])) {
 			$attrs['AstAccountRealmedPassword'][0] = self::buildPasswordString($this->attributes, $this->moduleSettings, $password);
 		}
@@ -1323,7 +1323,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
-		return array();
+		return [];
 	}
 
 	/**

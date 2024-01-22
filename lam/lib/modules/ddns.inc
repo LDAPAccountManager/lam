@@ -39,7 +39,7 @@
 class ddns extends baseModule {
 
 	/** standard DDNS settings */
-	public $ddns = array();
+	public $ddns = [];
 
 
 	/**
@@ -57,7 +57,7 @@ class ddns extends baseModule {
 	 * @return array array with meta data
 	 */
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// alias name
 		$return["alias"] = _("DDNS");
 		// this is a base module
@@ -67,11 +67,11 @@ class ddns extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter
-		$return["ldap_filter"] = array();
+		$return["ldap_filter"] = [];
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => []);
 		// managed object classes
-		$return['objectClasses'] = array();
+		$return['objectClasses'] = [];
 		// managed attributes
 		$return['attributes'] = array('dhcpOption', 'dhcpStatements');
 		// help Entries
@@ -242,7 +242,7 @@ class ddns extends baseModule {
 		else {
 			// account
 			if (!$this->check_if_ddns_is_enable()) {
-				return array();
+				return [];
 			}
 			$errors = $this->process_attributes_account();
 		}
@@ -254,9 +254,9 @@ class ddns extends baseModule {
 	 */
 	public function process_attributes_mainSettings() {
 		if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 
 		// Is DDNS active?
 		$active = $_POST['active'];
@@ -288,7 +288,7 @@ class ddns extends baseModule {
 	 * Process for account
 	 */
 	public function process_attributes_account() {
-		$errors = array();
+		$errors = [];
 
 		$ip = trim($_POST['ip']);
 		$zone = trim($_POST['zone']);
@@ -409,7 +409,7 @@ class ddns extends baseModule {
 		if (isset($zones[1])) {
 			$revzone = $zones[1];
 		}
-		$result = array();
+		$result = [];
 		$this->addPDFKeyValue($result, 'DNSserver', _('IP address of the DNS server'), $this->getDNSServer());
 		$this->addPDFKeyValue($result, 'zone', _('Zone name'), $zone);
 		$this->addPDFKeyValue($result, 'reverseZone', _('Reverse zone name'), $revzone);
@@ -445,7 +445,7 @@ class ddns extends baseModule {
 	 * @return array zone names array(zone, reverse zone)
 	 */
 	private function getZoneNames() {
-		$return = array();
+		$return = [];
 		$zone = '';
 		$revZone = '';
 		if (is_array($this->attributes['dhcpStatements'])) {
@@ -609,7 +609,7 @@ class ddns extends baseModule {
 	 */
 	private function setUpdateKey($key) {
 		if (!is_array($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = array();
+			$this->attributes['dhcpStatements'] = [];
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 			if (substr($this->attributes['dhcpStatements'][$i], 0, 8) == 'include ') {
@@ -641,7 +641,7 @@ class ddns extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		if (!$this->check_if_ddns_is_enable()) {
 			return $messages;
 		}
@@ -661,5 +661,3 @@ class ddns extends baseModule {
 	}
 
 }
-
-?>

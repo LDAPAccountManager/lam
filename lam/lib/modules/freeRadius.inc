@@ -76,13 +76,13 @@ class freeRadius extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'freeRadius.png';
 		// alias name
 		$return["alias"] = _("FreeRadius");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('posixAccount', 'inetOrgPerson')), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('posixAccount', 'inetOrgPerson')), 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('radiusprofile');
 		// managed attributes
@@ -140,7 +140,7 @@ class freeRadius extends baseModule {
 			),
 		);
 		// profile settings
-		$profileElements = array();
+		$profileElements = [];
 		// auto add extension
 		$profileElements[] = new htmlResponsiveInputCheckbox('freeRadius_addExt', false, _('Automatically add this extension'), 'autoAdd');
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPNetmask')) {
@@ -193,7 +193,7 @@ class freeRadius extends baseModule {
 		}
 		$return['profile_options'] = $profileContainer;
 		// upload fields
-		$return['upload_columns'] = array();
+		$return['upload_columns'] = [];
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {
 			$return['upload_columns'][] = array(
 				'name' => 'freeRadius_radiusRealm',
@@ -260,7 +260,7 @@ class freeRadius extends baseModule {
 			);
 		}
 		// available PDF fields
-		$return['PDF_fields'] = array();
+		$return['PDF_fields'] = [];
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPAddress')) {
 			$return['PDF_fields']['radiusFramedIPAddress'] = _('IP address');
 		}
@@ -345,7 +345,7 @@ class freeRadius extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -398,7 +398,7 @@ class freeRadius extends baseModule {
 				foreach ($this->getProfiles() as $dn) {
 					$profiles[getAbstractDN($dn)] = $dn;
 				}
-				$profile = array();
+				$profile = [];
 				if (!empty($this->attributes['radiusProfileDn'][0])) {
 					$profile = $this->attributes['radiusProfileDn'];
 					if (!in_array($this->attributes['radiusProfileDn'][0], $profiles)) {
@@ -445,7 +445,7 @@ class freeRadius extends baseModule {
 	function process_attributes() {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'radiusprofile';
-			return array();
+			return [];
 		}
 		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('radiusprofile'), $this->attributes['objectClass']);
@@ -454,13 +454,13 @@ class freeRadius extends baseModule {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
 			}
-			return array();
+			return [];
 		}
 		// skip processing if extension is not active
 		if (!in_array('radiusprofile', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		// IP address
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPAddress')) {
 			$this->attributes['radiusFramedIPAddress'][0] = $_POST['radiusFramedIPAddress'];
@@ -597,7 +597,7 @@ class freeRadius extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_expiration() {
-		$return = array();
+		$return = [];
 		// find button name
 		$buttonName = '';
 		$postKeys = array_keys($_POST);
@@ -606,13 +606,17 @@ class freeRadius extends baseModule {
 				$buttonName = $postKeys[$i];
 			}
 		}
-		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) return array();
+		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) {
+			return [];
+		}
 		// get attribute name
 		$attr = '';
 		if (strpos($buttonName, 'radiusExpiration') !== false) {
 			$attr = 'radiusExpiration';
 		}
-		if ($attr == '') return array();
+		if ($attr == '') {
+			return [];
+		}
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
 			// set new expiration date
@@ -640,7 +644,7 @@ class freeRadius extends baseModule {
 	function save_attributes() {
 		if (!in_array('radiusprofile', $this->attributes['objectClass']) && !in_array('radiusprofile', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -650,7 +654,7 @@ class freeRadius extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$errors = array();
+		$errors = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("radiusprofile", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "radiusprofile";
@@ -706,7 +710,7 @@ class freeRadius extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'radiusFramedIPAddress', _('IP address'));
 		$this->addSimplePDFField($return, 'radiusFramedIPNetmask', _('Net mask'));
 		$this->addSimplePDFField($return, 'radiusRealm', _('Realm'));
@@ -798,7 +802,7 @@ class freeRadius extends baseModule {
 			return $this->profileCache;
 		}
 		if (empty($this->moduleSettings['freeRadius_profileDN'][0])) {
-			return array();
+			return [];
 		}
 		$list = searchLDAP($this->moduleSettings['freeRadius_profileDN'][0], '(objectClass=radiusProfile)', array('dn'));
 		foreach ($list as $attr) {

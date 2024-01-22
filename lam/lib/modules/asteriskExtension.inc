@@ -52,11 +52,11 @@ class asteriskExtension extends baseModule {
     private $filterOwnerForAsteriskAccounts = true;
 
     /** Contains all attributes information for set of accounts */
-    private $extensionRows = array();
+    private $extensionRows = [];
     /** Contains all original attributes information for set of accounts */
-    private $extensionRowsOrig = array();
+    private $extensionRowsOrig = [];
     /** extension owners */
-    private $extensionOwners = array();
+    private $extensionOwners = [];
     /** flag if new rule should be added */
     private $addRuleFlag = false;
 
@@ -75,7 +75,7 @@ class asteriskExtension extends baseModule {
      * @return array array with meta data
      */
     function get_metaData() {
-        $return = array();
+        $return = [];
         $return["is_base"] = true;
         // RDN attribute
         $return["RDN"] = array("cn" => "normal");
@@ -84,7 +84,7 @@ class asteriskExtension extends baseModule {
         // alias name
         $return["alias"] = _("Asterisk extension");
         // module dependencies
-        $return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+        $return['dependencies'] = array('depends' => [], 'conflicts' => []);
         // managed object classes
         $return['objectClasses'] = array('AsteriskExtension', 'groupOfNames');
         // managed attributes
@@ -203,7 +203,7 @@ class asteriskExtension extends baseModule {
     /**
      * {@inheritDoc}
      */
-    public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+    public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
         $attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
         parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
     }
@@ -397,8 +397,8 @@ class asteriskExtension extends baseModule {
      * @param String $order order (SORT_ASC or SORT_DESC)
      */
     private function array_sort($array, $on, $order='SORT_ASC') {
-        $new_array = array();
-        $sortable_array = array();
+        $new_array = [];
+        $sortable_array = [];
 
         if (count($array) > 0) {
             foreach ($array as $k => $v) {
@@ -439,7 +439,7 @@ class asteriskExtension extends baseModule {
             $searchClass = 'AsteriskSIPUser';
         }
         $entries = searchLDAPByAttribute(null, null, $searchClass, array('dn'), array($searchScope));
-        $users_dn = array();
+        $users_dn = [];
         for ($i = 0; $i < sizeof($entries); $i++) {
             $dn = $entries[$i]['dn'];
             if (isset($dn) && (!isset($this->extensionOwners) || !in_array($dn, $this->extensionOwners))) {
@@ -450,10 +450,10 @@ class asteriskExtension extends baseModule {
         if (isset($this->extensionOwners)) {
             $memberList = $this->extensionOwners;
         } else {
-            $memberList = array();
+            $memberList = [];
         }
         usort($memberList, 'compareDN');
-        $members = array();
+        $members = [];
         for ($i = 0; $i < sizeof($memberList); $i++) {
             $members[getAbstractDN($memberList[$i])] = $memberList[$i];
         }
@@ -465,7 +465,7 @@ class asteriskExtension extends baseModule {
         $return->addVerticalSpacer('1rem');
         // owners
         $return->add(new htmlSubTitle(_("Extension owners")), 12);
-        $this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $members, array(), $users_dn, array(), 'owners', true);
+        $this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $members, [], $users_dn, [], 'owners', true);
         // back button
         $backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Ok'));
         $backButton->colspan = 3;
@@ -489,7 +489,7 @@ class asteriskExtension extends baseModule {
             }
         }
         if (!isset($this->extensionOwners)) {
-            $this->extensionOwners = array();
+            $this->extensionOwners = [];
         }
         if (isset($_POST['owners_2']) && isset($_POST['owners_left'])) {
             // Add new user
@@ -500,7 +500,7 @@ class asteriskExtension extends baseModule {
         }
         $this->attributes['member'] = $this->extensionOwners;
 
-        return array();
+        return [];
     }
 
     /**
@@ -536,8 +536,8 @@ class asteriskExtension extends baseModule {
      * @return array error messages
      */
     function process_attributes() {
-        $errors = array();
-        $extensionName = array();
+        $errors = [];
+        $extensionName = [];
 
         if (!isset($_POST['generate_extension_name'])) {
 
@@ -548,7 +548,7 @@ class asteriskExtension extends baseModule {
             } else {
                 $errors[] = $this->messages['AstExtension'][0];
             }
-            $extensionContext = array();
+            $extensionContext = [];
             if (isset($_POST['AstContext'])) {
             	$this->attributes['AstContext'][0] = $_POST['AstContext'];
                 $extensionContext[0] = $_POST['AstContext'];
@@ -590,13 +590,13 @@ class asteriskExtension extends baseModule {
      * @return array error messages
      */
     function processExtensionRows($extensionName, $extensionContext) {
-        $errors = array();
+        $errors = [];
         if (isset($_POST['extension_rows']) && get_preg($_POST['extension_rows'], 'digit')) {
 
             $extensionPriorityCntr = 1;
-            $this->extensionRows = array();
+            $this->extensionRows = [];
             for ($entryCounter = 0; $entryCounter < $_POST['extension_rows']; $entryCounter++) {
-                $extRow = array();
+                $extRow = [];
                 if (!isset($_POST['delete_rule_' . $entryCounter])) {
 
                     $singleExtAddErrors = $this->processSingleExtension($extRow,$extensionName, $extensionContext, $entryCounter,$extensionPriorityCntr);
@@ -657,7 +657,7 @@ class asteriskExtension extends baseModule {
      * @param int $extensionPriorityCntr - it is the variable where actual number of extension rules wuld be aggregated
      */
     function processSingleExtension(&$extRow,$extensionName, $extensionContext ,$entryCounter,$extensionPriorityCntr) {
-        $errors = array();
+        $errors = [];
         if (isset($extensionContext[0])) {
             $extRow['astcontext'][0] = $extensionContext[0];
         }
@@ -777,7 +777,7 @@ class asteriskExtension extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
     function get_pdfEntries($pdfKeys, $typeId) {
-        $return = array();
+        $return = [];
         $extName = '';
         if (isset($this->attributes['AstExtension'][0])) {
             $extName = $this->attributes['AstExtension'][0];
@@ -819,9 +819,9 @@ class asteriskExtension extends baseModule {
      * @see baseModule::build_uploadAccounts()
      */
     function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-        $messages = array();
+        $messages = [];
         //hash to store extension_name => priority. For new extension priority will be 1
-        $extensionNamePriorityMap = array();
+        $extensionNamePriorityMap = [];
         for ($i = 0; $i < sizeof($rawAccounts); $i++) {
             // add object class
             if (!in_array("AsteriskExtension", $partialAccounts[$i]['objectClass'])) {
@@ -969,7 +969,7 @@ class asteriskExtension extends baseModule {
                 ldap_delete($_SESSION['ldap']->server(), $rowOrig['dn']);
             }
         }
-        return array();
+        return [];
     }
 
     /**

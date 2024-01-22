@@ -56,7 +56,7 @@ class account extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'user.svg';
 		// alias name
@@ -68,7 +68,7 @@ class account extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("uid" => "low");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('account');
 		// LDAP aliases
@@ -177,7 +177,7 @@ class account extends baseModule {
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('account', $this->getAccountContainer()->attributes_orig['objectClass'])) {
-			return array();
+			return [];
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
@@ -189,7 +189,7 @@ class account extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		// Load attributes
 		$this->attributes['description'][0] = $_POST['description'];
 		// user name if no posixAccount
@@ -239,7 +239,7 @@ class account extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'uid', _('User name'));
 		return $return;
@@ -267,7 +267,7 @@ class account extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("account", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "account";
