@@ -6,7 +6,7 @@ use htmlScript;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2022 - 2023  Roland Gruber
+  Copyright (C) 2022 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -63,14 +63,14 @@ class GoogleReCaptcha implements CaptchaProvider {
 	 */
 	public function isValid(string $secretKey, string $siteKey): bool {
 		$url = 'https://www.google.com/recaptcha/api/siteverify';
-		$vars = array('secret' => $secretKey, 'response' => $_POST['g-recaptcha-response']);
-		$options = array(
-			'http' => array(
+		$vars = ['secret' => $secretKey, 'response' => $_POST['g-recaptcha-response']];
+		$options = [
+			'http' => [
 				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
 				'method'  => 'POST',
 				'content' => http_build_query($vars)
-			)
-		);
+			]
+		];
 		$context = stream_context_create($options);
 		$result = file_get_contents($url, false, $context);
 		if ($result === FALSE) {
@@ -117,7 +117,7 @@ class htmlReCAPTCHA extends htmlElement {
 		$script = new htmlScript('https://www.google.com/recaptcha/api.js');
 		$script->generateHTML($module, $input, $values, $restricted, $scope);
 		echo '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
-		return array();
+		return [];
 	}
 
 }

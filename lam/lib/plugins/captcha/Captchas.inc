@@ -5,7 +5,7 @@ use htmlElement;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2022  Roland Gruber
+  Copyright (C) 2022 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ use htmlElement;
  */
 class Captchas {
 
-	const NO_CAPTCHA = '-';
+	public const NO_CAPTCHA = '-';
 
 	/**
 	 * Includes all plugin files.
@@ -44,7 +44,7 @@ class Captchas {
 	protected function includeFiles() {
 		$pluginDir = dir(__DIR__);
 		while ($entry = $pluginDir->read()) {
-			if ((strpos($entry, '.') === 0) || ($entry === basename(__FILE__))) {
+			if ((str_starts_with($entry, '.')) || ($entry === basename(__FILE__))) {
 				continue;
 			}
 			include_once(__DIR__ . '/' . $entry);
@@ -58,7 +58,7 @@ class Captchas {
 	 */
 	public function findProviders(): array {
 		$this->includeFiles();
-		$providers = array();
+		$providers = [];
 		foreach (get_declared_classes() as $declaredClass) {
 			if (in_array('LAM\PLUGINS\CAPTCHA\CaptchaProvider', class_implements($declaredClass))) {
 				$provider = new $declaredClass();

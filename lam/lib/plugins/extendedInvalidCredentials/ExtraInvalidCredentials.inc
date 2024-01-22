@@ -4,7 +4,7 @@ namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2021  Roland Gruber
+  Copyright (C) 2020 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ class ExtraInvalidCredentials {
 	protected function includeFiles() {
 		$pluginDir = dir(__DIR__);
 		while ($entry = $pluginDir->read()) {
-			if ((strpos($entry, '.') === 0) || ($entry === basename(__FILE__))) {
+			if ((str_starts_with($entry, '.')) || ($entry === basename(__FILE__))) {
 				continue;
 			}
 			include_once(__DIR__ . '/' . $entry);
@@ -69,7 +69,7 @@ class ExtraInvalidCredentials {
 	 * @return ExtraInvalidCredentialsProvider[] providers
 	 */
 	protected function findProviders() {
-		$providers = array();
+		$providers = [];
 		foreach (get_declared_classes() as $declaredClass) {
 			if (in_array('LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentialsProvider', class_implements($declaredClass))) {
 				$providers[] = new $declaredClass();
@@ -84,7 +84,7 @@ class ExtraInvalidCredentials {
 	 * @param ExtraInvalidCredentialsProvider[] $providers
 	 */
 	protected function getAttributeNames(array $providers) {
-		$attributeNames = array();
+		$attributeNames = [];
 		foreach ($providers as $provider) {
 			$attributeNames = array_merge($attributeNames, $provider->getAttributeNamesToRead());
 		}
@@ -105,7 +105,7 @@ class ExtraInvalidCredentials {
 		$data = ldapGetDN($userDn, $attributes, $ldap);
 		logNewMessage(LOG_DEBUG, 'Extra invalid credentials - LDAP data: ' . print_r($data, true));
 		if ($data === null) {
-			$data = array();
+			$data = [];
 		}
 		return $data;
 	}

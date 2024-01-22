@@ -4,7 +4,7 @@ namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021  Roland Gruber
+  Copyright (C) 2021 - 2024  Roland Gruber
 
 */
 
@@ -20,7 +20,7 @@ class UserPasswordExtraInvalidCredentialsProvider implements ExtraInvalidCredent
 	 * @inheritDoc
 	 */
 	public function getAttributeNamesToRead(): array {
-		return array('userpassword');
+		return ['userpassword'];
 	}
 
 	/**

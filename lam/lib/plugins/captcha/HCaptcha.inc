@@ -6,7 +6,7 @@ use htmlScript;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2022 - 2023  Roland Gruber
+  Copyright (C) 2022 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -63,17 +63,17 @@ class HCaptcha implements CaptchaProvider {
 	 */
 	public function isValid(string $secretKey, string $siteKey): bool {
 		$url = 'https://hcaptcha.com/siteverify';
-		$vars = array(
+		$vars = [
 			'secret' => $secretKey,
 			'response' => $_POST['h-captcha-response'],
-			'sitekey' => $siteKey);
-		$options = array(
-			'http' => array(
+			'sitekey' => $siteKey];
+		$options = [
+			'http' => [
 				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
 				'method'  => 'POST',
 				'content' => http_build_query($vars)
-			)
-		);
+			]
+		];
 		$context = stream_context_create($options);
 		$result = file_get_contents($url, false, $context);
 		if ($result === FALSE) {
@@ -120,7 +120,7 @@ class htmlHCaptcha extends htmlElement {
 		$script = new htmlScript('https://js.hcaptcha.com/1/api.js');
 		$script->generateHTML($module, $input, $values, $restricted, $scope);
 		echo '<div class="h-captcha" data-sitekey="' . $this->key . '"></div>';
-		return array();
+		return [];
 	}
 
 }
