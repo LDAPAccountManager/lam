@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2022  Roland Gruber
+  Copyright (C) 2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -200,7 +200,7 @@ class group extends baseType {
 class lamGroupList extends lamList {
 
 	/** Primary group members hash */
-	private $primary_hash = array();
+	private $primary_hash = [];
 	/** Controls if primary group members needs refresh */
 	private $refresh_primary = false;
 	/** ID for config option */
@@ -208,7 +208,7 @@ class lamGroupList extends lamList {
 	/** specifies if primary group members are visible */
 	private $include_primary = false;
 	/** LDAP suffix of membership types */
-	private $suffixList = array();
+	private $suffixList = [];
 
 	/**
 	 * Constructor
@@ -218,28 +218,30 @@ class lamGroupList extends lamList {
 	 */
 	function __construct($type) {
 		parent::__construct($type);
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("Group count: %s"),
 			'error_noneFound' => _("No groups found!"),
 			'newEntry' => _("New group"),
-			'deleteEntry' => _("Delete selected groups"));
+			'deleteEntry' => _("Delete selected groups")
+		];
 		$modules = $this->type->getModules();
 		if (in_array('organizationalRole', $modules)) {
-			$this->labels = array(
+			$this->labels = [
 				'nav' => _("Role count: %s"),
 				'error_noneFound' => _("No roles found!"),
 				'newEntry' => _("New role"),
-				'deleteEntry' => _("Delete selected roles"));
+				'deleteEntry' => _("Delete selected roles")
+			];
 		}
 		// build suffix list for account types
 		$typeManager = new TypeManager();
-		$scopes = array('user', 'gon', 'group');
+		$scopes = ['user', 'gon', 'group'];
 		$types = $typeManager->getConfiguredTypesForScopes($scopes);
 		foreach ($types as $type) {
 			$suffix = $type->getSuffix();
 			// stop if suffixes are not unique
 			if (isset($this->suffixList[$suffix])) {
-				$this->suffixList = array();
+				$this->suffixList = [];
 				break;
 			}
 			if (!empty($suffix)) {
@@ -286,7 +288,7 @@ class lamGroupList extends lamList {
 				sort($entry[$attribute]);
 			}
 			// make a link for each member of the group
-			$linklist = array();
+			$linklist = [];
 			if ($use_primary) {
 				$primary_hash = $this->primary_hash[$gid];
 				// merge primary members into secondary ones
@@ -358,14 +360,14 @@ class lamGroupList extends lamList {
 		$scope = "user";
 		// configure search filter
 		$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
-		$attrs = array( "uid" );
+		$attrs = ["uid"];
 		for ($i = 0; $i < sizeof($this->ldapEntries); $i++) {
 			if (empty($this->ldapEntries[$i]['gidnumber'][0])) {
 				continue;
 			}
 			$gid = $this->ldapEntries[$i]['gidnumber'][0];
 			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
-			$entries = searchLDAPByFilter($filter, $attrs, array($scope));
+			$entries = searchLDAPByFilter($filter, $attrs, [$scope]);
 			for ($j = 0; $j < sizeof($entries); $j++) {
 				$this->primary_hash[$gid][$j] = $entries[$j]['uid'][0];
 			}
@@ -402,7 +404,7 @@ class lamGroupList extends lamList {
 	 */
 	protected function getAdditionalLDAPAttributesToRead() {
 		$attrs = $this->type->getAttributes();
-		$ret = array();
+		$ret = [];
 		$countLen = strlen('_count');
 		foreach ($attrs as $attr) {
 			$attrName = $attr->getAttributeName();

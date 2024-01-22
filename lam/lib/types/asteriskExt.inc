@@ -4,7 +4,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pozdnyak Pavel
-                2010 - 2022  Roland Gruber
+                2010 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -126,11 +126,12 @@ class lamAsteriskExtList extends lamList {
      */
     function __construct($type) {
         parent::__construct($type);
-        $this->labels = array(
+        $this->labels = [
             'nav' => _("Extension count: %s"),
             'error_noneFound' => _("No Asterisk extensions found."),
             'newEntry' => _("New extension"),
-            'deleteEntry' => _("Delete selected extensions"));
+            'deleteEntry' => _("Delete selected extensions")
+        ];
     }
 
     /**
@@ -141,8 +142,8 @@ class lamAsteriskExtList extends lamList {
     protected function listGetParams() {
         // check if only PDF should be shown
         parent::listGetParams();
-        $this->attrArray = array("astextension", "astcontext", "member");
-        $this->descArray = array(_("Extension name"), _("Account context"), _("Owner"));
+        $this->attrArray = ["astextension", "astcontext", "member"];
+        $this->descArray = [_("Extension name"), _("Account context"), _("Owner")];
     }
 
     /**
@@ -164,7 +165,7 @@ class lamAsteriskExtList extends lamList {
         }
 
         $this->ldapEntries = $this->normalizeLdapOutput($entries);
-    	$this->entries = array();
+    	$this->entries = [];
 		foreach ($this->ldapEntries as $index => &$attrs) {
 			$this->entries[$index] = &$attrs;
 		}
@@ -188,5 +189,3 @@ class lamAsteriskExtList extends lamList {
     }
 
 }
-
-?>

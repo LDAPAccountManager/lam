@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2022  Roland Gruber
+                2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -160,12 +160,13 @@ class lamDHCPList extends lamList {
 	 */
 	public function __construct($type) {
 		parent::__construct($type);
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("DHCP count: %s"),
 			'error_noneFound' => _("No DHCPs found!"),
 			'newEntry' => _("New DHCP"),
 			'dhcpDefaults' => _("DHCP settings"),
-			'deleteEntry' => _("Delete selected DHCP entries"));
+			'deleteEntry' => _("Delete selected DHCP entries")
+		];
 	}
 
 	/**
@@ -177,7 +178,7 @@ class lamDHCPList extends lamList {
 			if (empty($regex)) {
 				return true;
 			}
-			$entries = searchLDAP($data['dn'], 'objectClass=dhcpHost', array('dhcpstatements', 'dhcphwaddress', 'cn'));
+			$entries = searchLDAP($data['dn'], 'objectClass=dhcpHost', ['dhcpstatements', 'dhcphwaddress', 'cn']);
 			if (sizeof($entries) > 0) {
 				foreach ($entries as $entry) {
 					foreach ($entry as $attrValues) {
@@ -210,7 +211,7 @@ class lamDHCPList extends lamList {
             		}
             	}
             }
-            $pooledRanges = searchLDAP($data['dn'], '(objectclass=dhcpPool)', array('dhcprange'));
+            $pooledRanges = searchLDAP($data['dn'], '(objectclass=dhcpPool)', ['dhcprange']);
             foreach ($pooledRanges as $pooledRange) {
             	if (empty($pooledRange['dhcprange'])) {
             		continue;
@@ -234,7 +235,7 @@ class lamDHCPList extends lamList {
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
 			$dhcpButton = new htmlButton('dhcpDefaults', $this->labels['dhcpDefaults']);
-			$dhcpButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
+			$dhcpButton->setCSSClasses(['fullwidth-mobile-only lam-secondary']);
 			$left->addElement($dhcpButton);
 		}
 	}
