@@ -7,7 +7,7 @@ use function LAM\PDF\createModulePDF;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1471,8 +1471,12 @@ class lamList {
 			if (isset($_SESSION['mass_pdf']['file'])) {
 				$tempFilesManager = new LamTemporaryFilesManager();
 				StatusMessage('INFO',
-                    sprintf(_('You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}{endlink}.'),
-                    $tempFilesManager->getDownloadLink($_SESSION['mass_pdf']['file'])));
+                    _('You can download your PDF files %shere%s.'),
+                    '',
+                    [
+                        '<a href="' . $tempFilesManager->getDownloadLink($_SESSION['mass_pdf']['file']) . '">',
+                        '</a>'
+                    ]);
 			}
 		}
 		elseif (isset($_GET['accountEditInvalidID'])) {

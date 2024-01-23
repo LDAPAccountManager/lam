@@ -4,7 +4,7 @@ namespace LAM\HELP;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2023  Roland Gruber
+                2008 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ else {
 	/* If submitted help number is not in help/help.inc print error message */
 	if (!array_key_exists($_GET['HelpNumber'], $helpArray)) {
 		$variables = [htmlspecialchars($_GET['HelpNumber'])];
-		$errorMessage = _("Sorry, this help number ({bold}%s{endbold}) is not available.");
+		$errorMessage = _("Sorry, the help number %s is not available.");
 		echoHTMLHead();
 		statusMessage("ERROR", "", $errorMessage, $variables);
 		echoHTMLFoot();
