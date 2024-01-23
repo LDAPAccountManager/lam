@@ -72,13 +72,13 @@ class puppetClient extends baseModule {
     * @return array array with meta data
     */
     function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'computer.svg';
 		// alias name
 		$return["alias"] = _("Puppet");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('puppetClient');
 		// managed attributes
@@ -173,7 +173,7 @@ class puppetClient extends baseModule {
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('puppetClient_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$profileEnvironment = new htmlResponsiveInputField(_('Environment'), 'puppetClient_environment', null, 'environment');
-		$autocompleteEnvironment = array();
+		$autocompleteEnvironment = [];
 		if (isset($this->moduleSettings['puppetClient_environments'])) {
 			$autocompleteEnvironment = $this->moduleSettings['puppetClient_environments'];
 		}
@@ -220,7 +220,7 @@ class puppetClient extends baseModule {
 	function save_attributes() {
 		if (!in_array('puppetClient', $this->attributes['objectClass']) && !in_array('puppetClient', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -241,11 +241,11 @@ class puppetClient extends baseModule {
 		}
 		$this->initCache();
 		// environment
-		$autocompleteEnvironment = array();
+		$autocompleteEnvironment = [];
 		if (isset($this->moduleSettings['puppetClient_environments'])) {
 			$autocompleteEnvironment = $this->moduleSettings['puppetClient_environments'];
 		}
-		$environments = array();
+		$environments = [];
 		if (isset($this->attributes['environment'][0])) {
 			$environments = $this->attributes['environment'];
 		}
@@ -307,13 +307,13 @@ class puppetClient extends baseModule {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
 			}
-			return array();
+			return [];
 		}
 		if (!in_array('puppetClient', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 
-		$errors = array();
+		$errors = [];
 		// environment
 		$environmentCounter = 0;
 		while (isset($_POST['environment' . $environmentCounter])) {
@@ -353,7 +353,7 @@ class puppetClient extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("puppetClient", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "puppetClient";
@@ -395,7 +395,7 @@ class puppetClient extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		if (!in_array('puppetClient', $this->attributes['objectClass'])) {
 			return $return;
 		}
@@ -430,7 +430,7 @@ class puppetClient extends baseModule {
 		$possibleParentNodes = $this->getPossibleParentNodes();
 		array_unshift($possibleParentNodes, '-');
 		$possibleParentNodes = array_values($possibleParentNodes);
-		$return->add(new htmlResponsiveSelect('puppetClient_parentnode', $possibleParentNodes, array(), _('Parent node'), 'parentnode'));
+		$return->add(new htmlResponsiveSelect('puppetClient_parentnode', $possibleParentNodes, [], _('Parent node'), 'parentnode'));
 		return $return;
 	}
 
@@ -469,7 +469,7 @@ class puppetClient extends baseModule {
 	 */
 	private function getPossibleParentNodes() {
 		$searchResult = searchLDAPByAttribute('cn', '*', 'puppetClient', array('cn'), array('host'));
-		$possibleParentNodes = array();
+		$possibleParentNodes = [];
 		for ($i = 0; $i < sizeof($searchResult); $i++) {
 			if (!get_preg($searchResult[$i]['cn'][0], 'ascii')) {
 				continue;
@@ -491,8 +491,8 @@ class puppetClient extends baseModule {
 			return;
 		}
 		$attrs = array('puppetclass', 'puppetvar');
-		$classes = array();
-		$variables = array();
+		$classes = [];
+		$variables = [];
 		$result = searchLDAPByFilter('(objectClass=puppetClient)', $attrs, array($this->get_scope()));
 		foreach ($result as $attributes) {
 			if (isset($attributes['puppetclass'])) {

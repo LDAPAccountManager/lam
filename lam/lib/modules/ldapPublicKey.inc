@@ -75,13 +75,13 @@ class ldapPublicKey extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'key.svg';
 		// alias name
 		$return["alias"] = _("SSH public key");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('ldapPublicKey');
 		// managed attributes
@@ -140,7 +140,7 @@ class ldapPublicKey extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -184,11 +184,11 @@ class ldapPublicKey extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$messages = array();
+		$messages = [];
 		// add extension
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'ldapPublicKey';
-			return array();
+			return [];
 		}
 		// remove extension
 		elseif (isset($_POST['remObjectClass'])) {
@@ -196,11 +196,11 @@ class ldapPublicKey extends baseModule {
 			if (!empty($this->attributes['sshPublicKey'])) {
 				unset($this->attributes['sshPublicKey']);
 			}
-			return array();
+			return [];
 		}
 		// skip processing if extension is not active
 		if (!in_array('ldapPublicKey', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 		$this->processMultiValueInputTextField('sshPublicKey', $messages);
 		// file upload
@@ -211,7 +211,7 @@ class ldapPublicKey extends baseModule {
 				fclose($handle);
 				$isOk = true;
 				if (is_executable('/usr/bin/ssh-keygen')) {
-					$out = array();
+					$out = [];
 					$retVal = 0;
 					exec('/usr/bin/ssh-keygen -l -f ' . escapeshellarg($_FILES['sshPublicKeyFile']['tmp_name']), $out, $retVal);
 					if ($retVal !== 0) {
@@ -253,7 +253,7 @@ class ldapPublicKey extends baseModule {
 	function save_attributes() {
 		if (!in_array('ldapPublicKey', $this->attributes['objectClass']) && !in_array('ldapPublicKey', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -279,7 +279,7 @@ class ldapPublicKey extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("ldapPublicKey", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "ldapPublicKey";
@@ -294,7 +294,7 @@ class ldapPublicKey extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		if (!empty($this->attributes['sshPublicKey'])) {
 			$pdfTable = new PDFTable(_('SSH public keys'));
 			for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
@@ -319,12 +319,12 @@ class ldapPublicKey extends baseModule {
 	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array();
+		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
 		}
 		if (in_array('sshPublicKey', $fields)) {
-			$sshPublicKeys = array();
+			$sshPublicKeys = [];
 			if (isset($attributes['sshPublicKey'][0])) {
 				$sshPublicKeys = $attributes['sshPublicKey'];
 			}
@@ -511,15 +511,15 @@ class ldapPublicKey extends baseModule {
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
 		if (in_array('sshPublicKey', $fields)) {
-			$newKeys = array();
+			$newKeys = [];
 			$counter = 0;
 			while (isset($_POST['sshPublicKey_' . $counter])) {
 				$newKeys[] = $_POST['sshPublicKey_' . $counter];
@@ -532,7 +532,7 @@ class ldapPublicKey extends baseModule {
 				}
 			}
 			$newKeys = array_values(array_unique($newKeys));
-			$oldKeys = array();
+			$oldKeys = [];
 			if (isset($attributes['sshPublicKey'][0])) {
 				$oldKeys = $attributes['sshPublicKey'];
 			}
@@ -590,7 +590,7 @@ class ldapPublicKey extends baseModule {
 				$contentElement = $this->getSelfServiceKeys();
 				ob_end_clean();
 				ob_start();
-				parseHtml(null, $contentElement, array(), true, $this->get_scope());
+				parseHtml(null, $contentElement, [], true, $this->get_scope());
 				$content = ob_get_contents();
 				ob_end_clean();
 				$jsonReturn = array(
@@ -624,7 +624,7 @@ class ldapPublicKey extends baseModule {
 				$tmpFile = fopen($tmpFilePath, 'w+');
 				fwrite($tmpFile, $data);
 				fclose($tmpFile);
-				$out = array();
+				$out = [];
 				$retVal = 0;
 				$command = '/usr/bin/ssh-keygen -l -f ' . escapeshellarg($tmpFilePath);
 				exec($command, $out, $retVal);
@@ -649,7 +649,7 @@ class ldapPublicKey extends baseModule {
 			$contentElement = $this->getSelfServiceKeys();
 			ob_end_clean();
 			ob_start();
-			parseHtml(null, $contentElement, array(), true, $this->get_scope());
+			parseHtml(null, $contentElement, [], true, $this->get_scope());
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -680,7 +680,7 @@ class ldapPublicKey extends baseModule {
 		$contentElement = $this->getSelfServiceKeys();
 		ob_end_clean();
 		ob_start();
-		parseHtml(null, $contentElement, array(), true, $this->get_scope());
+		parseHtml(null, $contentElement, [], true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(

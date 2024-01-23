@@ -103,13 +103,13 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'key.svg';
 		// alias name
 		$return["alias"] = _('Shadow');
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('shadowAccount');
 		// managed attributes
@@ -277,7 +277,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -297,7 +297,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	function save_attributes() {
 		if (!in_array('shadowAccount', $this->attributes['objectClass']) && !in_array('shadowAccount', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -332,12 +332,12 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			if (isset($this->attributes['shadowflag'])) {
 				unset($this->attributes['shadowflag']);
 			}
-			return array();
+			return [];
 		}
 		if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		// Load attributes
 		$this->attributes['shadowmin'][0] = $_POST['shadowmin'];
 		$this->attributes['shadowmax'][0] = $_POST['shadowmax'];
@@ -434,7 +434,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	* @return array list of info/error messages
 	*/
 	function process_expire() {
-		$errors = array();
+		$errors = [];
 		// set expiration date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_change']) && !empty($_POST['shadowexpire'])) {
 			$date = DateTime::createFromFormat('d.m.Y', $_POST['shadowexpire'], new DateTimeZone('UTC'));
@@ -540,7 +540,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	* @return array list of info/error messages
 	*/
 	function process_pwdChange() {
-		$errors = array();
+		$errors = [];
 		// set last change date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_changePwdChange']) && !empty($_POST['shadowlastchange'])) {
 			$date = DateTime::createFromFormat('d.m.Y', $_POST['shadowlastchange'], new DateTimeZone('UTC'));
@@ -598,7 +598,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			$time = new DateTime('@' . $this->attributes['shadowexpire'][0]*24*3600);
 			$shadowExpire = $time->format('d.m.Y');
 		}
-		$return = array();
+		$return = [];
 		$this->addPDFKeyValue($return, 'shadowLastChange', _('Last password change'), $shadowLastChange);
 		$this->addPDFKeyValue($return, 'shadowExpire', _('Account expiration date'), $shadowExpire);
 		$this->addSimplePDFField($return, 'shadowWarning', _('Password warning'));
@@ -613,7 +613,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("shadowAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "shadowAccount";
@@ -734,7 +734,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		// update password timestamp when Unix password was updated
 		if (!in_array('posixAccount', $modules)) {
-			return array();
+			return [];
 		}
 		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
 			$this->attributes['shadowlastchange'][0] = intval(time()/3600/24);
@@ -742,7 +742,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 				$this->attributes['shadowlastchange'][0] = intval(time()/3600/24) - $this->attributes['shadowmax'][0] - 1;
 			}
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -791,7 +791,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array();
+		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
 		}
@@ -889,7 +889,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		$options = array();
+		$options = [];
 		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
 			$options[] = new PasswordQuickChangeOption('forcePasswordChangeUnix', _('Force Unix password change'), isPasswordChangeByDefault());
 		}
@@ -901,9 +901,9 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
 		if (!in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$attrs = array();
+		$attrs = [];
 		if (isset($this->attributes['shadowlastchange'][0]) && isset($_POST['updateUnixPwd'])) {
 			$attrs['shadowlastchange'][0] = intval(time()/3600/24);
 		}
@@ -926,7 +926,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
-		return array();
+		return [];
 	}
 
 	/**
@@ -943,7 +943,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
-		$details = array();
+		$details = [];
 		if (self::isAccountExpired($attributes)) {
 			$details[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Account expiration'), self::STATUS_ACCOUNT_EXPIRED);
 		}
@@ -967,7 +967,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
-		$options = array();
+		$options = [];
 		if (!self::isAccountExpired($attributes)) {
 			$options[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Account expiration'), self::STATUS_ACCOUNT_EXPIRED);
 		}

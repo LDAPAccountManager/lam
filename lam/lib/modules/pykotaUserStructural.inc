@@ -57,7 +57,7 @@ class pykotaUserStructural extends pykotaUser {
 	function get_metaData() {
 		$return = parent::get_metaData();
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('pykotaUser'));
+		$return['dependencies'] = array('depends' => [], 'conflicts' => array('pykotaUser'));
 		// additional object class and attribute
 		$return['objectClasses'][] = 'pykotaObject';
 		$return['attributes'][] = 'cn';

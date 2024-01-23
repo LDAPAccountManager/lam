@@ -93,7 +93,7 @@ class pykotaGroup extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'printer.svg';
 		// alias name
@@ -103,7 +103,7 @@ class pykotaGroup extends baseModule {
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=pykotaGroup)");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('pykotaGroup');
 		// managed attributes
@@ -133,7 +133,7 @@ class pykotaGroup extends baseModule {
 		);
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaGroup_pykotaLimitBy', $this->limitOptions, array(), _('Limit type'), 'pykotaLimitBy');
+		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaGroup_pykotaLimitBy', $this->limitOptions, [], _('Limit type'), 'pykotaLimitBy');
 		$pykotaLimitByProfileOption->setHasDescriptiveElements(true);
 		$pykotaLimitByProfileOption->setSortElements(false);
 		$profileContainer->add($pykotaLimitByProfileOption, 12);
@@ -186,7 +186,7 @@ class pykotaGroup extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -241,10 +241,10 @@ class pykotaGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
 			if (!isset($this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = array();
+				$this->attributes['objectClass'] = [];
 			}
 			if (!in_array('pykotaGroup', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'pykotaGroup';
@@ -333,7 +333,7 @@ class pykotaGroup extends baseModule {
 	function save_attributes() {
 		if (!in_array('pykotaGroup', $this->attributes['objectClass']) && !in_array('pykotaGroup', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -418,7 +418,7 @@ class pykotaGroup extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object classes
 			if (!in_array('pykotaGroup', $partialAccounts[$i]['objectClass'])) {
@@ -499,7 +499,7 @@ class pykotaGroup extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
 		$this->addSimplePDFField($return, 'pykotaGroupName', _('PyKota group name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
@@ -555,8 +555,8 @@ class pykotaGroup extends baseModule {
 	 */
 	private function loadGroupNameCache() {
 		$results = searchLDAPByFilter('(objectClass=pykotaGroup)', array('cn', 'pykotaGroupName'), array($this->get_scope()));
-		$this->cnCache = array();
-		$this->pykotaGroupNameCache = array();
+		$this->cnCache = [];
+		$this->pykotaGroupNameCache = [];
 		foreach ($results as $result) {
 			if (isset($result['cn'][0])) {
 				$this->cnCache[] = $result['cn'][0];

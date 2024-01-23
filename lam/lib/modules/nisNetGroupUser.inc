@@ -39,10 +39,10 @@ use \LAM\TYPES\TypeManager;
 class nisNetGroupUser extends baseModule {
 
 	/** list of NIS netgroups the user is memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
-	protected $groups = array();
+	protected $groups = [];
 	/** list of NIS netgroups the user was memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
-	protected $groupsOrig = array();
-	/** group cache (array(array(cn => '', dn => '', nisnetgrouptriple => array()))) */
+	protected $groupsOrig = [];
+	/** group cache (array(array(cn => '', dn => '', nisnetgrouptriple => []))) */
 	protected $groupCache;
 	/** original uid */
 	protected $uidOrig;
@@ -64,11 +64,11 @@ class nisNetGroupUser extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'group.svg';
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('posixAccount', 'inetOrgPerson')), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('posixAccount', 'inetOrgPerson')), 'conflicts' => []);
 		// alias name
 		$return["alias"] = _("NIS net groups");
 		// available PDF fields
@@ -106,8 +106,8 @@ class nisNetGroupUser extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->groups = array();
-		$this->groupsOrig = array();
+		$this->groups = [];
+		$this->groupsOrig = [];
 	}
 
 	/**
@@ -123,7 +123,7 @@ class nisNetGroupUser extends baseModule {
 		$this->uidOrig = $attr['uid'][0];
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypesForScope('netgroup');
-		$groupList = array();
+		$groupList = [];
 		foreach ($types as $type) {
 			$filter = '(&(objectClass=nisNetgroup)(nisnetgrouptriple=*))';
 			$typeFilter = $type->getAdditionalLdapFilter();
@@ -136,11 +136,11 @@ class nisNetGroupUser extends baseModule {
 			$groupsFound = searchLDAP($type->getSuffix(), $filter, array('dn', 'cn', 'nisnetgrouptriple'));
 			$groupList = array_merge($groupList, $groupsFound);
 		}
-		$this->groupsOrig = array();
+		$this->groupsOrig = [];
 		$tripleRegex = '/^\\(([^,]*),([^,]*),([^,]*)\\)$/';
 		foreach ($groupList as $group) {
 			foreach ($group['nisnetgrouptriple'] as $triple) {
-				$matches = array();
+				$matches = [];
 				if (preg_match($tripleRegex, $triple, $matches) == 0) {
 					continue;
 				}
@@ -196,7 +196,7 @@ class nisNetGroupUser extends baseModule {
 		$return->addVerticalSpace('40px');
 
 		// new entry
-		$groupList = array();
+		$groupList = [];
 		$groupData = $this->findGroups();
 		if (sizeof($groupData) > 0) {
 			$filterGroup = new htmlGroup();
@@ -229,7 +229,7 @@ class nisNetGroupUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$errors = array();
+		$errors = [];
 		// add new entry
 		if (isset($_POST['addGroup'])) {
 			$parts = explode('#+#', $_POST['group_add']);
@@ -308,13 +308,13 @@ class nisNetGroupUser extends baseModule {
 	public function postModifyActions($newAccount, $attributes) {
 		$accountContainer = $this->getAccountContainer();
 		if (empty($accountContainer)) {
-			return array();
+			return [];
 		}
 		$uid = $this->getUid();
 		if (empty($uid)) {
-			return array();
+			return [];
 		}
-		$messages = array();
+		$messages = [];
 		// calculate differences
 		$toRem = $this->groupsOrig;
 		$toAdd = $this->groups;
@@ -339,7 +339,7 @@ class nisNetGroupUser extends baseModule {
 			}
 		}
 		// group by DN
-		$changes = array();
+		$changes = [];
 		foreach ($toAdd as $add) {
 			$changes[$add['dn']]['add'][] = $this->createNetGroupValue($add, $uid);
 		}
@@ -354,7 +354,7 @@ class nisNetGroupUser extends baseModule {
 				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn));
 				continue;
 			}
-			$triples = empty($current['nisnetgrouptriple']) ? array() : $current['nisnetgrouptriple'];
+			$triples = empty($current['nisnetgrouptriple']) ? [] : $current['nisnetgrouptriple'];
 			if (isset($changeSet['del'])) {
 				$triples = array_delete($changeSet['del'], $triples);
 			}
@@ -405,7 +405,7 @@ class nisNetGroupUser extends baseModule {
 				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn));
 				continue;
 			}
-			$triples = empty($current['nisnetgrouptriple']) ? array() : $current['nisnetgrouptriple'];
+			$triples = empty($current['nisnetgrouptriple']) ? [] : $current['nisnetgrouptriple'];
 			$triples = array_delete($changeSet, $triples);
 			$triples = array_values(array_unique($triples));
 			$attributes = array(
@@ -431,7 +431,7 @@ class nisNetGroupUser extends baseModule {
 		}
 		$return = new htmlResponsiveRow();
 		$labels = array(_('Group'), _('Host name'), _('Domain name'));
-		$data = array();
+		$data = [];
 		for ($i = 0; $i < 5; $i++) {
 			$select = new htmlSelect('nisNetGroupUser_group' . $i, $groupOptions, array(''));
 			$select->setHasDescriptiveElements(true);
@@ -469,7 +469,7 @@ class nisNetGroupUser extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$pdfTable = new PDFTable();
 		$pdfRow = new PDFTableRow();
 		$pdfRow->cells[] = new PDFTableCell(_('Group'), '25%', null, true);
@@ -492,10 +492,10 @@ class nisNetGroupUser extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$errors = array();
+		$errors = [];
 		// get list of existing group of names
 		$groups = $this->findGroups();
-		$groupNames = array();
+		$groupNames = [];
 		foreach ($groups as $group) {
 			$groupNames[] = $group['cn'][0];
 		}
@@ -525,11 +525,11 @@ class nisNetGroupUser extends baseModule {
 		}
 		// on first call generate list of LDAP operations
 		if (!isset($temp['counter'])) {
-			$temp['groups'] = array();
+			$temp['groups'] = [];
 			$temp['counter'] = 0;
 			// get list of existing groups
 			$groupList = $this->findGroups();
-			$groupMap = array();
+			$groupMap = [];
 			foreach ($groupList as $group) {
 				$groupMap[$group['cn'][0]] = $group['dn'];
 			}
@@ -552,12 +552,12 @@ class nisNetGroupUser extends baseModule {
 			return array(
 				'status' => 'inProgress',
 				'progress' => 0,
-				'errors' => array()
+				'errors' => []
 			);
 		}
 		// add users to groups
 		elseif ($temp['counter'] < sizeof($temp['groupDNs'])) {
-			$errors = array();
+			$errors = [];
 			$dn = $temp['groupDNs'][$temp['counter']];
 			$current = ldapGetDN($dn, array('nisnetgrouptriple'));
 			if (empty($current)) {
@@ -565,7 +565,7 @@ class nisNetGroupUser extends baseModule {
 				$temp['counter']++;
 				return;
 			}
-			$triples = empty($current['nisnetgrouptriple']) ? array() : $current['nisnetgrouptriple'];
+			$triples = empty($current['nisnetgrouptriple']) ? [] : $current['nisnetgrouptriple'];
 			$triples = array_merge($temp['groups'][$dn], $triples);
 			$triples = array_values(array_unique($triples));
 			$attributes = array(
@@ -592,7 +592,7 @@ class nisNetGroupUser extends baseModule {
 			return array (
 				'status' => 'finished',
 				'progress' => 100,
-				'errors' => array()
+				'errors' => []
 			);
 		}
 	}
@@ -613,13 +613,13 @@ class nisNetGroupUser extends baseModule {
 	/**
 	 * Finds all existing LDAP NIS net groups.
 	 *
-	 * @return array groups array(array(cn => array(), dn => '', nisnetgrouptriple => array()))
+	 * @return array groups array(array(cn => [], dn => '', nisnetgrouptriple => []))
 	 */
 	protected function findGroups() {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
-		$return = array();
+		$return = [];
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypesForScope('netgroup');
 		foreach ($types as $type) {

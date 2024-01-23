@@ -38,13 +38,13 @@ class nisMailAliasUser extends baseModule {
 	private $cachedAliasList;
 
 	/** recipient entries to delete (list of arrays: dn => attributes) */
-	private $recipientsToDelete = array();
+	private $recipientsToDelete = [];
 	/** complete alias entries to delete */
-	private $aliasesToDelete = array();
+	private $aliasesToDelete = [];
 	/** new alias entries (list of arrays: dn => attributes) */
-	private $aliasesToAdd = array();
+	private $aliasesToAdd = [];
 	/** alias entries to extend with new recipients (list of arrays: dn => recipients) */
-	private $recipientsToAdd = array();
+	private $recipientsToAdd = [];
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -63,13 +63,13 @@ class nisMailAliasUser extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'mail.svg';
 		// alias name
 		$return["alias"] = _("Mail aliases");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'posixAccount')), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'posixAccount')), 'conflicts' => []);
 		// help Entries
 		$return['help'] = array(
 			'aliasUser' => array(
@@ -198,7 +198,7 @@ class nisMailAliasUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if (!$this->isMailAliasTypeActive()) {
 			return $errors;
 		}
@@ -338,13 +338,13 @@ class nisMailAliasUser extends baseModule {
 		$return->add(new htmlSubTitle(_('Create new alias')), 12);
 		$typeManager = new \LAM\TYPES\TypeManager();
 		$mailAliasTypes = $typeManager->getConfiguredTypesForScope('mailAlias');
-		$ous = array();
+		$ous = [];
 		foreach ($mailAliasTypes as $type) {
 			$ous = array_merge($ous, $type->getSuffixList());
 		}
 		$ous = array_unique($ous);
 		usort($ous, 'compareDN');
-		$suffixSelect = new htmlResponsiveSelect('new_ou', $ous, array(), _('Suffix'), 'suffix');
+		$suffixSelect = new htmlResponsiveSelect('new_ou', $ous, [], _('Suffix'), 'suffix');
 		$suffixSelect->setRightToLeftTextDirection(true);
 		$suffixSelect->setSortElements(false);
         $return->add($suffixSelect, 12);
@@ -358,14 +358,14 @@ class nisMailAliasUser extends baseModule {
 
 		// add to existing alias
 		$return->add(new htmlSubTitle(_('Add to existing alias')), 12);
-		$aliasesToAdd = array();
+		$aliasesToAdd = [];
 		foreach ($aliases as $index => $attrs) {
 			if (!empty($attrs['rfc822mailmember']) && in_array($recipient, $attrs['rfc822mailmember'])) {
 				continue;
 			}
 			$aliasesToAdd[$attrs['cn'][0]] = $index;
 		}
-		$aliasSelect = new htmlResponsiveSelect('ex_cn', $aliasesToAdd, array(), _('Alias names'), 'aliasNames', 20);
+		$aliasSelect = new htmlResponsiveSelect('ex_cn', $aliasesToAdd, [], _('Alias names'), 'aliasNames', 20);
 		$aliasSelect->setHasDescriptiveElements(true);
 		$aliasSelect->setMultiSelect(true);
 		$return->add($aliasSelect, 12);
@@ -386,7 +386,7 @@ class nisMailAliasUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_add() {
-		$errors = array();
+		$errors = [];
 		// create new alias entry
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_create'])) {
 			if (empty($_POST['new_cn']) || !get_preg($_POST['new_cn'], 'nis_alias')) {
@@ -445,7 +445,7 @@ class nisMailAliasUser extends baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		$errors = array();
+		$errors = [];
 		// delete complete aliases
 		foreach ($this->aliasesToDelete as $dn) {
 			$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
@@ -499,9 +499,9 @@ class nisMailAliasUser extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$aliases = $this->getMailAliasList();
-		$foundAliases = array();
+		$foundAliases = [];
 		$mails = $this->getMailAddresses();
 		$user = $this->getUserName();
 		foreach ($aliases as $alias) {

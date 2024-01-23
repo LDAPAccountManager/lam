@@ -84,18 +84,18 @@ class quota extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'hard-drive.svg';
 		// alias name
 		$return["alias"] = _('Quota');
 		if ($this->get_scope() == 'group') {
 			// module dependencies
-			$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup', 'windowsPosixGroup')), 'conflicts' => array());
+			$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup', 'windowsPosixGroup')), 'conflicts' => []);
 		}
 		if ($this->get_scope() == 'user') {
 			// module dependencies
-			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => []);
 		}
 		// managed attributes
 		$return['attributes'] = array('uid', 'cn');
@@ -397,7 +397,7 @@ class quota extends baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		$messages = array();
+		$messages = [];
 		if (!isset($this->quota) || !is_array($this->quota)
 			|| ($this->getAccountContainer() === null)
 			|| ($this->getAccountContainer()->finalDN === null)) {
@@ -492,7 +492,7 @@ class quota extends baseModule {
 			return array(array('ERROR', $e->getTitle(), $e->getMessage()));
 		}
 		if (!isset($this->quota) || !is_array($this->quota)) {
-			return array();
+			return [];
 		}
 		// determine if this is a user or group account
 		if ($this->get_scope()=='user') {
@@ -502,7 +502,7 @@ class quota extends baseModule {
 		if ($this->get_scope()=='group') {
 			$id = $this->getCn();
 		}
-		$messages = array();
+		$messages = [];
 		// get list of lamdaemon servers
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
@@ -536,9 +536,9 @@ class quota extends baseModule {
 	*/
 	function process_attributes() {
 		if (!isset($this->quota) || !is_array($this->quota)) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		// get list of lamdaemon servers
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
@@ -596,7 +596,7 @@ class quota extends baseModule {
 			return $return;
 		}
 		// get list of lamdaemon servers
-		$serverDescriptions = array();
+		$serverDescriptions = [];
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
 			$lamdaemonServer = $lamdaemonServers[$s];
@@ -627,7 +627,7 @@ class quota extends baseModule {
 			$i=0;
 			// loop for every mointpoint with enabled quotas
 			while (isset($this->quota[$server][$i][0])) {
-				$dataRow = array();
+				$dataRow = [];
 				$dataRow[] = new htmlOutputText($this->quota[$server][$i][0]);
 				$dataRow[] = new htmlOutputText($this->quota[$server][$i][1]);
 				$sbLimitInput = new htmlInputField($i . '_2_' . $id, $this->quota[$server][$i][2]);
@@ -742,7 +742,7 @@ class quota extends baseModule {
 	* {@inheritDoc}
 	*/
 	function check_profileOptions($options, $typeId) {
-		$return = array();
+		$return = [];
 		// get list of lamdaemon servers
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		foreach ($lamdaemonServers as $lamdaemonServer) {
@@ -764,7 +764,7 @@ class quota extends baseModule {
 			if (empty($dirs)) {
 				continue;
 			}
-			$quotaDirs = array();
+			$quotaDirs = [];
 			foreach ($dirs as $dirString) {
 				if (strpos($dirString, self::$QUOTA_PREFIX) !== 0) {
 					continue;
@@ -847,10 +847,10 @@ class quota extends baseModule {
 		}
 		catch (LAMException $e) {
 			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
-			return array();
+			return [];
 		}
 		if (!isset($this->quota) || !is_array($this->quota)) {
-			return array();
+			return [];
 		}
 		if (sizeof($this->quota) > 0) {
 			$pdfTable = new PDFTable();
@@ -888,12 +888,12 @@ class quota extends baseModule {
 				$pdfRow->cells[] = new PDFTableCell(' ');
 				$pdfTable->rows[] = $pdfRow;
 			}
-			$return = array();
+			$return = [];
 			$this->addPDFTable($return, 'quotas', $pdfTable);
 			return $return;
 		}
 		else {
-			return array();
+			return [];
 		}
 	}
 
@@ -907,12 +907,12 @@ class quota extends baseModule {
 		}
 		catch (LAMException $e) {
 			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
-			return array();
+			return [];
 		}
 		if (!isset($this->quota) || !is_array($this->quota)) {
-			return array();
+			return [];
 		}
-		$return = array();
+		$return = [];
 		if (sizeof($this->quota) > 0) {
 			// get list of lamdaemon servers
 			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
@@ -959,12 +959,12 @@ class quota extends baseModule {
 	 * @see baseModule::doUploadPostActions()
 	 */
 	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
-		$errors = array();
+		$errors = [];
 		// first call, get list of user names and quota values
 		if (!isset($temp['counter'])) {
 			$temp['counter'] = 0;
 			// create list of quota columns
-			$temp['quotas'] = array();
+			$temp['quotas'] = [];
 			$columns = array_keys($ids);
 			for ($i = 0; $i < sizeof($columns); $i++) {
 				if (strpos($columns[$i], 'quota_') === 0) {
@@ -972,7 +972,7 @@ class quota extends baseModule {
 				}
 			}
 			// select user/group name depending on current scope
-			$temp['accounts'] = array();
+			$temp['accounts'] = [];
 			$col = 'invalid';
 			if ($this->get_scope() == 'user') {
 				$col = $ids['posixAccount_userName'];
@@ -1105,14 +1105,14 @@ class quota extends baseModule {
 	*/
 	public function save_attributes() {
 		// no LDAP changes
-		return $this->getAccountContainer()->save_module_attributes(array(), array());
+		return $this->getAccountContainer()->save_module_attributes([], []);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array();
+		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
 		}
@@ -1122,7 +1122,7 @@ class quota extends baseModule {
 				$profile->scriptUserName, $profile->scriptSSHKey, deobfuscateText($profile->scriptSSHKeyPassword));
 			$this->initQuotas($attributes['uid'][0], $lamdaemonServers);
 			if (is_array($this->quota)) {
-				$serverDescriptions = array();
+				$serverDescriptions = [];
 				foreach ($lamdaemonServers as $lamdaemonServer) {
 					$serverDescriptions[$lamdaemonServer->getServer()] = $lamdaemonServer->getLabel();
 				}
@@ -1138,10 +1138,10 @@ class quota extends baseModule {
 						_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'),
 						_('Used inodes'), _('Soft inode limit'), _('Hard inode limit')
 					);
-					$data = array();
+					$data = [];
 					// loop for every mointpoint with enabled quotas
 					foreach ($quotaDatas as $quotaData) {
-						$dataRow = array();
+						$dataRow = [];
 						$mountPoint = new htmlOutputText($quotaData[0]);
 						$mountPoint->setNoWrap(true);
 						$dataRow[] = $mountPoint;

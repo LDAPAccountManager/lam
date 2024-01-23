@@ -59,7 +59,7 @@ class nisMailAlias extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'mail.svg';
 		// base module
@@ -71,7 +71,7 @@ class nisMailAlias extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('nisMailAlias');
 		// managed attributes
@@ -144,7 +144,7 @@ class nisMailAlias extends baseModule {
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('nisMailAlias', $this->getAccountContainer()->attributes_orig['objectClass'])) {
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -168,7 +168,7 @@ class nisMailAlias extends baseModule {
 		// list current recipients
 		$mailList = $this->getMailList();
 		$userList = $this->getUserList();
-		$autoList = array();
+		$autoList = [];
 		if ((sizeof($userList) + sizeof($mailList)) < 300) {
 			$autoList = array_merge($userList, $mailList);
 		}
@@ -235,10 +235,10 @@ class nisMailAlias extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
-		$this->attributes['cn'] = array();
+		$errors = [];
+		$this->attributes['cn'] = [];
 		$recipientCount = !empty($this->attributes['rfc822MailMember']) ? sizeof($this->attributes['rfc822MailMember']) : 0;
-		$this->attributes['rfc822MailMember'] = array();
+		$this->attributes['rfc822MailMember'] = [];
 		// check alias name
 		if (isset($_POST['cn']) && ($_POST['cn'] != "") && get_preg($_POST['cn'], 'nis_alias')) {
 			$this->attributes['cn'][] = $_POST['cn'];
@@ -381,7 +381,7 @@ class nisMailAlias extends baseModule {
 		$filterGroup->addElement(new htmlHelpLink('filter'));
 		$return->addField($filterGroup);
 		$return->addLabel(new htmlOutputText($label));
-		$mailSelect = new htmlSelect('selectBox', $options, array(), 15);
+		$mailSelect = new htmlSelect('selectBox', $options, [], 15);
 		$mailSelect->setMultiSelect($position === 'New');
 		$mailSelect->colspan = 5;
 		$return->addField($mailSelect);
@@ -401,7 +401,7 @@ class nisMailAlias extends baseModule {
 	function process_select() {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_select'])) {
 			if (!isset($this->attributes['rfc822MailMember'])) {
-				$this->attributes['rfc822MailMember'] = array();
+				$this->attributes['rfc822MailMember'] = [];
 			}
 			$position = $_POST['position'];
 			if ($position == 'New') {
@@ -410,9 +410,9 @@ class nisMailAlias extends baseModule {
 			else {
 				$this->attributes['rfc822MailMember'][$_POST['position']] = $_POST['selectBox'];
 			}
-			return array();
+			return [];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -436,7 +436,7 @@ class nisMailAlias extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("nisMailAlias", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "nisMailAlias";
@@ -467,7 +467,7 @@ class nisMailAlias extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'alias', _('Alias name'), 'cn');
 		$this->addSimplePDFField($return, 'recipients', _('Recipient list'), 'rfc822MailMember');
 		return $return;

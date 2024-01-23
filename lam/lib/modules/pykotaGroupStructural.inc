@@ -57,7 +57,7 @@ class pykotaGroupStructural extends pykotaGroup {
 	function get_metaData() {
 		$return = parent::get_metaData();
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('pykotaGroup'));
+		$return['dependencies'] = array('depends' => [], 'conflicts' => array('pykotaGroup'));
 		// additional object class and attribute
 		$return['objectClasses'][] = 'pykotaObject';
 		// RDN attribute

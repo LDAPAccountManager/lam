@@ -96,7 +96,7 @@ class pykotaUser extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'printer.svg';
 		// alias name
@@ -106,7 +106,7 @@ class pykotaUser extends baseModule {
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=pykotaAccount)");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('pykotaAccount', 'pykotaAccountBalance');
 		// managed attributes
@@ -176,7 +176,7 @@ class pykotaUser extends baseModule {
 		if (!$this->isStructural()) {
 			$profileContainer->add(new htmlResponsiveInputCheckbox('pykotaUser_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		}
-		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaUser_pykotaLimitBy', $this->limitOptions, array(), _('Limit type'), 'pykotaLimitBy');
+		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaUser_pykotaLimitBy', $this->limitOptions, [], _('Limit type'), 'pykotaLimitBy');
 		$pykotaLimitByProfileOption->setHasDescriptiveElements(true);
 		$pykotaLimitByProfileOption->setSortElements(false);
 		$profileContainer->add($pykotaLimitByProfileOption, 12);
@@ -300,7 +300,7 @@ class pykotaUser extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -413,10 +413,10 @@ class pykotaUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
 			if (!isset($this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = array();
+				$this->attributes['objectClass'] = [];
 			}
 			if (!in_array('pykotaAccount', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'pykotaAccount';
@@ -574,7 +574,7 @@ class pykotaUser extends baseModule {
 		if (!empty($this->attributes['pykotaPayments'][0])) {
 			$container->add(new htmlSubTitle(_('Payment history')), 12);
 			$labels = array(_('Date'), _('Amount'), _('Comment'));
-			$data = array();
+			$data = [];
 			rsort($this->attributes['pykotaPayments']);
 			foreach ($this->attributes['pykotaPayments'] as $payment) {
 				$parts = explode(' # ', $payment);
@@ -605,7 +605,7 @@ class pykotaUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_payments() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -621,7 +621,7 @@ class pykotaUser extends baseModule {
 		$titles = array(
 			_('Date'), _('Printer'), _('Price'), _('Size'), _('Title')
 		);
-		$data = array();
+		$data = [];
 		foreach ($jobs as $job) {
 			$data[] = array(
 				new htmlOutputText(formatLDAPTimestamp($job['createtimestamp'][0])),
@@ -648,7 +648,7 @@ class pykotaUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_jobs() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -666,7 +666,7 @@ class pykotaUser extends baseModule {
 	function save_attributes() {
 		if (!in_array('pykotaAccount', $this->attributes['objectClass']) && !in_array('pykotaAccount', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -760,7 +760,7 @@ class pykotaUser extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object classes
 			if (!in_array('pykotaAccount', $partialAccounts[$i]['objectClass'])) {
@@ -897,7 +897,7 @@ class pykotaUser extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
 		$this->addSimplePDFField($return, 'uid', _('User name'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
@@ -950,12 +950,12 @@ class pykotaUser extends baseModule {
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		if ($passwordChangeOnly) {
-			return array(); // no Kolab fields as long no LDAP content can be read
+			return []; // no Kolab fields as long no LDAP content can be read
 		}
 		if (!in_array('pykotaAccount', $attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$return = array();
+		$return = [];
 		if (in_array('pykotaBalance', $fields)) {
 			$pykotaBalance = '';
 			if (isset($attributes['pykotaBalance'][0])) {
@@ -1044,7 +1044,7 @@ class pykotaUser extends baseModule {
 	 * @return array error messages
 	 */
 	public function checkSelfServiceSettings(&$options, &$profile) {
-		$errors = array();
+		$errors = [];
 		if ((get_class($this) == 'pykotaUser')
 				&& !empty($options['pykotaUser_jobSuffix'][0])
 				&& !get_preg($options['pykotaUser_jobSuffix'][0], 'dn')) {
@@ -1114,8 +1114,8 @@ class pykotaUser extends baseModule {
 	 */
 	private function loadUserNameCache() {
 		$results = searchLDAPByFilter('(|(uid=*)(pykotaUserName=*))', array('uid', 'pykotaUserName'), array($this->get_scope()));
-		$this->uidCache = array();
-		$this->pykotaUserNameCache = array();
+		$this->uidCache = [];
+		$this->pykotaUserNameCache = [];
 		foreach ($results as $result) {
 			if (isset($result['uid'][0])) {
 				$this->uidCache[] = $result['uid'][0];
@@ -1169,15 +1169,15 @@ class pykotaUser extends baseModule {
 		}
 		$sr = @ldap_search($handle, $suffix, '(&(objectClass=pykotaJob)(pykotaUserName=' . $user . '))', $attrs);
 		if (!$sr) {
-			return array();
+			return [];
 		}
 		$jobList = ldap_get_entries($handle, $sr);
 		if (!$jobList) {
-			return array();
+			return [];
 		}
 		cleanLDAPResult($jobList);
 		@ldap_free_result($sr);
-		$jobs = array();
+		$jobs = [];
 		foreach ($jobList as $index => $job) {
 			$jobs[$job['createtimestamp'][0] . $index] = $job;
 		}

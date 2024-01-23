@@ -95,8 +95,8 @@ class posixGroup extends baseModule implements passwordService {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$error_messages = array();
-		$needAutoGID = array();
+		$error_messages = [];
+		$needAutoGID = [];
 		$typeId = $type->getId();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
@@ -149,7 +149,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		// fill in autoGIDs
 		if (sizeof($needAutoGID) > 0) {
-			$errorsTemp = array();
+			$errorsTemp = [];
 			$gids = $this->getNextGIDs(sizeof($needAutoGID), $errorsTemp, $type);
 			if (is_array($gids)) {
 				for ($i = 0; $i < sizeof($needAutoGID); $i++) {
@@ -175,7 +175,7 @@ class posixGroup extends baseModule implements passwordService {
 			if (sizeof($result) < 5) {
 				$max = sizeof($result);
 			}
-			$users = array();
+			$users = [];
 			for ($i = 0; $i < $max; $i++) {
 				$users[] = getAbstractDN($result[$i]['dn']);
 			}
@@ -242,7 +242,7 @@ class posixGroup extends baseModule implements passwordService {
 				$return->addField($membersGroup);
 				$return->addLabel(new htmlOutputText('&nbsp;', false));
 				$users = $this->getUsers();
-				$members = array();
+				$members = [];
 				if (isset($this->attributes['memberUid'][0])) {
 					foreach ($this->attributes['memberUid'] as $uid) {
 						if (isset($users[$uid]) && isset($users[$uid]['cn'])) {
@@ -282,11 +282,11 @@ class posixGroup extends baseModule implements passwordService {
 	function display_html_user() {
 		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = array();
+			$this->attributes['memberUid'] = [];
 		}
 		// load list with all users
 		$userAndGIDs = $this->getUsers();
-		$users = array();
+		$users = [];
 		foreach ($userAndGIDs as $user => $userAttrs) {
 			if (!in_array($user, $this->attributes['memberUid'])) {
 				$display = $user . ' (' . $userAttrs['cn'] . ')';
@@ -304,12 +304,12 @@ class posixGroup extends baseModule implements passwordService {
 		natcasesort($users);
 		$return->add(new htmlSubTitle(_("Group members")), 12);
 
-		$remUsers = array();
+		$remUsers = [];
 		if (isset($this->attributes['memberUid'])) {
 			$remUsers = $this->attributes['memberUid'];
 		}
 		natcasesort($remUsers);
-		$remUsersDescriptive = array();
+		$remUsersDescriptive = [];
 		foreach ($remUsers as $user) {
 			if (isset($userAndGIDs[$user])) {
 				$remUsersDescriptive[$user . ' (' . $userAndGIDs[$user]['cn'] . ')'] = $user;
@@ -368,7 +368,7 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array array with meta data
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'tux.svg';
 		if ($this->get_scope() == "group") {
@@ -382,7 +382,7 @@ class posixGroup extends baseModule implements passwordService {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('posixGroup');
 		// LDAP aliases
@@ -663,13 +663,13 @@ class posixGroup extends baseModule implements passwordService {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'memberUid', _('Group members'));
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		if (in_array(get_class($this) . '_memberUidPrimary', $pdfKeys)) {
-			$members = !empty($this->attributes['memberUid']) ? $this->attributes['memberUid'] : array();
+			$members = !empty($this->attributes['memberUid']) ? $this->attributes['memberUid'] : [];
 			if (!empty($this->attributes['gidNumber'])) {
 				$filter = "(&(&" . get_ldap_filter('user')  . ")(gidNumber=" . $this->attributes['gidNumber'][0] . "))";
 				$entries = searchLDAPByFilter($filter, array('uid'), array('user'));
@@ -783,10 +783,10 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
 			if (!isset($this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = array();
+				$this->attributes['objectClass'] = [];
 			}
 			if (!in_array('posixGroup', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'posixGroup';
@@ -951,9 +951,9 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_user() {
-		$return = array();
+		$return = [];
 		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = array();
+			$this->attributes['memberUid'] = [];
 		}
 		if (isset($_POST['members_2']) && isset($_POST['members_left'])) { // Add groups to list
 			// add new group
@@ -981,7 +981,7 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	protected function syncGon($forceDelete = false) {
 		$delete = $forceDelete || (isset($_POST['syncGON_delete']) && ($_POST['syncGON_delete'] == 'on'));
-		$return = array();
+		$return = [];
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
 		if ($gon == null) {
 			$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
@@ -993,13 +993,13 @@ class posixGroup extends baseModule implements passwordService {
 			return;
 		}
 		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = array();
+			$this->attributes['memberUid'] = [];
 		}
 		$memberDNs = $gon->getMembers();
 		$users = $this->getUsers();
 		$oldValues = $this->attributes['memberUid'];
 		if ($delete) {
-			$this->attributes['memberUid'] = array();
+			$this->attributes['memberUid'] = [];
 		}
 		foreach ($memberDNs as $dn) {
 			foreach ($users as $userName => $userAttrs) {
@@ -1029,20 +1029,20 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	protected function syncWindows() {
 		$delete = isset($_POST['syncWindows_delete']) && ($_POST['syncWindows_delete'] == 'on');
-		$return = array();
+		$return = [];
 		$windows = $this->getAccountContainer()->getAccountModule('windowsGroup');
 		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = array();
+			$this->attributes['memberUid'] = [];
 		}
 		$windowsAttributes = $windows->getAttributes();
-		$memberDNs = array();
+		$memberDNs = [];
 		if (!empty($windowsAttributes['member'])) {
 			$memberDNs = $windowsAttributes['member'];
 		}
 		$users = $this->getUsers();
 		$oldValues = $this->attributes['memberUid'];
 		if ($delete) {
-			$this->attributes['memberUid'] = array();
+			$this->attributes['memberUid'] = [];
 		}
 		foreach ($memberDNs as $dn) {
 			foreach ($users as $userName => $userAttrs) {
@@ -1080,11 +1080,11 @@ class posixGroup extends baseModule implements passwordService {
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
 		if ($this->is_base_module() && !$this->getAccountContainer()->isNewAccount && !in_array('posixGroup', $this->getAccountContainer()->attributes_orig['objectClass'])) {
-			return array();
+			return [];
 		}
 		if (!in_array('posixGroup', $this->attributes['objectClass']) && !in_array('posixGroup', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		// auto sync group members
 		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
@@ -1139,17 +1139,17 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		// use magic number
 		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'magicNumber')) {
-			$return = array();
+			$return = [];
 			for ($i = 0; $i < $count; $i++) {
 				$return[] = $this->moduleSettings['posixGroup_' . $typeId . '_magicNumber'][0];
 			}
 			return $return;
 		}
-		$ret = array();
+		$ret = [];
 		$minID = intval($this->moduleSettings['posixGroup_' . $typeId . '_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_' . $typeId . '_maxGID'][0]);
 		$gidList = $this->getGIDs($type);
-		$gids = array();
+		$gids = [];
 		foreach ($gidList as $gid) {
 			if (($gid <= $maxID) && ($gid >= $minID)) {
 				$gids[] = $gid;  // ignore GIDs > maxID and GIDs < minID
@@ -1216,7 +1216,7 @@ class posixGroup extends baseModule implements passwordService {
 				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
 				return null;
 			}
-			$result = array();
+			$result = [];
 			for ($i = 0; $i < $count; $i++) {
 				$result[] = $attrs['gidnumber'][0] + $i;
 			}
@@ -1244,7 +1244,7 @@ class posixGroup extends baseModule implements passwordService {
 				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
 				return null;
 			}
-			$result = array();
+			$result = [];
 			for ($i = 0; $i < $count; $i++) {
 				$result[] = $attrs['mssfu30maxgidnumber'][0] + $i;
 			}
@@ -1285,10 +1285,10 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		if (!in_array(get_class($this), $modules)) {
-			return array();
+			return [];
 		}
 		$this->attributes[$this->passwordAttrName][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-		return array();
+		return [];
 	}
 
 	/**
@@ -1301,7 +1301,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->cachedGIDList != null) {
 			return $this->cachedGIDList;
 		}
-		$this->cachedGIDList = array();
+		$this->cachedGIDList = [];
 		$attrs = array('gidNumber');
 		$filter = '(&(objectClass=posixGroup)(gidNumber=*))';
 		$suffix = $type->getSuffix();
@@ -1326,7 +1326,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->cachedUserToGIDList != null) {
 			return $this->cachedUserToGIDList;
 		}
-		$this->cachedUserToGIDList = array();
+		$this->cachedUserToGIDList = [];
 		$typeManager = new TypeManager();
 		foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
 			$filter = '(&(objectClass=posixAccount)(gidNumber=*)(uid=*))';
@@ -1365,7 +1365,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->cachedGroupNameList != null) {
 			return $this->cachedGroupNameList;
 		}
-		$this->cachedGroupNameList = array();
+		$this->cachedGroupNameList = [];
 		$attrs = array('cn');
 		$filter = '(&(objectClass=posixGroup)(cn=*))';
 		$suffix = $this->getAccountContainer()->get_type()->getSuffix();
@@ -1417,14 +1417,14 @@ class posixGroup extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		return array();
+		return [];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		return array();
+		return [];
 	}
 
 	/**
@@ -1438,7 +1438,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
-		return array();
+		return [];
 	}
 
 	/**

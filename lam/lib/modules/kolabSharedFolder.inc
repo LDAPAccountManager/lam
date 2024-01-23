@@ -36,7 +36,7 @@ use LAM\TYPES\ConfiguredType;
 class kolabSharedFolder extends baseModule {
 
 	/** list of folder types (label => id) */
-	private $folderTypes = array();
+	private $folderTypes = [];
 
 	/**
 	* Creates a new kolabSharedFolder object.
@@ -68,7 +68,7 @@ class kolabSharedFolder extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'kolab.png';
 		// alias name
@@ -78,7 +78,7 @@ class kolabSharedFolder extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=kolabSharedFolder)");
 		// managed object classes
@@ -260,7 +260,7 @@ class kolabSharedFolder extends baseModule {
 		$this->addMultiValueInputTextField($container, 'alias', null);
 		// delegates
 		$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('dn'), array('user'));
-		$delegates = array();
+		$delegates = [];
 		for ($i = 0; $i < sizeof($delegatesData); $i++) {
 			$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
 		}
@@ -297,7 +297,7 @@ class kolabSharedFolder extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		// cn
 		$this->attributes['cn'][0] = $_POST['cn'];
 		if (empty($_POST['cn'])) {
@@ -322,7 +322,7 @@ class kolabSharedFolder extends baseModule {
 		// mail aliases
 		$this->processMultiValueInputTextField('alias', $errors, 'email');
 		// check old delegates
-		$this->attributes['kolabDelegate'] = array();
+		$this->attributes['kolabDelegate'] = [];
 		$i = 0;
 		while (isset($_POST['delegate' . $i])) {
 			if (isset($_POST['delDelegate' . $i])) {
@@ -345,7 +345,7 @@ class kolabSharedFolder extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('dn'), array('user'));
 		for ($d = 0; $d < sizeof($delegates); $d++) {
 			if (isset($delegates[$d]['dn'])) {
@@ -400,7 +400,7 @@ class kolabSharedFolder extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'cn', _('Name'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
 		$this->addSimplePDFField($return, 'kolabTargetFolder', _('Target IMAP folder'));

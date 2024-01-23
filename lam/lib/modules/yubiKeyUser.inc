@@ -67,13 +67,13 @@ class yubiKeyUser extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'yubikey.png';
 		// alias name
 		$return["alias"] = "YubiKey";
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$objectClass = $this->getObjectClassName();
 		if (!empty($objectClass)) {
@@ -137,7 +137,7 @@ class yubiKeyUser extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, array($this->getAttributeName()));
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -157,7 +157,7 @@ class yubiKeyUser extends baseModule {
 			return $return;
 		}
 		if (empty($objectClass) || in_array($objectClass, $this->attributes['objectClass'])) {
-			$htmlIds = array();
+			$htmlIds = [];
 			$this->addMultiValueInputTextField($return, $attributeName, _('YubiKey ids'), false, '12', false, null, null, $htmlIds, 'lam-prevent-enter');
 			if (!empty($objectClass)) {
 				$return->addVerticalSpacer('2rem');
@@ -179,13 +179,13 @@ class yubiKeyUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$messages = array();
+		$messages = [];
 		$objectClass = $this->getObjectClassName();
 		$attributeName = $this->getAttributeName();
 		// add extension
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = $objectClass;
-			return array();
+			return [];
 		}
 		// remove extension
 		elseif (isset($_POST['remObjectClass'])) {
@@ -193,11 +193,11 @@ class yubiKeyUser extends baseModule {
 			if (!empty($this->attributes[$attributeName])) {
 				unset($this->attributes[$attributeName]);
 			}
-			return array();
+			return [];
 		}
 		// skip processing if extension is not active
 		if (!empty($objectClass) && !in_array($objectClass, $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 		$this->processMultiValueInputTextField($attributeName, $messages, 'ascii');
 		$this->attributes[$attributeName] = array_values(array_unique($this->attributes[$attributeName]));
@@ -220,7 +220,7 @@ class yubiKeyUser extends baseModule {
 		$objectClass = $this->getObjectClassName();
 		if (!empty($objectClass) && !in_array($objectClass, $this->attributes['objectClass']) && !in_array($objectClass, $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -232,7 +232,7 @@ class yubiKeyUser extends baseModule {
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$objectClass = $this->getObjectClassName();
 		$attributeName = $this->getAttributeName();
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!empty($objectClass) && !in_array($objectClass, $partialAccounts[$i]['objectClass'])) {
@@ -250,7 +250,7 @@ class yubiKeyUser extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	public function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$attributeName = $this->getAttributeName();
 		if (!empty($this->attributes[$attributeName])) {
 			$pdfTable = new PDFTable(_('YubiKey ids'));
@@ -276,7 +276,7 @@ class yubiKeyUser extends baseModule {
 	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array();
+		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
 		}
@@ -287,7 +287,7 @@ class yubiKeyUser extends baseModule {
 		}
 		if (in_array('yubiKeyId', $fields)) {
 			$attributeName = strtolower($this->getAttributeName());
-			$keyIds = array();
+			$keyIds = [];
 			if (isset($attributes[$attributeName][0])) {
 				$keyIds = $attributes[$attributeName];
 			}
@@ -427,10 +427,10 @@ class yubiKeyUser extends baseModule {
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
@@ -441,7 +441,7 @@ class yubiKeyUser extends baseModule {
 		}
 		if (in_array('yubiKeyId', $fields)) {
 			$attributeName = strtolower($this->getAttributeName());
-			$newKeys = array();
+			$newKeys = [];
 			$counter = 0;
 			while (isset($_POST['yubiKeyId_' . $counter])) {
 				$newKeys[] = $_POST['yubiKeyId_' . $counter];
@@ -457,7 +457,7 @@ class yubiKeyUser extends baseModule {
 				}
 			}
 			$newKeys = array_values(array_unique($newKeys));
-			$oldKeys = array();
+			$oldKeys = [];
 			if (isset($attributes[$attributeName][0])) {
 				$oldKeys = $attributes[$attributeName];
 			}
@@ -505,7 +505,7 @@ class yubiKeyUser extends baseModule {
 				$contentElement = $this->getSelfServiceKeys();
 				ob_end_clean();
 				ob_start();
-				parseHtml(null, $contentElement, array(), true, $this->get_scope());
+				parseHtml(null, $contentElement, [], true, $this->get_scope());
 				$content = ob_get_contents();
 				ob_end_clean();
 				$jsonReturn = array(
@@ -535,7 +535,7 @@ class yubiKeyUser extends baseModule {
 		$contentElement = $this->getSelfServiceKeys();
 		ob_end_clean();
 		ob_start();
-		parseHtml(null, $contentElement, array(), true, $this->get_scope());
+		parseHtml(null, $contentElement, [], true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(

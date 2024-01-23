@@ -57,9 +57,9 @@ class range extends baseModule {
 	private $overlapped;
 
 	/** list of pools that currently exist in LDAP */
-	private $poolsOrig = array();
+	private $poolsOrig = [];
 	/** list of pools that need to be updated in LDAP */
-	private $poolsNew = array();
+	private $poolsNew = [];
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -78,7 +78,7 @@ class range extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// alias name
 		$return["alias"] = _("Ranges");
 		// this is a base module
@@ -90,9 +90,9 @@ class range extends baseModule {
 		// LDAP filter
 		$return["ldap_filter"] = array('or'=>"(objectClass=dhcpSubnet)");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => []);
 		// managed object classes
-		$return['objectClasses'] = array();
+		$return['objectClasses'] = [];
 		// managed attributes
 		$return['attributes'] = array('dhcpRange');
 		// help Entries
@@ -187,7 +187,7 @@ class range extends baseModule {
 		$exB = explode(".", $ipB);
 
 		if(!is_array($this->overlapped)) {
-		    $this->overlapped = array();
+		    $this->overlapped = [];
 		}
 		for($n=$ex[3];$n<=$exB[3];$n++) {
 		    if (in_array($n, $this->overlapped)) {
@@ -206,7 +206,7 @@ class range extends baseModule {
 	 *
 	 **/
 	 private function reset_overlapped_range() {
-	    $this->overlapped = array();
+	    $this->overlapped = [];
 	 }
 
 	/**
@@ -300,7 +300,7 @@ class range extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if ($this->isRootNode()) {
 			return $errors;
 		}
@@ -475,7 +475,7 @@ class range extends baseModule {
 
         // If $ranges is not a array, then create it
         if (!is_array($this->ranges)) {
-	       	$this->ranges = array();
+	       	$this->ranges = [];
         }
         $this->reset_overlapped_range();
         $mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
@@ -617,7 +617,7 @@ class range extends baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		$errors = array();
+		$errors = [];
 		// update pool data
 		// add new pools
 		foreach ($this->poolsNew as $pool) {
@@ -647,7 +647,7 @@ class range extends baseModule {
 			foreach ($this->poolsOrig as $poolOrig) {
 				if ($pool['cn'][0] == $poolOrig['cn'][0]) {
 					// check for changes
-					$mod = array();
+					$mod = [];
 					// check attributes
 					$attrs = array('dhcpstatements', 'dhcprange');
 					foreach ($attrs as $attr) {
@@ -673,7 +673,7 @@ class range extends baseModule {
 							$mod[$attr] = $pool[$attr];
 						}
 						elseif ($changed) {
-							$mod[$attr] = array();
+							$mod[$attr] = [];
 						}
 					}
 					if (!empty($mod)) {
@@ -725,7 +725,7 @@ class range extends baseModule {
 	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	public function save_attributes() {
-		$return = array();
+		$return = [];
 		// Get easy attributes
 		if (!$this->isRootNode()) {
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
@@ -739,7 +739,7 @@ class range extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		if (is_array($this->ranges) && (sizeof($this->ranges) > 0)) {
 			$pdfTable = new PDFTable(_('Ranges'));
 			for ($i = 0; $i < sizeof($this->ranges); $i++) {
@@ -823,7 +823,7 @@ class range extends baseModule {
 				if (!empty($entry[$attribute][0])) {
 					$table = new htmlTable();
 					$table->setCSSClasses(array('nowrap'));
-					$ranges = array();
+					$ranges = [];
 					foreach($entry['dhcprange'] AS $value) {
 						if (!empty($value) && !is_numeric($value)) {
 							$ex = explode(" ", $value);

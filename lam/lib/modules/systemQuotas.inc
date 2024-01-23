@@ -53,13 +53,13 @@ class systemQuotas extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'hard-drive.svg';
 		// alias name
 		$return["alias"] = _("Quota");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('systemQuotas');
 		// managed attributes
@@ -177,9 +177,9 @@ class systemQuotas extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$return = array();
+		$return = [];
 		if (!isset($this->attributes['quota'][0])) {
-			$this->attributes['quota'] = array();
+			$this->attributes['quota'] = [];
 		}
 		// check existing entries
 		for ($i = 0; $i < sizeof($this->attributes['quota']); $i++) {
@@ -233,7 +233,7 @@ class systemQuotas extends baseModule {
 	 * @return array array where error messages are returned
 	 */
 	private function checkQuota($path, $softBlock, $hardBlock, $softInode, $hardInode, $uploadIndex = null) {
-		$return = array();
+		$return = [];
 		if (!get_preg($path, 'filePath')) {
 			if ($uploadIndex == null) {
 				$return[] = $this->messages['path'][0];
@@ -341,7 +341,7 @@ class systemQuotas extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('systemQuotas', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'systemQuotas';
@@ -363,7 +363,7 @@ class systemQuotas extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	public function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		if (isset($this->attributes['quota'][0])) {
 			$pdfTable = new PDFTable();
 			$pdfRow = new PDFTableRow();

@@ -60,7 +60,7 @@ class pykotaBillingCode extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'printer.svg';
 		// alias name
@@ -72,7 +72,7 @@ class pykotaBillingCode extends baseModule {
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=pykotaBilling)");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('pykotaObject', 'pykotaBilling');
 		// managed attributes
@@ -139,7 +139,7 @@ class pykotaBillingCode extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -191,7 +191,7 @@ class pykotaBillingCode extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		// pykotaBillingCode
 		if (isset($_POST['pykotaBillingCode']) && ($_POST['pykotaBillingCode'] != '')) {
 			if (!get_preg($_POST['pykotaBillingCode'], 'username')) {
@@ -229,7 +229,7 @@ class pykotaBillingCode extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		$this->loadCodeCache();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object classes
@@ -269,7 +269,7 @@ class pykotaBillingCode extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->loadCodeCache();
 		$this->addSimplePDFField($return, 'pykotaBillingCode', _('Billing code'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
@@ -304,7 +304,7 @@ class pykotaBillingCode extends baseModule {
 			return;
 		}
 		$results = searchLDAPByFilter('(objectClass=pykotaBilling)', array('pykotaBillingCode', 'dn'), array($this->get_scope()));
-		$this->codeCache = array();
+		$this->codeCache = [];
 		foreach ($results as $result) {
 			if (isset($result['pykotabillingcode'][0])) {
 				$this->codeCache[$result['dn']] = $result['pykotabillingcode'][0];

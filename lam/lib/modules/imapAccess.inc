@@ -67,15 +67,15 @@ class imapAccess extends baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// alias name
 		$return["alias"] = _("Mailbox");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'windowsUser')), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'windowsUser')), 'conflicts' => []);
 		// managed object classes
-		$return['objectClasses'] = array();
+		$return['objectClasses'] = [];
 		// managed attributes
-		$return['attributes'] = array();
+		$return['attributes'] = [];
 		// icon
 		$return['icon'] = 'mail.svg';
 		// help
@@ -354,7 +354,7 @@ class imapAccess extends baseModule {
 	 * @return array list of info/error messages
 	 */
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $errors;
 		}
@@ -415,7 +415,7 @@ class imapAccess extends baseModule {
 	 * @return array error messages
 	 */
 	private function createMailbox($client, $userName, $email_domain) {
-		$errors = array();
+		$errors = [];
 		$prefix = $this->getMailboxPrefix();
 		if ($this->isWrongDomain($email_domain)) {
 			$errors[] = $this->messages['managemailbox'][4];
@@ -458,7 +458,7 @@ class imapAccess extends baseModule {
 	 */
 	private function setQuota($client, $userName, $email_domain, $quota) {
 		$prefix = $this->getMailboxPrefix();
-		$errors = array();
+		$errors = [];
 		$root = $prefix . $this->getSep() . $userName;
 		if ($this->isWrongDomain($email_domain)) {
 			$errors[] = $this->messages['managemailbox'][4];
@@ -576,11 +576,11 @@ class imapAccess extends baseModule {
 		}
 		$user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
 		// check if user name contains any wildcards that need to be replaced with LDAP attribute values
-		$matches = array();
+		$matches = [];
 		preg_match_all('/\\$[a-z0-9_-]+\\$/i', $this->moduleSettings['ImapAccess_ImapAdmin'][0], $matches);
 		if (sizeof($matches) > 0) {
 			// find wildcards
-			$attrNames = array();
+			$attrNames = [];
 			foreach ($matches as $match) {
 				foreach ($match as $attr) {
 					$attrNames[] = substr($attr, 1, -1);
@@ -638,7 +638,7 @@ class imapAccess extends baseModule {
      * @return array list of error messages
      */
 	function doLogin() {
-		$errors = array();
+		$errors = [];
 		$adminUser = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && $_POST['ImapAdminPassword'] != "") {
 			$adminPassword = $_POST['ImapAdminPassword'];
@@ -693,7 +693,7 @@ class imapAccess extends baseModule {
 		$validateCertificate = !isset($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0]) || ($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0] !== 'novalidate-cert');
 		try {
 			$encryption = ($encryptionType === 'SSL') ? 'ssl' : 'starttls';
-			$cm = new ClientManager(array());
+			$cm = new ClientManager([]);
 			$options = array(
 				'username' => $user,
 				'password' => $password,
@@ -769,7 +769,7 @@ class imapAccess extends baseModule {
 	 * @return array list of folders
 	 */
 	private function getInitialFolders() {
-		$list = array();
+		$list = [];
 		if (!empty($this->moduleSettings['ImapAccess_initialFolders'])) {
 			foreach ($this->moduleSettings['ImapAccess_initialFolders'] as $folder) {
 				$folder = trim($folder);
@@ -788,7 +788,7 @@ class imapAccess extends baseModule {
 	public function get_uploadColumns($selectedModules, &$type) {
 		$pwd = $this->getAdminPassword();
 		if (empty($pwd)) {
-			return array();
+			return [];
 		}
 		return array(
 			array(
@@ -813,7 +813,7 @@ class imapAccess extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$errors = array();
+		$errors = [];
 		if (!isset($ids['imapAccess_createMailbox'])) {
 			return $errors;
 		}
@@ -847,9 +847,9 @@ class imapAccess extends baseModule {
 		}
 		// on first call generate list of IMAP operations
 		if (!isset($temp['counter'])) {
-			$temp['users'] = array();
+			$temp['users'] = [];
 			$temp['counter'] = 0;
-			$errors = array();
+			$errors = [];
 			if (isset($ids['imapAccess_createMailbox'])) {
 				foreach ($data as $i => $dataRow) {
 					if (in_array($i, $failed)) {
@@ -888,7 +888,7 @@ class imapAccess extends baseModule {
 		}
 		// add mailbox
 		elseif ($temp['counter'] < sizeof($temp['users'])) {
-			$errors = array();
+			$errors = [];
 			$data = $temp['users'][$temp['counter']];
 			$uid = $data['uid'];
 			$limit = $data['limit'];
@@ -927,7 +927,7 @@ class imapAccess extends baseModule {
 			return array (
 				'status' => 'finished',
 				'progress' => 100,
-				'errors' => array()
+				'errors' => []
 			);
 		}
 	}
@@ -953,7 +953,7 @@ class imapAccess extends baseModule {
 	 */
 	private function getQuota($client, string $user): array {
 		$user = $client->getConnection()->escapeString($user);
-		$quota_values = array();
+		$quota_values = [];
 		try {
 			$quota = $client->getConnection()->requestAndResponse('GETQUOTA', array($user));
 			$quota = $quota->data();

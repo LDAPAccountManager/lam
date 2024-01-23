@@ -59,7 +59,7 @@ class windowsHost extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'samba.svg';
 		// this is a base module
@@ -71,7 +71,7 @@ class windowsHost extends baseModule {
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('computer', 'securityPrincipal');
 		// managed attributes
@@ -157,7 +157,7 @@ class windowsHost extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -228,7 +228,7 @@ class windowsHost extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$return = array();
+		$return = [];
 		// cn
 		$this->attributes['cn'][0] = $_POST['cn'];
 		$this->attributes['sAMAccountName'][0] = $_POST['cn'] . '$';
@@ -257,7 +257,7 @@ class windowsHost extends baseModule {
 	function display_html_managedBy() {
 		$return = new htmlResponsiveRow();
 		// show possible managers
-		$options = array();
+		$options = [];
 		$filter = get_ldap_filter('user');
 		$entries = searchLDAPByFilter($filter, array('dn'), array('user'));
 		for ($i = 0; $i < sizeof($entries); $i++) {
@@ -268,7 +268,7 @@ class windowsHost extends baseModule {
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}
-		$selected = array();
+		$selected = [];
 		if (isset($this->attributes['managedBy'][0])) {
 			$selected = array($this->attributes['managedBy'][0]);
 			if (!in_array($selected[0], $options)) {
@@ -296,7 +296,7 @@ class windowsHost extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_managedBy() {
-		$return = array();
+		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
 			$this->attributes['managedBy'][0] = $_POST['managedBy'];
 		}
@@ -308,7 +308,7 @@ class windowsHost extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$errors = array();
+		$errors = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('computer', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'computer';
@@ -341,7 +341,7 @@ class windowsHost extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	public function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'cn', _('Host name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'location', _('Location'));

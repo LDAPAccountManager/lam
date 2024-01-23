@@ -60,11 +60,11 @@ class windowsPosixGroup extends posixGroup {
 	function get_metaData() {
 		$return = parent::get_metaData();
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('posixGroup'));
+		$return['dependencies'] = array('depends' => [], 'conflicts' => array('posixGroup'));
 		// this is no base module (in contrast to parent class)
 		$return["is_base"] = false;
 		// no RDN attribute setting
-		$return["RDN"] = array();
+		$return["RDN"] = [];
 		return $return;
 	}
 

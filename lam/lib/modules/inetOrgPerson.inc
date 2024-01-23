@@ -132,7 +132,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'user.svg';
 		// alias name
@@ -144,7 +144,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=inetOrgPerson)");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('inetOrgPerson');
 		// LDAP aliases
@@ -875,7 +875,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('inetOrgPerson', $this->getAccountContainer()->attributes_orig['objectClass'])) {
-			return array();
+			return [];
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// postalAddress, registeredAddress, facsimileTelephoneNumber and jpegPhoto need special removing
@@ -897,7 +897,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			unset($return[$this->getAccountContainer()->dn_orig]['add']['facsimileTelephoneNumber']);
 		}
 		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto'])) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['jpegPhoto'] = array();
+			$return[$this->getAccountContainer()->dn_orig]['modify']['jpegPhoto'] = [];
 			unset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto']);
 		}
 		// add information about clear text password
@@ -931,7 +931,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		$messages = array();
+		$messages = [];
 		// set exop password
 		$messages = array_merge($messages, $this->setExopPassword($this->moduleSettings));
 		// add address book
@@ -973,7 +973,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				return array(array('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())));
 			}
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -983,7 +983,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		$keysToReplace = array('mail', 'description', 'postalAddress', 'cn',
 			'registeredAddress', 'labeledURI');
 		if ($this->isUnixActive()) {
@@ -1180,7 +1180,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') && isset($_POST['delPhoto']) && !$this->isAdminReadOnly('jpegPhoto')) {
-			$this->attributes['jpegPhoto'] = array();
+			$this->attributes['jpegPhoto'] = [];
 		}
 		// Return error-messages
 		return $errors;
@@ -1313,7 +1313,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		// postal address
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
-			$postalAddresses = array();
+			$postalAddresses = [];
 			if (isset($this->attributes['postalAddress'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['postalAddress']); $i++) {
 					$postalAddresses[] = implode("\r\n", explode('$', $this->attributes['postalAddress'][$i]));
@@ -1354,7 +1354,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		// registered address
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
-			$registeredAddresses = array();
+			$registeredAddresses = [];
 			if (isset($this->attributes['registeredAddress'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['registeredAddress']); $i++) {
 					$registeredAddresses[] = implode("\r\n", explode('$', $this->attributes['registeredAddress'][$i]));
@@ -1575,7 +1575,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$fieldContainer->addField($managerButtonGroup);
 			}
 			if (isset($this->attributes['manager'][0])) {
-				$managerList = array();
+				$managerList = [];
 				for ($i = 0; $i < sizeof($this->attributes['manager']); $i++) {
 					$managerList[] = $this->attributes['manager'][$i];
 				}
@@ -1651,16 +1651,16 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	*/
 	public function process_photo() {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_back'])) {
-			return array();
+			return [];
 		}
 		if ($this->isAdminReadOnly('jpegPhoto')) {
-			return array();
+			return [];
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload']) || isset($_POST['webcamData'])) {
 			return $this->uploadPhoto();
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
-			$messages = array();
+			$messages = [];
 			try {
 				include_once __DIR__ . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
@@ -1682,7 +1682,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @return array error messages if any
 	 */
 	private function uploadPhoto() {
-		$messages = array();
+		$messages = [];
 		if ((empty($_FILES['photoFile']) || ($_FILES['photoFile']['size'] <= 0)) && empty($_POST['webcamData'])) {
 			$messages[] = $this->messages['file'][0];
 			return $messages;
@@ -1797,11 +1797,11 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	function display_html_manager() {
 		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['manager'])) {
-			$this->attributes['manager'] = array();
+			$this->attributes['manager'] = [];
 		}
 		// show list of possible new managers
 		if (isset($_POST['form_subpage_' . get_class($this) . '_manager_select'])) {
-			$options = array();
+			$options = [];
 			$filter = get_ldap_filter('user');
 			$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', array('dn'), array('user'));
 			for ($i = 0; $i < sizeof($entries); $i++) {
@@ -1818,7 +1818,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			if (sizeof($options) < 20) {
 				$size = sizeof($options);
 			}
-			$managerSelect = new htmlSelect('manager', $options, array(), $size);
+			$managerSelect = new htmlSelect('manager', $options, [], $size);
 			$managerSelect->setHasDescriptiveElements(true);
 			$managerSelect->setMultiSelect(true);
 			$managerSelect->setRightToLeftTextDirection(true);
@@ -1831,13 +1831,13 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			return $return;
 		}
 		// show existing managers
-		$managerTemp = array();
+		$managerTemp = [];
 		if (isset($this->attributes['manager'])) {
 			$managerTemp = $this->attributes['manager'];
 		}
 		// sort by DN
 		usort($managerTemp, 'compareDN');
-		$managers = array();
+		$managers = [];
 		for ($i = 0; $i < sizeof($managerTemp); $i++) {
 			$managers[getAbstractDN($managerTemp[$i])] = $managerTemp[$i];
 		}
@@ -1846,7 +1846,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$size = sizeof($this->attributes['manager']);
 		}
 		if (sizeof($managers) > 0) {
-			$managerSelect = new htmlSelect('manager', $managers, array(), $size);
+			$managerSelect = new htmlSelect('manager', $managers, [], $size);
 			$managerSelect->setHasDescriptiveElements(true);
 			$managerSelect->setMultiSelect(true);
 			$managerSelect->setRightToLeftTextDirection(true);
@@ -1872,7 +1872,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	* @return array list of info/error messages
 	*/
 	function process_manager() {
-		$return = array();
+		$return = [];
 		if ($this->isAdminReadOnly('manager')) {
 			return $return;
 		}
@@ -1921,7 +1921,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				if (!empty($pem)) {
 					$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
 					$pemData = @openssl_x509_parse($pem);
-					$data = array();
+					$data = [];
 					if (isset($pemData['serialNumber'])) {
 						$data[] = $pemData['serialNumber'];
 					}
@@ -1952,7 +1952,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	* @return array list of info/error messages
 	*/
 	function process_userCertificate() {
-		$messages = array();
+		$messages = [];
 		if ($this->isAdminReadOnly('userCertificate')) {
 			return $messages;
 		}
@@ -2018,7 +2018,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$this->addSimplePDFField($return, 'description', _('Description'));
 		}
@@ -2125,7 +2125,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	public function get_profileOptions($typeId) {
 		$typeManager = new TypeManager();
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
-		$profileElements = array();
+		$profileElements = [];
 		if (!$this->isUnixActive($modules)) {
 			$profileElements[] = new htmlResponsiveInputField(_('User name'), 'inetOrgPerson_uid', null, 'uid');
 		}
@@ -2347,7 +2347,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$errors = array();
+		$errors = [];
 		// get list of existing users
 		$existingUsers = searchLDAPByAttribute('uid', '*', 'inetOrgPerson', array('uid'), array('user'));
 		for ($e = 0; $e < sizeof($existingUsers); $e++) {
@@ -2561,7 +2561,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		if (!isset($temp['counter'])) {
 			$temp['counter'] = 0;
 		}
-		$errors = array();
+		$errors = [];
 		$dataSize = sizeof($data);
 		if (($temp['counter'] < $dataSize) && !in_array($temp['counter'], $failed)) {
 			// mail sending is LAM Pro only
@@ -2657,7 +2657,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @return array error messages
 	 */
 	public function checkSelfServiceSettings(&$options, &$profile) {
-		$errors = array();
+		$errors = [];
 		if (!empty($options['inetOrgPerson_jpegPhoto_maxWidth'][0]) && !is_numeric($options['inetOrgPerson_jpegPhoto_maxWidth'][0])) {
 			$errors[] = array('ERROR', _('Please enter a number.'), _('Maximum width (px)'));
 		}
@@ -2682,7 +2682,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array();
+		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
 		}
@@ -2751,7 +2751,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$attributes, $readOnlyFields);
 
 		if (in_array('userCertificate', $fields)) {
-			$userCertificates = array();
+			$userCertificates = [];
 			if (isset($attributes['userCertificate'][0])) {
 				$userCertificates = $attributes['userCertificate'];
 			}
@@ -2787,7 +2787,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$filter = '(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))';
 				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
 				$foundOs = searchLDAPPaged($_SESSION['ldapHandle']->getServer(), $suffix, $filter, array('dn'), false, 0);
-				$oList = array();
+				$oList = [];
 				foreach ($foundOs as $foundO) {
 					$oList[] = $foundO['dn'];
 				}
@@ -2799,7 +2799,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				foreach ($oList as $singleOU) {
 					$oSelectionList[getAbstractDN($singleOU)] = $singleOU;
 				}
-				$oSelectionListSelected = array();
+				$oSelectionListSelected = [];
 				if (!empty($attributes['o'][0])) {
 					$oSelectionListSelected[] = $attributes['o'][0];
 				}
@@ -2825,7 +2825,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$filter = '(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))';
 				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
 				$foundOus = searchLDAPPaged($_SESSION['ldapHandle']->getServer(), $suffix, $filter, array('dn'), false, 0);
-				$ouList = array();
+				$ouList = [];
 				foreach ($foundOus as $foundOu) {
 					$ouList[] = $foundOu['dn'];
 				}
@@ -2837,7 +2837,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				foreach ($ouList as $singleOU) {
 					$ouSelectionList[getAbstractDN($singleOU)] = $singleOU;
 				}
-				$ouSelectionListSelected = array();
+				$ouSelectionListSelected = [];
 				if (!empty($attributes['ou'][0])) {
 					$ouSelectionListSelected[] = $attributes['ou'][0];
 				}
@@ -3030,7 +3030,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				if (!empty($pem)) {
 					$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
 					$pemData = @openssl_x509_parse($pem);
-					$data = array();
+					$data = [];
 					if (isset($pemData['serialNumber'])) {
 						$data[] = $pemData['serialNumber'];
 					}
@@ -3143,14 +3143,14 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
-		$attributeNames = array(); // list of attributes which should be checked for modification
+		$attributeNames = []; // list of attributes which should be checked for modification
 		$attributesNew = $attributes;
 		$this->checkSimpleSelfServiceTextField($return, 'firstName', $attributes, $fields,
 			$readOnlyFields, 'realname', $this->messages['givenName'][0], null,
@@ -3213,7 +3213,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$data = $_SESSION[self::SESS_PHOTO];
 			// remove photo
 			if (!empty($attributes['jpegPhoto'][0]) && empty($data)) {
-				$return['mod']['jpegPhoto'] = array();
+				$return['mod']['jpegPhoto'] = [];
 			}
 			// set/replace photo
 			elseif (!empty($data) && (empty($attributes['jpegPhoto'][0]) || ($data != $attributes['jpegPhoto'][0]))) {
@@ -3400,7 +3400,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$contentElement = $this->getSelfServiceUserCertificates();
 			ob_end_clean();
 			ob_start();
-			parseHtml(null, $contentElement, array(), true, $this->get_scope());
+			parseHtml(null, $contentElement, [], true, $this->get_scope());
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -3441,7 +3441,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$contentElement = $this->getSelfServicePhoto(false, true);
 			ob_end_clean();
 			ob_start();
-			parseHtml(null, $contentElement, array(), true, $this->get_scope());
+			parseHtml(null, $contentElement, [], true, $this->get_scope());
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -3458,7 +3458,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$contentElement = $this->getSelfServicePhoto(false, false);
 		ob_end_clean();
 		ob_start();
-		parseHtml(null, $contentElement, array(), true, $this->get_scope());
+		parseHtml(null, $contentElement, [], true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(
@@ -3485,7 +3485,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$contentElement = $this->getSelfServiceUserCertificates();
 		ob_end_clean();
 		ob_start();
-		parseHtml(null, $contentElement, array(), true, $this->get_scope());
+		parseHtml(null, $contentElement, [], true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(
@@ -3541,11 +3541,11 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		if (!in_array(get_class($this), $modules)) {
-			return array();
+			return [];
 		}
 		// check password strength
 		$user = empty($this->attributes['uid'][0]) ? null : $this->attributes['uid'][0];
-		$additionalAttrs = array();
+		$additionalAttrs = [];
 		if (!empty($this->attributes['sn'][0])) {
 			$additionalAttrs[] = $this->attributes['sn'][0];
 		}
@@ -3571,7 +3571,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		else {
 			$this->attributes['userpassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -3581,7 +3581,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		if ($this->departmentCache != null) {
 			return;
 		}
-		$attrs = array();
+		$attrs = [];
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			$attrs[] = 'departmentNumber';
 		}
@@ -3600,12 +3600,12 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$attrs[] = 'businessCategory';
 		}
-		$departments = array();
-		$ous = array();
-		$os = array();
-		$titles = array();
-		$employeeTypes = array();
-		$businessCategories = array();
+		$departments = [];
+		$ous = [];
+		$os = [];
+		$titles = [];
+		$employeeTypes = [];
+		$businessCategories = [];
 		if (sizeof($attrs) > 0) {
 			$result = searchLDAPByFilter('(objectClass=inetOrgPerson)', $attrs, array($this->get_scope()));
 			foreach ($result as $attributes) {
@@ -3828,7 +3828,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * {@inheritdoc}
 	 */
 	public function getWildCardReplacements() {
-		$replacements = array();
+		$replacements = [];
 		// first name
 		if (!empty($_POST['givenName'])) {
 			$replacements['firstname'] = $_POST['givenName'];
@@ -3898,7 +3898,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$row->addLabel(new htmlOutputText(_('User name')));
 			$row->addField(new htmlOutputText($this->attributes['uid'][0]));
 		}
-		$nameParts = array();
+		$nameParts = [];
 		if (isset($this->attributes['givenName'][0])) {
 			$nameParts[] = $this->attributes['givenName'][0];
 		}
@@ -3924,10 +3924,10 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		if ($this->isUnixActive() && in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 		if (!in_array_ignore_case('inetOrgPerson', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 		return array(
 			new PasswordQuickChangeOption('updateUnixPwd', _('Change password'))
@@ -3939,12 +3939,12 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
 		if ($this->isUnixActive() && in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 		if (!in_array_ignore_case('inetOrgPerson', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$attrs = array();
+		$attrs = [];
 		if (isset($_POST['updateUnixPwd'])) {
 			$hashType = $this->moduleSettings['posixAccount_pwdHash'][0];
 			if ($hashType === 'LDAP_EXOP') {
@@ -3971,7 +3971,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
-		$values = array();
+		$values = [];
 		if (isset($this->attributes['sn'][0])) {
 			$values[] = $this->attributes['sn'][0];
 		}
@@ -3993,12 +3993,12 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
 		if ($this->isUnixActive($type->getModules())) {
-			return array();
+			return [];
 		}
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
-		$details = array();
+		$details = [];
 		if (self::isLocked($attributes)) {
 			$details[] = AccountStatusDetails::newLocked(_('Personal'), self::STATUS_PASSWORD_LOCKED);
 		}
@@ -4010,7 +4010,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
 		if ($this->isUnixActive($type->getModules())) {
-			return array();
+			return [];
 		}
 		return array('userpassword');
 	}
@@ -4020,12 +4020,12 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
 		if ($this->isUnixActive($type->getModules())) {
-			return array();
+			return [];
 		}
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
-		$options = array();
+		$options = [];
 		if (!self::isLocked($attributes) && isset($attributes['userpassword'][0]) && pwd_is_lockable($attributes['userpassword'][0])) {
 			$options[] = AccountStatusDetails::newLocked(_('Personal'), self::STATUS_PASSWORD_LOCKED);
 		}

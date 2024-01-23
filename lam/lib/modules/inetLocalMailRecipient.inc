@@ -68,13 +68,13 @@ class inetLocalMailRecipient extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'mail.svg';
 		// alias name
 		$return["alias"] = _("Mail routing");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('inetLocalMailRecipient');
 		// managed attributes
@@ -165,7 +165,7 @@ class inetLocalMailRecipient extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -222,7 +222,7 @@ class inetLocalMailRecipient extends baseModule {
 	function process_attributes() {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'inetLocalMailRecipient';
-			return array();
+			return [];
 		}
 		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('inetLocalMailRecipient'), $this->attributes['objectClass']);
@@ -231,16 +231,16 @@ class inetLocalMailRecipient extends baseModule {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
 			}
-			return array();
+			return [];
 		}
 		if (!in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		$this->getAccountContainer()->replaceWildcardsInPOST(array('mailLocalAddress', 'mailRoutingAddress'));
-		$this->attributes['mailRoutingAddress'] = array();
-		$this->attributes['mailLocalAddress'] = array();
-		$this->attributes['mailHost'] = array();
+		$this->attributes['mailRoutingAddress'] = [];
+		$this->attributes['mailLocalAddress'] = [];
+		$this->attributes['mailHost'] = [];
 		// check routing address
 		if (isset($_POST['mailRoutingAddress']) && ($_POST['mailRoutingAddress'] != "")) {
 			// check if address has correct format
@@ -284,7 +284,7 @@ class inetLocalMailRecipient extends baseModule {
 	function save_attributes() {
 		if (!in_array('inetLocalMailRecipient', $this->attributes['objectClass']) && !in_array('inetLocalMailRecipient', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return parent::save_attributes();
 	}
@@ -294,7 +294,7 @@ class inetLocalMailRecipient extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("inetLocalMailRecipient", $partialAccounts[$i]['objectClass'])) {
@@ -317,7 +317,7 @@ class inetLocalMailRecipient extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'routingAdr', _('Routing address'), 'mailRoutingAddress');
 		$this->addSimplePDFField($return, 'mailLocalAddress', _('Local address list'), 'mailLocalAddress');
 		$this->addSimplePDFField($return, 'host', _('Mail server'), 'mailHost');
@@ -326,11 +326,11 @@ class inetLocalMailRecipient extends baseModule {
 
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		if ($passwordChangeOnly) {
-			return array(); // no processing as long no LDAP content can be read
+			return []; // no processing as long no LDAP content can be read
 		}
-		$return = array();
+		$return = [];
 		if (in_array('mailLocalAddress', $fields)) {
-			$mailLocalAddress = array();
+			$mailLocalAddress = [];
 			if (isset($attributes['mailLocalAddress'])) {
 				$mailLocalAddress = $attributes['mailLocalAddress'];
 			}

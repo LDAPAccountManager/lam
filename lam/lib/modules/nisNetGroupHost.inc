@@ -59,7 +59,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	public function get_metaData() {
 		$return = parent::get_metaData();
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('account', 'posixAccount')), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('account', 'posixAccount')), 'conflicts' => []);
 		// upload columns
 		$return['upload_columns'] = array(array(
 			'name' => 'nisNetGroup_memberships',
@@ -112,7 +112,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 		$return->addVerticalSpace('40px');
 
 		// new entry
-		$groupList = array();
+		$groupList = [];
 		$groupData = $this->findGroups();
 		if (sizeof($groupData) > 0) {
 			$filterGroup = new htmlGroup();
@@ -145,7 +145,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$errors = array();
+		$errors = [];
 		// add new entry
 		if (isset($_POST['addGroup'])) {
 			$parts = explode('#+#', $_POST['group_add']);
@@ -215,7 +215,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 		}
 		$return = new htmlResponsiveRow();
 		$labels = array(_('Group'), _('User name'), _('Domain name'));
-		$data = array();
+		$data = [];
 		for ($i = 0; $i < 5; $i++) {
 			$select = new htmlSelect('nisNetGroupUser_group' . $i, $groupOptions, array(''));
 			$select->setHasDescriptiveElements(true);
@@ -253,7 +253,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$pdfTable = new PDFTable();
 		$pdfRow = new PDFTableRow();
 		$pdfRow->cells[] = new PDFTableCell(_('Group'), '25%', null, true);

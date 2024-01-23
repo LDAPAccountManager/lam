@@ -78,7 +78,7 @@ class pykotaPrinter extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'printer.svg';
 		// alias name
@@ -90,7 +90,7 @@ class pykotaPrinter extends baseModule {
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=pykotaPrinter)");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('pykotaObject', 'pykotaPrinter');
 		// managed attributes
@@ -229,7 +229,7 @@ class pykotaPrinter extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -263,7 +263,7 @@ class pykotaPrinter extends baseModule {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			$groups = $this->getPrinterGroups();
 			$this->loadPrinterNameCache();
-			$parentPrinters = array();
+			$parentPrinters = [];
 			foreach ($groups as $groupDN) {
 				$parentPrinters[] = $this->printerCache[$groupDN]['cn'];
 			}
@@ -313,7 +313,7 @@ class pykotaPrinter extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		// cn
 		if (isset($_POST['cn']) && ($_POST['cn'] != '')) {
 			if (!get_preg($_POST['cn'], 'username')) {
@@ -394,7 +394,7 @@ class pykotaPrinter extends baseModule {
 	*/
 	function display_html_members() {
 		$return = new htmlResponsiveRow();
-		$options = array();
+		$options = [];
 		$this->loadPrinterNameCache();
 		foreach ($this->printerCache as $dn => $attrs) {
 			if (!empty($attrs['description'])) {
@@ -417,7 +417,7 @@ class pykotaPrinter extends baseModule {
 		if (sizeof($options) < 20) {
 			$size = sizeof($options);
 		}
-		$membersSelect = new htmlSelect('members', $options, array(), $size);
+		$membersSelect = new htmlSelect('members', $options, [], $size);
 		$membersSelect->setHasDescriptiveElements(true);
 		$membersSelect->setMultiSelect(true);
 		$membersSelect->setTransformSingleSelect(false);
@@ -446,7 +446,7 @@ class pykotaPrinter extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_members() {
-		$return = array();
+		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addMembers']) && isset($_POST['members'])) {
 			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
 				$this->attributes['uniqueMember'][] = $_POST['members'][$i];
@@ -460,7 +460,7 @@ class pykotaPrinter extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		$this->loadPrinterNameCache();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object classes
@@ -548,7 +548,7 @@ class pykotaPrinter extends baseModule {
 			// group members
 			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_uniqueMember']])) {
 				$members = preg_split('/,[ ]*/', $rawAccounts[$i][$ids['pykotaPrinter_uniqueMember']]);
-				$memberDNs = array();
+				$memberDNs = [];
 				foreach ($members as $cn) {
 					if (empty($cn)) {
 						continue;
@@ -581,7 +581,7 @@ class pykotaPrinter extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->loadPrinterNameCache();
 		$this->addSimplePDFField($return, 'cn', _('Printer name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
@@ -597,7 +597,7 @@ class pykotaPrinter extends baseModule {
 		$this->addPDFKeyValue($return, 'pykotaPassThrough', _('Passthrough'), $passthroughValue);
 		// members
 		if (!empty($this->attributes['uniqueMember'][0])) {
-			$members = array();
+			$members = [];
 			foreach ($this->attributes['uniqueMember'] as $member) {
 				if (!empty($this->printerCache[$member]['cn'])) {
 					$members[] = $this->printerCache[$member]['cn'];
@@ -609,7 +609,7 @@ class pykotaPrinter extends baseModule {
 			$this->addPDFKeyValue($return, 'uniqueMember', _('Group members'), implode(', ', $members));
 		}
 		// printer groups
-		$parentGroups = array();
+		$parentGroups = [];
 		$groups = $this->getPrinterGroups();
 		foreach ($groups as $group) {
 			if (!empty($this->printerCache[$group]['cn'])) {
@@ -651,7 +651,7 @@ class pykotaPrinter extends baseModule {
 			return;
 		}
 		$results = searchLDAPByFilter('(objectClass=pykotaPrinter)', array('cn', 'dn', 'description'), array($this->get_scope()));
-		$this->printerCache = array();
+		$this->printerCache = [];
 		foreach ($results as $result) {
 			if (isset($result['cn'][0])) {
 				$this->printerCache[$result['dn']]['cn'] = $result['cn'][0];
@@ -672,7 +672,7 @@ class pykotaPrinter extends baseModule {
 			return $this->groupCache;
 		}
 		$results = searchLDAPByFilter('(&(objectClass=pykotaPrinter)(uniqueMember=' . $this->getAccountContainer()->dn_orig . '))', array('dn'), array($this->get_scope()));
-		$this->groupCache = array();
+		$this->groupCache = [];
 		foreach ($results as $result) {
 			$this->groupCache[] = $result['dn'];
 		}

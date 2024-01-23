@@ -101,13 +101,13 @@ class sambaGroupMapping extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'samba.svg';
 		// alias name
 		$return["alias"] = _('Samba 3');
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('sambaGroupMapping');
 		// managed attributes
@@ -185,7 +185,7 @@ class sambaGroupMapping extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -233,7 +233,7 @@ class sambaGroupMapping extends baseModule {
 	public function get_uploadColumns($selectedModules, &$type) {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		$domains = $this->getDomains();
-		$domainNames = array();
+		$domainNames = [];
 		for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;
 		$return[] = array(
 			'name' => 'sambaGroupMapping_domain',
@@ -253,17 +253,17 @@ class sambaGroupMapping extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		// search existing Samba 3 domains
 		$domains = $this->getDomains();
-		$nameToSID = array();
+		$nameToSID = [];
 		// get domain SIDs
 		for ($i = 0; $i < sizeof($domains); $i++) {
 			$nameToSID[$domains[$i]->name] = $domains[$i]->SID;
 		}
 		// get domain RID bases
-		$nameToRIDBase = array();
+		$nameToRIDBase = [];
 		for ($i = 0; $i < sizeof($domains); $i++) {
 			$nameToRIDBase[$domains[$i]->name] = $domains[$i]->RIDbase;
 		}
-		$errors = array();
+		$errors = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// group type
 			if ($rawAccounts[$i][$ids['sambaGroupMapping_groupType']] != "") {
@@ -328,7 +328,7 @@ class sambaGroupMapping extends baseModule {
 			$sambaDomains = $this->getDomains();
 			if (sizeof($sambaDomains) == 0) {
 				StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
-				return array();
+				return [];
 			}
 			// Get Domain-SID from group SID
 			if (isset($this->attributes['sambaSID'][0])) {
@@ -374,7 +374,7 @@ class sambaGroupMapping extends baseModule {
 			}
 			$return->add(new htmlResponsiveSelect('sambaGroupType', $names, $selected, _('Group type'), 'type'), 12);
 			// domain
-			$selectedDomain = array();
+			$selectedDomain = [];
 			if (isset($sel_domain)) {
 				$selectedDomain = array($sel_domain);
 			}
@@ -438,7 +438,7 @@ class sambaGroupMapping extends baseModule {
 		if ((isset($_POST['form_subpage_' . get_class($this) . '_members_select']) || isset($_POST['setFilter'])) && isset($_POST['type'])) {
 			$type = $typeManager->getConfiguredType($_POST['type']);
 			$this->loadSIDCache();
-			$options = array();
+			$options = [];
 			$filter = get_ldap_filter($type->getId());
 			$entries = searchLDAP($type->getSuffix(), $filter, array('dn', 'cn', 'uid', 'sambaSID'));
 			$entryCount = sizeof($entries);
@@ -463,7 +463,7 @@ class sambaGroupMapping extends baseModule {
 			if (sizeof($options) < 20) {
 				$size = sizeof($options);
 			}
-			$membersSelect = new htmlSelect('members', $options, array(), $size);
+			$membersSelect = new htmlSelect('members', $options, [], $size);
 			$membersSelect->setHasDescriptiveElements(true);
 			$membersSelect->setMultiSelect(true);
 			$membersSelect->setTransformSingleSelect(false);
@@ -482,8 +482,8 @@ class sambaGroupMapping extends baseModule {
 			return $return;
 		}
 		$types = $typeManager->getConfiguredTypesForScopes(array('user', 'group', 'host'));
-		$options = array();
-		$optionsSelected = array();
+		$options = [];
+		$optionsSelected = [];
 		foreach ($types as $type) {
 			$options[$type->getAlias()] = $type->getId();
 			if (empty($optionsSelected) && ($type->getScope() == 'group')) {
@@ -508,7 +508,7 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_members() {
-		$return = array();
+		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addMembers']) && isset($_POST['members'])) {
 			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
 				$this->attributes['sambaSIDList'][] = $_POST['members'][$i];
@@ -522,7 +522,7 @@ class sambaGroupMapping extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
 		$this->addSimplePDFField($return, 'sambaSID', _('Windows group'));
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
@@ -531,7 +531,7 @@ class sambaGroupMapping extends baseModule {
 		// local members
 		if (!empty($this->attributes['sambaSIDList'][0])) {
 			$this->loadSIDCache();
-			$members = array();
+			$members = [];
 			foreach ($this->attributes['sambaSIDList'] as $member) {
 				if (!empty($this->sidCache[$member])) {
 					$members[] = $this->sidCache[$member];
@@ -553,7 +553,7 @@ class sambaGroupMapping extends baseModule {
 		$return = new htmlResponsiveRow();
 		// get list of domains
 		$sambaDomains = $this->getDomains();
-		$sambaDomainNames = array();
+		$sambaDomainNames = [];
 		for ($i = 0; $i < count($sambaDomains); $i++ ) {
 			// extract names
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -647,15 +647,15 @@ class sambaGroupMapping extends baseModule {
 			if (isset($this->attributes['displayName'])) {
 				unset($this->attributes['displayName']);
 			}
-			return array();
+			return [];
 		}
 		if (!in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$errors = array();
+		$errors = [];
 		$sambaDomains = $this->getDomains();
 		if (sizeof($sambaDomains) == 0) {
-			return array();
+			return [];
 		}
 		// Save attributes
 		$this->attributes['displayName'][0] = $_POST['displayName'];
@@ -720,7 +720,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function save_attributes() {
 		if (!in_array('sambaGroupMapping', $this->attributes['objectClass']) && !in_array('sambaGroupMapping', $this->orig['objectClass'])) {
-			return array();
+			return [];
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
@@ -746,7 +746,7 @@ class sambaGroupMapping extends baseModule {
 			return;
 		}
 		$results = searchLDAPByFilter('(|(objectClass=sambaSamAccount)(objectClass=sambaGroupMapping))', array('cn', 'uid', 'sambaSID'), array('user', 'group', 'host'));
-		$this->sidCache = array();
+		$this->sidCache = [];
 		foreach ($results as $result) {
 			// require SID
 			if (empty($result['sambasid'][0])) {

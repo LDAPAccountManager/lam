@@ -75,13 +75,13 @@ class kolabUser extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'kolab.png';
 		// alias name
 		$return["alias"] = _("Kolab");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => []);
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=kolabInetOrgPerson)");
 		// managed object classes
@@ -298,7 +298,7 @@ class kolabUser extends baseModule {
 			$this->addMultiValueInputTextField($return, 'alias', null);
 			// delegates
 			$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('dn'), array('user'));
-			$delegates = array();
+			$delegates = [];
 			for ($i = 0; $i < sizeof($delegatesData); $i++) {
 				$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
 			}
@@ -346,17 +346,17 @@ class kolabUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'kolabInetOrgPerson';
 			$this->attributes['objectClass'][] = 'mailrecipient';
 		}
 		else {
-			if (isset($_POST['form_subpage_kolabUser_deleteUser_open']))  return array();
-			$this->attributes['kolabInvitationPolicy'] = array();
+			if (isset($_POST['form_subpage_kolabUser_deleteUser_open']))  return [];
+			$this->attributes['kolabInvitationPolicy'] = [];
 			// check old invitation policies
 			$policies = array_flip($this->invitationPolicies);
-			$targets = array();
+			$targets = [];
 			$i = 0;
 			while (isset($_POST['invPol1' . $i])) {
 				if (isset($_POST['delInvPol' . $i])) {
@@ -396,7 +396,7 @@ class kolabUser extends baseModule {
 			// mail aliases
 			$this->processMultiValueInputTextField('alias', $errors, 'email');
 			// check old delegates
-			$this->attributes['kolabDelegate'] = array();
+			$this->attributes['kolabDelegate'] = [];
 			$i = 0;
 			while (isset($_POST['delegate' . $i])) {
 				if (isset($_POST['delDelegate' . $i])) {
@@ -420,7 +420,7 @@ class kolabUser extends baseModule {
 				$errors[] = $this->messages['mailQuota'][0];
 			}
 			else {
-				$mailQuota = array();
+				$mailQuota = [];
 				if (!empty($_POST['mailQuota'])) {
 					$mailQuota = array($_POST['mailQuota'] * 1024);
 				}
@@ -467,7 +467,7 @@ class kolabUser extends baseModule {
 	function save_attributes() {
 		if (!in_array('kolabInetOrgPerson', $this->attributes['objectClass']) && !in_array('kolabInetOrgPerson', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
-			return array();
+			return [];
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
@@ -491,7 +491,7 @@ class kolabUser extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('mail'), array('user'));
 		for ($d = 0; $d < sizeof($delegates); $d++) {
 			if (isset($delegates[$d]['dn'])) {
@@ -587,7 +587,7 @@ class kolabUser extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		// invitation policies
 		if (isset($this->attributes['kolabInvitationPolicy'][0])) {
 			// find default policy
@@ -637,15 +637,15 @@ class kolabUser extends baseModule {
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		if ($passwordChangeOnly) {
-			return array(); // no Kolab fields as long no LDAP content can be read
+			return []; // no Kolab fields as long no LDAP content can be read
 		}
 		if (!in_array('kolabInetOrgPerson', $attributes['objectClass'])) {
-			return array();
+			return [];
 		}
-		$return = array();
+		$return = [];
 		// delegates
 		if (in_array('kolabDelegate', $fields)) {
-			$delegates = array();
+			$delegates = [];
 			$sr = @ldap_search($_SESSION['ldapHandle']->getServer(), $this->selfServiceSettings->LDAPSuffix, '(&(objectClass=inetOrgPerson)(mail=*))', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$result = ldap_get_entries($_SESSION['ldapHandle']->getServer(), $sr);
@@ -654,7 +654,7 @@ class kolabUser extends baseModule {
 					$delegates[getAbstractDN($result[$i]['dn'])] = $result[$i]['dn'];
 				}
 			}
-			$kolabDelegate = array();
+			$kolabDelegate = [];
 			if (isset($attributes['kolabDelegate'])) {
 				$kolabDelegate = $attributes['kolabDelegate'];
 				// do not show existing delegation candidates in selection list
@@ -781,17 +781,17 @@ class kolabUser extends baseModule {
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
 		if (!in_array_ignore_case('kolabInetOrgPerson', $attributes['objectClass'])) {
 			return $return;
 		}
-		$attributeNames = array(); // list of attributes which should be checked for modification
+		$attributeNames = []; // list of attributes which should be checked for modification
 		$attributesNew = $attributes;
 		// delegates
 		if (in_array('kolabDelegate', $fields) && !in_array('kolabDelegate', $readOnlyFields)) {
@@ -817,9 +817,9 @@ class kolabUser extends baseModule {
 		if (in_array('kolabInvitationPolicy', $fields) && !in_array('kolabInvitationPolicy', $readOnlyFields)) {
 			$attributeNames[] = 'kolabInvitationPolicy';
 			$policies = array_flip($this->invitationPolicies);
-			$attributesNew['kolabInvitationPolicy'] = array();
+			$attributesNew['kolabInvitationPolicy'] = [];
 			// check old invitation policies
-			$targets = array();
+			$targets = [];
 			$i = 0;
 			while (isset($_POST['invPol1' . $i])) {
 				if (isset($_POST['delInvPol' . $i])) {

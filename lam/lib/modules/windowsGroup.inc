@@ -97,7 +97,7 @@ class windowsGroup extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'samba.svg';
 		// this is a base module
@@ -109,7 +109,7 @@ class windowsGroup extends baseModule {
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('group', 'securityPrincipal', 'mailRecipient');
 		// managed attributes
@@ -295,7 +295,7 @@ class windowsGroup extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -397,7 +397,7 @@ class windowsGroup extends baseModule {
 		$memberButtons->addElement(new htmlSpacer('0.5rem', null));
 		$memberButtons->addElement(new htmlHelpLink('member'));
 		$container->addField($memberButtons);
-		$memberList = array();
+		$memberList = [];
 		if (isset($this->attributes['member'])) {
 			for ($i = 0; $i < sizeof($this->attributes['member']); $i++) {
 				$memberList[] = $this->attributes['member'][$i];
@@ -422,7 +422,7 @@ class windowsGroup extends baseModule {
 		$memberOfGroup->addElement(new htmlSpacer('0.5rem', null));
 		$memberOfGroup->addElement(new htmlHelpLink('memberOf'), true);
 		$container->addField($memberOfGroup);
-		$memberList = array();
+		$memberList = [];
 		if (isset($this->attributes['memberOf'])) {
 			for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
 				$memberList[] = $this->attributes['memberOf'][$i];
@@ -450,7 +450,7 @@ class windowsGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$return = array();
+		$return = [];
 		// cn
 		$this->attributes['cn'][0] = $_POST['cn'];
 		$this->attributes['sAMAccountName'][0] = $_POST['cn'];
@@ -521,9 +521,9 @@ class windowsGroup extends baseModule {
 		// sort by DN
 		usort($groups, 'compareDN');
 
-		$selectedGroups = array();
+		$selectedGroups = [];
 		if (empty($this->attributes['memberOf'])) {
-			$this->attributes['memberOf'] = array();
+			$this->attributes['memberOf'] = [];
 		}
 		// sort by DN
 		usort($this->attributes['memberOf'], 'compareDN');
@@ -532,7 +532,7 @@ class windowsGroup extends baseModule {
 				$selectedGroups[getAbstractDN($this->attributes['memberOf'][$i])] = $this->attributes['memberOf'][$i];
 			}
 		}
-		$availableGroups = array();
+		$availableGroups = [];
 		foreach ($groups as $dn) {
 			if (!in_array($dn, $this->attributes['memberOf'])) {
 				$availableGroups[getAbstractDN($dn)] = $dn;
@@ -563,7 +563,7 @@ class windowsGroup extends baseModule {
 		elseif (isset($_POST['memberof_1']) && isset($_POST['memberof_right'])) { // remove groups from list
 			$this->attributes['memberOf'] = array_delete($_POST['memberof_1'], $this->attributes['memberOf']);
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -574,7 +574,7 @@ class windowsGroup extends baseModule {
 	function display_html_managedBy() {
 		$return = new htmlResponsiveRow();
 		// show possible managers
-		$options = array();
+		$options = [];
 		$filter = get_ldap_filter('user');
 		$entries = searchLDAPByFilter($filter, array('dn'), array('user'));
 		for ($i = 0; $i < sizeof($entries); $i++) {
@@ -585,7 +585,7 @@ class windowsGroup extends baseModule {
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}
-		$selected = array();
+		$selected = [];
 		if (isset($this->attributes['managedBy'][0])) {
 			$selected = array($this->attributes['managedBy'][0]);
 			if (!in_array($selected[0], $options)) {
@@ -614,7 +614,7 @@ class windowsGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_managedBy() {
-		$return = array();
+		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
 			$this->attributes['managedBy'][0] = $_POST['managedBy'];
 		}
@@ -641,7 +641,7 @@ class windowsGroup extends baseModule {
 			$return->add($filterGroup, 12);
 			$return->addVerticalSpacer('1rem');
 
-			$options = array();
+			$options = [];
 			$filter = get_ldap_filter($type->getId());
 			$entries = searchLDAP($type->getSuffix(), $filter, array('dn'));
 			for ($i = 0; $i < sizeof($entries); $i++) {
@@ -658,7 +658,7 @@ class windowsGroup extends baseModule {
 			if (sizeof($options) < 20) {
 				$size = sizeof($options);
 			}
-			$membersSelect = new htmlSelect('members', $options, array(), $size);
+			$membersSelect = new htmlSelect('members', $options, [], $size);
 			$membersSelect->setHasDescriptiveElements(true);
 			$membersSelect->setMultiSelect(true);
 			$membersSelect->setRightToLeftTextDirection(true);
@@ -673,13 +673,13 @@ class windowsGroup extends baseModule {
 			return $return;
 		}
 		// show existing members
-		$membersTemp = array();
+		$membersTemp = [];
 		if (isset($this->attributes['member'])) {
 			$membersTemp = $this->attributes['member'];
 		}
 		// sort by DN
 		usort($membersTemp, 'compareDN');
-		$members = array();
+		$members = [];
 		for ($i = 0; $i < sizeof($membersTemp); $i++) {
 			$members[getAbstractDN($membersTemp[$i])] = $membersTemp[$i];
 		}
@@ -688,7 +688,7 @@ class windowsGroup extends baseModule {
 			$size = sizeof($this->attributes['member']);
 		}
 		if (sizeof($members) > 0) {
-			$membersSelect = new htmlSelect('members', $members, array(), $size);
+			$membersSelect = new htmlSelect('members', $members, [], $size);
 			$membersSelect->setHasDescriptiveElements(true);
 			$membersSelect->setMultiSelect(true);
 			$membersSelect->setRightToLeftTextDirection(true);
@@ -703,8 +703,8 @@ class windowsGroup extends baseModule {
 			$return->addVerticalSpacer('2rem');
 		}
 		$types = $typeManager->getConfiguredTypes();
-		$options = array();
-		$optionsSelected = array();
+		$options = [];
+		$optionsSelected = [];
 		foreach ($types as $type) {
 			$options[$type->getAlias()] = $type->getId();
 			if ($type->getScope() == 'user') {
@@ -729,7 +729,7 @@ class windowsGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_user() {
-		$return = array();
+		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_user_remove']) && isset($_POST['members'])) {
 			$members = array_flip($this->attributes['member']);
 			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
@@ -778,7 +778,7 @@ class windowsGroup extends baseModule {
 	 */
 	function process_effectiveMembers() {
 		// no processing, page is read-only
-		return array();
+		return [];
 	}
 
 	/**
@@ -786,7 +786,7 @@ class windowsGroup extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$errors = array();
+		$errors = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('group', $partialAccounts[$i]['objectClass'])) {
@@ -879,7 +879,7 @@ class windowsGroup extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	public function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'info', _('Notes'));
@@ -920,7 +920,7 @@ class windowsGroup extends baseModule {
 		}
 		// members
 		if (!empty($this->attributes['member'])) {
-			$memberList = array();
+			$memberList = [];
 			if (isset($this->attributes['member']) && is_array($this->attributes['member'])) {
 				$memberList = $this->attributes['member'];
 			}
@@ -935,7 +935,7 @@ class windowsGroup extends baseModule {
 		}
 		// member of
 		if (!empty($this->attributes['memberOf'])) {
-			$memberOfList = array();
+			$memberOfList = [];
 			if (isset($this->attributes['memberOf']) && is_array($this->attributes['memberOf'])) {
 				$memberOfList = $this->attributes['memberOf'];
 			}
@@ -960,7 +960,7 @@ class windowsGroup extends baseModule {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
-		$return = array();
+		$return = [];
 		$types = array('group');
 		$results = searchLDAPByFilter('(objectClass=group)', array('dn'), $types);
 		$count = sizeof($results);
@@ -996,8 +996,8 @@ class windowsGroup extends baseModule {
 	public function save_attributes() {
 		$attrs = $this->attributes;
 		$orig = $this->orig;
-		$attrs['memberOf'] = array();
-		$orig['memberOf'] = array();
+		$attrs['memberOf'] = [];
+		$orig['memberOf'] = [];
 		return $this->getAccountContainer()->save_module_attributes($attrs, $orig);
 	}
 
@@ -1011,14 +1011,14 @@ class windowsGroup extends baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		$messages = array();
+		$messages = [];
 		// set groups
 		$groups = $this->findGroups();
 		if (!isset($this->orig['memberOf'])) {
-			$this->orig['memberOf'] = array();
+			$this->orig['memberOf'] = [];
 		}
 		if (!isset($this->attributes['memberOf'])) {
-			$this->attributes['memberOf'] = array();
+			$this->attributes['memberOf'] = [];
 		}
 		$toAdd = array_values(array_diff($this->attributes['memberOf'], $this->orig['memberOf']));
 		$toRem = array_values(array_diff($this->orig['memberOf'], $this->attributes['memberOf']));

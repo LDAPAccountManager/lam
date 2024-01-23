@@ -64,7 +64,7 @@ class nisnetgroup extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'group.svg';
 		// alias name
@@ -76,7 +76,7 @@ class nisnetgroup extends baseModule {
 		// RDN attributes
 		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('nisNetgroup');
 		// managed attributes
@@ -226,7 +226,7 @@ class nisnetgroup extends baseModule {
 		$membersLabel->setHelpId('members');
 		$return->add($membersLabel, 12);
 		$titles = array(_('Host'), _('User'), _('Domain'), '');
-		$data = array();
+		$data = [];
 		if (isset($this->attributes['nisNetgroupTriple']) && (sizeof($this->attributes['nisNetgroupTriple']) > 0)) {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
@@ -237,7 +237,7 @@ class nisnetgroup extends baseModule {
 				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'user') && ($_POST['position'] == strval($i))) {
 					$triple[1] = $_POST['selectBox'];
 				}
-				$dataRow = array();
+				$dataRow = [];
 				$hostGroup = new htmlGroup();
 				$hostField = new htmlInputField('host_' . $i, $triple[0]);
 				$hostField->setCSSClasses(array('auto-width'));
@@ -265,7 +265,7 @@ class nisnetgroup extends baseModule {
 				$data[] = $dataRow;
 			}
 		}
-		$dataRowNew = array();
+		$dataRowNew = [];
 		$hostNew = '';
 		$userNew = '';
 		$domainNew = '';
@@ -316,7 +316,7 @@ class nisnetgroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		$errors = array();
+		$errors = [];
 		// user name
 		$this->attributes['cn'][0] = $_POST['cn'];
 		if ( !get_preg($this->attributes['cn'][0], 'groupname')) {
@@ -325,7 +325,7 @@ class nisnetgroup extends baseModule {
 		// description
 		$this->attributes['description'][0] = $_POST['description'];
 		// members
-		$this->attributes['nisNetgroupTriple'] = array();
+		$this->attributes['nisNetgroupTriple'] = [];
 		$i = 0;
 		while (isset($_POST['host_' . $i]) || isset($_POST['user_' . $i]) || isset($_POST['domain_' . $i])) {
 			if (isset($_POST['del_' . $i])) {
@@ -393,16 +393,16 @@ class nisnetgroup extends baseModule {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			$allGroups = array_delete($this->attributes['cn'][0], $allGroups);
 		}
-		$subgroups = array();
+		$subgroups = [];
 		if (is_array($this->attributes['memberNisNetgroup'])) {
 			$subgroups = $this->attributes['memberNisNetgroup'];
 			$allGroups = array_delete($subgroups, $allGroups);
 		}
-		$selectedGroups = array();
+		$selectedGroups = [];
 		foreach ($subgroups as $subgroup) {
 			$selectedGroups[$subgroup] = $subgroup;
 		}
-		$availableGroups = array();
+		$availableGroups = [];
 		foreach ($allGroups as $availableGroup) {
 			$availableGroups[$availableGroup] = $availableGroup;
 		}
@@ -410,7 +410,7 @@ class nisnetgroup extends baseModule {
 		$return = new htmlResponsiveRow();
 		$return->add(new htmlSubTitle(_("Subgroups")), 12);
 
-		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"), $selectedGroups, array(), $availableGroups, array(), 'subgroup', false, true);
+		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"), $selectedGroups, [], $availableGroups, [], 'subgroup', false, true);
 
 		$return->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
@@ -427,7 +427,7 @@ class nisnetgroup extends baseModule {
 	function process_group() {
 		if (isset($_POST['subgroup_2']) && isset($_POST['subgroup_left'])) { // Add groups to list
 			if (!is_array($this->attributes['memberNisNetgroup'])) {
-				$this->attributes['memberNisNetgroup'] = array();
+				$this->attributes['memberNisNetgroup'] = [];
 			}
 			// Add new group
 			$this->attributes['memberNisNetgroup'] = @array_merge($this->attributes['memberNisNetgroup'], $_POST['subgroup_2']);
@@ -435,7 +435,7 @@ class nisnetgroup extends baseModule {
 		elseif (isset($_POST['subgroup_1']) && isset($_POST['subgroup_right'])) { // remove groups from list
 			$this->attributes['memberNisNetgroup'] = array_delete($_POST['subgroup_1'], $this->attributes['memberNisNetgroup']);
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -508,12 +508,12 @@ class nisnetgroup extends baseModule {
 	*/
 	function process_select() {
 		if (isset($_POST['form_subpage_nisnetgroup_attributes_back'])) {
-			return array();
+			return [];
 		}
 		if ($_POST['position'] == 'New') {
 			$_POST[$_POST['type'] . '_new'] = $_POST['selectBox'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -521,7 +521,7 @@ class nisnetgroup extends baseModule {
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$messages = array();
+		$messages = [];
 		// get list of existing groups
 		$existingGroups = $this->getGroupList();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
@@ -567,7 +567,7 @@ class nisnetgroup extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'subgroups', _('Subgroups'), 'memberNisNetgroup');
@@ -633,7 +633,7 @@ class nisnetgroup extends baseModule {
 		if ($this->cachedHostList != null) {
 			return $this->cachedHostList;
 		}
-		$this->cachedHostList = array();
+		$this->cachedHostList = [];
 		$list = searchLDAPByFilter('(|(objectClass=account)(objectClass=device))', array('uid', 'cn'), array('host'));
 		foreach ($list as $attrs) {
 			if (!empty($attrs['uid'][0])) {

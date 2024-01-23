@@ -73,9 +73,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	const DISPLAY_GROUPS_CN = 'CN';
 
 	/** current group list */
-	private $groupList = array();
+	private $groupList = [];
 	/** original group list */
-	private $groupList_orig = array();
+	private $groupList_orig = [];
 	/** cache for groups */
 	private $groupCache;
 	/** host cache to reduce LDAP queries */
@@ -122,7 +122,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
-		$return = array();
+		$return = [];
 		// icon
 		$return['icon'] = 'samba.svg';
 		// this is a base module
@@ -136,7 +136,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
 		// managed object classes
 		$return['objectClasses'] = array('user', 'securityPrincipal');
 		// managed attributes
@@ -1163,8 +1163,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->groupList = array();
-		$this->groupList_orig = array();
+		$this->groupList = [];
+		$this->groupList_orig = [];
 	}
 
 	/**
@@ -1242,7 +1242,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -1256,7 +1256,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		parent::load_attributes($attr);
 		// get group memberships
 		$groupList = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'group', array('dn'), array('group'));
-		$this->groupList_orig = array();
+		$this->groupList_orig = [];
 		for ($i = 0; $i < sizeof($groupList); $i++) {
 			$this->groupList_orig[] = $groupList[$i]['dn'];
 		}
@@ -1600,7 +1600,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$containerRight->add(new htmlAccountPageButton(get_class($this), 'group', 'edit', _('Edit groups')), 12);
 		$containerRight->addVerticalSpacer('1rem');
 		$groupsList = new htmlGroup();
-		$groupNames = array();
+		$groupNames = [];
 		if ($this->groupDisplayContainsDn()) {
 			usort($this->groupList, 'compareDN');
 		}
@@ -1681,7 +1681,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	* @return array list of info/error messages
 	*/
 	public function process_attributes() {
-		$return = array();
+		$return = [];
 		$keysToReplace = array('cn', 'displayName', 'mail', 'otherMailbox',
 				'profilePath', 'scriptPath', 'homeDirectory', 'userPrincipalName',
 				'sAMAccountName');
@@ -2062,7 +2062,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	* @return array list of info/error messages
 	*/
 	function process_accountexpires() {
-		$return = array();
+		$return = [];
 		// find button name
 		$buttonName = '';
 		$postKeys = array_keys($_POST);
@@ -2072,7 +2072,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			}
 		}
 		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) {
-			return array();
+			return [];
 		}
 		$attr = 'accountexpires';
 		// determine action
@@ -2142,7 +2142,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			usort($groups, 'compareDN');
 		}
 
-		$selectedGroups = array();
+		$selectedGroups = [];
 		// sort by DN
 		if ($groupDisplayContainsDn) {
 			usort($this->groupList, 'compareDN');
@@ -2155,7 +2155,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$selectedGroups[$displayName] = $groupDn;
 			}
 		}
-		$availableGroups = array();
+		$availableGroups = [];
 		foreach ($groups as $dn) {
 			if (!in_array($dn, $this->groupList)) {
 				$groupCn = extractRDNValue($dn);
@@ -2239,7 +2239,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if (isset($_POST['form_subpage_windowsUser_group_syncG2W'])) {
 			$this->manualSyncGonToWindows();
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2249,17 +2249,17 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$windowsGroups = $this->getGroupList();
 		$unixGroups = $this->getAccountContainer()->getAccountModule('posixAccount')->getGroups();
 		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', array('cn'), array('group'));
-		$dnToCn = array();
+		$dnToCn = [];
 		foreach ($allWindowsGroups as $windowsGroup) {
 			$dnToCn[$windowsGroup['dn']] = $windowsGroup['cn'][0];
 		}
 		$cnToDn = array_flip($dnToCn);
-		$currentGroupNames = array();
+		$currentGroupNames = [];
 		foreach ($windowsGroups as $windowsGroup) {
 			$currentGroupNames[] = $dnToCn[$windowsGroup];
 		}
 		$deleteNonMatching = isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on');
-		$namesToIgnore = array();
+		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
 			array_map('trim', $namesToIgnore);
@@ -2297,22 +2297,22 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$windowsGroups = $this->getGroupList();
 		$gonGroupDns = $this->getAccountContainer()->getAccountModule('posixAccount')->getGroupOfNames();
 		$allGons = $this->getAccountContainer()->getAccountModule('posixAccount')->findGroupOfNames();
-		$gonGroups = array();
+		$gonGroups = [];
 		foreach ($gonGroupDns as $gonGroupDn) {
 			$gonGroups[] = $this->getAccountContainer()->getAccountModule('posixAccount')->getGonName($gonGroupDn, $allGons);
 		}
 		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', array('cn'), array('group'));
-		$dnToCn = array();
+		$dnToCn = [];
 		foreach ($allWindowsGroups as $windowsGroup) {
 			$dnToCn[$windowsGroup['dn']] = $windowsGroup['cn'][0];
 		}
 		$cnToDn = array_flip($dnToCn);
-		$currentGroupNames = array();
+		$currentGroupNames = [];
 		foreach ($windowsGroups as $windowsGroup) {
 			$currentGroupNames[] = $dnToCn[$windowsGroup];
 		}
 		$deleteNonMatching = isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on');
-		$namesToIgnore = array();
+		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
 			array_map('trim', $namesToIgnore);
@@ -2405,13 +2405,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	*/
 	public function process_photo() {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_back'])) {
-			return array();
+			return [];
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload']) || isset($_POST['webcamData'])) {
 			return $this->uploadPhoto();
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
-			$messages = array();
+			$messages = [];
 			try {
 				include_once dirname(__FILE__) . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
@@ -2433,7 +2433,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return array error messages if any
 	 */
 	private function uploadPhoto() {
-		$messages = array();
+		$messages = [];
 		if ((empty($_FILES['photoFile']) || ($_FILES['photoFile']['size'] <= 0)) && empty($_POST['webcamData'])) {
 			$messages[] = $this->messages['file'][0];
 			return $messages;
@@ -2485,10 +2485,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	function display_html_manager() {
 		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['manager'])) {
-			$this->attributes['manager'] = array();
+			$this->attributes['manager'] = [];
 		}
 		// show list of possible new managers
-		$options = array();
+		$options = [];
 		$filter = get_ldap_filter('user');
 		$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', array('dn'), array('user'));
 		for ($i = 0; $i < sizeof($entries); $i++) {
@@ -2499,7 +2499,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}
-		$selectedManager = array();
+		$selectedManager = [];
 		if (!empty($this->attributes['manager'][0])) {
 			$selectedManager[] = $this->attributes['manager'][0];
 		}
@@ -2527,7 +2527,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	* @return array list of info/error messages
 	*/
 	function process_manager() {
-		$return = array();
+		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManager'])) {
 			if (!empty($this->attributes['manager'])) {
 				unset($this->attributes['manager']);
@@ -2548,8 +2548,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$return = new htmlResponsiveRow();
 		if ($this->get_scope()=='user') {
 			// Get list of all hosts.
-			$userWorkstations = array();
-			$availableUserWorkstations = array();
+			$userWorkstations = [];
+			$availableUserWorkstations = [];
 
 			$result = $this->getHostList();
 			foreach ($result as $host) {
@@ -2564,15 +2564,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 
 			$return->add(new htmlSubTitle(_("Allowed workstations")), 12);
 
-			$userWorkstationsOptions = array();
+			$userWorkstationsOptions = [];
 			foreach ($userWorkstations as $userWorkstation) {
 				$userWorkstationsOptions[$userWorkstation] = $userWorkstation;
 			}
-			$availableUserWorkstationsOptions = array();
+			$availableUserWorkstationsOptions = [];
 			foreach ($availableUserWorkstations as $availableUserWorkstation) {
 				$availableUserWorkstationsOptions[$availableUserWorkstation] = $availableUserWorkstation;
 			}
-			$this->addDoubleSelectionArea($return, _("Allowed workstations"), _("Available workstations"), $userWorkstationsOptions, array(), $availableUserWorkstationsOptions, array(), 'workstations', false, true);
+			$this->addDoubleSelectionArea($return, _("Allowed workstations"), _("Available workstations"), $userWorkstationsOptions, [], $availableUserWorkstationsOptions, [], 'workstations', false, true);
 
 			$return->addVerticalSpacer('2rem');
 
@@ -2591,7 +2591,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	function process_userWorkstations() {
 		// Load attributes
 		if (isset($_POST['workstations_2']) && isset($_POST['workstations_left'])) { // Add workstations to list
-			$workstations = array();
+			$workstations = [];
 			if (isset($this->attributes['userWorkstations'][0])) {
 				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
 				$workstations = explode (',', $temp);
@@ -2637,7 +2637,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 			}
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2666,7 +2666,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		$messages = array();
+		$messages = [];
 		// set groups
 		$groups = $this->findGroups();
 		$toAdd = array_values(array_diff($this->groupList, $this->groupList_orig));
@@ -2715,17 +2715,17 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @see baseModule::build_uploadAccounts()
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		$errors = array();
+		$errors = [];
 		// get list of existing groups
 		$groupList = $this->findGroups();
-		$groupMap = array();
+		$groupMap = [];
 		foreach ($groupList as $dn) {
 			$groupMap[extractRDNValue($dn)] = $dn;
 		}
 		$existingUsers = $this->getUserNames();
 		$existingCns = $this->getCns();
 		$existingMailAccounts = searchLDAPByAttribute(null, null, 'user', array('mail', 'otherMailbox'), array('user'));
-		$existingMails = array();
+		$existingMails = [];
 		foreach ($existingMailAccounts as $existingMailAccount) {
 			if (!empty($existingMailAccount['mail'][0])) {
 				$existingMails[] = $existingMailAccount['mail'][0];
@@ -3034,7 +3034,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			// groups
 			if (isset($ids['windowsUser_groups']) && ($rawAccounts[$i][$ids['windowsUser_groups']] != "")) {
 				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_groups']]);
-				$invalidGroups = array();
+				$invalidGroups = [];
 				foreach ($valueList as $group) {
 					if (!in_array($group, $groupList) && !isset($groupMap[$group])) {
 						$invalidGroups[] = $group;
@@ -3139,15 +3139,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// on first call generate list of ldap operations
 		if (!isset($temp['counter'])) {
 			$groupList = $this->findGroups();
-			$groupMap = array();
+			$groupMap = [];
 			foreach ($groupList as $dn) {
 				$groupMap[extractRDNValue($dn)] = $dn;
 			}
 			$temp['groups'] = &$groupList;
 			$temp['groupMap'] = &$groupMap;
-			$temp['members'] = array();
+			$temp['members'] = [];
 			$temp['memberCount'] = 0;
-			$temp['pwdChange'] = array();
+			$temp['pwdChange'] = [];
 			$temp['pwdChangeCount'] = 0;
 			$groupCol = $ids['windowsUser_groups'];
 			$passwordChangeRequiredCol = $ids['windowsUser_pwdMustChange'];
@@ -3174,7 +3174,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			return array(
 				'status' => 'inProgress',
 				'progress' => 0,
-				'errors' => array()
+				'errors' => []
 			);
 		}
 		// add users to groups
@@ -3183,7 +3183,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$group = $keys[0];
 			$member = array_pop($temp['members'][$group]);
 			$success = @ldap_mod_add($_SESSION['ldap']->server(), $group, array('member' => $member));
-			$errors = array();
+			$errors = [];
 			if (!$success) {
 				$errors[] = array(
 					"ERROR",
@@ -3206,7 +3206,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		elseif (sizeof($temp['pwdChange']) > 0) {
 			$dn = array_pop($temp['pwdChange']);
 			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, array('pwdLastSet' => '0'));
-			$errors = array();
+			$errors = [];
 			if (!$success) {
 				$errors[] = array(
 					"ERROR",
@@ -3227,7 +3227,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			return array (
 				'status' => 'finished',
 				'progress' => 100,
-				'errors' => array()
+				'errors' => []
 			);
 		}
 	}
@@ -3237,7 +3237,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @see baseModule::get_pdfEntries()
 	 */
 	public function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		$this->addSimplePDFField($return, 'userPrincipalName', _('User name'));
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
 		$this->addSimplePDFField($return, 'sAMAccountName', _('User name (pre W2K)'));
@@ -3303,7 +3303,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$this->addSimplePDFField($return, 'scriptPath', _('Logon script'));
 		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'));
 		$this->addSimplePDFField($return, 'homeDrive', _('Home drive'));
-		$groups = array();
+		$groups = [];
 		foreach ($this->groupList as $group) {
 			$groups[] = extractRDNValue($group);
 		}
@@ -3330,14 +3330,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// domain
 		$domains = $this->getDomains();
 		$domains[] = '';
-		$return->add(new htmlResponsiveSelect('windowsUser_userPrincipalNameDomain', $domains, array(), _('Domain'), 'userPrincipalNameDomain'));
+		$return->add(new htmlResponsiveSelect('windowsUser_userPrincipalNameDomain', $domains, [], _('Domain'), 'userPrincipalNameDomain'));
 		// group memberships
 		$groups = $this->findGroups();
-		$groupOptions = array();
+		$groupOptions = [];
 		foreach ($groups as $dn) {
 			$groupOptions[extractRDNValue($dn)] = $dn;
 		}
-		$groupSelect = new htmlResponsiveSelect('windowsUser_groups', $groupOptions, array(), _('Groups'), 'groups', 10);
+		$groupSelect = new htmlResponsiveSelect('windowsUser_groups', $groupOptions, [], _('Groups'), 'groups', 10);
 		$groupSelect->setHasDescriptiveElements(true);
 		$groupSelect->setMultiSelect(true);
 		$return->add($groupSelect);
@@ -3454,7 +3454,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array();
+		$return = [];
 		if (in_array('unicodePwd', $fields)) {
 			$row = new htmlResponsiveRow();
 			$pwd1 = new htmlResponsiveInputField($this->getSelfServiceLabel('unicodePwd', _('New password')), 'windowsUser_unicodePwd');
@@ -3496,7 +3496,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$row->addField(new htmlOutputText($this->formatAccountExpires($attributes)));
 		$return['accountExpires'] = $row;
 		if (in_array('proxyAddresses', $fields)) {
-			$proxyAddresses = array();
+			$proxyAddresses = [];
 			if (isset($attributes['proxyAddresses'])) {
 				$proxyAddresses = $attributes['proxyAddresses'];
 			}
@@ -3507,7 +3507,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$return['proxyAddresses'] = $row;
 		}
 		if (in_array('otherMailbox', $fields)) {
-			$otherMailbox = array();
+			$otherMailbox = [];
 			if (isset($attributes['otherMailbox'])) {
 				$otherMailbox = $attributes['otherMailbox'];
 			}
@@ -3535,10 +3535,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 		if (in_array('unicodePwd', $fields)
 				&& isset($_POST['windowsUser_unicodePwd'])
 				&& ($_POST['windowsUser_unicodePwd'] != '')) {
@@ -3551,7 +3551,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$userName = empty($attributes['userPrincipalName'][0]) ? null : $attributes['userPrincipalName'][0];
-					$additionalAttrs = array();
+					$additionalAttrs = [];
 					if (!empty($attributes['sn'][0])) {
 						$additionalAttrs[] = $attributes['sn'][0];
 					}
@@ -3666,11 +3666,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
 		if (!in_array(get_class($this), $modules)) {
-			return array();
+			return [];
 		}
 		// check password strength
 		$user = empty($this->attributes['userPrincipalName'][0]) ? null : $this->attributes['userPrincipalName'][0];
-		$additionalAttrs = array();
+		$additionalAttrs = [];
 		if (!empty($this->attributes['sn'][0])) {
 			$additionalAttrs[] = $this->attributes['sn'][0];
 		}
@@ -3690,7 +3690,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$this->attributes['pwdLastSet'][0] = '0';
 		}
 		$this->clearTextPassword = $password;
-		return array();
+		return [];
 	}
 
 	/**
@@ -3769,12 +3769,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$attributeName = strtolower($attributeName);
 		$rootDSE = ldapGetDN("", array('defaultnamingcontext'));
 		if (empty($rootDSE['defaultnamingcontext'][0])) {
-			return array();
+			return [];
 		}
 		$namingContext = $rootDSE['defaultnamingcontext'][0];
 		$policyOptions = ldapGetDN($namingContext, array($attributeName));
 		if (!isset($policyOptions[$attributeName])) {
-			return array();
+			return [];
 		}
 		return $policyOptions[$attributeName];
 	}
@@ -3894,7 +3894,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
-		$return = array();
+		$return = [];
 		$types = array('group');
 		$results = searchLDAPByFilter('(objectClass=group)', array('dn'), $types);
 		$count = sizeof($results);
@@ -3913,7 +3913,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return array domain list
 	 */
 	private function getDomains() {
-		$domains = array();
+		$domains = [];
 		if (!empty($this->moduleSettings['windowsUser_domains'])) {
 			foreach ($this->moduleSettings['windowsUser_domains'] as $domain) {
 				$domain = trim(str_replace('@', '', $domain));
@@ -3934,12 +3934,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($this->cachedUserNameList != null) {
 			return $this->cachedUserNameList;
 		}
-		$this->cachedUserNameList = array();
+		$this->cachedUserNameList = [];
 		$attrs = array('userPrincipalName');
 		$filter = '(&(objectClass=user)(userPrincipalName=*))';
 		$typeManager = new TypeManager();
 		$typesUser = $typeManager->getConfiguredTypesForScope('user');
-		$suffixes = array();
+		$suffixes = [];
 		foreach ($typesUser as $type) {
 			$suffixes[] = $type->getSuffix();
 		}
@@ -3962,12 +3962,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($this->cachedCnList != null) {
 			return $this->cachedCnList;
 		}
-		$this->cachedCnList = array();
+		$this->cachedCnList = [];
 		$attrs = array('cn');
 		$filter = '(&(objectClass=user)(cn=*))';
 		$typeManager = new TypeManager();
 		$typesUser = $typeManager->getConfiguredTypesForScope('user');
-		$suffixes = array();
+		$suffixes = [];
 		foreach ($typesUser as $type) {
 			$suffixes[] = $type->getSuffix();
 		}
@@ -4108,14 +4108,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			'dn' => self::DISPLAY_GROUPS_DN,
 			'cn' => self::DISPLAY_GROUPS_CN,
 		);
-		$groupDisplaySelect = new htmlResponsiveSelect('windowsUser_displayGroups', $displayOptions, array(), _('Display format'), 'displayGroups');
+		$groupDisplaySelect = new htmlResponsiveSelect('windowsUser_displayGroups', $displayOptions, [], _('Display format'), 'displayGroups');
 		$groupDisplaySelect->setHasDescriptiveElements(true);
 		$configContainer->add($groupDisplaySelect, 12);
 		$configHiddenGroup = new htmlGroup();
 		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
 		$configContainer->add($configHiddenGroup, 12);
-		$hiddenOptions = array();
+		$hiddenOptions = [];
 		$hiddenOptions[_('Display name')] = array('windowsUser_hidedisplayName', false);
 		$hiddenOptions[_('Proxy-Addresses')] = array('windowsUser_hideproxyAddresses', true);
 		$hiddenOptions[_('Fax number')] = array('windowsUser_hidefacsimileTelephoneNumber', false);
@@ -4200,7 +4200,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($this->departmentCache != null) {
 			return;
 		}
-		$attrs = array();
+		$attrs = [];
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
 			$attrs[] = 'department';
 		}
@@ -4222,13 +4222,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
 			$attrs[] = 'businessCategory';
 		}
-		$departments = array();
-		$departmentNumbers = array();
-		$ous = array();
-		$os = array();
-		$titles = array();
-		$employeeTypes = array();
-		$businessCategories = array();
+		$departments = [];
+		$departmentNumbers = [];
+		$ous = [];
+		$os = [];
+		$titles = [];
+		$employeeTypes = [];
+		$businessCategories = [];
 		if (sizeof($attrs) > 0) {
 			$result = searchLDAPByFilter('(objectClass=user)', $attrs, array($this->get_scope()));
 			foreach ($result as $attributes) {
@@ -4297,7 +4297,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * {@inheritdoc}
 	 */
 	public function getWildCardReplacements() {
-		$replacements = array();
+		$replacements = [];
 		// first name
 		if (!empty($_POST['givenName'])) {
 			$replacements['firstname'] = $_POST['givenName'];
@@ -4385,7 +4385,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$row->addLabel(new htmlOutputText(_('User name')));
 			$row->addField(new htmlOutputText($this->attributes['userPrincipalName'][0]));
 		}
-		$nameParts = array();
+		$nameParts = [];
 		if (isset($this->attributes['givenName'][0])) {
 			$nameParts[] = $this->attributes['givenName'][0];
 		}
@@ -4411,7 +4411,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		if (!in_array_ignore_case('user', $this->attributes['objectClass'])) {
-			return array();
+			return [];
 		}
 		return array(
 			new PasswordQuickChangeOption('syncWindows', _('Change Windows password'))
@@ -4422,7 +4422,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		$attrs = array();
+		$attrs = [];
 		if (isset($_POST['syncWindows'])) {
 			$attrs['unicodePwd'][0] = self::pwdAttributeValue($password);
 		}
@@ -4443,7 +4443,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
-		$values = array();
+		$values = [];
 		if (isset($this->attributes['sn'][0])) {
 			$values[] = $this->attributes['sn'][0];
 		}
@@ -4467,7 +4467,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
-		$details = array();
+		$details = [];
 		if (self::isDeactivated($attributes)) {
 			$details[] = AccountStatusDetails::newLocked(_('Deactivated'), self::STATUS_ACCOUNT_LOCKED);
 		}
@@ -4495,7 +4495,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
-		$options = array();
+		$options = [];
 		if (!self::isDeactivated($attributes)) {
 			$options[] = AccountStatusDetails::newLocked(_('Deactivated'), self::STATUS_ACCOUNT_LOCKED);
 		}
@@ -4664,7 +4664,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function getPolicyOptions() {
 			$typeManager = new TypeManager();
-			$maxPwdAge = array();
+			$maxPwdAge = [];
 			foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
 				$userSuffix = $type->getSuffix();
 				if (empty($userSuffix)) {
@@ -4837,7 +4837,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				_('Half-yearly') => self::PERIOD_HALF_YEARLY,
 				_('Yearly') => self::PERIOD_YEARLY,
 			);
-			$periodSelect = new htmlResponsiveSelect($prefix . '_period' . $jobID, $periodOptions, array(), _('Period'), '811');
+			$periodSelect = new htmlResponsiveSelect($prefix . '_period' . $jobID, $periodOptions, [], _('Period'), '811');
 			$periodSelect->setHasDescriptiveElements(true);
 			$periodSelect->setSortElements(false);
 			$container->add($periodSelect, 12);
@@ -4849,7 +4849,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		public function checkConfigOptions($jobID, $options) {
 			$prefix = $this->getConfigPrefix();
-			$errors = array();
+			$errors = [];
 			// from address
 			if (empty($options[$prefix . '_mailFrom' . $jobID][0])
 				|| !(get_preg($options[$prefix . '_mailFrom' . $jobID][0], 'email')
@@ -4889,7 +4889,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @inheritDoc
 		 */
 		protected function getPolicyOptions() {
-			return array();
+			return [];
 		}
 
 		/**
@@ -4906,14 +4906,14 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$attrs = array_values(array_unique(array_merge($attrs, $sysAttrs)));
 			$users = searchLDAPByFilter('(&(mail=*)(managedObjects=*))', $attrs, array('user'));
 			$groups = searchLDAPByFilter('(managedBy=*)', array('cn', 'member'), array('group'));
-			$groupByDn = array();
+			$groupByDn = [];
 			foreach ($groups as $group) {
 				$groupByDn[$group['dn']] = $group;
 			}
 			unset($groups);
 			foreach ($users as $index => $user) {
 				$managedObjectDns = $user['managedobjects'];
-				$managedGroups = array();
+				$managedGroups = [];
 				foreach ($managedObjectDns as $managedObjectDn) {
 					if (array_key_exists($managedObjectDn, $groupByDn)) {
 						$managedGroups[] = $groupByDn[$managedObjectDn];
