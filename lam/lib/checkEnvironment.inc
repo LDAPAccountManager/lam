@@ -60,7 +60,7 @@ if (version_compare(phpversion(), '8.0.2') < 0) {
 }
 
 // check environment
-$criticalErrors = array();
+$criticalErrors = [];
 // check if PHP has session support
 if (!function_exists('session_start')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no session support!", "Please install the session extension for PHP.");

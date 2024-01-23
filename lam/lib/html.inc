@@ -73,11 +73,11 @@ abstract class htmlElement {
 	/** rowspan if inside a table */
 	public $rowspan;
 	/** CSS classes */
-	protected $cssClasses = array();
+	protected $cssClasses = [];
 	/** table cell CSS classes */
-	protected $tableCellCssClasses = array();
+	protected $tableCellCssClasses = [];
 	/** data attributes */
-	private $dataAttributes = array();
+	private $dataAttributes = [];
 	/** accessibility label */
 	private ?string $accessibilityLabel = null;
 
@@ -241,7 +241,7 @@ class htmlTable extends htmlElement {
 	const NEWLINE = "</tr><tr>\n";
 
 	/** list of subelements */
-	private $elements = array();
+	private $elements = [];
 	/** specifies if currently a row is open */
 	private $rowOpen = false;
 	/** table width */
@@ -340,7 +340,7 @@ class htmlTable extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		$width = '';
 		if ($this->width != null) {
 			$width = ' width="' . htmlspecialchars($this->width) . '"';
@@ -445,7 +445,7 @@ class htmlInputField extends htmlElement {
 	/** enable autocomplete */
 	protected $autocomplete = false;
 	/** autocompletion suggestions */
-	protected $autocompleteValues = array();
+	protected $autocompleteValues = [];
 	/** show calendar */
 	protected $showCalendar = false;
 	/** show DN selection */
@@ -666,7 +666,7 @@ class htmlInputField extends htmlElement {
 			';
 		}
 		if ($this->transient) {
-			return array();
+			return [];
 		}
 		if ($this->obfuscate) {
 			return array($this->fieldName => 'text_obfuscated');
@@ -945,10 +945,10 @@ class htmlHelpLink extends htmlElement {
 		// print link
 		$helpEntry = getHelp($module, $this->helpID, $scope);
 		if (empty($helpEntry)) {
-			return array();
+			return [];
 		}
 		printHelpLink($helpEntry, $this->helpID, $module, $scope, $this->cssClasses);
-		return array();
+		return [];
 	}
 
 }
@@ -1004,7 +1004,7 @@ class htmlButton extends htmlElement {
 		if ($restricted) {
 			// no buttons in restricted mode
 			logNewMessage(LOG_ERR, 'Meta HTML: Requested button in restricted mode.');
-			return array();
+			return [];
 		}
 		$style = '';
 		$classList = $this->cssClasses;
@@ -1148,7 +1148,7 @@ class htmlSelect extends htmlElement {
 	/** elements */
 	private $elements;
 	/** selected elements */
-	private $selectedElements = array();
+	private $selectedElements = [];
 	/** descriptive elements */
 	private $hasDescriptiveElements = false;
 	/** contains optgroups */
@@ -1168,13 +1168,13 @@ class htmlSelect extends htmlElement {
 	/** indicates that this field should not automatically be saved in the self service or server profile */
 	private $transient = false;
 	/** list of enclosing table rows to hide when checked */
-	protected $tableRowsToHide = array();
+	protected $tableRowsToHide = [];
 	/** list of enclosing table rows to show when checked */
-	protected $tableRowsToShow = array();
+	protected $tableRowsToShow = [];
 	/** dynamic scrolling */
 	private $dynamicScrolling = false;
 	/** CSS classes for values */
-	private $optionCssClasses = array();
+	private $optionCssClasses = [];
 
 	/**
 	 * Constructor.
@@ -1195,7 +1195,7 @@ class htmlSelect extends htmlElement {
 	 * @param array $selectedElements list of selected elements (optional, default none)
 	 * @param int $size size (optional, default = 1)
 	 */
-	function __construct($name, $elements, $selectedElements = array(), $size = 1) {
+	function __construct($name, $elements, $selectedElements = [], $size = 1) {
 		$this->name = htmlspecialchars($name);
 		$this->elements = $elements;
 		if ($selectedElements != null) {
@@ -1284,7 +1284,7 @@ class htmlSelect extends htmlElement {
 			}
 		}
 		if ($this->transient) {
-			return array();
+			return [];
 		}
 		if ($this->multiSelect) {
 			return array($this->name => 'multiselect');
@@ -1309,7 +1309,7 @@ class htmlSelect extends htmlElement {
 			if ($this->hasDescriptiveElements) {
 				$labels = array_keys($elements);
 				natcasesort($labels);
-				$newElements = array();
+				$newElements = [];
 				foreach ($labels as $label) {
 					$newElements[$label] = $elements[$label];
 				}
@@ -1476,7 +1476,7 @@ class htmlSelect extends htmlElement {
 		if ((sizeof($this->tableRowsToHide) == 0) && (sizeof($this->tableRowsToShow) == 0)) {
 			return;
 		}
-		$values = array();
+		$values = [];
 		if (!empty($this->tableRowsToHide)) {
 			$values = array_merge($values, array_keys($this->tableRowsToHide));
 		}
@@ -1537,7 +1537,7 @@ class htmlSelect extends htmlElement {
 			return;
 		}
 		$this->dynamicScrolling = true;
-		$elementData = array();
+		$elementData = [];
 		$counter = 0;
 		foreach ($this->elements as $key => $value) {
 			$elementData[] = array(
@@ -1581,9 +1581,9 @@ class htmlRadio extends htmlElement {
 	/** on change code */
 	private $onchangeEvent;
 	/** list of enclosing table rows to hide when checked */
-	protected $tableRowsToHide = array();
+	protected $tableRowsToHide = [];
 	/** list of enclosing table rows to show when checked */
-	protected $tableRowsToShow = array();
+	protected $tableRowsToShow = [];
 
 	/**
 	 * Constructor.
@@ -1691,7 +1691,7 @@ class htmlRadio extends htmlElement {
 		if ((sizeof($this->tableRowsToHide) == 0) && (sizeof($this->tableRowsToShow) == 0)) {
 			return;
 		}
-		$values = array();
+		$values = [];
 		if (!empty($this->tableRowsToHide)) {
 			$values = array_merge($values, array_keys($this->tableRowsToHide));
 		}
@@ -1855,7 +1855,7 @@ class htmlOutputText extends htmlElement {
 		if (!empty($this->title)) {
 			echo "</span>";
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -1919,15 +1919,15 @@ class htmlInputCheckbox extends htmlElement {
 	/** enabled or disabled */
 	protected $isEnabled = true;
 	/** list of enclosing table rows to hide when checked */
-	protected $tableRowsToHide = array();
+	protected $tableRowsToHide = [];
 	/** list of enclosing table rows to show when checked */
-	protected $tableRowsToShow = array();
+	protected $tableRowsToShow = [];
 	/** indicates that this field should not automatically be saved in the self service or server profile */
 	private $transient = false;
 	/** list of input elements to enable when checked */
-	protected $elementsToEnable = array();
+	protected $elementsToEnable = [];
 	/** list of input elements to disable when checked */
-	protected $elementsToDisable = array();
+	protected $elementsToDisable = [];
 	/** onclick event code */
 	private $onClick;
 	/** title */
@@ -2068,7 +2068,7 @@ class htmlInputCheckbox extends htmlElement {
 			. $this->getAccessibilityMarkup() . $this->getDataAttributesAsString() . $onChange . $onClick . $title . $checked . $disabled . '>';
 		echo $script;
 		if ($this->transient) {
-			return array();
+			return [];
 		}
 		return array($this->name => 'checkbox');
 	}
@@ -2594,7 +2594,7 @@ class htmlImage extends htmlElement {
 			echo '<input id="croppingDataWidth" type="hidden" name="croppingDataWidth" value="0"/>';
 			echo '<input id="croppingDataHeight" type="hidden" name="croppingDataHeight" value="0"/>';
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2654,7 +2654,7 @@ class htmlSpacer extends htmlElement {
 	 * @param string|null $height height (e.g. 10px)
 	 * @param array|null $cssClasses CSS classes
 	 */
-	function __construct($width, $height = null, ?array $cssClasses = array()) {
+	function __construct($width, $height = null, ?array $cssClasses = []) {
 		if ($width !== null) {
 			$this->width = htmlspecialchars($width);
 		}
@@ -2690,7 +2690,7 @@ class htmlSpacer extends htmlElement {
 			$classes = 'class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo "<div $classes style=\"$width $height display: inline-block;\"></div>\n";
-		return array();
+		return [];
 	}
 
 }
@@ -2768,7 +2768,7 @@ class htmlStatusMessage extends htmlElement {
 		if (!empty($this->cssClasses)) {
 			echo '</div>';
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2819,7 +2819,7 @@ class htmlTitle extends htmlElement {
 		echo $this->label;
 		echo "</h2>\n";
 		echo "</div>\n";
-		return array();
+		return [];
 	}
 
 }
@@ -2893,7 +2893,7 @@ class htmlSubTitle extends htmlElement {
 		}
 		echo "</h4>\n";
 		echo "</div>\n";
-		return array();
+		return [];
 	}
 
 	/**
@@ -3036,7 +3036,7 @@ class htmlLink extends htmlElement {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $onMouseOver . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
-		return array();
+		return [];
 	}
 
 	/**
@@ -3177,7 +3177,7 @@ class htmlContentLink extends htmlLink {
 class htmlGroup extends htmlElement {
 
 	/** link text */
-	private $subelements = array();
+	private $subelements = [];
 
 	/**
 	 * Prints the HTML code for this element.
@@ -3190,7 +3190,7 @@ class htmlGroup extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		for ($i = 0; $i < sizeof($this->subelements); $i++) {
 			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted, $scope));
 		}
@@ -3226,7 +3226,7 @@ class htmlHorizontalLine extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		echo "<hr>";
 		return $return;
 	}
@@ -3272,7 +3272,7 @@ class htmlDiv extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
@@ -3327,7 +3327,7 @@ class htmlSpan extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		$classesValue = '';
 		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -3398,7 +3398,7 @@ class htmlJavaScript extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		echo '<script type="text/javascript">';
 		echo $this->content;
 		echo '</script>';
@@ -3431,7 +3431,7 @@ class htmlIframe extends htmlElement {
 	 * @see htmlElement::generateHTML()
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		$idAttr = '';
 		if (!empty($this->id)) {
 			$idAttr = ' id="' . $this->id . '"';
@@ -3481,7 +3481,7 @@ class htmlScript extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		$async = $this->async ? ' async' : '';
 		$defer = $this->defer ? ' defer="defer"' : '';
 		echo '<script src="' . $this->src . '"' . $async . $defer . '>';
@@ -3521,7 +3521,7 @@ class htmlLinkCss extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		echo '<link href="' . $this->src . '" type="text/css" rel="stylesheet"/>';
 		return $return;
 	}
@@ -3565,9 +3565,9 @@ class htmlSortableList extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		if (sizeof($this->elements) == 0) {
-			return array();
+			return [];
 		}
-		$return = array();
+		$return = [];
 		$classesValue = '';
 		if (!empty($this->cssClasses)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -3649,7 +3649,7 @@ class htmlAccordion extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$result = array();
+		$result = [];
 		if ($this->openInitial !== false) {
 			$this->addDataAttribute('openinitial', $this->openInitial);
 		}
@@ -3718,7 +3718,7 @@ class htmlAccordion extends htmlElement {
 class htmlResponsiveRow extends htmlElement {
 
 	/** @var htmlResponsiveCell[] cells */
-	private $cells = array();
+	private $cells = [];
 	/** HTML ID */
 	private $id;
 
@@ -3729,7 +3729,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param htmlElement $field field element if this is a simple label+field row
 	 */
 	public function __construct($label = null, $field = null) {
-		$this->cells = array();
+		$this->cells = [];
 		if ($label != null) {
 			$this->addLabel($label);
 		}
@@ -3826,7 +3826,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		$cssClasses = implode(' ', $this->cssClasses);
 		$idParam = '';
 		if ($this->id !== null) {
@@ -4463,18 +4463,18 @@ class htmlResponsiveTable extends htmlElement {
 	private $data;
 
 	/** widthes of the columns */
-	private $widths = array();
+	private $widths = [];
 
 	/** highlighted rows */
-	private $highlighted = array();
+	private $highlighted = [];
 	/** CSS class for odd row numbers */
 	private $cssOddRow;
 	/** CSS class for even row numbers */
 	private $cssEvenRow;
 	/** onclick code (row number => code) */
-	private $onClick = array();
+	private $onClick = [];
 	/** ondoubleclick code (row number => code) */
-	private $onDoubleClick = array();
+	private $onDoubleClick = [];
 
 	/**
 	 * Creates the table.
@@ -4496,7 +4496,7 @@ class htmlResponsiveTable extends htmlElement {
 	 * @see htmlElement::generateHTML()
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		$classes = $this->cssClasses;
 		$classes[] = 'responsive-table';
 		echo '<table class="' . implode(' ', $classes) . '">';
@@ -4519,7 +4519,7 @@ class htmlResponsiveTable extends htmlElement {
 		$counter = 0;
 		foreach ($this->data as $row) {
 			$cssClass = '';
-			$cssClasses = array();
+			$cssClasses = [];
 			if (in_array($counter, $this->highlighted)) {
 				$cssClasses[] = 'highlighted';
 			}
@@ -4624,7 +4624,7 @@ class htmlCanvas extends htmlElement {
 		}
 		echo '<canvas id="' . $this->id . '" ' . $classesValue . '>';
 		echo '</canvas>';
-		return array();
+		return [];
 	}
 }
 
@@ -4656,7 +4656,7 @@ class htmlVideo extends htmlElement {
 		}
 		echo '<video id="' . $this->id . '" ' . $classesValue . '>';
 		echo '</video>';
-		return array();
+		return [];
 	}
 }
 
@@ -4697,7 +4697,7 @@ class htmlForm extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$return = array();
+		$return = [];
 		echo '<form name="' . $this->name . '" action="' . $this->action . '" method="post" enctype="multipart/form-data">';
 		if ($this->content != null) {
 			$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
@@ -4713,7 +4713,7 @@ class htmlForm extends htmlElement {
  */
 class htmlList extends htmlElement {
 
-	private $elements = array();
+	private $elements = [];
 
 	private $isOrdered = false;
 
@@ -4743,7 +4743,7 @@ class htmlList extends htmlElement {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<' . $parentTag . $idValue . $classesValue . '>';
-		$return = array();
+		$return = [];
 		foreach ($this->elements as $element) {
 			echo '<li>';
 			$return = array_merge($return, $element->generateHTML($module, $input, $values, $restricted, $scope));
@@ -4792,7 +4792,7 @@ class htmlLabel extends htmlElement {
 		if ($this->markAsRequired) {
 			echo htmlGetRequiredMarker();
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -4841,7 +4841,7 @@ class htmlProgressbar extends htmlElement {
 			echo '<div class="lam-progressbar-bar" style="width: ' . $this->progress . '%">';
 			echo '</div>';
 		echo '</div>';
-		return array();
+		return [];
 	}
 
 }

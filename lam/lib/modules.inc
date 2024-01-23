@@ -105,7 +105,7 @@ function get_ldap_filter($typeId) {
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$type = $typeManager->getConfiguredType($typeId);
 	$mods = $_SESSION['config']->get_AccountModules($typeId);
-	$filters = array('or' => array(), 'and' => array());
+	$filters = array('or' => [], 'and' => []);
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $type->getScope());
@@ -164,9 +164,9 @@ function getRDNAttributes($typeId, $selectedModules=null) {
 	if ($selectedModules != null) {
 		$mods = $selectedModules;
 	}
-	$attrs_low = array();
-	$attrs_normal = array();
-	$attrs_high = array();
+	$attrs_low = [];
+	$attrs_normal = [];
+	$attrs_high = [];
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		// get list of attributes
 		$module = moduleCache::getModule($mods[$i], \LAM\TYPES\getScopeFromTypeId($typeId));
@@ -232,7 +232,7 @@ function getModulesDependencies($scope) {
 * otherwise an array of array(selected module, depending module) if missing dependencies were found
 */
 function check_module_depends($selected, $deps) {
-	$ret = array();
+	$ret = [];
 	for ($m = 0; $m < sizeof($selected); $m++) {  // check selected modules
 		for ($i = 0; $i < sizeof($deps[$selected[$m]]['depends']); $i++) {  // check dependencies of module
 			// check if we have OR-combined modules
@@ -275,7 +275,7 @@ function check_module_depends($selected, $deps) {
 * otherwise an array of array(selected module, conflicting module) if conflicts were found
 */
 function check_module_conflicts($selected, $deps) {
-	$ret = array();
+	$ret = [];
 	for ($m = 0; $m < sizeof($selected); $m++) {
 		for ($i = 0; $i < sizeof($deps[$selected[$m]]['conflicts']); $i++) {
 			if (in_array($deps[$selected[$m]]['conflicts'][$i], $selected)) {
@@ -299,7 +299,7 @@ function check_module_conflicts($selected, $deps) {
 function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 12) . "/modules";
 	$dir = dir($dirname);
-	$return = array();
+	$return = [];
 	// get module names.
 	while ($entry = $dir->read()) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
@@ -329,7 +329,7 @@ function getProfileOptions($typeId) {
 	$typeManager = new TypeManager();
 	$type = $typeManager->getConfiguredType($typeId);
 	$mods = $type->getModules();
-	$return = array();
+	$return = [];
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $type->getScope());
 		$moduleOptions = $module->get_profileOptions($typeId);
@@ -351,7 +351,7 @@ function checkProfileOptions($typeId, $options) {
 	$typeManager = new TypeManager();
 	$type = $typeManager->getConfiguredType($typeId);
 	$mods = $type->getModules();
-	$return = array();
+	$return = [];
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $type->getScope());
 		$temp = $module->check_profileOptions($options, $type->getId());
@@ -367,7 +367,7 @@ function checkProfileOptions($typeId, $options) {
 * @return array configuration options
 */
 function getConfigOptions(array $moduleToScopes): array {
-	$return = array();
+	$return = [];
 	foreach ($moduleToScopes as $module => $typeIds) {
 		$m = moduleCache::getModule($module, getScopeFromTypeId($typeIds[0]));
 		$return[$module] = $m->get_configOptions($typeIds, $moduleToScopes);
@@ -383,7 +383,7 @@ function getConfigOptions(array $moduleToScopes): array {
 * @return array list of error messages
 */
 function checkConfigOptions($moduleToTypeIds, &$options) {
-	$return = array();
+	$return = [];
 	foreach ($moduleToTypeIds as $module => $typeIds) {
 		$m = moduleCache::getModule($module, getScopeFromTypeId($typeIds[0]));
 		$errors = $m->check_configOptions($typeIds, $options);
@@ -429,11 +429,11 @@ function getAvailablePDFFields($typeId) {
 	$_SESSION['pdfContainer'] = new accountContainer($typeManager->getConfiguredType($typeId), 'pdfContainer');
 	$_SESSION['pdfContainer']->initModules();
 	$mods = $_SESSION['pdfContainer']->getAccountModules();
-	$return = array();
+	$return = [];
 	foreach ($mods as $module) {
 		$fields = $module->get_pdfFields($typeId);
 		$moduleName = get_class($module);
-		$return[$moduleName] = array();
+		$return[$moduleName] = [];
 		if (is_array($fields)) {
 			foreach ($fields as $fieldID => $fieldLabel) {
 				if (is_integer($fieldID)) {
@@ -468,7 +468,7 @@ function getAvailablePDFFields($typeId) {
 * @return array column list
 */
 function getUploadColumns(&$type, $selectedModules) {
-	$return = array();
+	$return = [];
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
 		$module = moduleCache::getModule($selectedModules[$i], $type->getScope());
 		$return[$selectedModules[$i]] = $module->get_uploadColumns($selectedModules, $type);
@@ -491,8 +491,8 @@ function getUploadColumns(&$type, $selectedModules) {
 function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiveRow $container) {
 	// build module order
 	$unOrdered = $selectedModules;
-	$ordered = array();
-	$predepends = array();
+	$ordered = [];
+	$predepends = [];
 	// get dependencies
 	for ($i = 0; $i < sizeof($unOrdered); $i++) {
 		$mod = moduleCache::getModule($unOrdered[$i], $type->getScope());
@@ -537,10 +537,10 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 		return false;
 	}
 	// give raw data to modules
-	$errors = array();
-	$partialAccounts = array();
+	$errors = [];
+	$partialAccounts = [];
 	foreach ($data as $i => $dataRow) {
-		$partialAccounts[$i]['objectClass'] = array();
+		$partialAccounts[$i]['objectClass'] = [];
 	}
 	$stopUpload = false;
 	for ($i = 0; $i < sizeof($ordered); $i++) {
@@ -586,7 +586,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
  * @return array array which contains status messages. Each entry is an array containing the status message parameters.
  */
 function doUploadPreActions($type, $selectedModules, $attributes) {
-	$messages = array();
+	$messages = [];
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
 		$activeModule = $selectedModules[$i];
 		$module = moduleCache::getModule($activeModule, $type->getScope());
@@ -622,7 +622,7 @@ function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$a
 	$activeModule = $_SESSION['mass_postActions']['remainingModules'][0];
 	// initialize temporary variable
 	if (!isset($_SESSION['mass_postActions'][$activeModule])) {
-		$_SESSION['mass_postActions'][$activeModule] = array();
+		$_SESSION['mass_postActions'][$activeModule] = [];
 	}
 	// let first module do one post action
 	$module = moduleCache::getModule($activeModule, $type->getScope());
@@ -649,7 +649,7 @@ function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$a
 * @return array required extensions
 */
 function getRequiredExtensions() {
-	$extList = array();
+	$extList = [];
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypes();
 	foreach ($types as $type) {
@@ -685,13 +685,13 @@ function parseHtml($module, $input, $values, $restricted, $scope) {
 		return $input->generateHTML($module, $input, $values, $restricted, $scope);
 	}
 	if (is_array($input) && (sizeof($input) > 0)) {
-		$return = array();
+		$return = [];
 		for ($i = 0; $i < sizeof($input); $i++) {
 			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $scope));
 		}
 		return $return;
 	}
-	return array();
+	return [];
 }
 
 /**
@@ -719,7 +719,7 @@ function lamCompareDescriptiveOptions(&$a, &$b) {
  * @param String $scope account scope
  * @param array $classes CSS classes
  */
-function printHelpLink($entry, $number, $module = '', $scope = '', $classes = array()) {
+function printHelpLink($entry, $number, $module = '', $scope = '', $classes = []) {
 	$helpPath = "../";
 	if (is_file("./help.php")) {
 		$helpPath = "";
@@ -839,7 +839,7 @@ class accountContainer {
 	/**
 	 * @var array additional attributes for pre/post actions
 	 */
-	private $extraInfoAttributes = array();
+	private $extraInfoAttributes = [];
 
 	/**
 	 * @var bool errors occurred after saving LDAP data (postModify scripts)
@@ -896,7 +896,7 @@ class accountContainer {
 	public function continue_main() {
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
-		$result = array();
+		$result = [];
 		$errorsOccurred = false;
 		$typeObject = $this->type->getBaseType();
 		$profileLoaded = $this->loadProfileIfRequested();
@@ -968,7 +968,7 @@ class accountContainer {
 			if (!$errorsOccurred && isset($_POST['accountContainerSaveAccount'])) {
 				// check if all modules are complete
 				$modules = array_keys($this->module);
-				$incompleteModules = array();
+				$incompleteModules = [];
 				foreach ($modules as $module) {
 					if (!$this->module[$module]->module_complete()) {
 						$incompleteModules[] = $this->module[$module]->get_alias();
@@ -1047,7 +1047,7 @@ class accountContainer {
 			&& isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 			// scroll to last position
 			$scrollJs = new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] .', ' . $_POST['scrollPositionLeft'] . ')');
-			parseHtml(null, $scrollJs, array(), false, $this->type->getScope());
+			parseHtml(null, $scrollJs, [], false, $this->type->getScope());
 		}
 		$this->printPageFooter();
 	}
@@ -1088,7 +1088,7 @@ class accountContainer {
 		$titleBarSuffixRdn = new htmlResponsiveRow();
 		$titleBarSuffixRdn->add(new htmlHorizontalLine(), 12);
 		// suffix
-		$suffixList = array();
+		$suffixList = [];
 		foreach ($this->getOUs() as $suffix) {
 			$suffixList[getAbstractDN($suffix)] = $suffix;
 		}
@@ -1111,7 +1111,7 @@ class accountContainer {
 		$titleBarContainer->add($titleBarSuffixRdn);
 
 		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar'));
-		parseHtml(null, $titleBarDiv, array(), false, $this->type->getScope());
+		parseHtml(null, $titleBarDiv, [], false, $this->type->getScope());
 
 		echo '<div id="lamVerticalTabs" class="lam-vertical-tab-container">';
 		echo '<table class="lam-vertical-tabs fullwidth">';
@@ -1128,7 +1128,7 @@ class accountContainer {
 			catch (LAMException $e) {
 				$return = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
-			parseHtml($this->order[$this->current_page], $return, array(), false, $this->type->getScope());
+			parseHtml($this->order[$this->current_page], $return, [], false, $this->type->getScope());
 			echo "</div>\n";
 			echo '</td>';
 			echo '</tr>';
@@ -1159,7 +1159,7 @@ class accountContainer {
 		$pwdInput2->setSameValueFieldID('newPassword1');
 		$container->add($pwdInput2);
 		// print force password change option
-		$forceChangeSupported = array();
+		$forceChangeSupported = [];
 		foreach ($this->module as $module) {
 			if (($module instanceof passwordService) && $module->supportsForcePasswordChange()) {
 				$forceChangeSupported[] = $module;
@@ -1235,7 +1235,7 @@ class accountContainer {
 		$container->add($buttonGroup);
 		// generate HTML
 		if ($printContainer) {
-			parseHtml(null, $container, array(), false, $this->type->getScope());
+			parseHtml(null, $container, [], false, $this->type->getScope());
 		}
 		echo "</div>\n";
 		echo "</div>\n";
@@ -1250,7 +1250,7 @@ class accountContainer {
 		$password1 = $input['password1'];
 		$password2 = $input['password2'];
 		$random = $input['random'] === 'true';
-		$modules = array();
+		$modules = [];
 		foreach ($input['modules'] as $moduleName) {
 			$moduleName = str_replace('password_cb_', '', $moduleName);
 			if (array_key_exists($moduleName, $this->module)) {
@@ -1268,19 +1268,19 @@ class accountContainer {
 		if ($random) {
 			$password1 = generateRandomPassword();
 			if (!$sendMail) {
-				$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . htmlspecialchars($password1), '', array(), true);
+				$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . htmlspecialchars($password1), '', [], true);
 			}
 		}
 		else {
 			// check if passwords match
 			if ($password1 != $password2) {
-				$return['messages'] .= StatusMessage('ERROR', _('Passwords are different!'), '', array(), true);
+				$return['messages'] .= StatusMessage('ERROR', _('Passwords are different!'), '', [], true);
 				$return['errorsOccurred'] = 'true';
 			}
 			// check password strength
 			$pwdPolicyResult = checkPasswordStrength($password1, null, null);
 			if ($pwdPolicyResult !== true) {
-				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', array(), true);
+				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', [], true);
 				$return['errorsOccurred'] = 'true';
 			}
 		}
@@ -1299,10 +1299,10 @@ class accountContainer {
 							$return['errorsOccurred'] = 'true';
 						}
 						if (sizeof($messages[$m]) == 2) {
-							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], '', array(), true);
+							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], '', [], true);
 						}
 						elseif (sizeof($messages[$m]) == 3) {
-							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], array(), true);
+							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], [], true);
 						}
 						elseif (sizeof($messages[$m]) == 4) {
 							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], $messages[$m][3], true);
@@ -1315,14 +1315,14 @@ class accountContainer {
 			$this->sendPasswordViaMail = $password1;
 			if (($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false') && !empty($input['sendMailAlternateAddress'])) {
 				if (!get_preg($input['sendMailAlternateAddress'], 'email')) {
-					$return['messages'] .= StatusMessage('ERROR', _('Alternate recipient'), _('Please enter a valid email address!'), array(), true);
+					$return['messages'] .= StatusMessage('ERROR', _('Alternate recipient'), _('Please enter a valid email address!'), [], true);
 					$return['errorsOccurred'] = 'true';
 				}
 				$this->sendPasswordViaMailAlternateAddress = $input['sendMailAlternateAddress'];
 			}
 		}
 		if ($return['errorsOccurred'] == 'false') {
-			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', array(), true);
+			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', [], true);
 			$this->extraInfoAttributes['INFO.passwordUpdated'] = 'yes';
 			$this->extraInfoAttributes['INFO.forcePasswordChange'] = $forcePasswordChange ? 'yes' : 'no';
 			$this->extraInfoAttributes['INFO.passwordChangeModules'] = implode(', ', $modules);
@@ -1414,7 +1414,7 @@ class accountContainer {
 		}
 		$row->add($rightGroup, 12, 3, 3, 'text-right');
 
-		parseHtml(null, $row, array(), false, $this->type->getScope());
+		parseHtml(null, $row, [], false, $this->type->getScope());
 	}
 
 	/**
@@ -1509,7 +1509,7 @@ class accountContainer {
 		$buttonGroup->addElement($backToEditButton);
 		$container->add($buttonGroup);
 
-		parseHtml(null, $container, array(), false, $this->type->getScope());
+		parseHtml(null, $container, [], false, $this->type->getScope());
 
 		echo "</div>\n";
 		$this->printPageFooter();
@@ -1590,11 +1590,11 @@ class accountContainer {
 	* @return array an array which can be passed to $this->saveAccount()
 	*/
 	function save_module_attributes($attributes, $orig) {
-		$return = array();
-		$toadd = array();
-		$tomodify = array();
-		$torem = array();
-		$notchanged = array();
+		$return = [];
+		$toadd = [];
+		$tomodify = [];
+		$torem = [];
+		$notchanged = [];
 		// get list of all attributes
 		$attr_names = array_keys($attributes);
 		$orig_names = array_keys($orig);
@@ -1683,12 +1683,12 @@ class accountContainer {
 	* E.g. this is used to inject the clear text password in the file upload. Informational attribute names must start with "INFO.".
 	* @return array error messages
 	*/
-	function load_account($dn, $infoAttributes = array()) {
+	function load_account($dn, $infoAttributes = []) {
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->extraInfoAttributes['INFO.isNewAccount'] = 'no';
 		$this->extraInfoAttributes['INFO.passwordUpdated'] = 'no';
 		$this->extraInfoAttributes['INFO.passwordChangeType'] = 'none';
-		$this->module = array();
+		$this->module = [];
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 		$filter = 'objectClass=*';
 		$searchAttrs = array('*', '+');
@@ -1743,7 +1743,7 @@ class accountContainer {
 		$this->titleBarIcon = $typeObject->buildAccountStatusIcon($this);
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
-		return array();
+		return [];
 	}
 
 	/**
@@ -1759,9 +1759,9 @@ class accountContainer {
 		}
 		$keys = array_keys($attributes);
 		// get correct object class names, aliases and attributes
-		$objectClasses = array();
-		$aliases = array();
-		$ldapAttributesTemp = array();
+		$objectClasses = [];
+		$aliases = [];
+		$ldapAttributesTemp = [];
 		foreach ($modules as $module) {
 			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
 			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses($this->type->getId()));
@@ -1771,7 +1771,7 @@ class accountContainer {
 				$moduleObj->getManagedHiddenAttributes($this->type->getId()));
 		}
 		// build lower case attribute names
-		$ldapAttributes = array();
+		$ldapAttributes = [];
 		for ($i = 0; $i < sizeof($ldapAttributesTemp); $i++) {
 			$ldapAttributes[strtolower($ldapAttributesTemp[$i])] = $ldapAttributesTemp[$i];
 			unset($ldapAttributes[$i]);
@@ -1909,15 +1909,15 @@ class accountContainer {
 			die();
 		}
 		$this->finalDN = $this->dn_orig;
-		$errors = array();
+		$errors = [];
 		$module = array_keys($this->module);
-		$attributes = array();
+		$attributes = [];
 		// load attributes
 		foreach ($module as $singlemodule) {
 			// load changes
 			$temp = $this->module[$singlemodule]->save_attributes();
 			if (!is_array($temp)) {
-				$temp = array();
+				$temp = [];
 			}
 			// merge changes
 			$DNs = array_keys($temp);
@@ -2069,7 +2069,7 @@ class accountContainer {
 			}
 			// create complete new dn
 			else {
-				$attr = array();
+				$attr = [];
 				if (isset($attributes[$this->finalDN]['add']) && is_array($attributes[$this->finalDN]['add'])) {
 					$attr = array_merge_recursive($attr, $attributes[$this->finalDN]['add']);
 				}
@@ -2189,7 +2189,7 @@ class accountContainer {
 	 * @return PDFEntry[] list of key => PDFEntry
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$return = array();
+		$return = [];
 		while(($current = current($this->module)) != null) {
 			$return = array_merge($return,$current->get_pdfEntries($pdfKeys, $typeId));
 			next($this->module);
@@ -2205,9 +2205,9 @@ class accountContainer {
 	* Sorts the module buttons for the account page.
 	*/
 	function sortModules() {
-		$order = array();
+		$order = [];
 		$modules = array_keys($this->module);
-		$depModules = array();
+		$depModules = [];
 		if (isset($this->order)) {
 			$currentPage = $this->order[$this->current_page];
 		}
@@ -2277,8 +2277,8 @@ class accountContainer {
 			}
 		}
 		// move disabled modules to end
-		$activeModules = array();
-		$passiveModules = array();
+		$activeModules = [];
+		$passiveModules = [];
 		for ($i = 0; $i < sizeof($order); $i++) {
 			if ($this->module[$order[$i]]->getButtonStatus() == 'enabled') {
 				$activeModules[] = $order[$i];
@@ -2339,7 +2339,7 @@ class accountContainer {
 	 * @return AccountStatus status
 	 */
 	public function getAccountStatus(): AccountStatus {
-		$details = array();
+		$details = [];
 		foreach ($this->module as $module) {
 			if (($module instanceof AccountStatusProvider)) {
 				$details = array_merge($details, $module->getAccountStatusDetails());
@@ -2364,7 +2364,7 @@ class accountContainer {
      * @param array $data list of values that need replacement
      */
     public function replaceWildcardsInArray($keyPrefixes, &$data) {
-        $replacements = array();
+        $replacements = [];
         foreach ($this->module as $module) {
             $replacements = array_merge($replacements, $module->getWildCardReplacements());
         }
@@ -2645,7 +2645,7 @@ class AccountStatus {
 	 */
 	public static function fromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
 		$modules = $_SESSION['config']->get_AccountModules($type->getId());
-		$details = array();
+		$details = [];
 		foreach ($modules as $module) {
 			$interfaces = class_implements($module);
 			if (!in_array('AccountStatusProvider', $interfaces)) {
@@ -2666,7 +2666,7 @@ class AccountStatus {
 	 */
 	public static function lockableFromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
 		$modules = $_SESSION['config']->get_AccountModules($type->getId());
-		$details = array();
+		$details = [];
 		foreach ($modules as $module) {
 			$interfaces = class_implements($module);
 			if (!in_array('AccountStatusProvider', $interfaces)) {
@@ -2926,7 +2926,7 @@ class ScopeAndModuleValidation {
 		if (self::$cachedScopeNames === null) {
 			$dirname = __DIR__ . "/types";
 			$dir = dir($dirname);
-			$scopeNames = array();
+			$scopeNames = [];
 			while ($entry = $dir->read()) {
 				if ((substr($entry, strlen($entry) - 4, 4) === '.inc')
 					&& (is_file($dirname . '/'.$entry) || is_link($dirname . '/'.$entry))) {
@@ -2954,7 +2954,7 @@ class ScopeAndModuleValidation {
 		if (self::$cachedModuleNames === null) {
 			$dirname = __DIR__ . "/modules";
 			$dir = dir($dirname);
-			$moduleNames = array();
+			$moduleNames = [];
 			while ($entry = $dir->read()) {
 				if ((substr($entry, strlen($entry) - 4, 4) === '.inc')
 					&& (is_file($dirname . '/' . $entry) || is_link($dirname . '/' . $entry))) {

@@ -277,7 +277,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 			$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
 			throw new Exception("Unable to get serials: " . $errCode . ' ' . $errMessage);
 		}
-		$serials = array();
+		$serials = [];
 		foreach ($output->result->value->tokens as $tokenEntry) {
 			if (!isset($tokenEntry->active) || ($tokenEntry->active != 1) || !isset($tokenEntry->serial)) {
 				continue;
@@ -360,7 +360,7 @@ class YubicoProvider extends BaseProvider {
 		$handle = getLDAPServerHandle();
 		$ldapData = ldapGetDN($loginDn, array($keyAttributeName), $handle);
 		if (empty($ldapData[$keyAttributeName])) {
-			return array();
+			return [];
 		}
 		return array(implode(', ', $ldapData[$keyAttributeName]));
 	}

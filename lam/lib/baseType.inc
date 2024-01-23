@@ -101,7 +101,7 @@ class baseType {
 	* @return array list of descriptions
 	*/
 	public function getListAttributeDescriptions() {
-		$descriptions = array();
+		$descriptions = [];
 		foreach ($this->getType()->getModules() as $moduleName) {
 			$module = moduleCache::getModule($moduleName, $this->getScope());
 			if ($module === null) {
@@ -152,8 +152,8 @@ class baseType {
 	 */
 	public function buildAccountStatusIcon(accountContainer $container): ?htmlElement {
 		$statusContent = new htmlGroup();
-		$details = array();
-		$lockableOptions = array();
+		$details = [];
+		$lockableOptions = [];
 		$statusSupported = false;
 		foreach ($container->getAccountModules() as $module) {
 			$interfaces = class_implements($module);
@@ -346,7 +346,7 @@ class baseType {
 		if (isset($_POST['lam_accountStatusResult']) && ($_POST['lam_accountStatusResult'] == 'ok')) {
 			// lock account
 			if ($_POST['lam_accountStatusAction'] == 'lock') {
-				$lockIds = array();
+				$lockIds = [];
 				foreach ($_POST as $key => $value) {
 					if (($value === 'on') && (strpos($key, 'lam_accountStatusLock_') === 0)) {
 						$lockIds[] = substr($key, strlen('lam_accountStatusLock_'));
@@ -363,7 +363,7 @@ class baseType {
 			}
 			// unlock account
 			elseif ($_POST['lam_accountStatusAction'] == 'unlock') {
-				$unlockIds = array();
+				$unlockIds = [];
 				foreach ($_POST as $key => $value) {
 					if (($value === 'on') && (strpos($key, 'lam_accountStatusUnlock_') === 0)) {
 						$unlockIds[] = substr($key, strlen('lam_accountStatusUnlock_'));
@@ -405,7 +405,7 @@ class baseType {
 	* @return array list of error messages
 	*/
 	public function check_configOptions(&$options) {
-		return array();
+		return [];
 	}
 
 	/**

@@ -138,7 +138,7 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 	* @return array
 	*/
 	private function lshift($count, $data) {
-		$ret = array();
+		$ret = [];
 		for ($i = 0; $i < sizeof($data); $i++) {
 			$ret[$i] = $data[($i + $count)%sizeof($data)];
 		}
@@ -151,7 +151,7 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 	* @return array
 	*/
 	private function permute($in, $p, $n) {
-		$ret = array();
+		$ret = [];
 		for ($i = 0; $i < $n; $i++) {
 			$ret[$i] = $in[$p[$i] - 1]?1:0;
 		}
@@ -164,7 +164,7 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 	* @return array
 	*/
 	private function mxor($in1, $in2) {
-		$ret = array();
+		$ret = [];
 		for ($i = 0; $i < sizeof($in1); $i++) {
 			$ret[$i] = $in1[$i] ^ $in2[$i];
 		}
@@ -178,12 +178,12 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 	* @return array
 	*/
 	function doHash($in, $key, $forw) {
-		$ki = array();
+		$ki = [];
 
 		$pk1 = $this->permute($key, $this->perm1, 56);
 
-		$c = array();
-		$d = array();
+		$c = [];
+		$d = [];
 		for ($i = 0; $i < 28; $i++) {
 			$c[$i] = $pk1[$i];
 			$d[$i] = $pk1[28 + $i];
@@ -200,8 +200,8 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 
 		$pd1 = $this->permute($in, $this->perm3, 64);
 
-		$l = array();
-		$r = array();
+		$l = [];
+		$r = [];
 		for ($i = 0; $i < 32; $i++) {
 			$l[$i] = $pd1[$i];
 			$r[$i] = $pd1[32 + $i];
@@ -218,8 +218,8 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 				}
 			}
 			for ($j = 0; $j < 8; $j++) {
-				$m = array();
-				$n = array();
+				$m = [];
+				$n = [];
 				$m = ($b[$j][0] << 1) | $b[$j][5];
 				$n = ($b[$j][1] << 3) | ($b[$j][2] << 2) | ($b[$j][3] << 1) | $b[$j][4];
 
@@ -301,8 +301,8 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 	private function E_P16($in) {
 		$p14 = array_values(unpack("C*",$in));
 		$sp8 = array(0x4b, 0x47, 0x53, 0x21, 0x40, 0x23, 0x24, 0x25);
-		$p14_1 = array();
-		$p14_2 = array();
+		$p14_1 = [];
+		$p14_2 = [];
 		for ($i = 0; $i < 7; $i++) {
 			$p14_1[$i] = $p14[$i];
 			$p14_2[$i] = $p14[$i + 7];

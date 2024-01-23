@@ -57,7 +57,7 @@ while ($entry = $typesINC_dir->read()) {
 function getTypes() {
 	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 10) . "/types";
 	$dir = dir($dirname);
-	$return = array();
+	$return = [];
 	// get type names.
 	while ($entry = $dir->read()) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
@@ -181,7 +181,7 @@ class ConfiguredType {
 		}
 		$attributeString = $this->typeManager->getConfig()->get_listAttributes($this->id);
 		$attributeSpecs = explode(';', $attributeString);
-		$attributes = array();
+		$attributes = [];
 		foreach ($attributeSpecs as $attributeSpec) {
 			$attributes[] = new ListAttribute($attributeSpec);
 		}
@@ -253,7 +253,7 @@ class ConfiguredType {
 	 */
 	public function getSuffixList() {
 		$connection = $_SESSION["ldap"]->server();
-		$ret = array();
+		$ret = [];
 		$filter = $this->getBaseType()->getSuffixFilter();
 		$sr = @ldap_search($connection, $this->getSuffix(), $filter, array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
@@ -294,7 +294,7 @@ class ConfiguredType {
 	public function getModules() {
 		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
 		if (empty($typeSettings['modules_' . $this->getId()])) {
-			return array();
+			return [];
 		}
 		$modules = $typeSettings['modules_' . $this->getId()];
 		return explode(',', $modules);
@@ -428,7 +428,7 @@ class TypeManager {
 	 * @return \LAM\TYPES\ConfiguredType[] list of ConfiguredType
 	 */
 	public function getConfiguredTypes() {
-		$configuredTypes = array();
+		$configuredTypes = [];
 		$activeTypes = $this->config->get_ActiveTypes();
 		foreach ($activeTypes as $typeId) {
 			$type = $this->buildConfiguredType($typeId);
@@ -448,7 +448,7 @@ class TypeManager {
 	 */
 	public function getConfiguredTypesForScope($scope) {
 		$allTypes = $this->getConfiguredTypes();
-		$scopedTypes = array();
+		$scopedTypes = [];
 		foreach ($allTypes as $type) {
 			if ($type->getScope() == $scope) {
 				$scopedTypes[] = $type;
@@ -465,7 +465,7 @@ class TypeManager {
 	 */
 	public function getConfiguredTypesForScopes($scopes) {
 		$allTypes = $this->getConfiguredTypes();
-		$scopedTypes = array();
+		$scopedTypes = [];
 		foreach ($allTypes as $type) {
 			if (in_array($type->getScope(), $scopes)) {
 				$scopedTypes[] = $type;

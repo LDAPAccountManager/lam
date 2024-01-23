@@ -128,7 +128,7 @@ class Uploader {
 			}
 		}
 		// run preactions
-		$preAttributes = array();
+		$preAttributes = [];
 		foreach ($attrs as $key => $value) {
 			$preAttributes[$key] = &$attrs[$key];
 		}
@@ -176,7 +176,7 @@ class Uploader {
 				return deleteDN($dn, true);
 			}
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -209,7 +209,7 @@ class Uploader {
 		if ($allDone && !empty($_SESSION['mass_errors'])) {
 			foreach ($_SESSION['mass_errors'] as $error) {
 				$text = isset($error[2]) ? $error[2] : '';
-				$vars = isset($error[3]) ? $error[3] : array();
+				$vars = isset($error[3]) ? $error[3] : [];
 				$errorHtml .= StatusMessage($error[0], $error[1], $text, $vars, true);
 			}
 		}
@@ -303,7 +303,7 @@ class Uploader {
 			$attrs = $this->accounts[$_SESSION['mass_pdf']['counter']];
 			$dn = $attrs['dn'];
 			// get informational attributes
-			$infoAttributes = array();
+			$infoAttributes = [];
 			foreach ($attrs as $key => $value) {
 				if (strpos($key, 'INFO.') === 0) {
 					$infoAttributes[$key] = $value;

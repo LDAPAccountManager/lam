@@ -164,7 +164,7 @@ class TreeView {
 	 */
 	private function getRootNodes(): string {
 		$rootDns = TreeViewTool::getRootDns();
-		$result = array();
+		$result = [];
 		foreach ($rootDns as $rootDn) {
 			logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $rootDn);
 			$rootData = ldapGetDN($rootDn, array('objectClass'));
@@ -188,7 +188,7 @@ class TreeView {
 		$this->validateDn($dn);
 		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $dn);
 		$children = ldapListDN($dn, '(objectClass=*)', array('objectClass'));
-		$childNodes = array();
+		$childNodes = [];
 		foreach ($children as $child) {
 			$childNodes[] = $this->createNodeData($child);
 		}
@@ -204,7 +204,7 @@ class TreeView {
 	 * @param array $children child LDAP data
 	 * @return array nodes
 	 */
-	private function createNodeData(array $attributes, bool $open = false, $noShortenFirst = false, array $children = array()): array {
+	private function createNodeData(array $attributes, bool $open = false, $noShortenFirst = false, array $children = []): array {
 		$text = ($noShortenFirst) ? $attributes['dn'] : extractRDN($attributes['dn']);
 		$data = array(
 			'id' => base64_encode($attributes['dn']),
@@ -213,7 +213,7 @@ class TreeView {
 			'children' => true
 		);
 		if (!empty($children)) {
-			$childData = array();
+			$childData = [];
 			foreach ($children as $child) {
 				$childData[] = $this->createNodeData($child);
 			}
@@ -324,7 +324,7 @@ class TreeView {
 	private function getPossibleNewAttributeNameOptions(array $objectClasses, bool $includeMustAttributes = false): array {
 		$schemaObjectClasses = $this->getSchemaObjectClasses();
 		$schemaAttributes = $this->getSchemaAttributes();
-		$possibleNewAttributes = array();
+		$possibleNewAttributes = [];
 		foreach ($objectClasses as $objectClass) {
 			$objectClass = strtolower($objectClass);
 			if (empty($schemaObjectClasses[$objectClass])) {
@@ -375,7 +375,7 @@ class TreeView {
 		logNewMessage(LOG_DEBUG, 'LDAP attributes for ' . $dn . ': ' . print_r($attributes, true));
 		$schemaAttributes = $this->getSchemaAttributes();
 		$objectClasses = $attributes['objectclass'];
-		$highlighted = (empty($_POST['highlight'])) ? array() : explode(',', $_POST['highlight']);
+		$highlighted = (empty($_POST['highlight'])) ? [] : explode(',', $_POST['highlight']);
 		foreach ($attributes as $attributeName => $values) {
 			$schemaAttribute = null;
 			if (strpos($attributeName, ';binary') !== false) {
@@ -399,7 +399,7 @@ class TreeView {
 		logNewMessage(LOG_DEBUG, 'Possible new attributes for ' . $dn . ': ' . implode('; ', $possibleNewAttributes));
 		$possibleNewAttributes = array('' => '') + $possibleNewAttributes;
 		$row->add(new htmlSubTitle(_('Add new attribute')));
-		$newAttributeSelect = new htmlResponsiveSelect('newAttribute', $possibleNewAttributes, array(), _('Attribute'));
+		$newAttributeSelect = new htmlResponsiveSelect('newAttribute', $possibleNewAttributes, [], _('Attribute'));
 		$newAttributeSelect->setHasDescriptiveElements(true);
 		$newAttributeSelect->setTransformSingleSelect(false);
 		$newAttributeSelect->setOnchangeEvent('window.lam.treeview.addAttributeField(event, this);');
@@ -460,7 +460,7 @@ class TreeView {
 		$internalAttributesDiv = new htmlDiv('actionarea-internal-attributes', $internalAttributesContent);
 		$row->add($internalAttributesDiv, 12);
 		ob_start();
-		parseHtml(null, $row, array(), false, null);
+		parseHtml(null, $row, [], false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -529,8 +529,8 @@ class TreeView {
 			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0);
 			return $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
 		}
-		$valueListContents = array();
-		$autoCompleteValues = array();
+		$valueListContents = [];
+		$autoCompleteValues = [];
 		$onInput = null;
 		$safeAttributeName = htmlspecialchars(strtolower($attributeName));
 		if ($safeAttributeName === 'objectclass') {
@@ -827,7 +827,7 @@ class TreeView {
 			$row->addVerticalSpacer('0.5rem');
 		}
 		ob_start();
-		parseHtml(null, $row, array(), false, null);
+		parseHtml(null, $row, [], false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -846,7 +846,7 @@ class TreeView {
 		$changes = json_decode($_POST['changes'], true);
 		$changes = array_change_key_case($changes, CASE_LOWER);
 		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
-		$ldapChanges = array();
+		$ldapChanges = [];
 		foreach ($changes as $attrName => $change) {
 			$schemaAttribute = isset($schemaAttributes[$attrName]) ? $schemaAttributes[$attrName] : null;
 			if (isset($change['new'])) {
@@ -879,7 +879,7 @@ class TreeView {
 				if (!isset($ldapChanges[$attrName]) && !empty($attributes[$attrName])) {
 					$ldapChanges[$attrName] = $attributes[$attrName];
 				}
-				$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : array();
+				$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : [];
 				if ($this->isMultiValueAttribute($oldValues, $schemaAttribute)) {
 					$ldapChanges[$attrName][] = base64_decode($change['upload']);
 				}
@@ -889,7 +889,7 @@ class TreeView {
 			}
 		}
 		$message = new htmlStatusMessage('INFO', _('You made no changes'));
-		$jsonData = array();
+		$jsonData = [];
 		// rename DN if RDN attribute changed
 		$rdnAttribute = strtolower(extractRDNAttribute($dn));
 		$rdnValue = extractRDNValue($dn);
@@ -916,7 +916,7 @@ class TreeView {
 				logNewMessage(LOG_ERR, 'Renaming ' . $dn . ' to ' . $newDn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 				$message = new htmlStatusMessage('ERROR', sprintf(_('Was unable to rename DN: %s.'), $dn), getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 				// skip other changes
-				$ldapChanges = array();
+				$ldapChanges = [];
 			}
 		}
 		if (!empty($ldapChanges)) {
@@ -931,7 +931,7 @@ class TreeView {
 			}
 		}
 		ob_start();
-		parseHtml(null, $message, array(), true, null);
+		parseHtml(null, $message, [], true, null);
 		$messageContent = ob_get_contents();
 		ob_end_clean();
 		$jsonData['result'] = $messageContent;
@@ -980,7 +980,7 @@ class TreeView {
 	 * @return string[] binary data
 	 */
 	private function decodeBinaryAttributeValues(array $encoded): array {
-		$binaryValues = array();
+		$binaryValues = [];
 		foreach ($encoded as $value) {
 			$decoded = base64_decode($value, true);
 			if ($decoded !== false) {
@@ -1001,7 +1001,7 @@ class TreeView {
 	 * @return array hashed values
 	 */
 	private function applyPasswordHash(array $values, array $hash): array {
-		$result = array();
+		$result = [];
 		for ($i = 0; $i < sizeof($values); $i++) {
 			$oldType = getHashType($values[$i]);
 			if (($oldType === 'PLAIN') && ($hash[$i] !== 'PLAIN')) {
@@ -1050,8 +1050,8 @@ class TreeView {
 		$row->addField(new htmlOutputText($dn));
 		$row->addVerticalSpacer('1rem');
 		$schemaObjectClasses = $this->getSchemaObjectClasses();
-		$objectClassOptions = array();
-		$selectCssClasses = array();
+		$objectClassOptions = [];
+		$selectCssClasses = [];
 		foreach ($schemaObjectClasses as $schemaObjectClass) {
 			$name = $schemaObjectClass->getName();
 			$objectClassOptions[$name] = $name;
@@ -1059,7 +1059,7 @@ class TreeView {
 				$selectCssClasses[$name] = 'bold';
 			}
 		}
-		$objectClassSelect = new htmlResponsiveSelect('objectClasses', $objectClassOptions, array(), _('Object classes'), null, 10);
+		$objectClassSelect = new htmlResponsiveSelect('objectClasses', $objectClassOptions, [], _('Object classes'), null, 10);
 		$objectClassSelect->setHasDescriptiveElements(true);
 		$objectClassSelect->setMultiSelect(true);
 		$objectClassSelect->setOptionCssClasses($selectCssClasses);
@@ -1081,7 +1081,7 @@ class TreeView {
 		$row->add(new htmlOutputText(_('Hint: You must choose exactly one structural object class (shown in bold above)')), 12);
 		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)), 12);
 		ob_start();
-		parseHtml(null, $row, array(), false, '');
+		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1134,8 +1134,8 @@ class TreeView {
 		$row->addField(new htmlOutputText(implode(', ', $objectClasses)));
 		$row->addVerticalSpacer('1rem');
 		$schemaAttributes = $this->getSchemaAttributes();
-		$mustAttributes = array();
-		$mayAttributes = array();
+		$mustAttributes = [];
+		$mayAttributes = [];
 		foreach ($objectClasses as $objectClass) {
 			$classMustAttributeNames = $this->getMustAttributeNamesRecursive($schemaObjectClasses, $objectClass);
 			foreach ($classMustAttributeNames as $classMustAttributeName) {
@@ -1168,11 +1168,11 @@ class TreeView {
 		ksort($mayAttributes);
 		$allAttributes = array_merge($mustAttributes, $mayAttributes);
 		ksort($allAttributes);
-		$rdnOptions = array();
+		$rdnOptions = [];
 		foreach ($allAttributes as $attribute) {
 			$rdnOptions[] = $attribute->getName();
 		}
-		$rdnOptionsSelected = array();
+		$rdnOptionsSelected = [];
 		if ($rdnAttribute !== null) {
 			$rdnOptionsSelected[] = $rdnAttribute;
 		}
@@ -1188,14 +1188,14 @@ class TreeView {
 		}
 		foreach ($mustAttributes as $mustAttribute) {
 			$values = empty($attributes[$mustAttribute->getName()]) ? array('') : $attributes[$mustAttribute->getName()];
-			$this->addAttributeContent($row, $mustAttribute->getName(), $values, $mustAttribute, $objectClasses, null, array());
+			$this->addAttributeContent($row, $mustAttribute->getName(), $values, $mustAttribute, $objectClasses, null, []);
 		}
 		if (!empty($mayAttributes)) {
 			$row->add(new htmlSubTitle(_('Optional attributes')));
 		}
 		foreach ($mayAttributes as $mayAttribute) {
 			$values = empty($attributes[$mayAttribute->getName()]) ? array('') : $attributes[$mayAttribute->getName()];
-			$this->addAttributeContent($row, $mayAttribute->getName(), $values, $mayAttribute, $objectClasses, null, array());
+			$this->addAttributeContent($row, $mayAttribute->getName(), $values, $mayAttribute, $objectClasses, null, []);
 		}
 		$row->addVerticalSpacer('1rem');
 		$nextButton = new htmlButton('save', _('Create'));
@@ -1205,7 +1205,7 @@ class TreeView {
 		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
 		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)));
 		ob_start();
-		parseHtml(null, $row, array(), false, '');
+		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1223,7 +1223,7 @@ class TreeView {
 		$objectClassObject = $objectClasses[$objectClassLower];
 		$attributeNames = $objectClassObject->getMustAttrNames();
 		if ($attributeNames === null) {
-			$attributeNames = array();
+			$attributeNames = [];
 		}
 		foreach ($objectClassObject->getSupClasses() as $superClass) {
 			$attributeNames = array_merge($attributeNames, $this->getMustAttributeNamesRecursive($objectClasses, $superClass));
@@ -1244,7 +1244,7 @@ class TreeView {
 		$objectClassObject = $objectClasses[$objectClassLower];
 		$attributeNames = $objectClassObject->getMayAttrNames();
 		if ($attributeNames === null) {
-			$attributeNames = array();
+			$attributeNames = [];
 		}
 		foreach ($objectClassObject->getSupClasses() as $superClass) {
 			$attributeNames = array_merge($attributeNames, $this->getMayAttributeNamesRecursive($objectClasses, $superClass));
@@ -1303,7 +1303,7 @@ class TreeView {
 		if (!empty($errors)) {
 			return json_encode(array('errors' => $errors));
 		}
-		return json_encode(array());
+		return json_encode([]);
 	}
 
 	/**
@@ -1388,7 +1388,7 @@ class TreeView {
 			_('Sub (entire subtree)') => 'sub',
 			_('One (one level beneath base)') => 'one',
 		);
-		$scopeSelect = new htmlResponsiveSelect('scope', $scopeOptions, array(), _('Search scope'));
+		$scopeSelect = new htmlResponsiveSelect('scope', $scopeOptions, [], _('Search scope'));
 		$scopeSelect->setSortElements(false);
 		$scopeSelect->setHasDescriptiveElements(true);
 		$row->add($scopeSelect);
@@ -1412,7 +1412,7 @@ class TreeView {
 		$nextButton->setOnClick('window.lam.treeview.searchResults(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		ob_start();
-		parseHtml(null, $row, array(), false, '');
+		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1444,7 +1444,7 @@ class TreeView {
 		global $lamOrderByAttribute;
 		$lamOrderByAttribute = empty($_POST['orderBy']) ? 'dn' : strtolower($_POST['orderBy']);
 		$limit = empty($_POST['limit']) ? 0 : intval($_POST['limit']);
-		$results = array();
+		$results = [];
 		switch ($scope) {
 			case 'sub':
 				$results = searchLDAP($dn, $filter, $searchAttributes, $limit);
@@ -1504,7 +1504,7 @@ class TreeView {
 			$row->addVerticalSpacer('1rem');
 		}
 		ob_start();
-		parseHtml(null, $row, array(), false, '');
+		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1520,7 +1520,7 @@ class TreeView {
 	 */
 	private function searchResultsAsTable(array $results, array $attributes, htmlResponsiveRow $row) {
 		$titles = array_merge(array('', 'dn'), $attributes);
-		$data = array();
+		$data = [];
 		foreach ($results as $result) {
 			$dataEntry = array($this->getNodeIcon($result), new htmlLink(unescapeLdapSpecialCharacters($result['dn']), 'treeView.php?dn=' . base64_encode($result['dn'])));
 			$result = array_change_key_case($result, CASE_LOWER);
@@ -1539,7 +1539,7 @@ class TreeView {
 		$table->setCSSClasses(array('colored--table'));
 		$row->add($table);
 		ob_start();
-		parseHtml(null, $row, array(), false, '');
+		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -1569,7 +1569,7 @@ class TreeView {
 			if (($childrenCount === 0) && ($action === 'CUT')) {
 				// do LDAP move for entries without children and CUT operation
 				moveDn($dn, $targetDn);
-				return json_encode(array());
+				return json_encode([]);
 			}
 			copyDnRecursive($dn, $targetDn);
 			if ($action === 'CUT') {
@@ -1580,7 +1580,7 @@ class TreeView {
 						$row->add(new htmlStatusMessage($error[0], $error[1], isset($error[2]) ? $error[2] : null));
 					}
 					ob_start();
-					parseHtml(null, $row, array(), false, '');
+					parseHtml(null, $row, [], false, '');
 					$content = ob_get_contents();
 					ob_end_clean();
 					return json_encode(array('error' => $content));
@@ -1590,12 +1590,12 @@ class TreeView {
 		catch (LAMException $e) {
 			$message = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			ob_start();
-			parseHtml(null, $message, array(), false, '');
+			parseHtml(null, $message, [], false, '');
 			$content = ob_get_contents();
 			ob_end_clean();
 			return json_encode(array('error' => $content));
 		}
-		return json_encode(array());
+		return json_encode([]);
 	}
 
 }

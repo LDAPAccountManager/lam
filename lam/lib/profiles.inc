@@ -369,7 +369,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 			throw new LAMException(_('Unable to read templates.'));
 		}
 		$templateDir = @dir($templatePath);
-		$templates = array();
+		$templates = [];
 		if ($templateDir) {
 			$entry = $templateDir->read();
 			while ($entry){
@@ -431,7 +431,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 	 * @throws LAMException error reading file
 	 */
 	private function readAccountProfileFile(string $fileName): array {
-		$settings = array();
+		$settings = [];
 		if (is_file($fileName)) {
 			$file = @fopen($fileName, "r");
 			if ($file) {
@@ -549,7 +549,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 	 */
 	public function getAccountProfileNames(string $typeId, string $confName): array {
 		$dir = @dir(__DIR__ . "/../config/profiles/" . $confName);
-		$ret = array();
+		$ret = [];
 		if ($dir) {
 			$entry = $dir->read();
 			while ($entry){
@@ -636,7 +636,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 		$statement = $this->pdo->prepare("SELECT scope, name FROM " . self::TABLE_NAME_TEMPLATES);
 		$statement->execute();
 		$results = $statement->fetchAll();
-		$profiles = array();
+		$profiles = [];
 		foreach ($results as $result) {
 			$profiles[$result['scope']][] = $result['name'];
 		}
@@ -700,7 +700,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ?");
 		$statement->execute(array($confName, $typeId));
 		$results = $statement->fetchAll();
-		$profiles = array();
+		$profiles = [];
 		foreach ($results as $result) {
 			$profiles[] = $result['name'];
 		}

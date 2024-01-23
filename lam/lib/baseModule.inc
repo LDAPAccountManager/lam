@@ -136,11 +136,11 @@ abstract class baseModule {
 	*/
 	public function init($base) {
 		$this->base = $base;
-		$this->attributes = array();
-		$this->orig = array();
+		$this->attributes = [];
+		$this->orig = [];
 		// add object classes if needed
-		$this->attributes['objectClass'] = array();
-		$this->orig['objectClass'] = array();
+		$this->attributes['objectClass'] = [];
+		$this->orig['objectClass'] = [];
 		if ($this->autoAddObjectClasses === true) {
 			$objectClasses = $this->getManagedObjectClasses($this->getAccountContainer()->get_type()->getId());
 			for ($i = 0; $i < sizeof($objectClasses); $i++) {
@@ -163,15 +163,15 @@ abstract class baseModule {
 	* @param array $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
 	*/
 	public function load_attributes($attributes) {
-		$this->attributes = array();
+		$this->attributes = [];
 		// load object classes
 		if (isset($attributes['objectClass'])) {
 			$this->attributes['objectClass'] = $attributes['objectClass'];
 			$this->orig['objectClass'] = $attributes['objectClass'];
 		}
 		else {
-			$this->attributes['objectClass'] = array();
-			$this->orig['objectClass'] = array();
+			$this->attributes['objectClass'] = [];
+			$this->orig['objectClass'] = [];
 		}
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// add object classes if needed
@@ -201,7 +201,7 @@ abstract class baseModule {
 	 * @param array $ldapAttributes LDAP attributes of copy
 	 * @param array $attributesToIgnore list of attributes to ignore during load (defaults to self::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT)
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
 		if (empty($attributesToIgnore)) {
 			$attributesToIgnore = self::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT;
 		}
@@ -302,7 +302,7 @@ abstract class baseModule {
 	* <li><b>{@link check_profileOptions()}</b><br>
 	* <br>
 	* <b>Key:</b> profile_checks<br>
-	* <b>Value:</b> array of checks (array("optionName" => array()))<br>
+	* <b>Value:</b> array of checks (array("optionName" => []))<br>
 	* <br>
 	* The "optionName" keys of the value array are the names of the option identifiers.<br>
 	* Each array element is an array itself containing these values:
@@ -422,7 +422,7 @@ abstract class baseModule {
 	* @return array meta data
 	*/
 	public function get_metaData() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -524,7 +524,7 @@ abstract class baseModule {
 		if (isset($this->meta['RDN'])) {
 			return $this->meta['RDN'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -549,7 +549,7 @@ abstract class baseModule {
 		if (isset($this->meta['dependencies'])) {
 			return $this->meta['dependencies'];
 		}
-		return array('depends' => array(), 'conflicts' => array());
+		return array('depends' => [], 'conflicts' => []);
 	}
 
 	/**
@@ -593,7 +593,7 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function check_profileOptions($options, $typeId) {
-		$errors = array();
+		$errors = [];
 		if (isset($this->meta['profile_checks'])) {
 			foreach ($this->meta['profile_checks'] as $identifier => $check) {
 				// check if option is required
@@ -693,7 +693,7 @@ abstract class baseModule {
 	* @see htmlElement
 	*/
 	public function get_configOptions($scopes, $allScopes) {
-		$return = array();
+		$return = [];
 		for ($i = 0; $i < sizeof($scopes); $i++) {
 			if (isset($this->meta['config_options'][$scopes[$i]])) {
 				if (is_array($this->meta['config_options'][$scopes[$i]])) {
@@ -736,7 +736,7 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function check_configOptions($typeIds, &$options) {
-		$messages = array();
+		$messages = [];
 		// add checks that are independent of scope
 		$scopes = array('all');
 		foreach ($typeIds as $typeId) {
@@ -834,7 +834,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_pdfFields($typeId) {
-		return ((isset($this->meta['PDF_fields'])) ? $this->meta['PDF_fields'] : array());
+		return ((isset($this->meta['PDF_fields'])) ? $this->meta['PDF_fields'] : []);
 	}
 
 	/**
@@ -845,7 +845,7 @@ abstract class baseModule {
 	* @return PDFEntry[] list of key => PDFEntry
 	*/
 	public function get_pdfEntries($pdfKeys, $typeId) {
-		return array();
+		return [];
 	}
 
 	/**
@@ -946,7 +946,7 @@ abstract class baseModule {
 		if (isset($this->meta['upload_columns'])) {
 			return $this->meta['upload_columns'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -964,7 +964,7 @@ abstract class baseModule {
 		if (isset($this->meta['upload_preDepends'])) {
 			return $this->meta['upload_preDepends'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -983,7 +983,7 @@ abstract class baseModule {
 	*/
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		// must be implemented in sub modules
-		return array();
+		return [];
 	}
 
 	/**
@@ -1000,7 +1000,7 @@ abstract class baseModule {
 	* @param array $errors list of error messages if any
 	* @param String $regexSplit multiple values are separated and can be split with this preg_split expression (e.g. "/;[ ]?/")
 	*/
-	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, $message = array(), &$errors = array(), $regexSplit = null) {
+	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, $message = [], &$errors = [], $regexSplit = null) {
 		if (!isset($ids[$colName])) {
 			return;
 		}
@@ -1151,7 +1151,7 @@ abstract class baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function doUploadPreActions($attributes, $type) {
-		return array();
+		return [];
 	}
 
 	/**
@@ -1182,7 +1182,7 @@ abstract class baseModule {
 		return array(
 			'status' => 'finished',
 			'progress' => 100,
-			'errors' => array()
+			'errors' => []
 		);
 	}
 
@@ -1222,7 +1222,7 @@ abstract class baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function preModifyActions($newAccount, &$attributes) {
-		return array();
+		return [];
 	}
 
 	/**
@@ -1235,7 +1235,7 @@ abstract class baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		return array();
+		return [];
 	}
 
 	/**
@@ -1246,7 +1246,7 @@ abstract class baseModule {
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function preDeleteActions() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -1257,7 +1257,7 @@ abstract class baseModule {
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postDeleteActions() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -1431,7 +1431,7 @@ abstract class baseModule {
 	 */
 	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false,
 				$autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null, $cssClasses = '') {
-			$values = array();
+			$values = [];
 			if (isset($this->attributes[$attrName][0])) {
 				$values = $this->attributes[$attrName];
 			}
@@ -1563,7 +1563,7 @@ abstract class baseModule {
 	 */
 	protected function addMultiValueSelectField(&$container, $attrName, $label, $options, $hasDescriptiveOptions = false,
 				$required = false, $fieldSize = 1, &$htmlIDs = null) {
-			$values = array();
+			$values = [];
 			if (isset($this->attributes[$attrName][0])) {
 				$values = $this->attributes[$attrName];
 			}
@@ -1830,7 +1830,7 @@ abstract class baseModule {
 			return;
 		}
 		$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
-		$values = array();
+		$values = [];
 		if (isset($attributes[$ldapAttrName][0])) {
 			$values = $attributes[$ldapAttrName];
 		}
@@ -1913,7 +1913,7 @@ abstract class baseModule {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
 			$fieldName = get_class($this) . '_' . $name;
 			$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
-			$valuesNew = array();
+			$valuesNew = [];
 			foreach ($_POST as $postKey => $postValue) {
 				if (strpos($postKey, $fieldName) === false) {
 					continue;
@@ -1935,7 +1935,7 @@ abstract class baseModule {
 			if (empty($valuesNew) && ($requiredMessage !== null)) {
 				$container['messages'][] = $requiredMessage;
 			}
-			$valuesOld = isset($attributes[$ldapAttrName]) ? $attributes[$ldapAttrName] : array();
+			$valuesOld = isset($attributes[$ldapAttrName]) ? $attributes[$ldapAttrName] : [];
 			$intersect = array_intersect($valuesOld, $valuesNew);
 			if ((sizeof($valuesOld) != sizeof($valuesNew)) || (sizeof($intersect) != sizeof($valuesOld))) {
 				$container['mod'][$ldapAttrName] = $valuesNew;
@@ -1961,7 +1961,7 @@ abstract class baseModule {
 		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) {
 			return $this->meta['objectClasses'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -1980,7 +1980,7 @@ abstract class baseModule {
 		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) {
 			return $this->meta['LDAPaliases'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -1996,7 +1996,7 @@ abstract class baseModule {
 		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) {
 			return $this->meta['attributes'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2011,7 +2011,7 @@ abstract class baseModule {
 		if (isset($this->meta['hiddenAttributes']) && is_array($this->meta['hiddenAttributes'])) {
 			return $this->meta['hiddenAttributes'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2027,7 +2027,7 @@ abstract class baseModule {
 		if (isset($this->meta['extensions']) && is_array($this->meta['extensions'])) {
 			return $this->meta['extensions'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2043,7 +2043,7 @@ abstract class baseModule {
 		if (isset($this->meta['selfServiceSearchAttributes']) && is_array($this->meta['selfServiceSearchAttributes'])) {
 			return $this->meta['selfServiceSearchAttributes'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2061,7 +2061,7 @@ abstract class baseModule {
 		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) {
 			return $this->meta['selfServiceFieldSettings'];
 		}
-		return array();
+		return [];
 	}
 
 	/**
@@ -2124,7 +2124,7 @@ abstract class baseModule {
 	 */
 	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		// this function must be overwritten by subclasses.
-		return array();
+		return [];
 	}
 
 	/**
@@ -2142,10 +2142,10 @@ abstract class baseModule {
 	 * @param array $attributes LDAP attributes
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
+	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		return array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+		return array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 	}
 
 	/**
@@ -2187,7 +2187,7 @@ abstract class baseModule {
 	 */
 	public function checkSelfServiceSettings(&$options, &$profile) {
 		// needs to be implemented by the subclasses, if needed
-		return array();
+		return [];
 	}
 
 	/**
@@ -2316,7 +2316,7 @@ abstract class baseModule {
 	 * @param LAMConfig $config configuration
 	 */
 	public function getSupportedJobs(&$config) {
-		return array();
+		return [];
 	}
 
 
@@ -2346,7 +2346,7 @@ abstract class baseModule {
 	 * @return array replacements as wildcard => value
 	 */
 	public function getWildCardReplacements() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -2376,7 +2376,7 @@ abstract class baseModule {
 	 * @return array attribute name => description label
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array();
+		return [];
 	}
 
 }

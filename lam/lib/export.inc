@@ -112,7 +112,7 @@ class Exporter {
 	public static function formatMessage($type, $title, $message) {
 		$msg = new htmlStatusMessage($type, $title, $message);
 		ob_start();
-		$msg->generateHTML(null, array($msg), array(), true, 'user');
+		$msg->generateHTML(null, array($msg), [], true, 'user');
 		$data = ob_get_contents();
 		ob_clean();
 		return $data;
@@ -199,7 +199,7 @@ class Exporter {
 	 * @param string $lineEnding line ending
 	 */
 	private function getCsvOutput(&$entries, $lineEnding) {
-		$attributeNames = array();
+		$attributeNames = [];
 		foreach ($entries as $entry) {
 			$entryAttributeNames = array_keys($entry);
 			foreach ($entryAttributeNames as $name) {
@@ -218,7 +218,7 @@ class Exporter {
 		$output .= implode(',', $attributeNamesQuoted) . $lineEnding;
 		// content
 		foreach ($entries as $entry) {
-			$values = array();
+			$values = [];
 			foreach ($attributeNames as $name) {
 				if (!isset($entry[$name])) {
 					$values[] = $this->escapeCsvAndAddQuotes('');

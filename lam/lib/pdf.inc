@@ -68,7 +68,7 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
 	$structure = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
 		$account_type->getId(), $pdf_structure);
 	// get list of PDF keys
-	$pdfKeys = array();
+	$pdfKeys = [];
 	foreach($structure->getSections() as $section) {
 		if (!$section instanceof PDFEntrySection) {
 			continue;
@@ -292,7 +292,7 @@ class PDFTable implements PDFEntry {
 	/** optional label of table */
 	private $label = '';
 	/** list of PDFTableRow elements */
-	public $rows = array();
+	public $rows = [];
 
 	/**
 	 * Constructor
@@ -322,7 +322,7 @@ class PDFTable implements PDFEntry {
 class PDFTableRow {
 
 	/** list of PDFTableCell */
-	public $cells = array();
+	public $cells = [];
 
 }
 

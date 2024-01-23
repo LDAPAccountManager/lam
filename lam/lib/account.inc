@@ -43,7 +43,7 @@ use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
 function array_delete($values, $array) {
 	// Loop for every entry and check if it should be removed
 	if (is_array($array)) {
-		$return = array();
+		$return = [];
 		foreach ($array as $array_value) {
 			if (!@in_array($array_value, $values)) {
 				$return[] = $array_value;
@@ -51,7 +51,7 @@ function array_delete($values, $array) {
 		}
 		return $return;
 	}
-	return array();
+	return [];
 }
 
 
@@ -224,7 +224,7 @@ function getHashType(?string $hash): string {
 	if (empty($hash)) {
 		return 'PLAIN';
 	}
-	$matches = array();
+	$matches = [];
 	if (!preg_match('/\\{([A-Z0-9-]+)\\}.+/', $hash, $matches)) {
 		return 'PLAIN';
 	}
@@ -496,7 +496,7 @@ function search_domains($server = null, $suffix = null) {
 	if ($suffix == null) {
 		$suffix = $_SESSION['config']->get_Suffix('smbDomain');
 	}
-	$ret = array();
+	$ret = [];
 	$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
 		"sambaNextUserRid", "sambaAlgorithmicRidBase", 'sambaMinPwdAge', 'sambaMaxPwdAge',
 		'sambaPwdHistoryLength'
@@ -802,10 +802,10 @@ function connectToLDAP($serverURL, $startTLS) {
  * @return array list of found entries
  */
 function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes) {
-	$return = array();
+	$return = [];
 	// build filter
 	$filter = '';
-	$filterParts = array();
+	$filterParts = [];
 	if ($name != null) {
 		$filterParts[] = '(' . $name . '=' . ldap_escape($value, '*', LDAP_ESCAPE_FILTER) . ')';
 	}
@@ -845,7 +845,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
  * @return array list of found entries
  */
 function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
-	$return = array();
+	$return = [];
 	$readAttributesOnly = 0;
 	if ($attrsOnly) {
 		$readAttributesOnly = 1;
@@ -928,13 +928,13 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 		if ($sr) {
 			$entries = ldap_get_entries($server, $sr);
 			if (!$entries) {
-				return array();
+				return [];
 			}
 			cleanLDAPResult($entries);
 			return $entries;
 		}
 		else {
-			return array();
+			return [];
 		}
 	}
 	$pageSize = 999;
@@ -945,7 +945,7 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 			'size' => $pageSize,
 			'cookie' => $cookie)
 	);
-	$return = array();
+	$return = [];
 	do {
 		$sr  = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit,
 			0, LDAP_DEREF_NEVER, $controls);
@@ -1026,7 +1026,7 @@ function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'),
 * @return array error messages
 */
 function deleteDN($dn, $recursive) {
-	$errors = array();
+	$errors = [];
 	if (($dn == null) || ($dn == '')) {
 		$errors[] = array('ERROR', _('Entry does not exist'));
 		return $errors;
@@ -1485,7 +1485,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 	$subject = $mailSubject;
 	$body = $mailText;
 	$body = str_replace('@@newPassword@@', $pwd, $body);
-	$results = array();
+	$results = [];
 	$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
 	while ($found == 1) {
 		$attr = str_replace('@', '', $results[0]);
@@ -1632,7 +1632,7 @@ function isCommandlineSafeEmailAddress($address) {
 class moduleCache {
 
 	/** module cache ("name:scope" => module) */
-	private static $cache = array();
+	private static $cache = [];
 
 	/**
 	 * Returns a new/cached module with the given name and scope.
@@ -1906,7 +1906,7 @@ function unformatShortFormatToSeconds($text) {
 	if (empty($text)) {
 		return $text;
 	}
-	$matches = array();
+	$matches = [];
 	if (preg_match('/^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?$/', $text, $matches)) {
 		$newValue = 0;
 		if (!empty($matches[2])) {
@@ -1962,7 +1962,7 @@ function printHeaderContents($title, $prefix) {
 	// include CSS files
 	$cssDirName = __DIR__ . '/../style';
 	$cssDir = dir($cssDirName);
-	$cssFiles = array();
+	$cssFiles = [];
 	$cssEntry = $cssDir->read();
 	while ($cssEntry !== false) {
 		if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
@@ -1986,7 +1986,7 @@ function printHeaderContents($title, $prefix) {
 function printJsIncludes($prefix) {
 	$jsDirName = __DIR__ . '/../templates/lib';
 	$jsDir = dir($jsDirName);
-	$jsFiles = array();
+	$jsFiles = [];
 	$jsEntry = $jsDir->read();
 	while ($jsEntry !== false) {
 		if ((substr($jsEntry, strlen($jsEntry) - 3, 3) == '.js') || (substr($jsEntry, strlen($jsEntry) - 4, 4) == '.php')) {

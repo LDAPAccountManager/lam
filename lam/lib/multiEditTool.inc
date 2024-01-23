@@ -37,58 +37,58 @@ namespace LAM\TOOLS\MULTI_EDIT;
  */
 function extractWildcards(string $value): array {
 	$value = strtolower($value);
-	$attributes = array();
+	$attributes = [];
 	// ((attr)) -> " "
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/\\(\\(([a-z0-9-_]+)\\)\\)/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
 		}
 	}
 	// %attr% -> value
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/%([a-z0-9-_]+)%/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
 		}
 	}
 	// @attr@ -> v
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/@([a-z0-9-_]+)@/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
 		}
 	}
 	// ??attr?? -> value
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/\\?\\?([a-z0-9-_]+)\\?\\?/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
 		}
 	}
 	// !!attr!! -> VALUE
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/!!([a-z0-9-_]+)!!/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
 		}
 	}
 	// ?attr? -> v
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/\\?([a-z0-9-_]+)\\?/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
 		}
 	}
 	// !attr! -> V
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/!([a-z0-9-_]+)!/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
 		}
 	}
 	// §attr|;§ -> "val1;val2"
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/§([a-z0-9-_]+)\\|([^§]+)§/i', $value, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributes[] = strtolower($match);
@@ -109,7 +109,7 @@ function replaceWildcards(string $value, array $entry): string {
 	$replacement = $value;
 	$attrsLower['dn'] = array($attrsLower['dn']);
 	// ((attr)) -> " "
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/\\(\\(([a-z0-9-_]+)\\)\\)/i', $replacement, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributeName = strtolower($match);
@@ -122,7 +122,7 @@ function replaceWildcards(string $value, array $entry): string {
 		}
 	}
 	// %attr% -> value
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/%([a-z0-9-_]+)%/i', $replacement, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributeName = strtolower($match);
@@ -135,7 +135,7 @@ function replaceWildcards(string $value, array $entry): string {
 		}
 	}
 	// @attr@ -> v
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/@([a-z0-9-_]+)@/i', $replacement, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributeName = strtolower($match);
@@ -148,7 +148,7 @@ function replaceWildcards(string $value, array $entry): string {
 		}
 	}
 	// ??attr?? -> value
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/\\?\\?([a-z0-9-_]+)\\?\\?/i', $replacement, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributeName = strtolower($match);
@@ -161,7 +161,7 @@ function replaceWildcards(string $value, array $entry): string {
 		}
 	}
 	// !!attr!! -> VALUE
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/!!([a-z0-9-_]+)!!/i', $replacement, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributeName = strtolower($match);
@@ -174,7 +174,7 @@ function replaceWildcards(string $value, array $entry): string {
 		}
 	}
 	// ?attr? -> v
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/\\?([a-z0-9-_]+)\\?/i', $replacement, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributeName = strtolower($match);
@@ -187,7 +187,7 @@ function replaceWildcards(string $value, array $entry): string {
 		}
 	}
 	// !attr! -> V
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/!([a-z0-9-_]+)!/i', $replacement, $matches) > 0) {
 		foreach ($matches[1] as $match) {
 			$attributeName = strtolower($match);
@@ -200,7 +200,7 @@ function replaceWildcards(string $value, array $entry): string {
 		}
 	}
 	// §attr|;§ -> "val1;val2"
-	$matches = array();
+	$matches = [];
 	if (preg_match_all('/§([a-z0-9-_]+)\\|([^§]+)§/i', $replacement, $matches) > 0) {
 		for ($i = 0; $i < sizeof($matches[1]); $i++) {
 			$attributeName = strtolower($matches[1][$i]);

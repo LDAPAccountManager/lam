@@ -112,12 +112,12 @@ class ObjectClass extends SchemaItem
 		$this->oid = null;
 		$this->name = null;
 		$this->description = null;
-		$this->sup_classes = array();
+		$this->sup_classes = [];
 		$this->type = null;
-		$this->must_attrs = array();
-		$this->may_attrs = array();
+		$this->must_attrs = [];
+		$this->may_attrs = [];
 		$this->is_obsolete = false;
-        $this->children_objectclasses = array();
+        $this->children_objectclasses = [];
 	}
 
 	/**
@@ -354,7 +354,7 @@ class ObjectClass extends SchemaItem
 	function getMustAttrNames( $oclasses = null )
 	{
 		$attrs = $this->getMustAttrs( $oclasses );
-		$attr_names = array();
+		$attr_names = [];
 		foreach( $attrs as $attr )
 			$attr_names[] = $attr->getName();
 		return $attr_names;
@@ -378,7 +378,7 @@ class ObjectClass extends SchemaItem
 	function getMayAttrNames( $oclasses = null )
 	{
 		$attrs = $this->getMayAttrs( $oclasses );
-		$attr_names = array();
+		$attr_names = [];
 		foreach( $attrs as $attr )
 			$attr_names[] = $attr->getName();
 		return $attr_names;
@@ -394,7 +394,7 @@ class ObjectClass extends SchemaItem
     {
         $object_class_name = trim( $object_class_name );
         if( ! is_array( $this->children_objectclasses ) )
-            $this->children_objectclasses = array();
+            $this->children_objectclasses = [];
         foreach( $this->children_objectclasses as $existing_objectclass )
             if( 0 == strcasecmp( $object_class_name, $existing_objectclass ) )
                 return false;
@@ -561,7 +561,7 @@ class AttributeType extends SchemaItem
 	/** An array of objectClasses which use this attributeType (must be set by caller) */
 	var $used_in_object_classes;
     /** A list of object class names that require this attribute type.  */
-    var $required_by_object_classes = array();
+    var $required_by_object_classes = [];
 
 	/**
 	 * Initialize the class' member variables
@@ -584,10 +584,10 @@ class AttributeType extends SchemaItem
 		$this->is_collective = false;
 		$this->is_no_user_modification = false;
 		$this->usage = null;
-		$this->aliases = array();
+		$this->aliases = [];
 		$this->type = null;
-		$this->used_in_object_classes = array();
-		$this->required_by_object_classes = array();
+		$this->used_in_object_classes = [];
+		$this->required_by_object_classes = [];
 	}
 
 	/**
@@ -612,7 +612,7 @@ class AttributeType extends SchemaItem
 								$this->name .= " " . $strings[$i];
 						}while(!preg_match("/\'$/s", $strings[$i]));
 						// this attribute has no aliases
-						$this->aliases = array();
+						$this->aliases = [];
 					} else {
 						$i++;
 						do {
@@ -1078,7 +1078,7 @@ class MatchingRule extends SchemaItem
 		$this->description = null;
 		$this->is_obsolete = false;
 		$this->syntax = null;
-		$this->used_by_attrs = array();
+		$this->used_by_attrs = [];
 	}
 
 	/**
@@ -1210,7 +1210,7 @@ class MatchingRuleUse extends SchemaItem
         parent::initVars();
 		$this->oid = null;
 		$this->name = null;
-		$this->used_by_attrs = array();
+		$this->used_by_attrs = [];
 	}
 
 	function __construct( $raw_matching_rule_use_string )
@@ -1412,7 +1412,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 			$schema_entries = @ldap_get_entries($ds, $schema_search);
 		}
 		else {
-			$schema_entries = array();
+			$schema_entries = [];
 		}
 		if( $schema_search === false ||
             0 == @ldap_count_entries( $ds, $schema_search ) ||
@@ -1598,10 +1598,10 @@ function get_schema_objectclasses($dn=null, $use_cache=true )
 
 	$raw_oclasses = _get_raw_schema('objectclasses', $dn );
 	if( ! $raw_oclasses )
-		return array();
+		return [];
 
 	// build the array of objectClasses
-	$object_classes = array();
+	$object_classes = [];
 	foreach( $raw_oclasses as $class_string  ) {
 		if( $class_string == null || 0 == strlen( $class_string ) )
 			continue;
@@ -1680,18 +1680,18 @@ function get_schema_attributes($dn = null, $use_cache=true )
 
 	$raw_attrs = _get_raw_schema('attributeTypes', $dn );
 	if( ! $raw_attrs )
-		return array();
+		return [];
 
 	// build the array of attribueTypes
 	$syntaxes = get_schema_syntaxes($dn );
-	$attrs = array();
+	$attrs = [];
 	/**
      * bug 856832: create two arrays - one indexed by name (the standard
 	 * $attrs array above) and one indexed by oid (the new $attrs_oid array
 	 * below). This will help for directory servers, like IBM's, that use OIDs
 	 * in their attribute definitions of SUP, etc
 	 */
-	$attrs_oid = array();
+	$attrs_oid = [];
 	foreach( $raw_attrs as $attr_string ) {
 		if( $attr_string == null || 0 == strlen( $attr_string ) )
 			continue;
@@ -1766,7 +1766,7 @@ function get_schema_attributes($dn = null, $use_cache=true )
  */
 function add_aliases_to_attrs( &$attrs )
 {
-	$toaddAttrs = array();
+	$toaddAttrs = [];
 	// go back and add data from aliased attributeTypes
 	foreach($attrs as $attr) {
 		$aliases = $attr->getAliases();
@@ -1915,7 +1915,7 @@ function get_schema_matching_rules($dn=null, $use_cache=true )
 	$raw_matching_rules = _get_raw_schema('matchingRules', $dn );
 	if( ! $raw_matching_rules )
 		return false;
-	$rules = array();
+	$rules = [];
 	foreach( $raw_matching_rules as $rule_string ) {
 		if( $rule_string == null || 0 == strlen( $rule_string ) )
 			continue;
@@ -1970,7 +1970,7 @@ function get_schema_syntaxes($dn=null, $use_cache=true )
 		return false;
 
 	// build the array of attributes
-	$syntaxes = array();
+	$syntaxes = [];
 	foreach( $raw_syntaxes as $syntax_string ) {
 		$syntax = new Syntax( $syntax_string );
 		$key = strtolower( trim( $syntax->getOID() ) );

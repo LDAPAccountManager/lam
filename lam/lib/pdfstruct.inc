@@ -195,7 +195,7 @@ class PdfStructurePersistenceManager {
 		}
 		$logoNames = $this->strategy->getPdfLogoNames($confName);
 		sort($logoNames);
-		$result = array();
+		$result = [];
 		if ($readDimensions) {
 			include_once __DIR__ . '/imageutils.inc';
 		}
@@ -400,7 +400,7 @@ class PdfStructurePersistenceManager {
 		}
 		$logos = $this->getPdfTemplateLogoNames();
 		$existingLogos = $this->getPdfLogos($confName);
-		$existingLogoNames = array();
+		$existingLogoNames = [];
 		foreach ($existingLogos as $existingLogo) {
 			$existingLogoNames[] = $existingLogo->getName();
 		}
@@ -642,7 +642,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	public function getPdfStructureTemplateNames(): array {
 		$templatePath = __DIR__ . '/../config/templates/pdf';
 		$templateDir = @dir($templatePath);
-		$allTemplates = array();
+		$allTemplates = [];
 		if ($templateDir) {
 			$entry = $templateDir->read();
 			while ($entry){
@@ -717,7 +717,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	public function getPdfTemplateLogoNames(): array {
 		$templatePath = __DIR__ . '/../config/templates/pdf/logos';
 		$templateDir = @dir($templatePath);
-		$logos = array();
+		$logos = [];
 		if ($templateDir) {
 			$entry = $templateDir->read();
 			while ($entry){
@@ -791,7 +791,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @inheritDoc
 	 */
 	public function getPdfLogoNames(string $confName): array {
-		$return = array();
+		$return = [];
 		$dirPath = __DIR__ . '/../config/pdf/' . $confName . '/logos/';
 		if (!is_dir($dirPath)) {
 			mkdir($dirPath, 0700, true);
@@ -852,7 +852,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @inheritDoc
 	 */
 	public function getPDFStructures(string $confName, string $typeId): array {
-		$return = array();
+		$return = [];
 		$path = __DIR__ . '/../config/pdf/' . $confName;
 		if (is_dir($path) && is_readable($path)) {
 			$dirHandle = opendir($path);
@@ -1020,7 +1020,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 		$statement = $this->pdo->prepare("SELECT scope, name FROM " . self::TABLE_NAME_TEMPLATES);
 		$statement->execute();
 		$results = $statement->fetchAll();
-		$profiles = array();
+		$profiles = [];
 		foreach ($results as $result) {
 			$profiles[$result['scope']][] = $result['name'];
 		}
@@ -1076,7 +1076,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES_LOGOS);
 		$statement->execute();
 		$results = $statement->fetchAll();
-		$logos = array();
+		$logos = [];
 		foreach ($results as $result) {
 			$logos[] = $result['name'];
 		}
@@ -1129,7 +1129,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_LOGOS . ' WHERE confname = ?');
 		$statement->execute(array($confName));
 		$results = $statement->fetchAll();
-		$logos = array();
+		$logos = [];
 		foreach ($results as $result) {
 			$logos[] = $result['name'];
 		}
@@ -1182,7 +1182,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . ' WHERE confname = ? AND typeid = ?');
 		$statement->execute(array($confName, $typeId));
 		$results = $statement->fetchAll();
-		$names = array();
+		$names = [];
 		foreach ($results as $result) {
 			$names[] = $result['name'];
 		}
@@ -1264,7 +1264,7 @@ class PDFStructureReader {
 		$structure->setLogo($xml->getAttribute('filename'));
 		$structure->setTitle($xml->getAttribute('headline'));
 		$structure->setFoldingMarks($xml->getAttribute('foldingmarks'));
-		$sections = array();
+		$sections = [];
 		while ($xml->read()) {
 			if (($xml->nodeType === XMLReader::SIGNIFICANT_WHITESPACE)
 					|| (($xml->name === 'pdf') && ($xml->nodeType == XMLReader::END_ELEMENT))) {
@@ -1301,7 +1301,7 @@ class PDFStructureReader {
 	 */
 	private function readSection(XMLReader $xml) : PDFEntrySection {
 		$section = new PDFEntrySection($xml->getAttribute('name'));
-		$entries = array();
+		$entries = [];
 		while ($xml->read()) {
 			if (($xml->name === 'section') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
 				break;
@@ -1396,7 +1396,7 @@ class PDFStructure {
 
 	private $foldingMarks = 'no';
 
-	private $sections = array();
+	private $sections = [];
 
 	/**
 	 * Returns an array representation of the structure.
@@ -1404,11 +1404,11 @@ class PDFStructure {
 	 * @return array export data
 	 */
 	public function export() {
-		$data = array();
+		$data = [];
 		$data['title'] = $this->title;
 		$data['foldingMarks'] = $this->foldingMarks;
 		$data['logo'] = $this->logo;
-		$data['sections'] = array();
+		$data['sections'] = [];
 		foreach($this->sections as $section) {
 			$type = ($section instanceof PDFTextSection) ? 'text' : 'entry';
 			$sectionData = $section->export();
@@ -1569,7 +1569,7 @@ class PDFTextSection {
 class PDFEntrySection {
 
 	private $title;
-	private $entries = array();
+	private $entries = [];
 
 	/**
 	 * Constructor
@@ -1586,9 +1586,9 @@ class PDFEntrySection {
 	 * @return array export data
 	 */
 	public function export() {
-		$data = array();
+		$data = [];
 		$data['title'] = $this->title;
-		$data['entries'] = array();
+		$data['entries'] = [];
 		foreach($this->getEntries() as $entry) {
 			$data['entries'][] = $entry->getKey();
 		}

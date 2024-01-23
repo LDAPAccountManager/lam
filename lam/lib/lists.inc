@@ -78,10 +78,10 @@ class lamList {
 	protected $page = 1;
 
 	/** list of LDAP attributes */
-	protected $attrArray = array();
+	protected $attrArray = [];
 
 	/** list of attribute descriptions */
-	protected $descArray = array();
+	protected $descArray = [];
 
 	/** maximum count of entries per page */
 	protected $maxPageEntries = 30;
@@ -108,7 +108,7 @@ class lamList {
 	protected $sortMapping;
 
 	/** list of filters (attribute name => filter input) */
-	protected $filters = array();
+	protected $filters = [];
 
 	/** list of possible LDAP suffixes(organizational units) */
 	protected $possibleSuffixes;
@@ -169,7 +169,7 @@ class lamList {
 				&& isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
 			$cookieValue = $_COOKIE["ListOptions_" . $this->type->getId()];
 			$valueParts = explode(";", $cookieValue);
-			$values = array();
+			$values = [];
 			for ($i = 0; $i < sizeof($valueParts); $i++) {
 				$key_value = explode('=', $valueParts[$i]);
 				if (sizeof($key_value) == 2) {
@@ -212,7 +212,7 @@ class lamList {
 		}
 		// insert HTML fragment from listDoPost
         if ($postFragment !== null) {
-            parseHtml('', $postFragment, array(), true, $this->type->getScope());
+            parseHtml('', $postFragment, [], true, $this->type->getScope());
         }
 		// config dialog
 		$this->listPrintConfigurationPage();
@@ -231,7 +231,7 @@ class lamList {
 			$this->listPrintButtons(true);
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
-			$accounts = array();
+			$accounts = [];
 			$this->printAccountTable($accounts);
 			echo "</table><br>\n";
 		}
@@ -247,7 +247,7 @@ class lamList {
 		}
 		$oldFilter = $this->filters;
 		$this->serverSideFilterChanged = false;
-		$this->filters = array();
+		$this->filters = [];
 		if (!isset($_POST['clear_filter'])) {
 			// build filter array
 			for ($i = 0; $i < sizeof($this->attrArray); $i++) {
@@ -291,7 +291,7 @@ class lamList {
 		if (!is_array($this->attrArray) || !is_string($this->sortColumn)) {
 			return;
 		}
-		$toSort = array();
+		$toSort = [];
 		$col = $this->sortColumn;
 		$size = sizeof($info);
 		if ($this->sortColumn != 'dn') {
@@ -306,7 +306,7 @@ class lamList {
 			}
 		}
 		natcasesort($toSort);
-		$sortResult = array();
+		$sortResult = [];
 		if ($this->sortDirection == 1) {
 			foreach ($toSort as $orig => $val) {
 				$sortResult[] = $orig;
@@ -394,7 +394,7 @@ class lamList {
 			}
 		}
 		$row->add($navGroup, 12, 6, 6, 'responsiveLabel');
-		parseHtml(null, $row, array(), false, $this->type->getScope());
+		parseHtml(null, $row, [], false, $this->type->getScope());
 	}
 
 	/**
@@ -419,11 +419,11 @@ class lamList {
 		$scope = $this->type->getScope();
 		$titles = $this->descArray;
 		array_unshift($titles, _('Actions'));
-		$data = array();
+		$data = [];
 		$data[] = $this->getSortingElements();
 		$data[] = $this->getFilterElements();
-		$onClickEvents = array();
-		$onDoubleClickEvents = array();
+		$onClickEvents = [];
+		$onDoubleClickEvents = [];
 		$this->addDataElements($data, $info, $onClickEvents, $onDoubleClickEvents);
 
 		$table = new htmlResponsiveTable($titles, $data);
@@ -431,7 +431,7 @@ class lamList {
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
 
-		parseHtml(null, $table, array(), false, $scope);
+		parseHtml(null, $table, [], false, $scope);
 	}
 
 	/**
@@ -586,14 +586,14 @@ class lamList {
 		}
 		// get sort mapping
 		if (empty($this->sortMapping)) {
-			$this->sortMapping = array();
+			$this->sortMapping = [];
 			$infoSize = sizeof($info);
 			for ($i = 0; $i < $infoSize; $i++) {
 				$this->sortMapping[$i] = $i;
 			}
 		}
 		// get custom render functions
-        $renderFunctions = array();
+        $renderFunctions = [];
         $modules = $this->type->getModules();
 		foreach ($modules as $module) {
 		    $moduleObj = moduleCache::getModule($module, $this->type->getScope());
@@ -607,7 +607,7 @@ class lamList {
         }
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
-			$row = array();
+			$row = [];
 			$index = $this->sortMapping[$i];
 			$rowID = base64_encode($info[$index]['dn']);
 			$actionElement = new htmlGroup();
@@ -787,7 +787,7 @@ class lamList {
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
 				// build DN list
-				$_SESSION['delete_dn'] = array();
+				$_SESSION['delete_dn'] = [];
 				for ($i = 0; $i < sizeof($accounts); $i++) {
 					if ($accounts[$i] == 'tableSelectAll') {
 						continue;
@@ -832,7 +832,7 @@ class lamList {
                 elseif ($option == 'SELECTED') {
 				    // search for checkboxes
 				    $accounts = array_keys($_POST, "on");
-				    $list = array();
+				    $list = [];
 				    // load accounts from LDAP
 				    for ($i = 0; $i < sizeof($accounts); $i++) {
 					    $_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
@@ -847,7 +847,7 @@ class lamList {
 				    }
 			    } // create for all accounts
                 elseif ($option == 'ALL') {
-				    $list = array();
+				    $list = [];
 				    $entriesCount = sizeof($this->entries);
 				    for ($i = 0; $i < $entriesCount; $i++) {
 					    $_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
@@ -926,7 +926,7 @@ class lamList {
 
 		$container->add(new htmlResponsiveSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure'), '405'), 12);
 		$fonts = \LAM\PDF\getPdfFonts();
-		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, array(), _('Font'), '411');
+		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, [], _('Font'), '411');
 		$fontSelection->setCSSClasses(array('lam-save-selection'));
 		$fontSelection->setHasDescriptiveElements(true);
 		$fontSelection->setSortElements(false);
@@ -963,7 +963,7 @@ class lamList {
 		$container->add(new htmlHiddenInput('clickedAccount', $id), 0);
 		addSecurityTokenToMetaHTML($container);
 
-		parseHtml(null, $container, array(), false, $this->type->getScope());
+		parseHtml(null, $container, [], false, $this->type->getScope());
 
 		$this->printFooter();
 	}
@@ -976,7 +976,7 @@ class lamList {
 	protected function listShowOUSelection() {
 		$group = new htmlGroup();
 		if (sizeof($this->possibleSuffixes) > 1) {
-			$suffixList = array();
+			$suffixList = [];
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				$suffixList[getAbstractDN($this->possibleSuffixes[$i])] = $this->possibleSuffixes[$i];
 			}
@@ -1039,7 +1039,7 @@ class lamList {
 		$this->addExtraInputElementsToTopArea($left, $right);
 		$row->add($left, 12, 6, 6, 'text-left');
 		$row->add($right, 12, 6, 6, 'text-right');
-		parseHtml(null, $row, array(), false, $this->type->getScope());
+		parseHtml(null, $row, [], false, $this->type->getScope());
 	}
 
 	/**
@@ -1060,7 +1060,7 @@ class lamList {
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(array('maxrow'));
 		$row->add(new htmlTitle($this->type->getAlias()));
-		parseHtml(null, $row, array(), true, null);
+		parseHtml(null, $row, [], true, null);
 		$this->printHeaderContent();
 	}
 
@@ -1097,7 +1097,7 @@ class lamList {
 	*/
 	protected function listGetAttributeDescriptionList() {
 		$attrs = $this->type->getAttributes();
-		$ret = array();
+		$ret = [];
 		$predefinedDescriptions = $this->type->getBaseType()->getListAttributeDescriptions();
 		$predefinedDescriptions = array_change_key_case($predefinedDescriptions, CASE_LOWER);
 		foreach ($attrs as $attr) {
@@ -1212,7 +1212,7 @@ class lamList {
 			}
 		}
 		$this->ldapEntries = searchLDAP($this->suffix, $filter, $attrs);
-		$this->entries = array();
+		$this->entries = [];
 		foreach ($this->ldapEntries as $index => &$attrs) {
 			$this->entries[$index] = &$attrs;
 		}
@@ -1278,12 +1278,12 @@ class lamList {
 	 * Applies any local filters for attributes that cannot be filtered server side.
 	 */
 	protected function applyLocalFilters() {
-		$this->entries = array();
+		$this->entries = [];
 		foreach ($this->ldapEntries as $index => &$data) {
 			$this->entries[$index] = &$data;
 		}
 		// get custom filter functions
-		$filterFunctions = array();
+		$filterFunctions = [];
 		$modules = $this->type->getModules();
 		foreach ($modules as $module) {
 			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
@@ -1295,7 +1295,7 @@ class lamList {
 				}
 			}
 		}
-		$toFilter = array();
+		$toFilter = [];
 		foreach ($this->filters as $filterAttribute => $filterValue) {
 			if ($this->isAttributeFilteredByServer($filterAttribute) || ($filterValue === '')) {
 				continue;
@@ -1365,7 +1365,7 @@ class lamList {
 	 * @return array additional attribute names
 	 */
 	protected function getAdditionalLDAPAttributesToRead() {
-	    $attrs = array();
+	    $attrs = [];
 		if ($this->showAccountStatus) {
 			$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 			foreach ($modules as $module) {
@@ -1386,7 +1386,7 @@ class lamList {
 	 * @return lamListTool[] tools
 	 */
 	protected function getAdditionalTools() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -1395,7 +1395,7 @@ class lamList {
 	 * @return array list of lamListOption objects
 	 */
 	protected function listGetAllConfigOptions() {
-	    $options = array();
+	    $options = [];
 		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), array(10, 20, 30, 50, 75, 100, 500, 1000), self::LIST_SIZE_OPTION_NAME);
 		$listSizeOption->setHelpID('208');
 		$listSizeOption->setValue($this->maxPageEntries);
@@ -1420,7 +1420,7 @@ class lamList {
 		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'), 12);
 		addSecurityTokenToMetaHTML($configContainer);
 
-		parseHtml('', $configContainer, array(), false, $this->type->getScope());
+		parseHtml('', $configContainer, [], false, $this->type->getScope());
 
 		echo '</form>';
 		echo "</div>\n";

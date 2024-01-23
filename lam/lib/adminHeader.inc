@@ -73,7 +73,7 @@ function printHeader(string $headerPrefix): void {
     // get tool list
     $availableTools = getTools();
     // sort tools
-    $toSort = array();
+    $toSort = [];
     foreach ($availableTools as $myTool) {
     if ($myTool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
     continue;
@@ -94,7 +94,7 @@ function printHeader(string $headerPrefix): void {
     $toSort[$toolClass] = $myTool->getPosition();
     }
     asort($toSort);
-    $tools = array();
+    $tools = [];
     foreach ($toSort as $key => $value) {
     $tools[] = new $key();
     }
@@ -159,7 +159,7 @@ function printHeader(string $headerPrefix): void {
 			$accountTypesDiv = new htmlDiv('lam-navigation-types', $accountTypeEntriesDiv, array('lam-navigation-layer zeroHeight'));
 			$accountTypesGroup->addElement($accountTypesDiv);
 
-			parseHtml(null, $accountTypesGroup, array(), false, null);
+			parseHtml(null, $accountTypesGroup, [], false, null);
 		}
 		if (sizeof($tools) > 0) {
 			$toolGroup = new htmlGroup();
@@ -179,7 +179,7 @@ function printHeader(string $headerPrefix): void {
 			$toolDiv = new htmlDiv('lam-navigation-tools', $toolEntriesDiv, array('lam-navigation-layer zeroHeight'));
 			$toolGroup->addElement($toolDiv);
 
-			parseHtml(null, $toolGroup, array(), false, null);
+			parseHtml(null, $toolGroup, [], false, null);
 		}
 		if (is_dir(__DIR__ . '/../docs/manual')) {
 			?>

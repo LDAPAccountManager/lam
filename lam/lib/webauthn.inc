@@ -104,7 +104,7 @@ class WebauthnManager {
 	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialCreationOptions registration object
 	 */
-	public function getRegistrationObject($dn, $isSelfService, $extraExcludedKeys = array()) {
+	public function getRegistrationObject($dn, $isSelfService, $extraExcludedKeys = []) {
 		$rpEntity = $this->createRpEntry($isSelfService);
 		$userEntity = $this->getUserEntity($dn);
 		$challenge = $this->createChallenge();
@@ -230,8 +230,8 @@ class WebauthnManager {
 	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialDescriptor[] credential ids
 	 */
-	private function getExcludedKeys($user, $extraExcludedKeys = array()) {
-		$keys = array();
+	private function getExcludedKeys($user, $extraExcludedKeys = []) {
+		$keys = [];
 		$repository = $this->getDatabase();
 		$credentialSources = $repository->findAllForUserEntity($user);
 		foreach ($credentialSources as $credentialSource) {
@@ -357,7 +357,7 @@ class WebauthnManager {
 		$database = $this->getDatabase();
 		$userEntity = $this->getUserEntity($userDN);
 		$publicKeyCredentialSources = $database->findAllForUserEntity($userEntity);
-		$publicKeyDescriptors = array();
+		$publicKeyDescriptors = [];
 		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
 			$publicKeyDescriptors[] = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();
 		}
@@ -470,7 +470,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 * @return PublicKeyCredentialSource[] credential sources
 	 */
 	public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array {
-		$credentials = array();
+		$credentials = [];
 		try {
 			$pdo = $this->getPDO();
 			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userId = :userid');
@@ -563,7 +563,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			':searchTerm' => $searchTerm
 		));
 		$results = $statement->fetchAll();
-		$devices = array();
+		$devices = [];
 		foreach ($results as $result) {
 			$name = !empty($result['name']) ? $result['name'] : '';
 			$devices[] = array(
@@ -686,7 +686,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		$statement = $pdo->prepare('select * from ' . $this->getTableName());
 		$statement->execute();
 		$dbData = $statement->fetchAll();
-		$data = array();
+		$data = [];
 		foreach ($dbData as $dbRow) {
 			$data[] = array(
 				'userId' => $dbRow['userId'],

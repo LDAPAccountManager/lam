@@ -63,7 +63,7 @@ class Remote {
 	*/
 	public function execute($command) {
 		if ($this->server == null) {
-			return array();
+			return [];
 		}
 		return $this->server->exec("sudo " . $this->serverConfig->getScriptPath() . ' ' . escapeshellarg($command));
 	}

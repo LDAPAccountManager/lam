@@ -46,7 +46,7 @@ function getTools() : array {
 	}
 	// find tools classes
 	$classList = get_declared_classes();
-	$return = array();
+	$return = [];
 	foreach ($classList as $classCandidate) {
 		if (in_array('LAMTool', class_parents($classCandidate))) {
 			$return[] = new $classCandidate();
@@ -124,7 +124,7 @@ abstract class LAMTool {
 	 * @return array list of subtools (LAMSubTool)
 	 */
 	public function getSubTools(): array {
-		return array();
+		return [];
 	}
 	
 	/**
@@ -160,7 +160,7 @@ abstract class LAMTool {
 	 * @return array list of error messages
 	 */
 	public function checkConfigurationOptions(array $settings): array {
-		return array();
+		return [];
 	}
 	
 }

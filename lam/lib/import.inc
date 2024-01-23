@@ -60,8 +60,8 @@ class Importer {
 	 * @throws LAMException invalid format
 	 */
 	private function extractImportChunks($lines) {
-		$entries = array();
-		$currentEntry = array();
+		$entries = [];
+		$currentEntry = [];
 		foreach ($lines as $line) {
 			$trimmedLine = trim($line);
 			if (substr($trimmedLine, 0, 1) === '#') {
@@ -72,7 +72,7 @@ class Importer {
 				// end of entry
 				if (!empty($currentEntry)) {
 					$entries[] = $currentEntry;
-					$currentEntry = array();
+					$currentEntry = [];
 				}
 			}
 			elseif (substr($line, 0, 1) === ' ') {
@@ -212,7 +212,7 @@ class Importer {
 	 * @return ImporterTask[] tasks
 	 */
 	private function convertToTasks($entries) {
-		$tasks = array();
+		$tasks = [];
 		$count = sizeof($entries);
 		for ($i = 0; $i < $count; $i++) {
 			$entry = $entries[$i];
@@ -278,7 +278,7 @@ class Importer {
 		else {
 			$type = $firstAttribute[Importer::VALUE];
 			if ($type === 'add') {
-				$attributes = array();
+				$attributes = [];
 				foreach ($entry as $line) {
 					$lineData = $this->getLineKeyValue($line);
 					$attributes[$lineData[Importer::KEY]][] = $lineData[Importer::VALUE];
@@ -297,14 +297,14 @@ class Importer {
 			elseif ($type !== 'modify') {
 				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changetype: ' . htmlspecialchars($type));
 			}
-			$subtasks = array();
-			$currentLines = array();
+			$subtasks = [];
+			$currentLines = [];
 			$linesCount = sizeof($entry);
 			for ($i = 0; $i < $linesCount; $i++) {
 				$line = $entry[$i];
 				if ($line === '-') {
 					$subtasks[] = $this->getChangeTypeTask($dn, $currentLines);
-					$currentLines = array();
+					$currentLines = [];
 				}
 				else {
 					$currentLines[] = $line;
@@ -352,7 +352,7 @@ class Importer {
 		$firstLineData = $this->getLineKeyValue($firstLine);
 		$type = $firstLineData[Importer::KEY];
 		$attributeName = $firstLineData[Importer::VALUE];
-		$attributes = array();
+		$attributes = [];
 		foreach ($lines as $line) {
 			$lineData = $this->getLineKeyValue($line);
 			if ($lineData[Importer::KEY] !== $attributeName) {
@@ -383,7 +383,7 @@ class Importer {
 	public static function formatMessage($type, $title, $message) {
 		$msg = new htmlStatusMessage($type, $title, $message);
 		ob_start();
-		$msg->generateHTML(null, array($msg), array(), true, 'user');
+		$msg->generateHTML(null, array($msg), [], true, 'user');
 		$data = ob_get_contents();
 		ob_clean();
 		return $data;
@@ -435,7 +435,7 @@ interface ImporterTask {
 class AddEntryTask implements ImporterTask {
 
 	private $dn = '';
-	private $attributes = array();
+	private $attributes = [];
 
 	/**
 	 * Constructor
@@ -545,7 +545,7 @@ class MultiTask implements ImporterTask {
 	/**
 	 * @var ImporterTask[] tasks
 	 */
-	private $tasks = array();
+	private $tasks = [];
 
 	/**
 	 * @var string DN
@@ -592,7 +592,7 @@ class MultiTask implements ImporterTask {
 class AddAttributesTask implements ImporterTask {
 
 	private $dn = '';
-	private $attributes = array();
+	private $attributes = [];
 
 	/**
 	 * Constructor
@@ -646,7 +646,7 @@ class AddAttributesTask implements ImporterTask {
 class DeleteAttributesTask implements ImporterTask {
 
 	private $dn = '';
-	private $attributes = array();
+	private $attributes = [];
 	private $attributeName;
 
 	/**
@@ -672,7 +672,7 @@ class DeleteAttributesTask implements ImporterTask {
 			$success = @ldap_mod_del($ldap, $this->dn, $this->attributes);
 		}
 		else {
-			$success = @ldap_modify($ldap, $this->dn, array($this->attributeName => array()));
+			$success = @ldap_modify($ldap, $this->dn, array($this->attributeName => []));
 		}
 		if ($success) {
 			return '';
@@ -717,7 +717,7 @@ class DeleteAttributesTask implements ImporterTask {
 class ReplaceAttributesTask implements ImporterTask {
 
 	private $dn = '';
-	private $attributes = array();
+	private $attributes = [];
 
 	/**
 	 * Constructor

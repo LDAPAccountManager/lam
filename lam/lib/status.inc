@@ -49,7 +49,7 @@
  * @param boolean $returnOutput if set to true this function will return the generated HTML code instead of printing it directly (default: false)
  * @return String HTML code if $returnOutput is set to true, otherwise null
  */
-function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', $MessageVariables = array(), $returnOutput = false) {
+function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', $MessageVariables = [], $returnOutput = false) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if ($MessageTyp == "INFO") {
 		$class = "class=\"statusInfo lam-status-message\"";

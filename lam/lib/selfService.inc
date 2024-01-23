@@ -57,7 +57,7 @@ function isLAMProVersion() {
  * @return array attributes
  */
 function getSelfServiceSearchAttributes($scope) {
-	$return = array();
+	$return = [];
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
@@ -75,7 +75,7 @@ function getSelfServiceSearchAttributes($scope) {
  * @return array settings
  */
 function getSelfServiceFieldSettings($scope) {
-	$return = array();
+	$return = [];
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
@@ -98,14 +98,14 @@ function getSelfServiceFieldSettings($scope) {
  * @return array meta HTML code (array(<moduleName> => htmlResponsiveRow))
  */
 function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-	$return = array();
+	$return = [];
 	$modules = getAvailableModules($scope);
 	foreach ($modules as $module) {
 		if (!isset($fields[$module])) {
 			continue;
 		}
 		$m = moduleCache::getModule($module, $scope);
-		$modReadOnlyFields = array();
+		$modReadOnlyFields = [];
 		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
 			$parts = explode('_', $readOnlyFields[$r]);
 			if ($parts[0] == $module) {
@@ -128,17 +128,17 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
  * @param array $attributes LDAP attributes
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
  * @param array $readOnlyFields list of read-only fields
- * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+ * @return array messages and LDAP commands (array('messages' => [], 'add' => [], 'del' => [], 'mod' => []))
  */
 function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
+	$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) {
 			continue;
 		}
 		$m = moduleCache::getModule($modules[$i], $scope);
-		$modReadOnlyFields = array();
+		$modReadOnlyFields = [];
 		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
 			$parts = explode('_', $readOnlyFields[$r]);
 			if ($parts[0] == $modules[$i]) {
@@ -173,7 +173,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 * @return array configuration options
 */
 function getSelfServiceSettings($scope, $profile) {
-	$return = array();
+	$return = [];
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
@@ -191,7 +191,7 @@ function getSelfServiceSettings($scope, $profile) {
 * @return array list of error messages
 */
 function checkSelfServiceSettings($scope, &$options, &$profile) {
-	$return = array();
+	$return = [];
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
@@ -434,7 +434,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 	public function getProfiles(): array {
 		$types = LAM\TYPES\getTypes();
 		$dir = dir(__DIR__ . "/../config/selfService");
-		$ret = array();
+		$ret = [];
 		if ($dir === false) {
 			logNewMessage(LOG_ERR, 'Unable to read self service profiles');
 			return $ret;
@@ -594,7 +594,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 		$statement = $this->pdo->prepare("SELECT scope, name FROM " . self::TABLE_NAME);
 		$statement->execute();
 		$results = $statement->fetchAll();
-		$profiles = array();
+		$profiles = [];
 		foreach ($results as $result) {
 			$profiles[$result['scope']][] = $result['name'];
 		}
@@ -842,9 +842,9 @@ class selfServiceProfile {
 			array('name' => _('Password'),
 				'fields' => array('posixAccount_password'))
 		);
-		$this->readOnlyFields = array();
-		$this->relabelFields = array();
-		$this->moduleSettings = array();
+		$this->readOnlyFields = [];
+		$this->relabelFields = [];
+		$this->moduleSettings = [];
 		$this->language = 'en_GB.utf8';
 		$this->enforceLanguage = true;
 		$this->followReferrals = 0;
@@ -902,7 +902,7 @@ class selfServiceProfile {
 			return $this->baseUrl;
 		}
 		$callingUrl = getCallingURL();
-		$matches = array();
+		$matches = [];
 		if (preg_match('/^(http(s)?:\\/\\/[^\\/]+)\\/.+$/', $callingUrl, $matches)) {
 			return $matches[1];
 		}

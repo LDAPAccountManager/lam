@@ -181,7 +181,7 @@ function LAMVersion() {
  * @return array list of config options (name => array(values))
  */
 function extractConfigOptionsFromPOST($confTypes) {
-	$options = array();
+	$options = [];
 	foreach ($confTypes as $element => $type) {
 		// text fields
 		if ($type == "text") {
@@ -267,7 +267,7 @@ function isAccountTypeHidden($type) {
  * @return LAMLanguage[] languages
  */
 function getLanguages() {
-	$languages = array();
+	$languages = [];
 	// loading available languages from language.conf file
 	$languagefile = __DIR__ . "/../config/language";
 	if(is_file($languagefile)) {
@@ -374,7 +374,7 @@ class ServerProfilePersistenceManager {
 	 */
 	function getConfigTemplates() : array {
 		$dir = dir(__DIR__ . "/../config");
-		$ret = array();
+		$ret = [];
 		$pos = 0;
 		while ($entry = $dir->read()){
 			$ext = substr($entry, strlen($entry)-12, 12);
@@ -552,7 +552,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	public function getProfiles(): array {
 		$dirName = __DIR__ . "/../config";
 		$dir = dir($dirName);
-		$ret = array();
+		$ret = [];
 		while ($entry = $dir->read()) {
 			$ext = substr($entry, strlen($entry) - 5, 5);
 			$name = substr($entry, 0, strlen($entry) - 5);
@@ -579,10 +579,10 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		if (!$file) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		$moduleSettings = array();
-		$typeSettings = array();
-		$toolSettings = array();
-		$jobSettings = array();
+		$moduleSettings = [];
+		$typeSettings = [];
+		$toolSettings = [];
+		$jobSettings = [];
 		while (!feof($file)) {
 			$line = fgets($file, 1000000);
 			$line = trim($line);  // remove spaces at the beginning and end
@@ -658,7 +658,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			fclose($newFile);
 		}
 		if (is_file($confFile) && is_readable($confFile)) {
-			$file_array = array();
+			$file_array = [];
 			$file_array[] = "\n" . "ServerURL: " . $profile->get_ServerURL() . "\n";
 			$file_array[] = "\n" . "serverDisplayName: " . $profile->getServerDisplayName() . "\n";
 			$file_array[] = "\n" . "useTLS: " . $profile->getUseTLS() . "\n";
@@ -887,7 +887,7 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME);
 		$statement->execute();
 		$results = $statement->fetchAll();
-		$profiles = array();
+		$profiles = [];
 		foreach ($results as $result) {
 			$profiles[] = $result['name'];
 		}
@@ -1012,13 +1012,13 @@ class LAMConfig {
 	private $timeZone = 'Europe/London';
 
 	/** module settings */
-	private $moduleSettings = array();
+	private $moduleSettings = [];
 
 	/** type settings */
-	private $typeSettings = array();
+	private $typeSettings = [];
 
 	/** tool settings */
-	private $toolSettings = array();
+	private $toolSettings = [];
 
 	/**
 	* Path to external lamdaemon script on server where it is executed
@@ -1128,7 +1128,7 @@ class LAMConfig {
 	/** random job token */
 	private $jobToken;
 	/** job configuration */
-	private $jobSettings = array();
+	private $jobSettings = [];
 
 	private $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
 	private $twoFactorAuthenticationURL = 'https://localhost';
@@ -1176,7 +1176,7 @@ class LAMConfig {
 	 * @return array data
 	 */
 	public function exportData() {
-		$data = array();
+		$data = [];
 		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs');
 		foreach ($this->settings as $setting) {
 			if (in_array($setting, $settingsToIgnore)) {
@@ -1213,13 +1213,13 @@ class LAMConfig {
 			}
 			$this->$dataKey = $dataValue;
 		}
-		$typeSettingsData = !empty($data['typeSettings']) && is_array($data['typeSettings']) ? $data['typeSettings'] : array();
+		$typeSettingsData = !empty($data['typeSettings']) && is_array($data['typeSettings']) ? $data['typeSettings'] : [];
 		$this->typeSettings = $typeSettingsData;
-		$moduleSettingsData = !empty($data['moduleSettings']) && is_array($data['moduleSettings']) ? $data['moduleSettings'] : array();
+		$moduleSettingsData = !empty($data['moduleSettings']) && is_array($data['moduleSettings']) ? $data['moduleSettings'] : [];
 		$this->moduleSettings = $moduleSettingsData;
-		$toolSettingsData = !empty($data['toolSettings']) && is_array($data['toolSettings']) ? $data['toolSettings'] : array();
+		$toolSettingsData = !empty($data['toolSettings']) && is_array($data['toolSettings']) ? $data['toolSettings'] : [];
 		$this->toolSettings = $toolSettingsData;
-		$jobSettingsData = !empty($data['jobSettings']) && is_array($data['jobSettings']) ? $data['jobSettings'] : array();
+		$jobSettingsData = !empty($data['jobSettings']) && is_array($data['jobSettings']) ? $data['jobSettings'] : [];
 		$this->jobSettings = $jobSettingsData;
 	}
 
@@ -1243,7 +1243,7 @@ class LAMConfig {
 	 */
 	public function removeInvalidModules() {
 		$types = $this->get_ActiveTypes();
-		$availableByScope = array();
+		$availableByScope = [];
 		foreach ($types as $type) {
 			$scope = \LAM\TYPES\getScopeFromTypeId($type);
 			$moduleVar = "modules_" . $type;
@@ -1254,7 +1254,7 @@ class LAMConfig {
 				}
 				$available = $availableByScope[$scope];
 				// only return available modules
-				$ret = array();
+				$ret = [];
 				for ($i = 0; $i < sizeof($modules); $i++) {
 					if (in_array($modules[$i], $available)) {
 						$ret[] = $modules[$i];
@@ -1722,7 +1722,7 @@ class LAMConfig {
 	 * @return RemoteServerConfiguration[] configurations
 	 */
 	public static function parseConfiguredScriptServers($value, $scriptPath, $userName, $sshKey, $sshKeyPassword) : array {
-		$servers = array();
+		$servers = [];
 		if (empty($value)) {
 			return $servers;
 		}
@@ -1785,7 +1785,7 @@ class LAMConfig {
 		$array_string = explode(";", $value);
 		if (count($array_string) > 0) {
 			// Check all IPs in the exploded Array
-			$valid_ips = array();
+			$valid_ips = [];
 			foreach($array_string as $arr_value) {
 				// Explode name and IP, if a name exists
 				if (preg_match("/:/", $arr_value)) {
@@ -1944,7 +1944,7 @@ class LAMConfig {
 	public function get_AccountModules($scope) {
 		if (isset($this->typeSettings["modules_" . $scope])) {
 			$modulesTmp = explode(",", $this->typeSettings["modules_" . $scope]);
-			$modules = array();
+			$modules = [];
 			foreach ($modulesTmp as $mod) {
 				if (trim($mod) != '') {
 					$modules[] = $mod;
@@ -1953,7 +1953,7 @@ class LAMConfig {
 			return $modules;
 		}
 		else {
-			return array();
+			return [];
 		}
 	}
 
@@ -2014,7 +2014,7 @@ class LAMConfig {
 	*/
 	public function get_ActiveTypes() {
 		if (($this->activeTypes == '') || !isset($this->activeTypes)) {
-			return array();
+			return [];
 		}
 		else {
 			return explode(",", $this->activeTypes);
@@ -3181,7 +3181,7 @@ class LAMCfgMain {
 	 * @return array config data
 	 */
 	public function exportData($skipPersistenceSettings = false): array {
-		$data = array();
+		$data = [];
 		foreach ($this->settings as $setting) {
 			if ($skipPersistenceSettings && in_array($setting, $this->persistenceSettings)) {
 				continue;
@@ -3386,7 +3386,7 @@ class LAMCfgMain {
 	public function saveLocal(bool $persistenceOnly) : void {
 		if (is_file($this->conffile)) {
 			$file = fopen($this->conffile, "r");
-			$file_array = array();
+			$file_array = [];
 			// read config file
 			while (!feof($file)) {
 				$configLine = fgets($file, 1000000);
@@ -3397,7 +3397,7 @@ class LAMCfgMain {
 			}
 			fclose($file);
 			// generate new configuration file
-			$saved = array();
+			$saved = [];
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				$line = trim($file_array[$i]);
 				if (($line == "")||($line[0] == "#")) {
@@ -3727,11 +3727,11 @@ class LAMCfgMain {
 	 */
 	public function getSSLCaCertificates() {
 		if ($this->delSSLCaCert) {
-			return array();
+			return [];
 		}
 		$content = $this->getSSLCaCertificateContent();
 		if (empty($content)) {
-			return array();
+			return [];
 		}
 		$list = $this->splitSSLCaCertificateContent($content);
 		for ($i = 0; $i < sizeof($list); $i++) {
@@ -3772,17 +3772,17 @@ class LAMCfgMain {
 	 */
 	private function splitSSLCaCertificateContent($content) {
 		if (empty($content)) {
-			return array();
+			return [];
 		}
 		$content = str_replace("\n\n", "\n", $content);
 		if (empty($content)) {
-			return array();
+			return [];
 		}
 		if (!(strpos($content, '-----BEGIN CERTIFICATE-----') === 0)) {
-			return array();
+			return [];
 		}
 		$lines = explode("\n", $content);
-		$list = array();
+		$list = [];
 		$pos = -1;
 		foreach ($lines as $line) {
 			if (strpos($line, '-----BEGIN CERTIFICATE-----') === 0) {

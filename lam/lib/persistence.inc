@@ -57,12 +57,12 @@ class ConfigDataExporter {
 	 */
 	public function exportAsJson() {
 		$mainCfg = $this->_getMainConfiguration();
-		$jsonData = array();
+		$jsonData = [];
 		$jsonData['mainConfig'] = $this->_getMainConfigData($mainCfg);
 		$jsonData['certificates'] = $this->_getCertificates($mainCfg);
 		$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
 		$serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
-		$serverProfiles = array();
+		$serverProfiles = [];
 		foreach ($serverProfileNames as $serverProfileName) {
 			$serverProfiles[$serverProfileName] = $serverProfilesPersistenceManager->loadProfile($serverProfileName);
 		}
@@ -113,7 +113,7 @@ class ConfigDataExporter {
 	 * @return array $data
 	 */
 	public function _getServerProfiles($serverProfiles) {
-		$data = array();
+		$data = [];
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			$data[$profileName] = $serverProfile->exportData();
 		}
@@ -128,7 +128,7 @@ class ConfigDataExporter {
 	 * @throws LAMException error reading profiles
 	 */
 	public function _getAccountProfiles($serverProfiles) {
-		$data = array();
+		$data = [];
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
@@ -149,7 +149,7 @@ class ConfigDataExporter {
 	 * @throws LAMException error reading template
 	 */
 	public function _getAccountProfileTemplates() {
-		$data = array();
+		$data = [];
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		$accountProfileTemplateNames = $accountProfilePersistenceManager->getAccountProfileTemplateNames();
 		foreach ($accountProfileTemplateNames as $scope => $templateNames) {
@@ -169,7 +169,7 @@ class ConfigDataExporter {
 	 * @throws LAMException error reading logo
 	 */
 	public function _getPdfProfiles($serverProfiles) : array {
-		$data = array();
+		$data = [];
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
@@ -196,7 +196,7 @@ class ConfigDataExporter {
 	 * @throws LAMException error reading template
 	 */
 	public function _getPdfProfileTemplates() {
-		$data = array();
+		$data = [];
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$pdfTemplateNames = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
 		foreach ($pdfTemplateNames as $scope => $templateNames) {
@@ -218,7 +218,7 @@ class ConfigDataExporter {
 	 * @return array data
 	 */
 	public function _getSelfServiceProfiles() {
-		$data = array();
+		$data = [];
 		$selfServicePersistence = new SelfServicePersistence();
 		$profileTypes = $selfServicePersistence->getProfiles();
 		$selfServicePersistence = new SelfServicePersistence();
@@ -243,7 +243,7 @@ class ConfigDataExporter {
 	 * @return array data
 	 */
 	public function _getWebauthn() {
-		$data = array();
+		$data = [];
 		if (extension_loaded('PDO')
 			&& in_array('sqlite', \PDO::getAvailableDrivers())) {
 			include_once __DIR__ . '/webauthn.inc';
@@ -262,7 +262,7 @@ class ConfigDataExporter {
 	 * @throws LAMException error reading cron jobs
 	 */
 	public function _getCronJobData(array $serverProfiles) : array {
-		$data = array();
+		$data = [];
 		if (!isLAMProVersion()) {
 			return $data;
 		}
@@ -318,7 +318,7 @@ class ConfigDataImporter {
 		if ($data === null) {
 			throw new LAMException(_('Unable to read import file.'));
 		}
-		$steps = array();
+		$steps = [];
 		foreach ($data as $key => $value) {
 			switch ($key) {
 				case 'mainConfig':
@@ -467,7 +467,7 @@ class ConfigDataImporter {
 	 * @throws LAMException error during import
 	 */
 	private function importServerProfiles($step) {
-		$failedProfiles = array();
+		$failedProfiles = [];
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
@@ -498,7 +498,7 @@ class ConfigDataImporter {
 	 * @throws LAMException error during import
 	 */
 	private function importAccountProfiles($step) {
-		$failedProfiles = array();
+		$failedProfiles = [];
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
@@ -545,7 +545,7 @@ class ConfigDataImporter {
 	 * @throws LAMException error during import
 	 */
 	private function importPdfProfiles($step) {
-		$failedProfiles = array();
+		$failedProfiles = [];
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
@@ -588,7 +588,7 @@ class ConfigDataImporter {
 	 */
 	private function importPdfProfileTemplates($step) {
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
-		$failedNames = array();
+		$failedNames = [];
 		$data = $step->getValue();
 		if (isset($data['structures'])) {
 			foreach ($data['structures'] as $scope => $pdfProfiles) {
@@ -605,7 +605,7 @@ class ConfigDataImporter {
 				}
 			}
 		}
-		$failedLogos = array();
+		$failedLogos = [];
 		if (isset($data['logos'])) {
 			foreach ($data['logos'] as $logoFileName => $logoData) {
 				$logoBinary = base64_decode($logoData);
@@ -633,7 +633,7 @@ class ConfigDataImporter {
 	 * @throws LAMException error saving profiles
 	 */
 	private function importSelfServiceProfiles($step) {
-		$failedProfiles = array();
+		$failedProfiles = [];
 		$selfServicePersistence = new SelfServicePersistence();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
@@ -682,7 +682,7 @@ class ConfigDataImporter {
 		if (!isLAMProVersion()) {
 			return;
 		}
-		$failedProfiles = array();
+		$failedProfiles = [];
 		include_once 'database.inc';
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
@@ -729,7 +729,7 @@ class ImporterStep {
 	private $key;
 	private $value;
 	private $active = false;
-	private $subSteps = array();
+	private $subSteps = [];
 
 	/**
 	 * Constructor.
