@@ -252,7 +252,7 @@ class sambaMungedDial
   /** Takes a base64-encoded MungedDial-String and returns an array of included parameters and values */
   function decode_munged($munge)
   {
-  	$result= array();
+  	$result= [];
   		
   	/* 
   	 * Remove base64 encoding and skip SAMBA_MUNGEDDIAL_FILEHEADER.
@@ -324,7 +324,7 @@ class sambaMungedDial
   /** Returns array of flags, which can be set on-demand with activated java-script */
   function getOnDemandFlags ()
   {
-  	$result= array();
+  	$result= [];
 	foreach ($this->timeParams as $value) {
 		$result[$value."Mode"]= "";
 	}
