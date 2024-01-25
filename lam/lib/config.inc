@@ -10,7 +10,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ function setlanguage() {
 	putenv("LC_ALL=$code");
 	putenv("LC_LANG=$code");
 	putenv("LC_LANGUAGE=$code");
-	$setLocaleResult = setlocale(LC_ALL, array($code, $fallbackCode));  // set LC_ALL
+	$setLocaleResult = setlocale(LC_ALL, [$code, $fallbackCode]);  // set LC_ALL
 	if ($setLocaleResult === false) {
 		logNewMessage(LOG_WARNING, "Unable to set locale, check if 'locale -a' returns $code");
 	}
@@ -117,8 +117,8 @@ function setlanguage() {
  * @return true, if the chmod $right for $target were set
  */
 function checkChmod($right, $target, $chmod) {
-	$right_arr = array("read","write","execute");
-	$target_arr = array("owner","group","other");
+	$right_arr = ["read","write","execute"];
+	$target_arr = ["owner","group","other"];
 
 	// Check, if $right and $target has right parameters
 	if (!in_array($right, $right_arr) ||!in_array($target, $target_arr)) {
@@ -142,11 +142,11 @@ function checkChmod($right, $target, $chmod) {
 
 	// Now check, if the chmod_num can be right with the $right
 	// What numbers allow "read"
-	$read = array(4,5,6,7);
+	$read =[4,5,6,7];
 	// What numbers allow "write"
-	$write = array(2,3,6,7);
+	$write =[2,3,6,7];
 	// What numbers allow "execute"
-	$execute = array(1,3,5,7);
+	$execute =[1,3,5,7];
 	if ((($right == "read") && in_array($chmod_num, $read))
 			|| (($right == "write") && in_array($chmod_num, $write))
 			|| (($right == "execute") && in_array($chmod_num, $execute))) {
@@ -178,35 +178,35 @@ function LAMVersion() {
  * Extracts config options from HTTP POST data.
  *
  * @param array $confTypes array (option name => type (e.g. multiselect))
- * @return array list of config options (name => array(values))
+ * @return array list of config options (name =>[values])
  */
 function extractConfigOptionsFromPOST($confTypes) {
 	$options = [];
 	foreach ($confTypes as $element => $type) {
 		// text fields
 		if ($type == "text") {
-			$options[$element] = array($_POST[$element]);
+			$options[$element] =[$_POST[$element]];
 		}
 		// text fields
 		elseif ($type == "text_obfuscated") {
-			$options[$element] = array(obfuscateText($_POST[$element]));
+			$options[$element] =[obfuscateText($_POST[$element])];
 		}
 		// hidden fields
 		elseif ($type == "hidden") {
-			$options[$element] = array($_POST[$element]);
+			$options[$element] =[$_POST[$element]];
 		}
 		// checkboxes
 		elseif ($type == "checkbox") {
 			if (isset($_POST[$element]) && ($_POST[$element] == "on")) {
-				$options[$element] = array('true');
+				$options[$element] =['true'];
 			}
 			else {
-				$options[$element] = array('false');
+				$options[$element] =['false'];
 			}
 		}
 		// dropdownbox
 		elseif ($type == "select") {
-			$options[$element] = array($_POST[$element]);
+			$options[$element] =[$_POST[$element]];
 		}
 		// multiselect
 		elseif ($type == "multiselect") {
@@ -603,7 +603,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 					// ignore
 				}
 			}
-			elseif ((sizeof($parts) > 1) && !in_array($keyword, array('modules', 'types', 'tools', 'jobs'))) {
+			elseif ((sizeof($parts) > 1) && !in_array($keyword,['modules', 'types', 'tools', 'jobs'])) {
 				// global setting with value
 				try {
 					$property = $reflectionConfig->getProperty($keyword);
@@ -790,7 +790,11 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		}
 		$dir = __DIR__ . "/../config/";
 		// delete account profiles and PDF structures
-		$subDirs = array($dir . 'pdf/' . $name . '/logos', $dir . 'pdf/' . $name, $dir . 'profiles/' . $name);
+		$subDirs =[
+			$dir . 'pdf/' . $name . '/logos',
+			$dir . 'pdf/' . $name,
+			$dir . 'profiles/' . $name
+		];
 		for ($i = 0; $i < sizeof($subDirs); $i++) {
 			if (is_dir($subDirs[$i]) && is_readable($subDirs[$i])) {
 				$dirHandle = @opendir($subDirs[$i]);
@@ -1153,7 +1157,7 @@ class LAMConfig {
 	private $pwdPolicyMinSymbolic = '';
 
 	/** List of all settings in config file */
-	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins",
+	private $settings = ["ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", 'serverDisplayName',
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
@@ -1168,7 +1172,7 @@ class LAMConfig {
 		'twoFactorRememberDeviceDuration', 'twoFactorRememberDevicePassword', 'referentialIntegrityOverlay',
 		'hidePasswordPromptForExpiredPasswords', 'hideDnPart', 'pwdPolicyMinLength', 'pwdPolicyMinLowercase',
 		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic'
-	);
+	];
 
 	/**
 	 * Returns the server profile data.
@@ -1177,7 +1181,7 @@ class LAMConfig {
 	 */
 	public function exportData() {
 		$data = [];
-		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs');
+		$settingsToIgnore = ['modules', 'types', 'tools', 'jobs'];
 		foreach ($this->settings as $setting) {
 			if (in_array($setting, $settingsToIgnore)) {
 				continue;
@@ -1198,8 +1202,8 @@ class LAMConfig {
 	 * @throws LAMException import error
 	 */
 	public function importData($data) {
-		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs', 'typeSettings',
-			'moduleSettings', 'toolSettings', 'jobSettings');
+		$settingsToIgnore = ['modules', 'types', 'tools', 'jobs', 'typeSettings',
+			'moduleSettings', 'toolSettings', 'jobSettings'];
 		foreach ($data as $dataKey => $dataValue) {
 			if (in_array($dataKey, $settingsToIgnore)) {
 				continue;
@@ -1800,7 +1804,7 @@ class LAMConfig {
 					$homedirPrefix = '';
 				}
 				if (isset($servername) && is_string($servername) && preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $servername)) {
-					$serverData = array($servername);
+					$serverData = [$servername];
 					if (!empty($label)) {
 						$serverData[] = $label;
 					}
@@ -1987,7 +1991,7 @@ class LAMConfig {
 	/**
 	* Sets the settings for the account modules.
 	*
-	* @param array $settings list of module setting array(name => value)
+	* @param array $settings list of module setting [name => value]
 	* @return boolean true if $settings has correct format
 	*/
 	public function set_moduleSettings($settings) {
@@ -2001,7 +2005,7 @@ class LAMConfig {
 	/**
 	* Returns a list of saved module settings
 	*
-	* @return array list of settings: array(name => value)
+	* @return array list of settings: [name => value]
 	*/
 	public function get_moduleSettings() {
 		return $this->moduleSettings;
@@ -2042,7 +2046,7 @@ class LAMConfig {
 	/**
 	* Sets the settings for the account types.
 	*
-	* @param array $settings list of type setting array(name => value)
+	* @param array $settings list of type setting [name => value]
 	* @return boolean true if $settings has correct format
 	*/
 	public function set_typeSettings($settings) {
@@ -2056,7 +2060,7 @@ class LAMConfig {
 	/**
 	* Returns a list of saved type settings
 	*
-	* @return array list of settings: array(name => value)
+	* @return array list of settings: [name => value]
 	*/
 	public function get_typeSettings() {
 		return $this->typeSettings;
@@ -2508,7 +2512,7 @@ class LAMConfig {
 	/**
 	* Sets the settings for the jobs.
 	*
-	* @param array $settings list of job settings array(name => value)
+	* @param array $settings list of job settings [name => value]
 	* @return boolean true if $settings has correct format
 	*/
 	public function setJobSettings($settings) {
@@ -2522,7 +2526,7 @@ class LAMConfig {
 	/**
 	* Returns a list of saved job settings.
 	*
-	* @return array list of settings: array(name => value)
+	* @return array list of settings: [name => value]
 	*/
 	public function getJobSettings() {
 		return $this->jobSettings;
@@ -3129,7 +3133,7 @@ class LAMCfgMain {
 	public $configDatabasePassword = '';
 
 	/** list of data fields to save in config file */
-	private $settings = array("password", "default", "sessionTimeout", "hideLoginErrorDetails",
+	private $settings = ["password", "default", "sessionTimeout", "hideLoginErrorDetails",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
@@ -3140,14 +3144,14 @@ class LAMCfgMain {
 		'mailServer', 'mailUser', 'mailPassword', 'mailEncryption', 'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
 		'configDatabasePassword'
-	);
+	];
 
 	/** persistence settings are always stored on local file system */
-	private $persistenceSettings = array(
+	private $persistenceSettings = [
 		'configDatabaseType', 'configDatabaseServer',
 		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
 		'configDatabasePassword', 'license'
-	);
+	];
 
 	/**
 	 * Loads preferences from config file
