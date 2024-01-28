@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2023  Roland Gruber
+                2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1464,12 +1464,13 @@ function testSmtpConnection(string $server, string $user, string $password, stri
 function sendPasswordMail($pwd, $user, $recipient = null) {
 	$user = array_change_key_case($user, CASE_LOWER);
 	// read mail data
+	$cfgMain = $_SESSION['cfgMain'];
 	$mailTo = null;
 	if (!empty($recipient)) {
 		$mailTo = $recipient;
 	}
-	elseif (!empty($user['mail'][0])) {
-		$mailTo = $user['mail'][0];
+	elseif (!empty($user[$cfgMain->getMailAttribute()][0])) {
+		$mailTo = $user[$cfgMain->getMailAttribute()][0];
 	}
 	if (empty($mailTo)) {
 		logNewMessage(LOG_ERR, 'Unable to send password mail, no TO address set.');
