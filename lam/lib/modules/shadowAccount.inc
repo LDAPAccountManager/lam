@@ -1097,10 +1097,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('mail', 'shadowlastchange', 'shadowwarning', 'shadowmax', 'userPassword');
+			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'shadowlastchange', 'shadowwarning', 'shadowmax', 'userPassword');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(shadowlastchange=*)(shadowmax=*)(mail=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(shadowlastchange=*)(shadowmax=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
 		}
 
 		/**
@@ -1207,10 +1207,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('mail', 'shadowexpire');
+			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'shadowexpire');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(shadowexpire=*)(mail=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(shadowexpire=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
 		}
 
 		/**
