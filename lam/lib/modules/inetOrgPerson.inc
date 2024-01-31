@@ -2715,13 +2715,13 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$this->addMultiValueSelfServiceTextField($return, 'postOfficeBox', _('Post office box'), $fields,
 			$attributes, $readOnlyFields, false, false, 'postOfficeBox');
 		$this->addSimpleSelfServiceTextField($return, 'roomNumber', _('Room number'), $fields,
-			$attributes, $readOnlyFields, true, false, 'roomNumber');
+			$attributes, $readOnlyFields, false, false, 'roomNumber');
 		$this->addMultiValueSelfServiceTextField($return, 'location', _('Location'), $fields,
 			$attributes, $readOnlyFields, false, false, 'l');
 		$this->addMultiValueSelfServiceTextField($return, 'state', _('State'), $fields,
 			$attributes, $readOnlyFields, false, false, 'st');
 		$this->addSimpleSelfServiceTextField($return, 'carLicense', _('Car license'), $fields,
-			$attributes, $readOnlyFields, true, false, 'carLicense');
+			$attributes, $readOnlyFields, false, false, 'carLicense');
 		$this->addMultiValueSelfServiceTextField($return, 'officeName', _('Office name'), $fields,
 			$attributes, $readOnlyFields, false, false, 'physicalDeliveryOfficeName');
 		$this->addMultiValueSelfServiceTextField($return, 'businessCategory', _('Business category'), $fields,
