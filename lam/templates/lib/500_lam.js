@@ -58,7 +58,7 @@ function listPageNumberKeyPress(url, e) {
 		if (e.preventDefault) {
 			e.preventDefault();
 		}
-		location.href = url + '&page=' + pageNumber;
+		location.href = url + '&page=' + encodeURIComponent(pageNumber);
 		return false;
 	}
 	return true;
