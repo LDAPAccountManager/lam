@@ -1755,7 +1755,7 @@ abstract class baseModule {
 		}
 		$row = new htmlResponsiveRow();
 		$fieldLabel = new htmlLabel(get_class($this) . '_' . $name, $this->getSelfServiceLabel($name, $label));
-		$fieldLabel->setMarkAsRequired($required);
+		$fieldLabel->setMarkAsRequired($required && !in_array($name, $readOnlyFields));
 		$row->addLabel($fieldLabel);
 		$row->addField($field);
 		$container[$name] = $row;
