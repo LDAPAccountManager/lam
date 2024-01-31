@@ -3019,6 +3019,9 @@ class LAMCfgMain {
 	/** store configuration in MySQL database */
 	const DATABASE_MYSQL = 'mysql';
 
+	public const MAIL_ATTRIBUTE_DEFAULT = 'mail';
+	public const MAIL_BACKUP_ATTRIBUTE_DEFAULT = 'passwordselfresetbackupmail';
+
 	/** Default profile */
 	public $default;
 
@@ -3114,6 +3117,16 @@ class LAMCfgMain {
 	 */
 	public $mailEncryption = '';
 
+	/**
+	 * @var string attribute to use for user mail address
+	 */
+	public string $mailAttribute = self::MAIL_ATTRIBUTE_DEFAULT;
+
+	/**
+	 * @var string attribute to use for user backup mail address
+	 */
+	public string $mailBackupAttribute = self::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
+
 	/** database type */
 	public $configDatabaseType = self::DATABASE_FILE_SYSTEM;
 
@@ -3141,7 +3154,9 @@ class LAMCfgMain {
 		'externalPwdCheckUrl',
 		'errorReporting', 'allowedHostsSelfService',
 		'license', 'licenseEmailFrom', 'licenseEmailTo', 'licenseWarningType', 'licenseEmailDateSent',
-		'mailServer', 'mailUser', 'mailPassword', 'mailEncryption', 'configDatabaseType',
+		'mailServer', 'mailUser', 'mailPassword', 'mailEncryption',
+		'mailAttribute', 'mailBackupAttribute',
+		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
 		'configDatabasePassword'
 	];
@@ -3508,6 +3523,12 @@ class LAMCfgMain {
 			if (!in_array("mailEncryption", $saved)) {
 				array_push($file_array, "mailEncryption: " . $this->mailEncryption . "\n");
 			}
+			if (!in_array("mailAttribute", $saved)) {
+				array_push($file_array, "mailAttribute: " . $this->mailAttribute . "\n");
+			}
+			if (!in_array("mailBackupAttribute", $saved)) {
+				array_push($file_array, "mailBackupAttribute: " . $this->mailBackupAttribute . "\n");
+			}
 		}
 		if (!in_array("configDatabaseType", $saved)) {
 			array_push($file_array, "configDatabaseType: " . $this->configDatabaseType . "\n");
@@ -3869,6 +3890,30 @@ class LAMCfgMain {
 	 */
 	public function isHideLoginErrorDetails(): bool {
 		return $this->hideLoginErrorDetails === 'true';
+	}
+
+	/**
+	 * Returns the mail attribute.
+	 *
+	 * @return string attribute name
+	 */
+	public function getMailAttribute(): string {
+		if (!empty($this->mailAttribute)) {
+			return $this->mailAttribute;
+		}
+		return self::MAIL_ATTRIBUTE_DEFAULT;
+	}
+
+	/**
+	 * Returns the mail backup attribute.
+	 *
+	 * @return string attribute name
+	 */
+	public function getMailBackupAttribute(): string {
+		if (!empty($this->mailBackupAttribute)) {
+			return $this->mailBackupAttribute;
+		}
+		return self::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
 	}
 
 }

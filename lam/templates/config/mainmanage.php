@@ -33,7 +33,7 @@ use PDO;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -357,7 +357,7 @@ if (isset($_POST['submitFormData'])) {
 			$cfg->deleteSSLCaCert($index);
 		}
 	}
-	// mail EOL
+	// mail settings
 	if (isLAMProVersion()) {
 		$cfg->mailUser = $_POST['mailUser'];
 		$cfg->mailPassword = $_POST['mailPassword'];
@@ -366,6 +366,26 @@ if (isset($_POST['submitFormData'])) {
 		if (!empty($cfg->mailServer) && !get_preg($cfg->mailServer, 'hostAndPort')) {
             $errors[] = _('Please enter the mail server with host name and port.');
         }
+		$mailAttribute = strtolower($_POST['mailAttribute']);
+		$mailBackupAttribute = strtolower($_POST['mailBackupAttribute']);
+		if (empty($mailAttribute)) {
+			$cfg->mailAttribute = LAMCfgMain::MAIL_ATTRIBUTE_DEFAULT;
+        }
+		elseif (preg_match('/^[a-z0-9_-]+$/', $mailAttribute)) {
+		    $cfg->mailAttribute = $mailAttribute;
+        }
+		else {
+		    $errors[] = _('The mail attributes are invalid.');
+        }
+		if (empty($mailBackupAttribute)) {
+			$cfg->mailBackupAttribute = LAMCfgMain::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
+		}
+        elseif (preg_match('/^[a-z0-9_-]+$/', $mailBackupAttribute)) {
+			$cfg->mailBackupAttribute = $mailBackupAttribute;
+		}
+		else {
+			$errors[] = _('The mail attributes are invalid.');
+		}
 	}
 	$cfg->errorReporting = $_POST['errorReporting'];
 	// save settings
@@ -649,10 +669,12 @@ if (isset($_POST['submitFormData'])) {
 		$mailEncryptionSelect = new htmlResponsiveSelect('mailEncryption', $mailEncryptionOptions, [$selectedMailEncryption], _('Encryption protocol'), '256');
 		$mailEncryptionSelect->setHasDescriptiveElements(true);
 		$row->add($mailEncryptionSelect);
+		$row->add(new htmlResponsiveInputField(_("Mail attribute"), 'mailAttribute', $cfg->getMailAttribute(), '258'));
+		$row->add(new htmlResponsiveInputField(_("Secondary mail attribute"), 'mailBackupAttribute', $cfg->getMailBackupAttribute(), '259'));
 		addSecurityTokenToSession(false);
 		$mailTestButton = new htmlButton('testSmtp', _('Test settings'));
 		$mailTestButton->setOnClick("window.lam.smtp.test(event, '" . getSecurityTokenName()
-            . "', '" . getSecurityTokenValue() . "', '" . _('Ok') . "')");
+			. "', '" . getSecurityTokenValue() . "', '" . _('Ok') . "')");
 		$row->addLabel(new htmlOutputText("&nbsp;", false));
 		$row->addField($mailTestButton);
 	}

@@ -1,5 +1,6 @@
 March 2024 8.7
  - PHP 8.3 compatibility
+ - Mail attributes can be configured centrally in LAM's main configuration (273)
  - LAM Pro:
   -> Cron job to deactivate inactive accounts based on lastBind overlay data (265)
   -> Request access: support Windows groups (266)

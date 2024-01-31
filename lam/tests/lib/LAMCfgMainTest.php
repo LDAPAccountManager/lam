@@ -58,10 +58,15 @@ class LAMCfgMainTest extends TestCase {
 	 * Mail related settings
 	 */
 	public function testMail() {
+		$this->assertEquals(LAMCfgMain::MAIL_ATTRIBUTE_DEFAULT, $this->conf->getMailAttribute());
+		$this->assertEquals(LAMCfgMain::MAIL_BACKUP_ATTRIBUTE_DEFAULT, $this->conf->getMailBackupAttribute());
+
 		$this->conf->mailServer = 'server:123';
 		$this->conf->mailPassword = 'pwd123';
 		$this->conf->mailUser = 'user123';
 		$this->conf->mailEncryption = LAMCfgMain::SMTP_SSL;
+		$this->conf->mailAttribute = 'test';
+		$this->conf->mailBackupAttribute = 'test2';
 
 		$this->conf->save();
 		$this->conf = new LAMCfgMain($this->file);
@@ -70,6 +75,8 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals('pwd123', $this->conf->mailPassword);
 		$this->assertEquals('user123', $this->conf->mailUser);
 		$this->assertEquals(LAMCfgMain::SMTP_SSL, $this->conf->mailEncryption);
+		$this->assertEquals('test', $this->conf->getMailAttribute());
+		$this->assertEquals('test2', $this->conf->getMailBackupAttribute());
 	}
 
 	/**

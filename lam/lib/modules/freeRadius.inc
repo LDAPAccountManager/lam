@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2023  Roland Gruber
+  Copyright (C) 2011 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -945,10 +945,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('radiusExpiration', 'mail');
+			$sysattrs = array('radiusExpiration', $_SESSION['cfgMain']->getMailAttribute());
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(radiusExpiration=*)(mail=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(radiusExpiration=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
 		}
 
 		/**

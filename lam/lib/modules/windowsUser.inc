@@ -4691,10 +4691,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('mail', 'pwdLastSet', 'accountexpires', 'useraccountcontrol');
+			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'pwdLastSet', 'accountexpires', 'useraccountcontrol');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(pwdLastSet=*)(mail=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(pwdLastSet=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
 		}
 
 		/**
@@ -4901,10 +4901,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysAttrs = array('managedObjects', 'mail');
+			$sysAttrs = array('managedObjects', $_SESSION['cfgMain']->getMailAttribute());
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysAttrs)));
-			$users = searchLDAPByFilter('(&(mail=*)(managedObjects=*))', $attrs, array('user'));
+			$users = searchLDAPByFilter('(&(' . $_SESSION['cfgMain']->getMailAttribute() . '=*)(managedObjects=*))', $attrs, array('user'));
 			$groups = searchLDAPByFilter('(managedBy=*)', array('cn', 'member'), array('group'));
 			$groupByDn = [];
 			foreach ($groups as $group) {
@@ -5110,10 +5110,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('mail', 'accountexpires', 'useraccountcontrol');
+			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'accountexpires', 'useraccountcontrol');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(accountexpires=*)(!(accountexpires=0))(mail=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(accountexpires=*)(!(accountexpires=0))(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
 		}
 
 		/**
