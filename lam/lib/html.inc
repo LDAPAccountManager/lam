@@ -797,8 +797,8 @@ class htmlInputField extends htmlElement {
 	 * Shows a calendar when the field is selected.
 	 *
 	 * @param String $format calendar format (e.g. "Y-m-d" or "Y-m-d H:i:S")
-	 * @param bool $withTime activate time selection
-	 * @param bool $withSeconds show seconds
+	 * @param bool $withTime activate time selection (default: false)
+	 * @param bool $withSeconds show seconds (default: false)
 	 */
 	public function showCalendar($format, $withTime = false, $withSeconds = false) {
 		$this->showCalendar = true;

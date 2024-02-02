@@ -525,59 +525,14 @@ class freeRadius extends baseModule {
 	function display_html_expiration() {
 		$return = new htmlResponsiveRow();
 		$attr = 'radiusExpiration';
-		$text = _('Expiration date');
-		$help = "radiusExpiration";
 		$date = new DateTime('@' . (time() + 3600*24*365), new DateTimeZone('UTC'));
-		$year = $date->format('Y');
-		$month = $date->format('m');
-		$month = self::$monthList[$month];
-		$day = $date->format('d');
-		$hour = '00';
-		$minute = '00';
-		if (isset($this->attributes[$attr][0]) && ($this->attributes[$attr][0] != '')) {
-			$parts = explode(' ', $this->attributes[$attr][0]);
-			$year = $parts[2];
-			$month = $parts[1];
-			$day = $parts[0];
-			if (isset($parts[3])) {
-				$timeParts = explode(':', $parts[3]);
-				$hour = $timeParts[0];
-				$minute = $timeParts[1];
-			}
+		if (!empty($this->attributes[$attr][0])) {
+			$date = DateTime::createFromFormat('d M Y H:i',$this->attributes[$attr][0], new DateTimeZone('UTC'));
 		}
-		for ( $i=0; $i<=59; $i++ ) {
-			$minuteList[] = str_pad($i, 2, '0', STR_PAD_LEFT);
-		}
-		for ( $i=0; $i<=23; $i++ ) {
-			$hourList[] = str_pad($i, 2, '0', STR_PAD_LEFT);
-		}
-		for ( $i=1; $i<=31; $i++ ) {
-			$dayList[] = str_pad($i, 2, '0', STR_PAD_LEFT);
-		}
-		for ( $i=2003; $i<=2050; $i++ ) {
-			$yearList[] = $i;
-		}
-		$return->addLabel(new htmlOutputText($text));
-		$dateGroup = new htmlGroup();
-		$daySelect = new htmlSelect('expire_day', $dayList, array($day));
-		$daySelect->setWidth('3rem');
-		$dateGroup->addElement($daySelect);
-		$monthSelect = new htmlSelect('expire_mon', self::$monthList, array($month));
-		$monthSelect->setHasDescriptiveElements(true);
-		$monthSelect->setWidth('3rem');
-		$dateGroup->addElement($monthSelect);
-		$yearSelect = new htmlSelect('expire_yea', $yearList, array($year));
-		$yearSelect->setWidth('5rem');
-		$dateGroup->addElement($yearSelect);
-		$dateGroup->addElement(new htmlSpacer('10px', null));
-		$hourSelect = new htmlSelect('expire_hour', $hourList, array($hour));
-		$hourSelect->setWidth('3rem');
-		$dateGroup->addElement($hourSelect);
-		$minuteSelect = new htmlSelect('expire_minute', $minuteList, array($minute));
-		$minuteSelect->setWidth('3rem');
-		$dateGroup->addElement($minuteSelect);
-		$dateGroup->addElement(new htmlHelpLink($help));
-		$return->addField($dateGroup);
+		$dateInput = new htmlResponsiveInputField(_('Expiration date'), 'expirationTime', $date->format('Y-m-d H:i'), 'radiusExpiration');
+		$dateInput->showCalendar('Y-m-d H:i', true);
+		$return->add($dateInput);
+
 		$return->addVerticalSpacer('2rem');
 		$buttons = new htmlGroup();
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
@@ -620,7 +575,8 @@ class freeRadius extends baseModule {
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
 			// set new expiration date
-			$this->attributes[$attr][0] = $_POST['expire_day'] . ' ' . $_POST['expire_mon'] . ' ' . $_POST['expire_yea'] . ' ' . $_POST['expire_hour'] . ':' . $_POST['expire_minute'];
+			$date = DateTime::createFromFormat('Y-m-d H:i', $_POST['expirationTime'], new DateTimeZone('UTC'));
+			$this->attributes[$attr][0] = $date->format('d M Y H:i');
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
 			// remove attribute value
