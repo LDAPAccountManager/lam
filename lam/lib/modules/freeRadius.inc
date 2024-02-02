@@ -231,7 +231,7 @@ class freeRadius extends baseModule {
 				'name' => 'freeRadius_radiusExpiration',
 				'description' => _('Expiration date'),
 				'help' => 'radiusExpiration',
-				'example' => '17.07.2017 00:00'
+				'example' => '2035-11-22 00:00'
 			);
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
@@ -525,9 +525,11 @@ class freeRadius extends baseModule {
 	function display_html_expiration() {
 		$return = new htmlResponsiveRow();
 		$attr = 'radiusExpiration';
-		$date = new DateTime('@' . (time() + 3600*24*365), new DateTimeZone('UTC'));
+		// TODO display in local time
+		$date = new DateTime('@' . (time() + 3600*24*365), getTimeZone());
 		if (!empty($this->attributes[$attr][0])) {
 			$date = DateTime::createFromFormat('d M Y H:i',$this->attributes[$attr][0], new DateTimeZone('UTC'));
+			$date->setTimezone(getTimeZone());
 		}
 		$dateInput = new htmlResponsiveInputField(_('Expiration date'), 'expirationTime', $date->format('Y-m-d H:i'), 'radiusExpiration');
 		$dateInput->showCalendar('Y-m-d H:i', true);
@@ -575,7 +577,8 @@ class freeRadius extends baseModule {
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
 			// set new expiration date
-			$date = DateTime::createFromFormat('Y-m-d H:i', $_POST['expirationTime'], new DateTimeZone('UTC'));
+			$date = DateTime::createFromFormat('Y-m-d H:i', $_POST['expirationTime'], getTimeZone());
+			$date->setTimezone(new DateTimeZone('UTC'));
 			$this->attributes[$attr][0] = $date->format('d M Y H:i');
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
@@ -627,13 +630,10 @@ class freeRadius extends baseModule {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusGroupName', 'radiusGroupName', 'groupname', $this->messages['radiusGroupName'][1], $errors, '/;[ ]*/');
 			// expiration date
 			if ($rawAccounts[$i][$ids['freeRadius_radiusExpiration']] != "") {
-				if (preg_match('/^[0-9]{1,2}.[0-9]{1,2}.[0-9]{4} [0-9]{1,2}:[0-9]{1,2}$/', $rawAccounts[$i][$ids['freeRadius_radiusExpiration']])) {
-					$dateParts = explode(' ', $rawAccounts[$i][$ids['freeRadius_radiusExpiration']]);
-					$dateParts1 = explode('.', $dateParts[0]);
-					$radiusExpiration = str_pad($dateParts1[0], 2, '0', STR_PAD_LEFT) . ' ' . self::$monthList[str_pad($dateParts1[1], 2, '0', STR_PAD_LEFT)] . ' ' . $dateParts1[2];
-					$dateParts2 = explode(':', $dateParts[1]);
-					$radiusExpiration .= ' ' . str_pad($dateParts2[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($dateParts2[1], 2, '0', STR_PAD_LEFT);
-					$partialAccounts[$i]['radiusExpiration'] = $radiusExpiration;
+				$date = DateTime::createFromFormat('Y-m-d H:i', $rawAccounts[$i][$ids['freeRadius_radiusExpiration']], getTimeZone());
+				if ($date !== false) {
+					$date->setTimezone(new DateTimeZone('UTC'));
+					$partialAccounts[$i]['radiusExpiration'] = $date->format('d M Y H:i');;
 				}
 				else {
 					$errMsg = $this->messages['radiusExpiration'][1];
@@ -737,15 +737,9 @@ class freeRadius extends baseModule {
 		if (is_null($date) || ($date == '')) {
 			return $date;
 		}
-		foreach (self::$monthList as $replace => $search) {
-			$date = str_replace($search, $replace, $date);
-		}
-		$dateParts = explode(' ', $date);
-		$date = $dateParts[0] . '.' . $dateParts[1] . '.' . $dateParts[2];
-		if (isset($dateParts[3])) {
-			$date .= ' ' . $dateParts[3];
-		}
-		return $date;
+		$dateTime = DateTime::createFromFormat('d M Y H:i', $date, new DateTimeZone('UTC'));
+		$dateTime->setTimezone(getTimeZone());
+		return $dateTime->format('Y-m-d H:i');
 	}
 
 	/**
