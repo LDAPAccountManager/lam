@@ -178,14 +178,14 @@ class lamAsteriskExtList extends lamList {
      *
      * @param array $entries extension entries
      */
-    private function normalizeLdapOutput($entries){
-        $entries = array_map("unserialize", array_unique(array_map("serialize", $entries)));
-        foreach($entries as $key=> $value){
-            if($entries[$key]["astpriority"][0] > 1){
-                unset($entries[$key]);
+    private function normalizeLdapOutput($entries) {
+    	$filteredEntries = [];
+        foreach ($entries as $entry){
+            if ($entry["astpriority"][0] == '1') {
+				$filteredEntries[] = $entry;
             }
         }
-        return array_values($entries);
+        return $filteredEntries;
     }
 
 }
