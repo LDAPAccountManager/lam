@@ -2003,34 +2003,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	function display_html_accountexpires() {
 		$return = new htmlResponsiveRow();
 		$attr = 'accountexpires';
-		$text = _('Account expiration date');
-		$help = "accountexpires";
 		$datetime = new DateTime('now', getTimeZone());
 		if (!empty($this->attributes[$attr][0]) && !($this->attributes[$attr][0] == '0')) {
 			$datetime = windowsUser::getFileTime($this->attributes[$attr][0]);
 		}
-		for ( $i=1; $i<=31; $i++ ) {
-			$mday[] = $i;
-		}
-		for ( $i=1; $i<=12; $i++ ) {
-			$mon[] = $i;
-		}
-		for ( $i=2003; $i<=2050; $i++ ) {
-			$year[] = $i;
-		}
-		$return->addLabel(new htmlOutputText($text));
-		$dateGroup = new htmlGroup();
-		$daySelect = new htmlSelect('expire_day', $mday, array($datetime->format('d')));
-		$daySelect->setWidth('3rem');
-		$dateGroup->addElement($daySelect);
-		$monthSelect = new htmlSelect('expire_mon', $mon, array($datetime->format('m')));
-		$monthSelect->setWidth('3rem');
-		$dateGroup->addElement($monthSelect);
-		$yearSelect = new htmlSelect('expire_yea', $year, array($datetime->format('Y')));
-		$yearSelect->setWidth('5rem');
-		$dateGroup->addElement($yearSelect);
-		$dateGroup->addElement(new htmlHelpLink($help), true);
-		$return->addField($dateGroup);
+		$dateInput = new htmlResponsiveInputField(_('Account expiration date'), $attr, $datetime->format('Y-m-d'), 'accountexpires');
+		$dateInput->showCalendar('Y-m-d');
+		$return->add($dateInput);
+
 		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
 			$return->add(new htmlResponsiveInputCheckbox('syncShadow', false, _('Set also for Shadow')), 12);
 		}
@@ -2077,24 +2057,28 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$attr = 'accountexpires';
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
+			$date = DateTime::createFromFormat('Y-m-d', $_POST['accountexpires'], new DateTimeZone('UTC'));
+			$year = $date->format('Y');
+			$month = $date->format('m');
+			$day = $date->format('d');
 			// set new time
-			$this->setExpirationDate($_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			$this->setExpirationDate($year, $month, $day);
 			// sync other modules
 			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
-					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+					$year, $month, $day);
 			}
 			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
-					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+					$year, $month, $day);
 			}
 			if (isset($_POST['syncMIT']) && ($_POST['syncMIT'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('mitKerberos')->setExpirationDate(
-					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+					$year, $month, $day);
 			}
 			if (isset($_POST['syncMITStructural']) && ($_POST['syncMITStructural'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('mitKerberosStructural')->setExpirationDate(
-					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+					$year, $month, $day);
 			}
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
