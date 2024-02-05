@@ -758,7 +758,7 @@ class asteriskExtension extends baseModule {
             }
             else {
                 $ptn = "/(?P<name>[A-Za-z0-9]+)_(?P<digit>\\d+)/";
-                if(preg_match_all($ptn, $greater_ext_name, $matches, PREG_PATTERN_ORDER)){
+                if(preg_match_all($ptn, $greater_ext_name, $matches)){
                     $next_digit = $matches['digit'][0] + 1;
                     $suggested_extension = $matches['name'][0] . '_' . $next_digit;
                 }
@@ -860,13 +860,13 @@ class asteriskExtension extends baseModule {
     /**
      * Get list of all applications for given extension and move it into new suffix.
      *
-     * @param array $rowOrig attributes of original extension
+     * @param array $row attributes of original extension
      * @return array list of error messages
      */
-    function moveExtentionToNewSuffix($rowOrig) {
+    function moveExtentionToNewSuffix($row) {
         if ($this->isMoveToNewSuffix()) {
-            $oldDN = "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
-            $newRDN = "cn=" . $rowOrig["cn"][0];
+            $oldDN = "cn=" . $row["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
+            $newRDN = "cn=" . $row["cn"][0];
             $is_rename_success = @ldap_rename($_SESSION['ldap']->server(), $oldDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
             if (!$is_rename_success) {
                 $errors[] = array('ERROR', sprintf(_('Was unable to rename DN: %s.'), $this->getAccountContainer()->dn_orig), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
@@ -904,31 +904,37 @@ class asteriskExtension extends baseModule {
             unset($rowOrig['dn']);
             if ($rowCounter < count($this->extensionRows)) {
                 $row = $this->extensionRows[$rowCounter];
-
-                if (count($diffVals = array_diff_key($rowOrig, $row)) != 0) {
-                    ldap_mod_del($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
-                }
-                if (count($diffVals = array_diff_key($row, $rowOrig)) != 0) {
-                    ldap_mod_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
-                }
-                $diffValsSerialysed = array_diff(array_map("serialize", array_intersect_key($row, $rowOrig)), array_map("serialize", $rowOrig));
-
-                //if new suffix just move old rows to the new suffix and go on
-                $this->moveExtentionToNewSuffix($rowOrig);
-
-                if (count($diffValsSerialysed) != 0) {
-                    $diffVals = array_map("unserialize", $diffValsSerialysed);
-                    if ($row["cn"][0] ==  $rowOrig["cn"][0]) {
-                        ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
-                    }
-                    else {
-                        $origDN = "cn=" . $rowOrig["cn"][0] . "," . $this->getAccountContainer()->dnSuffix;
-                        $newRDN = "cn=" . $row["cn"][0];
-                        ldap_rename($_SESSION['ldap']->server(), $origDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
-                        ldap_mod_replace($_SESSION['ldap']->server(), $newRDN . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
-                    }
-                }
-            } else {
+                $attributeNames = array_values(array_unique(array_merge(array_keys($row), array_keys($rowOrig))));
+                $ldapChanges = [];
+                foreach ($attributeNames as $attributeName) {
+                	if (isset($rowOrig[$attributeName]) && !isset($row[$attributeName])) {
+                		$ldapChanges[$attributeName] = [];
+					}
+					elseif (!isset($rowOrig[$attributeName]) && isset($row[$attributeName])) {
+						$ldapChanges[$attributeName] = $row[$attributeName];
+					}
+                	elseif ($rowOrig[$attributeName][0] != $row[$attributeName][0]) {
+                		$ldapChanges[$attributeName] = $row[$attributeName][0];
+					}
+				}
+                if (!empty($ldapChanges)) {
+					if (!isset($ldapChanges['cn'])) {
+						ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $ldapChanges);
+					}
+					else {
+						$origDN = "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
+						$newRDN = "cn=" . $row["cn"][0];
+						ldap_rename($_SESSION['ldap']->server(), $origDN, $newRDN, extractDNSuffix($this->getAccountContainer()->dn_orig), true);
+						unset($ldapChanges['cn']);
+						if (!empty($ldapChanges)) {
+							ldap_mod_replace($_SESSION['ldap']->server(), $newRDN . "," . extractDNSuffix($this->getAccountContainer()->dn_orig), $ldapChanges);
+						}
+					}
+				}
+                // if new suffix just move old rows to the new suffix and go on
+                $this->moveExtentionToNewSuffix($row);
+            }
+            else {
                 ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig));
             }
         }
