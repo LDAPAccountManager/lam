@@ -571,7 +571,6 @@ class asteriskExtension extends baseModule {
             $extrow_errors = $this->processExtensionRows($extensionName, $extensionContext);
 
             if (isset($extrow_errors) && count($extrow_errors) > 0) {
-
                 $errors = array_merge($errors, $extrow_errors);
             }
         } else {
@@ -598,8 +597,7 @@ class asteriskExtension extends baseModule {
             for ($entryCounter = 0; $entryCounter < $_POST['extension_rows']; $entryCounter++) {
                 $extRow = [];
                 if (!isset($_POST['delete_rule_' . $entryCounter])) {
-
-                    $singleExtAddErrors = $this->processSingleExtension($extRow,$extensionName, $extensionContext, $entryCounter,$extensionPriorityCntr);
+                    $singleExtAddErrors = $this->processSingleExtension($extRow, $extensionName, $extensionContext, $entryCounter,$extensionPriorityCntr);
                     $errors = $errors + $singleExtAddErrors;
 
                     if ((isset($extRow['astapplication'][0]) && $extRow['astapplication'][0] != "") ||
@@ -656,7 +654,7 @@ class asteriskExtension extends baseModule {
      * @param int $entryCounter - counter to distinguish single extensuion properties from $_POST
      * @param int $extensionPriorityCntr - it is the variable where actual number of extension rules wuld be aggregated
      */
-    function processSingleExtension(&$extRow,$extensionName, $extensionContext ,$entryCounter,$extensionPriorityCntr) {
+    function processSingleExtension(&$extRow, $extensionName, $extensionContext ,$entryCounter,$extensionPriorityCntr) {
         $errors = [];
         if (isset($extensionContext[0])) {
             $extRow['astcontext'][0] = $extensionContext[0];
@@ -743,11 +741,10 @@ class asteriskExtension extends baseModule {
     function generateNextExtensionName() {
         $searchClass = "AsteriskExtension";
         $searchScope = 'asteriskExt';
-
-        $suggeted_extension = ''; //default empty value
-        if( isset($this->extensionRows[0]['astextension'][0]) ){
-            $suggeted_extension = $this->extensionRows[0]['astextension'][0];
-        }else{
+        if (isset($this->extensionRows[0]['astextension'][0])){
+            $suggested_extension = $this->extensionRows[0]['astextension'][0];
+        }
+        else{
             $entries = searchLDAPByAttribute(null, null, $searchClass, array('astextension'), array($searchScope));
             $entries = $this->array_sort($entries, 'astextension');
 
@@ -756,20 +753,21 @@ class asteriskExtension extends baseModule {
             } else {
                 $greater_ext_name = 0;
             }
-            if(is_numeric($greater_ext_name)){
-                $suggeted_extension = $greater_ext_name + 1;
-            }else{
+            if (is_numeric($greater_ext_name)){
+                $suggested_extension = $greater_ext_name + 1;
+            }
+            else {
                 $ptn = "/(?P<name>[A-Za-z0-9]+)_(?P<digit>\\d+)/";
                 if(preg_match_all($ptn, $greater_ext_name, $matches, PREG_PATTERN_ORDER)){
                     $next_digit = $matches['digit'][0] + 1;
-                    $suggeted_extension = $matches['name'][0] . '_' . $next_digit;
-                }else{
-                    $suggeted_extension = $greater_ext_name . '_1';
+                    $suggested_extension = $matches['name'][0] . '_' . $next_digit;
+                }
+                else{
+                    $suggested_extension = $greater_ext_name . '_1';
                 }
             }
         }
-
-        return $suggeted_extension;
+        return $suggested_extension;
     }
 
 	/**
@@ -900,7 +898,7 @@ class asteriskExtension extends baseModule {
 	function save_attributes() {
         $this->extensionRows = $this->array_sort($this->extensionRows, 'astpriority');
 
-        //Modify existent config roes if necessary
+        // modify existent config rows if necessary
         for ($rowCounter = 0; $rowCounter < count($this->extensionRowsOrig); $rowCounter++) {
             $rowOrig = $this->extensionRowsOrig[$rowCounter];
             unset($rowOrig['dn']);
@@ -915,18 +913,17 @@ class asteriskExtension extends baseModule {
                 }
                 $diffValsSerialysed = array_diff(array_map("serialize", array_intersect_key($row, $rowOrig)), array_map("serialize", $rowOrig));
 
-                //if new suffix jast move old rows to the new suffix and go on
+                //if new suffix just move old rows to the new suffix and go on
                 $this->moveExtentionToNewSuffix($rowOrig);
 
                 if (count($diffValsSerialysed) != 0) {
                     $diffVals = array_map("unserialize", $diffValsSerialysed);
-                    if($row["cn"][0] ==  $rowOrig["cn"][0]){
+                    if ($row["cn"][0] ==  $rowOrig["cn"][0]) {
                         ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
                     }
                     else {
                         $origDN = "cn=" . $rowOrig["cn"][0] . "," . $this->getAccountContainer()->dnSuffix;
                         $newRDN = "cn=" . $row["cn"][0];
-
                         ldap_rename($_SESSION['ldap']->server(), $origDN, $newRDN, $this->getAccountContainer()->dnSuffix, true);
                         ldap_mod_replace($_SESSION['ldap']->server(), $newRDN . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
                     }
@@ -935,7 +932,7 @@ class asteriskExtension extends baseModule {
                 ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig));
             }
         }
-        //Add new config rows
+        // add new config rows
         for ($rowCounter = count($this->extensionRowsOrig); $rowCounter < count($this->extensionRows); $rowCounter++) {
             $row = $this->extensionRows[$rowCounter];
             ldap_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
