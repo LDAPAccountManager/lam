@@ -12,7 +12,7 @@ use LamTemporaryFilesManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2023  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ if (isset($_POST['showldif'])) {
 	//download file
 	header('Content-Type: text/plain');
 	header('Content-disposition: attachment; filename=lam.ldif');
-	$accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
+	$accounts = json_decode(lamDecrypt($_SESSION['mass_accounts']), true);
 	if ($accounts === false) {
 		exit;
 	}
@@ -256,11 +256,11 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 			else {
 				// store accounts in session
-				$_SESSION['mass_accounts'] = lamEncrypt(serialize($accounts));
+				$_SESSION['mass_accounts'] = lamEncrypt(json_encode($accounts));
 				$_SESSION['mass_errors'] = [];
 				$_SESSION['mass_failed'] = [];
 				$_SESSION['mass_postActions'] = [];
-				$_SESSION['mass_data'] = lamEncrypt(serialize($data));
+				$_SESSION['mass_data'] = lamEncrypt(json_encode($data));
 				$_SESSION['mass_ids'] = $ids;
 				$_SESSION['mass_typeId'] = $type->getId();
 				$_SESSION['mass_selectedModules'] = $selectedModules;

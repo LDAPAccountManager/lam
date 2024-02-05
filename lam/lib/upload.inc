@@ -6,7 +6,7 @@ use accountContainer;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2023  Roland Gruber
+ Copyright (C) 2016 - 2024  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -65,8 +65,8 @@ class Uploader {
 	 * @param \LAM\TYPES\ConfiguredType $type account type
 	 */
 	public function __construct($type) {
-		$this->accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
-		$this->data = unserialize(lamDecrypt($_SESSION['mass_data']));
+		$this->accounts = json_decode(lamDecrypt($_SESSION['mass_accounts']), true);
+		$this->data = json_decode(lamDecrypt($_SESSION['mass_data']), true);
 		$this->type = $type;
 		$startTime = time();
 		$maxTime = get_cfg_var('max_execution_time') - 5;
