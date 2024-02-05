@@ -609,6 +609,14 @@
       intermediate release.</para>
 
       <section>
+        <title>8.6 -&gt; 8.7</title>
+
+        <para>LAM Pro: Self service profiles that were not saved for more than
+        3 years must be saved with LAM Pro 8.6 before upgrading to LAM Pro
+        8.7. </para>
+      </section>
+
+      <section>
         <title>8.1 -&gt; 8.6</title>
 
         <para>No actions required.</para>

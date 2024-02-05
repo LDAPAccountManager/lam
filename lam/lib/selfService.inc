@@ -6,7 +6,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2023  Roland Gruber
+  Copyright (C) 2006 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -476,12 +476,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 			if ($file) {
 				$data = fread($file, 10000000);
 				$profileData = @json_decode($data, true);
-				if ($profileData === null) {
-					$profile = unserialize($data);
-				}
-				else {
-					$profile = selfServiceProfile::import($profileData);
-				}
+				$profile = selfServiceProfile::import($profileData);
 				fclose($file);
 			}
 			else {
