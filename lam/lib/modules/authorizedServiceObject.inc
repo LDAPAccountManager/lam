@@ -3,7 +3,7 @@
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011         J de Jong
-  				2012 - 2022  Roland Gruber
+  				2012 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,14 +75,14 @@ class authorizedServiceObject extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('authorizedServiceObject');
 		// managed attributes
-		$return['attributes'] = array('authorizedService');
+		$return['attributes'] = array('authorizedservice');
 		// help Entries
 		$return['help'] = array (
-			'authorizedService' => array (
+			'authorizedservice' => array (
 				"Headline" => _("Authorized Services"), 'attr' => 'authorizedService',
 				"Text" => _("Service name (e.g. sshd, imap, ftp). Enter one service per entry."). ' '. _("Use * for all services.")
 			),
-			'authorizedServices' => array (
+			'authorizedservices' => array (
 				"Headline" => _("Authorized Services"), 'attr' => 'authorizedService',
 				"Text" => _("Comma separated list of services (e.g. sshd, imap, ftp)."). ' '. _("Use * for all services.")
 			),
@@ -110,12 +110,12 @@ class authorizedServiceObject extends baseModule {
 		);
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Authorized Services'), 'authorizedServiceObject_services', null, 'authorizedServices'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Authorized Services'), 'authorizedServiceObject_services', null, 'authorizedservices'), 12);
 		$profileContainer->add(new htmlResponsiveInputCheckbox('authorizedServiceObject_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['authorizedServiceObject_services'] = array('type' => 'ext_preg', 'regex' => 'ascii',
-		'error_message' => $this->messages['authorizedService'][0]);
+		'error_message' => $this->messages['authorizedservice'][0]);
 		return $return;
     }
 
@@ -123,8 +123,8 @@ class authorizedServiceObject extends baseModule {
 	* This function fills the error message array with messages
 	*/
 	function load_Messages() {
-		$this->messages['authorizedService'][0] = array('ERROR', _('Authorized services are invalid.'));  // third array value is set dynamically
-		$this->messages['authorizedService'][1] = array('ERROR', _('Account %s:') . ' authorizedService', _('Please enter a valid list of service names.'));
+		$this->messages['authorizedservice'][0] = array('ERROR', _('Authorized services are invalid.'));  // third array value is set dynamically
+		$this->messages['authorizedservice'][1] = array('ERROR', _('Account %s:') . ' authorizedService', _('Please enter a valid list of service names.'));
 	}
 
 	/**
@@ -162,7 +162,7 @@ class authorizedServiceObject extends baseModule {
 			if (isset($this->moduleSettings['authorizedServiceObject_services'])) {
 				$autocompleteValues = $this->moduleSettings['authorizedServiceObject_services'];
 			}
-			$this->addMultiValueInputTextField($return, 'authorizedService', _('Authorized Services'), false, null, false, $autocompleteValues);
+			$this->addMultiValueInputTextField($return, 'authorizedservice', _('Authorized Services'), false, null, false, $autocompleteValues);
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'remObjectClass', _('Remove Authorized Service extension'));
 			$remButton->setCSSClasses(array('lam-danger'));
@@ -193,7 +193,7 @@ class authorizedServiceObject extends baseModule {
 		}
 
 		$errors = [];
-		$this->processMultiValueInputTextField('authorizedService', $errors, 'ascii');
+		$this->processMultiValueInputTextField('authorizedservice', $errors, 'ascii');
 		return $errors;
 	}
 
@@ -207,7 +207,7 @@ class authorizedServiceObject extends baseModule {
 			// add object class
 			if (!in_array("authorizedServiceObject", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "authorizedServiceObject";
 			// add ASs
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'authorizedService', 'authorizedService', 'ascii', $this->messages['authorizedService'][1], $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'authorizedService', 'authorizedservice', 'ascii', $this->messages['authorizedservice'][1], $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}
@@ -219,7 +219,7 @@ class authorizedServiceObject extends baseModule {
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = [];
 		if (in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
-			$this->addSimplePDFField($return, 'authorizedService', _('Authorized Services'));
+			$this->addSimplePDFField($return, 'authorizedService', _('Authorized Services'), 'authorizedservice');
 		}
 		return $return;
 	}
@@ -243,7 +243,7 @@ class authorizedServiceObject extends baseModule {
 			$services = explode(',', $profile['authorizedServiceObject_services'][0]);
 			for ($m = 0; $m < sizeof($services); $m++) {
 				if (get_preg($services[$m], 'ascii')) {
-					$this->attributes['authorizedService'][] = trim($services[$m]);
+					$this->attributes['authorizedservice'][] = trim($services[$m]);
 				}
 			}
 		}
