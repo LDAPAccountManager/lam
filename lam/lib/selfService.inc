@@ -972,3 +972,93 @@ class SelfServiceLdapConnection {
     }
 
 }
+
+/**
+ * Login handler for self service
+ */
+interface SelfServiceLoginHandler {
+
+	/**
+	 * Adds necessary fields to the login dialog (e.g. user + password).
+	 *
+	 * @param htmlResponsiveRow $content dialog content
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void;
+
+}
+
+/**
+ * Performs login with user and password.
+ */
+class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
+
+	private selfServiceProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param selfServiceProfile $profile profile
+	 */
+	function __construct(selfServiceProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void {
+		// user name
+		$userNameVal = !empty($_POST['username']) ? $_POST['username'] : '';
+		$userField = new htmlResponsiveInputField($this->profile->loginAttributeText, 'username', $userNameVal);
+		$userField->setCSSClasses(['lam-initial-focus']);
+		$content->add($userField);
+		// password field
+		$passwordText = _("Password");
+		if (!empty($profile->passwordLabel)) {
+			$passwordText = $profile->passwordLabel;
+		}
+		$passwordVal = !empty($_POST['password']) ? $_POST['password'] : '';
+		$passwordField = new htmlResponsiveInputField($passwordText, 'password', $passwordVal);
+		$passwordField->setIsPassword(true);
+		$content->add($passwordField);
+	}
+
+}
+
+/**
+ * Performs login with HTTP authentication.
+ */
+class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
+
+	private selfServiceProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param selfServiceProfile $profile profile
+	 */
+	function __construct(selfServiceProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void {
+		// user name
+		$userLabel = new htmlLabel('username', $this->profile->loginAttributeText);
+		$content->addLabel($userLabel);
+		$userField = new htmlOutputText($_SERVER['PHP_AUTH_USER']);
+		$content->addField($userField);
+		// password field
+		$passwordText = _("Password");
+		if (!empty($profile->passwordLabel)) {
+			$passwordText = $profile->passwordLabel;
+		}
+		$passwordLabel = new htmlLabel('password', $passwordText);
+		$content->addLabel($passwordLabel);
+		$passwordField = new htmlOutputText('**********');
+		$content->addField($passwordField);
+	}
+
+}
