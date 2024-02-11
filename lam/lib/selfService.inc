@@ -985,6 +985,20 @@ interface SelfServiceLoginHandler {
 	 */
 	function addLoginFields(htmlResponsiveRow $content): void;
 
+	/**
+	 * Returns the login name.
+	 *
+	 * @return string login name
+	 */
+	function getLoginName(): string;
+
+	/**
+	 * Returns the login password.
+	 *
+	 * @return string password
+	 */
+	function getLoginPassword(): string;
+
 }
 
 /**
@@ -1023,6 +1037,20 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 		$content->add($passwordField);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginName(): string {
+		return $_POST['username'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginPassword(): string {
+		return $_POST['password'];
+	}
+
 }
 
 /**
@@ -1059,6 +1087,20 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 		$content->addLabel($passwordLabel);
 		$passwordField = new htmlOutputText('**********');
 		$content->addField($passwordField);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginName(): string {
+		return $_SERVER['PHP_AUTH_USER'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginPassword(): string {
+		return $_SERVER['PHP_AUTH_PW'];
 	}
 
 }
