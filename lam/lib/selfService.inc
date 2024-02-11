@@ -915,6 +915,18 @@ class selfServiceProfile {
 		}
 	}
 
+	/**
+	 * Returns the login handler.
+	 *
+	 * @return SelfServiceLoginHandler handler
+	 */
+	public function getLoginHandler(): SelfServiceLoginHandler {
+		if ($this->httpAuthentication) {
+			return new SelfServiceHttpAuthLoginHandler($this);
+		}
+		return new SelfServiceUserPasswordLoginHandler($this);
+	}
+
 }
 
 /**
