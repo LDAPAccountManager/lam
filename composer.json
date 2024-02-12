@@ -5,7 +5,8 @@
     "phpunit/phpunit" : "9.5.21",
     "squizlabs/php_codesniffer" : "3.4.0",
     "phpstan/phpstan": "^1.10",
-    "rector/rector": "^0.19"
+    "rector/rector": "^0.19",
+    "cyclonedx/cyclonedx-php-composer": "^5.0"
   },
   "require": {
     "ext-ldap": "*",
@@ -17,5 +18,10 @@
   "scripts": {
     "test": "vendor/bin/phpunit"
   },
-  "license": "GPL-3.0-or-later"
+  "license": "GPL-3.0-or-later",
+  "config": {
+    "allow-plugins": {
+      "cyclonedx/cyclonedx-php-composer": true
+    }
+  }
 }

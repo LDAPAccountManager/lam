@@ -1,0 +1,182 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.5",
+  "serialNumber" : "urn:uuid:2a0bcb24-dd83-41e6-a603-bdb3a21a83c8",
+  "version" : 1,
+  "metadata" : {
+    "timestamp" : "2024-02-12T19:17:14Z",
+    "tools" : [
+      {
+        "vendor" : "OWASP",
+        "name" : "Dependency-Track",
+        "version" : "4.10.1"
+      }
+    ],
+    "component" : {
+      "name" : "LDAP Account Manager",
+      "version" : "SNAPSHOT",
+      "type" : "application",
+      "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d"
+    }
+  },
+  "components" : [
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "@popperjs/core",
+      "version" : "2.11.6",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/%40popperjs/core@2.11.6",
+      "type" : "library",
+      "bom-ref" : "73140e29-f689-49c1-9b10-28ff13117f68"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "cropperjs",
+      "version" : "1.6.1",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/cropperjs@1.6.1",
+      "type" : "library",
+      "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "flatpickr",
+      "version" : "4.6.13",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/flatpickr@4.6.13",
+      "type" : "library",
+      "bom-ref" : "c4134441-7211-47d1-a970-202c819157d1"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "jQuery",
+      "version" : "3.7.1",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/jquery@3.7.1",
+      "type" : "library",
+      "bom-ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "sortablejs",
+      "version" : "1.15.0",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/sortablejs@1.15.0",
+      "type" : "library",
+      "bom-ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "sweetalert2",
+      "version" : "11.7.27",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/sweetalert2@11.7.27",
+      "type" : "library",
+      "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f"
+    },
+    {
+      "group" : "cdx:composer:package",
+      "name" : "tecnickcom/tcpdf",
+      "version" : "6.6.2",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "LGPL-3.0+"
+          }
+        }
+      ],
+      "purl" : "pkg:composer/tecnickcom/tcpdf@6.6.2",
+      "type" : "library",
+      "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "tippy.js",
+      "version" : "6.3.7",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/tippy.js@6.3.7",
+      "type" : "library",
+      "bom-ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0"
+    }
+  ],
+  "dependencies" : [
+    {
+      "ref" : "c2095505-c3af-4958-af68-6a61f216807d",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "73140e29-f689-49c1-9b10-28ff13117f68",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "c4134441-7211-47d1-a970-202c819157d1",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "72240acd-7de4-4058-b56f-e64638babcbf",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
+      "dependsOn" : [ ]
+    }
+  ]
+}
