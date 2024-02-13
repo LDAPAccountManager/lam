@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:2a0bcb24-dd83-41e6-a603-bdb3a21a83c8",
+  "serialNumber" : "urn:uuid:1970d9aa-098f-4912-9581-dbeaffdaf024",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-02-12T19:17:14Z",
+    "timestamp" : "2024-02-13T19:48:21Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -13,8 +13,8 @@
       }
     ],
     "component" : {
+      "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "group": "ldap-account-manager",
       "version" : "8.7",
       "type" : "application",
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d"
@@ -24,7 +24,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "@popperjs/core",
-      "version" : "2.11.6",
+      "version" : "2.11.8",
       "licenses" : [
         {
           "license" : {
@@ -32,7 +32,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/%40popperjs/core@2.11.6",
+      "purl" : "pkg:npm/%40popperjs/core@2.11.8",
       "type" : "library",
       "bom-ref" : "73140e29-f689-49c1-9b10-28ff13117f68"
     },
@@ -83,8 +83,8 @@
     },
     {
       "group" : "cdx:npm:package:bundled",
-      "name" : "sortablejs",
-      "version" : "1.15.0",
+      "name" : "jstree",
+      "version" : "3.3.16",
       "licenses" : [
         {
           "license" : {
@@ -92,14 +92,29 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sortablejs@1.15.0",
+      "purl" : "pkg:npm/jstree@3.3.16",
+      "type" : "library",
+      "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "sortablejs",
+      "version" : "1.15.2",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/sortablejs@1.15.2",
       "type" : "library",
       "bom-ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265"
     },
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.7.27",
+      "version" : "11.10.5",
       "licenses" : [
         {
           "license" : {
@@ -107,14 +122,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.7.27",
+      "purl" : "pkg:npm/sweetalert2@11.10.5",
       "type" : "library",
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f"
     },
     {
       "group" : "cdx:composer:package",
       "name" : "tecnickcom/tcpdf",
-      "version" : "6.6.2",
+      "version" : "6.6.5",
       "licenses" : [
         {
           "license" : {
@@ -122,7 +137,7 @@
           }
         }
       ],
-      "purl" : "pkg:composer/tecnickcom/tcpdf@6.6.2",
+      "purl" : "pkg:composer/tecnickcom/tcpdf@6.6.5",
       "type" : "library",
       "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf"
     },
@@ -161,6 +176,10 @@
     },
     {
       "ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "dependsOn" : [ ]
     },
     {
