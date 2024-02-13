@@ -2,10 +2,8 @@
     "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
     "bomFormat": "CycloneDX",
     "specVersion": "1.5",
-    "serialNumber": "urn:uuid:907e05db-c5dd-48a7-be81-65ec56c0751c",
     "version": 1,
     "metadata": {
-        "timestamp": "2024-02-12T19:49:00Z",
         "tools": [
             {
                 "name": "composer",
@@ -77,20 +75,13 @@
             }
         ],
         "component": {
-            "bom-ref": "__root__-dev-develop",
+            "bom-ref": "ldap-account-manager/ldap-account-manager-8.7.0.0",
             "type": "application",
-            "name": "__root__",
-            "version": "dev-develop",
-            "purl": "pkg:composer/__root__@dev-develop",
+            "name": "ldap-account-manager",
+            "version": "8.7",
+            "group": "ldap-account-manager",
+            "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@8.7",
             "properties": [
-                {
-                    "name": "cdx:composer:package:distReference",
-                    "value": "3c698a7ce739638be5c95a2ab7a3ff7c0d871c1f"
-                },
-                {
-                    "name": "cdx:composer:package:sourceReference",
-                    "value": "3c698a7ce739638be5c95a2ab7a3ff7c0d871c1f"
-                },
                 {
                     "name": "cdx:composer:package:type",
                     "value": "library"
@@ -4058,7 +4049,7 @@
             ]
         },
         {
-            "ref": "__root__-dev-develop",
+            "ref": "ldap-account-manager/ldap-account-manager-8.7.0.0",
             "dependsOn": [
                 "web-auth/webauthn-lib-3.3.12.0",
                 "web-auth/cose-lib-3.3.12.0",

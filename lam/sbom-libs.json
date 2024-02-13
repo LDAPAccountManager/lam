@@ -13,8 +13,9 @@
       }
     ],
     "component" : {
-      "name" : "LDAP Account Manager",
-      "version" : "SNAPSHOT",
+      "name" : "ldap-account-manager",
+      "group": "ldap-account-manager",
+      "version" : "8.7",
       "type" : "application",
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d"
     }
