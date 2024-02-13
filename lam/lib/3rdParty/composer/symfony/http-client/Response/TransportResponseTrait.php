@@ -146,7 +146,7 @@ trait TransportResponseTrait
      *
      * @internal
      */
-    public static function stream(iterable $responses, float $timeout = null): \Generator
+    public static function stream(iterable $responses, ?float $timeout = null): \Generator
     {
         $runningResponses = [];
 
@@ -303,7 +303,7 @@ trait TransportResponseTrait
             }
 
             if (-1 === self::select($multi, min($timeoutMin, $timeoutMax - $elapsedTimeout))) {
-                usleep(min(500, 1E6 * $timeoutMin));
+                usleep((int) min(500, 1E6 * $timeoutMin));
             }
 
             $elapsedTimeout = microtime(true) - $lastActivity;
