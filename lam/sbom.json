@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:a638adf6-d969-4550-9dc8-3c7e09fc5e01",
+  "serialNumber": "urn:uuid:7e958857-eb9b-4f3d-887d-22f2756ccf7d",
   "version": 1,
   "metadata": {
     "tools": [
@@ -3712,6 +3712,21 @@
     },
     {
       "type": "library",
+      "bom-ref": "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
+      "group": "cdx:npm:package:bundled",
+      "name": "friendly-challenge",
+      "version": "0.9.14",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/friendly-challenge@3.7.1"
+    },
+    {
+      "type": "library",
       "bom-ref": "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
       "group": "cdx:npm:package:bundled",
       "name": "jQuery",
@@ -4235,6 +4250,10 @@
     },
     {
       "ref": "c4134441-7211-47d1-a970-202c819157d1",
+      "dependsOn": []
+    },
+    {
+      "ref": "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
       "dependsOn": []
     },
     {

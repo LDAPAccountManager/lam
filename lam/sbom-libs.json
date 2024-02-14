@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:1970d9aa-098f-4912-9581-dbeaffdaf024",
+  "serialNumber" : "urn:uuid:383e49e6-483d-40ee-b1ec-6266b29ee6d1",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-02-13T19:48:21Z",
+    "timestamp" : "2024-02-14T06:58:15Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -65,6 +65,21 @@
       "purl" : "pkg:npm/flatpickr@4.6.13",
       "type" : "library",
       "bom-ref" : "c4134441-7211-47d1-a970-202c819157d1"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "friendly-challenge",
+      "version" : "0.9.14",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/friendly-challenge@3.7.1",
+      "type" : "library",
+      "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5"
     },
     {
       "group" : "cdx:npm:package:bundled",
@@ -172,6 +187,10 @@
     },
     {
       "ref" : "c4134441-7211-47d1-a970-202c819157d1",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
       "dependsOn" : [ ]
     },
     {
