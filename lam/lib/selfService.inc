@@ -682,8 +682,10 @@ class selfServiceProfile {
 	/** LDAP search attribute */
 	public $searchAttribute;
 
-	/** HTTP authentication */
-	public $httpAuthentication;
+	/**
+	 * @var string|null login handler ID
+	 */
+	public ?string $loginHandler = SelfServiceUserPasswordLoginHandler::ID;
 
 	/** header for self service pages */
 	public $pageHeader;
@@ -821,7 +823,7 @@ class selfServiceProfile {
 		$this->useForAllOperations = false;
 		$this->searchAttribute = "uid";
 		$this->additionalLDAPFilter = '';
-		$this->httpAuthentication = false;
+		$this->loginHandler = '';
 		$this->pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 		$this->additionalCSS = '';
 		$this->baseColor = '#fffde2';
@@ -921,10 +923,10 @@ class selfServiceProfile {
 	 * @return SelfServiceLoginHandler handler
 	 */
 	public function getLoginHandler(): SelfServiceLoginHandler {
-		if ($this->httpAuthentication) {
-			return new SelfServiceHttpAuthLoginHandler($this);
-		}
-		return new SelfServiceUserPasswordLoginHandler($this);
+		return match ($this->loginHandler) {
+			SelfServiceHttpAuthLoginHandler::ID => new SelfServiceHttpAuthLoginHandler($this),
+			default => new SelfServiceUserPasswordLoginHandler($this),
+		};
 	}
 
 }
@@ -991,6 +993,13 @@ class SelfServiceLdapConnection {
 interface SelfServiceLoginHandler {
 
 	/**
+	 * Returns a unique ID for the handler.
+	 *
+	 * @return string ID
+	 */
+	function getId(): string;
+
+	/**
 	 * Adds necessary fields to the login dialog (e.g. user + password).
 	 *
 	 * @param htmlResponsiveRow $content dialog content
@@ -1018,6 +1027,8 @@ interface SelfServiceLoginHandler {
  */
 class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 
+	public const ID = "user_password";
+
 	private selfServiceProfile $profile;
 
 	/**
@@ -1027,6 +1038,13 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function __construct(selfServiceProfile $profile) {
 		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getId(): string {
+		return self::ID;
 	}
 
 	/**
@@ -1070,6 +1088,8 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
  */
 class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 
+	public const ID = "http_auth";
+
 	private selfServiceProfile $profile;
 
 	/**
@@ -1079,6 +1099,13 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function __construct(selfServiceProfile $profile) {
 		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getId(): string {
+		return self::ID;
 	}
 
 	/**

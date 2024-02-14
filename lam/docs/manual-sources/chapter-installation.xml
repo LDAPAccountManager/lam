@@ -611,9 +611,23 @@
       <section>
         <title>8.6 -&gt; 8.7</title>
 
-        <para>LAM Pro: Self service profiles that were not saved for more than
-        3 years must be saved with LAM Pro 8.6 before upgrading to LAM Pro
-        8.7. </para>
+        <para>LAM Pro:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Self service profiles that were not saved with a LAM version
+            of the past 3 years must be saved with LAM Pro 8.6 before
+            upgrading to LAM Pro 8.7.</para>
+          </listitem>
+
+          <listitem>
+            <para>Self service profiles that have enabled "HTTP
+            authentication" need to be reconfigured. Open the self service
+            profile, select "HTTP authentication" as "Authentication method"
+            (first tab, server settings) and save the self service
+            profile.</para>
+          </listitem>
+        </itemizedlist>
       </section>
 
       <section>

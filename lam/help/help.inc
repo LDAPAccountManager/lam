@@ -160,6 +160,9 @@ $helpArray = [
 				"225" => ["Headline" => _('Base URL'),
 					"Text" => _("Please enter the base URL of your webserver (e.g. https://www.example.com). This is used to generate links in emails.")
 				],
+				"226" => ["Headline" => _("Authentication method"),
+					"Text" => _("Please select how users authenticate at the login screen.")
+				],
 				"230" => ["Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")
 				],
