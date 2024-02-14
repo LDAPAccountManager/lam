@@ -925,6 +925,7 @@ class selfServiceProfile {
 	public function getLoginHandler(): SelfServiceLoginHandler {
 		return match ($this->loginHandler) {
 			SelfServiceHttpAuthLoginHandler::ID => new SelfServiceHttpAuthLoginHandler($this),
+			SelfService2FaLoginHandler::ID => new SelfService2FaLoginHandler($this),
 			default => new SelfServiceUserPasswordLoginHandler($this),
 		};
 	}
@@ -1140,6 +1141,54 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function getLoginPassword(): string {
 		return $_SERVER['PHP_AUTH_PW'];
+	}
+
+}
+
+/**
+ * Performs login with pure 2FA.
+ */
+class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
+
+	public const ID = "2fa";
+
+	private selfServiceProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param selfServiceProfile $profile profile
+	 */
+	function __construct(selfServiceProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getId(): string {
+		return self::ID;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void {
+		// no input fields
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginName(): string {
+		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginPassword(): string {
+		return '';
 	}
 
 }
