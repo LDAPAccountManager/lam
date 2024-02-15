@@ -1021,6 +1021,22 @@ interface SelfServiceLoginHandler {
 	 */
 	function getLoginPassword(): string;
 
+	/**
+	 * Returns if the login handler manages authentication on its own.
+	 *
+	 * @return bool manages authentication
+	 */
+	function managesAuthentication(): bool;
+
+	/**
+	 * Returns if the authentication was successful.
+	 * Only valid if managesAuthentication() returns true.
+	 *
+	 * @return bool authentication successful
+	 * @throws LAMException error during authentication
+	 */
+	function isAuthenticationSuccessful(): bool;
+
 }
 
 /**
@@ -1080,6 +1096,20 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function getLoginPassword(): string {
 		return $_POST['password'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function managesAuthentication(): bool {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isAuthenticationSuccessful(): bool {
+		throw new LAMException('Not implemented');
 	}
 
 }
@@ -1143,6 +1173,20 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 		return $_SERVER['PHP_AUTH_PW'];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	function managesAuthentication(): bool {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isAuthenticationSuccessful(): bool {
+		throw new LAMException('Not implemented');
+	}
+
 }
 
 /**
@@ -1189,6 +1233,30 @@ class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function getLoginPassword(): string {
 		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function managesAuthentication(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isAuthenticationSuccessful(): bool {
+		if (($this->profile->twoFactorAuthentication !== TwoFactorProviderService::TWO_FACTOR_OKTA)
+			&& ($this->profile->twoFactorAuthentication !== TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+			logNewMessage(LOG_ERR, 'Unsupported 2FA provider: ' . $this->profile->twoFactorAuthentication);
+			return false;
+		}
+		if (!$this->profile->useForAllOperations) {
+			logNewMessage(LOG_ERR, 'Use for all operations must be set');
+			return false;
+		}
+		// authentication will be checked on 2FA page
+		return true;
 	}
 
 }
