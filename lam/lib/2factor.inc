@@ -780,9 +780,12 @@ class OpenIdProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
 	 */
 	public function addCustomInput(&$row, $userDn) {
-		$loginAttribute = $this->getLoginAttributeValue($userDn);
-		if (empty($loginAttribute)) {
-			throw new LAMException('Unable to read login attribute from ' . $userDn);
+		$loginAttribute = '';
+		if (($this->config->loginHandler === null) || !$this->config->loginHandler->managesAuthentication()) {
+			$loginAttribute = $this->getLoginAttributeValue($userDn);
+			if (empty($loginAttribute)) {
+				throw new LAMException('Unable to read login attribute from ' . $userDn);
+			}
 		}
 		if ($this->verificationFailed) {
 			return;
@@ -876,10 +879,16 @@ class OpenIdProvider extends BaseProvider {
 			$tokenSet = $authorizationService->callback($client, $callbackParams, $_GET['redirect_uri']);
 			$claims = $tokenSet->claims();
 			logNewMessage(LOG_DEBUG, print_r($claims, true));
-			$loginAttribute = $this->getLoginAttributeValue($user);
-			if ($loginAttribute !== $claims['preferred_username']) {
-				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim preferred_username: ' . $claims['preferred_username']);
-				return false;
+			$openIdUser = $claims['preferred_username'];
+			if (($this->config->loginHandler !== null) && $this->config->loginHandler->managesAuthentication()) {
+				$this->config->loginHandler->authorize2FaUser($openIdUser);
+			}
+			else {
+				$loginAttribute = $this->getLoginAttributeValue($user);
+				if ($loginAttribute !== $openIdUser) {
+					logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim preferred_username: ' . $openIdUser);
+					return false;
+				}
 			}
 			$this->verificationFailed = false;
 			return true;
