@@ -202,7 +202,10 @@
               server is responsible to authenticate your users. LAM will use
               the given user name + password for the LDAP login. To setup HTTP
               authentication in Apache please see this <ulink
-              url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.</entry>
+              url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.
+              If you use Okta or OpenID for 2FA then you can also select to
+              trust the 2FA provider. In this case the user does not need to
+              enter any password in LAM itself (SSO).</entry>
             </row>
 
             <row>

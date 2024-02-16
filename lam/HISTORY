@@ -5,6 +5,7 @@ March 2024 8.7
   -> Cron job to deactivate inactive accounts based on lastBind overlay data (265)
   -> Request access: support Windows groups (266)
   -> Request access: usability improvements (278, 279)
+  -> Self service: passwordless SSO login supported for Okta and OpenID
  - Fixed bugs:
   -> User self registration creates accounts only with SSHA hash (287)
 

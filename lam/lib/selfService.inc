@@ -925,6 +925,7 @@ class selfServiceProfile {
 	public function getLoginHandler(): SelfServiceLoginHandler {
 		return match ($this->loginHandler) {
 			SelfServiceHttpAuthLoginHandler::ID => new SelfServiceHttpAuthLoginHandler($this),
+			SelfService2FaLoginHandler::ID => new SelfService2FaLoginHandler($this),
 			default => new SelfServiceUserPasswordLoginHandler($this),
 		};
 	}
@@ -1020,6 +1021,30 @@ interface SelfServiceLoginHandler {
 	 */
 	function getLoginPassword(): string;
 
+	/**
+	 * Returns if the login handler manages authentication on its own.
+	 *
+	 * @return bool manages authentication
+	 */
+	function managesAuthentication(): bool;
+
+	/**
+	 * Returns if the authentication was successful.
+	 * Only valid if managesAuthentication() returns true.
+	 *
+	 * @return bool authentication successful
+	 * @throws LAMException error during authentication
+	 */
+	function isAuthenticationSuccessful(): bool;
+
+	/**
+	 * Authorizes an user that was provided by 2FA provider.
+	 *
+	 * @param string $userName user name
+	 * @throws LAMException error during authentication
+	 */
+	function authorize2FaUser(string $userName): void;
+
 }
 
 /**
@@ -1081,6 +1106,27 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 		return $_POST['password'];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	function managesAuthentication(): bool {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isAuthenticationSuccessful(): bool {
+		throw new LAMException('Not implemented');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function authorize2FaUser(string $userName): void {
+		// no action
+	}
+
 }
 
 /**
@@ -1140,6 +1186,139 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function getLoginPassword(): string {
 		return $_SERVER['PHP_AUTH_PW'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function managesAuthentication(): bool {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isAuthenticationSuccessful(): bool {
+		throw new LAMException('Not implemented');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function authorize2FaUser(string $userName): void {
+		// no action
+	}
+
+}
+
+/**
+ * Performs login with pure 2FA.
+ */
+class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
+
+	public const ID = "2fa";
+
+	private selfServiceProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param selfServiceProfile $profile profile
+	 */
+	function __construct(selfServiceProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getId(): string {
+		return self::ID;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void {
+		// no input fields
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginName(): string {
+		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginPassword(): string {
+		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function managesAuthentication(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isAuthenticationSuccessful(): bool {
+		if (($this->profile->twoFactorAuthentication !== TwoFactorProviderService::TWO_FACTOR_OKTA)
+			&& ($this->profile->twoFactorAuthentication !== TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+			logNewMessage(LOG_ERR, 'Unsupported 2FA provider: ' . $this->profile->twoFactorAuthentication);
+			return false;
+		}
+		if (!$this->profile->useForAllOperations) {
+			logNewMessage(LOG_ERR, 'Use for all operations must be set');
+			return false;
+		}
+		// authentication will be checked on 2FA page
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function authorize2FaUser(string $userName): void {
+		$bindUser = $this->profile->LDAPUser;
+		if (empty($bindUser)) {
+			throw new LAMException('SelfService2FaLoginHandler', 'No bind user set');
+		}
+		$bindPassword = deobfuscateText($this->profile->LDAPPassword);
+		$server = connectToLDAP($this->profile->serverURL, $this->profile->useTLS);
+		if ($server === null) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP connect failed');
+		}
+		ldap_set_option($server, LDAP_OPT_REFERRALS, $this->profile->followReferrals);
+		$bind = @ldap_bind($server, $bindUser, $bindPassword);
+		if (!$bind) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP bind failed');
+		}
+		$filter = '(' . $this->profile->twoFactorAuthenticationAttribute . "=" . ldap_escape($userName) . ')';
+		if (!empty($profile->additionalLDAPFilter)) {
+			$filter = '(&' . $filter . $profile->additionalLDAPFilter . ')';
+		}
+		$result = @ldap_search($server, $this->profile->LDAPSuffix, $filter, ['DN'], 0, 1, 0, LDAP_DEREF_NEVER);
+		if ($result === false) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP search failed');
+		}
+		$entries = @ldap_get_entries($server, $result);
+		if ($entries === false) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP search failed');
+		}
+		$info = $entries;
+		cleanLDAPResult($info);
+		if (sizeof($info) === 1) {
+			$userDN = $info[0]['dn'];
+			$_SESSION['selfService_clientDN'] = lamEncrypt($userDN, 'SelfService');
+			return;
+		}
+		throw new LAMException('SelfService2FaLoginHandler', 'Multiple or no results for ' . $userName . ' ' . print_r($info, true));
 	}
 
 }
