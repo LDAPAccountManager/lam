@@ -7,6 +7,7 @@ use Duo\DuoUniversal\DuoException;
 use Exception;
 use \htmlResponsiveRow;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use SelfServiceLoginHandler;
 use \selfServiceProfile;
 use \LAMConfig;
 use \htmlScript;
@@ -595,9 +596,11 @@ class OktaProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
 	 */
 	public function addCustomInput(&$row, $userDn) {
-		$loginAttribute = $this->getLoginAttributeValue($userDn);
-		if (empty($loginAttribute)) {
-			throw new LAMException('Unable to read login attribute from ' . $userDn);
+		if (($this->config->loginHandler === null) || !$this->config->loginHandler->managesAuthentication()) {
+			$loginAttribute = $this->getLoginAttributeValue($userDn);
+			if (empty($loginAttribute)) {
+				throw new LAMException('Unable to read login attribute from ' . $userDn);
+			}
 		}
 		if ($this->verificationFailed) {
 			return;
@@ -656,10 +659,16 @@ class OktaProvider extends BaseProvider {
 		try {
 			$claims = json_decode(base64_decode(explode('.', $accessCode)[1]), true);
 			logNewMessage(LOG_DEBUG, 'Okta claims: ' . print_r($claims, true));
-			$loginAttribute = $this->getLoginAttributeValue($user);
-			if ($loginAttribute !== $claims['sub']) {
-				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim sub: ' . $claims['sub']);
-				return false;
+			$oktaUser = $claims['sub'];
+			if (($this->config->loginHandler !== null) && $this->config->loginHandler->managesAuthentication()) {
+				$this->config->loginHandler->authorize2FaUser($oktaUser);
+			}
+			else {
+				$loginAttribute = $this->getLoginAttributeValue($user);
+				if ($loginAttribute !== $oktaUser) {
+					logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim sub: ' . $oktaUser);
+					return false;
+				}
 			}
 			$this->verificationFailed = false;
 			return true;
@@ -1250,6 +1259,7 @@ class TwoFactorProviderService {
 			$tfConfig->twoFactorRememberDeviceDuration = $profile->twoFactorRememberDeviceDuration;
 			$tfConfig->twoFactorRememberDevicePassword = $profile->twoFactorRememberDevicePassword;
 		}
+		$tfConfig->loginHandler = $profile->getLoginHandler();
 		return $tfConfig;
 	}
 
@@ -1361,5 +1371,10 @@ class TwoFactorConfiguration {
 	 * @var string password for remembering
 	 */
 	public string $twoFactorRememberDevicePassword = '';
+
+	/**
+	 * @var SelfServiceLoginHandler|null login handler
+	 */
+	public ?SelfServiceLoginHandler $loginHandler = null;
 
 }

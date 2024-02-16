@@ -1037,6 +1037,14 @@ interface SelfServiceLoginHandler {
 	 */
 	function isAuthenticationSuccessful(): bool;
 
+	/**
+	 * Authorizes an user that was provided by 2FA provider.
+	 *
+	 * @param string $userName user name
+	 * @throws LAMException error during authentication
+	 */
+	function authorize2FaUser(string $userName): void;
+
 }
 
 /**
@@ -1110,6 +1118,13 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function isAuthenticationSuccessful(): bool {
 		throw new LAMException('Not implemented');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function authorize2FaUser(string $userName): void {
+		// no action
 	}
 
 }
@@ -1187,6 +1202,13 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 		throw new LAMException('Not implemented');
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	function authorize2FaUser(string $userName): void {
+		// no action
+	}
+
 }
 
 /**
@@ -1257,6 +1279,46 @@ class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
 		}
 		// authentication will be checked on 2FA page
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function authorize2FaUser(string $userName): void {
+		$bindUser = $this->profile->LDAPUser;
+		if (empty($bindUser)) {
+			throw new LAMException('SelfService2FaLoginHandler', 'No bind user set');
+		}
+		$bindPassword = deobfuscateText($this->profile->LDAPPassword);
+		$server = connectToLDAP($this->profile->serverURL, $this->profile->useTLS);
+		if ($server === null) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP connect failed');
+		}
+		ldap_set_option($server, LDAP_OPT_REFERRALS, $this->profile->followReferrals);
+		$bind = @ldap_bind($server, $bindUser, $bindPassword);
+		if (!$bind) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP bind failed');
+		}
+		$filter = '(' . $this->profile->twoFactorAuthenticationAttribute . "=" . ldap_escape($userName) . ')';
+		if (!empty($profile->additionalLDAPFilter)) {
+			$filter = '(&' . $filter . $profile->additionalLDAPFilter . ')';
+		}
+		$result = @ldap_search($server, $this->profile->LDAPSuffix, $filter, ['DN'], 0, 1, 0, LDAP_DEREF_NEVER);
+		if ($result === false) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP search failed');
+		}
+		$entries = @ldap_get_entries($server, $result);
+		if ($entries === false) {
+			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP search failed');
+		}
+		$info = $entries;
+		cleanLDAPResult($info);
+		if (sizeof($info) === 1) {
+			$userDN = $info[0]['dn'];
+			$_SESSION['selfService_clientDN'] = lamEncrypt($userDN, 'SelfService');
+			return;
+		}
+		throw new LAMException('SelfService2FaLoginHandler', 'Multiple or no results for ' . $userName . ' ' . print_r($info, true));
 	}
 
 }
