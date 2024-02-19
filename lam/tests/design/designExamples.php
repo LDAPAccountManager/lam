@@ -35,6 +35,7 @@ echo "<!DOCTYPE html>\n";
 echo '<head>';
 $prefix = '../..';
 printHeaderContents("Design Examples", $prefix);
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/templates/lib/extra/jodit/jodit.css\">\n";
 echo "</head><body>\n";
 
 // include all JavaScript files
@@ -416,6 +417,6 @@ $form = new htmlForm('formname', 'designExamples.php', $row);
 parseHtml(null, $form, [], false, 'user');
 
 ?>
-<script type="text/javascript" src="../../templates/lib/extra/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="../../templates/lib/extra/jodit/jodit.js"></script>
 </body>
 </html>

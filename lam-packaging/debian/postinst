@@ -10,7 +10,7 @@ fi
 db_version 2.0 || [ $? -lt 30 ]
 
 # 3rd party libs
-jsThirdPartyLibs='ckeditor jstree'
+jsThirdPartyLibs='jstree'
 for jsThirdPartyLib in $jsThirdPartyLibs; do
 	if [ ! -L /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib} ] ; then
 		ln -s /usr/share/javascript/${jsThirdPartyLib} /usr/share/ldap-account-manager/templates/lib/extra/${jsThirdPartyLib}

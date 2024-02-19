@@ -69,7 +69,6 @@ export VERSION=`./getVersion`
 rm -r lam/po
 rm -r lam/tests
 rm -f lam/lib/3rdParty/tcpdf/fonts/*.ttf
-rm -r lam/templates/lib/extra/ckeditor/plugins/*/dev
 rm -r lam/lib/3rdParty/composer/nesbot/carbon/bin
 chmod -R -x+X lam/lib/3rdParty
 rm lam/composer*

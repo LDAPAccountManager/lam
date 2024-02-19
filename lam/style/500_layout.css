@@ -1110,3 +1110,8 @@ div.tippy-box {
 	padding: 0 var(--lam-regular-space) var(--lam-regular-space) var(--lam-regular-space);
 	max-width: 25rem;
 }
+
+div.jodit-container {
+	margin: var(--lam-small-space);
+	margin-bottom: var(--lam-regular-space);
+}

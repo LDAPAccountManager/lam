@@ -165,6 +165,7 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../templates/lib/extra/jodit/jodit.css\">\n";
 echo "<body>\n";
 // include all JavaScript files
 printJsIncludes('../..');
@@ -608,7 +609,7 @@ parseHtml(null, $buttonContainer, [], false, 'user');
 
 ?>
 </form>
-<script type="text/javascript" src="../lib/extra/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="../lib/extra/jodit/jodit.js"></script>
 </body>
 </html>
 <?php

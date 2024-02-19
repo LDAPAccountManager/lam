@@ -85,7 +85,6 @@ RUN apt-get install --no-install-recommends -y \
         wget \
         libldap-common \
         gettext \
-        ckeditor \
         libjs-jquery-jstree \
         php-phpseclib3 \
         php-voku-portable-ascii \

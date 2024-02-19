@@ -61,7 +61,6 @@ install:
 	install -D --mode=644 sess/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/sess/.htaccess
 	cp -r style debian/ldap-account-manager/usr/share/ldap-account-manager/
 	cp -r templates debian/ldap-account-manager/usr/share/ldap-account-manager/
-	rm -r debian/ldap-account-manager/usr/share/ldap-account-manager/templates/lib/extra/ckeditor
 	rm -r debian/ldap-account-manager/usr/share/ldap-account-manager/templates/lib/extra/jstree
 
 	install -D --mode=755 lib/lamdaemon.pl debian/ldap-account-manager-lamdaemon/usr/share/ldap-account-manager/lib/lamdaemon.pl

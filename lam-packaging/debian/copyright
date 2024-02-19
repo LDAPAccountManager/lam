@@ -26,6 +26,7 @@ time.
 * lib/modules/groupOfNames.inc
 * lib/modules/groupOfNamesUser.inc
 * lib/modules/groupOfUniqueNames.inc
+* lib/modules/guacamole.inc
 * lib/modules/heimdalKerberos.inc
 * lib/modules/ipHost.inc
 * lib/modules/kopanoAddressList.inc
@@ -34,6 +35,7 @@ time.
 * lib/modules/kopanoGroup.inc
 * lib/modules/kopanoServer.inc
 * lib/modules/kopanoUser.inc
+* lib/modules/lastBind.inc
 * lib/modules/locking389ds.inc
 * lib/modules/mitKerberos.inc
 * lib/modules/mitKerberosPolicy.inc
@@ -45,10 +47,12 @@ time.
 * lib/modules/oracleService.inc
 * lib/modules/organizationalRole*.inc
 * lib/modules/passwordSelfReset.inc
+* lib/modules/powerDNS.inc
 * lib/modules/ppolicy.inc
 * lib/modules/ppolicyUser.inc
 * lib/modules/qmailGroup.inc
 * lib/modules/qmailUser.inc
+* lib/modules/requestAccess.inc
 * lib/modules/rfc2307bisAutomount.inc
 * lib/modules/rfc2307bisPosixGroup.inc
 * lib/modules/selfRegistration.inc
@@ -57,12 +61,6 @@ time.
 * lib/modules/webauthn.inc
 * lib/modules/windowsLDSGroup.inc
 * lib/modules/windowsLDSUser.inc
-* lib/modules/zarafaAddressList.inc
-* lib/modules/zarafaContact.inc
-* lib/modules/zarafaDynamicGroup.inc
-* lib/modules/zarafaGroup.inc
-* lib/modules/zarafaServer.inc
-* lib/modules/zarafaUser.inc
 * lib/types/alias.inc
 * lib/types/automountType.inc
 * lib/types/bind.inc
@@ -74,10 +72,9 @@ time.
 * lib/types/nisObjectType.inc
 * lib/types/nsview.inc
 * lib/types/oracleContextType.inc
+* lib/types/powerDNSType.inc
 * lib/types/ppolicyType.inc
 * lib/types/sudo.inc
-* lib/types/zarafaAddressListType.inc
-* lib/types/zarafaDynamicGroupType.inc
 
 
 All other files are licensed under the conditions below.
@@ -1139,6 +1136,7 @@ accepting any such warranty or additional liability.
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
+graphics/webauthn.svg                                                F  2017  Duo Security, Inc.
 lib/3rdParty/composer/beberlei                                       G  2013  Benjamin Eberlei
 lib/3rdParty/composer/brick                                          B        Benjamin Morel
 lib/3rdParty/composer/carbonphp                                      B  2023  Carbon
@@ -1172,6 +1170,8 @@ lib/3rdParty/composer/webklex                                        B  2016  We
 lib/3rdParty/tcpdf                                                   D  2022  Nicola Asuni - Tecnick.com LTD
 lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
+style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal
+style/050_grid.css                                                   B
 templates/lib/*jquery*.js                                            B  2018  jQuery Foundation and other contributors
 templates/lib/*popper*.js                                            B
 templates/lib/*tippy*.js                                             B  2021  atomiks
@@ -1179,12 +1179,10 @@ templates/lib/*flatpickr*.js                                         B  2017  Gr
 style/600_flatpickr.css                                              B  2017  Gregory Petrosyan
 templates/lib/*sweetalert2*.js                                       B
 style/*sweetalert2*.css                                              B
-templates/lib/extra/cropperjs                                        B  2018  Chen Fengyuan
+templates/lib/cropper*.js                                            B  2018  Chen Fengyuan
 style/600_cropper*.css                                               B  2018  Chen Fengyuan
+templates/lib/extra/jodit                                            B        Chupurnov
 templates/lib/extra/friendlyCaptcha                                  B
-graphics/webauthn.svg                                                F  2017  Duo Security, Inc.
 templates/lib/400_Sortable*.js                                       B        RubaXa, owenm
-style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal
-style/050_grid.css                                                   B
 templates/lib/extra/jstree/*                                         B  2014  Ivan Bozhanov
 style/jstree/*                                                       B  2014  Ivan Bozhanov
