@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:383e49e6-483d-40ee-b1ec-6266b29ee6d1",
+  "serialNumber" : "urn:uuid:44914833-8fde-4146-9c13-c8457f2a694e",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-02-14T06:58:15Z",
+    "timestamp" : "2024-02-20T06:26:06Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -95,6 +95,21 @@
       "purl" : "pkg:npm/jquery@3.7.1",
       "type" : "library",
       "bom-ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "jodit",
+      "version" : "4.0.6",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/jodit@4.0.6",
+      "type" : "library",
+      "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e"
     },
     {
       "group" : "cdx:npm:package:bundled",
@@ -195,6 +210,10 @@
     },
     {
       "ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "dependsOn" : [ ]
     },
     {

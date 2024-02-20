@@ -287,10 +287,10 @@
             ]
         },
         {
-            "bom-ref": "doctrine/inflector-2.0.9.0",
+            "bom-ref": "doctrine/inflector-2.0.10.0",
             "type": "library",
             "name": "inflector",
-            "version": "2.0.9",
+            "version": "2.0.10",
             "group": "doctrine",
             "description": "PHP Doctrine Inflector is a small library that can perform string manipulations with regard to upper/lowercase and singular/plural forms of words.",
             "author": "Guilherme Blanco, Roman Borschel, Benjamin Eberlei, Jonathan Wage, Johannes Schmitt",
@@ -301,17 +301,17 @@
                     }
                 }
             ],
-            "purl": "pkg:composer/doctrine/inflector@2.0.9",
+            "purl": "pkg:composer/doctrine/inflector@2.0.10",
             "externalReferences": [
                 {
                     "type": "distribution",
-                    "url": "https://api.github.com/repos/doctrine/inflector/zipball/2930cd5ef353871c821d5c43ed030d39ac8cfe65",
-                    "comment": "dist reference: 2930cd5ef353871c821d5c43ed030d39ac8cfe65"
+                    "url": "https://api.github.com/repos/doctrine/inflector/zipball/5817d0659c5b50c9b950feb9af7b9668e2c436bc",
+                    "comment": "dist reference: 5817d0659c5b50c9b950feb9af7b9668e2c436bc"
                 },
                 {
                     "type": "vcs",
                     "url": "https://github.com/doctrine/inflector.git",
-                    "comment": "source reference: 2930cd5ef353871c821d5c43ed030d39ac8cfe65"
+                    "comment": "source reference: 5817d0659c5b50c9b950feb9af7b9668e2c436bc"
                 },
                 {
                     "type": "website",
@@ -325,18 +325,18 @@
                 },
                 {
                     "type": "vcs",
-                    "url": "https://github.com/doctrine/inflector/tree/2.0.9",
+                    "url": "https://github.com/doctrine/inflector/tree/2.0.10",
                     "comment": "as detected from Composer manifest 'support.source'"
                 }
             ],
             "properties": [
                 {
                     "name": "cdx:composer:package:distReference",
-                    "value": "2930cd5ef353871c821d5c43ed030d39ac8cfe65"
+                    "value": "5817d0659c5b50c9b950feb9af7b9668e2c436bc"
                 },
                 {
                     "name": "cdx:composer:package:sourceReference",
-                    "value": "2930cd5ef353871c821d5c43ed030d39ac8cfe65"
+                    "value": "5817d0659c5b50c9b950feb9af7b9668e2c436bc"
                 },
                 {
                     "name": "cdx:composer:package:type",
@@ -3670,7 +3670,7 @@
             "ref": "christian-riesen/base32-1.6.0.0"
         },
         {
-            "ref": "doctrine/inflector-2.0.9.0"
+            "ref": "doctrine/inflector-2.0.10.0"
         },
         {
             "ref": "duosecurity/duo_universal_php-1.0.2.0",
@@ -3765,7 +3765,7 @@
         {
             "ref": "illuminate/support-9.52.16.0",
             "dependsOn": [
-                "doctrine/inflector-2.0.9.0",
+                "doctrine/inflector-2.0.10.0",
                 "illuminate/collections-9.52.16.0",
                 "illuminate/conditionable-9.52.16.0",
                 "illuminate/contracts-9.52.16.0",
