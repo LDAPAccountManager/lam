@@ -428,7 +428,7 @@ $helpArray = [
 				"507" => ["Headline" => _("Add new group"),
 					"Text" => _("Adds a new group element to the list of self service options. Use this to structure the input fields.")
 				],
-				"508" => ["Headline" => _("Add input field"),
+				"508" => ["Headline" => _("Add input fields"),
 					"Text" => _("Adds a new self service option to the selected group element.")
 				],
 				"509" => ["Headline" => _("Page header"),
