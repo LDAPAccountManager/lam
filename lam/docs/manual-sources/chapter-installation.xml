@@ -615,8 +615,8 @@
 
         <itemizedlist>
           <listitem>
-            <para>Self service profiles that were not saved with a LAM version
-            of the past 3 years must be saved with LAM Pro 8.6 before
+            <para>Self service profiles that were not saved with a LAM Pro
+            version of the past 3 years must be saved with LAM Pro 8.6 before
             upgrading to LAM Pro 8.7.</para>
           </listitem>
 
