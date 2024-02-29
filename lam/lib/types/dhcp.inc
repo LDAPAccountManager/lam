@@ -241,7 +241,7 @@ class lamDHCPList extends lamList {
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	function listDoPost() {
 		$fragment = parent::listDoPost();
