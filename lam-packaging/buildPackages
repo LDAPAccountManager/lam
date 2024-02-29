@@ -72,6 +72,7 @@ rm -f lam/lib/3rdParty/tcpdf/fonts/*.ttf
 rm -r lam/lib/3rdParty/composer/nesbot/carbon/bin
 chmod -R -x+X lam/lib/3rdParty
 rm lam/composer*
+rm lam/sbom*
 find . -name .svnignore -exec rm {} \;
 find . -name .gitignore -exec rm {} \;
 find lam/lib/3rdParty -name LICENSE -exec rm {} \;
