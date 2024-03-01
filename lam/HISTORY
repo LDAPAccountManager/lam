@@ -8,6 +8,7 @@ March 2024 8.7
   -> Self service: passwordless SSO login supported for Okta and OpenID
  - Fixed bugs:
   -> User self registration creates accounts only with SSHA hash (287)
+  -> PHP error when no FreeRadius profiles were found (302)
 
 
 18.12.2023 8.6
