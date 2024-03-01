@@ -755,6 +755,9 @@ class freeRadius extends baseModule {
 			return [];
 		}
 		$list = searchLDAP($this->moduleSettings['freeRadius_profileDN'][0], '(objectClass=radiusProfile)', array('dn'));
+		if (empty($list)) {
+			return [];
+		}
 		foreach ($list as $attr) {
 			$this->profileCache[] = $attr['dn'];
 		}
