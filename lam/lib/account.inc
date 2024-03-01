@@ -178,7 +178,7 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			$iterations = 200000;
 			$salt = openssl_random_pseudo_bytes(16);
 			$hashBinary = openssl_pbkdf2($password, $salt, 64, $iterations, 'sha512');
-			$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
+			$hash = "{PBKDF2-SHA512}{$iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
 			break;
 		case 'MD5':
 			$hash = "{MD5}" . base64_encode(hex2bin(md5($password)));
