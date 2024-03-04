@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2023  Roland Gruber
+  Copyright (C) 2006 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,10 +94,10 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	}
 	// set error reporting
 	if (empty($_SESSION['cfgMain']) || ($_SESSION['cfgMain']->errorReporting == LAMCfgMain::ERROR_REPORTING_DEFAULT)) {
-		ini_set('error_reporting', 'E_ALL & ~E_NOTICE');
+		ini_set('error_reporting', (E_ALL & ~E_NOTICE));
 	}
 	elseif ($_SESSION['cfgMain']->errorReporting == LAMCfgMain::ERROR_REPORTING_ALL) {
-		ini_set('error_reporting', 'E_ALL');
+		ini_set('error_reporting', E_ALL);
 		ini_set('display_errors', 'On');
 	}
 	// check session id

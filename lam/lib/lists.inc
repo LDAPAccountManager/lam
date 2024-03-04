@@ -624,7 +624,7 @@ class lamList {
 			$row[] = new htmlDiv(null, $actionElement, array('lam-listtools'));
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
-				if ($renderFunctions[$attributeName] !== null) {
+				if (!empty($renderFunctions[$attributeName])) {
 				    $row[] = $renderFunctions[$attributeName]($info[$index], $attributeName);
                 }
 				else {

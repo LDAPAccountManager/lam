@@ -9,6 +9,7 @@ March 2024 8.7
  - Fixed bugs:
   -> User self registration creates accounts only with SSHA hash (287)
   -> PHP error when no FreeRadius profiles were found (302)
+  -> PHP notices (#303)
 
 
 18.12.2023 8.6
