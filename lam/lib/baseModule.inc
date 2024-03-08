@@ -1850,7 +1850,7 @@ abstract class baseModule {
 					$inputField->setFieldSize(null);
 				}
 				else {
-					$inputField = new htmlInputTextarea($fieldNamePrefix . $i, $value, null, null);
+					$inputField = new htmlInputTextarea($fieldNamePrefix . $i, $value, 100, 3);
 				}
 				$inputField->setAccessibilityLabel($this->getSelfServiceLabel($name, $label));
 				$fieldRow->add($inputField, 9, 10);

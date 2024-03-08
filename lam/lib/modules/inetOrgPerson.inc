@@ -3159,7 +3159,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$readOnlyFields, 'realname', $this->messages['lastname'][0], $this->messages['lastname'][0],
 			'sn');
 		$this->checkSimpleSelfServiceTextField($return, 'mail', $attributes, $fields,
-			$readOnlyFields, 'email', $this->messages['email'][0]);
+			$readOnlyFields, 'email', $this->messages['mail'][0]);
 		$this->checkMultiValueSelfServiceTextField($return, 'labeledURI', $attributes, $fields,
 			$readOnlyFields, null, null, null, 'labeledURI');
 		$this->checkSimpleSelfServiceTextField($return, 'telephoneNumber', $attributes, $fields,
@@ -3172,7 +3172,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$readOnlyFields, 'telephone', $this->messages['facsimileTelephoneNumber'][0], null,
 			'facsimileTelephoneNumber');
 		$this->checkSimpleSelfServiceTextField($return, 'mobile', $attributes, $fields,
-			$readOnlyFields, 'telephone', $this->messages['mobileTelephone'][0]);
+			$readOnlyFields, 'telephone', $this->messages['mobile'][0]);
 		$this->checkSimpleSelfServiceTextField($return, 'pager', $attributes, $fields,
 			$readOnlyFields, 'telephone', $this->messages['pager'][0]);
 		$this->checkMultiValueSelfServiceTextField($return, 'street', $attributes, $fields,
