@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2022  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -341,7 +341,7 @@ class inetLocalMailRecipient extends baseModule {
 			$return['mailLocalAddress'] = $row;
 		}
 		if (in_array('mailRoutingAddress', $fields)) {
-			$mailRoutingAddress = null;
+			$mailRoutingAddress = '';
 			if (isset($attributes['mailRoutingAddress'][0])) {
 				$mailRoutingAddress = $attributes['mailRoutingAddress'][0];
 			}
