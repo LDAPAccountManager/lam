@@ -135,22 +135,26 @@ class ObjectClass extends SchemaItem
 				case '(':
 					break;
 				case 'NAME':
-					if($strings[$i+1]!="(") {
+					if ($strings[$i + 1] != "(") {
 						do {
 							$i++;
-							if(strlen($this->name)==0)
+							if (($this->name === null) || (strlen($this->name) == 0)) {
 								$this->name = $strings[$i];
-							else
+							}
+							else {
 								$this->name .= " " . $strings[$i];
-						}while(!preg_match('/\'$/s', $strings[$i]));
+							}
+						} while(!preg_match('/\'$/s', $strings[$i]));
 					} else {
 						$i++;
 						do {
 							$i++;
-							if(strlen($this->name) == 0)
- 								$this->name = $strings[$i];
-							else
+							if (($this->name === null) || (strlen($this->name) == 0)) {
+								$this->name = $strings[$i];
+							}
+							else {
 								$this->name .= " " . $strings[$i];
+							}
 						} while(!preg_match('/\'$/s', $strings[$i]));
 						do {
 							$i++;
@@ -162,10 +166,12 @@ class ObjectClass extends SchemaItem
 				case 'DESC':
 					do {
 						$i++;
-						if(strlen($this->description)==0)
-							$this->description=$this->description . $strings[$i];
-						else
-							$this->description=$this->description . " " . $strings[$i];
+						if (($this->description === null) || (strlen($this->description) == 0)) {
+							$this->description = $strings[$i];
+						}
+						else {
+							$this->description = $this->description . " " . $strings[$i];
+						}
 					}while(!preg_match('/\'$/s', $strings[$i]));
 					break;
 				case 'OBSOLETE':
@@ -267,8 +273,10 @@ class ObjectClass extends SchemaItem
 			}
 		}
 
-		$this->description = preg_replace('/^\'/', "", $this->description);
-		$this->description = preg_replace('/\'$/', "", $this->description);
+		if ($this->description !== null) {
+			$this->description = preg_replace('/^\'/', "", $this->description);
+			$this->description = preg_replace('/\'$/', "", $this->description);
+		}
 	}
 
     /**
