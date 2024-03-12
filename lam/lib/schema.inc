@@ -3,7 +3,7 @@ namespace LAM\SCHEMA;
 /*
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2023 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2024 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -544,6 +544,8 @@ class AttributeType extends SchemaItem
 	var $sub_str;
 	/** The full syntax string, ie 1.2.3.4{16} */
 	var $syntax;
+	/** syntax OID */
+	var $syntax_oid;
 	/** boolean: is single valued only? */
 	var $is_single_value;
 	/** boolean: is collective? */
