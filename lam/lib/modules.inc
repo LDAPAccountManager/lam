@@ -2433,8 +2433,8 @@ class accountContainer {
 	*/
 	function __sleep() {
 		// encrypt data
-		$this->attributes = lamEncrypt(json_encode($this->attributes));
-		$this->attributes_orig = lamEncrypt(json_encode($this->attributes_orig));
+		$this->attributes = lamEncrypt(json_encode($this->attributes, JSON_INVALID_UTF8_IGNORE));
+		$this->attributes_orig = lamEncrypt(json_encode($this->attributes_orig, JSON_INVALID_UTF8_IGNORE));
 		$this->module = lamEncrypt(serialize($this->module));
 		// save all attributes
 		return array_keys(get_object_vars($this));
@@ -2445,8 +2445,8 @@ class accountContainer {
 	*/
 	function __wakeup() {
 		// decrypt data
-		$this->attributes = json_decode(lamDecrypt($this->attributes), true);
-		$this->attributes_orig = json_decode(lamDecrypt($this->attributes_orig), true);
+		$this->attributes = json_decode(lamDecrypt($this->attributes), true, 512, JSON_INVALID_UTF8_IGNORE);
+		$this->attributes_orig = json_decode(lamDecrypt($this->attributes_orig), true, 512, JSON_INVALID_UTF8_IGNORE);
 		$this->module = unserialize(lamDecrypt($this->module));
 	}
 
