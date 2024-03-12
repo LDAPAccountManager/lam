@@ -10,6 +10,7 @@ March 2024 8.7
   -> User self registration creates accounts only with SSHA hash (287)
   -> PHP error when no FreeRadius profiles were found (302)
   -> PHP notices (#303)
+  -> Self service reports "Password is too young to change" (305)
 
 
 18.12.2023 8.6
