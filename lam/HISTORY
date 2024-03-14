@@ -11,6 +11,7 @@ March 2024 8.7
   -> PHP error when no FreeRadius profiles were found (302)
   -> PHP notices (#303)
   -> Self service reports "Password is too young to change" (305)
+  -> Self service password reset does not set "shadowLastChange" when not set before (306)
 
 
 18.12.2023 8.6
