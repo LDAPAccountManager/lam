@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:0258a0c6-be9b-48d3-be28-9f52c04fb464",
+  "serialNumber": "urn:uuid:367e4dba-ac6c-4f4c-a327-9ed8433ece6a",
   "version": 1,
   "metadata": {
     "tools": [
@@ -1527,11 +1527,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "phpseclib/phpseclib-3.0.35.0",
+      "bom-ref": "phpseclib/phpseclib-3.0.37.0",
       "author": "Jim Wigginton, Patrick Monnerat, Andreas Fischer, Hans-J\u00FCrgen Petrich, Graham Campbell",
       "group": "phpseclib",
       "name": "phpseclib",
-      "version": "3.0.35",
+      "version": "3.0.37",
       "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
       "licenses": [
         {
@@ -1540,17 +1540,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/phpseclib/phpseclib@3.0.35",
+      "purl": "pkg:composer/phpseclib/phpseclib@3.0.37",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/4b1827beabce71953ca479485c0ae9c51287f2fe",
+          "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/cfa2013d0f68c062055180dd4328cc8b9d1f30b8",
           "type": "distribution",
-          "comment": "dist reference: 4b1827beabce71953ca479485c0ae9c51287f2fe"
+          "comment": "dist reference: cfa2013d0f68c062055180dd4328cc8b9d1f30b8"
         },
         {
           "url": "https://github.com/phpseclib/phpseclib.git",
           "type": "vcs",
-          "comment": "source reference: 4b1827beabce71953ca479485c0ae9c51287f2fe"
+          "comment": "source reference: cfa2013d0f68c062055180dd4328cc8b9d1f30b8"
         },
         {
           "url": "http://phpseclib.sourceforge.net",
@@ -1563,7 +1563,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/phpseclib/phpseclib/tree/3.0.35",
+          "url": "https://github.com/phpseclib/phpseclib/tree/3.0.37",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -1571,11 +1571,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "4b1827beabce71953ca479485c0ae9c51287f2fe"
+          "value": "cfa2013d0f68c062055180dd4328cc8b9d1f30b8"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "4b1827beabce71953ca479485c0ae9c51287f2fe"
+          "value": "cfa2013d0f68c062055180dd4328cc8b9d1f30b8"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2349,11 +2349,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/http-client-5.4.35.0",
+      "bom-ref": "symfony/http-client-5.4.37.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "http-client",
-      "version": "v5.4.35",
+      "version": "v5.4.37",
       "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
       "licenses": [
         {
@@ -2362,17 +2362,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/http-client@v5.4.35",
+      "purl": "pkg:composer/symfony/http-client@v5.4.37",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/http-client/zipball/53e4cc088a5f3466dc77c9f121f17e8e02ecc9c3",
+          "url": "https://api.github.com/repos/symfony/http-client/zipball/63d93fd99523b9608929a38172da3365a6c0821c",
           "type": "distribution",
-          "comment": "dist reference: 53e4cc088a5f3466dc77c9f121f17e8e02ecc9c3"
+          "comment": "dist reference: 63d93fd99523b9608929a38172da3365a6c0821c"
         },
         {
           "url": "https://github.com/symfony/http-client.git",
           "type": "vcs",
-          "comment": "source reference: 53e4cc088a5f3466dc77c9f121f17e8e02ecc9c3"
+          "comment": "source reference: 63d93fd99523b9608929a38172da3365a6c0821c"
         },
         {
           "url": "https://symfony.com",
@@ -2380,7 +2380,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/http-client/tree/v5.4.35",
+          "url": "https://github.com/symfony/http-client/tree/v5.4.37",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2388,11 +2388,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "53e4cc088a5f3466dc77c9f121f17e8e02ecc9c3"
+          "value": "63d93fd99523b9608929a38172da3365a6c0821c"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "53e4cc088a5f3466dc77c9f121f17e8e02ecc9c3"
+          "value": "63d93fd99523b9608929a38172da3365a6c0821c"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2720,11 +2720,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/process-5.4.35.0",
+      "bom-ref": "symfony/process-5.4.36.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "process",
-      "version": "v5.4.35",
+      "version": "v5.4.36",
       "description": "Executes commands in sub-processes",
       "licenses": [
         {
@@ -2733,17 +2733,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/process@v5.4.35",
+      "purl": "pkg:composer/symfony/process@v5.4.36",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/process/zipball/cbc28e34015ad50166fc2f9c8962d28d0fe861eb",
+          "url": "https://api.github.com/repos/symfony/process/zipball/4fdf34004f149cc20b2f51d7d119aa500caad975",
           "type": "distribution",
-          "comment": "dist reference: cbc28e34015ad50166fc2f9c8962d28d0fe861eb"
+          "comment": "dist reference: 4fdf34004f149cc20b2f51d7d119aa500caad975"
         },
         {
           "url": "https://github.com/symfony/process.git",
           "type": "vcs",
-          "comment": "source reference: cbc28e34015ad50166fc2f9c8962d28d0fe861eb"
+          "comment": "source reference: 4fdf34004f149cc20b2f51d7d119aa500caad975"
         },
         {
           "url": "https://symfony.com",
@@ -2751,7 +2751,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/process/tree/v5.4.35",
+          "url": "https://github.com/symfony/process/tree/v5.4.36",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2759,11 +2759,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "cbc28e34015ad50166fc2f9c8962d28d0fe861eb"
+          "value": "4fdf34004f149cc20b2f51d7d119aa500caad975"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "cbc28e34015ad50166fc2f9c8962d28d0fe861eb"
+          "value": "4fdf34004f149cc20b2f51d7d119aa500caad975"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3995,7 +3995,7 @@
       "ref": "phpmailer/phpmailer-6.9.1.0"
     },
     {
-      "ref": "phpseclib/phpseclib-3.0.35.0",
+      "ref": "phpseclib/phpseclib-3.0.37.0",
       "dependsOn": [
         "paragonie/constant_time_encoding-2.6.3.0",
         "paragonie/random_compat-2.0.21.0"
@@ -4070,7 +4070,7 @@
       "ref": "symfony/deprecation-contracts-3.0.2.0"
     },
     {
-      "ref": "symfony/http-client-5.4.35.0",
+      "ref": "symfony/http-client-5.4.37.0",
       "dependsOn": [
         "psr/log-1.1.4.0",
         "symfony/deprecation-contracts-3.0.2.0",
@@ -4103,7 +4103,7 @@
       "ref": "symfony/polyfill-php81-1.29.0.0"
     },
     {
-      "ref": "symfony/process-5.4.35.0",
+      "ref": "symfony/process-5.4.36.0",
       "dependsOn": [
         "symfony/polyfill-php80-1.29.0.0"
       ]
@@ -4167,7 +4167,7 @@
         "ramsey/uuid-4.7.5.0",
         "spomky-labs/base64url-2.0.4.0",
         "spomky-labs/cbor-php-2.1.0.0",
-        "symfony/process-5.4.35.0",
+        "symfony/process-5.4.36.0",
         "thecodingmachine/safe-1.3.3.0",
         "web-auth/cose-lib-3.3.12.0",
         "web-auth/metadata-service-3.3.12.0"
@@ -4238,13 +4238,13 @@
         "web-auth/metadata-service-3.3.12.0",
         "symfony/http-foundation-6.0.20.0",
         "symfony/psr-http-message-bridge-2.3.1.0",
-        "symfony/http-client-5.4.35.0",
+        "symfony/http-client-5.4.37.0",
         "http-interop/http-factory-guzzle-1.2.0.0",
         "webklex/php-imap-5.5.0.0",
         "phpmailer/phpmailer-6.9.1.0",
         "guzzlehttp/psr7-1.9.1.0",
         "paragonie/random_compat-2.0.21.0",
-        "phpseclib/phpseclib-3.0.35.0",
+        "phpseclib/phpseclib-3.0.37.0",
         "christian-riesen/base32-1.6.0.0",
         "facile-it/php-openid-client-0.2.0.0",
         "monolog/monolog-2.9.2.0",
