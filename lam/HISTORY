@@ -7,6 +7,7 @@
   -> Request access: usability improvements (278, 279)
   -> Self service: passwordless SSO login supported for Okta and OpenID
  - Fixed bugs:
+  -> Security fix: Log file handling (GHSA-fm9w-7m7v-wxqv)
   -> User self registration creates accounts only with SSHA hash (287)
   -> PHP error when no FreeRadius profiles were found (302)
   -> PHP notices (303)
