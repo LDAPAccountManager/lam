@@ -1,3 +1,7 @@
+June 2024 8.8
+ - PHP 8.1 or higher required
+
+
 16.03.2024 8.7
  - PHP 8.3 compatibility
  - Mail attributes can be configured centrally in LAM's main configuration (273)

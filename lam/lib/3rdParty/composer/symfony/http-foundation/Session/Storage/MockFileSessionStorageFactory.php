@@ -23,12 +23,12 @@ class MockFileSessionStorageFactory implements SessionStorageFactoryInterface
 {
     private ?string $savePath;
     private string $name;
-    private $metaBag;
+    private ?MetadataBag $metaBag;
 
     /**
      * @see MockFileSessionStorage constructor.
      */
-    public function __construct(string $savePath = null, string $name = 'MOCKSESSID', MetadataBag $metaBag = null)
+    public function __construct(?string $savePath = null, string $name = 'MOCKSESSID', ?MetadataBag $metaBag = null)
     {
         $this->savePath = $savePath;
         $this->name = $name;

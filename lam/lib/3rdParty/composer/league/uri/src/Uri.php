@@ -21,8 +21,11 @@ use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Idna;
 use Psr\Http\Message\UriInterface as Psr7UriInterface;
+use SensitiveParameter;
+use Stringable;
 use TypeError;
 use function array_filter;
+use function array_key_first;
 use function array_map;
 use function base64_decode;
 use function base64_encode;
@@ -33,14 +36,15 @@ use function filter_var;
 use function implode;
 use function in_array;
 use function inet_pton;
-use function is_object;
+use function is_int;
 use function is_scalar;
-use function method_exists;
+use function is_string;
+use function ltrim;
 use function preg_match;
 use function preg_replace;
 use function preg_replace_callback;
 use function rawurlencode;
-use function sprintf;
+use function str_contains;
 use function str_replace;
 use function strlen;
 use function strpos;
@@ -81,14 +85,14 @@ final class Uri implements UriInterface
      *
      * @var string
      */
-    private const REGEXP_CHARS_UNRESERVED = 'A-Za-z0-9_\-\.~';
+    private const REGEXP_CHARS_UNRESERVED = 'A-Za-z\d_\-\.~';
 
     /**
      * RFC3986 schema regular expression pattern.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.1
      */
-    private const REGEXP_SCHEME = ',^[a-z]([-a-z0-9+.]+)?$,i';
+    private const REGEXP_SCHEME = ',^[a-z]([-a-z\d+.]+)?$,i';
 
     /**
      * RFC3986 host identified by a registered name regular expression pattern.
@@ -96,9 +100,9 @@ final class Uri implements UriInterface
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      */
     private const REGEXP_HOST_REGNAME = '/^(
-        (?<unreserved>[a-z0-9_~\-\.])|
+        (?<unreserved>[a-z\d_~\-\.])|
         (?<sub_delims>[!$&\'()*+,;=])|
-        (?<encoded>%[A-F0-9]{2})
+        (?<encoded>%[A-F\d]{2})
     )+$/x';
 
     /**
@@ -114,9 +118,9 @@ final class Uri implements UriInterface
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      */
     private const REGEXP_HOST_IPFUTURE = '/^
-        v(?<version>[A-F0-9])+\.
+        v(?<version>[A-F\d])+\.
         (?:
-            (?<unreserved>[a-z0-9_~\-\.])|
+            (?<unreserved>[a-z\d_~\-\.])|
             (?<sub_delims>[!$&\'()*+,;=:])  # also include the : character
         )+
     $/ix';
@@ -176,20 +180,11 @@ final class Uri implements UriInterface
     ];
 
     /**
-     * URI validation methods per scheme.
+     * Maximum number of formatted host cached.
      *
-     * @var array<string>
+     * @var int
      */
-    private const SCHEME_VALIDATION_METHOD = [
-        'data' => 'isUriWithSchemeAndPathOnly',
-        'file' => 'isUriWithSchemeHostAndPathOnly',
-        'ftp' => 'isNonEmptyHostUriWithoutFragmentAndQuery',
-        'gopher' => 'isNonEmptyHostUriWithoutFragmentAndQuery',
-        'http' => 'isNonEmptyHostUri',
-        'https' => 'isNonEmptyHostUri',
-        'ws' => 'isNonEmptyHostUriWithoutFragment',
-        'wss' => 'isNonEmptyHostUriWithoutFragment',
-    ];
+    private const MAXIMUM_FORMATTED_HOST_CACHED = 100;
 
     /**
      * All ASCII letters sorted by typical frequency of occurrence.
@@ -203,7 +198,7 @@ final class Uri implements UriInterface
     private ?string $host;
     private ?int $port;
     private ?string $authority;
-    private string $path = '';
+    private string $path;
     private ?string $query;
     private ?string $fragment;
     private ?string $uri;
@@ -211,7 +206,7 @@ final class Uri implements UriInterface
     private function __construct(
         ?string $scheme,
         ?string $user,
-        ?string $pass,
+        #[SensitiveParameter] ?string $pass,
         ?string $host,
         ?int $port,
         string $path,
@@ -226,49 +221,49 @@ final class Uri implements UriInterface
         $this->path = $this->formatPath($path);
         $this->query = $this->formatQueryAndFragment($query);
         $this->fragment = $this->formatQueryAndFragment($fragment);
+
         $this->assertValidState();
     }
 
     /**
      * Format the Scheme and Host component.
      *
-     * @param  ?string     $scheme
      * @throws SyntaxError if the scheme is invalid
      */
     private function formatScheme(?string $scheme): ?string
     {
-        if (null === $scheme) {
+        if (null === $scheme || array_key_exists($scheme, self::SCHEME_DEFAULT_PORT)) {
             return $scheme;
         }
 
         $formatted_scheme = strtolower($scheme);
-        if (1 === preg_match(self::REGEXP_SCHEME, $formatted_scheme)) {
+        if (array_key_exists($formatted_scheme, self::SCHEME_DEFAULT_PORT) || 1 === preg_match(self::REGEXP_SCHEME, $formatted_scheme)) {
             return $formatted_scheme;
         }
 
-        throw new SyntaxError(sprintf('The scheme `%s` is invalid.', $scheme));
+        throw new SyntaxError('The scheme `'.$scheme.'` is invalid.');
     }
 
     /**
      * Set the UserInfo component.
-     * @param ?string $user
-     * @param ?string $password
      */
-    private function formatUserInfo(?string $user, ?string $password): ?string
-    {
+    private function formatUserInfo(
+        ?string $user,
+        #[SensitiveParameter] ?string $password
+    ): ?string {
         if (null === $user) {
-            return $user;
+            return null;
         }
 
-        static $user_pattern = '/(?:[^%'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.']++|%(?![A-Fa-f0-9]{2}))/';
-        $user = preg_replace_callback($user_pattern, [Uri::class, 'urlEncodeMatch'], $user);
+        static $user_pattern = '/[^%'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.']++|%(?![A-Fa-f\d]{2})/';
+        $user = preg_replace_callback($user_pattern, Uri::urlEncodeMatch(...), $user);
         if (null === $password) {
             return $user;
         }
 
-        static $password_pattern = '/(?:[^%:'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.']++|%(?![A-Fa-f0-9]{2}))/';
+        static $password_pattern = '/[^%:'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.']++|%(?![A-Fa-f\d]{2})/';
 
-        return $user.':'.preg_replace_callback($password_pattern, [Uri::class, 'urlEncodeMatch'], $password);
+        return $user.':'.preg_replace_callback($password_pattern, Uri::urlEncodeMatch(...), $password);
     }
 
     /**
@@ -281,7 +276,6 @@ final class Uri implements UriInterface
 
     /**
      * Validate and Format the Host component.
-     * @param ?string $host
      */
     private function formatHost(?string $host): ?string
     {
@@ -289,11 +283,18 @@ final class Uri implements UriInterface
             return $host;
         }
 
-        if ('[' !== $host[0]) {
-            return $this->formatRegisteredName($host);
+        static $formattedHostCache = [];
+        if (isset($formattedHostCache[$host])) {
+            return $formattedHostCache[$host];
         }
 
-        return $this->formatIp($host);
+        $formattedHost = '[' === $host[0] ? $this->formatIp($host) : $this->formatRegisteredName($host);
+        $formattedHostCache[$host] = $formattedHost;
+        if (self::MAXIMUM_FORMATTED_HOST_CACHED < count($formattedHostCache)) {
+            unset($formattedHostCache[array_key_first($formattedHostCache)]);
+        }
+
+        return $formattedHost;
     }
 
     /**
@@ -312,7 +313,7 @@ final class Uri implements UriInterface
         }
 
         if (1 === preg_match(self::REGEXP_HOST_GEN_DELIMS, $formatted_host)) {
-            throw new SyntaxError(sprintf('The host `%s` is invalid : a registered name can not contain URI delimiters or spaces', $host));
+            throw new SyntaxError('The host `'.$host.'` is invalid : a registered name can not contain URI delimiters or spaces.');
         }
 
         $info = Idna::toAscii($host, Idna::IDNA2008_ASCII);
@@ -341,35 +342,33 @@ final class Uri implements UriInterface
 
         $pos = strpos($ip, '%');
         if (false === $pos) {
-            throw new SyntaxError(sprintf('The host `%s` is invalid : the IP host is malformed', $host));
+            throw new SyntaxError('The host `'.$host.'` is invalid : the IP host is malformed.');
         }
 
         if (1 === preg_match(self::REGEXP_HOST_GEN_DELIMS, rawurldecode(substr($ip, $pos)))) {
-            throw new SyntaxError(sprintf('The host `%s` is invalid : the IP host is malformed', $host));
+            throw new SyntaxError('The host `'.$host.'` is invalid : the IP host is malformed.');
         }
 
         $ip = substr($ip, 0, $pos);
         if (false === filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            throw new SyntaxError(sprintf('The host `%s` is invalid : the IP host is malformed', $host));
+            throw new SyntaxError('The host `'.$host.'` is invalid : the IP host is malformed.');
         }
 
         //Only the address block fe80::/10 can have a Zone ID attach to
         //let's detect the link local significant 10 bits
-        if (0 === strpos((string) inet_pton($ip), self::HOST_ADDRESS_BLOCK)) {
+        if (str_starts_with((string)inet_pton($ip), self::HOST_ADDRESS_BLOCK)) {
             return $host;
         }
 
-        throw new SyntaxError(sprintf('The host `%s` is invalid : the IP host is malformed', $host));
+        throw new SyntaxError('The host `'.$host.'` is invalid : the IP host is malformed.');
     }
 
     /**
      * Format the Port component.
      *
-     * @param object|null|int|string $port
-     *
      * @throws SyntaxError
      */
-    private function formatPort($port = null): ?int
+    private function formatPort(Stringable|string|int|null $port = null): ?int
     {
         if (null === $port || '' === $port) {
             return null;
@@ -381,7 +380,7 @@ final class Uri implements UriInterface
 
         $port = (int) $port;
         if (0 > $port) {
-            throw new SyntaxError(sprintf('The port `%s` is invalid', $port));
+            throw new SyntaxError('The port `'.$port.'` is invalid.');
         }
 
         $defaultPort = self::SCHEME_DEFAULT_PORT[$this->scheme] ?? null;
@@ -392,9 +391,6 @@ final class Uri implements UriInterface
         return $port;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function __set_state(array $components): self
     {
         $components['user'] = null;
@@ -416,22 +412,21 @@ final class Uri implements UriInterface
     }
 
     /**
-     * Create a new instance from a URI and a Base URI.
+     * Creates a new instance from a URI and a Base URI.
      *
      * The returned URI must be absolute.
-     *
-     * @param mixed      $uri      the input URI to create
-     * @param null|mixed $base_uri the base URI used for reference
      */
-    public static function createFromBaseUri($uri, $base_uri = null): UriInterface
-    {
+    public static function createFromBaseUri(
+        Stringable|UriInterface|String $uri,
+        Stringable|UriInterface|String $base_uri = null
+    ): UriInterface {
         if (!$uri instanceof UriInterface) {
             $uri = self::createFromString($uri);
         }
 
         if (null === $base_uri) {
             if (null === $uri->getScheme()) {
-                throw new SyntaxError(sprintf('the URI `%s` must be absolute', (string) $uri));
+                throw new SyntaxError('the URI `'.$uri.'` must be absolute.');
             }
 
             if (null === $uri->getAuthority()) {
@@ -449,7 +444,7 @@ final class Uri implements UriInterface
         }
 
         if (null === $base_uri->getScheme()) {
-            throw new SyntaxError(sprintf('the base URI `%s` must be absolute', (string) $base_uri));
+            throw new SyntaxError('the base URI `'.$base_uri.'` must be absolute.');
         }
 
         /** @var UriInterface $uri */
@@ -460,10 +455,8 @@ final class Uri implements UriInterface
 
     /**
      * Create a new instance from a string.
-     *
-     * @param string|mixed $uri
      */
-    public static function createFromString($uri = ''): self
+    public static function createFromString(Stringable|string $uri = ''): self
     {
         $components = UriString::parse($uri);
 
@@ -517,7 +510,7 @@ final class Uri implements UriInterface
 
         // @codeCoverageIgnoreStart
         if (!$finfo_support) {
-            throw new FileinfoSupportMissing(sprintf('Please install ext/fileinfo to use the %s() method.', __METHOD__));
+            throw new FileinfoSupportMissing('Please install ext/fileinfo to use the '.__METHOD__.'() method.');
         }
         // @codeCoverageIgnoreEnd
 
@@ -528,9 +521,12 @@ final class Uri implements UriInterface
             $mime_args[] = $context;
         }
 
-        $raw = @file_get_contents(...$file_args);
+        set_error_handler(fn (int $errno, string $errstr, string $errfile, int $errline) => true);
+        $raw = file_get_contents(...$file_args);
+        restore_error_handler();
+
         if (false === $raw) {
-            throw new SyntaxError(sprintf('The file `%s` does not exist or is not readable', $path));
+            throw new SyntaxError('The file `'.$path.'` does not exist or is not readable.');
         }
 
         $mimetype = (string) (new finfo(FILEINFO_MIME))->file(...$mime_args);
@@ -546,7 +542,7 @@ final class Uri implements UriInterface
      */
     public static function createFromUnixPath(string $uri = ''): self
     {
-        $uri = implode('/', array_map('rawurlencode', explode('/', $uri)));
+        $uri = implode('/', array_map(rawurlencode(...), explode('/', $uri)));
         if ('/' !== ($uri[0] ?? '')) {
             return Uri::createFromComponents(['path' => $uri]);
         }
@@ -565,7 +561,7 @@ final class Uri implements UriInterface
             $uri = substr($uri, strlen($root));
         }
         $uri = str_replace('\\', '/', $uri);
-        $uri = implode('/', array_map('rawurlencode', explode('/', $uri)));
+        $uri = implode('/', array_map(rawurlencode(...), explode('/', $uri)));
 
         //Local Windows absolute path
         if ('' !== $root) {
@@ -573,7 +569,7 @@ final class Uri implements UriInterface
         }
 
         //UNC Windows Path
-        if ('//' !== substr($uri, 0, 2)) {
+        if (!str_starts_with($uri, '//')) {
             return Uri::createFromComponents(['path' => $uri]);
         }
 
@@ -584,10 +580,8 @@ final class Uri implements UriInterface
 
     /**
      * Create a new instance from a URI object.
-     *
-     * @param Psr7UriInterface|UriInterface $uri the input URI to create
      */
-    public static function createFromUri($uri): self
+    public static function createFromUri(Psr7UriInterface|UriInterface $uri): self
     {
         if ($uri instanceof UriInterface) {
             $user_info = $uri->getUserInfo();
@@ -607,10 +601,6 @@ final class Uri implements UriInterface
                 $uri->getQuery(),
                 $uri->getFragment()
             );
-        }
-
-        if (!$uri instanceof Psr7UriInterface) {
-            throw new TypeError(sprintf('The object must implement the `%s` or the `%s`', Psr7UriInterface::class, UriInterface::class));
         }
 
         $scheme = $uri->getScheme();
@@ -657,19 +647,12 @@ final class Uri implements UriInterface
      */
     public static function createFromServer(array $server): self
     {
-        [$user, $pass] = self::fetchUserInfo($server);
-        [$host, $port] = self::fetchHostname($server);
-        [$path, $query] = self::fetchRequestUri($server);
+        $components = ['scheme' => self::fetchScheme($server)];
+        [$components['user'], $components['pass']] = self::fetchUserInfo($server);
+        [$components['host'], $components['port']] = self::fetchHostname($server);
+        [$components['path'], $components['query']] = self::fetchRequestUri($server);
 
-        return Uri::createFromComponents([
-            'scheme' => self::fetchScheme($server),
-            'user' => $user,
-            'pass' => $pass,
-            'host' => $host,
-            'port' => $port,
-            'path' => $path,
-            'query' => $query,
-        ]);
+        return Uri::createFromComponents($components);
     }
 
     /**
@@ -686,14 +669,14 @@ final class Uri implements UriInterface
     /**
      * Returns the environment user info.
      *
-     * @return array{0:?string, 1:?string}
+     * @return non-empty-array{0:?string, 1:?string}
      */
     private static function fetchUserInfo(array $server): array
     {
         $server += ['PHP_AUTH_USER' => null, 'PHP_AUTH_PW' => null, 'HTTP_AUTHORIZATION' => ''];
         $user = $server['PHP_AUTH_USER'];
         $pass = $server['PHP_AUTH_PW'];
-        if (0 === strpos(strtolower($server['HTTP_AUTHORIZATION']), 'basic')) {
+        if (str_starts_with(strtolower($server['HTTP_AUTHORIZATION']), 'basic')) {
             $userinfo = base64_decode(substr($server['HTTP_AUTHORIZATION'], 6), true);
             if (false === $userinfo) {
                 throw new SyntaxError('The user info could not be detected');
@@ -751,20 +734,17 @@ final class Uri implements UriInterface
     /**
      * Returns the environment path.
      *
-     * @return array{0:?string, 1:?string}
+     * @return non-empty-array{0:?string, 1:?string}
      */
     private static function fetchRequestUri(array $server): array
     {
         $server += ['IIS_WasUrlRewritten' => null, 'UNENCODED_URL' => '', 'PHP_SELF' => '', 'QUERY_STRING' => null];
         if ('1' === $server['IIS_WasUrlRewritten'] && '' !== $server['UNENCODED_URL']) {
-            /** @var array{0:?string, 1:?string} $retval */
-            $retval = explode('?', $server['UNENCODED_URL'], 2) + [1 => null];
-
-            return $retval;
+            return explode('?', $server['UNENCODED_URL'], 2) + [1 => null];
         }
 
         if (isset($server['REQUEST_URI'])) {
-            [$path, ] = explode('?', $server['REQUEST_URI'], 2);
+            [$path] = explode('?', $server['REQUEST_URI'], 2);
             $query = ('' !== $server['QUERY_STRING']) ? $server['QUERY_STRING'] : null;
 
             return [$path, $query];
@@ -799,13 +779,21 @@ final class Uri implements UriInterface
      */
     private function formatPath(string $path): string
     {
-        $path = $this->formatDataPath($path);
+        if ('data' === $this->scheme) {
+            $path = $this->formatDataPath($path);
+        }
 
-        static $pattern = '/(?:[^'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.'%:@\/}{]++|%(?![A-Fa-f0-9]{2}))/';
+        if ('/' !== $path) {
+            static $pattern = '/[^'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.':@\/}{]++|%(?![A-Fa-f\d]{2})/';
 
-        $path = (string) preg_replace_callback($pattern, [Uri::class, 'urlEncodeMatch'], $path);
+            $path = (string) preg_replace_callback($pattern, Uri::urlEncodeMatch(...), $path);
+        }
 
-        return $this->formatFilePath($path);
+        if ('file' === $this->scheme) {
+            $path = $this->formatFilePath($path);
+        }
+
+        return $path;
     }
 
     /**
@@ -817,16 +805,12 @@ final class Uri implements UriInterface
      */
     private function formatDataPath(string $path): string
     {
-        if ('data' !== $this->scheme) {
-            return $path;
-        }
-
         if ('' == $path) {
             return 'text/plain;charset=us-ascii,';
         }
 
-        if (strlen($path) !== strspn($path, self::ASCII) || false === strpos($path, ',')) {
-            throw new SyntaxError(sprintf('The path `%s` is invalid according to RFC2937', $path));
+        if (strlen($path) !== strspn($path, self::ASCII) || !str_contains($path, ',')) {
+            throw new SyntaxError('The path `'.$path.'` is invalid according to RFC2937.');
         }
 
         $parts = explode(',', $path, 2) + [1 => null];
@@ -857,7 +841,7 @@ final class Uri implements UriInterface
     private function assertValidPath(string $mimetype, string $parameters, string $data): void
     {
         if (1 !== preg_match(self::REGEXP_MIMETYPE, $mimetype)) {
-            throw new SyntaxError(sprintf('The path mimetype `%s` is invalid', $mimetype));
+            throw new SyntaxError('The path mimetype `'.$mimetype.'` is invalid.');
         }
 
         $is_binary = 1 === preg_match(self::REGEXP_BINARY, $parameters, $matches);
@@ -865,9 +849,9 @@ final class Uri implements UriInterface
             $parameters = substr($parameters, 0, - strlen($matches[0]));
         }
 
-        $res = array_filter(array_filter(explode(';', $parameters), [$this, 'validateParameter']));
+        $res = array_filter(array_filter(explode(';', $parameters), $this->validateParameter(...)));
         if ([] !== $res) {
-            throw new SyntaxError(sprintf('The path paremeters `%s` is invalid', $parameters));
+            throw new SyntaxError('The path paremeters `'.$parameters.'` is invalid.');
         }
 
         if (!$is_binary) {
@@ -876,7 +860,7 @@ final class Uri implements UriInterface
 
         $res = base64_decode($data, true);
         if (false === $res || $data !== base64_encode($res)) {
-            throw new SyntaxError(sprintf('The path data `%s` is invalid', $data));
+            throw new SyntaxError('The path data `'.$data.'` is invalid.');
         }
     }
 
@@ -895,10 +879,6 @@ final class Uri implements UriInterface
      */
     private function formatFilePath(string $path): string
     {
-        if ('file' !== $this->scheme) {
-            return $path;
-        }
-
         $replace = static function (array $matches): string {
             return $matches['delim'].$matches['volume'].':'.$matches['rest'];
         };
@@ -915,8 +895,6 @@ final class Uri implements UriInterface
      * <li> a boolean flag telling wether the delimiter is to be added to the component
      * when building the URI string representation</li>
      * </ul>
-     *
-     * @param ?string $component
      */
     private function formatQueryAndFragment(?string $component): ?string
     {
@@ -924,8 +902,8 @@ final class Uri implements UriInterface
             return $component;
         }
 
-        static $pattern = '/(?:[^'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.'%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/';
-        return preg_replace_callback($pattern, [Uri::class, 'urlEncodeMatch'], $component);
+        static $pattern = '/[^'.self::REGEXP_CHARS_UNRESERVED.self::REGEXP_CHARS_SUBDELIM.':@\/?]++|%(?![A-Fa-f\d]{2})/';
+        return preg_replace_callback($pattern, Uri::urlEncodeMatch(...), $component);
     }
 
     /**
@@ -943,27 +921,31 @@ final class Uri implements UriInterface
             throw new SyntaxError('If an authority is present the path must be empty or start with a `/`.');
         }
 
-        if (null === $this->authority && 0 === strpos($this->path, '//')) {
-            throw new SyntaxError(sprintf('If there is no authority the path `%s` can not start with a `//`.', $this->path));
+        if (null === $this->authority && str_starts_with($this->path, '//')) {
+            throw new SyntaxError('If there is no authority the path `'.$this->path.'` can not start with a `//`.');
         }
 
         $pos = strpos($this->path, ':');
         if (null === $this->authority
             && null === $this->scheme
             && false !== $pos
-            && false === strpos(substr($this->path, 0, $pos), '/')
+            && !str_contains(substr($this->path, 0, $pos), '/')
         ) {
             throw new SyntaxError('In absence of a scheme and an authority the first path segment cannot contain a colon (":") character.');
         }
 
-        $validationMethod = self::SCHEME_VALIDATION_METHOD[$this->scheme] ?? null;
-        if (null === $validationMethod || true === $this->$validationMethod()) {
-            $this->uri = null;
+        $this->uri = null;
 
-            return;
+        if (! match ($this->scheme) {
+            'data' => $this->isUriWithSchemeAndPathOnly(),
+            'file' => $this->isUriWithSchemeHostAndPathOnly(),
+            'ftp', 'gopher' => $this->isNonEmptyHostUriWithoutFragmentAndQuery(),
+            'http', 'https' => $this->isNonEmptyHostUri(),
+            'ws', 'wss' => $this->isNonEmptyHostUriWithoutFragment(),
+            default => true,
+        }) {
+            throw new SyntaxError('The uri `'.$this.'` is invalid for the `'.$this->scheme.'` scheme.');
         }
-
-        throw new SyntaxError(sprintf('The uri `%s` is invalid for the `%s` scheme.', (string) $this, $this->scheme));
     }
 
     /**
@@ -1019,11 +1001,6 @@ final class Uri implements UriInterface
      * Generate the URI string representation from its components.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-5.3
-     *
-     * @param ?string $scheme
-     * @param ?string $authority
-     * @param ?string $query
-     * @param ?string $fragment
      */
     private function getUriString(
         ?string $scheme,
@@ -1053,15 +1030,13 @@ final class Uri implements UriInterface
 
     public function toString(): string
     {
-        $this->uri = $this->uri ?? $this->getUriString(
+        return $this->uri ??= $this->getUriString(
             $this->scheme,
             $this->authority,
             $this->path,
             $this->query,
             $this->fragment
         );
-
-        return $this->uri;
     }
 
     /**
@@ -1081,9 +1056,15 @@ final class Uri implements UriInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @return array{scheme:?string, user_info:?string, host:?string, port:?int, path:string, query:?string, fragment:?string}
+     * @return array{
+     *     scheme:?string,
+     *     user_info:?string,
+     *     host:?string,
+     *     port:?int,
+     *     path:string,
+     *     query:?string,
+     *     fragment:?string
+     * }
      */
     public function __debugInfo(): array
     {
@@ -1143,7 +1124,7 @@ final class Uri implements UriInterface
      */
     public function getPath(): string
     {
-        if (0 === strpos($this->path, '//')) {
+        if (str_starts_with($this->path, '//')) {
             return '/'.ltrim($this->path, '/');
         }
 
@@ -1192,18 +1173,14 @@ final class Uri implements UriInterface
      *
      * @throws SyntaxError if the submitted data can not be converted to string
      */
-    private function filterString($str): ?string
+    private function filterString(mixed $str): ?string
     {
         if (null === $str) {
-            return $str;
+            return null;
         }
 
-        if (is_object($str) && method_exists($str, '__toString')) {
-            $str = (string) $str;
-        }
-
-        if (!is_scalar($str)) {
-            throw new SyntaxError(sprintf('The component must be a string, a scalar or a stringable object; `%s` given.', gettype($str)));
+        if (!is_scalar($str) && !$str instanceof Stringable) {
+            throw new SyntaxError('The component must be a string, a scalar or a Stringable object; `'.gettype($str).'` given.');
         }
 
         $str = (string) $str;
@@ -1211,14 +1188,16 @@ final class Uri implements UriInterface
             return $str;
         }
 
-        throw new SyntaxError(sprintf('The component `%s` contains invalid characters.', $str));
+        throw new SyntaxError('The component `'.$str.'` contains invalid characters.');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function withUserInfo($user, $password = null): UriInterface
-    {
+    public function withUserInfo(
+        $user,
+        #[SensitiveParameter] $password = null
+    ): UriInterface {
         $user_info = null;
         $user = $this->filterString($user);
         if (null !== $password) {
