@@ -91,26 +91,6 @@ class toolTests extends LAMTool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSubTools(): array {
-		$return = [];
-		$lamdaemonTest = new LAMSubTool();
-		$lamdaemonTest->name = _("Lamdaemon test");
-		$lamdaemonTest->link = 'tests/lamdaemonTest.php';
-		$lamdaemonTest->description = _("Check if quotas and homedirectories can be managed.");
-		$lamdaemonTest->image = 'script.svg';
-		$return[] = $lamdaemonTest;
-		$schemaTest = new LAMSubTool();
-		$schemaTest->name = _("Schema test");
-		$schemaTest->link = 'tests/schemaTest.php';
-		$schemaTest->description = _("Check if the LDAP schema fits the requirements of the selected account modules.");
-		$schemaTest->image = 'search-color.svg';
-		$return[] = $schemaTest;
-		return $return;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isVisible(): bool {
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypes();

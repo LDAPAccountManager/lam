@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2021  Roland Gruber
+  Copyright (C) 2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -117,15 +117,6 @@ abstract class LAMTool {
 	 * @return int preferred position
 	 */
 	public abstract function getPosition(): int;
-	
-	/**
-	 * Returns a list of sub tools or an empty array.
-	 * 
-	 * @return array list of subtools (LAMSubTool)
-	 */
-	public function getSubTools(): array {
-		return [];
-	}
 	
 	/**
 	 * Returns if the tool is visible in the menu.
