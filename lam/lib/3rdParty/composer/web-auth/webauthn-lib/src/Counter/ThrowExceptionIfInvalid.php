@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Webauthn\Counter;
 
 use Assert\Assertion;
@@ -21,14 +12,13 @@ use Webauthn\PublicKeyCredentialSource;
 
 final class ThrowExceptionIfInvalid implements CounterChecker
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(?LoggerInterface $logger = null)
+    public function __construct(private LoggerInterface $logger = new NullLogger())
     {
-        $this->logger = $logger ?? new NullLogger();
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     public function check(PublicKeyCredentialSource $publicKeyCredentialSource, int $currentCounter): void

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Webauthn\TrustPath;
 
 use Assert\Assertion;
@@ -18,16 +9,19 @@ use Assert\Assertion;
 final class CertificateTrustPath implements TrustPath
 {
     /**
-     * @var string[]
+     * @param string[] $certificates
      */
-    private $certificates;
+    public function __construct(
+        private readonly array $certificates
+    ) {
+    }
 
     /**
      * @param string[] $certificates
      */
-    public function __construct(array $certificates)
+    public static function create(array $certificates): self
     {
-        $this->certificates = $certificates;
+        return new self($certificates);
     }
 
     /**
@@ -41,11 +35,11 @@ final class CertificateTrustPath implements TrustPath
     /**
      * {@inheritdoc}
      */
-    public static function createFromArray(array $data): TrustPath
+    public static function createFromArray(array $data): static
     {
         Assertion::keyExists($data, 'x5c', 'The trust path type is invalid');
 
-        return new CertificateTrustPath($data['x5c']);
+        return new self($data['x5c']);
     }
 
     /**

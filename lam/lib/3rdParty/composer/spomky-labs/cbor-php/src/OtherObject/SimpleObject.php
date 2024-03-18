@@ -2,22 +2,13 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2018-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace CBOR\OtherObject;
 
 use CBOR\Normalizable;
 use CBOR\OtherObject as Base;
 use CBOR\Utils;
-use function chr;
 use InvalidArgumentException;
+use function chr;
 use function ord;
 
 final class SimpleObject extends Base implements Normalizable
@@ -25,6 +16,28 @@ final class SimpleObject extends Base implements Normalizable
     public static function supportedAdditionalInformation(): array
     {
         return array_merge(range(0, 19), [24]);
+    }
+
+    public static function create(int $value): self|FalseObject|TrueObject|NullObject|UndefinedObject
+    {
+        switch (true) {
+            case $value >= 0 && $value <= 19:
+                return new self($value, null);
+            case $value === 20:
+                return FalseObject::create();
+            case $value === 21:
+                return TrueObject::create();
+            case $value === 22:
+                return NullObject::create();
+            case $value === 23:
+                return UndefinedObject::create();
+            case $value <= 31:
+                throw new InvalidArgumentException('Invalid simple value. Shall be between 32 and 255.');
+            case $value <= 255:
+                return new self(24, chr($value));
+            default:
+                throw new InvalidArgumentException('The value is not a valid simple value.');
+        }
     }
 
     public static function createFromLoadedData(int $additionalInformation, ?string $data): Base
@@ -55,25 +68,5 @@ final class SimpleObject extends Base implements Normalizable
         }
 
         return Utils::binToInt($this->data);
-    }
-
-    /**
-     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
-     */
-    public function getNormalizedData(bool $ignoreTags = false): int
-    {
-        return $this->normalize();
-    }
-
-    public static function create(int $value): self
-    {
-        switch (true) {
-            case $value < 32:
-                return new self($value, null);
-            case $value < 256:
-                return new self(24, chr($value));
-            default:
-                throw new InvalidArgumentException('The value is not a valid simple value.');
-        }
     }
 }

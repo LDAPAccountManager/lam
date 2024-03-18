@@ -2,46 +2,53 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Algorithm;
 
-use Assert\Assertion;
+use function array_key_exists;
+use InvalidArgumentException;
 
-class ManagerFactory
+final class ManagerFactory
 {
     /**
-     * @var Algorithm[]
+     * @var array<string, Algorithm>
      */
-    private $algorithms = [];
+    private array $algorithms = [];
 
-    public function add(string $alias, Algorithm $algorithm): void
+    public static function create(): self
     {
-        $this->algorithms[$alias] = $algorithm;
+        return new self();
     }
 
+    public function add(string $alias, Algorithm $algorithm): self
+    {
+        $this->algorithms[$alias] = $algorithm;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
     public function list(): iterable
     {
         yield from array_keys($this->algorithms);
     }
 
+    /**
+     * @return Algorithm[]
+     */
     public function all(): iterable
     {
-        yield from array_keys($this->algorithms);
+        yield from $this->algorithms;
     }
 
-    public function create(array $aliases): Manager
+    public function generate(string ...$aliases): Manager
     {
-        $manager = new Manager();
+        $manager = Manager::create();
         foreach ($aliases as $alias) {
-            Assertion::keyExists($this->algorithms, $alias, sprintf('The algorithm with alias "%s" is not supported', $alias));
+            if (! array_key_exists($alias, $this->algorithms)) {
+                throw new InvalidArgumentException(sprintf('The algorithm with alias "%s" is not supported', $alias));
+            }
             $manager->add($this->algorithms[$alias]);
         }
 

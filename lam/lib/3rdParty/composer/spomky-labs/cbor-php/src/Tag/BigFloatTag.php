@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2018-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace CBOR\Tag;
 
 use CBOR\CBORObject;
@@ -19,10 +10,10 @@ use CBOR\NegativeIntegerObject;
 use CBOR\Normalizable;
 use CBOR\Tag;
 use CBOR\UnsignedIntegerObject;
-use function count;
-use function extension_loaded;
 use InvalidArgumentException;
 use RuntimeException;
+use function count;
+use function extension_loaded;
 
 final class BigFloatTag extends Tag implements Normalizable
 {
@@ -88,21 +79,5 @@ final class BigFloatTag extends Tag implements Normalizable
         $m = $object->get(1);
 
         return rtrim(bcmul($m->normalize(), bcpow('2', $e->normalize(), 100), 100), '0');
-    }
-
-    /**
-     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
-     */
-    public function getNormalizedData(bool $ignoreTags = false)
-    {
-        if ($ignoreTags) {
-            return $this->object->getNormalizedData($ignoreTags);
-        }
-
-        if (! $this->object instanceof ListObject || count($this->object) !== 2) {
-            return $this->object->getNormalizedData($ignoreTags);
-        }
-
-        return $this->normalize();
     }
 }

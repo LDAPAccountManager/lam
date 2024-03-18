@@ -5,6 +5,32 @@ namespace Safe;
 use Safe\Exceptions\PcreException;
 
 /**
+ * Returns the array consisting of the elements of the
+ * array array that match the given
+ * pattern.
+ *
+ * @param string $pattern The pattern to search for, as a string.
+ * @param array $array The input array.
+ * @param int $flags If set to PREG_GREP_INVERT, this function returns
+ * the elements of the input array that do not match
+ * the given pattern.
+ * @return array Returns an array indexed using the keys from the
+ * array array.
+ * @throws PcreException
+ *
+ */
+function preg_grep(string $pattern, array $array, int $flags = 0): array
+{
+    error_clear_last();
+    $safeResult = \preg_grep($pattern, $array, $flags);
+    if ($safeResult === false) {
+        throw PcreException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
  * Searches subject for all matches to the regular
  * expression given in pattern and puts them in
  * matches in the order specified by
@@ -15,7 +41,7 @@ use Safe\Exceptions\PcreException;
  *
  * @param string $pattern The pattern to search for, as a string.
  * @param string $subject The input string.
- * @param array $matches Array of all matches in multi-dimensional array ordered according to
+ * @param array|null $matches Array of all matches in multi-dimensional array ordered according to
  * flags.
  * @param int $flags Can be a combination of the following flags (note that it doesn't make
  * sense to use PREG_PATTERN_ORDER together with
@@ -343,18 +369,18 @@ use Safe\Exceptions\PcreException;
  *
  *
  * The above example will output:
- * @return int Returns the number of full pattern matches (which might be zero).
+ * @return int|null Returns the number of full pattern matches (which might be zero).
  * @throws PcreException
  *
  */
-function preg_match_all(string $pattern, string $subject, array &$matches = null, int $flags = PREG_PATTERN_ORDER, int $offset = 0): int
+function preg_match_all(string $pattern, string $subject, ?array &$matches = null, int $flags = 0, int $offset = 0): ?int
 {
     error_clear_last();
-    $result = \preg_match_all($pattern, $subject, $matches, $flags, $offset);
-    if ($result === false) {
+    $safeResult = \preg_match_all($pattern, $subject, $matches, $flags, $offset);
+    if ($safeResult === false) {
         throw PcreException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
@@ -364,7 +390,7 @@ function preg_match_all(string $pattern, string $subject, array &$matches = null
  *
  * @param string $pattern The pattern to search for, as a string.
  * @param string $subject The input string.
- * @param array $matches If matches is provided, then it is filled with
+ * @param string[]|null $matches If matches is provided, then it is filled with
  * the results of search. $matches[0] will contain the
  * text that matched the full pattern, $matches[1]
  * will have the text that matched the first captured parenthesized
@@ -584,14 +610,14 @@ function preg_match_all(string $pattern, string $subject, array &$matches = null
  * @throws PcreException
  *
  */
-function preg_match(string $pattern, string $subject, array &$matches = null, int $flags = 0, int $offset = 0): int
+function preg_match(string $pattern, string $subject, ?iterable &$matches = null, int $flags = 0, int $offset = 0): int
 {
     error_clear_last();
-    $result = \preg_match($pattern, $subject, $matches, $flags, $offset);
-    if ($result === false) {
+    $safeResult = \preg_match($pattern, $subject, $matches, $flags, $offset);
+    if ($safeResult === false) {
         throw PcreException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
@@ -651,9 +677,9 @@ function preg_match(string $pattern, string $subject, array &$matches = null, in
 function preg_split(string $pattern, string $subject, ?int $limit = -1, int $flags = 0): array
 {
     error_clear_last();
-    $result = \preg_split($pattern, $subject, $limit, $flags);
-    if ($result === false) {
+    $safeResult = \preg_split($pattern, $subject, $limit, $flags);
+    if ($safeResult === false) {
         throw PcreException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }

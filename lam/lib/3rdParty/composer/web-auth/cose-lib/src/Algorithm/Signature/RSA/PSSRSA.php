@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Algorithm\Signature\RSA;
 
 use function ceil;
@@ -25,9 +16,11 @@ use InvalidArgumentException;
 use function mb_strlen;
 use function mb_substr;
 use function ord;
+use function pack;
 use function random_bytes;
 use RuntimeException;
 use function str_pad;
+use const STR_PAD_LEFT;
 use function str_repeat;
 
 /**
@@ -64,25 +57,35 @@ abstract class PSSRSA implements Signature
     }
 
     /**
-     * Exponentiate with or without Chinese Remainder Theorem.
-     * Operation with primes 'p' and 'q' is appox. 2x faster.
+     * Exponentiate with or without Chinese Remainder Theorem. Operation with primes 'p' and 'q' is appox. 2x faster.
      */
     public function exponentiate(RsaKey $key, BigInteger $c): BigInteger
     {
-        if ($c->compare(BigInteger::createFromDecimal(0)) < 0 || $c->compare(BigInteger::createFromBinaryString($key->n())) > 0) {
+        if ($c->compare(BigInteger::createFromDecimal(0)) < 0 || $c->compare(
+            BigInteger::createFromBinaryString($key->n())
+        ) > 0) {
             throw new RuntimeException();
         }
-        if ($key->isPublic() || !$key->hasPrimes() || !$key->hasExponents() || !$key->hasCoefficient()) {
-            return $c->modPow(BigInteger::createFromBinaryString($key->e()), BigInteger::createFromBinaryString($key->n()));
+        if ($key->isPublic() || ! $key->hasPrimes() || ! $key->hasExponents() || ! $key->hasCoefficient()) {
+            return $c->modPow(
+                BigInteger::createFromBinaryString($key->e()),
+                BigInteger::createFromBinaryString($key->n())
+            );
         }
 
-        [$p, $q] = $key->primes();
-        [$dP, $dQ] = $key->exponents();
+        [$pS, $qS] = $key->primes();
+        [$dPS, $dQS] = $key->exponents();
         $qInv = BigInteger::createFromBinaryString($key->QInv());
+        $p = BigInteger::createFromBinaryString($pS);
+        $q = BigInteger::createFromBinaryString($qS);
+        $dP = BigInteger::createFromBinaryString($dPS);
+        $dQ = BigInteger::createFromBinaryString($dQS);
 
         $m1 = $c->modPow($dP, $p);
         $m2 = $c->modPow($dQ, $q);
-        $h = $qInv->multiply($m1->subtract($m2)->add($p))->mod($p);
+        $h = $qInv->multiply($m1->subtract($m2)->add($p))
+            ->mod($p)
+        ;
 
         return $m2->add($h->multiply($q));
     }
@@ -91,17 +94,17 @@ abstract class PSSRSA implements Signature
 
     private function handleKey(Key $key): RsaKey
     {
-        return new RsaKey($key->getData());
+        return RsaKey::create($key->getData());
     }
 
     private function convertIntegerToOctetString(BigInteger $x, int $xLen): string
     {
-        $x = $x->toBytes();
-        if (mb_strlen($x, '8bit') > $xLen) {
+        $xB = $x->toBytes();
+        if (mb_strlen($xB, '8bit') > $xLen) {
             throw new RuntimeException('Unable to convert the integer');
         }
 
-        return str_pad($x, $xLen, chr(0), STR_PAD_LEFT);
+        return str_pad($xB, $xLen, chr(0), STR_PAD_LEFT);
     }
 
     /**
@@ -113,7 +116,7 @@ abstract class PSSRSA implements Signature
         $count = ceil($maskLen / $mgfHash->getLength());
         for ($i = 0; $i < $count; ++$i) {
             $c = pack('N', $i);
-            $t .= $mgfHash->hash($mgfSeed.$c);
+            $t .= $mgfHash->hash($mgfSeed . $c);
         }
 
         return mb_substr($t, 0, $maskLen, '8bit');
@@ -131,15 +134,15 @@ abstract class PSSRSA implements Signature
             throw new RuntimeException();
         }
         $salt = random_bytes($sLen);
-        $m2 = "\0\0\0\0\0\0\0\0".$mHash.$salt;
+        $m2 = "\0\0\0\0\0\0\0\0" . $mHash . $salt;
         $h = $hash->hash($m2);
         $ps = str_repeat(chr(0), $emLen - $sLen - $hash->getLength() - 2);
-        $db = $ps.chr(1).$salt;
+        $db = $ps . chr(1) . $salt;
         $dbMask = $this->getMGF1($h, $emLen - $hash->getLength() - 1, $hash);
         $maskedDB = $db ^ $dbMask;
         $maskedDB[0] = ~chr(0xFF << ($modulusLength & 7)) & $maskedDB[0];
 
-        return $maskedDB.$h.chr(0xBC);
+        return $maskedDB . $h . chr(0xBC);
     }
 
     /**
@@ -166,14 +169,14 @@ abstract class PSSRSA implements Signature
         $db = $maskedDB ^ $dbMask;
         $db[0] = ~chr(0xFF << ($emBits & 7)) & $db[0];
         $temp = $emLen - $hash->getLength() - $sLen - 2;
-        if (mb_substr($db, 0, $temp, '8bit') !== str_repeat(chr(0), $temp)) {
+        if (mb_strpos($db, str_repeat(chr(0), $temp), 0, '8bit') !== 0) {
             throw new InvalidArgumentException();
         }
-        if (1 !== ord($db[$temp])) {
+        if (ord($db[$temp]) !== 1) {
             throw new InvalidArgumentException();
         }
         $salt = mb_substr($db, $temp + 1, null, '8bit'); // should be $sLen long
-        $m2 = "\0\0\0\0\0\0\0\0".$mHash.$salt;
+        $m2 = "\0\0\0\0\0\0\0\0" . $mHash . $salt;
         $h2 = $hash->hash($m2);
 
         return hash_equals($h, $h2);

@@ -11,21 +11,20 @@
     }
   },
   "require" : {
-    "web-auth/webauthn-lib" : "3.3.12",
-    "web-auth/cose-lib": "v3.3.12",
-    "web-auth/metadata-service": "3.3.12",
+    "web-auth/webauthn-lib" : "^4",
+    "web-auth/cose-lib": "^v4",
+    "web-auth/metadata-service": "^4",
     "symfony/http-foundation" : "^6.0",
-    "symfony/psr-http-message-bridge" : "^2.3",
-    "symfony/http-client": "^5.4",
+    "symfony/http-client": "^6",
     "http-interop/http-factory-guzzle": "^1.2",
     "webklex/php-imap" : "^5.5",
     "phpmailer/phpmailer": "~6.5",
-    "guzzlehttp/psr7": "^1.7",
+    "guzzlehttp/psr7": "^2",
     "paragonie/random_compat": "^2.0",
     "phpseclib/phpseclib": "^3.0",
     "christian-riesen/base32": "^1.6",
     "facile-it/php-openid-client": "^0.2.0",
-    "monolog/monolog": "^2.3",
+    "monolog/monolog": "^3",
     "duosecurity/duo_universal_php": "^1.0"
   }
 }

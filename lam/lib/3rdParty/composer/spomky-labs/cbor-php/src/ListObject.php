@@ -2,29 +2,21 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2018-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace CBOR;
 
-use function array_key_exists;
 use ArrayAccess;
 use ArrayIterator;
-use function count;
 use Countable;
 use InvalidArgumentException;
 use Iterator;
 use IteratorAggregate;
+use function array_key_exists;
+use function count;
 
 /**
  * @phpstan-implements ArrayAccess<int, CBORObject>
  * @phpstan-implements IteratorAggregate<int, CBORObject>
+ * @see \CBOR\Test\ListObjectTest
  */
 class ListObject extends AbstractCBORObject implements Countable, IteratorAggregate, Normalizable, ArrayAccess
 {
@@ -33,12 +25,9 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
     /**
      * @var CBORObject[]
      */
-    private $data;
+    private array $data;
 
-    /**
-     * @var string|null
-     */
-    private $length;
+    private ?string $length = null;
 
     /**
      * @param CBORObject[] $data
@@ -47,9 +36,6 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
     {
         [$additionalInformation, $length] = LengthCalculator::getLengthOfArray($data);
         array_map(static function ($item): void {
-            if (! $item instanceof CBORObject) {
-                throw new InvalidArgumentException('The list must contain only CBORObject objects.');
-            }
         }, $data);
 
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
@@ -129,21 +115,10 @@ class ListObject extends AbstractCBORObject implements Countable, IteratorAggreg
      */
     public function normalize(): array
     {
-        return array_map(static function (CBORObject $object) {
-            return $object instanceof Normalizable ? $object->normalize() : $object;
-        }, $this->data);
-    }
-
-    /**
-     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
-     *
-     * @return array<int|string, mixed>
-     */
-    public function getNormalizedData(bool $ignoreTags = false): array
-    {
-        return array_map(static function (CBORObject $object) use ($ignoreTags) {
-            return $object->getNormalizedData($ignoreTags);
-        }, $this->data);
+        return array_map(
+            static fn (CBORObject $object) => $object instanceof Normalizable ? $object->normalize() : $object,
+            $this->data
+        );
     }
 
     public function count(): int

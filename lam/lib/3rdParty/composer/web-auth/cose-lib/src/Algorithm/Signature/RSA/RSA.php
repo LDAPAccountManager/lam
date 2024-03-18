@@ -2,32 +2,29 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Algorithm\Signature\RSA;
 
-use Assert\Assertion;
 use Cose\Algorithm\Signature\Signature;
 use Cose\Key\Key;
 use Cose\Key\RsaKey;
 use InvalidArgumentException;
+use function openssl_sign;
+use function openssl_verify;
+use Throwable;
 
 abstract class RSA implements Signature
 {
     public function sign(string $data, Key $key): string
     {
         $key = $this->handleKey($key);
-        Assertion::true($key->isPrivate(), 'The key is not private');
+        if (! $key->isPrivate()) {
+            throw new InvalidArgumentException('The key is not private.');
+        }
 
-        if (false === openssl_sign($data, $signature, $key->asPem(), $this->getHashAlgorithm())) {
-            throw new InvalidArgumentException('Unable to sign the data');
+        try {
+            openssl_sign($data, $signature, $key->asPem(), $this->getHashAlgorithm());
+        } catch (Throwable $e) {
+            throw new InvalidArgumentException('Unable to sign the data', 0, $e);
         }
 
         return $signature;
@@ -37,13 +34,13 @@ abstract class RSA implements Signature
     {
         $key = $this->handleKey($key);
 
-        return 1 === openssl_verify($data, $signature, $key->asPem(), $this->getHashAlgorithm());
+        return openssl_verify($data, $signature, $key->asPem(), $this->getHashAlgorithm()) === 1;
     }
 
     abstract protected function getHashAlgorithm(): int;
 
     private function handleKey(Key $key): RsaKey
     {
-        return new RsaKey($key->getData());
+        return RsaKey::create($key->getData());
     }
 }

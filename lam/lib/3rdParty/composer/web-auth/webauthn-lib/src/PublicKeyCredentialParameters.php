@@ -2,37 +2,23 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Webauthn;
 
 use Assert\Assertion;
+use const JSON_THROW_ON_ERROR;
 use JsonSerializable;
-use function Safe\json_decode;
 
 class PublicKeyCredentialParameters implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $type;
+    public function __construct(
+        private readonly string $type,
+        private readonly int $alg
+    ) {
+    }
 
-    /**
-     * @var int
-     */
-    private $alg;
-
-    public function __construct(string $type, int $alg)
+    public static function create(string $type, int $alg): self
     {
-        $this->type = $type;
-        $this->alg = $alg;
+        return new self($type, $alg);
     }
 
     public function getType(): string
@@ -47,7 +33,7 @@ class PublicKeyCredentialParameters implements JsonSerializable
 
     public static function createFromString(string $data): self
     {
-        $data = json_decode($data, true);
+        $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         Assertion::isArray($data, 'Invalid data');
 
         return self::createFromArray($data);
@@ -63,10 +49,7 @@ class PublicKeyCredentialParameters implements JsonSerializable
         Assertion::keyExists($json, 'alg', 'Invalid input. "alg" is missing.');
         Assertion::integer($json['alg'], 'Invalid input. "alg" is not an integer.');
 
-        return new self(
-            $json['type'],
-            $json['alg']
-        );
+        return new self($json['type'], $json['alg']);
     }
 
     /**

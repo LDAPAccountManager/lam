@@ -5,54 +5,346 @@ namespace Safe;
 use Safe\Exceptions\SodiumException;
 
 /**
- * Uses a CPU- and memory-hard hash algorithm along with a randomly-generated salt, and memory and CPU limits to generate an ASCII-encoded hash suitable for password storage.
+ * Verify then decrypt with AES-256-GCM.
+ * Only available if sodium_crypto_aead_aes256gcm_is_available returns TRUE.
  *
- * @param string $password string; The password to generate a hash for.
- * @param int $opslimit Represents a maximum amount of computations to perform. Raising this number will make the function require more CPU cycles to compute a key. There are constants available to set the operations limit to appropriate values depending on intended use, in order of strength: SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_OPSLIMIT_MODERATE and SODIUM_CRYPTO_PWHASH_OPSLIMIT_SENSITIVE.
- * @param int $memlimit The maximum amount of RAM that the function will use, in bytes. There are constants to help you choose an appropriate value, in order of size: SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_MEMLIMIT_MODERATE, and SODIUM_CRYPTO_PWHASH_MEMLIMIT_SENSITIVE. Typically these should be paired with the matching opslimit values.
- * @return string Returns the hashed password.
- *
- * In order to produce the same password hash from the same password, the same values for opslimit and memlimit must be used. These are embedded within the generated hash, so
- * everything that's needed to verify the hash is included. This allows
- * the sodium_crypto_pwhash_str_verify function to verify the hash without
- * needing separate storage for the other parameters.
+ * @param string $ciphertext Must be in the format provided by sodium_crypto_aead_aes256gcm_encrypt
+ * (ciphertext and tag, concatenated).
+ * @param string $additional_data Additional, authenticated data. This is used in the verification of the authentication tag
+ * appended to the ciphertext, but it is not encrypted or stored in the ciphertext.
+ * @param string $nonce A number that must be only used once, per message. 12 bytes long.
+ * @param string $key Encryption key (256-bit).
+ * @return string Returns the plaintext on success.
  * @throws SodiumException
  *
  */
-function sodium_crypto_pwhash_str(string $password, int $opslimit, int $memlimit): string
+function sodium_crypto_aead_aes256gcm_decrypt(string $ciphertext, string $additional_data, string $nonce, string $key): string
 {
     error_clear_last();
-    $result = \sodium_crypto_pwhash_str($password, $opslimit, $memlimit);
-    if ($result === false) {
+    $safeResult = \sodium_crypto_aead_aes256gcm_decrypt($ciphertext, $additional_data, $nonce, $key);
+    if ($safeResult === false) {
         throw SodiumException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
 /**
- * This function provides low-level access to libsodium's crypto_pwhash key derivation function. Unless you have specific reason to use this function, you should use sodium_crypto_pwhash_str or password_hash functions instead.
+ * Verify then decrypt with ChaCha20-Poly1305.
  *
- * @param int $length integer; The length of the password hash to generate, in bytes.
- * @param string $password string; The password to generate a hash for.
- * @param string $salt string A salt to add to the password before hashing. The salt should be unpredictable, ideally generated from a good random mumber source such as random_bytes, and have a length of at least SODIUM_CRYPTO_PWHASH_SALTBYTES bytes.
- * @param int $opslimit Represents a maximum amount of computations to perform. Raising this number will make the function require more CPU cycles to compute a key. There are some constants available to set the operations limit to appropriate values depending on intended use, in order of strength: SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_OPSLIMIT_MODERATE and SODIUM_CRYPTO_PWHASH_OPSLIMIT_SENSITIVE.
- * @param int $memlimit The maximum amount of RAM that the function will use, in bytes. There are constants to help you choose an appropriate value, in order of size: SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_MEMLIMIT_MODERATE, and SODIUM_CRYPTO_PWHASH_MEMLIMIT_SENSITIVE. Typically these should be paired with the matching opslimit values.
- * @param int $alg integer A number indicating the hash algorithm to use. By default SODIUM_CRYPTO_PWHASH_ALG_DEFAULT (the currently recommended algorithm, which can change from one version of libsodium to another), or explicitly using SODIUM_CRYPTO_PWHASH_ALG_ARGON2ID13, representing the Argon2id algorithm version 1.3.
- * @return string Returns the derived key. The return value is a binary string of the hash, not an ASCII-encoded representation, and does not contain additional information about the parameters used to create the hash, so you will need to keep that information if you are ever going to verify the password in future. Use sodium_crypto_pwhash_str to avoid needing to do all that.
+ * @param string $ciphertext Must be in the format provided by sodium_crypto_aead_chacha20poly1305_encrypt
+ * (ciphertext and tag, concatenated).
+ * @param string $additional_data Additional, authenticated data. This is used in the verification of the authentication tag
+ * appended to the ciphertext, but it is not encrypted or stored in the ciphertext.
+ * @param string $nonce A number that must be only used once, per message. 8 bytes long.
+ * @param string $key Encryption key (256-bit).
+ * @return string Returns the plaintext on success.
  * @throws SodiumException
  *
  */
-function sodium_crypto_pwhash(int $length, string $password, string $salt, int $opslimit, int $memlimit, int $alg = null): string
+function sodium_crypto_aead_chacha20poly1305_decrypt(string $ciphertext, string $additional_data, string $nonce, string $key): string
 {
     error_clear_last();
-    if ($alg !== null) {
-        $result = \sodium_crypto_pwhash($length, $password, $salt, $opslimit, $memlimit, $alg);
-    } else {
-        $result = \sodium_crypto_pwhash($length, $password, $salt, $opslimit, $memlimit);
-    }
-    if ($result === false) {
+    $safeResult = \sodium_crypto_aead_chacha20poly1305_decrypt($ciphertext, $additional_data, $nonce, $key);
+    if ($safeResult === false) {
         throw SodiumException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
+}
+
+
+/**
+ * Encrypt then authenticate with ChaCha20-Poly1305.
+ *
+ * @param string $message The plaintext message to encrypt.
+ * @param string $additional_data Additional, authenticated data. This is used in the verification of the authentication tag
+ * appended to the ciphertext, but it is not encrypted or stored in the ciphertext.
+ * @param string $nonce A number that must be only used once, per message. 8 bytes long.
+ * @param string $key Encryption key (256-bit).
+ * @return string Returns the ciphertext and tag on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_aead_chacha20poly1305_encrypt(string $message, string $additional_data, string $nonce, string $key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_aead_chacha20poly1305_encrypt($message, $additional_data, $nonce, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Verify then decrypt with ChaCha20-Poly1305 (IETF variant).
+ *
+ * The IETF variant uses 96-bit nonces and 32-bit internal counters, instead of 64-bit for both.
+ *
+ * @param string $ciphertext Must be in the format provided by sodium_crypto_aead_chacha20poly1305_ietf_encrypt
+ * (ciphertext and tag, concatenated).
+ * @param string $additional_data Additional, authenticated data. This is used in the verification of the authentication tag
+ * appended to the ciphertext, but it is not encrypted or stored in the ciphertext.
+ * @param string $nonce A number that must be only used once, per message. 12 bytes long.
+ * @param string $key Encryption key (256-bit).
+ * @return string Returns the plaintext on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_aead_chacha20poly1305_ietf_decrypt(string $ciphertext, string $additional_data, string $nonce, string $key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_aead_chacha20poly1305_ietf_decrypt($ciphertext, $additional_data, $nonce, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Encrypt then authenticate with ChaCha20-Poly1305 (IETF variant).
+ *
+ * The IETF variant uses 96-bit nonces and 32-bit internal counters, instead of 64-bit for both.
+ *
+ * @param string $message The plaintext message to encrypt.
+ * @param string $additional_data Additional, authenticated data. This is used in the verification of the authentication tag
+ * appended to the ciphertext, but it is not encrypted or stored in the ciphertext.
+ * @param string $nonce A number that must be only used once, per message. 12 bytes long.
+ * @param string $key Encryption key (256-bit).
+ * @return string Returns the ciphertext and tag on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_aead_chacha20poly1305_ietf_encrypt(string $message, string $additional_data, string $nonce, string $key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_aead_chacha20poly1305_ietf_encrypt($message, $additional_data, $nonce, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Verify then decrypt with ChaCha20-Poly1305 (eXtended-nonce variant).
+ *
+ * Generally, XChaCha20-Poly1305 is the best of the provided AEAD modes to use.
+ *
+ * @param string $ciphertext Must be in the format provided by sodium_crypto_aead_chacha20poly1305_ietf_encrypt
+ * (ciphertext and tag, concatenated).
+ * @param string $additional_data Additional, authenticated data. This is used in the verification of the authentication tag
+ * appended to the ciphertext, but it is not encrypted or stored in the ciphertext.
+ * @param string $nonce A number that must be only used once, per message. 24 bytes long.
+ * This is a large enough bound to generate randomly (i.e. random_bytes).
+ * @param string $key Encryption key (256-bit).
+ * @return string Returns the plaintext on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(string $ciphertext, string $additional_data, string $nonce, string $key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $additional_data, $nonce, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Encrypt then authenticate with XChaCha20-Poly1305 (eXtended-nonce variant).
+ *
+ * Generally, XChaCha20-Poly1305 is the best of the provided AEAD modes to use.
+ *
+ * @param string $message The plaintext message to encrypt.
+ * @param string $additional_data Additional, authenticated data. This is used in the verification of the authentication tag
+ * appended to the ciphertext, but it is not encrypted or stored in the ciphertext.
+ * @param string $nonce A number that must be only used once, per message. 24 bytes long.
+ * This is a large enough bound to generate randomly (i.e. random_bytes).
+ * @param string $key Encryption key (256-bit).
+ * @return string Returns the ciphertext and tag on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(string $message, string $additional_data, string $nonce, string $key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $additional_data, $nonce, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Verify the authentication tag is valid for a given message and key.
+ *
+ * Unlike with digital signatures (e.g. sodium_crypto_sign_verify_detached),
+ * any party capable of verifying a message is also capable of authenticating
+ * their own messages. (Hence, symmetric authentication.)
+ *
+ * @param string $mac Authentication tag produced by sodium_crypto_auth
+ * @param string $message Message
+ * @param string $key Authentication key
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_auth_verify(string $mac, string $message, string $key): void
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_auth_verify($mac, $message, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+}
+
+
+/**
+ * Decrypt a message using asymmetric (public key) cryptography.
+ *
+ * @param string $ciphertext The encrypted message to attempt to decrypt.
+ * @param string $nonce A number that must be only used once, per message. 24 bytes long.
+ * This is a large enough bound to generate randomly (i.e. random_bytes).
+ * @param string $key_pair See sodium_crypto_box_keypair_from_secretkey_and_publickey.
+ * This should include the sender's public key and the recipient's secret key.
+ * @return string Returns the plaintext message on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_box_open(string $ciphertext, string $nonce, string $key_pair): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_box_open($ciphertext, $nonce, $key_pair);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Decrypt a message that was encrypted with sodium_crypto_box_seal
+ *
+ * @param string $ciphertext The encrypted message
+ * @param string $key_pair The keypair of the recipient. Must include the secret key.
+ * @return string The plaintext on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_box_seal_open(string $ciphertext, string $key_pair): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_box_seal_open($ciphertext, $key_pair);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Appends a message to the internal hash state.
+ *
+ * @param string $state The return value of sodium_crypto_generichash_init.
+ * @param string $message Data to append to the hashing state.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_generichash_update(string &$state, string $message): void
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_generichash_update($state, $message);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+}
+
+
+/**
+ * Decrypt an encrypted message with a symmetric (shared) key.
+ *
+ * @param string $ciphertext Must be in the format provided by sodium_crypto_secretbox
+ * (ciphertext and tag, concatenated).
+ * @param string $nonce A number that must be only used once, per message. 24 bytes long.
+ * This is a large enough bound to generate randomly (i.e. random_bytes).
+ * @param string $key Encryption key (256-bit).
+ * @return string The decrypted string on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_secretbox_open(string $ciphertext, string $nonce, string $key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_secretbox_open($ciphertext, $nonce, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Verify the signature attached to a message and return the message
+ *
+ * @param string $signed_message A message signed with sodium_crypto_sign
+ * @param string $public_key An Ed25519 public key
+ * @return string Returns the original signed message on success.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_sign_open(string $signed_message, string $public_key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_sign_open($signed_message, $public_key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Verify signature for the message
+ *
+ * @param string $signature The cryptographic signature obtained from sodium_crypto_sign_detached
+ * @param string $message The message being verified
+ * @param string $public_key Ed25519 public key
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_sign_verify_detached(string $signature, string $message, string $public_key): void
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_sign_verify_detached($signature, $message, $public_key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+}
+
+
+/**
+ * The function is similar to sodium_crypto_stream_xchacha20_xor
+ * but adds the ability to set the initial value of the block counter to a non-zero value.
+ * This permits direct access to any block without having to compute the previous ones.
+ *
+ * @param string $message The message to encrypt.
+ * @param string $nonce 24-byte nonce.
+ * @param int $counter The initial value of the block counter.
+ * @param string $key Key, possibly generated from sodium_crypto_stream_xchacha20_keygen.
+ * @return string Encrypted message.
+ * @throws SodiumException
+ *
+ */
+function sodium_crypto_stream_xchacha20_xor_ic(string $message, string $nonce, int $counter, string $key): string
+{
+    error_clear_last();
+    $safeResult = \sodium_crypto_stream_xchacha20_xor_ic($message, $nonce, $counter, $key);
+    if ($safeResult === false) {
+        throw SodiumException::createFromPhpError();
+    }
+    return $safeResult;
 }

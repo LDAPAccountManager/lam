@@ -2,50 +2,50 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Key;
 
 use function array_key_exists;
-use Assert\Assertion;
 use FG\ASN1\ExplicitlyTaggedObject;
 use FG\ASN1\Universal\BitString;
 use FG\ASN1\Universal\Integer;
 use FG\ASN1\Universal\ObjectIdentifier;
 use FG\ASN1\Universal\OctetString;
 use FG\ASN1\Universal\Sequence;
+use function in_array;
+use InvalidArgumentException;
 
+/**
+ * @final
+ */
 class Ec2Key extends Key
 {
-    public const CURVE_P256 = 1;
-    public const CURVE_P256K = 8;
-    public const CURVE_P384 = 2;
-    public const CURVE_P521 = 3;
+    final public const CURVE_P256 = 1;
 
-    public const DATA_CURVE = -1;
-    public const DATA_X = -2;
-    public const DATA_Y = -3;
-    public const DATA_D = -4;
+    final public const CURVE_P256K = 8;
 
-    private const SUPPORTED_CURVES = [
-        self::CURVE_P256,
-        self::CURVE_P256K,
-        self::CURVE_P384,
-        self::CURVE_P521,
-    ];
+    final public const CURVE_P384 = 2;
+
+    final public const CURVE_P521 = 3;
+
+    final public const DATA_CURVE = -1;
+
+    final public const DATA_X = -2;
+
+    final public const DATA_Y = -3;
+
+    final public const DATA_D = -4;
+
+    private const SUPPORTED_CURVES = [self::CURVE_P256, self::CURVE_P256K, self::CURVE_P384, self::CURVE_P521];
 
     private const NAMED_CURVE_OID = [
-        self::CURVE_P256 => '1.2.840.10045.3.1.7', // NIST P-256 / secp256r1
-        self::CURVE_P256K => '1.3.132.0.10', // NIST P-256K / secp256k1
-        self::CURVE_P384 => '1.3.132.0.34', // NIST P-384 / secp384r1
-        self::CURVE_P521 => '1.3.132.0.35', // NIST P-521 / secp521r1
+        self::CURVE_P256 => '1.2.840.10045.3.1.7',
+        // NIST P-256 / secp256r1
+        self::CURVE_P256K => '1.3.132.0.10',
+        // NIST P-256K / secp256k1
+        self::CURVE_P384 => '1.3.132.0.34',
+        // NIST P-384 / secp384r1
+        self::CURVE_P521 => '1.3.132.0.35',
+        // NIST P-521 / secp521r1
     ];
 
     private const CURVE_KEY_LENGTH = [
@@ -55,16 +55,35 @@ class Ec2Key extends Key
         self::CURVE_P521 => 66,
     ];
 
+    /**
+     * @param array<int|string, mixed> $data
+     */
     public function __construct(array $data)
     {
         parent::__construct($data);
-        Assertion::eq($data[self::TYPE], self::TYPE_EC2, 'Invalid EC2 key. The key type does not correspond to an EC2 key');
-        Assertion::keyExists($data, self::DATA_CURVE, 'Invalid EC2 key. The curve is missing');
-        Assertion::keyExists($data, self::DATA_X, 'Invalid EC2 key. The x coordinate is missing');
-        Assertion::keyExists($data, self::DATA_Y, 'Invalid EC2 key. The y coordinate is missing');
-        Assertion::length($data[self::DATA_X], self::CURVE_KEY_LENGTH[$data[self::DATA_CURVE]], 'Invalid length for x coordinate', null, '8bit');
-        Assertion::length($data[self::DATA_Y], self::CURVE_KEY_LENGTH[$data[self::DATA_CURVE]], 'Invalid length for y coordinate', null, '8bit');
-        Assertion::inArray((int) $data[self::DATA_CURVE], self::SUPPORTED_CURVES, 'The curve is not supported');
+        if (! isset($data[self::TYPE]) || (int) $data[self::TYPE] !== self::TYPE_EC2) {
+            throw new InvalidArgumentException('Invalid EC2 key. The key type does not correspond to an EC2 key');
+        }
+        if (! isset($data[self::DATA_CURVE], $data[self::DATA_X], $data[self::DATA_Y])) {
+            throw new InvalidArgumentException('Invalid EC2 key. The curve or the "x/y" coordinates are missing');
+        }
+        if (mb_strlen((string) $data[self::DATA_X], '8bit') !== self::CURVE_KEY_LENGTH[(int) $data[self::DATA_CURVE]]) {
+            throw new InvalidArgumentException('Invalid length for x coordinate');
+        }
+        if (mb_strlen((string) $data[self::DATA_Y], '8bit') !== self::CURVE_KEY_LENGTH[(int) $data[self::DATA_CURVE]]) {
+            throw new InvalidArgumentException('Invalid length for y coordinate');
+        }
+        if (! in_array((int) $data[self::DATA_CURVE], self::SUPPORTED_CURVES, true)) {
+            throw new InvalidArgumentException('The curve is not supported');
+        }
+    }
+
+    /**
+     * @param array<int|string, mixed> $data
+     */
+    public static function create(array $data): self
+    {
+        return new self($data);
     }
 
     public function toPublic(): self
@@ -92,8 +111,9 @@ class Ec2Key extends Key
 
     public function d(): string
     {
-        Assertion::true($this->isPrivate(), 'The key is not private');
-
+        if (! $this->isPrivate()) {
+            throw new InvalidArgumentException('The key is not private.');
+        }
         return $this->get(self::DATA_D);
     }
 
@@ -116,10 +136,7 @@ class Ec2Key extends Key
         }
 
         $der = new Sequence(
-            new Sequence(
-                new ObjectIdentifier('1.2.840.10045.2.1'),
-                new ObjectIdentifier($this->getCurveOid())
-            ),
+            new Sequence(new ObjectIdentifier('1.2.840.10045.2.1'), new ObjectIdentifier($this->getCurveOid())),
             new BitString(bin2hex($this->getUncompressedCoordinates()))
         );
 
@@ -128,7 +145,7 @@ class Ec2Key extends Key
 
     public function getUncompressedCoordinates(): string
     {
-        return "\x04".$this->x().$this->y();
+        return "\x04" . $this->x() . $this->y();
     }
 
     private function getCurveOid(): string
@@ -138,8 +155,8 @@ class Ec2Key extends Key
 
     private function pem(string $type, string $der): string
     {
-        return sprintf("-----BEGIN %s-----\n", mb_strtoupper($type)).
-            chunk_split(base64_encode($der), 64, "\n").
+        return sprintf("-----BEGIN %s-----\n", mb_strtoupper($type)) .
+            chunk_split(base64_encode($der), 64, "\n") .
             sprintf("-----END %s-----\n", mb_strtoupper($type));
     }
 }

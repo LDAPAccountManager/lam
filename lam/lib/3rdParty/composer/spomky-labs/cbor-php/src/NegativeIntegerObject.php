@@ -2,37 +2,21 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2018-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace CBOR;
 
 use Brick\Math\BigInteger;
 use InvalidArgumentException;
 use const STR_PAD_LEFT;
 
-/**
- * @final
- */
-class NegativeIntegerObject extends AbstractCBORObject implements Normalizable
+final class NegativeIntegerObject extends AbstractCBORObject implements Normalizable
 {
     private const MAJOR_TYPE = self::MAJOR_TYPE_NEGATIVE_INTEGER;
 
-    /**
-     * @var string|null
-     */
-    private $data;
-
-    public function __construct(int $additionalInformation, ?string $data)
-    {
+    public function __construct(
+        int $additionalInformation,
+        private ?string $data
+    ) {
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
-        $this->data = $data;
     }
 
     public function __toString(): string
@@ -77,14 +61,6 @@ class NegativeIntegerObject extends AbstractCBORObject implements Normalizable
     }
 
     public function normalize(): string
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
-     */
-    public function getNormalizedData(bool $ignoreTags = false): string
     {
         return $this->getValue();
     }

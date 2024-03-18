@@ -2,30 +2,30 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Key;
 
 use function array_key_exists;
-use Assert\Assertion;
+use function in_array;
+use InvalidArgumentException;
 
+/**
+ * @final
+ */
 class OkpKey extends Key
 {
-    public const CURVE_X25519 = 4;
-    public const CURVE_X448 = 5;
-    public const CURVE_ED25519 = 6;
-    public const CURVE_ED448 = 7;
+    final public const CURVE_X25519 = 4;
 
-    public const DATA_CURVE = -1;
-    public const DATA_X = -2;
-    public const DATA_D = -4;
+    final public const CURVE_X448 = 5;
+
+    final public const CURVE_ED25519 = 6;
+
+    final public const CURVE_ED448 = 7;
+
+    final public const DATA_CURVE = -1;
+
+    final public const DATA_X = -2;
+
+    final public const DATA_D = -4;
 
     private const SUPPORTED_CURVES = [
         self::CURVE_X25519,
@@ -34,13 +34,29 @@ class OkpKey extends Key
         self::CURVE_ED448,
     ];
 
+    /**
+     * @param array<int|string, mixed> $data
+     */
     public function __construct(array $data)
     {
         parent::__construct($data);
-        Assertion::eq($data[self::TYPE], self::TYPE_OKP, 'Invalid OKP key. The key type does not correspond to an OKP key');
-        Assertion::keyExists($data, self::DATA_CURVE, 'Invalid EC2 key. The curve is missing');
-        Assertion::keyExists($data, self::DATA_X, 'Invalid OKP key. The x coordinate is missing');
-        Assertion::inArray((int) $data[self::DATA_CURVE], self::SUPPORTED_CURVES, 'The curve is not supported');
+        if (! isset($data[self::TYPE]) || (int) $data[self::TYPE] !== self::TYPE_OKP) {
+            throw new InvalidArgumentException('Invalid OKP key. The key type does not correspond to an OKP key');
+        }
+        if (! isset($data[self::DATA_CURVE], $data[self::DATA_X])) {
+            throw new InvalidArgumentException('Invalid EC2 key. The curve or the "x" coordinate is missing');
+        }
+        if (! in_array((int) $data[self::DATA_CURVE], self::SUPPORTED_CURVES, true)) {
+            throw new InvalidArgumentException('The curve is not supported');
+        }
+    }
+
+    /**
+     * @param array<int|string, mixed> $data
+     */
+    public static function create(array $data): self
+    {
+        return new self($data);
     }
 
     public function x(): string
@@ -55,7 +71,9 @@ class OkpKey extends Key
 
     public function d(): string
     {
-        Assertion::true($this->isPrivate(), 'The key is not private');
+        if (! $this->isPrivate()) {
+            throw new InvalidArgumentException('The key is not private.');
+        }
 
         return $this->get(self::DATA_D);
     }

@@ -2,30 +2,19 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2018-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace CBOR;
 
-abstract class OtherObject extends AbstractCBORObject
+use CBOR\OtherObject\OtherObjectInterface;
+
+abstract class OtherObject extends AbstractCBORObject implements OtherObjectInterface
 {
     private const MAJOR_TYPE = self::MAJOR_TYPE_OTHER_TYPE;
 
-    /**
-     * @var string|null
-     */
-    protected $data;
-
-    public function __construct(int $additionalInformation, ?string $data)
-    {
+    public function __construct(
+        int $additionalInformation,
+        protected ?string $data
+    ) {
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
-        $this->data = $data;
     }
 
     public function __toString(): string
@@ -42,11 +31,4 @@ abstract class OtherObject extends AbstractCBORObject
     {
         return $this->data;
     }
-
-    /**
-     * @return int[]
-     */
-    abstract public static function supportedAdditionalInformation(): array;
-
-    abstract public static function createFromLoadedData(int $additionalInformation, ?string $data): self;
 }
