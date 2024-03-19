@@ -7,7 +7,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2023  Roland Gruber
+  Copyright (C) 2007 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -971,7 +971,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		if (!self::isAccountExpired($attributes)) {
 			$options[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Account expiration'), self::STATUS_ACCOUNT_EXPIRED);
 		}
-		if (!self::isPasswordExpired($attributes)) {
+		if (!empty($attributes['shadowmax'][0]) && !self::isPasswordExpired($attributes)) {
 			$options[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Password expiration'), self::STATUS_PASSWORD_EXPIRED);
 		}
 		return $options;
@@ -988,7 +988,8 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			$attributes['shadowexpire'][0] = '1';
 		}
 		if (in_array(self::STATUS_PASSWORD_EXPIRED, $lockIds)) {
-			$attributes['shadowlastchange'][0] = intval(time()/3600/24) - $attributes['shadowmax'][0] - $attributes['shadowinactive'][0] - 1;
+			$inactive = !empty($attributes['shadowinactive'][0]) ? $attributes['shadowinactive'][0] : 0;
+			$attributes['shadowlastchange'][0] = intval(time()/3600/24) - $attributes['shadowmax'][0] - $inactive - 1;
 		}
 	}
 
