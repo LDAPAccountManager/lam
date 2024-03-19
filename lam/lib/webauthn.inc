@@ -50,7 +50,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2023  Roland Gruber
+  Copyright (C) 2019 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,12 +116,14 @@ class WebauthnManager {
 			$rpEntity,
 			$userEntity,
 			$challenge,
-			$credentialParameters,
-			$timeout,
-			$excludedKeys,
-			$authenticatorSelectionCriteria,
-			PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
-			new AuthenticationExtensionsClientInputs());
+			$credentialParameters);
+		$registrationObject->setTimeout($timeout);
+		foreach ($excludedKeys as $excludedKey) {
+			$registrationObject->excludeCredential($excludedKey);
+		}
+		$registrationObject->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE);
+		$registrationObject->setAuthenticatorSelection($authenticatorSelectionCriteria);
+		$registrationObject->setExtensions(new AuthenticationExtensionsClientInputs());
 		logNewMessage(LOG_DEBUG, 'WebAuthn registration: ' . json_encode($registrationObject));
 		return $registrationObject;
 	}
@@ -357,21 +359,18 @@ class WebauthnManager {
 		$database = $this->getDatabase();
 		$userEntity = $this->getUserEntity($userDN);
 		$publicKeyCredentialSources = $database->findAllForUserEntity($userEntity);
-		$publicKeyDescriptors = [];
-		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
-			$publicKeyDescriptors[] = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();
-		}
 		$userVerification = PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
 		$extensions = new AuthenticationExtensionsClientInputs();
 		$relyingParty = $this->createRpEntry($isSelfService);
-		return new PublicKeyCredentialRequestOptions(
-			$challenge,
-			$timeout,
-			$relyingParty->getId(),
-			$publicKeyDescriptors,
-			$userVerification,
-			$extensions
-		);
+		$options = PublicKeyCredentialRequestOptions::create($challenge)
+			->setTimeout($timeout)
+			->setRpId($relyingParty->getId())
+			->setUserVerification($userVerification)
+			->setExtensions($extensions);
+		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
+			$options->allowCredential($publicKeyCredentialSource->getPublicKeyCredentialDescriptor());
+		}
+		return $options;
 	}
 
 	/**
