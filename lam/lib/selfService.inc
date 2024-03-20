@@ -476,6 +476,10 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 			if ($file) {
 				$data = fread($file, 10000000);
 				$profileData = @json_decode($data, true);
+				if ($profileData === null) {
+					logNewMessage(LOG_ERR, "Unable to load profile because not in JSON format: " . $name);
+					throw new LAMException(_("Unable to load profile!"), $name);
+				}
 				$profile = selfServiceProfile::import($profileData);
 				fclose($file);
 			}
