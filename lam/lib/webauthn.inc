@@ -111,7 +111,7 @@ class WebauthnManager {
 		$credentialParameters = $this->getCredentialParameters();
 		$excludedKeys = $this->getExcludedKeys($userEntity, $extraExcludedKeys);
 		$timeout = $this->getTimeout();
-		$authenticatorSelectionCriteria = new AuthenticatorSelectionCriteria(null, false, AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_DISCOURAGED);
+		$authenticatorSelectionCriteria = AuthenticatorSelectionCriteria::create()->setUserVerification(AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_DISCOURAGED);
 		$registrationObject = new PublicKeyCredentialCreationOptions(
 			$rpEntity,
 			$userEntity,
