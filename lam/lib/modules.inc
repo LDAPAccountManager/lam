@@ -1690,7 +1690,7 @@ class accountContainer {
 		$this->extraInfoAttributes['INFO.passwordChangeType'] = 'none';
 		$this->module = [];
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
-		$filter = 'objectClass=*';
+		$filter = '(objectClass=*)';
 		$searchAttrs = array('*', '+');
 		foreach ($modules as $module) {
 			$modTmp = new $module($this->type->getScope());

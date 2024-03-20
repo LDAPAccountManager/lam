@@ -16,7 +16,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	// ask if user is sure to delete
 	elseif (isset($_POST['deleteOU'])) {
 		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", [""]);
+		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "(objectClass=*)", [""]);
 		if ($sr === false) {
 			$error = _("OU is not empty or invalid!");
 		}

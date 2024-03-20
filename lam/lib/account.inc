@@ -976,7 +976,7 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null): ?array {
 		$handle = getLDAPServerHandle();
 	}
 	$return = null;
-	$sr = @ldap_read($handle, $dn, 'objectClass=*', $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+	$sr = @ldap_read($handle, $dn, '(objectClass=*)', $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$entries = ldap_get_entries($handle, $sr);
 		if ($entries) {
@@ -1032,7 +1032,7 @@ function deleteDN($dn, $recursive) {
 		return $errors;
 	}
 	if ($recursive) {
-		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, '(objectClass=*)', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			cleanLDAPResult($entries);

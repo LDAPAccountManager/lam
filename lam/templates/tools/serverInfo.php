@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2023  Roland Gruber
+  Copyright (C) 2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ $vendorname = '';
 $vendorversion = '';
 $dynamicSubtrees = '';
 
-$result = ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', ['+', '*', 'subschemasubentry'], 0, 0, 0, LDAP_DEREF_NEVER);
+$result = ldap_read($_SESSION['ldap']->server(), '', '(objectclass=*)', ['+', '*', 'subschemasubentry'], 0, 0, 0, LDAP_DEREF_NEVER);
 if ($result) {
 	$info = ldap_get_entries($_SESSION['ldap']->server(), $result);
 	if (is_array($info) && is_array($info[0])) {
@@ -87,7 +87,7 @@ if ($result) {
 }
 
 // get additional information if monitoring is enabled
-$monitorResults = searchLDAP('cn=monitor', 'objectClass=*', ['*', '+']);
+$monitorResults = searchLDAP('cn=monitor', '(objectClass=*)', ['*', '+']);
 $monitorEntries = [];
 foreach ($monitorResults as $monitorResult) {
 	$monitorEntries[$monitorResult['dn']] = array_change_key_case($monitorResult, CASE_LOWER);

@@ -1321,7 +1321,7 @@ function _get_schema_dn($dn, $debug=false )
 	if( $debug ) echo "<pre>";
 	$ds = $_SESSION['ldap']->server();
 
-	$search = @ldap_read( $ds, $dn, 'objectClass=*', array( 'subschemaSubentry' ) );
+	$search = @ldap_read( $ds, $dn, '(objectClass=*)', array( 'subschemaSubentry' ) );
 	if( $debug ) { echo "Search result (ldap_read): "; var_dump( $search ); echo "\n"; }
 	if( ! $search ) {
 		if( $debug ) echo "_get_schema_dn() returning false. (search val is false)\n";
