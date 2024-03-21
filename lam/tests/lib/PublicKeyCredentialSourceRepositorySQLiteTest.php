@@ -11,7 +11,7 @@ use \Webauthn\TrustPath\CertificateTrustPath;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2023  Roland Gruber
+  Copyright (C) 2019 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			[],
 			"atype",
 			new CertificateTrustPath(['x5c' => 'test']),
-			\Ramsey\Uuid\Uuid::uuid1(),
+			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
 			"uh1",
 			1);
@@ -87,7 +87,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			[],
 			"atype",
 			new CertificateTrustPath(['x5c' => 'test']),
-			\Ramsey\Uuid\Uuid::uuid1(),
+			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p2",
 			"uh1",
 			1);
@@ -98,7 +98,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			[],
 			"atype",
 			new CertificateTrustPath(['x5c' => 'test']),
-			\Ramsey\Uuid\Uuid::uuid1(),
+			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p3",
 			"uh2",
 			1);
@@ -123,7 +123,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			[],
 			"atype",
 			new CertificateTrustPath(['x5c' => 'test']),
-			\Ramsey\Uuid\Uuid::uuid1(),
+			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
 			"uh1",
 			1);
@@ -138,7 +138,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			[],
 			"atype",
 			new CertificateTrustPath(['x5c' => 'test']),
-			\Ramsey\Uuid\Uuid::uuid1(),
+			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
 			"uh1",
 			1);
@@ -155,7 +155,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			[],
 			"atype",
 			new CertificateTrustPath(['x5c' => 'test']),
-			\Ramsey\Uuid\Uuid::uuid1(),
+			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
 			"uh1",
 			1);
