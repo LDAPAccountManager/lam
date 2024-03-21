@@ -2,32 +2,21 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2018-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace CBOR;
 
-use function array_key_exists;
 use ArrayAccess;
 use ArrayIterator;
-use function count;
-use Countable;
 use InvalidArgumentException;
 use Iterator;
 use IteratorAggregate;
+use function array_key_exists;
 
 /**
  * @phpstan-implements ArrayAccess<int, CBORObject>
  * @phpstan-implements IteratorAggregate<int, MapItem>
  * @final
  */
-class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable, IteratorAggregate, Normalizable, ArrayAccess
+class IndefiniteLengthMapObject extends AbstractCBORObject implements IteratorAggregate, Normalizable, ArrayAccess
 {
     private const MAJOR_TYPE = self::MAJOR_TYPE_MAP;
 
@@ -36,7 +25,7 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable,
     /**
      * @var MapItem[]
      */
-    private $data = [];
+    private array $data = [];
 
     public function __construct()
     {
@@ -59,14 +48,6 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable,
         return new self();
     }
 
-    /**
-     * @deprecated The method will be removed on v3.0. Please use "add" instead
-     */
-    public function append(CBORObject $key, CBORObject $value): self
-    {
-        return $this->add($key, $value);
-    }
-
     public function add(CBORObject $key, CBORObject $value): self
     {
         if (! $key instanceof Normalizable) {
@@ -77,18 +58,12 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable,
         return $this;
     }
 
-    /**
-     * @param int|string $key
-     */
-    public function has($key): bool
+    public function has(int|string $key): bool
     {
         return array_key_exists($key, $this->data);
     }
 
-    /**
-     * @param int|string $index
-     */
-    public function remove($index): self
+    public function remove(int|string $index): self
     {
         if (! $this->has($index)) {
             return $this;
@@ -99,10 +74,7 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable,
         return $this;
     }
 
-    /**
-     * @param int|string $index
-     */
-    public function get($index): CBORObject
+    public function get(int|string $index): CBORObject
     {
         if (! $this->has($index)) {
             throw new InvalidArgumentException('Index not found.');
@@ -121,14 +93,6 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable,
         $this->data[$key->normalize()] = $object;
 
         return $this;
-    }
-
-    /**
-     * @deprecated The method will be removed on v3.0. No replacement
-     */
-    public function count(): int
-    {
-        return count($this->data);
     }
 
     /**
@@ -151,22 +115,6 @@ class IndefiniteLengthMapObject extends AbstractCBORObject implements Countable,
             }
             $valueObject = $item->getValue();
             $carry[$key->normalize()] = $valueObject instanceof Normalizable ? $valueObject->normalize() : $valueObject;
-
-            return $carry;
-        }, []);
-    }
-
-    /**
-     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
-     *
-     * @return mixed[]
-     */
-    public function getNormalizedData(bool $ignoreTags = false): array
-    {
-        return array_reduce($this->data, static function (array $carry, MapItem $item) use ($ignoreTags): array {
-            $key = $item->getKey();
-            $valueObject = $item->getValue();
-            $carry[$key->getNormalizedData($ignoreTags)] = $valueObject->getNormalizedData($ignoreTags);
 
             return $carry;
         }, []);

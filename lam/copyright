@@ -1149,7 +1149,6 @@ lib/3rdParty/composer/firebase                                       F  2011  Ne
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
 lib/3rdParty/composer/http-interop                                   B  2016  Woody Gilk
 lib/3rdParty/composer/illuminate                                     B        Taylor Otwell
-lib/3rdParty/composer/league                                         B        ignace nyamagana butera
 lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
 lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano
 lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises
@@ -1158,7 +1157,6 @@ lib/3rdParty/composer/phpmailer                                      I
 lib/3rdParty/composer/phpseclib                                      B  2019  TerraFrost and other contributors
 lib/3rdParty/composer/psr                                            B        PHP Framework Interoperability Group
 lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar
-lib/3rdParty/composer/ramsey                                         B  2018  Ben Ramsey
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs
 lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier
 lib/3rdParty/composer/thecodingmachine                               B        TheCodingMachine

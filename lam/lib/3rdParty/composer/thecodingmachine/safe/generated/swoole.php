@@ -7,6 +7,46 @@ use Safe\Exceptions\SwooleException;
 /**
  *
  *
+ * @param string $hostname The host name.
+ * @param callable $callback The host name.
+ *
+ * The IP address.
+ * @throws SwooleException
+ *
+ */
+function swoole_async_dns_lookup(string $hostname, callable $callback): void
+{
+    error_clear_last();
+    $safeResult = \swoole_async_dns_lookup($hostname, $callback);
+    if ($safeResult === false) {
+        throw SwooleException::createFromPhpError();
+    }
+}
+
+
+/**
+ *
+ *
+ * @param string $filename The filename of the file being read.
+ * @param string $callback The name of the file.
+ *
+ * The content read from the file.
+ * @throws SwooleException
+ *
+ */
+function swoole_async_readfile(string $filename, string $callback): void
+{
+    error_clear_last();
+    $safeResult = \swoole_async_readfile($filename, $callback);
+    if ($safeResult === false) {
+        throw SwooleException::createFromPhpError();
+    }
+}
+
+
+/**
+ *
+ *
  * @param string $filename The filename being written.
  * @param string $content The content writing to the file.
  * @param int $offset The offset.
@@ -18,13 +58,13 @@ function swoole_async_write(string $filename, string $content, int $offset = nul
 {
     error_clear_last();
     if ($callback !== null) {
-        $result = \swoole_async_write($filename, $content, $offset, $callback);
+        $safeResult = \swoole_async_write($filename, $content, $offset, $callback);
     } elseif ($offset !== null) {
-        $result = \swoole_async_write($filename, $content, $offset);
+        $safeResult = \swoole_async_write($filename, $content, $offset);
     } else {
-        $result = \swoole_async_write($filename, $content);
+        $safeResult = \swoole_async_write($filename, $content);
     }
-    if ($result === false) {
+    if ($safeResult === false) {
         throw SwooleException::createFromPhpError();
     }
 }
@@ -44,13 +84,13 @@ function swoole_async_writefile(string $filename, string $content, callable $cal
 {
     error_clear_last();
     if ($flags !== 0) {
-        $result = \swoole_async_writefile($filename, $content, $callback, $flags);
+        $safeResult = \swoole_async_writefile($filename, $content, $callback, $flags);
     } elseif ($callback !== null) {
-        $result = \swoole_async_writefile($filename, $content, $callback);
+        $safeResult = \swoole_async_writefile($filename, $content, $callback);
     } else {
-        $result = \swoole_async_writefile($filename, $content);
+        $safeResult = \swoole_async_writefile($filename, $content);
     }
-    if ($result === false) {
+    if ($safeResult === false) {
         throw SwooleException::createFromPhpError();
     }
 }
@@ -66,8 +106,8 @@ function swoole_async_writefile(string $filename, string $content, callable $cal
 function swoole_event_defer(callable $callback): void
 {
     error_clear_last();
-    $result = \swoole_event_defer($callback);
-    if ($result === false) {
+    $safeResult = \swoole_event_defer($callback);
+    if ($safeResult === false) {
         throw SwooleException::createFromPhpError();
     }
 }
@@ -83,8 +123,8 @@ function swoole_event_defer(callable $callback): void
 function swoole_event_del(int $fd): void
 {
     error_clear_last();
-    $result = \swoole_event_del($fd);
-    if ($result === false) {
+    $safeResult = \swoole_event_del($fd);
+    if ($safeResult === false) {
         throw SwooleException::createFromPhpError();
     }
 }
@@ -101,8 +141,8 @@ function swoole_event_del(int $fd): void
 function swoole_event_write(int $fd, string $data): void
 {
     error_clear_last();
-    $result = \swoole_event_write($fd, $data);
-    if ($result === false) {
+    $safeResult = \swoole_event_write($fd, $data);
+    if ($safeResult === false) {
         throw SwooleException::createFromPhpError();
     }
 }

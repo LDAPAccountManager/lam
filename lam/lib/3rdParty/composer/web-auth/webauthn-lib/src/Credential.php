@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Webauthn;
 
 /**
@@ -18,20 +9,10 @@ namespace Webauthn;
  */
 abstract class Credential
 {
-    /**
-     * @var string
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $type;
-
-    public function __construct(string $id, string $type)
-    {
-        $this->id = $id;
-        $this->type = $type;
+    public function __construct(
+        protected string $id,
+        protected string $type
+    ) {
     }
 
     public function getId(): string

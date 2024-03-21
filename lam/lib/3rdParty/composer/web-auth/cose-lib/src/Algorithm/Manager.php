@@ -2,40 +2,43 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Algorithm;
 
 use function array_key_exists;
-use Assert\Assertion;
+use InvalidArgumentException;
 
-class Manager
+final class Manager
 {
     /**
-     * @var Algorithm[]
+     * @var array<int, Algorithm>
      */
-    private $algorithms = [];
+    private array $algorithms = [];
 
-    public function add(Algorithm $algorithm): void
+    public static function create(): self
     {
-        $identifier = $algorithm::identifier();
-        $this->algorithms[$identifier] = $algorithm;
+        return new self();
     }
 
+    public function add(Algorithm ...$algorithms): self
+    {
+        foreach ($algorithms as $algorithm) {
+            $identifier = $algorithm::identifier();
+            $this->algorithms[$identifier] = $algorithm;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return iterable<int>
+     */
     public function list(): iterable
     {
         yield from array_keys($this->algorithms);
     }
 
     /**
-     * @return Algorithm[]
+     * @return iterable<int, Algorithm>
      */
     public function all(): iterable
     {
@@ -49,7 +52,9 @@ class Manager
 
     public function get(int $identifier): Algorithm
     {
-        Assertion::true($this->has($identifier), 'Unsupported algorithm');
+        if (! $this->has($identifier)) {
+            throw new InvalidArgumentException('Unsupported algorithm');
+        }
 
         return $this->algorithms[$identifier];
     }

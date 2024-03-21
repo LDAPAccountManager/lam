@@ -2,28 +2,39 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Key;
 
-use Assert\Assertion;
+use InvalidArgumentException;
 
+/**
+ * @final
+ */
 class SymmetricKey extends Key
 {
-    public const DATA_K = -1;
+    final public const DATA_K = -1;
 
+    /**
+     * @param array<int|string, mixed> $data
+     */
     public function __construct(array $data)
     {
         parent::__construct($data);
-        Assertion::eq($data[self::TYPE], self::TYPE_OCT, 'Invalid symmetric key. The key type does not correspond to a symmetric key');
-        Assertion::keyExists($data, self::DATA_K, 'Invalid symmetric key. The parameter "k" is missing');
+        if (! isset($data[self::TYPE]) || (int) $data[self::TYPE] !== self::TYPE_OCT) {
+            throw new InvalidArgumentException(
+                'Invalid symmetric key. The key type does not correspond to a symmetric key'
+            );
+        }
+        if (! isset($data[self::DATA_K])) {
+            throw new InvalidArgumentException('Invalid symmetric key. The parameter "k" is missing');
+        }
+    }
+
+    /**
+     * @param array<int|string, mixed> $data
+     */
+    public static function create(array $data): self
+    {
+        return new self($data);
     }
 
     public function k(): string

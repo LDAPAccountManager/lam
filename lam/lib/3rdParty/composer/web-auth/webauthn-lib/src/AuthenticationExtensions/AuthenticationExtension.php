@@ -2,38 +2,21 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Webauthn\AuthenticationExtensions;
 
 use JsonSerializable;
 
 class AuthenticationExtension implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $name;
+    public function __construct(
+        private readonly string $name,
+        private readonly mixed $value
+    ) {
+    }
 
-    /**
-     * @var mixed
-     */
-    private $value;
-
-    /**
-     * @param mixed $value
-     */
-    public function __construct(string $name, $value)
+    public static function create(string $name, mixed $value): self
     {
-        $this->name = $name;
-        $this->value = $value;
+        return new self($name, $value);
     }
 
     public function name(): string
@@ -41,18 +24,12 @@ class AuthenticationExtension implements JsonSerializable
         return $this->name;
     }
 
-    /**
-     * @return mixed
-     */
-    public function value()
+    public function value(): mixed
     {
         return $this->value;
     }
 
-    /**
-     * @return mixed
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->value;
     }

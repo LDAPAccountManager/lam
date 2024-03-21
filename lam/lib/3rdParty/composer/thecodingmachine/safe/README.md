@@ -9,8 +9,6 @@
 Safe PHP
 ========
 
-**Work in progress**
-
 A set of core PHP functions rewritten to throw exceptions instead of returning `false` when an error is encountered.
 
 ## The problem
@@ -22,7 +20,7 @@ But most of us are too lazy to check explicitly for every single return of every
 
 ```php
 // This code is incorrect. Twice.
-// "file_get_contents" can return false if the file does not exists
+// "file_get_contents" can return false if the file does not exist
 // "json_decode" can return false if the file content is not valid JSON
 $content = file_get_contents('foobar.json');
 $foobar = json_decode($content);
@@ -115,7 +113,7 @@ tool that performs instant refactoring of your application.
 Run
 
 ```bash
-$ composer require --dev rector/rector:^0.7
+$ composer require --dev rector/rector
 ```
 
 to install `rector/rector`.
@@ -123,7 +121,7 @@ to install `rector/rector`.
 Run
 
 ```bash
-vendor/bin/rector process src/ --config vendor/thecodingmachine/safe/rector-migrate-0.7.php
+vendor/bin/rector process src/ --config vendor/thecodingmachine/safe/rector-migrate.php
 ```
 
 to run `rector/rector`.

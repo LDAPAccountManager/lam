@@ -7,7 +7,7 @@ use \htmlTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2023  Roland Gruber
+  Copyright (C) 2006 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,13 +56,13 @@ echo "<div class=\"smallPaddingContent\">\n";
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_("LAM tests")), 12);
 
-$container->add(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/script.svg'), 12, 4);
-$container->add(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), 12, 8);
+$container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/search-color.svg'), 12, 4);
+$container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);
 
 $container->addVerticalSpacer('2rem');
 
-$container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/search-color.svg'), 12, 4);
-$container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);
+$container->add(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/script.svg'), 12, 4);
+$container->add(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), 12, 8);
 
 parseHtml(null, $container, [], true, 'user');
 

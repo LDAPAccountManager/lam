@@ -5,125 +5,120 @@ namespace Safe;
 use Safe\Exceptions\ExecException;
 
 /**
- * proc_get_status fetches data about a
- * process opened using proc_open.
+ * exec executes the given
+ * command.
  *
- * @param resource $process The proc_open resource that will
- * be evaluated.
- * @return array An array of collected information on success. The returned array contains the following elements:
+ * @param string $command The command that will be executed.
+ * @param array|null $output If the output argument is present, then the
+ * specified array will be filled with every line of output from the
+ * command.  Trailing whitespace, such as \n, is not
+ * included in this array.  Note that if the array already contains some
+ * elements, exec will append to the end of the array.
+ * If you do not want the function to append elements, call
+ * unset on the array before passing it to
+ * exec.
+ * @param int|null $result_code If the result_code argument is present
+ * along with the output argument, then the
+ * return status of the executed command will be written to this
+ * variable.
+ * @return string The last line from the result of the command.  If you need to execute a
+ * command and have all the data from the command passed directly back without
+ * any interference, use the passthru function.
  *
+ * Returns FALSE on failure.
  *
- *
- *
- * elementtypedescription
- *
- *
- *
- * command
- * string
- *
- * The command string that was passed to proc_open.
- *
- *
- *
- * pid
- * int
- * process id
- *
- *
- * running
- * bool
- *
- * TRUE if the process is still running, FALSE if it has
- * terminated.
- *
- *
- *
- * signaled
- * bool
- *
- * TRUE if the child process has been terminated by
- * an uncaught signal. Always set to FALSE on Windows.
- *
- *
- *
- * stopped
- * bool
- *
- * TRUE if the child process has been stopped by a
- * signal. Always set to FALSE on Windows.
- *
- *
- *
- * exitcode
- * int
- *
- * The exit code returned by the process (which is only
- * meaningful if running is FALSE).
- * Only first call of this function return real value, next calls return
- * -1.
- *
- *
- *
- * termsig
- * int
- *
- * The number of the signal that caused the child process to terminate
- * its execution (only meaningful if signaled is TRUE).
- *
- *
- *
- * stopsig
- * int
- *
- * The number of the signal that caused the child process to stop its
- * execution (only meaningful if stopped is TRUE).
- *
- *
- *
- *
- *
+ * To get the output of the executed command, be sure to set and use the
+ * output parameter.
  * @throws ExecException
  *
  */
-function proc_get_status($process): array
+function exec(string $command, ?array &$output = null, ?int &$result_code = null): string
 {
     error_clear_last();
-    $result = \proc_get_status($process);
-    if ($result === false) {
+    $safeResult = \exec($command, $output, $result_code);
+    if ($safeResult === false) {
         throw ExecException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
+}
+
+
+/**
+ * The passthru function is similar to the
+ * exec function in that it executes a
+ * command. This function
+ * should be used in place of exec or
+ * system when the output from the Unix command
+ * is binary data which needs to be passed directly back to the
+ * browser.  A common use for this is to execute something like the
+ * pbmplus utilities that can output an image stream directly.  By
+ * setting the Content-type to image/gif and
+ * then calling a pbmplus program to output a gif, you can create
+ * PHP scripts that output images directly.
+ *
+ * @param string $command The command that will be executed.
+ * @param int|null $result_code If the result_code argument is present, the
+ * return status of the Unix command will be placed here.
+ * @throws ExecException
+ *
+ */
+function passthru(string $command, ?int &$result_code = null): void
+{
+    error_clear_last();
+    $safeResult = \passthru($command, $result_code);
+    if ($safeResult === false) {
+        throw ExecException::createFromPhpError();
+    }
 }
 
 
 /**
  * proc_nice changes the priority of the current
- * process by the amount specified in increment. A
- * positive increment will lower the priority of the
- * current process, whereas a negative increment
+ * process by the amount specified in priority. A
+ * positive priority will lower the priority of the
+ * current process, whereas a negative priority
  * will raise the priority.
  *
  * proc_nice is not related to
  * proc_open and its associated functions in any way.
  *
- * @param int $increment The new priority value, the value of this may differ on platforms.
+ * @param int $priority The new priority value, the value of this may differ on platforms.
  *
  * On Unix, a low value, such as -20 means high priority
- * wheras a positive value have a lower priority.
+ * whereas positive values have a lower priority.
  *
- * For Windows the increment parameter have the
- * following meanings:
+ * For Windows the priority parameter has the
+ * following meaning:
  * @throws ExecException
  *
  */
-function proc_nice(int $increment): void
+function proc_nice(int $priority): void
 {
     error_clear_last();
-    $result = \proc_nice($increment);
-    if ($result === false) {
+    $safeResult = \proc_nice($priority);
+    if ($safeResult === false) {
         throw ExecException::createFromPhpError();
     }
+}
+
+
+/**
+ * This function is identical to the backtick operator.
+ *
+ * @param string $command The command that will be executed.
+ * @return string A string containing the output from the executed command, FALSE if the pipe
+ * cannot be established or NULL if an error occurs or the command produces no output.
+ * @throws ExecException
+ *
+ */
+function shell_exec(string $command): string
+{
+    error_clear_last();
+    $safeResult = \shell_exec($command);
+    if ($safeResult === null) {
+        throw ExecException::createFromPhpError();
+    }
+    return $safeResult;
 }
 
 
@@ -141,19 +136,19 @@ function proc_nice(int $increment): void
  * passthru function.
  *
  * @param string $command The command that will be executed.
- * @param int $return_var If the return_var argument is present, then the
+ * @param int|null $result_code If the result_code argument is present, then the
  * return status of the executed command will be written to this
  * variable.
  * @return string Returns the last line of the command output on success.
  * @throws ExecException
  *
  */
-function system(string $command, int &$return_var = null): string
+function system(string $command, ?int &$result_code = null): string
 {
     error_clear_last();
-    $result = \system($command, $return_var);
-    if ($result === false) {
+    $safeResult = \system($command, $result_code);
+    if ($safeResult === false) {
         throw ExecException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }

@@ -21,11 +21,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile as BaseUploadedFile;
  */
 class UploadedFile extends BaseUploadedFile
 {
-    private $psrUploadedFile;
-    private $test = false;
+    private bool $test = false;
 
-    public function __construct(UploadedFileInterface $psrUploadedFile, callable $getTemporaryPath)
-    {
+    public function __construct(
+        private readonly UploadedFileInterface $psrUploadedFile,
+        callable $getTemporaryPath,
+    ) {
         $error = $psrUploadedFile->getError();
         $path = '';
 
@@ -45,14 +46,9 @@ class UploadedFile extends BaseUploadedFile
             $psrUploadedFile->getError(),
             $this->test
         );
-
-        $this->psrUploadedFile = $psrUploadedFile;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function move(string $directory, string $name = null): File
+    public function move(string $directory, ?string $name = null): File
     {
         if (!$this->isValid() || $this->test) {
             return parent::move($directory, $name);
@@ -63,7 +59,7 @@ class UploadedFile extends BaseUploadedFile
         try {
             $this->psrUploadedFile->moveTo((string) $target);
         } catch (\RuntimeException $e) {
-            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, $e->getMessage()), 0, $e);
+            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s).', $this->getPathname(), $target, $e->getMessage()), 0, $e);
         }
 
         @chmod($target, 0666 & ~umask());

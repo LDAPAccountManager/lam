@@ -7,13 +7,18 @@
 
 namespace Safe;
 
-use Safe\Exceptions\SocketsException;
+use Safe\Exceptions\FilesystemException;
 use const PREG_NO_ERROR;
+
+use Safe\Exceptions\MiscException;
+use Safe\Exceptions\PosixException;
+use Safe\Exceptions\SocketsException;
 use Safe\Exceptions\ApcException;
 use Safe\Exceptions\ApcuException;
 use Safe\Exceptions\JsonException;
 use Safe\Exceptions\OpensslException;
 use Safe\Exceptions\PcreException;
+use Safe\Exceptions\SimplexmlException;
 
 /**
  * Wrapper for json_decode that throws when an error occurs.
@@ -21,16 +26,16 @@ use Safe\Exceptions\PcreException;
  * @param string $json    JSON data to parse
  * @param bool $assoc     When true, returned objects will be converted
  *                        into associative arrays.
- * @param int $depth   User specified recursion depth.
- * @param int $options Bitmask of JSON decode options.
+ * @param int<1, max> $depth   User specified recursion depth.
+ * @param int $flags Bitmask of JSON decode options.
  *
  * @return mixed
  * @throws JsonException if the JSON cannot be decoded.
  * @link http://www.php.net/manual/en/function.json-decode.php
  */
-function json_decode(string $json, bool $assoc = false, int $depth = 512, int $options = 0)
+function json_decode(string $json, bool $assoc = false, int $depth = 512, int $flags = 0): mixed
 {
-    $data = \json_decode($json, $assoc, $depth, $options);
+    $data = \json_decode($json, $assoc, $depth, $flags);
     if (JSON_ERROR_NONE !== json_last_error()) {
         throw JsonException::createFromPhpError();
     }
@@ -83,12 +88,12 @@ function apcu_fetch($key)
  * pattern and replaces them with
  * replacement.
  *
- * @param mixed $pattern The pattern to search for. It can be either a string or an array with
+ * @param string[]|string $pattern The pattern to search for. It can be either a string or an array with
  * strings.
  *
  * Several PCRE modifiers
  * are also available.
- * @param mixed $replacement The string or an array with strings to replace. If this parameter is a
+ * @param string[]|string $replacement The string or an array with strings to replace. If this parameter is a
  * string and the pattern parameter is an array,
  * all patterns will be replaced by that string. If both
  * pattern and replacement
@@ -216,7 +221,7 @@ function openssl_encrypt(string $data, string $method, string $key, int $options
  * socket from the given
  * buffer.
  *
- * @param resource $socket
+ * @param \Socket $socket
  * @param string $buffer The buffer to be written.
  * @param int $length The optional parameter length can specify an
  * alternate length of bytes written to the socket. If this length is
@@ -230,7 +235,7 @@ function openssl_encrypt(string $data, string $method, string $key, int $options
  * @throws SocketsException
  *
  */
-function socket_write($socket, string $buffer, int $length = 0): int
+function socket_write(\Socket $socket, string $buffer, int $length = 0): int
 {
     error_clear_last();
     $result = $length === 0 ? \socket_write($socket, $buffer) : \socket_write($socket, $buffer, $length);
@@ -238,4 +243,200 @@ function socket_write($socket, string $buffer, int $length = 0): int
         throw SocketsException::createFromPhpError();
     }
     return $result;
+}
+
+/**
+ * This function takes a node of a DOM
+ * document and makes it into a SimpleXML node. This new object can
+ * then be used as a native SimpleXML element.
+ *
+ * @param \DOMNode $node A DOM Element node
+ * @param string $class_name You may use this optional parameter so that
+ * simplexml_import_dom will return an object of
+ * the specified class. That class should extend the
+ * SimpleXMLElement class.
+ * @return \SimpleXMLElement Returns a SimpleXMLElement.
+ * @throws SimplexmlException
+ *
+ */
+function simplexml_import_dom(\DOMNode $node, string $class_name = \SimpleXMLElement::class): \SimpleXMLElement
+{
+    error_clear_last();
+    $result = \simplexml_import_dom($node, $class_name);
+    if ($result === null) {
+        throw SimplexmlException::createFromPhpError();
+    }
+    return $result;
+}
+
+/**
+ * Convert the well-formed XML document in the given file to an object.
+ *
+ * @param string $filename Path to the XML file
+ * @param string $class_name You may use this optional parameter so that
+ * simplexml_load_file will return an object of
+ * the specified class. That class should extend the
+ * SimpleXMLElement class.
+ * @param int $options Since Libxml 2.6.0, you may also use the
+ * options parameter to specify additional Libxml parameters.
+ * @param string $namespace_or_prefix Namespace prefix or URI.
+ * @param bool $is_prefix TRUE if namespace_or_prefix is a prefix, FALSE if it's a URI;
+ * defaults to FALSE.
+ * @return \SimpleXMLElement Returns an object of class SimpleXMLElement with
+ * properties containing the data held within the XML document.
+ * @throws SimplexmlException
+ *
+ */
+function simplexml_load_file(string $filename, string $class_name = \SimpleXMLElement::class, int $options = 0, string $namespace_or_prefix = "", bool $is_prefix = false): \SimpleXMLElement
+{
+    error_clear_last();
+    $result = \simplexml_load_file($filename, $class_name, $options, $namespace_or_prefix, $is_prefix);
+    if ($result === false) {
+        throw SimplexmlException::createFromPhpError();
+    }
+    return $result;
+}
+
+
+/**
+ * Takes a well-formed XML string and returns it as an object.
+ *
+ * @param string $data A well-formed XML string
+ * @param string $class_name You may use this optional parameter so that
+ * simplexml_load_string will return an object of
+ * the specified class. That class should extend the
+ * SimpleXMLElement class.
+ * @param int $options Since Libxml 2.6.0, you may also use the
+ * options parameter to specify additional Libxml parameters.
+ * @param string $namespace_or_prefix Namespace prefix or URI.
+ * @param bool $is_prefix TRUE if namespace_or_prefix is a prefix, FALSE if it's a URI;
+ * defaults to FALSE.
+ * @return \SimpleXMLElement Returns an object of class SimpleXMLElement with
+ * properties containing the data held within the xml document.
+ * @throws SimplexmlException
+ *
+ */
+function simplexml_load_string(string $data, string $class_name = \SimpleXMLElement::class, int $options = 0, string $namespace_or_prefix = "", bool $is_prefix = false): \SimpleXMLElement
+{
+    error_clear_last();
+    $result = \simplexml_load_string($data, $class_name, $options, $namespace_or_prefix, $is_prefix);
+    if ($result === false) {
+        throw SimplexmlException::createFromPhpError();
+    }
+    return $result;
+}
+
+/**
+ * Returns three samples representing the average system load
+ * (the number of processes in the system run queue) over the last 1, 5 and 15
+ * minutes, respectively. Returns FALSE on failure.
+ *
+ * @return array<int,float> Returns an array with three samples (last 1, 5 and 15
+ * minutes).
+ * @throws MiscException
+ *
+ */
+function sys_getloadavg(): array
+{
+    error_clear_last();
+    $result = \sys_getloadavg();
+    if ($result === false) {
+        throw MiscException::createFromPhpError();
+    }
+    return $result;
+}
+
+/**
+ * Returns the process group identifier of the process
+ * process_id.
+ *
+ * @param int $process_id The process id.
+ * @return int Returns the identifier, as an int.
+ * @throws PosixException
+ *
+ */
+function posix_getpgid(int $process_id): int
+{
+    error_clear_last();
+    $result = \posix_getpgid($process_id);
+    if ($result === false) {
+        throw PosixException::createFromPhpError();
+    }
+    return $result;
+}
+
+
+/**
+ * fputcsv formats a line (passed as a
+ * fields array) as CSV and writes it (terminated by a
+ * newline) to the specified file stream.
+ *
+ * @param resource $stream The file pointer must be valid, and must point to
+ * a file successfully opened by fopen or
+ * fsockopen (and not yet closed by
+ * fclose).
+ * @phpstan-param (scalar|\Stringable|null)[] $fields
+ * @param array $fields An array of strings.
+ * @param string $separator The optional separator parameter sets the field
+ * delimiter (one single-byte character only).
+ * @param string $enclosure The optional enclosure parameter sets the field
+ * enclosure (one single-byte character only).
+ * @param string $escape The optional escape parameter sets the
+ * escape character (at most one single-byte character).
+ * An empty string ("") disables the proprietary escape mechanism.
+ * @param string $eol The optional eol parameter sets
+ * a custom End of Line sequence.
+ * @return int Returns the length of the written string.
+ * @throws FilesystemException
+ *
+ */
+function fputcsv($stream, array $fields, string $separator = ",", string $enclosure = "\"", string $escape = "\\", string $eol = "\n"): int
+{
+    error_clear_last();
+    if (PHP_VERSION_ID >= 80100) {
+        /** @phpstan-ignore-next-line */
+        $result = \fputcsv($stream, $fields, $separator, $enclosure, $escape, $eol);
+    } else {
+        $result = \fputcsv($stream, $fields, $separator, $enclosure, $escape);
+    }
+
+    if ($result === false) {
+        throw FilesystemException::createFromPhpError();
+    }
+    return $result;
+}
+
+/**
+ * Similar to fgets except that
+ * fgetcsv parses the line it reads for fields in
+ * CSV format and returns an array containing the fields
+ * read.
+ *
+ * @param resource $stream A valid file pointer to a file successfully opened by
+ * fopen, popen, or
+ * fsockopen.
+ * @param int<0, max>|null $length Must be greater than the longest line (in characters) to be found in
+ * the CSV file (allowing for trailing line-end characters). Otherwise the
+ * line is split in chunks of length characters,
+ * unless the split would occur inside an enclosure.
+ *
+ * Omitting this parameter (or setting it to 0,
+ * or NULL in PHP 8.0.0 or later) the maximum line length is not limited,
+ * which is slightly slower.
+ * @param string $separator The optional separator parameter sets the field separator (one single-byte character only).
+ * @param string $enclosure The optional enclosure parameter sets the field enclosure character (one single-byte character only).
+ * @param string $escape The optional escape parameter sets the escape character (at most one single-byte character).
+ * An empty string ("") disables the proprietary escape mechanism.
+ * @return mixed[]|false Returns an indexed array containing the fields read on success or false when there is no more lines.
+ * @throws FilesystemException
+ *
+ */
+function fgetcsv($stream, int $length = null, string $separator = ",", string $enclosure = "\"", string $escape = "\\"): array|false
+{
+    error_clear_last();
+    $safeResult = \fgetcsv($stream, $length, $separator, $enclosure, $escape);
+    if ($safeResult === false && \feof($stream) === false) {
+        throw FilesystemException::createFromPhpError();
+    }
+    return $safeResult;
 }

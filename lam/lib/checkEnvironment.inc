@@ -45,7 +45,7 @@ include_once(__DIR__ . "/../lib/config.inc");
 include_once(__DIR__ . "/../lib/persistence.inc");
 
 // check if PHP >= 7.4
-if (version_compare(phpversion(), '8.0.2') < 0) {
+if (version_compare(phpversion(), '8.1') < 0) {
 	echo "<!DOCTYPE html>\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
@@ -53,7 +53,7 @@ if (version_compare(phpversion(), '8.0.2') < 0) {
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	printHeaderContents('LDAP Account Manager', '..');
 	echo "</head><body>\n";
-	StatusMessage("ERROR", "LAM needs a PHP version which is greater or equal than 8.0.2.", "Please upgrade your PHP installation. The found version is " . phpversion());
+	StatusMessage("ERROR", "LAM needs a PHP version which is greater or equal than 8.1.", "Please upgrade your PHP installation. The found version is " . phpversion());
 	echo "<br><br>";
 	echo "</body></html>";
 	exit();

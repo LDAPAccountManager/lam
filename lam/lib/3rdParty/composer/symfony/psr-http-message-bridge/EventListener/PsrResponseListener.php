@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Bridge\PsrHttpMessage\EventListener;
 
 use Psr\Http\Message\ResponseInterface;
@@ -17,9 +26,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class PsrResponseListener implements EventSubscriberInterface
 {
-    private $httpFoundationFactory;
+    private readonly HttpFoundationFactoryInterface $httpFoundationFactory;
 
-    public function __construct(HttpFoundationFactoryInterface $httpFoundationFactory = null)
+    public function __construct(?HttpFoundationFactoryInterface $httpFoundationFactory = null)
     {
         $this->httpFoundationFactory = $httpFoundationFactory ?? new HttpFoundationFactory();
     }
@@ -38,9 +47,6 @@ final class PsrResponseListener implements EventSubscriberInterface
         $event->setResponse($this->httpFoundationFactory->createResponse($controllerResult));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents(): array
     {
         return [

@@ -2,64 +2,74 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Cose\Key;
 
 use function array_key_exists;
-use Assert\Assertion;
+use InvalidArgumentException;
 
 class Key
 {
     public const TYPE = 1;
+
     public const TYPE_OKP = 1;
+
     public const TYPE_EC2 = 2;
+
     public const TYPE_RSA = 3;
+
     public const TYPE_OCT = 4;
+
     public const KID = 2;
+
     public const ALG = 3;
+
     public const KEY_OPS = 4;
+
     public const BASE_IV = 5;
 
     /**
-     * @var array
+     * @var array<int|string, mixed>
      */
-    private $data;
+    private readonly array $data;
 
+    /**
+     * @param array<int|string, mixed> $data
+     */
     public function __construct(array $data)
     {
-        Assertion::keyExists($data, self::TYPE, 'Invalid key: the type is not defined');
+        if (! array_key_exists(self::TYPE, $data)) {
+            throw new InvalidArgumentException('Invalid key: the type is not defined');
+        }
         $this->data = $data;
     }
 
-    public static function createFromData(array $data): self
+    /**
+     * @param array<int|string, mixed> $data
+     */
+    public static function create(array $data): self
     {
-        Assertion::keyExists($data, self::TYPE, 'Invalid key: the type is not defined');
-        switch ($data[self::TYPE]) {
-            case 1:
-                return new OkpKey($data);
-            case 2:
-                return new Ec2Key($data);
-            case 3:
-                return new RsaKey($data);
-            case 4:
-                return new SymmetricKey($data);
-            default:
-                return new self($data);
-        }
+        return new self($data);
     }
 
     /**
-     * @return int|string
+     * @param array<int, mixed> $data
      */
-    public function type()
+    public static function createFromData(array $data): self
+    {
+        if (! array_key_exists(self::TYPE, $data)) {
+            throw new InvalidArgumentException('Invalid key: the type is not defined');
+        }
+
+        return match ($data[self::TYPE]) {
+            '1' => new OkpKey($data),
+            '2' => new Ec2Key($data),
+            '3' => new RsaKey($data),
+            '4' => new SymmetricKey($data),
+            default => self::create($data),
+        };
+    }
+
+    public function type(): int|string
     {
         return $this->data[self::TYPE];
     }
@@ -69,22 +79,24 @@ class Key
         return (int) $this->get(self::ALG);
     }
 
+    /**
+     * @return array<int|string, mixed>
+     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    public function has(int $key): bool
+    public function has(int|string $key): bool
     {
         return array_key_exists($key, $this->data);
     }
 
-    /**
-     * @return mixed
-     */
-    public function get(int $key)
+    public function get(int|string $key): mixed
     {
-        Assertion::keyExists($this->data, $key, sprintf('The key has no data at index %d', $key));
+        if (! array_key_exists($key, $this->data)) {
+            throw new InvalidArgumentException(sprintf('The key has no data at index %d', $key));
+        }
 
         return $this->data[$key];
     }

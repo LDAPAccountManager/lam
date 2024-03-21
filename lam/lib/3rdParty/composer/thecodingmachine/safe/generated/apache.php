@@ -14,19 +14,17 @@ use Safe\Exceptions\ApacheException;
 function apache_get_version(): string
 {
     error_clear_last();
-    $result = \apache_get_version();
-    if ($result === false) {
+    $safeResult = \apache_get_version();
+    if ($safeResult === false) {
         throw ApacheException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
 /**
  * Retrieve an Apache environment variable specified by
  * variable.
- *
- * This function requires Apache 2 otherwise it's undefined.
  *
  * @param string $variable The Apache environment variable
  * @param bool $walk_to_top Whether to get the top-level variable available to all Apache layers.
@@ -37,18 +35,65 @@ function apache_get_version(): string
 function apache_getenv(string $variable, bool $walk_to_top = false): string
 {
     error_clear_last();
-    $result = \apache_getenv($variable, $walk_to_top);
-    if ($result === false) {
+    $safeResult = \apache_getenv($variable, $walk_to_top);
+    if ($safeResult === false) {
         throw ApacheException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
+}
+
+
+/**
+ * This performs a partial request for a URI.  It goes just far
+ * enough to obtain all the important information about the given
+ * resource.
+ *
+ * @param string $filename The filename (URI) that's being requested.
+ * @return object An object of related URI information. The properties of
+ * this object are:
+ *
+ *
+ * status
+ * the_request
+ * status_line
+ * method
+ * content_type
+ * handler
+ * uri
+ * filename
+ * path_info
+ * args
+ * boundary
+ * no_cache
+ * no_local_copy
+ * allowed
+ * send_bodyct
+ * bytes_sent
+ * byterange
+ * clength
+ * unparsed_uri
+ * mtime
+ * request_time
+ *
+ *
+ * Returns FALSE on failure.
+ * @throws ApacheException
+ *
+ */
+function apache_lookup_uri(string $filename): object
+{
+    error_clear_last();
+    $safeResult = \apache_lookup_uri($filename);
+    if ($safeResult === false) {
+        throw ApacheException::createFromPhpError();
+    }
+    return $safeResult;
 }
 
 
 /**
  * Fetches all HTTP request headers from the current request. Works in the
- * Apache, FastCGI, CLI, FPM and NSAPI server module
- * in Netscape/iPlanet/SunONE webservers.
+ * Apache, FastCGI, CLI, and FPM webservers.
  *
  * @return array An associative array of all the HTTP headers in the current request.
  * @throws ApacheException
@@ -57,40 +102,17 @@ function apache_getenv(string $variable, bool $walk_to_top = false): string
 function apache_request_headers(): array
 {
     error_clear_last();
-    $result = \apache_request_headers();
-    if ($result === false) {
+    $safeResult = \apache_request_headers();
+    if ($safeResult === false) {
         throw ApacheException::createFromPhpError();
     }
-    return $result;
-}
-
-
-/**
- * apache_reset_timeout resets the Apache write timer,
- * which defaults to 300 seconds. With set_time_limit(0);
- * ignore_user_abort(true) and periodic
- * apache_reset_timeout calls, Apache can theoretically
- * run forever.
- *
- * This function requires Apache 1.
- *
- * @throws ApacheException
- *
- */
-function apache_reset_timeout(): void
-{
-    error_clear_last();
-    $result = \apache_reset_timeout();
-    if ($result === false) {
-        throw ApacheException::createFromPhpError();
-    }
+    return $safeResult;
 }
 
 
 /**
  * Fetch all HTTP response headers.  Works in the
- * Apache, FastCGI, CLI, FPM and NSAPI server module
- * in Netscape/iPlanet/SunONE webservers.
+ * Apache, FastCGI, CLI, and FPM webservers.
  *
  * @return array An array of all Apache response headers on success.
  * @throws ApacheException
@@ -99,11 +121,11 @@ function apache_reset_timeout(): void
 function apache_response_headers(): array
 {
     error_clear_last();
-    $result = \apache_response_headers();
-    if ($result === false) {
+    $safeResult = \apache_response_headers();
+    if ($safeResult === false) {
         throw ApacheException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
@@ -121,8 +143,8 @@ function apache_response_headers(): array
 function apache_setenv(string $variable, string $value, bool $walk_to_top = false): void
 {
     error_clear_last();
-    $result = \apache_setenv($variable, $value, $walk_to_top);
-    if ($result === false) {
+    $safeResult = \apache_setenv($variable, $value, $walk_to_top);
+    if ($safeResult === false) {
         throw ApacheException::createFromPhpError();
     }
 }
@@ -142,11 +164,11 @@ function apache_setenv(string $variable, string $value, bool $walk_to_top = fals
 function getallheaders(): array
 {
     error_clear_last();
-    $result = \getallheaders();
-    if ($result === false) {
+    $safeResult = \getallheaders();
+    if ($safeResult === false) {
         throw ApacheException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
@@ -163,15 +185,15 @@ function getallheaders(): array
  * To run the sub-request, all buffers are terminated and flushed to the
  * browser, pending headers are sent too.
  *
- * @param string $filename The file that the virtual command will be performed on.
+ * @param string $uri The file that the virtual command will be performed on.
  * @throws ApacheException
  *
  */
-function virtual(string $filename): void
+function virtual(string $uri): void
 {
     error_clear_last();
-    $result = \virtual($filename);
-    if ($result === false) {
+    $safeResult = \virtual($uri);
+    if ($safeResult === false) {
         throw ApacheException::createFromPhpError();
     }
 }

@@ -2,27 +2,22 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2021 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace Webauthn\AttestationStatement;
 
 use function array_key_exists;
 use Assert\Assertion;
-use function Safe\sprintf;
 
 class AttestationStatementSupportManager
 {
     /**
      * @var AttestationStatementSupport[]
      */
-    private $attestationStatementSupports = [];
+    private array $attestationStatementSupports = [];
+
+    public static function create(): self
+    {
+        return new self();
+    }
 
     public function add(AttestationStatementSupport $attestationStatementSupport): void
     {

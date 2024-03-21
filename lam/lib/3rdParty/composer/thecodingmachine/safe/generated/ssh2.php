@@ -16,8 +16,8 @@ use Safe\Exceptions\Ssh2Exception;
 function ssh2_auth_agent($session, string $username): void
 {
     error_clear_last();
-    $result = \ssh2_auth_agent($session, $username);
-    if ($result === false) {
+    $safeResult = \ssh2_auth_agent($session, $username);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -43,13 +43,13 @@ function ssh2_auth_hostbased_file($session, string $username, string $hostname, 
 {
     error_clear_last();
     if ($local_username !== null) {
-        $result = \ssh2_auth_hostbased_file($session, $username, $hostname, $pubkeyfile, $privkeyfile, $passphrase, $local_username);
+        $safeResult = \ssh2_auth_hostbased_file($session, $username, $hostname, $pubkeyfile, $privkeyfile, $passphrase, $local_username);
     } elseif ($passphrase !== null) {
-        $result = \ssh2_auth_hostbased_file($session, $username, $hostname, $pubkeyfile, $privkeyfile, $passphrase);
+        $safeResult = \ssh2_auth_hostbased_file($session, $username, $hostname, $pubkeyfile, $privkeyfile, $passphrase);
     } else {
-        $result = \ssh2_auth_hostbased_file($session, $username, $hostname, $pubkeyfile, $privkeyfile);
+        $safeResult = \ssh2_auth_hostbased_file($session, $username, $hostname, $pubkeyfile, $privkeyfile);
     }
-    if ($result === false) {
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -69,8 +69,8 @@ function ssh2_auth_hostbased_file($session, string $username, string $hostname, 
 function ssh2_auth_password($session, string $username, string $password): void
 {
     error_clear_last();
-    $result = \ssh2_auth_password($session, $username, $password);
-    if ($result === false) {
+    $safeResult = \ssh2_auth_password($session, $username, $password);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -95,11 +95,11 @@ function ssh2_auth_pubkey_file($session, string $username, string $pubkeyfile, s
 {
     error_clear_last();
     if ($passphrase !== null) {
-        $result = \ssh2_auth_pubkey_file($session, $username, $pubkeyfile, $privkeyfile, $passphrase);
+        $safeResult = \ssh2_auth_pubkey_file($session, $username, $pubkeyfile, $privkeyfile, $passphrase);
     } else {
-        $result = \ssh2_auth_pubkey_file($session, $username, $pubkeyfile, $privkeyfile);
+        $safeResult = \ssh2_auth_pubkey_file($session, $username, $pubkeyfile, $privkeyfile);
     }
-    if ($result === false) {
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -308,16 +308,16 @@ function ssh2_connect(string $host, int $port = 22, array $methods = null, array
 {
     error_clear_last();
     if ($callbacks !== null) {
-        $result = \ssh2_connect($host, $port, $methods, $callbacks);
+        $safeResult = \ssh2_connect($host, $port, $methods, $callbacks);
     } elseif ($methods !== null) {
-        $result = \ssh2_connect($host, $port, $methods);
+        $safeResult = \ssh2_connect($host, $port, $methods);
     } else {
-        $result = \ssh2_connect($host, $port);
+        $safeResult = \ssh2_connect($host, $port);
     }
-    if ($result === false) {
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
@@ -332,8 +332,8 @@ function ssh2_connect(string $host, int $port = 22, array $methods = null, array
 function ssh2_disconnect($session): void
 {
     error_clear_last();
-    $result = \ssh2_disconnect($session);
-    if ($result === false) {
+    $safeResult = \ssh2_disconnect($session);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -361,22 +361,69 @@ function ssh2_exec($session, string $command, string $pty = null, array $env = n
 {
     error_clear_last();
     if ($width_height_type !== SSH2_TERM_UNIT_CHARS) {
-        $result = \ssh2_exec($session, $command, $pty, $env, $width, $height, $width_height_type);
+        $safeResult = \ssh2_exec($session, $command, $pty, $env, $width, $height, $width_height_type);
     } elseif ($height !== 25) {
-        $result = \ssh2_exec($session, $command, $pty, $env, $width, $height);
+        $safeResult = \ssh2_exec($session, $command, $pty, $env, $width, $height);
     } elseif ($width !== 80) {
-        $result = \ssh2_exec($session, $command, $pty, $env, $width);
+        $safeResult = \ssh2_exec($session, $command, $pty, $env, $width);
     } elseif ($env !== null) {
-        $result = \ssh2_exec($session, $command, $pty, $env);
+        $safeResult = \ssh2_exec($session, $command, $pty, $env);
     } elseif ($pty !== null) {
-        $result = \ssh2_exec($session, $command, $pty);
+        $safeResult = \ssh2_exec($session, $command, $pty);
     } else {
-        $result = \ssh2_exec($session, $command);
+        $safeResult = \ssh2_exec($session, $command);
     }
-    if ($result === false) {
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
+}
+
+
+/**
+ * Accepts a connection created by a listener.
+ *
+ * @param resource $listener An SSH2 Listener resource, obtained from a call to ssh2_forward_listen.
+ * @return  Returns a stream resource.
+ * @throws Ssh2Exception
+ *
+ */
+function ssh2_forward_accept($listener)
+{
+    error_clear_last();
+    $safeResult = \ssh2_forward_accept($listener);
+    if ($safeResult === false) {
+        throw Ssh2Exception::createFromPhpError();
+    }
+    return $safeResult;
+}
+
+
+/**
+ * Binds a port on the remote server and listen for connections.
+ *
+ * @param resource $session An SSH Session resource, obtained from a call to ssh2_connect.
+ * @param int $port The port of the remote server.
+ * @param string $host
+ * @param int $max_connections
+ * @return  Returns an SSH2 Listener.
+ * @throws Ssh2Exception
+ *
+ */
+function ssh2_forward_listen($session, int $port, string $host = null, int $max_connections = 16)
+{
+    error_clear_last();
+    if ($max_connections !== 16) {
+        $safeResult = \ssh2_forward_listen($session, $port, $host, $max_connections);
+    } elseif ($host !== null) {
+        $safeResult = \ssh2_forward_listen($session, $port, $host);
+    } else {
+        $safeResult = \ssh2_forward_listen($session, $port);
+    }
+    if ($safeResult === false) {
+        throw Ssh2Exception::createFromPhpError();
+    }
+    return $safeResult;
 }
 
 
@@ -399,11 +446,11 @@ function ssh2_publickey_add($pkey, string $algoname, string $blob, bool $overwri
 {
     error_clear_last();
     if ($attributes !== null) {
-        $result = \ssh2_publickey_add($pkey, $algoname, $blob, $overwrite, $attributes);
+        $safeResult = \ssh2_publickey_add($pkey, $algoname, $blob, $overwrite, $attributes);
     } else {
-        $result = \ssh2_publickey_add($pkey, $algoname, $blob, $overwrite);
+        $safeResult = \ssh2_publickey_add($pkey, $algoname, $blob, $overwrite);
     }
-    if ($result === false) {
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -427,11 +474,11 @@ function ssh2_publickey_add($pkey, string $algoname, string $blob, bool $overwri
 function ssh2_publickey_init($session)
 {
     error_clear_last();
-    $result = \ssh2_publickey_init($session);
-    if ($result === false) {
+    $safeResult = \ssh2_publickey_init($session);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
@@ -447,8 +494,8 @@ function ssh2_publickey_init($session)
 function ssh2_publickey_remove($pkey, string $algoname, string $blob): void
 {
     error_clear_last();
-    $result = \ssh2_publickey_remove($pkey, $algoname, $blob);
-    if ($result === false) {
+    $safeResult = \ssh2_publickey_remove($pkey, $algoname, $blob);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -467,8 +514,8 @@ function ssh2_publickey_remove($pkey, string $algoname, string $blob): void
 function ssh2_scp_recv($session, string $remote_file, string $local_file): void
 {
     error_clear_last();
-    $result = \ssh2_scp_recv($session, $remote_file, $local_file);
-    if ($result === false) {
+    $safeResult = \ssh2_scp_recv($session, $remote_file, $local_file);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -489,8 +536,29 @@ function ssh2_scp_recv($session, string $remote_file, string $local_file): void
 function ssh2_scp_send($session, string $local_file, string $remote_file, int $create_mode = 0644): void
 {
     error_clear_last();
-    $result = \ssh2_scp_send($session, $local_file, $remote_file, $create_mode);
-    if ($result === false) {
+    $safeResult = \ssh2_scp_send($session, $local_file, $remote_file, $create_mode);
+    if ($safeResult === false) {
+        throw Ssh2Exception::createFromPhpError();
+    }
+}
+
+
+/**
+ * Sends an EOF to the stream; this is typically used to close standard input,
+ * while keeping output and error alive. For example, one can send a remote
+ * process some data over standard input, close it to start processing, and
+ * still be able to read out the results without creating additional files.
+ *
+ * @param resource $channel An SSH stream; can be acquired through functions like ssh2_fetch_stream
+ * or ssh2_connect.
+ * @throws Ssh2Exception
+ *
+ */
+function ssh2_send_eof($channel): void
+{
+    error_clear_last();
+    $safeResult = \ssh2_send_eof($channel);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -509,8 +577,8 @@ function ssh2_scp_send($session, string $local_file, string $remote_file, int $c
 function ssh2_sftp_chmod($sftp, string $filename, int $mode): void
 {
     error_clear_last();
-    $result = \ssh2_sftp_chmod($sftp, $filename, $mode);
-    if ($result === false) {
+    $safeResult = \ssh2_sftp_chmod($sftp, $filename, $mode);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -526,6 +594,7 @@ function ssh2_sftp_chmod($sftp, string $filename, int $mode): void
  * @param resource $sftp An SSH2 SFTP resource opened by ssh2_sftp.
  * @param string $dirname Path of the new directory.
  * @param int $mode Permissions on the new directory.
+ * The actual mode is affected by the current umask.
  * @param bool $recursive If recursive is TRUE any parent directories
  * required for dirname will be automatically created as well.
  * @throws Ssh2Exception
@@ -534,8 +603,8 @@ function ssh2_sftp_chmod($sftp, string $filename, int $mode): void
 function ssh2_sftp_mkdir($sftp, string $dirname, int $mode = 0777, bool $recursive = false): void
 {
     error_clear_last();
-    $result = \ssh2_sftp_mkdir($sftp, $dirname, $mode, $recursive);
-    if ($result === false) {
+    $safeResult = \ssh2_sftp_mkdir($sftp, $dirname, $mode, $recursive);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -553,8 +622,8 @@ function ssh2_sftp_mkdir($sftp, string $dirname, int $mode = 0777, bool $recursi
 function ssh2_sftp_rename($sftp, string $from, string $to): void
 {
     error_clear_last();
-    $result = \ssh2_sftp_rename($sftp, $from, $to);
-    if ($result === false) {
+    $safeResult = \ssh2_sftp_rename($sftp, $from, $to);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -574,8 +643,8 @@ function ssh2_sftp_rename($sftp, string $from, string $to): void
 function ssh2_sftp_rmdir($sftp, string $dirname): void
 {
     error_clear_last();
-    $result = \ssh2_sftp_rmdir($sftp, $dirname);
-    if ($result === false) {
+    $safeResult = \ssh2_sftp_rmdir($sftp, $dirname);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -594,8 +663,8 @@ function ssh2_sftp_rmdir($sftp, string $dirname): void
 function ssh2_sftp_symlink($sftp, string $target, string $link): void
 {
     error_clear_last();
-    $result = \ssh2_sftp_symlink($sftp, $target, $link);
-    if ($result === false) {
+    $safeResult = \ssh2_sftp_symlink($sftp, $target, $link);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -612,8 +681,8 @@ function ssh2_sftp_symlink($sftp, string $target, string $link): void
 function ssh2_sftp_unlink($sftp, string $filename): void
 {
     error_clear_last();
-    $result = \ssh2_sftp_unlink($sftp, $filename);
-    if ($result === false) {
+    $safeResult = \ssh2_sftp_unlink($sftp, $filename);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
 }
@@ -633,9 +702,48 @@ function ssh2_sftp_unlink($sftp, string $filename): void
 function ssh2_sftp($session)
 {
     error_clear_last();
-    $result = \ssh2_sftp($session);
-    if ($result === false) {
+    $safeResult = \ssh2_sftp($session);
+    if ($safeResult === false) {
         throw Ssh2Exception::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
+}
+
+
+/**
+ * Open a shell at the remote end and allocate a stream for it.
+ *
+ * @param resource $session An SSH connection link identifier, obtained from a call to
+ * ssh2_connect.
+ * @param string $term_type term_type should correspond to one of the
+ * entries in the target system's /etc/termcap file.
+ * @param array $env env may be passed as an associative array of
+ * name/value pairs to set in the target environment.
+ * @param int $width Width of the virtual terminal.
+ * @param int $height Height of the virtual terminal.
+ * @param int $width_height_type width_height_type should be one of
+ * SSH2_TERM_UNIT_CHARS or
+ * SSH2_TERM_UNIT_PIXELS.
+ * @return resource Returns a stream resource on success.
+ * @throws Ssh2Exception
+ *
+ */
+function ssh2_shell($session, string $term_type = "vanilla", array $env = null, int $width = 80, int $height = 25, int $width_height_type = SSH2_TERM_UNIT_CHARS)
+{
+    error_clear_last();
+    if ($width_height_type !== SSH2_TERM_UNIT_CHARS) {
+        $safeResult = \ssh2_shell($session, $term_type, $env, $width, $height, $width_height_type);
+    } elseif ($height !== 25) {
+        $safeResult = \ssh2_shell($session, $term_type, $env, $width, $height);
+    } elseif ($width !== 80) {
+        $safeResult = \ssh2_shell($session, $term_type, $env, $width);
+    } elseif ($env !== null) {
+        $safeResult = \ssh2_shell($session, $term_type, $env);
+    } else {
+        $safeResult = \ssh2_shell($session, $term_type);
+    }
+    if ($safeResult === false) {
+        throw Ssh2Exception::createFromPhpError();
+    }
+    return $safeResult;
 }

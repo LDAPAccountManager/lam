@@ -7,16 +7,16 @@ use Safe\Exceptions\PspellException;
 /**
  *
  *
- * @param int $dictionary_link
+ * @param int $dictionary An PSpell\Dictionary instance.
  * @param string $word The added word.
  * @throws PspellException
  *
  */
-function pspell_add_to_personal(int $dictionary_link, string $word): void
+function pspell_add_to_personal(int $dictionary, string $word): void
 {
     error_clear_last();
-    $result = \pspell_add_to_personal($dictionary_link, $word);
-    if ($result === false) {
+    $safeResult = \pspell_add_to_personal($dictionary, $word);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -25,16 +25,16 @@ function pspell_add_to_personal(int $dictionary_link, string $word): void
 /**
  *
  *
- * @param int $dictionary_link
+ * @param int $dictionary An PSpell\Dictionary instance.
  * @param string $word The added word.
  * @throws PspellException
  *
  */
-function pspell_add_to_session(int $dictionary_link, string $word): void
+function pspell_add_to_session(int $dictionary, string $word): void
 {
     error_clear_last();
-    $result = \pspell_add_to_session($dictionary_link, $word);
-    if ($result === false) {
+    $safeResult = \pspell_add_to_session($dictionary, $word);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -43,15 +43,15 @@ function pspell_add_to_session(int $dictionary_link, string $word): void
 /**
  *
  *
- * @param int $dictionary_link
+ * @param int $dictionary An PSpell\Dictionary instance.
  * @throws PspellException
  *
  */
-function pspell_clear_session(int $dictionary_link): void
+function pspell_clear_session(int $dictionary): void
 {
     error_clear_last();
-    $result = \pspell_clear_session($dictionary_link);
-    if ($result === false) {
+    $safeResult = \pspell_clear_session($dictionary);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -86,26 +86,18 @@ function pspell_clear_session(int $dictionary_link): void
  * 'viscii', 'cp1252', 'machine unsigned 16', 'machine unsigned
  * 32'. This parameter is largely untested, so be careful when
  * using.
- * @return int Returns a pspell config identifier.
+ * @return int Returns an PSpell\Config instance on success.
  * @throws PspellException
  *
  */
-function pspell_config_create(string $language, string $spelling = null, string $jargon = null, string $encoding = null): int
+function pspell_config_create(string $language, string $spelling = "", string $jargon = "", string $encoding = ""): int
 {
     error_clear_last();
-    if ($encoding !== null) {
-        $result = \pspell_config_create($language, $spelling, $jargon, $encoding);
-    } elseif ($jargon !== null) {
-        $result = \pspell_config_create($language, $spelling, $jargon);
-    } elseif ($spelling !== null) {
-        $result = \pspell_config_create($language, $spelling);
-    } else {
-        $result = \pspell_config_create($language);
-    }
-    if ($result === false) {
+    $safeResult = \pspell_config_create($language, $spelling, $jargon, $encoding);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
@@ -114,16 +106,16 @@ function pspell_config_create(string $language, string $spelling = null, string 
  * currently not documented; only its argument list is available.
  *
  *
- * @param int $conf
+ * @param int $config
  * @param string $directory
  * @throws PspellException
  *
  */
-function pspell_config_data_dir(int $conf, string $directory): void
+function pspell_config_data_dir(int $config, string $directory): void
 {
     error_clear_last();
-    $result = \pspell_config_data_dir($conf, $directory);
-    if ($result === false) {
+    $safeResult = \pspell_config_data_dir($config, $directory);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -134,16 +126,16 @@ function pspell_config_data_dir(int $conf, string $directory): void
  * currently not documented; only its argument list is available.
  *
  *
- * @param int $conf
+ * @param int $config
  * @param string $directory
  * @throws PspellException
  *
  */
-function pspell_config_dict_dir(int $conf, string $directory): void
+function pspell_config_dict_dir(int $config, string $directory): void
 {
     error_clear_last();
-    $result = \pspell_config_dict_dir($conf, $directory);
-    if ($result === false) {
+    $safeResult = \pspell_config_dict_dir($config, $directory);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -152,16 +144,16 @@ function pspell_config_dict_dir(int $conf, string $directory): void
 /**
  *
  *
- * @param int $dictionary_link
- * @param int $n Words less than n characters will be skipped.
+ * @param int $config An PSpell\Config instance.
+ * @param int $min_length Words less than min_length characters will be skipped.
  * @throws PspellException
  *
  */
-function pspell_config_ignore(int $dictionary_link, int $n): void
+function pspell_config_ignore(int $config, int $min_length): void
 {
     error_clear_last();
-    $result = \pspell_config_ignore($dictionary_link, $n);
-    if ($result === false) {
+    $safeResult = \pspell_config_ignore($config, $min_length);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -170,7 +162,7 @@ function pspell_config_ignore(int $dictionary_link, int $n): void
 /**
  *
  *
- * @param int $dictionary_link
+ * @param int $config An PSpell\Config instance.
  * @param int $mode The mode parameter is the mode in which spellchecker will work.
  * There are several modes available:
  *
@@ -195,11 +187,11 @@ function pspell_config_ignore(int $dictionary_link, int $n): void
  * @throws PspellException
  *
  */
-function pspell_config_mode(int $dictionary_link, int $mode): void
+function pspell_config_mode(int $config, int $mode): void
 {
     error_clear_last();
-    $result = \pspell_config_mode($dictionary_link, $mode);
-    if ($result === false) {
+    $safeResult = \pspell_config_mode($config, $mode);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -214,17 +206,17 @@ function pspell_config_mode(int $dictionary_link, int $mode): void
  * pspell_config_personal should be used on a config
  * before calling pspell_new_config.
  *
- * @param int $dictionary_link
- * @param string $file The personal wordlist. If the file does not exist, it will be created.
+ * @param int $config An PSpell\Config instance.
+ * @param string $filename The personal wordlist. If the file does not exist, it will be created.
  * The file should be writable by whoever PHP runs as (e.g. nobody).
  * @throws PspellException
  *
  */
-function pspell_config_personal(int $dictionary_link, string $file): void
+function pspell_config_personal(int $config, string $filename): void
 {
     error_clear_last();
-    $result = \pspell_config_personal($dictionary_link, $file);
-    if ($result === false) {
+    $safeResult = \pspell_config_personal($config, $filename);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -242,16 +234,16 @@ function pspell_config_personal(int $dictionary_link, string $file): void
  * pspell_config_repl should be used on a config
  * before calling pspell_new_config.
  *
- * @param int $dictionary_link
- * @param string $file The file should be writable by whoever PHP runs as (e.g. nobody).
+ * @param int $config An PSpell\Config instance.
+ * @param string $filename The file should be writable by whoever PHP runs as (e.g. nobody).
  * @throws PspellException
  *
  */
-function pspell_config_repl(int $dictionary_link, string $file): void
+function pspell_config_repl(int $config, string $filename): void
 {
     error_clear_last();
-    $result = \pspell_config_repl($dictionary_link, $file);
-    if ($result === false) {
+    $safeResult = \pspell_config_repl($config, $filename);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -267,17 +259,17 @@ function pspell_config_repl(int $dictionary_link, string $file): void
  * pspell_config_runtogether should be used on a config
  * before calling pspell_new_config.
  *
- * @param int $dictionary_link
- * @param bool $flag TRUE if run-together words should be treated as legal compounds,
+ * @param int $config An PSpell\Config instance.
+ * @param bool $allow TRUE if run-together words should be treated as legal compounds,
  * FALSE otherwise.
  * @throws PspellException
  *
  */
-function pspell_config_runtogether(int $dictionary_link, bool $flag): void
+function pspell_config_runtogether(int $config, bool $allow): void
 {
     error_clear_last();
-    $result = \pspell_config_runtogether($dictionary_link, $flag);
-    if ($result === false) {
+    $safeResult = \pspell_config_runtogether($config, $allow);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -295,16 +287,16 @@ function pspell_config_runtogether(int $dictionary_link, bool $flag): void
  * pspell_config_save_repl should be used on a config
  * before calling pspell_new_config.
  *
- * @param int $dictionary_link
- * @param bool $flag TRUE if replacement pairs should be saved, FALSE otherwise.
+ * @param int $config An PSpell\Config instance.
+ * @param bool $save TRUE if replacement pairs should be saved, FALSE otherwise.
  * @throws PspellException
  *
  */
-function pspell_config_save_repl(int $dictionary_link, bool $flag): void
+function pspell_config_save_repl(int $config, bool $save): void
 {
     error_clear_last();
-    $result = \pspell_config_save_repl($dictionary_link, $flag);
-    if ($result === false) {
+    $safeResult = \pspell_config_save_repl($config, $save);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -315,24 +307,94 @@ function pspell_config_save_repl(int $dictionary_link, bool $flag): void
  *
  * @param int $config The config parameter is the one returned by
  * pspell_config_create when the config was created.
- * @return int Returns a dictionary link identifier on success.
+ * @return int Returns an PSpell\Dictionary instance on success
  * @throws PspellException
  *
  */
 function pspell_new_config(int $config): int
 {
     error_clear_last();
-    $result = \pspell_new_config($config);
-    if ($result === false) {
+    $safeResult = \pspell_new_config($config);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
+}
+
+
+/**
+ * For more information and examples, check out inline manual pspell
+ * website:http://aspell.net/.
+ *
+ * @param string $filename The file where words added to the personal list will be stored.
+ * It should be an absolute filename beginning with '/' because otherwise
+ * it will be relative to $HOME, which is "/root" for most systems, and
+ * is probably not what you want.
+ * @param string $language The language code which consists of the two letter ISO 639 language
+ * code and an optional two letter ISO 3166 country code after a dash
+ * or underscore.
+ * @param string $spelling The requested spelling for languages with more than one spelling such
+ * as English. Known values are 'american', 'british', and 'canadian'.
+ * @param string $jargon Extra information to distinguish two different words lists that have
+ * the same language and spelling parameters.
+ * @param string $encoding The encoding that words are expected to be in.  Valid values are
+ * utf-8, iso8859-*,
+ * koi8-r, viscii,
+ * cp1252, machine unsigned 16,
+ * machine unsigned 32.
+ * @param int $mode The mode in which spellchecker will work. There are several modes available:
+ *
+ *
+ *
+ * PSPELL_FAST - Fast mode (least number of
+ * suggestions)
+ *
+ *
+ *
+ *
+ * PSPELL_NORMAL - Normal mode (more suggestions)
+ *
+ *
+ *
+ *
+ * PSPELL_BAD_SPELLERS - Slow mode (a lot of
+ * suggestions)
+ *
+ *
+ *
+ *
+ * PSPELL_RUN_TOGETHER - Consider run-together words
+ * as legal compounds.  That is, "thecat" will be a legal compound,
+ * although there should be a space between the two words. Changing this
+ * setting only affects the results returned by
+ * pspell_check; pspell_suggest
+ * will still return suggestions.
+ *
+ *
+ *
+ * Mode is a bitmask constructed from different constants listed above.
+ * However, PSPELL_FAST,
+ * PSPELL_NORMAL and
+ * PSPELL_BAD_SPELLERS are mutually exclusive, so you
+ * should select only one of them.
+ * @return int Returns an PSpell\Dictionary instance on success.
+ * @throws PspellException
+ *
+ */
+function pspell_new_personal(string $filename, string $language, string $spelling = "", string $jargon = "", string $encoding = "", int $mode = 0): int
+{
+    error_clear_last();
+    $safeResult = \pspell_new_personal($filename, $language, $spelling, $jargon, $encoding, $mode);
+    if ($safeResult === false) {
+        throw PspellException::createFromPhpError();
+    }
+    return $safeResult;
 }
 
 
 /**
  * pspell_new opens up a new dictionary and
- * returns the dictionary link identifier for use in other pspell
+ * returns an PSpell\Dictionary instance for use in other pspell
  * functions.
  *
  * For more information and examples, check out inline manual pspell
@@ -388,44 +450,33 @@ function pspell_new_config(int $config): int
  * PSPELL_NORMAL and
  * PSPELL_BAD_SPELLERS are mutually exclusive, so you
  * should select only one of them.
- * @return int Returns the dictionary link identifier on success.
+ * @return int Returns an PSpell\Dictionary instance on success.
  * @throws PspellException
  *
  */
-function pspell_new(string $language, string $spelling = null, string $jargon = null, string $encoding = null, int $mode = 0): int
+function pspell_new(string $language, string $spelling = "", string $jargon = "", string $encoding = "", int $mode = 0): int
 {
     error_clear_last();
-    if ($mode !== 0) {
-        $result = \pspell_new($language, $spelling, $jargon, $encoding, $mode);
-    } elseif ($encoding !== null) {
-        $result = \pspell_new($language, $spelling, $jargon, $encoding);
-    } elseif ($jargon !== null) {
-        $result = \pspell_new($language, $spelling, $jargon);
-    } elseif ($spelling !== null) {
-        $result = \pspell_new($language, $spelling);
-    } else {
-        $result = \pspell_new($language);
-    }
-    if ($result === false) {
+    $safeResult = \pspell_new($language, $spelling, $jargon, $encoding, $mode);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
-    return $result;
+    return $safeResult;
 }
 
 
 /**
  *
  *
- * @param int $dictionary_link A dictionary link identifier opened with
- * pspell_new_personal.
+ * @param int $dictionary An PSpell\Dictionary instance.
  * @throws PspellException
  *
  */
-function pspell_save_wordlist(int $dictionary_link): void
+function pspell_save_wordlist(int $dictionary): void
 {
     error_clear_last();
-    $result = \pspell_save_wordlist($dictionary_link);
-    if ($result === false) {
+    $safeResult = \pspell_save_wordlist($dictionary);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
@@ -434,18 +485,17 @@ function pspell_save_wordlist(int $dictionary_link): void
 /**
  *
  *
- * @param int $dictionary_link A dictionary link identifier, opened with
- * pspell_new_personal
+ * @param int $dictionary An PSpell\Dictionary instance.
  * @param string $misspelled The misspelled word.
  * @param string $correct The fixed spelling for the misspelled word.
  * @throws PspellException
  *
  */
-function pspell_store_replacement(int $dictionary_link, string $misspelled, string $correct): void
+function pspell_store_replacement(int $dictionary, string $misspelled, string $correct): void
 {
     error_clear_last();
-    $result = \pspell_store_replacement($dictionary_link, $misspelled, $correct);
-    if ($result === false) {
+    $safeResult = \pspell_store_replacement($dictionary, $misspelled, $correct);
+    if ($safeResult === false) {
         throw PspellException::createFromPhpError();
     }
 }
