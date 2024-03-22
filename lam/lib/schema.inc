@@ -603,8 +603,7 @@ class AttributeType extends SchemaItem
 	/**
 	 * Creates a new AttributeType objcet from a raw LDAP AttributeType string.
 	 */
-	function __construct( $raw_ldap_attr_string )
-	{
+	function __construct($raw_ldap_attr_string) {
 		$this->initVars();
 		$attr = $raw_ldap_attr_string;
 		$strings = preg_split ("/[\s,]+/", $attr, -1,PREG_SPLIT_DELIM_CAPTURE);
@@ -613,14 +612,17 @@ class AttributeType extends SchemaItem
 				case '(':
 					break;
 				case 'NAME':
-					if($strings[$i+1]!="(") {
+					if ($strings[$i+1] != "(") {
 						do {
 							$i++;
-							if(strlen($this->name)==0)
+							if (($this->name === null) || (strlen($this->name) == 0)) {
 								$this->name = $strings[$i];
-							else
+							}
+							else {
 								$this->name .= " " . $strings[$i];
-						}while(!preg_match("/\'$/s", $strings[$i]));
+							}
+						}
+						while (!preg_match("/\'$/s", $strings[$i]));
 						// this attribute has no aliases
 						$this->aliases = [];
 					} else {
@@ -704,16 +706,22 @@ class AttributeType extends SchemaItem
 			}
 		}
 
-		$this->name =        preg_replace("/^\'/", "", $this->name);
-		$this->name =        preg_replace("/\'$/", "", $this->name);
-		$this->description = preg_replace("/^\'/", "", $this->description);
-		$this->description = preg_replace("/\'$/", "", $this->description);
-		$this->syntax = preg_replace("/^\'/", "", $this->syntax );
-		$this->syntax = preg_replace("/\'$/", "", $this->syntax );
-		$this->syntax_oid  = preg_replace("/^\'/", "", $this->syntax_oid );
-		$this->syntax_oid  = preg_replace("/\'$/", "", $this->syntax_oid );
-		$this->sup_attribute = preg_replace("/^\'/", "", $this->sup_attribute );
-		$this->sup_attribute = preg_replace("/\'$/", "", $this->sup_attribute );
+		if ($this->name !== null) {
+			$this->name = preg_replace("/^\'/", "", $this->name);
+			$this->name = preg_replace("/\'$/", "", $this->name);
+		}
+		if ($this->description !== null) {
+			$this->description = preg_replace("/^\'/", "", $this->description);
+			$this->description = preg_replace("/\'$/", "", $this->description);
+		}
+		$this->syntax = preg_replace("/^\'/", "", $this->syntax);
+		$this->syntax = preg_replace("/\'$/", "", $this->syntax);
+		$this->syntax_oid  = preg_replace("/^\'/", "", $this->syntax_oid);
+		$this->syntax_oid  = preg_replace("/\'$/", "", $this->syntax_oid);
+		if ($this->sup_attribute !== null) {
+			$this->sup_attribute = preg_replace("/^\'/", "", $this->sup_attribute);
+			$this->sup_attribute = preg_replace("/\'$/", "", $this->sup_attribute);
+		}
 	}
 
     /**
@@ -1316,8 +1324,7 @@ class MatchingRuleUse extends SchemaItem
  *
  * @return string The DN of the entry which houses this LDAP server's schema.
  */
-function _get_schema_dn($dn, $debug=false )
-{
+function _get_schema_dn($dn, $debug = false) {
 	if( $debug ) echo "<pre>";
 	$ds = $_SESSION['ldap']->server();
 
@@ -1383,8 +1390,7 @@ function _get_schema_dn($dn, $debug=false )
  *      [1] => "( 1.3.6.1.4.1.7165.2.2.3 NAME 'sambaAccount' DESC 'Sa ...
  *      etc.
  */
-function _get_raw_schema($schema_to_fetch, $dn='' )
-{
+function _get_raw_schema($schema_to_fetch, $dn='' ) {
 
 	// Switch to true to enable verbose output of schema fetching progress
 	$debug = false;
@@ -1815,14 +1821,16 @@ function add_sup_to_attrs( &$attrs, &$attrs_oid )
 		$sup_attr = null;
 
 		// Does this attribute have any inheritance happening here?
-		if( null != trim( $sup_attr_name ) ) {
+		if(($sup_attr_name !== null) && !empty(trim($sup_attr_name))) {
 
 			// This loop really should traverse infinite levels of inheritance (SUP) for attributeTypes,
 			// but just in case we get carried away, stop at 100. This shouldn't happen, but for
 			// some weird reason, we have had someone report that it has happened. Oh well.
 			$i = 0;
 			while( $i++ < 100 /** 100 == INFINITY ;) */ ) {
-				if( $debug ) echo "Top of loop.\n";
+				if ($debug) {
+					echo "Top of loop.\n";
+				}
 
 				/**
 				 * Bug 856832: check if sup is indexed by OID. If it is,
@@ -1831,12 +1839,12 @@ function add_sup_to_attrs( &$attrs, &$attrs_oid )
 				 * make all the remaining code in this function work as
 				 * expected.
 				 */
-				if( isset( $attrs_oid[$sup_attr_name] ) ) {
+				if ( isset( $attrs_oid[$sup_attr_name] ) ) {
 					$attr->setSupAttribute( $attrs_oid[$sup_attr_name]->getName() );
 					$sup_attr_name = $attr->getSupAttribute();
 				}
 
-				if( ! isset( $attrs[ strtolower( $sup_attr_name ) ] ) ){
+				if ( ! isset( $attrs[ strtolower( $sup_attr_name ) ] ) ){
 					echo( "Schema error: attributeType '" . $attr->getName() . "' inherits from
 								'" . $sup_attr_name . "', but attributeType '" . $sup_attr_name . "' does not
 								exist." );
@@ -1969,29 +1977,29 @@ function get_schema_matching_rules($dn=null, $use_cache=true )
  * Returns an array of Syntax objects that this LDAP server uses mapped to
  * their descriptions. The key of each entry is the OID of the Syntax.
  */
-function get_schema_syntaxes($dn=null, $use_cache=true )
-{
-    if( $use_cache && cached_schema_available('ldapsyntaxes' ) ) {
-        return get_cached_schema('ldapsyntaxes' );
+function get_schema_syntaxes($dn=null, $use_cache=true) {
+    if ($use_cache && cached_schema_available('ldapsyntaxes')) {
+        return get_cached_schema('ldapsyntaxes');
     }
 
-	$raw_syntaxes = _get_raw_schema('ldapSyntaxes', $dn );
-	if( ! $raw_syntaxes )
+	$raw_syntaxes = _get_raw_schema('ldapSyntaxes', $dn);
+	if (!$raw_syntaxes) {
 		return false;
+	}
 
 	// build the array of attributes
 	$syntaxes = [];
-	foreach( $raw_syntaxes as $syntax_string ) {
+	foreach ($raw_syntaxes as $syntax_string) {
 		$syntax = new Syntax( $syntax_string );
 		$key = strtolower( trim( $syntax->getOID() ) );
 		if( ! $key ) continue;
 		$syntaxes[$key] = $syntax;
 	}
 
-	ksort( $syntaxes );
+	ksort($syntaxes);
 
 	// cache the schema to prevent multiple schema fetches from LDAP server
-    set_cached_schema('ldapsyntaxes', $syntaxes );
+    set_cached_schema('ldapsyntaxes', $syntaxes);
 
 	return $syntaxes;
 }
