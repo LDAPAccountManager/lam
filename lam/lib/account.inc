@@ -125,33 +125,14 @@ function smbflag($input) {
 }
 
 /**
-* Generates the LM hash of a password.
-*
-* @param string password original password
-* @return string password hash
-*/
-function lmPassword($password) {
-	// Needed to calculate Samba passwords
-	include_once(__DIR__ . "/createntlm.inc");
-	// get hash
-	$hash = new smbHash();
-	return $hash->lmhash($password);
-}
-
-/**
 * Generates the NT hash of a password.
 *
 * @param string password original password
 * @return string password hash
 */
 function ntPassword($password) {
-	// Needed to calculate Samba passwords
-	include_once(__DIR__ . "/createntlm.inc");
-	// get hash
-	$hash = new smbHash();
-	return $hash->nthash($password);
+	return strtoupper(hash('md4', convertUtf8ToUtf16Le($password)));
 }
-
 
 /**
 * Returns the hash value of a plain text password.

@@ -1,5 +1,6 @@
 June 2024 8.8
  - PHP 8.1 or higher required
+ - Samba 3: dropped support for LM password hashes (307)
 
 
 16.03.2024 8.7

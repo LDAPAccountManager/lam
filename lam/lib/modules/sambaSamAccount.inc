@@ -7,7 +7,7 @@ use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2023  Roland Gruber
+                2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sambaSID', 'sambaLMPassword', 'sambaNTPassword',
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sambaSID', 'sambaNTPassword',
 		'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
 		'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaKickoffTime',
 		'sambaLogonTime', 'sambaLogoffTime');
@@ -122,9 +122,9 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonScript', _('Logon script is invalid!'));
 		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
 		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_workstations', _('Please enter a comma separated list of host names!'));
-		$this->messages['sambaLMPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
-		$this->messages['sambaLMPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
-		$this->messages['sambaLMPassword'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
+		$this->messages['sambaNTPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
+		$this->messages['sambaNTPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
+		$this->messages['sambaNTPassword'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
 		$this->messages['rid'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!'));
 		$this->messages['rid'][3] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('This is not a valid RID number!'));
 		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_displayName', _('Please enter a valid display name!'));
@@ -173,7 +173,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		// managed object classes
 		$return['objectClasses'] = array('sambaSamAccount');
 		// managed attributes
-		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet',
+		$return['attributes'] = array('uid', 'sambaSID', 'sambaNTPassword', 'sambaPwdLastSet',
 			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaacctflags',
 			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial',
@@ -267,13 +267,12 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 		$return['selfServiceFieldSettings'] = array(
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
-			'syncLMPassword' => _('Sync Samba LM password with Unix password'),
 			'syncSambaPwdLastSet' => _('Update attribute "sambaPwdLastSet" on password change'),
 			'password' => _('Password'),
 			'sambaPwdLastSet' => _('Last password change (read-only)'),
 		);
 		// self service: fields that cannot be relabeled
-		$return['selfServiceNoRelabelFields'] = array('syncNTPassword', 'syncLMPassword', 'syncSambaPwdLastSet');
+		$return['selfServiceNoRelabelFields'] = array('syncNTPassword', 'syncSambaPwdLastSet');
 		// help Entries
 		$return['help'] = array (
 			"displayName" => array(
@@ -411,9 +410,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			'terminalServer' => array (
 				"Headline" => _("Terminal server options"),
 				"Text" => _("Here you can change the settings for the terminal server access.")),
-			'lmHash' => array (
-				"Headline" => _("Disable LM hashes"),
-				"Text" => _("Windows password hashes are saved by default as NT and LM hashes. LM hashes are insecure and only needed for old versions of Windows. You should disable them unless you really need them.")),
 			'sambaPwdLastSet' => array (
 				"Headline" => _("Last password change"), 'attr' => 'sambaPwdLastSet',
 				"Text" => _("This is the date when the user changed his password.")),
@@ -709,12 +705,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		if (!$this->isExtensionEnabled()) {
 			return [];
 		}
-		// delete LM hash if needed
-		if (!isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) || ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'yes')) {
-			if (isset($this->attributes['sambaLMPassword'])) {
-				unset($this->attributes['sambaLMPassword']);
-			}
-		}
 		$errors = [];
 		$sambaDomains = $this->getDomains();
 		if (sizeof($sambaDomains) == 0) {
@@ -784,9 +774,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			if (isset($_POST['ResetSambaPassword']) || !isset($this->attributes['sambaNTPassword'][0])) {
 				$hostname = $attrs['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
-				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-					$this->attributes['sambaLMPassword'][0] = lmPassword($hostname);
-				}
 				$this->attributes['sambaNTPassword'][0] = ntPassword($hostname);
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
@@ -1970,11 +1957,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"), 'history');
 		$historySelect->setHasDescriptiveElements(true);
 		$configContainer->add($historySelect, 12);
-		// disable LM passwords
-		$yesNo = array(_('yes') => 'yes', _('no') => 'no');
-		$lmYesNoSelect = new htmlResponsiveSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
-		$lmYesNoSelect->setHasDescriptiveElements(true);
-		$configContainer->add($lmYesNoSelect, 12);
 		// hidden options
 		$configContainer->addVerticalSpacer('1rem');
 		$configHiddenLabelGroup = new htmlGroup();
@@ -2106,28 +2088,19 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				// password
 				$partialAccounts[$i]['sambaPwdLastSet'] = time();
 				if (!get_preg($rawAccounts[$i][$ids['sambaSamAccount_password']], 'password')) {
-					$errMsg = $this->messages['sambaLMPassword'][2];
+					$errMsg = $this->messages['sambaNTPassword'][2];
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}
 				// use Unix password
 				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == "") {  // default: use Unix
-					if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-						$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
-					}
 					$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 				}
 				elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']], array('true', 'false'))) {
 					if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == 'true') {  // use Unix
-						if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-							$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
-						}
 						$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 					}
 					else {  // use given password
-						if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-							$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['sambaSamAccount_password']]);
-						}
 						$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['sambaSamAccount_password']]);
 					}
 				}
@@ -2140,7 +2113,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				if ($rawAccounts[$i][$ids['sambaSamAccount_noPassword']] != "") {
 					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_noPassword']], array('true', 'false'))) {
 						if ($rawAccounts[$i][$ids['sambaSamAccount_noPassword']] == 'true') {
-							$partialAccounts[$i]['sambaLMPassword'] = 'NO PASSWORD*****';
 							$partialAccounts[$i]['sambaNTPassword'] = 'NO PASSWORD*****';
 						}
 					}
@@ -2330,9 +2302,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 				// passwords ( = host name)
 				$partialAccounts[$i]['sambaPwdLastSet'] = time();
-				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-					$partialAccounts[$i]['sambaLMPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, strlen($partialAccounts[$i]['uid']) - 1));
-				}
 				$partialAccounts[$i]['sambaNTPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, strlen($partialAccounts[$i]['uid']) - 1));
 				// flags
 				$partialAccounts[$i]['sambaacctflags'] = "[W          ]";
@@ -2434,11 +2403,11 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		if (in_array('password', $fields)) {
 			if (isset($_POST['sambaSamAccount_password']) && ($_POST['sambaSamAccount_password'] != '')) {
 				if ($_POST['sambaSamAccount_password'] != $_POST['sambaSamAccount_password2']) {
-					$return['messages'][] = $this->messages['sambaLMPassword'][0];
+					$return['messages'][] = $this->messages['sambaNTPassword'][0];
 				}
 				else {
 					if (!get_preg($_POST['sambaSamAccount_password'], 'password')) {
-						$return['messages'][] = $this->messages['sambaLMPassword'][1];
+						$return['messages'][] = $this->messages['sambaNTPassword'][1];
 					}
 					else {
 						$userName = empty($attributes['uid'][0]) ? null : $attributes['uid'][0];
@@ -2454,9 +2423,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 							$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['sambaSamAccount_password']);
 							$return['info']['sambaUserPasswordClearText'][0] = $_POST['sambaSamAccount_password'];
 							$this->doSelfServicePasswordHistoryAndMinAge($attributes, $return);
-							if (array_key_exists('sambaLMPassword', $attributes)) {
-								$return['mod']['sambaLMPassword'][0] = lmPassword($_POST['sambaSamAccount_password']);
-							}
 							if (array_key_exists('sambaPwdLastSet', $attributes)) {
 								$return['mod']['sambaPwdLastSet'][0] = time();
 							}
@@ -2481,10 +2447,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					// sync password
 					if (in_array('syncNTPassword', $fields)) {
 						$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['posixAccount_password']);
-						$setPassword = true;
-					}
-					if (in_array('syncLMPassword', $fields)) {
-						$return['mod']['sambaLMPassword'][0] = lmPassword($_POST['posixAccount_password']);
 						$setPassword = true;
 					}
 					if ($setPassword) {
@@ -2596,9 +2558,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			return [];
 		}
 		$errors = [];
-		if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-			$this->attributes['sambaLMPassword'][0] = lmPassword($password);
-		}
 		$this->attributes['sambaNTPassword'][0] = ntPassword($password);
 		$this->attributes['sambaPwdLastSet'][0] = time();
 		if ($forcePasswordChange) {
@@ -2995,9 +2954,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 		if (in_array_ignore_case('sambaSamAccount', $this->attributes['objectClass'])) {
 			$options[] = new PasswordQuickChangeOption('syncSambaNT', _('Change Samba NT password'));
-			if (!isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) || ($this->moduleSettings['sambaSamAccount_lmHash'][0] != 'yes')) {
-				$options[] = new PasswordQuickChangeOption('syncSambaLM', _('Change Samba LM password'));
-			}
 			$options[] = new PasswordQuickChangeOption('forcePasswordChangeSamba', _('Force Samba password change'), isPasswordChangeByDefault());
 		}
 		if (isset($this->attributes['sambaPwdLastSet'][0])) {
@@ -3019,9 +2975,6 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$sambaFlags = str_replace('D', ' ', $sambaFlags);
 				$attrs['sambaacctflags'][0] = $sambaFlags;
 			}
-		}
-		if (isset($_POST['syncSambaLM'])) {
-			$attrs['sambaLMPassword'][0] = lmPassword($password);
 		}
 		if (isset($_POST['syncSambaNT'])) {
 			$attrs['sambaNTPassword'][0] = ntPassword($password);
