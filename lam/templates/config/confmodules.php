@@ -1,5 +1,6 @@
 <?php
 namespace LAM\CONFIG;
+use htmlInputField;
 use htmlJavaScript;
 use \htmlTable;
 use \htmlOutputText;
@@ -16,7 +17,7 @@ use \htmlResponsiveRow;
 use \htmlGroup;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2023  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -255,10 +256,22 @@ function config_showAccountModules($type, &$container): void {
 			$addButton->alignment = htmlElement::ALIGN_RIGHT;
 			$availTable->addElement($addButton, true);
 		}
+		$availRow = new htmlResponsiveRow();
 		$availDiv = new htmlDiv(null, $availTable);
 		$availDiv->alignment = htmlElement::ALIGN_TOP;
 		$availDiv->setCSSClasses(['confModList']);
-		$container->add($availDiv, 12, 6);
+		$availRow->add($availDiv);
+		if (sizeof($availOptions) >= 10) {
+			$availRow->addVerticalSpacer('1rem');
+			$filterGroup = new htmlGroup();
+			$filterGroup->addElement(new htmlOutputText(_('Filter')));
+			$filterInput = new htmlInputField('filter_' . $type->getId());
+			$filterInput->setOnInput('window.lam.config.updateModuleFilter(this); return false;');
+			$filterInput->setTransient(true);
+			$filterGroup->addElement($filterInput);
+			$availRow->add($filterGroup);
+		}
+		$container->add($availRow, 12, 6);
 	}
 	$positions = [];
 	for ($i = 0; $i < sizeof($selOptions); $i++) {

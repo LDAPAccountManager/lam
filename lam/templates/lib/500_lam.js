@@ -3368,6 +3368,31 @@ window.lam.smtp.test = function(event, tokenName, tokenValue, okText) {
 	});
 }
 
+window.lam.config = window.lam.config || {};
+
+window.lam.config.updateModuleFilter = function(inputField) {
+	const filterValue = inputField.value.toLowerCase();
+	const table = inputField.parentElement.parentElement.querySelector('table');
+	table.querySelectorAll('tr').forEach(row => {
+		let matches = false;
+		for (let i = 0; i < row.children.length; i++) {
+			const cell = row.children[i];
+			if (cell.children.length > 0) {
+				continue;
+			}
+			if (cell.innerText.toLowerCase().includes(filterValue)) {
+				matches = true;
+			}
+		};
+		if (matches) {
+			row.classList.remove('hidden');
+		}
+		else {
+			row.classList.add('hidden');
+		}
+	});
+}
+
 window.lam.richEdit = window.lam.richEdit || {};
 
 /**
