@@ -2922,12 +2922,14 @@ class htmlHiddenInput extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name input name
-	 * @param String $value input value
+	 * @param string $name input name
+	 * @param string $value input value
 	 */
-	function __construct($name, $value) {
+	function __construct($name, $value = '') {
 		$this->name = htmlspecialchars($name);
-		$this->value = htmlspecialchars($value);
+		if ($value !== null) {
+			$this->value = htmlspecialchars($value);
+		}
 	}
 
 	/**
