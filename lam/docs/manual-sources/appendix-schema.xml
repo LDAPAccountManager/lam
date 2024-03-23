@@ -383,6 +383,24 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
+                <imagedata fileref="images/schema_ssh.png"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>SSH public keys (AD)</entry>
+
+          <entry>-</entry>
+
+          <entry>built-in</entry>
+
+          <entry>AD/Samba 4 built-in</entry>
+
+          <entry/>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
                 <imagedata fileref="images/schema_quota.png"/>
               </imageobject>
             </inlinemediaobject></entry>

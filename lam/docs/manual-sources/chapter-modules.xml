@@ -2101,7 +2101,7 @@
     </section>
 
     <section>
-      <title>SSH keys</title>
+      <title>SSH public keys</title>
 
       <para>You can manage your public keys for SSH in LAM if you installed
       the <ulink url="http://code.google.com/p/openssh-lpk/">LPK patch for
@@ -2138,6 +2138,50 @@ server=ldap.domain.com
 baseDN=ou=people,dc=example,dc=com
 port=389
 ldapsearch -x -h $server -p $port -b $baseDN -s sub "(&amp;(objectclass=posixAccount)(uid=$uid))" | sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
+
+</literallayout>
+
+      <para>Now setup your sshd_config</para>
+
+      <literallayout>AuthorizedKeysCommand /usr/bin/ldapAuthSSH.sh
+AuthorizedKeysCommandUser root</literallayout>
+    </section>
+
+    <section>
+      <title>SSH public keys (AD)</title>
+
+      <para>You can manage your public SSH keys in Active Directory/Samba 4.
+      Activate the "SSH public key (AD)" module for users in the server
+      profile and you can add keys to your user entries. This will use the
+      attribute "altSecurityIdentities".</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_altSecurityIdentities1.png"/>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_altSecurityIdentities2.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Example for
+      AuthorizedKeysCommand</emphasis></para>
+
+      <para>This will dynamically get the public key from LDAP.</para>
+
+      <para>Create the authentication script in e.g.
+      /usr/bin/ldapAuthSSH.sh</para>
+
+      <literallayout>
+#!/bin/bash
+uid=$1
+server=ldap.domain.com
+baseDN=ou=people,dc=example,dc=com
+port=389
+ldapsearch -x -h $server -p $port -b $baseDN -s sub "(&amp;(objectclass=posixAccount)(uid=$uid))" | sed -n '/^ /{H;d};/altSecurityIdentities:/x;$g;s/\n *//g;s/altSecurityIdentities: //gp'
 
 </literallayout>
 
