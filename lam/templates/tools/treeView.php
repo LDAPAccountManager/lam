@@ -91,128 +91,15 @@ function showTree(): void {
 	$row->setCSSClasses(['maxrow']);
 	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), ['tree-view--tree']), 12, 5, 5, 'tree-left-area');
 	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), ['tree-view--actionarea']), 12, 7, 7, 'tree-right-area');
-	$newMenu = '';
-	if (checkIfWriteAccessIsAllowed()) {
-		$newMenu = '"createNode": {
-								"label": "' . _('Create a child entry') . '",
-								"icon": "../../graphics/add.svg",
-								"action": function(obj) {
-									window.lam.treeview.createNode("' . getSecurityTokenName() . '",
-										"' . getSecurityTokenValue() . '",
-										node,
-										tree)
-								}
-							},';
-	}
-	$copyMenu = '';
-	if (checkIfWriteAccessIsAllowed()) {
-		$copyMenu = '"copyNode": {
-								"separator_before": true,
-								"label": "' . _('Copy') . '",
-								"icon": "../../graphics/copy.svg",
-								"action": function(obj) {
-									window.lam.treeview.copyNode(node,
-										tree)
-								}
-							},';
-	}
-	$cutMenu = '';
-	if (checkIfWriteAccessIsAllowed()) {
-		$cutMenu = '"cutNode": {
-								"label": "' . _('Cut') . '",
-								"icon": "../../graphics/cut.svg",
-								"action": function(obj) {
-									window.lam.treeview.cutNode(node,
-										tree)
-								}
-							},';
-	}
-	$pasteMenu = '';
-	if (checkIfWriteAccessIsAllowed()) {
-		$pasteMenu = '"pasteNode": {
-								"separator_after": true,
-								"_disabled": window.lam.treeview.contextMenuPasteDisabled,
-								"label": "' . _('Paste') . '",
-								"icon": "../../graphics/paste.svg",
-								"action": function(obj) {
-									window.lam.treeview.pasteNode("' . getSecurityTokenName() . '",
-										"' . getSecurityTokenValue() . '",
-										node,
-										tree)
-								}
-							},';
-	}
-	$deleteMenu = '';
-	if (checkIfWriteAccessIsAllowed()) {
-		$deleteMenu = '"deleteNode": {
-								"label": "' . _('Delete') . '",
-								"icon": "../../graphics/del.svg",
-								"action": function(obj) {
-									window.lam.treeview.deleteNode("' . getSecurityTokenName() . '",
-										"' . getSecurityTokenValue() . '",
-										node,
-										tree,
-										"' . _('Delete') . '",
-										"' . _('Cancel') . '",
-										"' . _('Delete this entry') . '",
-										"' . _('Ok') . '",
-										"' . _('Error') . '")
-								}
-							},';
-	}
-	$exportMenu = '';
-	if ($_SESSION['config']->isToolActive('ImportExport')) {
-		$exportMenu = '"exportNode": {
-								"label": "' . _('Export') . '",
-								"icon": "../../graphics/export.svg",
-								"action": function(obj) {
-									window.location.href = "../tools/importexport.php?tab=export&dn=" + node.id;
-								}
-							},';
-	}
-	$refreshMenu = '"refreshNode": {
-								"label": "' . _('Refresh') . '",
-								"icon": "../../graphics/refresh.svg",
-								"action": function(obj) {
-									tree.refresh_node(node);
-									window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
-								}
-							},';
-	$searchMenu = '"search": {
-								"label": "' . _('Search') . '",
-								"icon": "../../graphics/search.svg",
-								"action": function(obj) {
-									window.lam.treeview.search("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
-								}
-							},';
 	$treeScript = new htmlJavaScript('
 		window.lam.utility.documentReady(function() {
 			var maxHeight = document.documentElement.scrollHeight - (document.querySelector("#ldap_tree").getBoundingClientRect().top - window.scrollY) - 50;
 			document.getElementById("ldap_tree").style.maxHeight = maxHeight;
 			document.getElementById("ldap_actionarea").style.maxHeight = maxHeight;
-			window.lam.treeview.contextMenuPasteDisabled = true;
 			jQuery(\'#ldap_tree\').jstree({
 				"plugins": [
-					"contextmenu",
 					"changed"
 				],
-				"contextmenu": {
-					"select_node": false,
-					"items": function(node) {
-						var tree = jQuery.jstree.reference("#ldap_tree");
-						var menuItems = {' .
-							$newMenu .
-							$deleteMenu .
-							$refreshMenu .
-							$copyMenu .
-							$cutMenu .
-							$pasteMenu .
-							$searchMenu .
-							$exportMenu .
-						'};
-						return menuItems;
-					}
-				},
 				"core": {
 					"worker": false,
 					"strings": {
