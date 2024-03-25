@@ -2327,13 +2327,12 @@ window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) 
  *
  * @param tokenName security token name
  * @param tokenValue security token value
- * @param node tree node
- * @param tree tree
+ * @param dn base64 encode DN
  */
-window.lam.treeview.createNode = function (tokenName, tokenValue, node, tree) {
+window.lam.treeview.createNode = function (tokenName, tokenValue, dn) {
 	let data = new FormData();
 	data.append(tokenName, tokenValue);
-	data.append('dn', node.id);
+	data.append('dn', dn);
 	fetch('../misc/ajax.php?function=treeview&command=createNewNode&step=getObjectClasses', {
 		method: 'POST',
 		body: data
@@ -2422,18 +2421,17 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
  *
  * @param tokenName security token name
  * @param tokenValue security token value
- * @param node tree node
- * @param tree tree
+ * @param dn base64 encoded DN
+ * @param text text for dialog body
  * @param okText text for OK button
  * @param cancelText text for cancel button
  * @param title dialog title
  * @param errorOkText text for OK button in error dialog
  * @param errorTitle dialog title in case of error
  */
-window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, okText, cancelText, title, errorOkText, errorTitle) {
-	const parent = node.parent;
+window.lam.treeview.deleteNode = function (tokenName, tokenValue, dn, text, okText, cancelText, title, errorOkText, errorTitle) {
 	const textSpan = document.querySelector('.treeview-delete-entry');
-	textSpan.innerText = node.text;
+	textSpan.innerText = text;
 	const dialogContent = document.getElementById('treeview_delete_dlg').cloneNode(true);
 	dialogContent.classList.remove('hidden');
 	Swal.fire({
@@ -2447,7 +2445,7 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 		if (result.isConfirmed) {
 			let data = new FormData();
 			data.append(tokenName, tokenValue);
-			data.append('dn', node.id)
+			data.append('dn', dn)
 			fetch("../misc/ajax.php?function=treeview&command=deleteNode", {
 				method: 'POST',
 				body: data
@@ -2455,9 +2453,11 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 			.then(async response => {
 				const jsonData = await response.json();
 				window.lam.treeview.checkSession(jsonData);
-				tree.refresh_node(parent);
-				const node = tree.get_node(parent, false);
-				window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
+				const tree = jQuery.jstree.reference("#ldap_tree");
+				const parentId = tree.get_node(dn, false).parent;
+				tree.refresh_node(parentId);
+				const parent = tree.get_node(parentId, false);
+				window.lam.treeview.getNodeContent(tokenName, tokenValue, parent.id);
 				if (jsonData['errors']) {
 					const errTextTitle = jsonData['errors'][0][1];
 					const textSpanErrorTitle = document.querySelector('.treeview-error-title');
@@ -2929,35 +2929,35 @@ window.lam.treeview.openInitial = function(tree, ids) {
 /**
  * Copies a node in the tree.
  *
- * @param node node
- * @param tree tree
+ * @param dn base64 encoded DN
  */
-window.lam.treeview.copyNode = function(node, tree) {
+window.lam.treeview.copyNode = function(dn) {
 	if (!window.sessionStorage) {
 		return;
 	}
+	const tree = jQuery.jstree.reference("#ldap_tree");
+	const node = tree.get_node(dn, false);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'COPY');
 	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
 	tree.set_icon(node, '../../graphics/copy.svg');
-	window.lam.treeview.contextMenuPasteDisabled = false;
 }
 
 /**
  * Cuts a node in the tree.
  *
- * @param node node
- * @param tree tree
+ * @param dn base64 encoded DN
  */
-window.lam.treeview.cutNode = function(node, tree) {
+window.lam.treeview.cutNode = function(dn) {
 	if (!window.sessionStorage) {
 		return;
 	}
+	const tree = jQuery.jstree.reference("#ldap_tree");
+	const node = tree.get_node(dn, false);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'CUT');
 	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
 	tree.set_icon(node, '../../graphics/cut.svg');
-	window.lam.treeview.contextMenuPasteDisabled = false;
 }
 
 /**
@@ -2965,19 +2965,21 @@ window.lam.treeview.cutNode = function(node, tree) {
  *
  * @param tokenName security token name
  * @param tokenValue security token value
- * @param node node
- * @param tree tree
+ * @param destinationDn base64 encoded DN
  */
-window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
+window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) {
 	const dn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+	if (!dn) {
+		return;
+	}
+	const tree = jQuery.jstree.reference("#ldap_tree");
 	tree.deselect_all();
 	const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
 	const action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
-	const targetDn = node.id;
 	let data = new FormData();
 	data.append(tokenName, tokenValue);
 	data.append('dn', dn);
-	data.append('targetDn', targetDn);
+	data.append('targetDn', destinationDn);
 	data.append('action', action);
 	fetch('../misc/ajax.php?function=treeview&command=paste', {
 		method: 'POST',
@@ -2994,14 +2996,13 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_ACTION');
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_OLD_ICON');
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_DN');
-		tree.refresh_node(targetDn);
-		tree.open_node(targetDn);
-		tree.select_node(targetDn);
+		tree.refresh_node(destinationDn);
+		tree.open_node(destinationDn);
+		tree.select_node(destinationDn);
 		if (action == 'CUT') {
 			const parentDn = tree.get_parent(dn);
 			tree.refresh_node(parentDn);
 		}
-		window.lam.treeview.contextMenuPasteDisabled = true;
 	});
 }
 

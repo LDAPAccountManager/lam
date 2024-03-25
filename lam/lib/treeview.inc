@@ -19,6 +19,7 @@ use htmlResponsiveSelect;
 use htmlResponsiveTable;
 use htmlSelect;
 use htmlSortableList;
+use htmlSpacer;
 use htmlStatusMessage;
 use htmlSubTitle;
 use htmlTable;
@@ -366,9 +367,10 @@ class TreeView {
 			$row->add($message);
 			$row->addVerticalSpacer('1rem');
 		}
-		$row->add(new htmlTitle(unescapeLdapSpecialCharacters($dn)), 12);
-		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')), 12);
-		$row->add(new htmlSubTitle(_('Attributes')), 12);
+		$row->add(new htmlTitle(unescapeLdapSpecialCharacters($dn)));
+		$this->addActionBar($row, $dn);
+		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')));
+		$row->add(new htmlSubTitle(_('Attributes')));
 		$attributes = ldapGetDN($dn, array('*'));
 		unset($attributes['dn']);
 		ksort($attributes);
@@ -449,21 +451,92 @@ class TreeView {
 		}
 
 		$internalAttributesContent = new htmlResponsiveRow();
-		$internalAttributesContent->add(new htmlSubTitle(_('Internal attributes')), 12);
+		$internalAttributesContent->add(new htmlSubTitle(_('Internal attributes')));
 		$internalAttributesButton = new htmlLink(_('Show internal attributes'), '#', null, true);
 		$internalAttributesButton->setOnClick('window.lam.treeview.getInternalAttributesContent(event,
 			"' . getSecurityTokenName() . '",
 			"' . getSecurityTokenValue() . '",
 			"' . base64_encode($dn) . '");');
 		$internalAttributesButton->setId('internalAttributesButton');
-		$internalAttributesContent->add($internalAttributesButton, 12);
+		$internalAttributesContent->add($internalAttributesButton);
 		$internalAttributesDiv = new htmlDiv('actionarea-internal-attributes', $internalAttributesContent);
-		$row->add($internalAttributesDiv, 12);
+		$row->add($internalAttributesDiv);
 		ob_start();
 		parseHtml(null, $row, [], false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Adds the action buttons.
+	 *
+	 * @param htmlResponsiveRow $row container
+	 * @param string $dn entry DN
+	 */
+	private function addActionBar(htmlResponsiveRow $row, string $dn): void {
+		$buttonGroup = new htmlGroup();
+		$buttonSize = '16px';
+		$buttonClasses = ['clickable', 'lam-margin-small', 'icon'];
+
+		if (checkIfWriteAccessIsAllowed()) {
+			$createButton = new htmlImage('../../graphics/add.svg', $buttonSize, $buttonSize, _('Create a child entry'), _('Create a child entry'));
+			$createButton->setOnClick('window.lam.treeview.createNode(\'' . getSecurityTokenName() . '\', '
+				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+			$createButton->setCSSClasses($buttonClasses);
+			$buttonGroup->addElement($createButton);
+
+			$deleteButton = new htmlImage('../../graphics/delete.svg', $buttonSize, $buttonSize, _('Delete'), _('Delete'));
+			$deleteButton->setOnClick('window.lam.treeview.deleteNode(\'' . getSecurityTokenName() . '\', '
+				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . htmlspecialchars(extractRDN($dn)) . '\', '
+				. '\'' . _('Delete') . '\', \'' . _('Cancel') . '\', \'' . _('Delete this entry') . '\', \'' . _('Ok') . '\', '
+				. '\'' . _('Error') . '\');');
+			$deleteButton->setCSSClasses($buttonClasses);
+			$buttonGroup->addElement($deleteButton);
+		}
+
+		$refreshButton = new htmlImage('../../graphics/refresh.svg', $buttonSize, $buttonSize, _('Refresh'), _('Refresh'));
+		$refreshButton->setOnClick('jQuery.jstree.reference(\'#ldap_tree\').refresh_node(\'' . base64_encode($dn) . '\'); '
+			. 'window.lam.treeview.getNodeContent(\'' . getSecurityTokenName() . '\', '
+			. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+		$refreshButton->setCSSClasses($buttonClasses);
+		$buttonGroup->addElement($refreshButton);
+
+		$buttonGroup->addElement(new htmlSpacer('0.5rem'));
+
+		if (checkIfWriteAccessIsAllowed()) {
+			$copyButton = new htmlImage('../../graphics/copy.svg', $buttonSize, $buttonSize, _('Copy'), _('Copy'));
+			$copyButton->setOnClick('window.lam.treeview.copyNode(\'' . base64_encode($dn) . '\');');
+			$copyButton->setCSSClasses($buttonClasses);
+			$buttonGroup->addElement($copyButton);
+
+			$cutButton = new htmlImage('../../graphics/cut.svg', $buttonSize, $buttonSize, _('Cut'), _('Cut'));
+			$cutButton->setOnClick('window.lam.treeview.cutNode(\'' . base64_encode($dn) . '\');');
+			$cutButton->setCSSClasses($buttonClasses);
+			$buttonGroup->addElement($cutButton);
+
+			$pasteButton = new htmlImage('../../graphics/paste.svg', $buttonSize, $buttonSize, _('Paste'), _('Paste'));
+			$pasteButton->setOnClick('window.lam.treeview.pasteNode(\'' . getSecurityTokenName() . '\', '
+				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+			$pasteButton->setCSSClasses($buttonClasses);
+			$buttonGroup->addElement($pasteButton);
+
+			$buttonGroup->addElement(new htmlSpacer('0.5rem'));
+		}
+
+		$searchButton = new htmlImage('../../graphics/search.svg', $buttonSize, $buttonSize, _('Search'), _('Search'));
+		$searchButton->setOnClick('window.lam.treeview.search(\'' . getSecurityTokenName() . '\', '
+			. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+		$searchButton->setCSSClasses($buttonClasses);
+		$buttonGroup->addElement($searchButton);
+
+		if ($_SESSION['config']->isToolActive('ImportExport')) {
+			$exportButton = new htmlImage('../../graphics/export.svg', $buttonSize, $buttonSize, _('Export'), _('Export'));
+			$exportButton->setOnClick('window.location.href = \'../tools/importexport.php?tab=export&dn=' . base64_encode($dn) . '\';');
+			$exportButton->setCSSClasses($buttonClasses);
+			$buttonGroup->addElement($exportButton);
+		}
+		$row->add($buttonGroup);
 	}
 
 	/**
