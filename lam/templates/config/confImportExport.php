@@ -48,6 +48,8 @@ use ZipArchive;
 
 /** Access to persistence functions */
 include_once('../../lib/persistence.inc');
+/** account modules */
+include_once('../../lib/modules.inc');
 
 // start session
 if (isFileBasedSession()) {

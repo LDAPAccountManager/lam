@@ -74,6 +74,7 @@ class ConfigDataExporter {
 		$jsonData['selfServiceProfiles'] = $this->_getSelfServiceProfiles();
 		$jsonData['webauthn'] = $this->_getWebauthn();
 		$jsonData['cronJobs'] = $this->_getCronJobData($serverProfiles);
+		$jsonData['requestAccess'] = $this->_getRequestAccessData();
 		return json_encode($jsonData);
 	}
 
@@ -299,6 +300,21 @@ class ConfigDataExporter {
 		return $data;
 	}
 
+	/**
+	 * Returns the content for request access requests.
+	 *
+	 * @return array data
+	 * @throws LAMException error reading data
+	 */
+	public function _getRequestAccessData() : array {
+		$data = [];
+		if (!isLAMProVersion()) {
+			return $data;
+		}
+		$database = \requestAccess::getDatabase();
+		return $database->exportData();
+	}
+
 }
 
 /**
@@ -378,6 +394,15 @@ class ConfigDataImporter {
 						$steps[] = $mainStep;
 					}
 					break;
+				case 'requestAccess':
+					if (isLAMProVersion()) {
+						$mainStep = new ImporterStep(_('Request access'), 'requestAccess', $value);
+						if (isset($value['openRequests'])) {
+							$mainStep->addSubStep(new ImporterStep(_('Open requests'), 'requestAccess_openRequests', $value['openRequests']));
+						}
+						$steps[] = $mainStep;
+					}
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -431,6 +456,9 @@ class ConfigDataImporter {
 				case 'cronJobs':
 					$this->importCronJobs($step);
 					break;
+				case 'requestAccess':
+					$this->importRequestAccess($step);
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -443,7 +471,7 @@ class ConfigDataImporter {
 	 * @param array $data main config data
 	 * @throws LAMException error during import
 	 */
-	private function importMainConfig($data) {
+	private function importMainConfig($data): void {
 		$cfgMain = new LAMCfgMain();
 		$cfgMain->importData($data);
 		$cfgMain->save();
@@ -455,7 +483,7 @@ class ConfigDataImporter {
 	 * @param null|string $data file content
 	 * @throws LAMException error during import
 	 */
-	private function importCertificates($data) {
+	private function importCertificates($data): void {
 		$cfgMain = new LAMCfgMain();
 		$cfgMain->importCertificates($data);
 	}
@@ -466,7 +494,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step step
 	 * @throws LAMException error during import
 	 */
-	private function importServerProfiles($step) {
+	private function importServerProfiles(ImporterStep $step): void {
 		$failedProfiles = [];
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
@@ -497,7 +525,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step step
 	 * @throws LAMException error during import
 	 */
-	private function importAccountProfiles($step) {
+	private function importAccountProfiles(ImporterStep $step): void {
 		$failedProfiles = [];
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
@@ -528,7 +556,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step step
 	 * @throws LAMException error during import
 	 */
-	private function importAccountProfileTemplates($step) {
+	private function importAccountProfileTemplates(ImporterStep $step): void {
 		$data = $step->getValue();
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($data as $scope => $accountProfileTemplates) {
@@ -544,7 +572,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step step
 	 * @throws LAMException error during import
 	 */
-	private function importPdfProfiles($step) {
+	private function importPdfProfiles(ImporterStep $step): void {
 		$failedProfiles = [];
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
@@ -586,7 +614,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step step
 	 * @throws LAMException error during import
 	 */
-	private function importPdfProfileTemplates($step) {
+	private function importPdfProfileTemplates(ImporterStep $step): void {
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$failedNames = [];
 		$data = $step->getValue();
@@ -632,7 +660,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step importer step
 	 * @throws LAMException error saving profiles
 	 */
-	private function importSelfServiceProfiles($step) {
+	private function importSelfServiceProfiles(ImporterStep $step): void {
 		$failedProfiles = [];
 		$selfServicePersistence = new SelfServicePersistence();
 		foreach ($step->getSubSteps() as $profileStep) {
@@ -664,7 +692,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step importer step
 	 * @throws LAMException error saving profiles
 	 */
-	private function importWebauthn($step) {
+	private function importWebauthn(ImporterStep $step): void {
 		$data = $step->getValue();
 		include_once __DIR__ . '/webauthn.inc';
 		$webauthnManager = new WebauthnManager();
@@ -678,7 +706,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep $step step
 	 * @throws LAMException error during import
 	 */
-	private function importCronJobs($step) {
+	private function importCronJobs(ImporterStep $step): void {
 		if (!isLAMProVersion()) {
 			return;
 		}
@@ -715,6 +743,31 @@ class ConfigDataImporter {
 		}
 		if (!empty($failedProfiles)) {
 			throw new LAMException(_('Could not save PDF structure, access denied.'), implode(', ', $failedProfiles));
+		}
+	}
+
+	/**
+	 * Imports request access data.
+	 *
+	 * @param ImporterStep $step step
+	 * @throws LAMException error accessing database
+	 */
+	private function importRequestAccess(ImporterStep $step): void {
+		if (!isLAMProVersion()) {
+			return;
+		}
+		$database = \requestAccess::getDatabase();
+		foreach ($step->getSubSteps() as $subStep) {
+			if (!$subStep->isActive()) {
+				continue;
+			}
+			$data = $subStep->getValue();
+			$stepName = str_replace('requestAccess_', '', $subStep->getKey());
+			switch ($stepName) {
+				case 'openRequests':
+					$database->importOpenRequests($data);
+					break;
+			}
 		}
 	}
 

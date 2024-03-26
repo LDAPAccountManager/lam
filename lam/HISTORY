@@ -3,6 +3,8 @@ June 2024 8.8
  - New module to manage SSH keys in AD/Samba 4 (using "altSecurityIdentities") (304)
  - Samba 3: dropped support for LM password hashes (307)
  - Configuration: added filter for available account modules
+ - LAM Pro:
+  -> Request access: request data can be imported and exported as part of configuration
 
 
 16.03.2024 8.7
