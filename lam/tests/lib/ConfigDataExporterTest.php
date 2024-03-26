@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020 - 2023  Roland Gruber
+ Copyright (C) 2020 - 2024  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -83,7 +83,8 @@ class ConfigDataExporterTest extends TestCase {
 			'pdfProfileTemplates' => $pdfTemplateData,
 			'selfServiceProfiles' => $selfServiceData,
 			'webauthn' => $webauthn,
-			'cronJobs' => []
+			'cronJobs' => [],
+			'requestAccess' => []
 		]);
 
 		$exporter = $this->getMockBuilder('\\' . \LAM\PERSISTENCE\ConfigDataExporter::class)
