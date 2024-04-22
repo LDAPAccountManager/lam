@@ -1914,12 +1914,16 @@
       requester.</para>
 
       <para>The wildcard $$requested_groups$$ will resolve to the requested
-      groups. This is available for mails to the group owners and the
-      approval/deny mails to the requester.</para>
+      groups. This is available for all mails.</para>
 
       <para>The wildcard $$requester_notes$$ resolves to the requester's
       optional notes. This is available for the mails to the group
       owners/managers.</para>
+
+      <para>The wildcards $$approveLink$$ and $$rejectLink$$ resolve to an URL
+      that allows to approve/deny all requests listed in $$requested_groups$$.
+      This is available for the mails to the group owners/managers and
+      approvers. Use it as target URL for a link inside the email body.</para>
 
       <para><emphasis role="bold">Example for owner email:</emphasis></para>
 
@@ -1932,7 +1936,10 @@
 
   Reason: $$requester_notes$$
 
-  Please open LAM Pro's self service for details.
+  Approve all: $$approveLink$$
+  Deny all: $$rejectLink$$
+
+  Please check here (link to self service) for details.
 
   Best regards,
   IT team
@@ -1943,9 +1950,14 @@
       email:</emphasis><literallayout>
   Dear @@cn@@,
 
-  there are new access requests waiting for approval.
+  there are new access requests waiting for approval:
 
-  Please check here(link to self service).
+  $$requested_groups$$
+
+  Approve all: $$approveLink$$
+  Deny all: $$rejectLink$$
+
+  Please check here (link to self service) for details.
 
   Best regards,
   IT team
