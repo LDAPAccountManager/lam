@@ -112,6 +112,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_businessCategory', _('Please enter a valid business category!'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
+		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_passwordDisabled', _('This value can only be "true" or "false".'));
 		$this->messages['sendPasswordMail'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_sendPasswordMail', _('This value can only be "true" or "false".'));
 	}
 
@@ -790,6 +791,10 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			'userPassword' => array(
 				"Headline" => _("Password"),
 				"Text" => _("Please enter the password which you want to set for this account.")
+			),
+			'userPassword_lock' => array(
+				"Headline" => _("Lock password"),
+				"Text" => _("If checked then the password will be deactivated by putting a \"!\" before the encrypted password.")
 			),
 			'userCertificate' => array(
 				"Headline" => _('User certificates'),
@@ -2330,6 +2335,14 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				'help' => 'userPassword',
 				'example' => _('secret'),
 			);
+			$return[] = array(
+				'name' => 'inetOrgPerson_passwordDisabled',
+				'description' => _('Lock password'),
+				'help' => 'userPassword_lock',
+				'example' => 'false',
+				'values' => 'true, false',
+				'default' => 'false'
+			);
 		}
 		if (!$this->isSamba3Active() && !$this->isBooleanConfigOptionSet('inetOrgPerson_hidedisplayName', true)) {
 			$return[] = array(
@@ -2520,6 +2533,21 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 					}
 				}
 				// password
+				$pwd_enabled = true;
+				// password enabled/disabled
+				if (empty($rawAccounts[$i][$ids['inetOrgPerson_passwordDisabled']])) {
+					$pwd_enabled = true;
+				}
+				elseif (in_array($rawAccounts[$i][$ids['inetOrgPerson_passwordDisabled']], array('true', 'false'))) {
+					if ($rawAccounts[$i][$ids['inetOrgPerson_passwordDisabled']] == 'true') {
+						$pwd_enabled = false;
+					}
+				}
+				else {
+					$errMsg = $this->messages['passwordDisabled'][0];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
 				// delay exop passwords
 				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
 					// changed in post action
@@ -2535,7 +2563,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				// set normal password
 				else {
 					if (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
-						$partialAccounts[$i]['userpassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+						$partialAccounts[$i]['userpassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
 						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']]; // for custom scripts etc.
 					}
 					elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {

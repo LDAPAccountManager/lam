@@ -450,8 +450,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					"Text" => _("Please enter the password which you want to set for this account.")
 				),
 				'userPassword_lock' => array(
-					"Headline" => _("Account deactivated"),
-					"Text" => _("If checked account will be deactivated by putting a \"!\" before the encrypted password.")
+					"Headline" => _("Lock password"),
+					"Text" => _("If checked then the password will be deactivated by putting a \"!\" before the encrypted password.")
 				),
 				'loginShell' => array(
 					"Headline" => _("Login shell"), 'attr' => 'loginShell',
@@ -2816,9 +2816,6 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					elseif (in_array($rawAccount[$ids['posixAccount_passwordDisabled']], array('true', 'false'))) {
 						if ($rawAccount[$ids['posixAccount_passwordDisabled']] == 'true') {
 							$pwd_enabled = false;
-						}
-						else {
-							$pwd_enabled = true;
 						}
 					}
 					else {
