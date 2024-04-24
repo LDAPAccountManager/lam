@@ -61,6 +61,9 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	/** business category cache */
 	private $businessCategoryCache;
 
+	/** email cache */
+	private $emailCheckCache;
+
 	/** session variable for existing user certificates in self service */
 	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
 	/** session variable for existing user certificates in self service */

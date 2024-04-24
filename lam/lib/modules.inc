@@ -2028,10 +2028,10 @@ class accountContainer {
 			$errors[] = array('ERROR', _('The operation was stopped because of the above errors.'));
 			return $errors;
 		}
-		// Set to true if an real error has happened
+		// Set to true if a real error has happened
 		$stopprocessing = false;
 		$finalDnLower = strtolower($this->finalDN);
-		$dnOrigLower = strtolower($this->dn_orig);
+		$dnOrigLower = ($this->dn_orig !== null) ? strtolower($this->dn_orig) : '';
 		if (($finalDnLower !== $dnOrigLower) && (unescapeLdapSpecialCharacters($finalDnLower) !== unescapeLdapSpecialCharacters($dnOrigLower))) {
 			// move existing DN
 			if ($this->dn_orig != '') {
