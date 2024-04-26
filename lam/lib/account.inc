@@ -343,15 +343,14 @@ function pwd_is_enabled($hash) {
 }
 
 /**
- * Generates a random password with 12 digits by default.
+ * Generates a random password with 14 digits by default.
  *
- * @param int $length length of password (defaults to 12)
+ * @param int $length length of password (defaults to 14)
  * @param bool $checkStrength check if password matches the policy
  * @return String password
  */
-function generateRandomPassword($length = 12, bool $checkStrength = true): string {
+function generateRandomPassword($length = 14, bool $checkStrength = true): string {
 	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
-	$password = '';
 	$minLength = $_SESSION['cfgMain']->passwordMinLength;
 	if ($minLength > $length) {
 		$length = $minLength;
