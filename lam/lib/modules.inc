@@ -1209,7 +1209,7 @@ class accountContainer {
 					$moduleContainer->addElement(new htmlImage($buttonImage, '16px', '16px', getModuleAlias($name, $this->type->getScope())));
 				}
 				$moduleContainer->addElement(new htmlInputCheckbox('password_cb_' . $name, true));
-				$moduleContainer->addElement(new htmlOutputText(getModuleAlias($name, $this->type->getScope())));
+				$moduleContainer->addElement(new htmlLabel('password_cb_' . $name, getModuleAlias($name, $this->type->getScope())));
 				$moduleContainer->addElement(new htmlSpacer('10px', null));
 			}
 		}
