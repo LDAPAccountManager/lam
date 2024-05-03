@@ -18,7 +18,7 @@ use function LAM\PDF\getPDFStructures;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2022  Roland Gruber
+  Copyright (C) 2020 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -400,6 +400,9 @@ class ConfigDataImporter {
 						if (isset($value['openRequests'])) {
 							$mainStep->addSubStep(new ImporterStep(_('Open requests'), 'requestAccess_openRequests', $value['openRequests']));
 						}
+						if (isset($value['historicRequests'])) {
+							$mainStep->addSubStep(new ImporterStep(_('Request history'), 'requestAccess_historicRequests', $value['historicRequests']));
+						}
 						$steps[] = $mainStep;
 					}
 					break;
@@ -766,6 +769,9 @@ class ConfigDataImporter {
 			switch ($stepName) {
 				case 'openRequests':
 					$database->importOpenRequests($data);
+					break;
+				case 'historicRequests':
+					$database->importRequestHistory($data);
 					break;
 			}
 		}

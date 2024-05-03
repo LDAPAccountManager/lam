@@ -7,6 +7,7 @@ June 2024 8.8
  - LAM Pro:
   -> Request access: request data can be imported and exported as part of configuration
   -> Request access: added $$approveLink$$ and $$rejectLink$$ in approval mails
+  -> Request access: added history (283)
 
 
 16.03.2024 8.7
