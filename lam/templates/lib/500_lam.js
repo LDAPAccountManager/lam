@@ -3413,13 +3413,14 @@ window.lam.richEdit.init = function() {
 }
 
 window.lam.datatable = window.lam.datatable || {};
-window.lam.datatable.openTables = window.lam.datatable.openTables || {};
+window.lam.datatable.tables = window.lam.datatable.tables || {};
+window.lam.datatable.unfinishedTables = window.lam.datatable.unfinishedTables || {};
 
 window.lam.datatable.init = function(id, table) {
-	window.lam.datatable.openTables[id] = function() {};
+	window.lam.datatable.tables[id] = table;
+	window.lam.datatable.unfinishedTables[id] = true;
 	table.on("tableBuilt", () => {
-		window.lam.datatable.openTables[id]();
-		window.lam.datatable.openTables[id] = null;
+		window.lam.datatable.unfinishedTables[id] = false;
 	});
 }
 
@@ -3430,17 +3431,18 @@ window.lam.datatable.init = function(id, table) {
  * @param data list of rows ([{firstName:"Steve", lastName:"Miller"}])
  */
 window.lam.datatable.setData = function(id, data) {
-	const table = Tabulator.findTable('#' + id)[0];
+	const table = window.lam.datatable.tables[id];
 	for (let i = 0; i < data.length; i++) {
 		data[i].id = i;
 	}
-	if (window.lam.datatable.openTables[id] === null) {
+	if (window.lam.datatable.unfinishedTables[id] === false) {
 		table.replaceData(data);
 	}
 	else {
-		window.lam.datatable.openTables[id] = function() {
+		table.on("tableBuilt", () => {
+			window.lam.datatable.unfinishedTables[id] = false;
 			table.replaceData(data);
-		};
+		});
 	}
 }
 

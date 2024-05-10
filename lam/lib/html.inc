@@ -441,13 +441,14 @@ class htmlDataTable extends htmlElement {
 			$headerFilter = $column->filterable ? ', headerFilter: "input"' : '';
 			$columnOptions[] = '{
 				title: "' . $column->label . '",
-				field: "' . $column->name . '"
+				field: "' . $column->name . '",
+				formatter: "textarea"
 				' . $headerFilter . '
 			}';
 		}
 		$columnsCode = implode(', ', $columnOptions);
 		echo '<script type="text/javascript">
-			const table = new Tabulator("#' . $this->id . '", {
+			window.lam.datatable.init("' . $this->id . '", new Tabulator("#' . $this->id . '", {
                 height: ' . $this->height . ',
                 layout: "fitColumns",
                 pagination:"local",
@@ -472,8 +473,7 @@ class htmlDataTable extends htmlElement {
                         }
                     }
 				}
-			});
-		    window.lam.datatable.init("' . $this->id . '", table);
+			}));
 		</script>';
 		return [];
 	}
