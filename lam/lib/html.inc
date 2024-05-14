@@ -412,6 +412,12 @@ class htmlTable extends htmlElement {
  */
 class htmlDataTable extends htmlElement {
 
+	public const DATA_AJAX_URL = 'ajaxurl';
+	public const DATA_TOKEN_NAME = 'tokenname';
+	public const DATA_TOKEN_VALUE = 'tokenvalue';
+	public const DATA_ACTION = 'action';
+	public const DATA_OK_TEXT = 'oktext';
+
 	private string $id;
 	private int $height;
 	private array $columns;
@@ -435,7 +441,7 @@ class htmlDataTable extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		echo '<link href="../../style/tabulator/tabulator.css" rel="stylesheet">';
 		echo '<script type="text/javascript" src="../../templates/lib/extra/tabulator/tabulator.js.js"></script>';
-		echo '<div id="' . $this->id . '" class="lam-data-table"></div>';
+		echo '<div id="' . $this->id . '" class="lam-data-table" ' . $this->getDataAttributesAsString() . '></div>';
 		$columnOptions = [];
 		foreach ($this->columns as $column) {
 			$headerFilter = $column->filterable ? ', headerFilter: "input"' : '';

@@ -3425,6 +3425,39 @@ window.lam.datatable.init = function(id, table) {
 }
 
 /**
+ * Refreshes the data of a datatable using the AjaxURL.
+ *
+ * @param id table ID
+ */
+window.lam.datatable.refreshTableData = function(id) {
+	const tableDiv = document.getElementById(id);
+	if (!tableDiv) {
+		return;
+	}
+	const ajaxUrl = tableDiv.dataset.ajaxurl;
+	const tokenName = tableDiv.dataset.tokenname;
+	const tokenValue = tableDiv.dataset.tokenvalue;
+	const action = tableDiv.dataset.action;
+	const okText = tableDiv.dataset.oktext;
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append("action", action);
+	fetch(ajaxUrl, {
+		method: "POST",
+		body: data
+	})
+	.then(async response => {
+		const jsonData = await response.json();
+		if (jsonData.message) {
+			window.lam.dialog.showError(jsonData.message, okText);
+		}
+		else {
+			window.lam.datatable.setData(id, jsonData);
+		}
+	});
+}
+
+/**
  * Sets the data of a datatable.
  *
  * @param id table ID
