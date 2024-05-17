@@ -180,4 +180,11 @@ class LAMCfgMainTest extends TestCase {
 		$this->conf->importData($importData);
 	}
 
+	public function testModuleSettings() {
+		$settings = ['abc' => 123];
+		$this->conf->setModuleSettings($settings);
+
+		$this->assertEquals($settings, $this->conf->getModuleSettings());
+	}
+
 }

@@ -826,6 +826,27 @@ abstract class baseModule {
 	}
 
 	/**
+	 * Returns a list of config options for LAM's main configuration.
+	 *
+	 * @param array $currentSettings current settings
+	 * @return htmlElement[] config options
+	 */
+	public function getGlobalConfigOptions(array $currentSettings): array {
+		return [];
+	}
+
+	/**
+	 * Checks the global config options.
+	 *
+	 * @param string[] $messages info messages can be added here
+	 * @param string[] $errors error messages can be added here
+	 * @param array $options config options
+	 */
+	public function checkGlobalConfigOptions(array &$options, array &$messages, array &$errors): void {
+		// to be implemented by modules if needed
+	}
+
+	/**
 	 * Returns a hashtable with all entries that may be printed out in the PDF.
 	 *
 	 * @param string $typeId type id (user, group, host)

@@ -3145,6 +3145,9 @@ class LAMCfgMain {
 	/** database password */
 	public $configDatabasePassword = '';
 
+	/** database password */
+	private $moduleSettings = '';
+
 	/** list of data fields to save in config file */
 	private $settings = ["password", "default", "sessionTimeout", "hideLoginErrorDetails",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
@@ -3158,7 +3161,7 @@ class LAMCfgMain {
 		'mailAttribute', 'mailBackupAttribute',
 		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
-		'configDatabasePassword'
+		'configDatabasePassword', 'moduleSettings'
 	];
 
 	/** persistence settings are always stored on local file system */
@@ -3187,6 +3190,7 @@ class LAMCfgMain {
 		$this->logDestination = "SYSLOG";
 		$this->allowedHosts = "";
 		$this->allowedHostsSelfService = '';
+		$this->moduleSettings = '';
 		try {
 			$this->reload();
 		} catch (LAMException $e) {
@@ -3547,6 +3551,9 @@ class LAMCfgMain {
 		}
 		if (!in_array("configDatabasePassword", $saved)) {
 			array_push($file_array, "configDatabasePassword: " . $this->configDatabasePassword . "\n");
+		}
+		if (!in_array("moduleSettings", $saved)) {
+			array_push($file_array, "moduleSettings: " . $this->moduleSettings . "\n");
 		}
 
 		$file = @fopen($this->conffile, "w");
@@ -3914,6 +3921,27 @@ class LAMCfgMain {
 			return $this->mailBackupAttribute;
 		}
 		return self::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
+	}
+
+	/**
+	 * Returns a list of module settings.
+	 *
+	 * @return array module settings
+	 */
+	public function getModuleSettings(): array {
+		if (empty($this->moduleSettings)) {
+			return [];
+		}
+		return json_decode(base64_decode($this->moduleSettings), true);
+	}
+
+	/**
+	 * Sets the module settings.
+	 *
+	 * @param array $settings module settings
+	 */
+	public function setModuleSettings(array $settings): void {
+		$this->moduleSettings = base64_encode(json_encode($settings));
 	}
 
 }

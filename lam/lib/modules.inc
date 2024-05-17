@@ -320,6 +320,25 @@ function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 }
 
 /**
+ * Returns an array with all modules.
+ *
+ * @return baseModule[] list of modules
+ */
+function getAllModules(): array {
+	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 12) . "/modules";
+	$dir = dir($dirname);
+	$return = [];
+	// get module names.
+	while ($entry = $dir->read()) {
+		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
+			$entry = substr($entry, 0, strpos($entry, '.'));
+			$return[] = new $entry(null);
+		}
+	}
+	return $return;
+}
+
+/**
 * Returns the elements for the profile page.
 *
 * @param string $typeId account type (user, group, host)
