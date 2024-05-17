@@ -715,7 +715,9 @@ if (isset($_POST['submitFormData'])) {
 
     // module settings
 	$modules = getAllModules();
+    $supportsGlobalCronJob = false;
     foreach ($modules as $module) {
+        $supportsGlobalCronJob = $supportsGlobalCronJob || $module->supportsGlobalCronJob();
         $moduleOptions = $module->getGlobalConfigOptions($cfg->getModuleSettings());
         if (empty($moduleOptions)) {
             continue;
@@ -725,6 +727,18 @@ if (isset($_POST['submitFormData'])) {
             $row->add($moduleOption);
         }
 		$row->addVerticalSpacer('3rem');
+    }
+
+    // global cron job
+    if ($supportsGlobalCronJob) {
+		$row->add(new htmlSubTitle(_('Global cron job')));
+        $cronCommand = dirname(__FILE__, 3) . '/lib/cronGlobal.sh';
+        $row->addLabel(new htmlOutputText('Cron command'));
+		$cmdGroup = new htmlGroup();
+		$cmdGroup->addElement(new htmlOutputText('0 0 * * * ' . $cronCommand));
+		$cmdGroup->addElement(new htmlSpacer('2rem', null));
+		$cmdGroup->addElement(new htmlHelpLink('294'));
+		$row->addField($cmdGroup);
     }
 
 	// change master password

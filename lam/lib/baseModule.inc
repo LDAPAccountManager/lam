@@ -847,6 +847,25 @@ abstract class baseModule {
 	}
 
 	/**
+	 * Specifies if the module supports global cron job actions.
+	 *
+	 * @return bool supports cron
+	 */
+	public function supportsGlobalCronJob(): bool {
+		return false;
+	}
+
+	/**
+	 * Runs any global cron actions.
+	 *
+	 * @param bool $isDryRun dry-run active
+	 * @throws LAMException error during execution
+	 */
+	public function runGlobalCronActions(bool $isDryRun): void {
+		// needs to be implemented by submodule if needed
+	}
+
+	/**
 	 * Returns a hashtable with all entries that may be printed out in the PDF.
 	 *
 	 * @param string $typeId type id (user, group, host)
