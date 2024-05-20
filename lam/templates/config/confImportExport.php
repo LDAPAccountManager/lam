@@ -19,7 +19,7 @@ use ZipArchive;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2023  Roland Gruber
+  Copyright (C) 2020 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -78,7 +78,11 @@ if (isset($_POST['exportConfig']) && $cfg->checkPassword($_SESSION["mainconf_pas
 		if ($zipTmpFile === false) {
 		    throw new LAMException(_('Unable to create temporary file.'));
         }
-		$zipFile = stream_get_meta_data($zipTmpFile)['uri'];
+        $metaData = stream_get_meta_data($zipTmpFile);
+        if (empty($metaData['uri'])) {
+            throw new LAMException(_('Unable to create temporary file.'));
+        }
+		$zipFile = $metaData['uri'];
 		fclose($zipTmpFile);
 		$zip->open($zipFile, ZipArchive::CREATE);
 		$json = $exporter->exportAsJson();

@@ -328,6 +328,40 @@
         </screenshot></para>
     </section>
 
+    <section id="confMainGlobalCron">
+      <title>Module settings and global cron job (LAM Pro)</title>
+
+      <para>The global cron job is used to perform cleanup tasks.</para>
+
+      <para><emphasis role="bold">Note: This is only needed when you use the
+      "Request access" module. If you do not use this module you do not need
+      to run the global cron job.</emphasis></para>
+
+      <para>Cleanup actions</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Request access</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Expiration of open requests (using "Request expiration
+              period")</para>
+            </listitem>
+
+            <listitem>
+              <para>Cleanup request history (using "History retention
+              period")</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <screenshot>
+        <graphic fileref="images/configGeneral11.png"/>
+      </screenshot>
+    </section>
+
     <section>
       <title>Change master password</title>
 

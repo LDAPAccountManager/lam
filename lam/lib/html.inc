@@ -408,6 +408,107 @@ class htmlTable extends htmlElement {
 }
 
 /**
+ * Table component for client-side controlled data tables.
+ */
+class htmlDataTable extends htmlElement {
+
+	public const DATA_AJAX_URL = 'ajaxurl';
+	public const DATA_TOKEN_NAME = 'tokenname';
+	public const DATA_TOKEN_VALUE = 'tokenvalue';
+	public const DATA_ACTION = 'action';
+	public const DATA_OK_TEXT = 'oktext';
+
+	private string $id;
+	private int $height;
+	private array $columns;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $id table ID
+	 * @param htmlDataTableColumn[] $columns columns
+	 * @param int $height table height
+	 */
+	public function __construct(string $id, array $columns, int $height = 300) {
+		$this->id = htmlspecialchars($id);
+		$this->height = $height;
+		$this->columns = $columns;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function generateHTML($module, $input, $values, $restricted, $scope) {
+		echo '<link href="../../style/tabulator/tabulator.css" rel="stylesheet">';
+		echo '<script type="text/javascript" src="../../templates/lib/extra/tabulator/tabulator.js.js"></script>';
+		echo '<div id="' . $this->id . '" class="lam-data-table" ' . $this->getDataAttributesAsString() . '></div>';
+		$columnOptions = [];
+		foreach ($this->columns as $column) {
+			$headerFilter = $column->filterable ? ', headerFilter: "input"' : '';
+			$columnOptions[] = '{
+				title: "' . $column->label . '",
+				field: "' . $column->name . '",
+				formatter: "textarea"
+				' . $headerFilter . '
+			}';
+		}
+		$columnsCode = implode(', ', $columnOptions);
+		echo '<script type="text/javascript">
+			window.lam.datatable.init("' . $this->id . '", new Tabulator("#' . $this->id . '", {
+                height: ' . $this->height . ',
+                layout: "fitColumns",
+                pagination:"local",
+				paginationSize:50,
+				paginationSizeSelector:[50, 100, 250, 500],
+				columns: [' . $columnsCode . '],
+				data: [],
+				locale: "en-gb",
+				langs: {
+                    "en-gb": {
+                        "pagination": {
+ 			               "page_size": "",
+			                "page_title": "",
+            			    "first": "↤",
+							"first_title": "",
+							"last": "↦",
+							"last_title": "",
+							"prev": "←",
+							"prev_title": "",
+							"next": "→",
+							"next_title": ""                            
+                        }
+                    }
+				}
+			}));
+		</script>';
+		return [];
+	}
+
+}
+
+/**
+ * Column for data table.
+ */
+class htmlDataTableColumn {
+
+	public string $label;
+	public string $name;
+	public bool $filterable;
+
+	/**
+	 * @param string $label
+	 * @param string $name
+	 * @param bool $filterable
+	 */
+	public function __construct(string $label, string $name, bool $filterable = true) {
+		$this->label = htmlspecialchars($label);
+		$this->name = htmlspecialchars($name);
+		$this->filterable = $filterable;
+	}
+
+}
+
+/**
  * A standard input field.
  *
  * @package metaHTML

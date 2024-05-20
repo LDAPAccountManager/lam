@@ -609,6 +609,21 @@
       intermediate release.</para>
 
       <section>
+        <title>8.7 -&gt; 8.8</title>
+
+        <para>LAM Pro:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Request access: please run the <link
+            linkend="confMainGlobalCron">new global cron job</link> to remove
+            requests that are too old. The time limit can be configured in
+            LAM's main configuration.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
         <title>8.6 -&gt; 8.7</title>
 
         <para>LAM Pro:</para>

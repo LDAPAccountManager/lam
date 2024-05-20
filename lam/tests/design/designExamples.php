@@ -89,6 +89,30 @@ $table = new htmlResponsiveTable($tableTitles, $tableData);
 $table->setCSSClasses(['accountlist']);
 $row->add($table);
 
+$row->add(new htmlSubTitle('Data table'));
+$dataTableColumns = [
+    new htmlDataTableColumn('First Name', 'first'),
+	new htmlDataTableColumn('Last Name', 'last'),
+	new htmlDataTableColumn('User Name', 'uid'),
+    new htmlDataTableColumn('Description', 'desc'),
+    new htmlDataTableColumn('Group', 'group')
+];
+$row->add(new htmlDataTable('datatable', $dataTableColumns, 300));
+$row->add(new htmlJavaScript('
+    let data = [];
+    for (let i = 0; i < 1000; i++) {
+        const entry = {
+            first: "first " + i,
+            last: "last " + i,
+            uid: "" + i,
+            desc: "description " + i,
+            group: "group" + i,
+        }
+        data.push(entry);
+    }
+    window.lam.datatable.setData("datatable", data);
+'));
+
 $row->add(new htmlSubTitle('Input fields'));
 
 $row->addLabel(new htmlOutputText('Default'));

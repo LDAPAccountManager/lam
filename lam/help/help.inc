@@ -346,6 +346,9 @@ $helpArray = [
 				"293" => ["Headline" => _('Database type'),
 					"Text" => _('Please select the type of database to use for all configuration data. Please install PHP MySQL PDO extension for MySQL support.')
 				],
+				"294" => ["Headline" => _('Cron command'),
+					"Text" => _('Run this for global cleanup tasks. See manual for details.')
+				],
 				// 300 - 399
 				// profile/PDF editor, file upload
 				"301" => ["Headline" => _("RDN identifier"),

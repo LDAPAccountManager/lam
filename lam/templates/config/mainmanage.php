@@ -388,10 +388,17 @@ if (isset($_POST['submitFormData'])) {
 		}
 	}
 	$cfg->errorReporting = $_POST['errorReporting'];
+    // module settings
+    $allModules = getAllModules();
+    $moduleSettings = $cfg->getModuleSettings();
+    foreach ($allModules as $module) {
+        $module->checkGlobalConfigOptions($moduleSettings, $messages, $errors);
+    }
+    $cfg->setModuleSettings($moduleSettings);
 	// save settings
 	if (isset($_POST['submit'])) {
 		$cfg->save();
-		if (sizeof($errors) == 0) {
+		if (empty($errors)) {
 			$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
 			parseHtml(null, $scriptTag, [], false, null);
 			echo '</body></html>';
@@ -405,14 +412,14 @@ if (isset($_POST['submitFormData'])) {
 
 	<?php
 	$row = new htmlResponsiveRow();
-	$row->add(new htmlTitle(_('General settings')), 12);
+	$row->add(new htmlTitle(_('General settings')));
 
 	// print messages
 	foreach ($errors as $error) {
-		$row->add(new htmlStatusMessage("ERROR", $error), 12);
+		$row->add(new htmlStatusMessage("ERROR", $error));
 	}
 	foreach ($messages as $message) {
-		$row->add(new htmlStatusMessage("INFO", $message), 12);
+		$row->add(new htmlStatusMessage("INFO", $message));
 	}
 
 	// check if config file is writable
@@ -705,6 +712,34 @@ if (isset($_POST['submitFormData'])) {
 		    $row->add(new htmlStatusMessage('ERROR', $e->getTitle()));
         }
 	}
+
+    // module settings
+	$modules = getAllModules();
+    $supportsGlobalCronJob = false;
+    foreach ($modules as $module) {
+        $supportsGlobalCronJob = $supportsGlobalCronJob || $module->supportsGlobalCronJob();
+        $moduleOptions = $module->getGlobalConfigOptions($cfg->getModuleSettings());
+        if (empty($moduleOptions)) {
+            continue;
+        }
+        $row->add(new htmlSubTitle($module->get_alias()));
+        foreach ($moduleOptions as $moduleOption) {
+            $row->add($moduleOption);
+        }
+		$row->addVerticalSpacer('3rem');
+    }
+
+    // global cron job
+    if ($supportsGlobalCronJob) {
+		$row->add(new htmlSubTitle(_('Global cron job')));
+        $cronCommand = dirname(__FILE__, 3) . '/lib/cronGlobal.sh';
+        $row->addLabel(new htmlOutputText('Cron command'));
+		$cmdGroup = new htmlGroup();
+		$cmdGroup->addElement(new htmlOutputText('0 0 * * * ' . $cronCommand));
+		$cmdGroup->addElement(new htmlSpacer('2rem', null));
+		$cmdGroup->addElement(new htmlHelpLink('294'));
+		$row->addField($cmdGroup);
+    }
 
 	// change master password
 	$row->add(new htmlSubTitle(_("Change master password")));

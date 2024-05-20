@@ -1183,3 +1183,6 @@ templates/lib/extra/friendlyCaptcha                                  B
 templates/lib/400_Sortable*.js                                       B        RubaXa, owenm
 templates/lib/extra/jstree/*                                         B  2014  Ivan Bozhanov
 style/jstree/*                                                       B  2014  Ivan Bozhanov
+templates/lib/extra/qrcode/*                                         B  2009  Kazuhiko Arase
+templates/lib/extra/tabulator/*                                      B  2024  Oliver Folkerd
+style/tabulator/*                                                    B  2024  Oliver Folkerd
