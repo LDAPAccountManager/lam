@@ -797,8 +797,7 @@ class accountContainer {
 	public $attributes;
 
 	/**
-	* This variale stores the account type.
-	* Currently "user", "group" and "host" are supported.
+	* This variable stores the account type.
 	*/
 	private $type;
 
