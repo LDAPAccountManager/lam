@@ -7,7 +7,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1104,6 +1104,7 @@ class windowsGroup extends baseModule {
 			'info' => _('Notes'),
 			'member' => _('Members'),
 			'memberof' => _('Member of'),
+			'managedby' => _('Managed by'),
 			'grouptype' => _('Group type'),
 			'groupscope' => _('Group scope'),
 			'whencreated' => _('Creation time'),

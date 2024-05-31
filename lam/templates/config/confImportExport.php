@@ -93,7 +93,7 @@ if (isset($_POST['exportConfig']) && $cfg->checkPassword($_SESSION["mainconf_pas
 			throw new LAMException(_('Unable to create temporary file.'));
         }
         $fileSize = filesize($zipFile);
-		if ($fileSize === false) {
+		if (($fileSize === false) || ($fileSize <= 0)) {
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
         $contents = fread($handle, $fileSize);

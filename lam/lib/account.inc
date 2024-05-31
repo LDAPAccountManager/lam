@@ -1171,7 +1171,7 @@ function getAbstractDN($dn) {
 			$parts[$i] = $subparts[1];
 		}
 	}
-	$abstractDn = implode(' > ', $parts);
+	$abstractDn = implode(' ❭ ', $parts);
 	return unescapeLdapSpecialCharacters($abstractDn);
 }
 
