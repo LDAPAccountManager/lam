@@ -1886,9 +1886,16 @@
       <title>Request Access</title>
 
       <para>Use this feature to allow your users to request access for group
-      memberships. Requests will require the approval by the group
+      memberships/ownerships. Requests will require the approval by the group
       owners/managers and optionally a special approver group (leave empty for
       owner/manager approval only).</para>
+
+      <para><emphasis role="bold">Setup cleanup</emphasis></para>
+
+      <para>Please use the <link linkend="confMainGlobalCron">global cron
+      job</link> to clean any outdated requests or history entries. Here you
+      can configure how long requests should be kept open and when to clean
+      the history.</para>
 
       <para><emphasis role="bold">Module Configuration</emphasis></para>
 
@@ -1896,11 +1903,13 @@
       configured on tab "Module settings". Here tick "Enable request access"
       and provide the information where your groups are located.</para>
 
-      <para>Group of names and group of unique names are supported. The LDAP
-      filter is optional, LAM will offer the user only group of (unique) names
-      or Windows groups that have defined owners/managers.<screenshot>
+      <para>Group of names, group of unique names and Windows groups are
+      supported. The LDAP filter is optional, LAM will offer the user only
+      groups of (unique) names or Windows groups that have defined
+      owners/managers.<screenshot>
           <graphic fileref="images/mod_requestAccess1.png"/>
-        </screenshot></para>
+        </screenshot><literallayout>
+</literallayout></para>
 
       <para><screenshot>
           <graphic fileref="images/mod_requestAccess1a.png"/>
@@ -2004,6 +2013,28 @@
           <para>Request Access: Approver view - Approver view for approver
           group</para>
         </listitem>
+
+        <listitem>
+          <para>Request Access: History of own requests - History of the
+          current user's requests</para>
+        </listitem>
+
+        <listitem>
+          <para>Request Access: History of requests - History of all
+          requests</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Users that have no approver role see only requests for
+              their managed groups</para>
+            </listitem>
+
+            <listitem>
+              <para>Users that are neither approver nor managing groups will
+              not see anything</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
       </itemizedlist>
 
       <para>You can set custom labels using the pencil icon.</para>
@@ -2025,7 +2056,7 @@
         <graphic fileref="images/mod_requestAccess4.png"/>
       </screenshot>
 
-      <para><emphasis role="bold">Approval view</emphasis></para>
+      <para><emphasis role="bold">Owner/approver view</emphasis></para>
 
       <para>Once the request is created, all owners of the respective groups
       get an email notification. They can then enter self service and view
@@ -2038,6 +2069,18 @@
 
       <screenshot>
         <graphic fileref="images/mod_requestAccess5.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Own request history</emphasis></para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess6.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Request history</emphasis></para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess7.png"/>
       </screenshot>
     </section>
 
