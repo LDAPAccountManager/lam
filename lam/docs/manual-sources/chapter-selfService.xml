@@ -1918,7 +1918,7 @@
 
       <para>In addition, $$requested_groups_member$$ and
       $$requested_groups_owner$$ can be used to inject the groups for member
-      or owner requests (all emails except owner's email).</para>
+      or owner requests (only emails for approved/denied requests).</para>
 
       <para>Use the wildcard $$requested_type$$ in owner emails to get the
       request type (Member/Owner). The request type label is replaced in the
