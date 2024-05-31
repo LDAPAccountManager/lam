@@ -448,6 +448,7 @@ class htmlDataTable extends htmlElement {
 			$columnOptions[] = '{
 				title: "' . $column->label . '",
 				field: "' . $column->name . '",
+				headerTooltip: "' . $column->label . '",
 				formatter: "textarea"
 				' . $headerFilter . '
 			}';
