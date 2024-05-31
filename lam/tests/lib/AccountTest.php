@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2023  Roland Gruber
+ Copyright (C) 2018 - 2024  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -144,9 +144,9 @@ class AccountTest extends TestCase {
 	 * Tests getAbstractDN().
 	 */
 	function testGetAbstractDN() {
-		$this->assertEquals('test > test > de', getAbstractDN('cn=test,o=test,c=de'));
-		$this->assertEquals('test,user > test > de', getAbstractDN('cn=test\\,user,o=test,c=de'));
-		$this->assertEquals('test,user > test > de', getAbstractDN('cn=test\\2Cuser,o=test,c=de'));
+		$this->assertEquals('test ❭ test ❭ de', getAbstractDN('cn=test,o=test,c=de'));
+		$this->assertEquals('test,user ❭ test ❭ de', getAbstractDN('cn=test\\,user,o=test,c=de'));
+		$this->assertEquals('test,user ❭ test ❭ de', getAbstractDN('cn=test\\2Cuser,o=test,c=de'));
 	}
 
 	/**
