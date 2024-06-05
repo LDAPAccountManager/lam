@@ -15,7 +15,7 @@
     "component" : {
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "8.7",
+      "version" : "8.8",
       "type" : "application",
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d"
     }
