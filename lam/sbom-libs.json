@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:44914833-8fde-4146-9c13-c8457f2a694e",
+  "serialNumber" : "urn:uuid:49f02510-fe68-4816-a9a1-c5a80f752868",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-02-20T06:26:06Z",
+    "timestamp" : "2024-06-05T18:11:18Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -99,7 +99,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.0.6",
+      "version" : "4.2.24",
       "licenses" : [
         {
           "license" : {
@@ -107,7 +107,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.0.6",
+      "purl" : "pkg:npm/jodit@4.2.24",
       "type" : "library",
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e"
     },
@@ -159,7 +159,7 @@
     {
       "group" : "cdx:composer:package",
       "name" : "tecnickcom/tcpdf",
-      "version" : "6.6.5",
+      "version" : "6.7.5",
       "licenses" : [
         {
           "license" : {
@@ -167,7 +167,7 @@
           }
         }
       ],
-      "purl" : "pkg:composer/tecnickcom/tcpdf@6.6.5",
+      "purl" : "pkg:composer/tecnickcom/tcpdf@6.7.5",
       "type" : "library",
       "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf"
     },
