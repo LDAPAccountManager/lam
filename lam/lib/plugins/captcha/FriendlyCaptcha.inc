@@ -118,7 +118,7 @@ class htmlFriendlyCaptcha extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		$script = new htmlScript('../lib/extra/friendlyCaptcha/friendly-challenge-0.9.14.js');
+		$script = new htmlScript('../lib/extra/friendlyCaptcha/friendly-challenge-0.9.15.js');
 		$script->generateHTML($module, $input, $values, $restricted, $scope);
 		echo '<div class="frc-captcha" data-sitekey="' . $this->key . '"></div>';
 		return [];

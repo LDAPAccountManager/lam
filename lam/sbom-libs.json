@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:49f02510-fe68-4816-a9a1-c5a80f752868",
+  "serialNumber" : "urn:uuid:f3e3a97d-1ae7-46db-a896-250fc05a857d",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-06-05T18:11:18Z",
+    "timestamp" : "2024-06-05T18:42:19Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -39,7 +39,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "cropperjs",
-      "version" : "1.6.1",
+      "version" : "1.6.2",
       "licenses" : [
         {
           "license" : {
@@ -47,7 +47,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/cropperjs@1.6.1",
+      "purl" : "pkg:npm/cropperjs@1.6.2",
       "type" : "library",
       "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836"
     },
@@ -69,7 +69,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "friendly-challenge",
-      "version" : "0.9.14",
+      "version" : "0.9.15",
       "licenses" : [
         {
           "license" : {
@@ -77,7 +77,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/friendly-challenge@3.7.1",
+      "purl" : "pkg:npm/friendly-challenge@0.9.15",
       "type" : "library",
       "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5"
     },
@@ -144,7 +144,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.10.5",
+      "version" : "11.11.1",
       "licenses" : [
         {
           "license" : {
@@ -152,7 +152,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.10.5",
+      "purl" : "pkg:npm/sweetalert2@11.11.1",
       "type" : "library",
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f"
     },
