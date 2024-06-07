@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:0b6ad058-2d18-4db3-81e0-35acdef26d65",
+  "serialNumber": "urn:uuid:0cff4f4f-8a22-458b-aba6-5045dcfd6a7b",
   "version": 1,
   "metadata": {
     "tools": [
@@ -3464,7 +3464,7 @@
       "bom-ref": "d0142b40-7a81-4f6b-b681-af8ab91ea836",
       "group": "cdx:npm:package:bundled",
       "name": "cropperjs",
-      "version": "1.6.1",
+      "version": "1.6.2",
       "licenses": [
         {
           "license": {
@@ -3472,7 +3472,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/cropperjs@1.6.1"
+      "purl": "pkg:npm/cropperjs@1.6.2"
     },
     {
       "type": "library",
@@ -3494,7 +3494,7 @@
       "bom-ref": "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
       "group": "cdx:npm:package:bundled",
       "name": "friendly-challenge",
-      "version": "0.9.14",
+      "version": "0.9.15",
       "licenses": [
         {
           "license": {
@@ -3502,7 +3502,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/friendly-challenge@3.7.1"
+      "purl": "pkg:npm/friendly-challenge@0.9.15"
     },
     {
       "type": "library",
@@ -3532,7 +3532,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/jodit@4.0.6"
+      "purl": "pkg:npm/jodit@4.2.24"
     },
     {
       "type": "library",
@@ -3569,7 +3569,7 @@
       "bom-ref": "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group": "cdx:npm:package:bundled",
       "name": "sweetalert2",
-      "version": "11.10.5",
+      "version": "11.11.1",
       "licenses": [
         {
           "license": {
@@ -3577,7 +3577,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/sweetalert2@11.10.5"
+      "purl": "pkg:npm/sweetalert2@11.11.1"
     },
     {
       "type": "library",
@@ -4007,323 +4007,6 @@
         "christian-riesen/base32-1.6.0.0",
         "facile-it/php-openid-client-0.2.0.0",
         "monolog/monolog-3.6.0.0",
-        "duosecurity/duo_universal_php-1.0.2.0"
-      ]
-    },
-    {
-      "ref": "c2095505-c3af-4958-af68-6a61f216807d",
-      "dependsOn": []
-    },
-    {
-      "ref": "73140e29-f689-49c1-9b10-28ff13117f68",
-      "dependsOn": []
-    },
-    {
-      "ref": "d0142b40-7a81-4f6b-b681-af8ab91ea836",
-      "dependsOn": []
-    },
-    {
-      "ref": "c4134441-7211-47d1-a970-202c819157d1",
-      "dependsOn": []
-    },
-    {
-      "ref": "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
-      "dependsOn": []
-    },
-    {
-      "ref": "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
-      "dependsOn": []
-    },
-    {
-      "ref": "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
-      "dependsOn": []
-    },
-    {
-      "ref": "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
-      "dependsOn": []
-    },
-    {
-      "ref": "394fe3c8-0e03-407a-96e2-2d3608e97265",
-      "dependsOn": []
-    },
-    {
-      "ref": "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
-      "dependsOn": []
-    },
-    {
-      "ref": "72240acd-7de4-4058-b56f-e64638babcbf",
-      "dependsOn": []
-    },
-    {
-      "ref": "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
-      "dependsOn": []
-    }
-  ]
-}ding-2.6.3.0"
-    },
-    {
-      "ref": "paragonie/random_compat-2.0.21.0"
-    },
-    {
-      "ref": "php-http/discovery-1.19.2.0"
-    },
-    {
-      "ref": "phpmailer/phpmailer-6.9.1.0"
-    },
-    {
-      "ref": "phpseclib/phpseclib-3.0.37.0",
-      "dependsOn": [
-        "paragonie/constant_time_encoding-2.6.3.0",
-        "paragonie/random_compat-2.0.21.0"
-      ]
-    },
-    {
-      "ref": "psr/clock-1.0.0.0"
-    },
-    {
-      "ref": "psr/container-2.0.2.0"
-    },
-    {
-      "ref": "psr/http-client-1.0.3.0",
-      "dependsOn": [
-        "psr/http-message-1.1.0.0"
-      ]
-    },
-    {
-      "ref": "psr/http-factory-1.0.2.0",
-      "dependsOn": [
-        "psr/http-message-1.1.0.0"
-      ]
-    },
-    {
-      "ref": "psr/http-message-1.1.0.0"
-    },
-    {
-      "ref": "psr/http-server-handler-1.0.2.0",
-      "dependsOn": [
-        "psr/http-message-1.1.0.0"
-      ]
-    },
-    {
-      "ref": "psr/http-server-middleware-1.0.2.0",
-      "dependsOn": [
-        "psr/http-message-1.1.0.0",
-        "psr/http-server-handler-1.0.2.0"
-      ]
-    },
-    {
-      "ref": "psr/log-1.1.4.0"
-    },
-    {
-      "ref": "psr/simple-cache-1.0.1.0"
-    },
-    {
-      "ref": "ralouphie/getallheaders-3.0.3.0"
-    },
-    {
-      "ref": "ramsey/collection-1.3.0.0",
-      "dependsOn": [
-        "symfony/polyfill-php81-1.29.0.0"
-      ]
-    },
-    {
-      "ref": "ramsey/uuid-4.7.5.0",
-      "dependsOn": [
-        "brick/math-0.9.3.0",
-        "ramsey/collection-1.3.0.0"
-      ]
-    },
-    {
-      "ref": "spomky-labs/base64url-2.0.4.0"
-    },
-    {
-      "ref": "spomky-labs/cbor-php-2.1.0.0",
-      "dependsOn": [
-        "brick/math-0.9.3.0"
-      ]
-    },
-    {
-      "ref": "symfony/deprecation-contracts-3.0.2.0"
-    },
-    {
-      "ref": "symfony/http-client-5.4.37.0",
-      "dependsOn": [
-        "psr/log-1.1.4.0",
-        "symfony/deprecation-contracts-3.0.2.0",
-        "symfony/http-client-contracts-2.5.2.0",
-        "symfony/polyfill-php73-1.29.0.0",
-        "symfony/polyfill-php80-1.29.0.0",
-        "symfony/service-contracts-3.0.2.0"
-      ]
-    },
-    {
-      "ref": "symfony/http-client-contracts-2.5.2.0"
-    },
-    {
-      "ref": "symfony/http-foundation-6.0.20.0",
-      "dependsOn": [
-        "symfony/deprecation-contracts-3.0.2.0",
-        "symfony/polyfill-mbstring-1.29.0.0"
-      ]
-    },
-    {
-      "ref": "symfony/polyfill-mbstring-1.29.0.0"
-    },
-    {
-      "ref": "symfony/polyfill-php73-1.29.0.0"
-    },
-    {
-      "ref": "symfony/polyfill-php80-1.29.0.0"
-    },
-    {
-      "ref": "symfony/polyfill-php81-1.29.0.0"
-    },
-    {
-      "ref": "symfony/process-5.4.36.0",
-      "dependsOn": [
-        "symfony/polyfill-php80-1.29.0.0"
-      ]
-    },
-    {
-      "ref": "symfony/psr-http-message-bridge-2.3.1.0",
-      "dependsOn": [
-        "psr/http-message-1.1.0.0",
-        "symfony/deprecation-contracts-3.0.2.0",
-        "symfony/http-foundation-6.0.20.0"
-      ]
-    },
-    {
-      "ref": "symfony/service-contracts-3.0.2.0",
-      "dependsOn": [
-        "psr/container-2.0.2.0"
-      ]
-    },
-    {
-      "ref": "symfony/translation-6.0.19.0",
-      "dependsOn": [
-        "symfony/polyfill-mbstring-1.29.0.0",
-        "symfony/translation-contracts-3.0.2.0"
-      ]
-    },
-    {
-      "ref": "symfony/translation-contracts-3.0.2.0"
-    },
-    {
-      "ref": "thecodingmachine/safe-1.3.3.0"
-    },
-    {
-      "ref": "voku/portable-ascii-2.0.1.0"
-    },
-    {
-      "ref": "web-auth/cose-lib-3.3.12.0",
-      "dependsOn": [
-        "beberlei/assert-3.3.2.0",
-        "fgrosse/phpasn1-2.5.0.0"
-      ]
-    },
-    {
-      "ref": "web-auth/metadata-service-3.3.12.0",
-      "dependsOn": [
-        "beberlei/assert-3.3.2.0",
-        "league/uri-6.7.2.0",
-        "psr/http-client-1.0.3.0",
-        "psr/http-factory-1.0.2.0",
-        "psr/log-1.1.4.0"
-      ]
-    },
-    {
-      "ref": "web-auth/webauthn-lib-3.3.12.0",
-      "dependsOn": [
-        "beberlei/assert-3.3.2.0",
-        "fgrosse/phpasn1-2.5.0.0",
-        "psr/http-client-1.0.3.0",
-        "psr/http-factory-1.0.2.0",
-        "psr/http-message-1.1.0.0",
-        "psr/log-1.1.4.0",
-        "ramsey/uuid-4.7.5.0",
-        "spomky-labs/base64url-2.0.4.0",
-        "spomky-labs/cbor-php-2.1.0.0",
-        "symfony/process-5.4.36.0",
-        "thecodingmachine/safe-1.3.3.0",
-        "web-auth/cose-lib-3.3.12.0",
-        "web-auth/metadata-service-3.3.12.0"
-      ]
-    },
-    {
-      "ref": "web-token/jwt-checker-2.2.11.0",
-      "dependsOn": [
-        "web-token/jwt-core-2.2.11.0"
-      ]
-    },
-    {
-      "ref": "web-token/jwt-core-2.2.11.0",
-      "dependsOn": [
-        "brick/math-0.9.3.0",
-        "fgrosse/phpasn1-2.5.0.0",
-        "spomky-labs/base64url-2.0.4.0"
-      ]
-    },
-    {
-      "ref": "web-token/jwt-easy-2.2.11.0",
-      "dependsOn": [
-        "web-token/jwt-checker-2.2.11.0",
-        "web-token/jwt-encryption-2.2.11.0",
-        "web-token/jwt-signature-2.2.11.0"
-      ]
-    },
-    {
-      "ref": "web-token/jwt-encryption-2.2.11.0",
-      "dependsOn": [
-        "web-token/jwt-core-2.2.11.0"
-      ]
-    },
-    {
-      "ref": "web-token/jwt-key-mgmt-2.2.11.0",
-      "dependsOn": [
-        "psr/http-client-1.0.3.0",
-        "psr/http-factory-1.0.2.0",
-        "web-token/jwt-core-2.2.11.0"
-      ]
-    },
-    {
-      "ref": "web-token/jwt-signature-2.2.11.0",
-      "dependsOn": [
-        "web-token/jwt-core-2.2.11.0"
-      ]
-    },
-    {
-      "ref": "web-token/jwt-signature-algorithm-rsa-2.2.11.0",
-      "dependsOn": [
-        "brick/math-0.9.3.0",
-        "web-token/jwt-signature-2.2.11.0"
-      ]
-    },
-    {
-      "ref": "webklex/php-imap-5.5.0.0",
-      "dependsOn": [
-        "illuminate/pagination-9.52.16.0",
-        "nesbot/carbon-2.72.3.0",
-        "symfony/http-foundation-6.0.20.0"
-      ]
-    },
-    {
-      "ref": "ldap-account-manager/ldap-account-manager-8.7.0.0",
-      "dependsOn": [
-        "web-auth/webauthn-lib-3.3.12.0",
-        "web-auth/cose-lib-3.3.12.0",
-        "web-auth/metadata-service-3.3.12.0",
-        "symfony/http-foundation-6.0.20.0",
-        "symfony/psr-http-message-bridge-2.3.1.0",
-        "symfony/http-client-5.4.37.0",
-        "http-interop/http-factory-guzzle-1.2.0.0",
-        "webklex/php-imap-5.5.0.0",
-        "phpmailer/phpmailer-6.9.1.0",
-        "guzzlehttp/psr7-1.9.1.0",
-        "paragonie/random_compat-2.0.21.0",
-        "phpseclib/phpseclib-3.0.37.0",
-        "christian-riesen/base32-1.6.0.0",
-        "facile-it/php-openid-client-0.2.0.0",
-        "monolog/monolog-2.9.2.0",
         "duosecurity/duo_universal_php-1.0.2.0"
       ]
     },
