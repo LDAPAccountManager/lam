@@ -22,8 +22,8 @@ fi
 if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog ] ; then
 	ln -s /usr/share/php/Monolog /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog
 fi
-if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr ] ; then
-	ln -s /usr/share/php/Psr /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr
+if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log ] ; then
+	ln -s /usr/share/php/Psr/Log /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log
 fi
 if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku ] ; then
 	ln -s /usr/share/php/voku /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku

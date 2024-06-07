@@ -22,6 +22,9 @@ fi
 if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr ] ; then
   rm /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log/Psr
 fi
+if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log ] ; then
+  rm /usr/share/ldap-account-manager/lib/3rdParty/composer/psr/log
+fi
 if [ -L /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku ] ; then
   rm /usr/share/ldap-account-manager/lib/3rdParty/composer/voku/portable-ascii/src/voku
 fi
