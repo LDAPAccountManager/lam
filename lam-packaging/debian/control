@@ -17,7 +17,7 @@ Depends: php (>= 8.1), php-ldap,
  apache2 (>= 2.4.0) | httpd,
  gettext, fonts-dejavu,
  libjs-jquery-jstree (>= 3.3.0),
- php-phpseclib3, php-psr-log, php-monolog (<< 3.0),
+ php-phpseclib3, php-monolog (<< 3.0),
  php-voku-portable-ascii (<< 3.0), libphp-phpmailer (<< 7.0),
  debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
 Recommends: php-opcache
