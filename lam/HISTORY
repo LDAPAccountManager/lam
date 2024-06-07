@@ -8,7 +8,7 @@ June 2024 8.8
   -> Request access: request data can be imported and exported as part of configuration
   -> Request access: added $$approveLink$$ and $$rejectLink$$ in approval mails
   -> Request access: added history (283)
-  -> Request access: allow to request group ownership
+  -> Request access: allow to request group ownership (285)
  - Fixed bugs:
   -> Custom Fields: LDAP search select list - wrong value for empty option (334)
 
