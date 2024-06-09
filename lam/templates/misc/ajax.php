@@ -88,7 +88,7 @@ class Ajax {
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
 			enforceUserIsLoggedIn();
 			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
-				$sessionKey  = htmlspecialchars($_GET['editKey']);
+				$sessionKey  = htmlspecialchars((string) $_GET['editKey']);
 				if (!isset($_SESSION[$sessionKey])) {
 					logNewMessage(LOG_ERR, 'Unable to find account container');
 					die();
@@ -108,7 +108,7 @@ class Ajax {
 		$function = $_GET['function'];
 
 		if (($function === 'passwordStrengthCheck') && isset($_POST['jsonInput'])) {
-			$this->checkPasswordStrength(json_decode($_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
+			$this->checkPasswordStrength(json_decode((string) $_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
 			die();
 		}
 		if ($function === 'webauthn') {
@@ -128,7 +128,7 @@ class Ajax {
 		}
 		enforceUserIsLoggedIn();
 		if (($function === 'passwordChange') && isset($_POST['jsonInput'])) {
-			self::managePasswordChange(json_decode($_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
+			self::managePasswordChange(json_decode((string) $_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
 		}
 		elseif ($function === 'import') {
 			include_once('../../lib/import.inc');
@@ -200,7 +200,7 @@ class Ajax {
 	 * @param array<mixed> $input input parameters
 	 */
 	private static function managePasswordChange(array $input): void {
-		$sessionKey  = htmlspecialchars($_GET['editKey']);
+		$sessionKey  = htmlspecialchars((string) $_GET['editKey']);
 		$return = $_SESSION[$sessionKey]->setNewPassword($input);
 		echo json_encode($return, JSON_THROW_ON_ERROR);
 	}
@@ -407,7 +407,7 @@ class Ajax {
 	 * @return string JSON output
 	 */
 	private function dnSelection(): string {
-		$dn = trim($_POST['dn']);
+		$dn = trim((string) $_POST['dn']);
 		if (empty($dn) || !get_preg($dn, 'dn')) {
 			$dnList = $this->getDefaultDns();
 		}
@@ -449,7 +449,7 @@ class Ajax {
 	 * @return string HTML code
 	 */
 	private function buildDnSelectionHtml($dnList, $currentDn): string {
-		$fieldId = trim($_POST['fieldId']);
+		$fieldId = trim((string) $_POST['fieldId']);
 		$mainRow = new htmlResponsiveRow();
 		$onclickUp = 'window.lam.html.updateDnSelection(this, \''
 				. htmlspecialchars($fieldId) . '\', \'' . getSecurityTokenName() . '\', \''

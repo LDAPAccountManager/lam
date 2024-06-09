@@ -24,7 +24,7 @@ use ServerProfilePersistenceManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2023  Roland Gruber
+                2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ if (isset($_GET['useProfile'])) {
 	if (in_array($_GET['useProfile'], $profiles)) {
 		$cookieOptions = lamDefaultCookieOptions();
 		$cookieOptions['expires'] = time() + (60 * 60 * 24 * 365);
-		setcookie("lam_default_profile", $_GET['useProfile'], $cookieOptions);
+		setcookie("lam_default_profile", (string) $_GET['useProfile'], $cookieOptions);
 	}
 	else {
 		unset($_GET['useProfile']);
@@ -104,7 +104,7 @@ if (isset($_GET['useProfile'])) {
 if (isset($_POST['language'])) {
 	$cookieOptions = lamDefaultCookieOptions();
 	$cookieOptions['expires'] = time() + (60 * 60 * 24 * 365);
-	setcookie('lam_last_language', htmlspecialchars($_POST['language']), $cookieOptions);
+	setcookie('lam_last_language', htmlspecialchars((string) $_POST['language']), $cookieOptions);
 }
 
 // init some session variables
@@ -146,7 +146,7 @@ $possibleLanguages = getLanguages();
 $encoding = 'UTF-8';
 if (isset($_COOKIE['lam_last_language'])) {
 	foreach ($possibleLanguages as $lang) {
-		if (str_starts_with($_COOKIE['lam_last_language'], $lang->code)) {
+		if (str_starts_with((string) $_COOKIE['lam_last_language'], $lang->code)) {
 			$_SESSION['language'] = $lang->code;
 			$encoding = $lang->encoding;
 			break;
@@ -156,7 +156,7 @@ if (isset($_COOKIE['lam_last_language'])) {
 elseif (!empty($_SESSION["config"])) {
 	$defaultLang = $_SESSION["config"]->get_defaultLanguage();
 	foreach ($possibleLanguages as $lang) {
-		if (str_starts_with($defaultLang, $lang->code)) {
+		if (str_starts_with((string) $defaultLang, $lang->code)) {
 			$_SESSION['language'] = $lang->code;
 			$encoding = $lang->encoding;
 			break;
@@ -168,7 +168,7 @@ else {
 }
 if (isset($_POST['language'])) {
 	foreach ($possibleLanguages as $lang) {
-		if (str_starts_with($_POST['language'], $lang->code)) {
+		if (str_starts_with((string) $_POST['language'], $lang->code)) {
 			$_SESSION['language'] = $lang->code;
 			$encoding = $lang->encoding;
 			break;
@@ -275,7 +275,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$admins = $config_object->get_Admins();
 								$adminList = [];
 								foreach ($admins as $admin) {
-									$text = explode(",", $admin);
+									$text = explode(",", (string) $admin);
 									$text = explode("=", $text[0]);
 									if (isset($text[1])) {
 										$adminList[$text[1]] = $admin;
@@ -337,7 +337,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 							$defaultLanguage = [];
 							foreach ($possibleLanguages as $lang) {
 								$languageList[$lang->description] = $lang->code;
-								if (str_starts_with(trim($_SESSION["language"]), $lang->code)) {
+								if (str_starts_with(trim((string) $_SESSION["language"]), $lang->code)) {
 									$defaultLanguage[] = $lang->code;
 								}
 							}
@@ -509,7 +509,7 @@ if (isset($_POST['checklogin'])) {
 		$cookieOptions = lamDefaultCookieOptions();
 		$cookieOptions['expires'] = time() + (60 * 60 * 24 * 365);
 		if (isset($_POST['rememberLogin']) && ($_POST['rememberLogin'] == 'on')) {
-			setcookie('lam_login_name', $_POST['username'], $cookieOptions);
+			setcookie('lam_login_name', (string) $_POST['username'], $cookieOptions);
 		}
 		else if (isset($_COOKIE['lam_login_name']) && ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH)) {
 			setcookie('lam_login_name', '', $cookieOptions);

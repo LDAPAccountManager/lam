@@ -3,7 +3,7 @@ namespace LAM\TYPES;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2023  Roland Gruber
+  Copyright (C) 2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ namespace LAM\TYPES;
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+
+use baseType;
 
 /**
 * This file is the interface to the different account types.
@@ -99,9 +101,9 @@ function getScopeFromTypeId($typeId) {
  */
 class ConfiguredType {
 
-	private $scope;
+	private string $scope;
 
-	private $id;
+	private string $id;
 
 	private $suffix;
 
@@ -115,16 +117,16 @@ class ConfiguredType {
 
 	private $baseType;
 
-	private $typeManager;
+	private ?TypeManager $typeManager;
 
 	/**
 	 * Constructor
 	 *
-	 * @param TypeManager $typeManager type manager
+	 * @param TypeManager|null $typeManager type manager
 	 * @param string $scope account type
 	 * @param string $id unique ID for this configuration
 	 */
-	public function __construct(&$typeManager, $scope, $id) {
+	public function __construct(?TypeManager &$typeManager, string $scope, string $id) {
 		$this->typeManager = &$typeManager;
 		$this->scope = $scope;
 		$this->id = $id;
@@ -135,7 +137,7 @@ class ConfiguredType {
 	 *
 	 * @return TypeManager type manager
 	 */
-	public function getTypeManager() {
+	public function getTypeManager(): TypeManager {
 		return $this->typeManager;
 	}
 
@@ -144,7 +146,7 @@ class ConfiguredType {
 	 *
 	 * @return string account type
 	 */
-	public function getScope() {
+	public function getScope(): string {
 		return $this->scope;
 	}
 
@@ -153,7 +155,7 @@ class ConfiguredType {
 	 *
 	 * @return string unique id
 	 */
-	public function getId() {
+	public function getId(): string {
 		return $this->id;
 	}
 
@@ -162,7 +164,7 @@ class ConfiguredType {
 	 *
 	 * @return string LDAP suffix
 	 */
-	public function getSuffix() {
+	public function getSuffix(): string {
 		if ($this->suffix !== null) {
 			return $this->suffix;
 		}
@@ -175,7 +177,7 @@ class ConfiguredType {
 	 *
 	 * @return ListAttribute[] list of ListAttribute
 	 */
-	public function getAttributes() {
+	public function getAttributes(): array {
 		if ($this->attributes !== null) {
 			return $this->attributes;
 		}
@@ -194,7 +196,7 @@ class ConfiguredType {
 	 *
 	 * @return string alias name
 	 */
-	public function getAlias() {
+	public function getAlias(): string {
 		if ($this->alias !== null) {
 			return $this->alias;
 		}
@@ -210,21 +212,21 @@ class ConfiguredType {
 	 *
 	 * @return string LDAP filter
 	 */
-	public function getAdditionalLdapFilter() {
+	public function getAdditionalLdapFilter(): string {
 		if ($this->additionalLdapFilter !== null) {
 			return $this->additionalLdapFilter;
 		}
 		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
-		$this->additionalLdapFilter = isset($typeSettings['filter_' . $this->id]) ? $typeSettings['filter_' . $this->id] : '';
+		$this->additionalLdapFilter = $typeSettings['filter_' . $this->id] ?? '';
 		return $this->additionalLdapFilter;
 	}
 
 	/**
 	 * Returns if this configuration is hidden.
 	 *
-	 * @return boolean hidden
+	 * @return bool hidden
 	 */
-	public function isHidden() {
+	public function isHidden(): bool {
 		if ($this->hidden !== null) {
 			return $this->hidden;
 		}
@@ -235,9 +237,9 @@ class ConfiguredType {
 	/**
 	 * Returns the base type of this configured type.
 	 *
-	 * @return \baseType base type
+	 * @return baseType base type
 	 */
-	public function getBaseType() {
+	public function getBaseType(): baseType {
 		if ($this->baseType != null) {
 			return $this->baseType;
 		}
@@ -251,7 +253,7 @@ class ConfiguredType {
 	 *
 	 * @return array sorted list of possible suffixes for this type.
 	 */
-	public function getSuffixList() {
+	public function getSuffixList(): array {
 		$connection = $_SESSION["ldap"]->server();
 		$ret = [];
 		$filter = $this->getBaseType()->getSuffixFilter();
@@ -291,7 +293,7 @@ class ConfiguredType {
 	 *
 	 * @return string[] module names
 	 */
-	public function getModules() {
+	public function getModules(): array {
 		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
 		if (empty($typeSettings['modules_' . $this->getId()])) {
 			return [];
@@ -328,7 +330,7 @@ class ListAttribute {
 	 *
 	 * @param string $attributeSpec spec of attribute (e.g. '#uid' or 'uid:User')
 	 */
-	public function __construct($attributeSpec) {
+	public function __construct(string $attributeSpec) {
 		$this->attributeSpec = $attributeSpec;
 	}
 	/**
@@ -336,7 +338,7 @@ class ListAttribute {
 	 *
 	 * @return string $attributeName name
 	 */
-	public function getAttributeName() {
+	public function getAttributeName(): string {
 		if ($this->isPredefined()) {
 			return substr($this->attributeSpec, 1);
 		}
@@ -365,9 +367,9 @@ class ListAttribute {
 	/**
 	 * Returns if this is a predefined attribute name.
 	 *
-	 * @return boolean is predefined
+	 * @return bool is predefined
 	 */
-	private function isPredefined() {
+	private function isPredefined(): bool {
 		return strpos($this->attributeSpec, '#') === 0;
 	}
 

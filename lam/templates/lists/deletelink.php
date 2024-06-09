@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2023  Roland Gruber
+  Copyright (C) 2007 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,14 +43,14 @@ enforceUserIsLoggedIn();
 setlanguage();
 
 // get account name and type
-$dn = $_GET['DN'];
-$type = $_GET['type'];
+$dn = (string) $_GET['DN'];
+$type = (string) $_GET['type'];
 if (!preg_match('/^[a-z0-9_]+$/i', $type)) {
 	logNewMessage(LOG_ERR, 'Invalid type: ' . $type);
 	die();
 }
 
-if (isset($dn) && isset($type)) {
+if (!empty($dn) && !empty($type)) {
 	if (str_starts_with($dn, "'")) {
 		$dn = substr($dn, 1);
 	}
@@ -68,5 +68,3 @@ else {
 	StatusMessage("ERROR", "No account or type given.");
 	include __DIR__ . '/../../lib/adminFooter.inc';
 }
-
-?>

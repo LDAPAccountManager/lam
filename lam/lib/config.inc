@@ -1004,7 +1004,7 @@ class LAMConfig {
 	/** hide password prompt for expired passwords */
 	private $hidePasswordPromptForExpiredPasswords = 'false';
 
-	/** Array of string: users with admin rights */
+	/** list of users with admin rights, separated by semicolon */
 	private $Admins;
 
 	/** Password to edit preferences */
@@ -1473,9 +1473,9 @@ class LAMConfig {
 	/**
 	* Returns an array of string with all admin names
 	*
-	* @return array the admin names
+	* @return string[] the admin names
 	*/
-	public function get_Admins() {
+	public function get_Admins(): array {
 		return explode(";", $this->Admins);
 	}
 
