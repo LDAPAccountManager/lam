@@ -431,7 +431,7 @@ class ObjectClass extends SchemaItem
     /**
      * Gets the objectClass names from which this objectClass inherits.
      *
-     * @return array An array of objectClass names (strings)
+     * @return string[] objectClass names
      */
 	function getSupClasses(): array
 	{
@@ -790,11 +790,10 @@ class AttributeType extends SchemaItem
 
     /**
      * Gets the names of attributes that are an alias for this attribute (if any).
-     * @return array An array of names of attributes which alias this attribute or
+     * @return string[] An array of names of attributes which alias this attribute or
      *          an empty array if no attribute aliases this object.
      */
-	function getAliases()
-	{
+	function getAliases(): array {
 		return $this->aliases;
 	}
 
@@ -968,10 +967,9 @@ class AttributeType extends SchemaItem
     /**
      * Gets the list of "used in" objectClasses, that is the list of objectClasses
      * which provide this attribute.
-     * @return array An array of names of objectclasses (strings) which provide this attribute
+     * @return string[] An array of names of objectclasses (strings) which provide this attribute
      */
-	function getUsedInObjectClasses()
-	{
+	function getUsedInObjectClasses(): array {
 		return $this->used_in_object_classes;
 	}
 
@@ -1606,7 +1604,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' ) {
  * @see ObjectClass
  * @see get_schema_objectclass
  */
-function get_schema_objectclasses($dn=null, $use_cache=true )
+function get_schema_objectclasses($dn=null, $use_cache=true ): array
 {
 	if( $use_cache && cached_schema_available('objectclasses' ) ) {
    //     return get_cached_schema('objectclasses' );
@@ -1686,10 +1684,9 @@ function get_schema_attribute($attr_name, $dn=null, $use_cache=true )
  * @param string $dn (optional) It is easier to fetch schema if a DN is provided
  *             which defines the subschemaSubEntry attribute (all entries should).
  *
- * @return array An array of AttributeType objects.
+ * @return AttributeType[] an array of AttributeType objects.
  */
-function get_schema_attributes($dn = null, $use_cache=true )
-{
+function get_schema_attributes($dn = null, $use_cache=true ): array {
     if( $use_cache && cached_schema_available('attributetypes' ) ) {
         return get_cached_schema('attributetypes' );
     }
