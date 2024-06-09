@@ -168,7 +168,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 
 class PublicKeyCredentialSourceRepositorySQLiteTestDb extends PublicKeyCredentialSourceRepositorySQLite {
 
-	private PDO $pdo;
+	private readonly PDO $pdo;
 
 	public function __construct() {
 		$this->pdo = new PDO($this->getPdoUrl(), null, null, [

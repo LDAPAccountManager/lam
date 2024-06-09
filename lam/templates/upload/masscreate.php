@@ -23,7 +23,7 @@ use \moduleCache;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2023  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ $types = array_values($types);
 // check if account specific page should be shown
 if (isset($_POST['type'])) {
 	// get selected type
-	$typeId = htmlspecialchars($_POST['type']);
+	$typeId = htmlspecialchars((string) $_POST['type']);
 	$type = $typeManager->getConfiguredType($typeId);
 	// get selected modules
 	$selectedModules = [];
@@ -185,7 +185,7 @@ foreach ($types as $type) {
 		$moduleGroup = new htmlGroup();
 		$module = moduleCache::getModule($moduleName, $type->getScope());
 		$iconImage = $module->getIcon();
-		if (!is_null($iconImage) && !(str_starts_with($iconImage, 'http')) && !(str_starts_with($iconImage, '/'))) {
+		if (!(str_starts_with($iconImage, 'http')) && !(str_starts_with($iconImage, '/'))) {
 			$iconImage = '../../graphics/' . $iconImage;
 		}
 		$image = new htmlImage($iconImage, '32px', '32px');
@@ -393,7 +393,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 		$row->addVerticalSpacer('2rem');
 		$module = moduleCache::getModule($moduleName, $scope);
 		$icon = $module->getIcon();
-		if (!empty($icon) && !(str_starts_with($icon, 'http')) && !(str_starts_with($icon, '/'))) {
+		if (!(str_starts_with($icon, 'http')) && !(str_starts_with($icon, '/'))) {
 			$icon = '../../graphics/' . $icon;
 		}
 		$moduleTitle = new htmlSubTitle(getModuleAlias($moduleName, $scope), $icon);
