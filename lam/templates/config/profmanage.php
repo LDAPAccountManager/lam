@@ -19,7 +19,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ if (isset($_POST['action'])) {
 	}
 	// set new profile password
 	elseif ($_POST['action'] == "setpass") {
-		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['setprofile'])) {
+		if (preg_match("/^[a-z0-9_-]+$/i", (string) $_POST['setprofile'])) {
 			if ($_POST['setpassword'] && $_POST['setpassword2'] && ($_POST['setpassword'] == $_POST['setpassword2'])) {
 				try {
 					$config = $serverProfilePersistenceManager->loadProfile($_POST['setprofile']);
@@ -152,7 +152,7 @@ if (isset($_POST['action'])) {
 	}
 	// set default profile
 	elseif ($_POST['action'] == "setdefault") {
-		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['defaultfilename'])) {
+		if (preg_match("/^[a-z0-9_-]+$/i", (string) $_POST['defaultfilename'])) {
 			$configMain = new LAMCfgMain();
 			$configMain->default = $_POST['defaultfilename'];
 			$configMain->save();

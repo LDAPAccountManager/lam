@@ -429,11 +429,11 @@ class baseType {
 	/**
 	 * Returns the file name of the type icon.
 	 * It needs to be 16x16px and located in graphics folder.
-	 * By default this is "{type name}.png"
+	 * By default, this is "{type name}.png"
 	 *
 	 * @return string file name
 	 */
-	public function getIcon() {
+	public function getIcon(): string {
 		return get_class($this) . '.png';
 	}
 

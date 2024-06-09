@@ -69,7 +69,7 @@ class dhcp extends baseType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getIcon() {
+	public function getIcon(): string {
 		return 'world-color.svg';
 	}
 

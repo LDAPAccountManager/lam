@@ -129,7 +129,7 @@ class pykotaBillingCodeType extends baseType {
 	 * {@inheritDoc}
 	 * @see baseType::getIcon()
 	 */
-	public function getIcon() {
+	public function getIcon(): string {
 		return 'printer.svg';
 	}
 

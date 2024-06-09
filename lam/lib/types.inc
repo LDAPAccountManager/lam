@@ -306,7 +306,7 @@ class ConfiguredType {
 	 *
 	 * @return string file name
 	 */
-	public function getIcon() {
+	public function getIcon(): string {
 		$baseType = $this->getBaseType();
 		return $baseType->getIcon();
 	}

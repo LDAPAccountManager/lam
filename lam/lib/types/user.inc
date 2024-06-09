@@ -67,7 +67,7 @@ class user extends baseType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getIcon() {
+	public function getIcon(): string {
 		return 'user.svg';
 	}
 

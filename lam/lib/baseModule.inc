@@ -2316,18 +2316,18 @@ abstract class baseModule {
 
 	/**
 	 * Returns the path to the module icon.
-	 * The path must be relative to graphics (e.g. key.png) or an URL (/icons/icon.png or http://server/icon.png).
-	 * You can also set $this->meta['icon']. The preferred size is 32x32px.
+	 * The path must be relative to graphics (e.g. key.svg) or a URL (/icons/icon.svg or http://server/icon.svg).
+	 * You can also set $this->meta['icon']. The preferred size is 32x32px, format SVG.
 	 *
-	 * @return unknown
+	 * @return string icon
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getIcon() {
-		if (isset($this->meta['icon'])) {
+	public function getIcon(): string {
+		if (!empty($this->meta['icon']) && is_string($this->meta['icon'])) {
 			return $this->meta['icon'];
 		}
-		return null;
+		return 'configure.svg';
 	}
 
 	/**

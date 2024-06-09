@@ -66,7 +66,7 @@ class mailAlias extends baseType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getIcon() {
+	public function getIcon(): string {
 		return 'mail.svg';
 	}
 

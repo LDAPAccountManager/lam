@@ -66,7 +66,7 @@ class host extends baseType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getIcon() {
+	public function getIcon(): string {
 		return 'computer.svg';
 	}
 
