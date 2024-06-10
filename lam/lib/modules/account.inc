@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2022  Roland Gruber
+                2005 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class account extends baseModule {
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
-		return in_array($this->get_scope(), array("host", "user"));
+		return in_array($this->get_scope(), ["host", "user"]);
 	}
 
 	/**
@@ -64,51 +64,51 @@ class account extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=account)");
+		$return["ldap_filter"] = ['or' => "(objectClass=account)"];
 		// RDN attribute
-		$return["RDN"] = array("uid" => "low");
+		$return["RDN"] = ["uid" => "low"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('account');
+		$return['objectClasses'] = ['account'];
 		// LDAP aliases
-		$return['LDAPaliases'] = array('userid' => 'uid');
+		$return['LDAPaliases'] = ['userid' => 'uid'];
 		// managed attributes
-		$return['attributes'] = array('uid', 'description');
+		$return['attributes'] = ['uid', 'description'];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'description' => _('Description')
-		);
+		];
 		// help Entries
 		$return['help'] = array (
-			'host' => array(
-				'uid' => array(
+			'host' => [
+				'uid' => [
 					"Headline" => _("Host name"), 'attr' => 'uid',
 					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
-				),
-				'description'	=>	array (
+				],
+				'description'	=>	[
 					"Headline" => _("Description"), 'attr' => 'description',
 					"Text" => _("Host description. If left empty host name will be used.")
-				)
-			),
-			'user' => array(
-				'uid' => array(
+				]
+			],
+			'user' => [
+				'uid' => [
 					"Headline" => _("User name"), 'attr' => 'uid',
 					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
-				),
-				'description'	=>	array (
+				],
+				'description'	=>	[
 					"Headline" => _("Description"), 'attr' => 'description',
 					"Text" => _("User description. If left empty user name will be used.")
-				)
-			)
+				]
+			]
 		);
 		// upload columns
-		$return['upload_columns'][] = array(
+		$return['upload_columns'][] = [
                'name' => 'account_description',
                'description' => _('Description'),
                'help' => 'description',
                'example' => ''
-		);
+		];
 		return $return;
 	}
 
@@ -128,10 +128,10 @@ class account extends baseModule {
 	* This function fills the message array.
 	*/
 	function load_Messages() {
-		$this->messages['uid'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][2] = array('WARN', _('User name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.'));
-		$this->messages['uid'][3] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][1] = ['ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][2] = ['WARN', _('User name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.')];
+		$this->messages['uid'][3] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 	}
 
 	/**
@@ -163,16 +163,7 @@ class account extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	* {@inheritDoc}
 	*/
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
@@ -252,12 +243,12 @@ class account extends baseModule {
 	function get_uploadColumns($selectedModules, &$type) {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if (!in_array('posixAccount', $selectedModules)) {
-			$return[] = array(
+			$return[] = [
                 'name' => 'account_uid',
                 'description' => _('User name'),
                 'help' => 'uid',
                 'required' => true
-			);
+			];
 		}
 		return $return;
 	}
@@ -293,10 +284,10 @@ class account extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			"description" => _("Description"),
 			'uid' => _("User name")
-		);
+		];
 	}
 
 }
