@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2022  Roland Gruber
+                2010 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,8 +43,8 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('AstVoicemailMailbox', 'AstVoicemailPassword',
-		'AstVoicemailEmail', 'AstVoicemailPager', 'AstVoicemailFullname');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['AstVoicemailMailbox', 'AstVoicemailPassword',
+		'AstVoicemailEmail', 'AstVoicemailPager', 'AstVoicemailFullname'];
 
 	/**
 	 * Creates a new asteriskVoicemail object.
@@ -58,12 +58,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
@@ -77,56 +77,56 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		// alias name
 		$return["alias"] = _("Asterisk voicemail");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => ['inetOrgPerson'], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('AsteriskVoiceMail');
+		$return['objectClasses'] = ['AsteriskVoiceMail'];
 		// managed attributes
-		$return['attributes'] = array('AstContext', 'AstVoicemailMailbox',
-				'AstVoicemailPassword', 'AstVoicemailFullname', 'AstVoicemailEmail',
-				'AstVoicemailPager', 'AstVoicemailOptions', 'AstVoicemailContext');
+		$return['attributes'] = ['AstContext', 'AstVoicemailMailbox',
+			'AstVoicemailPassword', 'AstVoicemailFullname', 'AstVoicemailEmail',
+			'AstVoicemailPager', 'AstVoicemailOptions', 'AstVoicemailContext'];
 		// icon
 		$return['icon'] = 'asterisk.png';
 		// self service
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'syncAsteriskVoicemailPassword' => _('Sync Asterisk password with Unix password'),
-		);
+		];
 		// self service: fields that cannot be relabeled
-		$return['selfServiceNoRelabelFields'] = array('syncAsteriskVoicemailPassword');
+		$return['selfServiceNoRelabelFields'] = ['syncAsteriskVoicemailPassword'];
 		// help
-		$return['help'] = array(
-			'AstContext' => array(
+		$return['help'] = [
+			'AstContext' => [
 				"Headline" => _("Account context"), 'attr' => 'AstContext',
 				"Text" => _("The account context stores information about the dial plan.")
-			),
-			'AstVoicemailMailbox' => array(
+			],
+			'AstVoicemailMailbox' => [
 				"Headline" => _("Mailbox"), 'attr' => 'AstVoicemailMailbox',
 				"Text" => _("Voicemail mailbox for this account.")
-			),
-			'AstVoicemailPassword' => array(
+			],
+			'AstVoicemailPassword' => [
 				"Headline" => _("Password"), 'attr' => 'AstVoicemailPassword',
 				"Text" => _("Password for voicemail mailbox.")
-			),
-			'AstVoicemailFullname' => array(
+			],
+			'AstVoicemailFullname' => [
 				"Headline" => _("Full name"), 'attr' => 'AstVoicemailFullname',
 				"Text" => _("Full name for Asterisk voicemail mailbox.")
-			),
-			'AstVoicemailEmail' => array(
+			],
+			'AstVoicemailEmail' => [
 				"Headline" => _("Email address"), 'attr' => 'AstVoicemailEmail',
 				"Text" => _("Email address for this voicemail account.")
-			),
-			'AstVoicemailPager' => array(
+			],
+			'AstVoicemailPager' => [
 				"Headline" => _("Pager"), 'attr' => 'AstVoicemailPager',
 				"Text" => _("Pager number for Asterisk voicemail.")
-			),
-			'AstVoicemailOptions' => array(
+			],
+			'AstVoicemailOptions' => [
 				"Headline" => _("Options"), 'attr' => 'AstVoicemailOptions',
 				"Text" => _("Options for Asterisk voicemail account (e.g. sendvoicemail=yes).")
-			),
-			'AstVoicemailContext' => array(
+			],
+			'AstVoicemailContext' => [
 				"Headline" => _("Voicemail context"), 'attr' => 'AstVoicemailContext',
 				"Text" => _("Asterisk voicemail context.")
-			),
-		);
+			],
+		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Options'), 'asteriskVoicemail_AstVoicemailOptions', null, 'AstVoicemailOptions'), 12);
@@ -134,77 +134,77 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'asteriskVoicemail_AstContext', null, 'AstContext'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
-		$return['profile_mappings'] = array(
-				'asteriskVoicemail_AstContext' => 'AstContext',
-				'asteriskVoicemail_AstVoicemailContext' => 'AstVoicemailContext',
-				'asteriskVoicemail_AstVoicemailOptions' => 'AstVoicemailOptions'
-		);
+		$return['profile_mappings'] = [
+			'asteriskVoicemail_AstContext' => 'AstContext',
+			'asteriskVoicemail_AstVoicemailContext' => 'AstVoicemailContext',
+			'asteriskVoicemail_AstVoicemailOptions' => 'AstVoicemailOptions'
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
-				'AstContext' => _('Account context'),
-				'AstVoicemailMailbox' => _('Mailbox'),
-				'AstVoicemailFullname' => _('Full name'),
-				'AstVoicemailEmail' => _('Email address'),
-				'AstVoicemailPager' => _('Pager'),
-				'AstVoicemailOptions' => _('Options'),
-				'AstVoicemailContext' => _('Voicemail context')
-		);
+		$return['PDF_fields'] = [
+			'AstContext' => _('Account context'),
+			'AstVoicemailMailbox' => _('Mailbox'),
+			'AstVoicemailFullname' => _('Full name'),
+			'AstVoicemailEmail' => _('Email address'),
+			'AstVoicemailPager' => _('Pager'),
+			'AstVoicemailOptions' => _('Options'),
+			'AstVoicemailContext' => _('Voicemail context')
+		];
 		// upload dependencies
-		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
+		$return['upload_preDepends'] = ['posixAccount', 'inetOrgPerson'];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'asteriskVoicemail_AstContext',
 				'description' => _('Account context'),
 				'help' => 'AstContext',
 				'example' => 'default',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskVoicemail_AstVoicemailMailbox',
 				'description' => _('Mailbox'),
 				'help' => 'AstVoicemailMailbox',
 				'example' => '12345',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskVoicemail_AstVoicemailPassword',
 				'description' => _('Password'),
 				'help' => 'AstVoicemailPassword',
 				'example' => _('secret'),
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskVoicemail_AstVoicemailFullname',
 				'description' => _('Full name'),
 				'help' => 'AstVoicemailFullname',
 				'example' => _('Steve Miller')
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskVoicemail_AstVoicemailEmail',
 				'description' => _('Email address'),
 				'help' => 'AstVoicemailEmail',
 				'example' => _('user@company.com')
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskVoicemail_AstVoicemailPager',
 				'description' => _('Pager'),
 				'help' => 'AstVoicemailPager',
 				'example' => _('123-123-1234')
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskVoicemail_AstVoicemailOptions',
 				'description' => _('Options'),
 				'help' => 'AstVoicemailOptions',
 				'example' => 'sendvoicemail=yes'
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskVoicemail_AstVoicemailContext',
 				'description' => _('Voicemail context'),
 				'help' => 'AstVoicemailContext',
 				'example' => 'default'
-			)
-		);
+			]
+		];
 		return $return;
 	}
 
@@ -213,32 +213,32 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 */
 	function load_Messages() {
 		//messages for voicemail
-		$this->messages['AstVoicemailMailbox'][0] = array('ERROR', _('Please enter a mailbox.'));
-		$this->messages['AstVoicemailMailbox'][1] = array('ERROR', _('The mailbox format is invalid.'));
-		$this->messages['AstVoicemailMailbox'][2] = array('ERROR', _('There is already another user with this mailbox name.'));
-		$this->messages['AstVoicemailMailbox'][3] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailMailbox', _('The mailbox format is invalid.'));
+		$this->messages['AstVoicemailMailbox'][0] = ['ERROR', _('Please enter a mailbox.')];
+		$this->messages['AstVoicemailMailbox'][1] = ['ERROR', _('The mailbox format is invalid.')];
+		$this->messages['AstVoicemailMailbox'][2] = ['ERROR', _('There is already another user with this mailbox name.')];
+		$this->messages['AstVoicemailMailbox'][3] = ['ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailMailbox', _('The mailbox format is invalid.')];
 
-		$this->messages['AstContext'][0] = array('ERROR', _('Please enter the account context.'));
-		$this->messages['AstContext'][1] = array('ERROR', _('The account context is invalid.'));
-		$this->messages['AstContext'][2] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstContext', _('The account context is invalid.'));
+		$this->messages['AstContext'][0] = ['ERROR', _('Please enter the account context.')];
+		$this->messages['AstContext'][1] = ['ERROR', _('The account context is invalid.')];
+		$this->messages['AstContext'][2] = ['ERROR', _('Account %s:') . ' asteriskVoicemail_AstContext', _('The account context is invalid.')];
 
-		$this->messages['AstVoicemailFullname'][0] = array('ERROR', _('The full name is invalid.'));
-		$this->messages['AstVoicemailFullname'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailFullname', _('The full name is invalid.'));
-		$this->messages['AstVoicemailEmail'][0] = array('ERROR', _('The email address is invalid.'));
-		$this->messages['AstVoicemailEmail'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailEmail', _('The email address is invalid.'));
-		$this->messages['AstVoicemailPager'][0] = array('ERROR', _('The pager number has bad format.'));
-		$this->messages['AstVoicemailPager'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailPager', _('The pager number has bad format.'));
-		$this->messages['AstVoicemailOptions'][0] = array('ERROR', _('The options have bad format.'));
-		$this->messages['AstVoicemailOptions'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailOptions', _('The options have bad format.'));
-		$this->messages['AstVoicemailContext'][0] = array('ERROR', _('The voicemail context name is invalid.'));
-		$this->messages['AstVoicemailContext'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailContext', _('The voicemail context name is invalid.'));
-		$this->messages['AstVoicemailPassword'][0] = array('INFO', _('Please set the voicemail password with "Set password" before saving.'));
+		$this->messages['AstVoicemailFullname'][0] = ['ERROR', _('The full name is invalid.')];
+		$this->messages['AstVoicemailFullname'][1] = ['ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailFullname', _('The full name is invalid.')];
+		$this->messages['AstVoicemailEmail'][0] = ['ERROR', _('The email address is invalid.')];
+		$this->messages['AstVoicemailEmail'][1] = ['ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailEmail', _('The email address is invalid.')];
+		$this->messages['AstVoicemailPager'][0] = ['ERROR', _('The pager number has bad format.')];
+		$this->messages['AstVoicemailPager'][1] = ['ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailPager', _('The pager number has bad format.')];
+		$this->messages['AstVoicemailOptions'][0] = ['ERROR', _('The options have bad format.')];
+		$this->messages['AstVoicemailOptions'][1] = ['ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailOptions', _('The options have bad format.')];
+		$this->messages['AstVoicemailContext'][0] = ['ERROR', _('The voicemail context name is invalid.')];
+		$this->messages['AstVoicemailContext'][1] = ['ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailContext', _('The voicemail context name is invalid.')];
+		$this->messages['AstVoicemailPassword'][0] = ['INFO', _('Please set the voicemail password with "Set password" before saving.')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -275,7 +275,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			// remove button
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remVoicemailObjectClass', _('Remove Asterisk voicemail extension'));
-			$remButton->setCSSClasses(array('lam-danger'));
+			$remButton->setCSSClasses(['lam-danger']);
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
@@ -295,7 +295,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		}
 		// remove extension
 		elseif (isset($_POST['remVoicemailObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('AsteriskVoiceMail'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['AsteriskVoiceMail'], $this->attributes['objectClass']);
 			$attrKeys = array_keys($this->attributes);
 			for ($k = 0; $k < sizeof($attrKeys); $k++) {
 				if (strpos($attrKeys[$k], 'AstVoicemail') > -1) {
@@ -320,7 +320,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 
 		if (isset($_POST['AstContext'])) {
 			$this->attributes['AstContext'][0] = $_POST['AstContext'];
-			if($this->attributes['AstContext'][0] == '') {
+			if ($this->attributes['AstContext'][0] == '') {
 				$errors[] = $this->messages['AstContext'][0];
 			}
 			elseif (!get_preg($this->attributes['AstContext'][0], 'realname')) {
@@ -330,7 +330,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		if (isset($_POST['AstVoicemailMailbox'])) {
 			$this->attributes['AstVoicemailMailbox'][0] = $_POST['AstVoicemailMailbox'];
 			// check if caller ID is empty
-			if($this->attributes['AstVoicemailMailbox'][0] == '') {
+			if ($this->attributes['AstVoicemailMailbox'][0] == '') {
 				$errors[] = $this->messages['AstVoicemailMailbox'][0];
 			}
 			// check format
@@ -339,7 +339,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			}
 			// check for duplicate Voicemail ID
 			else if (!isset($this->orig['AstVoicemailMailbox'][0]) || ($this->orig['AstVoicemailMailbox'][0] != $this->attributes['AstVoicemailMailbox'][0])) {
-				$entries = searchLDAPByAttribute('AstVoicemailMailbox', $this->attributes['AstVoicemailMailbox'][0], 'AstVoicemailMailbox', array('dn'), array('user'));
+				$entries = searchLDAPByAttribute('AstVoicemailMailbox', $this->attributes['AstVoicemailMailbox'][0], 'AstVoicemailMailbox', ['dn'], ['user']);
 				if (sizeof($entries) > 0) {
 					$errors[] = $this->messages['AstVoicemailMailbox'][2];
 				}
@@ -347,19 +347,19 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		}
 		if (isset($_POST['AstVoicemailFullname'])) {
 			$this->attributes['AstVoicemailFullname'][0] = $_POST['AstVoicemailFullname'];
-			if($this->attributes['AstVoicemailFullname'][0] != '' && !get_preg($this->attributes['AstVoicemailFullname'][0], 'realname')) {
+			if ($this->attributes['AstVoicemailFullname'][0] != '' && !get_preg($this->attributes['AstVoicemailFullname'][0], 'realname')) {
 				$errors[] = $this->messages['AstVoicemailFullname'][0];
 			}
 		}
 		if (isset($_POST['AstVoicemailEmail'])) {
 			$this->attributes['AstVoicemailEmail'][0] = $_POST['AstVoicemailEmail'];
-			if($this->attributes['AstVoicemailEmail'][0] != '' && !get_preg($this->attributes['AstVoicemailEmail'][0], 'email')) {
+			if ($this->attributes['AstVoicemailEmail'][0] != '' && !get_preg($this->attributes['AstVoicemailEmail'][0], 'email')) {
 				$errors[] = $this->messages['AstVoicemailEmail'][0];
 			}
 		}
 		if (isset($_POST['AstVoicemailPager'])) {
 			$this->attributes['AstVoicemailPager'][0] = $_POST['AstVoicemailPager'];
-			if($this->attributes['AstVoicemailPager'][0] != '' && !get_preg($this->attributes['AstVoicemailPager'][0], 'telephone')) {
+			if ($this->attributes['AstVoicemailPager'][0] != '' && !get_preg($this->attributes['AstVoicemailPager'][0], 'telephone')) {
 				$errors[] = $this->messages['AstVoicemailPager'][0];
 			}
 		}
@@ -368,7 +368,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		}
 		if (isset($_POST['AstVoicemailContext'])) {
 			$this->attributes['AstVoicemailContext'][0] = $_POST['AstVoicemailContext'];
-			if($this->attributes['AstVoicemailContext'][0] != '' && !get_preg($this->attributes['AstVoicemailContext'][0], 'realname')) {
+			if ($this->attributes['AstVoicemailContext'][0] != '' && !get_preg($this->attributes['AstVoicemailContext'][0], 'realname')) {
 				$errors[] = $this->messages['AstVoicemailContext'][0];
 			}
 		}
@@ -448,17 +448,17 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('AsteriskVoiceMail', $this->attributes['objectClass']) && !in_array('AsteriskVoiceMail', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -469,9 +469,9 @@ class asteriskVoicemail extends baseModule implements passwordService {
 
 	/**
 	 * This method specifies if a module manages password attributes.
+	 * @return boolean true if this module manages password attributes
 	 * @see passwordService::managesPasswordAttributes
 	 *
-	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
 		if (!in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
@@ -497,7 +497,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @param $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *			   e.g. return array(array('ERROR', 'Password change failed.'))
+	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
@@ -526,7 +526,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskVoiceMail', $attributes['objectClass'])) {
 			return $return;
 		}
@@ -610,7 +610,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'astcontext' => _('Account context'),
 			'astvoicemailmailbox' => _('Mailbox'),
 			'astvoicemailfullname' => _('Full name'),
@@ -618,7 +618,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			'astvoicemailpager' => _('Pager'),
 			'astvoicemailoptions' => _('Options'),
 			'astvoicemailcontext' => _('Voicemail context')
-		);
+		];
 	}
 
 }
