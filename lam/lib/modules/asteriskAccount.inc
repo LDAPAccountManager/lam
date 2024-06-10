@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdnyak
-                2009 - 2021  Roland Gruber
+                2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@
 
 
 /**
-* Manages the Asterisk extension of user accounts.
-*
-* @package modules
-*
-* @author Pavel Pozdnyak
-* @author Roland Gruber
-*/
+ * Manages the Asterisk extension of user accounts.
+ *
+ * @package modules
+ *
+ * @author Pavel Pozdnyak
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
@@ -45,14 +45,14 @@ class asteriskAccount extends baseModule implements passwordService {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('AstAccountCallerID', 'AstAccountRealmedPassword',
-		'AstAccountFullContact', 'AstAccountMailbox', 'AstAccountIPAddress');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['AstAccountCallerID', 'AstAccountRealmedPassword',
+		'AstAccountFullContact', 'AstAccountMailbox', 'AstAccountIPAddress'];
 
 	/**
-	* Creates a new asteriskAccount object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new asteriskAccount object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
@@ -60,12 +60,12 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
@@ -79,11 +79,11 @@ class asteriskAccount extends baseModule implements passwordService {
 		// alias name
 		$return["alias"] = _("Asterisk");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('AsteriskSIPUser');
+		$return['objectClasses'] = ['AsteriskSIPUser'];
 		// managed attributes
-		$return['attributes'] = array('AstAccountCallerID', 'AstAccountHost',
+		$return['attributes'] = ['AstAccountCallerID', 'AstAccountHost',
 			'AstAccountRealmedPassword', 'AstAccountContext', 'AstAccountType',
 			'AstAccountUserAgent', 'AstAccountAMAFlags', 'AstAccountCallGroup',
 			'AstAccountDTMFMode', 'AstAccountFromUser', 'AstAccountFromDomain',
@@ -95,165 +95,165 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountExpirationTimestamp', 'AstAccountRegistrationContext',
 			'AstAccountRegistrationExten', 'AstAccountCanCallForward', 'AstAccountIPAddress',
 			'AstAccountDefaultUser', 'AstAccountRegistrationServer', 'AstAccountLastQualifyMilliseconds',
-		);
+		];
 		// icon
 		$return['icon'] = 'asterisk.png';
 		// self service
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'syncAsteriskPassword' => _('Sync Asterisk password with Unix password'),
-		);
+		];
 		// self service: fields that cannot be relabeled
-		$return['selfServiceNoRelabelFields'] = array('syncAsteriskPassword');
+		$return['selfServiceNoRelabelFields'] = ['syncAsteriskPassword'];
 		// help
-		$return['help'] = array(
-			'AstAccountCallerID' => array(
+		$return['help'] = [
+			'AstAccountCallerID' => [
 				"Headline" => _("Caller ID"), 'attr' => 'AstAccountCallerID',
 				"Text" => _("This is the ID of the user in the Asterisk database. It may contain digits and letters (e.g. user1 or 200134).")
-			),
-			'AstAccountHost' => array(
+			],
+			'AstAccountHost' => [
 				"Headline" => _("Host"), 'attr' => 'AstAccountHost',
 				"Text" => _("This is the machine id (e.g. IP address or host name) from which the user can call/receive calls.")
-			),
-			'AstAccountContext' => array(
+			],
+			'AstAccountContext' => [
 				"Headline" => _("Account context"), 'attr' => 'AstAccountContext',
 				"Text" => _("The account context stores information about the dial plan.")
-			),
-			'AstAccountRealmedPassword' => array(
+			],
+			'AstAccountRealmedPassword' => [
 				"Headline" => _("Password"), 'attr' => 'AstAccountRealmedPassword',
 				"Text" => _("Please enter the password which you want to set for this account.")
-			),
-			'AstAccountType' => array(
+			],
+			'AstAccountType' => [
 				"Headline" => _("Account type"), 'attr' => 'AstAccountType',
 				"Text" => _("Please enter the account's type (e.g. \"friend\").")
-			),
-			'AsteriskRealm' => array(
+			],
+			'AsteriskRealm' => [
 				"Headline" => _("Asterisk realm"),
 				"Text" => _("Authentication realm for Asterisk server (default: asterisk). This value set in sip.conf (option: \"realm\").")
-			),
-			'AstAccountUserAgent' => array(
+			],
+			'AstAccountUserAgent' => [
 				"Headline" => _("User agent"), 'attr' => 'AstAccountUserAgent',
 				"Text" => _("SIP user agent identification.")
-			),
-			'AstAccountAMAFlags' => array(
+			],
+			'AstAccountAMAFlags' => [
 				"Headline" => _("AMA flags"), 'attr' => 'AstAccountAMAFlags',
 				"Text" => _("Asterisk AMA (Automated Message Accounting) flags.")
-			),
-			'AstAccountCallGroup' => array(
+			],
+			'AstAccountCallGroup' => [
 				"Headline" => _("Call groups"), 'attr' => 'AstAccountCallGroup',
 				"Text" => _("The user's call groups.")
-			),
-			'AstAccountDTMFMode' => array(
+			],
+			'AstAccountDTMFMode' => [
 				"Headline" => _("DTMF mode"), 'attr' => 'AstAccountDTMFMode',
 				"Text" => _("DTMF mode for SIP client configuration.")
-			),
-			'AstAccountFromUser' => array(
+			],
+			'AstAccountFromUser' => [
 				"Headline" => _("From user"), 'attr' => 'AstAccountFromUser',
 				"Text" => _("From user setting for this account.")
-			),
-			'AstAccountFromDomain' => array(
+			],
+			'AstAccountFromDomain' => [
 				"Headline" => _("From domain"), 'attr' => 'AstAccountFromDomain',
 				"Text" => _("From domain setting for this account.")
-			),
-			'AstAccountFullContact' => array(
+			],
+			'AstAccountFullContact' => [
 				"Headline" => _("Full contact"), 'attr' => 'AstAccountFullContact',
 				"Text" => _("SIP URI for a realtime peer.")
-			),
-			'AstAccountInsecure' => array(
+			],
+			'AstAccountInsecure' => [
 				"Headline" => _("Insecure"), 'attr' => 'AstAccountInsecure',
 				"Text" => _("This is typically used to allow incoming calls (e.g. from FWD) while having a type=friend entry defined with username and password.")
-			),
-			'AstAccountMailbox' => array(
+			],
+			'AstAccountMailbox' => [
 				"Headline" => _("Mailbox"), 'attr' => 'AstAccountMailbox',
 				"Text" => _("Defines the mailbox to check for message waiting indication (MWI) for this peer.")
-			),
-			'AstAccountNAT' => array(
+			],
+			'AstAccountNAT' => [
 				"Headline" => _("NAT"), 'attr' => 'AstAccountNAT',
 				"Text" => _("NAT setting for this account.")
-			),
-			'AstAccountDeny' => array(
+			],
+			'AstAccountDeny' => [
 				"Headline" => _("Deny"), 'attr' => 'AstAccountDeny',
 				"Text" => _("Used to limit SIP traffic to and from this peer to a certain IP or network.")
-			),
-			'AstAccountPermit' => array(
+			],
+			'AstAccountPermit' => [
 				"Headline" => _("Permit"), 'attr' => 'AstAccountPermit',
 				"Text" => _("Used to limit SIP traffic to and from this peer to a certain IP or network.")
-			),
-			'AstAccountPickupGroup' => array(
+			],
+			'AstAccountPickupGroup' => [
 				"Headline" => _("Pickup group"), 'attr' => 'AstAccountPickupGroup',
 				"Text" => _("Specifies the user's pickup group.")
-			),
-			'AstAccountPort' => array(
+			],
+			'AstAccountPort' => [
 				"Headline" => _("Port"), 'attr' => 'AstAccountPort',
 				"Text" => _("Port number.")
-			),
-			'AstAccountQualify' => array(
+			],
+			'AstAccountQualify' => [
 				"Headline" => _("Qualify"), 'attr' => 'AstAccountQualify',
 				"Text" => _("Used to regularly check that a device is still online.")
-			),
-			'AstAccountRestrictCID' => array(
+			],
+			'AstAccountRestrictCID' => [
 				"Headline" => _("Restrict caller ID"), 'attr' => 'AstAccountRestrictCID',
 				"Text" => _("Use this to hide the caller ID.")
-			),
-			'AstAccountRTPTimeout' => array(
+			],
+			'AstAccountRTPTimeout' => [
 				"Headline" => _("RTP timeout"), 'attr' => 'AstAccountRTPTimeout',
 				"Text" => _("Used to automatically hangup the call if no RTP traffic is received.")
-			),
-			'AstAccountRTPHoldTimeout' => array(
+			],
+			'AstAccountRTPHoldTimeout' => [
 				"Headline" => _("RTP hold timeout"), 'attr' => 'AstAccountRTPHoldTimeout',
 				"Text" => _("Maximum number of seconds of inactivity before terminating a call on hold.")
-			),
-			'AstAccountDisallowedCodec' => array(
+			],
+			'AstAccountDisallowedCodec' => [
 				"Headline" => _("Disallowed codec"), 'attr' => 'AstAccountDisallowedCodec',
 				"Text" => _("List of disallowed codecs.")
-			),
-			'AstAccountAllowedCodec' => array(
+			],
+			'AstAccountAllowedCodec' => [
 				"Headline" => _("Allowed codec"), 'attr' => 'AstAccountAllowedCodec',
 				"Text" => _("List of allowed codecs.")
-			),
-			'AstAccountMusicOnHold' => array(
+			],
+			'AstAccountMusicOnHold' => [
 				"Headline" => _("Music on hold"), 'attr' => 'AstAccountMusicOnHold',
 				"Text" => _("Music to play on hold.")
-			),
-			'AstAccountExpirationTimestamp' => array(
+			],
+			'AstAccountExpirationTimestamp' => [
 				"Headline" => _("Expiration timestamp"), 'attr' => 'AstAccountExpirationTimestamp',
 				"Text" => _("Expiration timestamp (\"regseconds\" option).")
-			),
-			'AstAccountRegistrationContext' => array(
+			],
+			'AstAccountRegistrationContext' => [
 				"Headline" => _("Registration context"), 'attr' => 'AstAccountRegistrationContext',
 				"Text" => _("If registration context is specified, Asterisk will dynamically create and destroy a NoOp priority 1 extension for a given peer who registers or unregisters with Asterisk.")
-			),
-			'AstAccountRegistrationExten' => array(
+			],
+			'AstAccountRegistrationExten' => [
 				"Headline" => _("Registration extension"), 'attr' => 'AstAccountRegistrationExten',
 				"Text" => _("Used for registration context.")
-			),
-			'AstAccountCanCallForward' => array(
+			],
+			'AstAccountCanCallForward' => [
 				"Headline" => _("Can call forward"), 'attr' => 'AstAccountCanCallForward',
 				"Text" => _("Specifies if the user can call forward.")
-			),
-			'AstAccountIPAddress' => array(
+			],
+			'AstAccountIPAddress' => [
 				"Headline" => _("IP address"), 'attr' => 'AstAccountIPAddress',
 				"Text" => _("IP address of the peer. Valid only for realtime peers.")
-			),
-			'AstAccountDefaultUser' => array(
+			],
+			'AstAccountDefaultUser' => [
 				"Headline" => _("Default user"), 'attr' => 'AstAccountDefaultUser',
 				"Text" => _("Authentication user for outbound proxies.")
-			),
-			'AstAccountRegistrationServer' => array(
+			],
+			'AstAccountRegistrationServer' => [
 				"Headline" => _("Registration server"), 'attr' => 'AstAccountRegistrationServer',
 				"Text" => _("IP address or domain name of the registration server.")
-			),
-			'AstAccountLastQualifyMilliseconds' => array(
+			],
+			'AstAccountLastQualifyMilliseconds' => [
 				"Headline" => _("Last qualify milliseconds"), 'attr' => 'AstAccountLastQualifyMilliseconds',
 				"Text" => _("The number of milliseconds for the last qualify.")
-			),
-			'hiddenOptions' => array(
+			],
+			'hiddenOptions' => [
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
-			),
-		);
+			],
+		];
 		// self service options
 		$selfServiceContainer = new htmlResponsiveRow();
-		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, array('AsteriskRealm', get_class($this))), 12);
+		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, ['AsteriskRealm', get_class($this)]), 12);
 		$return['selfServiceSettings'] = $selfServiceContainer;
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
@@ -262,13 +262,13 @@ class asteriskAccount extends baseModule implements passwordService {
 		$profileContainer->add(new htmlResponsiveInputField(_('Account type'), 'asteriskAccount_AstAccountType', null, 'AstAccountType'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
-		$return['profile_mappings'] = array(
+		$return['profile_mappings'] = [
 			'asteriskAccount_AstAccountHost' => 'AstAccountHost',
 			'asteriskAccount_AstAccountContext' => 'AstAccountContext',
 			'asteriskAccount_AstAccountType' => 'AstAccountType',
-		);
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'AstAccountCallerID' => _('Caller ID'),
 			'AstAccountContext' => _('Account context'),
 			'AstAccountHost' => _('Host'),
@@ -279,7 +279,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountDTMFMode' => _('DTFM flags'),
 			'AstAccountFromUser' => _('From user'),
 			'AstAccountFromDomain' => _('From domain'),
-			'AstAccountFullContact'=> _('Full contact'),
+			'AstAccountFullContact' => _('Full contact'),
 			'AstAccountInsecure' => _('Insecure'),
 			'AstAccountMailbox' => _('Mailbox'),
 			'AstAccountNAT' => _('NAT'),
@@ -302,254 +302,254 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountDefaultUser' => _('Default user'),
 			'AstAccountRegistrationServer' => _('Registration server'),
 			'AstAccountLastQualifyMilliseconds' => _('Last qualify milliseconds'),
-		);
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'asteriskAccount_AstAccountCallerID',
 				'description' => _('Caller ID'),
 				'help' => 'AstAccountCallerID',
 				'example' => '12345',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskAccount_AstAccountContext',
 				'description' => _('Account context'),
 				'help' => 'AstAccountContext',
 				'example' => 'default',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskAccount_AstAccountHost',
 				'description' => _('Host'),
 				'help' => 'AstAccountHost',
 				'example' => 'dynamic',
 				'default' => 'dynamic',
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskAccount_AstAccountRealmedPassword',
 				'description' => _('Password'),
 				'help' => 'AstAccountRealmedPassword',
 				'example' => _('secret'),
-			),
-			array(
+			],
+			[
 				'name' => 'asteriskAccount_AstAccountType',
 				'description' => _('Account type'),
 				'help' => 'AstAccountType',
 				'example' => 'friend',
 				'required' => true
-			),
-		);
+			],
+		];
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountUserAgent')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountUserAgent',
 				'description' => _('User agent'),
 				'help' => 'AstAccountUserAgent',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAMAFlags')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountAMAFlags',
 				'description' => _('AMA flags'),
 				'help' => 'AstAccountAMAFlags',
 				'example' => 'billing',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCallGroup')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountCallGroup',
 				'description' => _('Call groups'),
 				'help' => 'AstAccountCallGroup',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDTMFMode')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountDTMFMode',
 				'description' => _('DTFM flags'),
 				'help' => 'AstAccountDTMFMode',
 				'example' => 'auto',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromUser')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountFromUser',
 				'description' => _('From user'),
 				'help' => 'AstAccountFromUser',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromDomain')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountFromDomain',
 				'description' => _('From domain'),
 				'help' => 'AstAccountFromDomain',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFullContact')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountFullContact',
 				'description' => _('Full contact'),
 				'help' => 'AstAccountFullContact',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountInsecure')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountInsecure',
 				'description' => _('Insecure'),
 				'help' => 'AstAccountInsecure',
 				'example' => 'invite',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMailbox')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountMailbox',
 				'description' => _('Mailbox'),
 				'help' => 'AstAccountMailbox',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountNAT')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountNAT',
 				'description' => _('NAT'),
 				'help' => 'AstAccountNAT',
 				'example' => 'never',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDeny')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountDeny',
 				'description' => _('Deny'),
 				'help' => 'AstAccountDeny',
-			);
+			];
 		}
 
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPermit')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountPermit',
 				'description' => _('Permit'),
 				'help' => 'AstAccountPermit',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPickupGroup')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountPickupGroup',
 				'description' => _('Pickup group'),
 				'help' => 'AstAccountPickupGroup',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPort')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountPort',
 				'description' => _('Port'),
 				'help' => 'AstAccountPort',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountQualify')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountQualify',
 				'description' => _('Qualify'),
 				'help' => 'AstAccountQualify',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRestrictCID')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountRestrictCID',
 				'description' => _('Restrict caller ID'),
 				'help' => 'AstAccountRestrictCID',
-			);
+			];
 		}
 
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPTimeout')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountRTPTimeout',
 				'description' => _('RTP timeout'),
 				'help' => 'AstAccountRTPTimeout',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPHoldTimeout')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountRTPHoldTimeout',
 				'description' => _('RTP hold timeout'),
 				'help' => 'AstAccountRTPHoldTimeout',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDisallowedCodec')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountDisallowedCodec',
 				'description' => _('Disallowed codec'),
 				'help' => 'AstAccountDisallowedCodec',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAllowedCodec')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountAllowedCodec',
 				'description' => _('Allowed codec'),
 				'help' => 'AstAccountAllowedCodec',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMusicOnHold')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountMusicOnHold',
 				'description' => _('Music on hold'),
 				'help' => 'AstAccountMusicOnHold',
-			);
+			];
 		}
 
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountExpirationTimestamp')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountExpirationTimestamp',
 				'description' => _('Expiration timestamp'),
 				'help' => 'AstAccountExpirationTimestamp',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationContext')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountRegistrationContext',
 				'description' => _('Registration context'),
 				'help' => 'AstAccountRegistrationContext',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationExten')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountRegistrationExten',
 				'description' => _('Registration extension'),
 				'help' => 'AstAccountRegistrationExten',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCanCallForward')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountCanCallForward',
 				'description' => _('Can call forward'),
 				'help' => 'AstAccountCanCallForward',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountIPAddress')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountIPAddress',
 				'description' => _('IP address'),
 				'help' => 'AstAccountIPAddress',
-			);
+			];
 		}
 
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDefaultUser')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountDefaultUser',
 				'description' => _('Default user'),
 				'help' => 'AstAccountDefaultUser',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRegistrationServer')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountRegistrationServer',
 				'description' => _('Registration server'),
 				'help' => 'AstAccountRegistrationServer',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountLastQualifyMilliseconds')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'asteriskAccount_AstAccountLastQualifyMilliseconds',
 				'description' => _('Last qualify milliseconds'),
 				'help' => 'AstAccountLastQualifyMilliseconds',
-			);
+			];
 		}
 		return $return;
 	}
@@ -558,35 +558,35 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * This function fills the error message array with messages
 	 */
 	function load_Messages() {
-		$this->messages['AstAccountCallerID'][0] = array('ERROR', _('Please enter a caller ID.'));
-		$this->messages['AstAccountCallerID'][1] = array('ERROR', _('The caller ID format is invalid.'));
-		$this->messages['AstAccountCallerID'][2] = array('ERROR', _('There is already another user with this caller ID.'));
-		$this->messages['AstAccountCallerID'][3] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountCallerID', _('The caller ID format is invalid.'));
-		$this->messages['AstAccountContext'][0] = array('ERROR', _('Please enter the extension context.'));
-		$this->messages['AstAccountContext'][1] = array('ERROR', _('The extension context is invalid.'));
-		$this->messages['AstAccountContext'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountContext', _('The extension context is invalid.'));
-		$this->messages['AstAccountHost'][0] = array('ERROR', _('Please enter the host name.'));
-		$this->messages['AstAccountHost'][1] = array('ERROR', _('The host name is invalid.'));
-		$this->messages['AstAccountHost'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountHost', _('The host name is invalid.'));
-		$this->messages['AstAccountType'][0] = array('ERROR', _('Please enter the account type.'));
-		$this->messages['AstAccountType'][1] = array('ERROR', _('The account type is invalid.'));
-		$this->messages['AstAccountType'][2] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountType', _('The account type is invalid.'));
-		$this->messages['AstAccountFromUser'][0] = array('ERROR', _('Please enter a valid from user.'));
-		$this->messages['AstAccountFromUser'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountFromUser', _('Please enter a valid from user.'));
-		$this->messages['AstAccountFromDomain'][0] = array('ERROR', _('Please enter a valid from domain.'));
-		$this->messages['AstAccountFromDomain'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountFromDomain', _('Please enter a valid from domain.'));
-		$this->messages['AstAccountPort'][0] = array('ERROR', _('Please enter a valid port number.'));
-		$this->messages['AstAccountPort'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountPort', _('Please enter a valid port number.'));
-		$this->messages['AstAccountIPAddress'][0] = array('ERROR', _('The IP address is invalid.'));
-		$this->messages['AstAccountIPAddress'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountIPAddress', _('The IP address is invalid.'));
-		$this->messages['AstAccountDefaultUser'][0] = array('ERROR', _('Please enter a valid default user.'));
-		$this->messages['AstAccountDefaultUser'][1] = array('ERROR', _('Account %s:') . ' asteriskAccount_AstAccountDefaultUser', _('Please enter a valid default user.'));
+		$this->messages['AstAccountCallerID'][0] = ['ERROR', _('Please enter a caller ID.')];
+		$this->messages['AstAccountCallerID'][1] = ['ERROR', _('The caller ID format is invalid.')];
+		$this->messages['AstAccountCallerID'][2] = ['ERROR', _('There is already another user with this caller ID.')];
+		$this->messages['AstAccountCallerID'][3] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountCallerID', _('The caller ID format is invalid.')];
+		$this->messages['AstAccountContext'][0] = ['ERROR', _('Please enter the extension context.')];
+		$this->messages['AstAccountContext'][1] = ['ERROR', _('The extension context is invalid.')];
+		$this->messages['AstAccountContext'][2] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountContext', _('The extension context is invalid.')];
+		$this->messages['AstAccountHost'][0] = ['ERROR', _('Please enter the host name.')];
+		$this->messages['AstAccountHost'][1] = ['ERROR', _('The host name is invalid.')];
+		$this->messages['AstAccountHost'][2] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountHost', _('The host name is invalid.')];
+		$this->messages['AstAccountType'][0] = ['ERROR', _('Please enter the account type.')];
+		$this->messages['AstAccountType'][1] = ['ERROR', _('The account type is invalid.')];
+		$this->messages['AstAccountType'][2] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountType', _('The account type is invalid.')];
+		$this->messages['AstAccountFromUser'][0] = ['ERROR', _('Please enter a valid from user.')];
+		$this->messages['AstAccountFromUser'][1] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountFromUser', _('Please enter a valid from user.')];
+		$this->messages['AstAccountFromDomain'][0] = ['ERROR', _('Please enter a valid from domain.')];
+		$this->messages['AstAccountFromDomain'][1] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountFromDomain', _('Please enter a valid from domain.')];
+		$this->messages['AstAccountPort'][0] = ['ERROR', _('Please enter a valid port number.')];
+		$this->messages['AstAccountPort'][1] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountPort', _('Please enter a valid port number.')];
+		$this->messages['AstAccountIPAddress'][0] = ['ERROR', _('The IP address is invalid.')];
+		$this->messages['AstAccountIPAddress'][1] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountIPAddress', _('The IP address is invalid.')];
+		$this->messages['AstAccountDefaultUser'][0] = ['ERROR', _('Please enter a valid default user.')];
+		$this->messages['AstAccountDefaultUser'][1] = ['ERROR', _('Account %s:') . ' asteriskAccount_AstAccountDefaultUser', _('Please enter a valid default user.')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -613,7 +613,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			// AMA flags
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountAMAFlags')) {
-				$AstAccountAMAFlagsOptions = array('-', 'default', 'omit', 'billing', 'documentation');
+				$AstAccountAMAFlagsOptions = ['-', 'default', 'omit', 'billing', 'documentation'];
 				$AstAccountAMAFlags = [];
 				if (isset($this->attributes['AstAccountAMAFlags'][0])) {
 					$AstAccountAMAFlags[] = $this->attributes['AstAccountAMAFlags'][0];
@@ -630,7 +630,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			// DTMF flags
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDTMFMode')) {
-				$AstAccountDTMFModeOptions = array('-', 'inband', 'rfc2833', 'info', 'auto');
+				$AstAccountDTMFModeOptions = ['-', 'inband', 'rfc2833', 'info', 'auto'];
 				$AstAccountDTMFMode = [];
 				if (isset($this->attributes['AstAccountDTMFMode'][0])) {
 					$AstAccountDTMFMode[] = $this->attributes['AstAccountDTMFMode'][0];
@@ -655,7 +655,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			// insecure
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountInsecure')) {
-				$AstAccountInsecureOptions = array('-', 'port', 'invite', 'port,invite');
+				$AstAccountInsecureOptions = ['-', 'port', 'invite', 'port,invite'];
 				$AstAccountInsecure = [];
 				if (isset($this->attributes['AstAccountInsecure'][0])) {
 					$AstAccountInsecure[] = $this->attributes['AstAccountInsecure'][0];
@@ -672,7 +672,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			// NAT
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountNAT')) {
-				$AstAccountNATOptions = array('-', 'yes', 'no', 'never', 'route');
+				$AstAccountNATOptions = ['-', 'yes', 'no', 'never', 'route'];
 				$AstAccountNAT = [];
 				if (isset($this->attributes['AstAccountNAT'][0])) {
 					$AstAccountNAT[] = $this->attributes['AstAccountNAT'][0];
@@ -744,7 +744,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 			// can call forward
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCanCallForward')) {
-				$AstAccountCanCallForwardOptions = array('-', 'yes', 'no');
+				$AstAccountCanCallForwardOptions = ['-', 'yes', 'no'];
 				$AstAccountCanCallForward = [];
 				if (isset($this->attributes['AstAccountCanCallForward'][0])) {
 					$AstAccountCanCallForward[] = $this->attributes['AstAccountCanCallForward'][0];
@@ -797,17 +797,15 @@ class asteriskAccount extends baseModule implements passwordService {
 		if (isset($_POST['AstAccountCallerID'])) {
 			$this->attributes['AstAccountCallerID'][0] = $_POST['AstAccountCallerID'];
 			// check if caller ID is empty
-			if($this->attributes['AstAccountCallerID'][0] == '') {
+			if ($this->attributes['AstAccountCallerID'][0] == '') {
 				$errors[] = $this->messages['AstAccountCallerID'][0];
-			}
-			// check format
+			} // check format
 			else if (!get_preg($this->attributes['AstAccountCallerID'][0], 'username')) {
 				$errors[] = $this->messages['AstAccountCallerID'][1];
-			}
-			// check for duplicate caller ID
+			} // check for duplicate caller ID
 			else if (!isset($this->orig['AstAccountCallerID'][0])
-					|| ($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0])) {
-				$entries = searchLDAPByAttribute('AstAccountCallerID', $this->attributes['AstAccountCallerID'][0], 'AsteriskSIPUser', array('dn'), array('user'));
+				|| ($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0])) {
+				$entries = searchLDAPByAttribute('AstAccountCallerID', $this->attributes['AstAccountCallerID'][0], 'AsteriskSIPUser', ['dn'], ['user']);
 				if (sizeof($entries) > 0) {
 					$errors[] = $this->messages['AstAccountCallerID'][2];
 				}
@@ -815,7 +813,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		}
 		if (isset($_POST['AstAccountHost'])) {
 			$this->attributes['AstAccountHost'][0] = $_POST['AstAccountHost'];
-			if($this->attributes['AstAccountHost'][0] == '') {
+			if ($this->attributes['AstAccountHost'][0] == '') {
 				$errors[] = $this->messages['AstAccountHost'][0];
 			}
 			elseif (!get_preg($this->attributes['AstAccountHost'][0], 'hostname')) {
@@ -824,7 +822,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		}
 		if (isset($_POST['AstAccountContext'])) {
 			$this->attributes['AstAccountContext'][0] = $_POST['AstAccountContext'];
-			if($this->attributes['AstAccountContext'][0] == '') {
+			if ($this->attributes['AstAccountContext'][0] == '') {
 				$errors[] = $this->messages['AstAccountContext'][0];
 			}
 			elseif (!get_preg($this->attributes['AstAccountContext'][0], 'username')) {
@@ -833,7 +831,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		}
 		if (isset($_POST['AstAccountType'])) {
 			$this->attributes['AstAccountType'][0] = $_POST['AstAccountType'];
-			if($this->attributes['AstAccountType'][0] == '') {
+			if ($this->attributes['AstAccountType'][0] == '') {
 				$errors[] = $this->messages['AstAccountType'][0];
 			}
 			elseif (!get_preg($this->attributes['AstAccountType'][0], 'username')) {
@@ -971,17 +969,17 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
 			return [];
@@ -1038,8 +1036,10 @@ class asteriskAccount extends baseModule implements passwordService {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-		// add object class
-			if (!in_array("AsteriskSIPUser", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskSIPUser";
+			// add object class
+			if (!in_array("AsteriskSIPUser", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "AsteriskSIPUser";
+			}
 			// add account caller id
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountCallerID', 'AstAccountCallerID',
 				'username', $this->messages['AstAccountCallerID'][3], $messages);
@@ -1060,7 +1060,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				'username', $this->messages['AstAccountType'][2], $messages);
 			//add password
 			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']] != "") {
-				$attributes = array('AstAccountCallerID' => array($partialAccounts[$i]['AstAccountCallerID'])); // fake attribute list for password building
+				$attributes = ['AstAccountCallerID' => [$partialAccounts[$i]['AstAccountCallerID']]]; // fake attribute list for password building
 				$pwdString = asteriskAccount::buildPasswordString($attributes, $this->moduleSettings, $rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']]);
 				$partialAccounts[$i]['AstAccountRealmedPassword'] = $pwdString;
 			}
@@ -1112,12 +1112,11 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 
-
-        /**
+	/**
 	 * This method specifies if a module manages password attributes.
+	 * @return boolean true if this module manages password attributes
 	 * @see passwordService::managesPasswordAttributes
 	 *
-	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
 		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
@@ -1143,7 +1142,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @param $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *			   e.g. return array(array('ERROR', 'Password change failed.'))
+	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
@@ -1164,7 +1163,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 */
 	public static function buildPasswordString(&$attributes, &$moduleSettings, $password) {
 		$astRealm = asteriskAccount::ASTERISK_DEFAULT_REALM;
-		if (!empty($moduleSettings['asteriskAccount_AsteriskRealm'][0])){
+		if (!empty($moduleSettings['asteriskAccount_AsteriskRealm'][0])) {
 			$astRealm = $moduleSettings['asteriskAccount_AsteriskRealm'][0];
 		}
 		return asteriskAccount::hashPassword($attributes['AstAccountCallerID'][0] . ":" . $astRealm . ":" . $password);
@@ -1198,7 +1197,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskSIPUser', $attributes['objectClass'])) {
 			return $return;
 		}
@@ -1222,19 +1221,19 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns a list of configuration options.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* The field names are used as keywords to load and save settings.
-	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	*
-	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	* @return mixed htmlElement or array of htmlElement
-	*
-	* @see htmlElement
-	*/
+	 * Returns a list of configuration options.
+	 *
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * The field names are used as keywords to load and save settings.
+	 * We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	 *
+	 * @param array $scopes account types (user, group, host)
+	 * @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	 * @return mixed htmlElement or array of htmlElement
+	 *
+	 * @see htmlElement
+	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'), 12);
@@ -1337,7 +1336,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'astaccountcallerid' => _('Caller ID'),
 			'astaccountcontext' => _('Account context'),
 			'astaccounthost' => _('Host'),
@@ -1348,7 +1347,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			'astaccountdtmfmode' => _('DTFM flags'),
 			'astaccountfromuser' => _('From user'),
 			'astaccountfromdomain' => _('From domain'),
-			'astaccountfullcontact'=> _('Full contact'),
+			'astaccountfullcontact' => _('Full contact'),
 			'astaccountinsecure' => _('Insecure'),
 			'astaccountmailbox' => _('Mailbox'),
 			'astaccountnat' => _('NAT'),
@@ -1371,7 +1370,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			'astaccountdefaultuser' => _('Default user'),
 			'astaccountregistrationserver' => _('Registration server'),
 			'astaccountlastqualifymilliseconds' => _('Last qualify milliseconds'),
-		);
+		];
 	}
 
 }
