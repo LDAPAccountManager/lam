@@ -1087,8 +1087,8 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 		$content->add($userField);
 		// password field
 		$passwordText = _("Password");
-		if (!empty($profile->passwordLabel)) {
-			$passwordText = $profile->passwordLabel;
+		if (!empty($this->profile->passwordLabel)) {
+			$passwordText = $this->profile->passwordLabel;
 		}
 		$passwordVal = !empty($_POST['password']) ? $_POST['password'] : '';
 		$passwordField = new htmlResponsiveInputField($passwordText, 'password', $passwordVal);
