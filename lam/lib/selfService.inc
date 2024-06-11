@@ -1165,12 +1165,13 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 		// user name
 		$userLabel = new htmlLabel('username', $this->profile->loginAttributeText);
 		$content->addLabel($userLabel);
-		$userField = new htmlOutputText($_SERVER['PHP_AUTH_USER']);
+		$userName = !empty($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '-';
+		$userField = new htmlOutputText($userName);
 		$content->addField($userField);
 		// password field
 		$passwordText = _("Password");
-		if (!empty($profile->passwordLabel)) {
-			$passwordText = $profile->passwordLabel;
+		if (!empty($this->profile->passwordLabel)) {
+			$passwordText = $this->profile->passwordLabel;
 		}
 		$passwordLabel = new htmlLabel('password', $passwordText);
 		$content->addLabel($passwordLabel);
@@ -1304,8 +1305,8 @@ class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
 			throw new LAMException('SelfService2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP bind failed');
 		}
 		$filter = '(' . $this->profile->twoFactorAuthenticationAttribute . "=" . ldap_escape($userName) . ')';
-		if (!empty($profile->additionalLDAPFilter)) {
-			$filter = '(&' . $filter . $profile->additionalLDAPFilter . ')';
+		if (!empty($this->profile->additionalLDAPFilter)) {
+			$filter = '(&' . $filter . $this->profile->additionalLDAPFilter . ')';
 		}
 		$result = @ldap_search($server, $this->profile->LDAPSuffix, $filter, ['DN'], 0, 1, 0, LDAP_DEREF_NEVER);
 		if ($result === false) {
