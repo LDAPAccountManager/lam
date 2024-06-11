@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2022  Roland Gruber
+  Copyright (C) 2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,56 +20,56 @@
 */
 
 /**
-* Manages the eduPerson extension for user accounts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages the eduPerson extension for user accounts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Manages the eduPerson extension for user accounts.
-*
-* @package modules
-*/
+ * Manages the eduPerson extension for user accounts.
+ *
+ * @package modules
+ */
 class eduPerson extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('eduPersonNickname', 'eduPersonPrincipalName');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['eduPersonNickname', 'eduPersonPrincipalName'];
 
 	/** possible affiliation types */
-	private $affiliationTypes = array('faculty', 'student', 'staff', 'alum',
-									'member', 'affiliate', 'employee', 'library-walk-in');
+	private $affiliationTypes = ['faculty', 'student', 'staff', 'alum',
+		'member', 'affiliate', 'employee', 'library-walk-in'];
 
 	/**
-	* Creates a new eduPerson object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new eduPerson object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -77,157 +77,157 @@ class eduPerson extends baseModule {
 		// alias name
 		$return["alias"] = _("EDU person");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('eduPerson');
+		$return['objectClasses'] = ['eduPerson'];
 		// managed attributes
-		$return['attributes'] = array('eduPersonAffiliation', 'eduPersonNickname',
-								'eduPersonOrgDN', 'eduPersonOrgUnitDN',
-								'eduPersonPrimaryAffiliation', 'eduPersonPrincipalName',
-								'eduPersonEntitlement', 'eduPersonPrimaryOrgUnitDN',
-								'eduPersonScopedAffiliation', 'eduPersonAssurance');
+		$return['attributes'] = ['eduPersonAffiliation', 'eduPersonNickname',
+			'eduPersonOrgDN', 'eduPersonOrgUnitDN',
+			'eduPersonPrimaryAffiliation', 'eduPersonPrincipalName',
+			'eduPersonEntitlement', 'eduPersonPrimaryOrgUnitDN',
+			'eduPersonScopedAffiliation', 'eduPersonAssurance'];
 		// RDN attribute
-		$return["RDN"] = array('eduPersonPrincipalName' => 'low');
+		$return["RDN"] = ['eduPersonPrincipalName' => 'low'];
 		// help Entries
-		$return['help'] = array(
-			'primaryAffiliation' => array(
+		$return['help'] = [
+			'primaryAffiliation' => [
 				"Headline" => _("Primary affiliation"), 'attr' => 'eduPersonPrimaryAffiliation',
 				"Text" => _("Specifies the person's primary relationship to the institution in broad categories such as student, faculty, staff, alum, etc.")
-			),
-			'scopedAffiliation' => array(
+			],
+			'scopedAffiliation' => [
 				"Headline" => _("Scoped affiliations"), 'attr' => 'eduPersonScopedAffiliation',
 				"Text" => _("Specifies the person's affiliation within a particular security domain in broad categories such as student, faculty, staff, alum, etc.")
-			),
-			'scopedAffiliationUpload' => array(
+			],
+			'scopedAffiliationUpload' => [
 				"Headline" => _("Scoped affiliations"), 'attr' => 'eduPersonScopedAffiliation',
 				"Text" => _("Specifies the person's affiliation within a particular security domain in broad categories such as student, faculty, staff, alum, etc.") . " " .
-							_('Multiple values are separated by comma.')
-			),
-			'eduPersonNickname' => array(
+					_('Multiple values are separated by comma.')
+			],
+			'eduPersonNickname' => [
 				"Headline" => _("Nick names"), 'attr' => 'eduPersonNickname',
 				"Text" => _("This is a list of nick names for this user.")
-			),
-			'affiliation' => array(
+			],
+			'affiliation' => [
 				"Headline" => _("Affiliations"), 'attr' => 'eduPersonAffiliation',
 				"Text" => _("Specifies the person's relationships to the institution in broad categories such as student, faculty, staff, alum, etc.")
-			),
-			'affiliationUpload' => array(
+			],
+			'affiliationUpload' => [
 				"Headline" => _("Affiliations"), 'attr' => 'eduPersonAffiliation',
 				"Text" => _("Specifies the person's relationships to the institution in broad categories such as student, faculty, staff, alum, etc.") . " " .
-							_('Multiple values are separated by comma.')
-			),
-			'eduPersonPrincipalName' => array(
+					_('Multiple values are separated by comma.')
+			],
+			'eduPersonPrincipalName' => [
 				"Headline" => _("Principal name"), 'attr' => 'eduPersonPrincipalName',
 				"Text" => _("The \"NetID\" of the person for the purposes of inter-institutional authentication. It should be represented in the form \"user@scope\" where scope defines a local security domain.")
-			),
-			'eduPersonEntitlement' => array(
+			],
+			'eduPersonEntitlement' => [
 				"Headline" => _("Entitlements"), 'attr' => 'eduPersonEntitlement',
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.")
-			),
-			'entitlementUpload' => array(
+			],
+			'entitlementUpload' => [
 				"Headline" => _("Entitlements"), 'attr' => 'eduPersonEntitlement',
 				"Text" => _("URI (either URN or URL) that indicates a set of rights to specific resources.") . " " . _('Multiple values are separated by comma.')
-			),
-			'eduPersonOrgDN' => array(
+			],
+			'eduPersonOrgDN' => [
 				"Headline" => _("Organisation"), 'attr' => 'eduPersonOrgDN',
 				"Text" => _("The DN of the directory entry representing the institution with which the person is associated.")
-			),
-			'eduPersonPrimaryOrgUnitDN' => array(
+			],
+			'eduPersonPrimaryOrgUnitDN' => [
 				"Headline" => _("Primary organisational unit"), 'attr' => 'eduPersonPrimaryOrgUnitDN',
 				"Text" => _("The DN of the directory entry representing the person's primary organisational unit.")
-			),
-			'eduPersonOrgUnitDN' => array(
+			],
+			'eduPersonOrgUnitDN' => [
 				"Headline" => _("Organisational units"), 'attr' => 'eduPersonOrgUnitDN',
 				"Text" => _("The DNs of the directory entries representing the person's organisational units.")
-			),
-			'orgUnitDNUpload' => array(
+			],
+			'orgUnitDNUpload' => [
 				"Headline" => _("Organisational units"), 'attr' => 'eduPersonOrgUnitDN',
 				"Text" => _("The DNs of the directory entries representing the person's organisational units.") . ' ' . _('Multiple values are separated by comma.')
-			),
-			'eduPersonAssurance' => array(
+			],
+			'eduPersonAssurance' => [
 				"Headline" => _('Assurance profiles'), 'attr' => 'eduPersonAssurance',
 				"Text" => _('Assurance profiles are the set of standards that are met by an identity assertion.')
-			),
-			'eduPersonAssuranceUpload' => array(
+			],
+			'eduPersonAssuranceUpload' => [
 				"Headline" => _('Assurance profiles'), 'attr' => 'eduPersonAssurance',
 				"Text" => _('Assurance profiles are the set of standards that are met by an identity assertion.') . " " . _('Multiple values are separated by comma.')
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			));
+			]];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('eduPerson_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'eduPerson_principalName',
 				'description' => _('Principal name'),
 				'help' => 'eduPersonPrincipalName',
 				'example' => _('user@company.com'),
 				'unique' => true
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_primaryAffiliation',
 				'description' => _('Primary affiliation'),
 				'help' => 'primaryAffiliation',
 				'example' => 'student',
 				'values' => implode(", ", $this->affiliationTypes)
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_scopedAffiliation',
 				'description' => _('Scoped affiliations'),
 				'help' => 'scopedAffiliationUpload',
 				'example' => 'student@domain, student@domain2'
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_affiliation',
 				'description' => _('Affiliations'),
 				'help' => 'affiliationUpload',
 				'example' => 'student, employee',
 				'values' => implode(", ", $this->affiliationTypes)
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_nickname',
 				'description' => _('Nick names'),
 				'help' => 'eduPersonNickname',
 				'example' => _('Steve, Stevo')
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_entitlement',
 				'description' => _('Entitlements'),
 				'help' => 'entitlementUpload',
 				'example' => 'http://xstor.com/contracts/HEd123'
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_orgDN',
 				'description' => _('Organisation'),
 				'help' => 'eduPersonOrgDN',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_primaryOrgUnitDN',
 				'description' => _('Primary organisational unit'),
 				'help' => 'eduPersonPrimaryOrgUnitDN',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_orgUnitDN',
 				'description' => _('Organisational units'),
 				'help' => 'orgUnitDNUpload',
 				'example' => _('ou=accounts,dc=yourdomain,dc=org')
-			),
-			array(
+			],
+			[
 				'name' => 'eduPerson_assurance',
 				'description' => _('Assurance profiles'),
 				'help' => 'eduPersonAssuranceUpload',
 				'example' => 'urn:mace:incommon:IAQ:sample, http://idm.example.org/LOA#sample'
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'affiliation' => _('Affiliations'),
 			'nickname' => _('Nick names'),
 			'orgDN' => _('Organisation'),
@@ -238,40 +238,40 @@ class eduPerson extends baseModule {
 			'primaryOrgUnitDN' => _('Primary organisational unit'),
 			'scopedAffiliation' => _('Scoped affiliations'),
 			'eduPersonAssurance' => _('Assurance profiles'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the error message array with messages
-	*/
+	 * This function fills the error message array with messages
+	 */
 	function load_Messages() {
-		$this->messages['eduPersonPrincipalName'][0] = array('ERROR', _('Principal name is invalid!'));
-		$this->messages['eduPersonPrincipalName'][1] = array('ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!'));
-		$this->messages['eduPersonOrgDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organisation"));
-		$this->messages['eduPersonOrgDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgDN', _('This is not a valid DN!'));
-		$this->messages['eduPersonPrimaryOrgUnitDN'][0] = array('ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organisational unit"));
-		$this->messages['eduPersonPrimaryOrgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_primaryOrgUnitDN', _('This is not a valid DN!'));
-		$this->messages['eduPersonOrgUnitDN'][0] = array('ERROR', _('Organisational units contains an invalid entry.'));
-		$this->messages['eduPersonOrgUnitDN'][1] = array('ERROR', _('Account %s:') . ' eduPerson_orgUnitDN', _('This is not a valid list of DNs!'));
-		$this->messages['primaryAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_primaryAffiliation', _('Please enter a valid primary affiliation.'));
-		$this->messages['scopedAffiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_scopedAffiliation', _('Please enter a valid scoped affiliation.'));
-		$this->messages['affiliation'][0] = array('ERROR', _('Account %s:') . ' eduPerson_affiliation', _('Please enter a valid list of affiliations.'));
+		$this->messages['eduPersonPrincipalName'][0] = ['ERROR', _('Principal name is invalid!')];
+		$this->messages['eduPersonPrincipalName'][1] = ['ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!')];
+		$this->messages['eduPersonOrgDN'][0] = ['ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organisation")];
+		$this->messages['eduPersonOrgDN'][1] = ['ERROR', _('Account %s:') . ' eduPerson_orgDN', _('This is not a valid DN!')];
+		$this->messages['eduPersonPrimaryOrgUnitDN'][0] = ['ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Primary organisational unit")];
+		$this->messages['eduPersonPrimaryOrgUnitDN'][1] = ['ERROR', _('Account %s:') . ' eduPerson_primaryOrgUnitDN', _('This is not a valid DN!')];
+		$this->messages['eduPersonOrgUnitDN'][0] = ['ERROR', _('Organisational units contains an invalid entry.')];
+		$this->messages['eduPersonOrgUnitDN'][1] = ['ERROR', _('Account %s:') . ' eduPerson_orgUnitDN', _('This is not a valid list of DNs!')];
+		$this->messages['primaryAffiliation'][0] = ['ERROR', _('Account %s:') . ' eduPerson_primaryAffiliation', _('Please enter a valid primary affiliation.')];
+		$this->messages['scopedAffiliation'][0] = ['ERROR', _('Account %s:') . ' eduPerson_scopedAffiliation', _('Please enter a valid scoped affiliation.')];
+		$this->messages['affiliation'][0] = ['ERROR', _('Account %s:') . ' eduPerson_affiliation', _('Please enter a valid list of affiliations.')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**
-	* This functions return true if all needed settings are done.
-	*
-	* @return boolean true, if all is ok
-	*/
+	 * This functions return true if all needed settings are done.
+	 *
+	 * @return boolean true, if all is ok
+	 */
 	function module_complete() {
 		if (($this->getAccountContainer()->rdn == 'eduPersonPrincipalName') && !isset($this->attributes['eduPersonPrincipalName'][0])) {
 			return false;
@@ -292,7 +292,7 @@ class eduPerson extends baseModule {
 			// primary affiliation
 			$primaryAffiliation = [];
 			if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
-				$primaryAffiliation = array($this->attributes['eduPersonPrimaryAffiliation'][0]);
+				$primaryAffiliation = [$this->attributes['eduPersonPrimaryAffiliation'][0]];
 			}
 			$return->add(new htmlResponsiveSelect('primaryAffiliation', $this->affiliationTypes, $primaryAffiliation, _('Primary affiliation'), 'primaryAffiliation'), 12);
 			// scoped affiliations
@@ -303,7 +303,7 @@ class eduPerson extends baseModule {
 			if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonScopedAffiliation']); $i++) {
 					$parts = explode('@', $this->attributes['eduPersonScopedAffiliation'][$i]);
-					$scopedAffiliationPrefix = array($parts[0]);
+					$scopedAffiliationPrefix = [$parts[0]];
 					$scopedAffiliation = substr($this->attributes['eduPersonScopedAffiliation'][$i], strlen($parts[0]) + 1);
 					$scopedAffiliationContainer = new htmlTable();
 					$scopedAffiliationContainer->addElement(new htmlSelect('scopedAffiliationPrefix' . $i, $this->affiliationTypes, $scopedAffiliationPrefix));
@@ -329,7 +329,7 @@ class eduPerson extends baseModule {
 			$affiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonAffiliation'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonAffiliation']); $i++) {
-					$affiliations->addElement(new htmlSelect('affiliation' . $i, $this->affiliationTypes, array($this->attributes['eduPersonAffiliation'][$i])));
+					$affiliations->addElement(new htmlSelect('affiliation' . $i, $this->affiliationTypes, [$this->attributes['eduPersonAffiliation'][$i]]));
 					$affiliationButton = new htmlButton('delAffiliation' . $i, 'del.svg', true);
 					$affiliations->addElement($affiliationButton);
 					if ($i === 0) {
@@ -364,7 +364,7 @@ class eduPerson extends baseModule {
 			// remove button
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
-			$remButton->setCSSClasses(array('lam-danger'));
+			$remButton->setCSSClasses(['lam-danger']);
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
@@ -374,18 +374,18 @@ class eduPerson extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'eduPerson';
 			return [];
 		}
 		elseif (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('eduPerson'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['eduPerson'], $this->attributes['objectClass']);
 			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
@@ -452,10 +452,10 @@ class eduPerson extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		parent::load_profile($profile);
 		// add extension
@@ -474,7 +474,9 @@ class eduPerson extends baseModule {
 		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("eduPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "eduPerson";
+			if (!in_array("eduPerson", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "eduPerson";
+			}
 			// principal name
 			if ($rawAccounts[$i][$ids['eduPerson_principalName']] != "") {
 				if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $rawAccounts[$i][$ids['eduPerson_principalName']])) {
@@ -570,7 +572,7 @@ class eduPerson extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'edupersonaffiliation' => _('Affiliations'),
 			'edupersonnickname' => _('Nick names'),
 			'edupersonorgdn' => _('Organisation'),
@@ -581,7 +583,7 @@ class eduPerson extends baseModule {
 			'edupersonprimaryorgunitdn' => _('Primary organisational unit'),
 			'edupersonscopedaffiliation' => _('Scoped affiliations'),
 			'edupersonassurance' => _('Assurance profiles'),
-		);
+		];
 	}
 
 }

@@ -20,61 +20,61 @@
 */
 
 /**
-* Manages FreeRadius accounts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages FreeRadius accounts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Manages FreeRadius accounts.
-*
-* @package modules
-*/
+ * Manages FreeRadius accounts.
+ *
+ * @package modules
+ */
 class freeRadius extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('radiusFramedIPAddress');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['radiusFramedIPAddress'];
 
 	/** list of possible months */
-	private static $monthList = array('01' => 'Jan', '02' => 'Feb', '03' => 'Mar', '04' => 'Apr', '05' => 'May',
-			'06' => 'Jun', '07' => 'Jul', '08' => 'Aug', '09' => 'Sep', '10' => 'Oct', '11' => 'Nov', '12' => 'Dec'
-		);
+	private static $monthList = ['01' => 'Jan', '02' => 'Feb', '03' => 'Mar', '04' => 'Apr', '05' => 'May',
+		'06' => 'Jun', '07' => 'Jul', '08' => 'Aug', '09' => 'Sep', '10' => 'Oct', '11' => 'Nov', '12' => 'Dec'
+	];
 
 	/** cache for profile DNs */
 	private $profileCache;
 
 
 	/**
-	* Creates a new freeRadius object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new freeRadius object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -82,81 +82,81 @@ class freeRadius extends baseModule {
 		// alias name
 		$return["alias"] = _("FreeRadius");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('posixAccount', 'inetOrgPerson')), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [['posixAccount', 'inetOrgPerson']], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('radiusprofile');
+		$return['objectClasses'] = ['radiusprofile'];
 		// managed attributes
-		$return['attributes'] = array('radiusFramedIPAddress', 'radiusFramedIPNetmask', 'radiusRealm', 'radiusGroupName',
-			'radiusExpiration', 'radiusIdleTimeout', 'dialupAccess', 'radiusProfileDn');
+		$return['attributes'] = ['radiusFramedIPAddress', 'radiusFramedIPNetmask', 'radiusRealm', 'radiusGroupName',
+			'radiusExpiration', 'radiusIdleTimeout', 'dialupAccess', 'radiusProfileDn'];
 		// help Entries
-		$return['help'] = array(
-			'radiusFramedIPAddress' => array(
+		$return['help'] = [
+			'radiusFramedIPAddress' => [
 				"Headline" => _("IP address"), 'attr' => 'radiusFramedIPAddress',
 				"Text" => _("This is the IP address for the user (e.g. 123.123.123.123).")
-			),
-			'radiusFramedIPNetmask' => array(
+			],
+			'radiusFramedIPNetmask' => [
 				"Headline" => _("Net mask"), 'attr' => 'radiusFramedIPNetmask',
 				"Text" => _("The net mask for the IP address.")
-			),
-			'radiusRealm' => array(
+			],
+			'radiusRealm' => [
 				"Headline" => _("Realm"), 'attr' => 'radiusRealm',
 				"Text" => _("The Radius realm of this account.")
-			),
-			'radiusGroupName' => array(
+			],
+			'radiusGroupName' => [
 				"Headline" => _("Group names"), 'attr' => 'radiusGroupName',
 				"Text" => _("The group names for this account.")
-			),
-			'radiusGroupNameList' => array(
+			],
+			'radiusGroupNameList' => [
 				"Headline" => _("Group names"), 'attr' => 'radiusGroupName',
 				"Text" => _("The group names for this account.") . ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'radiusExpiration' => array(
+			],
+			'radiusExpiration' => [
 				"Headline" => _("Expiration date"), 'attr' => 'radiusExpiration',
 				"Text" => _("The account will be locked after this date.")
-			),
-			'radiusIdleTimeout' => array(
+			],
+			'radiusIdleTimeout' => [
 				"Headline" => _("Idle timeout"), 'attr' => 'radiusIdleTimeout',
 				"Text" => _("Specifies the maximum number of seconds that a connection can be idle before the session is terminated.")
-			),
-			'dialupAccess' => array(
+			],
+			'dialupAccess' => [
 				"Headline" => _("Enabled"), 'attr' => 'dialupAccess',
 				"Text" => _("Specifies if the user may authenticate with FreeRadius.")
-			),
-			'profileDN' => array(
+			],
+			'profileDN' => [
 				"Headline" => _("Profile DN"), 'attr' => 'radiusProfileDn',
 				"Text" => _('DN where Radius profile templates are stored.')
-			),
-			'radiusProfileDn' => array(
+			],
+			'radiusProfileDn' => [
 				"Headline" => _("Profile"), 'attr' => 'radiusProfileDn',
 				"Text" => _('Radius profile for this user.')
-			),
-			'hiddenOptions' => array(
+			],
+			'hiddenOptions' => [
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-		);
+			],
+		];
 		// profile settings
 		$profileElements = [];
 		// auto add extension
 		$profileElements[] = new htmlResponsiveInputCheckbox('freeRadius_addExt', false, _('Automatically add this extension'), 'autoAdd');
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPNetmask')) {
 			$profileElements[] = new htmlResponsiveInputField(_('Net mask'), 'freeRadius_radiusFramedIPNetmask', null, 'radiusFramedIPNetmask');
-			$return['profile_checks']['freeRadius_radiusFramedIPNetmask'] = array(
+			$return['profile_checks']['freeRadius_radiusFramedIPNetmask'] = [
 				'type' => 'ext_preg',
 				'regex' => 'ip',
-				'error_message' => $this->messages['radiusFramedIPNetmask'][0]);
+				'error_message' => $this->messages['radiusFramedIPNetmask'][0]];
 			$return['profile_mappings']['freeRadius_radiusFramedIPNetmask'] = 'radiusFramedIPNetmask';
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {
 			$profileElements[] = new htmlResponsiveInputField(_('Realm'), 'freeRadius_radiusRealm', null, 'radiusRealm');
-			$return['profile_checks']['freeRadius_radiusRealm'] = array(
+			$return['profile_checks']['freeRadius_radiusRealm'] = [
 				'type' => 'ext_preg',
 				'regex' => 'DNSname',
-				'error_message' => $this->messages['radiusRealm'][0]);
+				'error_message' => $this->messages['radiusRealm'][0]];
 			$return['profile_mappings']['freeRadius_radiusRealm'] = 'radiusRealm';
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
@@ -164,25 +164,25 @@ class freeRadius extends baseModule {
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
 			$profileElements[] = new htmlResponsiveInputField(_('Idle timeout'), 'freeRadius_radiusIdleTimeout', null, 'radiusIdleTimeout');
-			$return['profile_checks']['freeRadius_radiusIdleTimeout'] = array(
+			$return['profile_checks']['freeRadius_radiusIdleTimeout'] = [
 				'type' => 'ext_preg',
 				'regex' => 'digit',
-				'error_message' => $this->messages['radiusIdleTimeout'][0]);
+				'error_message' => $this->messages['radiusIdleTimeout'][0]];
 			$return['profile_mappings']['freeRadius_radiusIdleTimeout'] = 'radiusIdleTimeout';
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
-			$enabledOptions = array('-' => '', _('Yes') => 'true', _('No') => 'false');
-			$dialupAccessSelect = new htmlResponsiveSelect('freeRadius_dialupAccess', $enabledOptions, array('true'), _('Enabled'), 'dialupAccess');
+			$enabledOptions = ['-' => '', _('Yes') => 'true', _('No') => 'false'];
+			$dialupAccessSelect = new htmlResponsiveSelect('freeRadius_dialupAccess', $enabledOptions, ['true'], _('Enabled'), 'dialupAccess');
 			$dialupAccessSelect->setHasDescriptiveElements(true);
 			$profileElements[] = $dialupAccessSelect;
 			$return['profile_mappings']['freeRadius_dialupAccess'] = 'dialupAccess';
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn') && isLoggedIn()) {
-			$profileOptions = array('-' => '');
+			$profileOptions = ['-' => ''];
 			foreach ($this->getProfiles() as $dn) {
 				$profileOptions[getAbstractDN($dn)] = $dn;
 			}
-			$profileSelect = new htmlResponsiveSelect('freeRadius_radiusProfileDn', $profileOptions, array(''), _('Profile'), 'radiusProfileDn');
+			$profileSelect = new htmlResponsiveSelect('freeRadius_radiusProfileDn', $profileOptions, [''], _('Profile'), 'radiusProfileDn');
 			$profileSelect->setHasDescriptiveElements(true);
 			$profileElements[] = $profileSelect;
 			$return['profile_mappings']['freeRadius_radiusProfileDn'] = 'radiusProfileDn';
@@ -195,69 +195,69 @@ class freeRadius extends baseModule {
 		// upload fields
 		$return['upload_columns'] = [];
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_radiusRealm',
 				'description' => _('Realm'),
 				'help' => 'radiusRealm',
 				'example' => _('company.com')
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_radiusGroupName',
 				'description' => _('Group names'),
 				'help' => 'radiusGroupNameList',
 				'example' => _('group01;group02')
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPAddress')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_radiusFramedIPAddress',
 				'description' => _('IP address'),
 				'help' => 'radiusFramedIPAddress',
 				'example' => '123.123.123.123',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPNetmask')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_radiusFramedIPNetmask',
 				'description' => _('Net mask'),
 				'help' => 'radiusFramedIPNetmask',
 				'example' => '255.255.255.0'
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusExpiration')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_radiusExpiration',
 				'description' => _('Expiration date'),
 				'help' => 'radiusExpiration',
 				'example' => '2035-11-22 00:00'
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_radiusIdleTimeout',
 				'description' => _('Idle timeout'),
 				'help' => 'radiusIdleTimeout',
 				'example' => '3600'
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_dialupAccess',
 				'description' => _('Enabled'),
 				'help' => 'dialupAccess',
 				'example' => 'true',
 				'values' => 'true, false'
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'freeRadius_radiusProfileDn',
 				'description' => _('Profile'),
 				'help' => 'radiusProfileDn',
 				'example' => 'cn=profile,ou=radiusProfile,dc=example,dc=com'
-			);
+			];
 		}
 		// available PDF fields
 		$return['PDF_fields'] = [];
@@ -289,19 +289,19 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* Returns a list of configuration options.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* The field names are used as keywords to load and save settings.
-	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	*
-	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	* @return mixed htmlElement or array of htmlElement
-	*
-	* @see htmlElement
-	*/
+	 * Returns a list of configuration options.
+	 *
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * The field names are used as keywords to load and save settings.
+	 * We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	 *
+	 * @param array $scopes account types (user, group, host)
+	 * @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	 * @return mixed htmlElement or array of htmlElement
+	 *
+	 * @see htmlElement
+	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlResponsiveInputField(_('Profile DN'), 'freeRadius_profileDN', '', 'profileDN'), 12);
@@ -323,29 +323,29 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* This function fills the error message array with messages
-	*/
+	 * This function fills the error message array with messages
+	 */
 	function load_Messages() {
-		$this->messages['radiusFramedIPAddress'][0] = array('ERROR', _('The IP address is invalid.'));
-		$this->messages['radiusFramedIPAddress'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusFramedIPAddress', _('The IP address is invalid.'));
-		$this->messages['radiusFramedIPNetmask'][0] = array('ERROR', _('The net mask is invalid.'));
-		$this->messages['radiusFramedIPNetmask'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusFramedIPNetmask', _('The net mask is invalid.'));
-		$this->messages['radiusRealm'][0] = array('ERROR', _('Please enter a valid realm.'));
-		$this->messages['radiusRealm'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusRealm', _('Please enter a valid realm.'));
-		$this->messages['radiusGroupName'][0] = array('ERROR', _('Please enter a valid list of group names.'));
-		$this->messages['radiusGroupName'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusGroupName', _('Please enter a valid list of group names.'));
-		$this->messages['radiusExpiration'][0] = array('ERROR', _('The expiration date must be in format DD.MM.YYYY HH:MM.'));
-		$this->messages['radiusExpiration'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusExpiration', _('The expiration date must be in format DD.MM.YYYY HH:MM.'));
-		$this->messages['radiusIdleTimeout'][0] = array('ERROR', _('Please enter a numeric value for the idle timeout.'));
-		$this->messages['radiusIdleTimeout'][1] = array('ERROR', _('Account %s:') . ' freeRadius_radiusIdleTimeout', _('Please enter a numeric value for the idle timeout.'));
-		$this->messages['dialupAccess'][0] = array('ERROR', _('Account %s:') . ' freeRadius_dialupAccess', _('This value can only be "true" or "false".'));
-		$this->messages['radiusProfileDn'][0] = array('ERROR', _('Account %s:') . ' freeRadius_radiusProfileDn', _('This is not a valid DN!'));
+		$this->messages['radiusFramedIPAddress'][0] = ['ERROR', _('The IP address is invalid.')];
+		$this->messages['radiusFramedIPAddress'][1] = ['ERROR', _('Account %s:') . ' freeRadius_radiusFramedIPAddress', _('The IP address is invalid.')];
+		$this->messages['radiusFramedIPNetmask'][0] = ['ERROR', _('The net mask is invalid.')];
+		$this->messages['radiusFramedIPNetmask'][1] = ['ERROR', _('Account %s:') . ' freeRadius_radiusFramedIPNetmask', _('The net mask is invalid.')];
+		$this->messages['radiusRealm'][0] = ['ERROR', _('Please enter a valid realm.')];
+		$this->messages['radiusRealm'][1] = ['ERROR', _('Account %s:') . ' freeRadius_radiusRealm', _('Please enter a valid realm.')];
+		$this->messages['radiusGroupName'][0] = ['ERROR', _('Please enter a valid list of group names.')];
+		$this->messages['radiusGroupName'][1] = ['ERROR', _('Account %s:') . ' freeRadius_radiusGroupName', _('Please enter a valid list of group names.')];
+		$this->messages['radiusExpiration'][0] = ['ERROR', _('The expiration date must be in format DD.MM.YYYY HH:MM.')];
+		$this->messages['radiusExpiration'][1] = ['ERROR', _('Account %s:') . ' freeRadius_radiusExpiration', _('The expiration date must be in format DD.MM.YYYY HH:MM.')];
+		$this->messages['radiusIdleTimeout'][0] = ['ERROR', _('Please enter a numeric value for the idle timeout.')];
+		$this->messages['radiusIdleTimeout'][1] = ['ERROR', _('Account %s:') . ' freeRadius_radiusIdleTimeout', _('Please enter a numeric value for the idle timeout.')];
+		$this->messages['dialupAccess'][0] = ['ERROR', _('Account %s:') . ' freeRadius_dialupAccess', _('This value can only be "true" or "false".')];
+		$this->messages['radiusProfileDn'][0] = ['ERROR', _('Account %s:') . ' freeRadius_radiusProfileDn', _('This is not a valid DN!')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -394,7 +394,7 @@ class freeRadius extends baseModule {
 			}
 			// profile DN
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
-				$profiles = array('-' => '-');
+				$profiles = ['-' => '-'];
 				foreach ($this->getProfiles() as $dn) {
 					$profiles[getAbstractDN($dn)] = $dn;
 				}
@@ -411,15 +411,15 @@ class freeRadius extends baseModule {
 			}
 			// enabled
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
-				$enabled = array('');
+				$enabled = [''];
 				if (!empty($this->attributes['dialupAccess'][0])) {
-					$enabled = array($this->attributes['dialupAccess'][0]);
+					$enabled = [$this->attributes['dialupAccess'][0]];
 					// value in LDAP may be anything other than "false" to count as "true"
-					if (!in_array($this->attributes['dialupAccess'][0], array('true', 'false', 'TRUE', 'FALSE'))) {
-						$enabled = array('true');
+					if (!in_array($this->attributes['dialupAccess'][0], ['true', 'false', 'TRUE', 'FALSE'])) {
+						$enabled = ['true'];
 					}
 				}
-				$enabledOptions = array('-' => '', _('Yes') => 'true', _('No') => 'false');
+				$enabledOptions = ['-' => '', _('Yes') => 'true', _('No') => 'false'];
 				$enabledSelect = new htmlResponsiveSelect('dialupAccess', $enabledOptions, $enabled, _('Enabled'), 'dialupAccess');
 				$enabledSelect->setHasDescriptiveElements(true);
 				$return->add($enabledSelect, 12);
@@ -427,7 +427,7 @@ class freeRadius extends baseModule {
 			// button to remove extension
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove FreeRadius extension'));
-			$remButton->setCSSClasses(array('lam-danger'));
+			$remButton->setCSSClasses(['lam-danger']);
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
@@ -437,18 +437,18 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'radiusprofile';
 			return [];
 		}
 		elseif (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('radiusprofile'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['radiusprofile'], $this->attributes['objectClass']);
 			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
@@ -518,17 +518,16 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to change the expiration date.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * This function will create the meta HTML code to show a page to change the expiration date.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_expiration() {
 		$return = new htmlResponsiveRow();
 		$attr = 'radiusExpiration';
-		// TODO display in local time
-		$date = new DateTime('@' . (time() + 3600*24*365), getTimeZone());
+		$date = new DateTime('@' . (time() + 3600 * 24 * 365), getTimeZone());
 		if (!empty($this->attributes[$attr][0])) {
-			$date = DateTime::createFromFormat('d M Y H:i',$this->attributes[$attr][0], new DateTimeZone('UTC'));
+			$date = DateTime::createFromFormat('d M Y H:i', $this->attributes[$attr][0], new DateTimeZone('UTC'));
 			$date->setTimezone(getTimeZone());
 		}
 		$dateInput = new htmlResponsiveInputField(_('Expiration date'), 'expirationTime', $date->format('Y-m-d H:i'), 'radiusExpiration');
@@ -549,10 +548,10 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* Processes user input of the time selection page.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the time selection page.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_expiration() {
 		$return = [];
 		// find button name
@@ -589,17 +588,17 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('radiusprofile', $this->attributes['objectClass']) && !in_array('radiusprofile', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -616,7 +615,9 @@ class freeRadius extends baseModule {
 		$errors = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("radiusprofile", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "radiusprofile";
+			if (!in_array("radiusprofile", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "radiusprofile";
+			}
 			// IP address
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'freeRadius_radiusFramedIPAddress', 'radiusFramedIPAddress',
 				'ip', $this->messages['radiusFramedIPAddress'][1], $errors);
@@ -637,7 +638,7 @@ class freeRadius extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['radiusExpiration'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -646,12 +647,12 @@ class freeRadius extends baseModule {
 				'digit', $this->messages['radiusIdleTimeout'][1], $errors);
 			// enabled
 			if (!empty($rawAccounts[$i][$ids['freeRadius_dialupAccess']])) {
-				if (in_array($rawAccounts[$i][$ids['freeRadius_dialupAccess']], array('true', 'false'))) {
+				if (in_array($rawAccounts[$i][$ids['freeRadius_dialupAccess']], ['true', 'false'])) {
 					$partialAccounts[$i]['dialupAccess'] = $rawAccounts[$i][$ids['freeRadius_dialupAccess']];
 				}
 				else {
 					$errMsg = $this->messages['dialupAccess'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -678,7 +679,7 @@ class freeRadius extends baseModule {
 		}
 		if (isset($this->attributes['dialupAccess'][0])) {
 			$enabled = _('Yes');
-			if (in_array($this->attributes['dialupAccess'][0], array('false', 'FALSE'))) {
+			if (in_array($this->attributes['dialupAccess'][0], ['false', 'FALSE'])) {
 				$enabled = _('No');
 			}
 			$this->addPDFKeyValue($return, 'dialupAccess', _('Enabled'), $enabled);
@@ -687,8 +688,8 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function check_profileOptions($options, $typeId) {
 		$messages = parent::check_profileOptions($options, $typeId);
 		// group names
@@ -707,10 +708,10 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -754,7 +755,7 @@ class freeRadius extends baseModule {
 		if (empty($this->moduleSettings['freeRadius_profileDN'][0])) {
 			return [];
 		}
-		$list = searchLDAP($this->moduleSettings['freeRadius_profileDN'][0], '(objectClass=radiusProfile)', array('dn'));
+		$list = searchLDAP($this->moduleSettings['freeRadius_profileDN'][0], '(objectClass=radiusProfile)', ['dn']);
 		if (empty($list)) {
 			return [];
 		}
@@ -772,17 +773,17 @@ class freeRadius extends baseModule {
 	 * @return array list of jobs
 	 */
 	public function getSupportedJobs(&$config) {
-		return array(
+		return [
 			new FreeRadiusAccountExpirationCleanupJob(),
 			new FreeRadiusAccountExpirationNotifyJob()
-		);
+		];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'radiusframedipaddress' => _('IP address'),
 			'radiusframedipnetmask' => _('Net mask'),
 			'radiusrealm' => _('Realm'),
@@ -791,7 +792,7 @@ class freeRadius extends baseModule {
 			'radiusidletimeout' => _('Idle timeout'),
 			'dialupaccess' => _('Enabled'),
 			'radiusprofiledn' => _('Profile'),
-		);
+		];
 	}
 
 }
@@ -813,7 +814,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @return String name
 		 */
 		public function getAlias() {
-			return _('FreeRadius') .  ': ' . _('Cleanup expired user accounts');
+			return _('FreeRadius') . ': ' . _('Cleanup expired user accounts');
 		}
 
 		/**
@@ -834,8 +835,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$attrs = array('radiusExpiration');
-			return searchLDAPByFilter('(radiusExpiration=*)', $attrs, array('user'));
+			$attrs = ['radiusExpiration'];
+			return searchLDAPByFilter('(radiusExpiration=*)', $attrs, ['user']);
 		}
 
 		/**
@@ -898,10 +899,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('radiusExpiration', $_SESSION['cfgMain']->getMailAttribute());
+			$sysattrs = ['radiusExpiration', $_SESSION['cfgMain']->getMailAttribute()];
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(radiusExpiration=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(radiusExpiration=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, ['user']);
 		}
 
 		/**

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2022  Roland Gruber
+  Copyright (C) 2011 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,38 +20,38 @@
 */
 
 /**
-* Shows general information like the creation time of an account.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Shows general information like the creation time of an account.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 use LAM\TYPES\TypeManager;
 
 /**
-* Shows general information like the creation time of an account.
-*
-* @package modules
-*/
+ * Shows general information like the creation time of an account.
+ *
+ * @package modules
+ */
 class generalInformation extends baseModule {
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
 		return in_array($this->get_scope(), LAM\TYPES\getTypes());
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	public function get_metaData() {
 		$return = [];
 		// icon
@@ -59,12 +59,12 @@ class generalInformation extends baseModule {
 		// alias name
 		$return["alias"] = _("General information");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed attributes
-		$return['attributes'] = array('creatorsname', 'createtimestamp', 'modifiersname',
-			'modifytimestamp', 'hassubordinates', 'memberof');
-		$return['hiddenAttributes'] = array('creatorsname', 'createtimestamp', 'modifiersname',
-			'modifytimestamp', 'hassubordinates');
+		$return['attributes'] = ['creatorsname', 'createtimestamp', 'modifiersname',
+			'modifytimestamp', 'hassubordinates', 'memberof'];
+		$return['hiddenAttributes'] = ['creatorsname', 'createtimestamp', 'modifiersname',
+			'modifytimestamp', 'hassubordinates'];
 		return $return;
 	}
 
@@ -112,7 +112,7 @@ class generalInformation extends baseModule {
 		// group memberships
 		if (isset($this->attributes['memberof'][0])) {
 			$typeManager = new TypeManager();
-			$scopes = array('gon', 'group');
+			$scopes = ['gon', 'group'];
 			$types = $typeManager->getConfiguredTypesForScopes($scopes);
 			$suffixList = [];
 			foreach ($types as $type) {
@@ -146,11 +146,11 @@ class generalInformation extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		return [];
 	}
@@ -158,7 +158,7 @@ class generalInformation extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		// no action for this module
 	}
 
@@ -166,14 +166,14 @@ class generalInformation extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'creatorsname' => _('Created by'),
 			'createtimestamp' => _('Creation time'),
 			'modifiersname' => _('Modified by'),
 			'modifytimestamp' => _('Modification time'),
 			'hassubordinates' => _('Has subentries'),
 			'memberof' => _('Groups')
-		);
+		];
 	}
 
 }
