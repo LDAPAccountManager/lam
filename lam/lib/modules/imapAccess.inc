@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2023  Roland Gruber
+                2010 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -51,12 +51,12 @@ class imapAccess extends baseModule {
 	private $email;
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
@@ -71,7 +71,7 @@ class imapAccess extends baseModule {
 		// alias name
 		$return["alias"] = _("Mailbox");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'windowsUser')), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [['inetOrgPerson', 'windowsUser']], 'conflicts' => []];
 		// managed object classes
 		$return['objectClasses'] = [];
 		// managed attributes
@@ -79,73 +79,73 @@ class imapAccess extends baseModule {
 		// icon
 		$return['icon'] = 'mail.svg';
 		// help
-		$return['help'] = array(
-			'ImapServerAddress' => array(
+		$return['help'] = [
+			'ImapServerAddress' => [
 				"Headline" => _("Server address"),
-				"Text" => _("Address of IMAP server (e.g. mail.example.org).")),
-			'ImapServerEncryptionProtocol' => array(
+				"Text" => _("Address of IMAP server (e.g. mail.example.org).")],
+			'ImapServerEncryptionProtocol' => [
 				"Headline" => _("Encryption protocol"),
-				"Text" => _("Encryption protocol for connecting to IMAP server. LAM requires an encrypted connection.")),
-			'ImapValidateServerCert' => array(
+				"Text" => _("Encryption protocol for connecting to IMAP server. LAM requires an encrypted connection.")],
+			'ImapValidateServerCert' => [
 				"Headline" => _("Validate server certificate"),
-				"Text" => _("This option allows you to disable the certificate check of your IMAP server certificate. Disabling the certificate check is not recommended.")),
-			'ImapAdmin' => array(
+				"Text" => _("This option allows you to disable the certificate check of your IMAP server certificate. Disabling the certificate check is not recommended.")],
+			'ImapAdmin' => [
 				"Headline" => _("IMAP admin user"),
-				"Text" => _("The login name of your IMAP user who has rights to create/delete mailboxes.") . ' ' . _('Use wildcards like $uid$ for LDAP attributes of the current LAM admin user.')),
-			'ImapAdminPasswordSelect' => array(
+				"Text" => _("The login name of your IMAP user who has rights to create/delete mailboxes.") . ' ' . _('Use wildcards like $uid$ for LDAP attributes of the current LAM admin user.')],
+			'ImapAdminPasswordSelect' => [
 				"Headline" => _("IMAP password input"),
 				"Text" => _("Choose the way how to provide the IMAP admin password. You can use the same password as for the LAM login or LAM will ask you for a password when it is required.")
-							. ' ' . _('Storing the password in your server profile is also possible but not recommended.')
-			),
-			'ImapAdminPassword_Sess' => array(
+					. ' ' . _('Storing the password in your server profile is also possible but not recommended.')
+			],
+			'ImapAdminPassword_Sess' => [
 				"Headline" => _("Password of IMAP admin user"),
-				"Text" => _("The password of your IMAP admin user. The login name for the IMAP admin user is stored in the LAM server profile.")),
-			'ImapUserPrefix' => array(
+				"Text" => _("The password of your IMAP admin user. The login name for the IMAP admin user is stored in the LAM server profile.")],
+			'ImapUserPrefix' => [
 				"Headline" => _("Prefix for mailboxes"),
-				"Text" => _("Some IMAP servers store mailboxes with a prefix (e.g. \"user\" for Cyrus which results in \"user.username\").")),
-			'ImapMailDomain' => array(
+				"Text" => _("Some IMAP servers store mailboxes with a prefix (e.g. \"user\" for Cyrus which results in \"user.username\").")],
+			'ImapMailDomain' => [
 				"Headline" => _("Mail domains"),
-				"Text" => _("Please enter a comma separated list of domain names (e.g. \"company.com,example.com\"). LAM will only manage mailboxes from these domains.")),
-			'ImapUserNameAttr' => array(
+				"Text" => _("Please enter a comma separated list of domain names (e.g. \"company.com,example.com\"). LAM will only manage mailboxes from these domains.")],
+			'ImapUserNameAttr' => [
 				"Headline" => _("User name attribute"),
-				"Text" => _("Please choose the attribute to get the IMAP user name. The default is \"mail\" but you can also use \"uid\" or \"userPrincipalName\".")),
-			'MailAddress' => array(
+				"Text" => _("Please choose the attribute to get the IMAP user name. The default is \"mail\" but you can also use \"uid\" or \"userPrincipalName\".")],
+			'MailAddress' => [
 				"Headline" => _("Mailbox"),
-				"Text" => _("This mailbox will be created/deleted.")),
-			'ImapUserQuotaLimit' => array(
+				"Text" => _("This mailbox will be created/deleted.")],
+			'ImapUserQuotaLimit' => [
 				"Headline" => _("Quota"),
-				"Text" => _("Please enter the quota limit of this mailbox in kilobytes.")),
-			'pathSeparator' => array(
+				"Text" => _("Please enter the quota limit of this mailbox in kilobytes.")],
+			'pathSeparator' => [
 				"Headline" => _("Path separator"),
-				"Text" => _("This is the separator for the mailbox path. Usually, this is \".\" but e.g. Cyrus with \"unixhierarchysep\" will require \"/\".")),
-			'initialFolders' => array(
+				"Text" => _("This is the separator for the mailbox path. Usually, this is \".\" but e.g. Cyrus with \"unixhierarchysep\" will require \"/\".")],
+			'initialFolders' => [
 				"Headline" => _("Initial folders"),
-				"Text" => _("Use this to provide a list of folders (e.g. Trash) to add for new accounts.")),
-			'createMailbox' => array(
+				"Text" => _("Use this to provide a list of folders (e.g. Trash) to add for new accounts.")],
+			'createMailbox' => [
 				"Headline" => _("Create mailbox"),
-				"Text" => _('Set to "true" to create the mailbox.')),
-		);
+				"Text" => _('Set to "true" to create the mailbox.')],
+		];
 		// configuration checks
-		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = array (
+		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = [
 			'type' => 'ext_preg',
 			'regex' => 'DNSname',
 			'required' => true,
 			'required_message' => $this->messages['config'][0],
-			'error_message' => $this->messages['config'][0]);
-		$return['config_checks']['all']['ImapAccess_ImapDomain'] = array (
+			'error_message' => $this->messages['config'][0]];
+		$return['config_checks']['all']['ImapAccess_ImapDomain'] = [
 			'type' => 'regex_i',
 			'regex' => '[\\*a-z0-9\\._-]+(,[a-z0-9\\._-]+)*',
 			'required' => true,
 			'required_message' => $this->messages['config'][1],
-			'error_message' => $this->messages['config'][1]);
+			'error_message' => $this->messages['config'][1]];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'), 12);
 		$return['profile_options'] = $profileContainer;
-		$return['profile_checks']['ImapAccess_QuotaLimit'] = array(
+		$return['profile_checks']['ImapAccess_QuotaLimit'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['managemailbox'][8]);
+			'error_message' => $this->messages['managemailbox'][8]];
 		return $return;
 	}
 
@@ -153,21 +153,21 @@ class imapAccess extends baseModule {
 	 * This function fills the error message array with messages
 	 */
 	function load_Messages() {
-		$this->messages['config'][0] = array('ERROR', _('Please enter a valid server name where the mailboxes reside.'));
-		$this->messages['config'][1] = array('ERROR', _('Please enter a correct list of valid mail domains.'));
-		$this->messages['config'][2] = array('ERROR', _('The IMAP admin password is empty.'));
-		$this->messages['managemailbox'][0] = array('ERROR', _('Unable to change ACL on IMAP server for mailbox deletion.'));
-		$this->messages['managemailbox'][1] = array('ERROR', _('Unable to delete mailbox from IMAP server.'));
-		$this->messages['managemailbox'][2] = array('ERROR', _('Unable to create mailbox on IMAP server.'));
-		$this->messages['managemailbox'][3] = array('ERROR', _('Unable to locate mailbox on IMAP.'));
-		$this->messages['managemailbox'][4] = array('ERROR', _('Your IMAP domains and email address domain do not match.'));
-		$this->messages['managemailbox'][5] = array('ERROR', _('Invalid password for IMAP admin or other problem occurred.'));
-		$this->messages['managemailbox'][6] = array('WARN', _('Your LAM login password was not accepted by the IMAP server.'));
-		$this->messages['managemailbox'][7] = array('ERROR', _('Cannot update quota.'));
-		$this->messages['managemailbox'][8] = array('ERROR', _('Wrong quota format. Quota must be numeric.'));
-		$this->messages['managemailbox'][9] = array('ERROR', _('Account %s:') . ' imapAccess_quota', _('Wrong quota format. Quota must be numeric.'));
-		$this->messages['managemailbox'][10] = array('ERROR', _('Cannot read quota.'));
-		$this->messages['createMailbox'][0] = array('ERROR', _('Account %s:') . ' imapAccess_createMailbox', _('This value can only be "true" or "false".'));
+		$this->messages['config'][0] = ['ERROR', _('Please enter a valid server name where the mailboxes reside.')];
+		$this->messages['config'][1] = ['ERROR', _('Please enter a correct list of valid mail domains.')];
+		$this->messages['config'][2] = ['ERROR', _('The IMAP admin password is empty.')];
+		$this->messages['managemailbox'][0] = ['ERROR', _('Unable to change ACL on IMAP server for mailbox deletion.')];
+		$this->messages['managemailbox'][1] = ['ERROR', _('Unable to delete mailbox from IMAP server.')];
+		$this->messages['managemailbox'][2] = ['ERROR', _('Unable to create mailbox on IMAP server.')];
+		$this->messages['managemailbox'][3] = ['ERROR', _('Unable to locate mailbox on IMAP.')];
+		$this->messages['managemailbox'][4] = ['ERROR', _('Your IMAP domains and email address domain do not match.')];
+		$this->messages['managemailbox'][5] = ['ERROR', _('Invalid password for IMAP admin or other problem occurred.')];
+		$this->messages['managemailbox'][6] = ['WARN', _('Your LAM login password was not accepted by the IMAP server.')];
+		$this->messages['managemailbox'][7] = ['ERROR', _('Cannot update quota.')];
+		$this->messages['managemailbox'][8] = ['ERROR', _('Wrong quota format. Quota must be numeric.')];
+		$this->messages['managemailbox'][9] = ['ERROR', _('Account %s:') . ' imapAccess_quota', _('Wrong quota format. Quota must be numeric.')];
+		$this->messages['managemailbox'][10] = ['ERROR', _('Cannot read quota.')];
+		$this->messages['createMailbox'][0] = ['ERROR', _('Account %s:') . ' imapAccess_createMailbox', _('This value can only be "true" or "false".')];
 	}
 
 	/**
@@ -209,7 +209,7 @@ class imapAccess extends baseModule {
 
 		if (empty($this->email)) {
 			$modName = ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) ? 'inetOrgPerson' : 'windowsUser';
-			return new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule($modName)->get_alias()));
+			return new htmlStatusMessage('INFO', _("Please enter an email address on this page: %s"), '', [$this->getAccountContainer()->getAccountModule($modName)->get_alias()]);
 		}
 		return null;
 	}
@@ -258,7 +258,7 @@ class imapAccess extends baseModule {
 			$this->renderQuotasForMailbox($return, $client, $prefix . $this->getSep() . $this->user);
 			$return->addVerticalSpacer('2rem');
 			$delButton = new htmlButton('deleteMailbox', _('Delete mailbox'));
-			$delButton->setCSSClasses(array('lam-danger'));
+			$delButton->setCSSClasses(['lam-danger']);
 			$return->add($delButton, 12, 12, 12, 'text-center');
 		}
 		else {
@@ -400,7 +400,7 @@ class imapAccess extends baseModule {
 			$this->doLogout($client);
 		}
 		catch (LAMException $e) {
-			return array(array('ERROR', $e->getTitle(), $e->getMessage()));
+			return [['ERROR', $e->getTitle(), $e->getMessage()]];
 		}
 		// Return error-messages
 		return $errors;
@@ -501,7 +501,7 @@ class imapAccess extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		if (isset($profile['ImapAccess_QuotaLimit'][0]) && $profile['ImapAccess_QuotaLimit'][0] != '') {
-			$this->profileQuotaLimit =  $profile['ImapAccess_QuotaLimit'][0];
+			$this->profileQuotaLimit = $profile['ImapAccess_QuotaLimit'][0];
 		}
 	}
 
@@ -520,21 +520,21 @@ class imapAccess extends baseModule {
 		$configServer = new htmlResponsiveInputField(_('Server address'), 'ImapAccess_ImapServerAddress', '', 'ImapServerAddress');
 		$configServer->setRequired(true);
 		$configContainer->add($configServer, 12);
-		$configContainer->add(new htmlResponsiveSelect('ImapAccess_ImapServerEncriptionProtocol', array('TLS', 'SSL'), array('TLS'), _("Encryption protocol"), 'ImapServerEncryptionProtocol'), 12);
-		$configCertValidate = new htmlResponsiveSelect('ImapAccess_ImapValidateServerCert', array(_('Yes') => 'validate-cert', _('No') => 'novalidate-cert'), array('validate-cert'), _("Validate server certificate"), 'ImapValidateServerCert');
+		$configContainer->add(new htmlResponsiveSelect('ImapAccess_ImapServerEncriptionProtocol', ['TLS', 'SSL'], ['TLS'], _("Encryption protocol"), 'ImapServerEncryptionProtocol'), 12);
+		$configCertValidate = new htmlResponsiveSelect('ImapAccess_ImapValidateServerCert', [_('Yes') => 'validate-cert', _('No') => 'novalidate-cert'], ['validate-cert'], _("Validate server certificate"), 'ImapValidateServerCert');
 		$configCertValidate->setHasDescriptiveElements(true);
 		$configContainer->add($configCertValidate, 12);
 		$configUser = new htmlResponsiveInputField(_('IMAP admin user'), 'ImapAccess_ImapAdmin', '', 'ImapAdmin');
 		$configUser->setRequired(true);
 		$configContainer->add($configUser, 12);
-		$pwdSelectOptions = array(
+		$pwdSelectOptions = [
 			_('LAM user password') => 'lam_user_pass',
 			_('Ask') => 'ask_pass',
-			_('Server profile') => 'config');
-		$configPasswordType = new htmlResponsiveSelect('ImapAccess_ImapAdminPasswordSelect', $pwdSelectOptions, array('ask_pass'), _("IMAP password input"), 'ImapAdminPasswordSelect');
+			_('Server profile') => 'config'];
+		$configPasswordType = new htmlResponsiveSelect('ImapAccess_ImapAdminPasswordSelect', $pwdSelectOptions, ['ask_pass'], _("IMAP password input"), 'ImapAdminPasswordSelect');
 		$configPasswordType->setHasDescriptiveElements(true);
-		$configPasswordType->setTableRowsToShow(array('config' => array('ImapAccess_ImapAdminPassword')));
-		$configPasswordType->setTableRowsToHide(array('lam_user_pass' => array('ImapAccess_ImapAdminPassword'), 'ask_pass' => array('ImapAccess_ImapAdminPassword')));
+		$configPasswordType->setTableRowsToShow(['config' => ['ImapAccess_ImapAdminPassword']]);
+		$configPasswordType->setTableRowsToHide(['lam_user_pass' => ['ImapAccess_ImapAdminPassword'], 'ask_pass' => ['ImapAccess_ImapAdminPassword']]);
 		$configContainer->add($configPasswordType, 12);
 		$adminPwdInput = new htmlResponsiveInputField(_('Admin password'), 'ImapAccess_ImapAdminPassword', null, 'ImapAdminPasswordSelect');
 		$adminPwdInput->setIsPassword(true);
@@ -545,9 +545,9 @@ class imapAccess extends baseModule {
 		$configContainer->add($mailDomainsInput, 12);
 		$configContainer->add(new htmlResponsiveInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), 12);
 		$configContainer->add(new htmlResponsiveInputTextarea('ImapAccess_initialFolders', '', 10, 3, _('Initial folders'), 'initialFolders'), 12);
-		$configUserName = new htmlResponsiveSelect('ImapAccess_UserNameAttribute', array('mail', 'uid', 'userPrincipalName'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
+		$configUserName = new htmlResponsiveSelect('ImapAccess_UserNameAttribute', ['mail', 'uid', 'userPrincipalName'], ['mail'], _("User name attribute"), 'ImapUserNameAttr');
 		$configContainer->add($configUserName, 12);
-		$configPathSeparator = new htmlResponsiveSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
+		$configPathSeparator = new htmlResponsiveSelect('ImapAccess_pathSeparator', ['.', '/'], ['.'], _("Path separator"), 'pathSeparator');
 		$configContainer->add($configPathSeparator, 12);
 		return $configContainer;
 	}
@@ -559,7 +559,7 @@ class imapAccess extends baseModule {
 	public function check_configOptions($typeIds, &$options) {
 		$errors = parent::check_configOptions($typeIds, $options);
 		if (($options['ImapAccess_ImapAdminPasswordSelect'][0] == 'config')
-				&& empty($options['ImapAccess_ImapAdminPassword'][0])) {
+			&& empty($options['ImapAccess_ImapAdminPassword'][0])) {
 			$errors[] = $this->messages['config'][2];
 		}
 		return $errors;
@@ -633,10 +633,10 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-     * Checks the password given by user and save it as session parameter.
-     *
-     * @return array list of error messages
-     */
+	 * Checks the password given by user and save it as session parameter.
+	 *
+	 * @return array list of error messages
+	 */
 	function doLogin() {
 		$errors = [];
 		$adminUser = $this->getAdminUser();
@@ -694,7 +694,7 @@ class imapAccess extends baseModule {
 		try {
 			$encryption = ($encryptionType === 'SSL') ? 'ssl' : 'starttls';
 			$cm = new ClientManager([]);
-			$options = array(
+			$options = [
 				'username' => $user,
 				'password' => $password,
 				'protocol' => 'imap',
@@ -702,7 +702,7 @@ class imapAccess extends baseModule {
 				'port' => $port,
 				'encryption' => $encryption,
 				'validate_cert' => $validateCertificate
-			);
+			];
 			$client = $cm->make($options);
 			$client->connect();
 			return $client;
@@ -790,22 +790,22 @@ class imapAccess extends baseModule {
 		if (empty($pwd)) {
 			return [];
 		}
-		return array(
-			array(
+		return [
+			[
 				'name' => 'imapAccess_createMailbox',
 				'description' => _('Create mailbox'),
 				'example' => 'false',
 				'default' => 'false',
 				'values' => 'true, false',
 				'help' => 'createMailbox'
-			),
-			array(
+			],
+			[
 				'name' => 'imapAccess_quota',
 				'description' => _('Quota limit (kB)'),
 				'example' => '1000000',
 				'help' => 'ImapUserQuotaLimit'
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -819,18 +819,18 @@ class imapAccess extends baseModule {
 		}
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (isset($rawAccounts[$i][$ids['imapAccess_createMailbox']])
-					&& !in_array($rawAccounts[$i][$ids['imapAccess_createMailbox']], array('true', 'false'))) {
+				&& !in_array($rawAccounts[$i][$ids['imapAccess_createMailbox']], ['true', 'false'])) {
 				$errMsg = $this->messages['createMailbox'][0];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$errors[] = $errMsg;
 			}
 			if (isset($rawAccounts[$i][$ids['imapAccess_createMailbox']])
-					&& ($rawAccounts[$i][$ids['imapAccess_createMailbox']] === 'true')
-					&& !empty($ids['imapAccess_quota'])
-					&& isset($rawAccounts[$i][$ids['imapAccess_quota']])
-					&& !get_preg($rawAccounts[$i][$ids['imapAccess_quota']], 'digit')) {
+				&& ($rawAccounts[$i][$ids['imapAccess_createMailbox']] === 'true')
+				&& !empty($ids['imapAccess_quota'])
+				&& isset($rawAccounts[$i][$ids['imapAccess_quota']])
+				&& !get_preg($rawAccounts[$i][$ids['imapAccess_quota']], 'digit')) {
 				$errMsg = $this->messages['managemailbox'][9];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$errors[] = $errMsg;
 			}
 		}
@@ -858,33 +858,33 @@ class imapAccess extends baseModule {
 					if ($dataRow[$ids['imapAccess_createMailbox']] === 'true') {
 						$limit = '';
 						if (isset($ids['imapAccess_quota'])
-								&& isset($dataRow[$ids['imapAccess_quota']])
-								&& ($dataRow[$ids['imapAccess_quota']] !== '')) {
+							&& isset($dataRow[$ids['imapAccess_quota']])
+							&& ($dataRow[$ids['imapAccess_quota']] !== '')) {
 							$limit = $dataRow[$ids['imapAccess_quota']];
 						}
 						$attributes = $accounts[$i];
 						foreach ($attributes as $name => $value) {
 							if (!is_array($value)) {
-								$attributes[$name] = array($value);
+								$attributes[$name] = [$value];
 							}
 						}
 						$extractError = $this->extractUserAndEmail($attributes);
 						if ($extractError !== null) {
 							$errors[] = $extractError;
 						}
-						$temp['users'][] = array(
+						$temp['users'][] = [
 							'uid' => $this->user,
 							'limit' => $limit,
 							'email' => substr(strstr($this->email, '@'), 1)
-						);
+						];
 					}
 				}
 			}
-			return array(
+			return [
 				'status' => 'inProgress',
 				'progress' => 0,
 				'errors' => $errors
-			);
+			];
 		}
 		// add mailbox
 		elseif ($temp['counter'] < sizeof($temp['users'])) {
@@ -916,19 +916,19 @@ class imapAccess extends baseModule {
 			}
 			ob_end_clean();
 			$temp['counter']++;
-			return array (
+			return [
 				'status' => 'inProgress',
 				'progress' => ($temp['counter'] * 100) / sizeof($temp['users']),
 				'errors' => $errors
-			);
+			];
 		}
 		// all modifications are done
 		else {
-			return array (
+			return [
 				'status' => 'finished',
 				'progress' => 100,
 				'errors' => []
-			);
+			];
 		}
 	}
 
@@ -955,13 +955,13 @@ class imapAccess extends baseModule {
 		$user = $client->getConnection()->escapeString($user);
 		$quota_values = [];
 		try {
-			$quota = $client->getConnection()->requestAndResponse('GETQUOTA', array($user));
+			$quota = $client->getConnection()->requestAndResponse('GETQUOTA', [$user]);
 			$quota = $quota->data();
 			if (isset($quota[0][2][0]) && ($quota[0][2][0] === 'STORAGE')) {
-				$quota_values = array(
+				$quota_values = [
 					self::QUOTA_LIMIT => $quota[0][2][2],
 					self::QUOTA_USAGE => $quota[0][2][1],
-				);
+				];
 			}
 		}
 		catch (Exception $e) {
@@ -981,7 +981,7 @@ class imapAccess extends baseModule {
 	 */
 	private function runSetQuotaCommand($client, string $user, string $value): void {
 		$user = $client->getConnection()->escapeString($user);
-		$result = $client->getConnection()->requestAndResponse('SETQUOTA', array($user, '(STORAGE ' . $value . ')'));
+		$result = $client->getConnection()->requestAndResponse('SETQUOTA', [$user, '(STORAGE ' . $value . ')']);
 		$result = $result->data();
 		if (isset($result[0][0]) && ($result[0][0] === 'OK')) {
 			return;
@@ -1001,7 +1001,7 @@ class imapAccess extends baseModule {
 	private function deleteMailbox($client, $user): void {
 		$userEscaped = $client->getConnection()->escapeString($user);
 		$adminUser = $client->getConnection()->escapeString($this->getAdminUser());
-		$result = $client->getConnection()->requestAndResponse('SETACL', array($userEscaped, $adminUser, '+c'));
+		$result = $client->getConnection()->requestAndResponse('SETACL', [$userEscaped, $adminUser, '+c']);
 		$result = $result->data();
 		if (!isset($result[0][0]) || ($result[0][0] !== 'OK')) {
 			throw new LAMException(null);

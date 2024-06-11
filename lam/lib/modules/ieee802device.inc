@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2022  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,42 +20,42 @@
 */
 
 /**
-* Provides MAC addresses for hosts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Provides MAC addresses for hosts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Provides MAC addresses for hosts.
-*
-* @package modules
-*/
+ * Provides MAC addresses for hosts.
+ *
+ * @package modules
+ */
 class ieee802device extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('macAddress');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['macAddress'];
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('host'));
+		return in_array($this->get_scope(), ['host']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -63,49 +63,49 @@ class ieee802device extends baseModule {
 		// alias name
 		$return["alias"] = _("MAC address");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('ieee802Device');
+		$return['objectClasses'] = ['ieee802Device'];
 		// managed attributes
-		$return['attributes'] = array('macAddress');
+		$return['attributes'] = ['macAddress'];
 		// help Entries
-		$return['help'] = array(
-			'macAddress' => array(
+		$return['help'] = [
+			'macAddress' => [
 				"Headline" => _("MAC address"), 'attr' => 'macAddress',
 				"Text" => _("This is the MAC address of the network card of the device (e.g. 00:01:02:DE:EF:18).")
-			),
-			'macList' => array(
+			],
+			'macList' => [
 				"Headline" => _("MAC address list"), 'attr' => 'macAddress',
 				"Text" => _("This is a comma separated list of MAC addresses.")
-			));
+			]];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'ieee802Device_mac',
 				'description' => _('MAC address'),
 				'help' => 'macList',
 				'example' => '00:01:02:DE:EF:18'
-			)
-		);
+			]
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'macAddress' => _('MAC addresses')
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the error message array with messages
-	*/
+	 * This function fills the error message array with messages
+	 */
 	function load_Messages() {
-		$this->messages['macAddress'][0] = array('ERROR', 'MAC address is invalid!');  // third array value is set dynamically
-		$this->messages['macAddress'][1] = array('ERROR', _('Account %s:') . ' ieee802Device_mac', 'MAC address is invalid!');
+		$this->messages['macAddress'][0] = ['ERROR', 'MAC address is invalid!'];  // third array value is set dynamically
+		$this->messages['macAddress'][1] = ['ERROR', _('Account %s:') . ' ieee802Device_mac', 'MAC address is invalid!'];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -122,11 +122,11 @@ class ieee802device extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		$this->processMultiValueInputTextField('macAddress', $errors, 'macAddress');
@@ -137,9 +137,9 @@ class ieee802device extends baseModule {
 					// check only new MAC addresses
 					continue;
 				}
-				$result = searchLDAPByAttribute('macAddress', $macAddress, 'ieee802Device', array('dn'), array('host'));
+				$result = searchLDAPByAttribute('macAddress', $macAddress, 'ieee802Device', ['dn'], ['host']);
 				if (!empty($result)) {
-					$errors[] = array('WARN', _('This MAC address is already in use.'), getAbstractDN($result[0]['dn']));
+					$errors[] = ['WARN', _('This MAC address is already in use.'), getAbstractDN($result[0]['dn'])];
 				}
 			}
 		}
@@ -177,9 +177,9 @@ class ieee802device extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'macaddress' => _('MAC addresses')
-		);
+		];
 	}
 
 }
