@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2023  Roland Gruber
+                2008 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,20 +22,19 @@
 */
 
 /**
-* Manages DDNS entries.
-*
-* @package modules
-*
-* @author Thomas Manninger
-* @author Roland Gruber
-*/
+ * Manages DDNS entries.
+ *
+ * @package modules
+ *
+ * @author Thomas Manninger
+ * @author Roland Gruber
+ */
 
 /**
-* Manages DDNS entries.
-*
-* @package modules
-*/
-
+ * Manages DDNS entries.
+ *
+ * @package modules
+ */
 class ddns extends baseModule {
 
 	/** standard DDNS settings */
@@ -43,12 +42,12 @@ class ddns extends baseModule {
 
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('dhcp'));
+		return in_array($this->get_scope(), ['dhcp']);
 	}
 
 	/**
@@ -65,99 +64,99 @@ class ddns extends baseModule {
 		// icon
 		$return['icon'] = 'world-color.svg';
 		// RDN attribute
-		$return["RDN"] = array("cn" => "high");
+		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter
 		$return["ldap_filter"] = [];
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => ['dhcp_settings'], 'conflicts' => []];
 		// managed object classes
 		$return['objectClasses'] = [];
 		// managed attributes
-		$return['attributes'] = array('dhcpOption', 'dhcpStatements');
+		$return['attributes'] = ['dhcpOption', 'dhcpStatements'];
 		// help Entries
-		$return['help'] = array(
-			'active' => array(
+		$return['help'] = [
+			'active' => [
 				"Headline" => _("Activate DynDNS"),
 				"Text" => _("Should DDNS (Dynamic DNS) be activated?")
-			),
-			'fixed_ips' => array(
+			],
+			'fixed_ips' => [
 				"Headline" => _("Fix IP addresses"),
 				"Text" => _("Should fix IP addresses be added to the DNS server?")
-			),
-			'client_insert' => array(
+			],
+			'client_insert' => [
 				"Headline" => _("Disable client updates"),
 				"Text" => _("Disables the client to update DNS entries.")
-			),
-			'keypath' => array(
+			],
+			'keypath' => [
 				"Headline" => _("Path to key for DNS updates"),
 				"Text" => _("The key enables the DHCP server to perform DNS updates." .
-				" " . "The key is generated with \"genDDNSkey\".")
-			),
-			'dns' => array(
+					" " . "The key is generated with \"genDDNSkey\".")
+			],
+			'dns' => [
 				"Headline" => _("IP address of the DNS server"),
 				"Text" => _("Please enter the IP address of your DNS server.")
-			),
-			'zone' => array(
+			],
+			'zone' => [
 				"Headline" => _("Zone name"),
 				"Text" => _("Zone name for the DNS server (e.g. company.local).")
-			),
-			'zone_reverse' => array(
+			],
+			'zone_reverse' => [
 				"Headline" => _("Reverse zone name"),
 				"Text" => ("Name of the reverse zone of the DNS server (e.g. 0.168.192.in-addr.arpa).")
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'DNSserver' => _('IP address of the DNS server'),
 			'zone' => _('Zone name'),
 			'reverseZone' => _('Reverse zone name'),
-		);
+		];
 		// upload fields
 		if (isLoggedIn() && $this->check_if_ddns_is_enable()) {
-			$return['upload_columns'] = array(
-				array(
+			$return['upload_columns'] = [
+				[
 					'name' => 'ddns_DNSserver',
 					'description' => _('IP address of the DNS server'),
 					'help' => 'dns',
 					'example' => '123.123.123.123',
 					'required' => true
-				),
-				array(
+				],
+				[
 					'name' => 'ddns_zone',
 					'description' => _('Zone name'),
 					'help' => 'zone',
 					'example' => 'company.local',
 					'required' => true
-				),
-				array(
+				],
+				[
 					'name' => 'ddns_reverseZone',
 					'description' => _('Reverse zone name'),
 					'help' => 'zone_reverse',
 					'example' => '0.168.192.in-addr.arpa',
 					'required' => true
-				),
-			);
+				],
+			];
 		}
 		return $return;
 	}
 
 	/**
-	* This function fills the message array.
-	*/
+	 * This function fills the message array.
+	 */
 	public function load_Messages() {
-		$this->messages['key_path'][0] = array('ERROR', 'Please enter the path to the key.', '');
-		$this->messages['key_path'][1] = array('ERROR', 'The key path contains invalid characters.', '');
-		$this->messages['ip'][0] = array('ERROR', 'The IP address of the DNS server is invalid.');
-		$this->messages['ip'][1] = array('ERROR', _('Account %s:') . ' ddns_DNSserver', 'The IP address of the DNS server is invalid.');
-		$this->messages['zone'][0] = array('ERROR', 'Please enter a zone name.');
-		$this->messages['zone_reverse'][0] = array('ERROR', 'Please enter the reverse zone.');
+		$this->messages['key_path'][0] = ['ERROR', 'Please enter the path to the key.', ''];
+		$this->messages['key_path'][1] = ['ERROR', 'The key path contains invalid characters.', ''];
+		$this->messages['ip'][0] = ['ERROR', 'The IP address of the DNS server is invalid.'];
+		$this->messages['ip'][1] = ['ERROR', _('Account %s:') . ' ddns_DNSserver', 'The IP address of the DNS server is invalid.'];
+		$this->messages['zone'][0] = ['ERROR', 'Please enter a zone name.'];
+		$this->messages['zone_reverse'][0] = ['ERROR', 'Please enter the reverse zone.'];
 	}
 
 	/**
-	* This functions returns true if all needed settings are done.
-	*
-	* @return boolean true if LDAP operation can be done
-	*/
+	 * This functions returns true if all needed settings are done.
+	 *
+	 * @return boolean true if LDAP operation can be done
+	 */
 	public function module_complete() {
 		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
@@ -173,7 +172,9 @@ class ddns extends baseModule {
 			}
 			// Account settings
 			$ip = $this->getDNSServer();
-			if (!empty($ip) && !check_ip($ip)) return false;
+			if (!empty($ip) && !check_ip($ip)) {
+				return false;
+			}
 
 			$zones = $this->getZoneNames();
 			if (sizeof($zones) < 2) {
@@ -195,17 +196,17 @@ class ddns extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	public function save_attributes() {
 		// done by dhcp_server object
 	}
@@ -223,16 +224,16 @@ class ddns extends baseModule {
 		}
 		$suffix = $type->getSuffix();
 
-		$results = searchLDAP($suffix, "dhcpStatements=ddns-update-style interim", array('dn'));
+		$results = searchLDAP($suffix, "dhcpStatements=ddns-update-style interim", ['dn']);
 		return (!empty($results));
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		// Main Settings and Account have to different processes.
 		if ($this->isRootNode()) {
@@ -277,7 +278,7 @@ class ddns extends baseModule {
 		$this->setIgnoreClientUpdates(($client_insert == 'on'));
 
 		$this->setUpdateKey($key_path);
-		if (!empty($key_path) && (str_replace("\"","",$_POST['key_path']) != $key_path)) {
+		if (!empty($key_path) && (str_replace("\"", "", $_POST['key_path']) != $key_path)) {
 			$errors[] = $this->messages['key_path'][1];
 		}
 
@@ -451,8 +452,8 @@ class ddns extends baseModule {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
-					$parts = explode(" ",substr($this->attributes['dhcpStatements'][$i],5));
-					$value = substr(array_shift($parts),0,-1);
+					$parts = explode(" ", substr($this->attributes['dhcpStatements'][$i], 5));
+					$value = substr(array_shift($parts), 0, -1);
 					if (strpos($value, 'in-addr.arpa') === false) {
 						$zone = $value;
 					}
@@ -594,7 +595,7 @@ class ddns extends baseModule {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 8) == 'include ') {
-					$return = substr($this->attributes['dhcpStatements'][$i],9, strlen($this->attributes['dhcpStatements'][$i]) - 10);
+					$return = substr($this->attributes['dhcpStatements'][$i], 9, strlen($this->attributes['dhcpStatements'][$i]) - 10);
 					break;
 				}
 			}
@@ -623,15 +624,15 @@ class ddns extends baseModule {
 	}
 
 	/**
-	* This function loads the LDAP attributes when an account should be loaded.
-	*
-	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* By default this method loads the object classes and accounts which are specified in {@link getManagedObjectClasses()}
-	* and {@link getManagedAttributes()}.
-	*
-	* @param array $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
-	*/
+	 * This function loads the LDAP attributes when an account should be loaded.
+	 *
+	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * By default this method loads the object classes and accounts which are specified in {@link getManagedObjectClasses()}
+	 * and {@link getManagedAttributes()}.
+	 *
+	 * @param array $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
+	 */
 	public function load_attributes($attributes) {
 		// load nothing, attributes are saved in "dhcp_settings" module
 	}
@@ -649,7 +650,7 @@ class ddns extends baseModule {
 			// principal name
 			if (!check_ip($rawAccounts[$i][$ids['ddns_DNSserver']])) {
 				$error = $this->messages['ip'][1];
-				array_push($error, array($i));
+				array_push($error, [$i]);
 				$messages[] = $error;
 			}
 			else {
