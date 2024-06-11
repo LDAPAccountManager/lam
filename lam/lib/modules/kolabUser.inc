@@ -1,11 +1,13 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2023  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,57 +25,57 @@ use \LAM\PDF\PDFTableRow;
 */
 
 /**
-* Manages Kolab user accounts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Kolab user accounts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages Kolab user accounts.
-*
-* @package modules
-*/
+ * Manages Kolab user accounts.
+ *
+ * @package modules
+ */
 class kolabUser extends baseModule {
 
 	/** list of invitation policies */
 	private $invitationPolicies;
 
 	/**
-	* Creates a new kolabUser object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new kolabUser object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
 		// list of invitation policies
-		$this->invitationPolicies = array(
+		$this->invitationPolicies = [
 			'ACT_ALWAYS_ACCEPT' => _('Always accept'),
 			'ACT_ALWAYS_REJECT' => _('Always reject'),
 			'ACT_MANUAL' => _('Manual'),
 			'ACT_REJECT_IF_CONFLICTS' => _('Reject if conflicts'),
 			'ACT_MANUAL_IF_CONFLICTS' => _('Manual if conflicts')
-		);
+		];
 		$this->autoAddObjectClasses = false;
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -81,145 +83,145 @@ class kolabUser extends baseModule {
 		// alias name
 		$return["alias"] = _("Kolab");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => ['inetOrgPerson'], 'conflicts' => []];
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=kolabInetOrgPerson)");
+		$return["ldap_filter"] = ['or' => "(objectClass=kolabInetOrgPerson)"];
 		// managed object classes
-		$return['objectClasses'] = array('kolabInetOrgPerson', 'mailrecipient');
+		$return['objectClasses'] = ['kolabInetOrgPerson', 'mailrecipient'];
 		// managed attributes
-		$return['attributes'] = array('alias', 'kolabDelegate', 'kolabInvitationPolicy',
-										'kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'mailQuota');
+		$return['attributes'] = ['alias', 'kolabDelegate', 'kolabInvitationPolicy',
+			'kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'mailQuota'];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Mailbox quota'), 'kolab_mailQuota', null, 'mailQuota'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
-		$return['profile_checks']['kolab_mailQuota'] = array(
+		$return['profile_checks']['kolab_mailQuota'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['mailQuota'][0]);
+			'error_message' => $this->messages['mailQuota'][0]];
 		// self service field settings
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'kolabDelegate' => _('Delegates'),
 			'kolabInvitationPolicy' => _('Invitation policy')
-		);
+		];
 		// possible self service read-only fields
-		$return['selfServiceReadOnlyFields'] = array('kolabDelegate', 'kolabInvitationPolicy');
+		$return['selfServiceReadOnlyFields'] = ['kolabDelegate', 'kolabInvitationPolicy'];
 		// help Entries
-		$return['help'] = array(
-			'invPol' => array(
+		$return['help'] = [
+			'invPol' => [
 				"Headline" => _("Invitation policy"), 'attr' => 'kolabInvitationPolicy',
 				"Text" => _("For automatic invitation handling.")
-			),
-			'invPolList' => array(
+			],
+			'invPolList' => [
 				"Headline" => _("Invitation policy list"), 'attr' => 'kolabInvitationPolicy',
 				"Text" => _("This is a comma separated list of invitation policies.")
-			),
-			'delegate' => array(
+			],
+			'delegate' => [
 				"Headline" => _("Delegates"), 'attr' => 'kolabDelegate',
 				"Text" => _("A user may define who is allowed to act on behalf of herself. This property is checked when using the Kolab smtp daemon (Postfix) to send emails.")
-			),
-			'delegateList' => array(
+			],
+			'delegateList' => [
 				"Headline" => _("Delegates"), 'attr' => 'kolabDelegate',
 				"Text" => _("This is a semi-colon separated list of delegates.")
-			),
-			'alias' => array(
+			],
+			'alias' => [
 				"Headline" => _("Email alias"), 'attr' => 'alias',
 				"Text" => _("Email alias for this account.")
-			),
-			'aliasList' => array(
+			],
+			'aliasList' => [
 				"Headline" => _("Email alias list"), 'attr' => 'alias',
 				"Text" => _("This is a comma separated list of eMail aliases.")
-			),
-			'kolabAllowSMTPRecipient' => array (
+			],
+			'kolabAllowSMTPRecipient' => [
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
-			),
-			'kolabAllowSMTPRecipientList' => array (
+			],
+			'kolabAllowSMTPRecipientList' => [
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
-							. ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'kolabAllowSMTPSender' => array (
+					. ' ' . _("Multiple values are separated by semicolon.")
+			],
+			'kolabAllowSMTPSender' => [
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
 				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
-			),
-			'kolabAllowSMTPSenderList' => array (
+			],
+			'kolabAllowSMTPSenderList' => [
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
 				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
-							. ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'mailQuota' => array(
+					. ' ' . _("Multiple values are separated by semicolon.")
+			],
+			'mailQuota' => [
 				"Headline" => _('Mailbox quota'), 'attr' => 'mailQuota',
 				"Text" => _('The maximum mailbox size in MB.')
-			),
-		);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'kolabUser_invPol',
 				'description' => _('Invitation policy'),
 				'help' => 'invPolList',
 				'example' => 'user@domain:ACT_ALWAYS_ACCEPT,user2@domain:ACT_MANUAL'
-			),
-			array(
+			],
+			[
 				'name' => 'kolabUser_mailQuota',
 				'description' => _('Mailbox quota'),
 				'help' => 'mailQuota',
 				'example' => '2000',
-			),
-			array(
+			],
+			[
 				'name' => 'kolabUser_aliases',
 				'description' => _('Email aliases'),
 				'help' => 'aliasList',
 				'example' => 'user@domain,user2@domain'
-			),
-			array(
+			],
+			[
 				'name' => 'kolabUser_delegates',
 				'description' => _('Delegates'),
 				'help' => 'delegateList',
 				'example' => 'uid=user,ou=People,dc=example,dc=com;uid=user2,ou=People,dc=example,dc=com'
-			),
-			array(
+			],
+			[
 				'name' => 'kolabUser_kolabAllowSMTPRecipient',
 				'description' => _('Allowed recipients'),
 				'help' => 'kolabAllowSMTPRecipientList',
 				'example' => '.com; -.net',
-			),
-			array(
+			],
+			[
 				'name' => 'kolabUser_kolabAllowSMTPSender',
 				'description' => _('Allowed senders'),
 				'help' => 'kolabAllowSMTPSenderList',
 				'example' => '.com; -.net',
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'invPol' => _('Invitation policy'),
 			'mailQuota' => _('Mailbox quota'),
 			'aliases' => _('Email aliases'),
 			'delegate' => _('Delegates'),
 			'kolabAllowSMTPRecipient' => _('Allowed recipients'),
 			'kolabAllowSMTPSender' => _('Allowed senders'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the error message array with messages
-	*/
+	 * This function fills the error message array with messages
+	 */
 	function load_Messages() {
-		$this->messages['invPol'][0] = array('ERROR', _('Target of invitation policy is invalid!'));  // third array value is set dynamically
-		$this->messages['invPol'][1] = array('ERROR', _('Account %s:') . ' kolabUser_invPol', _('Policy list has invalid format!'));
-		$this->messages['alias'][0] = array('ERROR', _('Email alias is invalid!'));  // third array value is set dynamically
-		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' kolabUser_aliases', _('Email alias list has invalid format!'));
-		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabUser_delegates', _('Unknown delegate address: %s'));
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.'));
-		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.'));
-		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
-		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
-		$this->messages['mailQuota'][0] = array('ERROR', _('Mailbox quota'), _('Please enter a number.'));
-		$this->messages['mailQuota'][1] = array('ERROR', _('Account %s:') . ' kolabUser_mailQuota', _('Please enter a number.'));
+		$this->messages['invPol'][0] = ['ERROR', _('Target of invitation policy is invalid!')];  // third array value is set dynamically
+		$this->messages['invPol'][1] = ['ERROR', _('Account %s:') . ' kolabUser_invPol', _('Policy list has invalid format!')];
+		$this->messages['alias'][0] = ['ERROR', _('Email alias is invalid!')];  // third array value is set dynamically
+		$this->messages['alias'][1] = ['ERROR', _('Account %s:') . ' kolabUser_aliases', _('Email alias list has invalid format!')];
+		$this->messages['delegate'][0] = ['ERROR', _('Account %s:') . ' kolabUser_delegates', _('Unknown delegate address: %s')];
+		$this->messages['kolabAllowSMTPRecipient'][0] = ['ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.')];
+		$this->messages['kolabAllowSMTPRecipient'][1] = ['ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.')];
+		$this->messages['kolabAllowSMTPSender'][0] = ['ERROR', _('Allowed senders'), _('Please enter a valid sender expression.')];
+		$this->messages['kolabAllowSMTPSender'][1] = ['ERROR', _('Account %s:') . ' kolabUser_kolabAllowSMTPSender', _('Please enter a valid sender expression.')];
+		$this->messages['mailQuota'][0] = ['ERROR', _('Mailbox quota'), _('Please enter a number.')];
+		$this->messages['mailQuota'][1] = ['ERROR', _('Account %s:') . ' kolabUser_mailQuota', _('Please enter a number.')];
 	}
 
 	/**
@@ -245,7 +247,7 @@ class kolabUser extends baseModule {
 				}
 			}
 			if (!isset($attrsI['mail'][0])) {
-				$message = new htmlStatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
+				$message = new htmlStatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', [$this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()]);
 				$return->add($message);
 			}
 			// mailbox quota
@@ -273,7 +275,7 @@ class kolabUser extends baseModule {
 				}
 			}
 			$invitationContainer->addElement(new htmlOutputText(_('Anyone')));
-			$invitationContainer->addElement(new htmlSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol)));
+			$invitationContainer->addElement(new htmlSelect('defaultInvPol', array_values($this->invitationPolicies), [$defaultInvPol]));
 			$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
 			// other invitation policies
 			if (isset($this->attributes['kolabInvitationPolicy'])) {
@@ -281,7 +283,7 @@ class kolabUser extends baseModule {
 					$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
 					if (sizeof($parts) == 2) {
 						$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
-						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
+						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), [$this->invitationPolicies[$parts[1]]]));
 						$invitationContainer->addElement(new htmlButton('delInvPol' . $i, 'del.svg', true));
 						$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
 					}
@@ -297,7 +299,7 @@ class kolabUser extends baseModule {
 			$return->add(new htmlSubTitle(_('Email aliases')));
 			$this->addMultiValueInputTextField($return, 'alias', null);
 			// delegates
-			$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('dn'), array('user'));
+			$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', ['dn'], ['user']);
 			$delegates = [];
 			for ($i = 0; $i < sizeof($delegatesData); $i++) {
 				$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
@@ -307,7 +309,7 @@ class kolabUser extends baseModule {
 			$delegatesContainer = new htmlTable();
 			if (isset($this->attributes['kolabDelegate'])) {
 				for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
-					$delegateSelect = new htmlSelect('delegate' . $i, $delegates, array($this->attributes['kolabDelegate'][$i]));
+					$delegateSelect = new htmlSelect('delegate' . $i, $delegates, [$this->attributes['kolabDelegate'][$i]]);
 					$delegateSelect->setSortElements(false);
 					$delegateSelect->setHasDescriptiveElements(true);
 					$delegatesContainer->addElement($delegateSelect);
@@ -340,11 +342,11 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
@@ -352,7 +354,9 @@ class kolabUser extends baseModule {
 			$this->attributes['objectClass'][] = 'mailrecipient';
 		}
 		else {
-			if (isset($_POST['form_subpage_kolabUser_deleteUser_open']))  return [];
+			if (isset($_POST['form_subpage_kolabUser_deleteUser_open'])) {
+				return [];
+			}
 			$this->attributes['kolabInvitationPolicy'] = [];
 			// check old invitation policies
 			$policies = array_flip($this->invitationPolicies);
@@ -422,7 +426,7 @@ class kolabUser extends baseModule {
 			else {
 				$mailQuota = [];
 				if (!empty($_POST['mailQuota'])) {
-					$mailQuota = array($_POST['mailQuota'] * 1024);
+					$mailQuota = [$_POST['mailQuota'] * 1024];
 				}
 				$this->attributes['mailQuota'] = $mailQuota;
 			}
@@ -431,18 +435,22 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	* This function returns true if all needed settings are done.
-	*
-	* @return true, if account can be saved
-	*/
+	 * This function returns true if all needed settings are done.
+	 *
+	 * @return true, if account can be saved
+	 */
 	function module_complete() {
 		if (isset($this->attributes['objectClass']) && in_array('kolabInetOrgPerson', $this->attributes['objectClass'])) {
 			$attrsI = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			if (!$attrsI['mail'][0]) return false;
+			if (!$attrsI['mail'][0]) {
+				return false;
+			}
 			if ($this->getAccountContainer()->isNewAccount) {
 				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-					if (!$attrsP['userpassword'][0]) return false;
+					if (!$attrsP['userpassword'][0]) {
+						return false;
+					}
 				}
 				elseif (!$attrsI['userpassword'][0]) {
 					return false;
@@ -453,17 +461,17 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('kolabInetOrgPerson', $this->attributes['objectClass']) && !in_array('kolabInetOrgPerson', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -473,10 +481,10 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -492,7 +500,7 @@ class kolabUser extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('mail'), array('user'));
+		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', ['mail'], ['user']);
 		for ($d = 0; $d < sizeof($delegates); $d++) {
 			if (isset($delegates[$d]['dn'])) {
 				$delegates[$d] = $delegates[$d]['dn'];
@@ -513,7 +521,7 @@ class kolabUser extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['mailQuota'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 			}
@@ -532,7 +540,7 @@ class kolabUser extends baseModule {
 						}
 						else {
 							$errMsg = $this->messages['invPol'][1];
-							array_push($errMsg, array($i));
+							array_push($errMsg, [$i]);
 							$messages[] = $errMsg;
 						}
 						$defaultFound = true;
@@ -544,14 +552,14 @@ class kolabUser extends baseModule {
 						}
 						else {
 							$errMsg = $this->messages['invPol'][1];
-							array_push($errMsg, array($i));
+							array_push($errMsg, [$i]);
 							$messages[] = $errMsg;
 						}
 					}
 					// invalid format
 					else {
 						$errMsg = $this->messages['invPol'][1];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$messages[] = $errMsg;
 					}
 				}
@@ -569,7 +577,7 @@ class kolabUser extends baseModule {
 					// invalid format
 					else {
 						$errMsg = $this->messages['delegate'][0];
-						array_push($errMsg, array($i, $newDelegates[$d]));
+						array_push($errMsg, [$i, $newDelegates[$d]]);
 						$messages[] = $errMsg;
 					}
 				}
@@ -646,7 +654,7 @@ class kolabUser extends baseModule {
 		// delegates
 		if (in_array('kolabDelegate', $fields)) {
 			$delegates = [];
-			$sr = @ldap_search($_SESSION['ldapHandle']->getServer(), $this->selfServiceSettings->LDAPSuffix, '(&(objectClass=inetOrgPerson)(mail=*))', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$sr = @ldap_search($_SESSION['ldapHandle']->getServer(), $this->selfServiceSettings->LDAPSuffix, '(&(objectClass=inetOrgPerson)(mail=*))', ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$result = ldap_get_entries($_SESSION['ldapHandle']->getServer(), $sr);
 				cleanLDAPResult($result);
@@ -676,7 +684,7 @@ class kolabUser extends baseModule {
 					$delCheckbox->setAccessibilityLabel(_('Delete'));
 					$delegateGroup->addElement($delCheckbox);
 					$delegateGroup->addElement(new htmlOutputText(_('Delete')));
-					$delegateContainer->addElement(new htmlDiv(null, $delegateGroup, array('nowrap')));
+					$delegateContainer->addElement(new htmlDiv(null, $delegateGroup, ['nowrap']));
 				}
 				$delegateContainer->addNewLine();
 			}
@@ -690,7 +698,7 @@ class kolabUser extends baseModule {
 				$addCheckbox->setAccessibilityLabel(_("Add"));
 				$delegateAddGroup->addElement($addCheckbox);
 				$delegateAddGroup->addElement(new htmlOutputText(_("Add")));
-				$delegateContainer->addElement(new htmlDiv(null, $delegateAddGroup, array('nowrap')));
+				$delegateContainer->addElement(new htmlDiv(null, $delegateAddGroup, ['nowrap']));
 			}
 			$delegateLabel = new htmlOutputText($this->getSelfServiceLabel('kolabDelegate', _('Delegates')));
 			$row = new htmlResponsiveRow();
@@ -716,7 +724,7 @@ class kolabUser extends baseModule {
 			}
 			$invitationContainer->addElement(new htmlOutputText(_('Anyone')));
 			if (!in_array('kolabInvitationPolicy', $readOnlyFields)) {
-				$invitationContainer->addElement(new htmlSelect('defaultInvPol', array_values($this->invitationPolicies), array($defaultInvPol)), true);
+				$invitationContainer->addElement(new htmlSelect('defaultInvPol', array_values($this->invitationPolicies), [$defaultInvPol]), true);
 			}
 			else {
 				$invitationContainer->addElement(new htmlOutputText($defaultInvPol), true);
@@ -730,14 +738,15 @@ class kolabUser extends baseModule {
 							$newPolicyInput = new htmlInputField('invPol1' . $i, $parts[0]);
 							$newPolicyInput->setAccessibilityLabel(_('Invitation policy'));
 							$invitationContainer->addElement($newPolicyInput);
-							$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
+							$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), [$this->invitationPolicies[$parts[1]]]));
 							$invPolGroup = new htmlGroup();
 							$delCheckbox = new htmlInputCheckbox('delInvPol' . $i, false);
 							$delCheckbox->setAccessibilityLabel(_("Remove"));
 							$invPolGroup->addElement($delCheckbox);
 							$invPolGroup->addElement(new htmlOutputText(_("Remove")));
-							$invitationContainer->addElement(new htmlDiv(null, $invPolGroup, array('nowrap')), true);
-						} else {
+							$invitationContainer->addElement(new htmlDiv(null, $invPolGroup, ['nowrap']), true);
+						}
+						else {
 							$invitationContainer->addElement(new htmlOutputText($parts[0]));
 							$invitationContainer->addElement(new htmlOutputText($this->invitationPolicies[$parts[1]]), true);
 						}
@@ -755,7 +764,7 @@ class kolabUser extends baseModule {
 				$addPolicyCheckbox->setAccessibilityLabel(_("Add"));
 				$invPolAddGroup->addElement($addPolicyCheckbox);
 				$invPolAddGroup->addElement(new htmlOutputText(_("Add")));
-				$invitationContainer->addElement(new htmlDiv(null, $invPolAddGroup, array('nowrap')), true);
+				$invitationContainer->addElement(new htmlDiv(null, $invPolAddGroup, ['nowrap']), true);
 			}
 			$invitationLabel = new htmlOutputText($this->getSelfServiceLabel('kolabInvitationPolicy', _('Invitation policy')));
 			$row = new htmlResponsiveRow();
@@ -784,7 +793,7 @@ class kolabUser extends baseModule {
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}

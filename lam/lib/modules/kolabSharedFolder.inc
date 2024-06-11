@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,53 +20,53 @@
 */
 
 /**
-* Manages Kolab shared folders.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Kolab shared folders.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Manages Kolab shared folders.
-*
-* @package modules
-*/
+ * Manages Kolab shared folders.
+ *
+ * @package modules
+ */
 class kolabSharedFolder extends baseModule {
 
 	/** list of folder types (label => id) */
 	private $folderTypes = [];
 
 	/**
-	* Creates a new kolabSharedFolder object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new kolabSharedFolder object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
-		$this->folderTypes = array(
+		$this->folderTypes = [
 			_('Shared mail folder') => 'mail',
-		);
+		];
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('kolabSharedFolderType'));
+		return in_array($this->get_scope(), ['kolabSharedFolderType']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -76,126 +76,126 @@ class kolabSharedFolder extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute
-		$return["RDN"] = array("cn" => "normal");
+		$return["RDN"] = ["cn" => "normal"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=kolabSharedFolder)");
+		$return["ldap_filter"] = ['or' => "(objectClass=kolabSharedFolder)"];
 		// managed object classes
-		$return['objectClasses'] = array('kolabSharedFolder', 'mailrecipient');
+		$return['objectClasses'] = ['kolabSharedFolder', 'mailrecipient'];
 		// managed attributes
-		$return['attributes'] = array('cn', 'kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'acl',
-			'alias', 'kolabDelegate', 'kolabFolderType', 'kolabTargetFolder', 'mail');
+		$return['attributes'] = ['cn', 'kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'acl',
+			'alias', 'kolabDelegate', 'kolabFolderType', 'kolabTargetFolder', 'mail'];
 		// help Entries
-		$return['help'] = array(
-			'cn' => array(
+		$return['help'] = [
+			'cn' => [
 				"Headline" => _("Name"), 'attr' => 'cn',
 				"Text" => _("Please enter a name for this folder.")
-			),
-			'mail' => array (
+			],
+			'mail' => [
 				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The folder's email address.")
-			),
-			'kolabAllowSMTPRecipient' => array (
+			],
+			'kolabAllowSMTPRecipient' => [
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
-			),
-			'kolabAllowSMTPRecipientList' => array (
+			],
+			'kolabAllowSMTPRecipientList' => [
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
-							. ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'kolabAllowSMTPSender' => array (
+					. ' ' . _("Multiple values are separated by semicolon.")
+			],
+			'kolabAllowSMTPSender' => [
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
 				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
-			),
-			'kolabAllowSMTPSenderList' => array (
+			],
+			'kolabAllowSMTPSenderList' => [
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
 				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
-							. ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'delegate' => array(
+					. ' ' . _("Multiple values are separated by semicolon.")
+			],
+			'delegate' => [
 				"Headline" => _("Delegates"), 'attr' => 'kolabDelegate',
 				"Text" => _("Delegates are allowed to act on behalf of the shared folder. This property is checked when using the Kolab smtp daemon (Postfix) to send emails.")
-			),
-			'delegateList' => array(
+			],
+			'delegateList' => [
 				"Headline" => _("Delegates"), 'attr' => 'kolabDelegate',
 				"Text" => _("This is a semi-colon separated list of delegates.")
-			),
-			'alias' => array(
+			],
+			'alias' => [
 				"Headline" => _("Email alias"), 'attr' => 'alias',
 				"Text" => _("Email alias for this account.")
-			),
-			'aliasList' => array(
+			],
+			'aliasList' => [
 				"Headline" => _("Email alias list"), 'attr' => 'alias',
 				"Text" => _("This is a comma separated list of eMail aliases.")
-			),
-			'kolabTargetFolder' => array(
+			],
+			'kolabTargetFolder' => [
 				"Headline" => _("Target IMAP folder"), 'attr' => 'kolabTargetFolder',
 				"Text" => _("The folder on the server where the shared folder is located (e.g. shared/myfolder@example.com).")
-			),
-			'kolabFolderType' => array(
+			],
+			'kolabFolderType' => [
 				"Headline" => _("Type"), 'attr' => 'kolabFolderType',
 				"Text" => _("Specifies the folder type (e.g. shared mail folder).")
-			),
-		);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'kolabSharedFolder_cn',
 				'description' => _('Name'),
 				'help' => 'cn',
 				'example' => 'folder',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'kolabSharedFolder_mail',
 				'description' => _('Email address'),
 				'help' => 'mail',
 				'example' => _('user@company.com'),
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'kolabSharedFolder_kolabTargetFolder',
 				'description' => _('Target IMAP folder'),
 				'help' => 'kolabTargetFolder',
 				'example' => 'shared/myfolder@example.com',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'kolabSharedFolder_kolabFolderType',
 				'description' => _('Type'),
 				'help' => 'kolabFolderType',
 				'example' => 'mail',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'kolabSharedFolder_kolabAllowSMTPRecipient',
 				'description' => _('Allowed recipients'),
 				'help' => 'kolabAllowSMTPRecipientList',
 				'example' => '.com; -.net',
-			),
-			array(
+			],
+			[
 				'name' => 'kolabSharedFolder_kolabAllowSMTPSender',
 				'description' => _('Allowed senders'),
 				'help' => 'kolabAllowSMTPSenderList',
 				'example' => '.com; -.net',
-			),
-			array(
+			],
+			[
 				'name' => 'kolabSharedFolder_aliases',
 				'description' => _('Email aliases'),
 				'help' => 'aliasList',
 				'example' => 'user@domain,user2@domain'
-			),
-			array(
+			],
+			[
 				'name' => 'kolabSharedFolder_delegates',
 				'description' => _('Delegates'),
 				'help' => 'delegateList',
 				'example' => 'uid=user,ou=People,dc=example,dc=com;uid=user2,ou=People,dc=example,dc=com'
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'cn' => _('Name'),
 			'kolabAllowSMTPRecipient' => _('Allowed recipients'),
 			'kolabAllowSMTPSender' => _('Allowed senders'),
@@ -204,25 +204,25 @@ class kolabSharedFolder extends baseModule {
 			'mail' => _('Email address'),
 			'kolabTargetFolder' => _('Target IMAP folder'),
 			'kolabFolderType' => _('Type'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.'));
-		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.'));
-		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
-		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
-		$this->messages['alias'][0] = array('ERROR', _('Email alias is invalid!'));  // third array value is set dynamically
-		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_aliases', _('Email alias list has invalid format!'));
-		$this->messages['delegate'][0] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_delegates', _('Unknown delegate: %s'));
-		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
-		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' kolabSharedFolder_mail', _('Please enter a valid email address!'));
-		$this->messages['cn'][0] = array('ERROR', _('Name'), _('Please enter a name.'));
-		$this->messages['kolabTargetFolder'][0] = array('ERROR', _('Target IMAP folder'), _('Please enter a target folder.'));
+		$this->messages['kolabAllowSMTPRecipient'][0] = ['ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.')];
+		$this->messages['kolabAllowSMTPRecipient'][1] = ['ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.')];
+		$this->messages['kolabAllowSMTPSender'][0] = ['ERROR', _('Allowed senders'), _('Please enter a valid sender expression.')];
+		$this->messages['kolabAllowSMTPSender'][1] = ['ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPSender', _('Please enter a valid sender expression.')];
+		$this->messages['alias'][0] = ['ERROR', _('Email alias is invalid!')];  // third array value is set dynamically
+		$this->messages['alias'][1] = ['ERROR', _('Account %s:') . ' kolabSharedFolder_aliases', _('Email alias list has invalid format!')];
+		$this->messages['delegate'][0] = ['ERROR', _('Account %s:') . ' kolabSharedFolder_delegates', _('Unknown delegate: %s')];
+		$this->messages['mail'][0] = ['ERROR', _('Email address'), _('Please enter a valid email address!')];
+		$this->messages['mail'][1] = ['ERROR', _('Account %s:') . ' kolabSharedFolder_mail', _('Please enter a valid email address!')];
+		$this->messages['cn'][0] = ['ERROR', _('Name'), _('Please enter a name.')];
+		$this->messages['kolabTargetFolder'][0] = ['ERROR', _('Target IMAP folder'), _('Please enter a target folder.')];
 	}
 
 	/**
@@ -240,7 +240,7 @@ class kolabSharedFolder extends baseModule {
 		$this->addSimpleInputTextField($container, 'kolabTargetFolder', _('Target IMAP folder'), true);
 		// folder type
 		$possibleTypes = $this->folderTypes;
-		$selectedTypes = array('mail');
+		$selectedTypes = ['mail'];
 		if (!empty($this->attributes['kolabFolderType'])) {
 			$selectedTypes = $this->attributes['kolabFolderType'];
 			if (!in_array($this->attributes['kolabFolderType'][0], $possibleTypes)) {
@@ -259,7 +259,7 @@ class kolabSharedFolder extends baseModule {
 		$container->add(new htmlSubTitle(_('Email aliases')));
 		$this->addMultiValueInputTextField($container, 'alias', null);
 		// delegates
-		$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('dn'), array('user'));
+		$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', ['dn'], ['user']);
 		$delegates = [];
 		for ($i = 0; $i < sizeof($delegatesData); $i++) {
 			$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
@@ -269,7 +269,7 @@ class kolabSharedFolder extends baseModule {
 		$delegatesContainer = new htmlTable();
 		if (isset($this->attributes['kolabDelegate'])) {
 			for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
-				$delegateSelect = new htmlSelect('delegate' . $i, $delegates, array($this->attributes['kolabDelegate'][$i]));
+				$delegateSelect = new htmlSelect('delegate' . $i, $delegates, [$this->attributes['kolabDelegate'][$i]]);
 				$delegateSelect->setHasDescriptiveElements(true);
 				$delegateSelect->setSortElements(false);
 				$delegatesContainer->addElement($delegateSelect);
@@ -291,11 +291,11 @@ class kolabSharedFolder extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		// cn
@@ -346,7 +346,7 @@ class kolabSharedFolder extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('dn'), array('user'));
+		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', ['dn'], ['user']);
 		for ($d = 0; $d < sizeof($delegates); $d++) {
 			if (isset($delegates[$d]['dn'])) {
 				$delegates[$d] = $delegates[$d]['dn'];
@@ -386,7 +386,7 @@ class kolabSharedFolder extends baseModule {
 					// invalid format
 					else {
 						$errMsg = $this->messages['delegate'][0];
-						array_push($errMsg, array($i, $newDelegates[$d]));
+						array_push($errMsg, [$i, $newDelegates[$d]]);
 						$messages[] = $errMsg;
 					}
 				}
@@ -423,12 +423,12 @@ class kolabSharedFolder extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			"cn" => _('Name'),
 			"mail" => _('Email address'),
 			"kolabdelegate" => _('Delegates'),
 			'alias' => _('Email aliases'),
-		);
+		];
 	}
 
 	/**

@@ -1,9 +1,11 @@
 <?php
+
 use LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,27 +23,27 @@ use LAM\TYPES\TypeManager;
 */
 
 /**
-* Manages Kolab group accounts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Kolab group accounts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages Kolab group accounts.
-*
-* @package modules
-*/
+ * Manages Kolab group accounts.
+ *
+ * @package modules
+ */
 class kolabGroup extends baseModule {
 
 	/** cache for mail attribute */
 	private $mailCache;
 
 	/**
-	* Creates a new kolabGroup object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new kolabGroup object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
@@ -49,21 +51,21 @@ class kolabGroup extends baseModule {
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('group'));
+		return in_array($this->get_scope(), ['group']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -71,95 +73,95 @@ class kolabGroup extends baseModule {
 		// alias name
 		$return["alias"] = _("Kolab");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('kolabGroupOfUniqueNames');
+		$return['objectClasses'] = ['kolabGroupOfUniqueNames'];
 		// managed attributes
-		$return['attributes'] = array('kolabAllowSMTPRecipient', 'kolabAllowSMTPSender');
+		$return['attributes'] = ['kolabAllowSMTPRecipient', 'kolabAllowSMTPSender'];
 		// help Entries
-		$return['help'] = array(
-			'mail' => array(
+		$return['help'] = [
+			'mail' => [
 				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The list's email address.")
-			),
-			'mailList' => array(
+			],
+			'mailList' => [
 				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The list's email address.") . ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'kolabAllowSMTPRecipient' => array (
+			],
+			'kolabAllowSMTPRecipient' => [
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
-			),
-			'kolabAllowSMTPRecipientList' => array (
+			],
+			'kolabAllowSMTPRecipientList' => [
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
 				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
-							. ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'kolabAllowSMTPSender' => array (
+					. ' ' . _("Multiple values are separated by semicolon.")
+			],
+			'kolabAllowSMTPSender' => [
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
 				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
-			),
-			'kolabAllowSMTPSenderList' => array (
+			],
+			'kolabAllowSMTPSenderList' => [
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
 				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
-							. ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'autoAdd' => array(
+					. ' ' . _("Multiple values are separated by semicolon.")
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-			'addExtension' => array(
+			],
+			'addExtension' => [
 				"Headline" => _("Add Kolab extension"),
 				"Text" => _("Adds this Kolab extension.")
-			),
-		);
+			],
+		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('kolabGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'kolabGroup_addExtension',
 				'description' => _('Add Kolab extension'),
 				'help' => 'addExtension',
 				'example' => 'false',
 				'default' => 'false',
 				'values' => 'true, false'
-			),
-			array(
+			],
+			[
 				'name' => 'kolabGroup_kolabAllowSMTPRecipient',
 				'description' => _('Allowed recipients'),
 				'help' => 'kolabAllowSMTPRecipientList',
 				'example' => '.com; -.net',
-			),
-			array(
+			],
+			[
 				'name' => 'kolabGroup_kolabAllowSMTPSender',
 				'description' => _('Allowed senders'),
 				'help' => 'kolabAllowSMTPSenderList',
 				'example' => '.com; -.net',
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'kolabAllowSMTPRecipient' => _('Allowed recipients'),
 			'kolabAllowSMTPSender' => _('Allowed senders'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
-		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
-		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Please enter a valid email address!'));
-		$this->messages['mail'][2] = array('ERROR', _('Email address'), _('Email address already exists.'));
-		$this->messages['mail'][3] = array('ERROR', _('Account %s:') . ' kolabGroup_mail', _('Email address already exists.'));
-		$this->messages['kolabAllowSMTPRecipient'][0] = array('ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.'));
-		$this->messages['kolabAllowSMTPRecipient'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.'));
-		$this->messages['kolabAllowSMTPSender'][0] = array('ERROR', _('Allowed senders'), _('Please enter a valid sender expression.'));
-		$this->messages['kolabAllowSMTPSender'][1] = array('ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPSender', _('Please enter a valid sender expression.'));
+		$this->messages['mail'][0] = ['ERROR', _('Email address'), _('Please enter a valid email address!')];
+		$this->messages['mail'][1] = ['ERROR', _('Account %s:') . ' kolabGroup_mail', _('Please enter a valid email address!')];
+		$this->messages['mail'][2] = ['ERROR', _('Email address'), _('Email address already exists.')];
+		$this->messages['mail'][3] = ['ERROR', _('Account %s:') . ' kolabGroup_mail', _('Email address already exists.')];
+		$this->messages['kolabAllowSMTPRecipient'][0] = ['ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.')];
+		$this->messages['kolabAllowSMTPRecipient'][1] = ['ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.')];
+		$this->messages['kolabAllowSMTPSender'][0] = ['ERROR', _('Allowed senders'), _('Please enter a valid sender expression.')];
+		$this->messages['kolabAllowSMTPSender'][1] = ['ERROR', _('Account %s:') . ' kolabGroup_kolabAllowSMTPSender', _('Please enter a valid sender expression.')];
 	}
 
 	/**
@@ -187,11 +189,11 @@ class kolabGroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
@@ -199,7 +201,7 @@ class kolabGroup extends baseModule {
 			return $errors;
 		}
 		if (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('kolabGroupOfUniqueNames'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['kolabGroupOfUniqueNames'], $this->attributes['objectClass']);
 			$attrs = $this->meta['attributes'];
 			foreach ($attrs as $name) {
 				if (isset($this->attributes[$name])) {
@@ -240,17 +242,17 @@ class kolabGroup extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass']) && !in_array('kolabGroupOfUniqueNames', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -260,17 +262,17 @@ class kolabGroup extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
 		if (isset($profile['kolabGroup_addExt'][0])
-				&& ($profile['kolabGroup_addExt'][0] == "true")
-				&& !in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
+			&& ($profile['kolabGroup_addExt'][0] == "true")
+			&& !in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
 			$this->attributes['objectClass'][] = 'kolabGroupOfUniqueNames';
 		}
 	}
@@ -282,14 +284,14 @@ class kolabGroup extends baseModule {
 	function get_uploadColumns($selectedModules, &$type) {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->manageMail($selectedModules)) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'kolabGroup_mail',
 				'description' => _('Email address'),
 				'help' => 'mailList',
 				'example' => 'list@company.com',
 				'required' => true,
 				'unique' => true,
-			);
+			];
 		}
 		return $return;
 	}
@@ -318,13 +320,13 @@ class kolabGroup extends baseModule {
 					}
 					else {
 						$errMsg = $this->messages['mail'][3];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$messages[] = $errMsg;
 					}
 				}
 				else {
 					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 			}
@@ -379,7 +381,7 @@ class kolabGroup extends baseModule {
 		if ($this->mailCache != null) {
 			return;
 		}
-		$results = searchLDAPByFilter('(mail=*)', array('mail'), array($this->get_scope()));
+		$results = searchLDAPByFilter('(mail=*)', ['mail'], [$this->get_scope()]);
 		$this->mailCache = [];
 		foreach ($results as $result) {
 			if (isset($result['mail'][0])) {
