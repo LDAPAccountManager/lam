@@ -2,7 +2,7 @@
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 - 2023 Roland Gruber
+ *               2017 - 2024 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('mailAlias'));
+		return in_array($this->get_scope(), ['mailAlias']);
 	}
 
 	/**
@@ -57,78 +57,78 @@ class courierMailAlias extends baseModule {
 		// alias name
 		$return["alias"] = _("Courier");
 		// LDAP filter
-		$return["ldap_filter"] = array(
+		$return["ldap_filter"] = [
 			'or' => "(objectClass=courierMailAlias)"
-		);
+		];
 		// RDN attribute
-		$return["RDN"] = array(
+		$return["RDN"] = [
 			"mail" => "low"
-		);
+		];
 		// module dependencies
-		$return['dependencies'] = array(
-			'depends' => array('nisMailAlias'),
+		$return['dependencies'] = [
+			'depends' => ['nisMailAlias'],
 			'conflicts' => []
-		);
+		];
 		// managed object classes
-		$return['objectClasses'] = array('CourierMailAlias');
+		$return['objectClasses'] = ['CourierMailAlias'];
 		// managed attributes
-		$return['attributes'] = array('mail', 'maildrop', 'mailsource', 'description');
+		$return['attributes'] = ['mail', 'maildrop', 'mailsource', 'description'];
 		// help Entries
-		$return['help'] = array(
-			'mail' => array(
+		$return['help'] = [
+			'mail' => [
 				"Headline" => _("Email address"),
 				"attr" => 'mail',
 				"Text" => _("This is the email address of the alias.")
-			),
-			'maildrop' => array(
+			],
+			'maildrop' => [
 				"Headline" => _("Recipient address"),
 				"attr" => 'maildrop',
 				"Text" => _("This is the recipient address of the mail alias. There can be more than one.")
-			),
-			'mailsource' => array(
+			],
+			'mailsource' => [
 				"Headline" => _("Mail source"),
 				"attr" => 'mailsource',
 				"Text" => _("The mail source can be 'local' or 'estmp'.")
-			),
-			'description' => array(
+			],
+			'description' => [
 				"Headline" => _("Description"),
 				"attr" => 'description',
 				"Text" => _('This is an optional description for this entry.')
-			)
-		);
-		$return['PDF_fields'] = array(
+			]
+		];
+		$return['PDF_fields'] = [
 			'mail' => _('Email address'),
 			'maildrop' => _('Recipient address'),
 			'mailsource' => _('Mail source'),
 			'description' => _('Description')
-		);
-		$return['upload_columns'] = array(
-			array(
+		];
+		$return['upload_columns'] = [
+			[
 				'name' => 'courierMailAlias_mail',
 				'description' => _('Email address'),
 				'help' => 'mail',
 				'example' => _('group@company.com'),
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAlias_maildrop',
 				'description' => _('Recipient address'),
 				'help' => 'maildrop',
 				'example' => _('group1@company.com,group2@company.com'),
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAlias_mailsource',
 				'description' => _('Mail source'),
 				'help' => 'mailsource',
 				'values' => 'esmtp, local'
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAlias_description',
 				'description' => _('Description'),
 				'help' => 'description',
-			),
-		);
+			],
+		];
 		return $return;
 	}
 
@@ -136,11 +136,11 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	function load_Messages() {
-		$this->messages['maildrop'][0] = array('ERROR', _('Recipient address'), _('Please enter a valid email address!'));
-		$this->messages['maildrop'][1] = array('ERROR', _('Account %s:') . ' courierMailAlias_maildrop', _('Please enter a valid email address!'));
-		$this->messages['mailsource'][0] = array('ERROR', _('Account %s:') . ' courierMailAlias_maildrop', _('Please enter a valid mail source.'));
-		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
-		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' courierMailAlias_mail', _('Please enter a valid email address!'));
+		$this->messages['maildrop'][0] = ['ERROR', _('Recipient address'), _('Please enter a valid email address!')];
+		$this->messages['maildrop'][1] = ['ERROR', _('Account %s:') . ' courierMailAlias_maildrop', _('Please enter a valid email address!')];
+		$this->messages['mailsource'][0] = ['ERROR', _('Account %s:') . ' courierMailAlias_maildrop', _('Please enter a valid mail source.')];
+		$this->messages['mail'][0] = ['ERROR', _('Email address'), _('Please enter a valid email address!')];
+		$this->messages['mail'][1] = ['ERROR', _('Account %s:') . ' courierMailAlias_mail', _('Please enter a valid email address!')];
 	}
 
 	/**
@@ -152,7 +152,7 @@ class courierMailAlias extends baseModule {
 		$this->addMultiValueInputTextField($return, 'maildrop', _('Recipient address'), true);
 		$return->addVerticalSpacer('0.5rem');
 		$selectedSource = (!empty($this->attributes['mailsource'][0])) ? $this->attributes['mailsource'][0] : "-";
-		$return->add(new htmlResponsiveSelect('mailsource', array('-', 'esmtp', 'local'), array($selectedSource), _('Mail source'), 'mailsource'), 12);
+		$return->add(new htmlResponsiveSelect('mailsource', ['-', 'esmtp', 'local'], [$selectedSource], _('Mail source'), 'mailsource'), 12);
 		$description = (!empty($this->attributes['description'][0])) ? $this->attributes['description'][0] : '';
 		$boxInput = new htmlResponsiveInputField(_('Description'), 'description', $description, 'description');
 		$boxInput->setFieldMaxLength(100);
@@ -176,7 +176,8 @@ class courierMailAlias extends baseModule {
 		$this->attributes['mailsource'] = [];
 		if ($_POST['mailsource'] != "-") {
 			$this->attributes['mailsource'][0] = $_POST['mailsource'];
-		} elseif (isset($this->attributes['mailsource'])) {
+		}
+		elseif (isset($this->attributes['mailsource'])) {
 			unset($this->attributes['mailsource']);
 		}
 		$this->attributes['description'][0] = $_POST['description'];
@@ -200,9 +201,9 @@ class courierMailAlias extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		$possibleSources = array('esmtp', 'local');
-		for( $i = 0; $i < sizeof($rawAccounts); $i++) {
-			if (!in_array( "courierMailAlias", $partialAccounts[$i]['objectClass'] )) {
+		$possibleSources = ['esmtp', 'local'];
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			if (!in_array("courierMailAlias", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "courierMailAlias";
 			}
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'courierMailAlias_mail', 'mail', 'email', $this->messages['mail'][1], $messages);
@@ -214,7 +215,7 @@ class courierMailAlias extends baseModule {
 				}
 				else {
 					$error = $this->messages['mailsource'][0];
-					array_push($error, array($i));
+					array_push($error, [$i]);
 					$messages[] = $error;
 				}
 			}
@@ -226,12 +227,12 @@ class courierMailAlias extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'mail' => _('Email address'),
 			'maildrop' => _('Recipient address'),
 			'mailsource' => _('Mail source'),
 			'description' => _('Description')
-		);
+		];
 	}
 
 	/**

@@ -2,10 +2,11 @@
 
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
+
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 - 2022 Roland Gruber
+ *               2017 - 2024 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,13 +45,13 @@ class courierMailAccount extends baseModule {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('mailbox');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['mailbox'];
 
 	/**
-	* Creates a new courierMailAccount object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new courierMailAccount object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
@@ -63,9 +64,9 @@ class courierMailAccount extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array(
+		return in_array($this->get_scope(), [
 			'user'
-		));
+		]);
 	}
 
 	/**
@@ -78,79 +79,79 @@ class courierMailAccount extends baseModule {
 		// alias name
 		$return["alias"] = _("Courier");
 		// module dependencies
-		$return['dependencies'] = array(
-			'depends' => array(
+		$return['dependencies'] = [
+			'depends' => [
 				'inetOrgPerson'
-			),
+			],
 			'conflicts' => []
-		);
+		];
 		// managed object classes
-		$return['objectClasses'] = array(
+		$return['objectClasses'] = [
 			'courierMailAccount'
-		);
+		];
 		// managed attributes
-		$return['attributes'] = array(
+		$return['attributes'] = [
 			'mailbox', 'mailhost', 'sharedgroup', 'disableimap',
 			'disablepop3', 'disableshared', 'disablewebmail', 'quota'
-		);
+		];
 		// help entries
-		$return['help'] = array(
-			'disableimap' => array(
+		$return['help'] = [
+			'disableimap' => [
 				"Headline" => _("Disable IMAP access"),
 				"attr" => 'disableimap',
 				"Text" => _("Setting this will disallow the user from logging in using IMAP.")
-			),
-			'disablepop3' => array(
+			],
+			'disablepop3' => [
 				"Headline" => _("Disable POP3 access"),
 				"attr" => 'disablepop3',
 				"Text" => _("Setting this will disallow the user from logging in using POP3.")
-			),
-			'disablewebmail' => array(
+			],
+			'disablewebmail' => [
 				"Headline" => _("Disable webmail access"),
 				"attr" => 'disablewebmail',
 				"Text" => _("Setting this will disallow the user from logging in using webmail.")
-			),
-			'disableshared' => array(
+			],
+			'disableshared' => [
 				"Headline" => _("Disable shared folder access"),
 				"attr" => 'disableshared',
 				"Text" => _("Setting this will make shared folders invisible to this user.")
-			),
-			'mailbox' => array(
+			],
+			'mailbox' => [
 				"Headline" => _("Mailbox"),
 				"attr" => 'mailbox',
 				"Text" => _("Path to the user's mailbox. Usually relative to the user's home folder.")
-			),
-			'mailhost' => array(
+			],
+			'mailhost' => [
 				"Headline" => _("Mailbox home server"),
 				"attr" => 'mailhost',
 				"Text" => _("Name of the host that stores the user's email. Must be a FQDN.")
-			),
-			'quota' => array(
+			],
+			'quota' => [
 				"Headline" => _("Mailbox quota"),
 				"attr" => 'quota',
 				"Text" => _("The amount of storage available to the user.")
-			),
-			'quotaUpload' => array(
+			],
+			'quotaUpload' => [
 				"Headline" => _("Mailbox quota"),
 				"attr" => 'quota',
 				"Text" => _("The amount of storage available to the user.") . ' ' . _('Please enter the amount in MB, e.g. 1000 means 1000MB of quota.')
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-			'homeDirectory' => array(
+			],
+			'homeDirectory' => [
 				"Headline" => _("Home directory"),
 				"attr" => 'homeDirectory',
 				"Text" => _("The system home directory of the user. In a virtual user setup this is typically '/' for all users.")
-			),
-		);
+			],
+		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('courierMailAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'mailbox' => _('Mailbox'),
 			'mailhost' => _('Mailbox home server'),
 			'quota' => _('Mailbox quota'),
@@ -158,54 +159,54 @@ class courierMailAccount extends baseModule {
 			'disablepop3' => _('Disable POP3 access'),
 			'disablewebmail' => _('Disable webmail access'),
 			'disableshared' => _('Disable shared folder access')
-		);
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'courierMailAccount_mailbox',
 				'description' => _('Mailbox'),
 				'help' => 'mailbox',
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAccount_mailhost',
 				'description' => _('Mailbox home server'),
 				'help' => 'mailhost',
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAccount_quota',
 				'description' => _('Mailbox quota'),
 				'help' => 'quotaUpload',
 				'example' => '1000'
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAccount_disableimap',
 				'description' => _('Disable IMAP access'),
 				'help' => 'disableimap',
 				'values' => 'true, false',
 				'default' => 'false',
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAccount_disablepop3',
 				'description' => _('Disable POP3 access'),
 				'help' => 'disablepop3',
 				'values' => 'true, false',
 				'default' => 'false',
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAccount_disablewebmail',
 				'description' => _('Disable webmail access'),
 				'help' => 'disablewebmail',
 				'values' => 'true, false',
 				'default' => 'false',
-			),
-			array(
+			],
+			[
 				'name' => 'courierMailAccount_disableshared',
 				'description' => _('Disable shared folder access'),
 				'help' => 'disableshared',
 				'values' => 'true, false',
 				'default' => 'false',
-			),
-		);
+			],
+		];
 		return $return;
 	}
 
@@ -213,19 +214,19 @@ class courierMailAccount extends baseModule {
 	 * This function fills the error message array with messages
 	 */
 	public function load_Messages() {
-		$this->messages['mailhost'][0] = array('ERROR', _('The mail host is not valid.')); // third array value is set dynamically
-		$this->messages['mailhost'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_mailhost', _('The mail host is not valid.'));
-		$this->messages['quota'][0] = array('ERROR', _('The quota must be entered as a floating point number.')); // third array value is set dynamically
-		$this->messages['quota'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_quota', _('Please enter a number.'));
-		$this->messages['homeDirectory'][0] = array('ERROR', _('Homedirectory contains invalid characters.')); // third array value is set dynamically
-		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_homeDirectory', _('Homedirectory contains invalid characters.'));
-		$this->messages['boolean'][0] = array('ERROR', _('Account %s:') . ' courierMailAccount_%s', _('This value can only be "true" or "false".'));
+		$this->messages['mailhost'][0] = ['ERROR', _('The mail host is not valid.')]; // third array value is set dynamically
+		$this->messages['mailhost'][1] = ['ERROR', _('Account %s:') . ' courierMailAccount_mailhost', _('The mail host is not valid.')];
+		$this->messages['quota'][0] = ['ERROR', _('The quota must be entered as a floating point number.')]; // third array value is set dynamically
+		$this->messages['quota'][1] = ['ERROR', _('Account %s:') . ' courierMailAccount_quota', _('Please enter a number.')];
+		$this->messages['homeDirectory'][0] = ['ERROR', _('Homedirectory contains invalid characters.')]; // third array value is set dynamically
+		$this->messages['homeDirectory'][1] = ['ERROR', _('Account %s:') . ' courierMailAccount_homeDirectory', _('Homedirectory contains invalid characters.')];
+		$this->messages['boolean'][0] = ['ERROR', _('Account %s:') . ' courierMailAccount_%s', _('This value can only be "true" or "false".')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -254,7 +255,7 @@ class courierMailAccount extends baseModule {
 	public function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if ($this->isExtensionEnabled()) {
-            $this->getAccountContainer()->replaceWildcardsInArray(array('homeDirectory', 'mailbox'), $this->attributes);
+			$this->getAccountContainer()->replaceWildcardsInArray(['homeDirectory', 'mailbox'], $this->attributes);
 			if ($this->isUnixDisabled($this->getAccountContainer()->get_type()->getModules())) {
 				// home directory
 				$this->addSimpleInputTextField($return, 'homeDirectory', _('Home directory'), true);
@@ -276,13 +277,13 @@ class courierMailAccount extends baseModule {
 			$boxInput->setFieldSize(5);
 			$boxInput->setFieldMaxLength(5);
 			$tempTable->addElement($boxInput);
-			$units = array(
+			$units = [
 				'B', 'kB', 'MB', 'GB',
 				'TB', 'PB', 'EB'
-			);
-			$selected = array(
+			];
+			$selected = [
 				$units[$unitIndex]
-			);
+			];
 			$unitSelect = new htmlSelect('quotaUnit', $units, $selected);
 			$unitSelect->setSortElements(false);
 			$tempTable->addElement($unitSelect);
@@ -300,7 +301,7 @@ class courierMailAccount extends baseModule {
 			// remove extension
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove Courier mail extension'));
-			$remButton->setCSSClasses(array('lam-danger'));
+			$remButton->setCSSClasses(['lam-danger']);
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
@@ -320,9 +321,9 @@ class courierMailAccount extends baseModule {
 		}
 		// remove extension
 		elseif (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array(
+			$this->attributes['objectClass'] = array_delete([
 				'courierMailAccount'
-			), $this->attributes['objectClass']);
+			], $this->attributes['objectClass']);
 			$attrNames = $this->getManagedAttributes($this->getAccountContainer()->get_type()->getId());
 			foreach ($attrNames as $attrName) {
 				if (isset($this->attributes[$attrName])) {
@@ -335,15 +336,15 @@ class courierMailAccount extends baseModule {
 		if (!$this->isExtensionEnabled()) {
 			return [];
 		}
-		$this->getAccountContainer()->replaceWildcardsInPOST(array('homeDirectory', 'mailbox'));
+		$this->getAccountContainer()->replaceWildcardsInPOST(['homeDirectory', 'mailbox']);
 		$errors = [];
 		// check new mailbox
 		$this->attributes['mailbox'][0] = $_POST['mailbox'];
 		// quota
-		$units = array(
+		$units = [
 			'B', 'kB', 'MB',
 			'GB', 'TB', 'PB', 'EB'
-		);
+		];
 		// check new quota
 		if (isset($_POST['quotaValue'])) {
 			if (is_numeric($_POST['quotaValue']) && in_array($_POST['quotaUnit'], $units)) {
@@ -450,12 +451,12 @@ class courierMailAccount extends baseModule {
 		$this->addSimplePDFField($return, 'mailbox', _('Mailbox'));
 		$this->addSimplePDFField($return, 'mailhost', _('Mailbox home server'));
 		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'));
-		$disableOptions = array(
+		$disableOptions = [
 			'disableimap' => _('Disable IMAP access'),
 			'disablepop3' => _('Disable POP3 access'),
 			'disablewebmail' => _('Disable webmail access'),
 			'disableshared' => _('Disable shared folder access')
-		);
+		];
 		foreach ($disableOptions as $attrName => $label) {
 			$value = _('No');
 			if (isset($this->attributes[$attrName][0]) && ($this->attributes[$attrName][0] == '1')) {
@@ -470,10 +471,10 @@ class courierMailAccount extends baseModule {
 			$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
 			$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / pow(1000, $unitIndex), 2);
 		}
-		$units = array(
+		$units = [
 			'B', 'kB', 'MB', 'GB',
 			'TB', 'PB', 'EB'
-		);
+		];
 		$this->addPDFKeyValue($return, 'quota', _('Mailbox quota'), $value . $units[$unitIndex]);
 		return $return;
 	}
@@ -486,13 +487,13 @@ class courierMailAccount extends baseModule {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		// home directory
 		if ($this->isUnixDisabled($selectedModules)) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'courierMailAccount_homeDirectory',
 				'description' => _('Home directory'),
 				'help' => 'homeDirectory',
 				'example' => _('/home/smiller'),
 				'required' => true
-			);
+			];
 		}
 		return $return;
 	}
@@ -511,7 +512,7 @@ class courierMailAccount extends baseModule {
 			if ($this->isUnixDisabled($selectedModules)) {
 				if (!get_preg($rawAccounts[$i][$ids['courierMailAccount_homeDirectory']], 'homeDirectory')) {
 					$message = $this->messages['homeDirectory'][1];
-					$message[] = array($i);
+					$message[] = [$i];
 					$messages[] = $message;
 				}
 				else {
@@ -526,7 +527,7 @@ class courierMailAccount extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['courierMailAccount_mailhost']])) {
 				if (!get_preg($rawAccounts[$i][$ids['courierMailAccount_mailhost']], 'hostname')) {
 					$message = $this->messages['mailhost'][1];
-					$message[] = array($i);
+					$message[] = [$i];
 					$messages[] = $message;
 				}
 				else {
@@ -540,23 +541,23 @@ class courierMailAccount extends baseModule {
 				}
 				else {
 					$message = $this->messages['quota'][1];
-					$message[] = array($i);
+					$message[] = [$i];
 					$messages[] = $message;
 				}
 			}
 			// boolean flags
-			$flags = array(
+			$flags = [
 				'disableimap', 'disablepop3',
 				'disablewebmail', 'disableshared'
-			);
-			$flagValues = array('true', 'false');
+			];
+			$flagValues = ['true', 'false'];
 			foreach ($flags as $flag) {
 				$partialAccounts[$i][$flag] = 0;
 				if (!empty($rawAccounts[$i][$ids['courierMailAccount_' . $flag]])) {
 					$flagValue = $rawAccounts[$i][$ids['courierMailAccount_' . $flag]];
 					if (!in_array($flagValue, $flagValues)) {
 						$message = $this->messages['boolean'][0];
-						$message[] = array($i, $flag);
+						$message[] = [$i, $flag];
 						$messages[] = $message;
 					}
 					elseif ($flagValue == 'true') {
@@ -576,8 +577,8 @@ class courierMailAccount extends baseModule {
 		parent::load_profile($profile);
 		// add extension
 		if (isset($profile['courierMailAccount_addExt'][0])
-				&& ($profile['courierMailAccount_addExt'][0] == "true")
-				&& !in_array('courierMailAccount', $this->attributes['objectClass'])) {
+			&& ($profile['courierMailAccount_addExt'][0] == "true")
+			&& !in_array('courierMailAccount', $this->attributes['objectClass'])) {
 			$this->attributes['objectClass'][] = 'courierMailAccount';
 		}
 	}
@@ -596,7 +597,7 @@ class courierMailAccount extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'mailbox' => _('Mailbox'),
 			'mailhost' => _('Mailbox home server'),
 			'quota' => _('Mailbox quota'),
@@ -604,7 +605,7 @@ class courierMailAccount extends baseModule {
 			'disablepop3' => _('Disable POP3 access'),
 			'disablewebmail' => _('Disable webmail access'),
 			'disableshared' => _('Disable shared folder access')
-		);
+		];
 	}
 
 }
