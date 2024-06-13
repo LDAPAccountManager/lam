@@ -1,9 +1,11 @@
 <?php
+
 use \LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2023  Roland Gruber
+  Copyright (C) 2014 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,17 +23,17 @@ use \LAM\TYPES\TypeManager;
 */
 
 /**
-* Provides NIS mail alias management.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Provides NIS mail alias management.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Provides NIS mail alias management.
-*
-* @package modules
-*/
+ * Provides NIS mail alias management.
+ *
+ * @package modules
+ */
 class nisMailAliasUser extends baseModule {
 
 	/** alias cache */
@@ -47,21 +49,21 @@ class nisMailAliasUser extends baseModule {
 	private $recipientsToAdd = [];
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -69,47 +71,47 @@ class nisMailAliasUser extends baseModule {
 		// alias name
 		$return["alias"] = _("Mail aliases");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'posixAccount')), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [['inetOrgPerson', 'posixAccount']], 'conflicts' => []];
 		// help Entries
-		$return['help'] = array(
-			'aliasUser' => array(
+		$return['help'] = [
+			'aliasUser' => [
 				"Headline" => _("Alias names with user name"),
 				"Text" => _('Sets the alias names linked to the current user name.')
-			),
-			'aliasMail' => array(
+			],
+			'aliasMail' => [
 				"Headline" => _("Alias names with email address"),
 				"Text" => _('Sets the alias names linked to the user\'s email address.')
-			),
-			'suffix' => array(
+			],
+			'suffix' => [
 				"Headline" => _("Suffix"),
 				"Text" => _("Location where new alias is stored.")
-			),
-			'newAlias' => array(
+			],
+			'newAlias' => [
 				"Headline" => _("Alias name"), 'attr' => 'cn',
 				"Text" => _("Name of new alias entry.")
-			),
-			'aliasNames' => array(
+			],
+			'aliasNames' => [
 				"Headline" => _("Alias names"), 'attr' => 'cn',
 				"Text" => _("Select one or more alias entries from the list to add the recipient.")
-			),
-			'hiddenOptions' => array(
+			],
+			'hiddenOptions' => [
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'alias' => _('Alias names'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the error message array with messages
-	*/
+	 * This function fills the error message array with messages
+	 */
 	function load_Messages() {
-		$this->messages['alias'][0] = array('ERROR', _('Alias name is invalid.'));
-		$this->messages['alias'][1] = array('ERROR', _('Alias name already exists.'));
+		$this->messages['alias'][0] = ['ERROR', _('Alias name is invalid.')];
+		$this->messages['alias'][1] = ['ERROR', _('Alias name already exists.')];
 	}
 
 	/**
@@ -136,8 +138,8 @@ class nisMailAliasUser extends baseModule {
 				$dn = $aliases[$i]['dn'];
 				$members = $aliases[$i]['rfc822mailmember'];
 				if (in_array($userName, $members)
-						&& (!isset($this->recipientsToDelete[$dn]) || !in_array($userName, $this->recipientsToDelete[$dn]))
-						&& !in_array($dn, $this->aliasesToDelete)) {
+					&& (!isset($this->recipientsToDelete[$dn]) || !in_array($userName, $this->recipientsToDelete[$dn]))
+					&& !in_array($dn, $this->aliasesToDelete)) {
 					$return->addLabel(new htmlOutputText($aliases[$i]['cn'][0]));
 					$buttonGroup = new htmlGroup();
 					$remButton = new htmlButton('rem_' . $i, 'del.svg', true);
@@ -167,8 +169,8 @@ class nisMailAliasUser extends baseModule {
 					$dn = $aliases[$i]['dn'];
 					$members = $aliases[$i]['rfc822mailmember'];
 					if (in_array($mails[$m], $members)
-							&& (!isset($this->recipientsToDelete[$dn]) || !in_array($mails[$m], $this->recipientsToDelete[$dn]))
-							&& !in_array($dn, $this->aliasesToDelete)) {
+						&& (!isset($this->recipientsToDelete[$dn]) || !in_array($mails[$m], $this->recipientsToDelete[$dn]))
+						&& !in_array($dn, $this->aliasesToDelete)) {
 						$return->addLabel(new htmlOutputText($aliases[$i]['cn'][0]));
 						$buttonGroup = new htmlGroup();
 						$remButton = new htmlButton('remMail_' . $i . '_' . $m, 'del.svg', true);
@@ -192,11 +194,11 @@ class nisMailAliasUser extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		if (!$this->isMailAliasTypeActive()) {
@@ -243,7 +245,7 @@ class nisMailAliasUser extends baseModule {
 					unset($this->recipientsToAdd[$dn]);
 				}
 				else {
-					$this->recipientsToAdd[$dn] = array_values(array_delete(array($recipient), $this->recipientsToAdd[$dn]));
+					$this->recipientsToAdd[$dn] = array_values(array_delete([$recipient], $this->recipientsToAdd[$dn]));
 				}
 			}
 			else {
@@ -252,7 +254,7 @@ class nisMailAliasUser extends baseModule {
 			}
 			foreach ($this->cachedAliasList as $index => $attrs) {
 				if ($dn == $attrs['dn']) {
-					$this->cachedAliasList[$index]['rfc822mailmember'] = array_values(array_delete(array($recipient), $this->cachedAliasList[$index]['rfc822mailmember']));
+					$this->cachedAliasList[$index]['rfc822mailmember'] = array_values(array_delete([$recipient], $this->cachedAliasList[$index]['rfc822mailmember']));
 				}
 			}
 		}
@@ -268,10 +270,10 @@ class nisMailAliasUser extends baseModule {
 				}
 			}
 			else {
-				$this->aliasesToAdd[$dn]['rfc822mailmember'] = array_values(array_delete(array($recipient), $this->aliasesToAdd[$dn]['rfc822mailmember']));
+				$this->aliasesToAdd[$dn]['rfc822mailmember'] = array_values(array_delete([$recipient], $this->aliasesToAdd[$dn]['rfc822mailmember']));
 				foreach ($this->cachedAliasList as &$attrs) {
 					if ($dn == $attrs['dn']) {
-						$attrs['rfc822mailmember'] = array_values(array_delete(array($recipient), $attrs['rfc822mailmember']));
+						$attrs['rfc822mailmember'] = array_values(array_delete([$recipient], $attrs['rfc822mailmember']));
 					}
 				}
 			}
@@ -347,9 +349,9 @@ class nisMailAliasUser extends baseModule {
 		$suffixSelect = new htmlResponsiveSelect('new_ou', $ous, [], _('Suffix'), 'suffix');
 		$suffixSelect->setRightToLeftTextDirection(true);
 		$suffixSelect->setSortElements(false);
-        $return->add($suffixSelect, 12);
-        $newAliasCn = empty($_POST['new_cn']) ? '' : $_POST['new_cn'];
-        $return->add(new htmlResponsiveInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), 12);
+		$return->add($suffixSelect, 12);
+		$newAliasCn = empty($_POST['new_cn']) ? '' : $_POST['new_cn'];
+		$return->add(new htmlResponsiveInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), 12);
 		$return->addVerticalSpacer('1rem');
 		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'create', _('Create'));
 		$return->add($addButton, 12, 12, 12, 'text-center');
@@ -380,11 +382,11 @@ class nisMailAliasUser extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_add() {
 		$errors = [];
 		// create new alias entry
@@ -406,12 +408,12 @@ class nisMailAliasUser extends baseModule {
 					$errors[] = $this->messages['alias'][1];
 				}
 				else {
-					$newAttrs = array(
+					$newAttrs = [
 						'dn' => $newDN,
-						'cn' => array($_POST['new_cn']),
-						'objectclass' => array('nisMailAlias'),
-						'rfc822mailmember' => array($_POST['recipient'])
-					);
+						'cn' => [$_POST['new_cn']],
+						'objectclass' => ['nisMailAlias'],
+						'rfc822mailmember' => [$_POST['recipient']]
+					];
 					$this->aliasesToAdd[$newDN] = $newAttrs;
 					$this->cachedAliasList[] = $newAttrs;
 				}
@@ -451,7 +453,7 @@ class nisMailAliasUser extends baseModule {
 			$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to delete ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-				$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				$errors[] = ['ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 			}
 			else {
 				logNewMessage(LOG_NOTICE, 'Removed ' . $dn);
@@ -459,10 +461,10 @@ class nisMailAliasUser extends baseModule {
 		}
 		// delete recipient entries
 		foreach ($this->recipientsToDelete as $dn => $recipients) {
-			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, array('rfc822mailmember' => $recipients));
+			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to remove recipients ' . implode(', ', $recipients) . ' from  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-				$errors[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				$errors[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 			}
 			else {
 				logNewMessage(LOG_NOTICE, 'Removed recipients ' . implode(', ', $recipients) . ' from ' . $dn);
@@ -474,7 +476,7 @@ class nisMailAliasUser extends baseModule {
 			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to create mail alias ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-				$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				$errors[] = ['ERROR', sprintf(_('Was unable to create DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 			}
 			else {
 				logNewMessage(LOG_NOTICE, 'Added mail alias with recipients ' . implode(', ', $attrs['rfc822mailmember']) . ' and DN ' . $dn);
@@ -482,10 +484,10 @@ class nisMailAliasUser extends baseModule {
 		}
 		// add recipients
 		foreach ($this->recipientsToAdd as $dn => $recipients) {
-			$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, array('rfc822mailmember' => $recipients));
+			$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to add recipients ' . implode(', ', $recipients) . ' to  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-				$errors[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				$errors[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 			}
 			else {
 				logNewMessage(LOG_NOTICE, 'Added recipients ' . implode(', ', $recipients) . ' to ' . $dn);
@@ -525,20 +527,20 @@ class nisMailAliasUser extends baseModule {
 	}
 
 	/**
-	* Returns a list of configuration options.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* The field names are used as keywords to load and save settings.
-	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	*
-	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	* @return mixed htmlElement or array of htmlElement
-	*
-	* @see baseModule::get_metaData()
-	* @see htmlElement
-	*/
+	 * Returns a list of configuration options.
+	 *
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * The field names are used as keywords to load and save settings.
+	 * We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	 *
+	 * @param array $scopes account types (user, group, host)
+	 * @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	 * @return mixed htmlElement or array of htmlElement
+	 *
+	 * @see baseModule::get_metaData()
+	 * @see htmlElement
+	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
 		$hiddenGroup = new htmlGroup();
@@ -561,7 +563,7 @@ class nisMailAliasUser extends baseModule {
 		if ($this->cachedAliasList != null) {
 			return $this->cachedAliasList;
 		}
-		$this->cachedAliasList = searchLDAPByAttribute('cn', '*', 'nisMailAlias', array('dn', 'cn', 'rfc822MailMember'), array('mailAlias'));
+		$this->cachedAliasList = searchLDAPByAttribute('cn', '*', 'nisMailAlias', ['dn', 'cn', 'rfc822MailMember'], ['mailAlias']);
 		return $this->cachedAliasList;
 	}
 

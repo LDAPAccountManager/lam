@@ -1,4 +1,5 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
@@ -7,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2023  Roland Gruber
+  Copyright (C) 2009 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,17 +27,17 @@ use LAM\TYPES\ConfiguredType;
 */
 
 /**
-* Manages entries based on the object class nisNetgroup.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages entries based on the object class nisNetgroup.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages entries based on the object class nisNetgroup.
-*
-* @package modules
-*/
+ * Manages entries based on the object class nisNetgroup.
+ *
+ * @package modules
+ */
 class nisnetgroup extends baseModule {
 
 	/* caches to reduce LDAP queries */
@@ -48,21 +49,21 @@ class nisnetgroup extends baseModule {
 	private $cachedGroupList;
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('netgroup'));
+		return in_array($this->get_scope(), ['netgroup']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -72,104 +73,104 @@ class nisnetgroup extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=nisNetgroup)");
+		$return["ldap_filter"] = ['or' => "(objectClass=nisNetgroup)"];
 		// RDN attributes
-		$return["RDN"] = array("cn" => "normal");
+		$return["RDN"] = ["cn" => "normal"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('nisNetgroup');
+		$return['objectClasses'] = ['nisNetgroup'];
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'memberNisNetgroup', 'nisNetgroupTriple');
+		$return['attributes'] = ['cn', 'description', 'memberNisNetgroup', 'nisNetgroupTriple'];
 		// help Entries
-		$return['help'] = array(
-			'cn' => array(
+		$return['help'] = [
+			'cn' => [
 				"Headline" => _("Group name"), 'attr' => 'cn',
 				"Text" => _("This is the name of this group.")
-			),
-			'description' => array(
+			],
+			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Here you can enter a description for this group.")
-			),
-			'memberNisNetgroup' => array(
+			],
+			'memberNisNetgroup' => [
 				"Headline" => _("Subgroups"), 'attr' => 'memberNisNetgroup',
 				"Text" => _("Here you can specify subgroups which are included in this NIS netgroup. All members of the subgroups will be treated as members of this group.")
-			),
-			'members' => array(
+			],
+			'members' => [
 				"Headline" => _("Members"), 'attr' => 'nisNetgroupTriple',
 				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name, a domain name or any combination of them.")
-						),
-			'membersUpload' => array(
+			],
+			'membersUpload' => [
 				"Headline" => _("Members"), 'attr' => 'nisNetgroupTriple',
 				"Text" => _("These entries specify the members of the netgroup. You can limit the set to a host name, a user name, a domain name or any combination of them.") . ' ' .
-						_("For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)\". Multiple entries are separated by semicolon.")
-						),
-			'filter' => array(
+					_("For the upload please specify the entries in the format \"(HOST,USER,DOMAIN)\". Multiple entries are separated by semicolon.")
+			],
+			'filter' => [
 				"Headline" => _("Filter"),
 				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
-			)
-		);
+			]
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'nisnetgroup_cn',
 				'description' => _('Group name'),
 				'help' => 'cn',
 				'example' => _('adminstrators'),
 				'required' => true,
 				'unique' => true
-			),
-			array(
+			],
+			[
 				'name' => 'nisnetgroup_description',
 				'description' => _('Group description'),
 				'help' => 'description',
 				'example' => _('Administrators group')
-			),
-			array(
+			],
+			[
 				'name' => 'nisnetgroup_subgroups',
 				'description' => _('Subgroups'),
 				'help' => 'memberNisNetgroup',
 				'example' => _('group01,group02')
-			),
-			array(
+			],
+			[
 				'name' => 'nisnetgroup_members',
 				'description' => _('Members'),
 				'help' => 'membersUpload',
 				'example' => _('(host1,user1,example.com);(host2,user2,example.com)')
-			)
-		);
+			]
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'cn' => _('Group name'),
 			'description' => _('Description'),
 			'subgroups' => _('Subgroups'),
 			'members' => _('Members')
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
-		$this->messages['cn'][0] = array('ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['user'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['host'][0] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['domain'][0] = array('ERROR', _('Domain name'), _('Domain name is invalid!'));
+		$this->messages['cn'][0] = ['ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['user'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['host'][0] = ['ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['domain'][0] = ['ERROR', _('Domain name'), _('Domain name is invalid!')];
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// nisNetgroupTriple needs special changing
@@ -225,7 +226,7 @@ class nisnetgroup extends baseModule {
 		$membersLabel = new htmlSubTitle(_('Members'));
 		$membersLabel->setHelpId('members');
 		$return->add($membersLabel, 12);
-		$titles = array(_('Host'), _('User'), _('Domain'), '');
+		$titles = [_('Host'), _('User'), _('Domain'), ''];
 		$data = [];
 		if (isset($this->attributes['nisNetgroupTriple']) && (sizeof($this->attributes['nisNetgroupTriple']) > 0)) {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
@@ -240,7 +241,7 @@ class nisnetgroup extends baseModule {
 				$dataRow = [];
 				$hostGroup = new htmlGroup();
 				$hostField = new htmlInputField('host_' . $i, $triple[0]);
-				$hostField->setCSSClasses(array('auto-width'));
+				$hostField->setCSSClasses(['auto-width']);
 				$hostField->setFieldSize(null);
 				$hostGroup->addElement($hostField);
 				$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'host' . $i, 'computer.svg', true);
@@ -249,7 +250,7 @@ class nisnetgroup extends baseModule {
 				$dataRow[] = $hostGroup;
 				$userGroup = new htmlGroup();
 				$userField = new htmlInputField('user_' . $i, $triple[1]);
-				$userField->setCSSClasses(array('auto-width'));
+				$userField->setCSSClasses(['auto-width']);
 				$userField->setFieldSize(null);
 				$userGroup->addElement($userField);
 				$userButton = new htmlAccountPageButton(get_class($this), 'select', 'user' . $i, 'user.svg', true);
@@ -280,7 +281,7 @@ class nisnetgroup extends baseModule {
 		}
 		$hostNewGroup = new htmlGroup();
 		$hostField = new htmlInputField('host_new', $hostNew);
-		$hostField->setCSSClasses(array('auto-width'));
+		$hostField->setCSSClasses(['auto-width']);
 		$hostField->setFieldSize(null);
 		$hostNewGroup->addElement($hostField);
 		$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'hostNew', 'computer.svg', true);
@@ -289,7 +290,7 @@ class nisnetgroup extends baseModule {
 		$dataRowNew[] = $hostNewGroup;
 		$userNewGroup = new htmlGroup();
 		$userField = new htmlInputField('user_new', $userNew);
-		$userField->setCSSClasses(array('auto-width'));
+		$userField->setCSSClasses(['auto-width']);
 		$userField->setFieldSize(null);
 		$userNewGroup->addElement($userField);
 		$userButton = new htmlAccountPageButton(get_class($this), 'select', 'userNew', 'user.svg', true);
@@ -310,16 +311,16 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		// user name
 		$this->attributes['cn'][0] = $_POST['cn'];
-		if ( !get_preg($this->attributes['cn'][0], 'groupname')) {
+		if (!get_preg($this->attributes['cn'][0], 'groupname')) {
 			$errors[] = $this->messages['cn'][0];
 		}
 		// description
@@ -382,10 +383,10 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	* Displays the group selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the group selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_group() {
 		// load list with all groups
 		$allGroups = $this->getGroupList();
@@ -419,11 +420,11 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the group selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the group selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_group() {
 		if (isset($_POST['subgroup_2']) && isset($_POST['subgroup_left'])) { // Add groups to list
 			if (!is_array($this->attributes['memberNisNetgroup'])) {
@@ -439,22 +440,22 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	* Displays the host/user selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the host/user selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_select() {
 		$return = new htmlResponsiveRow();
 		$selectHost = true;
 		$postKeys = array_keys($_POST);
 		$position = 'New';
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if 	(substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_user') {
+			if (substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_user') {
 				$selectHost = false;
 				$position = substr($postKeys[$i], 36);
 				break;
 			}
-			if 	(substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_host') {
+			if (substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_host') {
 				$position = substr($postKeys[$i], 36);
 				break;
 			}
@@ -501,11 +502,11 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the host/user selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the host/user selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_select() {
 		if (isset($_POST['form_subpage_nisnetgroup_attributes_back'])) {
 			return [];
@@ -539,7 +540,7 @@ class nisnetgroup extends baseModule {
 				$skipSubgroups = false;
 				for ($g = 0; $g < sizeof($groups); $g++) {
 					if (!in_array($groups[$g], $existingGroups)) {
-						$messages[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
+						$messages[] = ['ERROR', _('Unable to find group in LDAP.'), $groups[$g]];
 						$skipSubgroups = true;
 					}
 				}
@@ -554,10 +555,10 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	* This functions is used to check if all settings for this module have been made.
-	*
-	* @return boolean true, if settings are complete
-	*/
+	 * This functions is used to check if all settings for this module have been made.
+	 *
+	 * @return boolean true, if settings are complete
+	 */
 	function module_complete() {
 		return (isset($this->attributes['cn']) && (sizeof($this->attributes['cn']) > 0));
 	}
@@ -601,7 +602,7 @@ class nisnetgroup extends baseModule {
 		if ($this->cachedGroupList != null) {
 			return $this->cachedGroupList;
 		}
-		$this->cachedGroupList = searchLDAPByAttribute('cn', '*', 'nisNetgroup', array('cn'), array('netgroup'));
+		$this->cachedGroupList = searchLDAPByAttribute('cn', '*', 'nisNetgroup', ['cn'], ['netgroup']);
 		for ($i = 0; $i < sizeof($this->cachedGroupList); $i++) {
 			$this->cachedGroupList[$i] = $this->cachedGroupList[$i]['cn'][0];
 		}
@@ -617,7 +618,7 @@ class nisnetgroup extends baseModule {
 		if ($this->cachedUserList != null) {
 			return $this->cachedUserList;
 		}
-		$this->cachedUserList = searchLDAPByAttribute('uid', '*', 'posixAccount', array('uid'), array('user'));
+		$this->cachedUserList = searchLDAPByAttribute('uid', '*', 'posixAccount', ['uid'], ['user']);
 		for ($i = 0; $i < sizeof($this->cachedUserList); $i++) {
 			$this->cachedUserList[$i] = $this->cachedUserList[$i]['uid'][0];
 		}
@@ -634,7 +635,7 @@ class nisnetgroup extends baseModule {
 			return $this->cachedHostList;
 		}
 		$this->cachedHostList = [];
-		$list = searchLDAPByFilter('(|(objectClass=account)(objectClass=device))', array('uid', 'cn'), array('host'));
+		$list = searchLDAPByFilter('(|(objectClass=account)(objectClass=device))', ['uid', 'cn'], ['host']);
 		foreach ($list as $attrs) {
 			if (!empty($attrs['uid'][0])) {
 				$this->cachedHostList[] = $attrs['uid'][0];
@@ -651,12 +652,12 @@ class nisnetgroup extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			"cn" => _("Group name"),
 			'description' => _('Description'),
 			'membernisnetgroup' => _('Subgroups'),
 			'nisnetgrouptriple' => _('Members')
-		);
+		];
 	}
 
 }

@@ -1,11 +1,13 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2018  Roland Gruber
+  Copyright (C) 2016 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,20 +26,20 @@ use \LAM\PDF\PDFTableRow;
 */
 
 /**
-* Manages memberships in NIS net groups.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages memberships in NIS net groups.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /** include parent class */
 include_once(__DIR__ . "/nisNetGroupUser.inc");
 
 /**
-* Manages memberships in NIS net groups.
-*
-* @package modules
-*/
+ * Manages memberships in NIS net groups.
+ *
+ * @package modules
+ */
 class nisNetGroupHost extends nisNetGroupUser {
 
 	/**
@@ -46,7 +48,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('host'));
+		return in_array($this->get_scope(), ['host']);
 	}
 
 	/**
@@ -59,23 +61,23 @@ class nisNetGroupHost extends nisNetGroupUser {
 	public function get_metaData() {
 		$return = parent::get_metaData();
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(array('account', 'posixAccount')), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [['account', 'posixAccount']], 'conflicts' => []];
 		// upload columns
-		$return['upload_columns'] = array(array(
+		$return['upload_columns'] = [[
 			'name' => 'nisNetGroup_memberships',
 			'description' => _('Memberships'),
 			'help' => 'memberships_upload',
 			'example' => 'group1#user#domain,group2#user#domain'
-		));
+		]];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
 		parent::load_Messages();
-		$this->messages['user'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['user'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 	}
 
 	/**
@@ -91,10 +93,10 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	* Displays the group selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the group selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	public function display_html_attributes() {
 		$return = new htmlTable();
 		$return->addElement(new htmlOutputText(_('Group')));
@@ -139,23 +141,23 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	* Processes user input of the group selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the group selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		$errors = [];
 		// add new entry
 		if (isset($_POST['addGroup'])) {
 			$parts = explode('#+#', $_POST['group_add']);
-			$this->groups[] = array(
+			$this->groups[] = [
 				'name' => $parts[0],
 				'dn' => $parts[1],
 				'user' => $_POST['user_add'],
 				'host' => $this->uidOrig,
 				'domain' => $_POST['domain_add']
-			);
+			];
 			if (!empty($_POST['user_add']) && !get_preg($_POST['user_add'], 'username')) {
 				$message = $this->messages['user'][0];
 				$message[2] = $message[2] . '<br><br>' . $_POST['user_add'];
@@ -190,7 +192,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 			$counter++;
 		}
 		$this->groups = array_values($this->groups);
-		usort($this->groups, array($this, 'sortTriple'));
+		usort($this->groups, [$this, 'sortTriple']);
 		return $errors;
 	}
 
@@ -205,19 +207,19 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function get_profileOptions($typeId) {
 		$groups = $this->findGroups();
-		$groupOptions = array('' => '');
+		$groupOptions = ['' => ''];
 		foreach ($groups as $group) {
 			$groupOptions[$group['cn'][0]] = $group['cn'][0] . '#+#' . $group['dn'];
 		}
 		$return = new htmlResponsiveRow();
-		$labels = array(_('Group'), _('User name'), _('Domain name'));
+		$labels = [_('Group'), _('User name'), _('Domain name')];
 		$data = [];
 		for ($i = 0; $i < 5; $i++) {
-			$select = new htmlSelect('nisNetGroupUser_group' . $i, $groupOptions, array(''));
+			$select = new htmlSelect('nisNetGroupUser_group' . $i, $groupOptions, ['']);
 			$select->setHasDescriptiveElements(true);
 			$data[$i][] = $select;
 			$data[$i][] = new htmlInputField('nisNetGroupUser_user' . $i);
@@ -228,24 +230,24 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		for ($i = 0; $i < 5; $i++) {
 			if (!empty($profile['nisNetGroupUser_group' . $i][0])) {
 				$parts = explode('#+#', $profile['nisNetGroupUser_group' . $i][0]);
-				$this->groups[] = array(
+				$this->groups[] = [
 					'name' => $parts[0],
 					'dn' => $parts[1],
 					'user' => $profile['nisNetGroupUser_user' . $i][0],
 					'host' => $this->uidOrig,
 					'domain' => $profile['nisNetGroupUser_domain' . $i][0],
-				);
+				];
 			}
 		}
-		usort($this->groups, array($this, 'sortTriple'));
+		usort($this->groups, [$this, 'sortTriple']);
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2023  Roland Gruber
+  Copyright (C) 2004 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,19 +20,19 @@
 */
 
 /**
-* Provides NIS mail alias management.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Provides NIS mail alias management.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Provides NIS mail alias management.
-*
-* @package modules
-*/
+ * Provides NIS mail alias management.
+ *
+ * @package modules
+ */
 class nisMailAlias extends baseModule {
 
 	/** mail cache */
@@ -43,21 +43,21 @@ class nisMailAlias extends baseModule {
 	const DISPLAY_LIMIT = 50;
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('mailAlias'));
+		return in_array($this->get_scope(), ['mailAlias']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -65,82 +65,82 @@ class nisMailAlias extends baseModule {
 		// base module
 		$return["is_base"] = true;
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=nisMailAlias)");
+		$return["ldap_filter"] = ['or' => "(objectClass=nisMailAlias)"];
 		// alias name
 		$return["alias"] = _("Mail aliases");
 		// RDN attribute
-		$return["RDN"] = array("cn" => "normal");
+		$return["RDN"] = ["cn" => "normal"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('nisMailAlias');
+		$return['objectClasses'] = ['nisMailAlias'];
 		// managed attributes
-		$return['attributes'] = array('cn', 'rfc822MailMember');
+		$return['attributes'] = ['cn', 'rfc822MailMember'];
 		// help Entries
-		$return['help'] = array(
-			'alias' => array(
+		$return['help'] = [
+			'alias' => [
 				"Headline" => _("Alias name"), 'attr' => 'cn',
 				"Text" => _("Mails to this name are forwarded to the recipients.")
-			),
-			'recipient' => array(
+			],
+			'recipient' => [
 				"Headline" => _("Recipients"), 'attr' => 'rfc822MailMember',
 				"Text" => _("Please enter the recipients for this alias.")
-			),
-			'recipientList' => array(
+			],
+			'recipientList' => [
 				"Headline" => _("Recipient list"), 'attr' => 'rfc822MailMember',
 				"Text" => _("This is a comma separated list of recipients.")
-			),
-			'filter' => array(
+			],
+			'filter' => [
 				"Headline" => _("Filter"),
 				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
-			),
-			);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'nisMailAlias_alias',
 				'description' => _('Alias name'),
 				'help' => 'alias',
 				'example' => 'root',
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'nisMailAlias_recipients',
 				'description' => _('Recipient list'),
 				'help' => 'recipientList',
 				'example' => _('smiller')
-			)
-		);
+			]
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'alias' => _('Alias name'),
 			'recipients' => _('Recipient list')
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the error message array with messages
-	*/
+	 * This function fills the error message array with messages
+	 */
 	function load_Messages() {
-		$this->messages['alias'][0] = array('ERROR', _('Alias is empty or invalid!'));  // third array value is set dynamically
-		$this->messages['alias'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_alias', _('Alias is empty or invalid!'));
-		$this->messages['recipient'][0] = array('ERROR', _('Recipient is invalid!'));  // third array value is set dynamically
-		$this->messages['recipient'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_recipient', _('Recipient is invalid!'));
+		$this->messages['alias'][0] = ['ERROR', _('Alias is empty or invalid!')];  // third array value is set dynamically
+		$this->messages['alias'][1] = ['ERROR', _('Account %s:') . ' nisMailAlias_alias', _('Alias is empty or invalid!')];
+		$this->messages['recipient'][0] = ['ERROR', _('Recipient is invalid!')];  // third array value is set dynamically
+		$this->messages['recipient'][1] = ['ERROR', _('Account %s:') . ' nisMailAlias_recipient', _('Recipient is invalid!')];
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('nisMailAlias', $this->getAccountContainer()->attributes_orig['objectClass'])) {
@@ -163,7 +163,7 @@ class nisMailAlias extends baseModule {
 		}
 		$nameInput = new htmlResponsiveInputField(_('Alias name'), 'cn', $alias, 'alias');
 		$nameInput->setRequired(true);
-		$nameInput->setCSSClasses(array('maxwidth20'));
+		$nameInput->setCSSClasses(['maxwidth20']);
 		$return->add($nameInput, 12);
 		// list current recipients
 		$mailList = $this->getMailList();
@@ -192,7 +192,7 @@ class nisMailAlias extends baseModule {
 					if (sizeof($autoList) > 0) {
 						$mailField->enableAutocompletion($autoList);
 					}
-					$mailField->setCSSClasses(array('maxwidth20'));
+					$mailField->setCSSClasses(['maxwidth20']);
 					$mailGroup = new htmlGroup();
 					$mailGroup->addElement($mailField);
 					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mail.svg', true, _('Select mail')));
@@ -215,7 +215,7 @@ class nisMailAlias extends baseModule {
 			if (sizeof($autoList) > 0) {
 				$newMailField->enableAutocompletion($autoList);
 			}
-			$newMailField->setCSSClasses(array('maxwidth20'));
+			$newMailField->setCSSClasses(['maxwidth20']);
 			$newGroup = new htmlGroup();
 			$newGroup->addElement($newMailField);
 			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mail.svg', true, _('Select mail')));
@@ -229,11 +229,11 @@ class nisMailAlias extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		$this->attributes['cn'] = [];
@@ -244,16 +244,18 @@ class nisMailAlias extends baseModule {
 			$this->attributes['cn'][] = $_POST['cn'];
 		}
 		else {
-				$this->attributes['cn'][] = $_POST['cn'];
-				$message = $this->messages['alias'][0];
-				$message[] = $_POST['cn'];
-				$errors[] = $message;
+			$this->attributes['cn'][] = $_POST['cn'];
+			$message = $this->messages['alias'][0];
+			$message[] = $_POST['cn'];
+			$errors[] = $message;
 		}
 		if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
 			// check old recipients
 			if (isset($_POST['rec_number'])) {
 				for ($i = 0; $i < $_POST['rec_number']; $i++) {
-					if (isset($_POST['delRec' . $i])) continue;
+					if (isset($_POST['delRec' . $i])) {
+						continue;
+					}
 					if (isset($_POST['rfc822MailMember' . $i]) && ($_POST['rfc822MailMember' . $i] != "")) {
 						// check if address has correct format
 						if (!get_preg($_POST['rfc822MailMember' . $i], 'nis_recipient') && !get_preg($_POST['rfc822MailMember' . $i], 'email')) {
@@ -272,9 +274,9 @@ class nisMailAlias extends baseModule {
 					$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember'];
 				}
 				else {
-						$message = $this->messages['recipient'][0];
-						$message[] = $_POST['rfc822MailMember'];
-						$errors[] = $message;
+					$message = $this->messages['recipient'][0];
+					$message[] = $_POST['rfc822MailMember'];
+					$errors[] = $message;
 				}
 			}
 		}
@@ -299,49 +301,49 @@ class nisMailAlias extends baseModule {
 	}
 
 	/**
-	* Displays the mail selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the mail selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_selectMail() {
 		return $this->display_html_select(true);
 	}
 
 	/**
-	* Processes user input of the host/user selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the host/user selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_selectMail() {
 		return $this->process_select();
 	}
 
 	/**
-	* Displays the user selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the user selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_selectUser() {
 		return $this->display_html_select(false);
 	}
 
 	/**
-	* Processes user input of the host/user selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the host/user selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_selectUser() {
 		return $this->process_select();
 	}
 
 	/**
-	* Displays the user/mail selection.
-	*
-	* @param boolean $isMail mail selection (user selection if false)
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the user/mail selection.
+	 *
+	 * @param boolean $isMail mail selection (user selection if false)
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_select($isMail) {
 		if ($isMail) {
 			$regex = 'email';
@@ -359,7 +361,7 @@ class nisMailAlias extends baseModule {
 		$postKeys = array_keys($_POST);
 		$position = 'New';
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if 	(strpos($postKeys[$i], 'form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient') === 0) {
+			if (strpos($postKeys[$i], 'form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient') === 0) {
 				$position = substr($postKeys[$i], strlen('form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient'));
 				break;
 			}
@@ -375,7 +377,7 @@ class nisMailAlias extends baseModule {
 		$return->addLabel(new htmlOutputText(_('Filter')));
 		$filterGroup = new htmlGroup();
 		$filterInput = new htmlInputField('filter', null);
-		$filterInput->setCSSClasses(array('maxwidth10'));
+		$filterInput->setCSSClasses(['maxwidth10']);
 		$filterInput->filterSelectBox('selectBox');
 		$filterGroup->addElement($filterInput);
 		$filterGroup->addElement(new htmlHelpLink('filter'));
@@ -393,11 +395,11 @@ class nisMailAlias extends baseModule {
 	}
 
 	/**
-	* Processes user input of the host/user selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the host/user selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_select() {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_select'])) {
 			if (!isset($this->attributes['rfc822MailMember'])) {
@@ -416,10 +418,10 @@ class nisMailAlias extends baseModule {
 	}
 
 	/**
-	* Controls if the module button the account page is visible and activated.
-	*
-	* @return string status ("enabled", "disabled", "hidden")
-	*/
+	 * Controls if the module button the account page is visible and activated.
+	 *
+	 * @return string status ("enabled", "disabled", "hidden")
+	 */
 	function getButtonStatus() {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
@@ -439,7 +441,9 @@ class nisMailAlias extends baseModule {
 		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("nisMailAlias", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "nisMailAlias";
+			if (!in_array("nisMailAlias", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "nisMailAlias";
+			}
 			// add alias name
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'nisMailAlias_alias', 'cn',
 				'nis_alias', $this->messages['alias'][1], $messages);
@@ -453,7 +457,7 @@ class nisMailAlias extends baseModule {
 					}
 					else {
 						$errMsg = $this->messages['recipient'][1];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$messages[] = $errMsg;
 					}
 				}
@@ -482,7 +486,7 @@ class nisMailAlias extends baseModule {
 		if ($this->cachedMailList != null) {
 			return $this->cachedMailList;
 		}
-		$this->cachedMailList = searchLDAPByAttribute('mail', '*', null, array('mail'), array('user'));
+		$this->cachedMailList = searchLDAPByAttribute('mail', '*', null, ['mail'], ['user']);
 		for ($i = 0; $i < sizeof($this->cachedMailList); $i++) {
 			$this->cachedMailList[$i] = $this->cachedMailList[$i]['mail'][0];
 		}
@@ -499,7 +503,7 @@ class nisMailAlias extends baseModule {
 		if ($this->cachedUserList != null) {
 			return $this->cachedUserList;
 		}
-		$this->cachedUserList = searchLDAPByFilter('(|(objectClass=posixAccount)(objectClass=inetOrgPerson))', array('uid'), array('user'));
+		$this->cachedUserList = searchLDAPByFilter('(|(objectClass=posixAccount)(objectClass=inetOrgPerson))', ['uid'], ['user']);
 		$count = sizeof($this->cachedUserList);
 		for ($i = 0; $i < $count; $i++) {
 			if (empty($this->cachedUserList[$i]['uid'][0])) {
@@ -516,10 +520,10 @@ class nisMailAlias extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			"cn" => _("Alias name"),
 			"rfc822mailmember" => _("Recipient list")
-		);
+		];
 	}
 
 }
