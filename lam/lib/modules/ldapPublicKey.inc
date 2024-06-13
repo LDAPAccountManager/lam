@@ -1,4 +1,5 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
@@ -25,28 +26,28 @@ use LAM\TYPES\ConfiguredType;
 */
 
 /**
-* Manages SSH public keys.
-*
-* @package modules
-* @author Roland Gruber
-* @author Andrew Dibble <adibble@mobitv.com>
-*/
+ * Manages SSH public keys.
+ *
+ * @package modules
+ * @author Roland Gruber
+ * @author Andrew Dibble <adibble@mobitv.com>
+ */
 
 /**
-* Manages SSH public keys.
-*
-* @package modules
-*/
+ * Manages SSH public keys.
+ *
+ * @package modules
+ */
 class ldapPublicKey extends baseModule {
 
 	/** session variable for existing keys in self service */
 	const SESS_KEY_LIST = 'ldapPublicKey_keyList';
 
 	/**
-	* Creates a new ldapPublicKey object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new ldapPublicKey object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
@@ -81,21 +82,21 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -103,32 +104,32 @@ class ldapPublicKey extends baseModule {
 		// alias name
 		$return["alias"] = _("SSH public key");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
 		if ($this->hasObjectClass()) {
-			$return['objectClasses'] = array($this->getObjectClass());
+			$return['objectClasses'] = [$this->getObjectClass()];
 		}
 		// managed attributes
 		$return['attributes'] = [$this->getAttributeName()];
 		// help Entries
-		$return['help'] = array(
-			$this->getAttributeName() => array(
+		$return['help'] = [
+			$this->getAttributeName() => [
 				"Headline" => _("SSH public key"), 'attr' => $this->getAttributeName(),
 				"Text" => _("Please enter your public SSH key.")
-			),
-			'keyList' => array(
+			],
+			'keyList' => [
 				"Headline" => _("SSH public key"), 'attr' => $this->getAttributeName(),
 				"Text" => _("Please a comma separated list of your public SSH keys.")
-			),
-			'upload' => array(
+			],
+			'upload' => [
 				"Headline" => _("File upload"), 'attr' => $this->getAttributeName(),
 				"Text" => _("Upload a file with one or more keys. Each line contains one key.")
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-		);
+			],
+		];
 		// profile options
 		if ($this->hasObjectClass()) {
 			$profileContainer = new htmlResponsiveRow();
@@ -136,37 +137,37 @@ class ldapPublicKey extends baseModule {
 			$return['profile_options'] = $profileContainer;
 		}
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => get_class($this) . '_sshPublicKey',
 				'description' => _('SSH public key'),
 				'help' => 'keyList',
 				'example' => _('ssh-rsa 234234 user@host')
-			)
-		);
+			]
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'sshPublicKey' => _('SSH public keys')
-		);
+		];
 		// self service field settings
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'sshPublicKey' => _('SSH public keys'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the message array.
-	**/
+	 * This function fills the message array.
+	 **/
 	function load_Messages() {
-		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
-		$this->messages['file'][1] = array('ERROR', _('The uploaded file seems to be no valid public key.'));
+		$this->messages['file'][0] = ['ERROR', _('No file selected.')];
+		$this->messages['file'][1] = ['ERROR', _('The uploaded file seems to be no valid public key.')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, [$this->getAttributeName()]);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -194,7 +195,7 @@ class ldapPublicKey extends baseModule {
 			if ($this->hasObjectClass()) {
 				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove SSH public key extension'));
-				$remButton->setCSSClasses(array('lam-danger'));
+				$remButton->setCSSClasses(['lam-danger']);
 				$return->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
@@ -205,11 +206,11 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$messages = [];
 		// add extension
@@ -219,7 +220,7 @@ class ldapPublicKey extends baseModule {
 		}
 		// remove extension
 		elseif (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array($this->getObjectClass()), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete([$this->getObjectClass()], $this->attributes['objectClass']);
 			if (!empty($this->attributes[$this->getAttributeName()])) {
 				unset($this->attributes[$this->getAttributeName()]);
 			}
@@ -266,17 +267,17 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if ($this->hasObjectClass()
 			&& !in_array($this->getObjectClass(), $this->attributes['objectClass'])
@@ -288,10 +289,10 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -300,7 +301,7 @@ class ldapPublicKey extends baseModule {
 			&& isset($profile[get_class($this) . '_addExt'][0])
 			&& ($profile[get_class($this) . '_addExt'][0] === "true")
 			&& !in_array($this->getObjectClass(), $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = $this->getObjectClass();
+			$this->attributes['objectClass'][] = $this->getObjectClass();
 		}
 	}
 
@@ -416,7 +417,7 @@ class ldapPublicKey extends baseModule {
 		$uploadInput = new htmlInputFileUpload('ldappublickey_file');
 		$uploadInput->setOnChange('ldapPublicKeyUploadKeyFunction();');
 		$uploadButtonGroup->addElement($uploadInput);
-		$content->add(new htmlDiv('ldapPublicKeyKeyUploadId', $uploadButtonGroup, array('lam-upload-button')));
+		$content->add(new htmlDiv('ldapPublicKeyKeyUploadId', $uploadButtonGroup, ['lam-upload-button']));
 		return $content;
 	}
 
@@ -546,7 +547,7 @@ class ldapPublicKey extends baseModule {
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
@@ -625,10 +626,10 @@ class ldapPublicKey extends baseModule {
 				parseHtml(null, $contentElement, [], true, $this->get_scope());
 				$content = ob_get_contents();
 				ob_end_clean();
-				$jsonReturn = array(
+				$jsonReturn = [
 					'errorsOccurred' => 'false',
 					'html' => $content,
-				);
+				];
 			}
 		}
 		echo json_encode($jsonReturn);
@@ -638,9 +639,9 @@ class ldapPublicKey extends baseModule {
 	 * Handles an AJAX file upload and prints the JSON result.
 	 */
 	private function ajaxUpload() {
-		$result = array('success' => true);
+		$result = ['success' => true];
 		if (!isset($_POST['file']) || (strlen($_POST['file']) < 10)) {
-			$result = array('error' => _('No file received.'));
+			$result = ['error' => _('No file received.')];
 		}
 		else {
 			foreach ($_SESSION[self::SESS_KEY_LIST] as $index => $value) {
@@ -663,7 +664,7 @@ class ldapPublicKey extends baseModule {
 				unlink($tmpFilePath);
 				if ($retVal !== 0) {
 					logNewMessage(LOG_NOTICE, 'Invalid SSH key: ' . print_r($out, true));
-					$result = array('error' => $this->messages['file'][1][1]);
+					$result = ['error' => $this->messages['file'][1][1]];
 					echo json_encode($result);
 					return;
 				}
@@ -715,10 +716,10 @@ class ldapPublicKey extends baseModule {
 		parseHtml(null, $contentElement, [], true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
-		return array(
+		return [
 			'errorsOccurred' => 'false',
 			'html' => $content,
-		);
+		];
 	}
 
 	/**
@@ -730,16 +731,16 @@ class ldapPublicKey extends baseModule {
 		if ($message == null) {
 			$message = _('Invalid request');
 		}
-		return array('errorsOccurred' => 'true', 'errormessage' => $message);
+		return ['errorsOccurred' => 'true', 'errormessage' => $message];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			$this->getAttributeName() => _('SSH public keys')
-		);
+		];
 	}
 
 }
