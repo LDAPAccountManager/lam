@@ -28,22 +28,22 @@ use LAM\TYPES\ConfiguredType;
 */
 
 /**
-* Manages Unix accounts for users and hosts.
-*
-* @package modules
-*
-* @author Tilo Lutz
-* @author Roland Gruber
-* @author Michael Duergner
-* @author Thomas Manninger
-*/
+ * Manages Unix accounts for users and hosts.
+ *
+ * @package modules
+ *
+ * @author Tilo Lutz
+ * @author Roland Gruber
+ * @author Michael Duergner
+ * @author Thomas Manninger
+ */
 
 /**
-* Manages the object class "posixAccount" for users and hosts.
-*
-* @package modules
-*/
-class posixAccount extends baseModule implements passwordService,AccountStatusProvider {
+ * Manages the object class "posixAccount" for users and hosts.
+ *
+ * @package modules
+ */
+class posixAccount extends baseModule implements passwordService, AccountStatusProvider {
 
 	// Variables
 	/** delimiter for lamdaemon commands */
@@ -89,75 +89,75 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	private $cachedUserNameList;
 
 	/** replacements for common umlauts */
-	private $umlautReplacements = array(
+	private $umlautReplacements = [
 		'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'oe', 'Ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
 		'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o', 'ç' => 'c'
-	);
+	];
 
 	/**
 	 *  This function fills the error message array with messages.
-	**/
+	 **/
 	function load_Messages() {
 		// error messages for input checks
-		$this->messages['minUID'][0] = array('ERROR', _('Users') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
-		$this->messages['maxUID'][0] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
-		$this->messages['minMachine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
-		$this->messages['maxMachine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
-		$this->messages['cmp_UID'][0] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
-		$this->messages['cmp_Machine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
-		$this->messages['cmp_both'][0] = array('ERROR', _('UID ranges for Unix accounts'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1 for new accounts. Please set the minimum UID to equal values or use independent ranges."));
-		$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
-		$this->messages['homeDirectory'][1] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
-		$this->messages['homeDirectory'][2] = array('ERROR', _('Account %s:') . ' posixAccount_homedir', _('Homedirectory contains invalid characters.'));
-		$this->messages['homeDirectory'][3] = array('INFO', _('Home directory'), _('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''));
-		$this->messages['homeDirectory'][4] = array('ERROR', _('Account %s:') . ' posixAccount_createHomeDir', _('Invalid remote server name.'));
-		$this->messages['uidNumber'][1] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
-		$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
-		$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-		$this->messages['uidNumber'][4] = array('ERROR', _('Account %s:') . ' posixAccount_uid', _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.'));
-		$this->messages['uidNumber'][5] = array('INFO', _('UID number'), _('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''));
-		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
-		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
-		$this->messages['userPassword'][4] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
-		$this->messages['uid'][0] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
-		$this->messages['uid'][1] = array('WARN', _('User name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.'));
-		$this->messages['uid'][2] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][3] = array('WARN', _('Host name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.'));
-		$this->messages['uid'][4] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][5] = array('WARN', _('User name'), _('User name in use (%s). Selected next free user name.'));
-		$this->messages['uid'][6] = array('WARN', _('Host name'), _('Host name in use (%s). Selected next free host name.'));
-		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][9] = array('WARN', _('Account %s:') . ' posixAccount_userName', _('User name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
-		$this->messages['uid'][10] = array('WARN', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
-		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
-		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
-		$this->messages['gidNumber'][2] = array('INFO', _('GID number'), _('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''));
-		$this->messages['gecos'][0] = array('ERROR', _('Account %s:') . ' posixAccount_gecos', _('This gecos value is invalid!'));
-		$this->messages['shell'][0] = array('ERROR', _('Account %s:') . ' posixAccount_shell', _('This login shell is invalid!'));
-		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be "true" or "false".'));
-		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' posixAccount_cn', _('Please enter a valid common name!'));
-		$this->messages['sambaIDPoolDN'][0] = array('ERROR', _('Samba ID pool DN'), _('This is not a valid DN!'));
-		$this->messages['windowsIDPoolDN'][0] = array('ERROR', _('Windows domain info DN'), _('This is not a valid DN!'));
+		$this->messages['minUID'][0] = ['ERROR', _('Users') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!")];
+		$this->messages['maxUID'][0] = ['ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!")];
+		$this->messages['minMachine'][0] = ['ERROR', _('Hosts') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!")];
+		$this->messages['maxMachine'][0] = ['ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!")];
+		$this->messages['cmp_UID'][0] = ['ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!")];
+		$this->messages['cmp_Machine'][0] = ['ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!")];
+		$this->messages['cmp_both'][0] = ['ERROR', _('UID ranges for Unix accounts'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1 for new accounts. Please set the minimum UID to equal values or use independent ranges.")];
+		$this->messages['homeDirectory'][0] = ['ERROR', _('Home directory'), _('Homedirectory contains invalid characters.')];
+		$this->messages['homeDirectory'][1] = ['INFO', _('Home directory'), _('Replaced $user or $group in homedir.')];
+		$this->messages['homeDirectory'][2] = ['ERROR', _('Account %s:') . ' posixAccount_homedir', _('Homedirectory contains invalid characters.')];
+		$this->messages['homeDirectory'][3] = ['INFO', _('Home directory'), _('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\'')];
+		$this->messages['homeDirectory'][4] = ['ERROR', _('Account %s:') . ' posixAccount_createHomeDir', _('Invalid remote server name.')];
+		$this->messages['uidNumber'][1] = ['ERROR', _('ID-Number'), _('No free ID-Number!')];
+		$this->messages['uidNumber'][2] = ['WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.')];
+		$this->messages['uidNumber'][3] = ['ERROR', _('ID-Number'), _('ID is already in use')];
+		$this->messages['uidNumber'][4] = ['ERROR', _('Account %s:') . ' posixAccount_uid', _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.')];
+		$this->messages['uidNumber'][5] = ['INFO', _('UID number'), _('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\'')];
+		$this->messages['userPassword'][0] = ['ERROR', _('Password'), _('Please enter the same password in both password fields.')];
+		$this->messages['userPassword'][1] = ['ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
+		$this->messages['userPassword'][4] = ['ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
+		$this->messages['uid'][0] = ['INFO', _('UID'), _('UID has changed. Do you want to change home directory?')];
+		$this->messages['uid'][1] = ['WARN', _('User name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.')];
+		$this->messages['uid'][2] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][3] = ['WARN', _('Host name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.')];
+		$this->messages['uid'][4] = ['ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][5] = ['WARN', _('User name'), _('User name in use (%s). Selected next free user name.')];
+		$this->messages['uid'][6] = ['WARN', _('Host name'), _('Host name in use (%s). Selected next free host name.')];
+		$this->messages['uid'][7] = ['ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][8] = ['ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][9] = ['WARN', _('Account %s:') . ' posixAccount_userName', _('User name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s'];
+		$this->messages['uid'][10] = ['WARN', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s'];
+		$this->messages['gidNumber'][0] = ['ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!')];
+		$this->messages['gidNumber'][1] = ['ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.')];
+		$this->messages['gidNumber'][2] = ['INFO', _('GID number'), _('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\'')];
+		$this->messages['gecos'][0] = ['ERROR', _('Account %s:') . ' posixAccount_gecos', _('This gecos value is invalid!')];
+		$this->messages['shell'][0] = ['ERROR', _('Account %s:') . ' posixAccount_shell', _('This login shell is invalid!')];
+		$this->messages['passwordDisabled'][0] = ['ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be "true" or "false".')];
+		$this->messages['cn'][0] = ['ERROR', _('Common name'), _('Please enter a valid common name!')];
+		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' posixAccount_cn', _('Please enter a valid common name!')];
+		$this->messages['sambaIDPoolDN'][0] = ['ERROR', _('Samba ID pool DN'), _('This is not a valid DN!')];
+		$this->messages['windowsIDPoolDN'][0] = ['ERROR', _('Windows domain info DN'), _('This is not a valid DN!')];
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user', 'host'));
+		return in_array($this->get_scope(), ['user', 'host']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -165,58 +165,58 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		// user specific data
 		if ($this->get_scope() == "user") {
 			// LDAP filter
-			$return["ldap_filter"] = array('or' => "(objectClass=posixAccount)", 'and' => "(!(uid=*$))");
+			$return["ldap_filter"] = ['or' => "(objectClass=posixAccount)", 'and' => "(!(uid=*$))"];
 			// module dependencies
-			$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+			$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		}
 		elseif ($this->get_scope() == "host") {
 			// LDAP filter
-			$return["ldap_filter"] = array('or' => "(objectClass=posixAccount)");
+			$return["ldap_filter"] = ['or' => "(objectClass=posixAccount)"];
 			// module dependencies
-			$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+			$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		}
 		// alias name
 		$return["alias"] = _("Unix");
 		// RDN attributes
-		$return["RDN"] = array("uid" => "high", "cn" => "low");
+		$return["RDN"] = ["uid" => "high", "cn" => "low"];
 		// managed object classes
-		$return['objectClasses'] = array('posixAccount');
+		$return['objectClasses'] = ['posixAccount'];
 		// LDAP aliases
-		$return['LDAPaliases'] = array('commonName' => 'cn', 'userid' => 'uid');
+		$return['LDAPaliases'] = ['commonName' => 'cn', 'userid' => 'uid'];
 		// managed attributes
-		$return['attributes'] = array('uid', 'uidNumber', 'gidNumber',
-			'loginShell', 'gecos', 'INFO.userPasswordClearText');
+		$return['attributes'] = ['uid', 'uidNumber', 'gidNumber',
+			'loginShell', 'gecos', 'INFO.userPasswordClearText'];
 		if ($this->get_scope() == "user") {
 			// self service search attributes
-			$return['selfServiceSearchAttributes'] = array('uid');
+			$return['selfServiceSearchAttributes'] = ['uid'];
 			// self service field settings
-			$return['selfServiceFieldSettings'] = array(
-					'password' => _('Password'),
-					'cn' => _('Common name'),
-					'loginShell' => _('Login shell'),
-					'syncWindowsPassword' => _('Sync Unix password with Windows password'),
-					'unixgroups' => _('Groups (read-only)')
-			);
+			$return['selfServiceFieldSettings'] = [
+				'password' => _('Password'),
+				'cn' => _('Common name'),
+				'loginShell' => _('Login shell'),
+				'syncWindowsPassword' => _('Sync Unix password with Windows password'),
+				'unixgroups' => _('Groups (read-only)')
+			];
 			// possible self service read-only fields
-			$return['selfServiceReadOnlyFields'] = array('cn', 'loginShell');
+			$return['selfServiceReadOnlyFields'] = ['cn', 'loginShell'];
 			// self service configuration settings
 			$selfServiceContainer = new htmlResponsiveRow();
 			$selfServiceContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				array('CRYPT-SHA512'), _("Password hash type"), array('pwdHash', get_class($this))), 12);
-			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), array('loginShells', get_class($this))), 12);
-			$selfServiceContainer->add(new htmlResponsiveInputField(_('Group DN'), 'posixAccount_groupDn', '', array('groupDn', get_class($this))), 12);
-			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), array('useOldPwd', get_class($this))), 12);
+				['CRYPT-SHA512'], _("Password hash type"), ['pwdHash', get_class($this)]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), ['loginShells', get_class($this)]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputField(_('Group DN'), 'posixAccount_groupDn', '', ['groupDn', get_class($this)]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), ['useOldPwd', get_class($this)]), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
-		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
-		'error_message' => $this->messages['homeDirectory'][0]);
+		$return['profile_checks']['posixAccount_homeDirectory'] = ['type' => 'ext_preg', 'regex' => 'homeDirectory',
+			'error_message' => $this->messages['homeDirectory'][0]];
 		// profile mappings
-		$return['profile_mappings'] = array(
+		$return['profile_mappings'] = [
 			'posixAccount_loginShell' => 'loginShell'
-		);
+		];
 		// upload
-		$return['upload_preDepends'] = array('inetOrgPerson');
+		$return['upload_preDepends'] = ['inetOrgPerson'];
 		// user specific upload options
 		if (($this->get_scope() == 'user') && isLoggedIn()) {
 			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
@@ -224,102 +224,102 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			foreach ($lamdaemonServers as $lamdaemonServer) {
 				$lamdaemonOptions[] = $lamdaemonServer->getServer();
 			}
-			$return['upload_columns'] = array(
-			array(
-				'name' => 'posixAccount_userName',
-				'description' => _('User name'),
-				'help' => 'uid',
-				'example' => _('smiller'),
-				'required' => true,
-				'unique' => true
-			),
-			array(
-				'name' => 'posixAccount_uid',
-				'description' => _('UID number'),
-				'help' => 'uidNumber',
-				'example' => '1234'
-			),
-			array(
-				'name' => 'posixAccount_group',
-				'description' => _('Primary group'),
-				'help' => 'group_upload',
-				'example' => _('users'),
-				'required' => true
-			),
-			array(
-				'name' => 'posixAccount_additionalGroups',
-				'description' => _('Additional groups'),
-				'help' => 'addgroup_upload',
-				'example' => _('group01,group02')
-			),
-			array(
-				'name' => 'posixAccount_homedir',
-				'description' => _('Home directory'),
-				'help' => 'homeDirectory_upload',
-				'example' => _('/home/smiller'),
-				'default' => '/home/{posixAccount_userName}'
-			),
-			);
+			$return['upload_columns'] = [
+				[
+					'name' => 'posixAccount_userName',
+					'description' => _('User name'),
+					'help' => 'uid',
+					'example' => _('smiller'),
+					'required' => true,
+					'unique' => true
+				],
+				[
+					'name' => 'posixAccount_uid',
+					'description' => _('UID number'),
+					'help' => 'uidNumber',
+					'example' => '1234'
+				],
+				[
+					'name' => 'posixAccount_group',
+					'description' => _('Primary group'),
+					'help' => 'group_upload',
+					'example' => _('users'),
+					'required' => true
+				],
+				[
+					'name' => 'posixAccount_additionalGroups',
+					'description' => _('Additional groups'),
+					'help' => 'addgroup_upload',
+					'example' => _('group01,group02')
+				],
+				[
+					'name' => 'posixAccount_homedir',
+					'description' => _('Home directory'),
+					'help' => 'homeDirectory_upload',
+					'example' => _('/home/smiller'),
+					'default' => '/home/{posixAccount_userName}'
+				],
+			];
 			if (!empty($lamdaemonOptions)) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'posixAccount_createHomeDir',
 					'description' => _('Create home directory'),
 					'help' => 'createhomedir',
 					'example' => 'localhost',
 					'values' => implode(', ', $lamdaemonOptions)
-				);
+				];
 			}
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'posixAccount_shell',
 				'description' => _('Login shell'),
 				'help' => 'loginShell',
 				'example' => '/bin/bash',
 				'values' => implode(", ", $this->getShells()),
 				'default' => '/bin/bash'
-			);
+			];
 			if (self::areGroupOfNamesActive()) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'posixAccount_gon',
 					'description' => _('Groups of names'),
 					'help' => 'addgroup_upload',
 					'example' => _('group01,group02')
-				);
+				];
 			}
 		}
 		// host specific upload options
 		elseif ($this->get_scope() == 'host') {
-			$return['upload_columns'] = array(
-			array(
-				'name' => 'posixAccount_hostName',
-				'description' => _('Host name'),
-				'help' => 'uid',
-				'example' => _('pc01$'),
-				'required' => true,
-				'unique' => true
-			),
-			array(
-				'name' => 'posixAccount_uid',
-				'description' => _('UID number'),
-				'help' => 'uidNumber',
-				'example' => '1234'
-			),
-			array(
-				'name' => 'posixAccount_group',
-				'description' => _('Primary group'),
-				'help' => 'group_upload',
-				'example' => _('machines'),
-				'required' => true
-			),
-			);
+			$return['upload_columns'] = [
+				[
+					'name' => 'posixAccount_hostName',
+					'description' => _('Host name'),
+					'help' => 'uid',
+					'example' => _('pc01$'),
+					'required' => true,
+					'unique' => true
+				],
+				[
+					'name' => 'posixAccount_uid',
+					'description' => _('UID number'),
+					'help' => 'uidNumber',
+					'example' => '1234'
+				],
+				[
+					'name' => 'posixAccount_group',
+					'description' => _('Primary group'),
+					'help' => 'group_upload',
+					'example' => _('machines'),
+					'required' => true
+				],
+			];
 		}
 		// available PDF fields
 		if ($this->get_scope() == 'host') {
-			$return['PDF_fields'] = array('uid' => _('Host name'));
+			$return['PDF_fields'] = ['uid' => _('Host name')];
 		}
 		else {
-			$return['PDF_fields'] = array('uid' => _('User name'));
+			$return['PDF_fields'] = ['uid' => _('User name')];
 		}
-		$return['PDF_fields'] = array_merge($return['PDF_fields'], array(
+		$return['PDF_fields'] = array_merge($return['PDF_fields'], [
 			'uidNumber' => _('UID number'),
 			'gidNumber' => _('GID number'),
 			'primaryGroup' => _('Primary group'),
@@ -327,181 +327,181 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			'homeDirectory' => _('Home directory'),
 			'loginShell' => _('Login shell'),
 			'userPassword' => _('Password')
-		));
+		]);
 		if (self::areGroupOfNamesActive()) {
 			$return['PDF_fields']['gon'] = _('Groups of names');
 		}
 		// help Entries
-		$return['help'] = array(
-			'autoAdd' => array(
+		$return['help'] = [
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-			'userNameSuggestion' => array(
+			],
+			'userNameSuggestion' => [
 				"Headline" => _("User name suggestion"),
 				"Text" => _("LAM will suggest a user name based on e.g. first and last name. Here you can specify the suggestion. %sn% will be replaced by the last name. @givenname@ will be replaced by the first character of first name. Only attributes of tab Personal may be used.")
-							. '<br>' . _('Common examples are "@givenname@%sn%" or "%givenname%.%sn%".')
-			),
-			'hiddenOptions' => array(
+					. '<br>' . _('Common examples are "@givenname@%sn%" or "%givenname%.%sn%".')
+			],
+			'hiddenOptions' => [
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
-			),
-			'primaryGroupAsSecondary' => array(
+			],
+			'primaryGroupAsSecondary' => [
 				'Headline' => _('Set primary group as memberUid'),
 				'Text' => _('Usually, users are not added to groups as memberUid if they have this group as primary group. If your application ignores primary groups then you can select this option to override this behaviour.')
-			),
-			'minMaxUser' => array(
+			],
+			'minMaxUser' => [
 				'Headline' => _('UID number'),
 				'Text' => _('These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.')
-			),
-			'minMaxHost' => array(
+			],
+			'minMaxHost' => [
 				'Headline' => _('UID number'),
 				'Text' => _('These are the minimum and maximum numbers to use for machine IDs when creating new accounts for hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.')
-			),
-			'pwdHash' => array(
+			],
+			'pwdHash' => [
 				"Headline" => _("Password hash type"),
 				"Text" => _("LAM supports a large number of possibilities to generate the hash value of passwords. CRYPT-SHA512 and SSHA are the most common. We do not recommend to use plain text passwords unless passwords are hashed server-side.")
-						. ' ' . _('K5KEY is only needed if you use Kerberos with smbk5pwd.')
-			),
-			'uidNumber' => array(
+					. ' ' . _('K5KEY is only needed if you use Kerberos with smbk5pwd.')
+			],
+			'uidNumber' => [
 				"Headline" => _("UID number"), 'attr' => 'uidNumber',
 				"Text" => _("If empty UID number will be generated automatically.")
-			),
-			'group_upload' => array(
+			],
+			'group_upload' => [
 				"Headline" => _("Primary group"),
 				"Text" => _("The primary group for this account. You can insert a GID number or a group name.")
-			),
-			'addgroup_upload' => array(
+			],
+			'addgroup_upload' => [
 				"Headline" => _("Additional groups"),
 				"Text" => _("Here you can enter a list of additional group memberships. The group names are separated by commas.")
-			),
-			'homeDirectory_upload' => array(
+			],
+			'homeDirectory_upload' => [
 				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 				"Text" => _("Please enter the path to the user's home directory.")
-			),
-			'homeDirectory' => array(
-					"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
-					"Text" => _("Please enter the path to the user's home directory.")
-			),
-			'deletehomedir' => array(
+			],
+			'homeDirectory' => [
+				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
+				"Text" => _("Please enter the path to the user's home directory.")
+			],
+			'deletehomedir' => [
 				"Headline" => _("Home directory"),
 				"Text" => _("Activating this checkbox will remove the user's home directory.")
-			),
-			'createhomedir' => array(
+			],
+			'createhomedir' => [
 				"Headline" => _("Home directory"),
 				"Text" => _("This will create the user's home directory on the specified server.")
-			),
-			'deleteSudoers' => array(
+			],
+			'deleteSudoers' => [
 				"Headline" => _("Delete sudo rights"),
 				"Text" => _("Deletes the user from all existing sudo rights.")
-			),
-			'uidCheckSuffix' => array (
+			],
+			'uidCheckSuffix' => [
 				"Headline" => _("Suffix for UID/user name check"),
 				"Text" => _("LAM checks if the entered user name and UID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default, the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique user names or UIDs.")
-			),
-			'loginShells' => array(
+			],
+			'loginShells' => [
 				"Headline" => _("Login shells"),
 				"Text" => _("This is the list of valid login shells.")
-			),
-			'uidGenerator' => array (
+			],
+			'uidGenerator' => [
 				"Headline" => _("UID generator"),
 				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\" or \"msSFU30DomainInfo\".")
 					. ' ' . _('Magic number will set a fixed value that must match your server configuration.')
-			),
-			'sambaIDPoolDN' => array (
+			],
+			'sambaIDPoolDN' => [
 				"Headline" => _("Samba ID pool DN"),
 				"Text" => _("Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\".")
-			),
-			'windowsIDPoolDN' => array (
+			],
+			'windowsIDPoolDN' => [
 				"Headline" => _("Windows domain info DN"),
 				"Text" => _("Please enter the DN of the LDAP entry with object class \"msSFU30DomainInfo\".")
-			),
-			'magicNumber' => array(
+			],
+			'magicNumber' => [
 				"Headline" => _("Magic number"),
 				"Text" => _("Please enter the magic number you configured on server side.")
-			),
-			'noObjectClass' => array(
+			],
+			'noObjectClass' => [
 				"Headline" => _("Do not add object class"),
 				"Text" => _("This will not add the posixAccount object class to the account.")
-				),
-			'excludeFromGroupSync' => array (
+			],
+			'excludeFromGroupSync' => [
 				"Headline" => _('Exclude from group sync'),
 				"Text" => _('Enter one group per line that should be ignored when syncing groups.')
-			),
-			'groupDn' => array (
+			],
+			'groupDn' => [
 				"Headline" => _('Group DN'),
 				"Text" => _('Enter the base DN of your groups here. This is only required if you want to display memberships on the self service page.')
-			),
-			'user' => array(
-				'uid' => array(
+			],
+			'user' => [
+				'uid' => [
 					"Headline" => _("User name"), 'attr' => 'uid',
 					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_. If user name is already used user name will be expanded with a number. The next free number will be used.")
-				),
-				'gecos' => array(
+				],
+				'gecos' => [
 					"Headline" => _("Gecos"), 'attr' => 'gecos',
 					"Text" => _("User description.")
-				),
-				'gidNumber' => array(
+				],
+				'gidNumber' => [
 					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
 					"Text" => _("The primary group the user should be member of.")
-				),
-				'userPassword' => array(
+				],
+				'userPassword' => [
 					"Headline" => _("Password"), 'attr' => 'userPassword',
 					"Text" => _("Please enter the password which you want to set for this account.")
-				),
-				'userPassword_lock' => array(
+				],
+				'userPassword_lock' => [
 					"Headline" => _("Lock password"),
 					"Text" => _("If checked then the password will be deactivated by putting a \"!\" before the encrypted password.")
-				),
-				'loginShell' => array(
+				],
+				'loginShell' => [
 					"Headline" => _("Login shell"), 'attr' => 'loginShell',
 					"Text" => _("To disable login use /bin/false.")
-				),
-				'addgroup' => array(
+				],
+				'addgroup' => [
 					"Headline" => _("Additional groups"),
-					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")
-				),
-				'cn' => array (
+					"Text" => _("Hold the CTRL-key to (de)select multiple groups.") . ' ' . _("Can be left empty.")
+				],
+				'cn' => [
 					"Headline" => _("Common name"), 'attr' => 'cn',
 					"Text" => _("This is the natural name of the user. If empty, the first and last name or user name is used.")
-				),
-				'useOldPwd' => array (
+				],
+				'useOldPwd' => [
 					"Headline" => _('Password change with old password'),
 					"Text" => _('Sends the old password together with the new password when the user sets a new password.')
-				)
-			),
-			'host' => array(
-				'uid' => array(
+				]
+			],
+			'host' => [
+				'uid' => [
 					"Headline" => _("Host name"), 'attr' => 'uid',
 					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
-				),
-				'gecos' => array(
+				],
+				'gecos' => [
 					"Headline" => _("Gecos"), 'attr' => 'gecos',
 					"Text" => _("Host description. If left empty host name will be used.")
-				),
-				'gidNumber' => array(
+				],
+				'gidNumber' => [
 					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
 					"Text" => _("The primary group the host should be member of.")
-				),
-				'description' => array (
+				],
+				'description' => [
 					"Headline" => _("Description"), 'attr' => 'description',
 					"Text" => _("Host description. If left empty host name will be used.")
-				),
-				'cn' => array (
+				],
+				'cn' => [
 					"Headline" => _("Common name"), 'attr' => 'cn',
 					"Text" => _("This is the natural name of the host. If empty, the host name will be used.")
-				)
-			)
-		);
+				]
+			]
+		];
 
 		return $return;
 	}
 
 	/**
-	* Initializes the module after it became part of an accountContainer
-	*
-	* @param string $base the name of the accountContainer object ($_SESSION[$base])
-	*/
+	 * Initializes the module after it became part of an accountContainer
+	 *
+	 * @param string $base the name of the accountContainer object ($_SESSION[$base])
+	 */
 	function init($base) {
 		// make optional if needed
 		$modules = $_SESSION[$base]->get_type()->getModules();
@@ -512,7 +512,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$this->groups_orig = [];
 		// list of all group names
 		$groups = $this->findGroups($modules);
-		if (count($groups)==0) {
+		if (count($groups) == 0) {
 			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
 			return;
 		}
@@ -540,10 +540,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* This functions is used to check if all settings for this module have been made.
-	*
-	* @return boolean true, if settings are complete
-	*/
+	 * This functions is used to check if all settings for this module have been made.
+	 *
+	 * @return boolean true, if settings are complete
+	 */
 	function module_complete() {
 		if (!$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
 			// no checks if object class is not set
@@ -601,7 +601,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			}
 			$groupFilter = '(&' . $groupFilter . $typeFilter . ')';
 		}
-		$groupList = searchLDAPByFilter($groupFilter, array('cn'), array('group'));
+		$groupList = searchLDAPByFilter($groupFilter, ['cn'], ['group']);
 		for ($i = 0; $i < sizeof($groupList); $i++) {
 			$groups[] = $groupList[$i]['cn'][0];
 		}
@@ -617,7 +617,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	private function getGoNMemberships(string $dn): array {
 		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$userGoNs = [];
-		$types = array('gon', 'group');
+		$types = ['gon', 'group'];
 		$gonList = [];
 		foreach ($types as $type) {
 			$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($dn, '', LDAP_ESCAPE_FILTER) . '))(&(objectClass=groupOfMembers)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfUniqueNames)(uniquemember=' . ldap_escape($dn) . ')))';
@@ -628,7 +628,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				$gonFilter = '(&' . $gonFilter . $typeFilter . ')';
 			}
-			$gonListPart = searchLDAPByFilter($gonFilter, array('dn'), array($type));
+			$gonListPart = searchLDAPByFilter($gonFilter, ['dn'], [$type]);
 			$gonList = array_merge($gonList, $gonListPart);
 		}
 		for ($i = 0; $i < sizeof($gonList); $i++) {
@@ -640,7 +640,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 		if (!empty($ldapAttributes['uid'][0])) {
 			$this->groups = $this->getUnixGroupMemberships($ldapAttributes['uid'][0]);
@@ -651,17 +651,17 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!$this->skipObjectClass() && (!in_array('posixAccount', $this->attributes['objectClass']) && !in_array('posixAccount', $this->orig['objectClass']))) {
 			// skip saving if the extension was not added/modified
@@ -706,7 +706,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$allGons = $this->findGroupOfNames();
 					foreach ($allGons as $gonDn => $gonData) {
 						if (in_array_ignore_case('posixGroup', $gonData['objectclass'])) {
-							$gonCn =  $gonData['cn'][0];
+							$gonCn = $gonData['cn'][0];
 							if (($gonCn === $primaryGroupName) && !in_array($gonDn, $this->gonList)) {
 								$this->gonList[] = $gonDn;
 							}
@@ -718,7 +718,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			// Set additional group memberships
 			if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($this->attributes['uid'][0] != $this->orig['uid'][0])) {
 				// find affected groups
-				$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', array('dn'), array('group'));
+				$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', ['dn'], ['group']);
 				for ($i = 0; $i < sizeof($groupList); $i++) {
 					// replace old user name with new one
 					$return[$groupList[$i]['dn']]['remove']['memberUid'][] = $this->orig['uid'][0];
@@ -729,7 +729,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// update groups.
 				$add = array_delete($this->groups_orig, $this->groups);
 				$remove = array_delete($this->groups, $this->groups_orig);
-				$groupList = searchLDAPByAttribute('cn', '*', 'posixGroup', array('cn', 'dn'), array('group'));
+				$groupList = searchLDAPByAttribute('cn', '*', 'posixGroup', ['cn', 'dn'], ['group']);
 				$cn2dn = [];
 				for ($i = 0; $i < sizeof($groupList); $i++) {
 					$cn2dn[$groupList[$i]['cn'][0]] = $groupList[$i]['dn'];
@@ -748,7 +748,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		elseif (in_array('posixAccount', $this->orig['objectClass']) && !empty($this->orig['uid'][0])) {
 			// Unix extension was removed, clean group memberships
-			$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', array('dn'), array('group'));
+			$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', ['dn'], ['group']);
 			for ($i = 0; $i < sizeof($groupList); $i++) {
 				// remove user name
 				$return[$groupList[$i]['dn']]['remove']['memberUid'][] = $this->orig['uid'][0];
@@ -760,11 +760,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	/**
 	 * Runs the postmodify actions.
 	 *
-	 * @see baseModule::postModifyActions()
-	 *
 	 * @param boolean $newAccount
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @see baseModule::postModifyActions()
+	 *
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = [];
@@ -788,7 +788,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$remote->connect($lamdaemonServer);
 				}
 				catch (LAMException $e) {
-					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$messages[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = self::createHomeDirectory($remote, $lamdaemonServer, $this->attributes['uid'][0],
@@ -802,7 +802,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 						$messages[] = $singleresult;
 					}
 					else {
-						$messages[] = array('ERROR', $result[0]);
+						$messages[] = ['ERROR', $result[0]];
 					}
 				}
 			}
@@ -816,20 +816,20 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$remote->connect($lamdaemonServer);
 				}
 				catch (LAMException $e) {
-					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$messages[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
-						array(
+						[
 							$this->attributes['uid'][0],
 							"home",
 							"move",
 							$lamdaemonServer->getHomeDirPrefix() . $this->orig[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
-							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0])
-						));
+							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0]]
+					));
 				$remote->disconnect();
 				// lamdaemon results
 				if (!empty($result)) {
@@ -849,20 +849,20 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$remote->connect($lamdaemonServer);
 				}
 				catch (LAMException $e) {
-					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$messages[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
-						array(
+						[
 							$this->attributes['uid'][0],
 							"home",
 							"chgrp",
 							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
-							$this->attributes['gidNumber'][0])
-						));
+							$this->attributes['gidNumber'][0]]
+					));
 				$remote->disconnect();
 				// lamdaemon results
 				if (!empty($result)) {
@@ -881,9 +881,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			// update groups if DN changed
 			if (isset($accountContainer->dn_orig) && (strtolower($accountContainer->dn_orig) != strtolower($accountContainer->finalDN))) {
 				// update owner/member/uniqueMember attributes
-				$searchAttrs = array('member', 'uniquemember', 'owner');
+				$searchAttrs = ['member', 'uniquemember', 'owner'];
 				foreach ($searchAttrs as $searchAttr) {
-					$ownerGroups = searchLDAPByAttribute($searchAttr, $accountContainer->dn_orig, null, array('dn', $searchAttr), array('gon', 'group'));
+					$ownerGroups = searchLDAPByAttribute($searchAttr, $accountContainer->dn_orig, null, ['dn', $searchAttr], ['gon', 'group']);
 					for ($i = 0; $i < sizeof($ownerGroups); $i++) {
 						$found = false;
 						$newOwners = $ownerGroups[$i][$searchAttr];
@@ -895,13 +895,13 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 							}
 						}
 						if ($found) {
-							$attributesToModify = array($searchAttr => $newOwners);
+							$attributesToModify = [$searchAttr => $newOwners];
 							$success = @ldap_mod_replace($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], $attributesToModify);
 							if (!$success) {
 								$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 								logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . $ldapError . ').');
 								logNewMessage(LOG_DEBUG, print_r($attributesToModify, true));
-								$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $ownerGroups[$i]['dn']), $ldapError);
+								$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $ownerGroups[$i]['dn']), $ldapError];
 							}
 						}
 					}
@@ -914,10 +914,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
 						$attrName = 'uniquemember';
 					}
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($accountContainer->finalDN)));
+					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], [$attrName => [$accountContainer->finalDN]]);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to add user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-						$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+						$messages[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 					}
 					else {
 						logNewMessage(LOG_NOTICE, 'Added user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i]);
@@ -931,10 +931,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
 						$attrName = 'uniquemember';
 					}
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($accountContainer->dn_orig)));
+					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], [$attrName => [$accountContainer->dn_orig]]);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to delete user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-						$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+						$messages[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 					}
 					else {
 						logNewMessage(LOG_NOTICE, 'Removed user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i]);
@@ -958,7 +958,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @return string output
 	 */
 	public static function createHomeDirectory(Remote $remote, RemoteServerConfiguration $config, string $userName,
-	                                           string $path, string $uidNumber, string $gidNumber, string $rights) {
+											   string $path, string $uidNumber, string $gidNumber, string $rights) {
 		if ($rights == '') {
 			$rights = '750';
 		}
@@ -968,15 +968,15 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		return $remote->execute(
 			implode(
 				self::$SPLIT_DELIMITER,
-				array(
+				[
 					$userName,
 					"home",
 					"add",
 					$config->getHomeDirPrefix() . $path,
 					$rights,
 					$uidNumber,
-					$gidNumber)
-		));
+					$gidNumber]
+			));
 	}
 
 	/**
@@ -987,10 +987,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 */
 	private function setExopPassword($settings) {
 		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
-				&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+			&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
 			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, null, $this->clearTextPassword);
 			if (!$success) {
-				return array(array('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())));
+				return [['ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())]];
 			}
 		}
 		return [];
@@ -1003,7 +1003,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	function delete_attributes(): array {
 		$return = [];
 		// remove memberUids if set
-		$groups = searchLDAPByAttribute('memberUid', $this->attributes['uid'][0], 'posixGroup', array('dn'), array('group'));
+		$groups = searchLDAPByAttribute('memberUid', $this->attributes['uid'][0], 'posixGroup', ['dn'], ['group']);
 		for ($i = 0; $i < sizeof($groups); $i++) {
 			$return[$groups[$i]['dn']]['remove']['memberUid'][] = $this->attributes['uid'][0];
 		}
@@ -1015,7 +1015,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		// remove from group of names
 		$dn = $this->getAccountContainer()->dn_orig;
 		$filter = '(&(|(member=' . $dn . ')(uniquemember=' . $dn . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=groupOfMembers)))';
-		$gons = searchLDAPByFilter($filter, array('member', 'uniquemember'), array('group', 'gon'));
+		$gons = searchLDAPByFilter($filter, ['member', 'uniquemember'], ['group', 'gon']);
 		for ($i = 0; $i < sizeof($gons); $i++) {
 			if (isset($gons[$i]['member'])) {
 				$return[$gons[$i]['dn']]['remove']['member'][] = $dn;
@@ -1048,36 +1048,36 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$result = $remote->execute(
 						implode(
 							self::$SPLIT_DELIMITER,
-							array(
+							[
 								$this->attributes['uid'][0],
 								"home",
 								"rem",
 								$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 								$this->attributes['uidNumber'][0]
-							)
+							]
 						));
 					$remote->disconnect();
 				}
 				catch (LAMException $e) {
-					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$return[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 				}
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
 					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-							$return[] = $singleresult;
-						}
+						$return[] = $singleresult;
+					}
 				}
 			}
 		}
 		// delete sudo rights
 		if (isset($_POST['deleteSudoers']) && ($_POST['deleteSudoers'] == 'on')) {
-			$result = searchLDAPByAttribute('sudoUser', $this->attributes['uid'][0], 'sudoRole', array('dn'), array('sudo'));
+			$result = searchLDAPByAttribute('sudoUser', $this->attributes['uid'][0], 'sudoRole', ['dn'], ['sudo']);
 			foreach ($result as $attrs) {
 				$dn = $attrs['dn'];
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, array('sudoUser' => array($this->attributes['uid'][0])));
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, ['sudoUser' => [$this->attributes['uid'][0]]]);
 				if (!$success) {
-					$return[] = array('ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+					$return[] = ['ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 			}
 		}
@@ -1085,13 +1085,13 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
-		$keysToReplace = array('cn', 'gecos', 'homeDirectory');
+		$keysToReplace = ['cn', 'gecos', 'homeDirectory'];
 		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
@@ -1106,7 +1106,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			return $errors;
 		}
 		if (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('posixAccount'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['posixAccount'], $this->attributes['objectClass']);
 			$attrs = $this->getManagedAttributes($this->getAccountContainer()->get_type()->getId());
 			foreach ($attrs as $name) {
 				if (isset($this->attributes[$name])) {
@@ -1120,7 +1120,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			return $errors;
 		}
 		$groups = $this->findGroups($modules); // list of all group names
-		if (count($groups)==0) {
+		if (count($groups) == 0) {
 			// abort if no groups were found
 			return [];
 		}
@@ -1137,26 +1137,26 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		if (isset($this->orig['gidNumber'][0]) && ($this->orig['gidNumber'][0] != '') && ($_POST['gidNumber'] != $this->attributes['gidNumber'][0])) {
 			$errorMessage = $this->messages['gidNumber'][2];
-			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
+			$errorMessage[] = [$this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']];
 			$errors[] = $errorMessage;
 			if ($this->isBooleanConfigOptionSet('posixAccount_primaryGroupAsSecondary') && !empty($this->attributes['gidNumber'][0])) {
 				// change primary group in $this->groups
 				$oldGroupName = $this->getGroupName($this->attributes['gidNumber'][0]);
 				$newGroupName = $this->getGroupName($_POST['gidNumber']);
 				if (!empty($oldGroupName) && !empty($newGroupName)) {
-					$this->groups = array_delete(array($oldGroupName), $this->groups);
+					$this->groups = array_delete([$oldGroupName], $this->groups);
 					$this->groups[] = $newGroupName;
 					// sync group of names if needed
 					if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 						$allGons = $this->findGroupOfNames();
 						foreach ($allGons as $gonDn => $gonData) {
 							if (in_array_ignore_case('posixGroup', $gonData['objectclass'])) {
-								$gonCn =  $gonData['cn'][0];
+								$gonCn = $gonData['cn'][0];
 								if (($gonCn === $newGroupName) && !in_array($gonDn, $this->gonList)) {
 									$this->gonList[] = $gonDn;
 								}
 								if (($gonCn === $oldGroupName) && in_array($gonDn, $this->gonList)) {
-									$this->gonList = array_delete(array($gonDn), $this->gonList);
+									$this->gonList = array_delete([$gonDn], $this->gonList);
 								}
 							}
 						}
@@ -1164,15 +1164,15 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 			}
 		}
-		if (isset($this->orig['uidNumber'][0]) && $this->orig['uidNumber'][0]!='' && trim($_POST['uidNumber'])!=$this->attributes['uidNumber'][0]) {
+		if (isset($this->orig['uidNumber'][0]) && $this->orig['uidNumber'][0] != '' && trim($_POST['uidNumber']) != $this->attributes['uidNumber'][0]) {
 			$errorMessage = $this->messages['uidNumber'][5];
-			$errorMessage[] = array($this->orig['uidNumber'][0], $_POST['uidNumber']);
+			$errorMessage[] = [$this->orig['uidNumber'][0], $_POST['uidNumber']];
 			$errors[] = $errorMessage;
 		}
 		$homedirAttrName = $this->getHomedirAttrName($modules);
 		if (isset($_POST['homeDirectory']) && isset($this->orig[$homedirAttrName][0]) && ($this->orig[$homedirAttrName][0] != '') && ($_POST['homeDirectory'] != $this->attributes[$homedirAttrName][0])) {
 			$errorMessage = $this->messages['homeDirectory'][3];
-			$errorMessage[] = array($this->orig[$homedirAttrName][0], $_POST['homeDirectory']);
+			$errorMessage[] = [$this->orig[$homedirAttrName][0], $_POST['homeDirectory']];
 			$errors[] = $errorMessage;
 		}
 		// get list of DNS names or IPs
@@ -1207,18 +1207,18 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			if (($this->attributes['uid'][0] != $_POST['uid']) && !get_preg($_POST['uid'], '!upper')) {
 				$errors[] = $this->messages['uid'][1];
 			}
-			if ( !get_preg($this->attributes[$homedirAttrName][0], 'homeDirectory' )) {
+			if (!get_preg($this->attributes[$homedirAttrName][0], 'homeDirectory')) {
 				$errors[] = $this->messages['homeDirectory'][0];
 			}
 		}
 		$this->attributes['uid'][0] = trim($_POST['uid']);
 		// Check if UID is valid. If none value was entered, the next usable value will be inserted
 		// load min and may uidNumber
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minUID'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxUID'][0]);
 		}
-		if ($this->get_scope()=='host') {
+		if ($this->get_scope() == 'host') {
 			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxMachine'][0]);
 		}
@@ -1235,7 +1235,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$errors[] = $this->messages['uidNumber'][3];
 				}
 			}
-			else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+			else {
+				$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+			}
 			// old account -> return id-number which has been used
 		}
 		else {
@@ -1244,18 +1246,20 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// check range
 				if (($this->get_scope() == 'user') && (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'range'))) {
 					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
-						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+						$errors[] = ['ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID)];
 					}
 				}
 				if (($this->get_scope() == 'host') && (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'range'))) {
 					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
-						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+						$errors[] = ['ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID)];
 					}
 				}
 				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && !isset($this->orig['uidNumber'][0])) $errors[] = $this->messages['uidNumber'][3];
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && !isset($this->orig['uidNumber'][0])) {
+					$errors[] = $this->messages['uidNumber'][3];
+				}
 				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && isset($this->orig['uidNumber'][0]) && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && isset($this->orig['uidNumber'][0]) && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
 					$errors[] = $this->messages['uidNumber'][3];
 					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 				}
@@ -1264,7 +1268,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ($this->userNameExists($this->attributes['uid'][0], $typeId) && isset($this->orig['uid'][0]) && ($this->orig['uid'][0]!='')) {
+		if ($this->userNameExists($this->attributes['uid'][0], $typeId) && isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '')) {
 			$this->attributes['uid'][0] = $this->orig['uid'][0];
 		}
 		else {
@@ -1278,12 +1282,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$userNames = $this->getUserNames($typeId);
 			if ($this->get_scope() == 'user') {
 				$error = $this->messages['uid'][5];
-				$error[] = array(htmlspecialchars($userNames[trim($_POST['uid'])]));
+				$error[] = [htmlspecialchars($userNames[trim($_POST['uid'])])];
 				$errors[] = $error;
 			}
 			if ($this->get_scope() == 'host') {
 				$error = $this->messages['uid'][6];
-				$error[] = array(htmlspecialchars($userNames[trim($_POST['uid'])]));
+				$error[] = [htmlspecialchars($userNames[trim($_POST['uid'])])];
 				$errors[] = $error;
 			}
 		}
@@ -1303,7 +1307,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				$this->attributes['loginShell'][0] = '/bin/false';
 			}
 		}
-		$attributeList = array($homedirAttrName);
+		$attributeList = [$homedirAttrName];
 		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 			$attributeList[] = 'gecos';
 		}
@@ -1313,14 +1317,14 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				$replacedValue = $this->checkASCII($value);
 				if ($value != $replacedValue) {
 					$this->attributes[$attributeList[$i]][0] = $replacedValue;
-					$errors[] = array('WARN', $attributeList[$i], _('Changed value because only ASCII characters are allowed.'));
+					$errors[] = ['WARN', $attributeList[$i], _('Changed value because only ASCII characters are allowed.')];
 				}
 			}
 		}
 		if ($this->get_scope() == 'user') {
 			// set SASL password for new and renamed users
 			if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
-					&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 				$this->attributes[$this->getPasswordAttrName($modules)][0] = '{SASL}' . $this->attributes['uid'][0];
 			}
 			// set K5KEY password for new users
@@ -1342,19 +1346,19 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			if ($nextGid !== null) {
 				$newGroupName = $this->attributes['uid'][0];
 				$dnNewGroup = 'cn=' . $newGroupName . ',' . $groupType->getSuffix();
-				$attributesNewGroup = array(
-					'cn' => array($newGroupName),
+				$attributesNewGroup = [
+					'cn' => [$newGroupName],
 					'gidNumber' => $nextGid[0],
-					'objectClass' => array('posixGroup'),
-				);
+					'objectClass' => ['posixGroup'],
+				];
 				$newGroupSuccess = @ldap_add(getLDAPServerHandle(), $dnNewGroup, $attributesNewGroup);
 				if ($newGroupSuccess) {
-					$errors[] = array('INFO', _('Created new group.'), htmlspecialchars($newGroupName));
+					$errors[] = ['INFO', _('Created new group.'), htmlspecialchars($newGroupName)];
 					$this->attributes['gidNumber'][0] = $nextGid[0];
 					$this->groupCache = null;
 				}
 				else {
-					$errors[] = array('ERROR', _('Unable to create new group.'), getDefaultLDAPErrorString(getLDAPServerHandle()));
+					$errors[] = ['ERROR', _('Unable to create new group.'), getDefaultLDAPErrorString(getLDAPServerHandle())];
 				}
 			}
 		}
@@ -1380,11 +1384,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Checks if an attribute contains only ASCII characters and replaces invalid characters.
-	*
-	* @param string $attribute attribute value
-	* @return string attribute value with replaced non-ASCII characters
-	*/
+	 * Checks if an attribute contains only ASCII characters and replaces invalid characters.
+	 *
+	 * @param string $attribute attribute value
+	 * @return string attribute value with replaced non-ASCII characters
+	 */
 	function checkASCII($attribute) {
 		if ($attribute == null) {
 			return '';
@@ -1402,11 +1406,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Processes user input of the group selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the group selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_group() {
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// Unix groups
@@ -1552,7 +1556,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 */
 	private function manualSyncWindowsToUnix($type) {
 		$windowsGroups = $this->getAccountContainer()->getAccountModule('windowsUser')->getGroupList();
-		$allWindowsGroups = searchLDAPByAttribute('gidNumber', '*', null, array('cn'), array('group'));
+		$allWindowsGroups = searchLDAPByAttribute('gidNumber', '*', null, ['cn'], ['group']);
 		$allGroups = $this->findGroups($modules);
 		foreach ($allGroups as $index => $groupData) {
 			$allGroups[$index] = $groupData[1];
@@ -1625,11 +1629,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Processes user input of the homedir check page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the homedir check page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_homedir() {
 		$return = [];
 		// get list of lamdaemon servers
@@ -1643,7 +1647,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$remote->connect($lamdaemonServers[$i]);
 				}
 				catch (LAMException $e) {
-					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$return[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = self::createHomeDirectory($remote, $lamdaemonServers[$i], $this->attributes['uid'][0],
@@ -1654,8 +1658,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
 					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-							$return[] = $singleresult;
-						}
+						$return[] = $singleresult;
+					}
 				}
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
@@ -1664,27 +1668,27 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$remote->connect($lamdaemonServers[$i]);
 				}
 				catch (LAMException $e) {
-					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$return[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
-						array(
+						[
 							$this->attributes['uid'][0],
 							"home",
 							"rem",
 							$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0]
-						)
+						]
 					));
 				$remote->disconnect();
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
 					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-							$return[] = $singleresult;
-						}
+						$return[] = $singleresult;
+					}
 				}
 			}
 		}
@@ -1702,15 +1706,15 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->isOptional($modules) || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
-            $keysToReplace = array('cn', 'gecos', 'homeDirectory');
-            $this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
+			$keysToReplace = ['cn', 'gecos', 'homeDirectory'];
+			$this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
 			$homeDirAttr = $this->getHomedirAttrName($modules);
 			$groupList = $this->findGroups($modules); // list of all group names
 			$groups = [];
 			for ($i = 0; $i < sizeof($groupList); $i++) {
 				$groups[$groupList[$i][1]] = $groupList[$i][0];
 			}
-			if (count($groups)==0) {
+			if (count($groups) == 0) {
 				$return->add(new htmlStatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.')), 12);
 				return $return;
 			}
@@ -1729,8 +1733,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 						}
 						$users = $this->getUserNames($typeId);
 						$msg = new htmlStatusMessage($this->messages['uid'][5][0],
-								$this->messages['uid'][5][1], $this->messages['uid'][5][2],
-								array(htmlspecialchars($users[$firstSuggestion])));
+							$this->messages['uid'][5][1], $this->messages['uid'][5][2],
+							[htmlspecialchars($users[$firstSuggestion])]);
 						$return->add($msg, 12);
 					}
 				}
@@ -1858,14 +1862,14 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				$selectedShell = [];
 				if (isset($this->attributes['loginShell'][0])) {
-					$selectedShell = array($this->attributes['loginShell'][0]);
+					$selectedShell = [$this->attributes['loginShell'][0]];
 				}
 				$return->add(new htmlResponsiveSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), 12);
 			}
 			// password buttons
 			if (checkIfWriteAccessIsAllowed($this->get_scope())
-					&& isset($this->attributes[$this->getPasswordAttrName($modules)][0])
-					&& $this->isPasswordManaged()) {
+				&& isset($this->attributes[$this->getPasswordAttrName($modules)][0])
+				&& $this->isPasswordManaged()) {
 				$return->addLabel(new htmlOutputText(_('Password')));
 				$pwdContainer = new htmlGroup();
 				if (pwd_is_enabled($this->attributes[$this->getPasswordAttrName($modules)][0])) {
@@ -1881,7 +1885,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			if ($this->isOptional($modules) && !$this->skipObjectClass()) {
 				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove Unix extension'));
-				$remButton->setCSSClasses(array('lam-danger'));
+				$remButton->setCSSClasses(['lam-danger']);
 				$return->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
@@ -1912,10 +1916,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Displays the delete homedir option for the delete page.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the delete homedir option for the delete page.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_delete() {
 		$return = new htmlResponsiveRow();
 		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null)) {
@@ -1930,10 +1934,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Displays the group selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the group selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_group() {
 		$return = new htmlResponsiveRow();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
@@ -2044,10 +2048,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Displays the delete homedir option for the homedir page.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the delete homedir option for the homedir page.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_homedir() {
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
@@ -2070,12 +2074,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
-					array(
+					[
 						$this->attributes['uid'][0],
 						"home",
 						"check",
-						$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0])
-					));
+						$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0]]
+				));
 			$remote->disconnect();
 			// lamdaemon results
 			if (!empty($result)) {
@@ -2117,8 +2121,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function get_profileOptions($typeId) {
 		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
@@ -2159,7 +2163,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			// home directory
 			$return->add(new htmlResponsiveInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'), 12);
 			// login shell
-			$return->add(new htmlResponsiveSelect('posixAccount_loginShell', $shelllist, array("/bin/bash"), _('Login shell'), 'loginShell'), 12);
+			$return->add(new htmlResponsiveSelect('posixAccount_loginShell', $shelllist, ["/bin/bash"], _('Login shell'), 'loginShell'), 12);
 			// lamdaemon settings
 			if ($_SESSION['config']->get_scriptPath() != null) {
 				$return->add(new htmlSubTitle(_('Create home directory')), 12);
@@ -2182,10 +2186,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -2311,12 +2315,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$typeManager = new TypeManager($_SESSION['conf_config']);
 		$isWindows = array_key_exists('windowsUser', $allScopes);
 		$return = [];
-		$generatorOptions = array(
-				_('Fixed range') => 'range',
-				_('Samba ID pool') => 'sambaPool',
-				_('Windows domain info') => 'windowsDomain',
-				_('Magic number') => 'magicNumber'
-		);
+		$generatorOptions = [
+			_('Fixed range') => 'range',
+			_('Samba ID pool') => 'sambaPool',
+			_('Windows domain info') => 'windowsDomain',
+			_('Magic number') => 'magicNumber'
+		];
 		$hasUserConfig = false;
 		$hasHostConfig = false;
 		foreach ($scopes as $typeId) {
@@ -2337,28 +2341,28 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				if (sizeof($allScopes[get_class($this)]) > 1) {
 					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
-					$title->setCSSClasses(array('bold', 'responsiveLabel'));
+					$title->setCSSClasses(['bold', 'responsiveLabel']);
 					$configUserContainer->add($title, 12, 6);
 					$configUserContainer->add(new htmlOutputText('&nbsp;', false), 0, 6);
 				}
-				$uidGeneratorSelect = new htmlResponsiveSelect('posixAccount_' . $typeId . '_uidGeneratorUsers', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
+				$uidGeneratorSelect = new htmlResponsiveSelect('posixAccount_' . $typeId . '_uidGeneratorUsers', $generatorOptions, ['range'], _('UID generator'), 'uidGenerator');
 				$uidGeneratorSelect->setHasDescriptiveElements(true);
-				$uidGeneratorSelect->setTableRowsToHide(array(
-						'range' => array('posixAccount_' . $typeId . '_sambaIDPoolDNUsers', 'posixAccount_' . $typeId . '_windowsIDPoolDNUsers',
-									'posixAccount_' . $typeId . '_magicNumberUser'),
-						'sambaPool' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
-									'posixAccount_' . $typeId . '_windowsIDPoolDNUsers', 'posixAccount_' . $typeId . '_magicNumberUser'),
-						'windowsDomain' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
-									'posixAccount_' . $typeId . '_sambaIDPoolDNUsers', 'posixAccount_' . $typeId . '_magicNumberUser'),
-						'magicNumber' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
-									'posixAccount_' . $typeId . '_windowsIDPoolDNUsers', 'posixAccount_' . $typeId . '_sambaIDPoolDNUsers')
-				));
-				$uidGeneratorSelect->setTableRowsToShow(array(
-						'range' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID'),
-						'sambaPool' => array('posixAccount_' . $typeId . '_sambaIDPoolDNUsers'),
-						'windowsDomain' => array('posixAccount_' . $typeId . '_windowsIDPoolDNUsers'),
-						'magicNumber' => array('posixAccount_' . $typeId . '_magicNumberUser')
-				));
+				$uidGeneratorSelect->setTableRowsToHide([
+					'range' => ['posixAccount_' . $typeId . '_sambaIDPoolDNUsers', 'posixAccount_' . $typeId . '_windowsIDPoolDNUsers',
+						'posixAccount_' . $typeId . '_magicNumberUser'],
+					'sambaPool' => ['posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
+						'posixAccount_' . $typeId . '_windowsIDPoolDNUsers', 'posixAccount_' . $typeId . '_magicNumberUser'],
+					'windowsDomain' => ['posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
+						'posixAccount_' . $typeId . '_sambaIDPoolDNUsers', 'posixAccount_' . $typeId . '_magicNumberUser'],
+					'magicNumber' => ['posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
+						'posixAccount_' . $typeId . '_windowsIDPoolDNUsers', 'posixAccount_' . $typeId . '_sambaIDPoolDNUsers']
+				]);
+				$uidGeneratorSelect->setTableRowsToShow([
+					'range' => ['posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID'],
+					'sambaPool' => ['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'],
+					'windowsDomain' => ['posixAccount_' . $typeId . '_windowsIDPoolDNUsers'],
+					'magicNumber' => ['posixAccount_' . $typeId . '_magicNumberUser']
+				]);
 				$configUserContainer->add($uidGeneratorSelect, 12);
 				$uidUsersGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_' . $typeId . '_sambaIDPoolDNUsers', null, 'sambaIDPoolDN');
 				$uidUsersGeneratorDN->setRequired(true);
@@ -2391,7 +2395,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hideCreateGroup', false, _('Create group with same name'), null, true), 12, 4, 4);
 					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hideposixGroups', false, _('Unix groups'), null, true), 12, 4, 4);
 					$syncGroupsCheckbox = new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_syncGroups', false, _('Sync groups'), null, true);
-					$syncGroupsCheckbox->setTableRowsToHide(array('posixAccount_' . $typeId . '_syncGroupsExclusions'));
+					$syncGroupsCheckbox->setTableRowsToHide(['posixAccount_' . $typeId . '_syncGroupsExclusions']);
 					$configUserContainer->add($syncGroupsCheckbox, 12, 4, 4);
 					$configUserContainer->add(new htmlResponsiveInputTextarea('posixAccount_' . $typeId . '_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync'), 'excludeFromGroupSync'), 12);
 				}
@@ -2408,28 +2412,28 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				if (sizeof($allScopes[get_class($this)]) > 1) {
 					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
-					$title->setCSSClasses(array('bold', 'responsiveLabel'));
+					$title->setCSSClasses(['bold', 'responsiveLabel']);
 					$configHostContainer->add($title, 12, 6);
 					$configHostContainer->add(new htmlOutputText('&nbsp;', false), 0, 6);
 				}
-				$uidHostGeneratorSelect = new htmlResponsiveSelect('posixAccount_' . $typeId . '_uidGeneratorHosts', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
+				$uidHostGeneratorSelect = new htmlResponsiveSelect('posixAccount_' . $typeId . '_uidGeneratorHosts', $generatorOptions, ['range'], _('UID generator'), 'uidGenerator');
 				$uidHostGeneratorSelect->setHasDescriptiveElements(true);
-				$uidHostGeneratorSelect->setTableRowsToHide(array(
-						'range' => array('posixAccount_' . $typeId . '_sambaIDPoolDNHosts', 'posixAccount_' . $typeId . '_windowsIDPoolDNHosts',
-										'posixAccount_' . $typeId . '_magicNumberHost'),
-						'sambaPool' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
-										'posixAccount_' . $typeId . '_windowsIDPoolDNHosts', 'posixAccount_' . $typeId . '_magicNumberHost'),
-						'windowsDomain' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
-										'posixAccount_' . $typeId . '_sambaIDPoolDNHosts', 'posixAccount_' . $typeId . '_magicNumberHost'),
-						'magicNumber' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
-										'posixAccount_' . $typeId . '_windowsIDPoolDNHosts', 'posixAccount_' . $typeId . '_sambaIDPoolDNHosts')
-				));
-				$uidHostGeneratorSelect->setTableRowsToShow(array(
-						'range' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine'),
-						'sambaPool' => array('posixAccount_' . $typeId . '_sambaIDPoolDNHosts'),
-						'windowsDomain' => array('posixAccount_' . $typeId . '_windowsIDPoolDNHosts'),
-						'magicNumber' => array('posixAccount_' . $typeId . '_magicNumberHost')
-				));
+				$uidHostGeneratorSelect->setTableRowsToHide([
+					'range' => ['posixAccount_' . $typeId . '_sambaIDPoolDNHosts', 'posixAccount_' . $typeId . '_windowsIDPoolDNHosts',
+						'posixAccount_' . $typeId . '_magicNumberHost'],
+					'sambaPool' => ['posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
+						'posixAccount_' . $typeId . '_windowsIDPoolDNHosts', 'posixAccount_' . $typeId . '_magicNumberHost'],
+					'windowsDomain' => ['posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
+						'posixAccount_' . $typeId . '_sambaIDPoolDNHosts', 'posixAccount_' . $typeId . '_magicNumberHost'],
+					'magicNumber' => ['posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
+						'posixAccount_' . $typeId . '_windowsIDPoolDNHosts', 'posixAccount_' . $typeId . '_sambaIDPoolDNHosts']
+				]);
+				$uidHostGeneratorSelect->setTableRowsToShow([
+					'range' => ['posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine'],
+					'sambaPool' => ['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'],
+					'windowsDomain' => ['posixAccount_' . $typeId . '_windowsIDPoolDNHosts'],
+					'magicNumber' => ['posixAccount_' . $typeId . '_magicNumberHost']
+				]);
 				$configHostContainer->add($uidHostGeneratorSelect, 12);
 				$uidHostsGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_' . $typeId . '_sambaIDPoolDNHosts', null, 'sambaIDPoolDN');
 				$uidHostsGeneratorDN->setRequired(true);
@@ -2462,7 +2466,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$configOptionsContainer = new htmlResponsiveRow();
 		$configOptionsContainer->add(new htmlSubTitle(_('Options')), 12);
 		$configOptionsContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				array('CRYPT-SHA512'), _("Password hash type"), 'pwdHash'), 12);
+			['CRYPT-SHA512'], _("Password hash type"), 'pwdHash'), 12);
 		$configOptionsContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), 12);
 		$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), 12);
 		if ($isWindows) {
@@ -2499,7 +2503,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 							$return[] = $this->messages['cmp_UID'][0];
 						}
 					}
-					$ranges[] = array($options['posixAccount_' . $typeId . '_minUID'][0], $options['posixAccount_' . $typeId . '_maxUID'][0]);
+					$ranges[] = [$options['posixAccount_' . $typeId . '_minUID'][0], $options['posixAccount_' . $typeId . '_maxUID'][0]];
 				}
 				elseif ($options['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool') {
 					if (!isset($options['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'][0], 'dn')) {
@@ -2528,7 +2532,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 							$return[] = $this->messages['cmp_Machine'][0];
 						}
 					}
-					$ranges[] = array($options['posixAccount_' . $typeId . '_minMachine'][0], $options['posixAccount_' . $typeId . '_maxMachine'][0]);
+					$ranges[] = [$options['posixAccount_' . $typeId . '_minMachine'][0], $options['posixAccount_' . $typeId . '_maxMachine'][0]];
 				}
 				elseif ($options['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'sambaPool') {
 					if (!isset($options['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'][0], 'dn')) {
@@ -2568,44 +2572,44 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$typeId = $type->getId();
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->isPasswordManaged($typeId)) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'posixAccount_password',
 				'description' => _('Password'),
 				'help' => 'userPassword',
 				'example' => _('secret')
-			);
-			$return[] = array(
+			];
+			$return[] = [
 				'name' => 'posixAccount_passwordDisabled',
 				'description' => _('Lock password'),
 				'help' => 'userPassword_lock',
 				'example' => 'false',
 				'values' => 'true, false',
 				'default' => 'false'
-			);
+			];
 		}
 		if (($this->get_scope() == 'user') && $this->manageCn($selectedModules)) {
-			array_unshift($return, array(
+			array_unshift($return, [
 				'name' => 'posixAccount_cn',
 				'description' => _('Common name'),
 				'help' => 'cn',
 				'example' => _('Steve Miller')
-			));
+			]);
 		}
 		if (($this->get_scope() == 'user') && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'posixAccount_gecos',
 				'description' => _('Gecos'),
 				'help' => 'gecos',
 				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
-			);
+			];
 		}
 		if (($this->get_scope() == 'host') && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'posixAccount_gecos',
 				'description' => _('Gecos'),
 				'help' => 'gecos',
 				'example' => _('pc01,Room 2.34')
-			);
+			];
 		}
 		return $return;
 	}
@@ -2656,7 +2660,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					}
 					else {
 						$errMsg = $this->messages['uidNumber'][4];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2667,14 +2671,14 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					}
 					else {
 						$errMsg = $this->messages['uidNumber'][4];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
 			}
 			else {
 				$errMsg = $this->messages['uidNumber'][4];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$errors[] = $errMsg;
 			}
 			// GID number
@@ -2692,13 +2696,13 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['gidNumber'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
 			else {
 				$errMsg = $this->messages['gidNumber'][1];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$errors[] = $errMsg;
 			}
 			// GECOS
@@ -2709,7 +2713,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					}
 					else {
 						$errMsg = $this->messages['gecos'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2736,7 +2740,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$groups = explode(",", $rawAccount[$ids['posixAccount_additionalGroups']]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $existingGroups)) {
-							$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
+							$errors[] = ['ERROR', _('Unable to find group in LDAP.'), $groups[$g]];
 						}
 					}
 				}
@@ -2745,7 +2749,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$groups = explode(",", $rawAccount[$ids['posixAccount_gon']]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $gonList)) {
-							$errors[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
+							$errors[] = ['ERROR', _('Unable to find group in LDAP.'), $groups[$g]];
 						}
 					}
 				}
@@ -2756,8 +2760,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 						$userName = $this->getNextUserName($userName, $selectedModules);
 					}
 					$errMsg = $this->messages['uid'][9];
-					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_userName']],
-						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_userName']]])));
+					array_push($errMsg, [$i, $userName, $rawAccount[$ids['posixAccount_userName']],
+						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_userName']]])]);
 					$errors[] = $errMsg;
 				}
 				if (get_preg($rawAccount[$ids['posixAccount_userName']], 'username')) {
@@ -2765,7 +2769,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['uid'][7];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				// home directory
@@ -2777,7 +2781,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['homeDirectory'][2];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				// create home directory
@@ -2791,7 +2795,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					}
 					if (!$lamdaemonServerValid) {
 						$errMsg = $this->messages['homeDirectory'][4];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2804,7 +2808,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['shell'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				if ($this->isPasswordManaged($typeId)) {
@@ -2813,14 +2817,14 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					if ($rawAccount[$ids['posixAccount_passwordDisabled']] == "") {
 						$pwd_enabled = true;
 					}
-					elseif (in_array($rawAccount[$ids['posixAccount_passwordDisabled']], array('true', 'false'))) {
+					elseif (in_array($rawAccount[$ids['posixAccount_passwordDisabled']], ['true', 'false'])) {
 						if ($rawAccount[$ids['posixAccount_passwordDisabled']] == 'true') {
 							$pwd_enabled = false;
 						}
 					}
 					else {
 						$errMsg = $this->messages['passwordDisabled'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 					// password
@@ -2845,7 +2849,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 						elseif ($rawAccount[$ids['posixAccount_password']] != "") {
 							$errMsg = $this->messages['userPassword'][4];
 							$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-							array_push($errMsg, array($i));
+							array_push($errMsg, [$i]);
 							$errors[] = $errMsg;
 						}
 					}
@@ -2858,7 +2862,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 						}
 						else {
 							$errMsg = $this->messages['cn'][1];
-							array_push($errMsg, array($i));
+							array_push($errMsg, [$i]);
 							$errors[] = $errMsg;
 						}
 					}
@@ -2884,8 +2888,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 						$userName = $this->getNextUserName($userName, $selectedModules);
 					}
 					$errMsg = $this->messages['uid'][10];
-					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_hostName']],
-						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_hostName']]])));
+					array_push($errMsg, [$i, $userName, $rawAccount[$ids['posixAccount_hostName']],
+						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_hostName']]])]);
 					$errors[] = $errMsg;
 				}
 				if (get_preg($rawAccount[$ids['posixAccount_hostName']], 'hostname')) {
@@ -2894,7 +2898,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['uid'][8];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				// description
@@ -2934,11 +2938,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		$homeDirAttr = $this->getHomedirAttrName($selectedModules);
 		if ($this->get_scope() != 'user') {
-			return array(
+			return [
 				'status' => 'finished',
 				'progress' => 100,
 				'errors' => []
-			);
+			];
 		}
 		// on first call generate list of ldap operations
 		if (!isset($temp['counter'])) {
@@ -3005,67 +3009,67 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
 					if (isset($ids['posixAccount_password']) && !empty($dataRow[$ids['posixAccount_password']])) {
-						$temp['exop'][] = array($accounts[$i]['dn'], $dataRow[$ids['posixAccount_password']]);
+						$temp['exop'][] = [$accounts[$i]['dn'], $dataRow[$ids['posixAccount_password']]];
 					}
 				}
 			}
 			$temp['dn_gon_keys'] = array_keys($temp['dn_gon']);
-			return array(
+			return [
 				'status' => 'inProgress',
 				'progress' => 0,
 				'errors' => []
-			);
+			];
 		}
 		// get DNs of groups
 		elseif (!isset($temp['dn'])) {
 			$temp['dn'] = [];
-			$ldapEntries = searchLDAPByAttribute('cn', '*', 'posixGroup', array('dn', 'cn'), array('group'));
+			$ldapEntries = searchLDAPByAttribute('cn', '*', 'posixGroup', ['dn', 'cn'], ['group']);
 			for ($i = 0; $i < sizeof($ldapEntries); $i++) {
 				$temp['dn'][$ldapEntries[$i]['cn'][0]] = $ldapEntries[$i]['dn'];
 			}
-			return array(
+			return [
 				'status' => 'inProgress',
 				'progress' => 0,
 				'errors' => []
-			);
+			];
 		}
 		// add users to groups
 		elseif ($temp['counter'] < sizeof($temp['groups'])) {
 			if (isset($temp['dn'][$temp['groups'][$temp['counter']]])) {
 				$memberUid = $temp['members'][$temp['groups'][$temp['counter']]];
 				$dnToUpdate = $temp['dn'][$temp['groups'][$temp['counter']]];
-				$groupAttrs = ldapGetDN($dnToUpdate, array('memberUID'));
+				$groupAttrs = ldapGetDN($dnToUpdate, ['memberUID']);
 				if (!empty($groupAttrs['memberuid'])) {
 					// skip members that are already set
 					$memberUid = array_delete($groupAttrs['memberuid'], $memberUid);
 				}
 				if (!empty($memberUid)) {
-					$toAdd = array('memberUID' => $memberUid);
+					$toAdd = ['memberUID' => $memberUid];
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $dnToUpdate, $toAdd);
 					$errors = [];
 					if (!$success) {
-						$errors[] = array(
+						$errors[] = [
 							"ERROR",
 							_("LAM was unable to modify group memberships for group: %s"),
 							getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-							array($temp['groups'][$temp['counter']])
-						);
+							[$temp['groups'][$temp['counter']]]
+						];
 					}
 				}
 				$temp['counter']++;
-				return array (
+				return [
 					'status' => 'inProgress',
 					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
 					'errors' => $errors
-				);
+				];
 			}
 			else {
 				$temp['counter']++;
-				return array (
+				return [
 					'status' => 'inProgress',
 					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups'] + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop']))),
-					'errors' => array(array('ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]))
-				);
+					'errors' => [['ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]]]
+				];
 			}
 		}
 		// create home directories
@@ -3082,20 +3086,20 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				$errors = [];
 				if (!empty($result)) {
 					$parts = explode(",", $result);
-					if (in_array($parts[0], array('ERROR', 'WARN'))) {
+					if (in_array($parts[0], ['ERROR', 'WARN'])) {
 						$errors[] = $parts;
 					}
 				}
 			}
 			catch (LAMException $e) {
-				$errors[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				$errors[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 			}
 			$temp['counter']++;
-			return array (
+			return [
 				'status' => 'inProgress',
 				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
 				'errors' => $errors
-			);
+			];
 		}
 		// add users to group of names
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']))) {
@@ -3116,20 +3120,20 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttrToAdd);
 				$errors = [];
 				if (!$success) {
-					$errors[] = array(
+					$errors[] = [
 						"ERROR",
 						_("LAM was unable to modify group memberships for group: %s"),
 						getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-						array($temp['groups'][$temp['counter']])
-					);
+						[$temp['groups'][$temp['counter']]]
+					];
 				}
 			}
 			$temp['counter']++;
-			return array (
+			return [
 				'status' => 'inProgress',
 				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
 				'errors' => $errors
-			);
+			];
 		}
 		// run password exop commands
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop']))) {
@@ -3139,38 +3143,38 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
 			$errors = [];
 			if (!$success) {
-				$errors[] = array(
+				$errors[] = [
 					"ERROR",
 					_('Unable to set password'),
 					$dn . '<br>' . getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-					array($temp['exop'][$temp['counter']])
-				);
+					[$temp['exop'][$temp['counter']]]
+				];
 			}
 			$temp['counter']++;
-			return array (
+			return [
 				'status' => 'inProgress',
 				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
 				'errors' => $errors
-			);
+			];
 		}
 		// all modifications are done
 		else {
-			return array (
+			return [
 				'status' => 'finished',
 				'progress' => 100,
 				'errors' => []
-			);
+			];
 		}
 	}
 
 	/**
-	* Returns one or more free UID numbers.
-	*
-	* @param integer $count Number of needed free UIDs.
-	* @param array $errors list of error messages where errors can be added
-	* @param string $typeId type id (e.g. user)
-	* @return mixed Null if no UIDs are free else an array of free UIDs.
-	*/
+	 * Returns one or more free UID numbers.
+	 *
+	 * @param integer $count Number of needed free UIDs.
+	 * @param array $errors list of error messages where errors can be added
+	 * @param string $typeId type id (e.g. user)
+	 * @return mixed Null if no UIDs are free else an array of free UIDs.
+	 */
 	function getNextUIDs($count, &$errors, $typeId) {
 		// check if UIDs should be taken from Samba pool entry
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool')) {
@@ -3213,13 +3217,15 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$uidList = $this->getUIDs($typeId);
 		$uids = [];
 		foreach ($uidList as $uid) {
-			if (($uid <= $maxID) && ($uid >= $minID)) $uids[] = $uid;  // ignore UIDs > maxID and UIDs < minID
+			if (($uid <= $maxID) && ($uid >= $minID)) {
+				$uids[] = $uid;
+			}  // ignore UIDs > maxID and UIDs < minID
 		}
 		for ($i = 0; $i < $count; $i++) {
 			if (count($uids) != 0) {
 				// there already are some uids
 				// store highest id-number
-				$id = $uids[count($uids)-1];
+				$id = $uids[count($uids) - 1];
 				// Return minimum allowed id-number if all found id-numbers are too low
 				if ($id < $minID) {
 					$ret[] = $minID;
@@ -3233,12 +3239,16 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				// find free numbers between existing ones
 				else {
 					$k = intval($minID);
-					while (in_array($k, $uids)) $k++;
-					if ($k > $maxID) return null;
+					while (in_array($k, $uids)) {
+						$k++;
+					}
+					if ($k > $maxID) {
+						return null;
+					}
 					else {
 						$ret[] = $k;
 						$uids[] = $k;
-						sort ($uids, SORT_NUMERIC);
+						sort($uids, SORT_NUMERIC);
 					}
 					// show warning message
 					$errors[] = $this->messages['uidNumber'][2];
@@ -3267,11 +3277,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		else {
 			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'][0];
 		}
-		$attrs = ldapGetDN($dn, array('uidNumber'));
+		$attrs = ldapGetDN($dn, ['uidNumber']);
 		if (isset($attrs['uidnumber'][0]) && ($attrs['uidnumber'][0] != '')) {
 			$newValue = $attrs['uidnumber'][0] + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldap_modify($ldapHandle, $dn, array('uidnumber' => array($newValue)));
+			ldap_modify($ldapHandle, $dn, ['uidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) != 0) {
 				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
@@ -3300,11 +3310,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		else {
 			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_windowsIDPoolDNHosts'][0];
 		}
-		$attrs = ldapGetDN($dn, array('msSFU30MaxUidNumber'));
+		$attrs = ldapGetDN($dn, ['msSFU30MaxUidNumber']);
 		if (!empty($attrs['mssfu30maxuidnumber'][0])) {
 			$newValue = $attrs['mssfu30maxuidnumber'][0] + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldap_modify($ldapHandle, $dn, array('mssfu30maxuidnumber' => array($newValue)));
+			ldap_modify($ldapHandle, $dn, ['mssfu30maxuidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) != 0) {
 				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
@@ -3359,7 +3369,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			if (isset($attributes['loginShell'][0])) {
 				$loginShell = $attributes['loginShell'][0];
 			}
-			$loginShellField = new htmlSelect('posixAccount_loginShell', $shelllist, array($loginShell));
+			$loginShellField = new htmlSelect('posixAccount_loginShell', $shelllist, [$loginShell]);
 			if (in_array('loginShell', $readOnlyFields)) {
 				$loginShellField = new htmlOutputText($loginShell);
 			}
@@ -3374,7 +3384,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$userName = $attributes['uid'][0];
 			if (!empty($userName)) {
 				$filter = '(&(objectClass=posixGroup)(|(gidNumber=' . $gidNumber . ')(memberUid=' . $userName . ')))';
-				$results = searchLDAP($groupDn, $filter, array('cn'));
+				$results = searchLDAP($groupDn, $filter, ['cn']);
 				$groups = [];
 				foreach ($results as $result) {
 					$groups[] = $result['cn'][0];
@@ -3408,7 +3418,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (in_array('password', $fields)) {
 			if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
 				if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
@@ -3451,12 +3461,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 							}
 							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
 							if (isset($attributes['shadowlastchange'][0])) {
-								$return['mod']['shadowlastchange'][0] = intval(time()/3600/24);
+								$return['mod']['shadowlastchange'][0] = intval(time() / 3600 / 24);
 							}
 							$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
 						}
 						else {
-							$return['messages'][] = array('ERROR', $pwdPolicyResult);
+							$return['messages'][] = ['ERROR', $pwdPolicyResult];
 						}
 					}
 				}
@@ -3471,7 +3481,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$password = $_POST['windowsUser_unicodePwd'];
 			$return['mod']['unixUserPassword'][0] = pwd_hash($password, true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
 			if (isset($attributes['shadowlastchange'][0])) {
-				$return['mod']['shadowlastchange'][0] = intval(time()/3600/24);
+				$return['mod']['shadowlastchange'][0] = intval(time() / 3600 / 24);
 			}
 		}
 		// cn
@@ -3481,7 +3491,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		if (in_array('loginShell', $fields) && !in_array('loginShell', $readOnlyFields)) {
 			$shelllist = $this->getShells(); // list of all valid shells
 			if (in_array($_POST['posixAccount_loginShell'], $shelllist)
-					&& (!isset($attributes['loginShell']) || ($attributes['loginShell'][0] != $_POST['posixAccount_loginShell']))) {
+				&& (!isset($attributes['loginShell']) || ($attributes['loginShell'][0] != $_POST['posixAccount_loginShell']))) {
 				$return['mod']['loginShell'][0] = $_POST['posixAccount_loginShell'];
 			}
 		}
@@ -3526,9 +3536,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 
 	/**
 	 * This method specifies if a module manages password attributes.
+	 * @return boolean true if this module manages password attributes
 	 * @see passwordService::managesPasswordAttributes
 	 *
-	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
 		return $this->isPasswordManaged();
@@ -3573,13 +3583,13 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
 		if ($checkResult !== true) {
-			return array(array('ERROR', $checkResult));
+			return [['ERROR', $checkResult]];
 		}
 		// set new password
 		$this->clearTextPassword = $password;
 		// set SASL password
 		if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
-				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+			&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 			$this->attributes[$this->getPasswordAttrName($accountModules)][0] = '{SASL}' . $this->attributes['uid'][0];
 		}
 		// delay on ldap_exop
@@ -3600,7 +3610,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @return String GID
 	 */
 	private function getGID($groupname) {
-		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', array('gidnumber'), array('group'));
+		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', ['gidnumber'], ['group']);
 		if ((sizeof($results) > 0) && isset($results[0]['gidnumber'][0])) {
 			return $results[0]['gidnumber'][0];
 		}
@@ -3614,7 +3624,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @return String group name
 	 */
 	private function getGroupName($groupID) {
-		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', array('cn'), array('group'));
+		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', ['cn'], ['group']);
 		if ((sizeof($results) > 0) && isset($results[0]['cn'][0])) {
 			return $results[0]['cn'][0];
 		}
@@ -3644,10 +3654,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 				$filter = '(&' . $filter . $typeFilter . ')';
 			}
-			$results = searchLDAP($type->getSuffix(), $filter, array('cn', 'gidnumber'));
+			$results = searchLDAP($type->getSuffix(), $filter, ['cn', 'gidnumber']);
 			for ($i = 0; $i < sizeof($results); $i++) {
 				if (isset($results[$i]['cn'][0]) && isset($results[$i]['gidnumber'][0])) {
-					$this->groupCache[] = array($results[$i]['gidnumber'][0], $results[$i]['cn'][0]);
+					$this->groupCache[] = [$results[$i]['gidnumber'][0], $results[$i]['cn'][0]];
 				}
 			}
 		}
@@ -3665,15 +3675,15 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		$return = [];
 		$typeManager = new TypeManager();
-		$types = $typeManager->getConfiguredTypesForScopes(array('gon', 'group'));
+		$types = $typeManager->getConfiguredTypesForScopes(['gon', 'group']);
 		foreach ($types as $type) {
 			$typeFilter = get_ldap_filter($type->getId());
-			$results = searchLDAP($type->getSuffix(), $typeFilter, array('cn', 'dn', 'objectClass'));
+			$results = searchLDAP($type->getSuffix(), $typeFilter, ['cn', 'dn', 'objectClass']);
 			for ($i = 0; $i < sizeof($results); $i++) {
 				if ((in_array_ignore_case('groupOfNames', $results[$i]['objectclass'])
 						|| in_array_ignore_case('groupOfMembers', $results[$i]['objectclass'])
 						|| in_array_ignore_case('groupOfUniqueNames', $results[$i]['objectclass']))
-						&& isset($results[$i]['cn'][0])) {
+					&& isset($results[$i]['cn'][0])) {
 					$return[$results[$i]['dn']] = $results[$i];
 				}
 			}
@@ -3693,7 +3703,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			return $this->cachedUIDList;
 		}
 		$this->cachedUIDList = [];
-		$attrs = array('uidNumber');
+		$attrs = ['uidNumber'];
 		$filter = '(&(objectClass=posixAccount)(uidNumber=*))';
 		if ($this->skipObjectClass()) {
 			$filter = '(uidNumber=*)';
@@ -3756,7 +3766,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			return $this->cachedUserNameList;
 		}
 		$this->cachedUserNameList = [];
-		$attrs = array('uid');
+		$attrs = ['uid'];
 		$filter = '(&(objectClass=posixAccount)(uid=*))';
 		if ($this->skipObjectClass()) {
 			$filter = '(uid=*)';
@@ -3805,12 +3815,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			return false;
 		}
 		$typeManager = new TypeManager();
-		$types = $typeManager->getConfiguredTypesForScopes(array('group', 'gon'));
+		$types = $typeManager->getConfiguredTypesForScopes(['group', 'gon']);
 		foreach ($types as $type) {
 			$modules = $type->getModules();
 			if (in_array('groupOfNames', $modules)
-					|| in_array('groupOfMembers', $modules)
-					|| in_array('groupOfUniqueNames', $modules)) {
+				|| in_array('groupOfMembers', $modules)
+				|| in_array('groupOfUniqueNames', $modules)) {
 				return true;
 			}
 		}
@@ -3866,7 +3876,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 */
 	private function cleanSuggestionPart($part) {
 		$result = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($part));
-		return str_replace(array(' ', '_', '-'), array('', '', ''), $result);
+		return str_replace([' ', '_', '-'], ['', '', ''], $result);
 	}
 
 	/**
@@ -3878,7 +3888,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 */
 	public function isLockable(&$modules) {
 		if (isset($this->attributes[$this->getPasswordAttrName($modules)][0])
-				&& pwd_is_lockable($this->attributes[$this->getPasswordAttrName($modules)][0])) {
+			&& pwd_is_lockable($this->attributes[$this->getPasswordAttrName($modules)][0])) {
 			return true;
 		}
 		return false;
@@ -3960,7 +3970,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$suffix = '$';
 		}
 		// Last character is no number
-		if ( !preg_match('/^([0-9])+$/', $lastchar)) {
+		if (!preg_match('/^([0-9])+$/', $lastchar)) {
 			// Last character is no number. Therefore we only have to add "2" to it.
 			$userName = $userName . '2' . $suffix;
 		}
@@ -3979,7 +3989,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$i--;
 				}
 				else {
-					$mark=true;
+					$mark = true;
 				}
 			}
 			// increase last number with one
@@ -4008,14 +4018,14 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			return $this->moduleSettings['posixAccount_shells'];
 		}
 		// fall back to default
-		return array(
+		return [
 			'/bin/bash',
 			'/bin/csh',
 			'/bin/dash',
 			'/bin/false',
 			'/bin/ksh',
 			'/bin/sh'
-		);
+		];
 	}
 
 	/**
@@ -4183,9 +4193,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL'))) {
 			return [];
 		}
-		return array(
+		return [
 			new PasswordQuickChangeOption('updateUnixPwd', _('Change Unix password'))
-		);
+		];
 	}
 
 	/**
@@ -4261,7 +4271,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		if (!$this->isPasswordManaged($type->getId())) {
 			return [];
 		}
-		return array($this->getPasswordAttrName($type->getModules()), 'uid');
+		return [$this->getPasswordAttrName($type->getModules()), 'uid'];
 	}
 
 	/**
@@ -4329,12 +4339,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @throws LAMException error during group modify
 	 */
 	private function clearGroupOfNamesMemberships(array $attributes): void {
-		$searchAttrs = array('member', 'uniquemember', 'owner');
+		$searchAttrs = ['member', 'uniquemember', 'owner'];
 		foreach ($searchAttrs as $searchAttr) {
-			$groups = searchLDAPByAttribute($searchAttr, $attributes['dn'], null, array('dn'), array('gon', 'group'));
+			$groups = searchLDAPByAttribute($searchAttr, $attributes['dn'], null, ['dn'], ['gon', 'group']);
 			foreach ($groups as $group) {
 				logNewMessage(LOG_DEBUG, 'Removing ' . $attributes['dn'] . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
-				$attributesToDelete = array($searchAttr => array($attributes['dn']));
+				$attributesToDelete = [$searchAttr => [$attributes['dn']]];
 				$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
 				if (!$success) {
 					$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
@@ -4355,10 +4365,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	private function clearPosixGroupMemberships(array $attributes): void {
 		$searchAttr = 'memberuid';
 		$uid = $attributes['uid'][0];
-		$groups = searchLDAPByAttribute($searchAttr, $uid, null, array('dn'), array('group'));
+		$groups = searchLDAPByAttribute($searchAttr, $uid, null, ['dn'], ['group']);
 		foreach ($groups as $group) {
 			logNewMessage(LOG_DEBUG, 'Removing ' . $uid . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
-			$attributesToDelete = array($searchAttr => array($uid));
+			$attributesToDelete = [$searchAttr => [$uid]];
 			$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
 			if (!$success) {
 				$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
@@ -4386,7 +4396,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'uid' => _('User name'),
 			'cn' => _('Common name'),
 			'gecos' => _('Gecos'),
@@ -4394,7 +4404,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			'gidnumber' => _('GID number'),
 			'homedirectory' => _('Home directory'),
 			'loginshell' => _('Login shell'),
-		);
+		];
 	}
 
 }
