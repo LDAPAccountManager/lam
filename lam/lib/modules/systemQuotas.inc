@@ -1,11 +1,13 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2022  Roland Gruber
+  Copyright (C) 2011 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,35 +25,35 @@ use \LAM\PDF\PDFTableRow;
 */
 
 /**
-* Manages user quotas with the object class systemQuotas.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages user quotas with the object class systemQuotas.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages user quotas with the object class systemQuotas.
-*
-* @package modules
-*/
+ * Manages user quotas with the object class systemQuotas.
+ *
+ * @package modules
+ */
 class systemQuotas extends baseModule {
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	public function get_metaData() {
 		$return = [];
 		// icon
@@ -59,57 +61,57 @@ class systemQuotas extends baseModule {
 		// alias name
 		$return["alias"] = _("Quota");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => ['posixAccount'], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('systemQuotas');
+		$return['objectClasses'] = ['systemQuotas'];
 		// managed attributes
-		$return['attributes'] = array('quota');
+		$return['attributes'] = ['quota'];
 		// help Entries
-		$return['help'] = array(
-			'quota' => array(
+		$return['help'] = [
+			'quota' => [
 				"Headline" => _("Quota"), 'attr' => 'quota',
 				"Text" => _("Please enter the quota settings for this user. The syntax is: {mount point},{soft block limit},{hard block limit},{soft inode limit},{hard inode limit}.")
-							. ' ' . _('Multiple values are separated by semicolon.')
-			)
-		);
+					. ' ' . _('Multiple values are separated by semicolon.')
+			]
+		];
 		// profile elements
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Quota'), 'systemQuotas_quota', null, 'quota'), 12);
 		$return['profile_options'] = $profileContainer;
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'systemQuotas_quota',
 				'description' => _('Quota'),
 				'help' => 'quota',
 				'example' => '/home/smiller,50000,60000,10000,12000',
-			)
-		);
+			]
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'quota' => _('Quota')
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	public function load_Messages() {
-		$this->messages['path'][0] = array('ERROR', _('Mountpoint'), _('Mountpoint contains invalid characters.'));
-		$this->messages['path'][1] = array('ERROR', _('Account %s:'), _('Mountpoint contains invalid characters.'));
-		$this->messages['softblock'][0] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['softblock'][1] = array('ERROR', _('Account %s:'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardblock'][0] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardblock'][1] = array('ERROR', _('Account %s:'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['softinode'][0] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['softinode'][1] = array('ERROR', _('Account %s:'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardinode'][0] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardinode'][1] = array('ERROR', _('Account %s:'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['block_cmp'][0] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota.'));
-		$this->messages['block_cmp'][1] = array('ERROR', _('Account %s:'), _('Block soft quota must be smaller than block hard quota.'));
-		$this->messages['inode_cmp'][0] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota.'));
-		$this->messages['inode_cmp'][1] = array('ERROR', _('Account %s:'), _('Inode soft quota must be smaller than inode hard quota.'));
+		$this->messages['path'][0] = ['ERROR', _('Mountpoint'), _('Mountpoint contains invalid characters.')];
+		$this->messages['path'][1] = ['ERROR', _('Account %s:'), _('Mountpoint contains invalid characters.')];
+		$this->messages['softblock'][0] = ['ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['softblock'][1] = ['ERROR', _('Account %s:'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardblock'][0] = ['ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardblock'][1] = ['ERROR', _('Account %s:'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['softinode'][0] = ['ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['softinode'][1] = ['ERROR', _('Account %s:'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardinode'][0] = ['ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardinode'][1] = ['ERROR', _('Account %s:'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['block_cmp'][0] = ['ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota.')];
+		$this->messages['block_cmp'][1] = ['ERROR', _('Account %s:'), _('Block soft quota must be smaller than block hard quota.')];
+		$this->messages['inode_cmp'][0] = ['ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota.')];
+		$this->messages['inode_cmp'][1] = ['ERROR', _('Account %s:'), _('Inode soft quota must be smaller than inode hard quota.')];
 	}
 
 	/**
@@ -171,11 +173,11 @@ class systemQuotas extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		$return = [];
 		if (!isset($this->attributes['quota'][0])) {
@@ -191,30 +193,46 @@ class systemQuotas extends baseModule {
 			}
 			$path = $_POST['path_' . $i];
 			$softBlock = $_POST['softBlock_' . $i];
-			if ($softBlock == '') $softBlock = '0';
+			if ($softBlock == '') {
+				$softBlock = '0';
+			}
 			$hardBlock = $_POST['hardBlock_' . $i];
-			if ($hardBlock == '') $hardBlock = '0';
+			if ($hardBlock == '') {
+				$hardBlock = '0';
+			}
 			$softInode = $_POST['softInode_' . $i];
-			if ($softInode == '') $softInode = '0';
+			if ($softInode == '') {
+				$softInode = '0';
+			}
 			$hardInode = $_POST['hardInode_' . $i];
-			if ($hardInode == '') $hardInode = '0';
+			if ($hardInode == '') {
+				$hardInode = '0';
+			}
 			$this->attributes['quota'][$i] = $path . ',' . $softBlock . ',' . $hardBlock . ',' .
-											$softInode . ',' . $hardInode;
+				$softInode . ',' . $hardInode;
 			$return = array_merge($return, $this->checkQuota($path, $softBlock, $hardBlock, $softInode, $hardInode));
 		}
 		// check for new entry
 		if (isset($_POST['add'])) {
 			$path = $_POST['path'];
 			$softBlock = $_POST['softBlock'];
-			if ($softBlock == '') $softBlock = '0';
+			if ($softBlock == '') {
+				$softBlock = '0';
+			}
 			$hardBlock = $_POST['hardBlock'];
-			if ($hardBlock == '') $hardBlock = '0';
+			if ($hardBlock == '') {
+				$hardBlock = '0';
+			}
 			$softInode = $_POST['softInode'];
-			if ($softInode == '') $softInode = '0';
+			if ($softInode == '') {
+				$softInode = '0';
+			}
 			$hardInode = $_POST['hardInode'];
-			if ($hardInode == '') $hardInode = '0';
+			if ($hardInode == '') {
+				$hardInode = '0';
+			}
 			$this->attributes['quota'][] = $path . ',' . $softBlock . ',' . $hardBlock . ',' .
-											$softInode . ',' . $hardInode;
+				$softInode . ',' . $hardInode;
 			$return = array_merge($return, $this->checkQuota($path, $softBlock, $hardBlock, $softInode, $hardInode));
 		}
 		$this->attributes['quota'] = array_unique($this->attributes['quota']);
@@ -240,7 +258,7 @@ class systemQuotas extends baseModule {
 			}
 			else {
 				$error = $this->messages['path'][1];
-				$error[] = array($uploadIndex);
+				$error[] = [$uploadIndex];
 				$return[] = $error;
 			}
 		}
@@ -250,7 +268,7 @@ class systemQuotas extends baseModule {
 			}
 			else {
 				$error = $this->messages['softblock'][1];
-				$error[] = array($uploadIndex);
+				$error[] = [$uploadIndex];
 				$return[] = $error;
 			}
 		}
@@ -260,7 +278,7 @@ class systemQuotas extends baseModule {
 			}
 			else {
 				$error = $this->messages['hardblock'][1];
-				$error[] = array($uploadIndex);
+				$error[] = [$uploadIndex];
 				$return[] = $error;
 			}
 		}
@@ -270,7 +288,7 @@ class systemQuotas extends baseModule {
 			}
 			else {
 				$error = $this->messages['softinode'][1];
-				$error[] = array($uploadIndex);
+				$error[] = [$uploadIndex];
 				$return[] = $error;
 			}
 		}
@@ -280,7 +298,7 @@ class systemQuotas extends baseModule {
 			}
 			else {
 				$error = $this->messages['hardinode'][1];
-				$error[] = array($uploadIndex);
+				$error[] = [$uploadIndex];
 				$return[] = $error;
 			}
 		}
@@ -290,7 +308,7 @@ class systemQuotas extends baseModule {
 			}
 			else {
 				$error = $this->messages['block_cmp'][1];
-				$error[] = array($uploadIndex);
+				$error[] = [$uploadIndex];
 				$return[] = $error;
 			}
 		}
@@ -300,7 +318,7 @@ class systemQuotas extends baseModule {
 			}
 			else {
 				$error = $this->messages['inode_cmp'][1];
-				$error[] = array($uploadIndex);
+				$error[] = [$uploadIndex];
 				$return[] = $error;
 			}
 		}
@@ -308,8 +326,8 @@ class systemQuotas extends baseModule {
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function check_profileOptions($options, $typeId) {
 		$messages = parent::check_profileOptions($options, $typeId);
 		$quotas = explode(';', $options['systemQuotas_quota'][0]);
@@ -324,10 +342,10 @@ class systemQuotas extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -344,7 +362,9 @@ class systemQuotas extends baseModule {
 		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('systemQuotas', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'systemQuotas';
+			if (!in_array('systemQuotas', $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = 'systemQuotas';
+			}
 			// add quota
 			if (isset($rawAccounts[$i][$ids['systemQuotas_quota']]) && ($rawAccounts[$i][$ids['systemQuotas_quota']] != '')) {
 				$quotas = explode(';', $rawAccounts[$i][$ids['systemQuotas_quota']]);

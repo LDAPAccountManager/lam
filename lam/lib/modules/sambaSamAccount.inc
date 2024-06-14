@@ -25,25 +25,25 @@ use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 */
 
 /**
-* Manages Samba 3 accounts for users and hosts.
-*
-* @package modules
-*
-* @author Tilo Lutz
-* @author Roland Gruber
-* @author Michael Duergner
-*/
+ * Manages Samba 3 accounts for users and hosts.
+ *
+ * @package modules
+ *
+ * @author Tilo Lutz
+ * @author Roland Gruber
+ * @author Michael Duergner
+ */
 
 /** terminals server options */
 
 include_once('sambaSamAccount/sambaMungedDial.inc');
 
 /**
-* Manages the object class "sambaSamAccount" for users and hosts.
-*
-* @package modules
-*/
-class sambaSamAccount extends baseModule implements passwordService,AccountStatusProvider {
+ * Manages the object class "sambaSamAccount" for users and hosts.
+ *
+ * @package modules
+ */
+class sambaSamAccount extends baseModule implements passwordService, AccountStatusProvider {
 
 	/**
 	 * ID for locked account status.
@@ -58,10 +58,10 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sambaSID', 'sambaNTPassword',
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sambaSID', 'sambaNTPassword',
 		'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
 		'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaKickoffTime',
-		'sambaLogonTime', 'sambaLogoffTime');
+		'sambaLogonTime', 'sambaLogoffTime'];
 
 	// Variables
 	/** use no password? */
@@ -73,9 +73,9 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	/** array of well known user rids */
 	private $userRids;
 	/** HEX to binary conversion table */
-	private $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
+	private $hex2bitstring = ['0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
 		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
-		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
+		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111'];
 	/** specifies if the password should be expired */
 	private $expirePassword = false;
 	/** host cache to reduce LDAP queries */
@@ -89,75 +89,75 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 
 
 	/**
-	* Creates a new sambaSamAccount object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new sambaSamAccount object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// List of well known group rids
-		$this->groupRids = array(
+		$this->groupRids = [
 			_('Domain admins') => 512, _('Domain users') => 513, _('Domain guests') => 514,
 			_('Domain computers') => 515, _('Domain controllers') => 516, _('Domain certificate admins') => 517,
-			_('Domain schema admins') => 518, _('Domain enterprise admins') => 519, _('Domain policy admins') => 520);
+			_('Domain schema admins') => 518, _('Domain enterprise admins') => 519, _('Domain policy admins') => 520];
 		// List of well known user rids
-		$this->userRids = array(
-			_('Domain admins') => 500, _('Domain guests') => 501, _('Domain KRBTGT') => 502);
+		$this->userRids = [
+			_('Domain admins') => 500, _('Domain guests') => 501, _('Domain KRBTGT') => 502];
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
 	}
 
 	/** this function fills the error message array with messages
-	**/
+	 **/
 	function load_Messages() {
 		// error messages for input checks
-		$this->messages['homePath'][0] = array('ERROR', _('Home path'), _('Home path is invalid.'));
-		$this->messages['homePath'][1] = array('INFO', _('Home path'), _('Inserted user or group name in home path.'));
-		$this->messages['homePath'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_homePath', _('Home path is invalid.'));
-		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
-		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user or group name in profile path.'));
-		$this->messages['profilePath'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_profilePath', _('Profile path is invalid!'));
-		$this->messages['logonScript'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
-		$this->messages['logonScript'][1] = array('INFO', _('Logon script'), _('Inserted user or group name in logon script.'));
-		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonScript', _('Logon script is invalid!'));
-		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
-		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_workstations', _('Please enter a comma separated list of host names!'));
-		$this->messages['sambaNTPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
-		$this->messages['sambaNTPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
-		$this->messages['sambaNTPassword'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
-		$this->messages['rid'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!'));
-		$this->messages['rid'][3] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('This is not a valid RID number!'));
-		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_displayName', _('Please enter a valid display name!'));
-		$this->messages['displayName'][1] = array('ERROR', _('Display name'), _('Please enter a valid display name!'));
-		$this->messages['pwdUnix'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdUnix', _('This value can only be "true" or "false".'));
-		$this->messages['noPassword'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noPassword', _('This value can only be "true" or "false".'));
-		$this->messages['noExpire'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noExpire', _('This value can only be "true" or "false".'));
-		$this->messages['deactivated'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_deactivated', _('This value can only be "true" or "false".'));
-		$this->messages['expireDate'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_expireDate', _('Please enter a valid date in format DD-MM-YYYY.'));
-		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_homeDrive', _('Please enter a valid drive letter.'));
-		$this->messages['domain'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_domain', _('LAM was unable to find a domain with this name!'));
-		$this->messages['logonHours'][0] = array('ERROR', _('Logon hours'), _('The format of the logon hours field is invalid!'));
-		$this->messages['logonHours'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonHours', _('The format of the logon hours field is invalid!'));
-		$this->messages['group'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_group', _('Please enter a valid group name!'));
-		$this->messages['profileCanMustChange'][0] = array('ERROR', _('The value for the Samba 3 field "User can/must change password" needs to be a number.'));
+		$this->messages['homePath'][0] = ['ERROR', _('Home path'), _('Home path is invalid.')];
+		$this->messages['homePath'][1] = ['INFO', _('Home path'), _('Inserted user or group name in home path.')];
+		$this->messages['homePath'][2] = ['ERROR', _('Account %s:') . ' sambaSamAccount_homePath', _('Home path is invalid.')];
+		$this->messages['profilePath'][0] = ['ERROR', _('Profile path'), _('Profile path is invalid!')];
+		$this->messages['profilePath'][1] = ['INFO', _('Profile path'), _('Inserted user or group name in profile path.')];
+		$this->messages['profilePath'][2] = ['ERROR', _('Account %s:') . ' sambaSamAccount_profilePath', _('Profile path is invalid!')];
+		$this->messages['logonScript'][0] = ['ERROR', _('Logon script'), _('Logon script is invalid!')];
+		$this->messages['logonScript'][1] = ['INFO', _('Logon script'), _('Inserted user or group name in logon script.')];
+		$this->messages['logonScript'][2] = ['ERROR', _('Account %s:') . ' sambaSamAccount_logonScript', _('Logon script is invalid!')];
+		$this->messages['workstations'][0] = ['ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!')];
+		$this->messages['workstations'][1] = ['ERROR', _('Account %s:') . ' sambaSamAccount_workstations', _('Please enter a comma separated list of host names!')];
+		$this->messages['sambaNTPassword'][0] = ['ERROR', _('Password'), _('Please enter the same password in both password fields.')];
+		$this->messages['sambaNTPassword'][1] = ['ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
+		$this->messages['sambaNTPassword'][2] = ['ERROR', _('Account %s:') . ' sambaSamAccount_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
+		$this->messages['rid'][2] = ['ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!')];
+		$this->messages['rid'][3] = ['ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('This is not a valid RID number!')];
+		$this->messages['displayName'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_displayName', _('Please enter a valid display name!')];
+		$this->messages['displayName'][1] = ['ERROR', _('Display name'), _('Please enter a valid display name!')];
+		$this->messages['pwdUnix'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_pwdUnix', _('This value can only be "true" or "false".')];
+		$this->messages['noPassword'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_noPassword', _('This value can only be "true" or "false".')];
+		$this->messages['noExpire'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_noExpire', _('This value can only be "true" or "false".')];
+		$this->messages['deactivated'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_deactivated', _('This value can only be "true" or "false".')];
+		$this->messages['expireDate'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_expireDate', _('Please enter a valid date in format DD-MM-YYYY.')];
+		$this->messages['homeDrive'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_homeDrive', _('Please enter a valid drive letter.')];
+		$this->messages['domain'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_domain', _('LAM was unable to find a domain with this name!')];
+		$this->messages['logonHours'][0] = ['ERROR', _('Logon hours'), _('The format of the logon hours field is invalid!')];
+		$this->messages['logonHours'][1] = ['ERROR', _('Account %s:') . ' sambaSamAccount_logonHours', _('The format of the logon hours field is invalid!')];
+		$this->messages['group'][0] = ['ERROR', _('Account %s:') . ' sambaSamAccount_group', _('Please enter a valid group name!')];
+		$this->messages['profileCanMustChange'][0] = ['ERROR', _('The value for the Samba 3 field "User can/must change password" needs to be a number.')];
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user', 'host'));
+		return in_array($this->get_scope(), ['user', 'host']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -165,51 +165,51 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		// alias name
 		$return["alias"] = _('Samba 3');
 		// RDN attribute
-		$return["RDN"] = array("sambaSID" => "low");
+		$return["RDN"] = ["sambaSID" => "low"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => ['posixAccount'], 'conflicts' => []];
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=sambaSamAccount)");
+		$return["ldap_filter"] = ['or' => "(objectClass=sambaSamAccount)"];
 		// managed object classes
-		$return['objectClasses'] = array('sambaSamAccount');
+		$return['objectClasses'] = ['sambaSamAccount'];
 		// managed attributes
-		$return['attributes'] = array('uid', 'sambaSID', 'sambaNTPassword', 'sambaPwdLastSet',
+		$return['attributes'] = ['uid', 'sambaSID', 'sambaNTPassword', 'sambaPwdLastSet',
 			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaacctflags',
 			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial',
-			'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange'); // sambaPwdCanChange/sambaPwdMustChange only for extension removal
+			'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange']; // sambaPwdCanChange/sambaPwdMustChange only for extension removal
 		// PHP extensions
-		$return['extensions'] = array('hash', 'iconv');
+		$return['extensions'] = ['hash', 'iconv'];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
-		$return['profile_checks']['sambaSamAccount_smbhome'] = array(
+		$return['profile_checks']['sambaSamAccount_smbhome'] = [
 			'type' => 'ext_preg',
 			'regex' => 'UNC',
-			'error_message' => $this->messages['homePath'][0]);
-		$return['profile_checks']['sambaSamAccount_profilePath'] = array(
+			'error_message' => $this->messages['homePath'][0]];
+		$return['profile_checks']['sambaSamAccount_profilePath'] = [
 			'type' => 'ext_preg',
 			'regex' => 'UNC',
-			'error_message' => $this->messages['profilePath'][0]);
-		$return['profile_checks']['sambaSamAccount_logonScript'] = array(
+			'error_message' => $this->messages['profilePath'][0]];
+		$return['profile_checks']['sambaSamAccount_logonScript'] = [
 			'type' => 'ext_preg',
 			'regex' => 'logonscript',
-			'error_message' => $this->messages['logonScript'][0]);
-		$return['profile_checks']['sambaSamAccount_userWorkstations'] = array(
+			'error_message' => $this->messages['logonScript'][0]];
+		$return['profile_checks']['sambaSamAccount_userWorkstations'] = [
 			'type' => 'ext_preg',
 			'regex' => 'unixhost',
-			'error_message' => $this->messages['workstations'][0]);
-		$return['profile_checks']['sambaSamAccount_logonHours'] = array(
+			'error_message' => $this->messages['workstations'][0]];
+		$return['profile_checks']['sambaSamAccount_logonHours'] = [
 			'type' => 'ext_preg',
 			'regex' => 'sambaLogonHours',
-			'error_message' => $this->messages['logonHours'][0]);
+			'error_message' => $this->messages['logonHours'][0]];
 		// profile mappings
-		$return['profile_mappings'] = array(
+		$return['profile_mappings'] = [
 			'sambaSamAccount_sambaDomainName' => 'sambaDomainName',
 			'sambaSamAccount_displayName' => 'displayName',
-		);
+		];
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 			$return['profile_mappings']['sambaSamAccount_smbhome'] = 'sambaHomePath';
 		}
@@ -226,12 +226,12 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			$return['profile_mappings']['sambaSamAccount_logonHours'] = 'sambaLogonHours';
 		}
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'displayName' => _('Display name'),
 			'sambaKickoffTime' => _('Account expiration date'),
 			'sambaDomainName' => _('Domain'),
 			'sambaPrimaryGroupSID' => _('Windows group')
-		);
+		];
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 			$return['PDF_fields']['sambaHomeDrive'] = _('Home drive');
 		}
@@ -265,311 +265,311 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			$return['PDF_fields']['tsBrokenConn'] = _('On broken or timed out connection') . ' (TS)';
 			$return['PDF_fields']['tsReconnect'] = _('Reconnect if disconnected') . ' (TS)';
 		}
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
 			'syncSambaPwdLastSet' => _('Update attribute "sambaPwdLastSet" on password change'),
 			'password' => _('Password'),
 			'sambaPwdLastSet' => _('Last password change (read-only)'),
-		);
+		];
 		// self service: fields that cannot be relabeled
-		$return['selfServiceNoRelabelFields'] = array('syncNTPassword', 'syncSambaPwdLastSet');
+		$return['selfServiceNoRelabelFields'] = ['syncNTPassword', 'syncSambaPwdLastSet'];
 		// help Entries
-		$return['help'] = array (
-			"displayName" => array(
+		$return['help'] = [
+			"displayName" => [
 				"Headline" => _("Display name"), 'attr' => 'displayName',
-				"Text" => _("This is the account's full name on Windows systems.")),
-			"password" => array(
+				"Text" => _("This is the account's full name on Windows systems.")],
+			"password" => [
 				"Headline" => _("Samba password"),
-				"Text" => _("This is the account's Windows password.")),
-			"resetPassword" => array(
+				"Text" => _("This is the account's Windows password.")],
+			"resetPassword" => [
 				"Headline" => _("Reset password"),
-				"Text" => _("This will reset the host's password to a default value.")),
-			"pwdUnix" => array(
+				"Text" => _("This will reset the host's password to a default value.")],
+			"pwdUnix" => [
 				"Headline" => _("Use Unix password"),
-				"Text" => _("If checked Unix password will also be used as Samba password.")),
-			"pwdUnixUpload" => array(
+				"Text" => _("If checked Unix password will also be used as Samba password.")],
+			"pwdUnixUpload" => [
 				"Headline" => _("Use Unix password"),
-				"Text" => _("If set to \"true\" Unix password will also be used as Samba password.")),
-			"noPassword" => array(
+				"Text" => _("If set to \"true\" Unix password will also be used as Samba password.")],
+			"noPassword" => [
 				"Headline" => _("Use no password"),
-				"Text" => _("If checked no password will be used.")),
-			"noPasswordUpload" => array(
+				"Text" => _("If checked no password will be used.")],
+			"noPasswordUpload" => [
 				"Headline" => _("Use no password"),
-				"Text" => _("If set to \"true\" no password will be used.")),
-			"noExpire" => array(
+				"Text" => _("If set to \"true\" no password will be used.")],
+			"noExpire" => [
 				"Headline" => _("Password does not expire"),
-				"Text" => _("If checked password does not expire. (Setting X-Flag)")),
-			"noExpireUpload" => array(
+				"Text" => _("If checked password does not expire. (Setting X-Flag)")],
+			"noExpireUpload" => [
 				"Headline" => _("Password does not expire"),
-				"Text" => _("If set to \"true\" password does not expire. (Setting X-Flag)")),
-			"deactivated" => array(
+				"Text" => _("If set to \"true\" password does not expire. (Setting X-Flag)")],
+			"deactivated" => [
 				"Headline" => _("Account is deactivated"),
-				"Text" => _("If checked then the account will be deactivated. (Setting D-Flag)")),
-			"locked" => array(
+				"Text" => _("If checked then the account will be deactivated. (Setting D-Flag)")],
+			"locked" => [
 				"Headline" => _("Account is locked"),
-				"Text" => _("If checked then the account will be locked (setting L-Flag). You usually want to use this setting to unlock user accounts which were locked because of failed login attempts.")),
-			"deactivatedUpload" => array(
+				"Text" => _("If checked then the account will be locked (setting L-Flag). You usually want to use this setting to unlock user accounts which were locked because of failed login attempts.")],
+			"deactivatedUpload" => [
 				"Headline" => _("Account is deactivated"),
-				"Text" => _("If set to \"true\" account will be deactivated. (Setting D-Flag)")),
-			"passwordIsExpired" => array(
+				"Text" => _("If set to \"true\" account will be deactivated. (Setting D-Flag)")],
+			"passwordIsExpired" => [
 				"Headline" => _("Password change at next login"),
-				"Text" => _("If you set this option then the user has to change his password at the next login.")),
-			"pwdCanChange" => array(
+				"Text" => _("If you set this option then the user has to change his password at the next login.")],
+			"pwdCanChange" => [
 				"Headline" => _("User can change password"),
-				"Text" => _("Date after the user is able to change his password.")),
-			"pwdMustChange" => array ("Headline" => _("User must change password"),
-				"Text" => _("Date after the user must change his password.")),
-			"homeDrive" => array(
+				"Text" => _("Date after the user is able to change his password.")],
+			"pwdMustChange" => ["Headline" => _("User must change password"),
+				"Text" => _("Date after the user must change his password.")],
+			"homeDrive" => [
 				"Headline" => _("Home drive"), 'attr' => 'sambaHomeDrive',
-				"Text" => _("The home directory will be connected under this drive letter.")),
-			"homePath" => array(
+				"Text" => _("The home directory will be connected under this drive letter.")],
+			"homePath" => [
 				"Headline" => _("Home path"), 'attr' => 'sambaHomePath',
-				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
-			"profilePath" => array(
+				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name.') . ' ' . _("Can be left empty.")],
+			"profilePath" => [
 				"Headline" => _("Profile path"), 'attr' => 'sambaProfilePath',
-				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
-			"scriptPath" => array(
+				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name.') . ' ' . _("Can be left empty.")],
+			"scriptPath" => [
 				"Headline" => _("Logon script"), 'attr' => 'sambaLogonScript',
-				"Text" => _('File name and path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
-			"userWorkstations" => array(
+				"Text" => _('File name and path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.') . ' ' . _("Can be left empty.")],
+			"userWorkstations" => [
 				"Headline" => _("Samba workstations"), 'attr' => 'sambaUserWorkstations',
-				"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation.")),
-			"workstations" => array(
+				"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation.")],
+			"workstations" => [
 				"Headline" => _("Samba workstations"), 'attr' => 'sambaUserWorkstations',
-				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
-			"group" => array(
+				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation.") . ' ' . _("Can be left empty.")],
+			"group" => [
 				"Headline" => _("Windows primary group"), 'attr' => 'sambaPrimaryGroupSID',
-				"Text" => _("This is the user's primary Windows group.")),
-			"groupUpload" => array(
+				"Text" => _("This is the user's primary Windows group.")],
+			"groupUpload" => [
 				"Headline" => _("Windows primary group SID"), 'attr' => 'sambaPrimaryGroupSID',
-				"Text" => _("This is the SID of the user's primary Windows group.")),
-			"specialUser" => array(
+				"Text" => _("This is the SID of the user's primary Windows group.")],
+			"specialUser" => [
 				"Headline" => _("Special user"),
-				"Text" => _("This allows you to define this account as a special user like administrator or guest.")),
-			"ridUpload" => array(
+				"Text" => _("This allows you to define this account as a special user like administrator or guest.")],
+			"ridUpload" => [
 				"Headline" => _("Samba RID"),
 				"Text" => _("This is the relative ID number for your Windows account. You can either enter a number or one of these special accounts: ") .
-				implode(", ", array_keys($this->userRids)) . "<br><br>" . _("If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")),
-			"ridUploadHost" => array(
+					implode(", ", array_keys($this->userRids)) . "<br><br>" . _("If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")],
+			"ridUploadHost" => [
 				"Headline" => _("Samba RID"),
-				"Text" => _("This is the relative ID number for your host account. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")),
-			"domain" => array(
+				"Text" => _("This is the relative ID number for your host account. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")],
+			"domain" => [
 				"Headline" => _("Domain"), 'attr' => 'sambaDomainName',
-				"Text" => _("Windows domain name of account.")),
-			"logonHours" => array(
+				"Text" => _("Windows domain name of account.")],
+			"logonHours" => [
 				"Headline" => _("Logon hours"), 'attr' => 'sambaLogonHours',
-				"Text" => _("This option defines the allowed logon hours for this account.")),
-			"logonHoursUpload" => array(
+				"Text" => _("This option defines the allowed logon hours for this account.")],
+			"logonHoursUpload" => [
 				"Headline" => _("Logon hours"), 'attr' => 'sambaLogonHours',
-				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT.")),
-			'expireDate' => array (
+				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT.")],
+			'expireDate' => [
 				"Headline" => _("Account expiration date"), 'attr' => 'sambaKickoffTime',
-				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")),
-			'timeZone' => array (
+				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")],
+			'timeZone' => [
 				"Headline" => _("Time zone"),
-				"Text" => _("This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly.")),
-			'tsAllowLogin' => array (
+				"Text" => _("This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly.")],
+			'tsAllowLogin' => [
 				"Headline" => _("Allow terminal server login"),
-				"Text" => _("Activate this checkbox to allow this user to use the terminal service.")),
-			'tsHomeDir' => array (
+				"Text" => _("Activate this checkbox to allow this user to use the terminal service.")],
+			'tsHomeDir' => [
 				"Headline" => _("Home directory"),
-				"Text" => _("This is the path to the user's home directory.")),
-			'tsProfilePath' => array (
+				"Text" => _("This is the path to the user's home directory.")],
+			'tsProfilePath' => [
 				"Headline" => _("Profile path"),
-				"Text" => _("Path of the user profile.")),
-			'tsInherit' => array (
+				"Text" => _("Path of the user profile.")],
+			'tsInherit' => [
 				"Headline" => _("Inherit client startup configuration"),
-				"Text" => _("Activate this checkbox to inherit the initial program and working directory from the client machine.")),
-			'tsInitialProgram' => array (
+				"Text" => _("Activate this checkbox to inherit the initial program and working directory from the client machine.")],
+			'tsInitialProgram' => [
 				"Headline" => _("Initial program"),
-				"Text" => _("This program is run after the login.")),
-			'tsWorkDirectory' => array (
+				"Text" => _("This program is run after the login.")],
+			'tsWorkDirectory' => [
 				"Headline" => _("Working directory"),
-				"Text" => _("Working directory of initial program.")),
-			'tsTimeLimit' => array (
+				"Text" => _("Working directory of initial program.")],
+			'tsTimeLimit' => [
 				"Headline" => _("Time limit"),
-				"Text" => _("Please enter the time limit in minutes. 0 means unlimited.")),
-			'tsConnectDrives' => array (
+				"Text" => _("Please enter the time limit in minutes. 0 means unlimited.")],
+			'tsConnectDrives' => [
 				"Headline" => _("Connect client drives"),
-				"Text" => _("Activate this checkbox to connect drives from the client machine.")),
-			'tsConnectPrinters' => array (
+				"Text" => _("Activate this checkbox to connect drives from the client machine.")],
+			'tsConnectPrinters' => [
 				"Headline" => _("Connect client printers"),
-				"Text" => _("Activate this checkbox to connect printers from the client machine.")),
-			'tsClientPrinterDefault' => array (
+				"Text" => _("Activate this checkbox to connect printers from the client machine.")],
+			'tsClientPrinterDefault' => [
 				"Headline" => _("Client printer is default"),
-				"Text" => _("Activate this checkbox to set the client's printer as default printer.")),
-			'tsShadowing' => array (
+				"Text" => _("Activate this checkbox to set the client's printer as default printer.")],
+			'tsShadowing' => [
 				"Headline" => _("Shadowing"),
-				"Text" => _("Here you can specify the shadowing mode.")),
-			'tsBrokenConn' => array (
+				"Text" => _("Here you can specify the shadowing mode.")],
+			'tsBrokenConn' => [
 				"Headline" => _("On broken or timed out connection"),
-				"Text" => _("This specifies what to do when the client connection is broken.")),
-			'tsReconnect' => array (
+				"Text" => _("This specifies what to do when the client connection is broken.")],
+			'tsReconnect' => [
 				"Headline" => _("Reconnect if disconnected"),
-				"Text" => _("This specifies the reconnect policy.")),
-			'terminalServer' => array (
+				"Text" => _("This specifies the reconnect policy.")],
+			'terminalServer' => [
 				"Headline" => _("Terminal server options"),
-				"Text" => _("Here you can change the settings for the terminal server access.")),
-			'sambaPwdLastSet' => array (
+				"Text" => _("Here you can change the settings for the terminal server access.")],
+			'sambaPwdLastSet' => [
 				"Headline" => _("Last password change"), 'attr' => 'sambaPwdLastSet',
-				"Text" => _("This is the date when the user changed his password.")),
-			'hiddenOptions' => array(
+				"Text" => _("This is the date when the user changed his password.")],
+			'hiddenOptions' => [
 				"Headline" => _("Hidden options"),
-				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")),
-			'autoAdd' => array(
+				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
-				"Text" => _("This will enable the extension automatically if this profile is loaded.")),
-			'domainSuffix' => array(
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")],
+			'domainSuffix' => [
 				"Headline" => _("Domain suffix"),
-				"Text" => _("Please enter the LDAP suffix where your Samba domain entries are stored.")),
-			'history' => array(
+				"Text" => _("Please enter the LDAP suffix where your Samba domain entries are stored.")],
+			'history' => [
 				"Headline" => _("Password history"),
-				"Text" => _("Enables password history. Depending on your LDAP server you need to select the right server-side ordering (switch ordering here if old passwords are not removed from history).")),
-		);
+				"Text" => _("Enables password history. Depending on your LDAP server you need to select the right server-side ordering (switch ordering here if old passwords are not removed from history).")],
+		];
 		// upload dependencies
-		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
+		$return['upload_preDepends'] = ['posixAccount', 'inetOrgPerson'];
 		// upload options
 		if ($this->get_scope() == "user") {
-			$return['upload_columns'] = array(
-				array(
+			$return['upload_columns'] = [
+				[
 					'name' => 'sambaSamAccount_domain',
 					'description' => _('Domain'),
 					'required' => true,
 					'help' => 'domain',
 					'example' => _('mydomain')
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_displayName',
 					'description' => _('Display name'),
 					'help' => 'displayName',
 					'example' => _('Steve Miller')
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_password',
 					'description' => _('Password'),
 					'help' => 'password',
 					'example' => _('secret')
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_pwdUnix',
 					'description' => _('Use Unix password'),
 					'help' => 'pwdUnixUpload',
 					'default' => 'true',
 					'values' => 'true, false',
 					'example' => 'true'
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_noPassword',
 					'description' => _('Use no password'),
 					'help' => 'noPasswordUpload',
 					'default' => 'false',
 					'values' => 'true, false',
 					'example' => 'false'
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_noExpire',
 					'description' => _('Password does not expire'),
 					'help' => 'noExpireUpload',
 					'default' => 'true',
 					'values' => 'true, false',
 					'example' => 'true'
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_deactivated',
 					'description' => _('Account is deactivated'),
 					'help' => 'deactivatedUpload',
 					'default' => 'false',
 					'values' => 'true, false',
 					'example' => 'false'
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_expireDate',
 					'description' => _('Account expiration date'),
 					'help' => 'expireDate',
 					'default' => '31-12-2030',
 					'example' => '15-10-2020'
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_group',
 					'description' => _('Windows group'),
 					'help' => 'groupUpload',
 					'example' => _('mygroup'),
 					'default' => 'Domain Users'
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_rid',
 					'description' => _('Samba RID'),
 					'help' => 'ridUpload',
 					'example' => '1235',
 					'default' => '{uidNumber}*2 + {sambaAlgorithmicRidBase}'
-				),
-			);
+				],
+			];
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'sambaSamAccount_homeDrive',
 					'description' => _('Home drive'),
 					'help' => 'homeDrive',
 					'example' => 'k:'
-				);
+				];
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'sambaSamAccount_homePath',
 					'description' => _('Home path'),
 					'help' => 'homePath',
 					'example' => _('\\\\server\\homes\\smiller')
-				);
+				];
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'sambaSamAccount_profilePath',
 					'description' => _('Profile path'),
 					'help' => 'profilePath',
 					'example' => _('\\\\server\\profiles\\smiller')
-				);
+				];
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'sambaSamAccount_logonScript',
 					'description' => _('Logon script'),
 					'help' => 'scriptPath',
 					'example' => 'logon.bat'
-				);
+				];
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'sambaSamAccount_workstations',
 					'description' => _('Samba workstations'),
 					'help' => 'workstations',
 					'example' => 'PC01,PC02,PC03'
-				);
+				];
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
-				$return['upload_columns'][] = array(
+				$return['upload_columns'][] = [
 					'name' => 'sambaSamAccount_logonHours',
 					'description' => _('Logon hours'),
 					'help' => 'logonHoursUpload',
 					'example' => 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
-				);
+				];
 			}
 		}
 		elseif ($this->get_scope() == "host") {
-			$return['upload_columns'] = array(
-				array(
+			$return['upload_columns'] = [
+				[
 					'name' => 'sambaSamAccount_domain',
 					'description' => _('Domain'),
 					'required' => true,
 					'help' => 'domain',
 					'example' => _('mydomain')
-				),
-				array(
+				],
+				[
 					'name' => 'sambaSamAccount_rid',
 					'description' => _('Samba RID'),
 					'help' => 'ridUploadHost',
 					'example' => '1235',
 					'default' => '{uidNumber}*2 + {sambaAlgorithmicRidBase}'
-				)
-			);
+				]
+			];
 		}
 		return $return;
 	}
@@ -577,16 +577,16 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**
-	* Initializes the module after it became part of an accountContainer
-	*
-	* @param string $base the name of the accountContainer object ($_SESSION[$base])
-	*/
+	 * Initializes the module after it became part of an accountContainer
+	 *
+	 * @param string $base the name of the accountContainer object ($_SESSION[$base])
+	 */
 	function init($base) {
 		// call parent init
 		parent::init($base);
@@ -595,23 +595,23 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* This function is used to check if this module page can be displayed.
-	* It returns false if a module depends on data from other modules which was not yet entered.
-	*
-	* @return boolean true, if page can be displayed
-	*/
+	 * This function is used to check if this module page can be displayed.
+	 * It returns false if a module depends on data from other modules which was not yet entered.
+	 *
+	 * @return boolean true, if page can be displayed
+	 */
 	function module_ready() {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		return isset($attrs['gidNumber'][0]) && isset($attrs['uidNumber'][0]) && isset($attrs['uid'][0]);
 	}
 
 	/**
-	* This function is used to check if all settings for this module have been made.
-	*
-	* @see baseModule::module_complete
-	*
-	* @return boolean true, if settings are complete
-	*/
+	 * This function is used to check if all settings for this module have been made.
+	 *
+	 * @return boolean true, if settings are complete
+	 * @see baseModule::module_complete
+	 *
+	 */
 	public function module_complete() {
 		if (!$this->isExtensionEnabled()) {
 			return true;
@@ -630,17 +630,25 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 
 
 	/**
-	* This function loads the LDAP attributes for this module.
-	*
-	* @param array $attr attribute list
-	*/
+	 * This function loads the LDAP attributes for this module.
+	 *
+	 * @param array $attr attribute list
+	 */
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		if (isset($this->attributes['sambaacctflags'][0])) {
-			if (strpos($this->attributes['sambaacctflags'][0], "N")) $this->nopwd = true;
-			else $this->nopwd = false;
-			if (strpos($this->attributes['sambaacctflags'][0], "X")) $this->noexpire = true;
-			else $this->noexpire = false;
+			if (strpos($this->attributes['sambaacctflags'][0], "N")) {
+				$this->nopwd = true;
+			}
+			else {
+				$this->nopwd = false;
+			}
+			if (strpos($this->attributes['sambaacctflags'][0], "X")) {
+				$this->noexpire = true;
+			}
+			else {
+				$this->noexpire = false;
+			}
 		}
 		if (isset($this->attributes['sambaPwdLastSet'][0]) && ($this->attributes['sambaPwdLastSet'][0] === '0')) {
 			$this->expirePassword = true;
@@ -648,17 +656,17 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('sambaSamAccount', $this->attributes['objectClass']) && !in_array('sambaSamAccount', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -676,11 +684,11 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		// add extension
 		if (isset($_POST['addObjectClass'])) {
@@ -689,7 +697,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 		// remove extension
 		elseif (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('sambaSamAccount'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['sambaSamAccount'], $this->attributes['objectClass']);
 			$attrKeys = array_keys($this->attributes);
 			for ($k = 0; $k < sizeof($attrKeys); $k++) {
 				if (strpos($attrKeys[$k], 'samba') > -1) {
@@ -715,7 +723,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $_POST['sambaDomainName'];
 		// Get Domain SID from name
-		for ($i=0; $i<count($sambaDomains); $i++ ) {
+		for ($i = 0; $i < count($sambaDomains); $i++) {
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
 				$RIDbase = $sambaDomains[$i]->RIDbase;
@@ -755,7 +763,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		// Expand string to fixed length
 		$flag = str_pad($flag, 12);
 		// End character
-		$flag = $flag. "]";
+		$flag = $flag . "]";
 		$this->attributes['sambaacctflags'][0] = $flag;
 
 		// display name
@@ -769,8 +777,8 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 
 		// host attributes
-		if ($this->get_scope()=='host') {
-			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->groupRids[_('Domain computers')];
+		if ($this->get_scope() == 'host') {
+			$this->attributes['sambaPrimaryGroupSID'][0] = $SID . "-" . $this->groupRids[_('Domain computers')];
 			if (isset($_POST['ResetSambaPassword']) || !isset($this->attributes['sambaNTPassword'][0])) {
 				$hostname = $attrs['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
@@ -779,7 +787,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			}
 		}
 		// user attributes
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 				$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
 				$this->attributes['sambaHomePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaHomePath'][0]);
@@ -787,7 +795,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) {
 					$errors[] = $this->messages['homePath'][1];
 				}
-				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC'))) {
+				if ((!$this->attributes['sambaHomePath'][0] == '') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC'))) {
 					$errors[] = $this->messages['homePath'][0];
 				}
 			}
@@ -806,7 +814,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) {
 					$errors[] = $this->messages['logonScript'][1];
 				}
-				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript'))) {
+				if ((!$this->attributes['sambaLogonScript'][0] == '') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript'))) {
 					$errors[] = $this->messages['logonScript'][0];
 				}
 			}
@@ -819,17 +827,17 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 				if (!($this->attributes['sambaProfilePath'][0] == '') &&
 					!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory'))) {
-						$errors[] = $this->messages['profilePath'][0];
+					$errors[] = $this->messages['profilePath'][0];
 				}
 			}
 			$rids = array_keys($this->groupRids);
 			$wrid = false;
-			for ($i=0; $i<count($rids); $i++) {
+			for ($i = 0; $i < count($rids); $i++) {
 				if ($_POST['sambaPrimaryGroupSID'] == $rids[$i]) {
 					$wrid = true;
 					// Get Domain SID
-					$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->groupRids[$rids[$i]];
-					}
+					$this->attributes['sambaPrimaryGroupSID'][0] = $SID . "-" . $this->groupRids[$rids[$i]];
+				}
 			}
 			if (!$wrid) {
 				$gidnumber = $attrs['gidNumber'][0];
@@ -854,13 +862,13 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				if (!isset($this->attributes['sambaSID'][0])
 					|| in_array($rid, $this->userRids)
 					|| (strpos($this->attributes['sambaSID'][0], $SID) === false)) {
-					$this->attributes['sambaSID'][0] = $SID . "-" . (($attrs['uidNumber'][0]*2) + $RIDbase);
+					$this->attributes['sambaSID'][0] = $SID . "-" . (($attrs['uidNumber'][0] * 2) + $RIDbase);
 				}
 			}
 		}
 		else {  // host
 			if (!isset($this->attributes['sambaSID'][0])) {
-				$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
+				$this->attributes['sambaSID'][0] = $SID . "-" . (($attrs['uidNumber'][0] * 2) + $RIDbase);
 			}
 		}
 		if (isset($_POST['forcePasswordChangeOption'])) {
@@ -873,21 +881,21 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_sambaUserWorkstations() {
 		// Load attributes
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			if (isset($_POST['workstations_2']) && isset($_POST['workstations_left'])) { // Add workstations to list
 				$workstations = [];
 				if (isset($this->attributes['sambaUserWorkstations'][0])) {
 					$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-					$workstations = explode (',', $temp);
-					for ($i=0; $i<count($workstations); $i++) {
-						if ($workstations[$i]=='') {
+					$workstations = explode(',', $temp);
+					for ($i = 0; $i < count($workstations); $i++) {
+						if ($workstations[$i] == '') {
 							unset($workstations[$i]);
 						}
 					}
@@ -903,16 +911,16 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				sort($workstations);
 				// Recreate workstation string
 				$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
-				for ($i=1; $i<count($workstations); $i++) {
+				for ($i = 1; $i < count($workstations); $i++) {
 					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
-					}
 				}
+			}
 			elseif (isset($_POST['workstations_1']) && isset($_POST['workstations_right'])) { // remove // Add workstations from list
 				// Put all workstations in array
 				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-				$workstations = explode (',', $temp);
-				for ($i=0; $i<count($workstations); $i++) {
-					if ($workstations[$i]=='') {
+				$workstations = explode(',', $temp);
+				for ($i = 0; $i < count($workstations); $i++) {
+					if ($workstations[$i] == '') {
 						unset($workstations[$i]);
 					}
 				}
@@ -923,7 +931,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				unset($this->attributes['sambaUserWorkstations'][0]);
 				if (sizeof($workstations) > 0) {
 					$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
-					for ($i=1; $i<count($workstations); $i++) {
+					for ($i = 1; $i < count($workstations); $i++) {
 						$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
 					}
 				}
@@ -933,18 +941,18 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Processes user input of the logon hours page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the logon hours page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_logonHours() {
 		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
 			return [];
 		}
 		// set new logon hours
 		$logonHours = '';
-		for ($i = 0; $i < 24*7; $i++) {
+		for ($i = 0; $i < 24 * 7; $i++) {
 			$logonHours .= isset($_POST['lh_' . $i]) ? '1' : '0';
 		}
 		// reconstruct HEX string
@@ -952,9 +960,9 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		$logonHoursNew = '';
 		for ($i = 0; $i < 21; $i++) {
 			$part = strrev(substr($logonHours, $i * 8, 8));
-			$byte['hi'] = substr($part,0,4);
-			$byte['low'] = substr($part,4,4);
-			$hex = $bitstring2hex[$byte['hi']].$bitstring2hex[$byte['low']];
+			$byte['hi'] = substr($part, 0, 4);
+			$byte['low'] = substr($part, 4, 4);
+			$hex = $bitstring2hex[$byte['hi']] . $bitstring2hex[$byte['low']];
 			$logonHoursNew = $logonHoursNew . $hex;
 		}
 		$this->attributes['sambaLogonHours'][0] = $logonHoursNew;
@@ -962,10 +970,10 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Processes user input of the time selection page.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the time selection page.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_time() {
 		$return = [];
 		// find button name
@@ -1034,11 +1042,11 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Processes user input of the terminal server page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the terminal server page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_terminalServer() {
 		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
 			return [];
@@ -1095,18 +1103,18 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 			}
 			$sel_domain = [];
-			for ($i=0; $i<count($sambaDomains); $i++ ) {
+			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 				if (isset($domainSID)) {
 					if ($domainSID == $sambaDomains[$i]->SID) {
 						$SID = $domainSID;
-						$sel_domain = array($sambaDomains[$i]->name);
+						$sel_domain = [$sambaDomains[$i]->name];
 					}
 				}
-				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
+				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0] != '')) {
 					if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 						$SID = $sambaDomains[$i]->SID;
-						$sel_domain = array($sambaDomains[$i]->name);
+						$sel_domain = [$sambaDomains[$i]->name];
 					}
 				}
 			}
@@ -1124,7 +1132,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 			}
 			$return->add(new htmlResponsiveInputField(_('Display name'), 'displayName', $displayName, 'displayName'), 12);
-			if ($this->get_scope()=='user') {
+			if ($this->get_scope() == 'user') {
 				// user account
 				$return->add(new htmlHiddenInput('sambaAcctFlagsU', 'true'), 12);
 				// no password
@@ -1179,15 +1187,15 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$return->addField($expireDateGroup);
 				// home drive
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
-					$drives = array('-');
-					for ($i=90; $i>67; $i--) {
-						$drives[] = chr($i).':';
+					$drives = ['-'];
+					for ($i = 90; $i > 67; $i--) {
+						$drives[] = chr($i) . ':';
 					}
 					if (isset($this->attributes['sambaHomeDrive'][0])) {
-						$selected = array ($this->attributes['sambaHomeDrive'][0]);
+						$selected = [$this->attributes['sambaHomeDrive'][0]];
 					}
 					else {
-						$selected = array('-');
+						$selected = ['-'];
 					}
 					$return->add(new htmlResponsiveSelect('sambaHomeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), 12);
 				}
@@ -1236,13 +1244,13 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 				// Windows group
 				$names = array_keys($this->groupRids);
-				$wrid=false;
+				$wrid = false;
 				$options = [];
 				$selected = [];
-				for ($i=0; $i<count($names); $i++) {
+				for ($i = 0; $i < count($names); $i++) {
 					if (isset($this->attributes['sambaPrimaryGroupSID'][0]) && ($this->attributes['sambaPrimaryGroupSID'][0] == $SID . "-" . $this->groupRids[$names[$i]])) {
 						$selected[] = $names[$i];
-						$wrid=true;
+						$wrid = true;
 					}
 					$options[] = $names[$i];
 				}
@@ -1260,10 +1268,10 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
 					$specialRids = array_flip($this->userRids);
 					if (in_array($rid, $this->userRids)) {
-						$selected = array($specialRids[$rid]);
+						$selected = [$specialRids[$rid]];
 					}
 					else {
-						$selected = array('-');
+						$selected = ['-'];
 					}
 				}
 				else {
@@ -1274,7 +1282,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			// domain
 			$return->add(new htmlResponsiveSelect('sambaDomainName', $sambaDomainNames, $sel_domain, _('Domain'), 'domain'), 12);
 			// logon hours and terminal server options
-			if ($this->get_scope()=='user') {
+			if ($this->get_scope() == 'user') {
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
 					$return->addLabel(new htmlOutputText(_('Logon hours')));
 					$logonHoursGroup = new htmlGroup();
@@ -1293,7 +1301,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 			}
 			// reset host password
-			if ($this->get_scope()=='host') {
+			if ($this->get_scope() == 'host') {
 				// host account
 				$return->add(new htmlHiddenInput('sambaAcctFlagsW', 'true'), 12);
 				// password reset
@@ -1308,7 +1316,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			$return->addVerticalSpacer('2rem');
 
 			$remButton = new htmlButton('remObjectClass', _('Remove Samba 3 extension'));
-			$remButton->setCSSClasses(array('lam-danger'));
+			$remButton->setCSSClasses(['lam-danger']);
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
@@ -1323,7 +1331,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	 * @return string expiration date
 	 */
 	private function formatAccountExpirationDate() {
-		$dateValue =  "-";
+		$dateValue = "-";
 		if (isset($this->attributes['sambaKickoffTime'][0])) {
 			if ($this->attributes['sambaKickoffTime'][0] > 2147483648) {
 				$dateValue = "∞";
@@ -1337,13 +1345,13 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* This function will create the HTML page to edit the allowed workstations.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * This function will create the HTML page to edit the allowed workstations.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_sambaUserWorkstations() {
 		$return = new htmlResponsiveRow();
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			// Get list of all hosts.
 			$userWorkstations = [];
 			$availableUserWorkstations = [];
@@ -1355,7 +1363,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			sort($availableUserWorkstations, SORT_STRING);
 			if (isset($this->attributes['sambaUserWorkstations'][0])) {
 				$wsAttr = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-				$userWorkstations = explode (',', $wsAttr);
+				$userWorkstations = explode(',', $wsAttr);
 			}
 			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
 
@@ -1380,15 +1388,15 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* This function will create the HTML page to edit logon hours.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * This function will create the HTML page to edit logon hours.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_logonHours() {
 		$return = new htmlResponsiveRow();
 		$timeZone = getTimeZoneOffsetHours();
-		$titles = array(_('Time'), _('Sunday'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'),
-			_('Friday'), _('Saturday'));
+		$titles = [_('Time'), _('Sunday'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'),
+			_('Friday'), _('Saturday')];
 		$data = [];
 		if (!isset($this->attributes['sambaLogonHours'][0]) || ($this->attributes['sambaLogonHours'][0] == '')) {
 			$this->attributes['sambaLogonHours'][0] = 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
@@ -1403,25 +1411,25 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		// reverse bits low to high (1 is 0:00 sunday, 2 is 1:00 sunday, etc)
 		$logonHours = "";
 		for ($i = 0; $i < 21; $i++) {
-			$logonHours .= strrev(substr($logonHoursRev, $i*8, 8));
+			$logonHours .= strrev(substr($logonHoursRev, $i * 8, 8));
 		}
 		$hour = [];
-		for ($i = 0; $i < 24*7; $i++) {
+		for ($i = 0; $i < 24 * 7; $i++) {
 			$hour[$i] = substr($logonHours, $i, 1);
 		}
 		// display input
 		$boxes = [];
 		// dynamically place boxes depending on time zone
-		for ($i = 0; $i < 24*7; $i++) {
+		for ($i = 0; $i < 24 * 7; $i++) {
 			$hr = $i + $timeZone;
 			if ($hr < 0) {
-				$hr = $hr + 24*7;
+				$hr = $hr + 24 * 7;
 			}
-			elseif ($hr >= 24*7) {
-				$hr = $hr - 24*7;
+			elseif ($hr >= 24 * 7) {
+				$hr = $hr - 24 * 7;
 			}
 			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
-			$boxes[$i % 24][floor($i/24)] = $checkbox;
+			$boxes[$i % 24][floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
 			$hour = $h;
@@ -1444,38 +1452,38 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to change time values.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * This function will create the meta HTML code to show a page to change time values.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_time() {
 		$return = new htmlResponsiveRow();
 		$attr = 'sambaKickoffTime';
 		$text = _('Account expiration date');
 		$help = "expireDate";
-		$time = time() + 3600*24*365;
+		$time = time() + 3600 * 24 * 365;
 		if (isset($this->attributes[$attr][0])) {
 			$time = $this->attributes[$attr][0];
 		}
 		$date = new DateTime('@' . $time, new DateTimeZone('UTC'));
-		for ( $i=1; $i<=31; $i++ ) {
+		for ($i = 1; $i <= 31; $i++) {
 			$mday[] = $i;
 		}
-		for ( $i=1; $i<=12; $i++ ) {
+		for ($i = 1; $i <= 12; $i++) {
 			$mon[] = $i;
 		}
-		for ( $i=2003; $i<=2050; $i++ ) {
+		for ($i = 2003; $i <= 2050; $i++) {
 			$year[] = $i;
 		}
 		$return->addLabel(new htmlOutputText($text));
 		$dateGroup = new htmlGroup();
-		$daySelect = new htmlSelect('expire_day', $mday, array($date->format('j')));
+		$daySelect = new htmlSelect('expire_day', $mday, [$date->format('j')]);
 		$daySelect->setWidth('3rem');
 		$dateGroup->addElement($daySelect);
-		$monthSelect = new htmlSelect('expire_mon', $mon, array($date->format('n')));
+		$monthSelect = new htmlSelect('expire_mon', $mon, [$date->format('n')]);
 		$monthSelect->setWidth('3rem');
 		$dateGroup->addElement($monthSelect);
-		$yearSelect = new htmlSelect('expire_yea', $year, array($date->format('Y')));
+		$yearSelect = new htmlSelect('expire_yea', $year, [$date->format('Y')]);
 		$yearSelect->setWidth('5rem');
 		$dateGroup->addElement($yearSelect);
 		$dateGroup->addElement(new htmlHelpLink($help));
@@ -1506,10 +1514,10 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* This function will create the HTML page to edit the terminal server options.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * This function will create the HTML page to edit the terminal server options.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_terminalServer() {
 		$return = new htmlResponsiveRow();
 		$mDial = new sambaMungedDial();
@@ -1522,12 +1530,12 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		$return->add(new htmlResponsiveInputField(_('Home directory'), 'tsHomeDir', $mDial->ctx['CtxWFHomeDir'], 'tsHomeDir'), 12);
 		// home drive
 		$drives = [];
-		for ($i=90; $i>67; $i--) {
-			$drives[] = chr($i).':';
+		for ($i = 90; $i > 67; $i--) {
+			$drives[] = chr($i) . ':';
 		}
 		$selTsDrive = [];
 		if (isset($mDial->ctx['CtxWFHomeDirDrive'])) {
-			$selTsDrive = array($mDial->ctx['CtxWFHomeDirDrive']);
+			$selTsDrive = [$mDial->ctx['CtxWFHomeDirDrive']];
 		}
 		$return->add(new htmlResponsiveSelect('tsHomeDrive', $drives, $selTsDrive, _('Home drive'), 'homeDrive'), 12);
 		// profile path
@@ -1557,29 +1565,29 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		// client printer is default
 		$return->add(new htmlResponsiveInputCheckbox('tsClientPrinterDefault', $mDial->getDefaultPrinter(), _('Client printer is default'), 'tsClientPrinterDefault'), 12);
 		// shadowing
-		$shadowOptions = array(
+		$shadowOptions = [
 			_("disabled") => "0",
 			_("input on, notify on") => "1",
 			_("input on, notify off") => "2",
 			_("input off, notify on") => "3",
-			_("input off, notify off") => "4");
-		$selShadow = array($mDial->getShadow());
+			_("input off, notify off") => "4"];
+		$selShadow = [$mDial->getShadow()];
 		$shadowSelect = new htmlResponsiveSelect('tsShadowing', $shadowOptions, $selShadow, _('Shadowing'), 'tsShadowing');
 		$shadowSelect->setHasDescriptiveElements(true);
 		$return->add($shadowSelect, 12);
 		// broken connection
-		$brokenConnOptions = array(
+		$brokenConnOptions = [
 			_("disconnect") => "0",
-			_("reset") => "1");
-		$selbrokenConn = array($mDial->getBrokenConn());
+			_("reset") => "1"];
+		$selbrokenConn = [$mDial->getBrokenConn()];
 		$brokenConnSelect = new htmlResponsiveSelect('tsBrokenConn', $brokenConnOptions, $selbrokenConn, _('On broken or timed out connection'), 'tsBrokenConn');
 		$brokenConnSelect->setHasDescriptiveElements(true);
 		$return->add($brokenConnSelect, 12);
 		// reconnect
-		$reconnectOptions = array(
+		$reconnectOptions = [
 			_("from any client") => "0",
-			_("from previous client only") => "1");
-		$selReconnect = array($mDial->getReConn());
+			_("from previous client only") => "1"];
+		$selReconnect = [$mDial->getReConn()];
 		$reconnectSelect = new htmlResponsiveSelect('tsReconnect', $reconnectOptions, $selReconnect, _('Reconnect if disconnected'), 'tsReconnect');
 		$reconnectSelect->setHasDescriptiveElements(true);
 		$return->add($reconnectSelect, 12);
@@ -1591,10 +1599,10 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Displays manage profile path page.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays manage profile path page.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_profilePath() {
 		$return = new htmlResponsiveRow();
 		$return->addLabel(new htmlOutputText(_('Profile path')));
@@ -1616,12 +1624,12 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
-					array(
+					[
 						$this->attributes['uid'][0],
 						"home",
 						"check",
-						$remoteServer->getHomeDirPrefix() . $this->attributes['sambaProfilePath'][0])
-					));
+						$remoteServer->getHomeDirPrefix() . $this->attributes['sambaProfilePath'][0]]
+				));
 			$remote->disconnect();
 			// remote command results
 			if (!empty($result)) {
@@ -1663,11 +1671,11 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Processes user input of the profile path check page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the profile path check page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_profilePath() {
 		$return = [];
 		$unixAttrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -1686,27 +1694,27 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					$remote->connect($remoteServer);
 				}
 				catch (LAMException $e) {
-					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$return[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
-						array(
+						[
 							$this->attributes['uid'][0],
 							"directory",
 							"add",
 							$remoteServer->getHomeDirPrefix() . $this->attributes['sambaProfilePath'][0],
-							"0".$_SESSION['config']->get_scriptRights(),
+							"0" . $_SESSION['config']->get_scriptRights(),
 							$uidNumber,
-							$gidNumber)
-				));
+							$gidNumber]
+					));
 				$remote->disconnect();
 				// remote command results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
 					if (is_array($singleresult)
-							&& (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO'))) {
+						&& (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO'))) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1717,26 +1725,26 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					$remote->connect($remoteServer);
 				}
 				catch (LAMException $e) {
-					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$return[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
-						array(
+						[
 							$this->attributes['uid'][0],
 							"home",
 							"rem",
 							$remoteServer->getHomeDirPrefix() . $this->attributes['sambaProfilePath'][0],
 							$uidNumber
-						)
-				));
+						]
+					));
 				$remote->disconnect();
 				// remote command results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
 					if (is_array($singleresult)
-							&& (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO'))) {
+						&& (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO'))) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1746,8 +1754,8 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function get_profileOptions($typeId) {
 		$return = parent::get_profileOptions($typeId);
 		if ($this->get_scope() == 'user') {
@@ -1755,13 +1763,13 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			$day = [];
 			$mon = [];
 			$year = [];
-			for ( $i=1; $i<=31; $i++ ) {
+			for ($i = 1; $i <= 31; $i++) {
 				$day[] = $i;
 			}
-			for ( $i=1; $i<=12; $i++ ) {
+			for ($i = 1; $i <= 12; $i++) {
 				$mon[] = $i;
 			}
-			for ( $i=2003; $i<=2030; $i++ ) {
+			for ($i = 2003; $i <= 2030; $i++) {
 				$year[] = $i;
 			}
 			// display name
@@ -1775,18 +1783,18 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			// expiration date
 			$return->addLabel(new htmlOutputText(_('Account expiration date')));
 			$expireContainer = new htmlResponsiveRow();
-			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_day', $day, array('1')), 2, 2, 2, 'padding-right05');
-			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_mon', $mon, array('1')), 2, 2, 2, 'padding-left-right05');
-			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_yea', $year, array('2030')), 6, 6, 6, 'padding-left-right05');
+			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_day', $day, ['1']), 2, 2, 2, 'padding-right05');
+			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_mon', $mon, ['1']), 2, 2, 2, 'padding-left-right05');
+			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_yea', $year, ['2030']), 6, 6, 6, 'padding-left-right05');
 			$expireContainer->add(new htmlHelpLink('expireDate'), 2, 2, 2, 'padding-left-right05');
 			$return->addField($expireContainer, 12);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 				// letter of home drive
-				$drives = array('-');
+				$drives = ['-'];
 				for ($i = 90; $i > 67; $i--) {
 					$drives[] = chr($i) . ':';
 				}
-				$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaHomeDrive', $drives, array('-'), _('Home drive'), 'homeDrive'), 12);
+				$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaHomeDrive', $drives, ['-'], _('Home drive'), 'homeDrive'), 12);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 				// path to home directory
@@ -1817,7 +1825,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$groups[$key] = $value;
 			}
 			$groups["-"] = "-";
-			$groupSelect = new htmlResponsiveSelect('sambaSamAccount_group', $groups, array('513'), _('Windows group'), 'group');
+			$groupSelect = new htmlResponsiveSelect('sambaSamAccount_group', $groups, ['513'], _('Windows group'), 'group');
 			$groupSelect->setHasDescriptiveElements(true);
 			$return->add($groupSelect, 12);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
@@ -1838,10 +1846,10 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -1928,20 +1936,20 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	}
 
 	/**
-	* Returns a list of configuration options.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* The field names are used as keywords to load and save settings.
-	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	*
-	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	* @return mixed htmlElement or array of htmlElement
-	*
-	* @see baseModule::get_metaData()
-	* @see htmlElement
-	*/
+	 * Returns a list of configuration options.
+	 *
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * The field names are used as keywords to load and save settings.
+	 * We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	 *
+	 * @param array $scopes account types (user, group, host)
+	 * @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	 * @return mixed htmlElement or array of htmlElement
+	 *
+	 * @see baseModule::get_metaData()
+	 * @see htmlElement
+	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$return = parent::get_configOptions($scopes, $allScopes);
 		if (!in_array('user', $scopes)) {
@@ -1949,12 +1957,12 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 		$configContainer = new htmlResponsiveRow();
 		// password history
-		$historyOptions = array(
-				_('yes - ordered ascending') => 'yes_deleteLast',
-				_('yes - ordered descending') => 'yes_deleteFirst',
-				_('no') => 'no'
-		);
-		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"), 'history');
+		$historyOptions = [
+			_('yes - ordered ascending') => 'yes_deleteLast',
+			_('yes - ordered descending') => 'yes_deleteFirst',
+			_('no') => 'no'
+		];
+		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, ['yes_deleteLast'], _("Password history"), 'history');
 		$historySelect->setHasDescriptiveElements(true);
 		$configContainer->add($historySelect, 12);
 		// hidden options
@@ -2001,7 +2009,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$tsAllowLogin = _('no');
 			}
 			$this->addPDFKeyValue($return, 'tsAllowLogin', _('Allow terminal server login'), $tsAllowLogin);
-			$this->addPDFKeyValue($return, 'tsHomeDir', _('Home directory'). ' (TS)', $mDial->ctx['CtxWFHomeDir']);
+			$this->addPDFKeyValue($return, 'tsHomeDir', _('Home directory') . ' (TS)', $mDial->ctx['CtxWFHomeDir']);
 			$this->addPDFKeyValue($return, 'tsHomeDrive', _('Home drive') . ' (TS)', $mDial->ctx['CtxWFHomeDirDrive']);
 			$this->addPDFKeyValue($return, 'tsProfilePath', _('Profile path') . ' (TS)', $mDial->ctx['CtxWFProfilePath']);
 			$tsInherit = _('yes');
@@ -2029,28 +2037,28 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$tsClientPrinterDefault = _('no');
 			}
 			$this->addPDFKeyValue($return, 'tsClientPrinterDefault', _('Client printer is default') . ' (TS)', $tsClientPrinterDefault);
-			$shadowOptions = array(
+			$shadowOptions = [
 				'0' => _("disabled"),
 				'1' => _("input on, notify on"),
 				'2' => _("input on, notify off"),
 				'3' => _("input off, notify on"),
-				'4' => _("input off, notify off"));
+				'4' => _("input off, notify off")];
 			$tsShadowing = '';
 			if (($mDial->getShadow() != null) && is_numeric($mDial->getShadow())) {
 				$tsShadowing = $shadowOptions[$mDial->getShadow()];
 			}
 			$this->addPDFKeyValue($return, 'tsShadowing', _('Shadowing') . ' (TS)', $tsShadowing);
-			$brokenConnOptions = array(
+			$brokenConnOptions = [
 				'0' => _("disconnect"),
-				'1' => _("reset"));
+				'1' => _("reset")];
 			$tsBrokenConn = '';
 			if (($mDial->getBrokenConn() != null) && is_numeric($mDial->getBrokenConn())) {
 				$tsBrokenConn = $brokenConnOptions[$mDial->getBrokenConn()];
 			}
 			$this->addPDFKeyValue($return, 'tsBrokenConn', _('On broken or timed out connection') . ' (TS)', $tsBrokenConn);
-			$reconnectOptions = array(
+			$reconnectOptions = [
 				'0' => _("from any client"),
-				'1' => _("from previous client only"));
+				'1' => _("from previous client only")];
 			$tsReconnect = '';
 			if (($mDial->getReConn() != null) && is_numeric($mDial->getReConn())) {
 				$tsReconnect = $reconnectOptions[$mDial->getReConn()];
@@ -2069,7 +2077,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		// get list of Samba 3 domains
 		$domains = $this->getDomains();
 		// get list of Unix groups and their sambaSID + gidNumber
-		$groupList = searchLDAPByFilter('objectClass=posixGroup', array('cn', 'sambaSID', 'gidNumber'), array('group'));
+		$groupList = searchLDAPByFilter('objectClass=posixGroup', ['cn', 'sambaSID', 'gidNumber'], ['group']);
 		$groups_cn = [];
 		for ($i = 0; $i < sizeof($groupList); $i++) {
 			if (isset($groupList[$i]['sambasid'][0])) {
@@ -2081,7 +2089,9 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 		if ($this->get_scope() == 'user') {
 			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-				if (!in_array("sambaSamAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaSamAccount";
+				if (!in_array("sambaSamAccount", $partialAccounts[$i]['objectClass'])) {
+					$partialAccounts[$i]['objectClass'][] = "sambaSamAccount";
+				}
 				// displayName
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'sambaSamAccount_displayName', 'displayName',
 					'realname', $this->messages['displayName'][0], $errors);
@@ -2089,14 +2099,14 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$partialAccounts[$i]['sambaPwdLastSet'] = time();
 				if (!get_preg($rawAccounts[$i][$ids['sambaSamAccount_password']], 'password')) {
 					$errMsg = $this->messages['sambaNTPassword'][2];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				// use Unix password
 				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == "") {  // default: use Unix
 					$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 				}
-				elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']], array('true', 'false'))) {
+				elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']], ['true', 'false'])) {
 					if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == 'true') {  // use Unix
 						$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 					}
@@ -2106,19 +2116,19 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 				else {
 					$errMsg = $this->messages['pwdUnix'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				// use no password
 				if ($rawAccounts[$i][$ids['sambaSamAccount_noPassword']] != "") {
-					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_noPassword']], array('true', 'false'))) {
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_noPassword']], ['true', 'false'])) {
 						if ($rawAccounts[$i][$ids['sambaSamAccount_noPassword']] == 'true') {
 							$partialAccounts[$i]['sambaNTPassword'] = 'NO PASSWORD*****';
 						}
 					}
 					else {
 						$errMsg = $this->messages['noPassword'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2127,34 +2137,38 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$flag_deactivated = false;
 				// password does not expire
 				if ($rawAccounts[$i][$ids['sambaSamAccount_noExpire']] != "") {
-					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_noExpire']], array('true', 'false'))) {
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_noExpire']], ['true', 'false'])) {
 						if ($rawAccounts[$i][$ids['sambaSamAccount_noExpire']] == 'false') {
 							$flag_expire = true;
 						}
 					}
 					else {
 						$errMsg = $this->messages['noExpire'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
 				// account is deactivated
 				if ($rawAccounts[$i][$ids['sambaSamAccount_deactivated']] != "") {
-					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_deactivated']], array('true', 'false'))) {
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_deactivated']], ['true', 'false'])) {
 						if ($rawAccounts[$i][$ids['sambaSamAccount_deactivated']] == 'true') {
 							$flag_deactivated = true;
 						}
 					}
 					else {
 						$errMsg = $this->messages['deactivated'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
 				// set flags
 				$flags = "[";
-				if ($flag_deactivated) $flags = $flags . "D";
-				if (!$flag_expire) $flags = $flags . "X";
+				if ($flag_deactivated) {
+					$flags = $flags . "D";
+				}
+				if (!$flag_expire) {
+					$flags = $flags . "X";
+				}
 				$flags = $flags . "U";
 				// Expand string to fixed length
 				$flags = str_pad($flags, 12);
@@ -2170,7 +2184,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					}
 					else {
 						$errMsg = $this->messages['expireDate'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2181,7 +2195,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					}
 					else {
 						$errMsg = $this->messages['homeDrive'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2211,20 +2225,20 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 				else {
 					$errMsg = $this->messages['domain'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				// group
 				if ($rawAccounts[$i][$ids['sambaSamAccount_group']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_group']], 'groupname')
-					&& (isset($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]))) {
+						&& (isset($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]))) {
 						if (isset($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['SID'])) {
 							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['SID'];
 						}
 						else {
 							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' .
-							($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['gid'] * 2 +
-							 $domains[$domIndex]->RIDbase + 1);
+								($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['gid'] * 2 +
+									$domains[$domIndex]->RIDbase + 1);
 						}
 					}
 					elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_group']], array_keys($this->groupRids))) {
@@ -2232,7 +2246,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					}
 					else {
 						$errMsg = $this->messages['group'][0];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2250,13 +2264,13 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					}
 					else {
 						$errMsg = $this->messages['rid'][2];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
 				else {
 					// default RID uid*2 + RIDBase
-					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase);
+					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber'] * 2 + $domains[$domIndex]->RIDbase);
 				}
 				// logon hours
 				$partialAccounts[$i]['sambaLogonHours'] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
@@ -2266,7 +2280,9 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 		else {  // hosts
 			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-				if (!in_array("sambaSamAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaSamAccount";
+				if (!in_array("sambaSamAccount", $partialAccounts[$i]['objectClass'])) {
+					$partialAccounts[$i]['objectClass'][] = "sambaSamAccount";
+				}
 				// domain
 				$domIndex = -1;
 				for ($d = 0; $d < sizeof($domains); $d++) {
@@ -2282,7 +2298,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				}
 				else {
 					$errMsg = $this->messages['domain'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 				// RID
@@ -2292,13 +2308,13 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 					}
 					else {
 						$errMsg = $this->messages['rid'][3];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
 				else {
 					// default RID uid*2 + RIDBase
-					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase);
+					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber'] * 2 + $domains[$domIndex]->RIDbase);
 				}
 				// passwords ( = host name)
 				$partialAccounts[$i]['sambaPwdLastSet'] = time();
@@ -2317,15 +2333,15 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	public function getSelfServiceSettings($profile) {
 		$selfServiceContainer = new htmlResponsiveRow();
 		// domain suffix
-		$selfServiceDomainSuffix = new htmlResponsiveInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix', null, array('domainSuffix', get_class($this)));
+		$selfServiceDomainSuffix = new htmlResponsiveInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix', null, ['domainSuffix', get_class($this)]);
 		$selfServiceContainer->add($selfServiceDomainSuffix, 12);
 		// password history
-		$historyOptions = array(
-				_('yes - ordered ascending') => 'yes_deleteLast',
-				_('yes - ordered descending') => 'yes_deleteFirst',
-				_('no') => 'no'
-		);
-		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"), array('history', get_class($this)));
+		$historyOptions = [
+			_('yes - ordered ascending') => 'yes_deleteLast',
+			_('yes - ordered descending') => 'yes_deleteFirst',
+			_('no') => 'no'
+		];
+		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, ['yes_deleteLast'], _("Password history"), ['history', get_class($this)]);
 		$historySelect->setHasDescriptiveElements(true);
 		$selfServiceContainer->add($historySelect, 12);
 		return $selfServiceContainer;
@@ -2396,7 +2412,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('sambaSamAccount', $attributes['objectClass'])) {
 			return $return;
 		}
@@ -2428,7 +2444,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 							}
 						}
 						else {
-							$return['messages'][] = array('ERROR', $pwdPolicyResult);
+							$return['messages'][] = ['ERROR', $pwdPolicyResult];
 						}
 					}
 				}
@@ -2478,7 +2494,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				&& is_numeric($sambaDomain->pwdHistoryLength)
 				&& ($sambaDomain->pwdHistoryLength > 0)) {
 				if (sambaSamAccount::oldPasswordUsed($return['info']['sambaUserPasswordClearText'][0], $attributes, $sambaDomain)) {
-					$return['messages'][] = array('ERROR', _('You are reusing an old password. Please choose a different password.'));
+					$return['messages'][] = ['ERROR', _('You are reusing an old password. Please choose a different password.')];
 				}
 				else {
 					// update password history
@@ -2515,7 +2531,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$time->setTimezone(getTimeZone());
 				$now = new DateTime('now', getTimeZone());
 				if ($time > $now) {
-					$return['messages'][] = array('ERROR', _('You are not yet allowed to change your password.'));
+					$return['messages'][] = ['ERROR', _('You are not yet allowed to change your password.')];
 				}
 			}
 		}
@@ -2523,9 +2539,9 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 
 	/**
 	 * This method specifies if a module manages password attributes.
+	 * @return boolean true if this module manages password attributes
 	 * @see passwordService::managesPasswordAttributes
 	 *
-	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
 		if ($this->get_scope() == "user") {
@@ -2569,7 +2585,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			// password history check
 			$oldPasswordUsed = sambaSamAccount::oldPasswordUsed($password, $this->orig, $sambaDomain);
 			if ($oldPasswordUsed) {
-				$errors[] = array('ERROR', _('You are reusing an old password. Please choose a different password.'));
+				$errors[] = ['ERROR', _('You are reusing an old password. Please choose a different password.')];
 			}
 			// set new history entry
 			$historyLength = $sambaDomain->pwdHistoryLength;
@@ -2608,7 +2624,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	public static function oldPasswordUsed($password, $attributes, $sambaDomain) {
 		$attributes = array_change_key_case($attributes, CASE_LOWER);
 		if (empty($attributes['sambapasswordhistory'][0]) || ($sambaDomain == null)
-				|| !is_numeric($sambaDomain->pwdHistoryLength) || ($sambaDomain->pwdHistoryLength < 1)) {
+			|| !is_numeric($sambaDomain->pwdHistoryLength) || ($sambaDomain->pwdHistoryLength < 1)) {
 			return false;
 		}
 		foreach ($attributes['sambapasswordhistory'] as $historyEntry) {
@@ -2641,7 +2657,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 						return $sambaDomains[$i];
 					}
 				}
-				elseif (isset($attributes['sambadomainname'][0]) && ($attributes['sambadomainname'][0]!='')) {
+				elseif (isset($attributes['sambadomainname'][0]) && ($attributes['sambadomainname'][0] != '')) {
 					if (($attributes['sambadomainname'][0] == $sambaDomains[$i]->name) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
 						return $sambaDomains[$i];
 					}
@@ -2658,7 +2674,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	 * @return String group name
 	 */
 	private function getGroupName($groupID) {
-		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', array('cn'), array('group'));
+		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', ['cn'], ['group']);
 		if ((sizeof($results) > 0) && isset($results[0]['cn'][0])) {
 			return $results[0]['cn'][0];
 		}
@@ -2738,7 +2754,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		if ($this->cachedHostList != null) {
 			return $this->cachedHostList;
 		}
-		$this->cachedHostList = searchLDAPByAttribute('uid', '*', 'sambaSamAccount', array('uid'), array('host'));
+		$this->cachedHostList = searchLDAPByAttribute('uid', '*', 'sambaSamAccount', ['uid'], ['host']);
 		for ($i = 0; $i < sizeof($this->cachedHostList); $i++) {
 			$this->cachedHostList[$i] = $this->cachedHostList[$i]['uid'][0];
 		}
@@ -2755,7 +2771,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 			return $this->cachedGroupSIDList;
 		}
 		$this->cachedGroupSIDList = [];
-		$result = searchLDAPByAttribute('sambaSID', '*', 'sambaGroupMapping', array('gidNumber', 'sambaSID'), array('group'));
+		$result = searchLDAPByAttribute('sambaSID', '*', 'sambaGroupMapping', ['gidNumber', 'sambaSID'], ['group']);
 		for ($i = 0; $i < sizeof($result); $i++) {
 			if (isset($result[$i]['gidnumber'][0])) {
 				$this->cachedGroupSIDList[$result[$i]['gidnumber'][0]] = $result[$i]['sambasid'][0];
@@ -3065,7 +3081,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	 * @inheritDoc
 	 */
 	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
-		return array('sambaacctflags');
+		return ['sambaacctflags'];
 	}
 
 	/**
@@ -3115,7 +3131,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	public function getListFilterFunction(string $attributeName): ?callable {
 		if ($attributeName == 'sambakickofftime') {
 			return function(?array $values, ?string $filterValue): bool {
-				$regex = str_replace(array('*'), array('.*'), $filterValue);
+				$regex = str_replace(['*'], ['.*'], $filterValue);
 				$regex = '/' . $regex . '/i';
 				if (!empty($values[0])) {
 					if ($values[0] > 2147483648) {
@@ -3158,12 +3174,12 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'displayname' => _('Display name'),
 			'sambakickofftime' => _('Account expiration date'),
 			'sambadomainname' => _('Domain'),
 			'sambaprimarygroupsid' => _('Windows group')
-		);
+		];
 	}
 
 }

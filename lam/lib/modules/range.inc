@@ -1,4 +1,5 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
@@ -8,7 +9,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2023  Roland Gruber
+                2008 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,20 +29,19 @@ use LAM\TYPES\ConfiguredType;
 
 
 /**
-* Manages DHCP ranges for DHCP server.
-*
-* @package modules
-*
-* @author Thomas Manninger
-* @author Roland Gruber
-*/
+ * Manages DHCP ranges for DHCP server.
+ *
+ * @package modules
+ *
+ * @author Thomas Manninger
+ * @author Roland Gruber
+ */
 
 /**
-* Manages DHCP ranges for DHCP server.
-*
-* @package modules
-*/
-
+ * Manages DHCP ranges for DHCP server.
+ *
+ * @package modules
+ */
 class range extends baseModule {
 
 	/** subnet */
@@ -62,21 +62,21 @@ class range extends baseModule {
 	private $poolsNew = [];
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('dhcp'));
+		return in_array($this->get_scope(), ['dhcp']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	public function get_metaData() {
 		$return = [];
 		// alias name
@@ -86,37 +86,37 @@ class range extends baseModule {
 		// icon
 		$return['icon'] = 'world-color.svg';
 		// RDN attribute
-		$return["RDN"] = array("cn" => "high");
+		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter
-		$return["ldap_filter"] = array('or'=>"(objectClass=dhcpSubnet)");
+		$return["ldap_filter"] = ['or' => "(objectClass=dhcpSubnet)"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('dhcp_settings'), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => ['dhcp_settings'], 'conflicts' => []];
 		// managed object classes
 		$return['objectClasses'] = [];
 		// managed attributes
-		$return['attributes'] = array('dhcpRange');
+		$return['attributes'] = ['dhcpRange'];
 		// help Entries
-		$return['help'] = array(
-			'range_from' => array(
+		$return['help'] = [
+			'range_from' => [
 				"Headline" => _("Range from"),
 				"Text" => _("The starting IP address of the range.")
-			),
-			'range_to' => array(
+			],
+			'range_to' => [
 				"Headline" => _("Range to"),
 				"Text" => _("The ending IP address of the range.")
-			),
-			'poolName' => array(
+			],
+			'poolName' => [
 				"Headline" => _("Name"), 'attr' => 'cn',
 				"Text" => _("The pool's name.")
-			),
-			'poolPeer' => array(
+			],
+			'poolPeer' => [
 				"Headline" => _("Failover peer"), 'attr' => 'dhcpStatements',
 				"Text" => _("The pool's failover peer.")
-			),
-		);
+			],
+		];
 
 		// available PDF fields
-		$return['PDF_fields'] = array('ranges' => _('Ranges'));
+		$return['PDF_fields'] = ['ranges' => _('Ranges')];
 		return $return;
 	}
 
@@ -124,11 +124,11 @@ class range extends baseModule {
 	 *  This function fills the error message array with messages.
 	 */
 	public function load_Messages() {
-		$this->messages['range_errors'][0] = array('ERROR', _('One or more errors occurred. The invalid fields are marked.'), '');
-		$this->messages['add_range'][0] = array('ERROR', _('New range'), _('Adding the range failed because errors occurred.'));
-		$this->messages['drop_range'][0] = array('ERROR', _('Delete range'), _('It is not possible to delete all ranges.'));
-		$this->messages['pool_cn'][0] = array('ERROR', _('Name'), _('Please enter a pool name.'));
-		$this->messages['pool_range'][0] = array('ERROR', _('Please enter at least one range for pool "%s".'), null);
+		$this->messages['range_errors'][0] = ['ERROR', _('One or more errors occurred. The invalid fields are marked.'), ''];
+		$this->messages['add_range'][0] = ['ERROR', _('New range'), _('Adding the range failed because errors occurred.')];
+		$this->messages['drop_range'][0] = ['ERROR', _('Delete range'), _('It is not possible to delete all ranges.')];
+		$this->messages['pool_cn'][0] = ['ERROR', _('Name'), _('Please enter a pool name.')];
+		$this->messages['pool_range'][0] = ['ERROR', _('Please enter at least one range for pool "%s".'), null];
 	}
 
 	/**
@@ -186,15 +186,15 @@ class range extends baseModule {
 		$ex = explode(".", $ip);
 		$exB = explode(".", $ipB);
 
-		if(!is_array($this->overlapped)) {
-		    $this->overlapped = [];
+		if (!is_array($this->overlapped)) {
+			$this->overlapped = [];
 		}
-		for($n=$ex[3];$n<=$exB[3];$n++) {
-		    if (in_array($n, $this->overlapped)) {
+		for ($n = $ex[3]; $n <= $exB[3]; $n++) {
+			if (in_array($n, $this->overlapped)) {
 				return false;
-		    }
-		    else {
-		    	$this->overlapped[] = $n;
+			}
+			else {
+				$this->overlapped[] = $n;
 			}
 		}
 		return true;
@@ -205,21 +205,21 @@ class range extends baseModule {
 	 * Reset the overlapped_range() function
 	 *
 	 **/
-	 private function reset_overlapped_range() {
-	    $this->overlapped = [];
-	 }
+	private function reset_overlapped_range() {
+		$this->overlapped = [];
+	}
 
 	/**
-	* Controls if the module button the account page is visible and activated.
-	*
-	* @return string status ("enabled", "disabled", "hidden")
-	*/
+	 * Controls if the module button the account page is visible and activated.
+	 *
+	 * @return string status ("enabled", "disabled", "hidden")
+	 */
 	public function getButtonStatus() {
-	    if (!$this->isRootNode()) {
-	    	return "enabled";
+		if (!$this->isRootNode()) {
+			return "enabled";
 		}
 		else {
-		    return "hidden";
+			return "hidden";
 		}
 	}
 
@@ -231,17 +231,17 @@ class range extends baseModule {
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		// Load DHCP Options:
-        if (!$this->isRootNode()) {
+		if (!$this->isRootNode()) {
 			$this->orig = $attr;
 			$this->attributes = $attr;
 			// Load DHCP Options:
-	        if (isset($attr['dhcpRange']) && is_array($attr['dhcpRange'])) {
-	        	natcasesort($attr['dhcpRange']);
-				foreach($attr['dhcpRange'] AS $id=>$value) {
-				    $ex = explode(" ", $value);
+			if (isset($attr['dhcpRange']) && is_array($attr['dhcpRange'])) {
+				natcasesort($attr['dhcpRange']);
+				foreach ($attr['dhcpRange'] as $id => $value) {
+					$ex = explode(" ", $value);
 
 					// DHCP Range ins Array laden:
-					$this->ranges[$id] = array('range_start'=>$ex[0],'range_end'=>$ex[1]);
+					$this->ranges[$id] = ['range_start' => $ex[0], 'range_end' => $ex[1]];
 				}
 			}
 			// load pools
@@ -259,46 +259,46 @@ class range extends baseModule {
 	public function reload_ranges() {
 		$range_edit = false;        // Range were edited?
 		// Only run it, when ranges already exists:
-	    if(is_array($this->ranges)) {
-		    $ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
-		    $dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
-		    $mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
-		    foreach ($this->ranges AS $id=>$arr) {
-		        if (!empty($this->ranges[$id]['range_start']) && !range::check_subnet_range($this->ranges[$id]['range_start'],$dhcpAttrs['cn'][0], $mask)) {
-		            // Range anpassen:
+		if (is_array($this->ranges)) {
+			$ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
+			$dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
+			$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
+			foreach ($this->ranges as $id => $arr) {
+				if (!empty($this->ranges[$id]['range_start']) && !range::check_subnet_range($this->ranges[$id]['range_start'], $dhcpAttrs['cn'][0], $mask)) {
+					// Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_start']);
 					$tmp = $this->ranges[$id]['range_start'];
-					$this->ranges[$id]['range_start'] = $ex_subnet['0'].".".$ex_subnet['1'].".".$ex_subnet['2'].".".$ex['3'];
-					if($tmp!=$this->ranges[$id]['range_start']) {
+					$this->ranges[$id]['range_start'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
+					if ($tmp != $this->ranges[$id]['range_start']) {
 						$range_edit = true;
 					}
-		        }
-		        if (!empty($this->ranges[$id]['range_end']) && !range::check_subnet_range($this->ranges[$id]['range_end'],$dhcpAttrs['cn'][0], $mask)) {
-		            // Range anpassen:
+				}
+				if (!empty($this->ranges[$id]['range_end']) && !range::check_subnet_range($this->ranges[$id]['range_end'], $dhcpAttrs['cn'][0], $mask)) {
+					// Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_end']);
 					$tmp = $this->ranges[$id]['range_end'];
-					$this->ranges[$id]['range_end'] = $ex_subnet['0'].".".$ex_subnet['1'].".".$ex_subnet['2'].".".$ex['3'];
-					if($tmp!=$this->ranges[$id]['range_end']) {
+					$this->ranges[$id]['range_end'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
+					if ($tmp != $this->ranges[$id]['range_end']) {
 						$range_edit = true;
 					}
-		        }
-		    }
-		    if ($range_edit) {
-		        // sort the range new, id it was edit.
-				foreach($this->ranges AS $id=>$arr) {
-				    $this->attributes['dhcpRange'][$id] = $this->ranges[$id]['range_start']." ".$this->ranges[$id]['range_end'];
 				}
-		    }
+			}
+			if ($range_edit) {
+				// sort the range new, id it was edit.
+				foreach ($this->ranges as $id => $arr) {
+					$this->attributes['dhcpRange'][$id] = $this->ranges[$id]['range_start'] . " " . $this->ranges[$id]['range_end'];
+				}
+			}
 		}
 		return $range_edit;
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		$errors = [];
 		if ($this->isRootNode()) {
@@ -306,79 +306,78 @@ class range extends baseModule {
 		}
 		$subnet = $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0];
 		$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
-	    $errorOccurred = false;
-	    $this->reset_overlapped_range();
-		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
+		$errorOccurred = false;
+		$this->reset_overlapped_range();
+		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] != "") {
 
-		    foreach($this->ranges AS $id=>$arr) {
-		        // Check if range is to drop
-			    if (isset($_POST['drop_range_'.$id])) {
+			foreach ($this->ranges as $id => $arr) {
+				// Check if range is to drop
+				if (isset($_POST['drop_range_' . $id])) {
 					// drop Range:
 					unset($this->ranges[$id]);
 					unset($this->attributes['dhcpRange'][$id]);
-			        continue;
-			    }
+					continue;
+				}
 
-		        // if the inputs are empty, then do nothing:
-		        if ($_POST['range_start_'.$id]=="" && $_POST['range_end_'.$id]=="") {
-		            unset($this->attributes['dhcpRange'][$id]);
-		        }
-		        else {
+				// if the inputs are empty, then do nothing:
+				if ($_POST['range_start_' . $id] == "" && $_POST['range_end_' . $id] == "") {
+					unset($this->attributes['dhcpRange'][$id]);
+				}
+				else {
 					// Check range_start:
-					$_POST['range_start_'.$id] = trim($_POST['range_start_'.$id]);
-			        if (!check_ip($_POST['range_start_'.$id])) {
-			        	$errorOccurred = true;
-			        }
-		            $this->ranges[$id]['range_start'] = $_POST['range_start_'.$id];
+					$_POST['range_start_' . $id] = trim($_POST['range_start_' . $id]);
+					if (!check_ip($_POST['range_start_' . $id])) {
+						$errorOccurred = true;
+					}
+					$this->ranges[$id]['range_start'] = $_POST['range_start_' . $id];
 
 					// Check end:
-					$_POST['range_end_'.$id] = trim($_POST['range_end_'.$id]);
-			        if (!check_ip($_POST['range_end_'.$id])) {
-			        	$errorOccurred = true;
-			        }
-		            $this->ranges[$id]['range_end'] = $_POST['range_end_'.$id];
+					$_POST['range_end_' . $id] = trim($_POST['range_end_' . $id]);
+					if (!check_ip($_POST['range_end_' . $id])) {
+						$errorOccurred = true;
+					}
+					$this->ranges[$id]['range_end'] = $_POST['range_end_' . $id];
 
-			        // Check if ip overlapped:
-			        if(!$this->isNotOverlappedRange($_POST['range_start_'.$id],$_POST['range_end_'.$id])) {
-			            $errorOccurred = true;
-			        }
+					// Check if ip overlapped:
+					if (!$this->isNotOverlappedRange($_POST['range_start_' . $id], $_POST['range_end_' . $id])) {
+						$errorOccurred = true;
+					}
 
 					// Check if Subnet and range first are valid:
-					if (!range::check_subnet_range($_POST['range_start_'.$id], $subnet, $mask)) {
-					    $errorOccurred = true;
+					if (!range::check_subnet_range($_POST['range_start_' . $id], $subnet, $mask)) {
+						$errorOccurred = true;
 					}
 
 					// Check if Subnet and range last are valid:
-					if (!range::check_subnet_range($_POST['range_end_'.$id], $subnet, $mask)) {
-					    $errorOccurred = true;
+					if (!range::check_subnet_range($_POST['range_end_' . $id], $subnet, $mask)) {
+						$errorOccurred = true;
 					}
 
-			        // Check if Range is valid
-			        if (!$this->check_range($_POST['range_start_'.$id],$_POST['range_end_'.$id])) {
-			            $errorOccurred = true;
-			        }
+					// Check if Range is valid
+					if (!$this->check_range($_POST['range_start_' . $id], $_POST['range_end_' . $id])) {
+						$errorOccurred = true;
+					}
 
-			        // Check, if range_start and range_end are ok!
-			        if (!$errorOccurred) {
-			            $this->attributes['dhcpRange'][$id] = $_POST['range_start_'.$id]." ".$_POST['range_end_'.$id];
-			        }
-			        else {
-			            unset($this->attributes['dhcpRange'][$id]);
-			        }
+					// Check, if range_start and range_end are ok!
+					if (!$errorOccurred) {
+						$this->attributes['dhcpRange'][$id] = $_POST['range_start_' . $id] . " " . $_POST['range_end_' . $id];
+					}
+					else {
+						unset($this->attributes['dhcpRange'][$id]);
+					}
 				}
 			}
 		}
 
 		// Add new Range
-		if(isset($_POST['add_range'])) {
-			// Check, if there where no errors:
+		if (isset($_POST['add_range'])) {
+			// Check, if there were no errors:
 			if ($errorOccurred) {
-			    $errors[] = $this->messages['add_range'][0];
+				$errors[] = $this->messages['add_range'][0];
 			}
-			else
-			{
-			    // Add Range:
-			    $this->ranges[] = array('range_start'=>'','range_end'=>'');
+			else {
+				// Add Range:
+				$this->ranges[] = ['range_start' => '', 'range_end' => ''];
 			}
 		}
 
@@ -424,10 +423,10 @@ class range extends baseModule {
 						$this->poolsNew[$index]['dhcprange'][$rIndex] = $from . ' ' . $to;
 						// check ranges
 						if (!check_ip($from) || !check_ip($to)
-								|| !$this->isNotOverlappedRange($from, $to)
-								|| !range::check_subnet_range($from, $subnet, $mask)
-								|| !range::check_subnet_range($to, $subnet, $mask)
-								|| !$this->check_range($from, $to)) {
+							|| !$this->isNotOverlappedRange($from, $to)
+							|| !range::check_subnet_range($from, $subnet, $mask)
+							|| !range::check_subnet_range($to, $subnet, $mask)
+							|| !$this->check_range($from, $to)) {
 							$errorOccurred = true;
 						}
 					}
@@ -436,7 +435,7 @@ class range extends baseModule {
 			// check if at least one range is still set
 			if (empty($this->poolsNew[$index]['dhcprange'])) {
 				$error = $this->messages['pool_range'][0];
-				$error[] = array(htmlspecialchars($this->poolsNew[$index]['cn'][0]));
+				$error[] = [htmlspecialchars($this->poolsNew[$index]['cn'][0])];
 				$errors[] = $error;
 			}
 			// add pool range
@@ -446,15 +445,15 @@ class range extends baseModule {
 		}
 		// add a new pool
 		if (isset($_POST['add_pool'])) {
-			$this->poolsNew[] = array(
-				'objectclass' => array('dhcpPool'),
-				'dhcprange' => array('')
-			);
+			$this->poolsNew[] = [
+				'objectclass' => ['dhcpPool'],
+				'dhcprange' => ['']
+			];
 		}
 
 		// Check if there was a error:
 		if ($errorOccurred) {
-		    $errors[] = $this->messages['range_errors'][0];
+			$errors[] = $this->messages['range_errors'][0];
 		}
 
 		$this->processed = true;
@@ -471,30 +470,33 @@ class range extends baseModule {
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] == "") {
 			$return->add(new htmlStatusMessage('INFO', _("Please fill out the DHCP settings first.")));
 			return $return;
-        }
+		}
 
-        // If $ranges is not a array, then create it
-        if (!is_array($this->ranges)) {
-	       	$this->ranges = [];
-        }
-        $this->reset_overlapped_range();
-        $mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
-        $subnet = $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0];
-        foreach($this->ranges AS $id=>$arr) {
+		// If $ranges is not a array, then create it
+		if (!is_array($this->ranges)) {
+			$this->ranges = [];
+		}
+		$this->reset_overlapped_range();
+		$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
+		$subnet = $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0];
+		foreach ($this->ranges as $id => $arr) {
 			// Range start
 			$error = "";
 			if (isset($this->ranges[$id]['range_start']) && !empty($this->ranges[$id]['range_start'])) {
 				if ($this->processed && !check_ip($this->ranges[$id]['range_start'])) {
-				    $error = _("The IP address is invalid.");
-				} elseif($this->processed && !$this->check_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end'])) {
-                    $error = _("The range end needs to be greater than the range start.");
-				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'], $subnet, $mask)) {
+					$error = _("The IP address is invalid.");
+				}
+				elseif ($this->processed && !$this->check_range($this->ranges[$id]['range_start'], $this->ranges[$id]['range_end'])) {
+					$error = _("The range end needs to be greater than the range start.");
+				}
+				elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'], $subnet, $mask)) {
 					$error = _("The IP does not match the subnet.");
-				} elseif ($this->processed && !$this->isNotOverlappedRange($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
+				}
+				elseif ($this->processed && !$this->isNotOverlappedRange($this->ranges[$id]['range_start'], $this->ranges[$id]['range_end'])) {
 					$error = _("The range conflicts with another range.");
 				}
 			}
-			$fromInput = new htmlResponsiveInputField(_('Range from'), 'range_start_'.$id, $this->ranges[$id]['range_start'], 'range_from', true);
+			$fromInput = new htmlResponsiveInputField(_('Range from'), 'range_start_' . $id, $this->ranges[$id]['range_start'], 'range_from', true);
 			$return->add($fromInput);
 			if (!empty($error)) {
 				$return->add(new htmlOutputText($error));
@@ -503,19 +505,20 @@ class range extends baseModule {
 			$error = "";
 			if (isset($this->ranges[$id]['range_end']) && !empty($this->ranges[$id]['range_end'])) {
 				if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
-				    $error = _("The IP address is invalid.");
-				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_end'], $subnet, $mask)) {
+					$error = _("The IP address is invalid.");
+				}
+				elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_end'], $subnet, $mask)) {
 					$error = _("The IP does not match the subnet.");
 				}
 			}
-			$toInput = new htmlResponsiveInputField(_('Range to'), 'range_end_'.$id, $this->ranges[$id]['range_end'], 'range_to', true);
+			$toInput = new htmlResponsiveInputField(_('Range to'), 'range_end_' . $id, $this->ranges[$id]['range_end'], 'range_to', true);
 			$return->add($toInput);
 			if (!empty($error)) {
 				$return->add(new htmlOutputText($error));
 			}
 			// Drop range:
-			$dropButton = new htmlButton('drop_range_'.$id, _('Delete range'));
-			$dropButton->setCSSClasses(array('lam-danger'));
+			$dropButton = new htmlButton('drop_range_' . $id, _('Delete range'));
+			$dropButton->setCSSClasses(['lam-danger']);
 			$return->add($dropButton, 12, 12, 12, 'text-center');
 
 			$return->addVerticalSpacer('2rem');
@@ -542,7 +545,7 @@ class range extends baseModule {
 				}
 				$return->add(new htmlResponsiveInputField(_('Failover peer'), 'pool_peer_' . $index, $peer, 'poolPeer'));
 				$delPoolButton = new htmlButton('del_pool_' . $index, _('Delete pool'));
-				$delPoolButton->setCSSClasses(array('lam-danger'));
+				$delPoolButton->setCSSClasses(['lam-danger']);
 				$return->add($delPoolButton, 12, 12, 12, 'text-center');
 				$return->addVerticalSpacer('2rem');
 				if (!empty($poolAttrs['dhcprange'])) {
@@ -586,7 +589,7 @@ class range extends baseModule {
 						}
 						// drop range
 						$dropButton = new htmlButton('drop_poolrange_' . $index . '_' . $rIndex, _('Delete range'));
-						$dropButton->setCSSClasses(array('lam-danger'));
+						$dropButton->setCSSClasses(['lam-danger']);
 						$return->add($dropButton, 12, 12, 12, 'text-center');
 						$return->addVerticalSpacer('4rem');
 					}
@@ -638,7 +641,7 @@ class range extends baseModule {
 				if (!$success) {
 					$msg = sprintf(_('Was unable to create DN: %s.'), $dn);
 					logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));
-					$errors[] = array('ERROR', $msg, getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+					$errors[] = ['ERROR', $msg, getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 			}
 		}
@@ -649,15 +652,15 @@ class range extends baseModule {
 					// check for changes
 					$mod = [];
 					// check attributes
-					$attrs = array('dhcpstatements', 'dhcprange');
+					$attrs = ['dhcpstatements', 'dhcprange'];
 					foreach ($attrs as $attr) {
 						$changed = false;
 						if (empty($pool[$attr]) && empty($poolOrig[$attr])) {
 							continue;
 						}
 						if ((!empty($pool[$attr]) && empty($poolOrig[$attr]))
-								|| (empty($pool[$attr]) && !empty($poolOrig[$attr]))
-								|| (sizeof($pool[$attr]) != sizeof($poolOrig[$attr]))) {
+							|| (empty($pool[$attr]) && !empty($poolOrig[$attr]))
+							|| (sizeof($pool[$attr]) != sizeof($poolOrig[$attr]))) {
 							$changed = true;
 						}
 						else {
@@ -682,7 +685,7 @@ class range extends baseModule {
 						if (!$success) {
 							$msg = sprintf(_('Was unable to modify attributes of DN: %s.'), $dn);
 							logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));
-							$errors[] = array('ERROR', $msg, getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+							$errors[] = ['ERROR', $msg, getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 						}
 					}
 					break;
@@ -705,7 +708,7 @@ class range extends baseModule {
 				if (!$success) {
 					$msg = sprintf(_('Was unable to delete DN: %s.'), $dn);
 					logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));
-					$errors[] = array('ERROR', $msg, getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+					$errors[] = ['ERROR', $msg, getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 			}
 		}
@@ -713,17 +716,17 @@ class range extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	public function save_attributes() {
 		$return = [];
 		// Get easy attributes
@@ -786,7 +789,7 @@ class range extends baseModule {
 	 */
 	private function loadPools() {
 		$dn = $this->getAccountContainer()->dn_orig;
-		$this->poolsOrig = searchLDAP($dn, '(objectclass=dhcpPool)', array('*'));
+		$this->poolsOrig = searchLDAP($dn, '(objectclass=dhcpPool)', ['*']);
 		foreach ($this->poolsOrig as &$pool) {
 			if (!empty($pool['dhcprange'])) {
 				sort($pool['dhcprange']);
@@ -809,9 +812,9 @@ class range extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			"dhcprange" => _("Ranges"),
-		);
+		];
 	}
 
 	/**
@@ -822,32 +825,32 @@ class range extends baseModule {
 			return function(array $entry, string $attribute): ?htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					$table = new htmlTable();
-					$table->setCSSClasses(array('nowrap'));
+					$table->setCSSClasses(['nowrap']);
 					$ranges = [];
-					foreach($entry['dhcprange'] AS $value) {
+					foreach ($entry['dhcprange'] as $value) {
 						if (!empty($value) && !is_numeric($value)) {
 							$ex = explode(" ", $value);
-							$row = array(
+							$row = [
 								new htmlOutputText($ex[0]),
 								new htmlOutputText(' - '),
 								new htmlOutputText($ex[1])
-							);
+							];
 							$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
 						}
 					}
-					$pooledRanges = searchLDAP($entry['dn'], '(objectclass=dhcpPool)', array('dhcprange'));
+					$pooledRanges = searchLDAP($entry['dn'], '(objectclass=dhcpPool)', ['dhcprange']);
 					foreach ($pooledRanges as $pool) {
 						if (empty($pool['dhcprange'])) {
 							continue;
 						}
-						foreach($pool['dhcprange'] AS $value) {
+						foreach ($pool['dhcprange'] as $value) {
 							if (!empty($value) && !is_numeric($value)) {
 								$ex = explode(" ", $value);
-								$row = array(
+								$row = [
 									new htmlOutputText($ex[0]),
 									new htmlOutputText(' - '),
 									new htmlOutputText($ex[1])
-								);
+								];
 								$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
 							}
 						}

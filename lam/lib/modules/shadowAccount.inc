@@ -25,26 +25,26 @@ use LAM\TYPES\ConfiguredType;
 */
 
 /**
-* Manages Unix shadow accounts for users.
-*
-* @package modules
-*
-* @author Tilo Lutz
-* @author Roland Gruber
-* @author Michael Duergner
-*/
+ * Manages Unix shadow accounts for users.
+ *
+ * @package modules
+ *
+ * @author Tilo Lutz
+ * @author Roland Gruber
+ * @author Michael Duergner
+ */
 
 /**
-* Manages the object class "shadowAccount" for users.
-*
-* @package modules
-*/
-class shadowAccount extends baseModule implements passwordService,AccountStatusProvider {
+ * Manages the object class "shadowAccount" for users.
+ *
+ * @package modules
+ */
+class shadowAccount extends baseModule implements passwordService, AccountStatusProvider {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('shadowlastchange', 'shadowexpire');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['shadowlastchange', 'shadowexpire'];
 
 	/**
 	 * ID for expired account status.
@@ -57,10 +57,10 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	const STATUS_PASSWORD_EXPIRED = "SHADOW_PASSWORD_EXPIRED";
 
 	/**
-	* Creates a new shadowAccount object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new shadowAccount object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
@@ -68,40 +68,40 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
-	* This function builds up the message array.
-	*/
+	 * This function builds up the message array.
+	 */
 	function load_Messages() {
 		// error messages for input checks
-		$this->messages['shadowmin'][0] = array('ERROR', _('Minimum password age'), _('Password minimum age must be are natural number.'));
-		$this->messages['shadowmin'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_minAge', _('Password minimum age must be are natural number.'));
-		$this->messages['shadowmax'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be are natural number.'));
-		$this->messages['shadowmax'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_maxAge', _('Password maximum age must be are natural number.'));
-		$this->messages['inactive'][0] = array('ERROR', _('Password expiration'), _('Password expiration must be are natural number or -1.'));
-		$this->messages['inactive'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_ignoreExpire', _('Password expiration must be are natural number or -1.'));
-		$this->messages['shadowwarning'][0] = array('ERROR', _('Password warning'), _('Password warning must be are natural number.'));
-		$this->messages['shadowwarning'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_warning', _('Password warning must be are natural number.'));
-		$this->messages['shadow_cmp'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be bigger than password minimum age.'));
-		$this->messages['shadow_cmp'][1] = array('ERROR',  _('Account %s:') . ' shadowAccount_min/maxAge', _('Password maximum age must be bigger as password minimum age.'));
-		$this->messages['shadow_expireDate'][0] = array('ERROR',  _('Account %s:') . ' shadowAccount_expireDate', _('The expiration date is invalid.'));
-		$this->messages['shadow_lastChange'][0] = array('ERROR',  _('Account %s:') . ' shadowAccount_lastChange', _('The last password change date is invalid.'));
+		$this->messages['shadowmin'][0] = ['ERROR', _('Minimum password age'), _('Password minimum age must be are natural number.')];
+		$this->messages['shadowmin'][1] = ['ERROR', _('Account %s:') . ' shadowAccount_minAge', _('Password minimum age must be are natural number.')];
+		$this->messages['shadowmax'][0] = ['ERROR', _('Maximum password age'), _('Password maximum age must be are natural number.')];
+		$this->messages['shadowmax'][1] = ['ERROR', _('Account %s:') . ' shadowAccount_maxAge', _('Password maximum age must be are natural number.')];
+		$this->messages['inactive'][0] = ['ERROR', _('Password expiration'), _('Password expiration must be are natural number or -1.')];
+		$this->messages['inactive'][1] = ['ERROR', _('Account %s:') . ' shadowAccount_ignoreExpire', _('Password expiration must be are natural number or -1.')];
+		$this->messages['shadowwarning'][0] = ['ERROR', _('Password warning'), _('Password warning must be are natural number.')];
+		$this->messages['shadowwarning'][1] = ['ERROR', _('Account %s:') . ' shadowAccount_warning', _('Password warning must be are natural number.')];
+		$this->messages['shadow_cmp'][0] = ['ERROR', _('Maximum password age'), _('Password maximum age must be bigger than password minimum age.')];
+		$this->messages['shadow_cmp'][1] = ['ERROR', _('Account %s:') . ' shadowAccount_min/maxAge', _('Password maximum age must be bigger as password minimum age.')];
+		$this->messages['shadow_expireDate'][0] = ['ERROR', _('Account %s:') . ' shadowAccount_expireDate', _('The expiration date is invalid.')];
+		$this->messages['shadow_lastChange'][0] = ['ERROR', _('Account %s:') . ' shadowAccount_lastChange', _('The last password change date is invalid.')];
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -109,21 +109,23 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		// alias name
 		$return["alias"] = _('Shadow');
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => []);
+		$return['dependencies'] = ['depends' => ['posixAccount'], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('shadowAccount');
+		$return['objectClasses'] = ['shadowAccount'];
 		// managed attributes
-		$return['attributes'] = array('shadowlastchange', 'shadowmin', 'shadowmax', 'shadowwarning',
-			'shadowinactive', 'shadowexpire', 'shadowflag');
+		$return['attributes'] = ['shadowlastchange', 'shadowmin', 'shadowmax', 'shadowwarning',
+			'shadowinactive', 'shadowexpire', 'shadowflag'];
 		// lists for expiration date
-		$day = array('-'); $mon = array('-'); $year = array('-');
-		for ( $i=1; $i<=31; $i++ ) {
+		$day = ['-'];
+		$mon = ['-'];
+		$year = ['-'];
+		for ($i = 1; $i <= 31; $i++) {
 			$day[] = $i;
 		}
-		for ( $i=1; $i<=12; $i++ ) {
+		for ($i = 1; $i <= 12; $i++) {
 			$mon[] = $i;
 		}
-		for ( $i=2003; $i<=2030; $i++ ) {
+		for ($i = 2003; $i <= 2030; $i++) {
 			$year[] = $i;
 		}
 		$profileOptionsTable = new htmlResponsiveRow();
@@ -148,152 +150,152 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		// expiration date
 		$profileOptionsTable->addLabel(new htmlOutputText(_('Account expiration date')));
 		$profileOptionsExpire = new htmlResponsiveRow();
-		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_day', $day, array('-')), 2, 2, 2, 'padding-right05');
-		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_mon', $mon, array('-')), 2, 2, 2, 'padding-left-right05');
-		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_yea', $year, array('-')), 6, 6, 6, 'padding-left-right05');
+		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_day', $day, ['-']), 2, 2, 2, 'padding-right05');
+		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_mon', $mon, ['-']), 2, 2, 2, 'padding-left-right05');
+		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_yea', $year, ['-']), 6, 6, 6, 'padding-left-right05');
 		$profileOptionsExpire->add(new htmlHelpLink('shadowexpire'), 2, 2, 2, 'padding-left-right05');
 		$profileOptionsTable->addField($profileOptionsExpire);
 		$return['profile_options'] = $profileOptionsTable;
 		// profile checks
-		$return['profile_checks']['shadowAccount_shadowMin'] = array(
+		$return['profile_checks']['shadowAccount_shadowMin'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['shadowmin'][0]);
-		$return['profile_checks']['shadowAccount_shadowMax'] = array(
+			'error_message' => $this->messages['shadowmin'][0]];
+		$return['profile_checks']['shadowAccount_shadowMax'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['shadowmax'][0]);
-		$return['profile_checks']['shadowAccount_cmp'] = array(
+			'error_message' => $this->messages['shadowmax'][0]];
+		$return['profile_checks']['shadowAccount_cmp'] = [
 			'type' => 'int_greater',
 			'cmp_name1' => 'shadowAccount_shadowMax',
 			'cmp_name2' => 'shadowAccount_shadowMin',
-			'error_message' => $this->messages['shadow_cmp'][0]);
-		$return['profile_checks']['shadowAccount_shadowInactive'] = array(
+			'error_message' => $this->messages['shadow_cmp'][0]];
+		$return['profile_checks']['shadowAccount_shadowInactive'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit2',
-			'error_message' => $this->messages['inactive'][0]);
-		$return['profile_checks']['shadowAccount_shadowWarning'] = array(
+			'error_message' => $this->messages['inactive'][0]];
+		$return['profile_checks']['shadowAccount_shadowWarning'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['shadowwarning'][0]);
+			'error_message' => $this->messages['shadowwarning'][0]];
 		// profile mappings
-		$return['profile_mappings'] = array(
+		$return['profile_mappings'] = [
 			'shadowAccount_shadowWarning' => 'shadowwarning',
 			'shadowAccount_shadowInactive' => 'shadowinactive',
 			'shadowAccount_shadowMin' => 'shadowmin',
 			'shadowAccount_shadowMax' => 'shadowmax'
-		);
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'shadowLastChange' => _('Last password change'),
 			'shadowWarning' => _('Password warning'),
 			'shadowInactive' => _('Password expiration'),
 			'shadowExpire' => _('Account expiration date'),
 			'shadowMinAge' => _('Minimum password age'),
 			'shadowMaxAge' => _('Maximum password age'),
-		);
+		];
 		// help Entries
-		$return['help'] = array (
-			'shadowwarning' => array (
+		$return['help'] = [
+			'shadowwarning' => [
 				"Headline" => _("Password warning"), 'attr' => 'shadowWarning',
-				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be >0."). ' '. _("Can be left empty.")
-			),
-			'shadowinactive' => array (
+				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be >0.") . ' ' . _("Can be left empty.")
+			],
+			'shadowinactive' => [
 				"Headline" => _("Password expiration"), 'attr' => 'shadowInactive',
-				"Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")
-			),
-			'shadowmin' => array (
+				"Text" => _("Number of days a user can login even his password has expired. -1=always.") . ' ' . _("Can be left empty.")
+			],
+			'shadowmin' => [
 				"Headline" => _("Minimum password age"), 'attr' => 'shadowMin',
-				"Text" => _("Number of days a user has to wait until he is allowed to change his password again. If set value must be >0."). ' '. _("Can be left empty.")
-			),
-			'shadowmax' => array (
+				"Text" => _("Number of days a user has to wait until he is allowed to change his password again. If set value must be >0.") . ' ' . _("Can be left empty.")
+			],
+			'shadowmax' => [
 				"Headline" => _("Maximum password age"), 'attr' => 'shadowMax',
-				"Text" => _("Number of days after a user has to change his password again. If set value must be >0."). ' '. _("Can be left empty.")
-			),
-			'shadowexpire' => array (
+				"Text" => _("Number of days after a user has to change his password again. If set value must be >0.") . ' ' . _("Can be left empty.")
+			],
+			'shadowexpire' => [
 				"Headline" => _("Account expiration date"), 'attr' => 'shadowExpire',
 				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-			'shadowlastchange' => array(
+			],
+			'shadowlastchange' => [
 				"Headline" => _("Last password change"), 'attr' => 'shadowLastChange',
 				"Text" => _("This is the date when the user changed his password. If you specify a maximum password age then you can force a password change here.")
-			),
-			'cronAddWarningPeriod' => array(
+			],
+			'cronAddWarningPeriod' => [
 				"Headline" => _('Add expiration warning time'), 'attr' => 'shadowWarning',
 				"Text" => _('This will add the warning period for password expiration on top.')
-			)
-		);
+			]
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'shadowAccount_warning',
 				'description' => _('Password warning'),
 				'help' => 'shadowwarning',
 				'example' => '14'
-			),
-			array(
+			],
+			[
 				'name' => 'shadowAccount_ignoreExpire',
 				'description' => _('Password expiration'),
 				'help' => 'shadowinactive',
 				'example' => '7'
-			),
-			array(
+			],
+			[
 				'name' => 'shadowAccount_minAge',
 				'description' => _('Minimum password age'),
 				'help' => 'shadowmin',
 				'example' => '1'
-			),
-			array(
+			],
+			[
 				'name' => 'shadowAccount_maxAge',
 				'description' => _('Maximum password age'),
 				'help' => 'shadowmax',
 				'example' => '365'
-			),
-			array(
+			],
+			[
 				'name' => 'shadowAccount_expireDate',
 				'description' => _('Account expiration date'),
 				'help' => 'shadowexpire',
 				'example' => '17-07-2011'
-			),
-			array(
+			],
+			[
 				'name' => 'shadowAccount_lastChange',
 				'description' => _('Last password change'),
 				'help' => 'shadowlastchange',
 				'example' => '17-07-2011'
-			)
-		);
+			]
+		];
 		// self service fields
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'shadowLastChange' => _('Last password change (read-only)'),
 			'shadowExpire' => _('Account expiration date (read-only)')
-		);
+		];
 		return $return;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('shadowAccount', $this->attributes['objectClass']) && !in_array('shadowAccount', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -303,14 +305,14 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('shadowAccount'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['shadowAccount'], $this->attributes['objectClass']);
 			if (isset($this->attributes['shadowmin'])) {
 				unset($this->attributes['shadowmin']);
 			}
@@ -343,32 +345,32 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		$this->attributes['shadowmax'][0] = $_POST['shadowmax'];
 		$this->attributes['shadowwarning'][0] = $_POST['shadowwarning'];
 		$this->attributes['shadowinactive'][0] = $_POST['shadowinactive'];
-		if ( !get_preg($this->attributes['shadowmin'][0], 'digit'))  {
+		if (!get_preg($this->attributes['shadowmin'][0], 'digit')) {
 			$errors[] = $this->messages['shadowmin'][0];
 		}
-		if ( !get_preg($this->attributes['shadowmax'][0], 'digit')) {
+		if (!get_preg($this->attributes['shadowmax'][0], 'digit')) {
 			$errors[] = $this->messages['shadowmax'][0];
 		}
-		if ( $this->attributes['shadowmin'][0] > $this->attributes['shadowmax'][0]) {
+		if ($this->attributes['shadowmin'][0] > $this->attributes['shadowmax'][0]) {
 			$errors[] = $this->messages['shadow_cmp'][0];
 		}
-		if ( !get_preg($this->attributes['shadowinactive'][0], 'digit2')) {
+		if (!get_preg($this->attributes['shadowinactive'][0], 'digit2')) {
 			$errors[] = $this->messages['inactive'][0];
 		}
-		if ( !get_preg($this->attributes['shadowwarning'][0], 'digit')) {
+		if (!get_preg($this->attributes['shadowwarning'][0], 'digit')) {
 			$errors[] = $this->messages['shadowwarning'][0];
 		}
 		if (isset($_POST['form_subpage_shadowAccount_attributes_expirePassword']) && isset($this->attributes['shadowmax'][0]) && ($this->attributes['shadowmax'][0] != 0)) {
-			$this->attributes['shadowlastchange'][0] = intval(time()/3600/24) - $this->attributes['shadowmax'][0] - 1;
+			$this->attributes['shadowlastchange'][0] = intval(time() / 3600 / 24) - $this->attributes['shadowmax'][0] - 1;
 		}
 		return $errors;
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page with all attributes.
-	*
-	* @return array meta HTML code
-	*/
+	 * This function will create the meta HTML code to show a page with all attributes.
+	 *
+	 * @return array meta HTML code
+	 */
 	function display_html_attributes() {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'shadowAccount';
@@ -390,7 +392,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowexpire'][0])) {
 				$shAccExpirationDate = $this->attributes['shadowexpire'][0];
-				$date = new DateTime('@' . $shAccExpirationDate*3600*24, new DateTimeZone('UTC'));
+				$date = new DateTime('@' . $shAccExpirationDate * 3600 * 24, new DateTimeZone('UTC'));
 				$expirationDate = $date->format('d.m.Y');
 			}
 			$return->addLabel(new htmlOutputText(_('Account expiration date')));
@@ -403,7 +405,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowlastchange'][0])) {
 				$shPwdChangeDate = $this->attributes['shadowlastchange'][0];
-				$date = new DateTime('@' . $shPwdChangeDate*3600*24, new DateTimeZone('UTC'));
+				$date = new DateTime('@' . $shPwdChangeDate * 3600 * 24, new DateTimeZone('UTC'));
 				$pwdChangeDate = $date->format('d.m.Y');
 			}
 			$return->addLabel(new htmlOutputText(_('Last password change')));
@@ -418,7 +420,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlAccountPageButton('shadowAccount', 'attributes', 'remObjectClass', _('Remove Shadow account extension'));
-			$remButton->setCSSClasses(array('lam-danger'));
+			$remButton->setCSSClasses(['lam-danger']);
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
@@ -428,17 +430,17 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
-	* Processes user input of the expiration page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the expiration page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_expire() {
 		$errors = [];
 		// set expiration date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_change']) && !empty($_POST['shadowexpire'])) {
 			$date = DateTime::createFromFormat('d.m.Y', $_POST['shadowexpire'], new DateTimeZone('UTC'));
-			$this->attributes['shadowexpire'][0] = intval($date->format('U')/3600/24);
+			$this->attributes['shadowexpire'][0] = intval($date->format('U') / 3600 / 24);
 			// sync other modules
 			if (isset($_POST['syncSamba']) && ($_POST['syncSamba'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
@@ -491,17 +493,17 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page with the expiration date.
-	*
-	* @return array meta HTML code
-	*/
+	 * This function will create the meta HTML code to show a page with the expiration date.
+	 *
+	 * @return array meta HTML code
+	 */
 	function display_html_expire() {
 		$return = new htmlResponsiveRow();
 		$shAccExpirationDate = time() / (3600 * 24) + 365;
 		if (isset($this->attributes['shadowexpire'][0])) {
 			$shAccExpirationDate = $this->attributes['shadowexpire'][0];
 		}
-		$date = new DateTime('@' . $shAccExpirationDate*3600*24, new DateTimeZone('UTC'));
+		$date = new DateTime('@' . $shAccExpirationDate * 3600 * 24, new DateTimeZone('UTC'));
 		$dateField = new htmlResponsiveInputField(_('Account expiration date'), 'shadowexpire', $date->format('d.m.Y'), 'shadowexpire');
 		$dateField->showCalendar('d.m.Y');
 		$return->add($dateField);
@@ -534,17 +536,17 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
-	* Processes user input of the last password change page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the last password change page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_pwdChange() {
 		$errors = [];
 		// set last change date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_changePwdChange']) && !empty($_POST['shadowlastchange'])) {
 			$date = DateTime::createFromFormat('d.m.Y', $_POST['shadowlastchange'], new DateTimeZone('UTC'));
-			$this->attributes['shadowlastchange'][0] = intval($date->format('U')/3600/24);
+			$this->attributes['shadowlastchange'][0] = intval($date->format('U') / 3600 / 24);
 		}
 		// remove last change date
 		elseif (isset($_POST['form_subpage_shadowAccount_attributes_delPwdChange'])
@@ -555,17 +557,17 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page with the password change date.
-	*
-	* @return array meta HTML code
-	*/
+	 * This function will create the meta HTML code to show a page with the password change date.
+	 *
+	 * @return array meta HTML code
+	 */
 	function display_html_pwdChange() {
 		$return = new htmlResponsiveRow();
-		$shLastChange = time()/(3600*24);
+		$shLastChange = time() / (3600 * 24);
 		if (isset($this->attributes['shadowlastchange'][0])) {
 			$shLastChange = $this->attributes['shadowlastchange'][0];
 		}
-		$date = new DateTime('@' . $shLastChange*3600*24, new DateTimeZone('UTC'));
+		$date = new DateTime('@' . $shLastChange * 3600 * 24, new DateTimeZone('UTC'));
 		$dateField = new htmlResponsiveInputField(_('Last password change'), 'shadowlastchange', $date->format('d.m.Y'), 'shadowlastchange');
 		$dateField->showCalendar('d.m.Y');
 		$return->add($dateField);
@@ -590,12 +592,12 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		$timeZone = getTimeZone();
 		$shadowLastChange = '';
 		if (!empty($this->attributes['shadowlastchange'][0])) {
-			$time = new DateTime('@' . $this->attributes['shadowlastchange'][0]*24*3600, $timeZone);
+			$time = new DateTime('@' . $this->attributes['shadowlastchange'][0] * 24 * 3600, $timeZone);
 			$shadowLastChange = $time->format('d.m.Y');
 		}
 		$shadowExpire = '';
 		if (!empty($this->attributes['shadowexpire'][0])) {
-			$time = new DateTime('@' . $this->attributes['shadowexpire'][0]*24*3600);
+			$time = new DateTime('@' . $this->attributes['shadowexpire'][0] * 24 * 3600);
 			$shadowExpire = $time->format('d.m.Y');
 		}
 		$return = [];
@@ -616,7 +618,9 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("shadowAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "shadowAccount";
+			if (!in_array("shadowAccount", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "shadowAccount";
+			}
 			// password warning
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'shadowAccount_warning', 'shadowwarning',
 				'digit', $this->messages['shadowwarning'][1], $messages);
@@ -631,10 +635,10 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 				'digit', $this->messages['shadowmax'][1], $messages);
 			// minAge <= maxAge
 			if ((($rawAccounts[$i][$ids['shadowAccount_minAge']] != '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] != '')) &&  // if at least one is set
-			(($rawAccounts[$i][$ids['shadowAccount_minAge']] == '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] == '') ||   // and one is not set
-			 ($rawAccounts[$i][$ids['shadowAccount_minAge']] > $rawAccounts[$i][$ids['shadowAccount_maxAge']]))) {  // or minAge > maxAge
+				(($rawAccounts[$i][$ids['shadowAccount_minAge']] == '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] == '') ||   // and one is not set
+					($rawAccounts[$i][$ids['shadowAccount_minAge']] > $rawAccounts[$i][$ids['shadowAccount_maxAge']]))) {  // or minAge > maxAge
 				$errMsg = $this->messages['shadow_cmp'][1];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$messages[] = $errMsg;
 			}
 			// expiration date
@@ -642,11 +646,11 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 				if (get_preg($rawAccounts[$i][$ids['shadowAccount_expireDate']], 'date')) {
 					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_expireDate']]);
 					$date = DateTime::createFromFormat('j.n.Y', $parts[0] . '.' . $parts[1] . '.' . $parts[2], new DateTimeZone('UTC'));
-					$partialAccounts[$i]['shadowexpire'][] = intval($date->format('U')/3600/24);
+					$partialAccounts[$i]['shadowexpire'][] = intval($date->format('U') / 3600 / 24);
 				}
 				else {
 					$errMsg = $this->messages['shadow_expireDate'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 			}
@@ -655,27 +659,27 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 				if (get_preg($rawAccounts[$i][$ids['shadowAccount_lastChange']], 'date')) {
 					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_lastChange']]);
 					$date = DateTime::createFromFormat('j.n.Y', $parts[0] . '.' . $parts[1] . '.' . $parts[2], new DateTimeZone('UTC'));
-					$partialAccounts[$i]['shadowlastchange'][] = intval($date->format('U')/3600/24);
+					$partialAccounts[$i]['shadowlastchange'][] = intval($date->format('U') / 3600 / 24);
 				}
 				else {
 					$errMsg = $this->messages['shadow_lastChange'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 			}
 			else {
 				$date = new DateTime('now', new DateTimeZone('UTC'));
-				$partialAccounts[$i]['shadowlastchange'][] = intval($date->format('U')/3600/24);
+				$partialAccounts[$i]['shadowlastchange'][] = intval($date->format('U') / 3600 / 24);
 			}
 		}
 		return $messages;
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -702,9 +706,9 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 
 	/**
 	 * This method specifies if a module manages password attributes.
+	 * @return boolean true if this module manages password attributes
 	 * @see passwordService::managesPasswordAttributes
 	 *
-	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
 		// only listen to password changes
@@ -737,9 +741,9 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			return [];
 		}
 		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
-			$this->attributes['shadowlastchange'][0] = intval(time()/3600/24);
+			$this->attributes['shadowlastchange'][0] = intval(time() / 3600 / 24);
 			if ($forcePasswordChange && isset($this->attributes['shadowmax'][0]) && ($this->attributes['shadowmax'][0] != 0)) {
-				$this->attributes['shadowlastchange'][0] = intval(time()/3600/24) - $this->attributes['shadowmax'][0] - 1;
+				$this->attributes['shadowlastchange'][0] = intval(time() / 3600 / 24) - $this->attributes['shadowmax'][0] - 1;
 			}
 		}
 		return [];
@@ -759,7 +763,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			return;
 		}
 		$date = DateTime::createFromFormat('j.n.Y', $day . '.' . $month . '.' . $year, new DateTimeZone('UTC'));
-		$this->attributes['shadowexpire'][0] = intval($date->format('U')/3600/24);
+		$this->attributes['shadowexpire'][0] = intval($date->format('U') / 3600 / 24);
 	}
 
 	/**
@@ -776,7 +780,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			return;
 		}
 		$date = DateTime::createFromFormat('j.n.Y', $day . '.' . $month . '.' . $year, new DateTimeZone('UTC'));
-		$this->attributes['shadowlastchange'][0] = intval($date->format('U')/3600/24);
+		$this->attributes['shadowlastchange'][0] = intval($date->format('U') / 3600 / 24);
 	}
 
 	/**
@@ -827,11 +831,11 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @return array list of jobs
 	 */
 	public function getSupportedJobs(&$config) {
-		return array(
+		return [
 			new ShadowAccountPasswordNotifyJob(),
 			new ShadowAccountExpirationCleanupJob(),
 			new ShadowAccountExpirationNotifyJob()
-		);
+		];
 	}
 
 	/**
@@ -905,12 +909,12 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		}
 		$attrs = [];
 		if (isset($this->attributes['shadowlastchange'][0]) && isset($_POST['updateUnixPwd'])) {
-			$attrs['shadowlastchange'][0] = intval(time()/3600/24);
+			$attrs['shadowlastchange'][0] = intval(time() / 3600 / 24);
 		}
 		if (isset($_POST['forcePasswordChangeUnix'])
 			&& isset($this->attributes['shadowmax'][0])
 			&& ($this->attributes['shadowmax'][0] != 0)) {
-			$attrs['shadowlastchange'][0] = intval(time()/3600/24) - $this->attributes['shadowmax'][0] - 1;
+			$attrs['shadowlastchange'][0] = intval(time() / 3600 / 24) - $this->attributes['shadowmax'][0] - 1;
 		}
 		return $attrs;
 	}
@@ -957,7 +961,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @inheritDoc
 	 */
 	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
-		return array('shadowexpire', 'shadowlastchange', 'shadowmax', 'shadowinactive');
+		return ['shadowexpire', 'shadowlastchange', 'shadowmax', 'shadowinactive'];
 	}
 
 	/**
@@ -989,7 +993,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		}
 		if (in_array(self::STATUS_PASSWORD_EXPIRED, $lockIds)) {
 			$inactive = !empty($attributes['shadowinactive'][0]) ? $attributes['shadowinactive'][0] : 0;
-			$attributes['shadowlastchange'][0] = intval(time()/3600/24) - $attributes['shadowmax'][0] - $inactive - 1;
+			$attributes['shadowlastchange'][0] = intval(time() / 3600 / 24) - $attributes['shadowmax'][0] - $inactive - 1;
 		}
 	}
 
@@ -1004,7 +1008,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			unset($attributes['shadowexpire']);
 		}
 		if (in_array(self::STATUS_PASSWORD_EXPIRED, $lockIds)) {
-			$attributes['shadowlastchange'][0] = intval(time()/3600/24);
+			$attributes['shadowlastchange'][0] = intval(time() / 3600 / 24);
 		}
 	}
 
@@ -1014,7 +1018,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	public function getListFilterFunction(string $attributeName): ?callable {
 		if (($attributeName == 'shadowexpire') || ($attributeName == 'shadowlastchange')) {
 			return function(?array $values, ?string $filterValue): bool {
-				$regex = str_replace(array('*'), array('.*'), $filterValue);
+				$regex = str_replace(['*'], ['.*'], $filterValue);
 				$regex = '/' . $regex . '/i';
 				if (!empty($values[0])) {
 					$time = new DateTime('@' . $values[0] * 24 * 3600, getTimeZone());
@@ -1047,14 +1051,14 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'shadowlastchange' => _('Last password change'),
 			'shadowwarning' => _('Password warning'),
 			'shadowinactive' => _('Password expiration'),
 			'shadowexpire' => _('Account expiration date'),
 			'shadowminage' => _('Minimum password age'),
 			'shadowmaxage' => _('Maximum password age'),
-		);
+		];
 	}
 
 }
@@ -1098,10 +1102,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'shadowlastchange', 'shadowwarning', 'shadowmax', 'userPassword');
+			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'shadowlastchange', 'shadowwarning', 'shadowmax', 'userPassword'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(shadowlastchange=*)(shadowmax=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(shadowlastchange=*)(shadowmax=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, ['user']);
 		}
 
 		/**
@@ -1208,10 +1212,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'shadowexpire');
+			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'shadowexpire'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(shadowexpire=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(shadowexpire=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, ['user']);
 		}
 
 		/**
@@ -1282,7 +1286,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @return String name
 		 */
 		public function getAlias() {
-			return _('Shadow') .  ': ' . _('Cleanup expired user accounts');
+			return _('Shadow') . ': ' . _('Cleanup expired user accounts');
 		}
 
 		/**
@@ -1303,8 +1307,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$attrs = array('shadowexpire');
-			return searchLDAPByFilter('(shadowexpire=*)', $attrs, array('user'));
+			$attrs = ['shadowexpire'];
+			return searchLDAPByFilter('(shadowexpire=*)', $attrs, ['user']);
 		}
 
 		/**
