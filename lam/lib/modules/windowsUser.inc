@@ -1,7 +1,9 @@
 <?php
+
 use \LAM\TYPES\TypeManager;
 use LAM\TYPES\ConfiguredType;
 use LAM\ImageUtils\ImageManipulationFactory;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -23,18 +25,18 @@ use LAM\ImageUtils\ImageManipulationFactory;
 */
 
 /**
-* Manages Windows AD (e.g. Samba 4) users.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Windows AD (e.g. Samba 4) users.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages Windows AD (e.g. Samba 4) users.
-*
-* @package modules
-*/
-class windowsUser extends baseModule implements passwordService,AccountStatusProvider {
+ * Manages Windows AD (e.g. Samba 4) users.
+ *
+ * @package modules
+ */
+class windowsUser extends baseModule implements passwordService, AccountStatusProvider {
 
 	/**
 	 * ID for locked password status.
@@ -54,9 +56,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('userPrincipalName', 'sAMAccountName', 'displayName',
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['userPrincipalName', 'sAMAccountName', 'displayName',
 		'profilePath', 'scriptPath', 'pwdLastSet', 'otherMailbox', 'homeDirectory', 'msSFU30Name',
-		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime');
+		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime'];
 
 	/** initial account flags */
 	const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
@@ -106,21 +108,21 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	public function get_metaData() {
 		$return = [];
 		// icon
@@ -128,721 +130,721 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// this is a base module
 		$return["is_base"] = true;
 		// PHP extensions
-		$return['extensions'] = array('iconv');
+		$return['extensions'] = ['iconv'];
 		// RDN attribute
-		$return["RDN"] = array("cn" => "high");
+		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter
-		$return["ldap_filter"] = array('and' => '(!(objectClass=computer))', 'or' => "(objectClass=user)");
+		$return["ldap_filter"] = ['and' => '(!(objectClass=computer))', 'or' => "(objectClass=user)"];
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('user', 'securityPrincipal');
+		$return['objectClasses'] = ['user', 'securityPrincipal'];
 		// managed attributes
-		$return['attributes'] = array('userPrincipalName', 'cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
+		$return['attributes'] = ['userPrincipalName', 'cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'useraccountcontrol', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountexpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
 			'businessCategory', 'department', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
 			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockouttime', 'userWorkstations'
-		);
+		];
 		// help Entries
-		$return['help'] = array(
-			'cn' => array(
+		$return['help'] = [
+			'cn' => [
 				"Headline" => _('Common name'), 'attr' => 'cn',
 				"Text" => _('This is the natural name of the user. If empty, the first and last name or user name is used.')
-			),
-			'userPrincipalName' => array(
+			],
+			'userPrincipalName' => [
 				"Headline" => _('User name'), 'attr' => 'userPrincipalName',
 				"Text" => _('Please enter the user\'s name.')
-			),
-			'userPrincipalNameDomain' => array(
+			],
+			'userPrincipalNameDomain' => [
 				"Headline" => _('Domain'), 'attr' => 'userPrincipalName',
 				"Text" => _('Windows domain name of account.')
-			),
-			'sAMAccountName' => array(
+			],
+			'sAMAccountName' => [
 				"Headline" => _('User name (pre W2K)'), 'attr' => 'sAMAccountName',
 				"Text" => _('Please enter the user\'s name.') . ' ' . _('This user name is only used for old Windows versions (e.g. NT4, W98).')
-			),
-			'description' => array(
+			],
+			'description' => [
 				"Headline" => _('Description'), 'attr' => 'description',
 				"Text" => _('Please enter a descriptive text for this user.')
-			),
-			'displayName' => array(
+			],
+			'displayName' => [
 				"Headline" => _('Display name'), 'attr' => 'displayName',
 				"Text" => _('This is the account\'s full name on Windows systems.')
-			),
-			'givenName' => array(
+			],
+			'givenName' => [
 				"Headline" => _('First name'), 'attr' => 'givenName',
 				"Text" => _('First name of user. Only letters, - and spaces are allowed.')
-			),
-			'initials' => array(
+			],
+			'initials' => [
 				"Headline" => _('Initials'), 'attr' => 'initials',
 				"Text" => _('The initials of the user\'s first names.')
-			),
-			'l' => array(
+			],
+			'l' => [
 				"Headline" => _('Location'), 'attr' => 'l',
 				"Text" => _('This describes the location of the user.')
-			),
-			'mail' => array(
+			],
+			'mail' => [
 				"Headline" => _('Email address'), 'attr' => 'mail',
 				"Text" => _('The user\'s email address.')
-			),
-			'otherTelephone' => array(
+			],
+			'otherTelephone' => [
 				"Headline" => _('Other telephone numbers'), 'attr' => 'otherTelephone',
 				"Text" => _('If the user has multiple telephone numbers then please enter it here.')
-			),
-			'otherTelephoneList' => array(
+			],
+			'otherTelephoneList' => [
 				"Headline" => _('Other telephone numbers'), 'attr' => 'otherTelephone',
 				"Text" => _('If the user has multiple telephone numbers then please enter it here.') . ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'physicalDeliveryOfficeName' => array(
+			],
+			'physicalDeliveryOfficeName' => [
 				"Headline" => _('Office name'), 'attr' => 'physicalDeliveryOfficeName',
 				"Text" => _('The office name of the user (e.g. YourCompany, Human Resources).')
-			),
-			'postalCode' => array(
+			],
+			'postalCode' => [
 				"Headline" => _('Postal code'), 'attr' => 'postalCode',
 				"Text" => _('The postal code of the user\'s address.')
-			),
-			'postOfficeBox' => array(
+			],
+			'postOfficeBox' => [
 				"Headline" => _('Post office box'), 'attr' => 'postOfficeBox',
 				"Text" => _('The post office box of the user\'s address.')
-			),
-			'sn' => array(
+			],
+			'sn' => [
 				"Headline" => _('Last name'), 'attr' => 'sn',
 				"Text" => _('Last name of user. Only letters, - and spaces are allowed.')
-			),
-			'st' => array(
+			],
+			'st' => [
 				"Headline" => _('State'), 'attr' => 'st',
 				"Text" => _('The state where the user resides or works.')
-			),
-			'streetAddress' => array(
+			],
+			'streetAddress' => [
 				"Headline" => _('Street'), 'attr' => 'streetAddress',
 				"Text" => _('The street name of the user\'s address.')
-			),
-			'telephoneNumber' => array(
+			],
+			'telephoneNumber' => [
 				"Headline" => _('Telephone number'), 'attr' => 'telephoneNumber',
 				"Text" => _('The user\'s telephone number.')
-			),
-			'facsimileTelephoneNumber' => array (
+			],
+			'facsimileTelephoneNumber' => [
 				"Headline" => _("Fax number"), 'attr' => 'facsimileTelephoneNumber',
 				"Text" => _("The user's fax number.")
-			),
-			'url' => array(
+			],
+			'url' => [
 				"Headline" => _('Other web sites'), 'attr' => 'url',
 				"Text" => _('Here you can enter additional web sites for the user.')
-			),
-			'urlList' => array(
+			],
+			'urlList' => [
 				"Headline" => _('Other web sites'), 'attr' => 'url',
 				"Text" => _('Here you can enter additional web sites for the user.') . ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'wWWHomePage' => array(
+			],
+			'wWWHomePage' => [
 				"Headline" => _('Web site'), 'attr' => 'wWWHomePage',
 				"Text" => _('The user\'s web site (e.g. http://www.company.com).')
-			),
-			"deactivated" => array(
+			],
+			"deactivated" => [
 				"Headline" => _("Account is deactivated"),
-				"Text" => _("If checked then the account will be deactivated.")),
-			"noExpire" => array(
+				"Text" => _("If checked then the account will be deactivated.")],
+			"noExpire" => [
 				"Headline" => _("Password does not expire"),
-				"Text" => _("If checked password does not expire.")),
-			"requireCard" => array(
+				"Text" => _("If checked password does not expire.")],
+			"requireCard" => [
 				"Headline" => _("Require smartcard"),
-				"Text" => _("The user must log on using a smart card.")),
-			"profilePath" => array(
+				"Text" => _("The user must log on using a smart card.")],
+			"profilePath" => [
 				"Headline" => _("Profile path"), 'attr' => 'profilePath',
-				"Text" => _('Path of the user profile (UNC-path, e.g. \\\\server\\share\\user).'). ' '. _("Can be left empty.")
-			),
-			"scriptPath" => array(
+				"Text" => _('Path of the user profile (UNC-path, e.g. \\\\server\\share\\user).') . ' ' . _("Can be left empty.")
+			],
+			"scriptPath" => [
 				"Headline" => _("Logon script"), 'attr' => 'scriptPath',
-				"Text" => _('File name and path relative to netlogon-share which should be executed on logon.'). ' '. _("Can be left empty.")
-			),
-			"pwdMustChange" => array (
+				"Text" => _('File name and path relative to netlogon-share which should be executed on logon.') . ' ' . _("Can be left empty.")
+			],
+			"pwdMustChange" => [
 				"Headline" => _("Password change at next login"),
-				"Text" => _("If you set this option then the user has to change his password at the next login.")),
-			"groups" => array (
+				"Text" => _("If you set this option then the user has to change his password at the next login.")],
+			"groups" => [
 				"Headline" => _("Groups"),
-				"Text" => _("Hold the CTRL-key to (de)select multiple groups.")),
-			"groupsUpload" => array (
+				"Text" => _("Hold the CTRL-key to (de)select multiple groups.")],
+			"groupsUpload" => [
 				"Headline" => _("Groups"),
-				"Text" => _("The groups for this account. You can insert a group name or DN.") . ' ' . _("Multiple values are separated by semicolon.")),
-			'password' => array(
-					"Headline" => _("Password"),
-					"Text" => _("Please enter the password which you want to set for this account.")
-			),
-			'otherMailbox' => array(
+				"Text" => _("The groups for this account. You can insert a group name or DN.") . ' ' . _("Multiple values are separated by semicolon.")],
+			'password' => [
+				"Headline" => _("Password"),
+				"Text" => _("Please enter the password which you want to set for this account.")
+			],
+			'otherMailbox' => [
 				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
 				"Text" => _("Email alias for this account.")
-			),
-			'otherMailboxList' => array(
+			],
+			'otherMailboxList' => [
 				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
 				"Text" => _("Email alias for this account.") . ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'hiddenOptions' => array(
+			],
+			'hiddenOptions' => [
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
-			),
-			'domains' => array(
+			],
+			'domains' => [
 				"Headline" => _('Domains'),
 				"Text" => _('Please enter a list of Windows domains that can be selected for your user accounts.')
-			),
-			"homeDrive" => array(
+			],
+			"homeDrive" => [
 				"Headline" => _("Home drive"), 'attr' => 'homeDrive',
-				"Text" => _("The home directory will be connected under this drive letter.")),
-			"homeDirectory" => array(
+				"Text" => _("The home directory will be connected under this drive letter.")],
+			"homeDirectory" => [
 				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 				"Text" => _('UNC-path (\\\\server\\share\) of home directory. If no home drive is set then this directory must start with a drive letter (e.g. "c:\dir\user").')
-			),
-			'msSFU30Name' => array(
+			],
+			'msSFU30Name' => [
 				"Headline" => _('NIS name'), 'attr' => 'msSFU30Name',
 				"Text" => _('User name for NIS.')
-			),
-			'msSFU30NisDomain' => array(
+			],
+			'msSFU30NisDomain' => [
 				"Headline" => _('NIS domain'), 'attr' => 'msSFU30NisDomain',
 				"Text" => _('NIS domain name.')
-			),
-			'pwdLastSet' => array(
+			],
+			'pwdLastSet' => [
 				"Headline" => _('Last password change'), 'attr' => 'pwdLastSet',
 				"Text" => _('Time of user\'s last password change.')
-			),
-			'lastLogonTimestamp' => array(
+			],
+			'lastLogonTimestamp' => [
 				"Headline" => _('Last login'), 'attr' => 'lastLogonTimestamp',
 				"Text" => _('Time of user\'s last login.')
-			),
-			'accountexpires' => array(
+			],
+			'accountexpires' => [
 				"Headline" => _('Account expiration date'), 'attr' => 'accountExpires',
 				"Text" => _('This is the date when the account will expire.')
-			),
-			'accountexpiresUpload' => array(
+			],
+			'accountexpiresUpload' => [
 				"Headline" => _('Account expiration date'), 'attr' => 'accountExpires',
 				"Text" => _('This is the date when the account will expire. Format: DD-MM-YYYY')
-			),
-			'accountexpiresProfile' => array(
+			],
+			'accountexpiresProfile' => [
 				"Headline" => _('Account expiration'), 'attr' => 'accountExpires',
 				"Text" => _('Number of days after which the account will expire.')
-			),
-			'jpegPhoto' => array(
+			],
+			'jpegPhoto' => [
 				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
 				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
-			),
-			'title' => array (
+			],
+			'title' => [
 				"Headline" => _("Job title"), 'attr' => 'title',
 				"Text" => _("Job title of user: President, department manager, ...")
-			),
-			'carLicense' => array(
+			],
+			'carLicense' => [
 				"Headline" => _("Car license"), 'attr' => 'carLicense',
 				"Text" => _("This can be used to specify if the user has a car license.")
-			),
-			'employeeNumber' => array(
+			],
+			'employeeNumber' => [
 				"Headline" => _("Employee number"), 'attr' => 'employeeNumber',
 				"Text" => _("The user's unique employee number.")
-			),
-			'employeeType' => array (
+			],
+			'employeeType' => [
 				"Headline" => _("Employee type"), 'attr' => 'employeeType',
 				"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")
-			),
-			'businessCategory' => array(
+			],
+			'businessCategory' => [
 				"Headline" => _("Business category"), 'attr' => 'businessCategory',
 				"Text" => _("Business category (e.g. Administration, IT-Services, Management, ...)")
-			),
-			'businessCategoryList' => array(
+			],
+			'businessCategoryList' => [
 				"Headline" => _("Business category"), 'attr' => 'businessCategory',
 				"Text" => _("Business category (e.g. Administration, IT-Services, Management, ...)") . '. ' . _("Multiple values are separated by semicolon.")
-			),
-			'department' => array(
+			],
+			'department' => [
 				"Headline" => _("Department"), 'attr' => 'department',
 				"Text" => _("Here you can enter the user's department.")
-			),
-			'departmentNumber' => array(
+			],
+			'departmentNumber' => [
 				"Headline" => _("Department number"), 'attr' => 'departmentNumber',
 				"Text" => _("Here you can enter the user's department number.")
-			),
-			'departmentNumberList' => array(
+			],
+			'departmentNumberList' => [
 				"Headline" => _("Department number"), 'attr' => 'departmentNumber',
 				"Text" => _("Here you can enter the user's department number.") . ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'ou' => array(
+			],
+			'ou' => [
 				"Headline" => _("Organisational unit"), 'attr' => 'ou',
 				"Text" => _("The user's organisational unit.")
-			),
-			'ouList' => array(
+			],
+			'ouList' => [
 				"Headline" => _("Organisational unit"), 'attr' => 'ou',
 				"Text" => _("The user's organisational unit.") . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'o' => array(
+			],
+			'o' => [
 				"Headline" => _("Organisation"), 'attr' => 'o',
 				"Text" => _("The user's organisation name.")
-			),
-			'oList' => array(
+			],
+			'oList' => [
 				"Headline" => _("Organisation"), 'attr' => 'o',
 				"Text" => _("The user's organisation name.") . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'manager' => array (
+			],
+			'manager' => [
 				"Headline" => _("Manager"), 'attr' => 'manager',
 				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
-			),
-			'company' => array (
+			],
+			'company' => [
 				"Headline" => _('Company'), 'attr' => 'company',
 				"Text" => _('Please enter the company name.')
-			),
-			'pager' => array (
+			],
+			'pager' => [
 				"Headline" => _('Pager'), 'attr' => 'pager',
 				"Text" => _('The user\'s pager number.')
-			),
-			'otherPager' => array (
+			],
+			'otherPager' => [
 				"Headline" => _('Other pagers'), 'attr' => 'otherPager',
 				"Text" => _('Any secondary pager numbers.')
-			),
-			'otherPagerUpload' => array (
+			],
+			'otherPagerUpload' => [
 				"Headline" => _('Other pagers'), 'attr' => 'otherPager',
 				"Text" => _('Any secondary pager numbers.') . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'mobile' => array (
+			],
+			'mobile' => [
 				"Headline" => _('Mobile'), 'attr' => 'mobile',
 				"Text" => _('The user\'s mobile number.')
-			),
-			'otherMobile' => array (
+			],
+			'otherMobile' => [
 				"Headline" => _('Other mobiles'), 'attr' => 'otherMobile',
 				"Text" => _('Any secondary mobile numbers.')
-			),
-			'otherMobileUpload' => array (
+			],
+			'otherMobileUpload' => [
 				"Headline" => _('Other mobiles'), 'attr' => 'otherMobile',
 				"Text" => _('Any secondary mobile numbers.') . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'proxyAddresses' => array (
+			],
+			'proxyAddresses' => [
 				"Headline" => _('Proxy-Addresses'), 'attr' => 'proxyAddresses',
 				"Text" => _('Use this to enter additional email addresses in format "smtp:user@domain.com".')
-			),
-			'proxyAddressesUpload' => array (
+			],
+			'proxyAddressesUpload' => [
 				"Headline" => _('Proxy-Addresses'), 'attr' => 'proxyAddresses',
 				"Text" => _('Use this to enter additional email addresses in format "smtp:user@domain.com".') . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'crop' => array(
+			],
+			'crop' => [
 				"Headline" => _('Image cropping'),
 				"Text" => _('Uploaded images will be cropped to these maximum values.')
-			),
-			'photoUpload' => array(
+			],
+			'photoUpload' => [
 				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
 				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
-			),
-			'excludeFromGroupSync' => array (
+			],
+			'excludeFromGroupSync' => [
 				"Headline" => _('Exclude from group sync'),
 				"Text" => _('Enter one group per line that should be ignored when syncing groups.')
-			),
-			"userWorkstations" => array(
+			],
+			"userWorkstations" => [
 				"Headline" => _("Workstations"), 'attr' => 'userWorkstations',
 				"Text" => _("List of workstations the user is allowed to login. Empty means every workstation.")
-			),
-			"workstations" => array(
+			],
+			"workstations" => [
 				"Headline" => _("Workstations"), 'attr' => 'userWorkstations',
-				"Text" => _("Comma separated list of workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")
-			),
-			'displayGroups' => array(
+				"Text" => _("Comma separated list of workstations the user is allowed to login. Empty means every workstation.") . ' ' . _("Can be left empty.")
+			],
+			'displayGroups' => [
 				"Headline" => _('Display format'),
 				"Text" => _('Specifies how groups are displayed.')
-			),
-		);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'windowsUser_userPrincipalName',
 				'description' => _('User name'),
 				'help' => 'userPrincipalName',
 				'example' => _('smiller'),
 				'required' => true,
 				'unique' => true,
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_password',
 				'description' => _('Password'),
 				'help' => 'password',
 				'example' => _('secret'),
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_firstName',
 				'description' => _('First name'),
 				'help' => 'givenName',
 				'example' => _('Steve'),
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_lastName',
 				'description' => _('Last name'),
 				'help' => 'sn',
 				'example' => _('Miller'),
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_cn',
 				'description' => _('Common name'),
 				'help' => 'cn',
 				'example' => _('Steve Miller'),
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_deactivated',
 				'description' => _('Account is deactivated'),
 				'help' => 'deactivated',
 				'example' => _('no'),
 				'default' => _('no'),
 				'values' => _('yes') . ', ' . _('no')
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_noExpire',
 				'description' => _('Password does not expire'),
 				'help' => 'noExpire',
 				'example' => _('no'),
 				'default' => _('no'),
 				'values' => _('yes') . ', ' . _('no')
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_accountExpires',
 				'description' => _('Account expiration date'),
 				'help' => 'accountexpiresUpload',
 				'example' => '21-11-2030',
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_pwdMustChange',
 				'description' => _('Password change at next login'),
 				'help' => 'pwdMustChange',
 				'example' => _('no'),
 				'default' => _('no'),
 				'values' => _('yes') . ', ' . _('no')
-			),
-			array(
+			],
+			[
 				'name' => 'windowsUser_groups',
 				'description' => _('Groups'),
 				'help' => 'groupsUpload',
-			),
-		);
+			],
+		];
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_displayName',
 				'description' => _('Display name'),
 				'help' => 'displayName',
 				'example' => _('Steve Miller'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_initials',
 				'description' => _('Initials'),
 				'help' => 'initials',
 				'example' => _('S.M.'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedescription')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_description',
 				'description' => _('Description'),
 				'help' => 'description',
 				'example' => _('Temp, contract till December'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_streetAddress',
 				'description' => _('Street'),
 				'help' => 'streetAddress',
 				'example' => _('Mystreetname 42'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_postOfficeBox',
 				'description' => _('Post office box'),
 				'help' => 'postOfficeBox',
 				'example' => _('12345'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_postalCode',
 				'description' => _('Postal code'),
 				'help' => 'postalCode',
 				'example' => _('GB-12345'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_l',
 				'description' => _('Location'),
 				'help' => 'l',
 				'example' => _('MyCity'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_state',
 				'description' => _('State'),
 				'help' => 'st',
 				'example' => _('New York'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_officeName',
 				'description' => _('Office name'),
 				'help' => 'physicalDeliveryOfficeName',
 				'example' => _('YourCompany'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_mail',
 				'description' => _('Email address'),
 				'help' => 'mail',
 				'example' => _('user@company.com'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_otherMailbox',
 				'description' => _('Email alias'),
 				'help' => 'otherMailboxList',
 				'example' => _('user@company.com'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetelephoneNumber')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_telephoneNumber',
 				'description' => _('Telephone number'),
 				'help' => 'telephoneNumber',
 				'example' => _('123-124-1234'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_otherTelephone',
 				'description' => _('Other telephone numbers'),
 				'help' => 'otherTelephoneList',
 				'example' => _('123-124-1234'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidewWWHomePage')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_webSite',
 				'description' => _('Web site'),
 				'help' => 'wWWHomePage',
 				'example' => _('http://www.company.com'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_otherWebSites',
 				'description' => _('Other web sites'),
 				'help' => 'urlList',
 				'example' => _('http://www.company.com'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_proxyAddresses',
 				'description' => _('Proxy-Addresses'),
 				'help' => 'proxyAddressesUpload',
 				'example' => _('smtp:user@example.com')
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_facsimileTelephoneNumber',
 				'description' => _('Fax number'),
 				'help' => 'facsimileTelephoneNumber',
 				'example' => _('123-123-1236')
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
-			$return['upload_columns'][] = array(
-					'name' => 'windowsUser_pager',
-					'description' => _('Pager'),
-					'help' => 'pager',
-					'example' => _('123-123-1236')
-			);
+			$return['upload_columns'][] = [
+				'name' => 'windowsUser_pager',
+				'description' => _('Pager'),
+				'help' => 'pager',
+				'example' => _('123-123-1236')
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
-			$return['upload_columns'][] = array(
-					'name' => 'windowsUser_otherPager',
-					'description' => _('Other pagers'),
-					'help' => 'otherPagerUpload',
-					'example' => _('123-123-1236')
-			);
+			$return['upload_columns'][] = [
+				'name' => 'windowsUser_otherPager',
+				'description' => _('Other pagers'),
+				'help' => 'otherPagerUpload',
+				'example' => _('123-123-1236')
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
-			$return['upload_columns'][] = array(
-					'name' => 'windowsUser_mobile',
-					'description' => _('Mobile'),
-					'help' => 'mobile',
-					'example' => _('123-123-1235')
-			);
+			$return['upload_columns'][] = [
+				'name' => 'windowsUser_mobile',
+				'description' => _('Mobile'),
+				'help' => 'mobile',
+				'example' => _('123-123-1235')
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
-			$return['upload_columns'][] = array(
-					'name' => 'windowsUser_otherMobile',
-					'description' => _('Other mobiles'),
-					'help' => 'otherMobileUpload',
-					'example' => _('123-123-1235')
-			);
+			$return['upload_columns'][] = [
+				'name' => 'windowsUser_otherMobile',
+				'description' => _('Other mobiles'),
+				'help' => 'otherMobileUpload',
+				'example' => _('123-123-1235')
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
-			$return['upload_columns'][] = array(
-					'name' => 'windowsUser_company',
-					'description' => _('Company'),
-					'help' => 'company',
-			);
+			$return['upload_columns'][] = [
+				'name' => 'windowsUser_company',
+				'description' => _('Company'),
+				'help' => 'company',
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_sAMAccountName',
 				'description' => _('User name (pre W2K)'),
 				'help' => 'sAMAccountName',
 				'example' => _('smiller'),
 				'unique' => true,
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_msSFU30Name',
 				'description' => _('NIS name'),
 				'help' => 'msSFU30Name',
 				'example' => _('smiller'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_msSFU30NisDomain',
 				'description' => _('NIS domain'),
 				'help' => 'msSFU30NisDomain',
 				'example' => _('domain'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_title',
 				'description' => _('Job title'),
 				'help' => 'title',
 				'example' => _('President'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_carLicense',
 				'description' => _('Car license'),
 				'help' => 'carLicense',
 				'example' => _('yes'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_employeeNumber',
 				'description' => _('Employee number'),
 				'help' => 'employeeNumber',
 				'example' => '123456',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_employeeType',
 				'description' => _('Employee type'),
 				'help' => 'employeeType',
 				'example' => _('Temp'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_businessCategory',
 				'description' => _('Business category'),
 				'help' => 'businessCategoryList',
 				'example' => _('Administration'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_department',
 				'description' => _('Department'),
 				'help' => 'department',
 				'example' => _('Administration'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_departmentNumber',
 				'description' => _('Department number'),
 				'help' => 'departmentNumberList',
 				'example' => 'A123',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_ou',
 				'description' => _('Organisational unit'),
 				'help' => 'ouList',
 				'example' => _('Administration'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_o',
 				'description' => _('Organisation'),
 				'help' => 'oList',
 				'example' => _('YourCompany'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_manager',
 				'description' => _('Manager'),
 				'help' => 'manager',
 				'example' => _('uid=smiller,ou=People,dc=company,dc=com'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_workstations',
 				'description' => _('Workstations'),
 				'help' => 'workstations',
 				'example' => 'PC01,PC02,PC03'
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_profilePath',
 				'description' => _('Profile path'),
 				'help' => 'profilePath',
 				'example' => _('\\\\server\\profiles\\smiller'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_scriptPath',
 				'description' => _('Logon script'),
 				'help' => 'scriptPath',
 				'example' => 'logon.bat',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_homeDrive',
 				'description' => _('Home drive'),
 				'help' => 'homeDrive',
 				'example' => 'K:'
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_homeDirectory',
 				'description' => _('Home directory'),
 				'help' => 'homeDirectory',
 				'example' => _('\\\\server\\homes\\smiller')
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsUser_requireCard',
 				'description' => _('Require smartcard'),
 				'help' => 'requireCard',
 				'example' => _('no'),
 				'default' => _('no'),
 				'values' => _('yes') . ', ' . _('no')
-			);
+			];
 		}
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
@@ -909,15 +911,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$profileContainer->add(new htmlResponsiveInputField(_('Employee type'), 'windowsUser_employeeType', null, 'employeeType'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
-		    $profileContainer->add(new htmlResponsiveInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'), 12);
 		}
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
-		$return['profile_mappings'] = array(
+		$return['profile_mappings'] = [
 			'windowsUser_cn' => 'cn',
 			'windowsUser_streetAddress' => 'streetAddress',
 			'windowsUser_company' => 'company',
-		);
+		];
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
 			$return['profile_mappings']['windowsUser_displayName'] = 'displayName';
 		}
@@ -958,33 +960,33 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$return['profile_mappings']['windowsUser_homeDrive'] = 'homeDrive';
 		}
 		// profile checks
-		$return['profile_checks']['windowsUser_accountExpires'] = array(
+		$return['profile_checks']['windowsUser_accountExpires'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['accountexpires'][0]);
+			'error_message' => $this->messages['accountexpires'][0]];
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
-			$return['profile_checks']['windowsUser_title'] = array(
+			$return['profile_checks']['windowsUser_title'] = [
 				'type' => 'ext_preg',
 				'regex' => 'title',
-				'error_message' => $this->messages['title'][0]);
+				'error_message' => $this->messages['title'][0]];
 			$return['profile_mappings']['windowsUser_title'] = 'title';
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
-			$return['profile_checks']['windowsUser_employeeType'] = array(
+			$return['profile_checks']['windowsUser_employeeType'] = [
 				'type' => 'ext_preg',
 				'regex' => 'employeeType',
-				'error_message' => $this->messages['employeeType'][0]);
+				'error_message' => $this->messages['employeeType'][0]];
 			$return['profile_mappings']['windowsUser_employeeType'] = 'employeeType';
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
-		    $return['profile_checks']['windowsUser_businessCategory'] = array(
-		    	'type' => 'ext_preg',
-		    	'regex' => 'businessCategory',
-		    	'error_message' => $this->messages['businessCategory'][0]);
-		    $return['profile_mappings']['windowsUser_businessCategory'] = 'businessCategory';
+			$return['profile_checks']['windowsUser_businessCategory'] = [
+				'type' => 'ext_preg',
+				'regex' => 'businessCategory',
+				'error_message' => $this->messages['businessCategory'][0]];
+			$return['profile_mappings']['windowsUser_businessCategory'] = 'businessCategory';
 		}
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'userPrincipalName' => _('User name'),
 			'cn' => _('Common name'),
 			'givenName' => _('First name'),
@@ -995,7 +997,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			'groups' => _('Groups'),
 			'password' => _('Password'),
 			'accountExpires' => _('Account expiration date'),
-		);
+		];
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
 			$return['PDF_fields']['displayName'] = _('Display name');
 		}
@@ -1126,11 +1128,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$return['PDF_fields']['otherMobile'] = _('Other mobiles');
 		}
 		// self service search attributes
-		$return['selfServiceSearchAttributes'] = array('sAMAccountName', 'userPrincipalName',
-				'employeeNumber'
-		);
+		$return['selfServiceSearchAttributes'] = ['sAMAccountName', 'userPrincipalName',
+			'employeeNumber'
+		];
 		// self service field settings
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'physicalDeliveryOfficeName' => _('Office name'),
 			'telephoneNumber' => _('Telephone number'),
 			'facsimileTelephoneNumber' => _('Fax number'),
@@ -1147,19 +1149,19 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			'departmentNumber' => _('Department number'),
 			'proxyAddresses' => _('Proxy-Addresses (read-only)'),
 			'otherMailbox' => _('Email alias (read-only)'),
-		);
+		];
 		// possible self service read-only fields
-		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
+		$return['selfServiceReadOnlyFields'] = ['physicalDeliveryOfficeName', 'telephoneNumber',
 			'facsimileTelephoneNumber', 'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox',
-			'departmentNumber', 'postalCode');
+			'departmentNumber', 'postalCode'];
 		return $return;
 	}
 
 	/**
-	* Initializes the module after it became part of an accountContainer
-	*
-	* @param string $base the name of the accountContainer object ($_SESSION[$base])
-	*/
+	 * Initializes the module after it became part of an accountContainer
+	 *
+	 * @param string $base the name of the accountContainer object ($_SESSION[$base])
+	 */
 	function init($base) {
 		// call parent init
 		parent::init($base);
@@ -1168,81 +1170,81 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	public function load_Messages() {
-		$this->messages['userPrincipalName'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['userPrincipalName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['userPrincipalName'][2] = array('ERROR', _('User name already exists!'));
-		$this->messages['userPrincipalName'][3] = array('WARN', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name already exists!'));
-		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsUser_cn', _('Please enter a valid common name!'));
-		$this->messages['cn'][2] = array('WARN', _('Common name already exists.'));
-		$this->messages['cn'][3] = array('WARN', _('Account %s:') . ' windowsUser_cn', _('Common name already exists.'));
-		$this->messages['sAMAccountName'][0] = array('ERROR', _('User name (pre W2K)'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['sAMAccountName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_sAMAccountName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['displayName'][0] = array('ERROR', _('Display name'), _('Please enter a valid display name!'));
-		$this->messages['displayName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_displayName', _('Please enter a valid display name!'));
-		$this->messages['givenName'][0] = array('ERROR', _('First name'), _('First name contains invalid characters!'));
-		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_givenName', _('First name contains invalid characters!'));
-		$this->messages['sn'][0] = array('ERROR', _('Last name'), _('Last name contains invalid characters or is empty!'));
-		$this->messages['sn'][1] = array('ERROR', _('Account %s:') . ' windowsUser_sn', _('Last name contains invalid characters or is empty!'));
-		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' windowsUser_telephone', _('Please enter a valid telephone number!'));
-		$this->messages['facsimileTelephoneNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-		$this->messages['facsimileTelephoneNumber'][1] = array('ERROR', _('Account %s:') . ' windowsUser_facsimileTelephoneNumber', _('Please enter a valid fax number!'));
-		$this->messages['otherTelephone'][0] = array('ERROR', _('Other telephone numbers'), _('Please enter a valid telephone number!'));
-		$this->messages['otherTelephone'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherTelephone', _('Please enter a valid telephone number!'));
-		$this->messages['pager'][0] = array('ERROR', _('Pager'), _('Please enter a valid telephone number!'));
-		$this->messages['pager'][1] = array('ERROR', _('Account %s:') . ' windowsUser_pager', _('Please enter a valid telephone number!'));
-		$this->messages['otherPager'][0] = array('ERROR', _('Other pagers'), _('Please enter a valid telephone number!'));
-		$this->messages['otherPager'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherPager', _('Please enter a valid telephone number!'));
-		$this->messages['mobile'][0] = array('ERROR', _('Mobile'), _('Please enter a valid telephone number!'));
-		$this->messages['mobile'][1] = array('ERROR', _('Account %s:') . ' windowsUser_mobile', _('Please enter a valid telephone number!'));
-		$this->messages['otherMobile'][0] = array('ERROR', _('Other mobiles'), _('Please enter a valid telephone number!'));
-		$this->messages['otherMobile'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherMobile', _('Please enter a valid telephone number!'));
-		$this->messages['postalCode'][0] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
-		$this->messages['postalCode'][1] = array('ERROR', _('Account %s:') . ' windowsUser_postalCode', _('Please enter a valid postal code!'));
-		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
-		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsUser_mail', _('Please enter a valid email address!'));
-		$this->messages['mail'][2] = array('WARN', _('Email address'), _('Email "%s" already in use.'));
-		$this->messages['mail'][3] = array('WARN', _('Account %s:') . ' windowsUser_mail', _('Email "%s" already in use.'));
-		$this->messages['otherMailbox'][0] = array('ERROR', _('Email alias'), _('Email alias is invalid!'));
-		$this->messages['otherMailbox'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherMailbox', _('Email alias is invalid!'));
-		$this->messages['otherMailbox'][2] = array('WARN', _('Email alias'), _('Email alias "%s" already in use.'));
-		$this->messages['otherMailbox'][3] = array('WARN', _('Account %s:') . ' windowsUser_otherMailbox', _('Email alias "%s" already in use.'));
-		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
-		$this->messages['profilePath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_profilePath', _('Profile path is invalid!'));
-		$this->messages['scriptPath'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
-		$this->messages['scriptPath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_scriptPath', _('Logon script is invalid!'));
-		$this->messages['unicodePwd'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
-		$this->messages['unicodePwd'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!');
-		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' windowsUser_homeDrive', _('Please enter a valid drive letter.'));
-		$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
-		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_homeDirectory', _('Homedirectory contains invalid characters.'));
-		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsUser_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['accountexpires'][0] = array('ERROR', _('Account expiration'), _('Please enter a number.'));
-		$this->messages['accountexpires'][1] = array('ERROR', _('Account %s:') . ' windowsUser_accountExpires', _('Please enter a valid date in format DD-MM-YYYY.'));
-		$this->messages['title'][0] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
-		$this->messages['title'][1] = array('ERROR', _('Account %s:') . ' windowsUser_title', _('Please enter a valid job title!'));
-		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
-		$this->messages['employeeType'][1] = array('ERROR', _('Account %s:') . ' windowsUser_employeeType', _('Please enter a valid employee type!'));
-		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
-		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_businessCategory', _('Please enter a valid business category!'));
-		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' windowsUser_manager', _('This is not a valid DN!'));
-		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
-		$this->messages['file'][1] = array('ERROR', _('Please upload a .jpg/.jpeg file.'));
-		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
-		$this->messages['file'][3] = array('ERROR', _('File is too large. Maximum allowed size is %s kB.'));
-		$this->messages['workstations'][0] = array('ERROR', _('Workstations'), _('Please enter a comma separated list of host names!'));
-		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' windowsUser_workstations', _('Please enter a comma separated list of host names!'));
+		$this->messages['userPrincipalName'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['userPrincipalName'][1] = ['ERROR', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['userPrincipalName'][2] = ['ERROR', _('User name already exists!')];
+		$this->messages['userPrincipalName'][3] = ['WARN', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name already exists!')];
+		$this->messages['cn'][0] = ['ERROR', _('Common name'), _('Please enter a valid common name!')];
+		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' windowsUser_cn', _('Please enter a valid common name!')];
+		$this->messages['cn'][2] = ['WARN', _('Common name already exists.')];
+		$this->messages['cn'][3] = ['WARN', _('Account %s:') . ' windowsUser_cn', _('Common name already exists.')];
+		$this->messages['sAMAccountName'][0] = ['ERROR', _('User name (pre W2K)'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['sAMAccountName'][1] = ['ERROR', _('Account %s:') . ' windowsUser_sAMAccountName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['displayName'][0] = ['ERROR', _('Display name'), _('Please enter a valid display name!')];
+		$this->messages['displayName'][1] = ['ERROR', _('Account %s:') . ' windowsUser_displayName', _('Please enter a valid display name!')];
+		$this->messages['givenName'][0] = ['ERROR', _('First name'), _('First name contains invalid characters!')];
+		$this->messages['givenName'][1] = ['ERROR', _('Account %s:') . ' windowsUser_givenName', _('First name contains invalid characters!')];
+		$this->messages['sn'][0] = ['ERROR', _('Last name'), _('Last name contains invalid characters or is empty!')];
+		$this->messages['sn'][1] = ['ERROR', _('Account %s:') . ' windowsUser_sn', _('Last name contains invalid characters or is empty!')];
+		$this->messages['telephoneNumber'][0] = ['ERROR', _('Telephone number'), _('Please enter a valid telephone number!')];
+		$this->messages['telephoneNumber'][1] = ['ERROR', _('Account %s:') . ' windowsUser_telephone', _('Please enter a valid telephone number!')];
+		$this->messages['facsimileTelephoneNumber'][0] = ['ERROR', _('Fax number'), _('Please enter a valid fax number!')];
+		$this->messages['facsimileTelephoneNumber'][1] = ['ERROR', _('Account %s:') . ' windowsUser_facsimileTelephoneNumber', _('Please enter a valid fax number!')];
+		$this->messages['otherTelephone'][0] = ['ERROR', _('Other telephone numbers'), _('Please enter a valid telephone number!')];
+		$this->messages['otherTelephone'][1] = ['ERROR', _('Account %s:') . ' windowsUser_otherTelephone', _('Please enter a valid telephone number!')];
+		$this->messages['pager'][0] = ['ERROR', _('Pager'), _('Please enter a valid telephone number!')];
+		$this->messages['pager'][1] = ['ERROR', _('Account %s:') . ' windowsUser_pager', _('Please enter a valid telephone number!')];
+		$this->messages['otherPager'][0] = ['ERROR', _('Other pagers'), _('Please enter a valid telephone number!')];
+		$this->messages['otherPager'][1] = ['ERROR', _('Account %s:') . ' windowsUser_otherPager', _('Please enter a valid telephone number!')];
+		$this->messages['mobile'][0] = ['ERROR', _('Mobile'), _('Please enter a valid telephone number!')];
+		$this->messages['mobile'][1] = ['ERROR', _('Account %s:') . ' windowsUser_mobile', _('Please enter a valid telephone number!')];
+		$this->messages['otherMobile'][0] = ['ERROR', _('Other mobiles'), _('Please enter a valid telephone number!')];
+		$this->messages['otherMobile'][1] = ['ERROR', _('Account %s:') . ' windowsUser_otherMobile', _('Please enter a valid telephone number!')];
+		$this->messages['postalCode'][0] = ['ERROR', _('Postal code'), _('Please enter a valid postal code!')];
+		$this->messages['postalCode'][1] = ['ERROR', _('Account %s:') . ' windowsUser_postalCode', _('Please enter a valid postal code!')];
+		$this->messages['mail'][0] = ['ERROR', _('Email address'), _('Please enter a valid email address!')];
+		$this->messages['mail'][1] = ['ERROR', _('Account %s:') . ' windowsUser_mail', _('Please enter a valid email address!')];
+		$this->messages['mail'][2] = ['WARN', _('Email address'), _('Email "%s" already in use.')];
+		$this->messages['mail'][3] = ['WARN', _('Account %s:') . ' windowsUser_mail', _('Email "%s" already in use.')];
+		$this->messages['otherMailbox'][0] = ['ERROR', _('Email alias'), _('Email alias is invalid!')];
+		$this->messages['otherMailbox'][1] = ['ERROR', _('Account %s:') . ' windowsUser_otherMailbox', _('Email alias is invalid!')];
+		$this->messages['otherMailbox'][2] = ['WARN', _('Email alias'), _('Email alias "%s" already in use.')];
+		$this->messages['otherMailbox'][3] = ['WARN', _('Account %s:') . ' windowsUser_otherMailbox', _('Email alias "%s" already in use.')];
+		$this->messages['profilePath'][0] = ['ERROR', _('Profile path'), _('Profile path is invalid!')];
+		$this->messages['profilePath'][1] = ['ERROR', _('Account %s:') . ' windowsUser_profilePath', _('Profile path is invalid!')];
+		$this->messages['scriptPath'][0] = ['ERROR', _('Logon script'), _('Logon script is invalid!')];
+		$this->messages['scriptPath'][1] = ['ERROR', _('Account %s:') . ' windowsUser_scriptPath', _('Logon script is invalid!')];
+		$this->messages['unicodePwd'][0] = ['ERROR', _('Password'), _('Please enter the same password in both password fields.')];
+		$this->messages['unicodePwd'][1] = ['ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
+		$this->messages['homeDrive'][0] = ['ERROR', _('Account %s:') . ' windowsUser_homeDrive', _('Please enter a valid drive letter.')];
+		$this->messages['homeDirectory'][0] = ['ERROR', _('Home directory'), _('Homedirectory contains invalid characters.')];
+		$this->messages['homeDirectory'][1] = ['ERROR', _('Account %s:') . ' windowsUser_homeDirectory', _('Homedirectory contains invalid characters.')];
+		$this->messages['msSFU30Name'][0] = ['ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['msSFU30Name'][1] = ['ERROR', _('Account %s:') . ' windowsUser_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['accountexpires'][0] = ['ERROR', _('Account expiration'), _('Please enter a number.')];
+		$this->messages['accountexpires'][1] = ['ERROR', _('Account %s:') . ' windowsUser_accountExpires', _('Please enter a valid date in format DD-MM-YYYY.')];
+		$this->messages['title'][0] = ['ERROR', _('Job title'), _('Please enter a valid job title!')];
+		$this->messages['title'][1] = ['ERROR', _('Account %s:') . ' windowsUser_title', _('Please enter a valid job title!')];
+		$this->messages['employeeType'][0] = ['ERROR', _('Employee type'), _('Please enter a valid employee type!')];
+		$this->messages['employeeType'][1] = ['ERROR', _('Account %s:') . ' windowsUser_employeeType', _('Please enter a valid employee type!')];
+		$this->messages['businessCategory'][0] = ['ERROR', _('Business category'), _('Please enter a valid business category!')];
+		$this->messages['businessCategory'][1] = ['ERROR', _('Account %s:') . ' windowsUser_businessCategory', _('Please enter a valid business category!')];
+		$this->messages['manager'][0] = ['ERROR', _('Account %s:') . ' windowsUser_manager', _('This is not a valid DN!')];
+		$this->messages['file'][0] = ['ERROR', _('No file selected.')];
+		$this->messages['file'][1] = ['ERROR', _('Please upload a .jpg/.jpeg file.')];
+		$this->messages['file'][2] = ['ERROR', _('Unable to process this file.')];
+		$this->messages['file'][3] = ['ERROR', _('File is too large. Maximum allowed size is %s kB.')];
+		$this->messages['workstations'][0] = ['ERROR', _('Workstations'), _('Please enter a comma separated list of host names!')];
+		$this->messages['workstations'][1] = ['ERROR', _('Account %s:') . ' windowsUser_workstations', _('Please enter a comma separated list of host names!')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -1255,7 +1257,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		// get group memberships
-		$groupList = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'group', array('dn'), array('group'));
+		$groupList = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'group', ['dn'], ['group']);
 		$this->groupList_orig = [];
 		for ($i = 0; $i < sizeof($groupList); $i++) {
 			$this->groupList_orig[] = $groupList[$i]['dn'];
@@ -1265,19 +1267,18 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 
-
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	public function save_attributes() {
 		$return = parent::save_attributes();
 		// add information about clear text password and password status change
@@ -1292,10 +1293,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	public function display_html_attributes() {
 		$this->initCache();
-        $keysToReplace = array('cn', 'displayName', 'mail', 'otherMailbox',
-            'profilePath', 'scriptPath', 'homeDirectory', 'userPrincipalName',
-            'sAMAccountName');
-        $this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
+		$keysToReplace = ['cn', 'displayName', 'mail', 'otherMailbox',
+			'profilePath', 'scriptPath', 'homeDirectory', 'userPrincipalName',
+			'sAMAccountName'];
+		$this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
 		$containerLeft = new htmlResponsiveRow();
 		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['useraccountcontrol'][0])) {
 			$this->attributes['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
@@ -1321,7 +1322,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$containerLeft->addLabel($userPrincipalNameLabel);
 		$userPrincipalNameGroup = new htmlGroup();
 		$userPrincipalNameGroup->addElement(new htmlInputField('userPrincipalName', $userPrincipalName, '15'));
-		$userPrincipalNameGroup->addElement(new htmlSelect('userPrincipalNameDomain', $domains, array($userPrincipalNameDomain)));
+		$userPrincipalNameGroup->addElement(new htmlSelect('userPrincipalNameDomain', $domains, [$userPrincipalNameDomain]));
 		$userPrincipalNameGroup->addElement(new htmlHelpLink('userPrincipalName'));
 		$containerLeft->addField($userPrincipalNameGroup);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
@@ -1497,7 +1498,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
 			if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
 				$pwdLastSetGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'releasePasswordChange', _('Clear password expiration')));
-			} else {
+			}
+			else {
 				$pwdLastSetGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'forcePasswordChange', _('Force password change')));
 			}
 			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
@@ -1540,15 +1542,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		// home drive
 		if ($showHomeDrive) {
-			$drives = array('-');
-			for ($i=90; $i>67; $i--) {
+			$drives = ['-'];
+			for ($i = 90; $i > 67; $i--) {
 				$drives[] = chr($i) . ':';
 			}
 			if (!empty($this->attributes['homeDrive'][0])) {
-				$selected = array(strtoupper($this->attributes['homeDrive'][0]));
+				$selected = [strtoupper($this->attributes['homeDrive'][0])];
 			}
 			else {
-				$selected = array('-');
+				$selected = ['-'];
 			}
 			$containerLeft->add(new htmlResponsiveSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), 12);
 		}
@@ -1578,12 +1580,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
 				$outjpeg = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
 				fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
-				fclose ($outjpeg);
+				fclose($outjpeg);
 				$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
 				$noPhoto = false;
 			}
 			$img = new htmlImage($photoFile);
-			$img->setCSSClasses(array('photo'));
+			$img->setCSSClasses(['photo']);
 			$img->enableLightbox();
 			$containerRight->add($img, 12);
 			$containerRight->addVerticalSpacer('0.5rem');
@@ -1616,7 +1618,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$groupsList->addElement(new htmlOutputText('<br>', false));
 		}
 		$groupsListClass = $this->groupDisplayContainsDn() ? 'rightToLeftText' : '';
-		$groupsListDiv = new htmlDiv(null, $groupsList, array($groupsListClass));
+		$groupsListDiv = new htmlDiv(null, $groupsList, [$groupsListClass]);
 		$containerRight->add($groupsListDiv, 12);
 
 		$container = new htmlResponsiveRow();
@@ -1661,30 +1663,30 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	private function manageWorkDetails() {
 		$allHidden = $this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hideou', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hideo', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hidemanager', true);
+			&& $this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hideou', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hideo', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hidemanager', true);
 		return !$allHidden;
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		$return = [];
-		$keysToReplace = array('cn', 'displayName', 'mail', 'otherMailbox',
-				'profilePath', 'scriptPath', 'homeDirectory', 'userPrincipalName',
-				'sAMAccountName');
+		$keysToReplace = ['cn', 'displayName', 'mail', 'otherMailbox',
+			'profilePath', 'scriptPath', 'homeDirectory', 'userPrincipalName',
+			'sAMAccountName'];
 		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
 		// user name
 		$userPrincipalName = $_POST['userPrincipalName'];
@@ -1770,11 +1772,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$this->attributes['mail'][0] = $_POST['mail'];
 			if (!empty($this->attributes['mail'][0]) && !get_preg($this->attributes['mail'][0], 'email')) {
 				$return[] = $this->messages['mail'][0];
-			} elseif (!empty($this->attributes['mail'][0]) && $this->getAccountContainer()->isNewAccount) {
-				$existingMailAccounts = searchLDAPByAttribute('mail', $this->attributes['mail'][0], 'user', array('mail'), array('user'));
+			}
+			elseif (!empty($this->attributes['mail'][0]) && $this->getAccountContainer()->isNewAccount) {
+				$existingMailAccounts = searchLDAPByAttribute('mail', $this->attributes['mail'][0], 'user', ['mail'], ['user']);
 				if (!empty($existingMailAccounts)) {
 					$msg = $this->messages['mail'][2];
-					$msg[] = array($this->attributes['mail'][0]);
+					$msg[] = [$this->attributes['mail'][0]];
 					$return[] = $msg;
 				}
 			}
@@ -1784,10 +1787,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$this->processMultiValueInputTextField('otherMailbox', $return, 'email');
 			if (!empty($this->attributes['otherMailbox'][0]) && $this->getAccountContainer()->isNewAccount) {
 				foreach ($this->attributes['otherMailbox'] as $otherMailbox) {
-					$existingMailAccounts = searchLDAPByAttribute('otherMailbox', $otherMailbox, 'user', array('otherMailbox'), array('user'));
+					$existingMailAccounts = searchLDAPByAttribute('otherMailbox', $otherMailbox, 'user', ['otherMailbox'], ['user']);
 					if (!empty($existingMailAccounts)) {
 						$msg = $this->messages['otherMailbox'][2];
-						$msg[] = array($otherMailbox);
+						$msg[] = [$otherMailbox];
 						$return[] = $msg;
 					}
 				}
@@ -1862,7 +1865,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// save pwdLastSet for postModifyActions
 		$this->pwdLastSet = null;
 		if (isset($this->attributes['pwdLastSet'][0])
-				&& (!isset($this->orig['pwdLastSet'][0]) || ($this->orig['pwdLastSet'][0] != $this->attributes['pwdLastSet'][0]))) {
+			&& (!isset($this->orig['pwdLastSet'][0]) || ($this->orig['pwdLastSet'][0] != $this->attributes['pwdLastSet'][0]))) {
 			$this->pwdLastSet = $this->attributes['pwdLastSet'][0];
 		}
 		// deactivated
@@ -1894,7 +1897,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
 			if ($_POST['homeDrive'] == "-") {
 				$this->attributes['homeDrive'][0] = '';
-			} else {
+			}
+			else {
 				$this->attributes['homeDrive'][0] = $_POST['homeDrive'];
 			}
 		}
@@ -1989,17 +1993,17 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		// photo
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)
-				&& isset($_POST['delPhoto'])) {
+			&& isset($_POST['delPhoto'])) {
 			unset($this->attributes['jpegPhoto']);
 		}
 		return $return;
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to change account expiration.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * This function will create the meta HTML code to show a page to change account expiration.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_accountexpires() {
 		$return = new htmlResponsiveRow();
 		$attr = 'accountexpires';
@@ -2037,10 +2041,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* Processes user input of the account expiration page.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the account expiration page.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_accountexpires() {
 		$return = [];
 		// find button name
@@ -2111,13 +2115,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* Displays the group selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the group selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	public function display_html_group() {
 		$return = new htmlResponsiveRow();
-		$return->setCSSClasses(array('maxrow'));
+		$return->setCSSClasses(['maxrow']);
 		$return->add(new htmlSubTitle(_("Groups")), 12);
 		$groups = $this->findGroups();
 		$groupDisplayContainsDn = $this->groupDisplayContainsDn();
@@ -2158,14 +2162,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"),
-				$selectedGroups, null, $availableGroups, null, 'groups', $groupDisplayContainsDn, true);
+			$selectedGroups, null, $availableGroups, null, 'groups', $groupDisplayContainsDn, true);
 
 		// sync options
 		$typeManager = new TypeManager();
-		$syncTypes = $typeManager->getConfiguredTypesForScopes(array('group', 'gon', 'user'));
+		$syncTypes = $typeManager->getConfiguredTypesForScopes(['group', 'gon', 'user']);
 		$syncActive = false;
 		$syncGonActive = false;
-		$possibleGonSyncModules = array('groupOfNames', 'groupOfMembers', 'groupOfUniqueNames');
+		$possibleGonSyncModules = ['groupOfNames', 'groupOfMembers', 'groupOfUniqueNames'];
 		foreach ($syncTypes as $syncType) {
 			$modules = $syncType->getModules();
 			foreach ($possibleGonSyncModules as $possibleModule) {
@@ -2202,11 +2206,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* Processes user input of the group selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the group selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_group() {
 		if (isset($_POST['groups_2']) && isset($_POST['groups_left'])) { // Add groups to list
 			// add new group
@@ -2232,7 +2236,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	private function manualSyncUnixToWindows() {
 		$windowsGroups = $this->getGroupList();
 		$unixGroups = $this->getAccountContainer()->getAccountModule('posixAccount')->getGroups();
-		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', array('cn'), array('group'));
+		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', ['cn'], ['group']);
 		$dnToCn = [];
 		foreach ($allWindowsGroups as $windowsGroup) {
 			$dnToCn[$windowsGroup['dn']] = $windowsGroup['cn'][0];
@@ -2264,7 +2268,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				if (!in_array($currentGroupName, $unixGroups)) {
 					foreach ($windowsGroups as $windowsGroup) {
 						if ($dnToCn[$windowsGroup] == $currentGroupName) {
-							$windowsGroups = array_delete(array($windowsGroup), $windowsGroups);
+							$windowsGroups = array_delete([$windowsGroup], $windowsGroups);
 							break;
 						}
 					}
@@ -2285,7 +2289,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		foreach ($gonGroupDns as $gonGroupDn) {
 			$gonGroups[] = $this->getAccountContainer()->getAccountModule('posixAccount')->getGonName($gonGroupDn, $allGons);
 		}
-		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', array('cn'), array('group'));
+		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', ['cn'], ['group']);
 		$dnToCn = [];
 		foreach ($allWindowsGroups as $windowsGroup) {
 			$dnToCn[$windowsGroup['dn']] = $windowsGroup['cn'][0];
@@ -2317,7 +2321,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				if (!in_array($currentGroupName, $gonGroups)) {
 					foreach ($windowsGroups as $windowsGroup) {
 						if ($dnToCn[$windowsGroup] == $currentGroupName) {
-							$windowsGroups = array_delete(array($windowsGroup), $windowsGroups);
+							$windowsGroups = array_delete([$windowsGroup], $windowsGroups);
 							break;
 						}
 					}
@@ -2328,10 +2332,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* Displays the photo upload page.
-	*
-	* @return array meta HTML code
-	*/
+	 * Displays the photo upload page.
+	 *
+	 * @return array meta HTML code
+	 */
 	public function display_html_photo() {
 		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['jpegPhoto'][0])) {
@@ -2345,23 +2349,23 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$webcamContent = new htmlResponsiveRow();
 			$webcamContent->add(new htmlSubTitle(_('Use webcam')), 12);
 			$errorMessage = new htmlStatusMessage('ERROR', '');
-			$errorMessage->setCSSClasses(array('hidden', 'lam-webcam-message'));
+			$errorMessage->setCSSClasses(['hidden', 'lam-webcam-message']);
 			$webcamContent->add($errorMessage, 12);
 			$captureButton = new htmlButton('lam-webcam-capture', _('Start capture'));
 			$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
 			$webcamContent->add($captureButton, 12, 12, 12, 'text-center');
 			$video = new htmlVideo('lam-webcam-video');
-			$video->setCSSClasses(array('hidden'));
+			$video->setCSSClasses(['hidden']);
 			$webcamContent->add($video, 12, 12, 12, 'text-center');
 			$webcamContent->addVerticalSpacer('0.5rem');
 			$webcamUploadButton = new htmlButton('uploadWebcam', _('Upload'));
-			$webcamUploadButton->setCSSClasses(array('btn-lam-webcam-upload', 'hidden'));
+			$webcamUploadButton->setCSSClasses(['btn-lam-webcam-upload', 'hidden']);
 			$webcamUploadButton->setOnClick('window.lam.tools.webcam.upload();');
 			$webcamContent->add($webcamUploadButton, 12, 12, 12, 'text-center');
 			$canvas = new htmlCanvas('lam-webcam-canvas');
-			$canvas->setCSSClasses(array('hidden'));
+			$canvas->setCSSClasses(['hidden']);
 			$webcamContent->add($canvas, 12);
-			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, array('hidden'));
+			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
 			$container->add($webcamDiv, 12);
 			$container->addVerticalSpacer('1rem');
 			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
@@ -2372,10 +2376,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
 			$handle = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
 			fwrite($handle, $this->attributes['jpegPhoto'][0]);
-			fclose ($handle);
+			fclose($handle);
 			$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
 			$img = new htmlImage($photoFile);
-			$img->setCSSClasses(array('photo'));
+			$img->setCSSClasses(['photo']);
 			$img->enableCropping();
 			$container->add($img);
 			$container->addVerticalSpacer('2rem');
@@ -2385,8 +2389,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* Sets a new photo.
-	*/
+	 * Sets a new photo.
+	 */
 	public function process_photo() {
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_back'])) {
 			return [];
@@ -2403,7 +2407,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
-				$msg =  $this->messages['file'][2];
+				$msg = $this->messages['file'][2];
 				$msg[] = htmlspecialchars($e->getMessage());
 				$messages[] = $msg;
 			}
@@ -2429,8 +2433,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]))) {
 				$errMsg = $this->messages['file'][3];
 				$errMsg[] = null;
-				$errMsg[] = array($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]);
-				return array($errMsg);
+				$errMsg[] = [$this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]];
+				return [$errMsg];
 			}
 		}
 		elseif (isset($_POST['webcamData'])) {
@@ -2452,7 +2456,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$data = $imageManipulator->getImageData();
 		}
 		catch (Exception $e) {
-			$msg =  $this->messages['file'][2];
+			$msg = $this->messages['file'][2];
 			$msg[] = htmlspecialchars($e->getMessage());
 			$messages[] = $msg;
 			return $messages;
@@ -2462,10 +2466,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to change the manager attribute.
-	*
-	* @return htmlElement HTML meta data
-	*/
+	 * This function will create the meta HTML code to show a page to change the manager attribute.
+	 *
+	 * @return htmlElement HTML meta data
+	 */
 	function display_html_manager() {
 		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['manager'])) {
@@ -2474,7 +2478,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// show list of possible new managers
 		$options = [];
 		$filter = get_ldap_filter('user');
-		$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', array('dn'), array('user'));
+		$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', ['dn'], ['user']);
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$entries[$i] = $entries[$i]['dn'];
 		}
@@ -2505,11 +2509,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* Processes user input of the manager page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the manager page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_manager() {
 		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManager'])) {
@@ -2530,7 +2534,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	function display_html_userWorkstations() {
 		$return = new htmlResponsiveRow();
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			// Get list of all hosts.
 			$userWorkstations = [];
 			$availableUserWorkstations = [];
@@ -2542,7 +2546,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			sort($availableUserWorkstations, SORT_STRING);
 			if (isset($this->attributes['userWorkstations'][0])) {
 				$wsAttr = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-				$userWorkstations = explode (',', $wsAttr);
+				$userWorkstations = explode(',', $wsAttr);
 			}
 			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
 
@@ -2578,9 +2582,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$workstations = [];
 			if (isset($this->attributes['userWorkstations'][0])) {
 				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-				$workstations = explode (',', $temp);
-				for ($i=0; $i<count($workstations); $i++) {
-					if ($workstations[$i]=='') {
+				$workstations = explode(',', $temp);
+				for ($i = 0; $i < count($workstations); $i++) {
+					if ($workstations[$i] == '') {
 						unset($workstations[$i]);
 					}
 				}
@@ -2596,16 +2600,16 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			sort($workstations);
 			// Recreate workstation string
 			$this->attributes['userWorkstations'][0] = $workstations[0];
-			for ($i=1; $i<count($workstations); $i++) {
+			for ($i = 1; $i < count($workstations); $i++) {
 				$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
 			}
 		}
 		elseif (isset($_POST['workstations_1']) && isset($_POST['workstations_right'])) { // remove // Add workstations from list
 			// Put all workstations in array
 			$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-			$workstations = explode (',', $temp);
-			for ($i=0; $i<count($workstations); $i++) {
-				if ($workstations[$i]=='') {
+			$workstations = explode(',', $temp);
+			for ($i = 0; $i < count($workstations); $i++) {
+				if ($workstations[$i] == '') {
 					unset($workstations[$i]);
 				}
 			}
@@ -2616,7 +2620,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			unset($this->attributes['userWorkstations'][0]);
 			if (sizeof($workstations) > 0) {
 				$this->attributes['userWorkstations'][0] = $workstations[0];
-				for ($i=1; $i<count($workstations); $i++) {
+				for ($i = 1; $i < count($workstations); $i++) {
 					$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
 				}
 			}
@@ -2633,7 +2637,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($this->cachedHostList != null) {
 			return $this->cachedHostList;
 		}
-		$this->cachedHostList = searchLDAPByAttribute('cn', '*', 'computer', array('cn'), array('host'));
+		$this->cachedHostList = searchLDAPByAttribute('cn', '*', 'computer', ['cn'], ['host']);
 		for ($i = 0; $i < sizeof($this->cachedHostList); $i++) {
 			$this->cachedHostList[$i] = $this->cachedHostList[$i]['cn'][0];
 		}
@@ -2643,11 +2647,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	/**
 	 * Runs the postmodify actions.
 	 *
-	 * @see baseModule::postModifyActions()
-	 *
 	 * @param boolean $newAccount
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @see baseModule::postModifyActions()
+	 *
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = [];
@@ -2658,10 +2662,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// add groups
 		for ($i = 0; $i < sizeof($toAdd); $i++) {
 			if (in_array($toAdd[$i], $groups)) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array('member' => array($this->getAccountContainer()->finalDN)));
+				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to add user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-					$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+					$messages[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 				else {
 					logNewMessage(LOG_NOTICE, 'Added user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
@@ -2672,10 +2676,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		for ($i = 0; $i < sizeof($toRem); $i++) {
 			if (in_array($toRem[$i], $groups)) {
 				// membership is removed with potentially new DN as Windows updates group automatically on user move
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->finalDN)));
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to delete user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+					$messages[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 				else {
 					logNewMessage(LOG_NOTICE, 'Removed user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
@@ -2684,11 +2688,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		// force password change if needed
 		if ($this->pwdLastSet != null) {
-			$attrs = array('pwdLastSet' => array($this->pwdLastSet));
+			$attrs = ['pwdLastSet' => [$this->pwdLastSet]];
 			$success = @ldap_modify($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $attrs);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to change pwdLastSet for ' . $this->getAccountContainer()->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $this->getAccountContainer()->finalDN), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+				$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $this->getAccountContainer()->finalDN), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 			}
 		}
 		return $messages;
@@ -2708,7 +2712,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		$existingUsers = $this->getUserNames();
 		$existingCns = $this->getCns();
-		$existingMailAccounts = searchLDAPByAttribute(null, null, 'user', array('mail', 'otherMailbox'), array('user'));
+		$existingMailAccounts = searchLDAPByAttribute(null, null, 'user', ['mail', 'otherMailbox'], ['user']);
 		$existingMails = [];
 		foreach ($existingMailAccounts as $existingMailAccount) {
 			if (!empty($existingMailAccount['mail'][0])) {
@@ -2718,7 +2722,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$existingMails = array_merge($existingMails, $existingMailAccount['othermailbox']);
 			}
 		}
-		$booleanOptions = array(_('yes') => true, _('no') => false);
+		$booleanOptions = [_('yes') => true, _('no') => false];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('user', $partialAccounts[$i]['objectClass'])) {
@@ -2729,13 +2733,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$partialAccounts[$i]['userPrincipalName'] = $rawAccounts[$i][$ids['windowsUser_userPrincipalName']];
 				if (array_key_exists($partialAccounts[$i]['userPrincipalName'], $existingUsers)) {
 					$errMsg = $this->messages['userPrincipalName'][3];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
 			else {
 				$errMsg = $this->messages['userPrincipalName'][1];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$errors[] = $errMsg;
 			}
 			// first name
@@ -2745,7 +2749,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$errMsg = $this->messages['givenName'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -2756,7 +2760,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$errMsg = $this->messages['sn'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -2766,13 +2770,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_cn']];
 					if (array_key_exists($partialAccounts[$i]['cn'], $existingCns)) {
 						$errMsg = $this->messages['cn'][3];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -2797,7 +2801,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					}
 					else {
 						$errMsg = $this->messages['sAMAccountName'][1];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2819,14 +2823,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			elseif ($rawAccounts[$i][$ids['windowsUser_password']] != "") {
 				$errMsg = $this->messages['userPassword'][4];
 				$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$errors[] = $errMsg;
 			}
 			// display name
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
 				if ($rawAccounts[$i][$ids['windowsUser_displayName']] != "") {
 					$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['windowsUser_displayName']];
-				} elseif (!empty($partialAccounts[$i]['cn'])) {
+				}
+				elseif (!empty($partialAccounts[$i]['cn'])) {
 					$partialAccounts[$i]['displayName'] = $partialAccounts[$i]['cn'];
 				}
 			}
@@ -2869,13 +2874,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsUser_mail']];
 					if (in_array_ignore_case($partialAccounts[$i]['mail'], $existingMails)) {
 						$errMsg = $this->messages['mail'][3];
-						array_push($errMsg, array($i, $partialAccounts[$i]['mail']));
+						array_push($errMsg, [$i, $partialAccounts[$i]['mail']]);
 						$errors[] = $errMsg;
 					}
 				}
 				else {
 					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -2886,13 +2891,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				for ($x = 0; $x < sizeof($valueList); $x++) {
 					if (!get_preg($valueList[$x], 'email')) {
 						$errMsg = $this->messages['otherMailbox'][1];
-						array_push($errMsg, array($i));
+						array_push($errMsg, [$i]);
 						$errors[] = $errMsg;
 						break;
 					}
 					if (in_array_ignore_case($valueList[$x], $existingMails)) {
 						$errMsg = $this->messages['otherMailbox'][3];
-						array_push($errMsg, array($i, $valueList[$x]));
+						array_push($errMsg, [$i, $valueList[$x]]);
 						$errors[] = $errMsg;
 					}
 				}
@@ -2909,7 +2914,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			// fax number
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_facsimileTelephoneNumber', 'facsimileTelephoneNumber',
-						'telephone', $this->messages['facsimileTelephoneNumber'][1], $errors);
+					'telephone', $this->messages['facsimileTelephoneNumber'][1], $errors);
 			}
 			// website
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidewWWHomePage')) {
@@ -2924,7 +2929,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			// deactivated
 			if ($rawAccounts[$i][$ids['windowsUser_deactivated']] != "") {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]])) {
-					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_deactivated', _('Please enter either yes or no.'));
+					$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_deactivated', _('Please enter either yes or no.')];
 				}
 				else {
 					$this->setIsDeactivated($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]], $userAccountControlAttr);
@@ -2933,7 +2938,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			// password does not expire
 			if ($rawAccounts[$i][$ids['windowsUser_noExpire']] != "") {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_noExpire']]])) {
-					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_noExpire', _('Please enter either yes or no.'));
+					$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_noExpire', _('Please enter either yes or no.')];
 				}
 				else {
 					$this->setIsNeverExpiring($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_noExpire']]]);
@@ -2947,14 +2952,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$errMsg = $this->messages['accountexpires'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
 			// require smartcard
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard') && ($rawAccounts[$i][$ids['windowsUser_requireCard']] != "")) {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]])) {
-					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_requireCard', _('Please enter either yes or no.'));
+					$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_requireCard', _('Please enter either yes or no.')];
 				}
 				else {
 					$this->setIsSmartCardRequired($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]]);
@@ -2964,8 +2969,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			// end user account control
 			// password change at next login
 			if (($rawAccounts[$i][$ids['windowsUser_pwdMustChange']] != "")
-					&& !isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_pwdMustChange']]])) {
-				$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_pwdMustChange', _('Please enter either yes or no.'));
+				&& !isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_pwdMustChange']]])) {
+				$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_pwdMustChange', _('Please enter either yes or no.')];
 				// attribute must be set in postModify
 			}
 			// profile path
@@ -2975,7 +2980,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$errMsg = $this->messages['profilePath'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -2986,7 +2991,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$errMsg = $this->messages['scriptPath'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -2997,7 +3002,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$errMsg = $this->messages['homeDrive'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -3008,7 +3013,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				}
 				else {
 					$errMsg = $this->messages['homeDirectory'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -3025,8 +3030,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					}
 				}
 				if (sizeof($invalidGroups) > 0) {
-					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_groups',
-						_('LAM was unable to find a group with this name!') . '<br>' . htmlspecialchars(implode('; ', $invalidGroups)));
+					$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_groups',
+						_('LAM was unable to find a group with this name!') . '<br>' . htmlspecialchars(implode('; ', $invalidGroups))];
 				}
 			}
 			// NIS name
@@ -3086,27 +3091,27 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			// mobile
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_mobile', 'mobile',
-						'telephone', $this->messages['mobile'][1], $errors);
+					'telephone', $this->messages['mobile'][1], $errors);
 			}
 			// other mobile
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherMobile', 'otherMobile',
-						'telephone', $this->messages['otherMobile'][1], $errors, '/;[ ]*/');
+					'telephone', $this->messages['otherMobile'][1], $errors, '/;[ ]*/');
 			}
 			// pager
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_pager', 'pager',
-						'telephone', $this->messages['pager'][1], $errors);
+					'telephone', $this->messages['pager'][1], $errors);
 			}
 			// other pager
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherPager', 'otherPager',
-						'telephone', $this->messages['otherPager'][1], $errors, '/;[ ]*/');
+					'telephone', $this->messages['otherPager'][1], $errors, '/;[ ]*/');
 			}
 			// Proxy-Addresses
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_proxyAddresses', 'proxyAddresses',
-						null, null, $errors, '/;[ ]*/');
+					null, null, $errors, '/;[ ]*/');
 			}
 		}
 		return $errors;
@@ -3136,7 +3141,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$groupCol = $ids['windowsUser_groups'];
 			$passwordChangeRequiredCol = $ids['windowsUser_pwdMustChange'];
 			for ($i = 0; $i < sizeof($data); $i++) {
-				if (in_array($i, $failed)) continue; // ignore failed accounts
+				if (in_array($i, $failed)) {
+					continue;
+				} // ignore failed accounts
 				if ($data[$i][$groupCol] != "") {
 					$groups = preg_split('/;[ ]*/', $data[$i][$groupCol]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
@@ -3155,64 +3162,64 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$temp['memberCount'] = sizeof($temp['members']);
 			$temp['pwdChangeCount'] = sizeof($temp['pwdChange']);
 			$temp['counter'] = $temp['memberCount'] + $temp['pwdChangeCount'];
-			return array(
+			return [
 				'status' => 'inProgress',
 				'progress' => 0,
 				'errors' => []
-			);
+			];
 		}
 		// add users to groups
 		elseif (sizeof($temp['members']) > 0) {
 			$keys = array_keys($temp['members']);
 			$group = $keys[0];
 			$member = array_pop($temp['members'][$group]);
-			$success = @ldap_mod_add($_SESSION['ldap']->server(), $group, array('member' => $member));
+			$success = @ldap_mod_add($_SESSION['ldap']->server(), $group, ['member' => $member]);
 			$errors = [];
 			if (!$success) {
-				$errors[] = array(
+				$errors[] = [
 					"ERROR",
 					_("LAM was unable to modify group memberships for group: %s"),
 					getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-					array($group)
-				);
+					[$group]
+				];
 			}
 			if (sizeof($temp['members'][$group]) == 0) {
 				unset($temp['members'][$group]);
 			}
 			$memberPercentage = (100 * ($temp['memberCount'] - sizeof($temp['members']))) / $temp['counter'];
-			return array (
+			return [
 				'status' => 'inProgress',
 				'progress' => $memberPercentage,
 				'errors' => $errors
-			);
+			];
 		}
 		// force password change
 		elseif (sizeof($temp['pwdChange']) > 0) {
 			$dn = array_pop($temp['pwdChange']);
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, array('pwdLastSet' => '0'));
+			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, ['pwdLastSet' => '0']);
 			$errors = [];
 			if (!$success) {
-				$errors[] = array(
+				$errors[] = [
 					"ERROR",
 					_("Was unable to modify attributes of DN: %s."),
 					getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-					array($dn)
-				);
+					[$dn]
+				];
 			}
 			$pwdPercentage = (100 * ($temp['memberCount'] + ($temp['pwdChangeCount'] - sizeof($temp['pwdChange'])))) / $temp['counter'];
-			return array (
+			return [
 				'status' => 'inProgress',
 				'progress' => $pwdPercentage,
 				'errors' => $errors
-			);
+			];
 		}
 		// all modifications are done
 		else {
-			return array (
+			return [
 				'status' => 'finished',
 				'progress' => 100,
 				'errors' => []
-			);
+			];
 		}
 	}
 
@@ -3307,8 +3314,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function get_profileOptions($typeId) {
 		$return = parent::get_profileOptions($typeId);
 		// domain
@@ -3327,11 +3334,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$return->add($groupSelect);
 		// home drive
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
-			$drives = array('-');
+			$drives = ['-'];
 			for ($i = 90; $i > 67; $i--) {
 				$drives[] = chr($i) . ':';
 			}
-			$driveSelect = new htmlResponsiveSelect('windowsUser_homeDrive', $drives, array('-'), _('Home drive'), 'homeDrive');
+			$driveSelect = new htmlResponsiveSelect('windowsUser_homeDrive', $drives, ['-'], _('Home drive'), 'homeDrive');
 			$return->add($driveSelect);
 		}
 		// force password change
@@ -3348,10 +3355,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -3382,15 +3389,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		// departments
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment')
-				&& isset($profile['windowsUser_department'][0])
-				&& ($profile['windowsUser_department'][0] != '')) {
+			&& isset($profile['windowsUser_department'][0])
+			&& ($profile['windowsUser_department'][0] != '')) {
 			$departments = explode(';', $profile['windowsUser_department'][0]);
 			// remove extra spaces and set attributes
 			$this->attributes['department'] = array_map('trim', $departments);
 		}
 		// department numbers
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')
-				&& !empty($profile['windowsUser_departmentNumber'][0])) {
+			&& !empty($profile['windowsUser_departmentNumber'][0])) {
 			$departmentNumbers = explode(';', $profile['windowsUser_departmentNumber'][0]);
 			// remove extra spaces and set attributes
 			$this->attributes['departmentNumber'] = array_map('trim', $departmentNumbers);
@@ -3522,10 +3529,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (in_array('unicodePwd', $fields)
-				&& isset($_POST['windowsUser_unicodePwd'])
-				&& ($_POST['windowsUser_unicodePwd'] != '')) {
+			&& isset($_POST['windowsUser_unicodePwd'])
+			&& ($_POST['windowsUser_unicodePwd'] != '')) {
 			if ($_POST['windowsUser_unicodePwd'] != $_POST['windowsUser_unicodePwd2']) {
 				$return['messages'][] = $this->messages['unicodePwd'][0];
 			}
@@ -3548,7 +3555,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 						$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
 					}
 					else {
-						$return['messages'][] = array('ERROR', $pwdPolicyResult);
+						$return['messages'][] = ['ERROR', $pwdPolicyResult];
 					}
 				}
 			}
@@ -3585,18 +3592,18 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
 		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
 		$dn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
-		$operation = array(
-			array(
+		$operation = [
+			[
 				'attrib' => 'unicodePwd',
 				'modtype' => LDAP_MODIFY_BATCH_REMOVE,
-				'values' => array($oldPasswordVal)
-			),
-			array(
+				'values' => [$oldPasswordVal]
+			],
+			[
 				'attrib' => 'unicodePwd',
 				'modtype' => LDAP_MODIFY_BATCH_ADD,
-				'values' => array($newPasswordVal)
-			)
-		);
+				'values' => [$newPasswordVal]
+			]
+		];
 		@ldap_modify_batch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
 		$returnCode = ldap_errno($_SESSION['ldapHandle']->getServer());
 		if ($returnCode != 0) {
@@ -3606,7 +3613,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$outputMessages = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $outputMessages;
 			}
 			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
-			$return['messages'][] = array('ERROR', _('Unable to change password.'), $outputMessages);
+			$return['messages'][] = ['ERROR', _('Unable to change password.'), $outputMessages];
 		}
 		else {
 			// update session password for next page load
@@ -3663,7 +3670,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
 		if ($checkResult !== true) {
-			return array(array('ERROR', $checkResult));
+			return [['ERROR', $checkResult]];
 		}
 		// set new password
 		$pwdBin = self::pwdAttributeValue($password);
@@ -3751,12 +3758,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	public static function getDomainPolicyAttribute(string $attributeName): array {
 		$attributeName = strtolower($attributeName);
-		$rootDSE = ldapGetDN("", array('defaultnamingcontext'));
+		$rootDSE = ldapGetDN("", ['defaultnamingcontext']);
 		if (empty($rootDSE['defaultnamingcontext'][0])) {
 			return [];
 		}
 		$namingContext = $rootDSE['defaultnamingcontext'][0];
-		$policyOptions = ldapGetDN($namingContext, array($attributeName));
+		$policyOptions = ldapGetDN($namingContext, [$attributeName]);
 		if (!isset($policyOptions[$attributeName])) {
 			return [];
 		}
@@ -3879,8 +3886,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			return $this->groupCache;
 		}
 		$return = [];
-		$types = array('group');
-		$results = searchLDAPByFilter('(objectClass=group)', array('dn'), $types);
+		$types = ['group'];
+		$results = searchLDAPByFilter('(objectClass=group)', ['dn'], $types);
 		$count = sizeof($results);
 		for ($i = 0; $i < $count; $i++) {
 			if (isset($results[$i]['dn'])) {
@@ -3919,7 +3926,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			return $this->cachedUserNameList;
 		}
 		$this->cachedUserNameList = [];
-		$attrs = array('userPrincipalName');
+		$attrs = ['userPrincipalName'];
 		$filter = '(&(objectClass=user)(userPrincipalName=*))';
 		$typeManager = new TypeManager();
 		$typesUser = $typeManager->getConfiguredTypesForScope('user');
@@ -3947,7 +3954,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			return $this->cachedCnList;
 		}
 		$this->cachedCnList = [];
-		$attrs = array('cn');
+		$attrs = ['cn'];
 		$filter = '(&(objectClass=user)(cn=*))';
 		$typeManager = new TypeManager();
 		$typesUser = $typeManager->getConfiguredTypesForScope('user');
@@ -4007,7 +4014,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$attributes = &$this->attributes;
 		}
 		if (empty($attributes['accountexpires'][0]) || ($attributes['accountexpires'][0] == '0')
-				|| ($attributes['accountexpires'][0] == '9223372036854775807')) {
+			|| ($attributes['accountexpires'][0] == '9223372036854775807')) {
 			return ' - ';
 		}
 		return $this->formatFileTime($attributes['accountexpires'][0]);
@@ -4088,10 +4095,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'), 12);
-		$displayOptions = array(
+		$displayOptions = [
 			'dn' => self::DISPLAY_GROUPS_DN,
 			'cn' => self::DISPLAY_GROUPS_CN,
-		);
+		];
 		$groupDisplaySelect = new htmlResponsiveSelect('windowsUser_displayGroups', $displayOptions, [], _('Display format'), 'displayGroups');
 		$groupDisplaySelect->setHasDescriptiveElements(true);
 		$configContainer->add($groupDisplaySelect, 12);
@@ -4100,57 +4107,57 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
 		$configContainer->add($configHiddenGroup, 12);
 		$hiddenOptions = [];
-		$hiddenOptions[_('Display name')] = array('windowsUser_hidedisplayName', false);
-		$hiddenOptions[_('Proxy-Addresses')] = array('windowsUser_hideproxyAddresses', true);
-		$hiddenOptions[_('Fax number')] = array('windowsUser_hidefacsimileTelephoneNumber', false);
-		$hiddenOptions[_('Mobile')] = array('windowsUser_hidemobile', false);
-		$hiddenOptions[_('Other mobiles')] = array('windowsUser_hideotherMobile', true);
-		$hiddenOptions[_('Pager')] = array('windowsUser_hidepager', true);
-		$hiddenOptions[_('Other pagers')] = array('windowsUser_hideotherPager', true);
-		$hiddenOptions[_('User name (pre W2K)')] = array('windowsUser_hidesAMAccountName', true);
-		$hiddenOptions[_('NIS name')] = array('windowsUser_hidemsSFU30Name', true);
-		$hiddenOptions[_('NIS domain')] = array('windowsUser_hidemsSFU30NisDomain', true);
-		$hiddenOptions[_('Last password change')] = array('windowsUser_hidepwdLastSet', false);
-		$hiddenOptions[_('Last login')] = array('windowsUser_hidelastLogonTimestamp', false);
-		$hiddenOptions[_('Workstations')] = array('windowsUser_hideWorkstations', false);
-		$hiddenOptions[_('Photo')] = array('windowsUser_hidejpegPhoto', true);
-		$hiddenOptions[_('Job title')] = array('windowsUser_hidetitle', true);
-		$hiddenOptions[_('Car license')] = array('windowsUser_hidecarLicense', true);
-		$hiddenOptions[_('Employee number')] = array('windowsUser_hideemployeeNumber', true);
-		$hiddenOptions[_('Employee type')] = array('windowsUser_hideemployeeType', true);
-		$hiddenOptions[_('Business category')] = array('windowsUser_hidebusinessCategory', true);
-		$hiddenOptions[_('Company')] = array('windowsUser_hidecompany', true);
-		$hiddenOptions[_('Department')] = array('windowsUser_hidedepartment', true);
-		$hiddenOptions[_('Department number')] = array('windowsUser_hidedepartmentNumber', true);
-		$hiddenOptions[_('Organisational unit')] = array('windowsUser_hideou', true);
-		$hiddenOptions[_('Organisation')] = array('windowsUser_hideo', true);
-		$hiddenOptions[_('Manager')] = array('windowsUser_hidemanager', true);
-		$hiddenOptions[_('Profile path')] = array('windowsUser_hideprofilePath', false);
-		$hiddenOptions[_('Logon script')] = array('windowsUser_hidescriptPath', false);
-		$hiddenOptions[_('Home drive')] = array('windowsUser_hidehomeDrive', false);
-		$hiddenOptions[_('Home directory')] = array('windowsUser_hidehomeDirectory', false);
-		$hiddenOptions[_('Initials')] = array('windowsUser_hideinitials', false);
-		$hiddenOptions[_('Description')] = array('windowsUser_hidedescription', false);
-		$hiddenOptions[_('Street')] = array('windowsUser_hidestreetAddress', false);
-		$hiddenOptions[_('Post office box')] = array('windowsUser_hidepostOfficeBox', false);
-		$hiddenOptions[_('Postal code')] = array('windowsUser_hidepostalCode', false);
-		$hiddenOptions[_('Location')] = array('windowsUser_hidel', false);
-		$hiddenOptions[_('State')] = array('windowsUser_hidest', false);
-		$hiddenOptions[_('Office name')] = array('windowsUser_hidephysicalDeliveryOfficeName', false);
-		$hiddenOptions[_('Email address')] = array('windowsUser_hidemail', false);
-		$hiddenOptions[_('Email alias')] = array('windowsUser_hideotherMailbox', false);
-		$hiddenOptions[_('Telephone number')] = array('windowsUser_hidetelephoneNumber', false);
-		$hiddenOptions[_('Other telephone numbers')] = array('windowsUser_hideotherTelephone', false);
-		$hiddenOptions[_('Web site')] = array('windowsUser_hidewWWHomePage', false);
-		$hiddenOptions[_('Other web sites')] = array('windowsUser_hideurl', false);
-		$hiddenOptions[_('Require smartcard')] = array('windowsUser_hideRequireSmartcard', false);
+		$hiddenOptions[_('Display name')] = ['windowsUser_hidedisplayName', false];
+		$hiddenOptions[_('Proxy-Addresses')] = ['windowsUser_hideproxyAddresses', true];
+		$hiddenOptions[_('Fax number')] = ['windowsUser_hidefacsimileTelephoneNumber', false];
+		$hiddenOptions[_('Mobile')] = ['windowsUser_hidemobile', false];
+		$hiddenOptions[_('Other mobiles')] = ['windowsUser_hideotherMobile', true];
+		$hiddenOptions[_('Pager')] = ['windowsUser_hidepager', true];
+		$hiddenOptions[_('Other pagers')] = ['windowsUser_hideotherPager', true];
+		$hiddenOptions[_('User name (pre W2K)')] = ['windowsUser_hidesAMAccountName', true];
+		$hiddenOptions[_('NIS name')] = ['windowsUser_hidemsSFU30Name', true];
+		$hiddenOptions[_('NIS domain')] = ['windowsUser_hidemsSFU30NisDomain', true];
+		$hiddenOptions[_('Last password change')] = ['windowsUser_hidepwdLastSet', false];
+		$hiddenOptions[_('Last login')] = ['windowsUser_hidelastLogonTimestamp', false];
+		$hiddenOptions[_('Workstations')] = ['windowsUser_hideWorkstations', false];
+		$hiddenOptions[_('Photo')] = ['windowsUser_hidejpegPhoto', true];
+		$hiddenOptions[_('Job title')] = ['windowsUser_hidetitle', true];
+		$hiddenOptions[_('Car license')] = ['windowsUser_hidecarLicense', true];
+		$hiddenOptions[_('Employee number')] = ['windowsUser_hideemployeeNumber', true];
+		$hiddenOptions[_('Employee type')] = ['windowsUser_hideemployeeType', true];
+		$hiddenOptions[_('Business category')] = ['windowsUser_hidebusinessCategory', true];
+		$hiddenOptions[_('Company')] = ['windowsUser_hidecompany', true];
+		$hiddenOptions[_('Department')] = ['windowsUser_hidedepartment', true];
+		$hiddenOptions[_('Department number')] = ['windowsUser_hidedepartmentNumber', true];
+		$hiddenOptions[_('Organisational unit')] = ['windowsUser_hideou', true];
+		$hiddenOptions[_('Organisation')] = ['windowsUser_hideo', true];
+		$hiddenOptions[_('Manager')] = ['windowsUser_hidemanager', true];
+		$hiddenOptions[_('Profile path')] = ['windowsUser_hideprofilePath', false];
+		$hiddenOptions[_('Logon script')] = ['windowsUser_hidescriptPath', false];
+		$hiddenOptions[_('Home drive')] = ['windowsUser_hidehomeDrive', false];
+		$hiddenOptions[_('Home directory')] = ['windowsUser_hidehomeDirectory', false];
+		$hiddenOptions[_('Initials')] = ['windowsUser_hideinitials', false];
+		$hiddenOptions[_('Description')] = ['windowsUser_hidedescription', false];
+		$hiddenOptions[_('Street')] = ['windowsUser_hidestreetAddress', false];
+		$hiddenOptions[_('Post office box')] = ['windowsUser_hidepostOfficeBox', false];
+		$hiddenOptions[_('Postal code')] = ['windowsUser_hidepostalCode', false];
+		$hiddenOptions[_('Location')] = ['windowsUser_hidel', false];
+		$hiddenOptions[_('State')] = ['windowsUser_hidest', false];
+		$hiddenOptions[_('Office name')] = ['windowsUser_hidephysicalDeliveryOfficeName', false];
+		$hiddenOptions[_('Email address')] = ['windowsUser_hidemail', false];
+		$hiddenOptions[_('Email alias')] = ['windowsUser_hideotherMailbox', false];
+		$hiddenOptions[_('Telephone number')] = ['windowsUser_hidetelephoneNumber', false];
+		$hiddenOptions[_('Other telephone numbers')] = ['windowsUser_hideotherTelephone', false];
+		$hiddenOptions[_('Web site')] = ['windowsUser_hidewWWHomePage', false];
+		$hiddenOptions[_('Other web sites')] = ['windowsUser_hideurl', false];
+		$hiddenOptions[_('Require smartcard')] = ['windowsUser_hideRequireSmartcard', false];
 		ksort($hiddenOptions);
 		foreach ($hiddenOptions as $hiddenOptionLabel => $hiddenOption) {
 			$configContainer->add(new htmlResponsiveInputCheckbox($hiddenOption[0], $hiddenOption[1], $hiddenOptionLabel, null, true), 12, 4);
 		}
-		$syncTypes = $typeManager->getConfiguredTypesForScopes(array('group', 'gon', 'user'));
+		$syncTypes = $typeManager->getConfiguredTypesForScopes(['group', 'gon', 'user']);
 		$syncActive = false;
-		$possibleSyncModules = array('groupOfNames', 'groupOfMembers', 'groupOfUniqueNames', 'posixAccount');
+		$possibleSyncModules = ['groupOfNames', 'groupOfMembers', 'groupOfUniqueNames', 'posixAccount'];
 		foreach ($syncTypes as $syncType) {
 			$modules = $syncType->getModules();
 			foreach ($possibleSyncModules as $possibleModule) {
@@ -4162,7 +4169,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		if ($syncActive) {
 			$syncGroupsCheckbox = new htmlResponsiveInputCheckbox('windowsUser_syncGroups', false, _('Sync groups'), null, true);
-			$syncGroupsCheckbox->setTableRowsToHide(array('windowsUser_syncGroupsExclusions'));
+			$syncGroupsCheckbox->setTableRowsToHide(['windowsUser_syncGroupsExclusions']);
 			$configContainer->add($syncGroupsCheckbox, 12, 4);
 			$configContainer->addVerticalSpacer('2rem');
 			$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync'), 'excludeFromGroupSync'), 12);
@@ -4172,7 +4179,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'), 12);
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'), 12);
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'), 12);
-		$advancedOptionsAccordion = new htmlAccordion('windowsUserAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
+		$advancedOptionsAccordion = new htmlAccordion('windowsUserAdvancedOptions', [_('Advanced options') => $advancedOptions], false);
 		$configContainer->add($advancedOptionsAccordion);
 		return $configContainer;
 	}
@@ -4214,7 +4221,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$employeeTypes = [];
 		$businessCategories = [];
 		if (sizeof($attrs) > 0) {
-			$result = searchLDAPByFilter('(objectClass=user)', $attrs, array($this->get_scope()));
+			$result = searchLDAPByFilter('(objectClass=user)', $attrs, [$this->get_scope()]);
 			foreach ($result as $attributes) {
 				if (isset($attributes['department'])) {
 					foreach ($attributes['department'] as $val) {
@@ -4269,12 +4276,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return array list of jobs
 	 */
 	public function getSupportedJobs(&$config) {
-		return array(
+		return [
 			new WindowsPasswordNotifyJob(),
 			new WindowsAccountExpirationCleanupJob(),
 			new WindowsAccountExpirationNotifyJob(),
 			new WindowsManagedGroupsNotifyJob()
-		);
+		];
 	}
 
 	/**
@@ -4397,9 +4404,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if (!in_array_ignore_case('user', $this->attributes['objectClass'])) {
 			return [];
 		}
-		return array(
+		return [
 			new PasswordQuickChangeOption('syncWindows', _('Change Windows password'))
-		);
+		];
 	}
 
 	/**
@@ -4469,7 +4476,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @inheritDoc
 	 */
 	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
-		return array('useraccountcontrol', 'lockouttime', 'accountexpires');
+		return ['useraccountcontrol', 'lockouttime', 'accountexpires'];
 	}
 
 	/**
@@ -4520,7 +4527,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'userprincipalname' => _('User name'),
 			'cn' => _('Common name'),
 			'displayname' => _('Display name'),
@@ -4530,7 +4537,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			'accountexpires' => _('Account expiration date'),
 			'whencreated' => _('Creation time'),
 			'whenchanged' => _('Change date'),
-		);
+		];
 	}
 
 	/**
@@ -4556,7 +4563,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] !== '')) {
 					if (strlen($entry[$attribute][0]) < 100) {
 						// looks like we have read broken binary data, reread photo
-						$result = @ldap_read($_SESSION['ldap']->server(), $entry['dn'], $attribute . "=*", array($attribute), 0, 0, 0, LDAP_DEREF_NEVER);
+						$result = @ldap_read($_SESSION['ldap']->server(), $entry['dn'], $attribute . "=*", [$attribute], 0, 0, 0, LDAP_DEREF_NEVER);
 						if ($result) {
 							$tempEntry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 							if ($tempEntry) {
@@ -4569,11 +4576,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
 					$handle = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
 					fwrite($handle, $entry[$attribute][0]);
-					fclose ($handle);
+					fclose($handle);
 					$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
 					$image = new htmlImage($photoFile);
 					$image->enableLightbox();
-					$image->setCSSClasses(array('thumbnail'));
+					$image->setCSSClasses(['thumbnail']);
 					return $image;
 				}
 				return null;
@@ -4609,7 +4616,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					if (!$replaced) {
 						$value = getAbstractDN($value);
 					}
-					return new htmlDiv(null, new htmlOutputText($value, false), array('rightToLeftText'));
+					return new htmlDiv(null, new htmlOutputText($value, false), ['rightToLeftText']);
 				}
 				return null;
 			};
@@ -4663,7 +4670,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$maxPwdAge = $policyAttrs[0];
 				$this->jobResultLog->logDebug("Using maxPwdAge = " . $maxPwdAge . ".");
 			}
-			return array('maxpwdage' => $maxPwdAge);
+			return ['maxpwdage' => $maxPwdAge];
 		}
 
 		/**
@@ -4675,10 +4682,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'pwdLastSet', 'accountexpires', 'useraccountcontrol');
+			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'pwdLastSet', 'accountexpires', 'useraccountcontrol'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(pwdLastSet=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(pwdLastSet=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, ['user']);
 		}
 
 		/**
@@ -4729,11 +4736,11 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
 			// expiration date = pwdLastSet - maxpwdage
 			$expirationValue = $user['pwdlastset'][0] - $maxPwdAge;
-			$this->jobResultLog->logDebug("PwdLastSet: ". $user['pwdlastset'][0]);
+			$this->jobResultLog->logDebug("PwdLastSet: " . $user['pwdlastset'][0]);
 			$this->jobResultLog->logDebug("Expiration raw value: " . $expirationValue);
 			$expireTime = windowsUser::getFileTime($expirationValue);
 			if ($expireTime === null) {
-				$this->jobResultLog->logWarning('Invalid expiration values '. $user['pwdlastset'][0] . ' - ' . $expirationValue);
+				$this->jobResultLog->logWarning('Invalid expiration values ' . $user['pwdlastset'][0] . ' - ' . $expirationValue);
 				return;
 			}
 			$this->jobResultLog->logDebug("Password expires on " . $expireTime->format('Y-m-d'));
@@ -4815,12 +4822,12 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$container->add(new htmlResponsiveInputField(_('Subject'), $prefix . '_mailSubject' . $jobID, null, '802'), 12);
 			$container->add(new htmlResponsiveInputCheckbox($prefix . '_mailIsHTML' . $jobID, false, _('HTML format'), '553'), 12);
 			$container->add(new htmlResponsiveInputTextarea($prefix . '_mailtext' . $jobID, '', 50, 4, _('Text'), '810'), 12);
-			$periodOptions = array(
+			$periodOptions = [
 				_('Monthly') => self::PERIOD_MONTHLY,
 				_('Quarterly') => self::PERIOD_QUARTERLY,
 				_('Half-yearly') => self::PERIOD_HALF_YEARLY,
 				_('Yearly') => self::PERIOD_YEARLY,
-			);
+			];
 			$periodSelect = new htmlResponsiveSelect($prefix . '_period' . $jobID, $periodOptions, [], _('Period'), '811');
 			$periodSelect->setHasDescriptiveElements(true);
 			$periodSelect->setSortElements(false);
@@ -4838,33 +4845,33 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			if (empty($options[$prefix . '_mailFrom' . $jobID][0])
 				|| !(get_preg($options[$prefix . '_mailFrom' . $jobID][0], 'email')
 					|| get_preg($options[$prefix . '_mailFrom' . $jobID][0], 'emailWithName'))) {
-				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('From address'));
+				$errors[] = ['ERROR', _('Please enter a valid email address!'), _('From address')];
 			}
 			// reply-to
 			if (!empty($options[$prefix . '_mailReplyTo' . $jobID][0])
 				&& !get_preg($options[$prefix . '_mailReplyTo' . $jobID][0], 'email')
 				&& !get_preg($options[$prefix . '_mailReplyTo' . $jobID][0], 'emailWithName')) {
-				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('Reply-to address'));
+				$errors[] = ['ERROR', _('Please enter a valid email address!'), _('Reply-to address')];
 			}
 			// CC address
 			if (!empty($options[$prefix . '_mailCC' . $jobID][0])
 				&& !get_preg($options[$prefix . '_mailCC' . $jobID][0], 'email')
 				&& !get_preg($options[$prefix . '_mailCC' . $jobID][0], 'emailWithName')) {
-				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('CC address'));
+				$errors[] = ['ERROR', _('Please enter a valid email address!'), _('CC address')];
 			}
 			// BCC address
 			if (!empty($options[$prefix . '_mailBCC' . $jobID][0])
 				&& !get_preg($options[$prefix . '_mailBCC' . $jobID][0], 'email')
 				&& !get_preg($options[$prefix . '_mailBCC' . $jobID][0], 'emailWithName')) {
-				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('BCC address'));
+				$errors[] = ['ERROR', _('Please enter a valid email address!'), _('BCC address')];
 			}
 			// text
 			$mailText = implode('', $options[$prefix . '_mailtext' . $jobID]);
 			if (empty($mailText)) {
-				$errors[] = array('ERROR', _('Please set a email text.'));
+				$errors[] = ['ERROR', _('Please set a email text.')];
 			}
 			if (strpos($mailText, '@@' . self::MANAGED_GROUPS . '@@') === false) {
-				$errors[] = array('ERROR', _('Please add the wildcard for the list of managed groups.'), '@@' . self::MANAGED_GROUPS . '@@');
+				$errors[] = ['ERROR', _('Please add the wildcard for the list of managed groups.'), '@@' . self::MANAGED_GROUPS . '@@'];
 			}
 			return $errors;
 		}
@@ -4885,11 +4892,11 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysAttrs = array('managedObjects', $_SESSION['cfgMain']->getMailAttribute());
+			$sysAttrs = ['managedObjects', $_SESSION['cfgMain']->getMailAttribute()];
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysAttrs)));
-			$users = searchLDAPByFilter('(&(' . $_SESSION['cfgMain']->getMailAttribute() . '=*)(managedObjects=*))', $attrs, array('user'));
-			$groups = searchLDAPByFilter('(managedBy=*)', array('cn', 'member'), array('group'));
+			$users = searchLDAPByFilter('(&(' . $_SESSION['cfgMain']->getMailAttribute() . '=*)(managedObjects=*))', $attrs, ['user']);
+			$groups = searchLDAPByFilter('(managedBy=*)', ['cn', 'member'], ['group']);
 			$groupByDn = [];
 			foreach ($groups as $group) {
 				$groupByDn[$group['dn']] = $group;
@@ -5094,10 +5101,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array($_SESSION['cfgMain']->getMailAttribute(), 'accountexpires', 'useraccountcontrol');
+			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'accountexpires', 'useraccountcontrol'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(accountexpires=*)(!(accountexpires=0))(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(accountexpires=*)(!(accountexpires=0))(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, ['user']);
 		}
 
 		/**
@@ -5168,7 +5175,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @return String name
 		 */
 		public function getAlias() {
-			return _('Windows') .  ': ' . _('Cleanup expired user accounts');
+			return _('Windows') . ': ' . _('Cleanup expired user accounts');
 		}
 
 		/**
@@ -5189,8 +5196,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$attrs = array('accountexpires');
-			return searchLDAPByFilter('(accountexpires=*)', $attrs, array('user'));
+			$attrs = ['accountexpires'];
+			return searchLDAPByFilter('(accountexpires=*)', $attrs, ['user']);
 		}
 
 		/**

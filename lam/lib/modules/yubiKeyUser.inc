@@ -1,11 +1,13 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2023  Roland Gruber
+  Copyright (C) 2018 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,27 +25,27 @@ use \LAM\PDF\PDFTableRow;
 */
 
 /**
-* Manages YubiKey keys.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages YubiKey keys.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages YubiKey keys.
-*
-* @package modules
-*/
+ * Manages YubiKey keys.
+ *
+ * @package modules
+ */
 class yubiKeyUser extends baseModule {
 
 	/** session variable for existing keys in self service */
 	const SESS_KEY_LIST = 'yubiKeyUser_keyList';
 
 	/**
-	* Creates a new yubiKeyUser object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new yubiKeyUser object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	public function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
@@ -51,21 +53,21 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	public function get_metaData() {
 		$return = [];
 		// icon
@@ -73,72 +75,72 @@ class yubiKeyUser extends baseModule {
 		// alias name
 		$return["alias"] = "YubiKey";
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
 		$objectClass = $this->getObjectClassName();
 		if (!empty($objectClass)) {
-			$return['objectClasses'] = array($objectClass);
+			$return['objectClasses'] = [$objectClass];
 		}
 		// managed attributes
 		$attributeName = $this->getAttributeName();
-		$return['attributes'] = array($attributeName);
+		$return['attributes'] = [$attributeName];
 		// help Entries
-		$return['help'] = array(
-			$attributeName => array(
+		$return['help'] = [
+			$attributeName => [
 				"Headline" => _("YubiKey ids"), 'attr' => $attributeName,
 				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simply touch your YubiKey in an empty field to set it.")
-			),
-			'keyList' => array(
+			],
+			'keyList' => [
 				"Headline" => _("YubiKey ids"), 'attr' => $attributeName,
 				"Text" => _("Please a comma separated list of your YubiKey ids.")
-			),
-			'objectClass' => array(
+			],
+			'objectClass' => [
 				"Headline" => _("Object class"),
 				"Text" => _("Please enter the object class that should be used for YubiKey (e.g. 'yubiKeyUser').")
-			),
-			'attributeName' => array(
+			],
+			'attributeName' => [
 				"Headline" => _("Attribute name"),
 				"Text" => _("Please enter the attribute name that should be used for YubiKey (e.g. 'yubiKeyId').")
-			),
-			'whereToFind' => array(
+			],
+			'whereToFind' => [
 				"Headline" => _("YubiKey ids"),
 				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simply touch your YubiKey in an empty field to set it.")
-			),
-		);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'yubiKeyUser_yubiKeyId',
 				'description' => _('YubiKey ids'),
 				'help' => 'keyList',
 				'example' => 'abcd1234, vwyxz12345'
-			)
-		);
+			]
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'yubiKeyId' => _('YubiKey ids')
-		);
+		];
 		// self service field settings
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'yubiKeyId' => _('YubiKey ids'),
-		);
-		$return['selfServiceReadOnlyFields'] = array('yubiKeyId');
+		];
+		$return['selfServiceReadOnlyFields'] = ['yubiKeyId'];
 		return $return;
 	}
 
 	/**
-	* This function fills the message array.
-	**/
+	 * This function fills the message array.
+	 **/
 	protected function load_Messages() {
-		$this->messages['yubiKeyId'][0] = array('ERROR', _('Please enter a valid key id.'));
-		$this->messages['yubiKeyId'][1] = array('ERROR', _('Account %s:') . ' yubiKeyUser_yubiKeyId', _('Please enter a valid key id.'));
+		$this->messages['yubiKeyId'][0] = ['ERROR', _('Please enter a valid key id.')];
+		$this->messages['yubiKeyId'][1] = ['ERROR', _('Account %s:') . ' yubiKeyUser_yubiKeyId', _('Please enter a valid key id.')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
-		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, array($this->getAttributeName()));
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, [$this->getAttributeName()]);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
@@ -162,8 +164,8 @@ class yubiKeyUser extends baseModule {
 			if (!empty($objectClass)) {
 				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove YubiKey extension'));
-				$remButton->setCSSClasses(array('lam-danger'));
-				$return->add($remButton, 12, 12 ,12, 'text-center');
+				$remButton->setCSSClasses(['lam-danger']);
+				$return->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
 		else {
@@ -173,11 +175,11 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		$messages = [];
 		$objectClass = $this->getObjectClassName();
@@ -189,7 +191,7 @@ class yubiKeyUser extends baseModule {
 		}
 		// remove extension
 		elseif (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array($objectClass), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete([$objectClass], $this->attributes['objectClass']);
 			if (!empty($this->attributes[$attributeName])) {
 				unset($this->attributes[$attributeName]);
 			}
@@ -205,17 +207,17 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	public function save_attributes() {
 		$objectClass = $this->getObjectClassName();
 		if (!empty($objectClass) && !in_array($objectClass, $this->attributes['objectClass']) && !in_array($objectClass, $this->orig['objectClass'])) {
@@ -318,13 +320,13 @@ class yubiKeyUser extends baseModule {
 				$group = new htmlGroup();
 				$keyInput = new htmlInputField('yubiKeyId_' . $i, $keys[$i]);
 				$keyInput->setFieldMaxLength(12);
-				$keyInput->setCSSClasses(array('lam-prevent-enter'));
+				$keyInput->setCSSClasses(['lam-prevent-enter']);
 				$keyInput->setAccessibilityLabel($this->getSelfServiceLabel('yubiKeyId', _('YubiKey ids')));
 				$group->addElement($keyInput);
 				$delLink = new htmlLink('', '#', '../../graphics/del.svg');
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('yubiKeyIdDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
-				$delLink->setCSSClasses(array('icon'));
+				$delLink->setCSSClasses(['icon']);
 				$group->addElement($delLink);
 				$content->add($group, 12, 12, 12, 'nowrap');
 			}
@@ -333,7 +335,7 @@ class yubiKeyUser extends baseModule {
 		$addLink = new htmlLink(_('Add'), '#', '../../graphics/add.svg', true);
 		$addLink->setTitle(_('Add'));
 		$addLink->setOnClick('yubiKeyIdAddKey(' . sizeof($keys) . ');return false;');
-		$addLink->setCSSClasses(array('icon'));
+		$addLink->setCSSClasses(['icon']);
 		$addGroup->addElement($addLink);
 		$addGroup->addElement(new htmlSpacer('0.5rem', null));
 		$addGroup->addElement(new htmlHelpLink('whereToFind', 'yubiKeyUser'));
@@ -430,7 +432,7 @@ class yubiKeyUser extends baseModule {
 	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
 	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
@@ -453,7 +455,7 @@ class yubiKeyUser extends baseModule {
 					unset($newKeys[$i]);
 				}
 				elseif (!get_preg($newKeys[$i], 'ascii')) {
-					$return['messages'][] = array('ERROR', _('Please enter a valid key id.'), htmlspecialchars($newKeys[$i]));
+					$return['messages'][] = ['ERROR', _('Please enter a valid key id.'), htmlspecialchars($newKeys[$i])];
 				}
 			}
 			$newKeys = array_values(array_unique($newKeys));
@@ -508,10 +510,10 @@ class yubiKeyUser extends baseModule {
 				parseHtml(null, $contentElement, [], true, $this->get_scope());
 				$content = ob_get_contents();
 				ob_end_clean();
-				$jsonReturn = array(
+				$jsonReturn = [
 					'errorsOccurred' => 'false',
 					'html' => $content,
-				);
+				];
 			}
 		}
 		echo json_encode($jsonReturn);
@@ -538,10 +540,10 @@ class yubiKeyUser extends baseModule {
 		parseHtml(null, $contentElement, [], true, $this->get_scope());
 		$content = ob_get_contents();
 		ob_end_clean();
-		return array(
+		return [
 			'errorsOccurred' => 'false',
 			'html' => $content,
-		);
+		];
 	}
 
 	/**
@@ -553,7 +555,7 @@ class yubiKeyUser extends baseModule {
 		if ($message == null) {
 			$message = _('Invalid request');
 		}
-		return array('errorsOccurred' => 'true', 'errormessage' => $message);
+		return ['errorsOccurred' => 'true', 'errormessage' => $message];
 	}
 
 	/**
@@ -603,8 +605,8 @@ class yubiKeyUser extends baseModule {
 	 */
 	public function getSelfServiceSettings($profile) {
 		$container = new htmlResponsiveRow();
-		$container->add(new htmlResponsiveInputField(_('Object class'), 'yubiKeyUser_objectClass', null, array('objectClass', 'yubiKeyUser')), 12);
-		$container->add(new htmlResponsiveInputField(_('Attribute name'), 'yubiKeyUser_attributeName', 'yubiKeyId', array('attributeName', 'yubiKeyUser')), 12);
+		$container->add(new htmlResponsiveInputField(_('Object class'), 'yubiKeyUser_objectClass', null, ['objectClass', 'yubiKeyUser']), 12);
+		$container->add(new htmlResponsiveInputField(_('Attribute name'), 'yubiKeyUser_attributeName', 'yubiKeyId', ['attributeName', 'yubiKeyUser']), 12);
 		return $container;
 	}
 

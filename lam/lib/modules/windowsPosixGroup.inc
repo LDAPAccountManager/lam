@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,27 +20,27 @@
 */
 
 /**
-* Manages Unix groups in Windows LDAP schema.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Unix groups in Windows LDAP schema.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /** include parent class */
 include_once(__DIR__ . "/posixGroup.inc");
 
 /**
-* Manages Unix groups in Windows LDAP schema.
-*
-* @package modules
-*/
+ * Manages Unix groups in Windows LDAP schema.
+ *
+ * @package modules
+ */
 class windowsPosixGroup extends posixGroup {
 
 	/**
-	* Creates a new windowsPosixGroup object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new windowsPosixGroup object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	public function __construct($scope) {
 		// different password attribute name
 		$this->passwordAttrName = 'unixUserPassword';
@@ -51,16 +51,16 @@ class windowsPosixGroup extends posixGroup {
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = parent::get_metaData();
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => array('posixGroup'));
+		$return['dependencies'] = ['depends' => [], 'conflicts' => ['posixGroup']];
 		// this is no base module (in contrast to parent class)
 		$return["is_base"] = false;
 		// no RDN attribute setting
@@ -69,19 +69,19 @@ class windowsPosixGroup extends posixGroup {
 	}
 
 	/**
-	* Controls if the module button the account page is visible and activated.
-	*
-	* @return string status ("enabled", "disabled", "hidden")
-	*/
+	 * Controls if the module button the account page is visible and activated.
+	 *
+	 * @return string status ("enabled", "disabled", "hidden")
+	 */
 	function getButtonStatus() {
 		return "enabled";
 	}
 
 	/**
-	* This functions is used to check if all settings for this module have been made.
-	*
-	* @return boolean true, if settings are complete
-	*/
+	 * This functions is used to check if all settings for this module have been made.
+	 *
+	 * @return boolean true, if settings are complete
+	 */
 	function module_complete() {
 		return true;
 	}

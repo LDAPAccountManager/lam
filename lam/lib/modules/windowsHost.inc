@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,44 +20,44 @@
 */
 
 /**
-* Manages Windows AD (e.g. Samba 4) hosts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Windows AD (e.g. Samba 4) hosts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 use LAM\TYPES\TypeManager;
 
 /**
-* Manages Windows AD (e.g. Samba 4) hosts.
-*
-* @package modules
-*/
+ * Manages Windows AD (e.g. Samba 4) hosts.
+ *
+ * @package modules
+ */
 class windowsHost extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sAMAccountName', 'pwdLastSet', 'lastLogonTimestamp',
-		'logonCount');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sAMAccountName', 'pwdLastSet', 'lastLogonTimestamp',
+		'logonCount'];
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('host'));
+		return in_array($this->get_scope(), ['host']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	public function get_metaData() {
 		$return = [];
 		// icon
@@ -65,99 +65,99 @@ class windowsHost extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute
-		$return["RDN"] = array("cn" => "high");
+		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter
-		$return["ldap_filter"] = array('and' => "", 'or' => '(objectClass=computer)');
+		$return["ldap_filter"] = ['and' => "", 'or' => '(objectClass=computer)'];
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('computer', 'securityPrincipal');
+		$return['objectClasses'] = ['computer', 'securityPrincipal'];
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'location', 'sAMAccountName', 'managedBy',
+		$return['attributes'] = ['cn', 'description', 'location', 'sAMAccountName', 'managedBy',
 			'operatingSystem', 'operatingSystemVersion', 'dNSHostName', 'pwdLastSet', 'lastLogonTimestamp',
-			'logonCount');
+			'logonCount'];
 		// help Entries
-		$return['help'] = array(
-			'cn' => array(
+		$return['help'] = [
+			'cn' => [
 				"Headline" => _('Host name'), 'attr' => 'cn, sAMAccountName',
 				"Text" => _('Please enter the host name.')
-			),
-			'description' => array(
+			],
+			'description' => [
 				"Headline" => _('Description'), 'attr' => 'description',
 				"Text" => _('Please enter a descriptive text for this host.')
-			),
-			'location' => array(
+			],
+			'location' => [
 				"Headline" => _('Location'), 'attr' => 'location',
 				"Text" => _('This is the host\'s location (e.g. Munich, server room 3).')
-			),
-			'managedBy' => array(
+			],
+			'managedBy' => [
 				"Headline" => _('Managed by'), 'attr' => 'managedBy',
 				"Text" => _('The host is managed by this contact person.')
-			),
-			'pwdLastSet' => array(
+			],
+			'pwdLastSet' => [
 				"Headline" => _('Last password change'), 'attr' => 'pwdLastSet',
 				"Text" => _('Time of user\'s last password change.')
-			),
-			'lastLogonTimestamp' => array(
+			],
+			'lastLogonTimestamp' => [
 				"Headline" => _('Last login'), 'attr' => 'lastLogonTimestamp',
 				"Text" => _('Time of user\'s last login.')
-			),
-			'logonCount' => array(
+			],
+			'logonCount' => [
 				"Headline" => _('Logon count'), 'attr' => 'logonCount',
 				"Text" => _('This is the number of logins performed by this account.')
-			),
-		);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'windowsHost_name',
 				'description' => _('Host name'),
 				'help' => 'cn',
 				'example' => _('PC01'),
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'windowsHost_description',
 				'description' => _('Description'),
 				'help' => 'description',
-			),
-			array(
+			],
+			[
 				'name' => 'windowsHost_location',
 				'description' => _('Location'),
 				'help' => 'location',
 				'example' => _('MyCity'),
-			),
-			array(
+			],
+			[
 				'name' => 'windowsHost_managedBy',
 				'description' => _('Managed by'),
 				'help' => 'managedBy',
 				'example' => 'cn=user1,o=test',
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'cn' => _('Host name'),
 			'description' => _('Description'),
 			'location' => _('Location'),
 			'managedBy' => _('Managed by'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	public function load_Messages() {
-		$this->messages['cn'][0] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsHost_cn', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['cn'][0] = ['ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' windowsHost_cn', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -222,11 +222,11 @@ class windowsHost extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		$return = [];
 		// cn
@@ -250,16 +250,16 @@ class windowsHost extends baseModule {
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to change the member attribute.
-	*
-	* @return htmlElement HTML meta data
-	*/
+	 * This function will create the meta HTML code to show a page to change the member attribute.
+	 *
+	 * @return htmlElement HTML meta data
+	 */
 	function display_html_managedBy() {
 		$return = new htmlResponsiveRow();
 		// show possible managers
 		$options = [];
 		$filter = get_ldap_filter('user');
-		$entries = searchLDAPByFilter($filter, array('dn'), array('user'));
+		$entries = searchLDAPByFilter($filter, ['dn'], ['user']);
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$entries[$i] = $entries[$i]['dn'];
 		}
@@ -270,7 +270,7 @@ class windowsHost extends baseModule {
 		}
 		$selected = [];
 		if (isset($this->attributes['managedBy'][0])) {
-			$selected = array($this->attributes['managedBy'][0]);
+			$selected = [$this->attributes['managedBy'][0]];
 			if (!in_array($selected[0], $options)) {
 				$options[getAbstractDN($selected[0])] = $selected[0];
 			}
@@ -290,11 +290,11 @@ class windowsHost extends baseModule {
 	}
 
 	/**
-	* Processes user input of the members page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the members page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_managedBy() {
 		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
@@ -311,7 +311,9 @@ class windowsHost extends baseModule {
 		$errors = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('computer', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'computer';
+			if (!in_array('computer', $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = 'computer';
+			}
 			// cn + sAMAccountName
 			if ($rawAccounts[$i][$ids['windowsHost_name']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsHost_name']], 'hostname')) {
@@ -320,7 +322,7 @@ class windowsHost extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -375,14 +377,14 @@ class windowsHost extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'cn' => _('Host name'),
 			'description' => _('Description'),
 			'location' => _('Location'),
 			'managedby' => _('Managed by'),
 			'whencreated' => _('Creation time'),
 			'whenchanged' => _('Change date'),
-		);
+		];
 	}
 
 	/**
@@ -414,7 +416,7 @@ class windowsHost extends baseModule {
 					if (!$replaced) {
 						$value = getAbstractDN($value);
 					}
-					return new htmlDiv(null, new htmlOutputText($value, false), array('rightToLeftText'));
+					return new htmlDiv(null, new htmlOutputText($value, false), ['rightToLeftText']);
 				}
 				return null;
 			};

@@ -1,9 +1,11 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -25,23 +27,23 @@ use \LAM\TYPES\TypeManager;
 */
 
 /**
-* Manages Windows AD (e.g. Samba 4) groups.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Windows AD (e.g. Samba 4) groups.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages Windows AD (e.g. Samba 4) groups.
-*
-* @package modules
-*/
+ * Manages Windows AD (e.g. Samba 4) groups.
+ *
+ * @package modules
+ */
 class windowsGroup extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sAMAccountName', 'msSFU30Name', 'msSFU30NisDomain');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sAMAccountName', 'msSFU30Name', 'msSFU30NisDomain'];
 
 	/** possible group types (e.g. distribution) */
 	private $groupTypes;
@@ -62,40 +64,40 @@ class windowsGroup extends baseModule {
 	const SCOPE_UNIVERSAL = 'universal';
 
 	/**
-	* Creates a new module for Samba 3 groups.
-	*
-	* @param string $scope account type
-	*/
+	 * Creates a new module for Samba 3 groups.
+	 *
+	 * @param string $scope account type
+	 */
 	function __construct($scope) {
-		$this->groupTypes = array(
+		$this->groupTypes = [
 			_('Security') => windowsGroup::TYPE_SECURITY,
 			_('Distribution') => windowsGroup::TYPE_DISTRIBUTION,
-		);
-		$this->groupScopes = array(
+		];
+		$this->groupScopes = [
 			_('Domain local') => windowsGroup::SCOPE_DOMAIN_LOCAL,
 			_('Global') => windowsGroup::SCOPE_GLOBAL,
 			_('Universal') => windowsGroup::SCOPE_UNIVERSAL,
-		);
+		];
 		// call parent constructor
 		parent::__construct($scope);
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('group'));
+		return in_array($this->get_scope(), ['group']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	public function get_metaData() {
 		$return = [];
 		// icon
@@ -103,148 +105,148 @@ class windowsGroup extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute
-		$return["RDN"] = array("cn" => "high");
+		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter
-		$return["ldap_filter"] = array('and' => "", 'or' => '(objectClass=group)');
+		$return["ldap_filter"] = ['and' => "", 'or' => '(objectClass=group)'];
 		// alias name
 		$return["alias"] = _("Windows");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('group', 'securityPrincipal', 'mailRecipient');
+		$return['objectClasses'] = ['group', 'securityPrincipal', 'mailRecipient'];
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'info', 'mail', 'member', 'memberOf', 'sAMAccountName',
-			'groupType', 'managedBy', 'msSFU30Name', 'msSFU30NisDomain');
+		$return['attributes'] = ['cn', 'description', 'info', 'mail', 'member', 'memberOf', 'sAMAccountName',
+			'groupType', 'managedBy', 'msSFU30Name', 'msSFU30NisDomain'];
 		// help Entries
-		$return['help'] = array(
-			'hiddenOptions' => array(
+		$return['help'] = [
+			'hiddenOptions' => [
 				"Headline" => _("Hidden options"),
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
-			),
-			'cn' => array(
+			],
+			'cn' => [
 				"Headline" => _('Group name'), 'attr' => 'cn, sAMAccountName',
 				"Text" => _('Please enter the group name.')
-			),
-			'description' => array(
+			],
+			'description' => [
 				"Headline" => _('Description'), 'attr' => 'description',
 				"Text" => _('Please enter a descriptive text for this group.')
-			),
-			'info' => array(
+			],
+			'info' => [
 				"Headline" => _('Notes'), 'attr' => 'info',
 				"Text" => _('Additional notes to describe this entry.')
-			),
-			'mail' => array(
+			],
+			'mail' => [
 				"Headline" => _('Email address'), 'attr' => 'mail',
 				"Text" => _('The list\'s email address.')
-			),
-			'member' => array(
+			],
+			'member' => [
 				"Headline" => _('Members'), 'attr' => 'member',
 				"Text" => _('This is a list of members of this group.')
-			),
-			'memberOf' => array(
+			],
+			'memberOf' => [
 				"Headline" => _('Member of'), 'attr' => 'memberOf',
 				"Text" => _('This is a list of groups this group is member of.')
-			),
-			'memberList' => array(
+			],
+			'memberList' => [
 				"Headline" => _('Members'), 'attr' => 'member',
 				"Text" => _('This is a list of members of this group. Multiple members are separated by semicolons.')
-			),
-			'groupType' => array(
+			],
+			'groupType' => [
 				"Headline" => _('Group type'), 'attr' => 'groupType',
 				"Text" => _('Security groups are used for permission management and distribution groups as email lists.')
-			),
-			'groupScope' => array(
+			],
+			'groupScope' => [
 				"Headline" => _('Group scope'), 'attr' => 'groupType',
 				"Text" => _('Please specify the group scope.')
-			),
-			'managedBy' => array(
+			],
+			'managedBy' => [
 				"Headline" => _('Managed by'), 'attr' => 'managedBy',
 				"Text" => _('The group is managed by this contact person.')
-			),
-			'msSFU30Name' => array(
+			],
+			'msSFU30Name' => [
 				"Headline" => _('NIS name'), 'attr' => 'msSFU30Name',
 				"Text" => _('Group name for NIS.')
-			),
-			'msSFU30NisDomain' => array(
+			],
+			'msSFU30NisDomain' => [
 				"Headline" => _('NIS domain'), 'attr' => 'msSFU30NisDomain',
 				"Text" => _('NIS domain name.')
-			),
-		);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'windowsGroup_name',
 				'description' => _('Group name'),
 				'help' => 'cn',
 				'example' => _('Domain administrators'),
 				'required' => true
-			),
-			array(
+			],
+			[
 				'name' => 'windowsGroup_description',
 				'description' => _('Description'),
 				'help' => 'description',
 				'example' => _('Domain administrators'),
-			),
-			array(
+			],
+			[
 				'name' => 'windowsGroup_notes',
 				'description' => _('Notes'),
 				'help' => 'info',
 				'example' => _('Domain administrators'),
-			),
-			array(
+			],
+			[
 				'name' => 'windowsGroup_scope',
 				'description' => _('Group scope'),
 				'help' => 'groupScope',
 				'values' => implode(', ', array_values($this->groupScopes)),
 				'example' => windowsGroup::SCOPE_GLOBAL,
 				'default' => windowsGroup::SCOPE_GLOBAL,
-			),
-			array(
+			],
+			[
 				'name' => 'windowsGroup_type',
 				'description' => _('Group type'),
 				'help' => 'groupType',
 				'values' => implode(', ', array_values($this->groupTypes)),
 				'example' => windowsGroup::TYPE_SECURITY,
 				'default' => windowsGroup::TYPE_SECURITY,
-			),
-			array(
+			],
+			[
 				'name' => 'windowsGroup_members',
 				'description' => _('Members'),
 				'help' => 'memberList',
 				'example' => 'uid=user1,o=test;uid=user2,o=test',
-			),
-		);
+			],
+		];
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsGroup_mail',
 				'description' => _('Email address'),
 				'help' => 'mail',
 				'example' => _('group@company.com'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsGroup_managedBy',
 				'description' => _('Managed by'),
 				'help' => 'managedBy',
 				'example' => 'cn=user1,o=test',
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsGroup_msSFU30Name',
 				'description' => _('NIS name'),
 				'help' => 'msSFU30Name',
 				'example' => _('adminstrators'),
-			);
+			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'windowsGroup_msSFU30NisDomain',
 				'description' => _('NIS domain'),
 				'help' => 'msSFU30NisDomain',
 				'example' => _('domain'),
-			);
+			];
 		}
 		// profile options
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
@@ -254,7 +256,7 @@ class windowsGroup extends baseModule {
 			$return['profile_mappings']['windowsGroup_msSFU30NisDomain'] = 'msSFU30NisDomain';
 		}
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'cn' => _('Group name'),
 			'description' => _('Description'),
 			'info' => _('Notes'),
@@ -262,7 +264,7 @@ class windowsGroup extends baseModule {
 			'memberOf' => _('Member of'),
 			'groupType' => _('Group type'),
 			'groupScope' => _('Group scope'),
-		);
+		];
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
 			$return['PDF_fields']['mail'] = _('Email address');
 		}
@@ -279,23 +281,23 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	public function load_Messages() {
-		$this->messages['cn'][0] = array('ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
-		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_mail', _('Please enter a valid email address!'));
-		$this->messages['groupScope'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupScope', _('Please enter a valid group scope.'));
-		$this->messages['groupType'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupType', _('Please enter a valid group type.'));
-		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['cn'][0] = ['ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' windowsGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['mail'][0] = ['ERROR', _('Email address'), _('Please enter a valid email address!')];
+		$this->messages['mail'][1] = ['ERROR', _('Account %s:') . ' windowsGroup_mail', _('Please enter a valid email address!')];
+		$this->messages['groupScope'][0] = ['ERROR', _('Account %s:') . ' windowsGroup_groupScope', _('Please enter a valid group scope.')];
+		$this->messages['groupType'][0] = ['ERROR', _('Account %s:') . ' windowsGroup_groupType', _('Please enter a valid group type.')];
+		$this->messages['msSFU30Name'][0] = ['ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['msSFU30Name'][1] = ['ERROR', _('Account %s:') . ' windowsGroup_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -345,10 +347,10 @@ class windowsGroup extends baseModule {
 				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_GLOBAL]]);
 			}
 		}
-		$groupScopeSelect = new htmlResponsiveSelect('groupScope', $scopeList, array($groupScope), _('Group scope'), 'groupScope');
+		$groupScopeSelect = new htmlResponsiveSelect('groupScope', $scopeList, [$groupScope], _('Group scope'), 'groupScope');
 		$groupScopeSelect->setHasDescriptiveElements(true);
 		$container->add($groupScopeSelect, 12);
-		$groupTypeSelect = new htmlResponsiveSelect('groupType', $this->groupTypes, array($groupType), _('Group type'), 'groupType');
+		$groupTypeSelect = new htmlResponsiveSelect('groupType', $this->groupTypes, [$groupType], _('Group type'), 'groupType');
 		$groupTypeSelect->setHasDescriptiveElements(true);
 		$container->add($groupTypeSelect, 12);
 		// notes
@@ -406,7 +408,7 @@ class windowsGroup extends baseModule {
 		}
 		$members = new htmlTable();
 		$members->alignment = htmlElement::ALIGN_RIGHT;
-		$members->setCSSClasses(array('fullwidth'));
+		$members->setCSSClasses(['fullwidth']);
 		for ($i = 0; $i < sizeof($memberList); $i++) {
 			$member = new htmlOutputText(getAbstractDN($memberList[$i]));
 			$member->alignment = htmlElement::ALIGN_RIGHT;
@@ -430,7 +432,7 @@ class windowsGroup extends baseModule {
 			usort($memberList, 'compareDN');
 		}
 		$memberOf = new htmlTable();
-		$memberOf->setCSSClasses(array('fullwidth'));
+		$memberOf->setCSSClasses(['fullwidth']);
 		$memberOf->alignment = htmlElement::ALIGN_RIGHT;
 		for ($i = 0; $i < sizeof($memberList); $i++) {
 			$member = new htmlOutputText(getAbstractDN($memberList[$i]));
@@ -444,11 +446,11 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	public function process_attributes() {
 		$return = [];
 		// cn
@@ -510,10 +512,10 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* Displays the memberof selection.
-	*
-	* @return htmlElement meta HTML code
-	*/
+	 * Displays the memberof selection.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
 	function display_html_memberof() {
 		$return = new htmlResponsiveRow();
 		$return->add(new htmlSubTitle(_("Groups")), 12);
@@ -540,7 +542,7 @@ class windowsGroup extends baseModule {
 		}
 
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"), $selectedGroups,
-				null, $availableGroups, null, 'memberof', false, true);
+			null, $availableGroups, null, 'memberof', false, true);
 
 		$return->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
@@ -550,11 +552,11 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the memberof selection page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the memberof selection page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_memberof() {
 		if (isset($_POST['memberof_2']) && isset($_POST['memberof_left'])) { // Add groups to list
 			// add new group
@@ -567,16 +569,16 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to change the member attribute.
-	*
-	* @return htmlElement HTML meta data
-	*/
+	 * This function will create the meta HTML code to show a page to change the member attribute.
+	 *
+	 * @return htmlElement HTML meta data
+	 */
 	function display_html_managedBy() {
 		$return = new htmlResponsiveRow();
 		// show possible managers
 		$options = [];
 		$filter = get_ldap_filter('user');
-		$entries = searchLDAPByFilter($filter, array('dn'), array('user'));
+		$entries = searchLDAPByFilter($filter, ['dn'], ['user']);
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$entries[$i] = $entries[$i]['dn'];
 		}
@@ -587,7 +589,7 @@ class windowsGroup extends baseModule {
 		}
 		$selected = [];
 		if (isset($this->attributes['managedBy'][0])) {
-			$selected = array($this->attributes['managedBy'][0]);
+			$selected = [$this->attributes['managedBy'][0]];
 			if (!in_array($selected[0], $options)) {
 				$options[getAbstractDN($selected[0])] = $selected[0];
 			}
@@ -608,11 +610,11 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the members page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the members page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_managedBy() {
 		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
@@ -622,10 +624,10 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to change the member attribute.
-	*
-	* @return htmlElement HTML meta data
-	*/
+	 * This function will create the meta HTML code to show a page to change the member attribute.
+	 *
+	 * @return htmlElement HTML meta data
+	 */
 	function display_html_user() {
 		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
@@ -643,7 +645,7 @@ class windowsGroup extends baseModule {
 
 			$options = [];
 			$filter = get_ldap_filter($type->getId());
-			$entries = searchLDAP($type->getSuffix(), $filter, array('dn'));
+			$entries = searchLDAP($type->getSuffix(), $filter, ['dn']);
 			for ($i = 0; $i < sizeof($entries); $i++) {
 				$entries[$i] = $entries[$i]['dn'];
 			}
@@ -723,11 +725,11 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the members page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the members page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_user() {
 		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_user_remove']) && isset($_POST['members'])) {
@@ -800,7 +802,7 @@ class windowsGroup extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -838,7 +840,7 @@ class windowsGroup extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['groupScope'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -854,7 +856,7 @@ class windowsGroup extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['groupType'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$errors[] = $errMsg;
 				}
 			}
@@ -961,8 +963,8 @@ class windowsGroup extends baseModule {
 			return $this->groupCache;
 		}
 		$return = [];
-		$types = array('group');
-		$results = searchLDAPByFilter('(objectClass=group)', array('dn'), $types);
+		$types = ['group'];
+		$results = searchLDAPByFilter('(objectClass=group)', ['dn'], $types);
 		$count = sizeof($results);
 		for ($i = 0; $i < $count; $i++) {
 			if (isset($results[$i]['dn'])) {
@@ -974,25 +976,25 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	*
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It is possible to change several DNs (e.g. create a new user and add him
-	* to some groups via attribute memberUid)<br>
-	* <br><b>"add"</b> are attributes which have to be added to the LDAP entry
-	* <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
-	* <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
-	* <br><b>"notchanged"</b> are attributes which stay unchanged
-	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
-	* <br>
-	* <br>This builds the required commands from $this-attributes and $this->orig.
-	*
-	* @return array list of modifications
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 *
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It is possible to change several DNs (e.g. create a new user and add him
+	 * to some groups via attribute memberUid)<br>
+	 * <br><b>"add"</b> are attributes which have to be added to the LDAP entry
+	 * <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
+	 * <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
+	 * <br><b>"notchanged"</b> are attributes which stay unchanged
+	 * <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
+	 * <br>
+	 * <br>This builds the required commands from $this-attributes and $this->orig.
+	 *
+	 * @return array list of modifications
+	 */
 	public function save_attributes() {
 		$attrs = $this->attributes;
 		$orig = $this->orig;
@@ -1004,11 +1006,11 @@ class windowsGroup extends baseModule {
 	/**
 	 * Runs the postmodify actions.
 	 *
-	 * @see baseModule::postModifyActions()
-	 *
 	 * @param boolean $newAccount
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @see baseModule::postModifyActions()
+	 *
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = [];
@@ -1025,10 +1027,10 @@ class windowsGroup extends baseModule {
 		// add groups
 		for ($i = 0; $i < sizeof($toAdd); $i++) {
 			if (in_array($toAdd[$i], $groups)) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array('member' => array($this->getAccountContainer()->finalDN)));
+				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to add group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-					$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+					$messages[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 				else {
 					logNewMessage(LOG_NOTICE, 'Added group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
@@ -1038,10 +1040,10 @@ class windowsGroup extends baseModule {
 		// remove groups
 		for ($i = 0; $i < sizeof($toRem); $i++) {
 			if (in_array($toRem[$i], $groups)) {
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->dn_orig)));
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], ['member' => [$this->getAccountContainer()->dn_orig]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to delete group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+					$messages[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 				else {
 					logNewMessage(LOG_NOTICE, 'Removed group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
@@ -1061,7 +1063,7 @@ class windowsGroup extends baseModule {
 		$effectiveMembers = $membersToCheck;
 		while (!empty($membersToCheck)) {
 			$member = array_pop($membersToCheck);
-			$attrs = ldapGetDN($member, array('member'));
+			$attrs = ldapGetDN($member, ['member']);
 			if (!empty($attrs['member'])) {
 				foreach ($attrs['member'] as $newMember) {
 					if (!in_array($newMember, $effectiveMembers)) {
@@ -1098,7 +1100,7 @@ class windowsGroup extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'cn' => _('Group name'),
 			'description' => _('Description'),
 			'info' => _('Notes'),
@@ -1109,7 +1111,7 @@ class windowsGroup extends baseModule {
 			'groupscope' => _('Group scope'),
 			'whencreated' => _('Creation time'),
 			'whenchanged' => _('Change date'),
-		);
+		];
 	}
 
 	/**
@@ -1147,7 +1149,7 @@ class windowsGroup extends baseModule {
 							$values[$i] = getAbstractDN($values[$i]);
 						}
 					}
-					return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), array('rightToLeftText'));
+					return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), ['rightToLeftText']);
 				}
 				return null;
 			};
