@@ -23,18 +23,17 @@
 
 
 /**
-* The account type for DHCP
-*
-* @package types
-* @author Thomas Manninger
-**/
+ * The account type for DHCP
+ *
+ * @package types
+ * @author Thomas Manninger
+ **/
 
 /**
-* The account type for DHCP
-*
-* @package types
-**/
-
+ * The account type for DHCP
+ *
+ * @package types
+ **/
 class dhcp extends baseType {
 
 	/**
@@ -49,19 +48,19 @@ class dhcp extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	public function getAlias() {
 		return _("DHCP");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	public function getDescription() {
 		return _("DHCP administration");
 	}
@@ -74,20 +73,20 @@ class dhcp extends baseType {
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	public function getListClassName() {
 		return "lamDHCPList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
-	public 	function getDefaultListAttributes() {
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
+	public function getDefaultListAttributes() {
 		return "#cn;#dhcpRange;#fixed_ips";
 	}
 
@@ -203,26 +202,26 @@ class lamDHCPList extends lamList {
 			}
 			return false;
 		}
-        elseif ($filterAttribute === "dhcprange") {
-            if (isset($data['dhcprange'])) {
-            	foreach ($data['dhcprange'] as $range) {
-            		if (preg_match($regex, $range)) {
-            			return true;
-            		}
-            	}
-            }
-            $pooledRanges = searchLDAP($data['dn'], '(objectclass=dhcpPool)', ['dhcprange']);
-            foreach ($pooledRanges as $pooledRange) {
-            	if (empty($pooledRange['dhcprange'])) {
-            		continue;
-            	}
-            	foreach ($pooledRange['dhcprange'] as $range) {
-            		if (preg_match($regex, $range)) {
-            			return true;
-            		}
-            	}
-            }
-        }
+		elseif ($filterAttribute === "dhcprange") {
+			if (isset($data['dhcprange'])) {
+				foreach ($data['dhcprange'] as $range) {
+					if (preg_match($regex, $range)) {
+						return true;
+					}
+				}
+			}
+			$pooledRanges = searchLDAP($data['dn'], '(objectclass=dhcpPool)', ['dhcprange']);
+			foreach ($pooledRanges as $pooledRange) {
+				if (empty($pooledRange['dhcprange'])) {
+					continue;
+				}
+				foreach ($pooledRange['dhcprange'] as $range) {
+					if (preg_match($regex, $range)) {
+						return true;
+					}
+				}
+			}
+		}
 		return parent::isFilterMatching($data, $filterAttribute, $regex);
 	}
 
@@ -245,12 +244,12 @@ class lamDHCPList extends lamList {
 	 */
 	function listDoPost() {
 		$fragment = parent::listDoPost();
-        if (isset($_POST['dhcpDefaults'])) {
-        	metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&DN='" . $this->type->getSuffix() . "'");
-        	die();
-        }
-        else {
-        	return $fragment;
-        }
+		if (isset($_POST['dhcpDefaults'])) {
+			metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&DN='" . $this->type->getSuffix() . "'");
+			die();
+		}
+		else {
+			return $fragment;
+		}
 	}
 }

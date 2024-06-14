@@ -21,17 +21,17 @@
 */
 
 /**
-* The account type for Kolab shared folders.
-*
-* @package types
-* @author Roland Gruber
-*/
+ * The account type for Kolab shared folders.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* The account type for Kolab shared folders.
-*
-* @package types
-*/
+ * The account type for Kolab shared folders.
+ *
+ * @package types
+ */
 class kolabSharedFolderType extends baseType {
 
 	/**
@@ -46,37 +46,37 @@ class kolabSharedFolderType extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		return _("Kolab shared folders");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("Kolab shared folders (e.g. mail folders)");
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "kolabSharedFolderTypeList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#cn;#kolabDelegate;#alias";
 	}

@@ -21,17 +21,17 @@
 */
 
 /**
-* The account type for PyKota billing codes.
-*
-* @package types
-* @author Roland Gruber
-*/
+ * The account type for PyKota billing codes.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* The account type for PyKota billing codes.
-*
-* @package types
-*/
+ * The account type for PyKota billing codes.
+ *
+ * @package types
+ */
 class pykotaBillingCodeType extends baseType {
 
 	/**
@@ -46,37 +46,37 @@ class pykotaBillingCodeType extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		return _("Billing codes");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("PyKota billing codes");
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "lamPykotaBillingCodeTypeList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#cn;#description;#pykotaBalance;#pykotaPageCounter";
 	}

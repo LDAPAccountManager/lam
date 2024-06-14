@@ -21,17 +21,17 @@
 */
 
 /**
-* The account type for host accounts (e.g. Samba).
-*
-* @package types
-* @author Roland Gruber
-*/
+ * The account type for host accounts (e.g. Samba).
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* The account type for host accounts (e.g. Samba).
-*
-* @package types
-*/
+ * The account type for host accounts (e.g. Samba).
+ *
+ * @package types
+ */
 class host extends baseType {
 
 	/**
@@ -46,19 +46,19 @@ class host extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		return _("Hosts");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("Host accounts (e.g. Samba)");
 	}
@@ -71,19 +71,19 @@ class host extends baseType {
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "lamHostList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#cn;#description;#uidNumber;#gidNumber";
 	}

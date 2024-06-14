@@ -22,17 +22,17 @@
 */
 
 /**
-* The account type for user accounts (e.g. Unix, Samba and Kolab).
-*
-* @package types
-* @author Roland Gruber
-*/
+ * The account type for user accounts (e.g. Unix, Samba and Kolab).
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* The account type for user accounts (e.g. Unix, Samba and Kolab).
-*
-* @package types
-*/
+ * The account type for user accounts (e.g. Unix, Samba and Kolab).
+ *
+ * @package types
+ */
 class user extends baseType {
 
 	/**
@@ -47,19 +47,19 @@ class user extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		return _("Users");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("User accounts (e.g. Unix, Samba and Kolab)");
 	}
@@ -72,19 +72,19 @@ class user extends baseType {
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "lamUserList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#uid;#givenName;#sn;#uidNumber;#gidNumber";
 	}
@@ -126,7 +126,7 @@ class user extends baseType {
 		}
 		// check if first and last name can be shown
 		if (($personalAttributes != null) && isset($personalAttributes['sn'][0]) && !empty($personalAttributes['sn'][0])
-				&& isset($personalAttributes['givenName'][0]) && !empty($personalAttributes['givenName'][0])) {
+			&& isset($personalAttributes['givenName'][0]) && !empty($personalAttributes['givenName'][0])) {
 			return $title . htmlspecialchars($personalAttributes['givenName'][0] . ' ' . $personalAttributes['sn'][0]);
 		}
 		// check if a display name is set

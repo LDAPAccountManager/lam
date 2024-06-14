@@ -37,52 +37,52 @@
  */
 class asteriskExt extends baseType {
 
-    /**
-     * Constructs a new domain type object.
-     *
-     * @param ConfiguredType $type configuration
-     */
-    public function __construct($type) {
-        parent::__construct($type);
-        $this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another extension');
-        $this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to extensions list');
-    }
+	/**
+	 * Constructs a new domain type object.
+	 *
+	 * @param ConfiguredType $type configuration
+	 */
+	public function __construct($type) {
+		parent::__construct($type);
+		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another extension');
+		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to extensions list');
+	}
 
-    /**
-     * Returns the alias name of this account type.
-     *
-     * @return string alias name
-     */
-    function getAlias() {
-        return _("Asterisk extensions");
-    }
+	/**
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
+	function getAlias() {
+		return _("Asterisk extensions");
+	}
 
-    /**
-     * Returns the description of this account type.
-     *
-     * @return string description
-     */
-    function getDescription() {
-        return _("Asterisk extensions entries");
-    }
+	/**
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
+	function getDescription() {
+		return _("Asterisk extensions entries");
+	}
 
-    /**
-     * Returns the class name for the list object.
-     *
-     * @return string class name
-     */
-    function getListClassName() {
-        return "lamAsteriskExtList";
-    }
+	/**
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
+	function getListClassName() {
+		return "lamAsteriskExtList";
+	}
 
-    /**
-     * Returns the default attribute list for this account type.
-     *
-     * @return string attribute list
-     */
-    function getDefaultListAttributes() {
-        return "#AstExtension;#AstContext;#member";
-    }
+	/**
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
+	function getDefaultListAttributes() {
+		return "#AstExtension;#AstContext;#member";
+	}
 
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
@@ -90,22 +90,22 @@ class asteriskExt extends baseType {
 	 * @param accountContainer $container account container
 	 * @return String title text
 	 */
-    public function getTitleBarTitle($container) {
+	public function getTitleBarTitle($container) {
 		$attributes = null;
 		if ($container->getAccountModule('asteriskExtension') != null) {
 			$attributes = $container->getAccountModule('asteriskExtension')->getAttributes();
 		}
 		// check if a common name is set
-        if (isset($attributes['AstExtension'][0])) {
-            return htmlspecialchars($attributes['AstExtension'][0]);
-        }
-        // new account
-    	if ($container->isNewAccount) {
-            return _("New extension");
-        }
-        // fall back to default
-        return parent::getTitleBarTitle($container);
-    }
+		if (isset($attributes['AstExtension'][0])) {
+			return htmlspecialchars($attributes['AstExtension'][0]);
+		}
+		// new account
+		if ($container->isNewAccount) {
+			return _("New extension");
+		}
+		// fall back to default
+		return parent::getTitleBarTitle($container);
+	}
 
 }
 
@@ -118,74 +118,74 @@ class asteriskExt extends baseType {
  */
 class lamAsteriskExtList extends lamList {
 
-    /**
-     * Constructor
-     *
-     * @param string $type account type
-     * @return lamList list object
-     */
-    function __construct($type) {
-        parent::__construct($type);
-        $this->labels = [
-            'nav' => _("Extension count: %s"),
-            'error_noneFound' => _("No Asterisk extensions found."),
-            'newEntry' => _("New extension"),
-            'deleteEntry' => _("Delete selected extensions")
-        ];
-    }
-
-    /**
-     * Forces the list view to show only specific attributes.
+	/**
+	 * Constructor
 	 *
-     * @see lamList::listGetParams()
-     */
-    protected function listGetParams() {
-        // check if only PDF should be shown
-        parent::listGetParams();
-        $this->attrArray = ["astextension", "astcontext", "member"];
-        $this->descArray = [_("Extension name"), _("Account context"), _("Owner")];
-    }
+	 * @param string $type account type
+	 * @return lamList list object
+	 */
+	function __construct($type) {
+		parent::__construct($type);
+		$this->labels = [
+			'nav' => _("Extension count: %s"),
+			'error_noneFound' => _("No Asterisk extensions found."),
+			'newEntry' => _("New extension"),
+			'deleteEntry' => _("Delete selected extensions")
+		];
+	}
 
-    /**
-     * Groups the extensions.
-     *
-     * (non-PHPdoc)
-     * @see lamList::listRefreshData()
-     */
-    protected function listRefreshData() {
-        // configure search filter
-        $module_filter = get_ldap_filter($this->type->getId());  // basic filter is provided by modules
-        $filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
-        $attrs = $this->attrArray;
-        $attrs[] = "astpriority";
-        $entries = searchLDAP($this->suffix, $filter, $attrs);
-        $lastError = getLastLDAPError();
-        if ($lastError != null) {
-            call_user_func_array('StatusMessage', $lastError);
-        }
+	/**
+	 * Forces the list view to show only specific attributes.
+	 *
+	 * @see lamList::listGetParams()
+	 */
+	protected function listGetParams() {
+		// check if only PDF should be shown
+		parent::listGetParams();
+		$this->attrArray = ["astextension", "astcontext", "member"];
+		$this->descArray = [_("Extension name"), _("Account context"), _("Owner")];
+	}
 
-        $this->ldapEntries = $this->normalizeLdapOutput($entries);
-    	$this->entries = [];
+	/**
+	 * Groups the extensions.
+	 *
+	 * (non-PHPdoc)
+	 * @see lamList::listRefreshData()
+	 */
+	protected function listRefreshData() {
+		// configure search filter
+		$module_filter = get_ldap_filter($this->type->getId());  // basic filter is provided by modules
+		$filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
+		$attrs = $this->attrArray;
+		$attrs[] = "astpriority";
+		$entries = searchLDAP($this->suffix, $filter, $attrs);
+		$lastError = getLastLDAPError();
+		if ($lastError != null) {
+			call_user_func_array('StatusMessage', $lastError);
+		}
+
+		$this->ldapEntries = $this->normalizeLdapOutput($entries);
+		$this->entries = [];
 		foreach ($this->ldapEntries as $index => &$attrs) {
 			$this->entries[$index] = &$attrs;
 		}
-        // generate list of possible suffixes
-        $this->possibleSuffixes = $this->type->getSuffixList();
-    }
+		// generate list of possible suffixes
+		$this->possibleSuffixes = $this->type->getSuffixList();
+	}
 
-    /**
-     * Groups the extensions.
-     *
-     * @param array $entries extension entries
-     */
-    private function normalizeLdapOutput($entries) {
-    	$filteredEntries = [];
-        foreach ($entries as $entry){
-            if ($entry["astpriority"][0] == '1') {
+	/**
+	 * Groups the extensions.
+	 *
+	 * @param array $entries extension entries
+	 */
+	private function normalizeLdapOutput($entries) {
+		$filteredEntries = [];
+		foreach ($entries as $entry) {
+			if ($entry["astpriority"][0] == '1') {
 				$filteredEntries[] = $entry;
-            }
-        }
-        return $filteredEntries;
-    }
+			}
+		}
+		return $filteredEntries;
+	}
 
 }

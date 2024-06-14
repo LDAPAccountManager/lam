@@ -21,17 +21,17 @@
 */
 
 /**
-* The account type for mail aliases.
-*
-* @package types
-* @author Roland Gruber
-*/
+ * The account type for mail aliases.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* The account type for mail aliases.
-*
-* @package types
-*/
+ * The account type for mail aliases.
+ *
+ * @package types
+ */
 class mailAlias extends baseType {
 
 	/**
@@ -46,19 +46,19 @@ class mailAlias extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		return _("Mail aliases");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("Mailing aliases (e.g. NIS mail aliases)");
 	}
@@ -71,19 +71,19 @@ class mailAlias extends baseType {
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "lamMailAliasList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#cn;#rfc822MailMember";
 	}

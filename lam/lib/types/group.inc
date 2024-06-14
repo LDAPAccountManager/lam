@@ -1,5 +1,7 @@
 <?php
+
 use \LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -22,18 +24,18 @@ use \LAM\TYPES\TypeManager;
 */
 
 /**
-* The account type for group accounts (e.g. Unix and Samba).
-*
-* @package types
-* @author Roland Gruber
-* @author Ludek Finstrle
-*/
+ * The account type for group accounts (e.g. Unix and Samba).
+ *
+ * @package types
+ * @author Roland Gruber
+ * @author Ludek Finstrle
+ */
 
 /**
-* The account type for group accounts (e.g. Unix and Samba).
-*
-* @package types
-*/
+ * The account type for group accounts (e.g. Unix and Samba).
+ *
+ * @package types
+ */
 class group extends baseType {
 
 	/**
@@ -55,13 +57,13 @@ class group extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		if ($this->getType() != null) {
-		$modules = $this->getType()->getModules();
+			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
 				return _('Roles');
 			}
@@ -70,10 +72,10 @@ class group extends baseType {
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("Group accounts (e.g. Unix and Samba)");
 	}
@@ -86,19 +88,19 @@ class group extends baseType {
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "lamGroupList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#cn;#gidNumber;#memberUID;#description";
 	}
@@ -295,7 +297,7 @@ class lamGroupList extends lamList {
 				$primaryvals = array_flip(array_values($primary_hash));
 				// test if group has some secondary members
 				if (isset($entry[$attribute])) {
-					$attr = array_merge($primary_hash,$entry[$attribute]);
+					$attr = array_merge($primary_hash, $entry[$attribute]);
 				}
 				else {
 					$attr = $primary_hash;
@@ -366,7 +368,7 @@ class lamGroupList extends lamList {
 				continue;
 			}
 			$gid = $this->ldapEntries[$i]['gidnumber'][0];
-			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
+			$filter = "(&(&" . $module_filter . ")(gidNumber=" . $gid . "))";
 			$entries = searchLDAPByFilter($filter, $attrs, [$scope]);
 			for ($j = 0; $j < sizeof($entries); $j++) {
 				$this->primary_hash[$gid][$j] = $entries[$j]['uid'][0];
@@ -392,7 +394,7 @@ class lamGroupList extends lamList {
 		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$use_primary = $this->include_primary;
- 		$this->include_primary = $tpOption->isSelected();
+		$this->include_primary = $tpOption->isSelected();
 		if (!$use_primary && $this->include_primary) {
 			$this->refresh_primary = true;
 		}

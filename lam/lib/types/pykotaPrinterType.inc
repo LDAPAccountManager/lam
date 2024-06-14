@@ -21,17 +21,17 @@
 */
 
 /**
-* The account type for PyKota printers.
-*
-* @package types
-* @author Roland Gruber
-*/
+ * The account type for PyKota printers.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* The account type for PyKota printers.
-*
-* @package types
-*/
+ * The account type for PyKota printers.
+ *
+ * @package types
+ */
 class pykotaPrinterType extends baseType {
 
 	/**
@@ -46,37 +46,37 @@ class pykotaPrinterType extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		return _("Printers");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("PyKota printers");
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "lamPykotaPrinterTypeList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#cn;#description;#pykotaPricePerPage;#pykotaPricePerJob;#pykotaMaxJobSize";
 	}

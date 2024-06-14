@@ -21,17 +21,17 @@
 */
 
 /**
-* The account type for NIS netgroups.
-*
-* @package types
-* @author Roland Gruber
-*/
+ * The account type for NIS netgroups.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* The account type for NIS netgroups.
-*
-* @package types
-*/
+ * The account type for NIS netgroups.
+ *
+ * @package types
+ */
 class netgroup extends baseType {
 
 	/**
@@ -46,19 +46,19 @@ class netgroup extends baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 *
+	 * @return string alias name
+	 */
 	function getAlias() {
 		return _("NIS netgroups");
 	}
 
 	/**
-	* Returns the description of this account type.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 *
+	 * @return string description
+	 */
 	function getDescription() {
 		return _("NIS netgroup entries");
 	}
@@ -71,19 +71,19 @@ class netgroup extends baseType {
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	function getListClassName() {
 		return "lamNetgroupList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 *
+	 * @return string attribute list
+	 */
 	function getDefaultListAttributes() {
 		return "#cn;#description;#memberNisNetgroup";
 	}
