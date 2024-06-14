@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,45 +20,45 @@
 */
 
 /**
-* Manages PyKota billing codes.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages PyKota billing codes.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Manages PyKota billing codes.
-*
-* @package modules
-*/
+ * Manages PyKota billing codes.
+ *
+ * @package modules
+ */
 class pykotaBillingCode extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaBalance', 'pykotaPageCounter', 'pykotaBillingCode');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaBalance', 'pykotaPageCounter', 'pykotaBillingCode'];
 
 	/** cache for existing codes (array(dn1 => pykotaBillingCode1, dn2 => pykotaBillingCode2)) */
 	private $codeCache;
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('pykotaBillingCodeType'));
+		return in_array($this->get_scope(), ['pykotaBillingCodeType']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -68,78 +68,78 @@ class pykotaBillingCode extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute
-		$return["RDN"] = array("cn" => "high");
+		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=pykotaBilling)");
+		$return["ldap_filter"] = ['or' => "(objectClass=pykotaBilling)"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('pykotaObject', 'pykotaBilling');
+		$return['objectClasses'] = ['pykotaObject', 'pykotaBilling'];
 		// managed attributes
-		$return['attributes'] = array('cn', 'pykotaBillingCode', 'description', 'pykotaBalance', 'pykotaPageCounter');
+		$return['attributes'] = ['cn', 'pykotaBillingCode', 'description', 'pykotaBalance', 'pykotaPageCounter'];
 		// help Entries
-		$return['help'] = array(
-			'pykotaBillingCode' => array(
+		$return['help'] = [
+			'pykotaBillingCode' => [
 				"Headline" => _("Billing code"), 'attr' => 'pykotaBillingCode',
 				"Text" => _("Billing code name which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ .")
-			),
-			'description' => array (
+			],
+			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Billing code description.")
-			),
-			'pykotaBalance' => array (
+			],
+			'pykotaBalance' => [
 				"Headline" => _('Balance'), 'attr' => 'pykotaBalance',
 				"Text" => _('Used balance for the billing code.')
-			),
-			'pykotaPageCounter' => array (
+			],
+			'pykotaPageCounter' => [
 				"Headline" => _('Page count'), 'attr' => 'pykotaPageCounter',
 				"Text" => _('Number of pages printed with this billing code.')
-			),
-			'reset' => array (
+			],
+			'reset' => [
 				"Headline" => _('Reset'), 'attr' => 'pykotaBalance, pykotaPageCounter',
 				"Text" => _('Resets the billing code\'s balance and page counter to 0.')
-			),
-		);
+			],
+		];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'pykotaBillingCode_pykotaBillingCode',
 				'description' => _('Printer name'),
 				'help' => 'cn',
 				'example' => _('billingCode01'),
 				'required' => true,
 				'unique' => true,
-			),
-			array(
+			],
+			[
 				'name' => 'pykotaBillingCode_description',
 				'description' => _('Description'),
 				'help' => 'description',
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'pykotaBillingCode' => _('Billing code'),
 			'description' => _('Description'),
 			'pykotaBalance' => _('Balance'),
 			'pykotaPageCounter' => _('Page count'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
-		$this->messages['pykotaBillingCode'][0] = array('ERROR', _('Billing code'), _('Billing code contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['pykotaBillingCode'][1] = array('ERROR', _('Account %s:') . ' pykotaBillingCode_cn', _('Billing code contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['pykotaBillingCode'][2] = array('ERROR', _('Billing code'), _('Billing code already exists!'));
-		$this->messages['pykotaBillingCode'][3] = array('ERROR', _('Account %s:') . ' pykotaBillingCode_cn', _('Billing code already exists!'));
+		$this->messages['pykotaBillingCode'][0] = ['ERROR', _('Billing code'), _('Billing code contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['pykotaBillingCode'][1] = ['ERROR', _('Account %s:') . ' pykotaBillingCode_cn', _('Billing code contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['pykotaBillingCode'][2] = ['ERROR', _('Billing code'), _('Billing code already exists!')];
+		$this->messages['pykotaBillingCode'][3] = ['ERROR', _('Account %s:') . ' pykotaBillingCode_cn', _('Billing code already exists!')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -185,11 +185,11 @@ class pykotaBillingCode extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		// pykotaBillingCode
@@ -242,12 +242,12 @@ class pykotaBillingCode extends baseModule {
 			// pykotaBillingCode
 			if (!get_preg($rawAccounts[$i][$ids['pykotaBillingCode_pykotaBillingCode']], 'username')) {
 				$errMsg = $this->messages['pykotaBillingCode'][1];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$messages[] = $errMsg;
 			}
 			elseif ($this->codeExists($rawAccounts[$i][$ids['pykotaBillingCode_pykotaBillingCode']])) {
 				$errMsg = $this->messages['pykotaBillingCode'][3];
-				array_push($errMsg, array($i));
+				array_push($errMsg, [$i]);
 				$messages[] = $errMsg;
 			}
 			else {
@@ -303,7 +303,7 @@ class pykotaBillingCode extends baseModule {
 		if ($this->codeCache != null) {
 			return;
 		}
-		$results = searchLDAPByFilter('(objectClass=pykotaBilling)', array('pykotaBillingCode', 'dn'), array($this->get_scope()));
+		$results = searchLDAPByFilter('(objectClass=pykotaBilling)', ['pykotaBillingCode', 'dn'], [$this->get_scope()]);
 		$this->codeCache = [];
 		foreach ($results as $result) {
 			if (isset($result['pykotabillingcode'][0])) {
@@ -316,12 +316,12 @@ class pykotaBillingCode extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			"description" => _('Description'),
 			"cn" => _('Billing code'),
 			'pykotabalance' => _('Balance'),
 			'pykotapagecounter' => _('Page count'),
-		);
+		];
 	}
 
 }

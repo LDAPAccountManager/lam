@@ -1,4 +1,5 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
@@ -7,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2023  Roland Gruber
+  Copyright (C) 2012 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,17 +28,17 @@ use LAM\TYPES\ConfiguredType;
 
 
 /**
-* Manages Puppet configuration options.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages Puppet configuration options.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages Puppet configuration options.
-*
-* @package modules
-*/
+ * Manages Puppet configuration options.
+ *
+ * @package modules
+ */
 class puppetClient extends baseModule {
 
 	/** cache for classes */
@@ -46,10 +47,10 @@ class puppetClient extends baseModule {
 	private $variablesCache;
 
 	/**
-	* Creates a new authorizedServiceObject object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new authorizedServiceObject object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
@@ -58,117 +59,117 @@ class puppetClient extends baseModule {
 
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('host'));
+		return in_array($this->get_scope(), ['host']);
 	}
 
 	/**
-    * Returns meta data that is interpreted by parent class
-    *
-    * @return array array with meta data
-    */
-    function get_metaData() {
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 */
+	function get_metaData() {
 		$return = [];
 		// icon
 		$return['icon'] = 'computer.svg';
 		// alias name
 		$return["alias"] = _("Puppet");
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('puppetClient');
+		$return['objectClasses'] = ['puppetClient'];
 		// managed attributes
-		$return['attributes'] = array('environment', 'parentnode', 'puppetclass', 'puppetvar');
+		$return['attributes'] = ['environment', 'parentnode', 'puppetclass', 'puppetvar'];
 		// help Entries
-		$return['help'] = array (
-			'environment' => array (
+		$return['help'] = [
+			'environment' => [
 				"Headline" => _('Environment'), 'attr' => 'environment',
 				"Text" => _('Please enter the environment name for this node (e.g. production).')
-			),
-			'environmentList' => array (
+			],
+			'environmentList' => [
 				"Headline" => _('Environment'), 'attr' => 'environment',
 				"Text" => _('Please enter the environment name for this node (e.g. production).') . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'parentnode' => array (
+			],
+			'parentnode' => [
 				"Headline" => _('Parent node'), 'attr' => 'parentnode',
 				"Text" => _('This is this node\'s parent. All classes and variables are inherited from this node.')
-			),
-			'puppetclass' => array (
+			],
+			'puppetclass' => [
 				"Headline" => _('Classes'), 'attr' => 'puppetclass',
 				"Text" => _('The list of configured Puppet classes for this node (e.g. ntp).')
-			),
-			'puppetclassList' => array (
+			],
+			'puppetclassList' => [
 				"Headline" => _('Classes'), 'attr' => 'puppetclass',
 				"Text" => _('The list of configured Puppet classes for this node (e.g. ntp).') . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'puppetvar' => array (
+			],
+			'puppetvar' => [
 				"Headline" => _('Variables'), 'attr' => 'puppetvar',
 				"Text" => _('Please enter your Puppet variables for this node (e.g. config_exim=true).')
-			),
-			'puppetvarList' => array (
+			],
+			'puppetvarList' => [
 				"Headline" => _('Variables'), 'attr' => 'puppetvar',
 				"Text" => _('Please enter your Puppet variables for this node (e.g. config_exim=true).') . ' ' . _('Multiple values are separated by semicolon.')
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _('Automatically add this extension'),
 				"Text" => _('This will enable the extension automatically if this profile is loaded.')
-			),
-			'predefinedClasses' => array(
+			],
+			'predefinedClasses' => [
 				"Headline" => _('Predefined classes'),
 				"Text" => _('These classes will be available as autocompletion hints when adding new classes.')
-			),
-			'predefinedEnvironments' => array(
+			],
+			'predefinedEnvironments' => [
 				"Headline" => _('Predefined environments'),
 				"Text" => _('These environments will be available as autocompletion hints when setting the environment.')
-			),
-			'enforceClasses' => array(
+			],
+			'enforceClasses' => [
 				"Headline" => _('Enforce classes'),
 				"Text" => _('If set then only these classes are allowed. One class per line.')
-			),
-		);
+			],
+		];
 		// upload fields
 		$allowedClasses = '';
 		if (!empty($this->moduleSettings['puppetClient_enforceClasses'][0])) {
 			$allowedClasses = implode(', ', $this->moduleSettings['puppetClient_enforceClasses']);
 		}
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'puppetClient_environment',
 				'description' => _('Environment'),
 				'help' => 'environmentList',
 				'example' => 'production'
-			),
-			array(
+			],
+			[
 				'name' => 'puppetClient_parentnode',
 				'description' => _('Parent node'),
 				'help' => 'parentnode',
 				'example' => 'basenode'
-			),
-			array(
+			],
+			[
 				'name' => 'puppetClient_puppetclass',
 				'description' => _('Classes'),
 				'help' => 'puppetclassList',
 				'example' => 'ntp;exim',
 				'values' => $allowedClasses
-			),
-			array(
+			],
+			[
 				'name' => 'puppetClient_puppetvar',
 				'description' => _('Variables'),
 				'help' => 'puppetvarList',
 				'example' => 'config_exim=true;config_exim_trusted_users=root'
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'environment' => _('Environment'),
 			'parentnode' => _('Parent node'),
 			'puppetclass' => _('Classes'),
 			'puppetvar' => _('Variables'),
-		);
+		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('puppetClient_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
@@ -183,40 +184,40 @@ class puppetClient extends baseModule {
 		$profileContainer->add(new htmlResponsiveInputTextarea('puppetClient_puppetvar', '', 60, 5, _('Variables'), 'puppetvar'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
-		$return['profile_checks']['puppetClient_environment'] = array('type' => 'ext_preg', 'regex' => 'ascii', 'error_message' => $this->messages['environment'][0]);
+		$return['profile_checks']['puppetClient_environment'] = ['type' => 'ext_preg', 'regex' => 'ascii', 'error_message' => $this->messages['environment'][0]];
 		// profile mappings
-		$return['profile_mappings'] = array(
+		$return['profile_mappings'] = [
 			'puppetClient_environment' => 'environment',
-		);
+		];
 		return $return;
-    }
-
-	/**
-	* This function fills the error message array with messages
-	*/
-	function load_Messages() {
-		$this->messages['environment'][0] = array('ERROR', _('The environment name may only contain ASCII characters.'));
-		$this->messages['environment'][1] = array('ERROR', _('Account %s:') . ' puppetClient_environment', _('The environment name may only contain ASCII characters.'));
-		$this->messages['puppetclass'][0] = array('ERROR', _('The class names may only contain ASCII characters.'));
-		$this->messages['puppetclass'][1] = array('ERROR', _('Account %s:') . ' puppetClient_puppetclass', _('The class names may only contain ASCII characters.'));
-		$this->messages['puppetclass'][2] = array('ERROR', _('Account %s:') . ' puppetClient_puppetclass', _('The class names contain invalid values.'));
-		$this->messages['puppetvar'][0] = array('ERROR', _('The variables may only contain ASCII characters.'));
-		$this->messages['puppetvar'][1] = array('ERROR', _('Account %s:') . ' puppetClient_puppetvar', _('The variables may only contain ASCII characters.'));
-		$this->messages['parentnode'][0] = array('ERROR', _('Account %s:') . ' puppetClient_parentnode', _('Parent node not found.'));
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * This function fills the error message array with messages
+	 */
+	function load_Messages() {
+		$this->messages['environment'][0] = ['ERROR', _('The environment name may only contain ASCII characters.')];
+		$this->messages['environment'][1] = ['ERROR', _('Account %s:') . ' puppetClient_environment', _('The environment name may only contain ASCII characters.')];
+		$this->messages['puppetclass'][0] = ['ERROR', _('The class names may only contain ASCII characters.')];
+		$this->messages['puppetclass'][1] = ['ERROR', _('Account %s:') . ' puppetClient_puppetclass', _('The class names may only contain ASCII characters.')];
+		$this->messages['puppetclass'][2] = ['ERROR', _('Account %s:') . ' puppetClient_puppetclass', _('The class names contain invalid values.')];
+		$this->messages['puppetvar'][0] = ['ERROR', _('The variables may only contain ASCII characters.')];
+		$this->messages['puppetvar'][1] = ['ERROR', _('Account %s:') . ' puppetClient_puppetvar', _('The variables may only contain ASCII characters.')];
+		$this->messages['parentnode'][0] = ['ERROR', _('Account %s:') . ' puppetClient_parentnode', _('Parent node not found.')];
+	}
+
+	/**
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('puppetClient', $this->attributes['objectClass']) && !in_array('puppetClient', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -275,7 +276,7 @@ class puppetClient extends baseModule {
 		if (isset($this->attributes['parentnode'][0])) {
 			$parentnode = $this->attributes['parentnode'][0];
 		}
-		$return->add(new htmlResponsiveSelect('parentnode', $possibleParentNodes, array($parentnode), _('Parent node'), 'parentnode'), 12);
+		$return->add(new htmlResponsiveSelect('parentnode', $possibleParentNodes, [$parentnode], _('Parent node'), 'parentnode'), 12);
 		// classes
 		if (empty($this->moduleSettings['puppetClient_enforceClasses'][0])) {
 			$this->addMultiValueInputTextField($return, 'puppetclass', _('Classes'), false, null, false, $this->classCache);
@@ -288,20 +289,20 @@ class puppetClient extends baseModule {
 
 		$return->addVerticalSpacer('2rem');
 		$remButton = new htmlAccountPageButton('puppetClient', 'attributes', 'remObjectClass', _('Remove Puppet extension'));
-		$remButton->setCSSClasses(array('lam-danger'));
+		$remButton->setCSSClasses(['lam-danger']);
 		$return->add($remButton, 12, 12, 12, 'text-center');
 		return $return;
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		if (isset($_POST['form_subpage_puppetClient_attributes_remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('puppetClient'), $this->attributes['objectClass']);
+			$this->attributes['objectClass'] = array_delete(['puppetClient'], $this->attributes['objectClass']);
 			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
@@ -318,7 +319,9 @@ class puppetClient extends baseModule {
 		$environmentCounter = 0;
 		while (isset($_POST['environment' . $environmentCounter])) {
 			$this->attributes['environment'][$environmentCounter] = $_POST['environment' . $environmentCounter];
-			if (!get_preg($this->attributes['environment'][$environmentCounter], 'ascii')) $errors[] = $this->messages['environment'][0];
+			if (!get_preg($this->attributes['environment'][$environmentCounter], 'ascii')) {
+				$errors[] = $this->messages['environment'][0];
+			}
 			if ($this->attributes['environment'][$environmentCounter] == '') {
 				unset($this->attributes['environment'][$environmentCounter]);
 			}
@@ -356,7 +359,9 @@ class puppetClient extends baseModule {
 		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("puppetClient", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "puppetClient";
+			if (!in_array("puppetClient", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "puppetClient";
+			}
 			// parent node
 			if ($rawAccounts[$i][$ids['puppetClient_parentnode']] != "") {
 				if (!in_array($rawAccounts[$i][$ids['puppetClient_parentnode']], $this->getPossibleParentNodes())) {
@@ -423,8 +428,8 @@ class puppetClient extends baseModule {
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	public function get_profileOptions($typeId) {
 		$return = parent::get_profileOptions($typeId);
 		$possibleParentNodes = $this->getPossibleParentNodes();
@@ -435,10 +440,10 @@ class puppetClient extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -468,7 +473,7 @@ class puppetClient extends baseModule {
 	 * @return array parent nodes (e.g. array('node1', 'node2'))
 	 */
 	private function getPossibleParentNodes() {
-		$searchResult = searchLDAPByAttribute('cn', '*', 'puppetClient', array('cn'), array('host'));
+		$searchResult = searchLDAPByAttribute('cn', '*', 'puppetClient', ['cn'], ['host']);
 		$possibleParentNodes = [];
 		for ($i = 0; $i < sizeof($searchResult); $i++) {
 			if (!get_preg($searchResult[$i]['cn'][0], 'ascii')) {
@@ -490,10 +495,10 @@ class puppetClient extends baseModule {
 		if ($this->classCache != null) {
 			return;
 		}
-		$attrs = array('puppetclass', 'puppetvar');
+		$attrs = ['puppetclass', 'puppetvar'];
 		$classes = [];
 		$variables = [];
-		$result = searchLDAPByFilter('(objectClass=puppetClient)', $attrs, array($this->get_scope()));
+		$result = searchLDAPByFilter('(objectClass=puppetClient)', $attrs, [$this->get_scope()]);
 		foreach ($result as $attributes) {
 			if (isset($attributes['puppetclass'])) {
 				foreach ($attributes['puppetclass'] as $val) {
@@ -526,12 +531,12 @@ class puppetClient extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'environment' => _('Environment'),
 			'parentnode' => _('Parent node'),
 			'puppetclass' => _('Classes'),
 			'puppetvar' => _('Variables'),
-		);
+		];
 	}
 
 }

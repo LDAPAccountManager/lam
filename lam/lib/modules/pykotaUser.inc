@@ -1,13 +1,15 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,24 +27,24 @@ use \LAM\TYPES\TypeManager;
 */
 
 /**
-* Manages PyKota user accounts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages PyKota user accounts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages PyKota user accounts.
-*
-* @package modules
-*/
+ * Manages PyKota user accounts.
+ *
+ * @package modules
+ */
 class pykotaUser extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
-		'pykotaPayments');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
+		'pykotaPayments'];
 
 	/** cache for uid attribute */
 	private $uidCache;
@@ -62,39 +64,39 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	* Creates a new pykotaUser object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new pykotaUser object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
-		$this->limitOptions = array(
+		$this->limitOptions = [
 			_('Quota') => 'quota',
 			_('Balance') => 'balance',
 			_('No quota') => 'noquota',
 			_('Free printing') => 'nochange',
 			_('Deny printing') => 'noprint',
-		);
+		];
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = $this->isStructural();
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), ['user']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -104,73 +106,73 @@ class pykotaUser extends baseModule {
 		// this is a base module
 		$return["is_base"] = $this->isStructural();
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=pykotaAccount)");
+		$return["ldap_filter"] = ['or' => "(objectClass=pykotaAccount)"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('pykotaAccount', 'pykotaAccountBalance');
+		$return['objectClasses'] = ['pykotaAccount', 'pykotaAccountBalance'];
 		// managed attributes
-		$return['attributes'] = array('uid', 'mail', 'description', 'pykotaLimitBy', 'pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
-			'pykotaOverCharge', 'pykotaPayments');
+		$return['attributes'] = ['uid', 'mail', 'description', 'pykotaLimitBy', 'pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
+			'pykotaOverCharge', 'pykotaPayments'];
 		// help Entries
-		$return['help'] = array(
-			'cn' => array(
+		$return['help'] = [
+			'cn' => [
 				"Headline" => _("Common name"), 'attr' => 'cn',
 				"Text" => _("This is the natural name of the user.")
-			),
-			'uid' => array(
+			],
+			'uid' => [
 				"Headline" => _("User name"), 'attr' => 'uid',
 				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
-			),
-			'mail' => array (
+			],
+			'mail' => [
 				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The user's email address.")
-			),
-			'description' => array (
+			],
+			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("User description.")
-			),
-			'pykotaUserName' => array(
+			],
+			'pykotaUserName' => [
 				"Headline" => _("PyKota user name"), 'attr' => 'pykotaUserName',
 				"Text" => _("User name that is used for PyKota.")
-			),
-			'pykotaLimitBy' => array(
+			],
+			'pykotaLimitBy' => [
 				"Headline" => _("Limit type"), 'attr' => 'pykotaLimitBy',
 				"Text" => _("Specifies the type of limit for printing if any. Please note that in contrast to \"Free printing\" the option \"No quota\" includes accounting.")
-			),
-			'pykotaBalance' => array(
+			],
+			'pykotaBalance' => [
 				"Headline" => _('Balance'), 'attr' => 'pykotaBalance',
 				"Text" => _('Current account balance for the user.')
-			),
-			'pykotaBalanceComment' => array(
+			],
+			'pykotaBalanceComment' => [
 				"Headline" => _('Balance comment'), 'attr' => 'pykotaPayments',
 				"Text" => _('Comment for initial balance.')
-			),
-			'pykotaLifeTimePaid' => array(
+			],
+			'pykotaLifeTimePaid' => [
 				"Headline" => _('Total paid'), 'attr' => 'pykotaLifeTimePaid',
 				"Text" => _('Total money paid by the user.')
-			),
-			'pykotaOverCharge' => array(
+			],
+			'pykotaOverCharge' => [
 				"Headline" => _('Overcharge factor'), 'attr' => 'pykotaOverCharge',
 				"Text" => _('Overcharge factor that is applied when computing the cost of a print job. The number of pages is not changed.')
-			),
-			'pykotaPayments' => array(
+			],
+			'pykotaPayments' => [
 				"Headline" => _('Payment and job history'), 'attr' => 'pykotaPayments',
 				"Text" => _('Payment and job history for this user.')
-			),
-			'pykotaPaymentsAdd' => array(
+			],
+			'pykotaPaymentsAdd' => [
 				"Headline" => _('Payment'), 'attr' => 'pykotaBalance, pykotaPayments',
 				"Text" => _('Adds the amount to the user\'s balance. You can also specify a comment.')
-			),
-			'jobSuffix' => array(
+			],
+			'jobSuffix' => [
 				"Headline" => _('Job suffix'),
 				"Text" => _('Please enter the LDAP suffix where the PyKota job entries are stored (configuration option "jobbase").')
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-		);
+			],
+		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		if (!$this->isStructural()) {
@@ -185,122 +187,122 @@ class pykotaUser extends baseModule {
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaUser_pykotaLimitBy'] = 'pykotaLimitBy';
 		$return['profile_mappings']['pykotaUser_pykotaOverCharge'] = 'pykotaOverCharge';
-		$return['profile_checks']['pykotaUser_pykotaBalance'] = array(
+		$return['profile_checks']['pykotaUser_pykotaBalance'] = [
 			'type' => 'ext_preg',
 			'regex' => 'float',
-			'error_message' => $this->messages['pykotaBalance'][0]);
-		$return['profile_checks']['pykotaUser_pykotaOverCharge'] = array(
+			'error_message' => $this->messages['pykotaBalance'][0]];
+		$return['profile_checks']['pykotaUser_pykotaOverCharge'] = [
 			'type' => 'ext_preg',
 			'regex' => 'float',
-			'error_message' => $this->messages['pykotaOverCharge'][0]);
+			'error_message' => $this->messages['pykotaOverCharge'][0]];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'pykotaUser_pykotaUserName',
 				'description' => _('PyKota user name'),
 				'help' => 'pykotaUserName',
 				'example' => _('smiller'),
 				'unique' => true,
-			)
-		);
+			]
+		];
 		if ($this->isStructural()) {
-			$return['upload_columns'][] = array(
+			$return['upload_columns'][] = [
 				'name' => 'pykotaUser_cn',
 				'description' => _('Common name'),
 				'help' => 'cn',
 				'example' => _('Steve Miller'),
 				'required' => true,
-			);
+			];
 		}
-		$return['upload_columns'][] = array(
+		$return['upload_columns'][] = [
 			'name' => 'pykotaUser_pykotaLimitBy',
 			'description' => _('Limit type'),
 			'help' => 'pykotaLimitBy',
 			'example' => _('Quota'),
 			'default' => _('Quota'),
 			'values' => implode(', ', array_keys($this->limitOptions))
-		);
-		$return['upload_columns'][] = array(
+		];
+		$return['upload_columns'][] = [
 			'name' => 'pykotaUser_pykotaBalance',
 			'description' => _('Balance'),
 			'help' => 'pykotaBalance',
 			'example' => '10.0',
-		);
-		$return['upload_columns'][] = array(
+		];
+		$return['upload_columns'][] = [
 			'name' => 'pykotaUser_pykotaBalanceComment',
 			'description' => _('Balance comment'),
 			'help' => 'pykotaBalanceComment',
 			'example' => _('Initial payment'),
-		);
-		$return['upload_columns'][] = array(
+		];
+		$return['upload_columns'][] = [
 			'name' => 'pykotaUser_pykotaOverCharge',
 			'description' => _('Overcharge factor'),
 			'help' => 'pykotaOverCharge',
 			'example' => '1.0',
 			'default' => '1.0'
-		);
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'pykotaUserName' => _('PyKota user name'),
 			'pykotaLimitBy' => _('Limit type'),
 			'pykotaBalance' => _('Balance'),
 			'pykotaOverCharge' => _('Overcharge factor'),
 			'pykotaLifeTimePaid' => _('Total paid'),
 			'pykotaPayments' => _('Payment history'),
-		);
+		];
 		if ($this->isStructural()) {
 			$return['PDF_fields']['cn'] = _('Common name');
 		}
 		// self service
-		$return['selfServiceFieldSettings'] = array(
+		$return['selfServiceFieldSettings'] = [
 			'pykotaBalance' => _('Balance (read-only)'),
 			'pykotaLifeTimePaid' => _('Total paid (read-only)'),
 			'pykotaPayments' => _('Payment history'),
 			'pykotaJobHistory' => _('Job history'),
-		);
+		];
 		// self service settings
 		if (get_class($this) == 'pykotaUser') {
 			$selfServiceContainer = new htmlResponsiveRow();
-			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, array('jobSuffix', get_class($this))), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, ['jobSuffix', get_class($this)]), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// configuration checks
-		$return['config_checks']['all']['pykotaUser_jobSuffix'] = array (
+		$return['config_checks']['all']['pykotaUser_jobSuffix'] = [
 			'type' => 'ext_preg',
 			'regex' => 'dn',
 			'required' => false,
 			'required_message' => $this->messages['jobSuffix'][0],
-			'error_message' => $this->messages['jobSuffix'][0]);
+			'error_message' => $this->messages['jobSuffix'][0]];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
-		$this->messages['uid'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' pykotaUser_uid', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][2] = array('ERROR', _('User name'), _('User name already exists!'));
-		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' pykotaUser_uid', _('User name already exists!'));
-		$this->messages['pykotaUserName'][0] = array('ERROR', _('PyKota user name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['pykotaUserName'][1] = array('ERROR', _('Account %s:') . ' pykotaUser_pykotaUserName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['pykotaUserName'][2] = array('ERROR', _('PyKota user name'), _('User name already exists!'));
-		$this->messages['pykotaUserName'][3] = array('ERROR', _('Account %s:') . ' pykotaUser_pykotaUserName', _('User name already exists!'));
-		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
-		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' pykotaUser_mail', _('Please enter a valid email address!'));
-		$this->messages['pykotaLimitBy'][0] = array('ERROR', _('Account %s:') . ' pykotaUser_pykotaLimitBy', _('Please enter a valid limit type.'));
-		$this->messages['pykotaBalance'][0] = array('ERROR', _('Balance'), _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaBalance'][1] = array('ERROR', _('Account %s:') . ' pykotaUser_pykotaBalance', _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaOverCharge'][0] = array('ERROR', _('Overcharge factor'), _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaOverCharge'][1] = array('ERROR', _('Account %s:') . ' pykotaUser_pykotaOverCharge', _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaPayments'][0] = array('ERROR', _('Payment'), _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['jobSuffix'][0] = array('ERROR', _('Job suffix'), _('Please enter a valid job suffix.'));
+		$this->messages['uid'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][1] = ['ERROR', _('Account %s:') . ' pykotaUser_uid', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['uid'][2] = ['ERROR', _('User name'), _('User name already exists!')];
+		$this->messages['uid'][3] = ['ERROR', _('Account %s:') . ' pykotaUser_uid', _('User name already exists!')];
+		$this->messages['pykotaUserName'][0] = ['ERROR', _('PyKota user name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['pykotaUserName'][1] = ['ERROR', _('Account %s:') . ' pykotaUser_pykotaUserName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['pykotaUserName'][2] = ['ERROR', _('PyKota user name'), _('User name already exists!')];
+		$this->messages['pykotaUserName'][3] = ['ERROR', _('Account %s:') . ' pykotaUser_pykotaUserName', _('User name already exists!')];
+		$this->messages['mail'][0] = ['ERROR', _('Email address'), _('Please enter a valid email address!')];
+		$this->messages['mail'][1] = ['ERROR', _('Account %s:') . ' pykotaUser_mail', _('Please enter a valid email address!')];
+		$this->messages['pykotaLimitBy'][0] = ['ERROR', _('Account %s:') . ' pykotaUser_pykotaLimitBy', _('Please enter a valid limit type.')];
+		$this->messages['pykotaBalance'][0] = ['ERROR', _('Balance'), _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaBalance'][1] = ['ERROR', _('Account %s:') . ' pykotaUser_pykotaBalance', _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaOverCharge'][0] = ['ERROR', _('Overcharge factor'), _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaOverCharge'][1] = ['ERROR', _('Account %s:') . ' pykotaUser_pykotaOverCharge', _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaPayments'][0] = ['ERROR', _('Payment'), _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['jobSuffix'][0] = ['ERROR', _('Job suffix'), _('Please enter a valid job suffix.')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -361,7 +363,7 @@ class pykotaUser extends baseModule {
 			if (!empty($this->attributes['pykotaLimitBy'][0])) {
 				$limitOption = $this->attributes['pykotaLimitBy'][0];
 			}
-			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, array($limitOption), _('Limit type'), 'pykotaLimitBy');
+			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, [$limitOption], _('Limit type'), 'pykotaLimitBy');
 			$limitSelect->setHasDescriptiveElements(true);
 			$limitSelect->setSortElements(false);
 			$container->add($limitSelect, 12);
@@ -395,7 +397,7 @@ class pykotaUser extends baseModule {
 			if (!$this->isStructural()) {
 				$container->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove PyKota extension'));
-				$remButton->setCSSClasses(array('lam-danger'));
+				$remButton->setCSSClasses(['lam-danger']);
 				$container->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
@@ -407,11 +409,11 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
@@ -431,8 +433,8 @@ class pykotaUser extends baseModule {
 		}
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('pykotaAccount', 'pykotaAccountBalance'), $this->attributes['objectClass']);
-			$attrs = array('pykotaLimitBy', 'pykotaUserName');
+			$this->attributes['objectClass'] = array_delete(['pykotaAccount', 'pykotaAccountBalance'], $this->attributes['objectClass']);
+			$attrs = ['pykotaLimitBy', 'pykotaUserName'];
 			if ($this->manageDescription($modules)) {
 				$attrs[] = 'description';
 			}
@@ -558,7 +560,7 @@ class pykotaUser extends baseModule {
 	 */
 	function display_html_payments() {
 		$container = new htmlResponsiveRow();
-		$container->setCSSClasses(array('maxrow'));
+		$container->setCSSClasses(['maxrow']);
 		// total paid
 		$total = '';
 		if (!empty($this->attributes['pykotaLifeTimePaid'][0])) {
@@ -573,7 +575,7 @@ class pykotaUser extends baseModule {
 		// payment/job history
 		if (!empty($this->attributes['pykotaPayments'][0])) {
 			$container->add(new htmlSubTitle(_('Payment history')), 12);
-			$labels = array(_('Date'), _('Amount'), _('Comment'));
+			$labels = [_('Date'), _('Amount'), _('Comment')];
 			$data = [];
 			rsort($this->attributes['pykotaPayments']);
 			foreach ($this->attributes['pykotaPayments'] as $payment) {
@@ -581,14 +583,14 @@ class pykotaUser extends baseModule {
 				$comment = empty($parts[2]) ? '' : base64_decode($parts[2]);
 				$commentField = new htmlOutputText($comment);
 				$amountFied = new htmlOutputText($parts[1]);
-				$data[] = array(
+				$data[] = [
 					new htmlOutputText($parts[0]),
 					$amountFied,
 					$commentField
-				);
+				];
 			}
 			$historyTable = new htmlResponsiveTable($labels, $data);
-			$historyTable->setWidths(array('20%', '15%', '65%'));
+			$historyTable->setWidths(['20%', '15%', '65%']);
 			$container->add($historyTable, 12);
 		}
 		// back button
@@ -599,11 +601,11 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	* Processes user input of the payments module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the payments module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_payments() {
 		return [];
 	}
@@ -615,24 +617,24 @@ class pykotaUser extends baseModule {
 	 */
 	function display_html_jobs() {
 		$container = new htmlResponsiveRow();
-		$container->setCSSClasses(array('maxrow'));
+		$container->setCSSClasses(['maxrow']);
 		// jobs
 		$jobs = $this->getJobs($this->getCurrentUserName(), $this->moduleSettings['pykotaUser_jobSuffix'][0]);
-		$titles = array(
+		$titles = [
 			_('Date'), _('Printer'), _('Price'), _('Size'), _('Title')
-		);
+		];
 		$data = [];
 		foreach ($jobs as $job) {
-			$data[] = array(
+			$data[] = [
 				new htmlOutputText(formatLDAPTimestamp($job['createtimestamp'][0])),
 				new htmlOutputText($job['pykotaprintername'][0]),
 				new htmlOutputText($job['pykotajobprice'][0]),
 				new htmlOutputText($job['pykotajobsize'][0]),
 				new htmlOutputText($job['pykotatitle'][0])
-			);
+			];
 		}
 		$table = new htmlResponsiveTable($titles, $data);
-		$table->setWidths(array('20%', '20%', '15%', '15%', '30%'));
+		$table->setWidths(['20%', '20%', '15%', '15%', '30%']);
 		$container->add($table, 12);
 		// back button
 		$container->addVerticalSpacer('2rem');
@@ -642,27 +644,27 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	* Processes user input of the jobs module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the jobs module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_jobs() {
 		return [];
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('pykotaAccount', $this->attributes['objectClass']) && !in_array('pykotaAccount', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -672,17 +674,17 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	* This function is used to check if all settings for this module have been made.
-	*
-	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* This function tells LAM if it can create/modify the LDAP account. If your module needs any
-	* additional input then set this to false. The user will be notified that your module needs
-	* more input.<br>
-	* This method's return value defaults to true.
-	*
-	* @return boolean true, if settings are complete
-	*/
+	 * This function is used to check if all settings for this module have been made.
+	 *
+	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * This function tells LAM if it can create/modify the LDAP account. If your module needs any
+	 * additional input then set this to false. The user will be notified that your module needs
+	 * more input.<br>
+	 * This method's return value defaults to true.
+	 *
+	 * @return boolean true, if settings are complete
+	 */
 	public function module_complete() {
 		if (in_array('pykotaAccount', $this->attributes['objectClass'])) {
 			// require uid
@@ -693,10 +695,10 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
@@ -727,30 +729,30 @@ class pykotaUser extends baseModule {
 	function get_uploadColumns($selectedModules, &$type) {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->manageUid($selectedModules)) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'pykotaUser_uid',
 				'description' => _('User name'),
 				'help' => 'uid',
 				'example' => _('smiller'),
 				'required' => true,
 				'unique' => true,
-			);
+			];
 		}
 		if ($this->manageMail($selectedModules)) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'pykotaUser_mail',
 				'description' => _('Email address'),
 				'help' => 'mail',
 				'example' => _('user@company.com'),
-			);
+			];
 		}
 		if ($this->manageDescription($selectedModules)) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'pykotaUser_description',
 				'description' => _('Description'),
 				'help' => 'description',
 				'example' => _('Temp, contract till December'),
-			);
+			];
 		}
 		return $return;
 	}
@@ -780,12 +782,12 @@ class pykotaUser extends baseModule {
 			if ($this->manageUid($selectedModules) && !empty($rawAccounts[$i][$ids['pykotaUser_uid']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaUser_uid']], 'username')) {
 					$errMsg = $this->messages['uid'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				elseif ($this->uidExists($rawAccounts[$i][$ids['pykotaUser_uid']])) {
 					$errMsg = $this->messages['uid'][3];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -803,12 +805,12 @@ class pykotaUser extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']], 'username')) {
 					$errMsg = $this->messages['pykotaUserName'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				elseif ($this->pykotaUserNameExists($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']])) {
 					$errMsg = $this->messages['pykotaUserName'][3];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -822,7 +824,7 @@ class pykotaUser extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['pykotaLimitBy'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 			}
@@ -837,7 +839,7 @@ class pykotaUser extends baseModule {
 				}
 				if (!get_preg($pykotaOverCharge, 'float')) {
 					$errMsg = $this->messages['pykotaOverCharge'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -855,7 +857,7 @@ class pykotaUser extends baseModule {
 				}
 				if (!get_preg($balance, 'float')) {
 					$errMsg = $this->messages['pykotaBalance'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -1046,8 +1048,8 @@ class pykotaUser extends baseModule {
 	public function checkSelfServiceSettings(&$options, &$profile) {
 		$errors = [];
 		if ((get_class($this) == 'pykotaUser')
-				&& !empty($options['pykotaUser_jobSuffix'][0])
-				&& !get_preg($options['pykotaUser_jobSuffix'][0], 'dn')) {
+			&& !empty($options['pykotaUser_jobSuffix'][0])
+			&& !get_preg($options['pykotaUser_jobSuffix'][0], 'dn')) {
 			$errors[] = $this->messages['jobSuffix'][0];
 		}
 		return $errors;
@@ -1113,7 +1115,7 @@ class pykotaUser extends baseModule {
 	 * Loads the list of user names into the cache.
 	 */
 	private function loadUserNameCache() {
-		$results = searchLDAPByFilter('(|(uid=*)(pykotaUserName=*))', array('uid', 'pykotaUserName'), array($this->get_scope()));
+		$results = searchLDAPByFilter('(|(uid=*)(pykotaUserName=*))', ['uid', 'pykotaUserName'], [$this->get_scope()]);
 		$this->uidCache = [];
 		$this->pykotaUserNameCache = [];
 		foreach ($results as $result) {
@@ -1160,7 +1162,7 @@ class pykotaUser extends baseModule {
 	 * @param String $suffix LDAP suffix for job objects
 	 */
 	private function getJobs($user, $suffix) {
-		$attrs = array('createTimestamp', 'pykotaTitle', 'pykotaPrinterName', 'pykotaJobPrice', 'pykotaJobSize');
+		$attrs = ['createTimestamp', 'pykotaTitle', 'pykotaPrinterName', 'pykotaJobPrice', 'pykotaJobSize'];
 		if (isset($_SESSION['ldapHandle']) && ($_SESSION['ldapHandle']->getServer() !== null)) {
 			$handle = $_SESSION['ldapHandle']->getServer();
 		}
@@ -1202,14 +1204,14 @@ class pykotaUser extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'pykotausername' => _('PyKota user name'),
 			'pykotalimitby' => _('Limit type'),
 			'pykotabalance' => _('Balance'),
 			'pykotaovercharge' => _('Overcharge factor'),
 			'pykotalifetimepaid' => _('Total paid'),
 			'pykotapayments' => _('Payment history'),
-		);
+		];
 	}
 
 	/**

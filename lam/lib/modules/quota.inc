@@ -1,4 +1,5 @@
 <?php
+
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
@@ -8,7 +9,7 @@ use LAM\REMOTE\RemoteServerConfiguration;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2021  Roland Gruber
+                2007 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,20 +28,20 @@ use LAM\REMOTE\RemoteServerConfiguration;
 
 
 /**
-* Manages quotas for users and groups.
-*
-* @package modules
-*
-* @author Tilo Lutz
-* @author Roland Gruber
-* @author Michael Duergner
-*/
+ * Manages quotas for users and groups.
+ *
+ * @package modules
+ *
+ * @author Tilo Lutz
+ * @author Roland Gruber
+ * @author Michael Duergner
+ */
 
 /**
-* Manages quotas for users and groups.
-*
-* @package modules
-*/
+ * Manages quotas for users and groups.
+ *
+ * @package modules
+ */
 class quota extends baseModule {
 
 	/** delimiter for lamdaemon commands */
@@ -49,40 +50,40 @@ class quota extends baseModule {
 	private static $QUOTA_PREFIX = 'QUOTA_ENTRY ';
 
 	/** this function fills the error message array with messages
-	**/
+	 **/
 	function load_Messages() {
 		// error messages for input checks
-		$this->messages['softblock'][0] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['softblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardblock'][0] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['softinode'][0] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['softinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardinode'][0] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['hardinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
-		$this->messages['block_cmp'][0] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota.'));
-		$this->messages['block_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota must be smaller than block hard quota.'));
-		$this->messages['inode_cmp'][0] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota.'));
-		$this->messages['inode_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota must be smaller than inode hard quota.'));
-		$this->messages['upload'][0] = array('ERROR', _('Account %s:') . ' %s', _('Quota has wrong format!'));
+		$this->messages['softblock'][0] = ['ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['softblock'][1] = ['ERROR', _('Account %s:') . ' %s', _('Block soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardblock'][0] = ['ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardblock'][1] = ['ERROR', _('Account %s:') . ' %s', _('Block hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['softinode'][0] = ['ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['softinode'][1] = ['ERROR', _('Account %s:') . ' %s', _('Inode soft quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardinode'][0] = ['ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['hardinode'][1] = ['ERROR', _('Account %s:') . ' %s', _('Inode hard quota contains invalid characters. Only natural numbers are allowed.')];
+		$this->messages['block_cmp'][0] = ['ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota.')];
+		$this->messages['block_cmp'][1] = ['ERROR', _('Account %s:') . ' %s', _('Block soft quota must be smaller than block hard quota.')];
+		$this->messages['inode_cmp'][0] = ['ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota.')];
+		$this->messages['inode_cmp'][1] = ['ERROR', _('Account %s:') . ' %s', _('Inode soft quota must be smaller than inode hard quota.')];
+		$this->messages['upload'][0] = ['ERROR', _('Account %s:') . ' %s', _('Quota has wrong format!')];
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user', 'group'));
+		return in_array($this->get_scope(), ['user', 'group']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -91,77 +92,77 @@ class quota extends baseModule {
 		$return["alias"] = _('Quota');
 		if ($this->get_scope() == 'group') {
 			// module dependencies
-			$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup', 'windowsPosixGroup')), 'conflicts' => []);
+			$return['dependencies'] = ['depends' => [['posixGroup', 'rfc2307bisPosixGroup', 'windowsPosixGroup']], 'conflicts' => []];
 		}
 		if ($this->get_scope() == 'user') {
 			// module dependencies
-			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => []);
+			$return['dependencies'] = ['depends' => ['posixAccount'], 'conflicts' => []];
 		}
 		// managed attributes
-		$return['attributes'] = array('uid', 'cn');
+		$return['attributes'] = ['uid', 'cn'];
 		// available PDF fields
-		$return['PDF_fields'] =  array(
+		$return['PDF_fields'] = [
 			'quotas' => _('Quota')
-		);
+		];
 		// help entries
 		$numbersHelp = _('Symbols K, M, G and T can be appended to numeric value to express kibibytes, mebibytes, gibibytes and tebibytes for blocks.')
-		. _(' Symbols k, m, g and t can be appended to numeric value to express multiples of 10^3, 10^6, 10^9 and 10^12 inodes.');
-		$return['help'] = array(
-			"Mountpoint" => array(
+			. _(' Symbols k, m, g and t can be appended to numeric value to express multiples of 10^3, 10^6, 10^9 and 10^12 inodes.');
+		$return['help'] = [
+			"Mountpoint" => [
 				"Headline" => _("Mountpoint"),
 				"Text" => _("Mountpoint of device with enabled quotas.")
-			),
-			"UsedBlocks" => array(
+			],
+			"UsedBlocks" => [
 				"Headline" => _("Used blocks"),
 				"Text" => _("Used blocks. 1000 blocks are usually 1MB")
-			),
-			"SoftBlockLimit" => array(
+			],
+			"SoftBlockLimit" => [
 				"Headline" => _("Soft block limit"),
-				"Text" => _("Soft block limit.") . '<br>' . $numbersHelp, "SeeAlso" => array(
+				"Text" => _("Soft block limit.") . '<br>' . $numbersHelp, "SeeAlso" => [
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
-					'text' => 'Quota How-To')
-			),
-			"HardBlockLimit" => array(
+					'text' => 'Quota How-To']
+			],
+			"HardBlockLimit" => [
 				"Headline" => _("Hard block limit"),
-				"Text" => _("Hard block limit") . '<br>' . $numbersHelp, "SeeAlso" => array(
+				"Text" => _("Hard block limit") . '<br>' . $numbersHelp, "SeeAlso" => [
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
-					'text' => 'Quota How-To')
-			),
-			"GraceBlockPeriod" => array(
+					'text' => 'Quota How-To']
+			],
+			"GraceBlockPeriod" => [
 				"Headline" => _("Grace block period"),
-				"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => array(
+				"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => [
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
-					'text' => 'Quota How-To')
-			),
-			"UsedInodes" => array(
+					'text' => 'Quota How-To']
+			],
+			"UsedInodes" => [
 				"Headline" => _("Used inodes"),
-				"Text" => _("Used inodes (files)").'.'
-			),
-			"SoftInodeLimit" => array(
+				"Text" => _("Used inodes (files)") . '.'
+			],
+			"SoftInodeLimit" => [
 				"Headline" => _("Soft inode limit"),
-				"Text" => _("Soft inode (files) limit.") . '<br>' . $numbersHelp, "SeeAlso" => array(
+				"Text" => _("Soft inode (files) limit.") . '<br>' . $numbersHelp, "SeeAlso" => [
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
-					'text' => 'Quota How-To')
-			),
-			"HardInodeLimit" => array(
+					'text' => 'Quota How-To']
+			],
+			"HardInodeLimit" => [
 				"Headline" => _("Hard inode limit"),
-				"Text" => _("Hard inode (files) limit") . '<br>' . $numbersHelp, "SeeAlso" => array(
+				"Text" => _("Hard inode (files) limit") . '<br>' . $numbersHelp, "SeeAlso" => [
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
-					'text' => 'Quota How-To')
-			),
-			"GraceInodePeriod" => array(
+					'text' => 'Quota How-To']
+			],
+			"GraceInodePeriod" => [
 				"Headline" => _("Grace inode period"),
-				"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => array(
+				"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => [
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
-					'text' => 'Quota How-To')
-			),
-			"upload" => array(
+					'text' => 'Quota How-To']
+			],
+			"upload" => [
 				"Headline" => _("Quota"),
 				"Text" => _("Please enter the quota settings for this mount point. The syntax is: {soft block limit},{hard block limit},{soft inode limit},{hard inode limit}")
-			)
-		);
+			]
+		];
 		// self service field settings
-		$return['selfServiceFieldSettings'] = array('quota' => _('Quota (read-only)'));
+		$return['selfServiceFieldSettings'] = ['quota' => _('Quota (read-only)')];
 		return $return;
 	}
 
@@ -210,7 +211,7 @@ class quota extends baseModule {
 				logNewMessage(LOG_ERR, $e->getMessage() . ' ' . $e->getTitle());
 				continue;
 			}
-			$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())));
+			$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, [$userName, "quota", "get", $this->get_scope()]));
 			$remote->disconnect();
 			if (empty($quotas)) {
 				continue;
@@ -234,13 +235,13 @@ class quota extends baseModule {
 					$this->quota[$server][$i][4] = '';
 				}
 				else {
-					$this->quota[$server][$i][4] = strval(intval(($this->quota[$server][$i][4] - time())/3600)) .' '. _('hours');
+					$this->quota[$server][$i][4] = strval(intval(($this->quota[$server][$i][4] - time()) / 3600)) . ' ' . _('hours');
 				}
 				if ($this->quota[$server][$i][8] < time()) {
 					$this->quota[$server][$i][8] = '';
 				}
 				else {
-					$this->quota[$server][$i][8] = strval(intval(($this->quota[$server][$i][8] - time())/3600)) .' '. _('hours');
+					$this->quota[$server][$i][8] = strval(intval(($this->quota[$server][$i][8] - time()) / 3600)) . ' ' . _('hours');
 				}
 			}
 		}
@@ -359,7 +360,7 @@ class quota extends baseModule {
 	 * @return String cn attribute
 	 */
 	private function getCn() {
-		$modules = array('posixGroup', 'windowsPosixGroup', 'rfc2307bisPosixGroup', 'groupOfNames', 'groupOfUniqueNames', 'windowsGroup');
+		$modules = ['posixGroup', 'windowsPosixGroup', 'rfc2307bisPosixGroup', 'groupOfNames', 'groupOfUniqueNames', 'windowsGroup'];
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
 				$attrs = $this->getAccountContainer()->getAccountModule($modules[$i])->getAttributes();
@@ -372,13 +373,13 @@ class quota extends baseModule {
 	}
 
 	/**
-	* This function is used to check if this module page can be displayed.
-	* It returns false if a module depends on data from other modules which was not yet entered.
-	*
-	* @return boolean true, if page can be displayed
-	*/
+	 * This function is used to check if this module page can be displayed.
+	 * It returns false if a module depends on data from other modules which was not yet entered.
+	 *
+	 * @return boolean true, if page can be displayed
+	 */
 	function module_ready() {
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			if (empty($attrs['uid'][0])) {
 				return false;
@@ -390,11 +391,11 @@ class quota extends baseModule {
 	/**
 	 * Quotas are set in postmodify.
 	 *
-	 * @see baseModule::postModifyActions()
-	 *
 	 * @param boolean $newAccount is new account
 	 * @param array $attributes LDAP attributes of this entry
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @see baseModule::postModifyActions()
+	 *
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = [];
@@ -404,18 +405,17 @@ class quota extends baseModule {
 			return $messages;
 		}
 		// determine if this is a user or group account
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			$id = $attrs['uid'][0];
 		}
-		if ($this->get_scope()=='group') {
+		if ($this->get_scope() == 'group') {
 			$id = $this->getCn();
 		}
 		// get list of lamdaemon servers
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
-			$i=0;
 			$quotastring = "";
 			for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
 				$quotastring .= $this->quota[$server][$i][0];
@@ -430,12 +430,12 @@ class quota extends baseModule {
 				$remote->connect($remoteServer);
 			}
 			catch (LAMException $e) {
-				$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				$messages[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 				continue;
 			}
-			$output = $remote->execute(implode(self::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
+			$output = $remote->execute(implode(self::$SPLIT_DELIMITER, [$id, "quota", "set", $this->get_scope(), "$quotastring\n"]));
 			if (strpos($output, 'ERROR,') === 0) {
-				$messages[] = array('ERROR', $server, _('Unable to set quota.'));
+				$messages[] = ['ERROR', $server, _('Unable to set quota.')];
 			}
 			$remote->disconnect();
 		}
@@ -489,17 +489,17 @@ class quota extends baseModule {
 			$this->initQuotas();
 		}
 		catch (LAMException $e) {
-			return array(array('ERROR', $e->getTitle(), $e->getMessage()));
+			return [['ERROR', $e->getTitle(), $e->getMessage()]];
 		}
 		if (!isset($this->quota) || !is_array($this->quota)) {
 			return [];
 		}
 		// determine if this is a user or group account
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			$id = $attrs['uid'][0];
 		}
-		if ($this->get_scope()=='group') {
+		if ($this->get_scope() == 'group') {
 			$id = $this->getCn();
 		}
 		$messages = [];
@@ -507,33 +507,33 @@ class quota extends baseModule {
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
-			$i=0;
+			$i = 0;
 			$quotastring = "";
 			while (isset($this->quota[$server][$i][0])) {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
-				}
+			}
 			$remote = new \LAM\REMOTE\Remote();
 			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
 			try {
 				$remote->connect($remoteServer);
 			}
 			catch (LAMException $e) {
-				$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				$messages[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 				continue;
 			}
-			$remote->execute(implode(self::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
+			$remote->execute(implode(self::$SPLIT_DELIMITER, [$id, "quota", "set", $this->get_scope(), "$quotastring\n"]));
 			$remote->disconnect();
 		}
 		return $messages;
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		if (!isset($this->quota) || !is_array($this->quota)) {
 			return [];
@@ -544,7 +544,7 @@ class quota extends baseModule {
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
 			$id = $this->replaceSpecialChars($server);
-			$i=0;
+			$i = 0;
 			// loop for every mointpoint with quotas
 			while (isset($this->quota[$server][$i][0])) {
 				$this->quota[$server][$i][2] = $_POST[$i . '_2_' . $id];
@@ -583,7 +583,7 @@ class quota extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = new htmlResponsiveRow();
-		$return->setCSSClasses(array('maxrow'));
+		$return->setCSSClasses(['maxrow']);
 		try {
 			$this->initQuotas();
 		}
@@ -612,19 +612,19 @@ class quota extends baseModule {
 			}
 			$return->add(new htmlSubTitle($title), 12);
 
-			$titles = array(
+			$titles = [
 				_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'), _('Grace block period'),
 				_('Used inodes'), _('Soft inode limit'), _('Hard inode limit'), _('Grace inode period')
-			);
-			$data = array(
-				array(
+			];
+			$data = [
+				[
 					new htmlHelpLink('Mountpoint'), new htmlHelpLink('UsedBlocks'), new htmlHelpLink('SoftBlockLimit'),
 					new htmlHelpLink('HardBlockLimit'), new htmlHelpLink('GraceBlockPeriod'), new htmlHelpLink('UsedInodes'),
 					new htmlHelpLink('SoftInodeLimit'), new htmlHelpLink('HardInodeLimit'), new htmlHelpLink('GraceInodePeriod')
-				)
-			);
+				]
+			];
 
-			$i=0;
+			$i = 0;
 			// loop for every mointpoint with enabled quotas
 			while (isset($this->quota[$server][$i][0])) {
 				$dataRow = [];
@@ -649,7 +649,7 @@ class quota extends baseModule {
 				$i++;
 			}
 			$table = new htmlResponsiveTable($titles, $data);
-			$table->setWidths(array('20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%'));
+			$table->setWidths(['20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%']);
 			$return->add($table, 12);
 		}
 		return $return;
@@ -666,8 +666,8 @@ class quota extends baseModule {
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function get_profileOptions($typeId) {
 		$return = new htmlResponsiveRow();
 		$optionsAvailable = false;
@@ -684,7 +684,7 @@ class quota extends baseModule {
 				// Get quotas
 				$remote = new \LAM\REMOTE\Remote();
 				$remote->connect($lamdaemonServer);
-				$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
+				$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, ["+", "quota", "get", $this->get_scope()]));
 				$remote->disconnect();
 				if (empty($quotas)) {
 					continue;
@@ -739,8 +739,8 @@ class quota extends baseModule {
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function check_profileOptions($options, $typeId) {
 		$return = [];
 		// get list of lamdaemon servers
@@ -754,10 +754,10 @@ class quota extends baseModule {
 				$remote->connect($lamdaemonServer);
 			}
 			catch (LAMException $e) {
-				$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				$return[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 				continue;
 			}
-			$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
+			$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, ["+", "quota", "get", $this->get_scope()]));
 			$remote->disconnect();
 			$dirs = explode(":", $quotas);
 			array_pop($dirs); // remove empty element at the end
@@ -801,10 +801,10 @@ class quota extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		try {
 			$this->initQuotas();
@@ -927,7 +927,7 @@ class quota extends baseModule {
 					logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
 					continue;
 				}
-				$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
+				$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, ["+", "quota", "get", $this->get_scope()]));
 				$remote->disconnect();
 				$dirs = explode(":", $quotas);
 				array_pop($dirs); // remove empty element at the end
@@ -943,11 +943,11 @@ class quota extends baseModule {
 				}
 				$dirs = array_values($dirs);
 				for ($i = 0; $i < sizeof($dirs); $i++) {
-					$return[] = array(
+					$return[] = [
 						'name' => 'quota_' . $server . ':' . $dirs[$i],
 						'description' => sprintf(_('Quota for %s on %s'), $dirs[$i], $server),
 						'help' => 'upload',
-						'example' => '2000,2500,3000,3500');
+						'example' => '2000,2500,3000,3500'];
 				}
 			}
 		}
@@ -992,43 +992,43 @@ class quota extends baseModule {
 						// check syntax
 						if (sizeof($parts) != 4) {
 							$errMsg = $this->messages['upload'][0];
-							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[0], 'quotaNumber')) {
 							$errMsg = $this->messages['softblock'][1];
-							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[1], 'quotaNumber')) {
 							$errMsg = $this->messages['hardblock'][1];
-							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[2], 'quotaNumber')) {
 							$errMsg = $this->messages['softinode'][1];
-							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[3], 'quotaNumber')) {
 							$errMsg = $this->messages['hardinode'][1];
-							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
 							$errors[] = $errMsg;
 							continue;
 						}
 						if ($this->getQuotaNumber($parts[0]) > $this->getQuotaNumber($parts[1])) {
 							$errMsg = $this->messages['block_cmp'][1];
-							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
 							$errors[] = $errMsg;
 							continue;
 						}
 						if ($this->getQuotaNumber($parts[2]) > $this->getQuotaNumber($parts[3])) {
 							$errMsg = $this->messages['inode_cmp'][1];
-							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
 							$errors[] = $errMsg;
 							continue;
 						}
@@ -1041,7 +1041,7 @@ class quota extends baseModule {
 					}
 				}
 			}
-			return array('status' => 'inProgress', 'progress' => 5, 'errors' => $errors);
+			return ['status' => 'inProgress', 'progress' => 5, 'errors' => $errors];
 		}
 		// quotas are ready to set
 		elseif ($temp['counter'] < sizeof($temp['accounts'])) {
@@ -1053,15 +1053,15 @@ class quota extends baseModule {
 				$mpParts = explode(":", $mountPoints[$m]);
 				$server = $mpParts[0];
 				$dir = $mpParts[1];
-				$quotaString = implode(self::$SPLIT_DELIMITER, array($name, "quota", "set", $this->get_scope(), $dir . ',' .
-					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"));
+				$quotaString = implode(self::$SPLIT_DELIMITER, [$name, "quota", "set", $this->get_scope(), $dir . ',' .
+					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"]);
 				$remote = new \LAM\REMOTE\Remote();
 				$remoteServer = $_SESSION['config']->getScriptServerByName($server);
 				try {
 					$remote->connect($remoteServer);
 				}
 				catch (LAMException $e) {
-					$errors[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					$errors[] = ['ERROR', $e->getTitle(), $e->getMessage()];
 					continue;
 				}
 				$result = $remote->execute($quotaString);
@@ -1069,40 +1069,40 @@ class quota extends baseModule {
 				if (!empty($result)) {
 					$parts = explode(",", $result);
 					if ($parts[0] == 'ERROR') {
-						$errors[] = array('ERROR', $parts[1], $parts[2]);
+						$errors[] = ['ERROR', $parts[1], $parts[2]];
 					}
 				}
 			}
 			// set counters to next account/mount point
 			$temp['counter']++;
-			return array(
+			return [
 				'status' => 'inProgress',
 				'progress' => 5 + (95 * ($temp['counter'] / sizeof($temp['accounts']))),
-				'errors' => $errors);
+				'errors' => $errors];
 		}
-		return array('status' => 'finished');
+		return ['status' => 'finished'];
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	*
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It is possible to change several DNs (e.g. create a new user and add him
-	* to some groups via attribute memberUid)<br>
-	* <br><b>"add"</b> are attributes which have to be added to the LDAP entry
-	* <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
-	* <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
-	* <br><b>"notchanged"</b> are attributes which stay unchanged
-	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
-	* <br>
-	* <br>This builds the required commands from $this-attributes and $this->orig.
-	*
-	* @return array list of modifications
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 *
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It is possible to change several DNs (e.g. create a new user and add him
+	 * to some groups via attribute memberUid)<br>
+	 * <br><b>"add"</b> are attributes which have to be added to the LDAP entry
+	 * <br><b>"remove"</b> are attributes which have to be removed from the LDAP entry
+	 * <br><b>"modify"</b> are attributes which have to be modified in the LDAP entry
+	 * <br><b>"notchanged"</b> are attributes which stay unchanged
+	 * <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
+	 * <br>
+	 * <br>This builds the required commands from $this-attributes and $this->orig.
+	 *
+	 * @return array list of modifications
+	 */
 	public function save_attributes() {
 		// no LDAP changes
 		return $this->getAccountContainer()->save_module_attributes([], []);
@@ -1134,10 +1134,10 @@ class quota extends baseModule {
 					}
 					$quotaRow->add(new htmlSubTitle($title), 12);
 
-					$titles = array(
+					$titles = [
 						_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'),
 						_('Used inodes'), _('Soft inode limit'), _('Hard inode limit')
-					);
+					];
 					$data = [];
 					// loop for every mointpoint with enabled quotas
 					foreach ($quotaDatas as $quotaData) {
@@ -1154,8 +1154,8 @@ class quota extends baseModule {
 						$data[] = $dataRow;
 					}
 					$table = new htmlResponsiveTable($titles, $data);
-					$table->setCSSClasses(array('responsive-table-wrap-th'));
-					$table->setWidths(array('20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%'));
+					$table->setCSSClasses(['responsive-table-wrap-th']);
+					$table->setWidths(['20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%']);
 					$quotaRow->add($table, 12);
 				}
 				$return['quota'] = $quotaRow;

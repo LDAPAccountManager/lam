@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,21 +20,21 @@
 */
 
 /**
-* Manages PyKota group accounts.
-* This module is used when the structural object class pykotaObject should be used.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages PyKota group accounts.
+ * This module is used when the structural object class pykotaObject should be used.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /** include parent class */
 include_once(__DIR__ . "/pykotaGroup.inc");
 
 /**
-* Manages PyKota group accounts.
-*
-* @package modules
-*/
+ * Manages PyKota group accounts.
+ *
+ * @package modules
+ */
 class pykotaGroupStructural extends pykotaGroup {
 
 	/**
@@ -48,20 +48,20 @@ class pykotaGroupStructural extends pykotaGroup {
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = parent::get_metaData();
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => array('pykotaGroup'));
+		$return['dependencies'] = ['depends' => [], 'conflicts' => ['pykotaGroup']];
 		// additional object class and attribute
 		$return['objectClasses'][] = 'pykotaObject';
 		// RDN attribute
-		$return["RDN"] = array("cn" => "normal");
+		$return["RDN"] = ["cn" => "normal"];
 		return $return;
 	}
 

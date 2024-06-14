@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,25 +20,25 @@
 */
 
 /**
-* Manages PyKota printers.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages PyKota printers.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Manages PyKota printers.
-*
-* @package modules
-*/
+ * Manages PyKota printers.
+ *
+ * @package modules
+ */
 class pykotaPrinter extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaPrinterName');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaPrinterName'];
 
 	/** cache for existing printers (array(dn => array(cn => ..., description => ...))) */
 	private $printerCache;
@@ -48,35 +48,35 @@ class pykotaPrinter extends baseModule {
 	private $passThroughOptions;
 
 	/**
-	* Creates a new pykotaPrinter object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new pykotaPrinter object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
-		$this->passThroughOptions = array(
+		$this->passThroughOptions = [
 			_('Yes') => 't',
 			_('No') => 'f',
-		);
+		];
 		// call parent constructor
 		parent::__construct($scope);
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('pykotaPrinterType'));
+		return in_array($this->get_scope(), ['pykotaPrinterType']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -86,116 +86,116 @@ class pykotaPrinter extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute
-		$return["RDN"] = array("cn" => "high");
+		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=pykotaPrinter)");
+		$return["ldap_filter"] = ['or' => "(objectClass=pykotaPrinter)"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('pykotaObject', 'pykotaPrinter');
+		$return['objectClasses'] = ['pykotaObject', 'pykotaPrinter'];
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'pykotaMaxJobSize', 'pykotaPassThrough', 'pykotaPricePerJob', 'pykotaPricePerPage', 'pykotaPrinterName', 'uniqueMember');
+		$return['attributes'] = ['cn', 'description', 'pykotaMaxJobSize', 'pykotaPassThrough', 'pykotaPricePerJob', 'pykotaPricePerPage', 'pykotaPrinterName', 'uniqueMember'];
 		// help Entries
-		$return['help'] = array(
-			'cn' => array(
+		$return['help'] = [
+			'cn' => [
 				"Headline" => _("Printer name"), 'attr' => 'cn',
 				"Text" => _("Printer name of the printer which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ .")
-			),
-			'description' => array (
+			],
+			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Printer description.")
-			),
-			'pykotaMaxJobSize' => array(
+			],
+			'pykotaMaxJobSize' => [
 				"Headline" => _('Maximum job size'), 'attr' => 'pykotaMaxJobSize',
 				"Text" => _('The maximum number of pages per job allowed on the printer. 0 means unlimited.')
-			),
-			'pykotaPassThrough' => array(
+			],
+			'pykotaPassThrough' => [
 				"Headline" => _('Passthrough'), 'attr' => 'pykotaPassThrough',
 				"Text" => _('In passthrough mode, users are allowed to print without any impact on their quota or account balance.')
-			),
-			'pykotaPricePerJob' => array(
+			],
+			'pykotaPricePerJob' => [
 				"Headline" => _('Price per job'), 'attr' => 'pykotaPricePerJob',
 				"Text" => _('The price for each print job.')
-			),
-			'pykotaPricePerPage' => array(
+			],
+			'pykotaPricePerPage' => [
 				"Headline" => _('Price per page'), 'attr' => 'pykotaPricePerPage',
 				"Text" => _('The price for each page of a print job.')
-			),
-			'uniqueMember' => array(
+			],
+			'uniqueMember' => [
 				"Headline" => _('Group members'), 'attr' => 'uniqueMember',
 				"Text" => _('If this entry should be a printer group then you can set the member names here.')
-			),
-			'uniqueMemberUpload' => array(
+			],
+			'uniqueMemberUpload' => [
 				"Headline" => _('Group members'), 'attr' => 'uniqueMember',
 				"Text" => _('If this entry should be a printer group then you can set the member names here.')
-							. ' ' . _('Multiple values are separated by comma.')
-			),
-			'filter' => array(
+					. ' ' . _('Multiple values are separated by comma.')
+			],
+			'filter' => [
 				"Headline" => _("Filter"),
 				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
 					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
-			),
-		);
+			],
+		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Maximum job size'), 'pykotaPrinter_pykotaMaxJobSize', '', 'pykotaMaxJobSize'), 12);
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaPrinter_pykotaMaxJobSize'] = 'pykotaMaxJobSize';
-		$return['profile_checks']['pykotaPrinter_pykotaMaxJobSize'] = array(
+		$return['profile_checks']['pykotaPrinter_pykotaMaxJobSize'] = [
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['pykotaMaxJobSize'][0]);
+			'error_message' => $this->messages['pykotaMaxJobSize'][0]];
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'pykotaPrinter_cn',
 				'description' => _('Printer name'),
 				'help' => 'cn',
 				'example' => _('printer01'),
 				'required' => true,
-			),
-			array(
+			],
+			[
 				'name' => 'pykotaPrinter_description',
 				'description' => _('Description'),
 				'help' => 'description',
 				'example' => _('Color laser printer'),
-			),
-			array(
+			],
+			[
 				'name' => 'pykotaPrinter_pykotaMaxJobSize',
 				'description' => _('Maximum job size'),
 				'help' => 'pykotaMaxJobSize',
 				'example' => '100',
 				'default' => '0',
-			),
-			array(
+			],
+			[
 				'name' => 'pykotaPrinter_pykotaPassThrough',
 				'description' => _('Passthrough'),
 				'help' => 'pykotaPassThrough',
 				'example' => _('No'),
 				'default' => _('No'),
 				'values' => _('Yes') . ', ' . _('No'),
-			),
-			array(
+			],
+			[
 				'name' => 'pykotaPrinter_pykotaPricePerJob',
 				'description' => _('Price per job'),
 				'help' => 'pykotaPricePerJob',
 				'example' => '0.01',
-			),
-			array(
+			],
+			[
 				'name' => 'pykotaPrinter_pykotaPricePerPage',
 				'description' => _('Price per page'),
 				'help' => 'pykotaPricePerPage',
 				'example' => '0.01',
-			),
-			array(
+			],
+			[
 				'name' => 'pykotaPrinter_uniqueMember',
 				'description' => _('Group members'),
 				'help' => 'uniqueMemberUpload',
 				'example' => _('printergroup1'),
-			),
-		);
+			],
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'cn' => _('Printer name'),
 			'description' => _('Description'),
 			'pykotaMaxJobSize' => _('Maximum job size'),
@@ -204,32 +204,32 @@ class pykotaPrinter extends baseModule {
 			'pykotaPricePerPage' => _('Price per page'),
 			'uniqueMember' => _('Group members'),
 			'parentUniqueMember' => _('Printer groups'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
-		$this->messages['cn'][0] = array('ERROR', _('Printer name'), _('Printer name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' pykotaPrinter_cn', _('Printer name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][2] = array('ERROR', _('Printer name'), _('Printer name already exists!'));
-		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' pykotaPrinter_cn', _('Printer name already exists!'));
-		$this->messages['pykotaMaxJobSize'][0] = array('ERROR', _('Maximum job size'), _('Please enter a valid number.'));
-		$this->messages['pykotaMaxJobSize'][1] = array('ERROR', _('Account %s:') . ' pykotaPrinter_pykotaMaxJobSize', _('Please enter a valid number.'));
-		$this->messages['pykotaPricePerJob'][0] = array('ERROR', _('Price per job'), _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaPricePerJob'][1] = array('ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPricePerJob', _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaPricePerPage'][0] = array('ERROR', _('Price per page'), _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaPricePerPage'][1] = array('ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPricePerPage', _('Please enter a valid number (e.g. "1.5").'));
-		$this->messages['pykotaPassThrough'][0] = array('ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPassThrough', _('Please enter "Yes" or "No".'));
-		$this->messages['uniqueMember'][0] = array('ERROR', _('Account %s:') . ' pykotaPrinter_uniqueMember', _('Unable to find a printer with name "%s".'));
+		$this->messages['cn'][0] = ['ERROR', _('Printer name'), _('Printer name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' pykotaPrinter_cn', _('Printer name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['cn'][2] = ['ERROR', _('Printer name'), _('Printer name already exists!')];
+		$this->messages['cn'][3] = ['ERROR', _('Account %s:') . ' pykotaPrinter_cn', _('Printer name already exists!')];
+		$this->messages['pykotaMaxJobSize'][0] = ['ERROR', _('Maximum job size'), _('Please enter a valid number.')];
+		$this->messages['pykotaMaxJobSize'][1] = ['ERROR', _('Account %s:') . ' pykotaPrinter_pykotaMaxJobSize', _('Please enter a valid number.')];
+		$this->messages['pykotaPricePerJob'][0] = ['ERROR', _('Price per job'), _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaPricePerJob'][1] = ['ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPricePerJob', _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaPricePerPage'][0] = ['ERROR', _('Price per page'), _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaPricePerPage'][1] = ['ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPricePerPage', _('Please enter a valid number (e.g. "1.5").')];
+		$this->messages['pykotaPassThrough'][0] = ['ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPassThrough', _('Please enter "Yes" or "No".')];
+		$this->messages['uniqueMember'][0] = ['ERROR', _('Account %s:') . ' pykotaPrinter_uniqueMember', _('Unable to find a printer with name "%s".')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -254,7 +254,7 @@ class pykotaPrinter extends baseModule {
 		if (!empty($this->attributes['pykotaPassThrough'][0])) {
 			$pykotaPassThroughOption = $this->attributes['pykotaPassThrough'][0];
 		}
-		$pykotaPassThroughSelect = new htmlResponsiveSelect('pykotaPassThrough', $this->passThroughOptions, array($pykotaPassThroughOption), _('Passthrough'), 'pykotaPassThrough');
+		$pykotaPassThroughSelect = new htmlResponsiveSelect('pykotaPassThrough', $this->passThroughOptions, [$pykotaPassThroughOption], _('Passthrough'), 'pykotaPassThrough');
 		$pykotaPassThroughSelect->setHasDescriptiveElements(true);
 		$container->add($pykotaPassThroughSelect, 12);
 		// description
@@ -307,11 +307,11 @@ class pykotaPrinter extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		// cn
@@ -388,10 +388,10 @@ class pykotaPrinter extends baseModule {
 	}
 
 	/**
-	* This function will create the meta HTML code to show a page to add members.
-	*
-	* @return htmlElement HTML meta data
-	*/
+	 * This function will create the meta HTML code to show a page to add members.
+	 *
+	 * @return htmlElement HTML meta data
+	 */
 	function display_html_members() {
 		$return = new htmlResponsiveRow();
 		$options = [];
@@ -425,7 +425,7 @@ class pykotaPrinter extends baseModule {
 		$filterGroup = new htmlGroup();
 		$filterGroup->addElement(new htmlOutputText(_('Filter')));
 		$filterInput = new htmlInputField('newFilter', null);
-		$filterInput->setCSSClasses(array('maxwidth20'));
+		$filterInput->setCSSClasses(['maxwidth20']);
 		$filterInput->filterSelectBox('members');
 		$filterGroup->addElement($filterInput);
 		$filterGroup->addElement(new htmlHelpLink('filter'));
@@ -440,11 +440,11 @@ class pykotaPrinter extends baseModule {
 	}
 
 	/**
-	* Processes user input of the members page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the members page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_members() {
 		$return = [];
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addMembers']) && isset($_POST['members'])) {
@@ -474,12 +474,12 @@ class pykotaPrinter extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_cn']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaPrinter_cn']], 'username')) {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				elseif ($this->cnExists($rawAccounts[$i][$ids['pykotaPrinter_cn']])) {
 					$errMsg = $this->messages['cn'][3];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -502,7 +502,7 @@ class pykotaPrinter extends baseModule {
 				}
 				if (!get_preg($pykotaPricePerJob, 'float')) {
 					$errMsg = $this->messages['pykotaPricePerJob'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -521,7 +521,7 @@ class pykotaPrinter extends baseModule {
 				}
 				if (!get_preg($pykotaPricePerPage, 'float')) {
 					$errMsg = $this->messages['pykotaPricePerPage'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -538,7 +538,7 @@ class pykotaPrinter extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['pykotaPassThrough'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 			}
@@ -564,7 +564,7 @@ class pykotaPrinter extends baseModule {
 					}
 					if (!$found) {
 						$errMsg = $this->messages['uniqueMember'][0];
-						array_push($errMsg, array($i, htmlspecialchars($cn)));
+						array_push($errMsg, [$i, htmlspecialchars($cn)]);
 						$messages[] = $errMsg;
 					}
 				}
@@ -650,7 +650,7 @@ class pykotaPrinter extends baseModule {
 		if ($this->printerCache != null) {
 			return;
 		}
-		$results = searchLDAPByFilter('(objectClass=pykotaPrinter)', array('cn', 'dn', 'description'), array($this->get_scope()));
+		$results = searchLDAPByFilter('(objectClass=pykotaPrinter)', ['cn', 'dn', 'description'], [$this->get_scope()]);
 		$this->printerCache = [];
 		foreach ($results as $result) {
 			if (isset($result['cn'][0])) {
@@ -671,7 +671,7 @@ class pykotaPrinter extends baseModule {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
-		$results = searchLDAPByFilter('(&(objectClass=pykotaPrinter)(uniqueMember=' . $this->getAccountContainer()->dn_orig . '))', array('dn'), array($this->get_scope()));
+		$results = searchLDAPByFilter('(&(objectClass=pykotaPrinter)(uniqueMember=' . $this->getAccountContainer()->dn_orig . '))', ['dn'], [$this->get_scope()]);
 		$this->groupCache = [];
 		foreach ($results as $result) {
 			$this->groupCache[] = $result['dn'];
@@ -683,7 +683,7 @@ class pykotaPrinter extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'cn' => _('Printer name'),
 			'description' => _('Description'),
 			'pykotamaxjobsize' => _('Maximum job size'),
@@ -692,7 +692,7 @@ class pykotaPrinter extends baseModule {
 			'pykotapriceperpage' => _('Price per page'),
 			'uniquemember' => _('Group members'),
 			'parentuniquemember' => _('Printer groups'),
-		);
+		];
 	}
 
 }

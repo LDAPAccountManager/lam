@@ -2,10 +2,11 @@
 
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,23 +24,23 @@ use \LAM\TYPES\TypeManager;
 */
 
 /**
-* Manages PyKota group accounts.
-*
-* @package modules
-* @author Roland Gruber
-*/
+ * Manages PyKota group accounts.
+ *
+ * @package modules
+ * @author Roland Gruber
+ */
 
 /**
-* Manages PyKota group accounts.
-*
-* @package modules
-*/
+ * Manages PyKota group accounts.
+ *
+ * @package modules
+ */
 class pykotaGroup extends baseModule {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaGroupName');
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaGroupName'];
 
 	/** cache for cn attribute */
 	private $cnCache;
@@ -59,39 +60,39 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
-	* Creates a new pykotaGroup object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
+	 * Creates a new pykotaGroup object.
+	 *
+	 * @param string $scope account type (user, group, host)
+	 */
 	function __construct($scope) {
-		$this->limitOptions = array(
+		$this->limitOptions = [
 			_('Quota') => 'quota',
 			_('Balance') => 'balance',
 			_('No quota') => 'noquota',
 			_('Free printing') => 'nochange',
 			_('Deny printing') => 'noprint',
-		);
+		];
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = $this->isStructural();
 	}
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), array('group'));
+		return in_array($this->get_scope(), ['group']);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -101,36 +102,36 @@ class pykotaGroup extends baseModule {
 		// this is a base module
 		$return["is_base"] = $this->isStructural();
 		// LDAP filter
-		$return["ldap_filter"] = array('or' => "(objectClass=pykotaGroup)");
+		$return["ldap_filter"] = ['or' => "(objectClass=pykotaGroup)"];
 		// module dependencies
-		$return['dependencies'] = array('depends' => [], 'conflicts' => []);
+		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = array('pykotaGroup');
+		$return['objectClasses'] = ['pykotaGroup'];
 		// managed attributes
-		$return['attributes'] = array('pykotaLimitBy', 'pykotaGroupName');
+		$return['attributes'] = ['pykotaLimitBy', 'pykotaGroupName'];
 		// help Entries
-		$return['help'] = array(
-			'cn' => array(
+		$return['help'] = [
+			'cn' => [
 				"Headline" => _("Common name"), 'attr' => 'cn',
 				"Text" => _("Group name of the group which should be created. Valid characters are: a-z, A-Z, 0-9 and .-_ .")
-			),
-			'description' => array (
+			],
+			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Group description.")
-			),
-			'pykotaGroupName' => array(
+			],
+			'pykotaGroupName' => [
 				"Headline" => _("PyKota group name"), 'attr' => 'pykotaGroupName',
 				"Text" => _("Group name that is used for PyKota.")
-			),
-			'pykotaLimitBy' => array(
+			],
+			'pykotaLimitBy' => [
 				"Headline" => _("Limit type"), 'attr' => 'pykotaLimitBy',
 				"Text" => _("Specifies the type of limit for printing if any. Please note that in contrast to \"Free printing\" the option \"No quota\" includes accounting.")
-			),
-			'autoAdd' => array(
+			],
+			'autoAdd' => [
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
-			),
-		);
+			],
+		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaGroup_pykotaLimitBy', $this->limitOptions, [], _('Limit type'), 'pykotaLimitBy');
@@ -143,50 +144,50 @@ class pykotaGroup extends baseModule {
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaGroup_pykotaLimitBy'] = 'pykotaLimitBy';
 		// upload fields
-		$return['upload_columns'] = array(
-			array(
+		$return['upload_columns'] = [
+			[
 				'name' => 'pykotaGroup_pykotaGroupName',
 				'description' => _('PyKota group name'),
 				'help' => 'pykotaGroupName',
 				'example' => _('adminstrators'),
 				'unique' => true,
-			)
-		);
-		$return['upload_columns'][] = array(
+			]
+		];
+		$return['upload_columns'][] = [
 			'name' => 'pykotaGroup_pykotaLimitBy',
 			'description' => _('Limit type'),
 			'help' => 'pykotaLimitBy',
 			'example' => _('Quota'),
 			'default' => _('Quota'),
 			'values' => implode(', ', array_keys($this->limitOptions))
-		);
+		];
 		// available PDF fields
-		$return['PDF_fields'] = array(
+		$return['PDF_fields'] = [
 			'pykotaGroupName' => _('PyKota group name'),
 			'pykotaLimitBy' => _('Limit type'),
-		);
+		];
 		return $return;
 	}
 
 	/**
-	* This function fills the $messages variable with output messages from this module.
-	*/
+	 * This function fills the $messages variable with output messages from this module.
+	 */
 	function load_Messages() {
-		$this->messages['cn'][0] = array('ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' pykotaGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][2] = array('ERROR', _('Group name'), _('Group name already exists!'));
-		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' pykotaGroup_cn', _('Group name already exists!'));
-		$this->messages['pykotaGroupName'][0] = array('ERROR', _('PyKota group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['pykotaGroupName'][1] = array('ERROR', _('Account %s:') . ' pykotaGroup_pykotaGroupName', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['pykotaGroupName'][2] = array('ERROR', _('PyKota group name'), _('Group name already exists!'));
-		$this->messages['pykotaGroupName'][3] = array('ERROR', _('Account %s:') . ' pykotaGroup_pykotaGroupName', _('Group name already exists!'));
-		$this->messages['pykotaLimitBy'][0] = array('ERROR', _('Account %s:') . ' pykotaGroup_pykotaLimitBy', _('Please enter a valid limit type.'));
+		$this->messages['cn'][0] = ['ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' pykotaGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['cn'][2] = ['ERROR', _('Group name'), _('Group name already exists!')];
+		$this->messages['cn'][3] = ['ERROR', _('Account %s:') . ' pykotaGroup_cn', _('Group name already exists!')];
+		$this->messages['pykotaGroupName'][0] = ['ERROR', _('PyKota group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['pykotaGroupName'][1] = ['ERROR', _('Account %s:') . ' pykotaGroup_pykotaGroupName', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
+		$this->messages['pykotaGroupName'][2] = ['ERROR', _('PyKota group name'), _('Group name already exists!')];
+		$this->messages['pykotaGroupName'][3] = ['ERROR', _('Account %s:') . ' pykotaGroup_pykotaGroupName', _('Group name already exists!')];
+		$this->messages['pykotaLimitBy'][0] = ['ERROR', _('Account %s:') . ' pykotaGroup_pykotaLimitBy', _('Please enter a valid limit type.')];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []) : void {
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
 		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
@@ -211,7 +212,7 @@ class pykotaGroup extends baseModule {
 			if (!empty($this->attributes['pykotaLimitBy'][0])) {
 				$limitOption = $this->attributes['pykotaLimitBy'][0];
 			}
-			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, array($limitOption), _('Limit type'), 'pykotaLimitBy');
+			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, [$limitOption], _('Limit type'), 'pykotaLimitBy');
 			$limitSelect->setHasDescriptiveElements(true);
 			$limitSelect->setSortElements(false);
 			$container->add($limitSelect, 12);
@@ -223,7 +224,7 @@ class pykotaGroup extends baseModule {
 			if (!$this->isStructural()) {
 				$container->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove PyKota extension'));
-				$remButton->setCSSClasses(array('lam-danger'));
+				$remButton->setCSSClasses(['lam-danger']);
 				$container->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
@@ -235,11 +236,11 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
@@ -256,8 +257,8 @@ class pykotaGroup extends baseModule {
 		}
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if (isset($_POST['remObjectClass'])) {
-			$this->attributes['objectClass'] = array_delete(array('pykotaGroup'), $this->attributes['objectClass']);
-			$attrs = array('pykotaLimitBy', 'pykotaGroupName');
+			$this->attributes['objectClass'] = array_delete(['pykotaGroup'], $this->attributes['objectClass']);
+			$attrs = ['pykotaLimitBy', 'pykotaGroupName'];
 			if ($this->isUnixOrGonInactive($modules)) {
 				$attrs[] = 'description';
 			}
@@ -319,17 +320,17 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	*/
+	 * Returns a list of modifications which have to be made to the LDAP account.
+	 *
+	 * @return array list of modifications
+	 * <br>This function returns an array with 3 entries:
+	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	 * <br>"add" are attributes which have to be added to LDAP entry
+	 * <br>"remove" are attributes which have to be removed from LDAP entry
+	 * <br>"modify" are attributes which have to been modified in LDAP entry
+	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 */
 	function save_attributes() {
 		if (!in_array('pykotaGroup', $this->attributes['objectClass']) && !in_array('pykotaGroup', $this->orig['objectClass'])) {
 			// skip saving if the extension was not added/modified
@@ -353,17 +354,17 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
-	* This function is used to check if all settings for this module have been made.
-	*
-	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* This function tells LAM if it can create/modify the LDAP account. If your module needs any
-	* additional input then set this to false. The user will be notified that your module needs
-	* more input.<br>
-	* This method's return value defaults to true.
-	*
-	* @return boolean true, if settings are complete
-	*/
+	 * This function is used to check if all settings for this module have been made.
+	 *
+	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * This function tells LAM if it can create/modify the LDAP account. If your module needs any
+	 * additional input then set this to false. The user will be notified that your module needs
+	 * more input.<br>
+	 * This method's return value defaults to true.
+	 *
+	 * @return boolean true, if settings are complete
+	 */
 	public function module_complete() {
 		if (in_array('pykotaGroup', $this->attributes['objectClass'])) {
 			// require cn
@@ -374,17 +375,17 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
-	* Loads the values of an account profile into internal variables.
-	*
-	* @param array $profile hash array with profile values (identifier => value)
-	*/
+	 * Loads the values of an account profile into internal variables.
+	 *
+	 * @param array $profile hash array with profile values (identifier => value)
+	 */
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
 		if (isset($profile['pykotaGroup_addExt'][0])
-				&& ($profile['pykotaGroup_addExt'][0] == "true")
-				&& !in_array('pykotaGroup', $this->attributes['objectClass'])) {
+			&& ($profile['pykotaGroup_addExt'][0] == "true")
+			&& !in_array('pykotaGroup', $this->attributes['objectClass'])) {
 			$this->attributes['objectClass'][] = 'pykotaGroup';
 		}
 	}
@@ -396,19 +397,19 @@ class pykotaGroup extends baseModule {
 	function get_uploadColumns($selectedModules, &$type) {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->isUnixOrGonInactive($selectedModules)) {
-			$return[] = array(
+			$return[] = [
 				'name' => 'pykotaGroup_cn',
 				'description' => _('Common name'),
 				'help' => 'cn',
 				'example' => _('adminstrators'),
 				'required' => true,
-			);
-			$return[] = array(
+			];
+			$return[] = [
 				'name' => 'pykotaGroup_description',
 				'description' => _('Description'),
 				'help' => 'description',
 				'example' => _('Administrators group'),
-			);
+			];
 		}
 		return $return;
 	}
@@ -431,12 +432,12 @@ class pykotaGroup extends baseModule {
 			if ($this->isUnixOrGonInactive($selectedModules) && !empty($rawAccounts[$i][$ids['pykotaGroup_cn']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaGroup_cn']], 'groupname')) {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				elseif ($this->cnExists($rawAccounts[$i][$ids['pykotaGroup_cn']])) {
 					$errMsg = $this->messages['cn'][3];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -449,12 +450,12 @@ class pykotaGroup extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']], 'groupname')) {
 					$errMsg = $this->messages['pykotaGroupName'][1];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				elseif ($this->pykotaGroupNameExists($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']])) {
 					$errMsg = $this->messages['pykotaGroupName'][3];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 				else {
@@ -468,7 +469,7 @@ class pykotaGroup extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['pykotaLimitBy'][0];
-					array_push($errMsg, array($i));
+					array_push($errMsg, [$i]);
 					$messages[] = $errMsg;
 				}
 			}
@@ -554,7 +555,7 @@ class pykotaGroup extends baseModule {
 	 * Loads the list of group names into the cache.
 	 */
 	private function loadGroupNameCache() {
-		$results = searchLDAPByFilter('(objectClass=pykotaGroup)', array('cn', 'pykotaGroupName'), array($this->get_scope()));
+		$results = searchLDAPByFilter('(objectClass=pykotaGroup)', ['cn', 'pykotaGroupName'], [$this->get_scope()]);
 		$this->cnCache = [];
 		$this->pykotaGroupNameCache = [];
 		foreach ($results as $result) {
@@ -604,12 +605,12 @@ class pykotaGroup extends baseModule {
 	 * @inheritDoc
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
-		return array(
+		return [
 			'cn' => _('Group name'),
 			'description' => _('Description'),
 			'pykotagroupname' => _('PyKota group name'),
 			'pykotalimitby' => _('Limit type'),
-		);
+		];
 	}
 
 }
