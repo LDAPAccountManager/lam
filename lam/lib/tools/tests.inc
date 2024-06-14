@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\TESTS;
+
 use LAM\TYPES\TypeManager;
 use LAMSubTool;
 use LAMTool;
@@ -26,11 +28,11 @@ use LAMTool;
 */
 
 /**
-* This file includes the test tool specification.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * This file includes the test tool specification.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * Tests page
@@ -43,8 +45,8 @@ class toolTests extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _("Tests");
-	 }
+		return _("Tests");
+	}
 
 	/**
 	 * {@inheritDoc}

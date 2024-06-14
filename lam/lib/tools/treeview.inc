@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\TREEVIEW;
+
 use htmlOutputText;
 use htmlResponsiveInputField;
 use htmlResponsiveRow;
@@ -28,11 +30,11 @@ use LAMTool;
 */
 
 /**
-* LDAP tree view.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * LDAP tree view.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * LDAP tree view.
@@ -47,8 +49,8 @@ class TreeViewTool extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _('Tree view');
-	 }
+		return _('Tree view');
+	}
 
 	/**
 	 * {@inheritDoc}

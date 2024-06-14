@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\PLUGINS\CAPTCHA;
+
 use htmlElement;
 use htmlScript;
 
@@ -70,8 +72,8 @@ class FriendlyCaptcha implements CaptchaProvider {
 		];
 		$options = [
 			'http' => [
-				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-				'method'  => 'POST',
+				'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method' => 'POST',
 				'content' => http_build_query($vars)
 			]
 		];

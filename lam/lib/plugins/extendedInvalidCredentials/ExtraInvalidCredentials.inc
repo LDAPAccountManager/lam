@@ -1,4 +1,5 @@
 <?php
+
 namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 
 /*

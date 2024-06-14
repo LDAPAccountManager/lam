@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\SERVER_INFO;
+
 use LAMTool;
 
 /*
@@ -24,11 +26,11 @@ use LAMTool;
 */
 
 /**
-* This file includes the server information tool specification.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * This file includes the server information tool specification.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * Server information
@@ -41,8 +43,8 @@ class toolServerInformation extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _("Server information");
-	 }
+		return _("Server information");
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\SCHEMA;
+
 use LAMTool;
 
 /*
@@ -24,11 +26,11 @@ use LAMTool;
 */
 
 /**
-* This file includes the schema browser tool specification.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * This file includes the schema browser tool specification.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * Schema browser
@@ -41,8 +43,8 @@ class toolSchemaBrowser extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _("Schema browser");
-	 }
+		return _("Schema browser");
+	}
 
 	/**
 	 * {@inheritDoc}

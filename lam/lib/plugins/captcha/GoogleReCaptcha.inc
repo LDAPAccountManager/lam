@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\PLUGINS\CAPTCHA;
+
 use htmlElement;
 use htmlScript;
 
@@ -66,8 +68,8 @@ class GoogleReCaptcha implements CaptchaProvider {
 		$vars = ['secret' => $secretKey, 'response' => $_POST['g-recaptcha-response']];
 		$options = [
 			'http' => [
-				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-				'method'  => 'POST',
+				'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method' => 'POST',
 				'content' => http_build_query($vars)
 			]
 		];

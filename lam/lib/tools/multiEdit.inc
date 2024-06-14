@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\MULTI_EDIT;
+
 use LAMTool;
 
 /*
@@ -24,11 +26,11 @@ use LAMTool;
 */
 
 /**
-* Multi edit tool that allows LDAP operations on multiple entries.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * Multi edit tool that allows LDAP operations on multiple entries.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * Multi edit tool that allows LDAP operations on multiple entries.
@@ -41,8 +43,8 @@ class toolMultiEdit extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _("Multi edit");
-	 }
+		return _("Multi edit");
+	}
 
 	/**
 	 * {@inheritDoc}

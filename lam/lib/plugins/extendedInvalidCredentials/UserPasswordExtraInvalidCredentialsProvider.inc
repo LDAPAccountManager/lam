@@ -1,4 +1,5 @@
 <?php
+
 namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 
 /*
@@ -13,7 +14,6 @@ namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
  *
  * @author Roland Gruber
  */
-
 class UserPasswordExtraInvalidCredentialsProvider implements ExtraInvalidCredentialsProvider {
 
 	/**

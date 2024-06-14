@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\PLUGINS\CAPTCHA;
+
 use htmlElement;
 
 /*

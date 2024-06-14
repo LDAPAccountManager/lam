@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\WEBAUTHN;
+
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAMTool;
 
@@ -25,11 +27,11 @@ use LAMTool;
 */
 
 /**
-* Webauthn device management.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * Webauthn device management.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * Webauthn device management.
@@ -42,8 +44,8 @@ class toolWebauthn extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _('WebAuthn devices');
-	 }
+		return _('WebAuthn devices');
+	}
 
 	/**
 	 * {@inheritDoc}

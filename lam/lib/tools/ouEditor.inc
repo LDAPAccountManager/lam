@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\OU_EDIT;
+
 use LAM\TYPES\TypeManager;
 use LAMTool;
 
@@ -25,11 +27,11 @@ use LAMTool;
 */
 
 /**
-* This file includes the OU editor tool specification.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * This file includes the OU editor tool specification.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * OU editor
@@ -42,8 +44,8 @@ class toolOUEditor extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _("OU editor");
-	 }
+		return _("OU editor");
+	}
 
 	/**
 	 * {@inheritDoc}

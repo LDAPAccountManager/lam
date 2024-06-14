@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\PDF_EDITOR;
+
 use LAM\TYPES\TypeManager;
 use LAMTool;
 
@@ -25,11 +27,11 @@ use LAMTool;
 */
 
 /**
-* This file includes the PDF editor tool specification.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * This file includes the PDF editor tool specification.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * PDF editor
@@ -42,8 +44,8 @@ class toolPDFEditor extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _("PDF editor");
-	 }
+		return _("PDF editor");
+	}
 
 	/**
 	 * {@inheritDoc}

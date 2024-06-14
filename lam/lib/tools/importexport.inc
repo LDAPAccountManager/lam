@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\UPLOAD;
+
 use LAMTool;
 
 /*
@@ -24,11 +26,11 @@ use LAMTool;
 */
 
 /**
-* Import and export tool.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * Import and export tool.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * Import and export tool.
@@ -41,8 +43,8 @@ class ImportExport extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getName(): string {
-	 	return _("LDAP import/export");
-	 }
+		return _("LDAP import/export");
+	}
 
 	/**
 	 * {@inheritDoc}

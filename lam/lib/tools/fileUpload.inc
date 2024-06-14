@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\UPLOAD;
+
 use LAM\TYPES\TypeManager;
 use LAMTool;
 
@@ -25,11 +27,11 @@ use LAMTool;
 */
 
 /**
-* This file includes the file upload tool specification.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * This file includes the file upload tool specification.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /**
  * File upload
@@ -41,9 +43,9 @@ class toolFileUpload extends LAMTool {
 	/**
 	 * {@inheritDoc}
 	 */
-	 public function getName(): string {
-	 	return _("File upload");
-	 }
+	public function getName(): string {
+		return _("File upload");
+	}
 
 	/**
 	 * {@inheritDoc}
