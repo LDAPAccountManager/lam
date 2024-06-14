@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\LIB\TWO_FACTOR;
+
 use DateInterval;
 use DateTime;
 use Duo\DuoUniversal\Client;
@@ -41,12 +43,11 @@ use \Webauthn\PublicKeyCredentialCreationOptions;
 */
 
 /**
-* 2-factor authentication
-*
-* @package two_factor
-* @author Roland Gruber
-*/
-
+ * 2-factor authentication
+ *
+ * @package two_factor
+ * @author Roland Gruber
+ */
 interface TwoFactorProvider {
 
 	/**
@@ -136,7 +137,7 @@ abstract class BaseProvider implements TwoFactorProvider {
 	protected function getLoginAttributeValue($userDn) {
 		$attrName = $this->config->twoFactorAuthenticationSerialAttributeName;
 		$handle = getLDAPServerHandle();
-		$userData = ldapGetDN($userDn, array($attrName), $handle);
+		$userData = ldapGetDN($userDn, [$attrName], $handle);
 		if (empty($userData[$attrName])) {
 			logNewMessage(LOG_DEBUG, getDefaultLDAPErrorString($handle));
 			return null;
@@ -205,12 +206,12 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$curl = $this->getCurl();
 		$url = $this->config->twoFactorAuthenticationURL . "/auth";
 		curl_setopt($curl, CURLOPT_URL, $url);
-		$header = array('Accept: application/json');
+		$header = ['Accept: application/json'];
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-		$options = array(
+		$options = [
 			'username' => $user,
 			'password' => $password,
-		);
+		];
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
 		$json = curl_exec($curl);
 		curl_close($curl);
@@ -261,7 +262,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$curl = $this->getCurl();
 		$url = $this->config->twoFactorAuthenticationURL . "/token/?user=" . $user;
 		curl_setopt($curl, CURLOPT_URL, $url);
-		$header = array('Authorization: ' . $token, 'Accept: application/json');
+		$header = ['Authorization: ' . $token, 'Accept: application/json'];
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 		$json = curl_exec($curl);
 		curl_close($curl);
@@ -299,12 +300,12 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$curl = $this->getCurl();
 		$url = $this->config->twoFactorAuthenticationURL . "/validate/check";
 		curl_setopt($curl, CURLOPT_URL, $url);
-		$options = array(
+		$options = [
 			'pass' => $twoFactorInput,
 			'serial' => $serial,
-		);
+		];
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
-		$header = array('Authorization: ' . $token, 'Accept: application/json');
+		$header = ['Authorization: ' . $token, 'Accept: application/json'];
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 		$json = curl_exec($curl);
 		curl_close($curl);
@@ -359,11 +360,11 @@ class YubicoProvider extends BaseProvider {
 			$loginDn = $_SESSION['ldap']->getUserName();
 		}
 		$handle = getLDAPServerHandle();
-		$ldapData = ldapGetDN($loginDn, array($keyAttributeName), $handle);
+		$ldapData = ldapGetDN($loginDn, [$keyAttributeName], $handle);
 		if (empty($ldapData[$keyAttributeName])) {
 			return [];
 		}
-		return array(implode(', ', $ldapData[$keyAttributeName]));
+		return [implode(', ', $ldapData[$keyAttributeName])];
 	}
 
 	/**
@@ -433,7 +434,7 @@ class DuoProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
 	 */
 	public function getSerials($user, $password) {
-		return array('DUO');
+		return ['DUO'];
 	}
 
 	/**
@@ -502,7 +503,8 @@ class DuoProvider extends BaseProvider {
 					});
 				';
 				$row->add(new htmlJavaScript($jsBlock));
-			} catch (DuoException $e) {
+			}
+			catch (DuoException $e) {
 				$row->add(new htmlStatusMessage('ERROR', _('Duo connection failed'), $e->getMessage()));
 			}
 		}
@@ -532,7 +534,8 @@ class DuoProvider extends BaseProvider {
 			$duoResult = $duoClient->exchangeAuthorizationCodeFor2FAResult($code, $loginAttribute);
 			logNewMessage(LOG_DEBUG, print_r($duoResult, true));
 			return true;
-		} catch (DuoException $e) {
+		}
+		catch (DuoException $e) {
 			logNewMessage(LOG_ERR, 'DUO error: ' . $e->getMessage());
 			return false;
 		}
@@ -571,7 +574,7 @@ class OktaProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
 	 */
 	public function getSerials($user, $password) {
-		return array('OKTA');
+		return ['OKTA'];
 	}
 
 	/**
@@ -620,11 +623,11 @@ class OktaProvider extends BaseProvider {
 						currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
 					}
 					window.location.href = "' . $this->config->twoFactorAuthenticationURL
-					. '/oauth2/default/v1/authorize?code_challenge_method=S256&response_type=code&scope=openid email profile&client_id='
-					. $this->config->twoFactorAuthenticationClientId
-					. '&code_challenge=' . $codeChallenge
-					. '&state=' . $_SESSION['okta_state']
-					. '&redirect_uri=" + currentLocation
+			. '/oauth2/default/v1/authorize?code_challenge_method=S256&response_type=code&scope=openid email profile&client_id='
+			. $this->config->twoFactorAuthenticationClientId
+			. '&code_challenge=' . $codeChallenge
+			. '&state=' . $_SESSION['okta_state']
+			. '&redirect_uri=" + currentLocation
 				}
 			});
 			';
@@ -694,18 +697,18 @@ class OktaProvider extends BaseProvider {
 		$callingUrl = getCallingURL();
 		$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
 		logNewMessage(LOG_DEBUG, 'Get Okta access code.');
-		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(array(
+		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query([
 			'grant_type' => 'authorization_code',
 			'code' => $code,
 			'code_verifier' => $_SESSION['okta_code_verifier'],
 			'redirect_uri' => $callingUrl,
 			'client_id' => $this->config->twoFactorAuthenticationClientId,
 			'client_secret' => $this->config->twoFactorAuthenticationSecretKey
-		)));
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+		]));
+		curl_setopt($curl, CURLOPT_HTTPHEADER, [
 			'accept: application/json',
 			'content-type: application/x-www-form-urlencoded',
-		));
+		]);
 		$results = curl_exec($curl);
 		$returnCode = curl_errno($curl);
 		logNewMessage(LOG_DEBUG, 'Okta responded with ' . $returnCode . ': ' . $results);
@@ -755,7 +758,7 @@ class OpenIdProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
 	 */
 	public function getSerials($user, $password) {
-		return array('OpenID');
+		return ['OpenID'];
 	}
 
 	/**
@@ -832,13 +835,13 @@ class OpenIdProvider extends BaseProvider {
 	 *
 	 * @return \Facile\OpenIDClient\Client\Client client
 	 */
-	private function getOpenIdClient() : \Facile\OpenIDClient\Client\Client {
+	private function getOpenIdClient(): \Facile\OpenIDClient\Client\Client {
 		$issuer = (new \Facile\OpenIDClient\Issuer\IssuerBuilder())->build($this->config->twoFactorAuthenticationURL . '/.well-known/openid-configuration');
-		$meta = array(
+		$meta = [
 			'client_id' => $this->config->twoFactorAuthenticationClientId,
 			'client_secret' => $this->config->twoFactorAuthenticationSecretKey,
 			'token_endpoint_auth_method' => 'client_secret_basic',
-		);
+		];
 		if (!empty($_GET['redirect_uri'])) {
 			$meta['redirect_uri'] = $_GET['redirect_uri'];
 		}
@@ -854,7 +857,7 @@ class OpenIdProvider extends BaseProvider {
 	 *
 	 * @return \Facile\OpenIDClient\Service\AuthorizationService service
 	 */
-	private function getAuthorizationService() : \Facile\OpenIDClient\Service\AuthorizationService {
+	private function getAuthorizationService(): \Facile\OpenIDClient\Service\AuthorizationService {
 		return (new \Facile\OpenIDClient\Service\Builder\AuthorizationServiceBuilder())->build();
 	}
 
@@ -927,7 +930,7 @@ class WebauthnProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
 	 */
 	public function getSerials($user, $password) {
-		return array('WEBAUTHN');
+		return ['WEBAUTHN'];
 	}
 
 	/**
@@ -975,14 +978,14 @@ class WebauthnProvider extends BaseProvider {
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg', '50%'));
 		$row->addVerticalSpacer('1rem');
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
-		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')));
+		$row->add(new htmlDiv(null, $errorMessage, ['hidden webauthn-error']));
 		if (($this->config->twoFactorAuthenticationOptional === true) && !$hasTokens) {
 			$registerButton = new htmlButton('register_webauthn', _('Register new key'));
 			$registerButton->setType('button');
-			$registerButton->setCSSClasses(array('fullwidth'));
+			$registerButton->setCSSClasses(['fullwidth']);
 			$row->add($registerButton);
 			$skipButton = new htmlButton('skip_webauthn', _('Skip'));
-			$skipButton->setCSSClasses(array('fullwidth'));
+			$skipButton->setCSSClasses(['fullwidth']);
 			$row->add($skipButton);
 		}
 		$errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
@@ -1124,10 +1127,10 @@ class TwoFactorProviderService {
 			logNewMessage(LOG_ERR, 'The selected 2FA password to remember devices is empty.');
 			return;
 		}
-		$dataToEncrypt = array(
+		$dataToEncrypt = [
 			'user' => $user,
 			'timestamp' => getFormattedTime(self::DEVICE_REMEMBER_DATE_FORMAT),
-		);
+		];
 		if (!empty($_SERVER['HTTP_USER_AGENT'])) {
 			$dataToEncrypt['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
 		}
@@ -1137,10 +1140,10 @@ class TwoFactorProviderService {
 		$iv = openssl_random_pseudo_bytes(16);
 		$encryptedData = openssl_encrypt(json_encode($dataToEncrypt), lamEncryptionAlgo(),
 			$this->config->twoFactorRememberDevicePassword, 0, $iv);
-		$data = array(
+		$data = [
 			'iv' => base64_encode($iv),
 			'data' => base64_encode($encryptedData)
-		);
+		];
 		$cookieOptions = lamDefaultCookieOptions();
 		$cookieOptions['expires'] = time() + intval($this->config->twoFactorRememberDeviceDuration);
 		$this->setCookie('lam_remember_2fa', json_encode($data), $cookieOptions);
@@ -1252,9 +1255,9 @@ class TwoFactorProviderService {
 			}
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			$attrName = $profile->twoFactorAuthenticationAttribute;
 			if (empty($attrName)) {
 				$attrName = 'uid';
@@ -1302,9 +1305,9 @@ class TwoFactorProviderService {
 			}
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
