@@ -1,11 +1,14 @@
 <?php
+
 namespace LAM\TOOLS\IMPORT_EXPORT;
+
 use \htmlStatusMessage;
 use \LAMException;
+
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2023  Roland Gruber
+ Copyright (C) 2018 - 2024  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -105,8 +108,8 @@ class Importer {
 	 * Converts the lines to LDAP import tasks.
 	 *
 	 * @param string[] $lines import lines
-	 * @throws LAMException if invalid format was found
 	 * @return ImporterTask[] tasks
+	 * @throws LAMException if invalid format was found
 	 */
 	public function getTasks($lines) {
 		$chunks = $this->extractImportChunks($lines);
@@ -154,10 +157,10 @@ class Importer {
 		if (isset($_SESSION[Importer::SESSION_KEY_TASKS])) {
 			unset($_SESSION[Importer::SESSION_KEY_TASKS]);
 		}
-		$status = array(
+		$status = [
 			Importer::STATUS => 'failed',
 			Importer::DATA => $data
-		);
+		];
 		return json_encode($status);
 	}
 
@@ -172,19 +175,19 @@ class Importer {
 			if (isset($_SESSION[Importer::SESSION_KEY_TASKS])) {
 				unset($_SESSION[Importer::SESSION_KEY_TASKS]);
 			}
-			$status = array(
+			$status = [
 				Importer::STATUS => 'done',
 				Importer::DATA => $data
-			);
+			];
 			return json_encode($status);
 		}
 		$progress = (sizeof($_SESSION[Importer::SESSION_KEY_TASKS]) / $_SESSION[Importer::SESSION_KEY_COUNT]) * 100.0;
 		$progress = floor(100 - $progress);
-		$status = array(
+		$status = [
 			Importer::STATUS => 'inProgress',
 			Importer::PROGRESS => $progress,
 			Importer::DATA => $data
-		);
+		];
 		return json_encode($status);
 	}
 
@@ -266,9 +269,9 @@ class Importer {
 		$firstAttribute = $this->getLineKeyValue($firstAttributeLine);
 		if ($firstAttribute[Importer::KEY] != Importer::CHANGETYPE) {
 			// complete DN
-			$attributes = array(
-				$firstAttribute[Importer::KEY] => array($firstAttribute[Importer::VALUE])
-			);
+			$attributes = [
+				$firstAttribute[Importer::KEY] => [$firstAttribute[Importer::VALUE]]
+			];
 			foreach ($entry as $attributeLine) {
 				$attribute = $this->getLineKeyValue($attributeLine);
 				$attributes[$attribute[Importer::KEY]][] = $attribute[Importer::VALUE];
@@ -333,7 +336,7 @@ class Importer {
 		}
 		$newRdn = $newRdnData[Importer::VALUE];
 		$delOldRdnData = $this->getLineKeyValue($entry[1]);
-		if (($delOldRdnData[Importer::KEY] !== 'deleteoldrdn') || !in_array($delOldRdnData[Importer::VALUE], array('0', '1'), true)) {
+		if (($delOldRdnData[Importer::KEY] !== 'deleteoldrdn') || !in_array($delOldRdnData[Importer::VALUE], ['0', '1'], true)) {
 			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . $entry[1]);
 		}
 		$delOldRdn = ($delOldRdnData[Importer::VALUE] !== '0');
@@ -383,7 +386,7 @@ class Importer {
 	public static function formatMessage($type, $title, $message) {
 		$msg = new htmlStatusMessage($type, $title, $message);
 		ob_start();
-		$msg->generateHTML(null, array($msg), [], true, 'user');
+		$msg->generateHTML(null, [$msg], [], true, 'user');
 		$data = ob_get_contents();
 		ob_clean();
 		return $data;
@@ -406,7 +409,7 @@ class Importer {
 		else {
 			$value = trim($parts[Importer::VALUE]);
 		}
-		return array($parts[Importer::KEY], $value);
+		return [$parts[Importer::KEY], $value];
 	}
 
 }
@@ -672,7 +675,7 @@ class DeleteAttributesTask implements ImporterTask {
 			$success = @ldap_mod_del($ldap, $this->dn, $this->attributes);
 		}
 		else {
-			$success = @ldap_modify($ldap, $this->dn, array($this->attributeName => []));
+			$success = @ldap_modify($ldap, $this->dn, [$this->attributeName => []]);
 		}
 		if ($success) {
 			return '';

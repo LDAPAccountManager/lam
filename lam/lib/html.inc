@@ -21,11 +21,11 @@
 */
 
 /**
-* Interface between modules and other parts of LAM.
-*
-* @package metaHTML
-* @author Roland Gruber
-*/
+ * Interface between modules and other parts of LAM.
+ *
+ * @package metaHTML
+ * @author Roland Gruber
+ */
 
 /**
  * Returns the marker for required values.
@@ -42,7 +42,7 @@ function htmlGetRequiredMarker(): string {
  * @return htmlSpan HTML code for required marker
  */
 function htmlGetRequiredMarkerElement(): htmlSpan {
-	$span = new htmlSpan(new htmlOutputText('*'), array('lam-required'));
+	$span = new htmlSpan(new htmlOutputText('*'), ['lam-required']);
 	$span->setTitle(_('required'));
 	return $span;
 }
@@ -104,19 +104,19 @@ abstract class htmlElement {
 			switch ($this->alignment) {
 				case htmlElement::ALIGN_BOTTOM:
 					$align = 'valign="bottom"';
-				break;
+					break;
 				case htmlElement::ALIGN_TOP:
 					$align = 'valign="top"';
-				break;
+					break;
 				case htmlElement::ALIGN_LEFT:
 					$align = 'align="left"';
-				break;
+					break;
 				case htmlElement::ALIGN_RIGHT:
 					$align = 'align="right"';
-				break;
+					break;
 				case htmlElement::ALIGN_CENTER:
 					$align = 'align="center"';
-				break;
+					break;
 			}
 		}
 		return $align;
@@ -131,7 +131,9 @@ abstract class htmlElement {
 		if ($this->colspan == null) {
 			return '';
 		}
-		else return 'colspan="' . $this->colspan . '"';
+		else {
+			return 'colspan="' . $this->colspan . '"';
+		}
 	}
 
 	/**
@@ -143,7 +145,9 @@ abstract class htmlElement {
 		if ($this->rowspan == null) {
 			return '';
 		}
-		else return 'rowspan="' . $this->rowspan . '"';
+		else {
+			return 'rowspan="' . $this->rowspan . '"';
+		}
 	}
 
 	/**
@@ -363,7 +367,7 @@ class htmlTable extends htmlElement {
 			}
 			// print simple Strings
 			else {
-				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == htmlTable::NEWLINE) ) {
+				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == htmlTable::NEWLINE)) {
 					echo $this->elements[$i];
 				}
 			}
@@ -761,7 +765,7 @@ class htmlInputField extends htmlElement {
 			elseif (is_file("../../../templates/misc/ajax.php")) {
 				$ajaxPath = "../../../templates/misc/ajax.php";
 			}
-			$ajaxPath .=  $query;
+			$ajaxPath .= $query;
 			echo '<script type="text/javascript">
 					checkPasswordStrength("' . $this->fieldName . '", "' . $ajaxPath . '", "' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '");
 				</script>
@@ -771,10 +775,10 @@ class htmlInputField extends htmlElement {
 			return [];
 		}
 		if ($this->obfuscate) {
-			return array($this->fieldName => 'text_obfuscated');
+			return [$this->fieldName => 'text_obfuscated'];
 		}
 		else {
-			return array($this->fieldName => 'text');
+			return [$this->fieldName => 'text'];
 		}
 	}
 
@@ -1157,7 +1161,7 @@ class htmlButton extends htmlElement {
 			echo '<button' . $id . $name . $type . $onClick . $style . $class . $title . $disabled
 				. $noFormValidation . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
 		}
-		return array($this->name => 'submit');
+		return [$this->name => 'submit'];
 	}
 
 	/**
@@ -1357,7 +1361,7 @@ class htmlSelect extends htmlElement {
 		}
 		// print select box
 		echo '<select' . $this->getDataAttributesAsString() . $this->getAccessibilityMarkup() . $class . $style
-				. $name . $size . $multi . $disabled . $onchange . ">\n";
+			. $name . $size . $multi . $disabled . $onchange . ">\n";
 		if ($this->containsOptgroups) {
 			foreach ($this->elements as $label => $elements) {
 				if (sizeof($elements) > 0) {
@@ -1389,10 +1393,10 @@ class htmlSelect extends htmlElement {
 			return [];
 		}
 		if ($this->multiSelect) {
-			return array($this->name => 'multiselect');
+			return [$this->name => 'multiselect'];
 		}
 		else {
-			return array($this->name => 'select');
+			return [$this->name => 'select'];
 		}
 	}
 
@@ -1642,11 +1646,11 @@ class htmlSelect extends htmlElement {
 		$elementData = [];
 		$counter = 0;
 		foreach ($this->elements as $key => $value) {
-			$elementData[] = array(
+			$elementData[] = [
 				'label' => $key,
 				'value' => $value,
 				'selected' => in_array($value, $this->selectedElements),
-				'index' => $counter);
+				'index' => $counter];
 			$counter++;
 		}
 		$this->addDataAttribute('dynamic-options', json_encode($elementData));
@@ -1752,7 +1756,7 @@ class htmlRadio extends htmlElement {
 			echo '</div>';
 			$counter++;
 		}
-		return array($this->name => 'select');
+		return [$this->name => 'select'];
 	}
 
 	/**
@@ -2172,7 +2176,7 @@ class htmlInputCheckbox extends htmlElement {
 		if ($this->transient) {
 			return [];
 		}
-		return array($this->name => 'checkbox');
+		return [$this->name => 'checkbox'];
 	}
 
 	/**
@@ -2333,7 +2337,7 @@ class htmlInputFileUpload extends htmlElement {
 		}
 		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $classValue .
 			$onChange . $disabled . $required . $this->getDataAttributesAsString() . '>';
-		return array($this->name => 'file');
+		return [$this->name => 'file'];
 	}
 
 	/**
@@ -2434,7 +2438,7 @@ class htmlInputTextarea extends htmlElement {
 		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $classes . $colCount .
 			$rowCount . $this->getDataAttributesAsString() . $this->getAccessibilityMarkup() . $required . $disabled . '>' .
 			$this->value . '</textarea>';
-		return array($this->name => 'textarea');
+		return [$this->name => 'textarea'];
 	}
 
 	/**
@@ -2503,7 +2507,7 @@ class htmlInputColorPicker extends htmlElement {
 			$disabled = ' disabled';
 		}
 		echo '<input type="color" value="' . $this->color . '" id="' . $this->name . '" name="' . $this->name . '"' . $disabled . '>';
-		return array($this->name => 'file');
+		return [$this->name => 'file'];
 	}
 
 	/**
@@ -2569,7 +2573,7 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 		$labelGroup->addElement(new htmlOutputText($this->label));
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$helpLinkLabel->setCSSClasses(['hide-on-tablet', 'margin-left5']);
 			$labelGroup->addElement($helpLinkLabel);
 		}
 		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
@@ -2578,7 +2582,7 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
 			$helpLinkField = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
+			$helpLinkField->setCSSClasses(['hide-on-mobile']);
 			$fieldGroup->addElement($helpLinkField);
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
@@ -2612,7 +2616,7 @@ class htmlImage extends htmlElement {
 	private $lightbox = false;
 	/** @var string help popup title */
 	private $helpTitle;
-	/** @var htmlElement help popup content	*/
+	/** @var htmlElement help popup content */
 	private $helpContent;
 
 	/**
@@ -3046,7 +3050,7 @@ class htmlHiddenInput extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		echo '<input type="hidden" name="' . $this->name . '" id="' . $this->name . '" value="' . $this->value . '">';
-		return array($this->name => 'hidden');
+		return [$this->name => 'hidden'];
 	}
 
 }
@@ -3936,7 +3940,7 @@ class htmlResponsiveRow extends htmlElement {
 		if ($this->id !== null) {
 			$idParam = ' id="' . $this->id . '"';
 		}
-		echo '<div class="row ' . $cssClasses . '"' .  $this->getDataAttributesAsString() . $idParam . '>';
+		echo '<div class="row ' . $cssClasses . '"' . $this->getDataAttributesAsString() . $idParam . '>';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $scope));
 		}
@@ -3950,7 +3954,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param string $space space in px or rem
 	 */
 	public function addVerticalSpacer($space) {
-		$this->add(new htmlSpacer(null,	$space), 12);
+		$this->add(new htmlSpacer(null, $space), 12);
 	}
 
 	/**
@@ -4032,7 +4036,7 @@ class htmlResponsiveInputField extends htmlInputField {
 	private $renderParentHtml = false;
 	/** short label */
 	private $shortLabel = false;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -4076,7 +4080,7 @@ class htmlResponsiveInputField extends htmlInputField {
 		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$helpLinkLabel->setCSSClasses(['hide-on-tablet', 'margin-left5']);
 			$labelGroup->addElement($helpLinkLabel);
 		}
 		$tabletDesktopLabelColumns = $this->shortLabel ? 4 : 6;
@@ -4086,7 +4090,7 @@ class htmlResponsiveInputField extends htmlInputField {
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
 			$helpLinkField = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
+			$helpLinkField->setCSSClasses(['hide-on-mobile']);
 			$fieldGroup->addElement($helpLinkField);
 		}
 		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
@@ -4165,7 +4169,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$helpLinkLabel->setCSSClasses(['hide-on-tablet', 'margin-left5']);
 			$labelGroup->addElement($helpLinkLabel);
 		}
 		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
@@ -4174,7 +4178,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
 			$helpLinkField = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
+			$helpLinkField->setCSSClasses(['hide-on-mobile']);
 			$fieldGroup->addElement($helpLinkField);
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
@@ -4243,7 +4247,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpCssClasses = array('margin-left5');
+			$helpCssClasses = ['margin-left5'];
 			if (!$this->richEdit) {
 				$helpCssClasses[] = 'hide-on-tablet';
 			}
@@ -4257,7 +4261,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID) && !$this->richEdit) {
 			$helpLink = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLink->setCSSClasses(array('align-top', 'hide-on-mobile'));
+			$helpLink->setCSSClasses(['align-top', 'hide-on-mobile']);
 			$fieldGroup->addElement($helpLink);
 		}
 		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
@@ -4330,7 +4334,7 @@ class htmlResponsiveSelect extends htmlSelect {
 		$labelGroup->addElement(new htmlLabel($this->name, $this->label));
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$helpLinkLabel->setCSSClasses(['hide-on-tablet', 'margin-left5']);
 			$labelGroup->addElement($helpLinkLabel);
 		}
 		$tabletDesktopLabelColumns = $this->shortLabel ? 4 : 6;
@@ -4340,7 +4344,7 @@ class htmlResponsiveSelect extends htmlSelect {
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
 			$helpLink = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLink->setCSSClasses(array('hide-on-mobile'));
+			$helpLink->setCSSClasses(['hide-on-mobile']);
 			$fieldGroup->addElement($helpLink);
 		}
 		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
@@ -4411,16 +4415,16 @@ class htmlResponsiveRadio extends htmlRadio {
 		$labelGroup->addElement(new htmlOutputText($this->label));
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$helpLinkLabel->setCSSClasses(['hide-on-tablet', 'margin-left5']);
 			$labelGroup->addElement($helpLinkLabel);
 		}
 		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
-		$fieldGroup->addElement(new htmlDiv(null, $this, array('float-left')));
+		$fieldGroup->addElement(new htmlDiv(null, $this, ['float-left']));
 		if (!empty($this->helpID)) {
 			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->setCSSClasses(array('hide-on-mobile'));
+			$helpLink->setCSSClasses(['hide-on-mobile']);
 			$fieldGroup->addElement(new htmlDiv(null, $helpLink));
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
@@ -4459,7 +4463,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	private $labelAfterCheckbox = false;
 	/** short label */
 	private $shortLabel = false;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -4513,7 +4517,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
 			$helpLink = new htmlHelpLink($this->helpID, $this->helpModule);
-			$helpLink->setCSSClasses(array('margin-left5 align-unset-img'));
+			$helpLink->setCSSClasses(['margin-left5 align-unset-img']);
 			$fieldGroup->addElement($helpLink);
 		}
 		if ($this->labelAfterCheckbox) {
@@ -4942,8 +4946,8 @@ class htmlProgressbar extends htmlElement {
 			$idValue = ' id="' . $this->id . '"';
 		}
 		echo '<div ' . $idValue . ' class="lam-progressbar ' . $extraClasses . '">';
-			echo '<div class="lam-progressbar-bar" style="width: ' . $this->progress . '%">';
-			echo '</div>';
+		echo '<div class="lam-progressbar-bar" style="width: ' . $this->progress . '%">';
+		echo '</div>';
 		echo '</div>';
 		return [];
 	}

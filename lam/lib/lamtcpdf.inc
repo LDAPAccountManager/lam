@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\PDF;
+
 use LAM\ImageUtils\ImageManipulationFactory;
 use TCPDF;
 
@@ -93,7 +95,7 @@ class LAMTCPDF extends TCPDF {
 		//set folding marks
 		if ($this->structure->getFoldingMarks() == PDFStructure::FOLDING_STANDARD) {
 			$this->SetLineWidth(0.2);
-			$foldingMarks = array(97, 202);
+			$foldingMarks = [97, 202];
 			foreach ($foldingMarks as $mark) {
 				$this->Line(0, $mark, 5, $mark);
 			}

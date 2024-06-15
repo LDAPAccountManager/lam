@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\IMPORT_EXPORT;
+
 use \htmlStatusMessage;
 use \LAMException;
 use LamTemporaryFilesManager;
@@ -7,7 +9,7 @@ use LamTemporaryFilesManager;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2023  Roland Gruber
+ Copyright (C) 2018 - 2024  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -93,10 +95,10 @@ class Exporter {
 		}
 		catch (LAMException $e) {
 			$data = Exporter::formatMessage('ERROR', $e->getTitle(), $e->getMessage());
-			$status = array(
+			$status = [
 				Exporter::STATUS => 'failed',
 				Exporter::DATA => $data
-			);
+			];
 			return json_encode($status);
 		}
 	}
@@ -112,7 +114,7 @@ class Exporter {
 	public static function formatMessage($type, $title, $message) {
 		$msg = new htmlStatusMessage($type, $title, $message);
 		ob_start();
-		$msg->generateHTML(null, array($msg), [], true, 'user');
+		$msg->generateHTML(null, [$msg], [], true, 'user');
 		$data = ob_get_contents();
 		ob_clean();
 		return $data;
@@ -138,13 +140,13 @@ class Exporter {
 	private function getLDAPData() {
 		$attributes = preg_split('/,[ ]*/', $this->attributes);
 		if ($this->includeSystem) {
-			$attributes = array_merge($attributes, array('+', 'passwordRetryCount', 'accountUnlockTime', 'nsAccountLock',
-				'nsRoleDN', 'passwordExpirationTime', 'pwdChangedTime'));
+			$attributes = array_merge($attributes, ['+', 'passwordRetryCount', 'accountUnlockTime', 'nsAccountLock',
+				'nsRoleDN', 'passwordExpirationTime', 'pwdChangedTime']);
 		}
 		$attributes = array_unique($attributes);
 		switch ($this->searchScope) {
 			case 'base':
-				return array(ldapGetDN($this->baseDn, $attributes));
+				return [ldapGetDN($this->baseDn, $attributes)];
 			case 'one':
 				$entries = ldapListDN($this->baseDn, $this->filter, $attributes);
 				usort($entries, 'compareLDAPEntriesByDn');
@@ -181,15 +183,15 @@ class Exporter {
 			$handle = $temporaryFilesManager->openTemporaryFileForWrite($filename);
 			fwrite($handle, $output);
 			fclose($handle);
-			return json_encode(array(
+			return json_encode([
 				Exporter::FILE => $temporaryFilesManager->getDownloadLink($filename),
 				Exporter::STATUS => 'done'
-			));
+			]);
 		}
-		return json_encode(array(
+		return json_encode([
 			Exporter::OUTPUT => htmlspecialchars($output, ENT_NOQUOTES),
 			Exporter::STATUS => 'done'
-		));
+		]);
 	}
 
 	/**
@@ -208,11 +210,11 @@ class Exporter {
 				}
 			}
 		}
-		$attributeNames = array_delete(array('dn'), $attributeNames);
+		$attributeNames = array_delete(['dn'], $attributeNames);
 		sort($attributeNames);
 		array_unshift($attributeNames, 'dn');
 
-		$attributeNamesQuoted = array_map(array($this, 'escapeCsvAndAddQuotes'), $attributeNames);
+		$attributeNamesQuoted = array_map([$this, 'escapeCsvAndAddQuotes'], $attributeNames);
 		$output = '';
 		// header
 		$output .= implode(',', $attributeNamesQuoted) . $lineEnding;
@@ -313,7 +315,7 @@ class Exporter {
 	 * @return bool is plain ASCII
 	 */
 	private function isPlainAscii($content) {
-		for ($i=0; $i < strlen($content); $i++) {
+		for ($i = 0; $i < strlen($content); $i++) {
 			if (ord($content[$i]) < 32 || ord($content[$i]) > 127) {
 				return false;
 			}

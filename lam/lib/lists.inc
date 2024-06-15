@@ -27,11 +27,11 @@ use function LAM\PDF\createModulePDF;
 */
 
 /**
-* This file includes functions to manage the list views.
-*
-* @package lists
-* @author Roland Gruber
-*/
+ * This file includes functions to manage the list views.
+ *
+ * @package lists
+ * @author Roland Gruber
+ */
 
 /** Used to get type information. */
 include_once(__DIR__ . "/types.inc");
@@ -138,10 +138,10 @@ class lamList {
 	 *
 	 * @var string[]
 	 */
-	protected $serverSideFilterAttributes = array(
+	protected $serverSideFilterAttributes = [
 		'cn', 'commonname', 'uid', 'description',
 		'sn', 'surname', 'gn', 'givenname', 'company', 'mail'
-	);
+	];
 
 	/**
 	 * Constructor
@@ -151,11 +151,11 @@ class lamList {
 	 */
 	public function __construct($type) {
 		$this->type = $type;
-		$this->labels = array(
+		$this->labels = [
 			'nav' => _("Object count: %s"),
 			'error_noneFound' => _("No objects found!"),
 			'newEntry' => _("New object"),
-			'deleteEntry' => _("Delete selected objects"));
+			'deleteEntry' => _("Delete selected objects")];
 		$this->configOptions = $this->listGetAllConfigOptions();
 		$this->listReadOptionsFromCookie();
 		$this->supportsPasswordQuickChange = $this->isSupportingPasswordQuickChange();
@@ -166,7 +166,7 @@ class lamList {
 	 */
 	private function listReadOptionsFromCookie() {
 		if ((sizeof($this->configOptions) > 0)
-				&& isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
+			&& isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
 			$cookieValue = $_COOKIE["ListOptions_" . $this->type->getId()];
 			$valueParts = explode(";", $cookieValue);
 			$values = [];
@@ -211,9 +211,9 @@ class lamList {
 			$this->listCreateSortMapping($this->entries);
 		}
 		// insert HTML fragment from listDoPost
-        if ($postFragment !== null) {
-            parseHtml('', $postFragment, [], true, $this->type->getScope());
-        }
+		if ($postFragment !== null) {
+			parseHtml('', $postFragment, [], true, $this->type->getScope());
+		}
 		// config dialog
 		$this->listPrintConfigurationPage();
 		// show form
@@ -239,8 +239,8 @@ class lamList {
 	}
 
 	/**
-	* Builds the regular expressions from the filter values.
-	*/
+	 * Builds the regular expressions from the filter values.
+	 */
 	protected function listBuildFilter() {
 		if (isset($_GET['accountEditBack'])) {
 			return;
@@ -282,11 +282,11 @@ class lamList {
 	}
 
 	/**
-	* Determines the sort mapping and stores it in $this->sortMapping.
-	* The sort mapping is used to display the right rows when the account table is created.
-	*
-	* @param array $info the account list
-	*/
+	 * Determines the sort mapping and stores it in $this->sortMapping.
+	 * The sort mapping is used to display the right rows when the account table is created.
+	 *
+	 * @param array $info the account list
+	 */
 	protected function listCreateSortMapping(&$info) {
 		if (!is_array($this->attrArray) || !is_string($this->sortColumn)) {
 			return;
@@ -323,73 +323,73 @@ class lamList {
 	}
 
 	/**
-	* Draws a navigation bar to switch between pages
-	*
-	* @param integer $count number of account entries
-	*/
+	 * Draws a navigation bar to switch between pages
+	 *
+	 * @param integer $count number of account entries
+	 */
 	protected function listDrawNavigationBar($count) {
 		$filter = $this->getFilterAsTextForURL();
 		$row = new htmlResponsiveRow();
-		$row->setCSSClasses(array('maxrow'));
+		$row->setCSSClasses(['maxrow']);
 		$countLabel = new htmlOutputText(sprintf($this->labels['nav'], $count));
 		$row->add($countLabel, 12, 6, 6);
 		$navGroup = new htmlGroup();
 		if ($count > $this->maxPageEntries) {
 			if ($this->page != 1) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=1" .
-						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-first.svg');
 				$link->setTitle(_('Jump to first page'));
-				$link->setCSSClasses(array('icon'));
+				$link->setCSSClasses(['icon']);
 				$navGroup->addElement($link);
 			}
 			if ($this->page > 11) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page - 10) .
-						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-previous.svg');
 				$link->setTitle(_('Jump 10 pages backward'));
-				$link->setCSSClasses(array('icon'));
+				$link->setCSSClasses(['icon']);
 				$navGroup->addElement($link);
 			}
-			$pageCount =  ceil($count / $this->maxPageEntries);
+			$pageCount = ceil($count / $this->maxPageEntries);
 			for ($i = $this->page - 6; $i < ($this->page + 5); $i++) {
 				if ($i >= $pageCount) {
 					break;
 				}
-				elseif ($i < 0) {
+                elseif ($i < 0) {
 					continue;
 				}
 				if ($i == $this->page - 1) {
 					$url = "list.php?type=" . $this->type->getId() . "&norefresh=true" .
-							"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 					$navInput = new htmlInputField('listNavPage', ($i + 1));
 					$navInput->setMinimumAndMaximumNumber(1, $pageCount);
-					$navInput->setCSSClasses(array('listPageInput'));
+					$navInput->setCSSClasses(['listPageInput']);
 					$navInput->setOnKeyPress('listPageNumberKeyPress(\'' . $url . '\', event);');
 					$navInput->setAccessibilityLabel(_('Page'));
 					$navGroup->addElement($navInput);
 				}
 				else {
 					$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($i + 1) .
-					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 					$link = new htmlLink(($i + 1), $linkHref);
 					$navGroup->addElement($link);
 				}
 			}
 			if ($this->page < ($pageCount - 10)) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page + 10) .
-						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-next.svg');
 				$link->setTitle(_('Jump 10 pages forward'));
-				$link->setCSSClasses(array('icon'));
+				$link->setCSSClasses(['icon']);
 				$navGroup->addElement($link);
 			}
 			if ($this->page < $pageCount) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . $pageCount .
-						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-last.svg');
 				$link->setTitle(_('Jump to last page'));
-				$link->setCSSClasses(array('icon'));
+				$link->setCSSClasses(['icon']);
 				$navGroup->addElement($link);
 			}
 		}
@@ -411,10 +411,10 @@ class lamList {
 	}
 
 	/**
-	* Prints the entry list
-	*
-	* @param array $info entries
-	*/
+	 * Prints the entry list
+	 *
+	 * @param array $info entries
+	 */
 	private function printAccountTable(&$info) {
 		$scope = $this->type->getScope();
 		$titles = $this->descArray;
@@ -427,7 +427,7 @@ class lamList {
 		$this->addDataElements($data, $info, $onClickEvents, $onDoubleClickEvents);
 
 		$table = new htmlResponsiveTable($titles, $data);
-		$table->setCSSClasses(array('accountlist'));
+		$table->setCSSClasses(['accountlist']);
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
 
@@ -441,40 +441,40 @@ class lamList {
 	 */
 	private function getSortingElements() {
 		$filter = $this->getFilterAsTextForURL();
-		$sortElements = array(new htmlSpan(new htmlOutputText(_('Sort sequence')), array('nowrap')));
+		$sortElements = [new htmlSpan(new htmlOutputText(_('Sort sequence')), ['nowrap'])];
 		foreach ($this->attrArray as $attributeName) {
-			$link = "list.php?type=" . $this->type->getId() . "&".
+			$link = "list.php?type=" . $this->type->getId() . "&" .
 				"sort=" . strtolower($attributeName) . $filter . "&norefresh=y";
 			$buttons = new htmlGroup();
 			if (strtolower($attributeName) == $this->sortColumn) {
 				if ($this->sortDirection < 0) {
-				    $down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
-				    $down->setCSSClasses(array('icon noMarginSides'));
-				    $down->setTitle(_('Sort ascending'));
+					$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
+					$down->setCSSClasses(['icon noMarginSides']);
+					$down->setTitle(_('Sort ascending'));
 					$buttons->addElement($down);
 					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
-					$up->setCSSClasses(array('icon icon-active noMarginSides'));
+					$up->setCSSClasses(['icon icon-active noMarginSides']);
 					$up->setTitle(_('Sort descending'));
 					$buttons->addElement($up);
 				}
 				else {
 					$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
-					$down->setCSSClasses(array('icon icon-active noMarginSides'));
+					$down->setCSSClasses(['icon icon-active noMarginSides']);
 					$down->setTitle(_('Sort ascending'));
 					$buttons->addElement($down);
 					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
-					$up->setCSSClasses(array('icon noMarginSides'));
+					$up->setCSSClasses(['icon noMarginSides']);
 					$up->setTitle(_('Sort descending'));
 					$buttons->addElement($up);
 				}
 			}
 			else {
 				$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
-				$down->setCSSClasses(array('icon noMarginSides'));
+				$down->setCSSClasses(['icon noMarginSides']);
 				$down->setTitle(_('Sort ascending'));
 				$buttons->addElement($down);
 				$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
-				$up->setCSSClasses(array('icon noMarginSides'));
+				$up->setCSSClasses(['icon noMarginSides']);
 				$up->setTitle(_('Sort descending'));
 				$buttons->addElement($up);
 			}
@@ -491,7 +491,7 @@ class lamList {
 	private function getFilterElements() {
 		$actionElement = new htmlGroup();
 		$selectAll = new htmlInputCheckbox('tableSelectAll', false);
-		$selectAll->setCSSClasses(array('align-middle'));
+		$selectAll->setCSSClasses(['align-middle']);
 		$selectAll->setOnClick('list_switchAccountSelection();');
 		$selectAll->setTitle(_('Select all'));
 		$actionElement->addElement($selectAll);
@@ -506,7 +506,7 @@ class lamList {
 			$actionElement->addElement($clearFilterButton);
 		}
 
-		$filterElements = array(new htmlDiv(null, $actionElement, array('lam-listtools')));
+		$filterElements = [new htmlDiv(null, $actionElement, ['lam-listtools'])];
 		$clearFilter = isset($_POST['clear_filter']);
 		foreach ($this->attrArray as $attributeName) {
 			$attributeName = strtolower($attributeName);
@@ -544,23 +544,23 @@ class lamList {
 
 	/**
 	 * Returns the filter for account status.
-     *
-     * @param bool $clearFilter filter should be cleared
+	 *
+	 * @param bool $clearFilter filter should be cleared
 	 */
 	protected function getAccountStatusFilterArea(bool $clearFilter): htmlElement {
 		$value = "-";
 		if (!$clearFilter && isset($this->filters[self::ATTR_ACCOUNT_STATUS])) {
 			$value = $this->filters[self::ATTR_ACCOUNT_STATUS];
 		}
-		$filterOptions = array(
+		$filterOptions = [
 			'' => '',
 			_('Unlocked') => self::FILTER_UNLOCKED,
 			_('Partially locked') => self::FILTER_SEMILOCKED,
 			_('Locked') => self::FILTER_LOCKED,
 			_('Expired') => self::FILTER_EXPIRED,
-		);
-		$filterInput = new htmlSelect('filter' . strtolower(self::ATTR_ACCOUNT_STATUS), $filterOptions, array($value));
-		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
+		];
+		$filterInput = new htmlSelect('filter' . strtolower(self::ATTR_ACCOUNT_STATUS), $filterOptions, [$value]);
+		$filterInput->setCSSClasses([$this->type->getScope() . '-bright']);
 		$filterInput->setHasDescriptiveElements(true);
 		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
 		$filterInput->setAccessibilityLabel(_('Filter'));
@@ -593,18 +593,18 @@ class lamList {
 			}
 		}
 		// get custom render functions
-        $renderFunctions = [];
-        $modules = $this->type->getModules();
+		$renderFunctions = [];
+		$modules = $this->type->getModules();
 		foreach ($modules as $module) {
-		    $moduleObj = moduleCache::getModule($module, $this->type->getScope());
+			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
 				$renderFunction = $moduleObj->getListRenderFunction($attributeName);
 				if ($renderFunction !== null) {
-                    $renderFunctions[$attributeName] = $renderFunction;
+					$renderFunctions[$attributeName] = $renderFunction;
 				}
 			}
-        }
+		}
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
 			$row = [];
@@ -613,7 +613,7 @@ class lamList {
 			$actionElement = new htmlGroup();
 			$checkbox = new htmlInputCheckbox($rowID, false);
 			$checkbox->setOnClick("list_click('" . $rowID . "');");
-			$checkbox->setCSSClasses(array('accountBoxUnchecked align-middle'));
+			$checkbox->setCSSClasses(['accountBoxUnchecked align-middle']);
 			$checkbox->setTitle(_('Select'));
 			$actionElement->addElement($checkbox);
 			$actionElement->addElement(new htmlSpacer('0.5rem', null));
@@ -621,12 +621,12 @@ class lamList {
 			$onClickEvents[$rowNumber] = "list_click('" . $rowID . "');";
 			$onDoubleClickEvents[$rowNumber] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
 			$this->addToolLinks($info[$index], $rowID, $actionElement);
-			$row[] = new htmlDiv(null, $actionElement, array('lam-listtools'));
+			$row[] = new htmlDiv(null, $actionElement, ['lam-listtools']);
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
 				if (!empty($renderFunctions[$attributeName])) {
-				    $row[] = $renderFunctions[$attributeName]($info[$index], $attributeName);
-                }
+					$row[] = $renderFunctions[$attributeName]($info[$index], $attributeName);
+				}
 				else {
 					$row[] = $this->getTableCellContent($info[$index], $attributeName);
 				}
@@ -646,66 +646,66 @@ class lamList {
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.svg');
 		$editLink->setTitle(_("Edit"));
-		$editLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
+		$editLink->setCSSClasses(['lam-margin-smaller', 'icon']);
 		$element->addElement($editLink);
 		// delete link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.svg');
 			$deleteLink->setTitle(_("Delete"));
-			$deleteLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
+			$deleteLink->setCSSClasses(['lam-margin-smaller', 'icon']);
 			$element->addElement($deleteLink);
 		}
 		// copy link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$copyLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&copyDn='" . rawurlencode($account['dn']) . "'", '../../graphics/copy.svg');
 			$copyLink->setTitle(_("Copy"));
-			$copyLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
+			$copyLink->setCSSClasses(['lam-margin-smaller', 'icon']);
 			$element->addElement($copyLink);
 		}
 		// PDF button
-        $pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$pdfStructures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $this->type->getId());
-        if (!empty($pdfStructures)) {
-	        $pdfButton = new htmlButton("createPDF_" . $id, 'pdf.svg', true);
-	        $pdfButton->setTitle(_('Create PDF file'));
-	        $pdfButton->setCSSClasses(array('lam-margin-smaller'));
-	        $element->addElement($pdfButton);
-        }
+		if (!empty($pdfStructures)) {
+			$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.svg', true);
+			$pdfButton->setTitle(_('Create PDF file'));
+			$pdfButton->setCSSClasses(['lam-margin-smaller']);
+			$element->addElement($pdfButton);
+		}
 		// password quick change
-        if (isLAMProVersion() && $this->supportsPasswordQuickChange && checkIfPasswordChangeIsAllowed()) {
-	        $pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN=" . rawurlencode($account['dn']), '../../graphics/key.svg');
-	        $pwdChangeButton->setTitle(_('Change password'));
-	        $pwdChangeButton->setCSSClasses(array('lam-margin-smaller', 'icon'));
-	        $element->addElement($pwdChangeButton);
-        }
+		if (isLAMProVersion() && $this->supportsPasswordQuickChange && checkIfPasswordChangeIsAllowed()) {
+			$pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN=" . rawurlencode($account['dn']), '../../graphics/key.svg');
+			$pwdChangeButton->setTitle(_('Change password'));
+			$pwdChangeButton->setCSSClasses(['lam-margin-smaller', 'icon']);
+			$element->addElement($pwdChangeButton);
+		}
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
 			$toolLink->setTitle($tools[$i]->getName());
-			$toolLink->setCSSClasses(array('lam-margin-smaller', 'icon'));
+			$toolLink->setCSSClasses(['lam-margin-smaller', 'icon']);
 			$element->addElement($toolLink);
 		}
 	}
 
 	/**
-     * Returns if this account supports the password quick change page.
-     *
+	 * Returns if this account supports the password quick change page.
+	 *
 	 * @return bool quick change supported
 	 */
 	private function isSupportingPasswordQuickChange(): bool {
-        $modules = $this->type->getModules();
-        foreach ($modules as $module) {
-            if (!in_array('passwordService', class_implements($module))) {
-                continue;
-            }
-	        $moduleObj = new $module($this->type->getScope());
-            if ($moduleObj->supportsPasswordQuickChangePage()) {
-                return true;
-            }
-        }
-        return false;
-    }
+		$modules = $this->type->getModules();
+		foreach ($modules as $module) {
+			if (!in_array('passwordService', class_implements($module))) {
+				continue;
+			}
+			$moduleObj = new $module($this->type->getScope());
+			if ($moduleObj->supportsPasswordQuickChangePage()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Returns if this account supports the account status column.
@@ -748,12 +748,12 @@ class lamList {
 			return $this->getAccountStatus($entry);
 		}
 		if (($attribute === 'dn') && is_string($entry[$attribute])) {
-		    return new htmlOutputText(getAbstractDN($entry[$attribute]));
-        }
+			return new htmlOutputText(getAbstractDN($entry[$attribute]));
+		}
 		// print all attribute entries separated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
-    			// sort array
+				// sort array
 				sort($entry[$attribute]);
 				return new htmlOutputText(implode("; ", $entry[$attribute]));
 			}
@@ -764,26 +764,26 @@ class lamList {
 	}
 
 	/**
-	* Manages all POST actions (e.g. button pressed) for the account lists.
-	*
-	* @return htmlElement|null HTML fragment to insert into beginning of account list
-	*/
+	 * Manages all POST actions (e.g. button pressed) for the account lists.
+	 *
+	 * @return htmlElement|null HTML fragment to insert into beginning of account list
+	 */
 	protected function listDoPost() {
 		if (!empty($_POST)) {
 			validateSecurityToken();
 		}
 		// check if button was pressed and if we have to add/delete an account or call file upload
-		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['fileUpload'])){
+		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['fileUpload'])) {
 			if (!checkIfWriteAccessIsAllowed($this->type->getId())) {
 				die();
 			}
 			// add new account
-			if (isset($_POST['new']) && checkIfNewEntriesAreAllowed($this->type->getId())){
+			if (isset($_POST['new']) && checkIfNewEntriesAreAllowed($this->type->getId())) {
 				metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&suffix=" . $this->suffix);
 				exit;
 			}
 			// delete account(s)
-			elseif (isset($_POST['del']) && checkIfDeleteEntriesIsAllowed($this->type->getId())){
+            elseif (isset($_POST['del']) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
 				// build DN list
@@ -800,7 +800,7 @@ class lamList {
 				}
 			}
 			// file upload
-			elseif (isset($_POST['fileUpload']) && checkIfNewEntriesAreAllowed($this->type->getId())){
+            elseif (isset($_POST['fileUpload']) && checkIfNewEntriesAreAllowed($this->type->getId())) {
 				metaRefresh("../upload/masscreate.php?type=" . $this->type->getId());
 				exit;
 			}
@@ -817,62 +817,63 @@ class lamList {
 		}
 		// PDF creation Ok
 		if (isset($_POST['createPDFok'])) {
-		    try {
-			    $pdfStruct = $_POST['pdf_structure'];
-			    $pdfFont = $_POST['pdf_font'];
-			    $option = $_POST['createFor'];
-			    $fileName = '';
-			    // create for clicked account
-			    if ($option == 'DN') {
-				    $_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
-				    $_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
-				    $fileName = createModulePDF(array($_SESSION["accountPDF"]), $pdfStruct, $pdfFont);
-				    unset($_SESSION["accountPDF"]);
-			    } // create for all selected accounts
+			try {
+				$pdfStruct = $_POST['pdf_structure'];
+				$pdfFont = $_POST['pdf_font'];
+				$option = $_POST['createFor'];
+				$fileName = '';
+				// create for clicked account
+				if ($option == 'DN') {
+					$_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
+					$_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
+					$fileName = createModulePDF([$_SESSION["accountPDF"]], $pdfStruct, $pdfFont);
+					unset($_SESSION["accountPDF"]);
+				} // create for all selected accounts
                 elseif ($option == 'SELECTED') {
-				    // search for checkboxes
-				    $accounts = array_keys($_POST, "on");
-				    $list = [];
-				    // load accounts from LDAP
-				    for ($i = 0; $i < sizeof($accounts); $i++) {
-					    $_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-					    $_SESSION["accountPDF-$i"]->load_account(base64_decode($accounts[$i]));
-					    $list[$i] = $_SESSION["accountPDF-$i"];
-				    }
-				    if (sizeof($list) > 0) {
-					    $fileName = createModulePDF($list, $pdfStruct, $pdfFont);
-					    for ($i = 0; $i < sizeof($accounts); $i++) {
-						    unset($_SESSION["accountPDF-$i"]);
-					    }
-				    }
-			    } // create for all accounts
+					// search for checkboxes
+					$accounts = array_keys($_POST, "on");
+					$list = [];
+					// load accounts from LDAP
+					for ($i = 0; $i < sizeof($accounts); $i++) {
+						$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
+						$_SESSION["accountPDF-$i"]->load_account(base64_decode($accounts[$i]));
+						$list[$i] = $_SESSION["accountPDF-$i"];
+					}
+					if (sizeof($list) > 0) {
+						$fileName = createModulePDF($list, $pdfStruct, $pdfFont);
+						for ($i = 0; $i < sizeof($accounts); $i++) {
+							unset($_SESSION["accountPDF-$i"]);
+						}
+					}
+				} // create for all accounts
                 elseif ($option == 'ALL') {
-				    $list = [];
-				    $entriesCount = sizeof($this->entries);
-				    for ($i = 0; $i < $entriesCount; $i++) {
-					    $_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-					    $_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
-					    $list[$i] = $_SESSION["accountPDF-$i"];
-				    }
-				    if (sizeof($list) > 0) {
-					    $fileName = createModulePDF($list, $pdfStruct, $pdfFont);
-					    for ($i = 0; $i < $entriesCount; $i++) {
-						    // clean session
-						    unset($_SESSION["accountPDF-$i"]);
-					    }
-				    }
-			    } elseif ($option == 'SESSION') {
-				    $fileName = createModulePDF(array($_SESSION[$_POST['PDFSessionID']]), $pdfStruct, $pdfFont);
-				    unset($_SESSION[$_POST['PDFSessionID']]);
-			    }
-			    if (!empty($fileName)) {
-			        $tempFilesManager = new LamTemporaryFilesManager();
-				    return new htmlJavaScript("window.open('" . $tempFilesManager->getDownloadLink($fileName) . "', '_blank');");
-			    }
-		    }
-		    catch (LAMException $e) {
-		        return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
-            }
+					$list = [];
+					$entriesCount = sizeof($this->entries);
+					for ($i = 0; $i < $entriesCount; $i++) {
+						$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
+						$_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
+						$list[$i] = $_SESSION["accountPDF-$i"];
+					}
+					if (sizeof($list) > 0) {
+						$fileName = createModulePDF($list, $pdfStruct, $pdfFont);
+						for ($i = 0; $i < $entriesCount; $i++) {
+							// clean session
+							unset($_SESSION["accountPDF-$i"]);
+						}
+					}
+				}
+                elseif ($option == 'SESSION') {
+					$fileName = createModulePDF([$_SESSION[$_POST['PDFSessionID']]], $pdfStruct, $pdfFont);
+					unset($_SESSION[$_POST['PDFSessionID']]);
+				}
+				if (!empty($fileName)) {
+					$tempFilesManager = new LamTemporaryFilesManager();
+					return new htmlJavaScript("window.open('" . $tempFilesManager->getDownloadLink($fileName) . "', '_blank');");
+				}
+			}
+			catch (LAMException $e) {
+				return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			}
 		}
 		// check if back from configuration page
 		if ((sizeof($this->configOptions) > 0) && isset($_POST['saveConfigOptions'])) {
@@ -924,10 +925,10 @@ class lamList {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlSubTitle(_('Create PDF file')), 12);
 
-		$container->add(new htmlResponsiveSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure'), '405'), 12);
+		$container->add(new htmlResponsiveSelect('pdf_structure', $pdf_structures, ['default'], _('PDF structure'), '405'), 12);
 		$fonts = \LAM\PDF\getPdfFonts();
 		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, [], _('Font'), '411');
-		$fontSelection->setCSSClasses(array('lam-save-selection'));
+		$fontSelection->setCSSClasses(['lam-save-selection']);
 		$fontSelection->setHasDescriptiveElements(true);
 		$fontSelection->setSortElements(false);
 		$container->add($fontSelection, 12);
@@ -941,11 +942,11 @@ class lamList {
 			$container->add(new htmlHiddenInput('PDFSessionID', $PDFSessionID), 0);
 		}
 		else {
-			$radioOptions = array(
+			$radioOptions = [
 				getAbstractDN(base64_decode($id)) => 'DN',
 				sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) => 'SELECTED',
 				sprintf(_('All accounts (%s)'), sizeof($this->entries)) => 'ALL'
-			);
+			];
 			$container->addField(new htmlRadio('createFor', $radioOptions, 'DN'));
 		}
 
@@ -969,10 +970,10 @@ class lamList {
 	}
 
 	/**
-	* Prints a combobox with possible sub-DNs.
-	*
-	* @return htmlGroup OU selection (may be empty)
-	*/
+	 * Prints a combobox with possible sub-DNs.
+	 *
+	 * @return htmlGroup OU selection (may be empty)
+	 */
 	protected function listShowOUSelection() {
 		$group = new htmlGroup();
 		if (sizeof($this->possibleSuffixes) > 1) {
@@ -980,7 +981,7 @@ class lamList {
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				$suffixList[getAbstractDN($this->possibleSuffixes[$i])] = $this->possibleSuffixes[$i];
 			}
-			$suffixSelect = new htmlSelect('suffix', $suffixList, array($this->suffix));
+			$suffixSelect = new htmlSelect('suffix', $suffixList, [$this->suffix]);
 			$suffixSelect->setOnchangeEvent("listOUchanged('" . $this->type->getId() . "', this)");
 			$suffixSelect->setRightToLeftTextDirection(true);
 			$suffixSelect->setSortElements(false);
@@ -998,26 +999,26 @@ class lamList {
 	 */
 	protected function listPrintButtons($createOnly) {
 		$row = new htmlResponsiveRow();
-		$row->setCSSClasses(array('maxrow lam-list-buttons'));
+		$row->setCSSClasses(['maxrow lam-list-buttons']);
 		$left = new htmlGroup();
 		// button part
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
 			// add button
 			if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 				$newButton = new htmlButton('new', $this->labels['newEntry']);
-				$newButton->setCSSClasses(array('lam-primary fullwidth-mobile-only'));
+				$newButton->setCSSClasses(['lam-primary fullwidth-mobile-only']);
 				$left->addElement($newButton);
 			}
 			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
-					&& $_SESSION['config']->isToolActive('toolFileUpload')) {
+				&& $_SESSION['config']->isToolActive('toolFileUpload')) {
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
-				$uploadButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
+				$uploadButton->setCSSClasses(['fullwidth-mobile-only lam-secondary']);
 				$left->addElement($uploadButton);
 			}
 			// delete button
 			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
-				$delButton->setCSSClasses(array('lam-danger fullwidth-mobile-only'));
+				$delButton->setCSSClasses(['lam-danger fullwidth-mobile-only']);
 				$left->addElement($delButton);
 			}
 		}
@@ -1032,7 +1033,7 @@ class lamList {
 		$settingsLink = new htmlLink('', '#', '../../graphics/configure.svg');
 		$settingsLink->setOnClick('window.lam.accountLists.listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
-		$settingsLink->setCSSClasses(array('icon'));
+		$settingsLink->setCSSClasses(['icon']);
 		$rightButtonGroup->addElement($settingsLink);
 		$right->add($rightButtonGroup, 12, 12, 2);
 
@@ -1058,7 +1059,7 @@ class lamList {
 	private function printHeader() {
 		include 'adminHeader.inc';
 		$row = new htmlResponsiveRow();
-		$row->setCSSClasses(array('maxrow'));
+		$row->setCSSClasses(['maxrow']);
 		$row->add(new htmlTitle($this->type->getAlias()));
 		parseHtml(null, $row, [], true, null);
 		$this->printHeaderContent();
@@ -1084,17 +1085,18 @@ class lamList {
 	 */
 	protected function printFooterContent() {
 		?>
-		<input type="hidden" name="<?php echo getSecurityTokenName(); ?>" value="<?php echo getSecurityTokenValue(); ?>">
-			</form>
+        <input type="hidden" name="<?php echo getSecurityTokenName(); ?>"
+               value="<?php echo getSecurityTokenValue(); ?>">
+        </form>
 		<?php
 	}
 
 	/**
-	* Returns an hash array containing with all attributes to be shown and their descriptions.
-	* Format: array(attribute => description)
-	*
-	* @return array attribute list
-	*/
+	 * Returns an hash array containing with all attributes to be shown and their descriptions.
+	 * Format: array(attribute => description)
+	 *
+	 * @return array attribute list
+	 */
 	protected function listGetAttributeDescriptionList() {
 		$attrs = $this->type->getAttributes();
 		$ret = [];
@@ -1131,8 +1133,8 @@ class lamList {
 		}
 		// generate attribute-description table
 		$temp_array = $this->listGetAttributeDescriptionList();
-		$this->attrArray = array_keys($temp_array);	// list of LDAP attributes to show
-		$this->descArray = array_values($temp_array);	// list of descriptions for the attributes
+		$this->attrArray = array_keys($temp_array);    // list of LDAP attributes to show
+		$this->descArray = array_values($temp_array);    // list of descriptions for the attributes
 		// get sorting column
 		if (isset($_GET["sort"])) {
 			if ($_GET["sort"] == $this->sortColumn) {
@@ -1156,11 +1158,11 @@ class lamList {
 			// new suffix selected via combobox
 			$this->suffix = $_POST['suffix'];
 		}
-		elseif (isset($_GET['suffix'])) {
+        elseif (isset($_GET['suffix'])) {
 			// new suffix selected via combobox
 			$this->suffix = $_GET['suffix'];
 		}
-		elseif (!$this->suffix) {
+        elseif (!$this->suffix) {
 			// default suffix
 			$this->suffix = $this->type->getSuffix();
 		}
@@ -1173,11 +1175,11 @@ class lamList {
 			$this->refresh = true;
 		}
 		if (isset($_POST['apply_filter']) || isset($_POST['clear_filter'])) {
-		    $noRefresh = '&norefresh=true';
-		    if ($this->serverSideFilterChanged) {
-			    $this->refresh = true;
-			    $noRefresh = '';
-		    }
+			$noRefresh = '&norefresh=true';
+			if ($this->serverSideFilterChanged) {
+				$this->refresh = true;
+				$noRefresh = '';
+			}
 			$filter = $this->getFilterAsTextForURL();
 			metaRefresh("list.php?type=" . $this->type->getId() . "&page=1" .
 				"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter . $noRefresh);
@@ -1195,7 +1197,7 @@ class lamList {
 		}
 		// configure search filter
 		$module_filter = get_ldap_filter($this->type->getId());  // basic filter is provided by modules
-		$filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter()  . ")";
+		$filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
 		$attrs = $this->attrArray;
 		// remove virtual attributes from list
 		for ($i = 0; $i < sizeof($attrs); $i++) {
@@ -1244,15 +1246,15 @@ class lamList {
 			}
 			$filterExpression = $filter;
 			if (strpos($filter, '^') === 0) {
-			    $filterExpression = substr($filterExpression, 1);
-            }
-			elseif (strpos($filter, '*') !== 0) {
+				$filterExpression = substr($filterExpression, 1);
+			}
+            elseif (strpos($filter, '*') !== 0) {
 				$filterExpression = '*' . $filterExpression;
 			}
 			if (strrpos($filter, '$') === (strlen($filter) - 1)) {
-			    $filterExpression = substr($filterExpression, 0, -1);
-            }
-			elseif (strrpos($filter, '*') !== (strlen($filter) - 1)) {
+				$filterExpression = substr($filterExpression, 0, -1);
+			}
+            elseif (strrpos($filter, '*') !== (strlen($filter) - 1)) {
 				$filterExpression = $filterExpression . '*';
 			}
 			$text .= '(' . $attr . '=' . $filterExpression . ')';
@@ -1304,13 +1306,13 @@ class lamList {
 				if (in_array($index, $toFilter)) {
 					continue;
 				}
-				$regex = str_replace(array('*'), array('.*'), $filterValue);
+				$regex = str_replace(['*'], ['.*'], $filterValue);
 				$regex = '/' . $regex . '/i';
 				if ($filterFunctions[$filterAttribute] !== null) {
-				    $value = isset($data[$filterAttribute]) ? $data[$filterAttribute] : null;
-                    if (!$filterFunctions[$filterAttribute]($value, $filterValue)) {
-	                    $toFilter[] = $index;
-                    }
+					$value = isset($data[$filterAttribute]) ? $data[$filterAttribute] : null;
+					if (!$filterFunctions[$filterAttribute]($value, $filterValue)) {
+						$toFilter[] = $index;
+					}
 				}
 				else {
 					if (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
@@ -1365,7 +1367,7 @@ class lamList {
 	 * @return array additional attribute names
 	 */
 	protected function getAdditionalLDAPAttributesToRead() {
-	    $attrs = [];
+		$attrs = [];
 		if ($this->showAccountStatus) {
 			$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 			foreach ($modules as $module) {
@@ -1395,8 +1397,8 @@ class lamList {
 	 * @return array list of lamListOption objects
 	 */
 	protected function listGetAllConfigOptions() {
-	    $options = [];
-		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), array(10, 20, 30, 50, 75, 100, 500, 1000), self::LIST_SIZE_OPTION_NAME);
+		$options = [];
+		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), [10, 20, 30, 50, 75, 100, 500, 1000], self::LIST_SIZE_OPTION_NAME);
 		$listSizeOption->setHelpID('208');
 		$listSizeOption->setValue($this->maxPageEntries);
 		$options[] = $listSizeOption;
@@ -1449,7 +1451,7 @@ class lamList {
 			$this->maxPageEntries = $sizeOption->getValue();
 		}
 		// if account status was activated, reload LDAP data
-        if ($this->isSupportingAccountStatus()) {
+		if ($this->isSupportingAccountStatus()) {
 			$asOption = $this->listGetConfigOptionByID(self::ACCOUNT_STATUS_OPTION_NAME);
 			$asOptionOldValue = $this->showAccountStatus;
 			$this->showAccountStatus = $asOption->isSelected();
@@ -1466,20 +1468,20 @@ class lamList {
 		if (isset($_GET['deleteAllOk'])) {
 			StatusMessage('INFO', _('Deletion was successful.'));
 		}
-		elseif (isset($_GET['uploadAllOk'])) {
+        elseif (isset($_GET['uploadAllOk'])) {
 			StatusMessage('INFO', _("Upload has finished"));
 			if (isset($_SESSION['mass_pdf']['file'])) {
 				$tempFilesManager = new LamTemporaryFilesManager();
 				StatusMessage('INFO',
-                    _('You can download your PDF files %shere%s.'),
-                    '',
-                    [
-                        '<a href="' . $tempFilesManager->getDownloadLink($_SESSION['mass_pdf']['file']) . '">',
-                        '</a>'
-                    ]);
+					_('You can download your PDF files %shere%s.'),
+					'',
+					[
+						'<a href="' . $tempFilesManager->getDownloadLink($_SESSION['mass_pdf']['file']) . '">',
+						'</a>'
+					]);
 			}
 		}
-		elseif (isset($_GET['accountEditInvalidID'])) {
+        elseif (isset($_GET['accountEditInvalidID'])) {
 			StatusMessage('WARN', _('Please do not edit multiple accounts in parallel in multiple browser tabs.'));
 		}
 		if (isset($_SESSION['listRedirectMessages'])) {
@@ -1540,7 +1542,7 @@ class lamList {
 			$altText = _('Expired');
 		}
 		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, null, null, $altText);
-		$statusIcon->setCSSClasses(array('icon'));
+		$statusIcon->setCSSClasses(['icon']);
 		if (!empty($accountStatus->getDetails())) {
 			$detailsTable = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
@@ -1548,7 +1550,7 @@ class lamList {
 				$label->setNoWrap(true);
 				$detailsTable->addElement($label);
 				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
-				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$statusDetailIcon->setCSSClasses(['fixed-size-16']);
 				$detailsTable->addElement($statusDetailIcon);
 				$detailsTable->addNewLine();
 			}
@@ -1806,7 +1808,7 @@ class lamSelectListOption extends lamListOption {
 	 */
 	public function getMetaHTML() {
 		$return = new htmlResponsiveRow();
-		$return->add(new htmlResponsiveSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID), 12);
+		$return->add(new htmlResponsiveSelect($this->getID(), $this->options, [$this->getValue()], $this->name, $this->helpID), 12);
 		return $return;
 	}
 

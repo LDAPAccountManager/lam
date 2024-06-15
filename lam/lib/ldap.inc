@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,20 +21,20 @@
 */
 
 /**
-* ldap.inc provides basic functions to connect to the OpenLDAP server.
-*
-* @package LDAP
-* @author Roland Gruber
-*/
+ * ldap.inc provides basic functions to connect to the OpenLDAP server.
+ *
+ * @package LDAP
+ * @author Roland Gruber
+ */
 
 /** Access to configuration data */
 include_once(__DIR__ . "/config.inc");
 
 /**
-* Ldap manages connection to LDAP and includes several helper functions.
-*
-* @package LDAP
-*/
+ * Ldap manages connection to LDAP and includes several helper functions.
+ *
+ * @package LDAP
+ */
 class Ldap {
 
 	/** Object of Config to access preferences */
@@ -54,10 +54,10 @@ class Ldap {
 	private $isActiveDirectory;
 
 	/**
-	* Creates a new LDAP object.
-	*
-	* @param object $config an object of class Config
-	*/
+	 * Creates a new LDAP object.
+	 *
+	 * @param object $config an object of class Config
+	 */
 	public function __construct($config) {
 		if (is_object($config)) {
 			$this->conf = $config;
@@ -76,7 +76,7 @@ class Ldap {
 		// close any prior connection
 		@$this->close();
 		// do not allow anonymous bind
-		if (!$allowAnonymous && ((!$user)||($user == "")||(!$passwd))) {
+		if (!$allowAnonymous && ((!$user) || ($user == "") || (!$passwd))) {
 			throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
 		}
 		// save password und username encrypted
@@ -87,7 +87,7 @@ class Ldap {
 		if ($this->server != null) {
 			// referral following
 			$followReferrals = ($this->conf->getFollowReferrals() === 'true') ? 1 : 0;
-			ldap_set_option($this->server,LDAP_OPT_REFERRALS, $followReferrals);
+			ldap_set_option($this->server, LDAP_OPT_REFERRALS, $followReferrals);
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 				$this->is_connected = true;
@@ -110,7 +110,7 @@ class Ldap {
 			else {
 				// other errors
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
-				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."),  "($errorNumber) " . getDefaultLDAPErrorString($this->server), null, $errorNumber);
+				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."), "($errorNumber) " . getDefaultLDAPErrorString($this->server), null, $errorNumber);
 			}
 		}
 		throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
@@ -143,10 +143,10 @@ class Ldap {
 	}
 
 	/**
-	* Returns the LDAP connection handle
-	*
-	* @return object connection handle
-	*/
+	 * Returns the LDAP connection handle
+	 *
+	 * @return object connection handle
+	 */
 	public function server() {
 		if (!$this->is_connected) {
 			try {
@@ -164,7 +164,7 @@ class Ldap {
 	public function __sleep() {
 		$this->close();
 		// define which attributes to save
-		return array("conf", "username", "password", 'isActiveDirectory');
+		return ["conf", "username", "password", 'isActiveDirectory'];
 	}
 
 	/** Reconnects to LDAP server when deserialized */
@@ -203,11 +203,11 @@ class Ldap {
 	}
 
 	/**
-	* Encrypts username and password
-	*
-	* @param string $username LDAP user name
-	* @param string $password LDAP password
-	*/
+	 * Encrypts username and password
+	 *
+	 * @param string $username LDAP user name
+	 * @param string $password LDAP password
+	 */
 	public function encrypt_login($username, $password) {
 		// encrypt username and password
 		$this->username = base64_encode(lamEncrypt($username));
@@ -241,8 +241,8 @@ class Ldap {
 	/** Closes connection to LDAP server and deletes encrypted username/password */
 	public function destroy() {
 		$this->close();
-		$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-		$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+		$this->username = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+		$this->password = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 	}
 
 	/**
@@ -254,7 +254,7 @@ class Ldap {
 		if ($this->isActiveDirectory !== null) {
 			return $this->isActiveDirectory;
 		}
-		$rootDse = ldapGetDN('', array('*'));
+		$rootDse = ldapGetDN('', ['*']);
 		logNewMessage(LOG_DEBUG, 'Root DSE: ' . print_r($rootDse, true));
 		return isset($rootDse['domaincontrollerfunctionality']) || isset($rootDse['forestfunctionality']);
 	}
