@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\TREEVIEW;
+
 use htmlButton;
 use htmlDiv;
 use htmlElement;
@@ -54,10 +56,10 @@ use function LAM\SCHEMA\get_schema_objectclasses;
 */
 
 /**
-* Tree view functions.
-*
-* @author Roland Gruber
-*/
+ * Tree view functions.
+ *
+ * @author Roland Gruber
+ */
 
 include_once 'account.inc';
 include_once 'tools.inc';
@@ -142,7 +144,7 @@ class TreeView {
 		$objectClasses = json_decode($_POST['objectClasses'], true);
 		$attributeNames = $this->getPossibleNewAttributeNameOptions($objectClasses, true);
 		natcasesort($attributeNames);
-		return json_encode(array('data' => $attributeNames));
+		return json_encode(['data' => $attributeNames]);
 	}
 
 	/**
@@ -168,11 +170,11 @@ class TreeView {
 		$result = [];
 		foreach ($rootDns as $rootDn) {
 			logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $rootDn);
-			$rootData = ldapGetDN($rootDn, array('objectClass'));
+			$rootData = ldapGetDN($rootDn, ['objectClass']);
 			if ($rootData === null) {
 				continue;
 			}
-			$children = ldapListDN($rootDn, '(objectClass=*)', array('objectClass'));
+			$children = ldapListDN($rootDn, '(objectClass=*)', ['objectClass']);
 			$nodeData = $this->createNodeData($rootData, true, true, $children);
 			$result[] = $nodeData;
 		}
@@ -188,7 +190,7 @@ class TreeView {
 	private function getSubNodes(string $dn): string {
 		$this->validateDn($dn);
 		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $dn);
-		$children = ldapListDN($dn, '(objectClass=*)', array('objectClass'));
+		$children = ldapListDN($dn, '(objectClass=*)', ['objectClass']);
 		$childNodes = [];
 		foreach ($children as $child) {
 			$childNodes[] = $this->createNodeData($child);
@@ -207,12 +209,12 @@ class TreeView {
 	 */
 	private function createNodeData(array $attributes, bool $open = false, $noShortenFirst = false, array $children = []): array {
 		$text = ($noShortenFirst) ? $attributes['dn'] : extractRDN($attributes['dn']);
-		$data = array(
+		$data = [
 			'id' => base64_encode($attributes['dn']),
 			'text' => unescapeLdapSpecialCharacters($text),
 			'icon' => $this->getNodeIcon($attributes),
 			'children' => true
-		);
+		];
 		if (!empty($children)) {
 			$childData = [];
 			foreach ($children as $child) {
@@ -222,9 +224,9 @@ class TreeView {
 			$data['children'] = $childData;
 		}
 		if ($open) {
-			$data['state'] = array(
+			$data['state'] = [
 				'opened' => true
-			);
+			];
 		}
 		return $data;
 	}
@@ -241,7 +243,7 @@ class TreeView {
 		$objectClasses = array_map('strtolower', $attributes['objectclass']);
 		$rdn = extractRDNValue($attributes['dn']);
 		if (in_array('sambasamaccount', $objectClasses) &&
-			'$' == $rdn[ strlen($rdn) - 1 ]) {
+			'$' == $rdn[strlen($rdn) - 1]) {
 			$icon = 'samba.svg';
 		}
 		if (in_array('sambasamaccount', $objectClasses)) {
@@ -371,7 +373,7 @@ class TreeView {
 		$this->addActionBar($row, $dn);
 		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')));
 		$row->add(new htmlSubTitle(_('Attributes')));
-		$attributes = ldapGetDN($dn, array('*'));
+		$attributes = ldapGetDN($dn, ['*']);
 		unset($attributes['dn']);
 		ksort($attributes);
 		logNewMessage(LOG_DEBUG, 'LDAP attributes for ' . $dn . ': ' . print_r($attributes, true));
@@ -399,7 +401,7 @@ class TreeView {
 			}
 		}
 		logNewMessage(LOG_DEBUG, 'Possible new attributes for ' . $dn . ': ' . implode('; ', $possibleNewAttributes));
-		$possibleNewAttributes = array('' => '') + $possibleNewAttributes;
+		$possibleNewAttributes = ['' => ''] + $possibleNewAttributes;
 		$row->add(new htmlSubTitle(_('Add new attribute')));
 		$newAttributeSelect = new htmlResponsiveSelect('newAttribute', $possibleNewAttributes, [], _('Attribute'));
 		$newAttributeSelect->setHasDescriptiveElements(true);
@@ -408,36 +410,36 @@ class TreeView {
 		$row->add($newAttributeSelect);
 		$newAttributesContentSingleInput = new htmlResponsiveRow();
 		$newAttributesContentSingleInput->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_INPUT_LABEL'));
-		$newAttributesContentSingleInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, false, false, null));
-		$row->add(new htmlDiv('new-attributes-single-input', $newAttributesContentSingleInput, array('hidden')));
+		$newAttributesContentSingleInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), [''], false, false, false, null));
+		$row->add(new htmlDiv('new-attributes-single-input', $newAttributesContentSingleInput, ['hidden']));
 		$newAttributesContentMultiInput = new htmlResponsiveRow();
 		$newAttributesContentMultiInput->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_INPUT_LABEL'));
-		$newAttributesContentMultiInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, true, false, null));
-		$row->add(new htmlDiv('new-attributes-multi-input', $newAttributesContentMultiInput, array('hidden')));
+		$newAttributesContentMultiInput->addField($this->getAttributeContentField('placeholder' . generateRandomText(), [''], false, true, false, null));
+		$row->add(new htmlDiv('new-attributes-multi-input', $newAttributesContentMultiInput, ['hidden']));
 		$newAttributesContentSingleTextarea = new htmlResponsiveRow();
 		$newAttributesContentSingleTextarea->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_TEXTAREA_LABEL'));
-		$newAttributesContentSingleTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, false, true, null));
-		$row->add(new htmlDiv('new-attributes-single-textarea', $newAttributesContentSingleTextarea, array('hidden')));
+		$newAttributesContentSingleTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), [''], false, false, true, null));
+		$row->add(new htmlDiv('new-attributes-single-textarea', $newAttributesContentSingleTextarea, ['hidden']));
 		$newAttributesContentMultiTextarea = new htmlResponsiveRow();
 		$newAttributesContentMultiTextarea->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_TEXTAREA_LABEL'));
-		$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), array(''), false, true, true, null));
-		$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, array('hidden')));
+		$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('placeholder' . generateRandomText(), [''], false, true, true, null));
+		$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, ['hidden']));
 		$newAttributesContentSinglePassword = new htmlResponsiveRow();
 		$newAttributesContentSinglePassword->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_PASSWORD_LABEL'));
-		$newAttributesContentSinglePassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), array(''), false, false, false, null));
-		$row->add(new htmlDiv('new-attributes-single-password', $newAttributesContentSinglePassword, array('hidden')));
+		$newAttributesContentSinglePassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), [''], false, false, false, null));
+		$row->add(new htmlDiv('new-attributes-single-password', $newAttributesContentSinglePassword, ['hidden']));
 		$newAttributesContentMultiPassword = new htmlResponsiveRow();
 		$newAttributesContentMultiPassword->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_PASSWORD_LABEL'));
-		$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), array(''), false, true, false, null));
-		$row->add(new htmlDiv('new-attributes-multi-password', $newAttributesContentMultiPassword, array('hidden')));
+		$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userpassword' . generateRandomText(), [''], false, true, false, null));
+		$row->add(new htmlDiv('new-attributes-multi-password', $newAttributesContentMultiPassword, ['hidden']));
 		$newAttributesContentSingleJpeg = new htmlResponsiveRow();
 		$newAttributesContentSingleJpeg->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_JPEG_LABEL'));
-		$newAttributesContentSingleJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), array(''), false, false, false, null));
-		$row->add(new htmlDiv('new-attributes-single-jpeg', $newAttributesContentSingleJpeg, array('hidden')));
+		$newAttributesContentSingleJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), [''], false, false, false, null));
+		$row->add(new htmlDiv('new-attributes-single-jpeg', $newAttributesContentSingleJpeg, ['hidden']));
 		$newAttributesContentMultiJpeg = new htmlResponsiveRow();
 		$newAttributesContentMultiJpeg->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_JPEG_LABEL'));
-		$newAttributesContentMultiJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), array(''), false, true, true, null));
-		$row->add(new htmlDiv('new-attributes-multi-jpeg', $newAttributesContentMultiJpeg, array('hidden')));
+		$newAttributesContentMultiJpeg->addField($this->getAttributeContentField('jpegphoto' . generateRandomText(), [''], false, true, true, null));
+		$row->add(new htmlDiv('new-attributes-multi-jpeg', $newAttributesContentMultiJpeg, ['hidden']));
 
 		if (checkIfWriteAccessIsAllowed()) {
 			$row->addVerticalSpacer('2rem');
@@ -446,7 +448,7 @@ class TreeView {
 				. "'" . getSecurityTokenName() . "', "
 				. "'" . getSecurityTokenValue() . "', "
 				. "'" . base64_encode($dn) . "');");
-			$saveButton->setCSSClasses(array('lam-primary'));
+			$saveButton->setCSSClasses(['lam-primary']);
 			$row->add($saveButton, 12, 12, 12, 'text-center');
 		}
 
@@ -465,7 +467,7 @@ class TreeView {
 		parseHtml(null, $row, [], false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('content' => $content));
+		return json_encode(['content' => $content]);
 	}
 
 	/**
@@ -551,8 +553,8 @@ class TreeView {
 	 * @param array $highlighted list of highlighted attribute names
 	 */
 	private function addAttributeContent(htmlResponsiveRow $row, string $attributeName, array $values,
-	                                    ?AttributeType $schemaAttribute, array $objectClasses, ?string $dn,
-										array $highlighted): void {
+										 ?AttributeType    $schemaAttribute, array $objectClasses, ?string $dn,
+										 array             $highlighted): void {
 		$schemaObjectClasses = $this->getSchemaObjectClasses();
 		$label = new htmlOutputText($attributeName);
 		$rdnAttribute = ($dn !== null) ? strtolower(extractRDNAttribute($dn)) : '';
@@ -597,7 +599,7 @@ class TreeView {
 	 * @return htmlElement content
 	 */
 	private function getAttributeContentField(string $attributeName, array $values, bool $required, bool $isMultiValue,
-	                                          bool $isMultiLine, ?AttributeType $schemaAttribute): htmlElement {
+											  bool   $isMultiLine, ?AttributeType $schemaAttribute): htmlElement {
 		if (!$isMultiValue) {
 			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0);
 			return $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
@@ -628,25 +630,25 @@ class TreeView {
 				$inputField->setOnInput($onInput);
 			}
 			$valueLine = new htmlTable();
-			$valueLine->setCSSClasses(array('fullwidth'));
+			$valueLine->setCSSClasses(['fullwidth']);
 			$valueLine->addElement($inputField);
 			if (checkIfWriteAccessIsAllowed()) {
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute)) {
 					$addButton = new htmlLink(null, '#', '../../graphics/add.svg');
-					$addButton->setCSSClasses(array('margin2'));
+					$addButton->setCSSClasses(['margin2']);
 					$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
 					$valueLine->addElement($addButton);
 				}
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute) || ($value !== '')) {
 					$clearButton = new htmlLink(null, '#', '../../graphics/del.svg');
-					$clearButton->setCSSClasses(array('margin2'));
+					$clearButton->setCSSClasses(['margin2']);
 					$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
 					$valueLine->addElement($clearButton);
 				}
 			}
 			$valueListContents[] = $valueLine;
 		}
-		$listClasses = array('nowrap unstyled-list');
+		$listClasses = ['nowrap unstyled-list'];
 		if ($this->isOrderedAttribute($values)) {
 			$listId = 'attributeList_' . $safeAttributeName;
 			$valueList = new htmlSortableList($valueListContents, $listId);
@@ -693,7 +695,7 @@ class TreeView {
 			$row->add($element);
 			$upload = new htmlInputFileUpload('lam_attr_' . $attributeName);
 			$upload->addDataAttribute('attr-name', $attributeName);
-			$upload->setCSSClasses(array('image-upload'));
+			$upload->setCSSClasses(['image-upload']);
 
 			$row->add($upload);
 			return $row;
@@ -715,7 +717,7 @@ class TreeView {
 	 * @throws LAMException error generating field
 	 */
 	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine,
-	                                        bool $isSingleValue, ?AttributeType $schemaAttribute, int $index): htmlElement {
+											bool   $isSingleValue, ?AttributeType $schemaAttribute, int $index): htmlElement {
 		if ($this->isPasswordAttribute($attributeName)) {
 			return $this->getAttributePasswordInputField($attributeName, $value, $required, $isSingleValue);
 		}
@@ -791,10 +793,10 @@ class TreeView {
 		$table = new htmlTable();
 		$table->addElement($inputField);
 		$hashes = getSupportedHashTypes();
-		$selectedHash = array(getHashType($value));
+		$selectedHash = [getHashType($value)];
 		$hashSelect = new htmlSelect('lam_hash_' . $attributeName, $hashes, $selectedHash);
 		$hashSelect->addDataAttribute('attr-name', $attributeName);
-		$hashSelect->setCSSClasses(array('hash-select'));
+		$hashSelect->setCSSClasses(['hash-select']);
 		$table->addElement($hashSelect);
 		$checkPassword = new htmlLink(null, '#', '../../graphics/light.svg');
 		$checkPassword->setTitle(_('Check password'));
@@ -807,23 +809,23 @@ class TreeView {
 	}
 
 	/**
-  * Returns an input field for a JPG image attribute.
-  *
-  * @param string $attributeName attribute name
-  * @param string $value value
-  * @param int $index index
-  * @return htmlElement input field
-  * @throws LAMException error writing image file
-  */
- private function getAttributeJpegInputField(string $attributeName, string $value, int $index): htmlElement {
+	 * Returns an input field for a JPG image attribute.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param string $value value
+	 * @param int $index index
+	 * @return htmlElement input field
+	 * @throws LAMException error writing image file
+	 */
+	private function getAttributeJpegInputField(string $attributeName, string $value, int $index): htmlElement {
 		$tempFilesManager = new LamTemporaryFilesManager();
 		$fileName = $tempFilesManager->registerTemporaryFile('.jpg');
 		$handle = $tempFilesManager->openTemporaryFileForWrite($fileName);
 		fwrite($handle, $value);
-		fclose ($handle);
+		fclose($handle);
 		$image = new htmlImage($tempFilesManager->getResourceLink($fileName));
 		$image->enableLightbox();
-		$image->setCSSClasses(array('thumbnail', 'image-input', 'attribute-field'));
+		$image->setCSSClasses(['thumbnail', 'image-input', 'attribute-field']);
 		$image->addDataAttribute('attr-name', $attributeName);
 		$image->addDataAttribute('index', $index);
 		return $image;
@@ -837,18 +839,18 @@ class TreeView {
 	 * @return bool is multi-line
 	 */
 	private function isMultiLineAttribute(string $attributeName, ?AttributeType $schemaAttribute): bool {
-		$knownAttributes = array('postalAddress1', 'homePostalAddress', 'personalSignature', 'description', 'mailReplyText');
+		$knownAttributes = ['postalAddress1', 'homePostalAddress', 'personalSignature', 'description', 'mailReplyText'];
 		if (in_array_ignore_case($attributeName, $knownAttributes)) {
 			return true;
 		}
 		if ($schemaAttribute === null) {
 			return false;
 		}
-		$knownSyntaxOIDs = array(
+		$knownSyntaxOIDs = [
 			// octet string syntax OID:
 			'1.3.6.1.4.1.1466.115.121.1.40',
 			// postal address syntax OID:
-			'1.3.6.1.4.1.1466.115.121.1.41');
+			'1.3.6.1.4.1.1466.115.121.1.41'];
 		return in_array($schemaAttribute->getSyntaxOID(), $knownSyntaxOIDs);
 	}
 
@@ -889,9 +891,9 @@ class TreeView {
 	private function getInternalAttributesContent(string $dn): string {
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlSubTitle(_('Internal attributes')), 12);
-		$attributes = ldapGetDN($dn, array('+', 'creatorsName', 'createTimestamp', 'modifiersName',
+		$attributes = ldapGetDN($dn, ['+', 'creatorsName', 'createTimestamp', 'modifiersName',
 			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime', 'passwordRetryCount', 'accountUnlockTime', 'nsAccountLock',
-			'nsRoleDN', 'passwordExpirationTime'));
+			'nsRoleDN', 'passwordExpirationTime']);
 		unset($attributes['dn']);
 		ksort($attributes);
 		foreach ($attributes as $attributeName => $values) {
@@ -903,7 +905,7 @@ class TreeView {
 		parseHtml(null, $row, [], false, null);
 		$content = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('content' => $content));
+		return json_encode(['content' => $content]);
 	}
 
 	/**
@@ -913,9 +915,9 @@ class TreeView {
 	 */
 	private function saveAttributes(string $dn): string {
 		$schemaAttributes = $this->getSchemaAttributes();
-		$attributes = ldapGetDN($dn, array('*'));
+		$attributes = ldapGetDN($dn, ['*']);
 		unset($attributes['dn']);
-		$attributes = array_change_key_case($attributes,CASE_LOWER);
+		$attributes = array_change_key_case($attributes, CASE_LOWER);
 		$changes = json_decode($_POST['changes'], true);
 		$changes = array_change_key_case($changes, CASE_LOWER);
 		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
@@ -1025,7 +1027,7 @@ class TreeView {
 			$newModules = array_delete($attributes['olcmoduleload'], $ldapChanges['olcmoduleload']);
 			unset($ldapChanges['olcmoduleload']);
 			if (!empty($newModules)) {
-				$isOk = ldap_mod_add($_SESSION['ldap']->server(), $dn, array('olcmoduleload' => $newModules));
+				$isOk = ldap_mod_add($_SESSION['ldap']->server(), $dn, ['olcmoduleload' => $newModules]);
 				if (!$isOk) {
 					logNewMessage(LOG_ERR, 'Changing olcmoduleload at ' . $dn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 				}
@@ -1147,7 +1149,7 @@ class TreeView {
 		$row->addField($filterGroup);
 		$row->addVerticalSpacer('1rem');
 		$nextButton = new htmlButton('next', _('Next'));
-		$nextButton->setCSSClasses(array('lam-primary'));
+		$nextButton->setCSSClasses(['lam-primary']);
 		$nextButton->setOnClick('window.lam.treeview.createNodeSelectObjectClassesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		$row->addVerticalSpacer('2rem');
@@ -1157,7 +1159,7 @@ class TreeView {
 		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('content' => $content));
+		return json_encode(['content' => $content]);
 	}
 
 	/**
@@ -1260,19 +1262,19 @@ class TreeView {
 			$row->add(new htmlSubTitle(_('Required attributes')));
 		}
 		foreach ($mustAttributes as $mustAttribute) {
-			$values = empty($attributes[$mustAttribute->getName()]) ? array('') : $attributes[$mustAttribute->getName()];
+			$values = empty($attributes[$mustAttribute->getName()]) ? [''] : $attributes[$mustAttribute->getName()];
 			$this->addAttributeContent($row, $mustAttribute->getName(), $values, $mustAttribute, $objectClasses, null, []);
 		}
 		if (!empty($mayAttributes)) {
 			$row->add(new htmlSubTitle(_('Optional attributes')));
 		}
 		foreach ($mayAttributes as $mayAttribute) {
-			$values = empty($attributes[$mayAttribute->getName()]) ? array('') : $attributes[$mayAttribute->getName()];
+			$values = empty($attributes[$mayAttribute->getName()]) ? [''] : $attributes[$mayAttribute->getName()];
 			$this->addAttributeContent($row, $mayAttribute->getName(), $values, $mayAttribute, $objectClasses, null, []);
 		}
 		$row->addVerticalSpacer('1rem');
 		$nextButton = new htmlButton('save', _('Create'));
-		$nextButton->setCSSClasses(array('lam-primary'));
+		$nextButton->setCSSClasses(['lam-primary']);
 		$nextButton->setOnClick('window.lam.treeview.createNodeEnterAttributesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
@@ -1281,7 +1283,7 @@ class TreeView {
 		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('content' => $content));
+		return json_encode(['content' => $content]);
 	}
 
 	/**
@@ -1327,16 +1329,16 @@ class TreeView {
 	}
 
 	/**
-  * Returns the content for the check attributes step of node creation.
-  *
-  * @param string $dn DN
-  * @return string JSON data
-  */
- private function createNewNodeCheckAttributesStep(string $dn): string {
+	 * Returns the content for the check attributes step of node creation.
+	 *
+	 * @param string $dn DN
+	 * @return string JSON data
+	 */
+	private function createNewNodeCheckAttributesStep(string $dn): string {
 		$objectClasses = $_POST['objectClasses'];
 		$rdnAttribute = $_POST['rdn'];
 		$attributeChanges = json_decode($_POST['attributes'], true);
-		$attributes = array('objectClass' => explode(',', $objectClasses));
+		$attributes = ['objectClass' => explode(',', $objectClasses)];
 		foreach ($attributeChanges as $attributeName => $attributeChange) {
 			if (isset($attributeChange['new'])) {
 				$attributes[$attributeName] = $attributeChange['new'];
@@ -1374,7 +1376,7 @@ class TreeView {
 			logNewMessage(LOG_ERR, 'Tree view delete node failed: ' . $error[0] . ' ' . $error[1]);
 		}
 		if (!empty($errors)) {
-			return json_encode(array('errors' => $errors));
+			return json_encode(['errors' => $errors]);
 		}
 		return json_encode([]);
 	}
@@ -1457,10 +1459,10 @@ class TreeView {
 		$row->addLabel(new htmlOutputText(_('Base DN')));
 		$row->addField(new htmlOutputText(unescapeLdapSpecialCharacters($dn)));
 		$row->addVerticalSpacer('1rem');
-		$scopeOptions = array(
+		$scopeOptions = [
 			_('Sub (entire subtree)') => 'sub',
 			_('One (one level beneath base)') => 'one',
-		);
+		];
 		$scopeSelect = new htmlResponsiveSelect('scope', $scopeOptions, [], _('Search scope'));
 		$scopeSelect->setSortElements(false);
 		$scopeSelect->setHasDescriptiveElements(true);
@@ -1472,23 +1474,23 @@ class TreeView {
 		$resultCountInput = new htmlResponsiveInputField(_('LDAP search limit'), 'limit', '50');
 		$resultCountInput->setMinimumAndMaximumNumber();
 		$row->add($resultCountInput);
-		$displayFormat = array(
+		$displayFormat = [
 			_('List') => 'list',
 			_('Table') => 'table'
-		);
-		$formatSelect = new htmlResponsiveSelect('format', $displayFormat, array('list'), _('Display format'));
+		];
+		$formatSelect = new htmlResponsiveSelect('format', $displayFormat, ['list'], _('Display format'));
 		$formatSelect->setHasDescriptiveElements(true);
 		$row->add($formatSelect);
 		$row->addVerticalSpacer('2rem');
 		$nextButton = new htmlButton('search', _('Search'));
-		$nextButton->setCSSClasses(array('lam-primary'));
+		$nextButton->setCSSClasses(['lam-primary']);
 		$nextButton->setOnClick('window.lam.treeview.searchResults(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		ob_start();
 		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('content' => $content));
+		return json_encode(['content' => $content]);
 	}
 
 	/**
@@ -1499,12 +1501,12 @@ class TreeView {
 	 */
 	private function searchResults(string $dn): string {
 		$scope = $_POST['scope'];
-		if (!in_array($scope, array('sub', 'one'))) {
+		if (!in_array($scope, ['sub', 'one'])) {
 			logNewMessage(LOG_ERR, 'Invalid search scope: ' . $scope);
 			die();
 		}
 		$format = $_POST['format'];
-		if (!in_array($format, array('list', 'table'))) {
+		if (!in_array($format, ['list', 'table'])) {
 			logNewMessage(LOG_ERR, 'Invalid search format: ' . $format);
 			die();
 		}
@@ -1580,7 +1582,7 @@ class TreeView {
 		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('content' => $content));
+		return json_encode(['content' => $content]);
 	}
 
 	/**
@@ -1592,10 +1594,10 @@ class TreeView {
 	 * @return string JSON
 	 */
 	private function searchResultsAsTable(array $results, array $attributes, htmlResponsiveRow $row) {
-		$titles = array_merge(array('', 'dn'), $attributes);
+		$titles = array_merge(['', 'dn'], $attributes);
 		$data = [];
 		foreach ($results as $result) {
-			$dataEntry = array($this->getNodeIcon($result), new htmlLink(unescapeLdapSpecialCharacters($result['dn']), 'treeView.php?dn=' . base64_encode($result['dn'])));
+			$dataEntry = [$this->getNodeIcon($result), new htmlLink(unescapeLdapSpecialCharacters($result['dn']), 'treeView.php?dn=' . base64_encode($result['dn']))];
 			$result = array_change_key_case($result, CASE_LOWER);
 			foreach ($attributes as $attribute) {
 				$attributeLower = strtolower($attribute);
@@ -1609,13 +1611,13 @@ class TreeView {
 			$data[] = $dataEntry;
 		}
 		$table = new htmlResponsiveTable($titles, $data);
-		$table->setCSSClasses(array('colored--table'));
+		$table->setCSSClasses(['colored--table']);
 		$row->add($table);
 		ob_start();
 		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('content' => $content));
+		return json_encode(['content' => $content]);
 	}
 
 	/**
@@ -1628,7 +1630,7 @@ class TreeView {
 		$targetDn = base64_decode($_POST['targetDn']);
 		$this->validateDn($targetDn);
 		$action = $_POST['action'];
-		if (!in_array($action, array('COPY', 'CUT'))) {
+		if (!in_array($action, ['COPY', 'CUT'])) {
 			logNewMessage(LOG_ERR, 'Invalid tree paste action: ' . $action);
 			die();
 		}
@@ -1656,7 +1658,7 @@ class TreeView {
 					parseHtml(null, $row, [], false, '');
 					$content = ob_get_contents();
 					ob_end_clean();
-					return json_encode(array('error' => $content));
+					return json_encode(['error' => $content]);
 				}
 			}
 		}
@@ -1666,7 +1668,7 @@ class TreeView {
 			parseHtml(null, $message, [], false, '');
 			$content = ob_get_contents();
 			ob_end_clean();
-			return json_encode(array('error' => $content));
+			return json_encode(['error' => $content]);
 		}
 		return json_encode([]);
 	}

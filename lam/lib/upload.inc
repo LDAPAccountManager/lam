@@ -1,8 +1,11 @@
 <?php
+
 namespace LAM\UPLOAD;
+
 use LamTemporaryFilesManager;
 use ZipArchive;
 use accountContainer;
+
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -70,8 +73,12 @@ class Uploader {
 		$this->type = $type;
 		$startTime = time();
 		$maxTime = get_cfg_var('max_execution_time') - 5;
-		if ($maxTime > Uploader::TIME_LIMIT) $maxTime = Uploader::TIME_LIMIT;
-		if ($maxTime <= 0) $maxTime = Uploader::TIME_LIMIT;
+		if ($maxTime > Uploader::TIME_LIMIT) {
+			$maxTime = Uploader::TIME_LIMIT;
+		}
+		if ($maxTime <= 0) {
+			$maxTime = Uploader::TIME_LIMIT;
+		}
 		$this->endTime = $startTime + $maxTime;
 	}
 
@@ -151,11 +158,11 @@ class Uploader {
 			// add LDAP entry
 			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 			if (!$success) {
-				$errorMessage = array(
-						"ERROR",
-						_("LAM was unable to create account %s! An LDAP error occurred."),
-						getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-						array($position));
+				$errorMessage = [
+					"ERROR",
+					_("LAM was unable to create account %s! An LDAP error occurred."),
+					getDefaultLDAPErrorString($_SESSION['ldap']->server()),
+					[$position]];
 				$_SESSION['mass_errors'][] = $errorMessage;
 				$_SESSION['mass_failed'][] = $position;
 			}
@@ -171,7 +178,7 @@ class Uploader {
 	 */
 	private function deleteOldEntryIfNeeded($dn, $attributes) {
 		if (isset($attributes['INFO.overwrite']) && ($attributes['INFO.overwrite'] === 'true')) {
-			$attrs = ldapGetDN($dn, array('dn'));
+			$attrs = ldapGetDN($dn, ['dn']);
 			if ($attrs !== null) {
 				return deleteDN($dn, true);
 			}
@@ -201,8 +208,8 @@ class Uploader {
 	 * @return String JSON status
 	 */
 	private function buildUploadStatus($accountsProgress = 0, $accountsFinished = false,
-			$postActionsTitle = '', $postActionsProgress = 0, $postActionsFinished = false,
-			$pdfProgress = 0) {
+									   $postActionsTitle = '', $postActionsProgress = 0, $postActionsFinished = false,
+									   $pdfProgress = 0) {
 		$pdfFinished = ($_SESSION['mass_pdf']['structure'] == null) || isset($_SESSION['mass_pdf']['finished']);
 		$allDone = $accountsFinished && $postActionsFinished && $pdfFinished;
 		$errorHtml = '';
@@ -213,7 +220,7 @@ class Uploader {
 				$errorHtml .= StatusMessage($error[0], $error[1], $text, $vars, true);
 			}
 		}
-		$status = array(
+		$status = [
 			'title' => _("LDAP upload in progress. Please wait."),
 			'titleFinished' => _("Upload has finished"),
 			'titleErrors' => _("There were errors while uploading:"),
@@ -228,7 +235,7 @@ class Uploader {
 			'allDone' => $allDone,
 			'errorHtml' => $errorHtml,
 			'typeId' => $this->type->getId()
-		);
+		];
 		return json_encode($status);
 	}
 
@@ -237,9 +244,9 @@ class Uploader {
 	 */
 	private function securityCheck() {
 		if (!isLoggedIn() || empty($this->type)
-				|| $this->type->isHidden()
-				|| !checkIfNewEntriesAreAllowed($this->type->getId())
-				|| !checkIfWriteAccessIsAllowed($this->type->getId())) {
+			|| $this->type->isHidden()
+			|| !checkIfNewEntriesAreAllowed($this->type->getId())
+			|| !checkIfWriteAccessIsAllowed($this->type->getId())) {
 			die;
 		}
 	}
@@ -292,7 +299,7 @@ class Uploader {
 		if ($_SESSION['mass_pdf']['counter'] == 0) {
 			$pdfZipResult = @$pdfZip->open($tempFilesManager->getFileSystemPath($file), ZipArchive::OVERWRITE);
 			if (!$pdfZipResult === true) {
-				$_SESSION['mass_errors'][] = array('ERROR', _('Unable to create ZIP file for PDF export.'));
+				$_SESSION['mass_errors'][] = ['ERROR', _('Unable to create ZIP file for PDF export.')];
 				$_SESSION['mass_pdf']['finished'] = true;
 			}
 		}
@@ -318,10 +325,10 @@ class Uploader {
 				break;
 			}
 			// create and save PDF
-			$pdfContent = \LAM\PDF\createModulePDF(array($_SESSION['mass_pdfAccount']), $pdfStructure, $font, true);
+			$pdfContent = \LAM\PDF\createModulePDF([$_SESSION['mass_pdfAccount']], $pdfStructure, $font, true);
 			$fileName = $dn . '.pdf';
 			$pdfZip->addFromString($fileName, $pdfContent);
-			$_SESSION['mass_pdf']['counter'] ++;
+			$_SESSION['mass_pdf']['counter']++;
 			if ($_SESSION['mass_pdf']['counter'] >= sizeof($this->accounts)) {
 				$_SESSION['mass_pdf']['finished'] = true;
 			}

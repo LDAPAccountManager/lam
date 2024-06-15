@@ -1,4 +1,5 @@
 <?php
+
 namespace LAM\TYPES;
 /*
 
@@ -24,11 +25,11 @@ namespace LAM\TYPES;
 use baseType;
 
 /**
-* This file is the interface to the different account types.
-*
-* @package types
-* @author Roland Gruber
-*/
+ * This file is the interface to the different account types.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /** parent class of account types */
 include_once(__DIR__ . "/baseType.inc");
@@ -39,30 +40,30 @@ include_once(__DIR__ . "/selfService.inc");
 
 
 /**
-* This includes all type definitions.
-*/
+ * This includes all type definitions.
+ */
 $typesINC_dirname = substr(__FILE__, 0, strlen(__FILE__) - 10) . "/types";
 $typesINC_dir = dir($typesINC_dirname);
 // get module names.
 while ($entry = $typesINC_dir->read()) {
-	if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($typesINC_dirname . '/'.$entry)) {
-		include_once($typesINC_dirname . '/'.$entry);
+	if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($typesINC_dirname . '/' . $entry)) {
+		include_once($typesINC_dirname . '/' . $entry);
 	}
 }
 
 
 /**
-* Returns a list of available account types.
-*
-* @return array list of types
-*/
+ * Returns a list of available account types.
+ *
+ * @return array list of types
+ */
 function getTypes() {
 	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 10) . "/types";
 	$dir = dir($dirname);
 	$return = [];
 	// get type names.
 	while ($entry = $dir->read()) {
-		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
+		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/' . $entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$return[] = $entry;
 		}
@@ -72,11 +73,11 @@ function getTypes() {
 }
 
 /**
-* Returns the description of an account type.
-*
-* @param string $type type name
-* @return string type description
-*/
+ * Returns the description of an account type.
+ *
+ * @param string $type type name
+ * @return string type description
+ */
 function getTypeDescription($type) {
 	$obj = new $type(null);
 	return $obj->getDescription();
@@ -257,7 +258,7 @@ class ConfiguredType {
 		$connection = $_SESSION["ldap"]->server();
 		$ret = [];
 		$filter = $this->getBaseType()->getSuffixFilter();
-		$sr = @ldap_search($connection, $this->getSuffix(), $filter, array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($connection, $this->getSuffix(), $filter, ['dn', 'objectClass'], 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($connection, $sr);
 			cleanLDAPResult($units);
@@ -333,6 +334,7 @@ class ListAttribute {
 	public function __construct(string $attributeSpec) {
 		$this->attributeSpec = $attributeSpec;
 	}
+
 	/**
 	 * Returns the name of the LDAP attribute.
 	 *
@@ -403,7 +405,7 @@ class TypeManager {
 	 * @param string $typeId type id
 	 * @return bool is valid
 	 */
-	public static function isValidTypeId(string $typeId) : bool {
+	public static function isValidTypeId(string $typeId): bool {
 		return preg_match("/^[a-z0-9_-]+$/i", $typeId);
 	}
 

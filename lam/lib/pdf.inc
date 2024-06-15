@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\PDF;
+
 use LAM\ImageUtils\ImageManipulationFactory;
 use LAMException;
 use LamTemporaryFilesManager;
@@ -7,7 +9,7 @@ use LamTemporaryFilesManager;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2023  Roland Gruber
+                2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -69,7 +71,7 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
 		$account_type->getId(), $pdf_structure);
 	// get list of PDF keys
 	$pdfKeys = [];
-	foreach($structure->getSections() as $section) {
+	foreach ($structure->getSections() as $section) {
 		if (!$section instanceof PDFEntrySection) {
 			continue;
 		}
@@ -103,7 +105,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 	$pdf = new LAMTCPDF($structure, $font);
 
 	// Loop over each account and add a new page in the PDF file for it
-	foreach($accounts as $account) {
+	foreach ($accounts as $account) {
 
 		// Start a new page for each account
 		$pdf->AddPage();
@@ -144,9 +146,9 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 						// Get current entry
 						$valueEntries = $entries[$entry->getKey()];
 						// Print entry only when module sumitted values for it
-						if(is_array($valueEntries)) {
+						if (is_array($valueEntries)) {
 							// Loop over all rows of this entry (most of the time this will be just one)
-							foreach($valueEntries as $valueEntry) {
+							foreach ($valueEntries as $valueEntry) {
 								if ($valueEntry instanceof PDFLabelValue) {
 									printLabelValue($pdf, $valueEntry, $font);
 								}
@@ -219,7 +221,7 @@ function printTable(&$pdf, $table, $fontName) {
 	$headline = $table->getHeadline();
 	if (!empty($headline)) {
 		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $headline . ':', 0 , 0, 'L', 0);
+		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $headline . ':', 0, 0, 'L', 0);
 		$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
 		$pdf->Ln(LAMPDF_LINEHEIGHT);
 	}
@@ -257,8 +259,8 @@ function printImage(&$pdf, $imageEntry, $fontName) {
 		$height = 40;
 	}
 	$pdf->Image('@' . $imageManipulator->getImageData(), null, null, null, $height,
-			'JPG', null, 'T', true, 300, 'R',
-			false, false, 0, false, false, false);
+		'JPG', null, 'T', true, 300, 'R',
+		false, false, 0, false, false, false);
 	$pdf->Ln($height);
 	$pdf->Ln(LAMPDF_LINEHEIGHT);
 	$imageManipulator = null;

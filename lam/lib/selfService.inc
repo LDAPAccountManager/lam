@@ -1,4 +1,5 @@
 <?php
+
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use function LAM\PERSISTENCE\dbTableExists;
@@ -26,12 +27,12 @@ use function LAM\PERSISTENCE\dbTableExists;
 */
 
 /**
-* Interface between modules and self service pages.
-* This file also includes the self service profile class and helper functions.
-*
-* @package selfService
-* @author Roland Gruber
-*/
+ * Interface between modules and self service pages.
+ * This file also includes the self service profile class and helper functions.
+ *
+ * @package selfService
+ * @author Roland Gruber
+ */
 
 /** modules */
 include_once "modules.inc";
@@ -131,7 +132,7 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
  * @return array messages and LDAP commands (array('messages' => [], 'add' => [], 'del' => [], 'mod' => []))
  */
 function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-	$return = array('messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []);
+	$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) {
@@ -166,12 +167,12 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 }
 
 /**
-* Returns a hash array (module name => elements) of all module options for the configuration page.
-*
-* @param string $scope account type
-* @param selfServiceProfile $profile currently edited profile
-* @return array configuration options
-*/
+ * Returns a hash array (module name => elements) of all module options for the configuration page.
+ *
+ * @param string $scope account type
+ * @param selfServiceProfile $profile currently edited profile
+ * @return array configuration options
+ */
 function getSelfServiceSettings($scope, $profile) {
 	$return = [];
 	$modules = getAvailableModules($scope);
@@ -183,13 +184,13 @@ function getSelfServiceSettings($scope, $profile) {
 }
 
 /**
-* Checks if the self service settings are valid
-*
-* @param string $scope account type
-* @param array $options hash array containing all options (name => array(...))
-* @param selfServiceProfile $profile profile
-* @return array list of error messages
-*/
+ * Checks if the self service settings are valid
+ *
+ * @param string $scope account type
+ * @param array $options hash array containing all options (name => array(...))
+ * @param selfServiceProfile $profile profile
+ * @return array list of error messages
+ */
 function checkSelfServiceSettings($scope, &$options, &$profile) {
 	$return = [];
 	$modules = getAvailableModules($scope);
@@ -278,7 +279,7 @@ class SelfServicePersistence {
 	 *
 	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
 	 */
-	public function getProfiles() : array {
+	public function getProfiles(): array {
 		$profiles = $this->strategy->getProfiles();
 		ksort($profiles);
 		foreach ($profiles as $key => $value) {
@@ -294,7 +295,7 @@ class SelfServicePersistence {
 	 * @param string $scope user/group/host
 	 * @return bool can be written
 	 */
-	public function canWrite(string $name, string $scope) : bool {
+	public function canWrite(string $name, string $scope): bool {
 		return $this->strategy->canWrite($name, $scope);
 	}
 
@@ -306,7 +307,7 @@ class SelfServicePersistence {
 	 * @return selfServiceProfile profile
 	 * @throws LAMException error during loading
 	 */
-	public function load(string $name, string $scope) : selfServiceProfile {
+	public function load(string $name, string $scope): selfServiceProfile {
 		return $this->strategy->load($name, $scope);
 	}
 
@@ -318,7 +319,7 @@ class SelfServicePersistence {
 	 * @param selfServiceProfile $profile profile
 	 * @throws LAMException error during saving
 	 */
-	public function save(string $name, string $scope, selfServiceProfile $profile) : void {
+	public function save(string $name, string $scope, selfServiceProfile $profile): void {
 		$this->strategy->save($name, $scope, $profile);
 	}
 
@@ -329,7 +330,7 @@ class SelfServicePersistence {
 	 * @param string $scope user/group/host
 	 * @throws LAMException error deleting profile
 	 */
-	public function delete(string $name, string $scope) : void {
+	public function delete(string $name, string $scope): void {
 		$profileList = $this->getProfiles();
 		if (!preg_match("/^[a-z]+$/i", $scope)
 			|| !preg_match("/^[a-z0-9_-]+$/i", $name)
@@ -348,7 +349,7 @@ class SelfServicePersistence {
 	 * @param string $scope user/group/host
 	 * @throws LAMException error renaming profile
 	 */
-	public function rename(string $oldName, string $newName, string $scope) : void {
+	public function rename(string $oldName, string $newName, string $scope): void {
 		$profileList = $this->getProfiles();
 		if (!preg_match("/^[a-z]+$/i", $scope)
 			|| !preg_match("/^[a-z0-9_-]+$/i", $newName)
@@ -371,7 +372,7 @@ interface SelfServicePersistenceStrategy {
 	 *
 	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
 	 */
-	public function getProfiles() : array;
+	public function getProfiles(): array;
 
 	/**
 	 * Returns if the profile with given name can be written.
@@ -380,7 +381,7 @@ interface SelfServicePersistenceStrategy {
 	 * @param string $scope user/group/host
 	 * @return bool can be written
 	 */
-	public function canWrite(string $name, string $scope) : bool;
+	public function canWrite(string $name, string $scope): bool;
 
 	/**
 	 * Loads the given self service profile.
@@ -390,7 +391,7 @@ interface SelfServicePersistenceStrategy {
 	 * @return selfServiceProfile profile
 	 * @throws LAMException error during loading
 	 */
-	public function load(string $name, string $scope) : selfServiceProfile;
+	public function load(string $name, string $scope): selfServiceProfile;
 
 	/**
 	 * Stores the given profile.
@@ -400,7 +401,7 @@ interface SelfServicePersistenceStrategy {
 	 * @param selfServiceProfile $profile profile
 	 * @throws LAMException error during saving
 	 */
-	public function save(string $name, string $scope, selfServiceProfile $profile) : void;
+	public function save(string $name, string $scope, selfServiceProfile $profile): void;
 
 	/**
 	 * Deletes a self service profile.
@@ -409,7 +410,7 @@ interface SelfServicePersistenceStrategy {
 	 * @param string $scope account type
 	 * @throws LAMException error renaming profile
 	 */
-	public function delete(string $name, string $scope) : void;
+	public function delete(string $name, string $scope): void;
 
 	/**
 	 * Renames a self service profile.
@@ -419,7 +420,7 @@ interface SelfServicePersistenceStrategy {
 	 * @param string $scope user/group/host
 	 * @throws LAMException error renaming profile
 	 */
-	public function rename(string $oldName, string $newName, string $scope) : void;
+	public function rename(string $oldName, string $newName, string $scope): void;
 
 }
 
@@ -439,7 +440,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 			logNewMessage(LOG_ERR, 'Unable to read self service profiles');
 			return $ret;
 		}
-		while ($entry = $dir->read()){
+		while ($entry = $dir->read()) {
 			$ext = substr($entry, strrpos($entry, '.') + 1);
 			$name = substr($entry, 0, strrpos($entry, '.'));
 			// check if extension is right, add to profile list
@@ -564,7 +565,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 	/**
 	 * Checks if the schema has latest version.
 	 */
-	private function checkSchema() : void {
+	private function checkSchema(): void {
 		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
 			$this->createInitialSchema();
 		}
@@ -573,7 +574,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 	/**
 	 * Creates the initial schema.
 	 */
-	public function createInitialSchema() : void {
+	public function createInitialSchema(): void {
 		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
 		$sql = 'create table ' . self::TABLE_NAME . '('
 			. 'scope VARCHAR(100) NOT NULL,'
@@ -612,7 +613,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 	 */
 	public function load(string $name, string $scope): selfServiceProfile {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			logNewMessage(LOG_ERR, 'Self service profile not found');
@@ -628,15 +629,15 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 	public function save(string $name, string $scope, selfServiceProfile $profile): void {
 		$data = json_encode($profile->export());
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (scope, name, data) VALUES (?, ?, ?)");
-			$statement->execute(array($scope, $name, $data));
+			$statement->execute([$scope, $name, $data]);
 		}
 		else {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE scope = ? AND name = ?");
-			$statement->execute(array($data, $scope, $name));
+			$statement->execute([$data, $scope, $name]);
 		}
 	}
 
@@ -645,7 +646,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 	 */
 	public function delete(string $name, string $scope): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 	}
 
 	/**
@@ -653,7 +654,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 	 */
 	public function rename(string $oldName, string $newName, string $scope): void {
 		$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET name = ? WHERE scope = ? AND name = ?");
-		$statement->execute(array($newName, $scope, $oldName));
+		$statement->execute([$newName, $scope, $oldName]);
 	}
 
 }
@@ -835,14 +836,14 @@ class selfServiceProfile {
 		$this->loginAttributeText = _('User name');
 		$this->passwordLabel = '';
 		$this->mainPageText = "<h1>LAM self service</h1>\n" . _("Here you can change your personal settings.");
-		$this->inputFields = array(
-			array('name' => _('Personal data'),
-				'fields' => array('inetOrgPerson_firstName', 'inetOrgPerson_lastName', 'inetOrgPerson_mail',
+		$this->inputFields = [
+			['name' => _('Personal data'),
+				'fields' => ['inetOrgPerson_firstName', 'inetOrgPerson_lastName', 'inetOrgPerson_mail',
 					'inetOrgPerson_telephoneNumber', 'inetOrgPerson_mobile', 'inetOrgPerson_faxNumber',
-					'inetOrgPerson_street', 'inetOrgPerson_postalAddress')),
-			array('name' => _('Password'),
-				'fields' => array('posixAccount_password'))
-		);
+					'inetOrgPerson_street', 'inetOrgPerson_postalAddress']],
+			['name' => _('Password'),
+				'fields' => ['posixAccount_password']]
+		];
 		$this->readOnlyFields = [];
 		$this->relabelFields = [];
 		$this->moduleSettings = [];
@@ -941,54 +942,54 @@ class selfServiceProfile {
  */
 class SelfServiceLdapConnection {
 
-    private $server;
+	private $server;
 
-    private $profile;
+	private $profile;
 
-    /**
-     * Constructor
-     *
-     * @param selfServiceProfile $profile profile
-     */
-    public function __construct(selfServiceProfile $profile) {
-        $this->profile = $profile;
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param selfServiceProfile $profile profile
+	 */
+	public function __construct(selfServiceProfile $profile) {
+		$this->profile = $profile;
+	}
 
-    /**
-     * Returns the LDAP handle.
-     *
-     * @return mixed LDAP handle
-     */
-    public function getServer() {
-        if ($this->server !== null) {
-            return $this->server;
-        }
-        $this->server = openSelfServiceLdapConnection($this->profile);
-        return $this->server;
-    }
+	/**
+	 * Returns the LDAP handle.
+	 *
+	 * @return mixed LDAP handle
+	 */
+	public function getServer() {
+		if ($this->server !== null) {
+			return $this->server;
+		}
+		$this->server = openSelfServiceLdapConnection($this->profile);
+		return $this->server;
+	}
 
-    /**
-     * Binds with the given credentials.
-     *
-     * @param string $userDn user DN
-     * @param string $password password
-     * @return bool bind successful
-     */
-    public function bind(string $userDn, string $password): bool {
-        return bindLdapUser($this->getServer(), $this->profile, $userDn, $password);
-    }
+	/**
+	 * Binds with the given credentials.
+	 *
+	 * @param string $userDn user DN
+	 * @param string $password password
+	 * @return bool bind successful
+	 */
+	public function bind(string $userDn, string $password): bool {
+		return bindLdapUser($this->getServer(), $this->profile, $userDn, $password);
+	}
 
-    /**
-     * Closes connection to LDAP server before serialization
-     */
-    public function __sleep(): array {
-        if ($this->server !== null) {
-            @ldap_close($this->server);
-            $this->server = null;
-        }
-        // define which attributes to save
-        return array('profile');
-    }
+	/**
+	 * Closes connection to LDAP server before serialization
+	 */
+	public function __sleep(): array {
+		if ($this->server !== null) {
+			@ldap_close($this->server);
+			$this->server = null;
+		}
+		// define which attributes to save
+		return ['profile'];
+	}
 
 }
 

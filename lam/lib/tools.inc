@@ -22,24 +22,24 @@
 */
 
 /**
-* This file includes functions to manage LAM tools.
-*
-* @package tools
-* @author Roland Gruber
-*/
+ * This file includes functions to manage LAM tools.
+ *
+ * @package tools
+ * @author Roland Gruber
+ */
 
 /**
  * Returns the tools which are available for LAM.
  *
  * @return array list of LAMTool objects
  */
-function getTools() : array {
+function getTools(): array {
 	$toolsDirName = __DIR__ . '/tools';
 	$toolsDir = dir($toolsDirName);
 	$entry = $toolsDir->read();
 	// include all files in the tools directory
 	while ($entry) {
-		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($toolsDirName . '/'.$entry)) {
+		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($toolsDirName . '/' . $entry)) {
 			include_once($toolsDirName . '/' . $entry);
 		}
 		$entry = $toolsDir->read();
@@ -67,49 +67,49 @@ function getTools() : array {
  * @package tools
  */
 abstract class LAMTool {
-	
+
 	/**
 	 * Returns the name of the tool.
-	 * 
+	 *
 	 * @return string name
 	 */
-	 public abstract function getName(): string;
-	
+	public abstract function getName(): string;
+
 	/**
 	 * returns a description text for the tool.
-	 * 
+	 *
 	 * @return string description
 	 */
 	public abstract function getDescription(): string;
-	
+
 	/**
 	 * Returns a link to the tool page (relative to templates/).
-	 * 
+	 *
 	 * @return string link
 	 */
 	public abstract function getLink(): string;
-	
-	/** 
+
+	/**
 	 * Returns if the tool requires write access to LDAP.
-	 * 
+	 *
 	 * @return bool true if write access is needed
 	 */
 	public abstract function getRequiresWriteAccess(): bool;
-	
+
 	/**
 	 * Returns if the tool requires password change rights.
-	 * 
+	 *
 	 * @return bool true if password change rights are needed
 	 */
 	public abstract function getRequiresPasswordChangeRights(): bool;
-	
+
 	/**
 	 * Returns the link to the tool image (relative to graphics/)
 	 *
 	 * @return string image URL
 	 */
 	public abstract function getImageLink(): string;
-	
+
 	/**
 	 * Returns the preferred position of this tool on the tools page.
 	 * The position may be between 0 and 1000. 0 is the top position.
@@ -117,17 +117,17 @@ abstract class LAMTool {
 	 * @return int preferred position
 	 */
 	public abstract function getPosition(): int;
-	
+
 	/**
 	 * Returns if the tool is visible in the menu.
 	 *
 	 * @return bool visible
 	 */
 	public abstract function isVisible(): bool;
-	
+
 	/**
 	 * Returns if a tool may be hidden by configuration in the LAM server profile.
-	 * 
+	 *
 	 * @return bool hideable
 	 */
 	public function isHideable(): bool {
@@ -153,7 +153,7 @@ abstract class LAMTool {
 	public function checkConfigurationOptions(array $settings): array {
 		return [];
 	}
-	
+
 }
 
 /**
@@ -163,7 +163,7 @@ abstract class LAMTool {
  * @package tools
  */
 class LAMSubTool {
-	
+
 	/** visible tool name */
 	public $name;
 	/** tool description */
@@ -172,5 +172,5 @@ class LAMSubTool {
 	public $link;
 	/** image URL (relative to graphics/) */
 	public $image;
-	
+
 }

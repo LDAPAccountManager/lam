@@ -1,4 +1,5 @@
 <?php
+
 namespace LAM\PDF;
 
 use \htmlStatusMessage;
@@ -17,7 +18,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2023  Roland Gruber
+                2011 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -71,7 +72,8 @@ class PdfStructurePersistenceManager {
 		$configDb = new ConfigurationDatabase(new LAMCfgMain());
 		if ($configDb->useRemoteDb()) {
 			$this->strategy = new PdfStructurePersistenceStrategyPdo($configDb->getPdo());
-		} else {
+		}
+		else {
 			$this->strategy = new PdfStructurePersistenceStrategyFiles();
 		}
 	}
@@ -82,7 +84,7 @@ class PdfStructurePersistenceManager {
 	 * @return array scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
-	public function getPdfStructureTemplateNames() : array {
+	public function getPdfStructureTemplateNames(): array {
 		return $this->strategy->getPdfStructureTemplateNames();
 	}
 
@@ -93,7 +95,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $name PDF structure name
 	 * @throws LAMException error deleting template
 	 */
-	public function deletePdfStructureTemplate(string $scope, string $name) : void {
+	public function deletePdfStructureTemplate(string $scope, string $name): void {
 		if (!$this->isValidPdfStructureName($name) || !TypeManager::isValidTypeId($scope) || ($name == 'default')) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to delete profile!"));
@@ -109,7 +111,7 @@ class PdfStructurePersistenceManager {
 	 * @return PDFStructure PDF structure
 	 * @throws LAMException error deleting structure
 	 */
-	public function readPdfStructureTemplate(string $scope, string $name) : PDFStructure {
+	public function readPdfStructureTemplate(string $scope, string $name): PDFStructure {
 		if (!TypeManager::isValidTypeId($scope) || !$this->isValidPDFStructureName($name)) {
 			throw new LAMException(_('Unable to read PDF structure.'));
 		}
@@ -124,7 +126,7 @@ class PdfStructurePersistenceManager {
 	 * @param PDFStructure $structure structure
 	 * @throws LAMException error saving structure
 	 */
-	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure) : void {
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure): void {
 		if (!TypeManager::isValidTypeId($scope) || !$this->isValidPDFStructureName($name)) {
 			throw new LAMException(_('PDF structure name not valid'));
 		}
@@ -136,7 +138,7 @@ class PdfStructurePersistenceManager {
 	 *
 	 * @return string[] logo file names
 	 */
-	public function getPdfTemplateLogoNames() : array {
+	public function getPdfTemplateLogoNames(): array {
 		return $this->strategy->getPdfTemplateLogoNames();
 	}
 
@@ -147,7 +149,7 @@ class PdfStructurePersistenceManager {
 	 * @return string binary
 	 * @throws LAMException error reading file
 	 */
-	public function getPdfTemplateLogoBinary(string $name) : string {
+	public function getPdfTemplateLogoBinary(string $name): string {
 		if (!$this->isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to read logo file.'));
 		}
@@ -160,7 +162,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $name logo name
 	 * @throws LAMException error during deletion
 	 */
-	public function deletePdfTemplateLogo(string $name) : void {
+	public function deletePdfTemplateLogo(string $name): void {
 		if (!$this->isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to delete logo file.'));
 		}
@@ -174,7 +176,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $data binary data
 	 * @throws LAMException error during save
 	 */
-	public function savePdfTemplateLogo(string $name, string $data) : void {
+	public function savePdfTemplateLogo(string $name, string $data): void {
 		if (!$this->isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to upload logo file.'));
 		}
@@ -189,7 +191,7 @@ class PdfStructurePersistenceManager {
 	 * @return PdfLogo[] logos
 	 * @throws LAMException error reading logos
 	 */
-	public function getPdfLogos(string $confName, bool $readDimensions = false) : array {
+	public function getPdfLogos(string $confName, bool $readDimensions = false): array {
 		if (!LAMConfig::isValidName($confName)) {
 			throw new LAMException(_('Unable to read logos.'));
 		}
@@ -221,7 +223,7 @@ class PdfStructurePersistenceManager {
 	 * @return string binary data
 	 * @throws LAMException error reading logo
 	 */
-	public function getPdfLogoBinary(string $confName, string $name) : string {
+	public function getPdfLogoBinary(string $confName, string $name): string {
 		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
 			logNewMessage(LOG_ERR, "Unable to read PDF logo " . $name);
 			throw new LAMException(_('Unable to read logo file.'));
@@ -236,7 +238,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $name logo name
 	 * @throws LAMException error deleting logo
 	 */
-	public function deletePdfLogo(string $confName, string $name) : void {
+	public function deletePdfLogo(string $confName, string $name): void {
 		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to delete logo file.'));
 		}
@@ -276,7 +278,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $data binary
 	 * @throws LAMException error saving logo
 	 */
-	public function savePdfLogo(string $confName, string $name, string $data) : void {
+	public function savePdfLogo(string $confName, string $name, string $data): void {
 		if (!LAMConfig::isValidName($confName)) {
 			throw new LAMException(_('Unable to upload logo file.'));
 		}
@@ -295,7 +297,7 @@ class PdfStructurePersistenceManager {
 	 * @return string[] structure names
 	 * @throws LAMException error reading structures
 	 */
-	public function getPDFStructures(string $confName, string $typeId) : array {
+	public function getPDFStructures(string $confName, string $typeId): array {
 		if (!TypeManager::isValidTypeId($typeId)) {
 			throw new LAMException(_('Unable to read PDF structures.'));
 		}
@@ -312,7 +314,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $name structure name
 	 * @throws LAMException error deleting structure
 	 */
-	public function deletePdfStructure(string $confName, string $typeId, string $name) : void {
+	public function deletePdfStructure(string $confName, string $typeId, string $name): void {
 		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
 			logNewMessage(LOG_ERR, 'Invalid data: ' . $confName . ' ' . $typeId . ' ' . $name);
 			throw new LAMException(_('Unable to delete PDF structure!'));
@@ -329,7 +331,7 @@ class PdfStructurePersistenceManager {
 	 * @return PDFStructure PDF structure
 	 * @throws LAMException error deleting structure
 	 */
-	public function readPdfStructure(string $confName, string $typeId, string $name) : PDFStructure {
+	public function readPdfStructure(string $confName, string $typeId, string $name): PDFStructure {
 		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
 			throw new LAMException(_('Unable to read PDF structure.'));
 		}
@@ -345,7 +347,7 @@ class PdfStructurePersistenceManager {
 	 * @param PDFStructure $structure structure
 	 * @throws LAMException error saving structure
 	 */
-	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure) : void {
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure): void {
 		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
 			throw new LAMException(_('PDF structure name not valid'));
 		}
@@ -358,7 +360,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $name structure name
 	 * @return boolean is valid
 	 */
-	private function isValidPDFStructureName(string $name) : bool {
+	private function isValidPDFStructureName(string $name): bool {
 		return preg_match('/^[a-z0-9_-]+$/i', $name) === 1;
 	}
 
@@ -368,7 +370,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $fileName file name
 	 * @return bool valid
 	 */
-	private function isValidLogoFileName(string $fileName) : bool {
+	private function isValidLogoFileName(string $fileName): bool {
 		return preg_match('/^[a-z0-9_-]+\\.(png|jpg)$/im', $fileName) === 1;
 	}
 
@@ -482,7 +484,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @return array scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
-	public function getPdfStructureTemplateNames() : array;
+	public function getPdfStructureTemplateNames(): array;
 
 	/**
 	 * Deletes a PDF structure template,
@@ -491,7 +493,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @param string $name template name
 	 * @throws LAMException error deleting template
 	 */
-	public function deletePdfStructureTemplate(string $scope, string $name) : void;
+	public function deletePdfStructureTemplate(string $scope, string $name): void;
 
 	/**
 	 * Reads a PDF structure template.
@@ -501,7 +503,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @return PDFStructure PDF structure
 	 * @throws LAMException error deleting structure
 	 */
-	public function readPdfStructureTemplate(string $scope, string $name) : PDFStructure;
+	public function readPdfStructureTemplate(string $scope, string $name): PDFStructure;
 
 	/**
 	 * Saves the PDF structure.
@@ -511,14 +513,14 @@ interface PdfStructurePersistenceStrategy {
 	 * @param PDFStructure $structure structure
 	 * @throws LAMException error saving structure
 	 */
-	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure) : void;
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure): void;
 
 	/**
 	 * Returns a list of template logo file names.
 	 *
 	 * @return string[] logo file names
 	 */
-	public function getPdfTemplateLogoNames() : array;
+	public function getPdfTemplateLogoNames(): array;
 
 	/**
 	 * Returns the binary data for the given template logo.
@@ -527,7 +529,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @return string binary
 	 * @throws LAMException error reading file
 	 */
-	public function getPdfTemplateLogoBinary(string $name) : string;
+	public function getPdfTemplateLogoBinary(string $name): string;
 
 	/**
 	 * Deletes a logo in global templates.
@@ -535,7 +537,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @param string $name logo name
 	 * @throws LAMException error during deletion
 	 */
-	public function deletePdfTemplateLogo(string $name) : void;
+	public function deletePdfTemplateLogo(string $name): void;
 
 	/**
 	 * Saves the template logo.
@@ -544,7 +546,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @param string $data binary data
 	 * @throws LAMException error during save
 	 */
-	public function savePdfTemplateLogo(string $name, string $data) : void;
+	public function savePdfTemplateLogo(string $name, string $data): void;
 
 	/**
 	 * Returns the list of available PDF logos.
@@ -553,7 +555,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @return string[] logos
 	 * @throws LAMException error reading logos
 	 */
-	public function getPdfLogoNames(string $confName) : array;
+	public function getPdfLogoNames(string $confName): array;
 
 	/**
 	 * Reads a PDF logo.
@@ -563,7 +565,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @return string binary data
 	 * @throws LAMException error reading logo
 	 */
-	public function getPdfLogoBinary(string $confName, string $name) : string;
+	public function getPdfLogoBinary(string $confName, string $name): string;
 
 	/**
 	 * Deletes a PDF logo.
@@ -572,7 +574,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @param string $name logo name
 	 * @throws LAMException error deleting logo
 	 */
-	public function deletePdfLogo(string $confName, string $name) : void;
+	public function deletePdfLogo(string $confName, string $name): void;
 
 	/**
 	 * Saves a PDF logo.
@@ -582,7 +584,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @param string $data binary
 	 * @throws LAMException error saving logo
 	 */
-	public function savePdfLogo(string $confName, string $name, string $data) : void;
+	public function savePdfLogo(string $confName, string $name, string $data): void;
 
 	/**
 	 * Returns all available PDF structure definitions for the submitted account type.
@@ -593,7 +595,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @return string[] structure names
 	 * @throws LAMException error reading structures
 	 */
-	public function getPDFStructures(string $confName, string $typeId) : array;
+	public function getPDFStructures(string $confName, string $typeId): array;
 
 	/**
 	 * Deletes a PDF structure.
@@ -603,7 +605,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @param string $name structure name
 	 * @throws LAMException error deleting structure
 	 */
-	public function deletePdfStructure(string $confName, string $typeId, string $name) : void;
+	public function deletePdfStructure(string $confName, string $typeId, string $name): void;
 
 	/**
 	 * Reads a PDF structure.
@@ -614,7 +616,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @return PDFStructure PDF structure
 	 * @throws LAMException error deleting structure
 	 */
-	public function readPdfStructure(string $confName, string $typeId, string $name) : PDFStructure;
+	public function readPdfStructure(string $confName, string $typeId, string $name): PDFStructure;
 
 	/**
 	 * Saves the PDF structure.
@@ -625,7 +627,7 @@ interface PdfStructurePersistenceStrategy {
 	 * @param PDFStructure $structure structure
 	 * @throws LAMException error saving structure
 	 */
-	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure) : void;
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure): void;
 
 }
 
@@ -645,7 +647,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		$allTemplates = [];
 		if ($templateDir) {
 			$entry = $templateDir->read();
-			while ($entry){
+			while ($entry) {
 				$parts = explode('.', $entry);
 				if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
 					$name = $parts[0];
@@ -662,7 +664,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @inheritDoc
 	 */
 	public function deletePdfStructureTemplate(string $scope, string $name): void {
-		$fileName = $this-> getPdfStructureTemplateFileName($scope, $name);
+		$fileName = $this->getPdfStructureTemplateFileName($scope, $name);
 		$deleted = @unlink($fileName);
 		if (!$deleted) {
 			throw new LAMException(_("Unable to delete PDF structure!"));
@@ -707,7 +709,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @param string $name structure name
 	 * @return string file name
 	 */
-	private function getPdfStructureTemplateFileName(string $scope, string $name) : string {
+	private function getPdfStructureTemplateFileName(string $scope, string $name): string {
 		return __DIR__ . '/../config/templates/pdf/' . $name . '.' . $scope . '.xml';
 	}
 
@@ -720,7 +722,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		$logos = [];
 		if ($templateDir) {
 			$entry = $templateDir->read();
-			while ($entry){
+			while ($entry) {
 				if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
 					$logos[] = $entry;
 				}
@@ -747,7 +749,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @param string $name logo name
 	 * @return string file name
 	 */
-	private function getPdfTemplateLogoFileName(string $name) : string {
+	private function getPdfTemplateLogoFileName(string $name): string {
 		return __DIR__ . '/../config/templates/pdf/logos/' . $name;
 	}
 
@@ -783,7 +785,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @param string $name logo name
 	 * @return string file name
 	 */
-	private function getPdfLogoFileName(string $confName, string $name) : string {
+	private function getPdfLogoFileName(string $confName, string $name): string {
 		return __DIR__ . '/../config/pdf/' . $confName . '/logos/' . $name;
 	}
 
@@ -856,9 +858,9 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		$path = __DIR__ . '/../config/pdf/' . $confName;
 		if (is_dir($path) && is_readable($path)) {
 			$dirHandle = opendir($path);
-			while($file = readdir($dirHandle)) {
+			while ($file = readdir($dirHandle)) {
 				$struct_file = explode('.', $file);
-				if(!is_dir($path . $file)
+				if (!is_dir($path . $file)
 					&& ($file != '.')
 					&& ($file != '..')
 					&& (sizeof($struct_file) === 3)
@@ -930,7 +932,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @param string $name structure name
 	 * @return string file name
 	 */
-	private function getPdfStructureFileName(string $confName, string $typeId, string $name) : string {
+	private function getPdfStructureFileName(string $confName, string $typeId, string $name): string {
 		return __DIR__ . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
 	}
 
@@ -966,7 +968,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	/**
 	 * Checks if the schema has latest version.
 	 */
-	private function checkSchema() : void {
+	private function checkSchema(): void {
 		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
 			$this->createInitialSchema();
 		}
@@ -975,7 +977,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	/**
 	 * Creates the initial schema.
 	 */
-	public function createInitialSchema() : void {
+	public function createInitialSchema(): void {
 		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
 		$sql = 'create table ' . self::TABLE_NAME . '('
 			. 'position int NOT NULL,'
@@ -1032,7 +1034,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function deletePdfStructureTemplate(string $scope, string $name): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 	}
 
 	/**
@@ -1040,7 +1042,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function readPdfStructureTemplate(string $scope, string $name): PDFStructure {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES . ' WHERE scope = ? AND name = ?');
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			throw new LAMException(_('Unable to read PDF structure.'));
@@ -1056,16 +1058,16 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure): void {
 		$json = json_encode($structure->export());
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 		$results = $statement->fetchAll();
 		$isExisting = !empty($results);
 		if ($isExisting) {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES . " SET data = ? WHERE scope = ? AND name = ?");
-			$statement->execute(array($json, $scope, $name));
+			$statement->execute([$json, $scope, $name]);
 		}
 		else {
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES . " (scope, name, data) VALUES (?, ?, ?)");
-			$statement->execute(array($scope, $name, $json));
+			$statement->execute([$scope, $name, $json]);
 		}
 	}
 
@@ -1088,7 +1090,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function getPdfTemplateLogoBinary(string $name): string {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . ' WHERE name = ?');
-		$statement->execute(array($name));
+		$statement->execute([$name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			throw new LAMException(_('Unable to read logo file.'));
@@ -1101,7 +1103,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function deletePdfTemplateLogo(string $name): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . " WHERE name = ?");
-		$statement->execute(array($name));
+		$statement->execute([$name]);
 	}
 
 	/**
@@ -1109,16 +1111,16 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function savePdfTemplateLogo(string $name, string $data): void {
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . " WHERE name = ?");
-		$statement->execute(array($name));
+		$statement->execute([$name]);
 		$results = $statement->fetchAll();
 		$isExisting = !empty($results);
 		if ($isExisting) {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES_LOGOS . " SET data = ? WHERE name = ?");
-			$statement->execute(array($data, $name));
+			$statement->execute([$data, $name]);
 		}
 		else {
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES_LOGOS . " (name, data) VALUES (?, ?)");
-			$statement->execute(array($name, $data));
+			$statement->execute([$name, $data]);
 		}
 	}
 
@@ -1127,7 +1129,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function getPdfLogoNames(string $confName): array {
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_LOGOS . ' WHERE confname = ?');
-		$statement->execute(array($confName));
+		$statement->execute([$confName]);
 		$results = $statement->fetchAll();
 		$logos = [];
 		foreach ($results as $result) {
@@ -1141,7 +1143,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function getPdfLogoBinary(string $confName, string $name): string {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_LOGOS . ' WHERE confname = ? AND name = ?');
-		$statement->execute(array($confName, $name));
+		$statement->execute([$confName, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			throw new LAMException(_('Unable to read logo file.'));
@@ -1154,7 +1156,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function deletePdfLogo(string $confName, string $name): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_LOGOS . " WHERE confname = ? AND name = ?");
-		$statement->execute(array($confName, $name));
+		$statement->execute([$confName, $name]);
 	}
 
 	/**
@@ -1162,16 +1164,16 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function savePdfLogo(string $confName, string $name, string $data): void {
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_LOGOS . " WHERE confname = ? AND name = ?");
-		$statement->execute(array($confName, $name));
+		$statement->execute([$confName, $name]);
 		$results = $statement->fetchAll();
 		$isExisting = !empty($results);
 		if ($isExisting) {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_LOGOS . " SET data = ? WHERE confname = ? AND name = ?");
-			$statement->execute(array($data, $confName, $name));
+			$statement->execute([$data, $confName, $name]);
 		}
 		else {
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_LOGOS . " (confname, name, data) VALUES (?, ?, ?)");
-			$statement->execute(array($confName, $name, $data));
+			$statement->execute([$confName, $name, $data]);
 		}
 	}
 
@@ -1180,7 +1182,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function getPDFStructures(string $confName, string $typeId): array {
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . ' WHERE confname = ? AND typeid = ?');
-		$statement->execute(array($confName, $typeId));
+		$statement->execute([$confName, $typeId]);
 		$results = $statement->fetchAll();
 		$names = [];
 		foreach ($results as $result) {
@@ -1194,7 +1196,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function deletePdfStructure(string $confName, string $typeId, string $name): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
-		$statement->execute(array($confName, $typeId, $name));
+		$statement->execute([$confName, $typeId, $name]);
 	}
 
 	/**
@@ -1202,7 +1204,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 */
 	public function readPdfStructure(string $confName, string $typeId, string $name): PDFStructure {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . ' WHERE confname = ? AND typeid = ? AND name = ?');
-		$statement->execute(array($confName, $typeId, $name));
+		$statement->execute([$confName, $typeId, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			throw new LAMException(_('Unable to read PDF structure.'));
@@ -1218,12 +1220,12 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure): void {
 		$json = json_encode($structure->export());
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
-		$statement->execute(array($confName, $typeId, $name));
+		$statement->execute([$confName, $typeId, $name]);
 		$results = $statement->fetchAll();
 		$isExisting = !empty($results);
 		if ($isExisting) {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE confname = ? AND typeid = ? AND name = ?");
-			$statement->execute(array($json, $confName, $typeId, $name));
+			$statement->execute([$json, $confName, $typeId, $name]);
 		}
 		else {
 			$positionStatement = $this->pdo->prepare("SELECT MAX(position) AS position FROM " . self::TABLE_NAME);
@@ -1231,7 +1233,7 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 			$positionResult = $positionStatement->fetchAll();
 			$position = $positionResult[0]['position'] + 1;
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (position, confname, typeid, name, data) VALUES (?, ?, ?, ?, ?)");
-			$statement->execute(array($position, $confName, $typeId, $name, $json));
+			$statement->execute([$position, $confName, $typeId, $name, $json]);
 		}
 	}
 
@@ -1251,7 +1253,7 @@ class PDFStructureReader {
 	 * @return PDFStructure structure
 	 * @throws LAMException error reading structure
 	 */
-	public function read(string $data) : PDFStructure {
+	public function read(string $data): PDFStructure {
 		$xml = new XMLReader();
 		$xml->XML($data);
 		$structure = new PDFStructure();
@@ -1267,7 +1269,7 @@ class PDFStructureReader {
 		$sections = [];
 		while ($xml->read()) {
 			if (($xml->nodeType === XMLReader::SIGNIFICANT_WHITESPACE)
-					|| (($xml->name === 'pdf') && ($xml->nodeType == XMLReader::END_ELEMENT))) {
+				|| (($xml->name === 'pdf') && ($xml->nodeType == XMLReader::END_ELEMENT))) {
 				continue;
 			}
 			elseif ($xml->name === 'text') {
@@ -1299,7 +1301,7 @@ class PDFStructureReader {
 	 * @return PDFEntrySection section
 	 * @throws LAMException unable to parse section
 	 */
-	private function readSection(XMLReader $xml) : PDFEntrySection {
+	private function readSection(XMLReader $xml): PDFEntrySection {
 		$section = new PDFEntrySection($xml->getAttribute('name'));
 		$entries = [];
 		while ($xml->read()) {
@@ -1307,7 +1309,7 @@ class PDFStructureReader {
 				break;
 			}
 			elseif (($xml->nodeType === \XMLReader::END_ELEMENT)
-					|| ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE)) {
+				|| ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE)) {
 				continue;
 			}
 			elseif ($xml->name === 'entry') {
@@ -1337,7 +1339,7 @@ class PDFStructureWriter {
 	 * @param PDFStructure $structure structure
 	 * @return string XML
 	 */
-	public function getXML(PDFStructure $structure) : string {
+	public function getXML(PDFStructure $structure): string {
 		$writer = new XMLWriter();
 		$writer->openMemory();
 		$writer->setIndent(true);
@@ -1409,13 +1411,13 @@ class PDFStructure {
 		$data['foldingMarks'] = $this->foldingMarks;
 		$data['logo'] = $this->logo;
 		$data['sections'] = [];
-		foreach($this->sections as $section) {
+		foreach ($this->sections as $section) {
 			$type = ($section instanceof PDFTextSection) ? 'text' : 'entry';
 			$sectionData = $section->export();
-			$data['sections'][] = array(
+			$data['sections'][] = [
 				'type' => $type,
 				'data' => $sectionData
-			);
+			];
 		}
 		return $data;
 	}
@@ -1436,7 +1438,7 @@ class PDFStructure {
 			$this->logo = $data['logo'];
 		}
 		if (isset($data['sections'])) {
-			foreach($data['sections'] as $section) {
+			foreach ($data['sections'] as $section) {
 				if ($section['type'] === 'text') {
 					$this->sections[] = new PDFTextSection($section['data']);
 				}
@@ -1589,7 +1591,7 @@ class PDFEntrySection {
 		$data = [];
 		$data['title'] = $this->title;
 		$data['entries'] = [];
-		foreach($this->getEntries() as $entry) {
+		foreach ($this->getEntries() as $entry) {
 			$data['entries'][] = $entry->getKey();
 		}
 		return $data;
@@ -1605,7 +1607,7 @@ class PDFEntrySection {
 			$this->title = $data['title'];
 		}
 		if ($data['entries']) {
-			foreach($data['entries'] as $entry) {
+			foreach ($data['entries'] as $entry) {
 				$this->entries[] = new PDFSectionEntry($entry);
 			}
 		}
@@ -1702,11 +1704,11 @@ class PDFSectionEntry {
  * @return array list of fonts (description => font name)
  */
 function getPdfFonts() {
-	return array(
+	return [
 		'DejaVu' => 'DejaVuSerif',
 		_('Chinese Traditional') => 'cid0ct',
 		_('Chinese Simplified') => 'cid0cs',
 		_('Japanese') => 'cid0jp',
 		_('Korean') => 'cid0kr',
-	);
+	];
 }

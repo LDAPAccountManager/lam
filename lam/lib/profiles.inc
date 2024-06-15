@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\PROFILES;
+
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAM\TYPES\TypeManager;
 use LAMCfgMain;
@@ -13,7 +15,7 @@ use function PHPUnit\Framework\isEmpty;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,11 +34,11 @@ use function PHPUnit\Framework\isEmpty;
 */
 
 /**
-* This file provides functions to load and save account profiles.
-*
-* @package profiles
-* @author Roland Gruber
-*/
+ * This file provides functions to load and save account profiles.
+ *
+ * @package profiles
+ * @author Roland Gruber
+ */
 
 /**
  * Manages the persistence of account profiles.
@@ -69,7 +71,7 @@ class AccountProfilePersistenceManager {
 	 * @return array scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
-	public function getAccountProfileTemplateNames() : array {
+	public function getAccountProfileTemplateNames(): array {
 		return $this->strategy->getAccountProfileTemplateNames();
 	}
 
@@ -80,7 +82,7 @@ class AccountProfilePersistenceManager {
 	 * @param string $name account profile name
 	 * @throws LAMException error deleting template
 	 */
-	public function deleteAccountProfileTemplate(string $scope, string $name) : void {
+	public function deleteAccountProfileTemplate(string $scope, string $name): void {
 		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope) || ($name == 'default')) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to delete profile!"));
@@ -96,7 +98,7 @@ class AccountProfilePersistenceManager {
 	 * @return array template data
 	 * @throws LAMException error reading template
 	 */
-	public function loadAccountProfileTemplate(string $scope, string $name) : array {
+	public function loadAccountProfileTemplate(string $scope, string $name): array {
 		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to load profile!"));
@@ -112,7 +114,7 @@ class AccountProfilePersistenceManager {
 	 * @param array $data profile data
 	 * @throws LAMException error writing template
 	 */
-	public function writeAccountProfileTemplate(string $scope, string $name, array $data) : void {
+	public function writeAccountProfileTemplate(string $scope, string $name, array $data): void {
 		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_('Unable to write account profile template.'));
@@ -157,7 +159,7 @@ class AccountProfilePersistenceManager {
 	 * @return array names
 	 * @throws LAMException error reading profiles
 	 */
-	public function getAccountProfileNames(string $typeId, string $confName) : array {
+	public function getAccountProfileNames(string $typeId, string $confName): array {
 		if (!TypeManager::isValidTypeId($typeId) || !LAMConfig::isValidName($confName)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $confName:$typeId");
 			throw new LAMException(_("Unable to read profiles."));
@@ -174,7 +176,7 @@ class AccountProfilePersistenceManager {
 	 * @param array $data profile data
 	 * @throws LAMException error writing template
 	 */
-	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data) : void {
+	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data): void {
 		if (!$this->isValidAccountProfileName($name)
 			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
@@ -190,7 +192,7 @@ class AccountProfilePersistenceManager {
 	 * @param string $name profile name
 	 * @return bool is valid profile
 	 */
-	private function isValidAccountProfileName(string $name) : bool {
+	private function isValidAccountProfileName(string $name): bool {
 		return preg_match("/^[0-9a-z _-]+$/i", $name) === 1;
 	}
 
@@ -200,11 +202,11 @@ class AccountProfilePersistenceManager {
 	 * @param string $typeId user/group/host
 	 * @param string $name profile name
 	 * @param string $confName server profile name
-	 * @throws LAMException error while checking
 	 * @return bool profile exists
+	 * @throws LAMException error while checking
 	 * @throws LAMException error writing template
 	 */
-	public function isAccountProfileExisting(string $typeId, string $name, string $confName) : bool {
+	public function isAccountProfileExisting(string $typeId, string $name, string $confName): bool {
 		if (!$this->isValidAccountProfileName($name)
 			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
@@ -223,7 +225,7 @@ class AccountProfilePersistenceManager {
 	 * @return array profile data
 	 * @throws LAMException error writing template
 	 */
-	public function loadAccountProfile(string $typeId, string $name, string $confName) : array {
+	public function loadAccountProfile(string $typeId, string $name, string $confName): array {
 		if (!$this->isValidAccountProfileName($name)
 			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
@@ -241,7 +243,7 @@ class AccountProfilePersistenceManager {
 	 * @param string $confName server profile name
 	 * @throws LAMException error deleting profile
 	 */
-	public function deleteAccountProfile(string $typeId, string $name, string $confName) : void {
+	public function deleteAccountProfile(string $typeId, string $name, string $confName): void {
 		if (!isLoggedIn() || !$this->isValidAccountProfileName($name)
 			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
@@ -266,7 +268,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @return array scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
-	public function getAccountProfileTemplateNames() : array;
+	public function getAccountProfileTemplateNames(): array;
 
 	/**
 	 * Deletes an account profile template.
@@ -275,7 +277,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @param string $name account profile name
 	 * @throws LAMException error deleting template
 	 */
-	public function deleteAccountProfileTemplate(string $scope, string $name) : void;
+	public function deleteAccountProfileTemplate(string $scope, string $name): void;
 
 	/**
 	 * Reads an account profile template.
@@ -285,7 +287,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @return array template data
 	 * @throws LAMException error reading template
 	 */
-	public function loadAccountProfileTemplate(string $scope, string $name) : array;
+	public function loadAccountProfileTemplate(string $scope, string $name): array;
 
 	/**
 	 * Writes an account profile template.
@@ -295,7 +297,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @param array $data profile data
 	 * @throws LAMException error writing template
 	 */
-	public function writeAccountProfileTemplate(string $scope, string $name, array $data) : void;
+	public function writeAccountProfileTemplate(string $scope, string $name, array $data): void;
 
 	/**
 	 * Checks if the given profile is already existing.
@@ -303,11 +305,11 @@ interface AccountProfilePersistenceStrategy {
 	 * @param string $typeId user/group/host
 	 * @param string $name profile name
 	 * @param string $confName server profile name
-	 * @throws LAMException error while checking
 	 * @return bool profile exists
+	 * @throws LAMException error while checking
 	 * @throws LAMException error writing template
 	 */
-	public function isAccountProfileExisting(string $typeId, string $name, string $confName) : bool;
+	public function isAccountProfileExisting(string $typeId, string $name, string $confName): bool;
 
 	/**
 	 * Returns all account profile names for the given type id.
@@ -317,7 +319,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @return array names
 	 * @throws LAMException error reading profiles
 	 */
-	public function getAccountProfileNames(string $typeId, string $confName) : array;
+	public function getAccountProfileNames(string $typeId, string $confName): array;
 
 	/**
 	 * Writes an account profile.
@@ -328,7 +330,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @param array $data profile data
 	 * @throws LAMException error writing template
 	 */
-	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data) : void;
+	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data): void;
 
 	/**
 	 * Loads an account profile.
@@ -339,7 +341,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @return array profile data
 	 * @throws LAMException error writing template
 	 */
-	public function loadAccountProfile(string $typeId, string $name, string $confName) : array;
+	public function loadAccountProfile(string $typeId, string $name, string $confName): array;
 
 	/**
 	 * Deletes an account profile.
@@ -349,7 +351,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @param string $confName server profile name
 	 * @throws LAMException error deleting profile
 	 */
-	public function deleteAccountProfile(string $typeId, string $name, string $confName) : void;
+	public function deleteAccountProfile(string $typeId, string $name, string $confName): void;
 
 }
 
@@ -372,7 +374,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 		$templates = [];
 		if ($templateDir) {
 			$entry = $templateDir->read();
-			while ($entry){
+			while ($entry) {
 				$parts = explode('.', $entry);
 				if ((strlen($entry) > 3) && (sizeof($parts) === 2)) {
 					$name = $parts[0];
@@ -472,7 +474,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 	 * @param array $data profile data
 	 * @throws LAMException error writing file
 	 */
-	private function writeAccountProfileDataToFile(string $fileName, array $data) : void {
+	private function writeAccountProfileDataToFile(string $fileName, array $data): void {
 		$basePath = dirname($fileName);
 		if (!file_exists($basePath)) {
 			mkdir($basePath, 0700, true);
@@ -552,7 +554,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 		$ret = [];
 		if ($dir) {
 			$entry = $dir->read();
-			while ($entry){
+			while ($entry) {
 				// check if filename ends with .<typeId>
 				if (strrpos($entry, '.')) {
 					$pos = strrpos($entry, '.');
@@ -597,7 +599,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	/**
 	 * Checks if the schema has latest version.
 	 */
-	private function checkSchema() : void {
+	private function checkSchema(): void {
 		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
 			$this->createInitialSchema();
 		}
@@ -606,7 +608,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	/**
 	 * Creates the initial schema.
 	 */
-	public function createInitialSchema() : void {
+	public function createInitialSchema(): void {
 		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
 		$sql = 'create table ' . self::TABLE_NAME . '('
 			. 'position int NOT NULL,'
@@ -648,7 +650,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	 */
 	public function deleteAccountProfileTemplate(string $scope, string $name): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 	}
 
 	/**
@@ -656,7 +658,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	 */
 	public function loadAccountProfileTemplate(string $scope, string $name): array {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			logNewMessage(LOG_ERR, "Account profile template not found: $scope-$name");
@@ -671,15 +673,15 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	public function writeAccountProfileTemplate(string $scope, string $name, array $data): void {
 		$json = json_encode($data);
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
-		$statement->execute(array($scope, $name));
+		$statement->execute([$scope, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES . " (scope, name, data) VALUES (?, ?, ?)");
-			$statement->execute(array($scope, $name, $json));
+			$statement->execute([$scope, $name, $json]);
 		}
 		else {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES . " SET data = ? WHERE scope = ? AND name = ?");
-			$statement->execute(array($json, $scope, $name));
+			$statement->execute([$json, $scope, $name]);
 		}
 	}
 
@@ -688,7 +690,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	 */
 	public function isAccountProfileExisting(string $typeId, string $name, string $confName): bool {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
-		$statement->execute(array($confName, $typeId, $name));
+		$statement->execute([$confName, $typeId, $name]);
 		$results = $statement->fetchAll();
 		return !empty($results);
 	}
@@ -698,7 +700,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	 */
 	public function getAccountProfileNames(string $typeId, string $confName): array {
 		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ?");
-		$statement->execute(array($confName, $typeId));
+		$statement->execute([$confName, $typeId]);
 		$results = $statement->fetchAll();
 		$profiles = [];
 		foreach ($results as $result) {
@@ -715,7 +717,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 		$isExisting = $this->isAccountProfileExisting($typeId, $name, $confName);
 		if ($isExisting) {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE confname = ? AND typeid = ? AND name = ?");
-			$statement->execute(array($json, $confName, $typeId, $name));
+			$statement->execute([$json, $confName, $typeId, $name]);
 		}
 		else {
 			$positionStatement = $this->pdo->prepare("SELECT MAX(position) AS position FROM " . self::TABLE_NAME);
@@ -723,7 +725,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 			$positionResult = $positionStatement->fetchAll();
 			$position = $positionResult[0]['position'] + 1;
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (position, confname, typeid, name, data) VALUES (?, ?, ?, ?, ?)");
-			$statement->execute(array($position, $confName, $typeId, $name, $json));
+			$statement->execute([$position, $confName, $typeId, $name, $json]);
 		}
 	}
 
@@ -732,7 +734,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	 */
 	public function loadAccountProfile(string $typeId, string $name, string $confName): array {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
-		$statement->execute(array($confName, $typeId, $name));
+		$statement->execute([$confName, $typeId, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			logNewMessage(LOG_ERR, "Account profile not found: $typeId-$name");
@@ -746,7 +748,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 	 */
 	public function deleteAccountProfile(string $typeId, string $name, string $confName): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
-		$statement->execute(array($confName, $typeId, $name));
+		$statement->execute([$confName, $typeId, $name]);
 	}
 
 }

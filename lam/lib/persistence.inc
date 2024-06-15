@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\PERSISTENCE;
+
 use LAM\DB\CronDatabase;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
@@ -169,7 +171,7 @@ class ConfigDataExporter {
 	 * @return array $data
 	 * @throws LAMException error reading logo
 	 */
-	public function _getPdfProfiles($serverProfiles) : array {
+	public function _getPdfProfiles($serverProfiles): array {
 		$data = [];
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
@@ -262,7 +264,7 @@ class ConfigDataExporter {
 	 * @return array data
 	 * @throws LAMException error reading cron jobs
 	 */
-	public function _getCronJobData(array $serverProfiles) : array {
+	public function _getCronJobData(array $serverProfiles): array {
 		$data = [];
 		if (!isLAMProVersion()) {
 			return $data;
@@ -276,14 +278,14 @@ class ConfigDataExporter {
 				}
 				$cronDatabase->connect();
 				foreach ($cronDatabase->getJobRuns() as $jobRun) {
-					$data[$serverProfileName]['jobRuns'][] = array(
+					$data[$serverProfileName]['jobRuns'][] = [
 						'runId' => $jobRun->getRunId(),
 						'name' => $jobRun->getName(),
 						'jobId' => $jobRun->getJobId(),
 						'time' => $jobRun->getTime()->format('Y-m-d H:i:s'),
 						'isOk' => $jobRun->isOk(),
 						'message' => $jobRun->getMessages()
-					);
+					];
 				}
 				$jobs = $cronDatabase->getJobs();
 				foreach ($jobs as $jobId => $job) {
@@ -306,7 +308,7 @@ class ConfigDataExporter {
 	 * @return array data
 	 * @throws LAMException error reading data
 	 */
-	public function _getRequestAccessData() : array {
+	public function _getRequestAccessData(): array {
 		$data = [];
 		if (!isLAMProVersion()) {
 			return $data;
@@ -905,7 +907,7 @@ class ConfigurationDatabase {
 	 *
 	 * @return bool use remote database
 	 */
-	public function useRemoteDb() : bool {
+	public function useRemoteDb(): bool {
 		return (!empty($this->cfgMain->configDatabaseType) && ($this->cfgMain->configDatabaseType === LAMCfgMain::DATABASE_MYSQL));
 	}
 
@@ -928,12 +930,12 @@ class ConfigurationDatabase {
 	 * @return PDO PDO
 	 * @throws PDOException error opening connection to database
 	 */
-	public function getPdo() : PDO {
+	public function getPdo(): PDO {
 		if ($this->pdo !== null) {
 			return $this->pdo;
 		}
 		$url = $this->getPdoUrl();
-		$this->pdo = new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		$this->pdo = new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 		return $this->pdo;
 	}
 
@@ -942,7 +944,7 @@ class ConfigurationDatabase {
 	 *
 	 * @return string PDO URL
 	 */
-	private function getPdoUrl() : string {
+	private function getPdoUrl(): string {
 		$portConf = empty($this->cfgMain->configDatabasePort) ? '' : ';port=' . $this->cfgMain->configDatabasePort;
 		return 'mysql:host=' . $this->cfgMain->configDatabaseServer . $portConf . ';dbname=' . $this->cfgMain->configDatabaseName;
 	}
@@ -995,11 +997,12 @@ class ConfigurationDatabase {
  * @param string $tableName table name
  * @return bool true if existing
  */
-function dbTableExists(PDO $pdo, string $tableName) : bool {
+function dbTableExists(PDO $pdo, string $tableName): bool {
 	try {
 		$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
 		return ($result === false) ? false : true;
-	} catch (PDOException $e) {
+	}
+	catch (PDOException $e) {
 		return false;
 	}
 }

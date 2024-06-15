@@ -1,10 +1,11 @@
 <?php
+
 namespace LAM\TOOLS\MULTI_EDIT;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2023  Roland Gruber
+  Copyright (C) 2023 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -107,7 +108,7 @@ function extractWildcards(string $value): array {
 function replaceWildcards(string $value, array $entry): string {
 	$attrsLower = array_change_key_case($entry, CASE_LOWER);
 	$replacement = $value;
-	$attrsLower['dn'] = array($attrsLower['dn']);
+	$attrsLower['dn'] = [$attrsLower['dn']];
 	// ((attr)) -> " "
 	$matches = [];
 	if (preg_match_all('/\\(\\(([a-z0-9-_]+)\\)\\)/i', $replacement, $matches) > 0) {

@@ -21,11 +21,11 @@
 */
 
 /**
-* This file includes functions to perform several security checks on each page load.
-*
-* @package lib
-* @author Roland Gruber
-*/
+ * This file includes functions to perform several security checks on each page load.
+ *
+ * @package lib
+ * @author Roland Gruber
+ */
 
 /** configuration options */
 include_once('config.inc');
@@ -54,13 +54,13 @@ function lamDefaultCookieOptions(): array {
 	if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') {
 		$secureFlag = true;
 	}
-	return array(
+	return [
 		'path' => '/',
 		'domain' => '',
 		'secure' => $secureFlag,
 		'httponly' => true,
 		'samesite' => 'Lax'
-	);
+	];
 }
 
 /**
@@ -156,7 +156,7 @@ function checkClientIP() {
 		$cfg = $_SESSION['cfgMain'];
 	}
 	else {
-			$cfg = new LAMCfgMain();
+		$cfg = new LAMCfgMain();
 	}
 	$allowedHosts = $cfg->allowedHosts;
 	$url = getCallingURL();
@@ -214,7 +214,7 @@ function logoffAndBackToLoginPage() {
 	setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
 	setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
 	// link back to login page
-	$paths = array('./', '../', '../../', '../../../', '../../../../');
+	$paths = ['./', '../', '../../', '../../../', '../../../../'];
 	$page = 'login.php';
 	$pageSuffix = '?expired=yes';
 	if (isset($_SESSION['selfService_clientDN']) || (strpos($_SERVER['REQUEST_URI'], '/selfService/') !== false)) {
@@ -275,12 +275,12 @@ function isDebugLoggingEnabled() {
  * @param string $level log level (LOG_DEBUG, LOG_NOTICE, LOG_WARNING, LOG_ERR)
  * @param string $message log message
  */
-function logNewMessage($level, $message) : void {
-	$possibleLevels = array(
+function logNewMessage($level, $message): void {
+	$possibleLevels = [
 		LOG_DEBUG => 'DEBUG',
 		LOG_NOTICE => 'NOTICE',
 		LOG_WARNING => 'WARNING',
-		LOG_ERR => 'ERROR');
+		LOG_ERR => 'ERROR'];
 	if (!in_array($level, array_keys($possibleLevels))) {
 		StatusMessage('ERROR', 'Invalid log level!', $level);
 		return;
@@ -289,13 +289,13 @@ function logNewMessage($level, $message) : void {
 		$cfg = $_SESSION['cfgMain'];
 	}
 	else {
-			$cfg = new LAMCfgMain();
-			$_SESSION['cfgMain'] = $cfg;
+		$cfg = new LAMCfgMain();
+		$_SESSION['cfgMain'] = $cfg;
 	}
 	// check if logging is disabled
 	if (($cfg->logDestination == 'NONE')
-			// check if log level is high enough
-			|| ($cfg->logLevel < $level)) {
+		// check if log level is high enough
+		|| ($cfg->logLevel < $level)) {
 		return;
 	}
 	// ok to log, build log message
@@ -341,9 +341,9 @@ function checkIfWriteAccessIsAllowed($scope = null) {
 	if ($_SESSION['config']->getAccessLevel() >= LAMConfig::ACCESS_ALL) {
 		$typeSettings = $_SESSION['config']->get_typeSettings();
 		if (($scope == null)
-				// check if write for this type is allowed
-				|| !isset($typeSettings['readOnly_' . $scope])
-				|| !$typeSettings['readOnly_' . $scope]) {
+			// check if write for this type is allowed
+			|| !isset($typeSettings['readOnly_' . $scope])
+			|| !$typeSettings['readOnly_' . $scope]) {
 			return true;
 		}
 	}
@@ -416,7 +416,7 @@ function checkIfDeleteEntriesIsAllowed($scope) {
  */
 function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (($userNames !== null) && !is_array($userNames)) {
-		$userNames = array($userNames);
+		$userNames = [$userNames];
 	}
 	if ($password == null) {
 		$password = "";
@@ -601,7 +601,7 @@ function checkPwdWithExternalPasswordService($cfg, $password) {
  * @param String $tool tool class name (e.g. toolFileUpload)
  */
 function checkIfToolIsActive($tool) {
-		// check if hidden by config
+	// check if hidden by config
 	if (!$_SESSION['config']->isToolActive($tool)) {
 		logNewMessage(LOG_ERR, 'Unauthorized access to tool ' . $tool . ' denied.');
 		die();
@@ -720,12 +720,12 @@ function setLAMHeaders() {
 }
 
 /**
-* Encrypts a string
-*
-* @param string $data string to encrypt
-* @param string $prefix prefix for cookie names
-* @return object encrypted string
-*/
+ * Encrypts a string
+ *
+ * @param string $data string to encrypt
+ * @param string $prefix prefix for cookie names
+ * @return object encrypted string
+ */
 function lamEncrypt($data, $prefix = '') {
 	if (empty($_COOKIE[$prefix . "IV"])) {
 		return $data;
@@ -738,13 +738,13 @@ function lamEncrypt($data, $prefix = '') {
 }
 
 /**
-* Decrypts a string
-*
-* @param object $data string to decrypt
-* @param string $prefix prefix for cookie names
-* @return string decrypted string
-*/
-function lamDecrypt($data, $prefix='') {
+ * Decrypts a string
+ *
+ * @param object $data string to decrypt
+ * @param string $prefix prefix for cookie names
+ * @return string decrypted string
+ */
+function lamDecrypt($data, $prefix = '') {
 	if (empty($_COOKIE[$prefix . "IV"])) {
 		return $data;
 	}
@@ -832,7 +832,7 @@ class LamTemporaryFilesManager {
 			@chmod($path, 0600);
 			fclose($handle);
 			$_SESSION[self::SESSION_KEY][] = $fileName;
-		return $fileName;
+			return $fileName;
 		}
 		throw new LAMException(_('Unable to create temporary file.'));
 	}

@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\REMOTE;
+
 use Exception;
 use \LAMException;
 use \phpseclib3\Net\SSH2;
@@ -9,7 +11,7 @@ use \phpseclib3\Exception\NoKeyLoadedException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2023  Roland Gruber
+  Copyright (C) 2017 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,12 +30,12 @@ use \phpseclib3\Exception\NoKeyLoadedException;
 */
 
 /**
-* This file includes functions to control LAM remote executions.
-*
-* @author Roland Gruber
-*
-* @package modules
-*/
+ * This file includes functions to control LAM remote executions.
+ *
+ * @author Roland Gruber
+ *
+ * @package modules
+ */
 
 /**
  * Runs remote commands.
@@ -56,11 +58,11 @@ class Remote {
 	private $server;
 
 	/**
-	* Sends commands to remote script.
-	*
-	* @param string $command command to execute
-	* @return string output of remote script
-	*/
+	 * Sends commands to remote script.
+	 *
+	 * @param string $command command to execute
+	 * @return string output of remote script
+	 */
 	public function execute($command) {
 		if ($this->server == null) {
 			return [];
@@ -116,7 +118,7 @@ class Remote {
 		if (empty($username)) {
 			// get user name from current LAM user
 			$ldapUser = $_SESSION['ldap']->getUserName();
-			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", ['uid'], 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 				if (!empty($entry[0]['uid'])) {
@@ -141,7 +143,8 @@ class Remote {
 				$errors = $handle->getErrors();
 				if (!empty($errors)) {
 					$errors = implode(' ', $errors);
-				} else {
+				}
+				else {
 					$errors = null;
 				}
 				throw new LAMException(_("Unable to login to lamdaemon server."), $errors);
@@ -157,8 +160,8 @@ class Remote {
 	 *
 	 * @param string $keyPath file name
 	 * @param string $keyPassword password
-	 * @throws LAMException error loading key
 	 * @return \phpseclib3\Crypt\Common\AsymmetricKey key object
+	 * @throws LAMException error loading key
 	 */
 	public function loadKey($keyPath, $keyPassword) {
 		// use key authentication

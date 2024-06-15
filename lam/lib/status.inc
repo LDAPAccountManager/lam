@@ -69,7 +69,7 @@ function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', $Messag
 	if (is_array($MessageVariables)) {
 		if (sizeof($MessageVariables) > 0) {
 			array_unshift($MessageVariables, $format);
-			$output = call_user_func_array('sprintf',$MessageVariables);
+			$output = call_user_func_array('sprintf', $MessageVariables);
 		}
 		else {
 			$output = $format;
