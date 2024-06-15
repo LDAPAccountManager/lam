@@ -3,7 +3,7 @@ namespace LAM\FOOTER;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018  Roland Gruber
+  Copyright (C) 2018 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@ namespace LAM\FOOTER;
 */
 
 /**
-* Footer part of page which closes the tab content area etc.
-*
-* @package main
-* @author Roland Gruber
-*/
+ * Footer part of page which closes the tab content area etc.
+ *
+ * @package main
+ * @author Roland Gruber
+ */
 ?>
 
 <br>

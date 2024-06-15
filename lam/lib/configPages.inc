@@ -1,4 +1,5 @@
 <?php
+
 namespace LAM\CONFIG;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -21,11 +22,11 @@ namespace LAM\CONFIG;
 
 
 /**
-* Common functions for configuration pages.
-*
-* @package configuration
-* @author Roland Gruber
-*/
+ * Common functions for configuration pages.
+ *
+ * @package configuration
+ * @author Roland Gruber
+ */
 
 /**
  * List of tabs.
@@ -63,8 +64,8 @@ function printConfigurationPageHeaderBar($conf) {
                 <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
                 <span class="hide-on-mobile">
                             <?php
-                            echo getLAMVersionText();
-                            ?>
+							echo getLAMVersionText();
+							?>
                         </span>
             </a>
             <span class="lam-margin-small">
@@ -77,7 +78,8 @@ function printConfigurationPageHeaderBar($conf) {
 		<?php
 		if (is_dir(__DIR__ . '/../docs/manual')) {
 			?>
-            <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
+            <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon"
+               onclick="window.lam.topmenu.toggle();">
                 <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
                 <span class="padding0">&nbsp;</span>
             </a>
@@ -88,7 +90,7 @@ function printConfigurationPageHeaderBar($conf) {
 		}
 		?>
     </div>
-	<br>
+    <br>
 	<?php
 }
 
@@ -98,51 +100,51 @@ function printConfigurationPageHeaderBar($conf) {
  * @param ConfigurationPageTab $active active tab
  */
 function printConfigurationPageTabs($active) {
-	$tabs = array(
-		ConfigurationPageTab::GENERAL => array(
+	$tabs = [
+		ConfigurationPageTab::GENERAL => [
 			'id' => 'generalSettingsButton',
 			'icon' => 'configure.svg',
 			'label' => _('General settings')
-		),
-		ConfigurationPageTab::TYPES => array(
+		],
+		ConfigurationPageTab::TYPES => [
 			'id' => 'edittypes',
 			'icon' => 'types.svg',
 			'label' => _('Account types')
-		),
-		ConfigurationPageTab::MODULES => array(
+		],
+		ConfigurationPageTab::MODULES => [
 			'id' => 'editmodules',
 			'icon' => 'modules.svg',
 			'label' => _('Modules')
-		),
-		ConfigurationPageTab::MODULE_SETTINGS => array(
+		],
+		ConfigurationPageTab::MODULE_SETTINGS => [
 			'id' => 'moduleSettings',
 			'icon' => 'gears.svg',
 			'label' => _('Module settings')
-		),
-	);
+		],
+	];
 	if (isLAMProVersion()) {
-		$tabs[ConfigurationPageTab::JOBS] = array(
+		$tabs[ConfigurationPageTab::JOBS] = [
 			'id' => 'jobs',
 			'icon' => 'clock.svg',
 			'label' => _('Jobs')
-		);
+		];
 	}
 	// hidden submit buttons which are clicked by tabs
 	?>
-	<div style="display: none;">
-		<input name="generalSettingsButton" type="submit" value=" ">
-		<input name="edittypes" type="submit" value=" ">
-		<input name="editmodules" type="submit" value=" ">
-		<input name="moduleSettings" type="submit" value=" ">
-		<input name="jobs" type="submit" value=" ">
-	</div>
+    <div style="display: none;">
+        <input name="generalSettingsButton" type="submit" value=" ">
+        <input name="edittypes" type="submit" value=" ">
+        <input name="editmodules" type="submit" value=" ">
+        <input name="moduleSettings" type="submit" value=" ">
+        <input name="jobs" type="submit" value=" ">
+    </div>
 	<?php
 
 	// tabs
 	?>
-	<div class="lam-tab-container">
-		<ul class="lam-tab-navigation">
-	<?php
+    <div class="lam-tab-container">
+    <ul class="lam-tab-navigation">
+		<?php
 		foreach ($tabs as $tab => $settings) {
 			$isActive = ($tab === $active);
 			$liClasses = 'lam-tab';
@@ -150,13 +152,13 @@ function printConfigurationPageTabs($active) {
 				$liClasses .= ' lam-tab-active';
 			}
 			echo '<li id="' . $settings['id'] . '" class="' . $liClasses . '">';
-				echo '<a class="lam-tab-anchor" href="#" onclick="document.getElementsByName(\'' . $settings['id'] . '\')[0].click();"><img src="../../graphics/' . $settings['icon'] . '" alt=""> ';
-					echo '<span class="hide-on-mobile">' . $settings['label'] . '</span>';
-				echo '</a>';
+			echo '<a class="lam-tab-anchor" href="#" onclick="document.getElementsByName(\'' . $settings['id'] . '\')[0].click();"><img src="../../graphics/' . $settings['icon'] . '" alt=""> ';
+			echo '<span class="hide-on-mobile">' . $settings['label'] . '</span>';
+			echo '</a>';
 			echo '</li>';
 		}
-	?>
-		</ul>
-		<div class="lam-tab-content lam-tab-active">
-<?php
+		?>
+    </ul>
+    <div class="lam-tab-content lam-tab-active">
+	<?php
 }

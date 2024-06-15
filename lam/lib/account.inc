@@ -22,24 +22,24 @@
 */
 
 /**
-* This provides several helper function for the account modules.
-*
-* @author Tilo Lutz
-* @author Roland Gruber
-*
-* @package lib
-*/
+ * This provides several helper function for the account modules.
+ *
+ * @author Tilo Lutz
+ * @author Roland Gruber
+ *
+ * @package lib
+ */
 
 use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
 
 
 /**
-* This function will return all values from $array without values of $values.
-*
-* @param array $values list of values which should be removed
-* @param array $array list of original values
-* @return array list of remaining values
-*/
+ * This function will return all values from $array without values of $values.
+ *
+ * @param array $values list of values which should be removed
+ * @param array $array list of original values
+ * @return array list of remaining values
+ */
 function array_delete($values, $array) {
 	// Loop for every entry and check if it should be removed
 	if (is_array($array)) {
@@ -62,25 +62,25 @@ function array_delete($values, $array) {
  * @param array $haystack array
  */
 function in_array_ignore_case($needle, $haystack) {
-    if (!is_array($haystack)) {
-        return false;
-    }
-    if (!is_string($needle)) {
-        return false;
-    }
-    foreach ($haystack as $element) {
-        if( is_string( $element ) && 0 == strcasecmp( $needle, $element ) ) {
-            return true;
-        }
-    }
-    return false;
+	if (!is_array($haystack)) {
+		return false;
+	}
+	if (!is_string($needle)) {
+		return false;
+	}
+	foreach ($haystack as $element) {
+		if (is_string($element) && 0 == strcasecmp($needle, $element)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
-* This function will return the days from 1.1.1970 until now.
-*
-* @return number of days
-*/
+ * This function will return the days from 1.1.1970 until now.
+ *
+ * @return number of days
+ */
 function getdays() {
 	$days = time() / 86400;
 	settype($days, 'integer');
@@ -88,11 +88,11 @@ function getdays() {
 }
 
 /**
-* Takes a list of Samba flags and creates the corresponding flag string.
-*
-* @param array $input is an array of Samba flags (e.g. X or D)
-* @return string Samba flag string
-*/
+ * Takes a list of Samba flags and creates the corresponding flag string.
+ *
+ * @param array $input is an array of Samba flags (e.g. X or D)
+ * @return string Samba flag string
+ */
 function smbflag($input) {
 	// Start character
 	$flag = "[";
@@ -125,27 +125,27 @@ function smbflag($input) {
 }
 
 /**
-* Generates the NT hash of a password.
-*
-* @param string password original password
-* @return string password hash
-*/
+ * Generates the NT hash of a password.
+ *
+ * @param string password original password
+ * @return string password hash
+ */
 function ntPassword($password) {
 	return strtoupper(hash('md4', convertUtf8ToUtf16Le($password)));
 }
 
 /**
-* Returns the hash value of a plain text password.
-* @see getSupportedHashTypes()
-*
-* @param string $password the password string
-* @param boolean $enabled marks the hash as enabled/disabled (e.g. by prefixing "!")
-* @param string $hashType password hash type (CRYPT, CRYPT-SHA512, SHA, SSHA, MD5, SMD5, PLAIN, K5KEY)
-* @return string the password hash
-*/
+ * Returns the hash value of a plain text password.
+ * @param string $password the password string
+ * @param boolean $enabled marks the hash as enabled/disabled (e.g. by prefixing "!")
+ * @param string $hashType password hash type (CRYPT, CRYPT-SHA512, SHA, SSHA, MD5, SMD5, PLAIN, K5KEY)
+ * @return string the password hash
+ * @see getSupportedHashTypes()
+ *
+ */
 function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 	// check for empty password
-	if (! $password || ($password == "")) {
+	if (!$password || ($password == "")) {
 		return "";
 	}
 	switch ($hashType) {
@@ -179,7 +179,7 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			break;
 		case 'ARGON2ID':
 			$threads = max(4, PASSWORD_ARGON2_DEFAULT_THREADS);
-			$hash = "{ARGON2}" . password_hash($password, PASSWORD_ARGON2ID, array('threads' => $threads));
+			$hash = "{ARGON2}" . password_hash($password, PASSWORD_ARGON2ID, ['threads' => $threads]);
 			break;
 		case 'SSHA':
 		default: // use SSHA if the setting is invalid
@@ -225,16 +225,16 @@ function getHashType(?string $hash): string {
  * @return array hash types
  */
 function getSupportedHashTypes() {
-	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP', 'ARGON2ID', 'PBKDF2-SHA512');
+	return ['CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP', 'ARGON2ID', 'PBKDF2-SHA512'];
 }
 
 /**
-* Calculates a password salt of the given length.
-*
-* @param int $len salt length
-* @return String the salt string
-*
-*/
+ * Calculates a password salt of the given length.
+ *
+ * @param int $len salt length
+ * @return String the salt string
+ *
+ */
 function generateSalt($len) {
 	$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890./';
 	$salt = '';
@@ -246,11 +246,11 @@ function generateSalt($len) {
 }
 
 /**
-* Marks an password hash as enabled and returns the new hash string
-*
-* @param string $hash hash value to enable
-* @return string enabled password hash
-*/
+ * Marks an password hash as enabled and returns the new hash string
+ *
+ * @param string $hash hash value to enable
+ * @return string enabled password hash
+ */
 function pwd_enable($hash) {
 	// check if password is disabled (old wrong LAM method)
 	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
@@ -275,11 +275,11 @@ function pwd_enable($hash) {
 }
 
 /**
-* Marks an password hash as disabled and returns the new hash string
-*
-* @param string $hash hash value to disable
-* @return string disabled hash value
-*/
+ * Marks an password hash as disabled and returns the new hash string
+ *
+ * @param string $hash hash value to disable
+ * @return string disabled hash value
+ */
 function pwd_disable($hash) {
 	// check if password is disabled (old wrong LAM method)
 	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
@@ -322,11 +322,11 @@ function pwd_is_lockable($password) {
 }
 
 /**
-* Checks if a password hash is enabled/disabled
-*
-* @param string $hash password hash to check
-* @return boolean true if the password is marked as enabled
-*/
+ * Checks if a password hash is enabled/disabled
+ *
+ * @param string $hash password hash to check
+ * @return boolean true if the password is marked as enabled
+ */
 function pwd_is_enabled($hash) {
 	// disabled passwords have a "!" or "*" at the beginning (old wrong LAM method)
 	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
@@ -445,7 +445,7 @@ function checkPasswordHash($type, $hash, $password) {
  * @param string $password password
  * @return int number of classes
  */
-function getNumberOfCharacterClasses($password) : int {
+function getNumberOfCharacterClasses($password): int {
 	if (($password === null) || ($password === '')) {
 		return 0;
 	}
@@ -466,21 +466,21 @@ function getNumberOfCharacterClasses($password) : int {
 }
 
 /**
-* Returns an array with all Samba 3 domain entries under the given suffix
-*
-* @param handle LDAP handle (if null then $_SESSION['ldap']->server() is used)
-* @param String $suffix LDAP suffix to search (if null then $_SESSION['config']->get_Suffix('smbDomain') is used)
-* @return array list of samba3domain objects
-*/
+ * Returns an array with all Samba 3 domain entries under the given suffix
+ *
+ * @param handle LDAP handle (if null then $_SESSION['ldap']->server() is used)
+ * @param String $suffix LDAP suffix to search (if null then $_SESSION['config']->get_Suffix('smbDomain') is used)
+ * @return array list of samba3domain objects
+ */
 function search_domains($server = null, $suffix = null) {
 	if ($suffix == null) {
 		$suffix = $_SESSION['config']->get_Suffix('smbDomain');
 	}
 	$ret = [];
-	$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
+	$attr = ["DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
 		"sambaNextUserRid", "sambaAlgorithmicRidBase", 'sambaMinPwdAge', 'sambaMaxPwdAge',
 		'sambaPwdHistoryLength'
-	);
+	];
 	if ($server == null) {
 		$server = $_SESSION['ldap']->server();
 	}
@@ -518,10 +518,10 @@ function search_domains($server = null, $suffix = null) {
 }
 
 /**
-* Represents a Samba 3 domain entry
-*
-* @package modules
-*/
+ * Represents a Samba 3 domain entry
+ *
+ * @package modules
+ */
 class samba3domain {
 
 	/** DN */
@@ -556,154 +556,154 @@ class samba3domain {
 }
 
 /**
-* Checks if a given value matches the selected regular expression.
-*
-* @param string $argument value to check
-* @param string $regexp pattern name
-* @return boolean true if matches, otherwise false
-*/
+ * Checks if a given value matches the selected regular expression.
+ *
+ * @param string $argument value to check
+ * @param string $regexp pattern name
+ * @return boolean true if matches, otherwise false
+ */
 function get_preg($argument, $regexp) {
 	// First we check "positive" cases
 	$pregexpr = '';
 	switch ($regexp) {
 		case 'password':
-					$pregexpr = '/^([[:alnum:]\\^\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]\\$§°@=-])*$/u';
-					break;
-		case 'groupname':	// all letters, numbers, space and ._- are allowed characters
+			$pregexpr = '/^([[:alnum:]\\^\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]\\$§°@=-])*$/u';
+			break;
+		case 'groupname':    // all letters, numbers, space and ._- are allowed characters
 		case 'username':
 		case 'hostname':
-					$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_\\$-])+$/u';
-					break;
+			$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_\\$-])+$/u';
+			break;
 		case 'krbUserName':
-					$pregexpr = '/^([[:alnum:]#@\\/\\.\\ \\_\\$-])+$/u';
-					break;
+			$pregexpr = '/^([[:alnum:]#@\\/\\.\\ \\_\\$-])+$/u';
+			break;
 		case 'hostObject':
-					$pregexpr = '/^[!]?([[:alnum:]@\\.\\ \\_\\$\\:*-])+$/u';
-					break;
-		case 'usernameList':	// comma separated list of user names
-		case 'groupnameList':	// comma separated list of group names
-					$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_-])+(,([[:alnum:]%#@\\.\\ \\_-])+)*$/u';
-					break;
-		case 'realname':	// Allow all but \, <, >, =, $, ?
+			$pregexpr = '/^[!]?([[:alnum:]@\\.\\ \\_\\$\\:*-])+$/u';
+			break;
+		case 'usernameList':    // comma separated list of user names
+		case 'groupnameList':    // comma separated list of group names
+			$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_-])+(,([[:alnum:]%#@\\.\\ \\_-])+)*$/u';
+			break;
+		case 'realname':    // Allow all but \, <, >, =, $, ?
 		case 'cn':
-					$pregexpr = '/^[^\\\<>=\\$\\?]+(\\$)?$/';
-					break;
-		case "telephone":	// Allow letters, numbers, space, brackets, /-+.
-					$pregexpr = '/^(\\+)*([0-9a-zA-Z\\.\\ \\(\\)\\/-])*$/';
-					break;
+			$pregexpr = '/^[^\\\<>=\\$\\?]+(\\$)?$/';
+			break;
+		case "telephone":    // Allow letters, numbers, space, brackets, /-+.
+			$pregexpr = '/^(\\+)*([0-9a-zA-Z\\.\\ \\(\\)\\/-])*$/';
+			break;
 		case "email":
-					$pregexpr = '/^([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
-					break;
+			$pregexpr = '/^([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
+			break;
 		case "emailWithName":
-					$pregexpr = '/^([[:alnum:] \'!~#+*%\\$\\(\\)_-])+ <([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
-					break;
+			$pregexpr = '/^([[:alnum:] \'!~#+*%\\$\\(\\)_-])+ <([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
+			break;
 		case "mailLocalAddress":
-					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
-					break;
+			$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
+			break;
 		case 'kolabEmailPrefix':
-					$pregexpr = '/^([-])?([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z\\.-])*)?$/';
-					break;
-		case "postalAddress":	// Allow all but \, <, >, =, ?
-					$pregexpr = '/^[^\\\<>=\\?]*$/';
-					break;
-		case "postalCode":	// Allow all but \, <, >, =, ?
+			$pregexpr = '/^([-])?([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z\\.-])*)?$/';
+			break;
+		case "postalAddress":    // Allow all but \, <, >, =, ?
+			$pregexpr = '/^[^\\\<>=\\?]*$/';
+			break;
+		case "postalCode":    // Allow all but \, <, >, =, ?
 		case "street":
 		case "title":
 		case "employeeType":
 		case "businessCategory":
-					$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
-					break;
-		case "homeDirectory":		// Home path, /path/......
+			$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
+			break;
+		case "homeDirectory":        // Home path, /path/......
 		case "filePath":
-					$pregexpr = '/^([\/]([[:alnum:]@\\$\\.\\ \\_-])+)+(\/)?$/u';
-					break;
-		case "digit":		// Normal number
-					$pregexpr = '/^[[:digit:]]*$/';
-					break;
-		case "digitWithNegativeValues":		// Normal number incl. negative values
-					$pregexpr = '/^[-]?[[:digit:]]*$/';
-					break;
-		case "float":		// float value
-					$pregexpr = '/^[[:digit:]]+(\\.[[:digit:]]+)?$/';
-					break;
-		case "UNC":			// UNC Path, e.g. \\server\share\folder\...
-					$pregexpr = '/^((([\\\][\\\])|(%))([a-zA-Z0-9@%\\.-])+)([\\\]([[:alnum:]@%\\.\\$\\ \\_-])+)+$/u';
-					break;
-		case "logonscript":	// path to login-script. normal unix file
-					$pregexpr = '/^(([\/\\\])*([[:alnum:]%\\.\\ \\$\\_-])+([\/\\\]([[:alnum:]%\\.\\ \\$\\_-])+)*((\\.bat)|(\\.cmd)|(\\.exe)|(\\.vbs)))*$/u';
-					break;
-		case "workstations":	// comma separated list with windows-hosts
-					$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
-					break;
-		case "domainname":		// Windows Domainname
-					$pregexpr = '/^([A-Za-z0-9\\.\\_-])+$/';
-					break;
-		case "unixhost":		// Unix hosts
-					$pregexpr = '/^([a-z0-9,\\.\\*_-])*$/';
-					break;
-		case 'digit2':			// Same as digit but also -1
-					$pregexpr = '/^(([-][1])|([[:digit:]]*))$/';
-					break;
+			$pregexpr = '/^([\/]([[:alnum:]@\\$\\.\\ \\_-])+)+(\/)?$/u';
+			break;
+		case "digit":        // Normal number
+			$pregexpr = '/^[[:digit:]]*$/';
+			break;
+		case "digitWithNegativeValues":        // Normal number incl. negative values
+			$pregexpr = '/^[-]?[[:digit:]]*$/';
+			break;
+		case "float":        // float value
+			$pregexpr = '/^[[:digit:]]+(\\.[[:digit:]]+)?$/';
+			break;
+		case "UNC":            // UNC Path, e.g. \\server\share\folder\...
+			$pregexpr = '/^((([\\\][\\\])|(%))([a-zA-Z0-9@%\\.-])+)([\\\]([[:alnum:]@%\\.\\$\\ \\_-])+)+$/u';
+			break;
+		case "logonscript":    // path to login-script. normal unix file
+			$pregexpr = '/^(([\/\\\])*([[:alnum:]%\\.\\ \\$\\_-])+([\/\\\]([[:alnum:]%\\.\\ \\$\\_-])+)*((\\.bat)|(\\.cmd)|(\\.exe)|(\\.vbs)))*$/u';
+			break;
+		case "workstations":    // comma separated list with windows-hosts
+			$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
+			break;
+		case "domainname":        // Windows Domainname
+			$pregexpr = '/^([A-Za-z0-9\\.\\_-])+$/';
+			break;
+		case "unixhost":        // Unix hosts
+			$pregexpr = '/^([a-z0-9,\\.\\*_-])*$/';
+			break;
+		case 'digit2':            // Same as digit but also -1
+			$pregexpr = '/^(([-][1])|([[:digit:]]*))$/';
+			break;
 		case 'gecos':
-					$pregexpr = '/^[[:alnum:] \\._-]+([,][[:alnum:] \\._-]+)*$/u';
-					break;
+			$pregexpr = '/^[[:alnum:] \\._-]+([,][[:alnum:] \\._-]+)*$/u';
+			break;
 		case 'macAddress':
-					$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
-					break;
-		case 'date':			// 31-12-2012
-					$pregexpr = '/^((0?[1-9])|([1-2][0-9])|30|31)\\-((0?[1-9])|(1[0-2]))\\-[1-3][0-9][0-9][0-9]$/';
-					break;
+			$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
+			break;
+		case 'date':            // 31-12-2012
+			$pregexpr = '/^((0?[1-9])|([1-2][0-9])|30|31)\\-((0?[1-9])|(1[0-2]))\\-[1-3][0-9][0-9][0-9]$/';
+			break;
 		case 'date2':
-					$pregexpr = '/^((0[1-9])|([1-2][0-9])|30|31)\\.((0[1-9])|(1[0-2]))\\.[1-3][0-9][0-9][0-9]$/';
-					break;
+			$pregexpr = '/^((0[1-9])|([1-2][0-9])|30|31)\\.((0[1-9])|(1[0-2]))\\.[1-3][0-9][0-9][0-9]$/';
+			break;
 		case 'dateTime':
-					$pregexpr = '/^[1-3][0-9][0-9][0-9]\\-((0[1-9])|(1[0-2]))\\-((0[1-9])|([1-2][0-9])|30|31) ((0[0-9])|([1][0-9])|20|21|22|23):((0[0-9])|([1-5][0-9])):((0[0-9])|([1-5][0-9]))$/';
-					break;
+			$pregexpr = '/^[1-3][0-9][0-9][0-9]\\-((0[1-9])|(1[0-2]))\\-((0[1-9])|([1-2][0-9])|30|31) ((0[0-9])|([1][0-9])|20|21|22|23):((0[0-9])|([1-5][0-9])):((0[0-9])|([1-5][0-9]))$/';
+			break;
 		case 'sambaLogonHours':
-					$pregexpr = '/^[0-9a-fA-F]{42}$/';
-					break;
+			$pregexpr = '/^[0-9a-fA-F]{42}$/';
+			break;
 		case 'DNSname':
-					$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
-					break;
+			$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
+			break;
 		case 'nis_alias':
-					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
-					break;
+			$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
+			break;
 		case 'nis_recipient':
-					$pregexpr = '/^([[:alnum:]+@\\.\\ \\_-])+$/u';
-					break;
-		case 'country':	// Allow all letters and space
-					$pregexpr = '/^[[:alpha:]]([[:alpha:] ])+$/u';
-					break;
-		case 'dn':	// LDAP DN
-					$pregexpr = '/^([^=,]+=[^=,]+)(,([^=,]+=[^=,]+))*$/';
-					break;
+			$pregexpr = '/^([[:alnum:]+@\\.\\ \\_-])+$/u';
+			break;
+		case 'country':    // Allow all letters and space
+			$pregexpr = '/^[[:alpha:]]([[:alpha:] ])+$/u';
+			break;
+		case 'dn':    // LDAP DN
+			$pregexpr = '/^([^=,]+=[^=,]+)(,([^=,]+=[^=,]+))*$/';
+			break;
 		case 'domainSID': // Samba domain SID
-					$pregexpr = "/^S\\-[0-9]\\-[0-9]\\-[0-9]{2,2}\\-[0-9]+\\-[0-9]+\\-[0-9]+$/";
-					break;
+			$pregexpr = "/^S\\-[0-9]\\-[0-9]\\-[0-9]{2,2}\\-[0-9]+\\-[0-9]+\\-[0-9]+$/";
+			break;
 		case 'ip': // IP address
-					$pregexpr = '/^[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}$/';
-					break;
+			$pregexpr = '/^[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}$/';
+			break;
 		case 'ip6': // IPv6 address (only basic check)
-					$pregexpr = '/^[0-9a-f:]+$/i';
-					break;
+			$pregexpr = '/^[0-9a-f:]+$/i';
+			break;
 		case 'ascii': // ASCII
-					$pregexpr = '/^[' . chr(1) . '-' . chr(128) . ']*$/';
-					break;
+			$pregexpr = '/^[' . chr(1) . '-' . chr(128) . ']*$/';
+			break;
 		case 'objectClass':
-					$pregexpr = '/^[[:alnum:]_-]+$/';
-					break;
+			$pregexpr = '/^[[:alnum:]_-]+$/';
+			break;
 		case 'quotaNumber':
-					$pregexpr = '/^[[:digit:]]+[KMGTkmgt]?$/';
-					break;
+			$pregexpr = '/^[[:digit:]]+[KMGTkmgt]?$/';
+			break;
 		case 'hostAndPort':
-					$pregexpr = '/^[[:alnum:]\\._-]+:[[:digit:]]+$/';
-					break;
+			$pregexpr = '/^[[:alnum:]\\._-]+:[[:digit:]]+$/';
+			break;
 		case 'ldapDateAndTime':
-					$pregexpr = '/^[0-9]{14}Z$/';
-					break;
+			$pregexpr = '/^[0-9]{14}Z$/';
+			break;
 		case 'guacamoleProtocol':
-					$pregexpr = '/^(rdp|vnc)$/';
-					break;
+			$pregexpr = '/^(rdp|vnc)$/';
+			break;
 	}
 	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
 		return true;
@@ -735,8 +735,8 @@ function get_preg($argument, $regexp) {
  */
 function convertCommaEscaping($dn) {
 	return str_replace(
-		array('\\,'),
-		array('\\2C'),
+		['\\,'],
+		['\\2C'],
 		$dn);
 }
 
@@ -806,7 +806,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 		}
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
-					$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
+			$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
@@ -845,7 +845,7 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 		}
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
-					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
+			$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
@@ -868,7 +868,7 @@ function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
 		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
 	}
 	$return = searchLDAPPaged(getLDAPServerHandle(), $suffix, $filter, $attributes,
-				0, $limit);
+		0, $limit);
 	if (ldap_errno(getLDAPServerHandle()) == 4) {
 		logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 	}
@@ -919,15 +919,15 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 	}
 	$pageSize = 999;
 	$cookie = '';
-	$controls = array(
-		array(
+	$controls = [
+		[
 			'oid' => LDAP_CONTROL_PAGEDRESULTS,
 			'size' => $pageSize,
-			'cookie' => $cookie)
-	);
+			'cookie' => $cookie]
+	];
 	$return = [];
 	do {
-		$sr  = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit,
+		$sr = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit,
 			0, LDAP_DEREF_NEVER, $controls);
 		if (!$sr) {
 			break;
@@ -951,7 +951,7 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
  * @param handle $handle LDAP handle (optional for admin interface pages)
  * @return ?array attributes or null if not found
  */
-function ldapGetDN($dn, $attributes = array('dn'), $handle = null): ?array {
+function ldapGetDN($dn, $attributes = ['dn'], $handle = null): ?array {
 	if ($handle == null) {
 		$handle = getLDAPServerHandle();
 	}
@@ -978,7 +978,7 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null): ?array {
  * @param int $limit result limit
  * @return array attributes or null if not found
  */
-function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'), $handle = null, $limit = -1) {
+function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = ['dn'], $handle = null, $limit = -1) {
 	if ($limit === -1) {
 		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
 	}
@@ -999,20 +999,20 @@ function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'),
 }
 
 /**
-* Deletes a DN and all child entries.
-*
-* @param string $dn DN to delete
-* @param boolean $recursive recursive delete also child entries
-* @return array error messages
-*/
+ * Deletes a DN and all child entries.
+ *
+ * @param string $dn DN to delete
+ * @param boolean $recursive recursive delete also child entries
+ * @return array error messages
+ */
 function deleteDN($dn, $recursive) {
 	$errors = [];
 	if (($dn == null) || ($dn == '')) {
-		$errors[] = array('ERROR', _('Entry does not exist'));
+		$errors[] = ['ERROR', _('Entry does not exist')];
 		return $errors;
 	}
 	if ($recursive) {
-		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, '(objectClass=*)', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, '(objectClass=*)', ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			cleanLDAPResult($entries);
@@ -1025,7 +1025,7 @@ function deleteDN($dn, $recursive) {
 			}
 		}
 		else {
-			$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+			$errors[] = ['ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 			return $errors;
 		}
 	}
@@ -1033,7 +1033,7 @@ function deleteDN($dn, $recursive) {
 	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
 	if (!$success) {
 		logNewMessage(LOG_ERR, 'Unable to delete DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+		$errors[] = ['ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 	}
 	else {
 		logNewMessage(LOG_NOTICE, 'Deleted DN: ' . $dn);
@@ -1052,13 +1052,13 @@ function copyDnRecursive(string $oldDn, string $targetDn): void {
 	$oldRdn = extractRDN($oldDn);
 	$newDn = $oldRdn . ',' . $targetDn;
 	logNewMessage(LOG_DEBUG, 'Copy DN ' . $oldDn . ' to ' . $newDn);
-	$attributes = ldapGetDN($oldDn, array('*'));
+	$attributes = ldapGetDN($oldDn, ['*']);
 	if (empty($attributes)) {
 		logNewMessage(LOG_ERR, sprintf(_("Unable to read %s."), unescapeLdapSpecialCharacters($oldDn)));
 		throw new LAMException(sprintf(_("Unable to read %s."), htmlspecialchars(unescapeLdapSpecialCharacters($oldDn))));
 	}
 	unset($attributes['dn']);
-	$systemAttributesToSkip = array('iscriticalsystemobject', 'primarygroupid', 'samaccounttype', 'objectsid');
+	$systemAttributesToSkip = ['iscriticalsystemobject', 'primarygroupid', 'samaccounttype', 'objectsid'];
 	foreach ($systemAttributesToSkip as $systemAttributeToSkip) {
 		if (isset($attributes[$systemAttributeToSkip])) {
 			unset($attributes[$systemAttributeToSkip]);
@@ -1106,7 +1106,7 @@ function getLastLDAPError() {
 			return null;
 		// size limit exceeded
 		case 4:
-			$error = array("WARN", _("LDAP sizelimit exceeded, not all entries are shown."));
+			$error = ["WARN", _("LDAP sizelimit exceeded, not all entries are shown.")];
 			if ($_SESSION['config']->get_searchLimit() == 0) {
 				// server limit exceeded
 				$error[] = _("See the manual for instructions to solve this problem.");
@@ -1114,7 +1114,7 @@ function getLastLDAPError() {
 			return $error;
 		// other errors
 		default:
-			return array("ERROR", _("LDAP search failed! Please check your preferences."), ldap_error($_SESSION["ldap"]->server()));
+			return ["ERROR", _("LDAP search failed! Please check your preferences."), ldap_error($_SESSION["ldap"]->server())];
 	}
 }
 
@@ -1196,12 +1196,12 @@ function unescapeLdapSpecialCharactersCallback(array $matches): string {
 }
 
 /**
-* Helper function to sort DNs.
-*
-* @param string $a first argument to compare
-* @param string $b second argument to compare
-* @return int 0 if equal, 1 if $a is greater, -1 if $b is greater
-*/
+ * Helper function to sort DNs.
+ *
+ * @param string $a first argument to compare
+ * @param string $b second argument to compare
+ * @return int 0 if equal, 1 if $a is greater, -1 if $b is greater
+ */
 function compareDN($a, $b): int {
 	// split DNs
 	$array_a = explode(",", strtolower($a));
@@ -1286,7 +1286,7 @@ function obfuscateText($text) {
 	if (($text == null) || ($text == '')) {
 		return $text;
 	}
-	return str_rot13(base64_encode('LAM_OBFUSCATE:'.$text));
+	return str_rot13(base64_encode('LAM_OBFUSCATE:' . $text));
 }
 
 /**
@@ -1454,9 +1454,9 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 	}
 	if (empty($mailTo)) {
 		logNewMessage(LOG_ERR, 'Unable to send password mail, no TO address set.');
-		return array(
-			array('ERROR', _('Unable to send mail!'))
-		);
+		return [
+			['ERROR', _('Unable to send mail!')]
+		];
 	}
 	$mailFrom = $_SESSION['config']->getLamProMailFrom();
 	$mailReplyTo = $_SESSION['config']->getLamProMailReplyTo();
@@ -1485,15 +1485,15 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 	$success = sendEMail($mailTo, $subject, $body, $mailFrom, ($mailIsHTML == 'true'), $mailReplyTo);
 	if ($success) {
 		logNewMessage(LOG_DEBUG, 'Sent password mail to ' . $mailTo);
-		return array(
-			array('INFO', sprintf(_('Mail successfully sent to %s.'), htmlspecialchars($mailTo)))
-		);
+		return [
+			['INFO', sprintf(_('Mail successfully sent to %s.'), htmlspecialchars($mailTo))]
+		];
 	}
 	else {
 		logNewMessage(LOG_ERR, 'Unable to send password mail to ' . htmlspecialchars($mailTo));
-		return array(
-			array('ERROR', _('Unable to send mail!'))
-		);
+		return [
+			['ERROR', _('Unable to send mail!')]
+		];
 	}
 }
 
@@ -1594,7 +1594,7 @@ function isCommandlineSafeEmailAddress($address) {
 		return false;
 	}
 	$addressLength = strlen($address);
-	$allowedSpecialChars = array('@', '_', '-', '.');
+	$allowedSpecialChars = ['@', '_', '-', '.'];
 	for ($i = 0; $i < $addressLength; $i++) {
 		$char = $address[$i];
 		if (!ctype_alnum($char) && !in_array($char, $allowedSpecialChars)) {
@@ -1658,7 +1658,7 @@ function getRandomNumber() {
  * @return mixed false on error and certificate if extracted successfully
  */
 function getLDAPSSLCertificate($server, $port) {
-	$stream = @stream_context_create(array("ssl" => array("capture_peer_cert_chain" => true, "verify_peer" => false, "allow_self_signed" => true)));
+	$stream = @stream_context_create(["ssl" => ["capture_peer_cert_chain" => true, "verify_peer" => false, "allow_self_signed" => true]]);
 	if (!$stream) {
 		return false;
 	}
@@ -2028,7 +2028,7 @@ function isDeveloperVersion($version) {
 class LAMException extends Exception {
 
 	private $title;
-	
+
 	private $ldapErrorCode;
 
 	/**

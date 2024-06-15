@@ -1,4 +1,5 @@
 <?php
+
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PERSISTENCE\ConfigurationDatabase;
@@ -30,12 +31,12 @@ use function LAM\PERSISTENCE\dbTableExists;
 */
 
 /**
-* This file includes functions to manage the configuration files.
-*
-* @package configuration
-* @author Roland Gruber
-* @author Thomas Manninger
-*/
+ * This file includes functions to manage the configuration files.
+ *
+ * @package configuration
+ * @author Roland Gruber
+ * @author Thomas Manninger
+ */
 
 /** persistence */
 include_once 'persistence.inc';
@@ -68,8 +69,8 @@ function setSSLCaCert() {
 }
 
 /**
-* Sets language settings for automatic translation
-*/
+ * Sets language settings for automatic translation
+ */
 function setlanguage() {
 	$code = 'en_GB.utf8';
 	$fallbackCode = 'en_GB.UTF-8';
@@ -117,11 +118,11 @@ function setlanguage() {
  * @return true, if the chmod $right for $target were set
  */
 function checkChmod($right, $target, $chmod) {
-	$right_arr = ["read","write","execute"];
-	$target_arr = ["owner","group","other"];
+	$right_arr = ["read", "write", "execute"];
+	$target_arr = ["owner", "group", "other"];
 
 	// Check, if $right and $target has right parameters
-	if (!in_array($right, $right_arr) ||!in_array($target, $target_arr)) {
+	if (!in_array($right, $right_arr) || !in_array($target, $target_arr)) {
 		return false;
 	}
 
@@ -142,26 +143,26 @@ function checkChmod($right, $target, $chmod) {
 
 	// Now check, if the chmod_num can be right with the $right
 	// What numbers allow "read"
-	$read =[4,5,6,7];
+	$read = [4, 5, 6, 7];
 	// What numbers allow "write"
-	$write =[2,3,6,7];
+	$write = [2, 3, 6, 7];
 	// What numbers allow "execute"
-	$execute =[1,3,5,7];
+	$execute = [1, 3, 5, 7];
 	if ((($right == "read") && in_array($chmod_num, $read))
-			|| (($right == "write") && in_array($chmod_num, $write))
-			|| (($right == "execute") && in_array($chmod_num, $execute))) {
+		|| (($right == "write") && in_array($chmod_num, $write))
+		|| (($right == "execute") && in_array($chmod_num, $execute))) {
 		return true;
 	}
 	return false;
 }
 
 /**
-* Returns the version number of this LAM installation.
-* Format: <major version>.<minor version>.<patch level>
-* <br> Major/minor version are always numbers, patch level may contain letters for unofficial releases only (e.g. 0.5.alpha1).
-*
-* @return string version number
-*/
+ * Returns the version number of this LAM installation.
+ * Format: <major version>.<minor version>.<patch level>
+ * <br> Major/minor version are always numbers, patch level may contain letters for unofficial releases only (e.g. 0.5.alpha1).
+ *
+ * @return string version number
+ */
 function LAMVersion() {
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/VERSION";
 	if (is_readable($file)) {
@@ -185,28 +186,28 @@ function extractConfigOptionsFromPOST($confTypes) {
 	foreach ($confTypes as $element => $type) {
 		// text fields
 		if ($type == "text") {
-			$options[$element] =[$_POST[$element]];
+			$options[$element] = [$_POST[$element]];
 		}
 		// text fields
 		elseif ($type == "text_obfuscated") {
-			$options[$element] =[obfuscateText($_POST[$element])];
+			$options[$element] = [obfuscateText($_POST[$element])];
 		}
 		// hidden fields
 		elseif ($type == "hidden") {
-			$options[$element] =[$_POST[$element]];
+			$options[$element] = [$_POST[$element]];
 		}
 		// checkboxes
 		elseif ($type == "checkbox") {
 			if (isset($_POST[$element]) && ($_POST[$element] == "on")) {
-				$options[$element] =['true'];
+				$options[$element] = ['true'];
 			}
 			else {
-				$options[$element] =['false'];
+				$options[$element] = ['false'];
 			}
 		}
 		// dropdownbox
 		elseif ($type == "select") {
-			$options[$element] =[$_POST[$element]];
+			$options[$element] = [$_POST[$element]];
 		}
 		// multiselect
 		elseif ($type == "multiselect") {
@@ -222,10 +223,10 @@ function extractConfigOptionsFromPOST($confTypes) {
 
 
 /**
-* Prints a meta refresh page
-*
-* @param string $page the URL of the target page
-*/
+ * Prints a meta refresh page
+ *
+ * @param string $page the URL of the target page
+ */
 function metaRefresh($page) {
 	if (!headers_sent()) {
 		header('Location: ' . $page);
@@ -270,11 +271,11 @@ function getLanguages() {
 	$languages = [];
 	// loading available languages from language.conf file
 	$languagefile = __DIR__ . "/../config/language";
-	if(is_file($languagefile)) {
+	if (is_file($languagefile)) {
 		$file = fopen($languagefile, "r");
-		while(!feof($file)) {
+		while (!feof($file)) {
 			$line = fgets($file, 1024);
-			if($line == "" || $line == "\n" || $line[0] == "#") {
+			if ($line == "" || $line == "\n" || $line[0] == "#") {
 				continue; // ignore comment and empty lines
 			}
 			$value = explode(":", $line);
@@ -339,7 +340,7 @@ class ServerProfilePersistenceManager {
 	 * @return string[] list of server profile names
 	 * @throws LAMException error listing profiles
 	 */
-	public function getProfiles() : array {
+	public function getProfiles(): array {
 		return $this->strategy->getProfiles();
 	}
 
@@ -350,7 +351,7 @@ class ServerProfilePersistenceManager {
 	 * @return LAMConfig profile
 	 * @throws LAMException error loading profile
 	 */
-	public function loadProfile(string $name) : LAMConfig {
+	public function loadProfile(string $name): LAMConfig {
 		$config = $this->strategy->loadProfile($name);
 		$config->setName($name);
 		return $config;
@@ -363,7 +364,7 @@ class ServerProfilePersistenceManager {
 	 * @param $name profile name
 	 * @throws LAMException error saving profile
 	 */
-	public function saveProfile(LAMConfig $profile, $name) : void {
+	public function saveProfile(LAMConfig $profile, $name): void {
 		$this->strategy->saveProfile($profile, $name);
 	}
 
@@ -372,17 +373,17 @@ class ServerProfilePersistenceManager {
 	 *
 	 * @return array template names
 	 */
-	function getConfigTemplates() : array {
+	function getConfigTemplates(): array {
 		$dir = dir(__DIR__ . "/../config");
 		$ret = [];
 		$pos = 0;
-		while ($entry = $dir->read()){
-			$ext = substr($entry, strlen($entry)-12, 12);
+		while ($entry = $dir->read()) {
+			$ext = substr($entry, strlen($entry) - 12, 12);
 			$name = substr($entry, 0, strlen($entry) - 12);
 			// check if extension is right, add to profile list
 			if ($ext == ".sample.conf") {
 				$ret[$pos] = $name;
-				$pos ++;
+				$pos++;
 			}
 		}
 		sort($ret);
@@ -397,7 +398,7 @@ class ServerProfilePersistenceManager {
 	 * @param string $password new profile password
 	 * @throws LAMException error saving profile
 	 */
-	public function createProfileFromTemplate(string $name, string $templateName, string $password) : void {
+	public function createProfileFromTemplate(string $name, string $templateName, string $password): void {
 		if (!LAMConfig::isValidName($name) || !preg_match("/^[a-z0-9\\._-]+$/i", $templateName) || in_array($name, $this->getProfiles())) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
@@ -451,7 +452,7 @@ class ServerProfilePersistenceManager {
 	 * @param string $newName new profile name
 	 * @throws LAMException error during rename
 	 */
-	public function renameProfile(string $oldName, string $newName) : void {
+	public function renameProfile(string $oldName, string $newName): void {
 		$this->strategy->renameProfile($oldName, $newName);
 		// update default profile setting if needed
 		$mainConfig = new LAMCfgMain();
@@ -467,7 +468,7 @@ class ServerProfilePersistenceManager {
 	 * @param string $name profile name
 	 * @throws LAMException error deleting profile
 	 */
-	public function deleteProfile(string $name) : void {
+	public function deleteProfile(string $name): void {
 		$this->strategy->deleteProfile($name);
 	}
 
@@ -477,7 +478,7 @@ class ServerProfilePersistenceManager {
 	 * @param string $name profile name
 	 * @return bool is writable
 	 */
-	public function isWritable(string $name) : bool {
+	public function isWritable(string $name): bool {
 		return $this->strategy->isWritable($name);
 	}
 
@@ -494,7 +495,7 @@ interface ServerProfilePersistenceStrategy {
 	 * @return string[] list of server profile names
 	 * @throws LAMException error listing profiles
 	 */
-	public function getProfiles() : array;
+	public function getProfiles(): array;
 
 	/**
 	 * Loads the given server profile
@@ -503,7 +504,7 @@ interface ServerProfilePersistenceStrategy {
 	 * @return LAMConfig profile
 	 * @throws LAMException error loading profile
 	 */
-	public function loadProfile(string $name) : LAMConfig;
+	public function loadProfile(string $name): LAMConfig;
 
 	/**
 	 * Saves a server profile.
@@ -512,7 +513,7 @@ interface ServerProfilePersistenceStrategy {
 	 * @param string $name profile name
 	 * @throws LAMException error saving profile
 	 */
-	public function saveProfile(LAMConfig $profile, string $name) : void;
+	public function saveProfile(LAMConfig $profile, string $name): void;
 
 	/**
 	 * Renames an existing server profile.
@@ -521,7 +522,7 @@ interface ServerProfilePersistenceStrategy {
 	 * @param string $newName new profile name
 	 * @throws LAMException error saving profile
 	 */
-	public function renameProfile(string $oldName, string $newName) : void;
+	public function renameProfile(string $oldName, string $newName): void;
 
 	/**
 	 * Deletes a server profile.
@@ -529,7 +530,7 @@ interface ServerProfilePersistenceStrategy {
 	 * @param string $name profile name
 	 * @throws LAMException error deleting profile
 	 */
-	public function deleteProfile(string $name) : void;
+	public function deleteProfile(string $name): void;
 
 	/**
 	 * Returns if the configuration is writable.
@@ -537,7 +538,7 @@ interface ServerProfilePersistenceStrategy {
 	 * @param string $name profile name
 	 * @return bool is writable
 	 */
-	public function isWritable(string $name) : bool;
+	public function isWritable(string $name): bool;
 
 }
 
@@ -586,7 +587,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		while (!feof($file)) {
 			$line = fgets($file, 1000000);
 			$line = trim($line);  // remove spaces at the beginning and end
-			if (($line == "")||($line[0] == "#")) {
+			if (($line == "") || ($line[0] == "#")) {
 				continue; // ignore comments and empty lines
 			}
 			// search keywords
@@ -599,17 +600,19 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 					$property = $reflectionConfig->getProperty($keyword);
 					$property->setAccessible(true);
 					$property->setValue($config, '');
-				} catch (ReflectionException $e) {
+				}
+				catch (ReflectionException $e) {
 					// ignore
 				}
 			}
-			elseif ((sizeof($parts) > 1) && !in_array($keyword,['modules', 'types', 'tools', 'jobs'])) {
+			elseif ((sizeof($parts) > 1) && !in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
 				// global setting with value
 				try {
 					$property = $reflectionConfig->getProperty($keyword);
 					$property->setAccessible(true);
 					$property->setValue($config, substr($line, $startIndex));
-				} catch (ReflectionException $e) {
+				}
+				catch (ReflectionException $e) {
 					// ignore
 				}
 			}
@@ -790,7 +793,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		}
 		$dir = __DIR__ . "/../config/";
 		// delete account profiles and PDF structures
-		$subDirs =[
+		$subDirs = [
 			$dir . 'pdf/' . $name . '/logos',
 			$dir . 'pdf/' . $name,
 			$dir . 'profiles/' . $name
@@ -799,7 +802,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			if (is_dir($subDirs[$i]) && is_readable($subDirs[$i])) {
 				$dirHandle = @opendir($subDirs[$i]);
 				while (false !== ($path = readdir($dirHandle))) {
-					if (($path != '.')  && ($path != '..') && !@unlink($subDirs[$i] . '/' . $path)) {
+					if (($path != '.') && ($path != '..') && !@unlink($subDirs[$i] . '/' . $path)) {
 						logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i] . '/' . $path);
 						throw new LAMException(_("Unable to delete profile!"));
 					}
@@ -832,7 +835,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	 * @param string $name profile name
 	 * @return string path on filesystem
 	 */
-	private function getPath(string $name) : string {
+	private function getPath(string $name): string {
 		return __DIR__ . "/../config/" . $name . ".conf";
 	}
 
@@ -852,7 +855,7 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param PDO $pdo PDO
 	 */
 	public function __construct(PDO $pdo) {
@@ -863,7 +866,7 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 	/**
 	 * Checks if the schema has latest version.
 	 */
-	private function checkSchema() : void {
+	private function checkSchema(): void {
 		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
 			$this->createInitialSchema();
 		}
@@ -872,7 +875,7 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 	/**
 	 * Creates the initial schema.
 	 */
-	public function createInitialSchema() : void {
+	public function createInitialSchema(): void {
 		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
 		$sql = 'create table ' . self::TABLE_NAME . '('
 			. 'name VARCHAR(300) NOT NULL,'
@@ -903,7 +906,7 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 	 */
 	public function loadProfile(string $name): LAMConfig {
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE name = ?");
-		$statement->execute(array($name));
+		$statement->execute([$name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			logNewMessage(LOG_ERR, 'Server profile not found: ' . $name);
@@ -921,15 +924,15 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 	public function saveProfile(LAMConfig $profile, string $name): void {
 		$data = json_encode($profile->exportData());
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE name = ?");
-		$statement->execute(array($name));
+		$statement->execute([$name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
 			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (name, data) VALUES (?, ?)");
-			$statement->execute(array($name, $data));
+			$statement->execute([$name, $data]);
 		}
 		else {
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE name = ?");
-			$statement->execute(array($data, $name));
+			$statement->execute([$data, $name]);
 		}
 	}
 
@@ -938,7 +941,7 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 	 */
 	public function renameProfile(string $oldName, string $newName): void {
 		$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET name = ? WHERE name = ?");
-		$statement->execute(array($newName, $oldName));
+		$statement->execute([$newName, $oldName]);
 	}
 
 	/**
@@ -946,7 +949,7 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 	 */
 	public function deleteProfile(string $name): void {
 		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE name = ?");
-		$statement->execute(array($name));
+		$statement->execute([$name]);
 	}
 
 	/**
@@ -958,10 +961,10 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 }
 
 /**
-* This class manages conf files.
-*
-* @package configuration
-*/
+ * This class manages conf files.
+ *
+ * @package configuration
+ */
 class LAMConfig {
 
 	/* access levels */
@@ -1025,11 +1028,11 @@ class LAMConfig {
 	private $toolSettings = [];
 
 	/**
-	* Path to external lamdaemon script on server where it is executed
-	*
-	* This is used for managing quota and home directories.
-	* optional setting, may not be defined
-	*/
+	 * Path to external lamdaemon script on server where it is executed
+	 *
+	 * This is used for managing quota and home directories.
+	 * optional setting, may not be defined
+	 */
 	private $scriptPath;
 
 	/**
@@ -1038,11 +1041,11 @@ class LAMConfig {
 	private $scriptRights = '750';
 
 	/**
-	* Servers where lamdaemon script is executed
-	*
-	* This is used for managing quota and home directories.
-	* optional setting, may not be defined
-	*/
+	 * Servers where lamdaemon script is executed
+	 *
+	 * This is used for managing quota and home directories.
+	 * optional setting, may not be defined
+	 */
 	private $scriptServer;
 
 	/**
@@ -1251,7 +1254,7 @@ class LAMConfig {
 		foreach ($types as $type) {
 			$scope = \LAM\TYPES\getScopeFromTypeId($type);
 			$moduleVar = "modules_" . $type;
-			if (isset($this->typeSettings[$moduleVar])){
+			if (isset($this->typeSettings[$moduleVar])) {
 				$modules = explode(",", $this->typeSettings[$moduleVar]);
 				if (empty($availableByScope[$scope])) {
 					$availableByScope[$scope] = getAvailableModules($scope);
@@ -1275,7 +1278,7 @@ class LAMConfig {
 	 * @param string $name server profile name
 	 * @return bool is valid
 	 */
-	public static function isValidName(string $name) : bool {
+	public static function isValidName(string $name): bool {
 		return preg_match("/^[a-z0-9_-]+$/i", $name);
 	}
 
@@ -1284,7 +1287,7 @@ class LAMConfig {
 	 *
 	 * @return string name
 	 */
-	public function getName() : string {
+	public function getName(): string {
 		return $this->name;
 	}
 
@@ -1293,27 +1296,27 @@ class LAMConfig {
 	 *
 	 * @param string $name name
 	 */
-	public function setName(string $name) : void {
+	public function setName(string $name): void {
 		$this->name = $name;
 	}
 
 	// functions to read/write preferences
 
 	/**
-	* Returns the server address as string
-	*
-	* @return string server address
-	*/
+	 * Returns the server address as string
+	 *
+	 * @return string server address
+	 */
 	public function get_ServerURL() {
 		return $this->ServerURL;
 	}
 
 	/**
-	* Sets the server address
-	*
-	* @param string $value new server address
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the server address
+	 *
+	 * @param string $value new server address
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_ServerURL($value) {
 		if (is_string($value)) {
 			$this->ServerURL = $value;
@@ -1323,10 +1326,10 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the server display name. Defaults to server URL if empty display name.
-	*
-	* @return string server display name
-	*/
+	 * Returns the server display name. Defaults to server URL if empty display name.
+	 *
+	 * @return string server display name
+	 */
 	public function getServerDisplayNameGUI() {
 		if (empty($this->serverDisplayName)) {
 			return $this->ServerURL;
@@ -1335,20 +1338,20 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the server display name.
-	*
-	* @return string server display name
-	*/
+	 * Returns the server display name.
+	 *
+	 * @return string server display name
+	 */
 	public function getServerDisplayName() {
 		return $this->serverDisplayName;
 	}
 
 	/**
-	* Sets the server display name
-	*
-	* @param string $value new server display name
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the server display name
+	 *
+	 * @param string $value new server display name
+	 * @return boolean true if $value has correct format
+	 */
 	public function setServerDisplayName($value) {
 		if (is_string($value)) {
 			$this->serverDisplayName = $value;
@@ -1471,29 +1474,29 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns an array of string with all admin names
-	*
-	* @return string[] the admin names
-	*/
+	 * Returns an array of string with all admin names
+	 *
+	 * @return string[] the admin names
+	 */
 	public function get_Admins(): array {
 		return explode(";", $this->Admins);
 	}
 
 	/**
-	* Returns all admin users separated by semicolons
-	*
-	* @return string the admin string
-	*/
+	 * Returns all admin users separated by semicolons
+	 *
+	 * @return string the admin string
+	 */
 	public function get_Adminstring() {
 		return $this->Admins;
 	}
 
 	/**
-	* Sets the admin string
-	*
-	* @param string $value new admin string that contains all admin users separated by semicolons
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the admin string
+	 *
+	 * @param string $value new admin string that contains all admin users separated by semicolons
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_Adminstring($value) {
 		if (is_string($value) &&
 			preg_match("/^[^;]+(;[^;]+)*$/", $value)) {
@@ -1530,11 +1533,11 @@ class LAMConfig {
 	}
 
 	/**
-	* Sets the preferences wizard password
-	*
-	* @param string $value new password
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the preferences wizard password
+	 *
+	 * @param string $value new password
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_Passwd($value) {
 		if (is_string($value)) {
 			$this->Passwd = $this->hashPassword($value, generateSalt(16));
@@ -1566,22 +1569,22 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the LDAP suffix for the given account type
-	*
-	* @param string $typeId account type
-	* @return string the LDAP suffix
-	*/
+	 * Returns the LDAP suffix for the given account type
+	 *
+	 * @param string $typeId account type
+	 * @return string the LDAP suffix
+	 */
 	public function get_Suffix($typeId) {
 		return $this->typeSettings['suffix_' . $typeId];
 	}
 
 	/**
-	* Sets the LDAP suffix where accounts are saved
-	*
-	* @param string $scope account type
-	* @param string $value new LDAP suffix
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the LDAP suffix where accounts are saved
+	 *
+	 * @param string $scope account type
+	 * @param string $value new LDAP suffix
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_Suffix($scope, $value) {
 		if (!$value) {
 			$value = "";
@@ -1594,22 +1597,22 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the list of attributes to show in user list
-	*
-	* @param string $scope account type
-	* @return string the attribute list
-	*/
+	 * Returns the list of attributes to show in user list
+	 *
+	 * @param string $scope account type
+	 * @return string the attribute list
+	 */
 	public function get_listAttributes($scope) {
 		return $this->typeSettings['attr_' . $scope];
 	}
 
 	/**
-	* Sets the list of attributes to show in user list
-	*
-	* @param string $value new attribute string
-	* @param string $scope account type
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the list of attributes to show in user list
+	 *
+	 * @param string $value new attribute string
+	 * @param string $scope account type
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_listAttributes($value, $scope) {
 		if (is_string($value) && preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $value)) {
 			$this->typeSettings['attr_' . $scope] = $value;
@@ -1621,20 +1624,20 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the default language string
-	*
-	* @return string default language
-	*/
+	 * Returns the default language string
+	 *
+	 * @return string default language
+	 */
 	public function get_defaultLanguage() {
 		return $this->defaultLanguage;
 	}
 
 	/**
-	* Sets the default language string
-	*
-	* @param string $value new default language
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the default language string
+	 *
+	 * @param string $value new default language
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_defaultLanguage($value) {
 		if (is_string($value)) {
 			$this->defaultLanguage = $value;
@@ -1646,20 +1649,20 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the time zone name.
-	*
-	* @return string time zone
-	*/
+	 * Returns the time zone name.
+	 *
+	 * @return string time zone
+	 */
 	public function getTimeZone() {
 		return ($this->timeZone == null) ? 'Europe/London' : $this->timeZone;
 	}
 
 	/**
-	* Sets the time zone name.
-	*
-	* @param string $value new time zone
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the time zone name.
+	 *
+	 * @param string $value new time zone
+	 * @return boolean true if $value has correct format
+	 */
 	public function setTimeZone($value) {
 		if (is_string($value)) {
 			$this->timeZone = $value;
@@ -1669,20 +1672,20 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the path to the external script
-	*
-	* @return string script path
-	*/
+	 * Returns the path to the external script
+	 *
+	 * @return string script path
+	 */
 	public function get_scriptPath() {
 		return $this->scriptPath;
 	}
 
 	/**
-	* Sets the path to the external script
-	*
-	* @param string $value new script path
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the path to the external script
+	 *
+	 * @param string $value new script path
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_scriptPath($value) {
 		if (!$value) {
 			$this->scriptPath = ""; // optional parameter
@@ -1697,12 +1700,12 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the servers of the external script as a Array
-	*
-	* @return string script servers
-	*/
+	 * Returns the servers of the external script as a Array
+	 *
+	 * @return string script servers
+	 */
 	public function get_scriptServers() {
-	    return $this->scriptServer;
+		return $this->scriptServer;
 	}
 
 	/**
@@ -1725,7 +1728,7 @@ class LAMConfig {
 	 * @param string $sshKeyPassword SSH key password
 	 * @return RemoteServerConfiguration[] configurations
 	 */
-	public static function parseConfiguredScriptServers($value, $scriptPath, $userName, $sshKey, $sshKeyPassword) : array {
+	public static function parseConfiguredScriptServers($value, $scriptPath, $userName, $sshKey, $sshKeyPassword): array {
 		$servers = [];
 		if (empty($value)) {
 			return $servers;
@@ -1761,11 +1764,11 @@ class LAMConfig {
 	}
 
 	/**
-	* Sets the servers of the external script
-	*
-	* @param string $value new script servers
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the servers of the external script
+	 *
+	 * @param string $value new script servers
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_scriptServers($value) {
 		$parsedValue = LAMConfig::parseScriptServerValue($value);
 		if ($parsedValue === false) {
@@ -1790,7 +1793,7 @@ class LAMConfig {
 		if (count($array_string) > 0) {
 			// Check all IPs in the exploded Array
 			$valid_ips = [];
-			foreach($array_string as $arr_value) {
+			foreach ($array_string as $arr_value) {
 				// Explode name and IP, if a name exists
 				if (preg_match("/:/", $arr_value)) {
 					$arr_value_explode = explode(":", $arr_value);
@@ -1846,91 +1849,91 @@ class LAMConfig {
 	}
 
 	/**
-	* Sets the rights for the home directory.
-	*
-	* @param string $chmod the rights
-	* @return boolean true if values has correct format
-	*/
+	 * Sets the rights for the home directory.
+	 *
+	 * @param string $chmod the rights
+	 * @return boolean true if values has correct format
+	 */
 	public function set_scriptRights($chmod) {
 		// check if the chmod is correct:
-		if ($chmod > 0 && $chmod <=777) {
-		    $this->scriptRights=$chmod;
-		    return true;
+		if ($chmod > 0 && $chmod <= 777) {
+			$this->scriptRights = $chmod;
+			return true;
 		}
 		else {
-		    return false;
+			return false;
 		}
 	}
 
 	/**
-	* Returns the path to lamdamon SSH key.
-	*
-	* @return string key path
-	*/
+	 * Returns the path to lamdamon SSH key.
+	 *
+	 * @return string key path
+	 */
 	public function getScriptSSHKey() {
 		return $this->scriptSSHKey;
 	}
 
 	/**
-	* Sets the path to lamdamon SSH key.
-	*
-	* @param string $value key path
-	*/
+	 * Sets the path to lamdamon SSH key.
+	 *
+	 * @param string $value key path
+	 */
 	public function setScriptSSHKey($value) {
 		$this->scriptSSHKey = $value;
 	}
 
 	/**
-	* Returns the password for the lamdamon SSH key.
-	*
-	* @return string password
-	*/
+	 * Returns the password for the lamdamon SSH key.
+	 *
+	 * @return string password
+	 */
 	public function getScriptSSHKeyPassword() {
 		return deobfuscateText($this->scriptSSHKeyPassword);
 	}
 
 	/**
-	* Sets the password for the lamdamon SSH key.
-	*
-	* @param string $value password
-	*/
+	 * Sets the password for the lamdamon SSH key.
+	 *
+	 * @param string $value password
+	 */
 	public function setScriptSSHKeyPassword($value) {
 		$this->scriptSSHKeyPassword = obfuscateText($value);
 	}
 
 	/**
-	* Returns the lamdaemon user name.
-	*
-	* @return string user name
-	*/
+	 * Returns the lamdaemon user name.
+	 *
+	 * @return string user name
+	 */
 	public function getScriptUserName() {
 		return $this->scriptUserName;
 	}
 
 	/**
-	* Sets the lamdaemon user name.
-	*
-	* @param string $value user name
-	*/
+	 * Sets the lamdaemon user name.
+	 *
+	 * @param string $value user name
+	 */
 	public function setScriptUserName($value) {
 		$this->scriptUserName = $value;
 	}
 
 	/**
-	* Returns the LDAP search limit.
-	*
-	* @return integer search limit
-	*/
+	 * Returns the LDAP search limit.
+	 *
+	 * @return integer search limit
+	 */
 	public function get_searchLimit() {
 		return $this->searchLimit;
 	}
 
 	/**
-	* Sets the LDAP search limit.
-	*
-	* @param integer $value new search limit
-	* @return boolean true if $value has correct format
-	*/
+	 * Sets the LDAP search limit.
+	 *
+	 * @param integer $value new search limit
+	 * @return boolean true if $value has correct format
+	 */
 	public function set_searchLimit($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->searchLimit = $value;
@@ -1940,11 +1943,11 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns an array of all selected account modules
-	*
-	* @param string $scope account type
-	* @return array user modules
-	*/
+	 * Returns an array of all selected account modules
+	 *
+	 * @param string $scope account type
+	 * @return array user modules
+	 */
 	public function get_AccountModules($scope) {
 		if (isset($this->typeSettings["modules_" . $scope])) {
 			$modulesTmp = explode(",", $this->typeSettings["modules_" . $scope]);
@@ -1962,12 +1965,12 @@ class LAMConfig {
 	}
 
 	/**
-	* Sets the selected account modules
-	*
-	* @param array $modules array with module names (not aliases!)
-	* @param string $scope account type
-	* @return boolean true if $modules has correct format
-	*/
+	 * Sets the selected account modules
+	 *
+	 * @param array $modules array with module names (not aliases!)
+	 * @param string $scope account type
+	 * @return boolean true if $modules has correct format
+	 */
 	public function set_AccountModules($modules, $scope) {
 		if (!is_array($modules)) {
 			return false;
@@ -1975,7 +1978,9 @@ class LAMConfig {
 		// check module names
 		$available = getAvailableModules($scope);
 		for ($i = 0; $i < sizeof($modules); $i++) {
-			if (! in_array($modules[$i], $available)) return false;
+			if (!in_array($modules[$i], $available)) {
+				return false;
+			}
 		}
 		// check depends/conflicts
 		if (check_module_conflicts($modules, getModulesDependencies($scope))) {
@@ -1989,11 +1994,11 @@ class LAMConfig {
 	}
 
 	/**
-	* Sets the settings for the account modules.
-	*
-	* @param array $settings list of module setting [name => value]
-	* @return boolean true if $settings has correct format
-	*/
+	 * Sets the settings for the account modules.
+	 *
+	 * @param array $settings list of module setting [name => value]
+	 * @return boolean true if $settings has correct format
+	 */
 	public function set_moduleSettings($settings) {
 		if (!is_array($settings)) {
 			return false;
@@ -2003,19 +2008,19 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns a list of saved module settings
-	*
-	* @return array list of settings: [name => value]
-	*/
+	 * Returns a list of saved module settings
+	 *
+	 * @return array list of settings: [name => value]
+	 */
 	public function get_moduleSettings() {
 		return $this->moduleSettings;
 	}
 
 	/**
-	* Returns a list of active account types.
-	*
-	* @return string[] list of types
-	*/
+	 * Returns a list of active account types.
+	 *
+	 * @return string[] list of types
+	 */
 	public function get_ActiveTypes() {
 		if (($this->activeTypes == '') || !isset($this->activeTypes)) {
 			return [];
@@ -2035,20 +2040,20 @@ class LAMConfig {
 	}
 
 	/**
-	* Sets the list of active types.
-	*
-	* @param string[] list of types
-	*/
+	 * Sets the list of active types.
+	 *
+	 * @param string[] list of types
+	 */
 	public function set_ActiveTypes($types) {
 		$this->activeTypes = implode(",", $types);
 	}
 
 	/**
-	* Sets the settings for the account types.
-	*
-	* @param array $settings list of type setting [name => value]
-	* @return boolean true if $settings has correct format
-	*/
+	 * Sets the settings for the account types.
+	 *
+	 * @param array $settings list of type setting [name => value]
+	 * @return boolean true if $settings has correct format
+	 */
 	public function set_typeSettings($settings) {
 		if (!is_array($settings)) {
 			return false;
@@ -2058,10 +2063,10 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns a list of saved type settings
-	*
-	* @return array list of settings: [name => value]
-	*/
+	 * Returns a list of saved type settings
+	 *
+	 * @return array list of settings: [name => value]
+	 */
 	public function get_typeSettings() {
 		return $this->typeSettings;
 	}
@@ -2510,11 +2515,11 @@ class LAMConfig {
 	}
 
 	/**
-	* Sets the settings for the jobs.
-	*
-	* @param array $settings list of job settings [name => value]
-	* @return boolean true if $settings has correct format
-	*/
+	 * Sets the settings for the jobs.
+	 *
+	 * @param array $settings list of job settings [name => value]
+	 * @return boolean true if $settings has correct format
+	 */
 	public function setJobSettings($settings) {
 		if (!is_array($settings)) {
 			return false;
@@ -2524,10 +2529,10 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns a list of saved job settings.
-	*
-	* @return array list of settings: [name => value]
-	*/
+	 * Returns a list of saved job settings.
+	 *
+	 * @return array list of settings: [name => value]
+	 */
 	public function getJobSettings() {
 		return $this->jobSettings;
 	}
@@ -2615,6 +2620,7 @@ class LAMConfig {
 	public function setPwdResetDefaultPasswordOutput($pwdResetDefaultPasswordOutput) {
 		$this->pwdResetDefaultPasswordOutput = $pwdResetDefaultPasswordOutput;
 	}
+
 	/**
 	 * Returns the authentication type.
 	 *
@@ -2985,10 +2991,10 @@ class LAMConfig {
 
 
 /**
-* This class manages config.cfg.
-*
-* @package configuration
-*/
+ * This class manages config.cfg.
+ *
+ * @package configuration
+ */
 class LAMCfgMain {
 
 	/** PHP error reporting setting as E_ALL & ~E_NOTICE */
@@ -3193,7 +3199,8 @@ class LAMCfgMain {
 		$this->moduleSettings = '';
 		try {
 			$this->reload();
-		} catch (LAMException $e) {
+		}
+		catch (LAMException $e) {
 			syslog(LOG_ERR, 'Error loading main config: ' . $e->getTitle() . ' ' . $e->getMessage());
 		}
 	}
@@ -3281,7 +3288,7 @@ class LAMCfgMain {
 	 *
 	 * @throws LAMException error reading config
 	 */
-	private function reload() : void {
+	private function reload(): void {
 		if (is_file($this->conffile)) {
 			$file = @fopen($this->conffile, "r");
 			if (!$file) {
@@ -3290,7 +3297,7 @@ class LAMCfgMain {
 			while (!feof($file)) {
 				$line = fgets($file, 1000000);
 				$line = trim($line);  // remove spaces at the beginning and end
-				if (($line == "")||($line[0] == "#")) {
+				if (($line == "") || ($line[0] == "#")) {
 					continue; // ignore comments
 				}
 				// search keywords
@@ -3317,7 +3324,7 @@ class LAMCfgMain {
 	 * @return bool true when ok
 	 * @throws LAMException error reading config
 	 */
-	private function loadFromDb() : void {
+	private function loadFromDb(): void {
 		$configDb = new ConfigurationDatabase($this);
 		try {
 			$pdo = $configDb->getPdo();
@@ -3386,7 +3393,7 @@ class LAMCfgMain {
 	/**
 	 * Saves the config data to the database.
 	 */
-	private function saveDb() : void {
+	private function saveDb(): void {
 		$configDb = new ConfigurationDatabase($this);
 		$pdo = $configDb->getPdo();
 		$json = json_encode($this->exportData(true));
@@ -3397,7 +3404,7 @@ class LAMCfgMain {
 		$pdo->exec($sql);
 		// new data
 		$stmt = $pdo->prepare('insert into ' . ConfigurationDatabase::TABLE_MAIN_CONFIG . ' (name, value) VALUES (?, ?)');
-		$stmt->execute(array($nameKey, $json));
+		$stmt->execute([$nameKey, $json]);
 		$pdo->commit();
 	}
 
@@ -3406,7 +3413,7 @@ class LAMCfgMain {
 	 *
 	 * @param bool $persistenceOnly store only persistence related data
 	 */
-	public function saveLocal(bool $persistenceOnly) : void {
+	public function saveLocal(bool $persistenceOnly): void {
 		if (is_file($this->conffile)) {
 			$file = fopen($this->conffile, "r");
 			$file_array = [];
@@ -3423,7 +3430,7 @@ class LAMCfgMain {
 			$saved = [];
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				$line = trim($file_array[$i]);
-				if (($line == "")||($line[0] == "#")) {
+				if (($line == "") || ($line[0] == "#")) {
 					continue; // ignore comments and empty lines
 				}
 				// search keywords
@@ -3435,7 +3442,7 @@ class LAMCfgMain {
 					$keylen = strlen($keyword);
 					if (strtolower(substr($line, 0, $keylen + 1)) == strtolower($keyword . ":")) {
 						$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
-						$saved[] = $keyword;	// mark keyword as saved
+						$saved[] = $keyword;    // mark keyword as saved
 						break;
 					}
 				}
@@ -3619,7 +3626,7 @@ class LAMCfgMain {
 	 *
 	 * @return boolean writable
 	 */
-	public function isWritable() : bool {
+	public function isWritable(): bool {
 		return is_writeable($this->conffile);
 	}
 

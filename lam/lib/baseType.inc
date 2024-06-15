@@ -1,4 +1,5 @@
 <?php
+
 use LAM\TYPES\ConfiguredType;
 
 /*
@@ -23,17 +24,17 @@ use LAM\TYPES\ConfiguredType;
 */
 
 /**
-* This is the parent class of all account types.
-*
-* @package types
-* @author Roland Gruber
-*/
+ * This is the parent class of all account types.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
 
 /**
-* This is the parent class of all account types.
-*
-* @package types
-*/
+ * This is the parent class of all account types.
+ *
+ * @package types
+ */
 class baseType {
 
 	/** label to create another account */
@@ -56,50 +57,50 @@ class baseType {
 	}
 
 	/**
-	* Returns the alias name of this account type.
-	* This function must be overwritten by the child classes.
-	*
-	* @return string alias name
-	*/
+	 * Returns the alias name of this account type.
+	 * This function must be overwritten by the child classes.
+	 *
+	 * @return string alias name
+	 */
 	public function getAlias() {
 		return "baseType";
 	}
 
 	/**
-	* Returns the description of this account type.
-	* This function must be overwritten by the child classes.
-	*
-	* @return string description
-	*/
+	 * Returns the description of this account type.
+	 * This function must be overwritten by the child classes.
+	 *
+	 * @return string description
+	 */
 	public function getDescription() {
 		return "base type";
 	}
 
 	/**
-	* Returns the class name for the list object.
-	*
-	* @return string class name
-	*/
+	 * Returns the class name for the list object.
+	 *
+	 * @return string class name
+	 */
 	public function getListClassName() {
 		return "lamList";
 	}
 
 	/**
-	* Returns the default attribute list for this account type.
-	* This function must be overwritten by the child classes.
-	*
-	* @return string attribute list
-	*/
+	 * Returns the default attribute list for this account type.
+	 * This function must be overwritten by the child classes.
+	 *
+	 * @return string attribute list
+	 */
 	public function getDefaultListAttributes() {
 		return "dn:DN,objectClass:Object classes";
 	}
 
 	/**
-	* Returns a list of attributes which have a translated description.
-	* This is used for the head row in the list view.
-	*
-	* @return array list of descriptions
-	*/
+	 * Returns a list of attributes which have a translated description.
+	 * This is used for the head row in the list view.
+	 *
+	 * @return array list of descriptions
+	 */
 	public function getListAttributeDescriptions() {
 		$descriptions = [];
 		foreach ($this->getType()->getModules() as $moduleName) {
@@ -188,7 +189,7 @@ class baseType {
 			$altText = _('Expired');
 		}
 		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, null, null, $altText);
-		$statusIcon->setCSSClasses(array('icon'));
+		$statusIcon->setCSSClasses(['icon']);
 		if (!empty($accountStatus->getDetails()) || !empty($lockableOptions)) {
 			$detailsTable = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
@@ -196,14 +197,14 @@ class baseType {
 				$label->setNoWrap(true);
 				$detailsTable->addElement($label);
 				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
-				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$statusDetailIcon->setCSSClasses(['fixed-size-16']);
 				$detailsTable->addElement($statusDetailIcon);
 				$detailsTable->addNewLine();
 			}
 			if (empty($accountStatus->getDetails())) {
 				$detailsTable->addElement(new htmlOutputText(_('Unlocked')));
 				$statusDetailIcon = new htmlImage('../../graphics/unlocked.svg', '16px', '16px');
-				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$statusDetailIcon->setCSSClasses(['fixed-size-16']);
 				$detailsTable->addElement($statusDetailIcon);
 				$detailsTable->addNewLine();
 			}
@@ -216,7 +217,7 @@ class baseType {
 			$statusIcon->setHelpData(_('Account status'), $detailsTable);
 			if (checkIfWriteAccessIsAllowed($container->get_type()->getScope())) {
 				$statusIcon->setOnClick("window.lam.dialog.showModal('.modal-account-status')");
-				$statusIcon->setCSSClasses(array('clickable', 'icon'));
+				$statusIcon->setCSSClasses(['clickable', 'icon']);
 			}
 		}
 		$statusContent->addElement($statusIcon);
@@ -250,12 +251,12 @@ class baseType {
 			$selectedRadio = 'lock';
 		}
 		if (!$radioDisabled) {
-			$radio = new htmlRadio('lam_accountStatusAction', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
+			$radio = new htmlRadio('lam_accountStatusAction', [_('Lock') => 'lock', _('Unlock') => 'unlock'], $selectedRadio);
 			$radio->setOnchangeEvent($onchange);
 			$container->add($radio, 12);
 		}
 		else {
-			$radio = new htmlRadio('lam_accountStatusActionDisabled', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
+			$radio = new htmlRadio('lam_accountStatusActionDisabled', [_('Lock') => 'lock', _('Unlock') => 'unlock'], $selectedRadio);
 			$radio->setIsEnabled(false);
 			$container->add($radio, 12);
 			$container->add(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), 12);
@@ -271,20 +272,20 @@ class baseType {
 				$preSelected = $lockableOption->isLocked();
 				$lockContentGroup = new htmlGroup();
 				$image = new htmlImage('../../graphics/' . $lockableOption->getIcon(), '16px', '16px');
-				$image->setCSSClasses(array('align-middle'));
+				$image->setCSSClasses(['align-middle']);
 				$lockContentGroup->addElement($image);
 				$checkbox = new htmlInputCheckbox('lam_accountStatusLock_' . $lockableOption->getId(), $preSelected);
-				$checkbox->setCSSClasses(array('align-middle'));
+				$checkbox->setCSSClasses(['align-middle']);
 				$lockContentGroup->addElement($checkbox);
 				$label = new htmlLabel('lam_accountStatusLock_' . $lockableOption->getId(), $lockableOption->getDetails());
-				$label->setCSSClasses(array('align-middle'));
+				$label->setCSSClasses(['align-middle']);
 				$lockContentGroup->addElement($label);
 				$lockContent->add($lockContentGroup);
 			}
 
 			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);
 			if ($hasUnlockOptions) {
-				$lockDiv->setCSSClasses(array('hidden'));
+				$lockDiv->setCSSClasses(['hidden']);
 			}
 			$container->add($lockDiv);
 		}
@@ -294,13 +295,13 @@ class baseType {
 			foreach ($accountStatus->getDetails() as $detail) {
 				$unlockContentGroup = new htmlGroup();
 				$image = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
-				$image->setCSSClasses(array('align-middle'));
+				$image->setCSSClasses(['align-middle']);
 				$unlockContentGroup->addElement($image);
 				$checkbox = new htmlInputCheckbox('lam_accountStatusUnlock_' . $detail->getId(), true);
-				$checkbox->setCSSClasses(array('align-middle'));
+				$checkbox->setCSSClasses(['align-middle']);
 				$unlockContentGroup->addElement($checkbox);
 				$label = new htmlLabel('lam_accountStatusUnlock_' . $detail->getId(), $detail->getDetails());
-				$label->setCSSClasses(array('align-middle'));
+				$label->setCSSClasses(['align-middle']);
 				$unlockContentGroup->addElement($label);
 				$unlockContent->add($unlockContentGroup);
 			}
@@ -311,7 +312,7 @@ class baseType {
 
 		$buttonGroup = new htmlGroup();
 		$okButton = new htmlButton('changeStatusOk', _('Ok'));
-		$okButton->setCSSClasses(array('lam-primary'));
+		$okButton->setCSSClasses(['lam-primary']);
 		$okButton->setOnClick("document.getElementById('lam_accountStatusResult').value = 'ok'; document.forms['inputForm'].submit();");
 		$buttonGroup->addElement($okButton);
 		$cancelButton = new htmlButton('changeStatusCancel', _('Cancel'));
@@ -320,9 +321,9 @@ class baseType {
 		$container->add($buttonGroup);
 
 		$innerDiv = new htmlDiv('lam_accountStatusDialogContent', $container);
-		$innerDiv->setCSSClasses(array('modal-content'));
+		$innerDiv->setCSSClasses(['modal-content']);
 		$div = new htmlDiv('lam_accountStatusDialog', $innerDiv);
-		$div->setCSSClasses(array('modal modal-account-status'));
+		$div->setCSSClasses(['modal modal-account-status']);
 		return $div;
 	}
 
@@ -382,28 +383,28 @@ class baseType {
 	}
 
 	/**
-	* Returns a list of configuration options.
-	*
-	* The field names are used as keywords to load and save settings.
-	* We recommend to use the type name as prefix for them (e.g. user_someSetting) to avoid naming conflicts.
-	*
-	* @return mixed htmlElement or array of htmlElement
-	*
-	* @see htmlElement
-	*/
+	 * Returns a list of configuration options.
+	 *
+	 * The field names are used as keywords to load and save settings.
+	 * We recommend to use the type name as prefix for them (e.g. user_someSetting) to avoid naming conflicts.
+	 *
+	 * @return mixed htmlElement or array of htmlElement
+	 *
+	 * @see htmlElement
+	 */
 	public function get_configOptions() {
 		return null;
 	}
 
 	/**
-	* Checks input values of config settings.
-	* <br>
-	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
-	* <br>If no errors occurred the function returns an empty array.
-	*
-	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	* @return array list of error messages
-	*/
+	 * Checks input values of config settings.
+	 * <br>
+	 * If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
+	 * <br>If no errors occurred the function returns an empty array.
+	 *
+	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @return array list of error messages
+	 */
 	public function check_configOptions(&$options) {
 		return [];
 	}

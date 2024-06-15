@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\Cron;
+
 use Exception;
 use LAM\DB\CronDatabase;
 use LAMCfgMain;
@@ -18,11 +20,11 @@ use ServerProfilePersistenceManager;
 */
 
 /**
-* Global cron job for LAM.
-*
-* @package jobs
-* @author Roland Gruber
-*/
+ * Global cron job for LAM.
+ *
+ * @package jobs
+ * @author Roland Gruber
+ */
 
 /** access to configuration data */
 include_once(__DIR__ . "/config.inc");
