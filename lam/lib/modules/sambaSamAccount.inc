@@ -58,7 +58,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sambaSID', 'sambaNTPassword',
+	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sambaSID', 'sambaNTPassword',
 		'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
 		'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaKickoffTime',
 		'sambaLogonTime', 'sambaLogoffTime'];

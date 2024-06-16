@@ -38,7 +38,7 @@ class pykotaBillingCode extends baseModule {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaBalance', 'pykotaPageCounter', 'pykotaBillingCode'];
+	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaBalance', 'pykotaPageCounter', 'pykotaBillingCode'];
 
 	/** cache for existing codes (array(dn1 => pykotaBillingCode1, dn2 => pykotaBillingCode2)) */
 	private $codeCache;

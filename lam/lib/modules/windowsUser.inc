@@ -56,7 +56,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['userPrincipalName', 'sAMAccountName', 'displayName',
+	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['userPrincipalName', 'sAMAccountName', 'displayName',
 		'profilePath', 'scriptPath', 'pwdLastSet', 'otherMailbox', 'homeDirectory', 'msSFU30Name',
 		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime'];
 

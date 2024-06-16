@@ -43,7 +43,7 @@ class pykotaUser extends baseModule {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
+	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
 		'pykotaPayments'];
 
 	/** cache for uid attribute */

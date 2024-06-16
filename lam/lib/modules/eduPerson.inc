@@ -38,7 +38,7 @@ class eduPerson extends baseModule {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['eduPersonNickname', 'eduPersonPrincipalName'];
+	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['eduPersonNickname', 'eduPersonPrincipalName'];
 
 	/** possible affiliation types */
 	private $affiliationTypes = ['faculty', 'student', 'staff', 'alum',

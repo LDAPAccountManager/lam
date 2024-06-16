@@ -43,7 +43,7 @@ class windowsGroup extends baseModule {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sAMAccountName', 'msSFU30Name', 'msSFU30NisDomain'];
+	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sAMAccountName', 'msSFU30Name', 'msSFU30NisDomain'];
 
 	/** possible group types (e.g. distribution) */
 	private $groupTypes;

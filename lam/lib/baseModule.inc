@@ -64,7 +64,7 @@ abstract class baseModule {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT = ['uid', 'uidNumber', 'gid', 'gidNumber',
+	public const ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT = ['uid', 'uidNumber', 'gid', 'gidNumber',
 		'cn', 'userpassword', 'sn', 'givenName', 'initials', 'telephoneNumber',
 		'homePhone', 'mobile', 'facsimileTelephoneNumber', 'pager', 'mail',
 		'employeeNumber', 'userCertificate;binary', 'userCertificate',

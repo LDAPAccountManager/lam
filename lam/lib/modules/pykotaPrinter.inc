@@ -38,7 +38,7 @@ class pykotaPrinter extends baseModule {
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
-	const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaPrinterName'];
+	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaPrinterName'];
 
 	/** cache for existing printers (array(dn => array(cn => ..., description => ...))) */
 	private $printerCache;
