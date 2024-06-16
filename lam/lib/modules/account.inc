@@ -21,40 +21,40 @@
 */
 
 /**
-* Manages the object class "account" for users and hosts.
-*
-* @package modules
-*
-* @author Tilo Lutz
-* @author Roland Gruber
-* @author Michael Duergner
-*/
+ * Manages the object class "account" for users and hosts.
+ *
+ * @package modules
+ *
+ * @author Tilo Lutz
+ * @author Roland Gruber
+ * @author Michael Duergner
+ */
 
 use LAM\TYPES\ConfiguredType;
 
 /**
-* Manages the object class "account" for users and hosts.
-*
-* @package modules
-*/
+ * Manages the object class "account" for users and hosts.
+ *
+ * @package modules
+ */
 class account extends baseModule {
 
 	/**
-	* Returns true if this module can manage accounts of the current type, otherwise false.
-	*
-	* @return boolean true if module fits
-	*/
+	 * Returns true if this module can manage accounts of the current type, otherwise false.
+	 *
+	 * @return boolean true if module fits
+	 */
 	public function can_manage() {
 		return in_array($this->get_scope(), ["host", "user"]);
 	}
 
 	/**
-	* Returns meta data that is interpreted by parent class
-	*
-	* @return array array with meta data
-	*
-	* @see baseModule::get_metaData()
-	*/
+	 * Returns meta data that is interpreted by parent class
+	 *
+	 * @return array array with meta data
+	 *
+	 * @see baseModule::get_metaData()
+	 */
 	function get_metaData() {
 		$return = [];
 		// icon
@@ -80,13 +80,13 @@ class account extends baseModule {
 			'description' => _('Description')
 		];
 		// help Entries
-		$return['help'] = array (
+		$return['help'] = [
 			'host' => [
 				'uid' => [
 					"Headline" => _("Host name"), 'attr' => 'uid',
 					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
 				],
-				'description'	=>	[
+				'description' => [
 					"Headline" => _("Description"), 'attr' => 'description',
 					"Text" => _("Host description. If left empty host name will be used.")
 				]
@@ -96,18 +96,18 @@ class account extends baseModule {
 					"Headline" => _("User name"), 'attr' => 'uid',
 					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
 				],
-				'description'	=>	[
+				'description' => [
 					"Headline" => _("Description"), 'attr' => 'description',
 					"Text" => _("User description. If left empty user name will be used.")
 				]
 			]
-		);
+		];
 		// upload columns
 		$return['upload_columns'][] = [
-               'name' => 'account_description',
-               'description' => _('Description'),
-               'help' => 'description',
-               'example' => ''
+			'name' => 'account_description',
+			'description' => _('Description'),
+			'help' => 'description',
+			'example' => ''
 		];
 		return $return;
 	}
@@ -125,8 +125,8 @@ class account extends baseModule {
 	}
 
 	/**
-	* This function fills the message array.
-	*/
+	 * This function fills the message array.
+	 */
 	function load_Messages() {
 		$this->messages['uid'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['uid'][1] = ['ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
@@ -135,10 +135,10 @@ class account extends baseModule {
 	}
 
 	/**
-	* This functions returns true if all needed settings are done.
-	*
-	* @return boolean true if LDAP operation can be done
-	*/
+	 * This functions returns true if all needed settings are done.
+	 *
+	 * @return boolean true if LDAP operation can be done
+	 */
 	function module_complete() {
 		if (!$this->isUnixActive() && empty($this->attributes['uid'][0])) {
 			return false;
@@ -147,10 +147,10 @@ class account extends baseModule {
 	}
 
 	/**
-	* Controls if the module button the account page is visible and activated.
-	*
-	* @return string status ("enabled", "disabled", "hidden")
-	*/
+	 * Controls if the module button the account page is visible and activated.
+	 *
+	 * @return string status ("enabled", "disabled", "hidden")
+	 */
 	function getButtonStatus() {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
@@ -163,8 +163,8 @@ class account extends baseModule {
 	}
 
 	/**
-	* {@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	function save_attributes() {
 		// skip saving if account is based on another structural object class
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('account', $this->getAccountContainer()->attributes_orig['objectClass'])) {
@@ -174,11 +174,11 @@ class account extends baseModule {
 	}
 
 	/**
-	* Processes user input of the primary module page.
-	* It checks if all input values are correct and updates the associated LDAP attributes.
-	*
-	* @return array list of info/error messages
-	*/
+	 * Processes user input of the primary module page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
 	function process_attributes() {
 		$errors = [];
 		// Load attributes
@@ -186,8 +186,12 @@ class account extends baseModule {
 		// user name if no posixAccount
 		if (!$this->isUnixActive()) {
 			$this->attributes['uid'][0] = $_POST['uid'];
-			if (!get_preg($this->attributes['uid'][0], '!upper')) $errors[] = $this->messages['uid'][2];
-			if (!get_preg($this->attributes['uid'][0], 'username')) $errors[] = $this->messages['uid'][3];
+			if (!get_preg($this->attributes['uid'][0], '!upper')) {
+				$errors[] = $this->messages['uid'][2];
+			}
+			if (!get_preg($this->attributes['uid'][0], 'username')) {
+				$errors[] = $this->messages['uid'][3];
+			}
 		}
 		return $errors;
 	}
@@ -202,7 +206,7 @@ class account extends baseModule {
 		// user name if no posixAccount
 		if (!$this->isUnixActive()) {
 			$title = _('User name');
-			if ($this->get_scope()=='host') {
+			if ($this->get_scope() == 'host') {
 				$title = _('Host name');
 			}
 			$uidInput = $this->addSimpleInputTextField($container, 'uid', $title, true);
@@ -244,10 +248,10 @@ class account extends baseModule {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if (!in_array('posixAccount', $selectedModules)) {
 			$return[] = [
-                'name' => 'account_uid',
-                'description' => _('User name'),
-                'help' => 'uid',
-                'required' => true
+				'name' => 'account_uid',
+				'description' => _('User name'),
+				'help' => 'uid',
+				'required' => true
 			];
 		}
 		return $return;
@@ -261,7 +265,9 @@ class account extends baseModule {
 		$messages = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("account", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "account";
+			if (!in_array("account", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "account";
+			}
 			// description
 			if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_description']];
