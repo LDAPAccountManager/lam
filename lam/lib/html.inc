@@ -56,15 +56,15 @@ function htmlGetRequiredMarkerElement(): htmlSpan {
 abstract class htmlElement {
 
 	/** align to top */
-	const ALIGN_TOP = 0;
+	public const ALIGN_TOP = 0;
 	/** align to left */
-	const ALIGN_LEFT = 1;
+	public const ALIGN_LEFT = 1;
 	/** align to right */
-	const ALIGN_RIGHT = 2;
+	public const ALIGN_RIGHT = 2;
 	/** align to bottom */
-	const ALIGN_BOTTOM = 3;
+	public const ALIGN_BOTTOM = 3;
 	/** align to center */
-	const ALIGN_CENTER = 4;
+	public const ALIGN_CENTER = 4;
 
 	/** alignment when inside a table */
 	public $alignment;
@@ -240,9 +240,9 @@ abstract class htmlElement {
 class htmlTable extends htmlElement {
 
 	/** table footer */
-	const FOOTER = "</table>\n";
+	private const FOOTER = "</table>\n";
 	/** new line */
-	const NEWLINE = "</tr><tr>\n";
+	private const NEWLINE = "</tr><tr>\n";
 
 	/** list of subelements */
 	private $elements = [];
@@ -265,9 +265,9 @@ class htmlTable extends htmlElement {
 	}
 
 	/**
-	 * Adds an element to the table. The element may be a htmlElement object or a simple String.
+	 * Adds an element to the table.
 	 *
-	 * @param mixed $element htmlElement object or a simple String
+	 * @param mixed $element htmlElement object or a simple string
 	 * @param boolean $newLine adds a new line after the element (optional, default false)
 	 * @param boolean $isTableHeadElement specifies if this is a head or body element (default: body)
 	 */
@@ -311,7 +311,7 @@ class htmlTable extends htmlElement {
 			$this->elements[] = "<tr>\n";
 		}
 		else {
-			$this->elements[] = htmlTable::NEWLINE;
+			$this->elements[] = self::NEWLINE;
 		}
 	}
 
@@ -367,7 +367,7 @@ class htmlTable extends htmlElement {
 			}
 			// print simple Strings
 			else {
-				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == htmlTable::NEWLINE)) {
+				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == self::NEWLINE)) {
 					echo $this->elements[$i];
 				}
 			}
@@ -375,7 +375,7 @@ class htmlTable extends htmlElement {
 		if ($this->rowOpen) {
 			echo "</tr>\n";
 		}
-		echo htmlTable::FOOTER;
+		echo self::FOOTER;
 		return $return;
 	}
 
@@ -389,7 +389,7 @@ class htmlTable extends htmlElement {
 			return;
 		}
 		// remove obsolete new lines at the end
-		if ($table->elements[sizeof($table->elements) - 1] == htmlTable::NEWLINE) {
+		if ($table->elements[sizeof($table->elements) - 1] == self::NEWLINE) {
 			unset($table->elements[sizeof($table->elements) - 1]);
 		}
 		// close last row of other table if needed
@@ -398,7 +398,7 @@ class htmlTable extends htmlElement {
 		}
 		// close last own row if needed
 		if ($this->rowOpen) {
-			if ($this->elements[sizeof($this->elements) - 1] == htmlTable::NEWLINE) {
+			if ($this->elements[sizeof($this->elements) - 1] == self::NEWLINE) {
 				unset($this->elements[sizeof($this->elements) - 1]);
 			}
 			else {
@@ -501,9 +501,9 @@ class htmlDataTableColumn {
 	public bool $filterable;
 
 	/**
-	 * @param string $label
-	 * @param string $name
-	 * @param bool $filterable
+	 * @param string $label column label text
+	 * @param string $name column ID
+	 * @param bool $filterable can be filtered
 	 */
 	public function __construct(string $label, string $name, bool $filterable = true) {
 		$this->label = htmlspecialchars($label);
@@ -646,7 +646,7 @@ class htmlInputField extends htmlElement {
 		}
 		$class = ' class="' . implode(' ', $this->cssClasses) . '"';
 		$name = ' name="' . $this->fieldName . '"';
-		$idValue = ($this->id !== null) ? $this->id : $this->fieldName;
+		$idValue = $this->id ?? $this->fieldName;
 		$id = ' id="' . $idValue . '"';
 		$value = '';
 		if ($this->fieldValue != null) {
@@ -2844,16 +2844,12 @@ class htmlStatusMessage extends htmlElement {
 		}
 
 		$count = count($params);
-		switch ($count) {
-			case 2:
-				return new htmlStatusMessage($params[0], $params[1]);
-			case 3:
-				return new htmlStatusMessage($params[0], $params[1], $params[2]);
-			case 4:
-				return new htmlStatusMessage($params[0], $params[1], $params[2], $params[3]);
-			default:
-				throw new BadMethodCallException("Invalid parameter count");
-		}
+		return match ($count) {
+			2 => new htmlStatusMessage($params[0], $params[1]),
+			3 => new htmlStatusMessage($params[0], $params[1], $params[2]),
+			4 => new htmlStatusMessage($params[0], $params[1], $params[2], $params[3]),
+			default => throw new BadMethodCallException("Invalid parameter count"),
+		};
 	}
 
 	/**
@@ -3883,8 +3879,8 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param String $classes CSS classes separated by space
 	 */
 	public function add($content, $numMobile = 12, $numTablet = null, $numDesktop = null, $classes = '') {
-		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
-		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
+		$tabletCols = $numTablet ?? $numMobile;
+		$desktopCols = $numDesktop ?? $tabletCols;
 		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
 	}
 
@@ -3898,8 +3894,8 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param String $classes CSS classes separated by space
 	 */
 	public function addAtTheBeginning($content, $numMobile = 12, $numTablet = null, $numDesktop = null, $classes = '') {
-		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
-		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
+		$tabletCols = $numTablet ?? $numMobile;
+		$desktopCols = $numDesktop ?? $tabletCols;
 		$this->addCellAtTheBeginning(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
 	}
 
@@ -4073,7 +4069,7 @@ class htmlResponsiveInputField extends htmlInputField {
 		$row = new htmlResponsiveRow();
 		// label text
 		$labelGroup = new htmlGroup();
-		$idValue = ($this->id !== null) ? $this->id : $this->fieldName;
+		$idValue = $this->id ?? $this->fieldName;
 		$labelGroup->addElement(new htmlLabel($idValue, $this->label));
 		if ($this->required) {
 			$labelGroup->addElement(htmlGetRequiredMarkerElement());
