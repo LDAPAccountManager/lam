@@ -1,6 +1,7 @@
 <?php
 
 use Rector\Config\RectorConfig;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
@@ -18,7 +19,8 @@ return RectorConfig::configure()
 	])
 	->withSkip([
 		__DIR__ . '/lam/lib/3rdParty',
-		NullToStrictStringFuncCallArgRector::class
+		NullToStrictStringFuncCallArgRector::class,
+		ReadOnlyPropertyRector::class
 	])
 	->withFileExtensions([
 		'php',
