@@ -3865,11 +3865,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) == 'useraccountcontrol') {
 				if ($neverExpires) {
-					$attrs[$key][0] = intval($attrs[$key][0]) | windowsUser::AC_PWD_NEVER_EXPIRES;
+					$attrs[$key][0] = (string) (intval($attrs[$key][0]) | windowsUser::AC_PWD_NEVER_EXPIRES);
 				}
 				else {
 					if (intval($attrs[$key][0]) & windowsUser::AC_PWD_NEVER_EXPIRES) {
-						$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_PWD_NEVER_EXPIRES;
+						$attrs[$key][0] = (string) (intval($attrs[$key][0]) - windowsUser::AC_PWD_NEVER_EXPIRES);
 					}
 				}
 			}
