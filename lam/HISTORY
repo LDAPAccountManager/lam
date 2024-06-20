@@ -11,6 +11,7 @@ June 2024 8.8
   -> Request access: allow to request group ownership (285)
  - Fixed bugs:
   -> Custom Fields: LDAP search select list - wrong value for empty option (334)
+  -> Windows user: "Password does not expire" option sent even when not modified (340)
 
 
 16.03.2024 8.7
