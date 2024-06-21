@@ -2412,7 +2412,7 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 		const tree = jQuery.jstree.reference("#ldap_tree");
 		tree.refresh_node(parentDn);
 		tree.open_node(parentDn);
-		document.getElementById("ldap_actionarea").scrollTop = 0;
+		window.scrollTo(0, 0);
 	});
 }
 
@@ -2497,7 +2497,7 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 		if (messages) {
 			document.getElementById('ldap_actionarea_messages').innerHTML = messages;
 		}
-		document.getElementById("ldap_actionarea").scrollTop = 0;
+		window.scrollTo(0, 0);
 		window.lam.html.activateLightboxes();
 		window.lam.treeview.addFileInputListeners();
 		window.lam.treeview.activateSortableInputs();
@@ -2872,7 +2872,7 @@ window.lam.treeview.search = function (tokenName, tokenValue, dn) {
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
-		document.getElementById("ldap_actionarea").scrollTop = 0;
+		window.scrollTo(0, 0);
 	});
 }
 
@@ -2903,7 +2903,7 @@ window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) 
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
-		document.getElementById("ldap_actionarea").scrollTop = 0;
+		window.scrollTo(0, 0);
 	});
 }
 
