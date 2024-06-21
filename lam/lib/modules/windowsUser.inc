@@ -1280,6 +1280,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	 */
 	public function save_attributes() {
+		// do not add securityPrincipal on existing accounts if it was not set before
+		if (!$this->getAccountContainer()->isNewAccount
+			&& in_array_ignore_case('user', $this->orig['objectClass'])
+			&& !in_array('securityPrincipal', $this->orig['objectClass'])
+			&& in_array('securityPrincipal', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'] = array_delete(['securityPrincipal'], $this->attributes['objectClass']);
+		}
 		$return = parent::save_attributes();
 		// add information about clear text password and password status change
 		$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
