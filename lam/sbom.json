@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:0cff4f4f-8a22-458b-aba6-5045dcfd6a7b",
+  "serialNumber": "urn:uuid:b5f0b4a0-9355-49c2-9f60-a1268984d338",
   "version": 1,
   "metadata": {
     "tools": [
@@ -3432,11 +3432,11 @@
     },
     {
       "type": "application",
-      "bom-ref": "ldap-account-manager/ldap-account-manager-8.7.0.0",
+      "bom-ref": "ldap-account-manager/ldap-account-manager-8.8.0.0",
       "group": "ldap-account-manager",
       "name": "ldap-account-manager",
-      "version": "8.7",
-      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@8.7",
+      "version": "8.8",
+      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@8.8",
       "properties": [
         {
           "name": "cdx:composer:package:type",
@@ -3990,7 +3990,7 @@
       ]
     },
     {
-      "ref": "ldap-account-manager/ldap-account-manager-8.7.0.0",
+      "ref": "ldap-account-manager/ldap-account-manager-8.8.0.0",
       "dependsOn": [
         "web-auth/webauthn-lib-4.0.5.0",
         "web-auth/cose-lib-4.0.13.0",

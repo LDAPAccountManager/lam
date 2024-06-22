@@ -1,4 +1,4 @@
-June 2024 8.8
+22.06.2024 8.8
  - PHP 8.1 or higher required
  - New module to manage SSH keys in AD/Samba 4 (using "altSecurityIdentities") (304)
  - Samba 3: dropped support for LM password hashes (307)
