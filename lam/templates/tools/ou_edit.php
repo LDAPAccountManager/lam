@@ -207,13 +207,13 @@ function display_main(?string $message, ?string $error): void {
 		}
 		if (!empty($elements)) {
 			$optionsToDelete[$title] = $elements;
-			uasort($optionsToDelete[$title], 'compareDn');
+			uasort($optionsToDelete[$title], compareDn(...));
 		}
 		$optionsToInsert[$title] = $elements;
 		if (empty($optionsToInsert[$title])) {
 			$optionsToInsert[$title] = [getAbstractDN($type->getSuffix()) => $type->getSuffix()];
 		}
-		uasort($optionsToInsert[$title], 'compareDn');
+		uasort($optionsToInsert[$title], compareDn(...));
 	}
 
 	if (!empty($optionsToInsert)) {

@@ -108,7 +108,7 @@ if (!empty($_GET['DN'])) {
 	if (sizeof($result) > 0) {
 		include __DIR__ . '/../../lib/adminHeader.inc';
 		foreach ($result as $message) {
-			call_user_func_array("StatusMessage", $message);
+			call_user_func_array(StatusMessage(...), $message);
 		}
 		include __DIR__ . '/../../lib/adminFooter.inc';
 		die();

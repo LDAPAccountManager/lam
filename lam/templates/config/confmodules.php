@@ -120,7 +120,7 @@ printConfigurationPageHeaderBar($conf);
 
 // print error messages
 for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
-	call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
+	call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
 }
 
 echo "<form id=\"inputForm\" action=\"confmodules.php\" method=\"post\" onSubmit=\"window.lam.utility.saveScrollPosition('inputForm')\" novalidate=\"novalidate\">\n";

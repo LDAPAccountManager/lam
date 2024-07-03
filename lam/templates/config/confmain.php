@@ -179,7 +179,7 @@ if (!$serverProfilePersistenceManager->isWritable($_SESSION['conf_config']->getN
 // display error messages
 if (sizeof($errorsToDisplay) > 0) {
 	for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
-		call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
+		call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
 	}
 	echo "<br>";
 }

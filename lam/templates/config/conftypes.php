@@ -133,7 +133,7 @@ foreach ($allScopes as $scope) {
 		$availableScopes[] = $scopeObj;
 	}
 }
-usort($availableScopes, '\LAM\CONFIG\compareTypesByAlias');
+usort($availableScopes, \LAM\CONFIG\compareTypesByAlias(...));
 
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
@@ -144,7 +144,7 @@ printConfigurationPageHeaderBar($conf);
 
 // print error messages
 for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
-	call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
+	call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
 }
 
 echo "<form action=\"conftypes.php\" method=\"post\" novalidate=\"novalidate\">\n";

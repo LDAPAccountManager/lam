@@ -204,7 +204,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 // print error messages if any
 if (sizeof($saveErrors) > 0) {
 	foreach ($saveErrors as $saveError) {
-		call_user_func_array('StatusMessage', $saveError);
+		call_user_func_array(StatusMessage(...), $saveError);
 	}
 	echo "<br>\n";
 }

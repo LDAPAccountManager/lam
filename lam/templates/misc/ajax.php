@@ -437,7 +437,7 @@ class Ajax {
 			$baseDnList[] = $treeSuffix;
 		}
 		$baseDnList = array_unique($baseDnList);
-		usort($baseDnList, 'compareDN');
+		usort($baseDnList, compareDN(...));
 		return $baseDnList;
 	}
 
@@ -516,7 +516,7 @@ class Ajax {
 		foreach ($dnEntries as $entry) {
 			$dnList[] = $entry['dn'];
 		}
-		usort($dnList, 'compareDN');
+		usort($dnList, compareDN(...));
 		return $dnList;
 	}
 

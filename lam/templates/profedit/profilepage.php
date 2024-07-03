@@ -152,7 +152,7 @@ echo '<div class="smallPaddingContent">';
 if (sizeof($errors) > 0) {
 	echo "<br>\n";
 	foreach ($errors as $error) {
-		call_user_func_array('StatusMessage', $error);
+		call_user_func_array(StatusMessage(...), $error);
 	}
 }
 

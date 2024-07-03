@@ -170,7 +170,7 @@ if (isset($_POST['submitFormData'])) {
 	// set license
 	if (isLAMProVersion()) {
 		$licenseLines = explode("\n", $_POST['license']);
-		$licenseLines = array_map('trim', $licenseLines);
+		$licenseLines = array_map(trim(...), $licenseLines);
 		$cfg->setLicenseLines($licenseLines);
 		$cfg->licenseWarningType = $_POST['licenseWarningType'];
 		$cfg->licenseEmailFrom = $_POST['licenseEmailFrom'];

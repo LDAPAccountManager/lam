@@ -504,7 +504,7 @@ function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline): void {
  * @return array<mixed> status
  */
 function doModify(): array {
-	set_error_handler('\LAM\TOOLS\MULTI_EDIT\multiEditLdapErrorHandler');
+	set_error_handler(\LAM\TOOLS\MULTI_EDIT\multiEditLdapErrorHandler(...));
 	// initial action index
 	if (!isset($_SESSION['multiEdit_status']['index'])) {
 		$_SESSION['multiEdit_status']['index'] = 0;
