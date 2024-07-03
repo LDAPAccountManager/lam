@@ -6130,6 +6130,11 @@ OK (10 msec)</programlisting>
       </listitem>
 
       <listitem>
+        <para><emphasis role="bold">$INFO.lamProfileName$:</emphasis> the
+        current server or self service profile name</para>
+      </listitem>
+
+      <listitem>
         <para><emphasis role="bold">$INFO.debug$:</emphasis> list of all
         possible wildcards and their values (e.g.
         "$objectClass$:posixAccount,inetOrgPerson; $loginShell$:/bin/bash;
