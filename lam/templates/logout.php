@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@ include_once(__DIR__ . "/../lib/ldap.inc");
 // delete key and iv in cookie
 $cookieOptions = lamDefaultCookieOptions();
 $cookieOptions['expires'] = 0;
-setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
-setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
+setcookie("Key", "", $cookieOptions);
+setcookie("IV", "", $cookieOptions);
 
 // start session
 startSecureSession();

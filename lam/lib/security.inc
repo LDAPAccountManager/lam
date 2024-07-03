@@ -211,8 +211,8 @@ function logoffAndBackToLoginPage() {
 	// delete key and iv in cookie
 	$cookieOptions = lamDefaultCookieOptions();
 	$cookieOptions['expires'] = 0;
-	setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
-	setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
+	setcookie("Key", "", $cookieOptions);
+	setcookie("IV", "", $cookieOptions);
 	// link back to login page
 	$paths = ['./', '../', '../../', '../../../', '../../../../'];
 	$page = 'login.php';
