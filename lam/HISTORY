@@ -2,6 +2,7 @@ September 2024 8.9
  - Windows user: support for room number and personal title (needs to be activated in module settings) (343, 344)
  - LAM Pro:
   -> Custom scripts: added wildcard for server/self service profile name (325)
+  -> Self registration: added option to generate password
 
 
 22.06.2024 8.8
