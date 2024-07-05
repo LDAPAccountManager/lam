@@ -1274,6 +1274,10 @@
 
       <itemizedlist>
         <listitem>
+          <para>$personaltitle: Personal title</para>
+        </listitem>
+
+        <listitem>
           <para>$firstname: First name</para>
         </listitem>
 

@@ -58,7 +58,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['userPrincipalName', 'sAMAccountName', 'displayName',
 		'profilePath', 'scriptPath', 'pwdLastSet', 'otherMailbox', 'homeDirectory', 'msSFU30Name',
-		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime'];
+		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime', 'personaltitle', 'roomnumber'];
 
 	/** initial account flags */
 	const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
@@ -148,7 +148,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountexpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
 			'businessCategory', 'department', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
-			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockouttime', 'userWorkstations'
+			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockouttime', 'userWorkstations', 'roomnumber',
+			'personaltitle'
 		];
 		// help Entries
 		$return['help'] = [
@@ -203,6 +204,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'physicalDeliveryOfficeName' => [
 				"Headline" => _('Office name'), 'attr' => 'physicalDeliveryOfficeName',
 				"Text" => _('The office name of the user (e.g. YourCompany, Human Resources).')
+			],
+			'roomnumber' => [
+				"Headline" => _('Room number'), 'attr' => 'roomnumber',
+				"Text" => _('The room number(s) of the user.')
+			],
+			'roomnumberList' => [
+				"Headline" => _('Room number'), 'attr' => 'roomnumber',
+				"Text" => _('The room number(s) of the user.') . ' ' . _("Multiple values are separated by semicolon.")
 			],
 			'postalCode' => [
 				"Headline" => _('Postal code'), 'attr' => 'postalCode',
@@ -332,6 +341,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'title' => [
 				"Headline" => _("Job title"), 'attr' => 'title',
 				"Text" => _("Job title of user: President, department manager, ...")
+			],
+			'personaltitle' => [
+				"Headline" => _("Personal title"), 'attr' => 'personaltitle',
+				"Text" => _("Can be used to specify gender (Mr, Mrs, ...) or academic title (e.g. Prof., PhD., ...).")
 			],
 			'carLicense' => [
 				"Headline" => _("Car license"), 'attr' => 'carLicense',
@@ -588,6 +601,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				'example' => _('YourCompany'),
 			];
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
+			$return['upload_columns'][] = [
+				'name' => 'windowsUser_roomNumber',
+				'description' => _('Room number'),
+				'help' => 'roomnumber',
+				'example' => 'A.123; B.456',
+			];
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
 			$return['upload_columns'][] = [
 				'name' => 'windowsUser_mail',
@@ -724,6 +745,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				'example' => _('President'),
 			];
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepersonaltitle', true)) {
+			$return['upload_columns'][] = [
+				'name' => 'windowsUser_personalTitle',
+				'description' => _('Personal title'),
+				'help' => 'personaltitle',
+				'example' => _('Prof.'),
+			];
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
 			$return['upload_columns'][] = [
 				'name' => 'windowsUser_carLicense',
@@ -848,70 +877,76 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Common name'), 'windowsUser_cn', null, 'cn'));
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Street'), 'windowsUser_streetAddress', null, 'streetAddress'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Street'), 'windowsUser_streetAddress', null, 'streetAddress'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Post office box'), 'windowsUser_postOfficeBox', null, 'postOfficeBox'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Post office box'), 'windowsUser_postOfficeBox', null, 'postOfficeBox'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Postal code'), 'windowsUser_postalCode', null, 'postalCode'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Postal code'), 'windowsUser_postalCode', null, 'postalCode'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Location'), 'windowsUser_l', null, 'l'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Location'), 'windowsUser_l', null, 'l'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('State'), 'windowsUser_st', null, 'st'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('State'), 'windowsUser_st', null, 'st'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Office name'), 'windowsUser_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Office name'), 'windowsUser_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName'));
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Room number'), 'windowsUser_roomnumber', null, 'roomnumber'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Email address'), 'windowsUser_mail', null, 'mail'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Email address'), 'windowsUser_mail', null, 'mail'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Email alias'), 'windowsUser_otherMailbox', null, 'otherMailboxList'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Email alias'), 'windowsUser_otherMailbox', null, 'otherMailboxList'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Profile path'), 'windowsUser_profilePath', null, 'profilePath'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Profile path'), 'windowsUser_profilePath', null, 'profilePath'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory')) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Home directory'), 'windowsUser_homeDirectory', null, 'homeDirectory'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Home directory'), 'windowsUser_homeDirectory', null, 'homeDirectory'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'));
 		}
-		$profileContainer->add(new htmlResponsiveInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountexpiresProfile'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountexpiresProfile'));
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Company'), 'windowsUser_company', null, 'company'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Company'), 'windowsUser_company', null, 'company'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Department'), 'windowsUser_department', null, 'department'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Department'), 'windowsUser_department', null, 'department'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Department number'), 'windowsUser_departmentNumber', null, 'departmentNumberList'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Department number'), 'windowsUser_departmentNumber', null, 'departmentNumberList'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Organisational unit'), 'windowsUser_ou', null, 'ouList'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Organisational unit'), 'windowsUser_ou', null, 'ouList'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Organisation'), 'windowsUser_o', null, 'oList'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Organisation'), 'windowsUser_o', null, 'oList'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Job title'), 'windowsUser_title', null, 'title'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Job title'), 'windowsUser_title', null, 'title'));
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepersonaltitle', true)) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Personal title'), 'windowsUser_personaltitle', null, 'personaltitle'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Employee type'), 'windowsUser_employeeType', null, 'employeeType'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Employee type'), 'windowsUser_employeeType', null, 'employeeType'));
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
-			$profileContainer->add(new htmlResponsiveInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'));
 		}
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
@@ -970,6 +1005,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				'regex' => 'title',
 				'error_message' => $this->messages['title'][0]];
 			$return['profile_mappings']['windowsUser_title'] = 'title';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepersonaltitle', true)) {
+			$return['profile_checks']['windowsUser_personaltitle'] = [
+				'type' => 'ext_preg',
+				'regex' => 'title',
+				'error_message' => $this->messages['personaltitle'][0]];
+			$return['profile_mappings']['windowsUser_personaltitle'] = 'personaltitle';
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
 			$return['profile_checks']['windowsUser_employeeType'] = [
@@ -1037,6 +1079,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
 			$return['PDF_fields']['physicalDeliveryOfficeName'] = _('Office name');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
+			$return['PDF_fields']['roomnumber'] = _('Room number');
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
 			$return['PDF_fields']['postalCode'] = _('Postal code');
 		}
@@ -1084,6 +1129,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 			$return['PDF_fields']['title'] = _('Job title');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepersonaltitle', true)) {
+			$return['PDF_fields']['personaltitle'] = _('Personal title');
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
 			$return['PDF_fields']['carLicense'] = _('Car license');
@@ -1134,6 +1182,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// self service field settings
 		$return['selfServiceFieldSettings'] = [
 			'physicalDeliveryOfficeName' => _('Office name'),
+			'roomnumber' => _('Room number'),
+			'personaltitle' => _('Personal title'),
 			'telephoneNumber' => _('Telephone number'),
 			'facsimileTelephoneNumber' => _('Fax number'),
 			'wWWHomePage' => _('Web site'),
@@ -1228,6 +1278,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$this->messages['accountexpires'][1] = ['ERROR', _('Account %s:') . ' windowsUser_accountExpires', _('Please enter a valid date in format DD-MM-YYYY.')];
 		$this->messages['title'][0] = ['ERROR', _('Job title'), _('Please enter a valid job title!')];
 		$this->messages['title'][1] = ['ERROR', _('Account %s:') . ' windowsUser_title', _('Please enter a valid job title!')];
+		$this->messages['personaltitle'][0] = ['ERROR', _('Personal title'), _('Please enter a valid personal title.')];
+		$this->messages['personaltitle'][1] = ['ERROR', _('Account %s:') . ' windowsUser_personalTitle', _('Please enter a valid personal title.')];
 		$this->messages['employeeType'][0] = ['ERROR', _('Employee type'), _('Please enter a valid employee type!')];
 		$this->messages['employeeType'][1] = ['ERROR', _('Account %s:') . ' windowsUser_employeeType', _('Please enter a valid employee type!')];
 		$this->messages['businessCategory'][0] = ['ERROR', _('Business category'), _('Please enter a valid business category!')];
@@ -1335,6 +1387,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$this->addSimpleInputTextField($containerLeft, 'sAMAccountName', _('User name (pre W2K)'));
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepersonaltitle', true)) {
+			$this->addSimpleInputTextField($containerLeft, 'personaltitle', _('Personal title'));
+		}
 		$this->addSimpleInputTextField($containerLeft, 'givenName', _('First name'));
 		$this->addSimpleInputTextField($containerLeft, 'sn', _('Last name'));
 		$this->addSimpleInputTextField($containerLeft, 'cn', _('Common name'), true);
@@ -1436,14 +1491,17 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'title', _('Job title'), false, null, false, array_slice($this->titleCache, 0, 300));
 			}
-			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
-				$this->addSimpleInputTextField($containerLeft, 'carLicense', _('Car license'));
-			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'employeeNumber', _('Employee number'));
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'employeeType', _('Employee type'), false, null, false, array_slice($this->employeeTypeCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
+				$this->addMultiValueInputTextField($containerLeft, 'roomnumber', _('Room number'));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'carLicense', _('Car license'));
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'businessCategory', _('Business category'), false, null, false, array_slice($this->businessCategoryCache, 0, 300));
@@ -1671,6 +1729,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	private function manageWorkDetails() {
 		$allHidden = $this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)
 			&& $this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)
+			&& $this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)
 			&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)
 			&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)
 			&& $this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)
@@ -1769,6 +1828,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// initials
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
 			$this->attributes['initials'][0] = $_POST['initials'];
+		}
+		// personal title
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepersonaltitle')) {
+			$this->processSimpleTextInput('personaltitle', $return, false, 'title');
 		}
 		// location
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
@@ -1935,6 +1998,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// title
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 			$this->attributes['title'][0] = $_POST['title'];
+		}
+		// room number
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
+			$this->processMultiValueInputTextField('roomnumber', $return);
 		}
 		// car license
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
@@ -2771,6 +2838,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$errors[] = $errMsg;
 				}
 			}
+			// personal title
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidepersonaltitle', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_personalTitle',
+					'personaltitle', 'title', $this->messages['personaltitle'][1], $errors);
+			}
 			// cn
 			if ($rawAccounts[$i][$ids['windowsUser_cn']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_cn']], 'cn')) {
@@ -3054,6 +3126,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_title', 'title', 'title', $this->messages['title'][1], $errors);
 			}
+			// room number
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_roomNumber',
+					'roomnumber', null, null, $errors, '/;[ ]*/');
+			}
 			// carLicense
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_carLicense', 'carLicense');
@@ -3241,6 +3318,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$this->addSimplePDFField($return, 'sAMAccountName', _('User name (pre W2K)'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
+		$this->addSimplePDFField($return, 'personaltitle', _('Personal title'));
 		$this->addSimplePDFField($return, 'givenName', _('First name'));
 		$this->addSimplePDFField($return, 'initials', _('Initials'));
 		$this->addSimplePDFField($return, 'l', _('Location'));
@@ -3266,6 +3344,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$this->addSimplePDFField($return, 'msSFU30Name', _('NIS name'));
 		$this->addSimplePDFField($return, 'msSFU30NisDomain', _('NIS domain'));
 		$this->addSimplePDFField($return, 'title', _('Job title'));
+		$this->addSimplePDFField($return, 'roomnumber', _('Room number'));
 		$this->addSimplePDFField($return, 'carLicense', _('Car license'));
 		$this->addSimplePDFField($return, 'employeeNumber', _('Employee number'));
 		$this->addSimplePDFField($return, 'employeeType', _('Employee type'));
@@ -3419,6 +3498,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$oList = preg_split('/;[ ]*/', $profile['windowsUser_o'][0]);
 			$this->attributes['o'] = $oList;
 		}
+		// room number
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber') && isset($profile['windowsUser_roomnumber'][0])) {
+			$this->attributes['roomnumber'] = preg_split('/;[ ]*/', $profile['windowsUser_roomnumber'][0]);
+		}
 		// no password expiration
 		if (isset($profile['windowsUser_pwdNoExpire'][0]) && ($profile['windowsUser_pwdNoExpire'][0] === "true")) {
 			if (!isset($this->attributes['useraccountcontrol'][0])) {
@@ -3469,6 +3552,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if ($passwordChangeOnly) {
 			return $return; // only password fields as long no LDAP content can be read
 		}
+		$this->addSimpleSelfServiceTextField($return, 'personaltitle', _('Personal title'), $fields, $attributes, $readOnlyFields);
+		$this->addMultiValueSelfServiceTextField($return, 'roomnumber', _('Room number'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'physicalDeliveryOfficeName', _('Office name'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'telephoneNumber', _('Telephone number'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'facsimileTelephoneNumber', _('Fax number'), $fields, $attributes, $readOnlyFields);
@@ -3573,6 +3658,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (isset($attributes['street'])) {
 			$attributes['streetAddress'] = $attributes['street'];
 		}
+		$this->checkMultiValueSelfServiceTextField($return, 'roomnumber', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'personaltitle', $attributes, $fields, $readOnlyFields, 'title');
 		$this->checkSimpleSelfServiceTextField($return, 'physicalDeliveryOfficeName', $attributes, $fields, $readOnlyFields);
 		$this->checkSimpleSelfServiceTextField($return, 'telephoneNumber', $attributes, $fields, $readOnlyFields, 'telephone');
 		$this->checkSimpleSelfServiceTextField($return, 'facsimileTelephoneNumber', $attributes, $fields, $readOnlyFields, 'telephone');
@@ -4114,6 +4201,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
 		$configContainer->add($configHiddenGroup, 12);
 		$hiddenOptions = [];
+		$hiddenOptions[_('Personal title')] = ['windowsUser_hidepersonaltitle', true];
 		$hiddenOptions[_('Display name')] = ['windowsUser_hidedisplayName', false];
 		$hiddenOptions[_('Proxy-Addresses')] = ['windowsUser_hideproxyAddresses', true];
 		$hiddenOptions[_('Fax number')] = ['windowsUser_hidefacsimileTelephoneNumber', false];
@@ -4129,6 +4217,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$hiddenOptions[_('Workstations')] = ['windowsUser_hideWorkstations', false];
 		$hiddenOptions[_('Photo')] = ['windowsUser_hidejpegPhoto', true];
 		$hiddenOptions[_('Job title')] = ['windowsUser_hidetitle', true];
+		$hiddenOptions[_('Room number')] = ['windowsUser_hideroomnumber', true];
 		$hiddenOptions[_('Car license')] = ['windowsUser_hidecarLicense', true];
 		$hiddenOptions[_('Employee number')] = ['windowsUser_hideemployeeNumber', true];
 		$hiddenOptions[_('Employee type')] = ['windowsUser_hideemployeeType', true];
@@ -4296,6 +4385,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	public function getWildCardReplacements() {
 		$replacements = [];
+		// personal title
+		if (!empty($_POST['personaltitle'])) {
+			$replacements['personaltitle'] = $_POST['personaltitle'];
+		}
+		elseif (!empty($this->attributes['givenName'][0])) {
+			$replacements['personaltitle'] = $this->attributes['personaltitle'][0];
+		}
 		// first name
 		if (!empty($_POST['givenName'])) {
 			$replacements['firstname'] = $_POST['givenName'];
@@ -4544,6 +4640,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'accountexpires' => _('Account expiration date'),
 			'whencreated' => _('Creation time'),
 			'whenchanged' => _('Change date'),
+			'personaltitle' => _('Personal title'),
+			'roomnumber' => _('Room number'),
 		];
 	}
 
