@@ -52,11 +52,11 @@ class Uploader {
 	private $type;
 	private $endTime;
 
-	const TIME_LIMIT = 10;
+	private const TIME_LIMIT = 10;
 
 	public static function cleanSession() {
 		foreach ($_SESSION as $key => &$value) {
-			if (strpos($key, 'mass_') === 0) {
+			if (str_starts_with($key, 'mass_')) {
 				unset($_SESSION[$key]);
 			}
 		}
@@ -73,11 +73,11 @@ class Uploader {
 		$this->type = $type;
 		$startTime = time();
 		$maxTime = get_cfg_var('max_execution_time') - 5;
-		if ($maxTime > Uploader::TIME_LIMIT) {
-			$maxTime = Uploader::TIME_LIMIT;
+		if ($maxTime > self::TIME_LIMIT) {
+			$maxTime = self::TIME_LIMIT;
 		}
 		if ($maxTime <= 0) {
-			$maxTime = Uploader::TIME_LIMIT;
+			$maxTime = self::TIME_LIMIT;
 		}
 		$this->endTime = $startTime + $maxTime;
 	}
@@ -130,7 +130,7 @@ class Uploader {
 		unset($attrs['dn']);
 		// remove informational attributes
 		foreach ($attrs as $key => $value) {
-			if (strpos($key, 'INFO.') === 0) {
+			if (str_starts_with($key, 'INFO.')) {
 				unset($attrs[$key]);
 			}
 		}
@@ -215,8 +215,8 @@ class Uploader {
 		$errorHtml = '';
 		if ($allDone && !empty($_SESSION['mass_errors'])) {
 			foreach ($_SESSION['mass_errors'] as $error) {
-				$text = isset($error[2]) ? $error[2] : '';
-				$vars = isset($error[3]) ? $error[3] : [];
+				$text = $error[2] ?? '';
+				$vars = $error[3] ?? [];
 				$errorHtml .= StatusMessage($error[0], $error[1], $text, $vars, true);
 			}
 		}
@@ -312,7 +312,7 @@ class Uploader {
 			// get informational attributes
 			$infoAttributes = [];
 			foreach ($attrs as $key => $value) {
-				if (strpos($key, 'INFO.') === 0) {
+				if (str_starts_with($key, 'INFO.')) {
 					$infoAttributes[$key] = $value;
 				}
 			}

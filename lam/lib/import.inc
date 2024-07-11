@@ -50,7 +50,7 @@ class Importer {
 	const STATUS = 'status';
 	const PROGRESS = 'progress';
 	const DATA = 'data';
-	const TIME_LIMIT = 10;
+	private const TIME_LIMIT = 10;
 	const KEY = 0;
 	const VALUE = 1;
 	const CHANGETYPE = 'changetype';
@@ -199,11 +199,11 @@ class Importer {
 	private function getEndTime() {
 		$startTime = time();
 		$maxTime = get_cfg_var('max_execution_time') - 10;
-		if ($maxTime > Importer::TIME_LIMIT) {
-			$maxTime = Importer::TIME_LIMIT;
+		if ($maxTime > self::TIME_LIMIT) {
+			$maxTime = self::TIME_LIMIT;
 		}
 		if ($maxTime <= 0) {
-			$maxTime = Importer::TIME_LIMIT;
+			$maxTime = self::TIME_LIMIT;
 		}
 		return $startTime + $maxTime;
 	}
