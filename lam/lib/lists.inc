@@ -51,19 +51,25 @@ include_once(__DIR__ . "/pdf.inc");
 class lamList {
 
 	/** ID for config option to show account status */
-	const ACCOUNT_STATUS_OPTION_NAME = "LU_AS";
+	private const ACCOUNT_STATUS_OPTION_NAME = "LU_AS";
 
 	/** virtual attribute name for account status column */
-	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
+	private const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
 
 	/** filter value for expired accounts */
-	const FILTER_EXPIRED = 1;
+	private const FILTER_EXPIRED = 1;
 	/** filter value for locked accounts */
-	const FILTER_LOCKED = 2;
+	private const FILTER_LOCKED = 2;
 	/** filter value for partially locked accounts */
-	const FILTER_SEMILOCKED = 3;
+	private const FILTER_SEMILOCKED = 3;
 	/** filter value for unlocked accounts */
-	const FILTER_UNLOCKED = 4;
+	private const FILTER_UNLOCKED = 4;
+
+	/** ID for list size config option */
+	private const LIST_SIZE_OPTION_NAME = "L_SIZE";
+
+	/** prefix for virtual (non-LDAP) attributes */
+	private const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
 
 	/** Controls if the account status is shown */
 	protected $showAccountStatus = false;
@@ -126,12 +132,6 @@ class lamList {
 	 * @var bool
 	 */
 	private $supportsPasswordQuickChange;
-
-	/** ID for list size config option */
-	const LIST_SIZE_OPTION_NAME = "L_SIZE";
-
-	/** prefix for virtual (non-LDAP) attributes */
-	const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
 
 	/**
 	 * List of attributes to filter on server side.
@@ -1201,7 +1201,7 @@ class lamList {
 		$attrs = $this->attrArray;
 		// remove virtual attributes from list
 		for ($i = 0; $i < sizeof($attrs); $i++) {
-			if (strpos($attrs[$i], self::VIRTUAL_ATTRIBUTE_PREFIX) === 0) {
+			if (str_starts_with($attrs[$i], self::VIRTUAL_ATTRIBUTE_PREFIX)) {
 				unset($attrs[$i]);
 			}
 		}
@@ -1220,7 +1220,7 @@ class lamList {
 		}
 		$lastError = getLastLDAPError();
 		if ($lastError != null) {
-			call_user_func_array('StatusMessage', $lastError);
+			call_user_func_array(StatusMessage(...), $lastError);
 		}
 		// generate list of possible suffixes
 		$this->possibleSuffixes = $this->type->getSuffixList();
@@ -1245,10 +1245,10 @@ class lamList {
 				continue;
 			}
 			$filterExpression = $filter;
-			if (strpos($filter, '^') === 0) {
+			if (str_starts_with($filter, '^')) {
 				$filterExpression = substr($filterExpression, 1);
 			}
-            elseif (strpos($filter, '*') !== 0) {
+            elseif (!str_starts_with($filter, '*')) {
 				$filterExpression = '*' . $filterExpression;
 			}
 			if (strrpos($filter, '$') === (strlen($filter) - 1)) {
@@ -1309,7 +1309,7 @@ class lamList {
 				$regex = str_replace(['*'], ['.*'], $filterValue);
 				$regex = '/' . $regex . '/i';
 				if ($filterFunctions[$filterAttribute] !== null) {
-					$value = isset($data[$filterAttribute]) ? $data[$filterAttribute] : null;
+					$value = $data[$filterAttribute] ?? null;
 					if (!$filterFunctions[$filterAttribute]($value, $filterValue)) {
 						$toFilter[] = $index;
 					}
@@ -1486,7 +1486,7 @@ class lamList {
 		}
 		if (isset($_SESSION['listRedirectMessages'])) {
 			for ($i = 0; $i < sizeof($_SESSION['listRedirectMessages']); $i++) {
-				call_user_func_array('StatusMessage', $_SESSION['listRedirectMessages'][$i]);
+				call_user_func_array(StatusMessage(...), $_SESSION['listRedirectMessages'][$i]);
 			}
 			unset($_SESSION['listRedirectMessages']);
 		}
