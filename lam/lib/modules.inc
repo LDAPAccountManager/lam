@@ -131,7 +131,7 @@ function get_ldap_filter($typeId) {
 	// add type filter
 	$typeSettings = $_SESSION['config']->get_typeSettings();
 	if (isset($typeSettings['filter_' . $typeId]) && ($typeSettings['filter_' . $typeId] != '')) {
-		if (strpos($typeSettings['filter_' . $typeId], '(') === 0) {
+		if (str_starts_with($typeSettings['filter_' . $typeId], '(')) {
 			$filters['and'][] = $typeSettings['filter_' . $typeId];
 		}
 		else {
@@ -451,7 +451,7 @@ function getAvailablePDFFields($typeId) {
 	$return = [];
 	foreach ($mods as $module) {
 		$fields = $module->get_pdfFields($typeId);
-		$moduleName = get_class($module);
+		$moduleName = $module::class;
 		$return[$moduleName] = [];
 		if (is_array($fields)) {
 			foreach ($fields as $fieldID => $fieldLabel) {
@@ -693,7 +693,7 @@ function getRequiredExtensions() {
  * meta HTML code. This allows to have a common design for all module pages.
  *
  * @param string $module Name of account module
- * @param mixed $input htmlElement or array of htmlElement elements
+ * @param htmlElement|htmlElement[] $input htmlElement or array of htmlElement elements
  * @param array $values List of values which override the defaults in $input (name => value)
  * @param boolean $restricted If true then no buttons will be displayed
  * @param string $scope Account type
@@ -1028,7 +1028,7 @@ class accountContainer {
 			// go to subpage of current module
 			$postKeys = array_keys($_POST);
 			for ($p = 0; $p < sizeof($postKeys); $p++) {
-				if (is_string($postKeys[$p]) && (strpos($postKeys[$p], 'form_subpage_' . $this->order[$this->current_page]) === 0)) {
+				if (is_string($postKeys[$p]) && (str_starts_with($postKeys[$p], 'form_subpage_' . $this->order[$this->current_page]))) {
 					$temp = substr($postKeys[$p], strlen($this->order[$this->current_page]) + 14);
 					$temp = explode('_', $temp);
 					if (sizeof($temp) == 2) {
@@ -1081,7 +1081,7 @@ class accountContainer {
 		// display error messages
 		if (is_array($result)) {
 			for ($i = 0; $i < sizeof($result); $i++) {
-				call_user_func_array("StatusMessage", $result[$i]);
+				call_user_func_array(StatusMessage(...), $result[$i]);
 			}
 		}
 		echo '<div id="passwordMessageArea"></div>';
@@ -1221,7 +1221,7 @@ class accountContainer {
 				$printContainer = true;
 				$buttonImage = $module->getIcon();
 				if ($buttonImage != null) {
-					if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
+					if (!(str_starts_with($buttonImage, 'http')) && !(str_starts_with($buttonImage, '/'))) {
 						$buttonImage = '../../graphics/' . $buttonImage;
 					}
 					$moduleContainer->addElement(new htmlImage($buttonImage, '16px', '16px', getModuleAlias($name, $this->type->getScope())));
@@ -1586,7 +1586,7 @@ class accountContainer {
 			}
 			echo ' >';
 			if ($buttonImage != null) {
-				if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
+				if (!(str_starts_with($buttonImage, 'http')) && !(str_starts_with($buttonImage, '/'))) {
 					$buttonImage = '../../graphics/' . $buttonImage;
 				}
 				echo "<img height=32 width=32 class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"$buttonImage\">&nbsp;";
@@ -2406,7 +2406,7 @@ class accountContainer {
 		$found = false;
 		foreach ($data as $key => $value) {
 			foreach ($keyPrefixes as $keyPrefix) {
-				if (strpos($key, $keyPrefix) === 0) {
+				if (str_starts_with($key, $keyPrefix)) {
 					if (!is_array($value)) {
 						$found = $this->doReplace($replacements, $data[$key]) || $found;
 					}
@@ -2432,12 +2432,12 @@ class accountContainer {
 		$found = false;
 		foreach ($replacements as $replKey => $replValue) {
 			$searchString = '$' . $replKey;
-			if (strpos($value, $searchString) !== false) {
+			if (str_contains($value, $searchString)) {
 				$found = true;
 				$value = str_replace($searchString, $replValue, $value);
 			}
 			$searchString = '$_' . $replKey;
-			if (strpos($value, $searchString) !== false) {
+			if (str_contains($value, $searchString)) {
 				$found = true;
 				$value = str_replace($searchString, strtolower($replValue), $value);
 			}
@@ -2929,8 +2929,8 @@ class ScopeAndModuleValidation {
 
 	private static $cachedScopeNames;
 
-	const REGEX_SCOPE = "/^[a-z0-9_-]+$/i";
-	const REGEX_MODULE = "/^[a-z0-9_-]+$/i";
+	private const REGEX_SCOPE = "/^[a-z0-9_-]+$/i";
+	private const REGEX_MODULE = "/^[a-z0-9_-]+$/i";
 
 	/**
 	 * Checks if the provided scope name is valid.
