@@ -228,7 +228,7 @@ function printTable(&$pdf, $table, $fontName) {
 	foreach ($table->rows as $row) {
 		foreach ($row->cells as $cell) {
 			$width = $cell->width;
-			if (!empty($width) && (strpos($width, '%') !== false)) {
+			if (!empty($width) && (str_contains($width, '%'))) {
 				$width = ceil(LAMPDF_LINEWIDTH * substr($width, 0, -1) / 100);
 			}
 			if ($cell->bold) {
@@ -336,9 +336,9 @@ class PDFTableRow {
  */
 class PDFTableCell {
 
-	const ALIGN_LEFT = 'L';
-	const ALIGN_RIGHT = 'R';
-	const ALIGN_CENTER = 'C';
+	public const ALIGN_LEFT = 'L';
+	public const ALIGN_RIGHT = 'R';
+	public const ALIGN_CENTER = 'C';
 
 	/** content text of cell */
 	public $content = '';

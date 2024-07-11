@@ -263,7 +263,10 @@ $foldingMarks = 'no';
 if (isset($_SESSION['currentPDFStructure'])) {
 	$foldingMarks = $_SESSION['currentPDFStructure']->getFoldingMarks();
 }
-$possibleFoldingMarks = [_('No') => 'no', _('Yes') => 'standard'];
+$possibleFoldingMarks = [
+    _('No') => PDFStructure::FOLDING_NONE,
+    _('Yes') => PDFStructure::FOLDING_STANDARD
+];
 $foldingMarksSelect = new htmlResponsiveSelect('foldingmarks', $possibleFoldingMarks, [$foldingMarks], _('Folding marks'));
 $foldingMarksSelect->setHasDescriptiveElements(true);
 $mainContent->add($foldingMarksSelect, 12);

@@ -723,7 +723,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		if ($templateDir) {
 			$entry = $templateDir->read();
 			while ($entry) {
-				if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
+				if ((!str_starts_with($entry, '.')) && is_file($templatePath . '/' . $entry)) {
 					$logos[] = $entry;
 				}
 				$entry = $templateDir->read();
@@ -945,10 +945,10 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
  */
 class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrategy {
 
-	const TABLE_NAME = 'pdf_structures';
-	const TABLE_NAME_LOGOS = 'pdf_logos';
-	const TABLE_NAME_TEMPLATES = 'pdf_structures_templates';
-	const TABLE_NAME_TEMPLATES_LOGOS = 'pdf_logos_templates';
+	private const TABLE_NAME = 'pdf_structures';
+	private const TABLE_NAME_LOGOS = 'pdf_logos';
+	private const TABLE_NAME_TEMPLATES = 'pdf_structures_templates';
+	private const TABLE_NAME_TEMPLATES_LOGOS = 'pdf_logos_templates';
 
 	/**
 	 * @var PDO
@@ -1388,9 +1388,9 @@ class PDFStructureWriter {
 class PDFStructure {
 
 	/** no folding marks */
-	const FOLDING_NONE = 'no';
+	public const FOLDING_NONE = 'no';
 	/** standard folding marks */
-	const FOLDING_STANDARD = 'standard';
+	public const FOLDING_STANDARD = 'standard';
 
 	private $logo;
 
