@@ -106,7 +106,7 @@ class ConfiguredType {
 
 	private string $id;
 
-	private $suffix;
+	private string $suffix;
 
 	private $attributes;
 
