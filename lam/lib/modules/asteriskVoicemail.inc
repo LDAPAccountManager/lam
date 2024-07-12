@@ -501,7 +501,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
-		if (!in_array(get_class($this), $modules)) {
+		if (!in_array(static::class, $modules)) {
 			return [];
 		}
 		$this->attributes['AstVoicemailPassword'][0] = $password;

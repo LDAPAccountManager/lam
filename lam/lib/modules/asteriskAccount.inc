@@ -40,7 +40,7 @@ use LAM\TYPES\ConfiguredType;
  */
 class asteriskAccount extends baseModule implements passwordService {
 
-	const ASTERISK_DEFAULT_REALM = "asterisk";
+	private const ASTERISK_DEFAULT_REALM = "asterisk";
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
@@ -253,7 +253,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		];
 		// self service options
 		$selfServiceContainer = new htmlResponsiveRow();
-		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, ['AsteriskRealm', get_class($this)]), 12);
+		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, ['AsteriskRealm', static::class]), 12);
 		$return['selfServiceSettings'] = $selfServiceContainer;
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
@@ -1146,7 +1146,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
-		if (!in_array(get_class($this), $modules)) {
+		if (!in_array(static::class, $modules)) {
 			return [];
 		}
 		$this->attributes['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($this->attributes, $this->moduleSettings, $password);
@@ -1162,7 +1162,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return String value for password attribute
 	 */
 	public static function buildPasswordString(&$attributes, &$moduleSettings, $password) {
-		$astRealm = asteriskAccount::ASTERISK_DEFAULT_REALM;
+		$astRealm = self::ASTERISK_DEFAULT_REALM;
 		if (!empty($moduleSettings['asteriskAccount_AsteriskRealm'][0])) {
 			$astRealm = $moduleSettings['asteriskAccount_AsteriskRealm'][0];
 		}

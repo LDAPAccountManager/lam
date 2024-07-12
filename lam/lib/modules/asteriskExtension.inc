@@ -259,7 +259,7 @@ class asteriskExtension extends baseModule {
 		}
 		$renderContainer->add($ownerList, 12);
 		$renderContainer->addVerticalSpacer('1rem');
-		$renderContainer->add(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Change')), 12);
+		$renderContainer->add(new htmlAccountPageButton(static::class, 'user', 'open', _('Change')), 12);
 	}
 
 	/**
@@ -451,14 +451,14 @@ class asteriskExtension extends baseModule {
 				$users_dn[getAbstractDN($dn)] = $dn;
 			}
 		}
-		uasort($users_dn, 'compareDN');
+		uasort($users_dn, compareDN(...));
 		if (isset($this->extensionOwners)) {
 			$memberList = $this->extensionOwners;
 		}
 		else {
 			$memberList = [];
 		}
-		usort($memberList, 'compareDN');
+		usort($memberList, compareDN(...));
 		$members = [];
 		for ($i = 0; $i < sizeof($memberList); $i++) {
 			$members[getAbstractDN($memberList[$i])] = $memberList[$i];
@@ -473,7 +473,7 @@ class asteriskExtension extends baseModule {
 		$return->add(new htmlSubTitle(_("Extension owners")), 12);
 		$this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $members, [], $users_dn, [], 'owners', true);
 		// back button
-		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Ok'));
+		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Ok'));
 		$backButton->colspan = 3;
 		$return->add($backButton, 12);
 		return $return;
@@ -692,7 +692,7 @@ class asteriskExtension extends baseModule {
 		//Fill the member filed
 		$extRow['member'] = $this->extensionOwners;
 		if ((!isset($extRow['member']) || count($extRow['member']) == 0)
-			&& !isset($_POST['form_subpage_' . get_class($this) . '_user_open'])) {
+			&& !isset($_POST['form_subpage_' . static::class . '_user_open'])) {
 			$errors[] = $this->messages['member'][0];
 		}
 		return $errors;
