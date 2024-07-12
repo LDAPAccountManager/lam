@@ -1,6 +1,9 @@
 <?php
 
-use \LAM\TYPES\TypeManager;
+use LAM\JOB\AccountExpirationCleanupJob;
+use LAM\JOB\JobResultLog;
+use LAM\JOB\PasswordExpirationJob;
+use LAM\TYPES\TypeManager;
 use LAM\TYPES\ConfiguredType;
 use LAM\ImageUtils\ImageManipulationFactory;
 
@@ -41,17 +44,17 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * ID for locked password status.
 	 */
-	const STATUS_PASSWORD_LOCKED = "WINDOWS_PASSWORD_LOCKED";
+	private const STATUS_PASSWORD_LOCKED = "WINDOWS_PASSWORD_LOCKED";
 
 	/**
 	 * ID for locked account status.
 	 */
-	const STATUS_ACCOUNT_LOCKED = "WINDOWS_ACCOUNT_LOCKED";
+	private const STATUS_ACCOUNT_LOCKED = "WINDOWS_ACCOUNT_LOCKED";
 
 	/**
 	 * ID for expired account status.
 	 */
-	const STATUS_ACCOUNT_EXPIRED = "WINDOWS_ACCOUNT_EXPIRED";
+	private const STATUS_ACCOUNT_EXPIRED = "WINDOWS_ACCOUNT_EXPIRED";
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
@@ -61,18 +64,18 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime', 'personaltitle', 'roomnumber'];
 
 	/** initial account flags */
-	const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
+	private const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
 	/** password never expires */
-	const AC_PWD_NEVER_EXPIRES = 0x00010000;
+	private const AC_PWD_NEVER_EXPIRES = 0x00010000;
 	/** login requires smartcard */
-	const AC_SMARTCARD_REQUIRED = 0x00040000;
+	private const AC_SMARTCARD_REQUIRED = 0x00040000;
 	/** account is disabled */
-	const AC_ACCOUNT_DISABLED = 0x00000002;
+	private const AC_ACCOUNT_DISABLED = 0x00000002;
 
 	/** display groups as dn */
-	const DISPLAY_GROUPS_DN = 'DN';
+	private const DISPLAY_GROUPS_DN = 'DN';
 	/** display groups as cn */
-	const DISPLAY_GROUPS_CN = 'CN';
+	private const DISPLAY_GROUPS_CN = 'CN';
 
 	/** current group list */
 	private $groupList = [];
@@ -101,7 +104,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/** business category cache */
 	private $businessCategoryCache;
 
-	/** cache for user name */
+	/** cache for username */
 	private $cachedUserNameList;
 	/** cache for cn */
 	private $cachedCnList;
@@ -113,11 +116,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() == 'user';
 	}
 
 	/**
-	 * Returns meta data that is interpreted by parent class
+	 * Returns metadata that is interpreted by parent class
 	 *
 	 * @return array array with meta data
 	 *
@@ -1175,11 +1178,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
 			$return['PDF_fields']['otherMobile'] = _('Other mobiles');
 		}
-		// self service search attributes
+		// self-service search attributes
 		$return['selfServiceSearchAttributes'] = ['sAMAccountName', 'userPrincipalName',
 			'employeeNumber'
 		];
-		// self service field settings
+		// self-service field settings
 		$return['selfServiceFieldSettings'] = [
 			'physicalDeliveryOfficeName' => _('Office name'),
 			'roomnumber' => _('Room number'),
@@ -1200,7 +1203,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'proxyAddresses' => _('Proxy-Addresses (read-only)'),
 			'otherMailbox' => _('Email alias (read-only)'),
 		];
-		// possible self service read-only fields
+		// possible self-service read-only fields
 		$return['selfServiceReadOnlyFields'] = ['physicalDeliveryOfficeName', 'telephoneNumber',
 			'facsimileTelephoneNumber', 'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox',
 			'departmentNumber', 'postalCode'];
@@ -1302,12 +1305,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attr list of attributes
+	 * {@inheritDoc}
 	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
+	public function load_attributes($attributes) {
+		parent::load_attributes($attributes);
 		// get group memberships
 		$groupList = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'group', ['dn'], ['group']);
 		$this->groupList_orig = [];
@@ -1320,16 +1321,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 
 	/**
-	 * Returns a list of modifications which have to be made to the LDAP account.
-	 *
-	 * @return array list of modifications
-	 * <br>This function returns an array with 3 entries:
-	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	 * <br>"add" are attributes which have to be added to LDAP entry
-	 * <br>"remove" are attributes which have to be removed from LDAP entry
-	 * <br>"modify" are attributes which have to been modified in LDAP entry
-	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 * {@inheritDoc}
 	 */
 	public function save_attributes() {
 		// do not add securityPrincipal on existing accounts if it was not set before
@@ -1346,7 +1338,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
+	 * Returns the HTML metadata for the main account page.
 	 *
 	 * @return htmlElement HTML meta data
 	 */
@@ -1358,9 +1350,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
 		$containerLeft = new htmlResponsiveRow();
 		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['useraccountcontrol'][0])) {
-			$this->attributes['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+			$this->attributes['useraccountcontrol'][0] = self::DEFAULT_ACCOUNT_CONTROL;
 		}
-		$containerLeft->add(new htmlSubTitle(_('General')), 12);
+		$containerLeft->add(new htmlSubTitle(_('General')));
 		// user name
 		$userPrincipalName = '';
 		$userPrincipalNameDomain = '';
@@ -1411,7 +1403,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$showPhysicalDeliveryOfficeName = !$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName');
 		$showAddress = $showStreetAddress || $showPostOfficeBox || $showPostalCode || $showL || $showSt || $showPhysicalDeliveryOfficeName;
 		if ($showAddress) {
-			$containerLeft->add(new htmlSubTitle(_('Address')), 12);
+			$containerLeft->add(new htmlSubTitle(_('Address')));
 		}
 		if ($showStreetAddress) {
 			$this->addSimpleInputTextField($containerLeft, 'streetAddress', _('Street'), false, 20, true);
@@ -1447,7 +1439,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$showContactData = $showMail || $showOtherMailbox || $showProxyAddresses || $showTelephoneNumber || $showOtherTelephone || $showMobile ||
 			$showOtherMobile || $showPager || $showOtherPager || $showFacsimileTelephoneNumber || $showWWWHomePage || $showUrl;
 		if ($showContactData) {
-			$containerLeft->add(new htmlSubTitle(_('Contact data')), 12);
+			$containerLeft->add(new htmlSubTitle(_('Contact data')));
 		}
 		if ($showMail) {
 			$this->addSimpleInputTextField($containerLeft, 'mail', _('Email address'));
@@ -1487,7 +1479,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		// work details area
 		if ($this->manageWorkDetails()) {
-			$containerLeft->add(new htmlSubTitle(_('Work details')), 12);
+			$containerLeft->add(new htmlSubTitle(_('Work details')));
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'title', _('Job title'), false, null, false, array_slice($this->titleCache, 0, 300));
 			}
@@ -1527,33 +1519,33 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$managerVal = (empty($this->attributes['manager'][0])) ? '-' : getAbstractDN($this->attributes['manager'][0]);
 				$managerGroup->addElement(new htmlOutputText($managerVal));
 				$managerGroup->addElement(new htmlSpacer('0.5rem', null));
-				$managerGroup->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
+				$managerGroup->addElement(new htmlAccountPageButton(static::class, 'manager', 'change', _("Change")));
 				$managerGroup->addElement(new htmlSpacer('0.5rem', null));
-				$managerGroup->addElement(new htmlHelpLink('manager'), true);
+				$managerGroup->addElement(new htmlHelpLink('manager'));
 				$containerLeft->addField($managerGroup);
 			}
 		}
 		// account area
-		$containerLeft->add(new htmlSubTitle(_('Account')), 12);
+		$containerLeft->add(new htmlSubTitle(_('Account')));
 		// deactivated
 		$deactivated = windowsUser::isDeactivated($this->attributes);
-		$containerLeft->add(new htmlResponsiveInputCheckbox('deactivated', $deactivated, _("Account is deactivated"), 'deactivated'), 12);
+		$containerLeft->add(new htmlResponsiveInputCheckbox('deactivated', $deactivated, _("Account is deactivated"), 'deactivated'));
 		// password does not expire
 		$noExpire = windowsUser::isNeverExpiring($this->attributes);
-		$containerLeft->add(new htmlResponsiveInputCheckbox('noExpire', $noExpire, _("Password does not expire"), 'noExpire'), 12);
+		$containerLeft->add(new htmlResponsiveInputCheckbox('noExpire', $noExpire, _("Password does not expire"), 'noExpire'));
 		// require smartcard
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard')) {
 			$requireCard = windowsUser::isSmartCardRequired($this->attributes);
-			$containerLeft->add(new htmlResponsiveInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), 12);
+			$containerLeft->add(new htmlResponsiveInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'));
 		}
 		// account expiration
 		$containerLeft->addLabel(new htmlOutputText(_('Account expiration date')));
 		$accountExpiresGroup = new htmlGroup();
 		$accountExpiresGroup->addElement(new htmlOutputText($this->formatAccountExpires()));
 		$accountExpiresGroup->addElement(new htmlSpacer('0.5rem', null));
-		$accountExpiresGroup->addElement(new htmlAccountPageButton(get_class($this), 'accountexpires', 'edit', _('Change')));
+		$accountExpiresGroup->addElement(new htmlAccountPageButton(static::class, 'accountexpires', 'edit', _('Change')));
 		$accountExpiresGroup->addElement(new htmlSpacer('0.5rem', null));
-		$accountExpiresGroup->addElement(new htmlHelpLink('accountexpires'), true);
+		$accountExpiresGroup->addElement(new htmlHelpLink('accountexpires'));
 		$containerLeft->addField($accountExpiresGroup);
 		// last password change
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdLastSet')) {
@@ -1562,10 +1554,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$pwdLastSetGroup->addElement(new htmlOutputText($this->formatPwdLastSet()));
 			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
 			if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
-				$pwdLastSetGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'releasePasswordChange', _('Clear password expiration')));
+				$pwdLastSetGroup->addElement(new htmlAccountPageButton(static::class, 'attributes', 'releasePasswordChange', _('Clear password expiration')));
 			}
 			else {
-				$pwdLastSetGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'forcePasswordChange', _('Force password change')));
+				$pwdLastSetGroup->addElement(new htmlAccountPageButton(static::class, 'attributes', 'forcePasswordChange', _('Force password change')));
 			}
 			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
 			$pwdLastSetGroup->addElement(new htmlHelpLink('pwdLastSet'));
@@ -1583,7 +1575,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
 			$containerLeft->addLabel(new htmlOutputText(_('Workstations')));
 			$userWorkstationsGroup = new htmlGroup();
-			$userWorkstationsGroup->addElement(new htmlAccountPageButton(get_class($this), 'userWorkstations', 'open', _('Edit workstations')));
+			$userWorkstationsGroup->addElement(new htmlAccountPageButton(static::class, 'userWorkstations', 'open', _('Edit workstations')));
 			$userWorkstationsGroup->addElement(new htmlSpacer('0.5rem', null));
 			$userWorkstationsGroup->addElement(new htmlHelpLink('userWorkstations'));
 			$containerLeft->addField($userWorkstationsGroup);
@@ -1595,7 +1587,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$showHomeDirectory = !$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory');
 		$showUserProfile = $showProfilePath || $showScriptPath || $showHomeDrive || $showHomeDirectory;
 		if ($showUserProfile) {
-			$containerLeft->add(new htmlSubTitle(_('User profile')), 12);
+			$containerLeft->add(new htmlSubTitle(_('User profile')));
 		}
 		// profile path
 		if ($showProfilePath) {
@@ -1617,7 +1609,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			else {
 				$selected = ['-'];
 			}
-			$containerLeft->add(new htmlResponsiveSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), 12);
+			$containerLeft->add(new htmlResponsiveSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'));
 		}
 		// home directory
 		if ($showHomeDirectory) {
@@ -1626,7 +1618,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 		// NIS attributes
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
-			$containerLeft->add(new htmlSubTitle(_('NIS')), 12);
+			$containerLeft->add(new htmlSubTitle(_('NIS')));
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'msSFU30Name', _('NIS name'));
 			}
@@ -1652,19 +1644,19 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$img = new htmlImage($photoFile);
 			$img->setCSSClasses(['photo']);
 			$img->enableLightbox();
-			$containerRight->add($img, 12);
+			$containerRight->add($img);
 			$containerRight->addVerticalSpacer('0.5rem');
 			if ($noPhoto) {
-				$containerRight->add(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')), 12);
+				$containerRight->add(new htmlAccountPageButton(static::class, 'photo', 'open', _('Add photo')));
 			}
 			else {
-				$containerRight->add(new htmlButton('delPhoto', _('Delete photo')), 12);
+				$containerRight->add(new htmlButton('delPhoto', _('Delete photo')));
 			}
 			$containerRight->addVerticalSpacer('2rem');
 		}
 		// groups
-		$containerRight->add(new htmlSubTitle(_('Groups')), 12);
-		$containerRight->add(new htmlAccountPageButton(get_class($this), 'group', 'edit', _('Edit groups')), 12);
+		$containerRight->add(new htmlSubTitle(_('Groups')));
+		$containerRight->add(new htmlAccountPageButton(static::class, 'group', 'edit', _('Edit groups')));
 		$containerRight->addVerticalSpacer('1rem');
 		$groupsList = new htmlGroup();
 		$groupNames = [];
@@ -1684,7 +1676,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		$groupsListClass = $this->groupDisplayContainsDn() ? 'rightToLeftText' : '';
 		$groupsListDiv = new htmlDiv(null, $groupsList, [$groupsListClass]);
-		$containerRight->add($groupsListDiv, 12);
+		$containerRight->add($groupsListDiv);
 
 		$container = new htmlResponsiveRow();
 		$container->add($containerLeft, 12, 12, 7);
@@ -1702,13 +1694,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	private function formatGroupName($cn, $dn) {
 		$mode = empty($this->moduleSettings['windowsUser_displayGroups'][0]) ? 'dn' : $this->moduleSettings['windowsUser_displayGroups'][0];
-		switch ($mode) {
-			case self::DISPLAY_GROUPS_CN:
-				return $cn;
-			case self::DISPLAY_GROUPS_DN:
-			default:
-				return getAbstractDN($dn);
-		}
+		return match ($mode) {
+			self::DISPLAY_GROUPS_CN => $cn,
+			default => getAbstractDN($dn),
+		};
 	}
 
 	/**
@@ -1803,7 +1792,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 		}
 		elseif ($this->getAccountContainer()->isNewAccount && !empty($_POST['userPrincipalName'])) {
-			// set sAMAccountName to user name if attribute input field is not visible (W2012 requires this attribute)
+			// set sAMAccountName to username if attribute input field is not visible (W2012 requires this attribute)
 			$this->attributes['sAMAccountName'][0] = $_POST['userPrincipalName'];
 		}
 		// description
@@ -1912,7 +1901,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$return[] = $this->messages['telephoneNumber'][0];
 			}
 		}
-		// other web sites
+		// other websites
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
 			$this->processMultiValueInputTextField('url', $return);
 		}
@@ -1921,10 +1910,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$this->attributes['wWWHomePage'][0] = $_POST['wWWHomePage'];
 		}
 		// password must be changed
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_forcePasswordChange'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_forcePasswordChange'])) {
 			$this->attributes['pwdLastSet'][0] = '0';
 		}
-		elseif (isset($_POST['form_subpage_' . get_class($this) . '_attributes_releasePasswordChange'])) {
+		elseif (isset($_POST['form_subpage_' . static::class . '_attributes_releasePasswordChange'])) {
 			if (isset($this->orig['pwdLastSet'][0]) && ($this->orig['pwdLastSet'][0] !== '0')) {
 				$this->attributes['pwdLastSet'][0] = $this->orig['pwdLastSet'][0];
 			}
@@ -2090,26 +2079,26 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$return->add($dateInput);
 
 		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncShadow', false, _('Set also for Shadow')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncShadow', false, _('Set also for Shadow')));
 		}
 		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')));
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberos') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncMIT', false, _('Set also for Kerberos')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncMIT', false, _('Set also for Kerberos')));
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberosStructural') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')));
 		}
 		$return->addVerticalSpacer('2rem');
 		$buttons = new htmlGroup();
-		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
+		$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'change' . $attr, _('Change')));
 		if (isset($this->attributes[$attr][0])) {
 			$buttons->addElement(new htmlSpacer('0.5rem', null));
-			$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
+			$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'del' . $attr, _('Remove')));
 		}
 		$buttons->addElement(new htmlSpacer('0.5rem', null));
-		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
+		$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'back' . $attr, _('Cancel')));
 		$return->add($buttons, 12, 12, 12, 'text-center');
 		return $return;
 	}
@@ -2125,16 +2114,16 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$buttonName = '';
 		$postKeys = array_keys($_POST);
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if (strpos($postKeys[$i], 'form_subpage_windowsUser_attributes_') !== false) {
+			if (str_contains($postKeys[$i], 'form_subpage_windowsUser_attributes_')) {
 				$buttonName = $postKeys[$i];
 			}
 		}
-		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) {
+		if (($buttonName == '') || (str_contains($buttonName, '_back'))) {
 			return [];
 		}
 		$attr = 'accountexpires';
 		// determine action
-		if (strpos($buttonName, '_change') !== false) {
+		if (str_contains($buttonName, '_change')) {
 			$date = DateTime::createFromFormat('Y-m-d', $_POST['accountexpires'], new DateTimeZone('UTC'));
 			$year = $date->format('Y');
 			$month = $date->format('m');
@@ -2159,7 +2148,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$year, $month, $day);
 			}
 		}
-		elseif (strpos($buttonName, '_del') !== false) {
+		elseif (str_contains($buttonName, '_del')) {
 			// remove attribute value
 			if (!isset($this->orig[$attr][0])) {
 				unset($this->attributes[$attr]);
@@ -2196,7 +2185,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	public function display_html_group() {
 		$return = new htmlResponsiveRow();
 		$return->setCSSClasses(['maxrow']);
-		$return->add(new htmlSubTitle(_("Groups")), 12);
+		$return->add(new htmlSubTitle(_("Groups")));
 		$groups = $this->findGroups();
 		$groupDisplayContainsDn = $this->groupDisplayContainsDn();
 		// sort by DN
@@ -2258,15 +2247,15 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		$syncActive = $syncActive && !$this->isBooleanConfigOptionSet('windowsUser_syncGroups');
 		if ($syncActive) {
-			$return->add(new htmlSubTitle(_('Sync groups')), 12);
-			$return->add(new htmlResponsiveInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), 12);
+			$return->add(new htmlSubTitle(_('Sync groups')));
+			$return->add(new htmlResponsiveInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')));
 			$return->addVerticalSpacer('2rem');
 			$syncButtons = new htmlGroup();
-			$u2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2W', _('Sync Unix to Windows'));
+			$u2wButton = new htmlAccountPageButton(static::class, 'group', 'syncU2W', _('Sync Unix to Windows'));
 			$syncButtons->addElement($u2wButton);
 			$syncButtons->addElement(new htmlSpacer('2rem', null));
 			if ($syncGonActive) {
-				$g2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncG2W', _('Sync group of names to Windows'));
+				$g2wButton = new htmlAccountPageButton(static::class, 'group', 'syncG2W', _('Sync group of names to Windows'));
 				$syncButtons->addElement($g2wButton);
 				$syncButtons->addElement(new htmlSpacer('2rem', null));
 			}
@@ -2274,8 +2263,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$return->addVerticalSpacer('2rem');
 		}
 
-		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$return->add($backButton, 12);
+		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
+		$return->add($backButton);
 		return $return;
 	}
 
@@ -2408,23 +2397,23 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Displays the photo upload page.
 	 *
-	 * @return array meta HTML code
+	 * @return htmlElement meta HTML code
 	 */
 	public function display_html_photo() {
 		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['jpegPhoto'][0])) {
-			$container->add(new htmlSubTitle(_('Upload image')), 12);
+			$container->add(new htmlSubTitle(_('Upload image')));
 			$label = _('Photo file');
-			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'), 12);
+			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'));
 			$container->addVerticalSpacer('0.5rem');
 			$container->addLabel(new htmlOutputText('&nbsp;', false));
-			$container->addField(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
+			$container->addField(new htmlAccountPageButton(static::class, 'photo', 'upload', _('Upload')));
 			$container->addVerticalSpacer('1rem');
 			$webcamContent = new htmlResponsiveRow();
-			$webcamContent->add(new htmlSubTitle(_('Use webcam')), 12);
+			$webcamContent->add(new htmlSubTitle(_('Use webcam')));
 			$errorMessage = new htmlStatusMessage('ERROR', '');
 			$errorMessage->setCSSClasses(['hidden', 'lam-webcam-message']);
-			$webcamContent->add($errorMessage, 12);
+			$webcamContent->add($errorMessage);
 			$captureButton = new htmlButton('lam-webcam-capture', _('Start capture'));
 			$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
 			$webcamContent->add($captureButton, 12, 12, 12, 'text-center');
@@ -2438,11 +2427,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$webcamContent->add($webcamUploadButton, 12, 12, 12, 'text-center');
 			$canvas = new htmlCanvas('lam-webcam-canvas');
 			$canvas->setCSSClasses(['hidden']);
-			$webcamContent->add($canvas, 12);
+			$webcamContent->add($canvas);
 			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
-			$container->add($webcamDiv, 12);
+			$container->add($webcamDiv);
 			$container->addVerticalSpacer('1rem');
-			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
+			$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')));
 		}
 		else {
 			$container->add(new htmlSubTitle(_('Crop image')));
@@ -2457,7 +2446,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$img->enableCropping();
 			$container->add($img);
 			$container->addVerticalSpacer('2rem');
-			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done')), 12);
+			$container->add(new htmlAccountPageButton(static::class, 'attributes', 'crop', _('Done')));
 		}
 		return $container;
 	}
@@ -2466,16 +2455,16 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Sets a new photo.
 	 */
 	public function process_photo() {
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_back'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_back'])) {
 			return [];
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload']) || isset($_POST['webcamData'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_photo_upload']) || isset($_POST['webcamData'])) {
 			return $this->uploadPhoto();
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
-			$messages = [];
+		$messages = [];
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_crop'])) {
 			try {
-				include_once dirname(__FILE__) . '/../imageutils.inc';
+				include_once __DIR__ . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
 				$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
 				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
@@ -2485,8 +2474,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$msg[] = htmlspecialchars($e->getMessage());
 				$messages[] = $msg;
 			}
-			return $messages;
 		}
+		return $messages;
 	}
 
 	/**
@@ -2518,7 +2507,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		// convert to JPG
 		try {
-			include_once dirname(__FILE__) . '/../imageutils.inc';
+			include_once __DIR__ . '/../imageutils.inc';
 			$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 			// resize if maximum values specified
 			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
@@ -2570,15 +2559,15 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$managerSelect->setRightToLeftTextDirection(true);
 		$managerSelect->setSortElements(false);
 		$managerSelect->setTransformSingleSelect(false);
-		$return->add($managerSelect, 12);
+		$return->add($managerSelect);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'setManager', _('Change')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'setManager', _('Change')));
 		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManager', _('Remove')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'removeManager', _('Remove')));
 		$buttonTable->addElement(new htmlSpacer('2rem', null));
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancelManager', _('Cancel')));
-		$return->add($buttonTable, 12);
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'cancelManager', _('Cancel')));
+		$return->add($buttonTable);
 		return $return;
 	}
 
@@ -2590,12 +2579,12 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	function process_manager() {
 		$return = [];
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManager'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_removeManager'])) {
 			if (!empty($this->attributes['manager'])) {
 				unset($this->attributes['manager']);
 			}
 		}
-		elseif (isset($_POST['form_subpage_' . get_class($this) . '_attributes_setManager']) && isset($_POST['manager'])) {
+		elseif (isset($_POST['form_subpage_' . static::class . '_attributes_setManager']) && isset($_POST['manager'])) {
 			$this->attributes['manager'][0] = $_POST['manager'];
 		}
 		return $return;
@@ -2624,7 +2613,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
 
-			$return->add(new htmlSubTitle(_("Allowed workstations")), 12);
+			$return->add(new htmlSubTitle(_("Allowed workstations")));
 
 			$userWorkstationsOptions = [];
 			foreach ($userWorkstations as $userWorkstation) {
@@ -2638,8 +2627,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 			$return->addVerticalSpacer('2rem');
 
-			$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-			$return->add($backButton, 12);
+			$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
+			$return->add($backButton);
 		}
 		return $return;
 	}
@@ -2807,13 +2796,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$partialAccounts[$i]['userPrincipalName'] = $rawAccounts[$i][$ids['windowsUser_userPrincipalName']];
 				if (array_key_exists($partialAccounts[$i]['userPrincipalName'], $existingUsers)) {
 					$errMsg = $this->messages['userPrincipalName'][3];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
 			else {
 				$errMsg = $this->messages['userPrincipalName'][1];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$errors[] = $errMsg;
 			}
 			// first name
@@ -2823,7 +2812,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['givenName'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -2834,7 +2823,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['sn'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -2849,13 +2838,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_cn']];
 					if (array_key_exists($partialAccounts[$i]['cn'], $existingCns)) {
 						$errMsg = $this->messages['cn'][3];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 					}
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -2880,7 +2869,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					}
 					else {
 						$errMsg = $this->messages['sAMAccountName'][1];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 					}
 				}
@@ -2890,7 +2879,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 			}
 			else {
-				// set sAMAccountName to user name if not managed (W2012 requires it)
+				// set sAMAccountName to username if not managed (W2012 requires it)
 				$parts = explode('@', $partialAccounts[$i]['userPrincipalName']);
 				$partialAccounts[$i]['sAMAccountName'] = $parts[0];
 			}
@@ -2902,7 +2891,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			elseif ($rawAccounts[$i][$ids['windowsUser_password']] != "") {
 				$errMsg = $this->messages['userPassword'][4];
 				$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$errors[] = $errMsg;
 			}
 			// display name
@@ -2953,13 +2942,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsUser_mail']];
 					if (in_array_ignore_case($partialAccounts[$i]['mail'], $existingMails)) {
 						$errMsg = $this->messages['mail'][3];
-						array_push($errMsg, [$i, $partialAccounts[$i]['mail']]);
+						$errMsg[] = [$i, $partialAccounts[$i]['mail']];
 						$errors[] = $errMsg;
 					}
 				}
 				else {
 					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -2970,13 +2959,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				for ($x = 0; $x < sizeof($valueList); $x++) {
 					if (!get_preg($valueList[$x], 'email')) {
 						$errMsg = $this->messages['otherMailbox'][1];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 						break;
 					}
 					if (in_array_ignore_case($valueList[$x], $existingMails)) {
 						$errMsg = $this->messages['otherMailbox'][3];
-						array_push($errMsg, [$i, $valueList[$x]]);
+						$errMsg[] = [$i, $valueList[$x]];
 						$errors[] = $errMsg;
 					}
 				}
@@ -3004,14 +2993,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites', 'url', null, null, $errors, '/;[ ]*/');
 			}
 			// user account control
-			$userAccountControlAttr['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+			$userAccountControlAttr['useraccountcontrol'][0] = self::DEFAULT_ACCOUNT_CONTROL;
 			// deactivated
 			if ($rawAccounts[$i][$ids['windowsUser_deactivated']] != "") {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]])) {
 					$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_deactivated', _('Please enter either yes or no.')];
 				}
 				else {
-					$this->setIsDeactivated($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]], $userAccountControlAttr);
+					windowsUser::setIsDeactivated($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]], $userAccountControlAttr);
 				}
 			}
 			// password does not expire
@@ -3020,7 +3009,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_noExpire', _('Please enter either yes or no.')];
 				}
 				else {
-					$this->setIsNeverExpiring($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_noExpire']]]);
+					windowsUser::setIsNeverExpiring($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_noExpire']]]);
 				}
 			}
 			// account expiration
@@ -3031,7 +3020,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['accountexpires'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -3041,7 +3030,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$errors[] = ['ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_requireCard', _('Please enter either yes or no.')];
 				}
 				else {
-					$this->setIsSmartCardRequired($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]]);
+					windowsUser::setIsSmartCardRequired($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]]);
 				}
 			}
 			$partialAccounts[$i]['useraccountcontrol'][0] = $userAccountControlAttr['useraccountcontrol'][0];
@@ -3059,7 +3048,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['profilePath'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -3070,7 +3059,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['scriptPath'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -3081,7 +3070,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['homeDrive'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -3092,7 +3081,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 				else {
 					$errMsg = $this->messages['homeDirectory'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -3356,18 +3345,18 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$this->addSimplePDFField($return, 'manager', _('Manager'));
 		$this->addSimplePDFField($return, 'userWorkstations', _('Workstations'));
 		$deactivated = _('no');
-		if ($this->isDeactivated($this->attributes)) {
+		if (windowsUser::isDeactivated($this->attributes)) {
 			$deactivated = _('yes');
 		}
 		$this->addPDFKeyValue($return, 'deactivated', _('Account is deactivated'), $deactivated);
 		$noExpire = _('no');
-		if ($this->isNeverExpiring($this->attributes)) {
+		if (windowsUser::isNeverExpiring($this->attributes)) {
 			$noExpire = _('yes');
 		}
 		$this->addPDFKeyValue($return, 'noExpire', _('Password does not expire'), $noExpire);
 		$this->addPDFKeyValue($return, 'accountExpires', _('Account expiration date'), $this->formatAccountExpires());
 		$requireCard = _('no');
-		if ($this->isSmartCardRequired($this->attributes)) {
+		if (windowsUser::isSmartCardRequired($this->attributes)) {
 			$requireCard = _('yes');
 		}
 		$this->addPDFKeyValue($return, 'requireCard', _('Require smartcard'), $requireCard);
@@ -3505,7 +3494,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// no password expiration
 		if (isset($profile['windowsUser_pwdNoExpire'][0]) && ($profile['windowsUser_pwdNoExpire'][0] === "true")) {
 			if (!isset($this->attributes['useraccountcontrol'][0])) {
-				$this->attributes['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+				$this->attributes['useraccountcontrol'][0] = self::DEFAULT_ACCOUNT_CONTROL;
 			}
 			windowsUser::setIsNeverExpiring($this->attributes, true);
 		}
@@ -3541,12 +3530,12 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$pwd1 = new htmlResponsiveInputField($this->getSelfServiceLabel('unicodePwd', _('New password')), 'windowsUser_unicodePwd');
 			$pwd1->setIsPassword(true, true);
 			$pwd1->setFieldSize(null);
-			$row->add($pwd1, 12);
+			$row->add($pwd1);
 			$pwd2 = new htmlResponsiveInputField(_('Reenter password'), 'windowsUser_unicodePwd2');
 			$pwd2->setIsPassword(true);
 			$pwd2->setFieldSize(null);
 			$pwd2->setSameValueFieldID('windowsUser_unicodePwd');
-			$row->add($pwd2, 12);
+			$row->add($pwd2);
 			$return['unicodePwd'] = $row;
 		}
 		if ($passwordChangeOnly) {
@@ -3675,7 +3664,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Sets the user password in self service.
+	 * Sets the user password in self-service.
 	 * Since the change requires the old password we need to run ldapmodify for this task.
 	 *
 	 * Enter description here ...
@@ -3703,7 +3692,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if ($returnCode != 0) {
 			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));
 			// Active Directory message translations
-			if ((strpos($outputMessages, 'DSID-03190F80') !== false) && (strpos($outputMessages, 'unicodePwd') !== false)) {
+			if ((str_contains($outputMessages, 'DSID-03190F80')) && (str_contains($outputMessages, 'unicodePwd'))) {
 				$outputMessages = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $outputMessages;
 			}
 			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
@@ -3750,7 +3739,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
-		if (!in_array(get_class($this), $modules)) {
+		if (!in_array(static::class, $modules)) {
 			return [];
 		}
 		// check password strength
@@ -3794,11 +3783,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @return boolean is deactivated
 	 */
 	public static function isDeactivated($attrs) {
-		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
+		$myAttrs = array_change_key_case($attrs);
 		if (!isset($myAttrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($myAttrs['useraccountcontrol'][0]) & windowsUser::AC_ACCOUNT_DISABLED;
+		return intval($myAttrs['useraccountcontrol'][0]) & self::AC_ACCOUNT_DISABLED;
 	}
 
 	/**
@@ -3833,12 +3822,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	private static function getDomainLockoutDuration() {
 		if (!isset($_SESSION['windowsUser_cacheDomainLockoutDuration'])) {
 			$lockoutValue = self::getDomainPolicyAttribute('lockoutduration');
-			if (isset($lockoutValue[0])) {
-				$lockoutValue = $lockoutValue[0];
-			}
-			else {
-				$lockoutValue = null;
-			}
+			$lockoutValue = $lockoutValue[0] ?? null;
 			$_SESSION['windowsUser_cacheDomainLockoutDuration'] = $lockoutValue;
 		}
 		return $_SESSION['windowsUser_cacheDomainLockoutDuration'];
@@ -3891,11 +3875,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) == 'useraccountcontrol') {
 				if ($deactivated) {
-					$attrs[$key][0] = intval($attrs[$key][0]) | windowsUser::AC_ACCOUNT_DISABLED;
+					$attrs[$key][0] = intval($value[0]) | self::AC_ACCOUNT_DISABLED;
 				}
 				else {
-					if (intval($attrs[$key][0]) & windowsUser::AC_ACCOUNT_DISABLED) {
-						$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_ACCOUNT_DISABLED;
+					if (intval($value[0]) & self::AC_ACCOUNT_DISABLED) {
+						$attrs[$key][0] = intval($value[0]) - self::AC_ACCOUNT_DISABLED;
 					}
 				}
 			}
@@ -3912,7 +3896,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($attrs['useraccountcontrol'][0]) & windowsUser::AC_SMARTCARD_REQUIRED;
+		return intval($attrs['useraccountcontrol'][0]) & self::AC_SMARTCARD_REQUIRED;
 	}
 
 	/**
@@ -3925,11 +3909,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) == 'useraccountcontrol') {
 				if ($requireCard) {
-					$attrs[$key][0] = intval($attrs[$key][0]) | windowsUser::AC_SMARTCARD_REQUIRED;
+					$attrs[$key][0] = intval($value[0]) | self::AC_SMARTCARD_REQUIRED;
 				}
 				else {
-					if (intval($attrs[$key][0]) & windowsUser::AC_SMARTCARD_REQUIRED) {
-						$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_SMARTCARD_REQUIRED;
+					if (intval($value[0]) & self::AC_SMARTCARD_REQUIRED) {
+						$attrs[$key][0] = intval($value[0]) - self::AC_SMARTCARD_REQUIRED;
 					}
 				}
 			}
@@ -3946,7 +3930,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($attrs['useraccountcontrol'][0]) & windowsUser::AC_PWD_NEVER_EXPIRES;
+		return intval($attrs['useraccountcontrol'][0]) & self::AC_PWD_NEVER_EXPIRES;
 	}
 
 	/**
@@ -3959,11 +3943,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) == 'useraccountcontrol') {
 				if ($neverExpires) {
-					$attrs[$key][0] = (string) (intval($attrs[$key][0]) | windowsUser::AC_PWD_NEVER_EXPIRES);
+					$attrs[$key][0] = (string) (intval($value[0]) | self::AC_PWD_NEVER_EXPIRES);
 				}
 				else {
-					if (intval($attrs[$key][0]) & windowsUser::AC_PWD_NEVER_EXPIRES) {
-						$attrs[$key][0] = (string) (intval($attrs[$key][0]) - windowsUser::AC_PWD_NEVER_EXPIRES);
+					if (intval($value[0]) & self::AC_PWD_NEVER_EXPIRES) {
+						$attrs[$key][0] = (string) (intval($value[0]) - self::AC_PWD_NEVER_EXPIRES);
 					}
 				}
 			}
@@ -4011,7 +3995,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Returns a list of all user names in LDAP.
+	 * Returns a list of all usernames in LDAP.
 	 *
 	 * @return array user names
 	 */
@@ -4188,18 +4172,18 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$typeManager = new TypeManager($_SESSION['conf_config']);
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
-		$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'), 12);
+		$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'));
 		$displayOptions = [
 			'dn' => self::DISPLAY_GROUPS_DN,
 			'cn' => self::DISPLAY_GROUPS_CN,
 		];
 		$groupDisplaySelect = new htmlResponsiveSelect('windowsUser_displayGroups', $displayOptions, [], _('Display format'), 'displayGroups');
 		$groupDisplaySelect->setHasDescriptiveElements(true);
-		$configContainer->add($groupDisplaySelect, 12);
+		$configContainer->add($groupDisplaySelect);
 		$configHiddenGroup = new htmlGroup();
 		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->add($configHiddenGroup, 12);
+		$configContainer->add($configHiddenGroup);
 		$hiddenOptions = [];
 		$hiddenOptions[_('Personal title')] = ['windowsUser_hidepersonaltitle', true];
 		$hiddenOptions[_('Display name')] = ['windowsUser_hidedisplayName', false];
@@ -4268,13 +4252,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$syncGroupsCheckbox->setTableRowsToHide(['windowsUser_syncGroupsExclusions']);
 			$configContainer->add($syncGroupsCheckbox, 12, 4);
 			$configContainer->addVerticalSpacer('2rem');
-			$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync'), 'excludeFromGroupSync'), 12);
+			$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync'), 'excludeFromGroupSync'));
 		}
 		$advancedOptions = new htmlResponsiveRow();
-		$advancedOptions->add(new htmlSubTitle(_('Photo')), 12);
-		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'), 12);
-		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'), 12);
-		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'), 12);
+		$advancedOptions->add(new htmlSubTitle(_('Photo')));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'));
 		$advancedOptionsAccordion = new htmlAccordion('windowsUserAdvancedOptions', [_('Advanced options') => $advancedOptions], false);
 		$configContainer->add($advancedOptionsAccordion);
 		return $configContainer;
@@ -4440,7 +4424,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @return bool expired
 	 */
 	public static function isAccountExpired($attrs) {
-		$attrs = array_change_key_case($attrs, CASE_LOWER);
+		$attrs = array_change_key_case($attrs);
 		if (empty($attrs['accountexpires'][0])) {
 			return false;
 		}
@@ -4733,14 +4717,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 if (interface_exists('\LAM\JOB\Job', false)) {
 
-	include_once dirname(__FILE__) . '/../passwordExpirationJob.inc';
+	include_once __DIR__ . '/../passwordExpirationJob.inc';
 
 	/**
 	 * Job to notify users about password expiration.
 	 *
 	 * @package jobs
 	 */
-	class WindowsPasswordNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+	class WindowsPasswordNotifyJob extends PasswordExpirationJob {
 
 		/**
 		 * Returns the alias name of the job.
@@ -4890,13 +4874,13 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	 *
 	 * @package jobs
 	 */
-	class WindowsManagedGroupsNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+	class WindowsManagedGroupsNotifyJob extends PasswordExpirationJob {
 
-		const MANAGED_GROUPS = 'LAM_MANAGED_GROUPS';
-		const PERIOD_MONTHLY = 'MONTHLY';
-		const PERIOD_QUARTERLY = 'QUARTERLY';
-		const PERIOD_HALF_YEARLY = 'HALF_YEARLY';
-		const PERIOD_YEARLY = 'YEARLY';
+		private const MANAGED_GROUPS = 'LAM_MANAGED_GROUPS';
+		private const PERIOD_MONTHLY = 'MONTHLY';
+		private const PERIOD_QUARTERLY = 'QUARTERLY';
+		private const PERIOD_HALF_YEARLY = 'HALF_YEARLY';
+		private const PERIOD_YEARLY = 'YEARLY';
 
 		/**
 		 * Returns the alias name of the job.
@@ -4920,13 +4904,13 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		public function getConfigOptions($jobID) {
 			$prefix = $this->getConfigPrefix();
 			$container = new htmlResponsiveRow();
-			$container->add(new htmlResponsiveInputField(_('From address'), $prefix . '_mailFrom' . $jobID, null, '800', true), 12);
-			$container->add(new htmlResponsiveInputField(_('Reply-to address'), $prefix . '_mailReplyTo' . $jobID, null, '801'), 12);
-			$container->add(new htmlResponsiveInputField(_('CC address'), $prefix . '_mailCC' . $jobID, null, '805'), 12);
-			$container->add(new htmlResponsiveInputField(_('BCC address'), $prefix . '_mailBCC' . $jobID, null, '806'), 12);
-			$container->add(new htmlResponsiveInputField(_('Subject'), $prefix . '_mailSubject' . $jobID, null, '802'), 12);
-			$container->add(new htmlResponsiveInputCheckbox($prefix . '_mailIsHTML' . $jobID, false, _('HTML format'), '553'), 12);
-			$container->add(new htmlResponsiveInputTextarea($prefix . '_mailtext' . $jobID, '', 50, 4, _('Text'), '810'), 12);
+			$container->add(new htmlResponsiveInputField(_('From address'), $prefix . '_mailFrom' . $jobID, null, '800', true));
+			$container->add(new htmlResponsiveInputField(_('Reply-to address'), $prefix . '_mailReplyTo' . $jobID, null, '801'));
+			$container->add(new htmlResponsiveInputField(_('CC address'), $prefix . '_mailCC' . $jobID, null, '805'));
+			$container->add(new htmlResponsiveInputField(_('BCC address'), $prefix . '_mailBCC' . $jobID, null, '806'));
+			$container->add(new htmlResponsiveInputField(_('Subject'), $prefix . '_mailSubject' . $jobID, null, '802'));
+			$container->add(new htmlResponsiveInputCheckbox($prefix . '_mailIsHTML' . $jobID, false, _('HTML format'), '553'));
+			$container->add(new htmlResponsiveInputTextarea($prefix . '_mailtext' . $jobID, '', 50, 4, _('Text'), '810'));
 			$periodOptions = [
 				_('Monthly') => self::PERIOD_MONTHLY,
 				_('Quarterly') => self::PERIOD_QUARTERLY,
@@ -4936,7 +4920,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$periodSelect = new htmlResponsiveSelect($prefix . '_period' . $jobID, $periodOptions, [], _('Period'), '811');
 			$periodSelect->setHasDescriptiveElements(true);
 			$periodSelect->setSortElements(false);
-			$container->add($periodSelect, 12);
+			$container->add($periodSelect);
 			return $container;
 		}
 
@@ -4975,7 +4959,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			if (empty($mailText)) {
 				$errors[] = ['ERROR', _('Please set a email text.')];
 			}
-			if (strpos($mailText, '@@' . self::MANAGED_GROUPS . '@@') === false) {
+			if (!str_contains($mailText, '@@' . self::MANAGED_GROUPS . '@@')) {
 				$errors[] = ['ERROR', _('Please add the wildcard for the list of managed groups.'), '@@' . self::MANAGED_GROUPS . '@@'];
 			}
 			return $errors;
@@ -5027,7 +5011,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$this->jobResultLog = &$resultLog;
 			$this->jobResultLog->logDebug("Configuration options:");
 			foreach ($options as $key => $value) {
-				if (strpos($key, $jobID) === false) {
+				if (!str_contains($key, $jobID)) {
 					continue;
 				}
 				$this->jobResultLog->logDebug($key . ': ' . implode(', ', $value));
@@ -5089,20 +5073,13 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @param $jobId job id
 		 * @return int interval
 		 */
-		private function getMonthInterval($options, $jobId) {
-			$monthInterval = 12;
-			switch ($options[$this->getConfigPrefix() . '_period' . $jobId][0]) {
-				case self::PERIOD_HALF_YEARLY:
-					$monthInterval = 6;
-					break;
-				case self::PERIOD_QUARTERLY:
-					$monthInterval = 3;
-					break;
-				case self::PERIOD_MONTHLY:
-					$monthInterval = 1;
-					break;
-			}
-			return $monthInterval;
+		private function getMonthInterval($options, $jobId): int {
+			return match($options[$this->getConfigPrefix() . '_period' . $jobId][0]) {
+			   self::PERIOD_HALF_YEARLY => 6,
+			   self::PERIOD_QUARTERLY => 3,
+			   self::PERIOD_MONTHLY => 1,
+			   default => 12,
+		   };
 		}
 
 		/**
@@ -5121,7 +5098,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 *
 		 * @param DateTime $baseDate base date
 		 * @param int $monthInterval number of months in interval
-		 * @param \LAM\JOB\JobResultLog $resultLog result log
+		 * @param JobResultLog $resultLog result log
 		 */
 		public static function getLastEffectiveExecutionDate($baseDate, $monthInterval, $resultLog) {
 			$month = $baseDate->format('m');
@@ -5182,7 +5159,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	 *
 	 * @package jobs
 	 */
-	class WindowsAccountExpirationNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+	class WindowsAccountExpirationNotifyJob extends PasswordExpirationJob {
 
 		/**
 		 * {@inheritDoc}
@@ -5194,7 +5171,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::getDescription()
+		 * @see PasswordExpirationJob::getDescription
 		 */
 		public function getDescription() {
 			return _('This job sends out emails to inform your users that their account will expire soon.');
@@ -5202,7 +5179,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::findUsers()
+		 * @see PasswordExpirationJob::findUsers
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
@@ -5214,7 +5191,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::checkSingleUser()
+		 * @see PasswordExpirationJob::checkSingleUser
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$dn = $user['dn'];
@@ -5272,7 +5249,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	 *
 	 * @package jobs
 	 */
-	class WindowsAccountExpirationCleanupJob extends \LAM\JOB\AccountExpirationCleanupJob {
+	class WindowsAccountExpirationCleanupJob extends AccountExpirationCleanupJob {
 
 		/**
 		 * Returns the alias name of the job.
