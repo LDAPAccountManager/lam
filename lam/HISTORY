@@ -4,6 +4,8 @@ September 2024 8.9
   -> Custom scripts: added wildcard for server/self service profile name (325)
   -> Self registration: added option to generate password
   -> Request access: auto-refresh views (#324)
+ - Fixed bugs:
+  -> Unix users: error log messages on file upload
 
 
 22.06.2024 8.8

@@ -7,6 +7,7 @@ use \htmlOutputText;
 use \htmlButton;
 use \htmlHiddenInput;
 use \htmlResponsiveRow;
+use LAM\TYPES\TypeManager;
 use LamTemporaryFilesManager;
 
 /*
@@ -102,11 +103,12 @@ if (isset($_POST['showldif'])) {
 }
 elseif (isset($_POST['upload'])) {
 	metaRefresh('massDoUpload.php');
+	exit();
 }
 
 include __DIR__ . '/../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_POST['typeId']);
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
 
 // check if account type is ok

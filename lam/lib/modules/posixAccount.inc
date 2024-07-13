@@ -2707,7 +2707,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 			// GECOS
 			if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-				if (!empty($rawAccount[$ids['posixAccount_gecos']])) {
+				if (isset($ids['posixAccount_gecos']) && !empty($rawAccount[$ids['posixAccount_gecos']])) {
 					if (get_preg($rawAccount[$ids['posixAccount_gecos']], 'gecos')) {
 						$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccount[$ids['posixAccount_gecos']]);
 					}
@@ -2721,7 +2721,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$gecos = "";
 					if (($rawAccount[$ids['inetOrgPerson_firstName']] != "") && ($rawAccount[$ids['inetOrgPerson_lastName']] != "")) {
 						$gecos = $rawAccount[$ids['inetOrgPerson_firstName']] . " " . $rawAccount[$ids['inetOrgPerson_lastName']];
-						if (!empty($rawAccount[$ids['inetOrgPerson_telephone']])) {
+						if (isset($ids['inetOrgPerson_telephone']) && !empty($rawAccount[$ids['inetOrgPerson_telephone']])) {
 							$gecos = $gecos . ",," . $rawAccount[$ids['inetOrgPerson_telephone']];  // double "," because room is unknown
 							if (!empty($rawAccount[$ids['inetOrgPerson_fax']])) {
 								$gecos = $gecos . "," . $rawAccount[$ids['inetOrgPerson_fax']];
@@ -2745,7 +2745,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					}
 				}
 				// group of names
-				if (self::areGroupOfNamesActive() && ($rawAccount[$ids['posixAccount_gon']] != "")) {
+				if (self::areGroupOfNamesActive() && isset($ids['posixAccount_gon']) && ($rawAccount[$ids['posixAccount_gon']] != "")) {
 					$groups = explode(",", $rawAccount[$ids['posixAccount_gon']]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
 						if (!in_array($groups[$g], $gonList)) {
@@ -2785,7 +2785,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$errors[] = $errMsg;
 				}
 				// create home directory
-				if (!empty($rawAccount[$ids['posixAccount_createHomeDir']])) {
+				if (isset($ids['posixAccount_createHomeDir']) && !empty($rawAccount[$ids['posixAccount_createHomeDir']])) {
 					$lamdaemonServerValid = false;
 					foreach ($lamdaemonServers as $lamdaemonServer) {
 						if ($lamdaemonServer->getServer() === $rawAccount[$ids['posixAccount_createHomeDir']]) {
@@ -2952,7 +2952,6 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$temp['exop'] = [];
 			$temp['counter'] = 0;
 			$col = $ids['posixAccount_additionalGroups'];
-			$col_home = $ids['posixAccount_createHomeDir'];
 			// get list of existing groups
 			$groupList = $this->findGroups($selectedModules);
 			$groupMap = [];
@@ -3004,7 +3003,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 						$temp['dn_gon'][$gonMap[$gons[$g]]][$memberAttr][] = $accounts[$i]['dn'];
 					}
 				}
-				if (!empty($dataRow[$col_home])) {
+				if (isset($ids['posixAccount_createHomeDir']) && !empty($dataRow[$ids['posixAccount_createHomeDir']])) {
 					$temp['createHomes'][] = $i;
 				}
 				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
