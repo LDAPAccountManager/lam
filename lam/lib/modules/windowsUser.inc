@@ -1661,7 +1661,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$groupsList = new htmlGroup();
 		$groupNames = [];
 		if ($this->groupDisplayContainsDn()) {
-			usort($this->groupList, 'compareDN');
+			usort($this->groupList, compareDN(...));
 		}
 		foreach ($this->groupList as $groupDn) {
 			$groupCn = extractRDNValue($groupDn);
@@ -2190,13 +2190,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$groupDisplayContainsDn = $this->groupDisplayContainsDn();
 		// sort by DN
 		if ($groupDisplayContainsDn) {
-			usort($groups, 'compareDN');
+			usort($groups, compareDN(...));
 		}
 
 		$selectedGroups = [];
 		// sort by DN
 		if ($groupDisplayContainsDn) {
-			usort($this->groupList, 'compareDN');
+			usort($this->groupList, compareDN(...));
 		}
 		for ($i = 0; $i < sizeof($this->groupList); $i++) {
 			if (in_array($this->groupList[$i], $groups)) {
@@ -2313,7 +2313,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
-			array_map('trim', $namesToIgnore);
+			array_map(trim(...), $namesToIgnore);
 		}
 		foreach ($unixGroups as $unixGroup) {
 			if (in_array($unixGroup, $namesToIgnore)) {
@@ -2366,7 +2366,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
-			array_map('trim', $namesToIgnore);
+			array_map(trim(...), $namesToIgnore);
 		}
 		foreach ($gonGroups as $gonGroup) {
 			if (in_array($gonGroup, $namesToIgnore)) {
@@ -2546,7 +2546,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$entries[$i] = $entries[$i]['dn'];
 		}
 		// sort by DN
-		usort($entries, 'compareDN');
+		usort($entries, compareDN(...));
 		for ($i = 0; $i < sizeof($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}
@@ -3468,14 +3468,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			&& ($profile['windowsUser_department'][0] != '')) {
 			$departments = explode(';', $profile['windowsUser_department'][0]);
 			// remove extra spaces and set attributes
-			$this->attributes['department'] = array_map('trim', $departments);
+			$this->attributes['department'] = array_map(trim(...), $departments);
 		}
 		// department numbers
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')
 			&& !empty($profile['windowsUser_departmentNumber'][0])) {
 			$departmentNumbers = explode(';', $profile['windowsUser_departmentNumber'][0]);
 			// remove extra spaces and set attributes
-			$this->attributes['departmentNumber'] = array_map('trim', $departmentNumbers);
+			$this->attributes['departmentNumber'] = array_map(trim(...), $departmentNumbers);
 		}
 		// organizational unit
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou') && isset($profile['windowsUser_ou'][0])) {
@@ -3572,7 +3572,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (isset($attributes['proxyAddresses'])) {
 				$proxyAddresses = $attributes['proxyAddresses'];
 			}
-			array_map('htmlspecialchars', $proxyAddresses);
+			array_map(htmlspecialchars(...), $proxyAddresses);
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('proxyAddresses', _('Proxy-Addresses'))));
 			$row->addField(new htmlOutputText(implode('<br>', $proxyAddresses), false));
@@ -3583,7 +3583,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (isset($attributes['otherMailbox'])) {
 				$otherMailbox = $attributes['otherMailbox'];
 			}
-			array_map('htmlspecialchars', $otherMailbox);
+			array_map(htmlspecialchars(...), $otherMailbox);
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('otherMailbox', _('Email alias'))));
 			$row->addField(new htmlOutputText(implode('<br>', $otherMailbox), false));
@@ -4511,10 +4511,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
-		if (isset($this->attributes['userPrincipalName'][0])) {
-			return $this->attributes['userPrincipalName'][0];
-		}
-		return null;
+		return $this->attributes['userPrincipalName'][0] ?? null;
 	}
 
 	/**
@@ -4676,9 +4673,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			};
 		}
 		elseif ($attributeName === 'accountexpires') {
-			return function(array $entry, string $attribute): ?htmlElement {
-				return new htmlOutputText($this->formatAccountExpires($entry));
-			};
+			return fn(array $entry, string $attribute): ?htmlElement => new htmlOutputText($this->formatAccountExpires($entry));
 		}
 		elseif (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
 			return function(array $entry, string $attribute): ?htmlElement {
