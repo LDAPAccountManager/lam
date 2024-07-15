@@ -746,4 +746,22 @@ class ReplaceAttributesTask implements ImporterTask {
 		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
 	}
 
+	/**
+	 * Returns the DN. Used for unit test.
+	 *
+	 * @return string DN
+	 */
+	public function getDn(): string {
+		return $this->dn;
+	}
+
+	/**
+	 * Returns the attributes to add. Used for unit test.
+	 *
+	 * @return array[] attributes (array('attr' => array('val1', 'val2')))
+	 */
+	public function getAttributes(): array {
+		return $this->attributes;
+	}
+
 }
