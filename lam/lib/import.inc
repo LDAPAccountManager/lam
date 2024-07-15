@@ -2,8 +2,8 @@
 
 namespace LAM\TOOLS\IMPORT_EXPORT;
 
-use \htmlStatusMessage;
-use \LAMException;
+use htmlStatusMessage;
+use LAMException;
 
 /*
 
@@ -44,16 +44,16 @@ include_once('ldap.inc');
  */
 class Importer {
 
-	const SESSION_KEY_TASKS = 'import_tasks';
-	const SESSION_KEY_COUNT = 'import_count';
-	const SESSION_KEY_STOP_ON_ERROR = 'import_stop_on_error';
-	const STATUS = 'status';
-	const PROGRESS = 'progress';
-	const DATA = 'data';
+	public const SESSION_KEY_TASKS = 'import_tasks';
+	public const SESSION_KEY_COUNT = 'import_count';
+	public const SESSION_KEY_STOP_ON_ERROR = 'import_stop_on_error';
+	public const STATUS = 'status';
+	public const PROGRESS = 'progress';
+	public const DATA = 'data';
 	private const TIME_LIMIT = 10;
-	const KEY = 0;
-	const VALUE = 1;
-	const CHANGETYPE = 'changetype';
+	public const KEY = 0;
+	public const VALUE = 1;
+	private const CHANGETYPE = 'changetype';
 
 	/**
 	 * Extracts the single entries in the file.
@@ -67,7 +67,7 @@ class Importer {
 		$currentEntry = [];
 		foreach ($lines as $line) {
 			$trimmedLine = trim($line);
-			if (substr($trimmedLine, 0, 1) === '#') {
+			if (str_starts_with($trimmedLine, '#')) {
 				// skip comments
 				continue;
 			}
@@ -78,7 +78,7 @@ class Importer {
 					$currentEntry = [];
 				}
 			}
-			elseif (substr($line, 0, 1) === ' ') {
+			elseif (str_starts_with($line, ' ')) {
 				// append to last line if starting with a space
 				if (empty($currentEntry)) {
 					throw new LAMException(_('Invalid data'), htmlspecialchars($line));
@@ -246,7 +246,7 @@ class Importer {
 	private function processVersion($entry) {
 		$keyValue = $this->getLineKeyValue($entry[0]);
 		if (($keyValue[Importer::VALUE] != '1') || (sizeof($entry) > 1)) {
-			$escapedLines = array_map('htmlspecialchars', $entry);
+			$escapedLines = array_map(htmlspecialchars(...), $entry);
 			throw new LAMException(_('LDIF import only supports version 1'), implode('<br>', $escapedLines));
 		}
 	}
@@ -267,7 +267,7 @@ class Importer {
 		}
 		$firstAttributeLine = array_shift($entry);
 		$firstAttribute = $this->getLineKeyValue($firstAttributeLine);
-		if ($firstAttribute[Importer::KEY] != Importer::CHANGETYPE) {
+		if ($firstAttribute[Importer::KEY] != self::CHANGETYPE) {
 			// complete DN
 			$attributes = [
 				$firstAttribute[Importer::KEY] => [$firstAttribute[Importer::VALUE]]
@@ -332,7 +332,7 @@ class Importer {
 		}
 		$newRdnData = $this->getLineKeyValue($entry[0]);
 		if ($newRdnData[Importer::KEY] !== 'newrdn') {
-			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . $newRdnData);
+			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . print_r($newRdnData, true));
 		}
 		$newRdn = $newRdnData[Importer::VALUE];
 		$delOldRdnData = $this->getLineKeyValue($entry[1]);
@@ -403,7 +403,7 @@ class Importer {
 		if (sizeof($parts) !== 2) {
 			throw new LAMException(_('Invalid data'), htmlspecialchars($line));
 		}
-		if (substr($parts[Importer::VALUE], 0, 1) == ':') {
+		if (str_starts_with($parts[Importer::VALUE], ':')) {
 			$value = base64_decode(trim(substr($parts[Importer::VALUE], 1)));
 		}
 		else {
@@ -453,7 +453,7 @@ class AddEntryTask implements ImporterTask {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 * @see ImporterTask::run
 	 */
 	public function run() {
 		$ldap = $_SESSION['ldap']->server();
@@ -492,7 +492,7 @@ class RenameEntryTask implements ImporterTask {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 * @see ImporterTask::run
 	 */
 	public function run() {
 		$ldap = $_SESSION['ldap']->server();
@@ -525,7 +525,7 @@ class DeleteEntryTask implements ImporterTask {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 * @see ImporterTask::run
 	 */
 	public function run() {
 		$ldap = $_SESSION['ldap']->server();
@@ -567,7 +567,7 @@ class MultiTask implements ImporterTask {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 * @see ImporterTask::run
 	 */
 	public function run() {
 		foreach ($this->tasks as $task) {
@@ -610,7 +610,7 @@ class AddAttributesTask implements ImporterTask {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 * @see ImporterTask::run
 	 */
 	public function run() {
 		$ldap = $_SESSION['ldap']->server();
@@ -667,7 +667,7 @@ class DeleteAttributesTask implements ImporterTask {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 * @see ImporterTask::run
 	 */
 	public function run() {
 		$ldap = $_SESSION['ldap']->server();
@@ -735,7 +735,7 @@ class ReplaceAttributesTask implements ImporterTask {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 * @see ImporterTask::run
 	 */
 	public function run() {
 		$ldap = $_SESSION['ldap']->server();
@@ -744,33 +744,6 @@ class ReplaceAttributesTask implements ImporterTask {
 			return '';
 		}
 		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
-	}
-
-	/**
-	 * Returns the DN.
-	 *
-	 * @return string DN
-	 */
-	public function getDn() {
-		return $this->dn;
-	}
-
-	/**
-	 * Returns the attributes to add.
-	 *
-	 * @return string[] attributes (array('attr' => array('val1', 'val2')))
-	 */
-	public function getAttributes() {
-		return $this->attributes;
-	}
-
-	/**
-	 * Returns the attributes name.
-	 *
-	 * @return string name
-	 */
-	public function getAttributeName() {
-		return $this->attributeName;
 	}
 
 }

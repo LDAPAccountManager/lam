@@ -96,14 +96,13 @@ class Ldap {
 			// return error number
 			$errorNumber = ldap_errno($this->server);
 			$clientSource = empty($_SERVER['REMOTE_ADDR']) ? '' : $_SERVER['REMOTE_ADDR'];
-			if (($errorNumber === False)
-				|| ($errorNumber == 81)) {
+			if ($errorNumber == 81) {
 				// connection failed
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
 				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."), null, null, $errorNumber);
 			}
 			elseif ($errorNumber == 49) {
-				// user name/password invalid. Return to login page.
+				// username/password invalid. Return to login page.
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (wrong password). ' . getDefaultLDAPErrorString($this->server));
 				throw new LAMException(_("Wrong password/user name combination. Please try again."), getDefaultLDAPErrorString($this->server), null, $errorNumber);
 			}
@@ -177,7 +176,7 @@ class Ldap {
 		$file = @readdir($dir);
 		while ($file) {
 			$path = $tmpDir . $file;
-			if ((substr($file, 0, 1) != '.')
+			if ((!str_starts_with($file, '.'))
 				&& !is_dir($path)
 				&& ($time - filemtime($path) > 900)) {
 				@unlink($path);
@@ -191,7 +190,7 @@ class Ldap {
 		$dir = @opendir($tmpDir);
 		$file = @readdir($dir);
 		while ($file) {
-			if (substr($file, -4) == '.tmp') {
+			if (str_ends_with($file, '.tmp')) {
 				$path = $tmpDir . $file;
 				if ($time - filemtime($path) > (3600 * 24)) {
 					@unlink($path);
@@ -215,7 +214,7 @@ class Ldap {
 	}
 
 	/**
-	 * Returns the LDAP user name.
+	 * Returns the LDAP username.
 	 *
 	 * @return string user name
 	 */
