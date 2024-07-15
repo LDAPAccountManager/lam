@@ -1,8 +1,8 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 
 /*
@@ -67,7 +67,7 @@ class range extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['dhcp']);
+		return $this->get_scope() == 'dhcp';
 	}
 
 	/**
@@ -398,7 +398,7 @@ class range extends baseModule {
 			if (!empty($this->poolsNew[$index]['dhcpstatements'])) {
 				// remove old peer setting
 				foreach ($this->poolsNew[$index]['dhcpstatements'] as $indexStmt => $stmt) {
-					if (strpos($stmt, 'failover peer "') === 0) {
+					if (str_starts_with($stmt, 'failover peer "')) {
 						unset($this->poolsNew[$index]['dhcpstatements'][$indexStmt]);
 						break;
 					}
@@ -538,7 +538,7 @@ class range extends baseModule {
 				$peer = '';
 				if (!empty($poolAttrs['dhcpstatements'])) {
 					foreach ($poolAttrs['dhcpstatements'] as $statement) {
-						if (strpos($statement, 'failover peer "') === 0) {
+						if (str_starts_with($statement, 'failover peer "')) {
 							$peer = substr($statement, strlen('failover peer "'), -1);
 						}
 					}
@@ -760,7 +760,7 @@ class range extends baseModule {
 					$peer = '';
 					if (!empty($poolAttrs['dhcpstatements'])) {
 						foreach ($poolAttrs['dhcpstatements'] as $statement) {
-							if (strpos($statement, 'failover peer "') === 0) {
+							if (str_starts_with($statement, 'failover peer "')) {
 								$peer = ' (' . substr($statement, strlen('failover peer "'), -1) . ')';
 							}
 						}
@@ -855,7 +855,7 @@ class range extends baseModule {
 							}
 						}
 					}
-					uksort($ranges, 'strnatcasecmp');
+					uksort($ranges, strnatcasecmp(...));
 					foreach ($ranges as $row) {
 						$table->addElement($row[0]);
 						$table->addElement($row[1]);

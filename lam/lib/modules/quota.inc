@@ -1,8 +1,9 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
+use LAM\REMOTE\Remote;
 use LAM\REMOTE\RemoteServerConfiguration;
 
 /*
@@ -203,7 +204,7 @@ class quota extends baseModule {
 		foreach ($lamdaemonServers as $lamdaemonServer) {
 			$server = $lamdaemonServer->getServer();
 			// get quotas
-			$remote = new \LAM\REMOTE\Remote();
+			$remote = new Remote();
 			try {
 				$remote->connect($lamdaemonServer);
 			}
@@ -219,7 +220,7 @@ class quota extends baseModule {
 			$allQuotas = explode(":", $quotas);
 			array_pop($allQuotas); // remove empty element at the end
 			for ($i = 0; $i < sizeof($allQuotas); $i++) {
-				if (strpos($allQuotas[$i], self::$QUOTA_PREFIX) !== 0) {
+				if (!str_starts_with($allQuotas[$i], self::$QUOTA_PREFIX)) {
 					continue;
 				}
 				$allQuotas[$i] = substr($allQuotas[$i], strlen(self::$QUOTA_PREFIX));
@@ -235,13 +236,13 @@ class quota extends baseModule {
 					$this->quota[$server][$i][4] = '';
 				}
 				else {
-					$this->quota[$server][$i][4] = strval(intval(($this->quota[$server][$i][4] - time()) / 3600)) . ' ' . _('hours');
+					$this->quota[$server][$i][4] = intval(($this->quota[$server][$i][4] - time()) / 3600) . ' ' . _('hours');
 				}
 				if ($this->quota[$server][$i][8] < time()) {
 					$this->quota[$server][$i][8] = '';
 				}
 				else {
-					$this->quota[$server][$i][8] = strval(intval(($this->quota[$server][$i][8] - time()) / 3600)) . ' ' . _('hours');
+					$this->quota[$server][$i][8] = intval(($this->quota[$server][$i][8] - time()) / 3600) . ' ' . _('hours');
 				}
 			}
 		}
@@ -424,7 +425,7 @@ class quota extends baseModule {
 				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][6]);
 				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][7]) . ':';
 			}
-			$remote = new \LAM\REMOTE\Remote();
+			$remote = new Remote();
 			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
 			try {
 				$remote->connect($remoteServer);
@@ -434,7 +435,7 @@ class quota extends baseModule {
 				continue;
 			}
 			$output = $remote->execute(implode(self::$SPLIT_DELIMITER, [$id, "quota", "set", $this->get_scope(), "$quotastring\n"]));
-			if (strpos($output, 'ERROR,') === 0) {
+			if (str_starts_with($output, 'ERROR,')) {
 				$messages[] = ['ERROR', $server, _('Unable to set quota.')];
 			}
 			$remote->disconnect();
@@ -452,28 +453,28 @@ class quota extends baseModule {
 		if (empty($quotaInput) || (strlen($quotaInput) < 2)) {
 			return $quotaInput;
 		}
-		if (substr($quotaInput, -1, 1) === 'K') {
+		if (str_ends_with($quotaInput, 'K')) {
 			return substr($quotaInput, 0, -1);
 		}
-		if (substr($quotaInput, -1, 1) === 'M') {
+		if (str_ends_with($quotaInput, 'M')) {
 			return 1024 * substr($quotaInput, 0, -1);
 		}
-		if (substr($quotaInput, -1, 1) === 'G') {
+		if (str_ends_with($quotaInput, 'G')) {
 			return 1024 * 1024 * substr($quotaInput, 0, -1);
 		}
-		if (substr($quotaInput, -1, 1) === 'T') {
+		if (str_ends_with($quotaInput, 'T')) {
 			return 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
 		}
-		if (substr($quotaInput, -1, 1) === 'k') {
+		if (str_ends_with($quotaInput, 'k')) {
 			return 1000 * substr($quotaInput, 0, -1);
 		}
-		if (substr($quotaInput, -1, 1) === 'm') {
+		if (str_ends_with($quotaInput, 'm')) {
 			return 1000 * 1000 * substr($quotaInput, 0, -1);
 		}
-		if (substr($quotaInput, -1, 1) === 'g') {
+		if (str_ends_with($quotaInput, 'g')) {
 			return 1000 * 1000 * 1000 * substr($quotaInput, 0, -1);
 		}
-		if (substr($quotaInput, -1, 1) === 't') {
+		if (str_ends_with($quotaInput, 't')) {
 			return 1000 * 1000 * 1000 * 1000 * substr($quotaInput, 0, -1);
 		}
 		return $quotaInput;
@@ -513,7 +514,7 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
 			}
-			$remote = new \LAM\REMOTE\Remote();
+			$remote = new Remote();
 			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
 			try {
 				$remote->connect($remoteServer);
@@ -588,7 +589,7 @@ class quota extends baseModule {
 			$this->initQuotas();
 		}
 		catch (LAMException $e) {
-			$return->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+			$return->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 			return $return;
 		}
 		if (!is_array($this->quota)) {
@@ -610,7 +611,7 @@ class quota extends baseModule {
 			if ($serverDescriptions[$server] != $server) {
 				$title = $serverDescriptions[$server] . " (" . $server . ")";
 			}
-			$return->add(new htmlSubTitle($title), 12);
+			$return->add(new htmlSubTitle($title));
 
 			$titles = [
 				_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'), _('Grace block period'),
@@ -650,7 +651,7 @@ class quota extends baseModule {
 			}
 			$table = new htmlResponsiveTable($titles, $data);
 			$table->setWidths(['20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%']);
-			$return->add($table, 12);
+			$return->add($table);
 		}
 		return $return;
 	}
@@ -682,7 +683,7 @@ class quota extends baseModule {
 					$description = $description . ' (' . $server . ')';
 				}
 				// Get quotas
-				$remote = new \LAM\REMOTE\Remote();
+				$remote = new Remote();
 				$remote->connect($lamdaemonServer);
 				$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, ["+", "quota", "get", $this->get_scope()]));
 				$remote->disconnect();
@@ -695,7 +696,7 @@ class quota extends baseModule {
 					continue;
 				}
 				for ($i = 0; $i < sizeof($dirs); $i++) {
-					if (strpos($dirs[$i], self::$QUOTA_PREFIX) !== 0) {
+					if (!str_starts_with($dirs[$i], self::$QUOTA_PREFIX)) {
 						unset($dirs[$i]);
 						$dirs = array_values($dirs);
 						$i--;
@@ -710,26 +711,26 @@ class quota extends baseModule {
 					continue; // stop if no quota directories were found
 				}
 				$optionsAvailable = true;
-				$return->add(new htmlSubTitle($description), 12);
+				$return->add(new htmlSubTitle($description));
 				for ($i = 0; $i < sizeof($dirs); $i++) {
-					$return->add(new htmlOutputText($dirs[$i]), 12);
+					$return->add(new htmlOutputText($dirs[$i]));
 					$sbLimit = new htmlResponsiveInputField(_('Soft block limit'), "quota_softblock_" . $id . "_" . $dirs[$i], null, 'SoftBlockLimit');
 					$sbLimit->setFieldMaxLength(20);
-					$return->add($sbLimit, 12);
+					$return->add($sbLimit);
 					$hbLimit = new htmlResponsiveInputField(_('Hard block limit'), "quota_hardblock_" . $id . "_" . $dirs[$i], null, 'HardBlockLimit');
 					$hbLimit->setFieldMaxLength(20);
-					$return->add($hbLimit, 12);
+					$return->add($hbLimit);
 					$siLimit = new htmlResponsiveInputField(_('Soft inode limit'), "quota_softinode_" . $id . "_" . $dirs[$i], null, 'SoftInodeLimit');
 					$siLimit->setFieldMaxLength(20);
-					$return->add($siLimit, 12);
+					$return->add($siLimit);
 					$hiLimit = new htmlResponsiveInputField(_('Hard inode limit'), "quota_hardinode_" . $id . "_" . $dirs[$i], null, 'HardInodeLimit');
 					$hiLimit->setFieldMaxLength(20);
-					$return->add($hiLimit, 12);
+					$return->add($hiLimit);
 				}
 			}
 		}
 		catch (LAMException $e) {
-			$return->add(new htmlStatusMessage('WARN', $e->getTitle()), 12);
+			$return->add(new htmlStatusMessage('WARN', $e->getTitle()));
 			return $return;
 		}
 		if (!$optionsAvailable) {
@@ -749,7 +750,7 @@ class quota extends baseModule {
 			$server = $lamdaemonServer->getServer();
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
-			$remote = new \LAM\REMOTE\Remote();
+			$remote = new Remote();
 			try {
 				$remote->connect($lamdaemonServer);
 			}
@@ -766,7 +767,7 @@ class quota extends baseModule {
 			}
 			$quotaDirs = [];
 			foreach ($dirs as $dirString) {
-				if (strpos($dirString, self::$QUOTA_PREFIX) !== 0) {
+				if (!str_starts_with($dirString, self::$QUOTA_PREFIX)) {
 					continue;
 				}
 				$dirData = explode(",", substr($dirString, strlen(self::$QUOTA_PREFIX)));
@@ -810,7 +811,7 @@ class quota extends baseModule {
 			$this->initQuotas();
 		}
 		catch (LAMException $e) {
-			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+			logNewMessage(LOG_ERR, $e->getTitle() . ' - ' . $e->getMessage());
 		}
 		if (!isset($this->quota) || !is_array($this->quota)) {
 			return;
@@ -846,7 +847,7 @@ class quota extends baseModule {
 			$this->initQuotas();
 		}
 		catch (LAMException $e) {
-			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+			logNewMessage(LOG_ERR, $e->getTitle() . ' - ' . $e->getMessage());
 			return [];
 		}
 		if (!isset($this->quota) || !is_array($this->quota)) {
@@ -906,7 +907,7 @@ class quota extends baseModule {
 			$this->initQuotas();
 		}
 		catch (LAMException $e) {
-			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+			logNewMessage(LOG_ERR, $e->getTitle() . ' - ' . $e->getMessage());
 			return [];
 		}
 		if (!isset($this->quota) || !is_array($this->quota)) {
@@ -919,12 +920,12 @@ class quota extends baseModule {
 			foreach ($lamdaemonServers as $lamdaemonServer) {
 				$server = $lamdaemonServer->getServer();
 				// Get quotas
-				$remote = new \LAM\REMOTE\Remote();
+				$remote = new Remote();
 				try {
 					$remote->connect($lamdaemonServer);
 				}
 				catch (LAMException $e) {
-					logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+					logNewMessage(LOG_ERR, $e->getTitle() . ' - ' . $e->getMessage());
 					continue;
 				}
 				$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, ["+", "quota", "get", $this->get_scope()]));
@@ -932,7 +933,7 @@ class quota extends baseModule {
 				$dirs = explode(":", $quotas);
 				array_pop($dirs); // remove empty element at the end
 				for ($i = 0; $i < sizeof($dirs); $i++) {
-					if (strpos($dirs[$i], self::$QUOTA_PREFIX) !== 0) {
+					if (!str_starts_with($dirs[$i], self::$QUOTA_PREFIX)) {
 						unset($dirs[$i]);
 						$i--;
 						continue;
@@ -967,7 +968,7 @@ class quota extends baseModule {
 			$temp['quotas'] = [];
 			$columns = array_keys($ids);
 			for ($i = 0; $i < sizeof($columns); $i++) {
-				if (strpos($columns[$i], 'quota_') === 0) {
+				if (str_starts_with($columns[$i], 'quota_')) {
 					$temp['quotas'][] = substr($columns[$i], 6);
 				}
 			}
@@ -992,43 +993,43 @@ class quota extends baseModule {
 						// check syntax
 						if (sizeof($parts) != 4) {
 							$errMsg = $this->messages['upload'][0];
-							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
+							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[0], 'quotaNumber')) {
 							$errMsg = $this->messages['softblock'][1];
-							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
+							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[1], 'quotaNumber')) {
 							$errMsg = $this->messages['hardblock'][1];
-							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
+							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[2], 'quotaNumber')) {
 							$errMsg = $this->messages['softinode'][1];
-							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
+							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
 							continue;
 						}
 						if (!get_preg($parts[3], 'quotaNumber')) {
 							$errMsg = $this->messages['hardinode'][1];
-							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
+							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
 							continue;
 						}
 						if ($this->getQuotaNumber($parts[0]) > $this->getQuotaNumber($parts[1])) {
 							$errMsg = $this->messages['block_cmp'][1];
-							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
+							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
 							continue;
 						}
 						if ($this->getQuotaNumber($parts[2]) > $this->getQuotaNumber($parts[3])) {
 							$errMsg = $this->messages['inode_cmp'][1];
-							array_push($errMsg, [$i, 'quota_' . $temp['quotas'][$m]]);
+							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
 							continue;
 						}
@@ -1055,7 +1056,7 @@ class quota extends baseModule {
 				$dir = $mpParts[1];
 				$quotaString = implode(self::$SPLIT_DELIMITER, [$name, "quota", "set", $this->get_scope(), $dir . ',' .
 					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"]);
-				$remote = new \LAM\REMOTE\Remote();
+				$remote = new Remote();
 				$remoteServer = $_SESSION['config']->getScriptServerByName($server);
 				try {
 					$remote->connect($remoteServer);
@@ -1132,7 +1133,7 @@ class quota extends baseModule {
 					if ($serverDescriptions[$server] != $server) {
 						$title = $serverDescriptions[$server] . " (" . $server . ")";
 					}
-					$quotaRow->add(new htmlSubTitle($title), 12);
+					$quotaRow->add(new htmlSubTitle($title));
 
 					$titles = [
 						_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'),
@@ -1156,7 +1157,7 @@ class quota extends baseModule {
 					$table = new htmlResponsiveTable($titles, $data);
 					$table->setCSSClasses(['responsive-table-wrap-th']);
 					$table->setWidths(['20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%']);
-					$quotaRow->add($table, 12);
+					$quotaRow->add($table);
 				}
 				$return['quota'] = $quotaRow;
 			}
