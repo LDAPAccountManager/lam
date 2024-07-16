@@ -1993,6 +1993,25 @@
 
 </literallayout></para>
 
+      <para><emphasis role="bold">Membership Expiration</emphasis></para>
+
+      <para>You can select to expire memberships after a given time. LAM will
+      then remove them using <link linkend="confMainGlobalCron">global cron
+      job</link> once the time is reached. Please configure the following
+      settings. If you use multiple self-service profiles for
+      requester/owner/approver views then you need to configure this in the
+      one that group owners use.</para>
+
+      <para>If you do not specify an expiration time then memberships will not
+      expire unless a custom expiration time is used. Allowing custom
+      expiration times enables group owners to enter a custom date of
+      expiration or no expiration time. The admin DN and password are used to
+      perform the LDAP operation to remove the memberships.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess8.png"/>
+      </screenshot>
+
       <para><emphasis role="bold">Field Configuration</emphasis></para>
 
       <para>Next, the fields need to be added to the "Page layout" tab. There
