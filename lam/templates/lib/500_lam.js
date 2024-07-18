@@ -1065,8 +1065,9 @@ window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction)
  * @param divId DIV id with dialog content
  * @param callbackFunction callback function (optional, gets result of preConfirmFunction as parameter)
  * @param preConfirmFunction preConfirm function (optional)
+ * @param postDisplayFunction called after dialog gets visible (optional)
  */
-window.lam.dialog.showConfirmation = async function(title, okText, cancelText, divId, callbackFunction, preConfirmFunction) {
+window.lam.dialog.showConfirmation = async function(title, okText, cancelText, divId, callbackFunction, preConfirmFunction, postDisplayFunction) {
 	const div = document.getElementById(divId);
 	const dialogContent = div.cloneNode(true);
 	const divContent = div.innerHTML;
@@ -1082,6 +1083,9 @@ window.lam.dialog.showConfirmation = async function(title, okText, cancelText, d
 	};
 	if (preConfirmFunction) {
 		options.preConfirm = preConfirmFunction;
+	}
+	if (postDisplayFunction) {
+		options.didOpen = postDisplayFunction;
 	}
 	const {value: formValues} = await Swal.fire(options);
 	if (callbackFunction && formValues) {
