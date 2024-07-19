@@ -1942,6 +1942,11 @@
       This is available for the mails to the group owners/managers and
       approvers. Use it as target URL for a link inside the email body.</para>
 
+      <para>The wildcard $$membershipExpirationTime$$ resolves to the
+      expiration time of the membership if set. It is available for the mails
+      to the approvers and the approval mails to the requester if no approval
+      group is set.</para>
+
       <para><emphasis role="bold">Example for owner email:</emphasis></para>
 
       <literallayout>
