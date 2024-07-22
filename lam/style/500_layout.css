@@ -1159,3 +1159,7 @@ div.lam-data-table button.tabulator-page.active {
 	color: var(--lam-text-color-default) !important;
 	font-weight: bold;
 }
+
+div.lam-data-table .tabulator-header,.tabulator-table {
+	color: var(--lam-text-color-default) !important;
+}
