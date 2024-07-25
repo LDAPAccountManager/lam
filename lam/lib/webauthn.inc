@@ -759,6 +759,9 @@ class PublicKeyCredentialSourceRepositorySQLite extends PublicKeyCredentialSourc
 		$fileName = __DIR__ . '/../config/__lam.webauthn.sqlite';
 		if (!file_exists($fileName)) {
 			$handle = fopen($fileName, 'w');
+			if ($handle === false) {
+				throw new PDOException('Unable to write ' . $fileName);
+			}
 			fclose($handle);
 			chmod($fileName, 0600);
 		}
