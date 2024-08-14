@@ -1118,7 +1118,7 @@ div.jodit-container {
 
 div.lam-data-table {
 	border-color: var(--lam-table-border-color);
-	background-color: unset;
+	background-color: var(--lam-table-background-color-bright);
 }
 
 div.lam-data-table select {
@@ -1158,4 +1158,8 @@ div.lam-data-table div.tabulator-cell,div.tabulator-header {
 div.lam-data-table button.tabulator-page.active {
 	color: var(--lam-text-color-default) !important;
 	font-weight: bold;
+}
+
+div.lam-data-table .tabulator-header,.tabulator-table {
+	color: var(--lam-text-color-default) !important;
 }

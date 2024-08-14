@@ -1942,6 +1942,10 @@
       This is available for the mails to the group owners/managers and
       approvers. Use it as target URL for a link inside the email body.</para>
 
+      <para>The wildcard $$membershipRevocationTime$$ resolves to the
+      revocation date of the membership if set. It is available for the mails
+      to the approvers.</para>
+
       <para><emphasis role="bold">Example for owner email:</emphasis></para>
 
       <literallayout>
@@ -1993,6 +1997,25 @@
 
 </literallayout></para>
 
+      <para><emphasis role="bold">Membership Revocation</emphasis></para>
+
+      <para>You can select to revoke memberships after a given time. LAM will
+      then remove them using <link linkend="confMainGlobalCron">global cron
+      job</link> once the time is reached. Please configure the following
+      settings. If you use multiple self-service profiles for
+      requester/owner/approver views then you need to configure this in the
+      one that group owners use.</para>
+
+      <para>If you do not specify a revocation time then memberships/ownerships will not
+      expire unless a custom revocation time is used. Allowing custom
+      revocation times enables group owners to enter a custom date of
+      revocation or no revocation time. The admin DN and password are used to
+      perform the LDAP operation to remove the memberships.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_requestAccess8.png"/>
+      </screenshot>
+
       <para><emphasis role="bold">Field Configuration</emphasis></para>
 
       <para>Next, the fields need to be added to the "Page layout" tab. There
@@ -2027,6 +2050,23 @@
             <listitem>
               <para>Users that have no approver role see only requests for
               their managed groups</para>
+            </listitem>
+
+            <listitem>
+              <para>Users that are neither approver nor managing groups will
+              not see anything</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Request access: Revocation information - Displays when roles
+          will be revoked by the system</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Users that have no approver role see only their managed
+              groups</para>
             </listitem>
 
             <listitem>
