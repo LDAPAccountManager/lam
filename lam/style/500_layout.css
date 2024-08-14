@@ -1118,7 +1118,7 @@ div.jodit-container {
 
 div.lam-data-table {
 	border-color: var(--lam-table-border-color);
-	background-color: unset;
+	background-color: var(--lam-table-background-color-bright);
 }
 
 div.lam-data-table select {

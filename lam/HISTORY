@@ -3,7 +3,7 @@ September 2024 8.9
  - LAM Pro:
   -> Custom scripts: added wildcard for server/self service profile name (325)
   -> Self registration: added option to generate password
-  -> Request access: allow to define an expiration time for memberships (284)
+  -> Request access: allow to define an expiration time for memberships/ownerships (284)
   -> Request access: auto-refresh views (#324)
  - Fixed bugs:
   -> Unix users: error log messages on file upload
