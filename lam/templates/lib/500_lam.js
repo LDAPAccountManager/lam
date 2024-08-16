@@ -582,8 +582,9 @@ window.lam.filterSelect.addFormListener = function() {
 	const forms = Array.from(document.forms);
 	forms.forEach((form) => {
 		form.addEventListener('submit', function () {
-			const selectFields = form.querySelectorAll('.lam-filteredOptions');
+			const selectFields = form.querySelectorAll('.lam-filteredOptions[multiple]');
 			selectFields.forEach((item) => {
+
 				const storedOptions = JSON.parse(item.dataset.options);
 				item.querySelectorAll('option').forEach((optionItem) => {
 					storedOptions[optionItem.value].selected = optionItem.selected;
