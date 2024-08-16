@@ -546,7 +546,8 @@ window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 	selectField.dataset.options = JSON.stringify(storedOptions);
 	// get matching values
 	selectField.innerHTML = '';
-	const search = inputField.value.trim();
+	let search = inputField.value.trim();
+	search = search.replace('*', '.*');
 	const regex = new RegExp(search,'gi');
 	let index = 0;
 	for (const value in storedOptions) {
@@ -627,7 +628,8 @@ window.lam.filterSelect.filterDynamic = function(inputField, selectField) {
 	selectField.innerHTML = '';
 	const newOptions = [];
 	// get matching values
-	const search = inputField.value.trim();
+	let search = inputField.value.trim();
+	search = search.replace('*', '.*');
 	const regex = new RegExp(search,'gi');
 	optionsOrig.forEach(function(option, i) {
 		if(option.label.match(regex) !== null) {
