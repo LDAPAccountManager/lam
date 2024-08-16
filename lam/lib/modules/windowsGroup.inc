@@ -171,6 +171,11 @@ class windowsGroup extends baseModule {
 				"Headline" => _('NIS domain'), 'attr' => 'msSFU30NisDomain',
 				"Text" => _('NIS domain name.')
 			],
+			'filter' => [
+				"Headline" => _("Filter"),
+				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
+					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
+			],
 		];
 		// upload fields
 		$return['upload_columns'] = [
@@ -599,7 +604,15 @@ class windowsGroup extends baseModule {
 		$membersSelect->setRightToLeftTextDirection(true);
 		$membersSelect->setSortElements(false);
 		$membersSelect->setTransformSingleSelect(false);
-		$return->add($membersSelect, 12);
+		$return->add($membersSelect);
+		$filterGroup = new htmlGroup();
+		$filterGroup->addElement(new htmlOutputText(_('Filter')));
+		$filterInput = new htmlInputField('filter');
+		$filterInput->filterSelectBox('managedBy');
+		$filterInput->setCSSClasses(['max-width-10']);
+		$filterGroup->addElement($filterInput);
+		$filterGroup->addElement(new htmlHelpLink('filter'));
+		$return->add($filterGroup);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'set', _('Change')));

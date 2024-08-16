@@ -461,6 +461,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				"Headline" => _('Display format'),
 				"Text" => _('Specifies how groups are displayed.')
 			],
+			'filter' => [
+				"Headline" => _("Filter"),
+				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
+					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
+			],
 		];
 		// upload fields
 		$return['upload_columns'] = [
@@ -2560,6 +2565,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$managerSelect->setSortElements(false);
 		$managerSelect->setTransformSingleSelect(false);
 		$return->add($managerSelect);
+		$filterGroup = new htmlGroup();
+		$filterGroup->addElement(new htmlOutputText(_('Filter')));
+		$filterInput = new htmlInputField('filter');
+		$filterInput->filterSelectBox('manager');
+		$filterInput->setCSSClasses(['max-width-10']);
+		$filterGroup->addElement($filterInput);
+		$filterGroup->addElement(new htmlHelpLink('filter'));
+		$return->add($filterGroup);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'setManager', _('Change')));
