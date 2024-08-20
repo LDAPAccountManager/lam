@@ -246,6 +246,10 @@ table.accountlist > tbody > tr:hover {
 	color: var(--lam-table-text-color-hover);
 }
 
+table.accountlist > tbody > tr:hover a {
+	color: var(--lam-table-text-color-hover);
+}
+
 .lam-margin-large {
 	margin: var(--lam-large-space);
 }
