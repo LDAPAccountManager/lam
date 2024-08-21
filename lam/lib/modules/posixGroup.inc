@@ -240,7 +240,7 @@ class posixGroup extends baseModule implements passwordService {
 				$return->addLabel(new htmlOutputText(_("Group members")));
 				$membersGroup = new htmlGroup();
 				if (!$this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
-					$membersGroup->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+					$membersGroup->addElement(new htmlAccountPageButton(static::class, 'user', 'open', _('Edit members')));
 				}
 				$membersGroup->addElement(new htmlHelpLink('members'));
 				$return->addField($membersGroup);
@@ -352,7 +352,7 @@ class posixGroup extends baseModule implements passwordService {
 
 		// back button
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12);
 
 		return $return;
 	}
@@ -509,8 +509,8 @@ class posixGroup extends baseModule implements passwordService {
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlSubTitle(_("Groups")), 12);
-		foreach ($allScopes[get_class($this)] as $typeId) {
-			if (sizeof($allScopes[get_class($this)]) > 1) {
+		foreach ($allScopes[static::class] as $typeId) {
+			if (sizeof($allScopes[static::class]) > 1) {
 				$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
 				$title->setCSSClasses(['bold', 'responsiveLabel']);
 				$configContainer->add($title, 12, 6);
@@ -672,7 +672,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
-		if (in_array(get_class($this) . '_memberUidPrimary', $pdfKeys)) {
+		if (in_array(static::class . '_memberUidPrimary', $pdfKeys)) {
 			$members = !empty($this->attributes['memberUid']) ? $this->attributes['memberUid'] : [];
 			if (!empty($this->attributes['gidNumber'])) {
 				$filter = "(&(&" . get_ldap_filter('user') . ")(gidNumber=" . $this->attributes['gidNumber'][0] . "))";
@@ -1288,7 +1288,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
-		if (!in_array(get_class($this), $modules)) {
+		if (!in_array(static::class, $modules)) {
 			return [];
 		}
 		$this->attributes[$this->passwordAttrName][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);

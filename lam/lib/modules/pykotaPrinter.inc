@@ -276,7 +276,7 @@ class pykotaPrinter extends baseModule {
 		// printer members
 		$memberLabel = new htmlOutputText(_('Group members'));
 		$container->addLabel($memberLabel);
-		$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.svg', true);
+		$addMemberButton = new htmlAccountPageButton(static::class, 'members', 'open', 'add.svg', true);
 		$addMemberButton->setTitle(_('Add'));
 		$memberHelp = new htmlHelpLink('uniqueMember');
 		$memberTable = new htmlTable();
@@ -432,9 +432,9 @@ class pykotaPrinter extends baseModule {
 		$return->add($filterGroup, 12);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'addMembers', _('Add')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'addMembers', _('Add')));
 		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
 		$return->add($buttonTable, 12);
 		return $return;
 	}
@@ -447,7 +447,7 @@ class pykotaPrinter extends baseModule {
 	 */
 	function process_members() {
 		$return = [];
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addMembers']) && isset($_POST['members'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_addMembers']) && isset($_POST['members'])) {
 			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
 				$this->attributes['uniqueMember'][] = $_POST['members'][$i];
 			}

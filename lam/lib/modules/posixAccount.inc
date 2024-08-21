@@ -202,10 +202,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			// self service configuration settings
 			$selfServiceContainer = new htmlResponsiveRow();
 			$selfServiceContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				['CRYPT-SHA512'], _("Password hash type"), ['pwdHash', get_class($this)]), 12);
-			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), ['loginShells', get_class($this)]), 12);
-			$selfServiceContainer->add(new htmlResponsiveInputField(_('Group DN'), 'posixAccount_groupDn', '', ['groupDn', get_class($this)]), 12);
-			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), ['useOldPwd', get_class($this)]), 12);
+				['CRYPT-SHA512'], _("Password hash type"), ['pwdHash', static::class]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), ['loginShells', static::class]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputField(_('Group DN'), 'posixAccount_groupDn', '', ['groupDn', static::class]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), ['useOldPwd', static::class]), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
@@ -1641,7 +1641,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
+			if (isset($_POST['form_subpage_' . static::class . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
 				try {
 					$remote->connect($lamdaemonServers[$i]);
@@ -1662,7 +1662,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					}
 				}
 			}
-			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
+			elseif (isset($_POST['form_subpage_' . static::class . '_homedir_delete_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
 				try {
 					$remote->connect($lamdaemonServers[$i]);
@@ -1826,7 +1826,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
 					$return->addLabel(new htmlOutputText(_('Additional groups')));
 					$additionalGroups = new htmlGroup();
-					$additionalGroups->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
+					$additionalGroups->addElement(new htmlAccountPageButton(static::class, 'group', 'open', _('Edit groups')));
 					$additionalGroups->addElement(new htmlHelpLink('addgroup'));
 					$return->addField($additionalGroups);
 				}
@@ -1857,7 +1857,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					}
 					else {
 						$return->addLabel(new htmlOutputText('&nbsp;', false));
-						$return->addField(new htmlAccountPageButton(get_class($this), 'homedir', 'open', _('Check home directories')));
+						$return->addField(new htmlAccountPageButton(static::class, 'homedir', 'open', _('Check home directories')));
 					}
 				}
 				$selectedShell = [];
@@ -2023,10 +2023,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$return->addVerticalSpacer('1rem');
 			if ($showGonSync) {
 				$syncButtons = new htmlGroup();
-				$u2gonButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2GON', _('Sync Unix to group of names'));
+				$u2gonButton = new htmlAccountPageButton(static::class, 'group', 'syncU2GON', _('Sync Unix to group of names'));
 				$syncButtons->addElement($u2gonButton);
 				$syncButtons->addElement(new htmlSpacer('2rem', null));
-				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncGON2U', _('Sync group of names to Unix'));
+				$gon2uButton = new htmlAccountPageButton(static::class, 'group', 'syncGON2U', _('Sync group of names to Unix'));
 				$syncButtons->addElement($gon2uButton);
 				$return->add($syncButtons, 12, 12, 12, 'text-center');
 				if ($showWindowsSync) {
@@ -2035,14 +2035,14 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 			if ($showWindowsSync) {
 				$syncButtons = new htmlGroup();
-				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncWin2U', _('Sync Windows to Unix'));
+				$gon2uButton = new htmlAccountPageButton(static::class, 'group', 'syncWin2U', _('Sync Windows to Unix'));
 				$syncButtons->addElement($gon2uButton);
 				$return->add($syncButtons, 12, 12, 12, 'text-center');
 			}
 		}
 
 		$return->addVerticalSpacer('2rem');
-		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
 		$return->add($backButton, 12);
 		return $return;
 	}
@@ -2089,7 +2089,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$okGroup = new htmlGroup();
 					$okGroup->addElement(new htmlImage('../../graphics/pass.svg', 16, 16));
 					$okGroup->addElement(new htmlSpacer('5px', null));
-					$okGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+					$okGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'delete_' . $i, _('Delete')));
 					$return->addField($okGroup);
 				}
 				elseif ($returnValue == 'missing') {
@@ -2097,7 +2097,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$failGroup = new htmlGroup();
 					$failGroup->addElement(new htmlImage('../../graphics/del.svg', 16, 16));
 					$failGroup->addElement(new htmlSpacer('5px', null));
-					$failGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+					$failGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'create_' . $i, _('Create')));
 					$return->addField($failGroup);
 				}
 				elseif (trim($returnValue) != '') {
@@ -2116,7 +2116,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 		}
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12, 12, 12, 'text-center');
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12, 12, 12, 'text-center');
 		return $return;
 	}
 
@@ -2335,11 +2335,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			// user options
 			$configUserContainer = new htmlResponsiveRow();
 			$configUserContainer->add(new htmlSubTitle(_("Users")), 12);
-			foreach ($allScopes[get_class($this)] as $typeId) {
+			foreach ($allScopes[static::class] as $typeId) {
 				if (!(getScopeFromTypeId($typeId) === 'user')) {
 					continue;
 				}
-				if (sizeof($allScopes[get_class($this)]) > 1) {
+				if (sizeof($allScopes[static::class]) > 1) {
 					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
 					$title->setCSSClasses(['bold', 'responsiveLabel']);
 					$configUserContainer->add($title, 12, 6);
@@ -2406,11 +2406,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if ($hasHostConfig) {
 			$configHostContainer = new htmlResponsiveRow();
 			$configHostContainer->add(new htmlSubTitle(_("Hosts")), 12);
-			foreach ($allScopes[get_class($this)] as $typeId) {
+			foreach ($allScopes[static::class] as $typeId) {
 				if (!(getScopeFromTypeId($typeId) === 'host')) {
 					continue;
 				}
-				if (sizeof($allScopes[get_class($this)]) > 1) {
+				if (sizeof($allScopes[static::class]) > 1) {
 					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
 					$title->setCSSClasses(['bold', 'responsiveLabel']);
 					$configHostContainer->add($title, 12, 6);
@@ -3564,7 +3564,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
-		if (!in_array(get_class($this), $modules)) {
+		if (!in_array(static::class, $modules)) {
 			return [];
 		}
 		$accountModules = $this->getAccountContainer()->get_type()->getModules();

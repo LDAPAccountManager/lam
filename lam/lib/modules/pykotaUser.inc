@@ -261,9 +261,9 @@ class pykotaUser extends baseModule {
 			'pykotaJobHistory' => _('Job history'),
 		];
 		// self service settings
-		if (get_class($this) == 'pykotaUser') {
+		if (static::class == 'pykotaUser') {
 			$selfServiceContainer = new htmlResponsiveRow();
-			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, ['jobSuffix', get_class($this)]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, ['jobSuffix', static::class]), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// configuration checks
@@ -350,10 +350,10 @@ class pykotaUser extends baseModule {
 			$container->addField($balanceGroup);
 			$container->addLabel(new htmlOutputText('&nbsp;', false));
 			$historyGroup = new htmlGroup();
-			$historyGroup->addElement(new htmlAccountPageButton(get_class($this), 'payments', 'open', _('Payment history')));
+			$historyGroup->addElement(new htmlAccountPageButton(static::class, 'payments', 'open', _('Payment history')));
 			if (!$this->getAccountContainer()->isNewAccount && !empty($this->moduleSettings['pykotaUser_jobSuffix'][0])) {
 				$historyGroup->addElement(new htmlSpacer('5px', null));
-				$historyGroup->addElement(new htmlAccountPageButton(get_class($this), 'jobs', 'open', _('Job history')));
+				$historyGroup->addElement(new htmlAccountPageButton(static::class, 'jobs', 'open', _('Job history')));
 			}
 			$historyGroup->addElement(new htmlSpacer('5px', null));
 			$historyGroup->addElement(new htmlHelpLink('pykotaPayments'), true);
@@ -595,7 +595,7 @@ class pykotaUser extends baseModule {
 		}
 		// back button
 		$container->addVerticalSpacer('2rem');
-		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
 		$container->add($backButton, 12);
 		return $container;
 	}
@@ -638,7 +638,7 @@ class pykotaUser extends baseModule {
 		$container->add($table, 12);
 		// back button
 		$container->addVerticalSpacer('2rem');
-		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
 		$container->add($backButton, 12);
 		return $container;
 	}
@@ -1047,7 +1047,7 @@ class pykotaUser extends baseModule {
 	 */
 	public function checkSelfServiceSettings(&$options, &$profile) {
 		$errors = [];
-		if ((get_class($this) == 'pykotaUser')
+		if ((static::class == 'pykotaUser')
 			&& !empty($options['pykotaUser_jobSuffix'][0])
 			&& !get_preg($options['pykotaUser_jobSuffix'][0], 'dn')) {
 			$errors[] = $this->messages['jobSuffix'][0];
