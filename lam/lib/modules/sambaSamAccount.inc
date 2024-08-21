@@ -1181,7 +1181,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				$expireDateGroup = new htmlGroup();
 				$expireDateGroup->addElement(new htmlOutputText($dateValue, false));
 				$expireDateGroup->addElement(new htmlSpacer('0.5rem', null));
-				$expireDateGroup->addElement(new htmlAccountPageButton(get_class($this), 'time', 'sambaKickoffTime', _('Change')));
+				$expireDateGroup->addElement(new htmlAccountPageButton(static::class, 'time', 'sambaKickoffTime', _('Change')));
 				$expireDateGroup->addElement(new htmlSpacer('0.5rem', null));
 				$expireDateGroup->addElement(new htmlHelpLink('expireDate'), true);
 				$return->addField($expireDateGroup);
@@ -1218,7 +1218,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 					$sambaProfilePathGroup->addElement(new htmlInputField('sambaProfilePath', $sambaProfilePath));
 					if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
 						if (get_preg($sambaProfilePath, 'homeDirectory')) {
-							$sambaProfilePathButton = new htmlAccountPageButton(get_class($this), 'profilePath', 'manage', '../graphics/folder.svg', true);
+							$sambaProfilePathButton = new htmlAccountPageButton(static::class, 'profilePath', 'manage', '../graphics/folder.svg', true);
 							$sambaProfilePathButton->setTitle(_('Manage profile directory'));
 							$sambaProfilePathGroup->addElement($sambaProfilePathButton);
 						}
@@ -1237,7 +1237,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
 					$return->addLabel(new htmlOutputText(_('Samba workstations')));
 					$userWorkstationsGroup = new htmlGroup();
-					$userWorkstationsGroup->addElement(new htmlAccountPageButton(get_class($this), 'sambaUserWorkstations', 'open', _('Edit workstations')));
+					$userWorkstationsGroup->addElement(new htmlAccountPageButton(static::class, 'sambaUserWorkstations', 'open', _('Edit workstations')));
 					$userWorkstationsGroup->addElement(new htmlSpacer('0.5rem', null));
 					$userWorkstationsGroup->addElement(new htmlHelpLink('userWorkstations'));
 					$return->addField($userWorkstationsGroup);
@@ -1286,7 +1286,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
 					$return->addLabel(new htmlOutputText(_('Logon hours')));
 					$logonHoursGroup = new htmlGroup();
-					$logonHoursGroup->addElement(new htmlAccountPageButton(get_class($this), 'logonHours', 'open', _('Edit')));
+					$logonHoursGroup->addElement(new htmlAccountPageButton(static::class, 'logonHours', 'open', _('Edit')));
 					$logonHoursGroup->addElement(new htmlSpacer('0.5rem', null));
 					$logonHoursGroup->addElement(new htmlHelpLink('logonHours'));
 					$return->addField($logonHoursGroup);
@@ -1294,7 +1294,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideTerminalServer')) {
 					$return->addLabel(new htmlOutputText(_('Terminal server options')));
 					$terminalServerGroup = new htmlGroup();
-					$terminalServerGroup->addElement(new htmlAccountPageButton(get_class($this), 'terminalServer', 'open', _('Edit')));
+					$terminalServerGroup->addElement(new htmlAccountPageButton(static::class, 'terminalServer', 'open', _('Edit')));
 					$terminalServerGroup->addElement(new htmlSpacer('0.5rem', null));
 					$terminalServerGroup->addElement(new htmlHelpLink('terminalServer'));
 					$return->addField($terminalServerGroup);
@@ -1381,7 +1381,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 
 			$return->addVerticalSpacer('2rem');
 
-			$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+			$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
 			$return->add($backButton, 12);
 		}
 		return $return;
@@ -1446,8 +1446,8 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		$return->add(new htmlResponsiveTable($titles, $data), 12);
 
 		$return->addVerticalSpacer('2rem');
-		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Ok')));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
+		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'submit', _('Ok')));
+		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'abort', _('Cancel')));
 		return $return;
 	}
 
@@ -1502,13 +1502,13 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		}
 		$return->addVerticalSpacer('2rem');
 		$buttons = new htmlGroup();
-		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
+		$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'change' . $attr, _('Change')));
 		$buttons->addElement(new htmlSpacer('0.5rem', null));
 		if (isset($this->attributes[$attr][0])) {
-			$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
+			$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'del' . $attr, _('Remove')));
 			$buttons->addElement(new htmlSpacer('0.5rem', null));
 		}
-		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
+		$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'back' . $attr, _('Cancel')));
 		$return->add($buttons, 12, 12, 12, 'text-center');
 		return $return;
 	}
@@ -1593,8 +1593,8 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		$return->add($reconnectSelect, 12);
 		// buttons
 		$return->addVerticalSpacer('2rem');
-		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Ok')));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
+		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'submit', _('Ok')));
+		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'abort', _('Cancel')));
 		return $return;
 	}
 
@@ -1639,7 +1639,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 					$editGroup = new htmlGroup();
 					$editGroup->addElement(new htmlImage('../../graphics/pass.svg', 16, 16));
 					$editGroup->addElement(new htmlSpacer('0.5rem', null));
-					$editGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+					$editGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'delete_' . $i, _('Delete')));
 					$return->addField($editGroup);
 				}
 				elseif ($returnValue == 'missing') {
@@ -1647,7 +1647,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 					$editGroup = new htmlGroup();
 					$editGroup->addElement(new htmlImage('../../graphics/del.svg', 16, 16));
 					$editGroup->addElement(new htmlSpacer('0.5rem', null));
-					$editGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+					$editGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'create_' . $i, _('Create')));
 					$return->addField($editGroup);
 				}
 				elseif (trim($returnValue) != '') {
@@ -1666,7 +1666,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			}
 		}
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12, 12, 12, 'text-center');
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12, 12, 12, 'text-center');
 		return $return;
 	}
 
@@ -1688,7 +1688,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		$remoteServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($remoteServers); $i++) {
 			$remoteServer = $remoteServers[$i];
-			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
+			if (isset($_POST['form_subpage_' . static::class . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
 				try {
 					$remote->connect($remoteServer);
@@ -1719,7 +1719,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 					}
 				}
 			}
-			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
+			elseif (isset($_POST['form_subpage_' . static::class . '_homedir_delete_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
 				try {
 					$remote->connect($remoteServer);
@@ -2333,7 +2333,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	public function getSelfServiceSettings($profile) {
 		$selfServiceContainer = new htmlResponsiveRow();
 		// domain suffix
-		$selfServiceDomainSuffix = new htmlResponsiveInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix', null, ['domainSuffix', get_class($this)]);
+		$selfServiceDomainSuffix = new htmlResponsiveInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix', null, ['domainSuffix', static::class]);
 		$selfServiceContainer->add($selfServiceDomainSuffix, 12);
 		// password history
 		$historyOptions = [
@@ -2341,7 +2341,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			_('yes - ordered descending') => 'yes_deleteFirst',
 			_('no') => 'no'
 		];
-		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, ['yes_deleteLast'], _("Password history"), ['history', get_class($this)]);
+		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, ['yes_deleteLast'], _("Password history"), ['history', static::class]);
 		$historySelect->setHasDescriptiveElements(true);
 		$selfServiceContainer->add($historySelect, 12);
 		return $selfServiceContainer;
@@ -2570,7 +2570,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
-		if (!in_array(get_class($this), $modules)) {
+		if (!in_array(static::class, $modules)) {
 			return [];
 		}
 		$errors = [];

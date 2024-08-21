@@ -387,7 +387,7 @@ class sambaGroupMapping extends baseModule {
 			// local group members
 			$memberLabel = new htmlOutputText(_('Local members'));
 			$return->addLabel($memberLabel);
-			$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.svg', true);
+			$addMemberButton = new htmlAccountPageButton(static::class, 'members', 'open', 'add.svg', true);
 			$addMemberButton->setTitle(_('Add'));
 			$addMemberButton->alignment = htmlElement::ALIGN_TOP;
 			$memberHelp = new htmlHelpLink('sambaSIDList');
@@ -440,7 +440,7 @@ class sambaGroupMapping extends baseModule {
 		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		// show list of possible new members
-		if ((isset($_POST['form_subpage_' . get_class($this) . '_members_select']) || isset($_POST['setFilter'])) && isset($_POST['type'])) {
+		if ((isset($_POST['form_subpage_' . static::class . '_members_select']) || isset($_POST['setFilter'])) && isset($_POST['type'])) {
 			$type = $typeManager->getConfiguredType($_POST['type']);
 			$this->loadSIDCache();
 			$options = [];
@@ -482,8 +482,8 @@ class sambaGroupMapping extends baseModule {
 			$filterGroup->addElement(new htmlHiddenInput('type', $type->getId()));
 			$return->add($filterGroup, 12);
 			$return->addVerticalSpacer('2rem');
-			$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'addMembers', _('Add')));
-			$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+			$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'addMembers', _('Add')));
+			$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
 			return $return;
 		}
 		$types = $typeManager->getConfiguredTypesForScopes(['user', 'group', 'host']);
@@ -500,9 +500,9 @@ class sambaGroupMapping extends baseModule {
 		$typeSelect->setHasDescriptiveElements(true);
 		$return->addField($typeSelect);
 		$return->addLabel(new htmlOutputText('&nbsp;', false));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'members', 'select', _('Ok')));
+		$return->addField(new htmlAccountPageButton(static::class, 'members', 'select', _('Ok')));
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')), 12, 12, 12, 'text-center');
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'membersBack', _('Back')), 12, 12, 12, 'text-center');
 		return $return;
 	}
 
@@ -514,7 +514,7 @@ class sambaGroupMapping extends baseModule {
 	 */
 	function process_members() {
 		$return = [];
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_addMembers']) && isset($_POST['members'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_addMembers']) && isset($_POST['members'])) {
 			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
 				$this->attributes['sambaSIDList'][] = $_POST['members'][$i];
 			}
