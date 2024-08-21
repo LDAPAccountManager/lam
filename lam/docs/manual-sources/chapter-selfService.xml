@@ -1906,7 +1906,7 @@
       <para>Group of names, group of unique names and Windows groups are
       supported. The LDAP filter is optional, LAM will offer the user only
       groups of (unique) names or Windows groups that have defined
-      owners/managers.<screenshot>
+      owners/managers unless an additional owner group is defined.<screenshot>
           <graphic fileref="images/mod_requestAccess1.png"/>
         </screenshot><literallayout>
 </literallayout></para>
@@ -2006,11 +2006,12 @@
       requester/owner/approver views then you need to configure this in the
       one that group owners use.</para>
 
-      <para>If you do not specify a revocation time then memberships/ownerships will not
-      expire unless a custom revocation time is used. Allowing custom
-      revocation times enables group owners to enter a custom date of
-      revocation or no revocation time. The admin DN and password are used to
-      perform the LDAP operation to remove the memberships.</para>
+      <para>If you do not specify a revocation time then
+      memberships/ownerships will not expire unless a custom revocation time
+      is used. Allowing custom revocation times enables group owners to enter
+      a custom date of revocation or no revocation time. The admin DN and
+      password are used to perform the LDAP operation to remove the
+      memberships.</para>
 
       <screenshot>
         <graphic fileref="images/mod_requestAccess8.png"/>
