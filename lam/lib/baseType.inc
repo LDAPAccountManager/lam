@@ -435,7 +435,7 @@ class baseType {
 	 * @return string file name
 	 */
 	public function getIcon(): string {
-		return get_class($this) . '.png';
+		return static::class . '.png';
 	}
 
 	/**
@@ -444,7 +444,7 @@ class baseType {
 	 * @return string scope
 	 */
 	public function getScope() {
-		return get_class($this);
+		return static::class;
 	}
 
 }

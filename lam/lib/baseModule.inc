@@ -503,7 +503,7 @@ abstract class baseModule {
 		if (isset($this->meta['alias'])) {
 			return $this->meta['alias'];
 		}
-		return get_class($this);
+		return static::class;
 	}
 
 	/**
