@@ -152,7 +152,7 @@ class nisMailAliasUser extends baseModule {
 				}
 			}
 			$return->addVerticalSpacer('1rem');
-			$addButton = new htmlAccountPageButton(get_class($this), 'add', 'user', _('Add'));
+			$addButton = new htmlAccountPageButton(static::class, 'add', 'user', _('Add'));
 			$return->add($addButton, 12, 12, 12, 'text-center');
 		}
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideMailAliases') && !empty($mails)) {
@@ -183,7 +183,7 @@ class nisMailAliasUser extends baseModule {
 					}
 				}
 				$return->addVerticalSpacer('1rem');
-				$addButton = new htmlAccountPageButton(get_class($this), 'add', 'mail' . $m, _('Add'));
+				$addButton = new htmlAccountPageButton(static::class, 'add', 'mail' . $m, _('Add'));
 				$return->add($addButton, 12, 12, 12, 'text-center');
 				if ((sizeof($mails) > 1) && ($m < (sizeof($mails) - 1))) {
 					$return->addVerticalSpacer('2rem');
@@ -322,12 +322,12 @@ class nisMailAliasUser extends baseModule {
 		if (isset($_POST['recipient'])) {
 			$recipient = $_POST['recipient'];
 		}
-		elseif (isset($_POST['form_subpage_' . get_class($this) . '_add_user'])) {
+		elseif (isset($_POST['form_subpage_' . static::class . '_add_user'])) {
 			$recipient = $userName;
 		}
 		else {
 			for ($m = 0; $m < sizeof($mails); $m++) {
-				if (isset($_POST['form_subpage_' . get_class($this) . '_add_mail' . $m])) {
+				if (isset($_POST['form_subpage_' . static::class . '_add_mail' . $m])) {
 					$recipient = $mails[$m];
 					break;
 				}
@@ -353,7 +353,7 @@ class nisMailAliasUser extends baseModule {
 		$newAliasCn = empty($_POST['new_cn']) ? '' : $_POST['new_cn'];
 		$return->add(new htmlResponsiveInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), 12);
 		$return->addVerticalSpacer('1rem');
-		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'create', _('Create'));
+		$addButton = new htmlAccountPageButton(static::class, 'attributes', 'create', _('Create'));
 		$return->add($addButton, 12, 12, 12, 'text-center');
 
 		$return->addVerticalSpacer('2rem');
@@ -372,11 +372,11 @@ class nisMailAliasUser extends baseModule {
 		$aliasSelect->setMultiSelect(true);
 		$return->add($aliasSelect, 12);
 		$return->addVerticalSpacer('1rem');
-		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'recipient', _('Add'));
+		$addButton = new htmlAccountPageButton(static::class, 'attributes', 'recipient', _('Add'));
 		$return->add($addButton, 12, 12, 12, 'text-center');
 
 		$return->addVerticalSpacer('2rem');
-		$cancelButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel'));
+		$cancelButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Cancel'));
 		$return->add($cancelButton, 12);
 		return $return;
 	}
@@ -390,7 +390,7 @@ class nisMailAliasUser extends baseModule {
 	function process_add() {
 		$errors = [];
 		// create new alias entry
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_create'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_create'])) {
 			if (empty($_POST['new_cn']) || !get_preg($_POST['new_cn'], 'nis_alias')) {
 				$errors[] = $this->messages['alias'][0];
 			}
@@ -420,7 +420,7 @@ class nisMailAliasUser extends baseModule {
 			}
 		}
 		// add recipient to existing entries
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_recipient'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_recipient'])) {
 			$selectedAliases = $_POST['ex_cn'];
 			foreach ($selectedAliases as $index) {
 				$dn = $this->cachedAliasList[$index]['dn'];

@@ -215,7 +215,7 @@ class nisnetgroup extends baseModule {
 			}
 		}
 		$subGroupsButtonGroup = new htmlGroup();
-		$subGroupsButtonGroup->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit subgroups')));
+		$subGroupsButtonGroup->addElement(new htmlAccountPageButton(static::class, 'group', 'open', _('Edit subgroups')));
 		$subGroupsButtonGroup->addElement(new htmlHelpLink('memberNisNetgroup'));
 		$subgroupsContainer->addElement($subGroupsButtonGroup);
 		$subgroupsLabel = new htmlOutputText(_('Subgroups'));
@@ -244,7 +244,7 @@ class nisnetgroup extends baseModule {
 				$hostField->setCSSClasses(['auto-width']);
 				$hostField->setFieldSize(null);
 				$hostGroup->addElement($hostField);
-				$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'host' . $i, 'computer.svg', true);
+				$hostButton = new htmlAccountPageButton(static::class, 'select', 'host' . $i, 'computer.svg', true);
 				$hostButton->setTitle(_('Select host'));
 				$hostGroup->addElement($hostButton);
 				$dataRow[] = $hostGroup;
@@ -253,7 +253,7 @@ class nisnetgroup extends baseModule {
 				$userField->setCSSClasses(['auto-width']);
 				$userField->setFieldSize(null);
 				$userGroup->addElement($userField);
-				$userButton = new htmlAccountPageButton(get_class($this), 'select', 'user' . $i, 'user.svg', true);
+				$userButton = new htmlAccountPageButton(static::class, 'select', 'user' . $i, 'user.svg', true);
 				$userButton->setTitle(_('Select user'));
 				$userGroup->addElement($userButton);
 				$dataRow[] = $userGroup;
@@ -284,7 +284,7 @@ class nisnetgroup extends baseModule {
 		$hostField->setCSSClasses(['auto-width']);
 		$hostField->setFieldSize(null);
 		$hostNewGroup->addElement($hostField);
-		$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'hostNew', 'computer.svg', true);
+		$hostButton = new htmlAccountPageButton(static::class, 'select', 'hostNew', 'computer.svg', true);
 		$hostButton->setTitle(_('Select host'));
 		$hostNewGroup->addElement($hostButton);
 		$dataRowNew[] = $hostNewGroup;
@@ -293,7 +293,7 @@ class nisnetgroup extends baseModule {
 		$userField->setCSSClasses(['auto-width']);
 		$userField->setFieldSize(null);
 		$userNewGroup->addElement($userField);
-		$userButton = new htmlAccountPageButton(get_class($this), 'select', 'userNew', 'user.svg', true);
+		$userButton = new htmlAccountPageButton(static::class, 'select', 'userNew', 'user.svg', true);
 		$userButton->setTitle(_('Select user'));
 		$userNewGroup->addElement($userButton);
 		$dataRowNew[] = $userNewGroup;
@@ -392,7 +392,7 @@ class nisnetgroup extends baseModule {
 		$allGroups = $this->getGroupList();
 		// remove own entry
 		if (!$this->getAccountContainer()->isNewAccount) {
-			$allGroups = array_delete($this->attributes['cn'][0], $allGroups);
+			$allGroups = array_delete([$this->attributes['cn'][0]], $allGroups);
 		}
 		$subgroups = [];
 		if (is_array($this->attributes['memberNisNetgroup'])) {
@@ -414,7 +414,7 @@ class nisnetgroup extends baseModule {
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"), $selectedGroups, [], $availableGroups, [], 'subgroup', false, true);
 
 		$return->addVerticalSpacer('2rem');
-		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
 		$return->add($backButton, 12);
 		return $return;
 	}
@@ -491,8 +491,8 @@ class nisnetgroup extends baseModule {
 		if (!$selectHost) {
 			$type = 'user';
 		}
-		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'select', _('Ok')));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel')));
+		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'select', _('Ok')));
+		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Cancel')));
 		$return->add(new htmlHiddenInput('host_new', $_POST['host_new']), 12);
 		$return->add(new htmlHiddenInput('user_new', $_POST['user_new']), 12);
 		$return->add(new htmlHiddenInput('domain_new', $_POST['domain_new']), 12);

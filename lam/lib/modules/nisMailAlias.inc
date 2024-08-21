@@ -195,8 +195,8 @@ class nisMailAlias extends baseModule {
 					$mailField->setCSSClasses(['maxwidth20']);
 					$mailGroup = new htmlGroup();
 					$mailGroup->addElement($mailField);
-					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mail.svg', true, _('Select mail')));
-					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.svg', true, _('Select user')));
+					$mailGroup->addElement(new htmlAccountPageButton(static::class, 'selectMail', 'recipient' . $i, 'mail.svg', true, _('Select mail')));
+					$mailGroup->addElement(new htmlAccountPageButton(static::class, 'selectUser', 'recipient' . $i, 'user.svg', true, _('Select user')));
 					$mailGroup->addElement(new htmlButton('delRec' . $i, 'del.svg', true));
 					$mailGroup->addElement(new htmlHelpLink('recipient'));
 					$return->addField($mailGroup);
@@ -218,8 +218,8 @@ class nisMailAlias extends baseModule {
 			$newMailField->setCSSClasses(['maxwidth20']);
 			$newGroup = new htmlGroup();
 			$newGroup->addElement($newMailField);
-			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mail.svg', true, _('Select mail')));
-			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.svg', true, _('Select user')));
+			$newGroup->addElement(new htmlAccountPageButton(static::class, 'selectMail', 'recipient' . 'New', 'mail.svg', true, _('Select mail')));
+			$newGroup->addElement(new htmlAccountPageButton(static::class, 'selectUser', 'recipient' . 'New', 'user.svg', true, _('Select user')));
 			$newGroup->addElement(new htmlButton('addRec', 'add.svg', true));
 			$newGroup->addElement(new htmlHelpLink('recipient'));
 			$newGroup->addElement(new htmlHiddenInput('rec_number', $recipientCount));
@@ -361,8 +361,8 @@ class nisMailAlias extends baseModule {
 		$postKeys = array_keys($_POST);
 		$position = 'New';
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if (strpos($postKeys[$i], 'form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient') === 0) {
-				$position = substr($postKeys[$i], strlen('form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient'));
+			if (strpos($postKeys[$i], 'form_subpage_' . static::class . '_select' . $suffix . '_recipient') === 0) {
+				$position = substr($postKeys[$i], strlen('form_subpage_' . static::class . '_select' . $suffix . '_recipient'));
 				break;
 			}
 		}
@@ -388,8 +388,8 @@ class nisMailAlias extends baseModule {
 		$mailSelect->colspan = 5;
 		$return->addField($mailSelect);
 		$return->addVerticalSpacer('2rem');
-		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'select', _('Ok')));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel')));
+		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'select', _('Ok')));
+		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Cancel')));
 		$return->add(new htmlHiddenInput('position', $position), 12);
 		return $return;
 	}
@@ -401,7 +401,7 @@ class nisMailAlias extends baseModule {
 	 * @return array list of info/error messages
 	 */
 	function process_select() {
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_select'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_select'])) {
 			if (!isset($this->attributes['rfc822MailMember'])) {
 				$this->attributes['rfc822MailMember'] = [];
 			}
