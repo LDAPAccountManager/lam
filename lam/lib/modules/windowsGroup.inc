@@ -373,10 +373,10 @@ class windowsGroup extends baseModule {
 			$managedByGroup->addElement(new htmlHelpLink('managedBy'), true);
 			$container->addField($managedByGroup);
 			$managedByButtons = new htmlGroup();
-			$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'managedBy', 'edit', _('Change')));
+			$managedByButtons->addElement(new htmlAccountPageButton(static::class, 'managedBy', 'edit', _('Change')));
 			if (isset($this->attributes['managedBy'][0])) {
 				$managedByButtons->addElement(new htmlSpacer('5px', null));
-				$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManagedBy', _('Remove')));
+				$managedByButtons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'removeManagedBy', _('Remove')));
 			}
 			$container->addLabel(new htmlOutputText('&nbsp;', false));
 			$container->addField($managedByButtons);
@@ -396,10 +396,10 @@ class windowsGroup extends baseModule {
 		$container->addVerticalSpacer('1rem');
 		$container->addLabel(new htmlOutputText(_("Group members")));
 		$memberButtons = new htmlGroup();
-		$memberButtons->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit')));
+		$memberButtons->addElement(new htmlAccountPageButton(static::class, 'user', 'open', _('Edit')));
 		if (!empty($this->attributes['member'])) {
 			$memberButtons->addElement(new htmlSpacer('0.5rem', null));
-			$memberButtons->addElement(new htmlAccountPageButton(get_class($this), 'effectiveMembers', 'open', _('Show effective members')));
+			$memberButtons->addElement(new htmlAccountPageButton(static::class, 'effectiveMembers', 'open', _('Show effective members')));
 		}
 		$memberButtons->addElement(new htmlSpacer('0.5rem', null));
 		$memberButtons->addElement(new htmlHelpLink('member'));
@@ -425,7 +425,7 @@ class windowsGroup extends baseModule {
 		$container->addVerticalSpacer('2rem');
 		$container->addLabel(new htmlOutputText(_("Member of")));
 		$memberOfGroup = new htmlGroup();
-		$memberOfGroup->addElement(new htmlAccountPageButton(get_class($this), 'memberof', 'open', _('Edit')));
+		$memberOfGroup->addElement(new htmlAccountPageButton(static::class, 'memberof', 'open', _('Edit')));
 		$memberOfGroup->addElement(new htmlSpacer('0.5rem', null));
 		$memberOfGroup->addElement(new htmlHelpLink('memberOf'), true);
 		$container->addField($memberOfGroup);
@@ -493,7 +493,7 @@ class windowsGroup extends baseModule {
 		$this->attributes['info'][0] = $_POST['info'];
 		// managed by
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
-			if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManagedBy'])) {
+			if (isset($_POST['form_subpage_' . static::class . '_attributes_removeManagedBy'])) {
 				unset($this->attributes['managedBy']);
 			}
 		}
@@ -550,7 +550,7 @@ class windowsGroup extends baseModule {
 			null, $availableGroups, null, 'memberof', false, true);
 
 		$return->addVerticalSpacer('2rem');
-		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
 		$return->add($backButton, 12);
 
 		return $return;
@@ -615,9 +615,9 @@ class windowsGroup extends baseModule {
 		$return->add($filterGroup);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'set', _('Change')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'set', _('Change')));
 		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
 		$return->add($buttonTable, 12);
 		return $return;
 	}
@@ -630,7 +630,7 @@ class windowsGroup extends baseModule {
 	 */
 	function process_managedBy() {
 		$return = [];
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_set'])) {
 			$this->attributes['managedBy'][0] = $_POST['managedBy'];
 		}
 		return $return;
@@ -645,7 +645,7 @@ class windowsGroup extends baseModule {
 		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		// show list of possible new members
-		if (isset($_POST['form_subpage_' . get_class($this) . '_user_select']) && isset($_POST['type'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_user_select']) && isset($_POST['type'])) {
 			$type = $typeManager->getConfiguredType($_POST['type']);
 			$filterGroup = new htmlGroup();
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
@@ -682,8 +682,8 @@ class windowsGroup extends baseModule {
 			$return->add($membersSelect, 12);
 			$return->addVerticalSpacer('2rem');
 			$buttonTable = new htmlGroup();
-			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'user', 'addMembers', _('Add')));
-			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'user', 'cancel', _('Cancel')));
+			$buttonTable->addElement(new htmlAccountPageButton(static::class, 'user', 'addMembers', _('Add')));
+			$buttonTable->addElement(new htmlAccountPageButton(static::class, 'user', 'cancel', _('Cancel')));
 			$return->add($buttonTable, 12);
 			return $return;
 		}
@@ -711,7 +711,7 @@ class windowsGroup extends baseModule {
 			$membersSelect->setTransformSingleSelect(false);
 			$return->add($membersSelect, 12);
 			$return->addVerticalSpacer('0.5rem');
-			$removeButton = new htmlAccountPageButton(get_class($this), 'user', 'remove', _('Remove selected entries'));
+			$removeButton = new htmlAccountPageButton(static::class, 'user', 'remove', _('Remove selected entries'));
 			$return->add($removeButton, 12);
 			$return->addVerticalSpacer('2rem');
 			$return->add(new htmlHorizontalLine(), 12);
@@ -731,9 +731,9 @@ class windowsGroup extends baseModule {
 		$typeSelect->setHasDescriptiveElements(true);
 		$return->addField($typeSelect);
 		$return->addLabel(new htmlOutputText('&nbsp;', false));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'user', 'select', _('Ok')));
+		$return->addField(new htmlAccountPageButton(static::class, 'user', 'select', _('Ok')));
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')), 12);
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'membersBack', _('Back')), 12);
 		return $return;
 	}
 
@@ -745,7 +745,7 @@ class windowsGroup extends baseModule {
 	 */
 	function process_user() {
 		$return = [];
-		if (isset($_POST['form_subpage_' . get_class($this) . '_user_remove']) && isset($_POST['members'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_user_remove']) && isset($_POST['members'])) {
 			$members = array_flip($this->attributes['member']);
 			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
 				if (isset($members[$_POST['members'][$i]])) {
@@ -754,7 +754,7 @@ class windowsGroup extends baseModule {
 			}
 			$this->attributes['member'] = array_values(array_flip($members));
 		}
-		elseif (isset($_POST['form_subpage_' . get_class($this) . '_user_addMembers']) && isset($_POST['members'])) {
+		elseif (isset($_POST['form_subpage_' . static::class . '_user_addMembers']) && isset($_POST['members'])) {
 			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
 				$this->attributes['member'][] = $_POST['members'][$i];
 				$this->attributes['member'] = array_unique($this->attributes['member']);
@@ -782,7 +782,7 @@ class windowsGroup extends baseModule {
 		}
 		$return->add($entryTable, 12);
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'membersEffectiveBack', _('Back')), 12);
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'membersEffectiveBack', _('Back')), 12);
 		return $return;
 	}
 

@@ -217,10 +217,10 @@ class windowsHost extends baseModule {
 		$container->addField($managedByGroup);
 		$container->addLabel(new htmlOutputText('&nbsp;', false));
 		$managedByButtons = new htmlGroup();
-		$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'managedBy', 'edit', _('Change')));
+		$managedByButtons->addElement(new htmlAccountPageButton(static::class, 'managedBy', 'edit', _('Change')));
 		if (isset($this->attributes['managedBy'][0])) {
 			$managedByButtons->addElement(new htmlSpacer('5px', null));
-			$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManagedBy', _('Remove')));
+			$managedByButtons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'removeManagedBy', _('Remove')));
 		}
 		$container->addField($managedByButtons);
 		return $container;
@@ -245,7 +245,7 @@ class windowsHost extends baseModule {
 		// location
 		$this->attributes['location'][0] = $_POST['location'];
 		// managed by
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManagedBy'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_removeManagedBy'])) {
 			unset($this->attributes['managedBy']);
 		}
 		if ($this->getAccountContainer()->isNewAccount) {
@@ -296,8 +296,8 @@ class windowsHost extends baseModule {
 		$return->add($filterGroup);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlTable();
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'set', _('Change')));
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'set', _('Change')));
+		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
 		$return->add($buttonTable, 12);
 		return $return;
 	}
@@ -310,7 +310,7 @@ class windowsHost extends baseModule {
 	 */
 	function process_managedBy() {
 		$return = [];
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_set'])) {
 			$this->attributes['managedBy'][0] = $_POST['managedBy'];
 		}
 		return $return;
