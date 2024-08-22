@@ -133,13 +133,13 @@ class ldapPublicKey extends baseModule {
 		// profile options
 		if ($this->hasObjectClass()) {
 			$profileContainer = new htmlResponsiveRow();
-			$profileContainer->add(new htmlResponsiveInputCheckbox(get_class($this) . '_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+			$profileContainer->add(new htmlResponsiveInputCheckbox(static::class . '_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 			$return['profile_options'] = $profileContainer;
 		}
 		// upload fields
 		$return['upload_columns'] = [
 			[
-				'name' => get_class($this) . '_sshPublicKey',
+				'name' => static::class . '_sshPublicKey',
 				'description' => _('SSH public key'),
 				'help' => 'keyList',
 				'example' => _('ssh-rsa 234234 user@host')
@@ -298,8 +298,8 @@ class ldapPublicKey extends baseModule {
 		parent::load_profile($profile);
 		// add extension
 		if ($this->hasObjectClass()
-			&& isset($profile[get_class($this) . '_addExt'][0])
-			&& ($profile[get_class($this) . '_addExt'][0] === "true")
+			&& isset($profile[static::class . '_addExt'][0])
+			&& ($profile[static::class . '_addExt'][0] === "true")
 			&& !in_array($this->getObjectClass(), $this->attributes['objectClass'])) {
 			$this->attributes['objectClass'][] = $this->getObjectClass();
 		}
@@ -317,7 +317,7 @@ class ldapPublicKey extends baseModule {
 				$partialAccounts[$i]['objectClass'][] = $this->getObjectClass();
 			}
 			// add keys
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, get_class($this) . '_sshPublicKey', $this->getAttributeName(), null, null, $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, static::class . '_sshPublicKey', $this->getAttributeName(), null, null, $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}

@@ -1584,7 +1584,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$userCertificateGroup->addElement(new htmlOutputText($userCertificateCount));
 			$userCertificateGroup->addElement(new htmlSpacer('10px', null));
 			if (!$this->isAdminReadOnly('manager')) {
-				$userCertificateGroup->addElement(new htmlAccountPageButton(get_class($this), 'userCertificate', 'manage', _('Manage')));
+				$userCertificateGroup->addElement(new htmlAccountPageButton(static::class, 'userCertificate', 'manage', _('Manage')));
 				$userCertificateGroup->addElement(new htmlHelpLink('userCertificate'));
 			}
 			$fieldContainer->addField($userCertificateGroup);
@@ -1595,7 +1595,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$fieldContainer->addLabel(new htmlOutputText(_('Manager')));
 			if (!$this->isAdminReadOnly('manager')) {
 				$managerButtonGroup = new htmlGroup();
-				$managerButtonGroup->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
+				$managerButtonGroup->addElement(new htmlAccountPageButton(static::class, 'manager', 'change', _("Change")));
 				$managerButtonGroup->addElement(new htmlHelpLink('manager'));
 				$fieldContainer->addField($managerButtonGroup);
 			}
@@ -1658,7 +1658,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$imageContainer->addElement($img, true);
 			if (!$this->isAdminReadOnly('jpegPhoto')) {
 				if ($noPhoto) {
-					$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
+					$imageContainer->addElement(new htmlAccountPageButton(static::class, 'photo', 'open', _('Add photo')));
 				}
 				else {
 					$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
@@ -1675,16 +1675,16 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * @return array list of error messages if any
 	 */
 	public function process_photo() {
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_back'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_back'])) {
 			return [];
 		}
 		if ($this->isAdminReadOnly('jpegPhoto')) {
 			return [];
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload']) || isset($_POST['webcamData'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_photo_upload']) || isset($_POST['webcamData'])) {
 			return $this->uploadPhoto();
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_crop'])) {
 			$messages = [];
 			try {
 				include_once __DIR__ . '/../imageutils.inc';
@@ -1764,7 +1764,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'), 12);
 			$container->addVerticalSpacer('0.5rem');
 			$container->addLabel(new htmlOutputText('&nbsp;', false));
-			$container->addField(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
+			$container->addField(new htmlAccountPageButton(static::class, 'photo', 'upload', _('Upload')));
 			$container->addVerticalSpacer('1rem');
 			$webcamContent = new htmlResponsiveRow();
 			$webcamContent->add(new htmlSubTitle(_('Use webcam')), 12);
@@ -1788,7 +1788,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
 			$container->add($webcamDiv, 12);
 			$container->addVerticalSpacer('1rem');
-			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
+			$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12);
 		}
 		else {
 			$container->add(new htmlSubTitle(_('Crop image')));
@@ -1808,7 +1808,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				logNewMessage(LOG_ERR, $e->getTitle());
 			}
 			$container->addVerticalSpacer('1rem');
-			$doneButton = new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done'));
+			$doneButton = new htmlAccountPageButton(static::class, 'attributes', 'crop', _('Done'));
 			$container->add($doneButton);
 		}
 		return $container;
@@ -1825,7 +1825,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$this->attributes['manager'] = [];
 		}
 		// show list of possible new managers
-		if (isset($_POST['form_subpage_' . get_class($this) . '_manager_select'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_manager_select'])) {
+			$return->add(new htmlSubTitle(_('Add entries')));
 			$options = [];
 			$filter = get_ldap_filter('user');
 			$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', ['dn'], ['user']);
@@ -1859,10 +1860,11 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$filterGroup->addElement(new htmlHelpLink('filter'));
 			$return->add($filterGroup);
 			$return->addVerticalSpacer('1rem');
-			$return->addLabel(new htmlAccountPageButton(get_class($this), 'manager', 'addManagers', _('Add')));
-			$return->addField(new htmlAccountPageButton(get_class($this), 'manager', 'cancel', _('Cancel')));
+			$return->addLabel(new htmlAccountPageButton(static::class, 'manager', 'addManagers', _('Add')));
+			$return->addField(new htmlAccountPageButton(static::class, 'manager', 'cancel', _('Cancel')));
 			return $return;
 		}
+		$return->add(new htmlSubTitle(_('Manager')));
 		// show existing managers
 		$managerTemp = [];
 		if (isset($this->attributes['manager'])) {
@@ -1887,14 +1889,14 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$managerSelect->setTransformSingleSelect(false);
 			$return->add($managerSelect, 12);
 			$return->addVerticalSpacer('0.5rem');
-			$removeButton = new htmlAccountPageButton(get_class($this), 'manager', 'remove', _('Remove selected entries'));
+			$removeButton = new htmlAccountPageButton(static::class, 'manager', 'remove', _('Remove selected entries'));
 			$return->add($removeButton, 12, 12, 12, 'text-center');
 			$return->addVerticalSpacer('1rem');
 			$return->add(new htmlHorizontalLine(), 12);
 		}
 		$return->addVerticalSpacer('1rem');
-		$return->addLabel(new htmlAccountPageButton(get_class($this), 'manager', 'select', _('Add entries')));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'managerBack', _('Back')));
+		$return->addLabel(new htmlAccountPageButton(static::class, 'manager', 'select', _('Add entries')));
+		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'managerBack', _('Back')));
 		return $return;
 	}
 
@@ -1909,7 +1911,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if ($this->isAdminReadOnly('manager')) {
 			return $return;
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_manager_remove']) && isset($_POST['manager'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_manager_remove']) && isset($_POST['manager'])) {
 			$managers = array_flip($this->attributes['manager']);
 			for ($i = 0; $i < sizeof($_POST['manager']); $i++) {
 				if (isset($managers[$_POST['manager'][$i]])) {
@@ -1918,7 +1920,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			}
 			$this->attributes['manager'] = array_values(array_flip($managers));
 		}
-		elseif (isset($_POST['form_subpage_' . get_class($this) . '_manager_addManagers']) && isset($_POST['manager'])) {
+		elseif (isset($_POST['form_subpage_' . static::class . '_manager_addManagers']) && isset($_POST['manager'])) {
 			for ($i = 0; $i < sizeof($_POST['manager']); $i++) {
 				$this->attributes['manager'][] = $_POST['manager'][$i];
 				$this->attributes['manager'] = array_unique($this->attributes['manager']);
@@ -1948,7 +1950,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$link->setTargetWindow('_blank');
 				$link->setCSSClasses(['icon']);
 				$table->addElement($link);
-				$deleteButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'delete_' . $i, 'del.svg', true);
+				$deleteButton = new htmlAccountPageButton(static::class, 'userCertificate', 'delete_' . $i, 'del.svg', true);
 				$table->addElement($deleteButton);
 				$pem = @chunk_split(@base64_encode($this->attributes['userCertificate;binary'][$i]), 64, "\n");
 				if (!empty($pem)) {
@@ -1972,10 +1974,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		$container->add(new htmlResponsiveInputFileUpload('userCertificateUpload', _('New user certificate')), 12, 6);
 
-		$uploadButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'submit', _('Upload'));
+		$uploadButton = new htmlAccountPageButton(static::class, 'userCertificate', 'submit', _('Upload'));
 		$container->add($uploadButton, 12, 6);
 		$container->addVerticalSpacer('2rem');
-		$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
+		$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12);
 		return $container;
 	}
 
@@ -1989,7 +1991,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if ($this->isAdminReadOnly('userCertificate')) {
 			return $messages;
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_userCertificate_submit'])) {
+		if (isset($_POST['form_subpage_' . static::class . '_userCertificate_submit'])) {
 			if ($_FILES['userCertificateUpload'] && ($_FILES['userCertificateUpload']['size'] > 0)) {
 				$handle = fopen($_FILES['userCertificateUpload']['tmp_name'], "r");
 				$data = fread($handle, 10000000);
@@ -2013,7 +2015,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		elseif (isset($this->attributes['userCertificate;binary'])) {
 			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
-				if (isset($_POST['form_subpage_' . get_class($this) . '_userCertificate_delete_' . $i])) {
+				if (isset($_POST['form_subpage_' . static::class . '_userCertificate_delete_' . $i])) {
 					unset($this->attributes['userCertificate;binary'][$i]);
 					$this->attributes['userCertificate;binary'] = array_values($this->attributes['userCertificate;binary']);
 					break;
@@ -2696,8 +2698,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	public function getSelfServiceSettings($profile) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlSubTitle(_('Photo')), 12);
-		$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, ['crop', get_class($this)]), 12);
-		$container->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, ['crop', get_class($this)]), 12);
+		$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, ['crop', static::class]), 12);
+		$container->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, ['crop', static::class]), 12);
 		$container->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), 12);
 		return $container;
 	}
@@ -3601,7 +3603,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
-		if (!in_array(get_class($this), $modules)) {
+		if (!in_array(static::class, $modules)) {
 			return [];
 		}
 		// check password strength
