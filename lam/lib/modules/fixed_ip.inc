@@ -517,7 +517,7 @@ class fixed_ip extends baseModule {
 		// add existing host entry
 		if (!empty($this->hostCache)) {
 			$return->addVerticalSpacer('2rem');
-			$addHostButton = new htmlAccountPageButton(get_class($this), 'addHost', 'add', _('Add existing host'));
+			$addHostButton = new htmlAccountPageButton(static::class, 'addHost', 'add', _('Add existing host'));
 			$return->add($addHostButton, 12);
 		}
 		return $return;
@@ -604,8 +604,8 @@ class fixed_ip extends baseModule {
 		$select->setHasDescriptiveElements(true);
 		$return->add($select, 12);
 		$return->addVerticalSpacer('2rem');
-		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'addHost', _('Add')));
-		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
+		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'addHost', _('Add')));
+		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
 		return $return;
 	}
 

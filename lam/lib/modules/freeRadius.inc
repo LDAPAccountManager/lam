@@ -388,7 +388,7 @@ class freeRadius extends baseModule {
 				$return->addLabel(new htmlOutputText('Expiration date'));
 				$radiusExpirationList = new htmlGroup();
 				$radiusExpirationList->addElement(new htmlOutputText($radiusExpiration . ' &nbsp;&nbsp;&nbsp;&nbsp;', false));
-				$radiusExpirationList->addElement(new htmlAccountPageButton(get_class($this), 'expiration', 'change', _('Change')));
+				$radiusExpirationList->addElement(new htmlAccountPageButton(static::class, 'expiration', 'change', _('Change')));
 				$radiusExpirationList->addElement(new htmlHelpLink('radiusExpiration'));
 				$return->addField($radiusExpirationList);
 			}
@@ -536,13 +536,13 @@ class freeRadius extends baseModule {
 
 		$return->addVerticalSpacer('2rem');
 		$buttons = new htmlGroup();
-		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
+		$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'change' . $attr, _('Change')));
 		$buttons->addElement(new htmlSpacer('0.5rem', null));
 		if (isset($this->attributes[$attr][0])) {
-			$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
+			$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'del' . $attr, _('Remove')));
 			$buttons->addElement(new htmlSpacer('0.5rem', null));
 		}
-		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
+		$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'back' . $attr, _('Cancel')));
 		$return->add($buttons, 12);
 		return $return;
 	}
