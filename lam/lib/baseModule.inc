@@ -912,7 +912,7 @@ abstract class baseModule {
 			$value = implode($delimiter, $this->attributes[$attrName]);
 			$value = trim($value);
 		}
-		$result[get_class($this) . '_' . $name][] = new PDFLabelValue($label, $value);
+		$result[static::class . '_' . $name][] = new PDFLabelValue($label, $value);
 	}
 
 	/**
@@ -929,7 +929,7 @@ abstract class baseModule {
 			natcasesort($value);
 			$value = implode($delimiter, $value);
 		}
-		$result[get_class($this) . '_' . $name][] = new PDFLabelValue($label, $value);
+		$result[static::class . '_' . $name][] = new PDFLabelValue($label, $value);
 	}
 
 	/**
@@ -943,7 +943,7 @@ abstract class baseModule {
 		if (empty($table->rows)) {
 			return;
 		}
-		$result[get_class($this) . '_' . $name][] = $table;
+		$result[static::class . '_' . $name][] = $table;
 	}
 
 	/**
@@ -955,7 +955,7 @@ abstract class baseModule {
 	 */
 	public function addPDFImage(&$result, $attrName) {
 		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
-			$result[get_class($this) . '_' . $attrName][] = new PDFImage($this->attributes[$attrName][0]);
+			$result[static::class . '_' . $attrName][] = new PDFImage($this->attributes[$attrName][0]);
 		}
 	}
 
@@ -1778,12 +1778,12 @@ abstract class baseModule {
 			$value = $attributes[$ldapAttrName][0];
 		}
 		if (!$isTextArea && !in_array($name, $readOnlyFields)) {
-			$field = new htmlInputField(get_class($this) . '_' . $name, $value);
+			$field = new htmlInputField(static::class . '_' . $name, $value);
 			$field->setRequired($required);
 			$field->setFieldSize(null);
 		}
 		elseif ($isTextArea && !in_array($name, $readOnlyFields)) {
-			$field = new htmlInputTextarea(get_class($this) . '_' . $name, $value, null, null);
+			$field = new htmlInputTextarea(static::class . '_' . $name, $value, null, null);
 		}
 		else {
 			if (!$isTextArea) {
@@ -1796,7 +1796,7 @@ abstract class baseModule {
 			}
 		}
 		$row = new htmlResponsiveRow();
-		$fieldLabel = new htmlLabel(get_class($this) . '_' . $name, $this->getSelfServiceLabel($name, $label));
+		$fieldLabel = new htmlLabel(static::class . '_' . $name, $this->getSelfServiceLabel($name, $label));
 		$fieldLabel->setMarkAsRequired($required && !in_array($name, $readOnlyFields));
 		$row->addLabel($fieldLabel);
 		$row->addField($field);
@@ -1821,7 +1821,7 @@ abstract class baseModule {
 	protected function checkSimpleSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields,
 													   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
-			$fieldName = get_class($this) . '_' . $name;
+			$fieldName = static::class . '_' . $name;
 			$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
 			if (!empty($_POST[$fieldName])) {
 				if (($validationID != null) && !get_preg($_POST[$fieldName], $validationID)) {
@@ -1878,7 +1878,7 @@ abstract class baseModule {
 		}
 		$readOnly = in_array($name, $readOnlyFields);
 		$field = new htmlResponsiveRow();
-		$fieldNamePrefix = get_class($this) . '_' . $name . '_';
+		$fieldNamePrefix = static::class . '_' . $name . '_';
 		if (!$readOnly) {
 			if (empty($values)) {
 				$values[] = '';
@@ -1953,7 +1953,7 @@ abstract class baseModule {
 	protected function checkMultiValueSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields,
 														   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
-			$fieldName = get_class($this) . '_' . $name;
+			$fieldName = static::class . '_' . $name;
 			$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
 			$valuesNew = [];
 			foreach ($_POST as $postKey => $postValue) {
@@ -2145,7 +2145,7 @@ abstract class baseModule {
 		if (!$this->canSelfServiceFieldBeRelabeled($fieldID, $this->selfServiceSettings)) {
 			return $defaultLabel;
 		}
-		$key = get_class($this) . '_' . $fieldID;
+		$key = static::class . '_' . $fieldID;
 		return empty($this->selfServiceSettings->relabelFields[$key]) ? $defaultLabel : $this->selfServiceSettings->relabelFields[$key];
 	}
 
