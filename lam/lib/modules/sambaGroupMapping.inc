@@ -1,7 +1,7 @@
 <?php
 
 use LAM\TYPES\ConfiguredType;
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 
 /*
 
@@ -91,7 +91,7 @@ class sambaGroupMapping extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['group']);
+		return $this->get_scope() === 'group';
 	}
 
 	/**
@@ -276,7 +276,7 @@ class sambaGroupMapping extends baseModule {
 				}
 				else {  // invalid type
 					$errMsg = $this->messages['groupType'][0];
-					array_push($errMsg, [$i, implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes)]);
+					$errMsg[] = [$i, implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes)];
 					$errors[] = $errMsg;
 				}
 			}
@@ -290,7 +290,7 @@ class sambaGroupMapping extends baseModule {
 			$domSID = $nameToSID[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
 			if (!isset($domSID)) {
 				$errMsg = $this->messages['sambaSID'][1];
-				array_push($errMsg, [$rawAccounts[$i][$ids['sambaGroupMapping_domain']], $i]);
+				$errMsg[] = [$rawAccounts[$i][$ids['sambaGroupMapping_domain']], $i];
 				$errors[] = $errMsg;
 			}
 			else {
@@ -332,8 +332,8 @@ class sambaGroupMapping extends baseModule {
 		if (in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
 			$sambaDomains = $this->getDomains();
 			if (sizeof($sambaDomains) == 0) {
-				StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
-				return [];
+				$return->add(new htmlStatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.')));
+				return $return;
 			}
 			// Get Domain-SID from group SID
 			if (isset($this->attributes['sambaSID'][0])) {
@@ -354,7 +354,7 @@ class sambaGroupMapping extends baseModule {
 			}
 			$displayNameInput = new htmlResponsiveInputField(_('Display name'), 'displayName', $displayName, 'displayName');
 			$displayNameInput->setFieldMaxLength(50);
-			$return->add($displayNameInput, 12);
+			$return->add($displayNameInput);
 			// Windows group
 			$options = [$this->getCn()];
 			$selected = [$this->getCn()];
@@ -365,7 +365,7 @@ class sambaGroupMapping extends baseModule {
 				}
 				$options[] = $names[$i];
 			}
-			$return->add(new htmlResponsiveSelect('sambaSID', $options, $selected, _('Windows group'), 'sambaSID'), 12);
+			$return->add(new htmlResponsiveSelect('sambaSID', $options, $selected, _('Windows group'), 'sambaSID'));
 			// group type
 			$names = array_keys($this->sambaGroupTypes);
 			$selected = [_('Domain group')];
@@ -377,13 +377,13 @@ class sambaGroupMapping extends baseModule {
 					$selected = [$names[$i]];
 				}
 			}
-			$return->add(new htmlResponsiveSelect('sambaGroupType', $names, $selected, _('Group type'), 'type'), 12);
+			$return->add(new htmlResponsiveSelect('sambaGroupType', $names, $selected, _('Group type'), 'type'));
 			// domain
 			$selectedDomain = [];
 			if (isset($sel_domain)) {
 				$selectedDomain = [$sel_domain];
 			}
-			$return->add(new htmlResponsiveSelect('sambaDomainName', $sambaDomainNames, $selectedDomain, _('Domain'), 'sambaDomainName'), 12);
+			$return->add(new htmlResponsiveSelect('sambaDomainName', $sambaDomainNames, $selectedDomain, _('Domain'), 'sambaDomainName'));
 			// local group members
 			$memberLabel = new htmlOutputText(_('Local members'));
 			$return->addLabel($memberLabel);
@@ -426,7 +426,7 @@ class sambaGroupMapping extends baseModule {
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add Samba 3 extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add Samba 3 extension')));
 		}
 		return $return;
 	}
@@ -472,7 +472,7 @@ class sambaGroupMapping extends baseModule {
 			$membersSelect->setHasDescriptiveElements(true);
 			$membersSelect->setMultiSelect(true);
 			$membersSelect->setTransformSingleSelect(false);
-			$return->add($membersSelect, 12);
+			$return->add($membersSelect);
 			$return->addVerticalSpacer('0.5rem');
 			$filterGroup = new htmlGroup();
 			$filterInput = new htmlInputField('newFilter');
@@ -480,7 +480,7 @@ class sambaGroupMapping extends baseModule {
 			$filterGroup->addElement(new htmlOutputText(_('Filter')));
 			$filterGroup->addElement($filterInput);
 			$filterGroup->addElement(new htmlHiddenInput('type', $type->getId()));
-			$return->add($filterGroup, 12);
+			$return->add($filterGroup);
 			$return->addVerticalSpacer('2rem');
 			$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'addMembers', _('Add')));
 			$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
@@ -564,7 +564,7 @@ class sambaGroupMapping extends baseModule {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
 		}
 		// domain
-		$return->add(new htmlResponsiveSelect('sambaGroupMapping_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'sambaDomainName'), 12);
+		$return->add(new htmlResponsiveSelect('sambaGroupMapping_sambaDomainName', $sambaDomainNames, [], _('Domain'), 'sambaDomainName'));
 		return $return;
 	}
 
@@ -701,7 +701,7 @@ class sambaGroupMapping extends baseModule {
 		}
 		// delete local members
 		foreach ($_POST as $key => $value) {
-			if (strpos($key, 'sambaSIDListDel_') === 0) {
+			if (str_starts_with($key, 'sambaSIDListDel_')) {
 				$index = substr($key, strlen('sambaSIDListDel_'));
 				unset($this->attributes['sambaSIDList'][$index]);
 				$this->attributes['sambaSIDList'] = array_values($this->attributes['sambaSIDList']);

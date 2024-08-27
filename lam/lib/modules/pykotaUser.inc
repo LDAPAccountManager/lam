@@ -1,10 +1,10 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 
 /*
 
@@ -87,7 +87,7 @@ class pykotaUser extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -176,14 +176,14 @@ class pykotaUser extends baseModule {
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		if (!$this->isStructural()) {
-			$profileContainer->add(new htmlResponsiveInputCheckbox('pykotaUser_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+			$profileContainer->add(new htmlResponsiveInputCheckbox('pykotaUser_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 		}
 		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaUser_pykotaLimitBy', $this->limitOptions, [], _('Limit type'), 'pykotaLimitBy');
 		$pykotaLimitByProfileOption->setHasDescriptiveElements(true);
 		$pykotaLimitByProfileOption->setSortElements(false);
-		$profileContainer->add($pykotaLimitByProfileOption, 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Balance'), 'pykotaUser_pykotaBalance', '', 'pykotaBalance'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Overcharge factor'), 'pykotaUser_pykotaOverCharge', '', 'pykotaOverCharge'), 12);
+		$profileContainer->add($pykotaLimitByProfileOption);
+		$profileContainer->add(new htmlResponsiveInputField(_('Balance'), 'pykotaUser_pykotaBalance', '', 'pykotaBalance'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Overcharge factor'), 'pykotaUser_pykotaOverCharge', '', 'pykotaOverCharge'));
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaUser_pykotaLimitBy'] = 'pykotaLimitBy';
 		$return['profile_mappings']['pykotaUser_pykotaOverCharge'] = 'pykotaOverCharge';
@@ -263,7 +263,7 @@ class pykotaUser extends baseModule {
 		// self service settings
 		if (static::class == 'pykotaUser') {
 			$selfServiceContainer = new htmlResponsiveRow();
-			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, ['jobSuffix', static::class]), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, ['jobSuffix', static::class]));
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// configuration checks
@@ -332,7 +332,7 @@ class pykotaUser extends baseModule {
 						$page = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias();
 					}
 					$msg = new htmlStatusMessage('INFO', sprintf(_("Please enter an user name on this page: %s"), $page));
-					$container->add($msg, 12);
+					$container->add($msg);
 				}
 			}
 			// pykotaUserName
@@ -356,7 +356,7 @@ class pykotaUser extends baseModule {
 				$historyGroup->addElement(new htmlAccountPageButton(static::class, 'jobs', 'open', _('Job history')));
 			}
 			$historyGroup->addElement(new htmlSpacer('5px', null));
-			$historyGroup->addElement(new htmlHelpLink('pykotaPayments'), true);
+			$historyGroup->addElement(new htmlHelpLink('pykotaPayments'));
 			$container->addField($historyGroup);
 			// limit by
 			$limitOption = 'quota';
@@ -366,7 +366,7 @@ class pykotaUser extends baseModule {
 			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, [$limitOption], _('Limit type'), 'pykotaLimitBy');
 			$limitSelect->setHasDescriptiveElements(true);
 			$limitSelect->setSortElements(false);
-			$container->add($limitSelect, 12);
+			$container->add($limitSelect);
 			// overcharge factor
 			$this->addSimpleInputTextField($container, 'pykotaOverCharge', _('Overcharge factor'));
 			// cn
@@ -382,11 +382,11 @@ class pykotaUser extends baseModule {
 				$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
 			}
 			// new payment
-			$container->add(new htmlSubTitle(_('Payment')), 12);
+			$container->add(new htmlSubTitle(_('Payment')));
 			$newPaymentAmount = new htmlResponsiveInputField(_('Amount'), 'pykotaBalanceAdd', '', '5em');
-			$container->add($newPaymentAmount, 12);
+			$container->add($newPaymentAmount);
 			$newPaymentComment = new htmlResponsiveInputField(_('Comment'), 'pykotaBalanceComment', '', '20em');
-			$container->add($newPaymentComment, 12);
+			$container->add($newPaymentComment);
 			$newPaymentBtn = new htmlButton('addPayment', _('Add'));
 			$newPaymentGroup = new htmlGroup();
 			$newPaymentGroup->addElement($newPaymentBtn);
@@ -403,7 +403,7 @@ class pykotaUser extends baseModule {
 		}
 		else {
 			// add button
-			$container->add(new htmlButton('addObjectClass', _('Add PyKota extension')), 12);
+			$container->add(new htmlButton('addObjectClass', _('Add PyKota extension')));
 		}
 		return $container;
 	}
@@ -519,10 +519,10 @@ class pykotaUser extends baseModule {
 		// add payment
 		if (isset($_POST['addPayment'])) {
 			$amount = $_POST['pykotaBalanceAdd'];
-			if (!empty($amount) && (strpos($amount, ',') !== false)) {
+			if (!empty($amount) && (str_contains($amount, ','))) {
 				$amount = str_replace(',', '.', $amount);
 			}
-			if (!empty($amount) && (strpos($amount, '.') === false)) {
+			if (!empty($amount) && (!str_contains($amount, '.'))) {
 				$amount .= '.0';
 			}
 			$comment = $_POST['pykotaBalanceComment'];
@@ -574,7 +574,7 @@ class pykotaUser extends baseModule {
 		$container->addField($totalPaidGroup, 12);
 		// payment/job history
 		if (!empty($this->attributes['pykotaPayments'][0])) {
-			$container->add(new htmlSubTitle(_('Payment history')), 12);
+			$container->add(new htmlSubTitle(_('Payment history')));
 			$labels = [_('Date'), _('Amount'), _('Comment')];
 			$data = [];
 			rsort($this->attributes['pykotaPayments']);
@@ -591,12 +591,12 @@ class pykotaUser extends baseModule {
 			}
 			$historyTable = new htmlResponsiveTable($labels, $data);
 			$historyTable->setWidths(['20%', '15%', '65%']);
-			$container->add($historyTable, 12);
+			$container->add($historyTable);
 		}
 		// back button
 		$container->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
-		$container->add($backButton, 12);
+		$container->add($backButton);
 		return $container;
 	}
 
@@ -635,11 +635,11 @@ class pykotaUser extends baseModule {
 		}
 		$table = new htmlResponsiveTable($titles, $data);
 		$table->setWidths(['20%', '20%', '15%', '15%', '30%']);
-		$container->add($table, 12);
+		$container->add($table);
 		// back button
 		$container->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
-		$container->add($backButton, 12);
+		$container->add($backButton);
 		return $container;
 	}
 
@@ -713,7 +713,7 @@ class pykotaUser extends baseModule {
 		}
 		if (isset($profile['pykotaUser_pykotaBalance'][0]) && ($profile['pykotaUser_pykotaBalance'][0] !== '') && empty($this->attributes['pykotaBalance'][0])) {
 			$amount = $profile['pykotaUser_pykotaBalance'][0];
-			if (strpos($amount, '.') === false) {
+			if (!str_contains($amount, '.')) {
 				$amount .= '.0';
 			}
 			$this->attributes['pykotaBalance'][0] = $amount;
@@ -782,12 +782,12 @@ class pykotaUser extends baseModule {
 			if ($this->manageUid($selectedModules) && !empty($rawAccounts[$i][$ids['pykotaUser_uid']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaUser_uid']], 'username')) {
 					$errMsg = $this->messages['uid'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				elseif ($this->uidExists($rawAccounts[$i][$ids['pykotaUser_uid']])) {
 					$errMsg = $this->messages['uid'][3];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -805,12 +805,12 @@ class pykotaUser extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']], 'username')) {
 					$errMsg = $this->messages['pykotaUserName'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				elseif ($this->pykotaUserNameExists($rawAccounts[$i][$ids['pykotaUser_pykotaUserName']])) {
 					$errMsg = $this->messages['pykotaUserName'][3];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -824,7 +824,7 @@ class pykotaUser extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['pykotaLimitBy'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 			}
@@ -834,12 +834,12 @@ class pykotaUser extends baseModule {
 			// overcharge factor
 			if (!empty($rawAccounts[$i][$ids['pykotaUser_pykotaOverCharge']])) {
 				$pykotaOverCharge = $rawAccounts[$i][$ids['pykotaUser_pykotaOverCharge']];
-				if (strpos($pykotaOverCharge, '.') === false) {
+				if (!str_contains($pykotaOverCharge, '.')) {
 					$pykotaOverCharge .= '.0';
 				}
 				if (!get_preg($pykotaOverCharge, 'float')) {
 					$errMsg = $this->messages['pykotaOverCharge'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -852,12 +852,12 @@ class pykotaUser extends baseModule {
 			// balance
 			if (!empty($rawAccounts[$i][$ids['pykotaUser_pykotaBalance']])) {
 				$balance = $rawAccounts[$i][$ids['pykotaUser_pykotaBalance']];
-				if (strpos($balance, '.') === false) {
+				if (!str_contains($balance, '.')) {
 					$balance .= '.0';
 				}
 				if (!get_preg($balance, 'float')) {
 					$errMsg = $this->messages['pykotaBalance'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -995,10 +995,11 @@ class pykotaUser extends baseModule {
 					$pykotaPayments->add(new htmlOutputText(base64_decode($parts[2])), 6);
 				}
 			}
-			$row->add(new htmlSpacer(null, '10px'), 12);
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlSpacer(null, '10px'));
 			$row = new htmlResponsiveRow();
 			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaPayments', _('Payment history'))), 12, 12, 12, 'bold text-left');
-			$row->add($pykotaPayments, 12);
+			$row->add($pykotaPayments);
 			$return['pykotaPayments'] = $row;
 		}
 		// job history
@@ -1024,9 +1025,9 @@ class pykotaUser extends baseModule {
 				$pykotaJobs->add(new htmlOutputText($job['pykotatitle'][0]), 3);
 			}
 			$row = new htmlResponsiveRow();
-			$row->add(new htmlSpacer(null, '10px'), 12);
+			$row->add(new htmlSpacer(null, '10px'));
 			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaJobHistory', _('Job history'))), 12, 12, 12, 'bold text-left');
-			$row->add($pykotaJobs, 12);
+			$row->add($pykotaJobs);
 			$return['pykotaJobHistory'] = $row;
 		}
 		return $return;
@@ -1196,7 +1197,7 @@ class pykotaUser extends baseModule {
 	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
-		$configContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', '', 'jobSuffix'), 12);
+		$configContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', '', 'jobSuffix'));
 		return $configContainer;
 	}
 

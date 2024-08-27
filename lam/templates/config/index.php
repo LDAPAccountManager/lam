@@ -5,7 +5,7 @@ use htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -85,21 +85,21 @@ $content = new htmlResponsiveRow();
         $topContent = new htmlResponsiveRow();
         $topContent->setCSSClasses(['maxrow fullwidth roundedShadowBox spacing5']);
         $mainCfgLink = new htmlLink(_("Edit general settings"), 'mainlogin.php', '../../graphics/configure.svg');
-        $mainCfgLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
-        $topContent->add($mainCfgLink, 12);
+        $mainCfgLink->setCSSClasses(['lam-margin-large display-as-block']);
+        $topContent->add($mainCfgLink);
         $cfgLink = new htmlLink(_("Edit server profiles"), 'conflogin.php', '../../graphics/world.svg');
-        $cfgLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
-        $topContent->add($cfgLink, 12);
+        $cfgLink->setCSSClasses(['lam-margin-large display-as-block']);
+        $topContent->add($cfgLink);
         if (isLAMProVersion()) {
         	$selfServiceLink = new htmlLink(_("Edit self service"), '../selfService/adminLogin.php', '../../graphics/people.svg');
-        	$selfServiceLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
-	        $topContent->add($selfServiceLink, 12);
+        	$selfServiceLink->setCSSClasses(['lam-margin-large display-as-block']);
+	        $topContent->add($selfServiceLink);
         }
         $topContent->addVerticalSpacer('1rem');
         $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/export.svg');
-        $importExportLink->setCSSClasses(['lam-margin-large display-as-block icon-big']);
-        $topContent->add($importExportLink, 12);
-        $content->add($topContent, 12);
+        $importExportLink->setCSSClasses(['lam-margin-large display-as-block']);
+        $topContent->add($importExportLink);
+        $content->add($topContent);
         $content->addVerticalSpacer('4rem');
         ?>
 
@@ -107,11 +107,11 @@ $content = new htmlResponsiveRow();
 		if (isLAMProVersion()) {
 			include_once(__DIR__ . "/../../lib/env.inc");
 			$printer = new \LAM\ENV\LAMLicenseInfoPrinter();
-			$content->add($printer->getLicenseInfo(), 12);
+			$content->add($printer->getLicenseInfo());
 			$content->addVerticalSpacer('2rem');
 		}
 
-		$content->add(new htmlLink(_("Back to login"), '../login.php'), 12);
+		$content->add(new htmlLink(_("Back to login"), '../login.php'));
 		$content->addVerticalSpacer('2rem');
 
 		parseHtml(null, $content, [], true, null);
