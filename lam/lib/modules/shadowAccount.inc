@@ -49,12 +49,12 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * ID for expired account status.
 	 */
-	const STATUS_ACCOUNT_EXPIRED = "SHADOW_ACCOUNT_EXPIRED";
+	private const STATUS_ACCOUNT_EXPIRED = "SHADOW_ACCOUNT_EXPIRED";
 
 	/**
 	 * ID for expired password status.
 	 */
-	const STATUS_PASSWORD_EXPIRED = "SHADOW_PASSWORD_EXPIRED";
+	private const STATUS_PASSWORD_EXPIRED = "SHADOW_PASSWORD_EXPIRED";
 
 	/**
 	 * Creates a new shadowAccount object.
@@ -92,7 +92,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -130,23 +130,23 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		}
 		$profileOptionsTable = new htmlResponsiveRow();
 		// auto add extension
-		$profileOptionsTable->add(new htmlResponsiveInputCheckbox('shadowAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileOptionsTable->add(new htmlResponsiveInputCheckbox('shadowAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 		// password warning
 		$profilePwdWarning = new htmlResponsiveInputField(_('Password warning'), 'shadowAccount_shadowWarning', null, 'shadowwarning');
 		$profilePwdWarning->setFieldMaxLength(4);
-		$profileOptionsTable->add($profilePwdWarning, 12);
+		$profileOptionsTable->add($profilePwdWarning);
 		// password expiration
 		$profilePwdExpiration = new htmlResponsiveInputField(_('Password expiration'), 'shadowAccount_shadowInactive', null, 'shadowinactive');
 		$profilePwdExpiration->setFieldMaxLength(4);
-		$profileOptionsTable->add($profilePwdExpiration, 12);
+		$profileOptionsTable->add($profilePwdExpiration);
 		// minimum password age
 		$profilePwdMinAge = new htmlResponsiveInputField(_('Minimum password age'), 'shadowAccount_shadowMin', null, 'shadowmin');
 		$profilePwdMinAge->setFieldMaxLength(5);
-		$profileOptionsTable->add($profilePwdMinAge, 12);
+		$profileOptionsTable->add($profilePwdMinAge);
 		// maximum password age
 		$profilePwdMinAge = new htmlResponsiveInputField(_('Maximum password age'), 'shadowAccount_shadowMax', null, 'shadowmax');
 		$profilePwdMinAge->setFieldMaxLength(5);
-		$profileOptionsTable->add($profilePwdMinAge, 12);
+		$profileOptionsTable->add($profilePwdMinAge);
 		// expiration date
 		$profileOptionsTable->addLabel(new htmlOutputText(_('Account expiration date')));
 		$profileOptionsExpire = new htmlResponsiveRow();
@@ -399,7 +399,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 			$expireTable = new htmlGroup();
 			$expireTable->addElement(new htmlOutputText($expirationDate, false));
 			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', 'edit-document.svg', true, _('Change')));
-			$expireTable->addElement(new htmlHelpLink('shadowexpire'), true);
+			$expireTable->addElement(new htmlHelpLink('shadowexpire'));
 			$return->addField($expireTable);
 
 			$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -415,7 +415,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 			if (isset($this->attributes['shadowmax'][0]) && ($this->attributes['shadowmax'][0] != '')) {
 				$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'expirePassword', _('Force password change')));
 			}
-			$pwdChangeTable->addElement(new htmlHelpLink('shadowlastchange'), true);
+			$pwdChangeTable->addElement(new htmlHelpLink('shadowlastchange'));
 			$return->addField($pwdChangeTable);
 
 			$return->addVerticalSpacer('2rem');
@@ -424,7 +424,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlAccountPageButton('shadowAccount', 'attributes', 'addObjectClass', _('Add Shadow account extension')), 12);
+			$return->add(new htmlAccountPageButton('shadowAccount', 'attributes', 'addObjectClass', _('Add Shadow account extension')));
 		}
 		return $return;
 	}
@@ -508,19 +508,19 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		$dateField->showCalendar('d.m.Y');
 		$return->add($dateField);
 		if ($this->getAccountContainer()->getAccountModule('sambaSamAccount') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncSamba', false, _('Set also for Samba 3')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncSamba', false, _('Set also for Samba 3')));
 		}
 		if ($this->getAccountContainer()->getAccountModule('windowsUser') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncWindows', false, _('Set also for Windows')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncWindows', false, _('Set also for Windows')));
 		}
 		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')));
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberos') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncMIT', false, _('Set also for Kerberos')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncMIT', false, _('Set also for Kerberos')));
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberosStructural') != null) {
-			$return->add(new htmlResponsiveInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')));
 		}
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
@@ -638,7 +638,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 				(($rawAccounts[$i][$ids['shadowAccount_minAge']] == '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] == '') ||   // and one is not set
 					($rawAccounts[$i][$ids['shadowAccount_minAge']] > $rawAccounts[$i][$ids['shadowAccount_maxAge']]))) {  // or minAge > maxAge
 				$errMsg = $this->messages['shadow_cmp'][1];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$messages[] = $errMsg;
 			}
 			// expiration date
@@ -650,7 +650,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 				}
 				else {
 					$errMsg = $this->messages['shadow_expireDate'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 			}
@@ -663,7 +663,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 				}
 				else {
 					$errMsg = $this->messages['shadow_lastChange'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 			}
@@ -864,7 +864,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 			return false;
 		}
 		if (($attrs['shadowlastchange'][0] < 1) || ($attrs['shadowmax'][0] < 1)) {
-			return;
+			return false;
 		}
 		$time = new DateTime('@' . $attrs['shadowlastchange'][0] * 24 * 3600, new DateTimeZone('UTC'));
 		$time = $time->add(new DateInterval('P' . $attrs['shadowmax'][0] . 'D'));
@@ -1065,7 +1065,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 
 if (interface_exists('\LAM\JOB\Job', false)) {
 
-	include_once dirname(__FILE__) . '/../passwordExpirationJob.inc';
+	include_once __DIR__ . '/../passwordExpirationJob.inc';
 
 	/**
 	 * Job to notify users about password expiration.
