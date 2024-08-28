@@ -937,7 +937,7 @@ class lamList {
 		$container->addLabel(new htmlOutputText(_('Create for')));
 		// check if account object is already in session
 		if ($sessionObject != null) {
-			$container->addField(new htmlOutputText($sessionObject->finalDN));
+			$container->addField(new htmlOutputText(getAbstractDN($sessionObject->finalDN)));
 			$container->add(new htmlHiddenInput('createFor', 'SESSION'), 0);
 			$container->add(new htmlHiddenInput('PDFSessionID', $PDFSessionID), 0);
 		}
