@@ -47,7 +47,7 @@ class ddns extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['dhcp']);
+		return $this->get_scope() === 'dhcp';
 	}
 
 	/**
@@ -301,7 +301,7 @@ class ddns extends baseModule {
 		}
 
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-			if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
+			if (str_starts_with($this->attributes['dhcpStatements'][$i], 'zone ')) {
 				unset($this->attributes['dhcpStatements'][$i]);
 				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 				$i--;
@@ -356,21 +356,21 @@ class ddns extends baseModule {
 				return $return;
 			}
 			// DHCP main settings
-			$return->add(new htmlResponsiveInputCheckbox('active', $this->isDynDNSActivated(), _('Activate DynDNS'), 'active'), 12);
-			$return->add(new htmlResponsiveInputCheckbox('insert_fixed', $this->addFixIPs(), _('Add fix IP addresses to DNS'), 'fixed_ips'), 12);
-			$return->add(new htmlResponsiveInputCheckbox('client_insert', $this->isIgnoreClientUpdates(), _('Disable client updates'), 'client_insert'), 12);
+			$return->add(new htmlResponsiveInputCheckbox('active', $this->isDynDNSActivated(), _('Activate DynDNS'), 'active'));
+			$return->add(new htmlResponsiveInputCheckbox('insert_fixed', $this->addFixIPs(), _('Add fix IP addresses to DNS'), 'fixed_ips'));
+			$return->add(new htmlResponsiveInputCheckbox('client_insert', $this->isIgnoreClientUpdates(), _('Disable client updates'), 'client_insert'));
 			$keyInput = new htmlResponsiveInputField(_('Path to key for DNS updates'), 'key_path', $this->getUpdateKey(), 'keypath');
-			$return->add($keyInput, 12);
+			$return->add($keyInput);
 		}
 		else {
 			// Account edit
 			if (!$this->check_if_ddns_is_enable()) {
-				$return->add(new htmlOutputText(_("DDNS is not activated. You can activate it in the DHCP settings (DDNS).")), 12);
+				$return->add(new htmlOutputText(_("DDNS is not activated. You can activate it in the DHCP settings (DDNS).")));
 			}
 			else {
 				// DNS server
 				$serverInput = new htmlResponsiveInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
-				$return->add($serverInput, 12);
+				$return->add($serverInput);
 
 				$zones = $this->getZoneNames();
 				$zone = '';
@@ -383,10 +383,10 @@ class ddns extends baseModule {
 				}
 				// zone name
 				$zoneInput = new htmlResponsiveInputField(_('Zone name'), 'zone', $zone, 'zone');
-				$return->add($zoneInput, 12);
+				$return->add($zoneInput);
 				// reverse zone name
 				$revZoneInput = new htmlResponsiveInputField(_('Reverse zone name'), 'zone_reverse', $revzone, 'zone_reverse');
-				$return->add($revZoneInput, 12);
+				$return->add($revZoneInput);
 			}
 		}
 
@@ -423,11 +423,10 @@ class ddns extends baseModule {
 	 * @return String IP address
 	 */
 	private function getDNSServer() {
-		$return = null;
 		if (isset($this->attributes['dhcpStatements'][0])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
-					if (strpos($this->attributes['dhcpStatements'][$i], ' primary ') === false) {
+				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'zone ')) {
+					if (!str_contains($this->attributes['dhcpStatements'][$i], ' primary ')) {
 						continue;
 					}
 					$parts = explode(". { primary ", $this->attributes['dhcpStatements'][$i]);
@@ -437,7 +436,7 @@ class ddns extends baseModule {
 				}
 			}
 		}
-		return $return;
+		return null;
 	}
 
 	/**
@@ -451,10 +450,10 @@ class ddns extends baseModule {
 		$revZone = '';
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-				if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
+				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'zone ')) {
 					$parts = explode(" ", substr($this->attributes['dhcpStatements'][$i], 5));
 					$value = substr(array_shift($parts), 0, -1);
-					if (strpos($value, 'in-addr.arpa') === false) {
+					if (!str_contains($value, 'in-addr.arpa')) {
 						$zone = $value;
 					}
 					else {
@@ -494,7 +493,7 @@ class ddns extends baseModule {
 	private function setDynDNSActivated($activated) {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-				if (substr($this->attributes['dhcpStatements'][$i], 0, 18) == 'ddns-update-style ') {
+				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'ddns-update-style ')) {
 					unset($this->attributes['dhcpStatements'][$i]);
 					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 				}
@@ -534,7 +533,7 @@ class ddns extends baseModule {
 	private function setFixIPs($add) {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-				if (substr($this->attributes['dhcpStatements'][$i], 0, 21) == 'update-static-leases ') {
+				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'update-static-leases ')) {
 					unset($this->attributes['dhcpStatements'][$i]);
 					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 				}
@@ -594,7 +593,7 @@ class ddns extends baseModule {
 		$return = null;
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-				if (substr($this->attributes['dhcpStatements'][$i], 0, 8) == 'include ') {
+				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'include ')) {
 					$return = substr($this->attributes['dhcpStatements'][$i], 9, strlen($this->attributes['dhcpStatements'][$i]) - 10);
 					break;
 				}
@@ -613,7 +612,7 @@ class ddns extends baseModule {
 			$this->attributes['dhcpStatements'] = [];
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
-			if (substr($this->attributes['dhcpStatements'][$i], 0, 8) == 'include ') {
+			if (str_starts_with($this->attributes['dhcpStatements'][$i], 'include ')) {
 				unset($this->attributes['dhcpStatements'][$i]);
 				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 			}
@@ -650,7 +649,7 @@ class ddns extends baseModule {
 			// principal name
 			if (!check_ip($rawAccounts[$i][$ids['ddns_DNSserver']])) {
 				$error = $this->messages['ip'][1];
-				array_push($error, [$i]);
+				$error[] = [$i];
 				$messages[] = $error;
 			}
 			else {

@@ -1,7 +1,7 @@
 <?php
 
 use LAM\TYPES\ConfiguredType;
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -64,9 +64,7 @@ class courierMailAccount extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), [
-			'user'
-		]);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -148,7 +146,7 @@ class courierMailAccount extends baseModule {
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputCheckbox('courierMailAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileContainer->add(new htmlResponsiveInputCheckbox('courierMailAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 		$return['profile_options'] = $profileContainer;
 		// PDF fields
 		$return['PDF_fields'] = [
@@ -291,13 +289,13 @@ class courierMailAccount extends baseModule {
 			$return->addField($tempTable);
 			// check boxes for account access control
 			$disableimap = isset($this->attributes['disableimap'][0]) && ($this->attributes['disableimap'][0] != 0);
-			$return->add(new htmlResponsiveInputCheckbox('disableimap', $disableimap, _('Disable IMAP access'), 'disableimap'), 12);
+			$return->add(new htmlResponsiveInputCheckbox('disableimap', $disableimap, _('Disable IMAP access'), 'disableimap'));
 			$disablepop3 = isset($this->attributes['disablepop3'][0]) && ($this->attributes['disablepop3'][0] != 0);
-			$return->add(new htmlResponsiveInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 access'), 'disablepop3'), 12);
+			$return->add(new htmlResponsiveInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 access'), 'disablepop3'));
 			$disablewebmail = isset($this->attributes['disablewebmail'][0]) && ($this->attributes['disablewebmail'][0] != 0);
-			$return->add(new htmlResponsiveInputCheckbox('disablewebmail', $disablewebmail, _('Disable webmail access'), 'disablewebmail'), 12);
+			$return->add(new htmlResponsiveInputCheckbox('disablewebmail', $disablewebmail, _('Disable webmail access'), 'disablewebmail'));
 			$disableshared = isset($this->attributes['disableshared'][0]) && ($this->attributes['disableshared'][0] != 0);
-			$return->add(new htmlResponsiveInputCheckbox('disableshared', $disableshared, _('Disable shared folder access'), 'disableshared'), 12);
+			$return->add(new htmlResponsiveInputCheckbox('disableshared', $disableshared, _('Disable shared folder access'), 'disableshared'));
 			// remove extension
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove Courier mail extension'));
@@ -305,7 +303,7 @@ class courierMailAccount extends baseModule {
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add Courier mail extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add Courier mail extension')));
 		}
 		return $return;
 	}

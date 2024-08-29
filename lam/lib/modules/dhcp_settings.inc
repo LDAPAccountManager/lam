@@ -79,17 +79,17 @@ if (!function_exists('check_ip')) {
  */
 class dhcp_settings extends baseModule {
 
-	const UNKNOWN_CLIENTS = 'unknown-clients';
-	const DEFAULT_LEASE_TIME = 'default-lease-time';
-	const MAX_LEASE_TIME = 'max-lease-time';
-	const AUTHORITATIVE = 'authoritative';
-	const DOMAIN_SEARCH = 'domain-search';
-	const DOMAIN_NAME = 'domain-name';
-	const DOMAIN_NAME_SERVERS = 'domain-name-servers';
-	const ROUTERS = 'routers';
-	const NETBIOS_NAME_SERVERS = 'netbios-name-servers';
-	const NETBIOS_NODE_TYPE = 'netbios-node-type';
-	const SUBNET_MASK = 'subnet-mask';
+	private const UNKNOWN_CLIENTS = 'unknown-clients';
+	private const DEFAULT_LEASE_TIME = 'default-lease-time';
+	private const MAX_LEASE_TIME = 'max-lease-time';
+	private const AUTHORITATIVE = 'authoritative';
+	private const DOMAIN_SEARCH = 'domain-search';
+	private const DOMAIN_NAME = 'domain-name';
+	private const DOMAIN_NAME_SERVERS = 'domain-name-servers';
+	private const ROUTERS = 'routers';
+	private const NETBIOS_NAME_SERVERS = 'netbios-name-servers';
+	private const NETBIOS_NODE_TYPE = 'netbios-node-type';
+	private const SUBNET_MASK = 'subnet-mask';
 
 	/** all netbios node types */
 	private $all_netbios_node_types;
@@ -126,7 +126,7 @@ class dhcp_settings extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['dhcp']);
+		return $this->get_scope() === 'dhcp';
 	}
 
 	/**
@@ -620,7 +620,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if ($this->isRootNode()
 			&& !in_array_ignore_case('dhcpService', $this->attributes['objectClass'])
 			&& !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-			$return->add(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')), 12);
+			$return->add(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
 			return $return;
 		}
 		// Subnet name
@@ -631,26 +631,26 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			$subnetInput = new htmlResponsiveInputField(_('Subnet'), 'cn', $cn, 'subnet');
 			$subnetInput->setRequired(true);
-			$return->add($subnetInput, 12);
+			$return->add($subnetInput);
 		}
 		// description
 		$description = '';
 		if (isset($this->attributes['dhcpComments'][0])) {
 			$description = $this->attributes['dhcpComments'][0];
 		}
-		$return->add(new htmlResponsiveInputField(_('Description'), 'description', $description, 'description'), 12);
+		$return->add(new htmlResponsiveInputField(_('Description'), 'description', $description, 'description'));
 		// domain name
-		$return->add(new htmlResponsiveInputField(_('Domain name'), 'domainname', $this->getDHCPOption(self::DOMAIN_NAME), 'domainname'), 12);
+		$return->add(new htmlResponsiveInputField(_('Domain name'), 'domainname', $this->getDHCPOption(self::DOMAIN_NAME), 'domainname'));
 		// lease Time
 		$leasetimeInput = new htmlResponsiveInputField(_('Lease time'), 'lease_time', $this->getDefaultLeaseTime(), 'leasetime');
 		$leasetimeInput->setMinimumAndMaximumNumber();
-		$return->add($leasetimeInput, 12);
+		$return->add($leasetimeInput);
 		// max lease time
 		$max_leasetimeInput = new htmlResponsiveInputField(_('Maximum lease time'), 'max_lease_time', $this->getMaxLeaseTime(), 'max_leasetime');
 		$max_leasetimeInput->setMinimumAndMaximumNumber();
-		$return->add($max_leasetimeInput, 12);
+		$return->add($max_leasetimeInput);
 		// DNS
-		$return->add(new htmlResponsiveInputField(_('DNS'), 'dns', $this->getDHCPOption(self::DOMAIN_NAME_SERVERS), 'dns'), 12);
+		$return->add(new htmlResponsiveInputField(_('DNS'), 'dns', $this->getDHCPOption(self::DOMAIN_NAME_SERVERS), 'dns'));
 		// domain search
 		$domainSearchEntries = $this->getDHCPOption(self::DOMAIN_SEARCH);
 		if ($domainSearchEntries === null) {
@@ -660,9 +660,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->attributes['INFO_domain-search'] = $domainSearchEntries;
 		$this->addMultiValueInputTextField($return, 'INFO_domain-search', _('Search domains'));
 		// gateway
-		$return->add(new htmlResponsiveInputField(_('Default gateway'), 'routers', $this->getDHCPOption(self::ROUTERS), 'gateway'), 12);
+		$return->add(new htmlResponsiveInputField(_('Default gateway'), 'routers', $this->getDHCPOption(self::ROUTERS), 'gateway'));
 		// netbios name servers
-		$return->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', $this->getDHCPOption(self::NETBIOS_NAME_SERVERS), 'netbios'), 12);
+		$return->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', $this->getDHCPOption(self::NETBIOS_NAME_SERVERS), 'netbios'));
 		// netbios node type
 		$nodeType = $this->getDHCPOption(self::NETBIOS_NODE_TYPE);
 		if ($nodeType == '') {
@@ -983,8 +983,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!empty($this->attributes['dhcpStatements'])) {
 			foreach ($this->attributes['dhcpStatements'] as $statement) {
 				if (($statement !== self::AUTHORITATIVE)
-					&& (strpos($statement, self::DEFAULT_LEASE_TIME) !== 0)
-					&& (strpos($statement, self::MAX_LEASE_TIME) !== 0)
+					&& (!str_starts_with($statement, self::DEFAULT_LEASE_TIME))
+					&& (!str_starts_with($statement, self::MAX_LEASE_TIME))
 					&& (strpos($statement, self::UNKNOWN_CLIENTS) !== (strlen($statement) - strlen(self::UNKNOWN_CLIENTS)))) {
 					$extraStatements[] = $statement;
 				}
@@ -1005,8 +1005,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$toDelete = [];
 		foreach ($this->attributes['dhcpStatements'] as $statement) {
 			if (($statement !== self::AUTHORITATIVE)
-				&& (strpos($statement, self::DEFAULT_LEASE_TIME) !== 0)
-				&& (strpos($statement, self::MAX_LEASE_TIME) !== 0)
+				&& (!str_starts_with($statement, self::DEFAULT_LEASE_TIME))
+				&& (!str_starts_with($statement, self::MAX_LEASE_TIME))
 				&& (strpos($statement, self::UNKNOWN_CLIENTS) !== (strlen($statement) - strlen(self::UNKNOWN_CLIENTS)))) {
 				$toDelete[] = $statement;
 			}
@@ -1024,13 +1024,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$extraOptions = [];
 		if (!empty($this->attributes['dhcpOption'])) {
 			foreach ($this->attributes['dhcpOption'] as $option) {
-				if ((strpos($option, self::DOMAIN_NAME) !== 0)
-					&& (strpos($option, self::DOMAIN_NAME_SERVERS) !== 0)
-					&& (strpos($option, self::DOMAIN_SEARCH) !== 0)
-					&& (strpos($option, self::ROUTERS) !== 0)
-					&& (strpos($option, self::NETBIOS_NAME_SERVERS) !== 0)
-					&& (strpos($option, self::NETBIOS_NODE_TYPE) !== 0)
-					&& (strpos($option, self::SUBNET_MASK) !== 0)
+				if ((!str_starts_with($option, self::DOMAIN_NAME))
+					&& (!str_starts_with($option, self::DOMAIN_NAME_SERVERS))
+					&& (!str_starts_with($option, self::DOMAIN_SEARCH))
+					&& (!str_starts_with($option, self::ROUTERS))
+					&& (!str_starts_with($option, self::NETBIOS_NAME_SERVERS))
+					&& (!str_starts_with($option, self::NETBIOS_NODE_TYPE))
+					&& (!str_starts_with($option, self::SUBNET_MASK))
 				) {
 					$extraOptions[] = $option;
 				}
@@ -1050,13 +1050,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		$toDelete = [];
 		foreach ($this->attributes['dhcpOption'] as $option) {
-			if ((strpos($option, self::DOMAIN_NAME) !== 0)
-				&& (strpos($option, self::DOMAIN_NAME_SERVERS) !== 0)
-				&& (strpos($option, self::DOMAIN_SEARCH) !== 0)
-				&& (strpos($option, self::ROUTERS) !== 0)
-				&& (strpos($option, self::NETBIOS_NAME_SERVERS) !== 0)
-				&& (strpos($option, self::NETBIOS_NODE_TYPE) !== 0)
-				&& (strpos($option, self::SUBNET_MASK) !== 0)
+			if ((!str_starts_with($option, self::DOMAIN_NAME))
+				&& (!str_starts_with($option, self::DOMAIN_NAME_SERVERS))
+				&& (!str_starts_with($option, self::DOMAIN_SEARCH))
+				&& (!str_starts_with($option, self::ROUTERS))
+				&& (!str_starts_with($option, self::NETBIOS_NAME_SERVERS))
+				&& (!str_starts_with($option, self::NETBIOS_NODE_TYPE))
+				&& (!str_starts_with($option, self::SUBNET_MASK))
 			) {
 				$toDelete[] = $option;
 			}
@@ -1085,7 +1085,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			else {
 				$error = $this->messages['cn'][3];
-				array_push($error, [$i]);
+				$error[] = [$i];
 				$messages[] = $error;
 			}
 			// domain name
@@ -1095,7 +1095,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['domainname'][5];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1106,7 +1106,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['lease_time'][1];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1117,7 +1117,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['max_lease_time'][1];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1135,7 +1135,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['dns'][1];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1156,7 +1156,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['INFO_domain-search'][1];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1167,7 +1167,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['routers'][1];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1185,7 +1185,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['netbios'][1];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1207,7 +1207,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['netbios_node_type'][1];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1223,7 +1223,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['unknownClients'][0];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1236,7 +1236,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['authoritative'][0];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -1246,7 +1246,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			else {
 				$error = $this->messages['subnet'][1];
-				array_push($error, [$i]);
+				$error[] = [$i];
 				$messages[] = $error;
 			}
 			// net mask
