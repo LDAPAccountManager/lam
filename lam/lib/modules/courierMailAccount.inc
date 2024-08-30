@@ -267,7 +267,7 @@ class courierMailAccount extends baseModule {
 			$value = 0;
 			if (isset($this->attributes['quota'][0]) && (strlen($this->attributes['quota'][0]) > 0)) {
 				$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
-				$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / pow(1000, $unitIndex), 2);
+				$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / (1000 ** $unitIndex), 2);
 			}
 			$return->addLabel(new htmlOutputText(_('Mailbox quota')));
 			$tempTable = new htmlTable();
@@ -348,7 +348,7 @@ class courierMailAccount extends baseModule {
 			if (is_numeric($_POST['quotaValue']) && in_array($_POST['quotaUnit'], $units)) {
 				if ($_POST['quotaValue'] > 0) {
 					$power = array_search($_POST['quotaUnit'], $units);
-					$this->attributes['quota'][0] = $_POST['quotaValue'] * pow(1000, $power) . "S";
+					$this->attributes['quota'][0] = $_POST['quotaValue'] * (1000 ** $power) . "S";
 				}
 				elseif (isset($this->attributes['quota'])) {
 					unset($this->attributes['quota']);
@@ -467,7 +467,7 @@ class courierMailAccount extends baseModule {
 		$value = 0;
 		if (isset($this->attributes['quota'][0]) && (strlen($this->attributes['quota'][0]) > 0)) {
 			$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
-			$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / pow(1000, $unitIndex), 2);
+			$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / (1000 ** $unitIndex), 2);
 		}
 		$units = [
 			'B', 'kB', 'MB', 'GB',
