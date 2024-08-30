@@ -754,13 +754,10 @@ class imapAccess extends baseModule {
 	/**
 	 * Returns the path separator.
 	 *
-	 * @return String separator char
+	 * @return string separator char
 	 */
-	private function getSep() {
-		if (isset($this->moduleSettings['ImapAccess_pathSeparator'][0])) {
-			return $this->moduleSettings['ImapAccess_pathSeparator'][0];
-		}
-		return '.'; // default
+	private function getSep(): string {
+		return $this->moduleSettings['ImapAccess_pathSeparator'][0] ?? '.';
 	}
 
 	/**
