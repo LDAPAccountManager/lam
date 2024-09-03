@@ -1,8 +1,8 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 
 /*
@@ -41,7 +41,7 @@ use LAM\TYPES\ConfiguredType;
 class ldapPublicKey extends baseModule {
 
 	/** session variable for existing keys in self service */
-	const SESS_KEY_LIST = 'ldapPublicKey_keyList';
+	private const SESS_KEY_LIST = 'ldapPublicKey_keyList';
 
 	/**
 	 * Creates a new ldapPublicKey object.
@@ -87,7 +87,7 @@ class ldapPublicKey extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -133,7 +133,7 @@ class ldapPublicKey extends baseModule {
 		// profile options
 		if ($this->hasObjectClass()) {
 			$profileContainer = new htmlResponsiveRow();
-			$profileContainer->add(new htmlResponsiveInputCheckbox(static::class . '_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+			$profileContainer->add(new htmlResponsiveInputCheckbox(static::class . '_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 			$return['profile_options'] = $profileContainer;
 		}
 		// upload fields
@@ -252,7 +252,7 @@ class ldapPublicKey extends baseModule {
 					$data = str_replace("\r", "\n", $data);
 					$lines = explode("\n", $data);
 					foreach ($lines as $line) {
-						if (!empty($line) && !(strpos($line, '#') === 0)) {
+						if (!empty($line) && !(str_starts_with($line, '#'))) {
 							$this->attributes[$this->getAttributeName()][] = $line;
 						}
 					}
@@ -380,9 +380,9 @@ class ldapPublicKey extends baseModule {
 	 * Returns the meta HTML code to display the key area.
 	 * This also includes the file upload.
 	 *
-	 * @return htmlTable key content
+	 * @return htmlResponsiveRow key content
 	 */
-	private function getSelfServiceKeys() {
+	private function getSelfServiceKeys(): htmlResponsiveRow {
 		$keys = $_SESSION[self::SESS_KEY_LIST];
 		$content = new htmlResponsiveRow();
 		if (sizeof($keys) > 0) {
@@ -408,7 +408,7 @@ class ldapPublicKey extends baseModule {
 			$addLink = new htmlLink('', '#', '../../graphics/add.svg');
 			$addLink->setTitle(_('Add'));
 			$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
-			$content->add($addLink, 12);
+			$content->add($addLink);
 		}
 		// upload button
 		$uploadButtonGroup = new htmlGroup();
@@ -673,7 +673,7 @@ class ldapPublicKey extends baseModule {
 			$data = str_replace("\r", "\n", $data);
 			$lines = explode("\n", $data);
 			foreach ($lines as $line) {
-				if (!empty($line) && !(strpos($line, '#') === 0)) {
+				if (!empty($line) && !(str_starts_with($line, '#'))) {
 					$_SESSION[self::SESS_KEY_LIST][] = $line;
 				}
 			}
