@@ -1,6 +1,6 @@
 <?php
 
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 use LAM\ImageUtils\ImageManipulationFactory;
 use LAM\TYPES\ConfiguredType;
 
@@ -44,7 +44,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * ID for locked password status.
 	 */
-	const STATUS_PASSWORD_LOCKED = "INETORG_PERSON_PASSWORD_LOCKED";
+	private const STATUS_PASSWORD_LOCKED = "INETORG_PERSON_PASSWORD_LOCKED";
 
 	/** clear text password */
 	private $clearTextPassword;
@@ -125,7 +125,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -1288,7 +1288,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideState') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
-			$fieldContainer->add(new htmlSubTitle(_('Address')), 12);
+			$fieldContainer->add(new htmlSubTitle(_('Address')));
 		}
 
 		// street
@@ -1439,7 +1439,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
-			$fieldContainer->add(new htmlSubTitle(_('Contact data')), 12);
+			$fieldContainer->add(new htmlSubTitle(_('Contact data')));
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
@@ -1503,7 +1503,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')
 			|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideuserCertificate')) {
-			$fieldContainer->add(new htmlSubTitle(_('Work details')), 12);
+			$fieldContainer->add(new htmlSubTitle(_('Work details')));
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
@@ -1619,7 +1619,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		// password buttons
 		if (!$this->isUnixActive() && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userpassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
-			$fieldContainer->add(new htmlSubTitle(_('Password')), 12);
+			$fieldContainer->add(new htmlSubTitle(_('Password')));
 			$pwdContainer = new htmlGroup();
 			if (pwd_is_enabled($this->attributes['userpassword'][0])) {
 				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
@@ -1699,6 +1699,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			}
 			return $messages;
 		}
+		return [];
 	}
 
 	/**
@@ -1759,18 +1760,18 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	public function display_html_photo() {
 		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['jpegPhoto'][0])) {
-			$container->add(new htmlSubTitle(_('Upload image')), 12);
+			$container->add(new htmlSubTitle(_('Upload image')));
 			$label = _('Photo file');
-			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'), 12);
+			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'));
 			$container->addVerticalSpacer('0.5rem');
 			$container->addLabel(new htmlOutputText('&nbsp;', false));
 			$container->addField(new htmlAccountPageButton(static::class, 'photo', 'upload', _('Upload')));
 			$container->addVerticalSpacer('1rem');
 			$webcamContent = new htmlResponsiveRow();
-			$webcamContent->add(new htmlSubTitle(_('Use webcam')), 12);
+			$webcamContent->add(new htmlSubTitle(_('Use webcam')));
 			$errorMessage = new htmlStatusMessage('ERROR', '');
 			$errorMessage->setCSSClasses(['hidden', 'lam-webcam-message']);
-			$webcamContent->add($errorMessage, 12);
+			$webcamContent->add($errorMessage);
 			$captureButton = new htmlButton('lam-webcam-capture', _('Start capture'));
 			$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
 			$webcamContent->add($captureButton, 12, 12, 12, 'text-center');
@@ -1784,11 +1785,11 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$webcamContent->add($webcamUploadButton, 12, 12, 12, 'text-center');
 			$canvas = new htmlCanvas('lam-webcam-canvas');
 			$canvas->setCSSClasses(['hidden']);
-			$webcamContent->add($canvas, 12);
+			$webcamContent->add($canvas);
 			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
-			$container->add($webcamDiv, 12);
+			$container->add($webcamDiv);
 			$container->addVerticalSpacer('1rem');
-			$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12);
+			$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')));
 		}
 		else {
 			$container->add(new htmlSubTitle(_('Crop image')));
@@ -1887,12 +1888,12 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$managerSelect->setRightToLeftTextDirection(true);
 			$managerSelect->setSortElements(false);
 			$managerSelect->setTransformSingleSelect(false);
-			$return->add($managerSelect, 12);
+			$return->add($managerSelect);
 			$return->addVerticalSpacer('0.5rem');
 			$removeButton = new htmlAccountPageButton(static::class, 'manager', 'remove', _('Remove selected entries'));
 			$return->add($removeButton, 12, 12, 12, 'text-center');
 			$return->addVerticalSpacer('1rem');
-			$return->add(new htmlHorizontalLine(), 12);
+			$return->add(new htmlHorizontalLine());
 		}
 		$return->addVerticalSpacer('1rem');
 		$return->addLabel(new htmlAccountPageButton(static::class, 'manager', 'select', _('Add entries')));
@@ -1969,7 +1970,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				}
 				$table->addNewLine();
 			}
-			$container->add($table, 12);
+			$container->add($table);
 			$container->addVerticalSpacer('2rem');
 		}
 		$container->add(new htmlResponsiveInputFileUpload('userCertificateUpload', _('New user certificate')), 12, 6);
@@ -1977,7 +1978,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$uploadButton = new htmlAccountPageButton(static::class, 'userCertificate', 'submit', _('Upload'));
 		$container->add($uploadButton, 12, 6);
 		$container->addVerticalSpacer('2rem');
-		$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12);
+		$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')));
 		return $container;
 	}
 
@@ -1996,7 +1997,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$handle = fopen($_FILES['userCertificateUpload']['tmp_name'], "r");
 				$data = fread($handle, 10000000);
 				fclose($handle);
-				if (strpos($data, '-----BEGIN CERTIFICATE-----') === 0) {
+				if (str_starts_with($data, '-----BEGIN CERTIFICATE-----')) {
 					$pemData = str_replace("\r", '', $data);
 					$pemData = explode("\n", $pemData);
 					array_shift($pemData);
@@ -2233,7 +2234,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (sizeof($profileElements) > 0) {
 			$profileContainer = new htmlResponsiveRow();
 			for ($i = 0; $i < sizeof($profileElements); $i++) {
-				$profileContainer->add($profileElements[$i], 12);
+				$profileContainer->add($profileElements[$i]);
 			}
 			return $profileContainer;
 		}
@@ -2410,7 +2411,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			}
 			else {
 				$errMsg = $this->messages['lastname'][1];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$errors[] = $errMsg;
 			}
 			// first name
@@ -2420,7 +2421,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				}
 				else {
 					$errMsg = $this->messages['givenName'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -2429,7 +2430,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				if (isset($ids['inetOrgPerson_userName']) && !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
 					if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
 						$errMsg = $this->messages['uid'][3];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 					}
 					if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
@@ -2437,7 +2438,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					}
 					else {
 						$errMsg = $this->messages['uid'][1];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 					}
 				}
@@ -2522,13 +2523,13 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				for ($x = 0; $x < sizeof($mailList); $x++) {
 					if (!get_preg($mailList[$x], 'email')) {
 						$errMsg = $this->messages['email'][1];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 						break;
 					}
 					elseif (in_array($mailList[$x], $existingMails)) {
 						$errMsg = $this->messages['mail'][2];
-						array_push($errMsg, [$i, $mailList[$x]]);
+						$errMsg[] = [$i, $mailList[$x]];
 						$errors[] = $errMsg;
 					}
 				}
@@ -2536,7 +2537,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (isLAMProVersion() && isset($ids['inetOrgPerson_sendPasswordMail']) && ($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']] != "")) {
 				if (!in_array($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']], ['true', 'false'])) {
 					$errMsg = $this->messages['sendPasswordMail'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -2552,7 +2553,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					}
 					else {
 						$errMsg = $this->messages['cn'][1];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 					}
 				}
@@ -2577,7 +2578,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				}
 				else {
 					$errMsg = $this->messages['passwordDisabled'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 				// delay exop passwords
@@ -2601,7 +2602,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
 						$errMsg = $this->messages['userPassword'][0];
 						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$errors[] = $errMsg;
 					}
 				}
@@ -2648,7 +2649,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to add addressbook for user ' . $accounts[$temp['counter']]['dn'] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-					$messages[] = ['ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
+					$errors[] = ['ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
 				else {
 					logNewMessage(LOG_NOTICE, 'Added addressbook for user ' . $accounts[$temp['counter']]['dn']);
@@ -2697,10 +2698,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 */
 	public function getSelfServiceSettings($profile) {
 		$container = new htmlResponsiveRow();
-		$container->add(new htmlSubTitle(_('Photo')), 12);
-		$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, ['crop', static::class]), 12);
-		$container->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, ['crop', static::class]), 12);
-		$container->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), 12);
+		$container->add(new htmlSubTitle(_('Photo')));
+		$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, ['crop', static::class]));
+		$container->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, ['crop', static::class]));
+		$container->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'));
 		return $container;
 	}
 
@@ -2795,7 +2796,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (!empty($attributes['jpegPhoto'][0]) || !$readOnlyPhoto) {
 				$photoSub = new htmlDiv('inetOrgPersonPhotoUploadContent', $this->getSelfServicePhoto($readOnlyPhoto, false));
 				$photoRow = new htmlResponsiveRow();
-				$photoRow->add($this->getSelfServicePhotoJS($readOnlyPhoto), 0);
+				$photoRow->add(self::getSelfServicePhotoJS($readOnlyPhoto), 0);
 				$photoRow->addLabel(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))));
 				$photoRow->addField(new htmlDiv('jpegPhotoDiv', $photoSub));
 				$return['jpegPhoto'] = $photoRow;
@@ -2821,7 +2822,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$certTable = new htmlResponsiveRow();
 			$certTable->add(new htmlDiv('userCertificateDiv', $this->getSelfServiceUserCertificates()));
 			// JavaScript functions
-			$certTable->add($this->getSelfServiceUserCertificatesJSBlock(), 12);
+			$certTable->add(self::getSelfServiceUserCertificatesJSBlock());
 			// upload button
 			$uploadButtonGroup = new htmlGroup();
 			$uploadLabel = new htmlLabel('inetOrgPersonCertificate_file', _('Upload a file'));
@@ -2945,7 +2946,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$row->add($img);
 			if (!$readOnly) {
 				$row->addVerticalSpacer('0.5rem');
-				$deleteButton = new htmlLink(_('Delete'), '#', '../../graphics/del.svg', true);
+				$deleteButton = new htmlLink(_('Delete'), '#', '../../graphics/del.svg');
 				$deleteButton->setOnClick('inetOrgPersonDeletePhoto(); return false;');
 				$row->add($deleteButton);
 			}
@@ -2966,7 +2967,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$errorMessage->setCSSClasses(['hidden', 'lam-webcam-message']);
 		$webcamContent->add($errorMessage);
 		$webcamContent->addVerticalSpacer('0.5rem');
-		$captureButton = new htmlLink(_('Use webcam'), '#', '../../graphics/webcam.png', true);
+		$captureButton = new htmlLink(_('Use webcam'), '#', '../../graphics/webcam.png');
 		$captureButton->setId('btn_lam-webcam-capture');
 		$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
 		$webcamContent->add($captureButton, 12, 12, 12);
@@ -2974,7 +2975,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$video->setCSSClasses(['hidden']);
 		$webcamContent->add($video, 12, 12, 12, 'text-center');
 		$webcamContent->addVerticalSpacer('1rem');
-		$webcamUploadButton = new htmlLink(_('Upload'), '#', '../../graphics/upload.svg', true);
+		$webcamUploadButton = new htmlLink(_('Upload'), '#', '../../graphics/upload.svg');
 		$webcamUploadButton->setId('btn-lam-webcam-upload');
 		$webcamUploadButton->setCSSClasses(['btn-lam-webcam-upload', 'hidden']);
 		$webcamUploadButton->setOnClick('window.lam.tools.webcam.uploadSelfService(event, "' . getSecurityTokenName()
@@ -2982,7 +2983,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$webcamContent->add($webcamUploadButton, 12, 12, 12);
 		$canvas = new htmlCanvas('lam-webcam-canvas');
 		$canvas->setCSSClasses(['hidden']);
-		$webcamContent->add($canvas, 12);
+		$webcamContent->add($canvas);
 		$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
 		$webcamContent->addVerticalSpacer('1rem');
 		$row->add($webcamDiv);
@@ -3111,7 +3112,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . '); return false;');
 				$delLink->setCSSClasses(['icon']);
 				$group->addElement($delLink);
-				$certTable->add($group, 12);
+				$certTable->add($group);
 			}
 			$content->addElement($certTable);
 		}
@@ -3446,7 +3447,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		else {
 			$data = base64_decode($_POST['file']);
-			if (strpos($data, '-----BEGIN CERTIFICATE-----') === 0) {
+			if (str_starts_with($data, '-----BEGIN CERTIFICATE-----')) {
 				$pemData = str_replace("\r", '', $data);
 				$pemData = explode("\n", $pemData);
 				array_shift($pemData);
@@ -3747,13 +3748,13 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (!$unixModuleFound) {
 				$optionsSelected = ['CRYPT-SHA512'];
 				$hashOption = new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash');
-				$configContainer->add($hashOption, 12);
+				$configContainer->add($hashOption);
 			}
 		}
 		$configContainerHead = new htmlGroup();
 		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->add($configContainerHead, 12);
+		$configContainer->add($configContainerHead);
 		$configContainer->add(new htmlResponsiveInputCheckbox('inetOrgPerson_hideDescription', false, _('Description'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('inetOrgPerson_hideStreet', false, _('Street'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('inetOrgPerson_hidePostOfficeBox', false, _('Post office box'), null, true), 12, 4);
@@ -3798,8 +3799,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		$configContainer->addVerticalSpacer('1rem');
 		$advancedOptions = new htmlResponsiveRow();
-		$advancedOptions->add(new htmlResponsiveInputCheckbox('inetOrgPerson_addAddressbook', false, _('Add addressbook (ou=addressbook)'), 'addAddressbook'), 12);
-		$advancedOptions->add(new htmlSubTitle(_('Read-only fields')), 12);
+		$advancedOptions->add(new htmlResponsiveInputCheckbox('inetOrgPerson_addAddressbook', false, _('Add addressbook (ou=addressbook)'), 'addAddressbook'));
+		$advancedOptions->add(new htmlSubTitle(_('Read-only fields')));
 		$readOnlyOptions = [
 			_('Description') => 'inetOrgPerson_readOnly_description', _('Street') => 'inetOrgPerson_readOnly_street',
 			_('First name') => 'inetOrgPerson_readOnly_givenName', _('Last name') => 'inetOrgPerson_readOnly_sn',
@@ -3826,10 +3827,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		foreach ($readOnlyOptions as $label => $id) {
 			$advancedOptions->add(new htmlResponsiveInputCheckbox($id, false, $label, null, true), 12, 4);
 		}
-		$advancedOptions->add(new htmlSubTitle(_('Photo')), 12);
-		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, 'crop'), 12);
-		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, 'crop'), 12);
-		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), 12);
+		$advancedOptions->add(new htmlSubTitle(_('Photo')));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, 'crop'));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, 'crop'));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'));
 		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', [_('Advanced options') => $advancedOptions], false);
 		$configContainer->add($advancedOptionsAccordion);
 		return $configContainer;
@@ -3838,10 +3839,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Checks if the given email address already exists in LDAP.
 	 *
-	 * @param String $mail email address
-	 * @return boolean true if already exists
+	 * @param string $mail email address
+	 * @return bool true if already exists
 	 */
-	private function emailExists($mail) {
+	private function emailExists(string $mail): bool {
 		if (empty($mail)) {
 			return false;
 		}
@@ -3940,7 +3941,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 */
 	public function isLocked(?array $attributes = null): bool {
 		if ($attributes === null) {
-			$attributes = array_change_key_case($this->attributes, CASE_LOWER);
+			$attributes = array_change_key_case($this->attributes);
 		}
 		return isset($attributes['userpassword'][0])
 			&& !pwd_is_enabled($attributes['userpassword'][0]);
@@ -4024,10 +4025,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
-		if (isset($this->attributes['uid'][0])) {
-			return $this->attributes['uid'][0];
-		}
-		return null;
+		return $this->attributes['uid'][0] ?? null;
 	}
 
 	/**
