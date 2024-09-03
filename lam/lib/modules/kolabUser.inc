@@ -1,8 +1,8 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 
 /*
 
@@ -66,7 +66,7 @@ class kolabUser extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -93,7 +93,7 @@ class kolabUser extends baseModule {
 			'kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'mailQuota'];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Mailbox quota'), 'kolab_mailQuota', null, 'mailQuota'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Mailbox quota'), 'kolab_mailQuota', null, 'mailQuota'));
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['kolab_mailQuota'] = [
@@ -435,9 +435,7 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	 * This function returns true if all needed settings are done.
-	 *
-	 * @return true, if account can be saved
+	 * @inheritDoc
 	 */
 	function module_complete() {
 		if (isset($this->attributes['objectClass']) && in_array('kolabInetOrgPerson', $this->attributes['objectClass'])) {
@@ -521,7 +519,7 @@ class kolabUser extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['mailQuota'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 			}
@@ -540,7 +538,7 @@ class kolabUser extends baseModule {
 						}
 						else {
 							$errMsg = $this->messages['invPol'][1];
-							array_push($errMsg, [$i]);
+							$errMsg[] = [$i];
 							$messages[] = $errMsg;
 						}
 						$defaultFound = true;
@@ -552,14 +550,14 @@ class kolabUser extends baseModule {
 						}
 						else {
 							$errMsg = $this->messages['invPol'][1];
-							array_push($errMsg, [$i]);
+							$errMsg[] = [$i];
 							$messages[] = $errMsg;
 						}
 					}
 					// invalid format
 					else {
 						$errMsg = $this->messages['invPol'][1];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$messages[] = $errMsg;
 					}
 				}
@@ -577,7 +575,7 @@ class kolabUser extends baseModule {
 					// invalid format
 					else {
 						$errMsg = $this->messages['delegate'][0];
-						array_push($errMsg, [$i, $newDelegates[$d]]);
+						$errMsg[] = [$i, $newDelegates[$d]];
 						$messages[] = $errMsg;
 					}
 				}
@@ -812,7 +810,7 @@ class kolabUser extends baseModule {
 			// check for deleted delegations
 			$postKeys = array_keys($_POST);
 			for ($i = 0; $i < sizeof($postKeys); $i++) {
-				if (strpos($postKeys[$i], 'delDelegate_') !== false) {
+				if (str_contains($postKeys[$i], 'delDelegate_')) {
 					$sKey = substr($postKeys[$i], strlen('delDelegate_'));
 					$key = array_search($_SESSION['kolabUser_kolabDelegate'][$sKey], $attributesNew['kolabDelegate']);
 					if ($key !== false) {
@@ -841,7 +839,7 @@ class kolabUser extends baseModule {
 					if (!get_preg($_POST['invPol1' . $i], 'email')) {
 						$message = $this->messages['invPol'][0];
 						$message[] = $_POST['invPol1' . $i];
-						$errors[] = $message;
+						$return['messages'][] = $message;
 					}
 					else {
 						$attributesNew['kolabInvitationPolicy'][] = $_POST['invPol1' . $i] . ':' . $policies[$_POST['invPol2' . $i]];
@@ -855,7 +853,7 @@ class kolabUser extends baseModule {
 				if (!get_preg($_POST['invPol1'], 'email')) {
 					$message = $this->messages['invPol'][0];
 					$message[] = $_POST['invPol1'];
-					$errors[] = $message;
+					$return['messages'][] = $message;
 				}
 				else {
 					$attributesNew['kolabInvitationPolicy'][] = $_POST['invPol1'] . ':' . $policies[$_POST['invPol2']];
@@ -898,6 +896,3 @@ class kolabUser extends baseModule {
 	}
 
 }
-
-
-?>
