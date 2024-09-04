@@ -15,6 +15,7 @@ use CBOR\UnsignedIntegerObject;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
+use function strlen;
 use const STR_PAD_RIGHT;
 
 final class TimestampTag extends Tag implements Normalizable
@@ -60,8 +61,8 @@ final class TimestampTag extends Tag implements Normalizable
                 $value = (string) $object->normalize();
                 $parts = explode('.', $value);
                 if (isset($parts[1])) {
-                    if (mb_strlen($parts[1], '8bit') > 6) {
-                        $parts[1] = mb_substr($parts[1], 0, 6, '8bit');
+                    if (strlen($parts[1]) > 6) {
+                        $parts[1] = substr($parts[1], 0, 6);
                     } else {
                         $parts[1] = str_pad($parts[1], 6, '0', STR_PAD_RIGHT);
                     }

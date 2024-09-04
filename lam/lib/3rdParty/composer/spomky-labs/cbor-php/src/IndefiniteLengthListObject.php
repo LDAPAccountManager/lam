@@ -42,9 +42,14 @@ class IndefiniteLengthListObject extends AbstractCBORObject implements IteratorA
         return $result . "\xFF";
     }
 
-    public static function create(): self
+    public static function create(CBORObject ...$items): self
     {
-        return new self();
+        $object = new self();
+        foreach ($items as $item) {
+            $object->add($item);
+        }
+
+        return $object;
     }
 
     /**

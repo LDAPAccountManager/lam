@@ -8,6 +8,7 @@ use Brick\Math\BigInteger;
 use InvalidArgumentException;
 use function chr;
 use function count;
+use function strlen;
 use const STR_PAD_LEFT;
 
 final class LengthCalculator
@@ -17,7 +18,7 @@ final class LengthCalculator
      */
     public static function getLengthOfString(string $data): array
     {
-        $length = mb_strlen($data, '8bit');
+        $length = strlen($data);
 
         return self::computeLength($length);
     }
@@ -54,7 +55,7 @@ final class LengthCalculator
 
     private static function hex2bin(string $data): string
     {
-        $data = str_pad($data, (int) (2 ** ceil(log(mb_strlen($data, '8bit'), 2))), '0', STR_PAD_LEFT);
+        $data = str_pad($data, (int) (2 ** ceil(log(strlen($data), 2))), '0', STR_PAD_LEFT);
         $result = hex2bin($data);
         if ($result === false) {
             throw new InvalidArgumentException('Unable to convert the data');

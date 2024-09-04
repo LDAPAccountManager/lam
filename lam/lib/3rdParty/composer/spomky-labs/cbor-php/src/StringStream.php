@@ -6,6 +6,7 @@ namespace CBOR;
 
 use InvalidArgumentException;
 use RuntimeException;
+use function strlen;
 
 final class StringStream implements Stream
 {
@@ -53,21 +54,21 @@ final class StringStream implements Stream
             if ($newData === false) {
                 throw new RuntimeException('Unable to read the memory');
             }
-            if (mb_strlen($newData, '8bit') < $sizeToRead) {
+            if (strlen($newData) < $sizeToRead) {
                 throw new InvalidArgumentException(sprintf(
                     'Out of range. Expected: %d, read: %d.',
                     $length,
-                    mb_strlen($data, '8bit')
+                    strlen($data)
                 ));
             }
             $data .= $newData;
         }
 
-        if (mb_strlen($data, '8bit') !== $length) {
+        if (strlen($data) !== $length) {
             throw new InvalidArgumentException(sprintf(
                 'Out of range. Expected: %d, read: %d.',
                 $length,
-                mb_strlen($data, '8bit')
+                strlen($data)
             ));
         }
 

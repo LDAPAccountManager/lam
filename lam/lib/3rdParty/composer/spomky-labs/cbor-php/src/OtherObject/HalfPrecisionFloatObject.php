@@ -9,6 +9,7 @@ use CBOR\Normalizable;
 use CBOR\OtherObject as Base;
 use CBOR\Utils;
 use InvalidArgumentException;
+use function strlen;
 use const INF;
 use const NAN;
 
@@ -26,7 +27,7 @@ final class HalfPrecisionFloatObject extends Base implements Normalizable
 
     public static function create(string $value): self
     {
-        if (mb_strlen($value, '8bit') !== 2) {
+        if (strlen($value) !== 2) {
             throw new InvalidArgumentException('The value is not a valid half precision floating point');
         }
 
