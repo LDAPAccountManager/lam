@@ -28,6 +28,7 @@ parameters:
 		- '#Cannot assign new offset to array<int, string>\|string.#'
 		- '#Cannot access offset .* on mixed.#'
 		- '#Cannot access offset .* on array\|int.#'
+		- '#Cannot access an offset on array\|Countable.#'
 		- '#Parameter \#1 \$haystack of function str_starts_with expects string, int\|string given.#'
 		- '#Parameter \#3 \$length of function substr expects int\|null, int<0, max>\|false given.#'
 		- '#Parameter \#1 \$string of function htmlspecialchars expects string, array<int, string>\|string given.#'
