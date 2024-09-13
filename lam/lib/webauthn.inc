@@ -185,10 +185,20 @@ class WebauthnManager {
 	private function getUserEntity($dn) {
 		return new PublicKeyCredentialUserEntity(
 			$dn,
-			$dn,
+			$this->getUserIdFromDn($dn),
 			extractRDNValue($dn),
 			null
 		);
+	}
+
+	/**
+	 * Generates the user ID as hash of the user DN.
+	 *
+	 * @param string $dn user DN
+	 * @return string user ID
+	 */
+	private function getUserIdFromDn(string $dn) {
+		return hash('sha256', $dn);
 	}
 
 	/**
@@ -406,12 +416,19 @@ class WebauthnManager {
 			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 			$psr7Request = $psrFactory->createRequest($symfonyRequest);
 			$publicKeyCredentialRequestOptions = PublicKeyCredentialRequestOptions::createFromString($_SESSION['webauthn_authentication']);
+			$credential = $database->findOneByCredentialId($publicKeyCredential->getRawId());
+			if ($credential === null) {
+				throw new LAMException(null, 'Unable to find credential');
+			}
+			$userId = $credential->getUserHandle();
+			// old entries use DN as user ID
+			$userHandle = ($userId === $userDn) ? $userDn : $this->getUserIdFromDn($userDn);
 			$responseValidator->check(
 				$publicKeyCredential->getRawId(),
 				$publicKeyCredential->getResponse(),
 				$publicKeyCredentialRequestOptions,
 				$psr7Request,
-				$userDn
+				$userHandle
 			);
 			return true;
 		}
@@ -472,8 +489,8 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		$credentials = [];
 		try {
 			$pdo = $this->getPDO();
-			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userId = :userid');
-			$statement->execute([':userid' => $publicKeyCredentialUserEntity->getId()]);
+			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userDN = :userDN');
+			$statement->execute([':userDN' => $publicKeyCredentialUserEntity->getName()]);
 			$results = $statement->fetchAll();
 			foreach ($results as $result) {
 				$jsonArray = json_decode($result['credentialSource'], true);
@@ -497,20 +514,27 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		$userId = $publicKeyCredentialSource->getUserHandle();
 		$currentTime = time();
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userId = :userId and credentialId = :credentialId');
+		if (isset($_SESSION['selfService_clientDN'])) {
+			$userDn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		else {
+			$userDn = $_SESSION['ldap']->getUserName();
+		}
+		$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userDN = :userDN and credentialId = :credentialId');
 		$statement->execute([
-			':userId' => $userId,
+			':userDN' => $userDn,
 			':credentialId' => $credentialId
 		]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
-			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
+			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime, userDN) VALUES (?, ?, ?, ?, ?, ?)');
 			$statement->execute([
 				$userId,
 				$credentialId,
 				$json,
 				$currentTime,
-				$currentTime
+				$currentTime,
+				$userDn
 			]);
 			logNewMessage(LOG_DEBUG, 'Stored new credential for ' . $userId);
 		}
@@ -518,15 +542,15 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			$statement = $pdo->prepare(
 				'update ' . $this->getTableName() .
 				' set credentialSource = :credentialSource, lastUseTime = :lastUseTime' .
-				' WHERE userId = :userId AND credentialId = :credentialId'
+				' WHERE userDN = :userDN AND credentialId = :credentialId'
 			);
 			$statement->execute([
 				':credentialSource' => $json,
 				':lastUseTime' => $currentTime,
-				':userId' => $userId,
+				':userDN' => $userDn,
 				':credentialId' => $credentialId
 			]);
-			logNewMessage(LOG_DEBUG, 'Stored updated credential for ' . $userId);
+			logNewMessage(LOG_DEBUG, 'Stored updated credential for ' . $userDn);
 		}
 	}
 
@@ -557,7 +581,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 */
 	public function searchDevices(string $searchTerm) {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userId like :searchTerm order by userId,registrationTime');
+		$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userDN like :searchTerm order by userId,registrationTime');
 		$statement->execute([
 			':searchTerm' => $searchTerm
 		]);
@@ -566,7 +590,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		foreach ($results as $result) {
 			$name = !empty($result['name']) ? $result['name'] : '';
 			$devices[] = [
-				'dn' => $result['userId'],
+				'dn' => $result['userDN'],
 				'credentialId' => $result['credentialId'],
 				'lastUseTime' => $result['lastUseTime'],
 				'registrationTime' => $result['registrationTime'],
@@ -586,9 +610,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	public function deleteDevice(string $dn, string $credentialId) {
 		logNewMessage(LOG_NOTICE, 'Delete webauthn device ' . $credentialId . ' of ' . $dn);
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('delete from ' . $this->getTableName() . ' where userId = :userId and credentialId = :credentialId');
+		$statement = $pdo->prepare('delete from ' . $this->getTableName() . ' where userDN = :userDN and credentialId = :credentialId');
 		$statement->execute([
-			':userId' => $dn,
+			':userDN' => $dn,
 			':credentialId' => $credentialId
 		]);
 		return $statement->rowCount() > 0;
@@ -604,9 +628,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 */
 	public function updateDeviceName(string $dn, string $credentialId, $name) {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('update ' . $this->getTableName() . ' set name = :name where userId = :userId and credentialId = :credentialId');
+		$statement = $pdo->prepare('update ' . $this->getTableName() . ' set name = :name where userDN = :userDN and credentialId = :credentialId');
 		$statement->execute([
-			':userId' => $dn,
+			':userDN' => $dn,
 			':credentialId' => $credentialId,
 			':name' => $name
 		]);
@@ -636,6 +660,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			$this->createInitialSchema($pdo);
 		}
 		$this->addNameColumn($pdo);
+		$this->addUserDnColumn($pdo);
 	}
 
 	/**
@@ -677,6 +702,29 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	}
 
 	/**
+	 * Adds the user DN column if not existing.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	protected function addUserDnColumn(PDO $pdo): void {
+		try {
+			$statement = $pdo->query("select * from pragma_table_info('" . $this->getTableName() . "') where name = 'userDN';");
+			$results = $statement->fetchAll();
+			if (empty($results)) {
+				$sql = 'alter table ' . $this->getTableName() . ' add column userDN VARCHAR(255);';
+				logNewMessage(LOG_DEBUG, $sql);
+				$pdo->exec($sql);
+				$sql = 'update ' . $this->getTableName() . ' set userDn = userId;';
+				logNewMessage(LOG_DEBUG, $sql);
+				$pdo->exec($sql);
+			}
+		}
+		catch (PDOException $e) {
+			logNewMessage(LOG_ERR, 'Unable to add userDN column to table: ' . $e->getMessage());
+		}
+	}
+
+	/**
 	 * Exports all entries.
 	 *
 	 * @return array data
@@ -695,6 +743,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 				'registrationTime' => $dbRow['registrationTime'],
 				'lastUseTime' => $dbRow['lastUseTime'],
 				'name' => $dbRow['name'],
+				'userDN' => $dbRow['userDN'],
 			];
 		}
 		return $data;
@@ -713,14 +762,15 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			return;
 		}
 		foreach ($data as $dbRow) {
-			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime, name) VALUES (?, ?, ?, ?, ?, ?)');
+			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime, name, userDN) VALUES (?, ?, ?, ?, ?, ?, ?)');
 			$statement->execute([
 				$dbRow['userId'],
 				$dbRow['credentialId'],
 				$dbRow['credentialSource'],
 				$dbRow['registrationTime'],
 				$dbRow['lastUseTime'],
-				$dbRow['name']
+				$dbRow['name'],
+				$dbRow['userDN'],
 			]);
 		}
 	}
@@ -833,6 +883,27 @@ class PublicKeyCredentialSourceRepositoryMySql extends PublicKeyCredentialSource
 	 */
 	protected function addNameColumn(PDO $pdo) {
 		// added via initial schema
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function addUserDnColumn(PDO $pdo): void {
+		try {
+			$statement = $pdo->query("show columns from " . $this->getTableName() . " like 'userDN';");
+			$results = $statement->fetchAll();
+			if (empty($results)) {
+				$sql = 'alter table ' . $this->getTableName() . ' add column userDN VARCHAR(255);';
+				logNewMessage(LOG_DEBUG, $sql);
+				$pdo->exec($sql);
+				$sql = 'update ' . $this->getTableName() . ' set userDn = userId;';
+				logNewMessage(LOG_DEBUG, $sql);
+				$pdo->exec($sql);
+			}
+		}
+		catch (PDOException $e) {
+			logNewMessage(LOG_ERR, 'Unable to add userDN column to table: ' . $e->getMessage());
+		}
 	}
 
 }

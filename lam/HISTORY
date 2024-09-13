@@ -1,3 +1,8 @@
+December 2024 9.0
+ - Fixed bugs:
+  -> WebAuthn: support DNs larger than 64 bytes (358)
+
+
 September 2024 8.9
  - Windows user: support for room number and personal title (needs to be activated in module settings) (343, 344)
  - Usability improvements (354)
