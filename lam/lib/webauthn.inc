@@ -185,7 +185,7 @@ class WebauthnManager {
 	private function getUserEntity($dn) {
 		return new PublicKeyCredentialUserEntity(
 			$dn,
-			$this->getUserIdFromDn($dn),
+			self::getUserIdFromDn($dn),
 			extractRDNValue($dn),
 			null
 		);
@@ -197,7 +197,7 @@ class WebauthnManager {
 	 * @param string $dn user DN
 	 * @return string user ID
 	 */
-	private function getUserIdFromDn(string $dn) {
+	public static function getUserIdFromDn(string $dn) {
 		return hash('sha256', $dn);
 	}
 
@@ -422,7 +422,7 @@ class WebauthnManager {
 			}
 			$userId = $credential->getUserHandle();
 			// old entries use DN as user ID
-			$userHandle = ($userId === $userDn) ? $userDn : $this->getUserIdFromDn($userDn);
+			$userHandle = ($userId === $userDn) ? $userDn : self::getUserIdFromDn($userDn);
 			$responseValidator->check(
 				$publicKeyCredential->getRawId(),
 				$publicKeyCredential->getResponse(),
@@ -536,7 +536,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 				$currentTime,
 				$userDn
 			]);
-			logNewMessage(LOG_DEBUG, 'Stored new credential for ' . $userId);
+			logNewMessage(LOG_DEBUG, 'Stored new credential for ' . $userDn);
 		}
 		else {
 			$statement = $pdo->prepare(
