@@ -1,9 +1,9 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
-use \LAM\TYPES\TypeManager;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
+use LAM\TYPES\TypeManager;
 
 /*
 
@@ -55,7 +55,7 @@ class nisNetGroupUser extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -130,7 +130,7 @@ class nisNetGroupUser extends baseModule {
 			$filter = '(&(objectClass=nisNetgroup)(nisnetgrouptriple=*))';
 			$typeFilter = $type->getAdditionalLdapFilter();
 			if (!empty($typeFilter)) {
-				if (strpos($typeFilter, '(') !== 0) {
+				if (!str_starts_with($typeFilter, '(')) {
 					$typeFilter = '(' . $typeFilter . ')';
 				}
 				$filter = '(&' . $filter . $typeFilter . ')';
@@ -404,7 +404,7 @@ class nisNetGroupUser extends baseModule {
 		foreach ($changes as $dn => $changeSet) {
 			$current = ldapGetDN($dn, ['nisnetgrouptriple']);
 			if (empty($current)) {
-				$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn)];
+				$return[$this->getAccountContainer()->dn_orig]['errors'][] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn)];
 				continue;
 			}
 			$triples = empty($current['nisnetgrouptriple']) ? [] : $current['nisnetgrouptriple'];
@@ -416,7 +416,7 @@ class nisNetGroupUser extends baseModule {
 			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
-				$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
+				$return[$this->getAccountContainer()->dn_orig]['errors'][] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 			}
 		}
 		return $return;
@@ -441,7 +441,7 @@ class nisNetGroupUser extends baseModule {
 			$data[$i][] = new htmlInputField('nisNetGroupUser_host' . $i);
 			$data[$i][] = new htmlInputField('nisNetGroupUser_domain' . $i);
 		}
-		$return->add(new htmlResponsiveTable($labels, $data), 12);
+		$return->add(new htmlResponsiveTable($labels, $data));
 		return $return;
 	}
 
@@ -567,7 +567,11 @@ class nisNetGroupUser extends baseModule {
 			if (empty($current)) {
 				$errors[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn)];
 				$temp['counter']++;
-				return;
+				return [
+					'status' => 'inProgress',
+					'progress' => ($temp['counter'] * 100) / sizeof($temp['groupDNs']),
+					'errors' => $errors
+				];
 			}
 			$triples = empty($current['nisnetgrouptriple']) ? [] : $current['nisnetgrouptriple'];
 			$triples = array_merge($temp['groups'][$dn], $triples);
@@ -630,7 +634,7 @@ class nisNetGroupUser extends baseModule {
 			$filter = '(objectClass=nisNetgroup)';
 			$typeFilter = $type->getAdditionalLdapFilter();
 			if (!empty($typeFilter)) {
-				if (strpos($typeFilter, '(') !== 0) {
+				if (!str_starts_with($typeFilter, '(')) {
 					$typeFilter = '(' . $typeFilter . ')';
 				}
 				$filter = '(&' . $filter . $typeFilter . ')';
@@ -666,5 +670,3 @@ class nisNetGroupUser extends baseModule {
 	}
 
 }
-
-?>
