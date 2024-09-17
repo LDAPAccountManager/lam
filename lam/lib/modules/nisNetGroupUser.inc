@@ -160,7 +160,7 @@ class nisNetGroupUser extends baseModule {
 				}
 			}
 		}
-		usort($this->groupsOrig, [$this, 'sortTriple']);
+		usort($this->groupsOrig, $this->sortTriple(...));
 		$this->groups = $this->groupsOrig;
 	}
 
@@ -276,7 +276,7 @@ class nisNetGroupUser extends baseModule {
 			$counter++;
 		}
 		$this->groups = array_values($this->groups);
-		usort($this->groups, [$this, 'sortTriple']);
+		usort($this->groups, $this->sortTriple(...));
 		return $errors;
 	}
 
@@ -463,7 +463,7 @@ class nisNetGroupUser extends baseModule {
 				];
 			}
 		}
-		usort($this->groups, [$this, 'sortTriple']);
+		usort($this->groups, $this->sortTriple(...));
 	}
 
 	/**
