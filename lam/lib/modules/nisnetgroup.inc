@@ -1,8 +1,8 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 
 /*
@@ -54,7 +54,7 @@ class nisnetgroup extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['netgroup']);
+		return $this->get_scope() === 'netgroup';
 	}
 
 	/**
@@ -200,12 +200,12 @@ class nisnetgroup extends baseModule {
 		$nameInput = new htmlResponsiveInputField(_("Group name"), 'cn', $groupName, 'cn');
 		$nameInput->setRequired(true);
 		$nameInput->setFieldMaxLength(20);
-		$return->add($nameInput, 12);
+		$return->add($nameInput);
 		$description = '';
 		if (isset($this->attributes['description'][0])) {
 			$description = $this->attributes['description'][0];
 		}
-		$return->add(new htmlResponsiveInputField(_('Description'), 'description', $description, 'description'), 12);
+		$return->add(new htmlResponsiveInputField(_('Description'), 'description', $description, 'description'));
 		$subgroupsContainer = new htmlTable();
 		if (isset($this->attributes['memberNisNetgroup']) && is_array($this->attributes['memberNisNetgroup'])) {
 			$membergroups = $this->attributes['memberNisNetgroup'];
@@ -225,7 +225,7 @@ class nisnetgroup extends baseModule {
 		// members
 		$membersLabel = new htmlSubTitle(_('Members'));
 		$membersLabel->setHelpId('members');
-		$return->add($membersLabel, 12);
+		$return->add($membersLabel);
 		$titles = [_('Host'), _('User'), _('Domain'), ''];
 		$data = [];
 		if (isset($this->attributes['nisNetgroupTriple']) && (sizeof($this->attributes['nisNetgroupTriple']) > 0)) {
@@ -306,7 +306,7 @@ class nisnetgroup extends baseModule {
 		$data[] = $dataRowNew;
 
 		$memberTable = new htmlResponsiveTable($titles, $data);
-		$return->add($memberTable, 12);
+		$return->add($memberTable);
 		return $return;
 	}
 
@@ -409,13 +409,13 @@ class nisnetgroup extends baseModule {
 		}
 
 		$return = new htmlResponsiveRow();
-		$return->add(new htmlSubTitle(_("Subgroups")), 12);
+		$return->add(new htmlSubTitle(_("Subgroups")));
 
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"), $selectedGroups, [], $availableGroups, [], 'subgroup', false, true);
 
 		$return->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
-		$return->add($backButton, 12);
+		$return->add($backButton);
 		return $return;
 	}
 
@@ -450,12 +450,12 @@ class nisnetgroup extends baseModule {
 		$postKeys = array_keys($_POST);
 		$position = 'New';
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if (substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_user') {
+			if (str_starts_with($postKeys[$i], 'form_subpage_nisnetgroup_select_user')) {
 				$selectHost = false;
 				$position = substr($postKeys[$i], 36);
 				break;
 			}
-			if (substr($postKeys[$i], 0, 36) == 'form_subpage_nisnetgroup_select_host') {
+			if (str_starts_with($postKeys[$i], 'form_subpage_nisnetgroup_select_host')) {
 				$position = substr($postKeys[$i], 36);
 				break;
 			}
@@ -469,13 +469,12 @@ class nisnetgroup extends baseModule {
 					unset($options[$i]);
 				}
 			}
-			$options = array_values($options);
 		}
 		else {
 			// load list with all users
 			$options = $this->getUserList();
-			$options = array_values($options);
 		}
+		$options = array_values($options);
 		$return->addLabel(new htmlOutputText(_('Filter')));
 		$filterInput = new htmlInputField('filter');
 		$filterInput->filterSelectBox('selectBox');
@@ -493,11 +492,11 @@ class nisnetgroup extends baseModule {
 		}
 		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'select', _('Ok')));
 		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Cancel')));
-		$return->add(new htmlHiddenInput('host_new', $_POST['host_new']), 12);
-		$return->add(new htmlHiddenInput('user_new', $_POST['user_new']), 12);
-		$return->add(new htmlHiddenInput('domain_new', $_POST['domain_new']), 12);
-		$return->add(new htmlHiddenInput('type', $type), 12);
-		$return->add(new htmlHiddenInput('position', $position), 12);
+		$return->add(new htmlHiddenInput('host_new', $_POST['host_new']));
+		$return->add(new htmlHiddenInput('user_new', $_POST['user_new']));
+		$return->add(new htmlHiddenInput('domain_new', $_POST['domain_new']));
+		$return->add(new htmlHiddenInput('type', $type));
+		$return->add(new htmlHiddenInput('position', $position));
 		return $return;
 	}
 
