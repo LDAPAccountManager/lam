@@ -129,8 +129,7 @@ if (ini_get("session.auto_start") == "1") {
 }
 // check memory limit
 $memLimit = ini_get('memory_limit');
-if (isset($memLimit)
-	&& ($memLimit != '')
+if (($memLimit != '')
 	&& (substr(strtoupper($memLimit), strlen($memLimit) - 1) == 'M')
 	&& (intval(substr($memLimit, 0, strlen($memLimit) - 1)) < 128)) {
 	$criticalErrors[] = ["ERROR", "Please increase the \"memory_limit\" parameter in your php.ini to at least \"128M\".",
@@ -168,9 +167,6 @@ if (!empty($criticalErrors)) {
 	echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	printHeaderContents('LDAP Account Manager', '..');
 	echo "</head><body>\n";
-	if (empty($criticalErrors)) {
-		displayLoginHeader();
-	}
 	foreach ($criticalErrors as $criticalError) {
 		call_user_func_array("StatusMessage", $criticalError);
 		echo "<br><br>";
