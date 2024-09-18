@@ -65,7 +65,7 @@ class freeRadius extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -189,7 +189,7 @@ class freeRadius extends baseModule {
 		}
 		$profileContainer = new htmlResponsiveRow();
 		for ($i = 0; $i < sizeof($profileElements); $i++) {
-			$profileContainer->add($profileElements[$i], 12);
+			$profileContainer->add($profileElements[$i]);
 		}
 		$return['profile_options'] = $profileContainer;
 		// upload fields
@@ -304,12 +304,12 @@ class freeRadius extends baseModule {
 	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
-		$configContainer->add(new htmlResponsiveInputField(_('Profile DN'), 'freeRadius_profileDN', '', 'profileDN'), 12);
+		$configContainer->add(new htmlResponsiveInputField(_('Profile DN'), 'freeRadius_profileDN', '', 'profileDN'));
 		$configContainer->addVerticalSpacer('1rem');
 		$hiddenGroup = new htmlGroup();
 		$hiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
 		$hiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->add($hiddenGroup, 12);
+		$configContainer->add($hiddenGroup);
 		$configContainer->addVerticalSpacer('0.5rem');
 		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusFramedIPAddress', false, _('IP address'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusFramedIPNetmask', false, _('Net mask'), null, true), 12, 4);
@@ -407,7 +407,7 @@ class freeRadius extends baseModule {
 				}
 				$profileSelect = new htmlResponsiveSelect('radiusProfileDn', $profiles, $profile, _('Profile'), 'radiusProfileDn');
 				$profileSelect->setHasDescriptiveElements(true);
-				$return->add($profileSelect, 12);
+				$return->add($profileSelect);
 			}
 			// enabled
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
@@ -422,7 +422,7 @@ class freeRadius extends baseModule {
 				$enabledOptions = ['-' => '', _('Yes') => 'true', _('No') => 'false'];
 				$enabledSelect = new htmlResponsiveSelect('dialupAccess', $enabledOptions, $enabled, _('Enabled'), 'dialupAccess');
 				$enabledSelect->setHasDescriptiveElements(true);
-				$return->add($enabledSelect, 12);
+				$return->add($enabledSelect);
 			}
 			// button to remove extension
 			$return->addVerticalSpacer('2rem');
@@ -431,7 +431,7 @@ class freeRadius extends baseModule {
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add FreeRadius extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add FreeRadius extension')));
 		}
 		return $return;
 	}
@@ -543,7 +543,7 @@ class freeRadius extends baseModule {
 			$buttons->addElement(new htmlSpacer('0.5rem', null));
 		}
 		$buttons->addElement(new htmlAccountPageButton(static::class, 'attributes', 'back' . $attr, _('Cancel')));
-		$return->add($buttons, 12);
+		$return->add($buttons);
 		return $return;
 	}
 
@@ -558,29 +558,29 @@ class freeRadius extends baseModule {
 		$buttonName = '';
 		$postKeys = array_keys($_POST);
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if (strpos($postKeys[$i], 'form_subpage_freeRadius_attributes_') !== false) {
+			if (str_contains($postKeys[$i], 'form_subpage_freeRadius_attributes_')) {
 				$buttonName = $postKeys[$i];
 			}
 		}
-		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) {
+		if (($buttonName == '') || (str_contains($buttonName, '_back'))) {
 			return [];
 		}
 		// get attribute name
 		$attr = '';
-		if (strpos($buttonName, 'radiusExpiration') !== false) {
+		if (str_contains($buttonName, 'radiusExpiration')) {
 			$attr = 'radiusExpiration';
 		}
 		if ($attr == '') {
 			return [];
 		}
 		// determine action
-		if (strpos($buttonName, '_change') !== false) {
+		if (str_contains($buttonName, '_change')) {
 			// set new expiration date
 			$date = DateTime::createFromFormat('Y-m-d H:i', $_POST['expirationTime'], getTimeZone());
 			$date->setTimezone(new DateTimeZone('UTC'));
 			$this->attributes[$attr][0] = $date->format('d M Y H:i');
 		}
-		elseif (strpos($buttonName, '_del') !== false) {
+		elseif (str_contains($buttonName, '_del')) {
 			// remove attribute value
 			unset($this->attributes[$attr]);
 		}
@@ -634,11 +634,11 @@ class freeRadius extends baseModule {
 				$date = DateTime::createFromFormat('Y-m-d H:i', $rawAccounts[$i][$ids['freeRadius_radiusExpiration']], getTimeZone());
 				if ($date !== false) {
 					$date->setTimezone(new DateTimeZone('UTC'));
-					$partialAccounts[$i]['radiusExpiration'] = $date->format('d M Y H:i');;
+					$partialAccounts[$i]['radiusExpiration'] = $date->format('d M Y H:i');
 				}
 				else {
 					$errMsg = $this->messages['radiusExpiration'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -652,7 +652,7 @@ class freeRadius extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['dialupAccess'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -735,7 +735,7 @@ class freeRadius extends baseModule {
 	 * @param String $date date value
 	 */
 	private function formatExpirationDate($date) {
-		if (is_null($date) || ($date == '')) {
+		if (empty($date)) {
 			return $date;
 		}
 		$dateTime = DateTime::createFromFormat('d M Y H:i', $date, new DateTimeZone('UTC'));
