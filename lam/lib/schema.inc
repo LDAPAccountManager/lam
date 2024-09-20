@@ -44,9 +44,9 @@ namespace LAM\SCHEMA;
  */
 class SchemaItem {
 	/** The OID of this schema item. */
-	var $oid;
+	protected $oid;
 	/** The description of this schema item. */
-	var $description;
+	protected $description;
 
 	/** Initialize class members to default values. */
 	function initVars() {
@@ -83,19 +83,19 @@ class SchemaItem {
  */
 class ObjectClass extends SchemaItem {
 	/** This objectClass' name, ie "inetOrgPerson" */
-	var $name;
+	protected $name;
 	/** array of objectClass names from which this objectClass inherits */
-	var $sup_classes;
+	protected $sup_classes;
 	/** one of STRUCTURAL, ABSTRACT, or AUXILIARY */
-	var $type;
+	protected $type;
 	/** arrays of attribute names that this objectClass requires */
-	var $must_attrs;
+	protected $must_attrs;
 	/** arrays of attribute names that this objectClass allows, but does not require */
-	var $may_attrs;
+	protected $may_attrs;
 	/** boolean value indicating whether this objectClass is obsolete */
-	var $is_obsolete;
+	protected $is_obsolete;
 	/** array of objectClasses which inherit from this one (must be set at runtime explicitly by the caller) */
-	var $children_objectclasses;
+	protected $children_objectclasses;
 
 	/** Initialize the class' member variables */
 	function initVars() {
@@ -135,7 +135,7 @@ class ObjectClass extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match('/\'$/s', $strings[$i]));
+						while (!str_ends_with($strings[$i], '\''));
 					}
 					else {
 						$i++;
@@ -148,7 +148,7 @@ class ObjectClass extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match('/\'$/s', $strings[$i]));
+						while (!str_ends_with($strings[$i], '\''));
 						do {
 							$i++;
 						}
@@ -167,7 +167,7 @@ class ObjectClass extends SchemaItem {
 							$this->description = $this->description . " " . $strings[$i];
 						}
 					}
-					while (!preg_match('/\'$/s', $strings[$i]));
+					while (!str_ends_with($strings[$i], '\''));
 					break;
 				case 'OBSOLETE':
 					$this->is_obsolete = TRUE;
@@ -175,14 +175,14 @@ class ObjectClass extends SchemaItem {
 				case 'SUP':
 					if ($strings[$i + 1] != "(") {
 						$i++;
-						array_push($this->sup_classes, preg_replace("/'/", "", $strings[$i]));
+						$this->sup_classes[] = preg_replace("/'/", "", $strings[$i]);
 					}
 					else {
 						$i++;
 						do {
 							$i++;
 							if ($strings[$i] != "$") {
-								array_push($this->sup_classes, preg_replace("/'/", "", $strings[$i]));
+								$this->sup_classes[] = preg_replace("/'/", "", $strings[$i]);
 							}
 						}
 						while (!preg_match('/\)+\)?/', $strings[$i + 1]));
@@ -201,12 +201,12 @@ class ObjectClass extends SchemaItem {
 					if (preg_match('/^\(./', $strings[$i + 1])) {
 						$i++;
 						$attr = new ObjectClassAttribute(preg_replace('/^\(/', "", $strings[$i]), $this->name);
-						array_push($this->must_attrs, $attr);
+						$this->must_attrs[] = $attr;
 						do {
 							$i++;
 							if ($strings[$i] != "$") {
 								$attr = new ObjectClassAttribute($strings[$i], $this->name);
-								array_push($this->must_attrs, $attr);
+								$this->must_attrs[] = $attr;
 							}
 						}
 						while (!preg_match('/\)+\)?/', $strings[$i + 1]));
@@ -214,7 +214,7 @@ class ObjectClass extends SchemaItem {
 					elseif ($strings[$i + 1] != "(") {
 						$i++;
 						$attr = new ObjectClassAttribute($strings[$i], $this->name);
-						array_push($this->must_attrs, $attr);
+						$this->must_attrs[] = $attr;
 					}
 					else {
 						$i++;
@@ -222,7 +222,7 @@ class ObjectClass extends SchemaItem {
 							$i++;
 							if ($strings[$i] != "$") {
 								$attr = new ObjectClassAttribute($strings[$i], $this->name);
-								array_push($this->must_attrs, $attr);
+								$this->must_attrs[] = $attr;
 							}
 						}
 						while (!preg_match('/\)+\)?/', $strings[$i + 1]));
@@ -233,12 +233,12 @@ class ObjectClass extends SchemaItem {
 					if (preg_match('/^\(./', $strings[$i + 1])) {
 						$i++;
 						$attr = new ObjectClassAttribute(preg_replace('/^\(/', "", $strings[$i]), $this->name);
-						array_push($this->may_attrs, $attr);
+						$this->may_attrs[] = $attr;
 						do {
 							$i++;
 							if ($strings[$i] != "$") {
 								$attr = new ObjectClassAttribute($strings[$i], $this->name);
-								array_push($this->may_attrs, $attr);
+								$this->may_attrs[] = $attr;
 							}
 						}
 						while (!preg_match('/\)+\)?/', $strings[$i + 1]));
@@ -246,7 +246,7 @@ class ObjectClass extends SchemaItem {
 					elseif ($strings[$i + 1] != "(") {
 						$i++;
 						$attr = new ObjectClassAttribute($strings[$i], $this->name);
-						array_push($this->may_attrs, $attr);
+						$this->may_attrs[] = $attr;
 					}
 					else {
 						$i++;
@@ -254,7 +254,7 @@ class ObjectClass extends SchemaItem {
 							$i++;
 							if ($strings[$i] != "$") {
 								$attr = new ObjectClassAttribute($strings[$i], $this->name);
-								array_push($this->may_attrs, $attr);
+								$this->may_attrs[] = $attr;
 							}
 						}
 						while (!preg_match('/\)+\)?/', $strings[$i + 1]));
@@ -487,9 +487,9 @@ class ObjectClass extends SchemaItem {
  */
 class ObjectClassAttribute {
 	/** This Attribute's name */
-	var $name;
+	protected $name;
 	/** This Attribute's root */
-	var $source;
+	protected $source;
 
 	/**
 	 * Creates a new ObjectClassAttribute with specified name and source objectClass.
@@ -521,39 +521,39 @@ class ObjectClassAttribute {
  */
 class AttributeType extends SchemaItem {
 	/** The name of this attributeType */
-	var $name;
+	protected $name;
 	/** string: the description */
-	var $is_obsolete;
+	protected $is_obsolete;
 	/** The attribute from which this attribute inherits (if any) */
-	var $sup_attribute;
+	protected $sup_attribute;
 	/** The equality rule used */
-	var $equality;
+	protected $equality;
 	/** The ordering of the attributeType */
-	var $ordering;
+	protected $ordering;
 	/** Boolean: supports substring matching? */
-	var $sub_str;
+	protected $sub_str;
 	/** The full syntax string, ie 1.2.3.4{16} */
-	var $syntax;
+	protected $syntax;
 	/** syntax OID */
-	var $syntax_oid;
+	protected $syntax_oid;
 	/** boolean: is single valued only? */
-	var $is_single_value;
+	protected $is_single_value;
 	/** boolean: is collective? */
-	var $is_collective;
+	protected $is_collective;
 	/** boolean: can use modify? */
-	var $is_no_user_modification;
+	protected $is_no_user_modification;
 	/** The usage string set by the LDAP schema */
-	var $usage;
+	protected $usage;
 	/** An array of alias attribute names, strings */
-	var $aliases;
+	protected $aliases;
 	/** The max number of characters this attribute can be */
-	var $max_length;
+	protected $max_length;
 	/** A string description of the syntax type (taken from the LDAPSyntaxes) */
-	var $type;
+	protected $type;
 	/** An array of objectClasses which use this attributeType (must be set by caller) */
-	var $used_in_object_classes;
+	protected $used_in_object_classes;
 	/** A list of object class names that require this attribute type.  */
-	var $required_by_object_classes = [];
+	protected $required_by_object_classes = [];
 
 	/**
 	 * Initialize the class' member variables
@@ -603,7 +603,7 @@ class AttributeType extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match("/\'$/s", $strings[$i]));
+						while (!preg_match("/\'$/", $strings[$i]));
 						// this attribute has no aliases
 						$this->aliases = [];
 					}
@@ -618,7 +618,7 @@ class AttributeType extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match("/\'$/s", $strings[$i]));
+						while (!preg_match("/\'$/", $strings[$i]));
 						// add alias names for this attribute
 						while ($strings[++$i] != ")") {
 							$alias = $strings[$i];
@@ -638,7 +638,7 @@ class AttributeType extends SchemaItem {
 							$this->description = $this->description . " " . $strings[$i];
 						}
 					}
-					while (!preg_match("/\'$/s", $strings[$i]));
+					while (!preg_match("/\'$/", $strings[$i]));
 					break;
 				case 'OBSOLETE':
 					$this->is_obsolete = TRUE;
@@ -1027,7 +1027,7 @@ class Syntax extends SchemaItem {
 							$this->description = $this->description . " " . $strings[$i];
 						}
 					}
-					while (!preg_match("/\'$/s", $strings[$i]));
+					while (!preg_match("/\'$/", $strings[$i]));
 					break;
 				default:
 					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i == 1) {
@@ -1047,13 +1047,13 @@ class Syntax extends SchemaItem {
  */
 class MatchingRule extends SchemaItem {
 	/** This rule's name */
-	var $name;
+	protected $name;
 	/** This rule's syntax OID */
-	var $syntax;
+	protected $syntax;
 	/** Boolean value indicating whether this MatchingRule is obsolete */
-	var $is_obsolete;
+	protected $is_obsolete;
 	/** An array of attribute names who use this MatchingRule */
-	var $used_by_attrs;
+	protected $used_by_attrs;
 
 	/** Initialize the class' member variables */
 	function initVars() {
@@ -1087,7 +1087,7 @@ class MatchingRule extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match("/\'$/s", $strings[$i]));
+						while (!preg_match("/\'$/", $strings[$i]));
 					}
 					else {
 						$i++;
@@ -1100,7 +1100,7 @@ class MatchingRule extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match("/\'$/s", $strings[$i]));
+						while (!preg_match("/\'$/", $strings[$i]));
 						do {
 							$i++;
 						}
@@ -1119,7 +1119,7 @@ class MatchingRule extends SchemaItem {
 							$this->description = $this->description . " " . $strings[$i];
 						}
 					}
-					while (!preg_match("/\'$/s", $strings[$i]));
+					while (!preg_match("/\'$/", $strings[$i]));
 					break;
 				case 'OBSOLETE':
 					$this->is_obsolete = TRUE;
@@ -1190,10 +1190,10 @@ class MatchingRule extends SchemaItem {
  */
 class MatchingRuleUse extends SchemaItem {
 	/** The name of the MathingRule this applies to */
-	var $name;
+	protected $name;
 	/** An array of attributeType names who make use of the mathingRule
 	 * identified by $this->oid and $this->name */
-	var $used_by_attrs;
+	protected $used_by_attrs;
 
 	/** Initialize the class' member variables */
 	function initVars() {
@@ -1221,7 +1221,7 @@ class MatchingRuleUse extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match("/\'$/s", $strings[$i]));
+						while (!preg_match("/\'$/", $strings[$i]));
 					}
 					else {
 						$i++;
@@ -1234,7 +1234,7 @@ class MatchingRuleUse extends SchemaItem {
 								$this->name .= " " . $strings[$i];
 							}
 						}
-						while (!preg_match("/\'$/s", $strings[$i]));
+						while (!preg_match("/\'$/", $strings[$i]));
 						do {
 							$i++;
 						}
@@ -1342,7 +1342,7 @@ function _get_schema_dn($dn, $debug = false) {
 		return false;
 	}
 
-	$entry = isset($entries[0]) ? $entries[0] : false;
+	$entry = $entries[0] ?? false;
 	if (!$entry) {
 		if ($debug) {
 			echo "_get_schema_dn() returning false (entry val is false)\n";
@@ -1350,7 +1350,7 @@ function _get_schema_dn($dn, $debug = false) {
 		return false;
 	}
 
-	$sub_schema_sub_entry = isset($entry[0]) ? $entry[0] : false;
+	$sub_schema_sub_entry = $entry[0] ?? false;
 	if (!$sub_schema_sub_entry) {
 		if ($debug) {
 			echo "_get_schema_dn() returning false (sub_schema_sub_entry val is false)\n";
@@ -1358,9 +1358,7 @@ function _get_schema_dn($dn, $debug = false) {
 		return false;
 	}
 
-	$schema_dn = isset($entry[$sub_schema_sub_entry][0]) ?
-		$entry[$sub_schema_sub_entry][0] :
-		false;
+	$schema_dn = $entry[$sub_schema_sub_entry][0] ?? false;
 
 	if ($debug) {
 		echo "_get_schema_dn() returning: \"" . $schema_dn . "\"\n";
@@ -1385,7 +1383,7 @@ function _get_schema_dn($dn, $debug = false) {
  *        this will try to retrieve the schema from the RootDSE subschemaSubentry.
  *        Failing that, we use some commonly known schema DNs. Default
  *        value is the Root DSE DN (zero-length string)
- * @return an array of strings of this form:
+ * @return array an array of strings of this form:
  *    Array (
  *      [0] => "( 1.3.6.1.4.1.7165.1.2.2.4 NAME 'gidPool' DESC 'Pool ...
  *      [1] => "( 1.3.6.1.4.1.7165.2.2.3 NAME 'sambaAccount' DESC 'Sa ...
@@ -1513,9 +1511,7 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 	if ($schema_search == null) {
 		// try again, with a different schema DN
 		global $servers;
-		$base_dn = isset($servers['base']) ?
-			$servers['base'] :
-			null;
+		$base_dn = $servers['base'] ?? null;
 		if ($debug) {
 			echo "Attempting with cn=schema,cn=configuration,$base_dn (ActiveDirectory)...\n";
 		}
@@ -1532,9 +1528,7 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 	if ($schema_search == null) {
 		// try again, with a different schema DN
 		global $servers;
-		$base_dn = isset($servers['base']) ?
-			$servers['base'] :
-			null;
+		$base_dn = $servers['base'] ?? null;
 		if ($debug) {
 			echo "Attempting with cn=Schema,ou=Admin,$base_dn (ActiveDirectory)...\n";
 		}
@@ -1599,7 +1593,7 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 	}
 
 	$schema = @ldap_get_entries($ds, $schema_search);
-	if ($schema == false) {
+	if ($schema === false) {
 		if ($debug) {
 			echo "Returning false since ldap_get_entries() returned false.</pre>\n";
 		}
@@ -1650,7 +1644,7 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
  */
 function get_schema_objectclasses($dn = null, $use_cache = true): array {
 	if ($use_cache && cached_schema_available('objectclasses')) {
-		//     return get_cached_schema('objectclasses' );
+		return get_cached_schema('objectclasses' );
 	}
 
 	$raw_oclasses = _get_raw_schema('objectclasses', $dn);
@@ -1695,12 +1689,7 @@ function get_schema_objectclass($oclass_name, $dn = null, $use_cache = true) {
 	if (!$oclasses) {
 		return false;
 	}
-	if (isset($oclasses[$oclass_name])) {
-		return $oclasses[$oclass_name];
-	}
-	else {
-		return false;
-	}
+	return $oclasses[$oclass_name] ?? false;
 }
 
 /**
@@ -1719,7 +1708,7 @@ function get_schema_attribute($attr_name, $dn = null, $use_cache = true) {
 	$attr_name = real_attr_name($attr_name);
 	$schema_attrs = get_schema_attributes($dn, $use_cache);
 	$attr_name = strtolower($attr_name);
-	return isset($schema_attrs[$attr_name]) ? $schema_attrs[$attr_name] : false;
+	return $schema_attrs[$attr_name] ?? false;
 }
 
 /**
@@ -1800,9 +1789,6 @@ function get_schema_attributes($dn = null, $use_cache = true): array {
 				$attrs[strtolower($attr_name)]->addUsedInObjectClass(
 					$object_class->getName());
 			}
-			else {
-				//echo "Warning, attr not set: $attr_name<br />";
-			}
 		}
 
 		// Add Required By.
@@ -1810,9 +1796,6 @@ function get_schema_attributes($dn = null, $use_cache = true): array {
 			if (isset($attrs[strtolower($attr_name)])) {
 				$attrs[strtolower($attr_name)]->addRequiredByObjectClass(
 					$object_class->getName());
-			}
-			else {
-				//echo "Warning, attr not set: $attr_name<br />";
 			}
 		}
 
@@ -1953,7 +1936,7 @@ function add_sup_to_attrs(&$attrs, &$attrs_oid) {
 					}
 					// only overwrite the SINGLE-VALUE property if the child explicitly sets it
 					// (note: All LDAP attributes default to multi-value if not explicitly set SINGLE-VALUE)
-					if (true == $tmp_single_val) {
+					if (true === $tmp_single_val) {
 						$attr->setIsSingleValue(true);
 					}
 
@@ -2018,7 +2001,7 @@ function get_schema_matching_rules($dn = null, $use_cache = true) {
 	// For each MatchingRuleUse entry, add the attributes who use it to the
 	// MatchingRule in the $rules array.
 	$raw_matching_rule_use = _get_raw_schema('matchingRuleUse');
-	if ($raw_matching_rule_use != false) {
+	if ($raw_matching_rule_use !== false) {
 		foreach ($raw_matching_rule_use as $rule_use_string) {
 			if ($rule_use_string == null || 0 == strlen($rule_use_string)) {
 				continue;
@@ -2193,5 +2176,3 @@ function set_schema_cache_unavailable() {
 	$_SESSION['schema']['unavailable'] = true;
 	return true;
 }
-
-?>
