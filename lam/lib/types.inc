@@ -23,6 +23,7 @@ namespace LAM\TYPES;
 */
 
 use baseType;
+use LAMConfig;
 
 /**
  * This file is the interface to the different account types.
@@ -46,7 +47,7 @@ $typesINC_dirname = substr(__FILE__, 0, strlen(__FILE__) - 10) . "/types";
 $typesINC_dir = dir($typesINC_dirname);
 // get module names.
 while ($entry = $typesINC_dir->read()) {
-	if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($typesINC_dirname . '/' . $entry)) {
+	if ((str_ends_with($entry, '.inc')) && is_file($typesINC_dirname . '/' . $entry)) {
 		include_once($typesINC_dirname . '/' . $entry);
 	}
 }
@@ -55,15 +56,15 @@ while ($entry = $typesINC_dir->read()) {
 /**
  * Returns a list of available account types.
  *
- * @return array list of types
+ * @return string[] list of types
  */
-function getTypes() {
+function getTypes(): array {
 	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 10) . "/types";
 	$dir = dir($dirname);
 	$return = [];
 	// get type names.
 	while ($entry = $dir->read()) {
-		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/' . $entry)) {
+		if ((str_ends_with($entry, '.inc')) && is_file($dirname . '/' . $entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$return[] = $entry;
 		}
@@ -73,23 +74,12 @@ function getTypes() {
 }
 
 /**
- * Returns the description of an account type.
- *
- * @param string $type type name
- * @return string type description
- */
-function getTypeDescription($type) {
-	$obj = new $type(null);
-	return $obj->getDescription();
-}
-
-/**
  * Returns the account type for a given type id.
  *
  * @param string $typeId type id (e.g. user_1)
  * @return string scope (e.g. user)
  */
-function getScopeFromTypeId($typeId) {
+function getScopeFromTypeId(string $typeId): string {
 	$parts = explode('_', $typeId);
 	return $parts[0];
 }
@@ -203,9 +193,12 @@ class ConfiguredType {
 		}
 		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
 		if (!empty($typeSettings['customLabel_' . $this->id])) {
-			return $typeSettings['customLabel_' . $this->id];
+			$this->alias = $typeSettings['customLabel_' . $this->id];
 		}
-		return $this->getBaseType()->getAlias();
+		else {
+			$this->alias = $this->getBaseType()->getAlias();
+		}
+		return $this->alias;
 	}
 
 	/**
@@ -357,10 +350,7 @@ class ListAttribute {
 	public function getAlias(array $predefinedDescriptions): string {
 		if ($this->isPredefined()) {
 			$name = strtolower(substr($this->attributeSpec, 1));
-			if (isset($predefinedDescriptions[$name])) {
-				return $predefinedDescriptions[$name];
-			}
-			return $name;
+			return $predefinedDescriptions[$name] ?? $name;
 		}
 		$parts = explode(':', $this->attributeSpec);
 		return $parts[1];
@@ -372,7 +362,7 @@ class ListAttribute {
 	 * @return bool is predefined
 	 */
 	private function isPredefined(): bool {
-		return strpos($this->attributeSpec, '#') === 0;
+		return str_starts_with($this->attributeSpec, '#');
 	}
 
 }
@@ -390,9 +380,9 @@ class TypeManager {
 	/**
 	 * Constructor
 	 *
-	 * @param \LAMConfig $config configuration (uses $_SESSION['config'] by default)
+	 * @param LAMConfig|null $config configuration (uses $_SESSION['config'] by default)
 	 */
-	public function __construct(&$config = null) {
+	public function __construct(LAMConfig &$config = null) {
 		if ($config == null) {
 			$config = &$_SESSION['config'];
 		}
@@ -413,9 +403,9 @@ class TypeManager {
 	 * Returns the configured type with the given id or null.
 	 *
 	 * @param string $typeId type id
-	 * @return \LAM\TYPES\ConfiguredType|NULL type
+	 * @return ConfiguredType|null type
 	 */
-	public function getConfiguredType($typeId) {
+	public function getConfiguredType(string $typeId): ?ConfiguredType {
 		if ($this->config == null) {
 			return null;
 		}
@@ -429,9 +419,9 @@ class TypeManager {
 	/**
 	 * Returns a list of configured account types.
 	 *
-	 * @return \LAM\TYPES\ConfiguredType[] list of ConfiguredType
+	 * @return ConfiguredType[] list of ConfiguredType
 	 */
-	public function getConfiguredTypes() {
+	public function getConfiguredTypes(): array {
 		$configuredTypes = [];
 		$activeTypes = $this->config->get_ActiveTypes();
 		foreach ($activeTypes as $typeId) {
@@ -448,9 +438,9 @@ class TypeManager {
 	 * Returns a list of configured types for this scope.
 	 *
 	 * @param string $scope scope (e.g. user)
-	 * @return \LAM\TYPES\ConfiguredType[] list of ConfiguredType
+	 * @return ConfiguredType[] list of ConfiguredType
 	 */
-	public function getConfiguredTypesForScope($scope) {
+	public function getConfiguredTypesForScope(string $scope): array {
 		$allTypes = $this->getConfiguredTypes();
 		$scopedTypes = [];
 		foreach ($allTypes as $type) {
@@ -465,9 +455,9 @@ class TypeManager {
 	 * Returns a list of configured types for these scopes.
 	 *
 	 * @param array $scopes scopes (e.g. user)
-	 * @return \LAM\TYPES\ConfiguredType[] list of ConfiguredType
+	 * @return ConfiguredType[] list of ConfiguredType
 	 */
-	public function getConfiguredTypesForScopes($scopes) {
+	public function getConfiguredTypesForScopes(array $scopes): array {
 		$allTypes = $this->getConfiguredTypes();
 		$scopedTypes = [];
 		foreach ($allTypes as $type) {
@@ -482,8 +472,9 @@ class TypeManager {
 	 * Builds a configured account type.
 	 *
 	 * @param string $typeId type id
+	 * @return ConfiguredType|null type
 	 */
-	private function buildConfiguredType($typeId) {
+	private function buildConfiguredType(string $typeId): ?ConfiguredType {
 		$scope = getScopeFromTypeId($typeId);
 		if (!class_exists($scope)) {
 			return null;
@@ -496,7 +487,7 @@ class TypeManager {
 	 *
 	 * @param string $scope account type (e.g. user)
 	 */
-	public function generateNewTypeId($scope) {
+	public function generateNewTypeId(string $scope): string {
 		$activeTypes = $this->config->get_ActiveTypes();
 		if (!in_array($scope, $activeTypes)) {
 			return $scope;
@@ -511,9 +502,9 @@ class TypeManager {
 	/**
 	 * Returns the associated config object.
 	 *
-	 * @return \LAMConfig config
+	 * @return LAMConfig|null config
 	 */
-	public function getConfig() {
+	public function getConfig(): ?LAMConfig {
 		return $this->config;
 	}
 
@@ -522,7 +513,7 @@ class TypeManager {
 	 *
 	 * @return boolean configured
 	 */
-	public function hasConfig() {
+	public function hasConfig(): bool {
 		return !empty($this->config);
 	}
 

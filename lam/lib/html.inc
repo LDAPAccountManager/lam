@@ -267,39 +267,33 @@ class htmlTable extends htmlElement {
 	/**
 	 * Adds an element to the table.
 	 *
-	 * @param mixed $element htmlElement object or a simple string
-	 * @param boolean $newLine adds a new line after the element (optional, default false)
-	 * @param boolean $isTableHeadElement specifies if this is a head or body element (default: body)
+	 * @param htmlElement $element htmlElement object or a simple string
+	 * @param bool $newLine adds a new line after the element (optional, default false)
+	 * @param bool $isTableHeadElement specifies if this is a head or body element (default: body)
 	 */
-	public function addElement($element, $newLine = false, $isTableHeadElement = false) {
-		// add cell element
-		if ($element instanceof htmlElement) {
-			// check if a row needs to be opened
-			if (!$this->rowOpen) {
-				$this->elements[] = "<tr>\n";
-				$this->rowOpen = true;
-			}
-			// check if alignment option was given
-			$align = $element->getAlignmentString();
-			$colspan = $element->getColspanString();
-			$rowspan = $element->getRowspanString();
-			$css = '';
-			if (sizeof($element->getTableCellCSSClasses()) > 0) {
-				$css = 'class="' . implode(' ', $element->getTableCellCSSClasses()) . '"';
-			}
-			$tagName = 'td';
-			if ($isTableHeadElement) {
-				$tagName = 'th';
-			}
-			$this->elements[] = "<$tagName $align $colspan $rowspan $css>\n";
-			$this->elements[] = $element;
-			$this->elements[] = "</$tagName>\n";
-			if ($newLine) {
-				$this->addNewLine();
-			}
+	public function addElement(htmlElement $element, bool $newLine = false, bool $isTableHeadElement = false): void {
+		// check if a row needs to be opened
+		if (!$this->rowOpen) {
+			$this->elements[] = "<tr>\n";
+			$this->rowOpen = true;
 		}
-		else {
-			StatusMessage('ERROR', 'Invalid element', print_r($element, true));
+		// check if alignment option was given
+		$align = $element->getAlignmentString();
+		$colspan = $element->getColspanString();
+		$rowspan = $element->getRowspanString();
+		$css = '';
+		if (sizeof($element->getTableCellCSSClasses()) > 0) {
+			$css = 'class="' . implode(' ', $element->getTableCellCSSClasses()) . '"';
+		}
+		$tagName = 'td';
+		if ($isTableHeadElement) {
+			$tagName = 'th';
+		}
+		$this->elements[] = "<$tagName $align $colspan $rowspan $css>\n";
+		$this->elements[] = $element;
+		$this->elements[] = "</$tagName>\n";
+		if ($newLine) {
+			$this->addNewLine();
 		}
 	}
 
@@ -382,12 +376,9 @@ class htmlTable extends htmlElement {
 	/**
 	 * Merges the content of another htmlTable object into this table.
 	 *
-	 * @param $table table to get elements
+	 * @param htmlTable $table table to get elements
 	 */
-	public function mergeTableElements($table) {
-		if (is_null($table) || !($table instanceof htmlTable)) {
-			return;
-		}
+	public function mergeTableElements(htmlTable $table) {
 		// remove obsolete new lines at the end
 		if ($table->elements[sizeof($table->elements) - 1] == self::NEWLINE) {
 			unset($table->elements[sizeof($table->elements) - 1]);
@@ -1220,18 +1211,16 @@ class htmlAccountPageButton extends htmlButton {
 	/**
 	 * Constructor
 	 *
-	 * @param String $targetModule module name which renders next page
-	 * @param String $targetPage name of next page
-	 * @param String $identifier identifier for button
-	 * @param String $value button text or image (16x16px, relative to graphics folder)
-	 * @param String $isImageButton image or text button (default text)
-	 * @param String $title title to show
+	 * @param string $targetModule module name which renders next page
+	 * @param string $targetPage name of next page
+	 * @param string $identifier identifier for button
+	 * @param string $value button text or image (16x16px, relative to graphics folder)
+	 * @param bool $isImageButton image or text button (default text)
+	 * @param string|null $title title to show
 	 */
-	function __construct($targetModule, $targetPage, $identifier, $value, $isImageButton = false, $title = null) {
-		$this->name = htmlspecialchars('form_subpage_' . $targetModule . '_' . $targetPage . '_' . $identifier);
-		$this->value = $value;
-		$this->isImageButton = $isImageButton;
-		if ($title != null) {
+	public function __construct(string $targetModule, string $targetPage, string $identifier, string $value, bool $isImageButton = false, ?string $title = null) {
+		parent::__construct('form_subpage_' . $targetModule . '_' . $targetPage . '_' . $identifier, $value, $isImageButton);
+		if ($title !== null) {
 			$this->setTitle($title);
 		}
 	}
@@ -1431,16 +1420,13 @@ class htmlSelect extends htmlElement {
 			if (isset($this->optionCssClasses[$value])) {
 				$optionClass = 'class="' . $this->optionCssClasses[$value] . '"';
 			}
+			if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
+				$selected = ' selected';
+			}
 			if ($this->hasDescriptiveElements) {
-				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
-					$selected = ' selected';
-				}
 				echo "<option value=\"" . htmlspecialchars($value) . "\"$selected $optionClass>" . htmlspecialchars($key) . "</option>\n";
 			}
 			else {
-				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
-					$selected = ' selected';
-				}
 				echo "<option$selected $optionClass>" . htmlspecialchars($value) . "</option>\n";
 			}
 		}
@@ -1790,12 +1776,12 @@ class htmlRadio extends htmlElement {
 	 * Creates the JavaScript code to hide/show table rows based on the select value.
 	 *
 	 * @param int $counter index
-	 * @return String onChange code
+	 * @return string onChange code
 	 */
-	private function getOnchangeCodeForShowHideTableRows($counter) {
+	private function getOnchangeCodeForShowHideTableRows($counter): string {
 		$onChange = '';
 		if ((sizeof($this->tableRowsToHide) == 0) && (sizeof($this->tableRowsToShow) == 0)) {
-			return;
+			return $onChange;
 		}
 		$values = [];
 		if (!empty($this->tableRowsToHide)) {
@@ -3132,8 +3118,7 @@ class htmlLink extends htmlElement {
 		}
 		$idAttr = '';
 		if (!empty($this->id)) {
-			$id = !empty($this->id) ? $this->id : 'a_' . preg_replace('/[^a-zA-Z0-9_]+/', '_', $this->target);
-			$idAttr = ' id="' . $id . '"';
+			$idAttr = ' id="' . $this->id . '"';
 		}
 		$classAttr = '';
 		if (sizeof($this->cssClasses) > 0) {
@@ -3734,9 +3719,9 @@ class htmlAccordion extends htmlElement {
 	 *
 	 * @param String $id HTML ID
 	 * @param array $elements list of content elements array('title' => htmlElement)
-	 * @param String $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
+	 * @param mixed $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
 	 */
-	function __construct($id, $elements, $openInitial = 0) {
+	function __construct($id, $elements, mixed $openInitial = 0) {
 		$this->id = $id;
 		$this->elements = $elements;
 		$this->openInitial = $openInitial;
@@ -3950,7 +3935,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param string $space space in px or rem
 	 */
 	public function addVerticalSpacer($space) {
-		$this->add(new htmlSpacer(null, $space), 12);
+		$this->add(new htmlSpacer(null, $space));
 	}
 
 	/**
