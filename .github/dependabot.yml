@@ -9,3 +9,13 @@ updates:
     directory: "/lam/" # Location of package manifests
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /lam-packaging/docker
+    schedule:
+      interval: daily
