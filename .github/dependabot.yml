@@ -9,3 +9,18 @@ updates:
     directory: "/lam/" # Location of package manifests
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /lam-packaging/docker
+    schedule:
+      interval: daily
+
+  - package-ecosystem: docker
+    directory: /lam/lib/3rdParty/composer/webklex/php-imap/.github/docker
+    schedule:
+      interval: daily

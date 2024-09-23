@@ -15,10 +15,15 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Harden Runner
+      uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Setup PHP with PECL extension
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231 # v2
       with:
         php-version: '8.1'
         extensions: ldap, xdebug, gd, json, xml, curl, zip, mbstring
@@ -28,7 +33,7 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v3
+      uses: actions/cache@e12d46a63a90f2fae62d114769bbf2a179198b5c # v3.3.3
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
