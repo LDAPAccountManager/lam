@@ -19,8 +19,3 @@ updates:
     directory: /lam-packaging/docker
     schedule:
       interval: daily
-
-  - package-ecosystem: docker
-    directory: /lam/lib/3rdParty/composer/webklex/php-imap/.github/docker
-    schedule:
-      interval: daily
