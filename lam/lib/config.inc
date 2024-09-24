@@ -1,12 +1,13 @@
 <?php
 
-use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAM\PROFILES\AccountProfilePersistenceManager;
-use \LAM\REMOTE\RemoteServerConfiguration;
+use LAM\REMOTE\RemoteServerConfiguration;
 use LAM\TYPES\TypeManager;
 use function LAM\PERSISTENCE\dbTableExists;
+use function LAM\TYPES\getScopeFromTypeId;
 
 /*
 
@@ -53,13 +54,7 @@ include_once '2factor.inc';
  * Sets the environment variables for custom SSL CA certificates.
  */
 function setSSLCaCert() {
-	$config = null;
-	if (isset($_SESSION['cfgMain'])) {
-		$config = $_SESSION['cfgMain'];
-	}
-	else {
-		$config = new LAMCfgMain();
-	}
+	$config = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	// set SSL certificate if set
 	$sslCaPath = $config->getSSLCaCertPath();
 	if ($sslCaPath != null) {
@@ -101,11 +96,8 @@ function setlanguage() {
 	if (!is_string($bindTextResult)) {
 		logNewMessage(LOG_WARNING, "Unable to bind text domain, check if 'locale -a' returns $code");
 	}
-	$textDomainResult = textdomain("messages");
-	if (!is_string($textDomainResult)) {
-		logNewMessage(LOG_WARNING, "Unable to set text domain, check if 'locale -a' returns $code");
-	}
-	header("Content-type: text/html; charset=" . $encoding, true);
+	textdomain("messages");
+	header("Content-type: text/html; charset=" . $encoding);
 }
 
 /**
@@ -404,7 +396,7 @@ class ServerProfilePersistenceManager {
 		}
 		$copyFromTemplate = true;
 		$existingTemplateNames = $this->getConfigTemplates();
-		if (strpos($templateName, '.sample') !== false) {
+		if (str_contains($templateName, '.sample')) {
 			$templateNameShort = str_replace('.sample', '', $templateName);
 			if (!in_array($templateNameShort, $existingTemplateNames)) {
 				throw new LAMException(_("Profile name is invalid!"));
@@ -558,7 +550,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$ext = substr($entry, strlen($entry) - 5, 5);
 			$name = substr($entry, 0, strlen($entry) - 5);
 			// check if extension is right, add to profile list
-			if (($ext == ".conf") && (strpos($name, '.sample') === false) && is_readable($dirName . '/' . $entry)) {
+			if (($ext == ".conf") && (!str_contains($name, '.sample')) && is_readable($dirName . '/' . $entry)) {
 				$ret[] = $name;
 			}
 		}
@@ -601,7 +593,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 					$property->setAccessible(true);
 					$property->setValue($config, '');
 				}
-				catch (ReflectionException $e) {
+				catch (ReflectionException) {
 					// ignore
 				}
 			}
@@ -612,7 +604,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 					$property->setAccessible(true);
 					$property->setValue($config, substr($line, $startIndex));
 				}
-				catch (ReflectionException $e) {
+				catch (ReflectionException) {
 					// ignore
 				}
 			}
@@ -1237,7 +1229,7 @@ class LAMConfig {
 		$allTypes = LAM\TYPES\getTypes();
 		$activeTypes = $this->get_ActiveTypes();
 		for ($i = 0; $i < sizeof($activeTypes); $i++) {
-			if (!in_array(\LAM\TYPES\getScopeFromTypeId($activeTypes[$i]), $allTypes)) {
+			if (!in_array(getScopeFromTypeId($activeTypes[$i]), $allTypes)) {
 				unset($activeTypes[$i]);
 			}
 		}
@@ -1252,7 +1244,7 @@ class LAMConfig {
 		$types = $this->get_ActiveTypes();
 		$availableByScope = [];
 		foreach ($types as $type) {
-			$scope = \LAM\TYPES\getScopeFromTypeId($type);
+			$scope = getScopeFromTypeId($type);
 			$moduleVar = "modules_" . $type;
 			if (isset($this->typeSettings[$moduleVar])) {
 				$modules = explode(",", $this->typeSettings[$moduleVar]);
@@ -1513,14 +1505,14 @@ class LAMConfig {
 	 * @return boolean true, if matches
 	 */
 	public function check_Passwd($password) {
-		if (strpos($this->Passwd, "{SSHA}") === 0) {
+		if (str_starts_with($this->Passwd, "{SSHA}")) {
 			$value = substr($this->Passwd, strlen("{SSHA}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
 			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 			return ($hash === $this->Passwd);
 		}
-		elseif (strpos($this->Passwd, "{CRYPT-SHA512}") === 0) {
+		elseif (str_starts_with($this->Passwd, "{CRYPT-SHA512}")) {
 			$value = substr($this->Passwd, strlen("{CRYPT-SHA512}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
@@ -1740,8 +1732,8 @@ class LAMConfig {
 			}
 			$serverSettings = explode(':', $serverChunk);
 			$serverName = $serverSettings[0];
-			$serverLabel = isset($serverSettings[1]) ? $serverSettings[1] : null;
-			$serverHomedirPrefix = isset($serverSettings[2]) ? $serverSettings[2] : null;
+			$serverLabel = $serverSettings[1] ?? null;
+			$serverHomedirPrefix = $serverSettings[2] ?? null;
 			$servers[] = new RemoteServerConfiguration($serverName, $serverLabel, $serverHomedirPrefix, $scriptPath, $userName, $sshKey, $sshKeyPassword);
 		}
 		return $servers;
@@ -1795,18 +1787,18 @@ class LAMConfig {
 			$valid_ips = [];
 			foreach ($array_string as $arr_value) {
 				// Explode name and IP, if a name exists
-				if (preg_match("/:/", $arr_value)) {
+				if (str_contains($arr_value, ":")) {
 					$arr_value_explode = explode(":", $arr_value);
 					$servername = $arr_value_explode[0];
 					$label = $arr_value_explode[1];
-					$homedirPrefix = isset($arr_value_explode[2]) ? $arr_value_explode[2] : '';
+					$homedirPrefix = $arr_value_explode[2] ?? '';
 				}
 				else {
 					$servername = $arr_value;
 					$label = '';
 					$homedirPrefix = '';
 				}
-				if (isset($servername) && is_string($servername) && preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $servername)) {
+				if (preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $servername)) {
 					$serverData = [$servername];
 					if (!empty($label)) {
 						$serverData[] = $label;
@@ -3423,7 +3415,7 @@ class LAMCfgMain {
 				if (($configLine === false) || ($configLine === "") || ($configLine === "\n") || ($configLine[0] == "#")) {
 					continue; // ignore comments and empty lines
 				}
-				array_push($file_array, $configLine);
+				$file_array[] = $configLine;
 			}
 			fclose($file);
 			// generate new configuration file
@@ -3451,116 +3443,116 @@ class LAMCfgMain {
 		if (!$persistenceOnly) {
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
 			if (!in_array("password", $saved)) {
-				array_push($file_array, "password: " . $this->password . "\n");
+				$file_array[] = "password: " . $this->password . "\n";
 			}
 			if (!in_array("default", $saved)) {
-				array_push($file_array, "default: " . $this->default . "\n");
+				$file_array[] = "default: " . $this->default . "\n";
 			}
 			if (!in_array("sessionTimeout", $saved)) {
-				array_push($file_array, "sessionTimeout: " . $this->sessionTimeout . "\n");
+				$file_array[] = "sessionTimeout: " . $this->sessionTimeout . "\n";
 			}
 			if (!in_array("hideLoginErrorDetails", $saved)) {
-				array_push($file_array, "hideLoginErrorDetails: " . $this->hideLoginErrorDetails . "\n");
+				$file_array[] = "hideLoginErrorDetails: " . $this->hideLoginErrorDetails . "\n";
 			}
 			if (!in_array("logLevel", $saved)) {
-				array_push($file_array, "logLevel: " . $this->logLevel . "\n");
+				$file_array[] = "logLevel: " . $this->logLevel . "\n";
 			}
 			if (!in_array("logDestination", $saved)) {
-				array_push($file_array, "logDestination: " . $this->logDestination . "\n");
+				$file_array[] = "logDestination: " . $this->logDestination . "\n";
 			}
 			if (!in_array("allowedHosts", $saved)) {
-				array_push($file_array, "allowedHosts: " . $this->allowedHosts . "\n");
+				$file_array[] = "allowedHosts: " . $this->allowedHosts . "\n";
 			}
 			if (!in_array("allowedHostsSelfService", $saved)) {
-				array_push($file_array, "allowedHostsSelfService: " . $this->allowedHostsSelfService . "\n");
+				$file_array[] = "allowedHostsSelfService: " . $this->allowedHostsSelfService . "\n";
 			}
 			if (!in_array("passwordMinLength", $saved)) {
-				array_push($file_array, "passwordMinLength: " . $this->passwordMinLength . "\n");
+				$file_array[] = "passwordMinLength: " . $this->passwordMinLength . "\n";
 			}
 			if (!in_array("passwordMinUpper", $saved)) {
-				array_push($file_array, "passwordMinUpper: " . $this->passwordMinUpper . "\n");
+				$file_array[] = "passwordMinUpper: " . $this->passwordMinUpper . "\n";
 			}
 			if (!in_array("passwordMinLower", $saved)) {
-				array_push($file_array, "passwordMinLower: " . $this->passwordMinLower . "\n");
+				$file_array[] = "passwordMinLower: " . $this->passwordMinLower . "\n";
 			}
 			if (!in_array("passwordMinNumeric", $saved)) {
-				array_push($file_array, "passwordMinNumeric: " . $this->passwordMinNumeric . "\n");
+				$file_array[] = "passwordMinNumeric: " . $this->passwordMinNumeric . "\n";
 			}
 			if (!in_array("passwordMinSymbol", $saved)) {
-				array_push($file_array, "passwordMinSymbol: " . $this->passwordMinSymbol . "\n");
+				$file_array[] = "passwordMinSymbol: " . $this->passwordMinSymbol . "\n";
 			}
 			if (!in_array("passwordMinClasses", $saved)) {
-				array_push($file_array, "passwordMinClasses: " . $this->passwordMinClasses . "\n");
+				$file_array[] = "passwordMinClasses: " . $this->passwordMinClasses . "\n";
 			}
 			if (!in_array("checkedRulesCount", $saved)) {
-				array_push($file_array, "checkedRulesCount: " . $this->checkedRulesCount . "\n");
+				$file_array[] = "checkedRulesCount: " . $this->checkedRulesCount . "\n";
 			}
 			if (!in_array("passwordMustNotContain3Chars", $saved)) {
-				array_push($file_array, "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars . "\n");
+				$file_array[] = "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars . "\n";
 			}
 			if (!in_array("passwordMustNotContainUser", $saved)) {
-				array_push($file_array, "passwordMustNotContainUser: " . $this->passwordMustNotContainUser . "\n");
+				$file_array[] = "passwordMustNotContainUser: " . $this->passwordMustNotContainUser . "\n";
 			}
 			if (!in_array("externalPwdCheckUrl", $saved)) {
-				array_push($file_array, "externalPwdCheckUrl: " . $this->externalPwdCheckUrl . "\n");
+				$file_array[] = "externalPwdCheckUrl: " . $this->externalPwdCheckUrl . "\n";
 			}
 			if (!in_array("errorReporting", $saved)) {
-				array_push($file_array, "errorReporting: " . $this->errorReporting . "\n");
+				$file_array[] = "errorReporting: " . $this->errorReporting . "\n";
 			}
 			if (!in_array("license", $saved)) {
-				array_push($file_array, "license: " . $this->license . "\n");
+				$file_array[] = "license: " . $this->license . "\n";
 			}
 			if (!in_array("licenseEmailFrom", $saved)) {
-				array_push($file_array, "licenseEmailFrom: " . $this->licenseEmailFrom . "\n");
+				$file_array[] = "licenseEmailFrom: " . $this->licenseEmailFrom . "\n";
 			}
 			if (!in_array("licenseEmailTo", $saved)) {
-				array_push($file_array, "licenseEmailTo: " . $this->licenseEmailTo . "\n");
+				$file_array[] = "licenseEmailTo: " . $this->licenseEmailTo . "\n";
 			}
 			if (!in_array("licenseEmailDateSent", $saved)) {
-				array_push($file_array, "licenseEmailDateSent: " . $this->licenseEmailDateSent . "\n");
+				$file_array[] = "licenseEmailDateSent: " . $this->licenseEmailDateSent . "\n";
 			}
 			if (!in_array("licenseWarningType", $saved)) {
-				array_push($file_array, "licenseWarningType: " . $this->licenseWarningType . "\n");
+				$file_array[] = "licenseWarningType: " . $this->licenseWarningType . "\n";
 			}
 			if (!in_array("mailServer", $saved)) {
-				array_push($file_array, "mailServer: " . $this->mailServer . "\n");
+				$file_array[] = "mailServer: " . $this->mailServer . "\n";
 			}
 			if (!in_array("mailUser", $saved)) {
-				array_push($file_array, "mailUser: " . $this->mailUser . "\n");
+				$file_array[] = "mailUser: " . $this->mailUser . "\n";
 			}
 			if (!in_array("mailPassword", $saved)) {
-				array_push($file_array, "mailPassword: " . $this->mailPassword . "\n");
+				$file_array[] = "mailPassword: " . $this->mailPassword . "\n";
 			}
 			if (!in_array("mailEncryption", $saved)) {
-				array_push($file_array, "mailEncryption: " . $this->mailEncryption . "\n");
+				$file_array[] = "mailEncryption: " . $this->mailEncryption . "\n";
 			}
 			if (!in_array("mailAttribute", $saved)) {
-				array_push($file_array, "mailAttribute: " . $this->mailAttribute . "\n");
+				$file_array[] = "mailAttribute: " . $this->mailAttribute . "\n";
 			}
 			if (!in_array("mailBackupAttribute", $saved)) {
-				array_push($file_array, "mailBackupAttribute: " . $this->mailBackupAttribute . "\n");
+				$file_array[] = "mailBackupAttribute: " . $this->mailBackupAttribute . "\n";
 			}
 		}
 		if (!in_array("configDatabaseType", $saved)) {
-			array_push($file_array, "configDatabaseType: " . $this->configDatabaseType . "\n");
+			$file_array[] = "configDatabaseType: " . $this->configDatabaseType . "\n";
 		}
 		if (!in_array("configDatabaseServer", $saved)) {
-			array_push($file_array, "configDatabaseServer: " . $this->configDatabaseServer . "\n");
+			$file_array[] = "configDatabaseServer: " . $this->configDatabaseServer . "\n";
 		}
 		if (!in_array("configDatabasePort", $saved)) {
-			array_push($file_array, "configDatabasePort: " . $this->configDatabasePort . "\n");
+			$file_array[] = "configDatabasePort: " . $this->configDatabasePort . "\n";
 		}
 		if (!in_array("configDatabaseName", $saved)) {
-			array_push($file_array, "configDatabaseName: " . $this->configDatabaseName . "\n");
+			$file_array[] = "configDatabaseName: " . $this->configDatabaseName . "\n";
 		}
 		if (!in_array("configDatabaseUser", $saved)) {
-			array_push($file_array, "configDatabaseUser: " . $this->configDatabaseUser . "\n");
+			$file_array[] = "configDatabaseUser: " . $this->configDatabaseUser . "\n";
 		}
 		if (!in_array("configDatabasePassword", $saved)) {
-			array_push($file_array, "configDatabasePassword: " . $this->configDatabasePassword . "\n");
+			$file_array[] = "configDatabasePassword: " . $this->configDatabasePassword . "\n";
 		}
 		if (!in_array("moduleSettings", $saved)) {
-			array_push($file_array, "moduleSettings: " . $this->moduleSettings . "\n");
+			$file_array[] = "moduleSettings: " . $this->moduleSettings . "\n";
 		}
 
 		$file = @fopen($this->conffile, "w");
@@ -3591,14 +3583,14 @@ class LAMCfgMain {
 	 * @return boolean true, if password matches
 	 */
 	public function checkPassword($password) {
-		if (strpos($this->password, "{SSHA}") === 0) {
+		if (str_starts_with($this->password, "{SSHA}")) {
 			$value = substr($this->password, strlen("{SSHA}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
 			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 			return ($hash === $this->password);
 		}
-		elseif (strpos($this->password, "{CRYPT-SHA512}") === 0) {
+		elseif (str_starts_with($this->password, "{CRYPT-SHA512}")) {
 			$value = substr($this->password, strlen("{CRYPT-SHA512}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
@@ -3678,7 +3670,7 @@ class LAMCfgMain {
 	 * @return mixed TRUE if format is correct, error message if file is not accepted
 	 */
 	public function uploadSSLCaCert($cert) {
-		if (strpos($cert, '-----BEGIN CERTIFICATE-----') === false) {
+		if (!str_contains($cert, '-----BEGIN CERTIFICATE-----')) {
 			$pem = @chunk_split(@base64_encode($cert), 64, "\n");
 			$cert = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
 		}
@@ -3817,14 +3809,14 @@ class LAMCfgMain {
 		if (empty($content)) {
 			return [];
 		}
-		if (!(strpos($content, '-----BEGIN CERTIFICATE-----') === 0)) {
+		if (!(str_starts_with($content, '-----BEGIN CERTIFICATE-----'))) {
 			return [];
 		}
 		$lines = explode("\n", $content);
 		$list = [];
 		$pos = -1;
 		foreach ($lines as $line) {
-			if (strpos($line, '-----BEGIN CERTIFICATE-----') === 0) {
+			if (str_starts_with($line, '-----BEGIN CERTIFICATE-----')) {
 				$pos++;
 			}
 			if (!isset($list[$pos])) {

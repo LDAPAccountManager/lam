@@ -214,7 +214,7 @@ class Exporter {
 		sort($attributeNames);
 		array_unshift($attributeNames, 'dn');
 
-		$attributeNamesQuoted = array_map([$this, 'escapeCsvAndAddQuotes'], $attributeNames);
+		$attributeNamesQuoted = array_map($this->escapeCsvAndAddQuotes(...), $attributeNames);
 		$output = '';
 		// header
 		$output .= implode(',', $attributeNamesQuoted) . $lineEnding;
