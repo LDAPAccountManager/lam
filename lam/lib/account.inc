@@ -31,6 +31,7 @@
  */
 
 use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
+use LAM\TYPES\TypeManager;
 
 
 /**
@@ -253,12 +254,12 @@ function generateSalt($len) {
  */
 function pwd_enable($hash) {
 	// check if password is disabled (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
+	if ((str_starts_with($hash, "!{")) || (str_starts_with($hash, "*{"))) {
 		return substr($hash, 1, strlen($hash));
 	}
 	// check for "!" or "*" at beginning of password hash
 	else {
-		if (substr($hash, 0, 1) == "{") {
+		if (str_starts_with($hash, "{")) {
 			$pos = strpos($hash, "}");
 			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
 				// enable hash
@@ -282,12 +283,12 @@ function pwd_enable($hash) {
  */
 function pwd_disable($hash) {
 	// check if password is disabled (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
+	if ((str_starts_with($hash, "!{")) || (str_starts_with($hash, "*{"))) {
 		return $hash;
 	}
 	// check for "!" or "*" at beginning of password hash
 	else {
-		if (substr($hash, 0, 1) == "{") {
+		if (str_starts_with($hash, "{")) {
 			$pos = strpos($hash, "}");
 			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
 				// hash already disabled
@@ -315,10 +316,10 @@ function pwd_is_lockable($password) {
 		return false;
 	}
 	// SASL is not lockable
-	if (strpos($password, '{SASL}') === 0) {
+	if (str_starts_with($password, '{SASL}')) {
 		return false;
 	}
-	return ((substr($password, 0, 1) == "{") || (substr($password, 1, 1) == "{")) && (strpos($password, "}") > 3);
+	return ((str_starts_with($password, "{")) || (substr($password, 1, 1) == "{")) && (strpos($password, "}") > 3);
 }
 
 /**
@@ -329,10 +330,10 @@ function pwd_is_lockable($password) {
  */
 function pwd_is_enabled($hash) {
 	// disabled passwords have a "!" or "*" at the beginning (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
+	if ((str_starts_with($hash, "!{")) || (str_starts_with($hash, "*{"))) {
 		return false;
 	}
-	if (substr($hash, 0, 1) == "{") {
+	if (str_starts_with($hash, "{")) {
 		$pos = strrpos($hash, "}");
 		// check if hash starts with "!" or "*"
 		return ((substr($hash, $pos + 1, 1) !== "!") && (substr($hash, $pos + 1, 1) !== "*"));
@@ -798,7 +799,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	elseif (sizeof($filterParts) > 1) {
 		$filter = '(& ' . implode(' ', $filterParts) . ')';
 	}
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager();
 	$activeTypes = $typeManager->getConfiguredTypes();
 	foreach ($activeTypes as $type) {
 		if (!in_array($type->getScope(), $scopes)) {
@@ -830,15 +831,15 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 	if ($attrsOnly) {
 		$readAttributesOnly = 1;
 	}
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager();
 	$types = $typeManager->getConfiguredTypesForScopes($scopes);
 	foreach ($types as $type) {
 		$additionalFilter = $type->getAdditionalLdapFilter();
 		if (!empty($additionalFilter)) {
-			if (strpos($additionalFilter, '(') !== 0) {
+			if (!str_starts_with($additionalFilter, '(')) {
 				$additionalFilter = '(' . $additionalFilter . ')';
 			}
-			if (strpos($filter, '(') !== 0) {
+			if (!str_starts_with($filter, '(')) {
 				$filter = '(' . $filter . ')';
 			}
 			$filter = '(&' . $additionalFilter . $filter . ')';
@@ -919,26 +920,35 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 	}
 	$pageSize = 999;
 	$cookie = '';
-	$controls = [
-		[
-			'oid' => LDAP_CONTROL_PAGEDRESULTS,
-			'size' => $pageSize,
-			'cookie' => $cookie]
-	];
 	$return = [];
 	do {
+		$controls = [
+			[
+				'oid' => LDAP_CONTROL_PAGEDRESULTS,
+				'value' => [
+					'size' => $pageSize,
+					'cookie' => $cookie]
+			]
+		];
 		$sr = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit,
 			0, LDAP_DEREF_NEVER, $controls);
 		if (!$sr) {
 			break;
 		}
+		$errorCode = 0;
+		$matchedDn = '';
+		$errorMessage = '';
+		$referrals = [];
+		$resultControls = [];
+		ldap_parse_result($server, $sr, $errorCode , $matchedDn , $errorMessage , $referrals, $resultControls);
 		$entries = ldap_get_entries($server, $sr);
 		if (!$entries) {
 			break;
 		}
 		$return = array_merge($return, $entries);
+		$cookie = $resultControls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'] ?? '';
 	}
-	while ($cookie !== null && $cookie != '');
+	while ($cookie != '');
 	cleanLDAPResult($return);
 	return $return;
 }
@@ -1215,10 +1225,10 @@ function compareDN($a, $b): int {
 		// get parts to compare
 		$part_a = $array_a[$len_a - $i - 1];
 		$part_a = explode('=', $part_a);
-		$part_a = isset($part_a[1]) ? $part_a[1] : $part_a[0];
+		$part_a = $part_a[1] ?? $part_a[0];
 		$part_b = $array_b[$len_b - $i - 1];
 		$part_b = explode('=', $part_b);
-		$part_b = isset($part_b[1]) ? $part_b[1] : $part_b[0];
+		$part_b = $part_b[1] ?? $part_b[0];
 		// compare parts
 		if ($part_a == $part_b) { // part is identical
 			if ($i == ($len - 1)) {
@@ -1315,7 +1325,7 @@ function isObfuscatedText($text) {
 		return false;
 	}
 	$deob = base64_decode(str_rot13($text));
-	return (strpos($deob, 'LAM_OBFUSCATE:') === 0);
+	return (str_starts_with($deob, 'LAM_OBFUSCATE:'));
 }
 
 /**
@@ -1442,7 +1452,7 @@ function testSmtpConnection(string $server, string $user, string $password, stri
  * @return array list of arrays that can be used to create status messages
  */
 function sendPasswordMail($pwd, $user, $recipient = null) {
-	$user = array_change_key_case($user, CASE_LOWER);
+	$user = array_change_key_case($user);
 	// read mail data
 	$cfgMain = $_SESSION['cfgMain'];
 	$mailTo = null;
@@ -1627,16 +1637,13 @@ class moduleCache {
 			|| (!empty($scope) && !ScopeAndModuleValidation::isValidScopeName($scope))) {
 			return null;
 		}
-		if (isset(self::$cache[$name . ':' . $scope])) {
-			return self::$cache[$name . ':' . $scope];
-		}
-		else {
+		if (!isset(self::$cache[$name . ':' . $scope])) {
 			if (!class_exists($name)) {
 				return null;
 			}
 			self::$cache[$name . ':' . $scope] = new $name($scope);
-			return self::$cache[$name . ':' . $scope];
 		}
+		return self::$cache[$name . ':' . $scope];
 	}
 
 }
@@ -1710,32 +1717,32 @@ function getExtendedLDAPErrorMessage($server) {
 function getDefaultLDAPErrorString($server) {
 	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
 	// Active Directory message translations
-	if (strpos($extError, 'DSID') !== false) {
-		if (strpos($extError, '5003') !== false) {
+	if (str_contains($extError, 'DSID')) {
+		if (str_contains($extError, '5003')) {
 			logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
 			$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
 		}
-		elseif (strpos($extError, 'data 530,') !== false) {
+		elseif (str_contains($extError, 'data 530,')) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
 			$extError = _('Logon not permitted at this time');
 		}
-		elseif (strpos($extError, 'data 532,') !== false) {
+		elseif (str_contains($extError, 'data 532,')) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
 			$extError = _('Password expired');
 		}
-		elseif (strpos($extError, 'data 533,') !== false) {
+		elseif (str_contains($extError, 'data 533,')) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
 			$extError = _('Account is deactivated');
 		}
-		elseif (strpos($extError, 'data 701,') !== false) {
+		elseif (str_contains($extError, 'data 701,')) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
 			$extError = _('Account is expired');
 		}
-		elseif (strpos($extError, 'data 773,') !== false) {
+		elseif (str_contains($extError, 'data 773,')) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
 			$extError = _('Password change required');
 		}
-		elseif (strpos($extError, 'data 775,') !== false) {
+		elseif (str_contains($extError, 'data 775,')) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
 			$extError = _('Account is locked');
 		}
@@ -1756,11 +1763,11 @@ function getDefaultLDAPErrorString($server) {
  */
 function ldapIsPasswordExpired($server): bool {
 	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
-	if (strpos($extError, 'data 532,') !== false) {
+	if (str_contains($extError, 'data 532,')) {
 		// password expired
 		return true;
 	}
-	elseif (strpos($extError, 'data 773,') !== false) {
+	elseif (str_contains($extError, 'data 773,')) {
 		// password change required
 		return true;
 	}
@@ -1946,7 +1953,7 @@ function printHeaderContents($title, $prefix) {
 	$cssFiles = [];
 	$cssEntry = $cssDir->read();
 	while ($cssEntry !== false) {
-		if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
+		if (str_ends_with($cssEntry, '.css')) {
 			$cssFiles[] = $cssEntry;
 		}
 		$cssEntry = $cssDir->read();
@@ -1970,7 +1977,7 @@ function printJsIncludes($prefix) {
 	$jsFiles = [];
 	$jsEntry = $jsDir->read();
 	while ($jsEntry !== false) {
-		if ((substr($jsEntry, strlen($jsEntry) - 3, 3) == '.js') || (substr($jsEntry, strlen($jsEntry) - 4, 4) == '.php')) {
+		if ((str_ends_with($jsEntry, '.js')) || (str_ends_with($jsEntry, '.php'))) {
 			$jsFiles[] = $jsEntry;
 		}
 		$jsEntry = $jsDir->read();
@@ -1991,7 +1998,7 @@ function convertUtf8ToUtf16Le($input) {
 		return $input;
 	}
 	$output = iconv('UTF-8', 'UTF-16LE', $input);
-	if (($output === false) || ($output == '')) {
+	if (($output == '')) {
 		$output = mb_convert_encoding($input, 'UTF-8', 'UTF-16LE');
 	}
 	return $output;
@@ -2017,7 +2024,7 @@ function getLAMVersionText() {
  * @return bool is developer version
  */
 function isDeveloperVersion($version) {
-	return strpos($version, 'DEV') !== false;
+	return str_contains($version, 'DEV');
 }
 
 /**
