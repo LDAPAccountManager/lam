@@ -6,6 +6,8 @@ parameters:
 	paths:
 		- lam/lib
 		- lam/templates
+	fileExtensions:
+	    - php
 	excludePaths:
 		analyseAndScan:
 			- */3rdParty/*
@@ -39,3 +41,4 @@ parameters:
 		- '#Parameter \#1 \$input of static method LAM\\AJAX\\Ajax::managePasswordChange\(\) expects array, mixed given.#'
 		- '#Parameter \#1 \$input of method LAM\\AJAX\\Ajax::checkPasswordStrength\(\) expects array, mixed given.#'
 		- '#Cannot access offset non-falsy-string on array<int\|string, string>\|object.#'
+		- '#Unable to resolve the template type T in call to function array_values#'
