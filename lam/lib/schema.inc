@@ -2097,12 +2097,7 @@ function cached_schema_available($schema_type) {
 		$cache_avail[$schema_type] = true;
 		return true;
 	}
-	elseif (isset($_SESSION['schema']['unavailable'])) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 /**
