@@ -248,7 +248,7 @@ class ConfigDataExporter {
 	public function _getWebauthn() {
 		$data = [];
 		if (extension_loaded('PDO')
-			&& in_array('sqlite', \PDO::getAvailableDrivers())) {
+			&& in_array('sqlite', PDO::getAvailableDrivers())) {
 			include_once __DIR__ . '/webauthn.inc';
 			$webauthnManager = new WebauthnManager();
 			$webauthnDatabase = $webauthnManager->getDatabase();
@@ -430,43 +430,20 @@ class ConfigDataImporter {
 				continue;
 			}
 			$key = $step->getKey();
-			switch ($key) {
-				case 'mainConfig':
-					$this->importMainConfig($step->getValue());
-					break;
-				case 'certificates':
-					$this->importCertificates($step->getValue());
-					break;
-				case 'serverProfiles':
-					$this->importServerProfiles($step);
-					break;
-				case 'accountProfiles':
-					$this->importAccountProfiles($step);
-					break;
-				case 'accountProfileTemplates':
-					$this->importAccountProfileTemplates($step);
-					break;
-				case 'pdfProfiles':
-					$this->importPdfProfiles($step);
-					break;
-				case 'pdfProfileTemplates':
-					$this->importPdfProfileTemplates($step);
-					break;
-				case 'selfServiceProfiles':
-					$this->importSelfServiceProfiles($step);
-					break;
-				case 'webauthn':
-					$this->importWebauthn($step);
-					break;
-				case 'cronJobs':
-					$this->importCronJobs($step);
-					break;
-				case 'requestAccess':
-					$this->importRequestAccess($step);
-					break;
-				default:
-					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
-			}
+			match ($key) {
+				'mainConfig' => $this->importMainConfig($step->getValue()),
+				'certificates' => $this->importCertificates($step->getValue()),
+				'serverProfiles' => $this->importServerProfiles($step),
+				'accountProfiles' => $this->importAccountProfiles($step),
+				'accountProfileTemplates' => $this->importAccountProfileTemplates($step),
+				'pdfProfiles' => $this->importPdfProfiles($step),
+				'pdfProfileTemplates' => $this->importPdfProfileTemplates($step),
+				'selfServiceProfiles' => $this->importSelfServiceProfiles($step),
+				'webauthn' => $this->importWebauthn($step),
+				'cronJobs' => $this->importCronJobs($step),
+				'requestAccess' => $this->importRequestAccess($step),
+				default => logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key),
+			};
 		}
 	}
 
@@ -544,7 +521,7 @@ class ConfigDataImporter {
 					try {
 						$accountProfilePersistenceManager->writeAccountProfile($typeId, $accountProfileName, $serverProfileName, $accountProfileData);
 					}
-					catch (LAMException $e) {
+					catch (LAMException) {
 						$failedProfiles[] = $serverProfileName . ':' . $typeId . ':' . $accountProfileName;
 					}
 				}
@@ -878,13 +855,13 @@ class ImporterStep {
 class ConfigurationDatabase {
 
 	/** table for schema versions */
-	const TABLE_SCHEMA_VERSIONS = 'schema_versions';
+	public const TABLE_SCHEMA_VERSIONS = 'schema_versions';
 	/** row name for system schema version */
-	const ROW_VERSION_SYSTEM = 'system';
+	private const ROW_VERSION_SYSTEM = 'system';
 	/** table for main configuration */
-	const TABLE_MAIN_CONFIG = 'main_configuration';
+	public const TABLE_MAIN_CONFIG = 'main_configuration';
 	/** row name for main config schema version */
-	const ROW_VERSION_MAIN_CONFIG = 'main_configuration';
+	private const ROW_VERSION_MAIN_CONFIG = 'main_configuration';
 
 	private $cfgMain;
 
@@ -1000,9 +977,9 @@ class ConfigurationDatabase {
 function dbTableExists(PDO $pdo, string $tableName): bool {
 	try {
 		$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
-		return ($result === false) ? false : true;
+		return ($result !== false);
 	}
-	catch (PDOException $e) {
+	catch (PDOException) {
 		return false;
 	}
 }

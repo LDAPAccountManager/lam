@@ -7,25 +7,23 @@ use DateTime;
 use Duo\DuoUniversal\Client;
 use Duo\DuoUniversal\DuoException;
 use Exception;
-use \htmlResponsiveRow;
-use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use htmlResponsiveRow;
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use SelfServiceLoginHandler;
-use \selfServiceProfile;
-use \LAMConfig;
-use \htmlScript;
-use \htmlIframe;
-use \htmlImage;
-use \htmlButton;
-use \htmlJavaScript;
-use \htmlStatusMessage;
-use \htmlOutputText;
-use \htmlDiv;
-use \LAMException;
-use \Webauthn\PublicKeyCredentialCreationOptions;
+use selfServiceProfile;
+use LAMConfig;
+use htmlImage;
+use htmlButton;
+use htmlJavaScript;
+use htmlStatusMessage;
+use htmlOutputText;
+use htmlDiv;
+use LAMException;
+use Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2023  Roland Gruber
+  Copyright (C) 2017 - 2024  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -114,7 +112,7 @@ abstract class BaseProvider implements TwoFactorProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 * @see TwoFactorProvider::hasCustomInputForm
 	 */
 	public function hasCustomInputForm() {
 		return false;
@@ -122,7 +120,7 @@ abstract class BaseProvider implements TwoFactorProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::addCustomInput()
+	 * @see TwoFactorProvider::addCustomInput
 	 */
 	public function addCustomInput(&$row, $userDn) {
 		// must be filled by subclass if used
@@ -150,7 +148,7 @@ abstract class BaseProvider implements TwoFactorProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
 	public function isShowSubmitButton() {
 		return true;
@@ -174,7 +172,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 * @see TwoFactorProvider::getSerials
 	 */
 	public function getSerials($user, $password) {
 		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Getting serials for ' . $user);
@@ -185,7 +183,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 * @see TwoFactorProvider::verify2ndFactor
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
@@ -200,7 +198,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 	 * @param string $user user name
 	 * @param string $password password
 	 * @return string token
-	 * @throws \Exception error during authentication
+	 * @throws Exception error during authentication
 	 */
 	private function authenticate($user, $password) {
 		$curl = $this->getCurl();
@@ -224,8 +222,8 @@ class PrivacyIDEAProvider extends BaseProvider {
 		}
 		$status = $output->result->status;
 		if ($status != 1) {
-			$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
-			$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
+			$errCode = $output->result->error->code ?? '';
+			$errMessage = $output->result->error->message ?? '';
 			throw new Exception("Unable to login: " . $errCode . ' ' . $errMessage);
 		}
 		if (!isset($output->result->value) || !isset($output->result->value->token)) {
@@ -238,7 +236,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 	 * Returns the curl object.
 	 *
 	 * @return object curl handle
-	 * @throws \Exception error during curl creation
+	 * @throws Exception error during curl creation
 	 */
 	private function getCurl() {
 		$curl = curl_init();
@@ -275,8 +273,8 @@ class PrivacyIDEAProvider extends BaseProvider {
 		}
 		$status = $output->result->status;
 		if (($status != 1) || !isset($output->result->value) || !isset($output->result->value->tokens)) {
-			$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
-			$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
+			$errCode = $output->result->error->code ?? '';
+			$errMessage = $output->result->error->message ?? '';
 			throw new Exception("Unable to get serials: " . $errCode . ' ' . $errMessage);
 		}
 		$serials = [];
@@ -311,7 +309,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 		curl_close($curl);
 		$output = json_decode($json);
 		if (empty($output) || !isset($output->result) || !isset($output->result->status) || !isset($output->result->value)) {
-			throw new \Exception("Unable to get json from $url.");
+			throw new Exception("Unable to get json from $url.");
 		}
 		$status = $output->result->status;
 		$value = $output->result->value;
@@ -349,7 +347,7 @@ class YubicoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 * @see TwoFactorProvider::getSerials
 	 */
 	public function getSerials($user, $password) {
 		$keyAttributeName = strtolower($this->config->twoFactorAuthenticationSerialAttributeName);
@@ -369,7 +367,7 @@ class YubicoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 * @see TwoFactorProvider::verify2ndFactor
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		include_once(__DIR__ . "/3rdParty/yubico/Yubico.php");
@@ -380,13 +378,13 @@ class YubicoProvider extends BaseProvider {
 		$serials = explode(', ', $serialData[0]);
 		$serialMatched = false;
 		foreach ($serials as $serial) {
-			if (strpos($twoFactorInput, $serial) === 0) {
+			if (str_starts_with($twoFactorInput, $serial)) {
 				$serialMatched = true;
 				break;
 			}
 		}
 		if (!$serialMatched) {
-			throw new \Exception(_('YubiKey id does not match allowed list of key ids.'));
+			throw new Exception(_('YubiKey id does not match allowed list of key ids.'));
 		}
 		$urls = $this->config->twoFactorAuthenticationURL;
 		shuffle($urls);
@@ -431,7 +429,7 @@ class DuoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 * @see TwoFactorProvider::getSerials
 	 */
 	public function getSerials($user, $password) {
 		return ['DUO'];
@@ -439,7 +437,7 @@ class DuoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
 	public function isShowSubmitButton() {
 		return false;
@@ -447,7 +445,7 @@ class DuoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 * @see TwoFactorProvider::hasCustomInputForm
 	 */
 	public function hasCustomInputForm() {
 		return true;
@@ -455,7 +453,7 @@ class DuoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 * @see BaseProvider::addCustomInput
 	 */
 	public function addCustomInput(&$row, $userDn) {
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
@@ -482,7 +480,7 @@ class DuoProvider extends BaseProvider {
 			$row->add(new htmlJavaScript($jsBlock));
 		}
 		// start authentication
-		elseif (!empty($_GET['duoRedirect'])) {
+		else {
 			include_once __DIR__ . '/3rdParty/composer/autoload.php';
 			try {
 				$duoClient = new Client(
@@ -512,7 +510,7 @@ class DuoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 * @see TwoFactorProvider::verify2ndFactor
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'DuoProvider: Checking 2nd factor for ' . $user);
@@ -571,7 +569,7 @@ class OktaProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 * @see TwoFactorProvider::getSerials
 	 */
 	public function getSerials($user, $password) {
 		return ['OKTA'];
@@ -579,7 +577,7 @@ class OktaProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
 	public function isShowSubmitButton() {
 		return false;
@@ -587,7 +585,7 @@ class OktaProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 * @see TwoFactorProvider::hasCustomInputForm
 	 */
 	public function hasCustomInputForm() {
 		return true;
@@ -596,7 +594,7 @@ class OktaProvider extends BaseProvider {
 	/**
 	 * {@inheritDoc}
 	 * @throws LAMException error building custom input
-	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 * @see BaseProvider::addCustomInput
 	 */
 	public function addCustomInput(&$row, $userDn) {
 		if (($this->config->loginHandler === null) || !$this->config->loginHandler->managesAuthentication()) {
@@ -636,7 +634,7 @@ class OktaProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 * @see TwoFactorProvider::verify2ndFactor
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		$this->verificationFailed = true;
@@ -755,7 +753,7 @@ class OpenIdProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 * @see TwoFactorProvider::getSerials
 	 */
 	public function getSerials($user, $password) {
 		return ['OpenID'];
@@ -763,7 +761,7 @@ class OpenIdProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
 	public function isShowSubmitButton() {
 		return false;
@@ -771,7 +769,7 @@ class OpenIdProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 * @see TwoFactorProvider::hasCustomInputForm
 	 */
 	public function hasCustomInputForm() {
 		return true;
@@ -780,7 +778,7 @@ class OpenIdProvider extends BaseProvider {
 	/**
 	 * {@inheritDoc}
 	 * @throws LAMException error building custom input
-	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 * @see BaseProvider::addCustomInput
 	 */
 	public function addCustomInput(&$row, $userDn) {
 		$loginAttribute = '';
@@ -795,7 +793,7 @@ class OpenIdProvider extends BaseProvider {
 		}
 		$content = new htmlResponsiveRow();
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
-		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'), 12);
+		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'));
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
 		try {
 			$client = $this->getOpenIdClient();
@@ -863,7 +861,7 @@ class OpenIdProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 * @see TwoFactorProvider::verify2ndFactor
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		$this->verificationFailed = true;
@@ -927,7 +925,7 @@ class WebauthnProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 * @see TwoFactorProvider::getSerials
 	 */
 	public function getSerials($user, $password) {
 		return ['WEBAUTHN'];
@@ -935,7 +933,7 @@ class WebauthnProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
 	public function isShowSubmitButton() {
 		return false;
@@ -943,7 +941,7 @@ class WebauthnProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 * @see TwoFactorProvider::hasCustomInputForm
 	 */
 	public function hasCustomInputForm() {
 		return true;
@@ -951,26 +949,26 @@ class WebauthnProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 * @see BaseProvider::addCustomInput
 	 */
 	public function addCustomInput(&$row, $userDn) {
 		if (!extension_loaded('PDO')) {
-			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the PDO extension for PHP.'), 12);
+			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the PDO extension for PHP.'));
 			return;
 		}
 		$pdoDrivers = \PDO::getAvailableDrivers();
 		if (!in_array('sqlite', $pdoDrivers)) {
-			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the sqlite PDO driver for PHP.'), 12);
+			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the sqlite PDO driver for PHP.'));
 			return;
 		}
 		include_once __DIR__ . '/webauthn.inc';
 		$webauthnManager = $this->getWebauthnManager();
 		$hasTokens = $webauthnManager->isRegistered($userDn);
 		if ($hasTokens) {
-			$row->add(new htmlStatusMessage('INFO', _('Please authenticate with your security device.')), 12);
+			$row->add(new htmlStatusMessage('INFO', _('Please authenticate with your security device.')));
 		}
 		else {
-			$row->add(new htmlStatusMessage('INFO', _('Please register a security device.')), 12);
+			$row->add(new htmlStatusMessage('INFO', _('Please register a security device.')));
 		}
 		$row->addVerticalSpacer('2rem');
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
@@ -1006,7 +1004,7 @@ class WebauthnProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 * @see TwoFactorProvider::verify2ndFactor
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
@@ -1050,22 +1048,22 @@ class WebauthnProvider extends BaseProvider {
 class TwoFactorProviderService {
 
 	/** 2factor authentication disabled */
-	const TWO_FACTOR_NONE = 'none';
+	public const TWO_FACTOR_NONE = 'none';
 	/** 2factor authentication via privacyIDEA */
-	const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
+	public const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
 	/** 2factor authentication via YubiKey */
-	const TWO_FACTOR_YUBICO = 'yubico';
+	public const TWO_FACTOR_YUBICO = 'yubico';
 	/** 2factor authentication via DUO */
-	const TWO_FACTOR_DUO = 'duo';
+	public const TWO_FACTOR_DUO = 'duo';
 	/** 2factor authentication via webauthn */
-	const TWO_FACTOR_WEBAUTHN = 'webauthn';
+	public const TWO_FACTOR_WEBAUTHN = 'webauthn';
 	/** 2factor authentication via Okta */
-	const TWO_FACTOR_OKTA = 'okta';
+	public const TWO_FACTOR_OKTA = 'okta';
 	/** 2factor authentication via OpenId */
-	const TWO_FACTOR_OPENID = 'openid';
+	public const TWO_FACTOR_OPENID = 'openid';
 
 	/** date format when remembering devices */
-	const DEVICE_REMEMBER_DATE_FORMAT = 'Y-m-d H:i:s';
+	private const DEVICE_REMEMBER_DATE_FORMAT = 'Y-m-d H:i:s';
 
 	private TwoFactorConfiguration $config;
 

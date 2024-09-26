@@ -39,8 +39,8 @@ use Webklex\PHPIMAP\ClientManager;
  */
 class imapAccess extends baseModule {
 
-	const QUOTA_USAGE = 'usage';
-	const QUOTA_LIMIT = 'limit';
+	private const QUOTA_USAGE = 'usage';
+	private const QUOTA_LIMIT = 'limit';
 
 	/** quota limit from profile */
 	private $profileQuotaLimit;
@@ -56,7 +56,7 @@ class imapAccess extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -140,7 +140,7 @@ class imapAccess extends baseModule {
 			'error_message' => $this->messages['config'][1]];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'));
 		$return['profile_options'] = $profileContainer;
 		$return['profile_checks']['ImapAccess_QuotaLimit'] = [
 			'type' => 'ext_preg',
@@ -224,7 +224,7 @@ class imapAccess extends baseModule {
 		}
 		$msg = $this->extractUserAndEmail();
 		if ($msg != null) {
-			$return->add($msg, 12);
+			$return->add($msg);
 			return $return;
 		}
 		$prefix = $this->getMailboxPrefix();
@@ -266,7 +266,7 @@ class imapAccess extends baseModule {
 			$return->add($mailboxMessage, 12, 12, 12, 'text-center');
 			$return->addVerticalSpacer('2rem');
 			if ($this->isWrongDomain($email_domain)) {
-				$return->add(new htmlStatusMessage('INFO', $this->messages['managemailbox'][4][1]), 12);
+				$return->add(new htmlStatusMessage('INFO', $this->messages['managemailbox'][4][1]));
 				$return->addVerticalSpacer('1rem');
 			}
 			else {
@@ -287,14 +287,14 @@ class imapAccess extends baseModule {
 	function display_html_password($message = null) {
 		$return = new htmlResponsiveRow();
 		if ($message !== null) {
-			$return->add($message, 12);
+			$return->add($message);
 			$return->addVerticalSpacer('1rem');
 		}
 		$passwordInput = new htmlResponsiveInputField(_("Password of IMAP admin user"), 'ImapAdminPassword', '', 'ImapAdminPassword_Sess');
 		$passwordInput->setIsPassword(true);
 		$passwordInput->setRequired(true);
 		$passwordInput->setOnKeyPress('SubmitForm(\'enterPasswordButton\', event);');
-		$return->add($passwordInput, 12);
+		$return->add($passwordInput);
 		$return->addVerticalSpacer('2rem');
 		$return->add(new htmlButton('enterPasswordButton', _('Ok')), 12, 12, 12, 'text-center');
 		return $return;
@@ -519,14 +519,14 @@ class imapAccess extends baseModule {
 		$configContainer = new htmlResponsiveRow();
 		$configServer = new htmlResponsiveInputField(_('Server address'), 'ImapAccess_ImapServerAddress', '', 'ImapServerAddress');
 		$configServer->setRequired(true);
-		$configContainer->add($configServer, 12);
-		$configContainer->add(new htmlResponsiveSelect('ImapAccess_ImapServerEncriptionProtocol', ['TLS', 'SSL'], ['TLS'], _("Encryption protocol"), 'ImapServerEncryptionProtocol'), 12);
+		$configContainer->add($configServer);
+		$configContainer->add(new htmlResponsiveSelect('ImapAccess_ImapServerEncriptionProtocol', ['TLS', 'SSL'], ['TLS'], _("Encryption protocol"), 'ImapServerEncryptionProtocol'));
 		$configCertValidate = new htmlResponsiveSelect('ImapAccess_ImapValidateServerCert', [_('Yes') => 'validate-cert', _('No') => 'novalidate-cert'], ['validate-cert'], _("Validate server certificate"), 'ImapValidateServerCert');
 		$configCertValidate->setHasDescriptiveElements(true);
-		$configContainer->add($configCertValidate, 12);
+		$configContainer->add($configCertValidate);
 		$configUser = new htmlResponsiveInputField(_('IMAP admin user'), 'ImapAccess_ImapAdmin', '', 'ImapAdmin');
 		$configUser->setRequired(true);
-		$configContainer->add($configUser, 12);
+		$configContainer->add($configUser);
 		$pwdSelectOptions = [
 			_('LAM user password') => 'lam_user_pass',
 			_('Ask') => 'ask_pass',
@@ -535,20 +535,20 @@ class imapAccess extends baseModule {
 		$configPasswordType->setHasDescriptiveElements(true);
 		$configPasswordType->setTableRowsToShow(['config' => ['ImapAccess_ImapAdminPassword']]);
 		$configPasswordType->setTableRowsToHide(['lam_user_pass' => ['ImapAccess_ImapAdminPassword'], 'ask_pass' => ['ImapAccess_ImapAdminPassword']]);
-		$configContainer->add($configPasswordType, 12);
+		$configContainer->add($configPasswordType);
 		$adminPwdInput = new htmlResponsiveInputField(_('Admin password'), 'ImapAccess_ImapAdminPassword', null, 'ImapAdminPasswordSelect');
 		$adminPwdInput->setIsPassword(true);
 		$adminPwdInput->setObfuscate(true);
-		$configContainer->add($adminPwdInput, 12);
+		$configContainer->add($adminPwdInput);
 		$mailDomainsInput = new htmlResponsiveInputField(_('Mail domains'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
 		$mailDomainsInput->setRequired(true);
-		$configContainer->add($mailDomainsInput, 12);
-		$configContainer->add(new htmlResponsiveInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), 12);
-		$configContainer->add(new htmlResponsiveInputTextarea('ImapAccess_initialFolders', '', 10, 3, _('Initial folders'), 'initialFolders'), 12);
+		$configContainer->add($mailDomainsInput);
+		$configContainer->add(new htmlResponsiveInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'));
+		$configContainer->add(new htmlResponsiveInputTextarea('ImapAccess_initialFolders', '', 10, 3, _('Initial folders'), 'initialFolders'));
 		$configUserName = new htmlResponsiveSelect('ImapAccess_UserNameAttribute', ['mail', 'uid', 'userPrincipalName'], ['mail'], _("User name attribute"), 'ImapUserNameAttr');
-		$configContainer->add($configUserName, 12);
+		$configContainer->add($configUserName);
 		$configPathSeparator = new htmlResponsiveSelect('ImapAccess_pathSeparator', ['.', '/'], ['.'], _("Path separator"), 'pathSeparator');
-		$configContainer->add($configPathSeparator, 12);
+		$configContainer->add($configPathSeparator);
 		return $configContainer;
 	}
 
@@ -575,7 +575,7 @@ class imapAccess extends baseModule {
 			return $_SESSION['imapAdmUser'];
 		}
 		$user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
-		// check if user name contains any wildcards that need to be replaced with LDAP attribute values
+		// check if username contains any wildcards that need to be replaced with LDAP attribute values
 		$matches = [];
 		preg_match_all('/\\$[a-z0-9_-]+\\$/i', $this->moduleSettings['ImapAccess_ImapAdmin'][0], $matches);
 		if (sizeof($matches) > 0) {
@@ -587,7 +587,7 @@ class imapAccess extends baseModule {
 				}
 			}
 			$attrNames = array_values(array_unique($attrNames));
-			$attrNames = array_change_key_case($attrNames, CASE_LOWER);
+			$attrNames = array_change_key_case($attrNames);
 			// read LAM login user data
 			$dn = $_SESSION['ldap']->getUserName();
 			$sr = @ldap_read($_SESSION['ldap']->server(), $dn, '(objectclass=*)', $attrNames, 0, 0, 0, LDAP_DEREF_NEVER);
@@ -818,7 +818,7 @@ class imapAccess extends baseModule {
 			if (isset($rawAccounts[$i][$ids['imapAccess_createMailbox']])
 				&& !in_array($rawAccounts[$i][$ids['imapAccess_createMailbox']], ['true', 'false'])) {
 				$errMsg = $this->messages['createMailbox'][0];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$errors[] = $errMsg;
 			}
 			if (isset($rawAccounts[$i][$ids['imapAccess_createMailbox']])
@@ -827,7 +827,7 @@ class imapAccess extends baseModule {
 				&& isset($rawAccounts[$i][$ids['imapAccess_quota']])
 				&& !get_preg($rawAccounts[$i][$ids['imapAccess_quota']], 'digit')) {
 				$errMsg = $this->messages['managemailbox'][9];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$errors[] = $errMsg;
 			}
 		}

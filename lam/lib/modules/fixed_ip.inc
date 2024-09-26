@@ -1,8 +1,8 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 
 /*
@@ -71,7 +71,7 @@ class fixed_ip extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['dhcp']);
+		return $this->get_scope() === 'dhcp';
 	}
 
 	/**
@@ -404,7 +404,7 @@ class fixed_ip extends baseModule {
 	public function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] == "") {
-			$return->add(new htmlStatusMessage('ERROR', _("Please fill out the DHCP settings first.")), 12);
+			$return->add(new htmlStatusMessage('ERROR', _("Please fill out the DHCP settings first.")));
 			return $return;
 		}
 		$this->initCache();
@@ -508,17 +508,17 @@ class fixed_ip extends baseModule {
 		$table = new htmlResponsiveTable($titles, $data);
 		$table->setWidths(['20%', '20%', '20%', '25%', '10%', '5%']);
 		$table->colspan = 100;
-		$return->add($table, 12);
+		$return->add($table);
 
 		foreach ($messages as $message) {
-			$return->add($message, 12);
+			$return->add($message);
 		}
 
 		// add existing host entry
 		if (!empty($this->hostCache)) {
 			$return->addVerticalSpacer('2rem');
 			$addHostButton = new htmlAccountPageButton(static::class, 'addHost', 'add', _('Add existing host'));
-			$return->add($addHostButton, 12);
+			$return->add($addHostButton);
 		}
 		return $return;
 	}
@@ -534,7 +534,7 @@ class fixed_ip extends baseModule {
 		foreach ($this->existingDhcpHostsCache as &$host) {
 			if ($name === $host['name']) {
 				$dn = $host['dn'];
-				if ($this->getAccountContainer()->isNewAccount || strpos($dn, $this->getAccountContainer()->dn_orig) === false) {
+				if ($this->getAccountContainer()->isNewAccount || !str_contains($dn, $this->getAccountContainer()->dn_orig)) {
 					return [$dn, $this->getHostNameSuggestion($name)];
 				}
 			}
@@ -602,7 +602,7 @@ class fixed_ip extends baseModule {
 		}
 		$select = new htmlResponsiveSelect('host', $hostNames, [], _('Host'));
 		$select->setHasDescriptiveElements(true);
-		$return->add($select, 12);
+		$return->add($select);
 		$return->addVerticalSpacer('2rem');
 		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'addHost', _('Add')));
 		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
@@ -648,7 +648,7 @@ class fixed_ip extends baseModule {
 	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	 */
 	public function save_attributes() {
-
+		return [];
 	}
 
 	/**
@@ -719,24 +719,24 @@ class fixed_ip extends baseModule {
 				ldap_delete($_SESSION['ldap']->server(), 'cn=' . $cn . $ldapSuffix);
 			}
 
-			foreach ($add as $id => $arr) {
+			foreach ($add as $arr) {
 				$attr = [];
-				$attr['cn'] = $add[$id]['cn'];
+				$attr['cn'] = $arr['cn'];
 				$attr['objectClass'][0] = 'top';
 				$attr['objectClass'][1] = 'dhcpHost';
-				$attr['dhcpHWAddress'] = 'ethernet ' . $add[$id]['mac'];
-				if ($add[$id]['ip'] != '') {
-					$attr['dhcpStatements'][] = 'fixed-address ' . $add[$id]['ip'];
+				$attr['dhcpHWAddress'] = 'ethernet ' . $arr['mac'];
+				if ($arr['ip'] != '') {
+					$attr['dhcpStatements'][] = 'fixed-address ' . $arr['ip'];
 				}
-				if ($add[$id]['active'] === false) {
+				if ($arr['active'] === false) {
 					$attr['dhcpStatements'][] = 'deny booting';
 				}
-				$attr['dhcpOption'] = 'host-name "' . $add[$id]['cn'] . '"';
+				$attr['dhcpOption'] = 'host-name "' . $arr['cn'] . '"';
 				if (!empty($arr['description'])) {
 					$attr['dhcpComments'][] = $arr['description'];
 				}
 				if ($attr['cn'] != "") {
-					ldap_add($_SESSION['ldap']->server(), 'cn=' . $add[$id]['cn'] . $ldapSuffix, $attr);
+					ldap_add($_SESSION['ldap']->server(), 'cn=' . $arr['cn'] . $ldapSuffix, $attr);
 				}
 			}
 			// entries to modify
@@ -793,7 +793,7 @@ class fixed_ip extends baseModule {
 		$return = null;
 		if (is_array($dhcpStatements)) {
 			for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
-				if (strpos($dhcpStatements[$i], 'fixed-address ') === 0) {
+				if (str_starts_with($dhcpStatements[$i], 'fixed-address ')) {
 					$return = substr($dhcpStatements[$i], strlen('fixed-address') + 1);
 					break;
 				}
@@ -810,7 +810,7 @@ class fixed_ip extends baseModule {
 	 */
 	private function setIP(&$dhcpStatements, $ip) {
 		for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
-			if (strpos($dhcpStatements[$i], 'fixed-address ') === 0) {
+			if (str_starts_with($dhcpStatements[$i], 'fixed-address ')) {
 				unset($dhcpStatements[$i]);
 				$dhcpStatements = array_values($dhcpStatements);
 			}
@@ -848,7 +848,7 @@ class fixed_ip extends baseModule {
 	 */
 	private function setActive(&$dhcpStatements, $active) {
 		for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
-			if (strpos($dhcpStatements[$i], ' booting') !== false) {
+			if (str_contains($dhcpStatements[$i], ' booting')) {
 				unset($dhcpStatements[$i]);
 				$dhcpStatements = array_values($dhcpStatements);
 			}
@@ -891,7 +891,7 @@ class fixed_ip extends baseModule {
 	 */
 	private function fillExistingDhcpHosts() {
 		if ($this->existingDhcpHostsCache != null) {
-			return $this->existingDhcpHostsCache;
+			return;
 		}
 		$entries = searchLDAPByAttribute('cn', '*', 'dhcpHost', ['cn'], ['dhcp']);
 		$this->existingDhcpHostsCache = [];

@@ -48,7 +48,7 @@ class nisMailAlias extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['mailAlias']);
+		return $this->get_scope() === 'mailAlias';
 	}
 
 	/**
@@ -164,7 +164,7 @@ class nisMailAlias extends baseModule {
 		$nameInput = new htmlResponsiveInputField(_('Alias name'), 'cn', $alias, 'alias');
 		$nameInput->setRequired(true);
 		$nameInput->setCSSClasses(['maxwidth20']);
-		$return->add($nameInput, 12);
+		$return->add($nameInput);
 		// list current recipients
 		$mailList = $this->getMailList();
 		$userList = $this->getUserList();
@@ -177,7 +177,7 @@ class nisMailAlias extends baseModule {
 			natcasesort($this->attributes['rfc822MailMember']);
 			$this->attributes['rfc822MailMember'] = array_values($this->attributes['rfc822MailMember']);
 			$recipientCount = sizeof($this->attributes['rfc822MailMember']);
-			if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
+			if ($recipientCount < self::DISPLAY_LIMIT) {
 				for ($i = 0; $i < $recipientCount; $i++) {
 					if (($i == 0) && ($recipientCount == 1)) {
 						$return->addLabel(new htmlOutputText(_('Recipient')));
@@ -204,10 +204,10 @@ class nisMailAlias extends baseModule {
 			}
 			else {
 				$memberText = implode("\r\n", $this->attributes['rfc822MailMember']);
-				$return->add(new htmlResponsiveInputTextarea('rfc822MailMember', $memberText, 50, 30, _('Recipients'), 'recipient'), 12);
+				$return->add(new htmlResponsiveInputTextarea('rfc822MailMember', $memberText, 50, 30, _('Recipients'), 'recipient'));
 			}
 		}
-		if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
+		if ($recipientCount < self::DISPLAY_LIMIT) {
 			// input box for new recipient
 			$return->addLabel(new htmlOutputText(_('New recipient')));
 			$newMailField = new htmlInputField('rfc822MailMember');
@@ -240,16 +240,13 @@ class nisMailAlias extends baseModule {
 		$recipientCount = !empty($this->attributes['rfc822MailMember']) ? sizeof($this->attributes['rfc822MailMember']) : 0;
 		$this->attributes['rfc822MailMember'] = [];
 		// check alias name
-		if (isset($_POST['cn']) && ($_POST['cn'] != "") && get_preg($_POST['cn'], 'nis_alias')) {
-			$this->attributes['cn'][] = $_POST['cn'];
-		}
-		else {
-			$this->attributes['cn'][] = $_POST['cn'];
+		$this->attributes['cn'][] = $_POST['cn'];
+		if (!isset($_POST['cn']) || ($_POST['cn'] == "") || !get_preg($_POST['cn'], 'nis_alias')) {
 			$message = $this->messages['alias'][0];
 			$message[] = $_POST['cn'];
 			$errors[] = $message;
 		}
-		if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
+		if ($recipientCount < self::DISPLAY_LIMIT) {
 			// check old recipients
 			if (isset($_POST['rec_number'])) {
 				for ($i = 0; $i < $_POST['rec_number']; $i++) {
@@ -361,7 +358,7 @@ class nisMailAlias extends baseModule {
 		$postKeys = array_keys($_POST);
 		$position = 'New';
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if (strpos($postKeys[$i], 'form_subpage_' . static::class . '_select' . $suffix . '_recipient') === 0) {
+			if (str_starts_with($postKeys[$i], 'form_subpage_' . static::class . '_select' . $suffix . '_recipient')) {
 				$position = substr($postKeys[$i], strlen('form_subpage_' . static::class . '_select' . $suffix . '_recipient'));
 				break;
 			}
@@ -390,7 +387,7 @@ class nisMailAlias extends baseModule {
 		$return->addVerticalSpacer('2rem');
 		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'select', _('Ok')));
 		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Cancel')));
-		$return->add(new htmlHiddenInput('position', $position), 12);
+		$return->add(new htmlHiddenInput('position', $position));
 		return $return;
 	}
 
@@ -457,7 +454,7 @@ class nisMailAlias extends baseModule {
 					}
 					else {
 						$errMsg = $this->messages['recipient'][1];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$messages[] = $errMsg;
 					}
 				}

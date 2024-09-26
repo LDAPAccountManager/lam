@@ -1,6 +1,6 @@
 <?php
 
-use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use function LAM\PERSISTENCE\dbTableExists;
 
@@ -265,7 +265,7 @@ class SelfServicePersistence {
 				$this->strategy = new SelfServicePersistenceStrategyPdo($configDb->getPdo());
 			}
 			catch (PDOException $e) {
-				logNewMessage(LOG_ERR, _('Unable to connect to configuration database.'), $e->getMessage());
+				logNewMessage(LOG_ERR, _('Unable to connect to configuration database.') . ' ' . $e->getMessage());
 				throw new LAMException(_('Unable to connect to configuration database.'));
 			}
 		}
@@ -502,9 +502,6 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 		if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
-		if (!get_class($profile) === 'selfServiceProfile') {
-			throw new LAMException('Invalid data');
-		}
 		$path = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
 		$file = @fopen($path, "w");
 		if ($file) {
@@ -550,7 +547,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 	 */
 	private $pdo;
 
-	const TABLE_NAME = 'self_service_profiles';
+	private const TABLE_NAME = 'self_service_profiles';
 
 	/**
 	 * Constructor
@@ -815,10 +812,8 @@ class selfServiceProfile {
 
 	/**
 	 * Constructor
-	 *
-	 * @return selfServiceProfile
 	 */
-	function __construct() {
+	public function __construct() {
 		// set default values
 		$this->serverURL = "localhost";
 		$this->useTLS = false;
@@ -908,6 +903,7 @@ class selfServiceProfile {
 		if (preg_match('/^(http(s)?:\\/\\/[^\\/]+)\\/.+$/', $callingUrl, $matches)) {
 			return $matches[1];
 		}
+		return '';
 	}
 
 	/**
@@ -917,7 +913,7 @@ class selfServiceProfile {
 	 */
 	public function setBaseUrl($url) {
 		$this->baseUrl = $url;
-		if (!empty($url) && (substr($url, -1, 1) === '/')) {
+		if (!empty($url) && (str_ends_with($url, '/'))) {
 			$this->baseUrl = substr($url, 0, -1);
 		}
 	}

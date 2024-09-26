@@ -1,3 +1,8 @@
+December 2024 9.0
+ - Fixed bugs:
+  -> Windows: show more than 1000 LDAP entries when paged results is activated in server profile
+
+
 24.09.2024 8.9
  - Windows user: support for room number and personal title (needs to be activated in module settings) (343, 344)
  - Usability improvements (354)
