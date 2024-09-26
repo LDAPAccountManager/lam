@@ -1,6 +1,7 @@
 <?php
 namespace LAM\LOGIN\WEBAUTHN;
 
+use Ldap;
 use PDO;
 use \PHPUnit\Framework\TestCase;
 use \Webauthn\PublicKeyCredentialDescriptor;
@@ -46,6 +47,8 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 
 	protected function setUp(): void {
 		$this->database = new PublicKeyCredentialSourceRepositorySQLiteTestDb();
+		$_SESSION['ldap'] = new Ldap(null);
+		$_SESSION['ldap']->encrypt_login('cn=user1', 'password');
 	}
 
 	/**
@@ -60,7 +63,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 	 * Empty DB test
 	 */
 	public function test_findAllForUserEntity_emptyDb() {
-		$entity = new PublicKeyCredentialUserEntity("cn=test,dc=example", "cn=test,dc=example", "test", null);
+		$entity = new PublicKeyCredentialUserEntity("cn=test,dc=example", WebauthnManager::getUserIdFromDn("cn=test,dc=example"), "test", null);
 
 		$result = $this->database->findAllForUserEntity($entity);
 		$this->assertEmpty($result);
@@ -78,7 +81,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			new CertificateTrustPath(['x5c' => 'test']),
 			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
-			"uh1",
+			WebauthnManager::getUserIdFromDn("cn=user1"),
 			1);
 		$this->database->saveCredentialSource($source1);
 		$source2 = new PublicKeyCredentialSource(
@@ -89,9 +92,10 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			new CertificateTrustPath(['x5c' => 'test']),
 			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p2",
-			"uh1",
+			WebauthnManager::getUserIdFromDn("cn=user1"),
 			1);
 		$this->database->saveCredentialSource($source2);
+		$_SESSION['ldap']->encrypt_login('cn=user2', 'password');
 		$source3 = new PublicKeyCredentialSource(
 			"id3",
 			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
@@ -100,7 +104,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			new CertificateTrustPath(['x5c' => 'test']),
 			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p3",
-			"uh2",
+			WebauthnManager::getUserIdFromDn("cn=user2"),
 			1);
 		$this->database->saveCredentialSource($source3);
 
@@ -108,10 +112,10 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$this->assertNotNull($this->database->findOneByCredentialId("id2"));
 		$this->assertNotNull($this->database->findOneByCredentialId("id3"));
 		$this->assertEquals(2, sizeof(
-			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("uh1", "uh1", "uh1", null))
+			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("cn=user1", WebauthnManager::getUserIdFromDn("uh1"), "uh1", null))
 		));
 		$this->assertEquals(1, sizeof(
-			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("uh2", "uh2", "uh2", null))
+			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("cn=user2", WebauthnManager::getUserIdFromDn("uh2"), "uh2", null))
 		));
 	}
 
@@ -125,7 +129,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			new CertificateTrustPath(['x5c' => 'test']),
 			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
-			"uh1",
+			WebauthnManager::getUserIdFromDn("cn=user1"),
 			1);
 		$this->database->saveCredentialSource($source1);
 		$this->assertTrue($this->database->hasRegisteredCredentials());
@@ -140,12 +144,12 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			new CertificateTrustPath(['x5c' => 'test']),
 			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
-			"uh1",
+			WebauthnManager::getUserIdFromDn("cn=user1"),
 			1);
 		$this->database->saveCredentialSource($source1);
-		$this->assertNotEmpty($this->database->searchDevices('uh1'));
-		$this->assertNotEmpty($this->database->searchDevices('%h1%'));
-		$this->assertEmpty($this->database->searchDevices('uh2'));
+		$this->assertNotEmpty($this->database->searchDevices('cn=user1'));
+		$this->assertNotEmpty($this->database->searchDevices('%user1%'));
+		$this->assertEmpty($this->database->searchDevices('cn=user2'));
 	}
 
 	public function test_deleteDevice() {
@@ -157,11 +161,11 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			new CertificateTrustPath(['x5c' => 'test']),
 			\Symfony\Component\Uid\Uuid::fromString('00000000-0000-0000-0000-000000000000'),
 			"p1",
-			"uh1",
+			WebauthnManager::getUserIdFromDn("cn=user1"),
 			1);
 		$this->database->saveCredentialSource($source1);
-		$this->assertTrue($this->database->deleteDevice('uh1', base64_encode('id1')));
-		$this->assertFalse($this->database->deleteDevice('uh1', base64_encode('id2')));
+		$this->assertTrue($this->database->deleteDevice('cn=user1', base64_encode('id1')));
+		$this->assertFalse($this->database->deleteDevice('cn=user1', base64_encode('id2')));
 	}
 
 }
