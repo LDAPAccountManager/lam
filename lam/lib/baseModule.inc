@@ -1,7 +1,7 @@
 <?php
 
-use \LAM\PDF\PDFLabelValue;
-use \LAM\PDF\PDFTable;
+use LAM\PDF\PDFLabelValue;
+use LAM\PDF\PDFTable;
 use LAM\TYPES\ConfiguredType;
 use function LAM\TYPES\getScopeFromTypeId;
 use LAM\PDF\PDFImage;
@@ -445,7 +445,7 @@ abstract class baseModule {
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public abstract function can_manage();
+	abstract public function can_manage();
 
 	/**
 	 * Returns true if your module is a base module and otherwise false.
@@ -480,10 +480,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_ldap_filter($typeId) {
-		if (isset($this->meta['ldap_filter'])) {
-			return $this->meta['ldap_filter'];
-		}
-		return "";
+		return $this->meta['ldap_filter'] ?? "";
 	}
 
 	/**
@@ -500,10 +497,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_alias() {
-		if (isset($this->meta['alias'])) {
-			return $this->meta['alias'];
-		}
-		return static::class;
+		return $this->meta['alias'] ?? static::class;
 	}
 
 	/**
@@ -523,10 +517,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_RDNAttributes($typeId) {
-		if (isset($this->meta['RDN'])) {
-			return $this->meta['RDN'];
-		}
-		return [];
+		return $this->meta['RDN'] ?? [];
 	}
 
 	/**
@@ -548,10 +539,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_dependencies() {
-		if (isset($this->meta['dependencies'])) {
-			return $this->meta['dependencies'];
-		}
-		return ['depends' => [], 'conflicts' => []];
+		return $this->meta['dependencies'] ?? ['depends' => [], 'conflicts' => []];
 	}
 
 	/**
@@ -571,10 +559,7 @@ abstract class baseModule {
 	 * @see htmlElement
 	 */
 	public function get_profileOptions($typeId) {
-		if (isset($this->meta['profile_options'])) {
-			return $this->meta['profile_options'];
-		}
-		return null;
+		return $this->meta['profile_options'] ?? null;
 	}
 
 	/**
@@ -876,7 +861,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_pdfFields($typeId) {
-		return ((isset($this->meta['PDF_fields'])) ? $this->meta['PDF_fields'] : []);
+		return $this->meta['PDF_fields'] ?? [];
 	}
 
 	/**
@@ -921,7 +906,7 @@ abstract class baseModule {
 	 * @param array $result result array (entry will be added here)
 	 * @param String $name ID
 	 * @param String $label label name
-	 * @param mixed $value value as String or array
+	 * @param string|array $value value as String or array
 	 * @param String $delimiter delimiter if value is array (default: ", ")
 	 */
 	public function addPDFKeyValue(&$result, $name, $label, $value, $delimiter = ', ') {
@@ -985,10 +970,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_uploadColumns($selectedModules, &$type) {
-		if (isset($this->meta['upload_columns'])) {
-			return $this->meta['upload_columns'];
-		}
-		return [];
+		return $this->meta['upload_columns'] ?? [];
 	}
 
 	/**
@@ -1003,10 +985,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_uploadPreDepends() {
-		if (isset($this->meta['upload_preDepends'])) {
-			return $this->meta['upload_preDepends'];
-		}
-		return [];
+		return $this->meta['upload_preDepends'] ?? [];
 	}
 
 	/**
@@ -1091,7 +1070,7 @@ abstract class baseModule {
 		}
 		if (!$matched) {
 			$errMsg = $message;
-			array_push($errMsg, [$position]);
+			$errMsg[] = [$position];
 			$errors[] = $errMsg;
 			return false;
 		}
@@ -1350,7 +1329,7 @@ abstract class baseModule {
 	 *
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	public abstract function process_attributes();
+	abstract public function process_attributes();
 
 	/**
 	 * This function creates meta HTML code to display the module page.
@@ -1361,7 +1340,7 @@ abstract class baseModule {
 	 *
 	 * @see htmlElement
 	 */
-	public abstract function display_html_attributes();
+	abstract public function display_html_attributes();
 
 	/**
 	 * Adds a simple text input field to the given htmlResponsiveRow.
@@ -1442,7 +1421,7 @@ abstract class baseModule {
 			}
 			return;
 		}
-		$this->attributes[$attrName][0] = isset($_POST[$attrName]) ? $_POST[$attrName] : '';
+		$this->attributes[$attrName][0] = $_POST[$attrName] ?? '';
 		if ($required && (!isset($_POST[$attrName]) || ($_POST[$attrName] === ''))) {
 			$errors[] = $this->messages[$attrName][0];
 		}
@@ -1543,7 +1522,7 @@ abstract class baseModule {
 			$container->addField($subContainer);
 		}
 		else {
-			$container->add($subContainer, 12);
+			$container->add($subContainer);
 		}
 	}
 
@@ -1702,21 +1681,21 @@ abstract class baseModule {
 		}
 		// first select
 		$firstRow = new htmlResponsiveRow();
-		$firstRow->add(new htmlOutputText($labelFirst), 12);
+		$firstRow->add(new htmlOutputText($labelFirst));
 		$firstSelect = new htmlSelect($namePrefix . '_1', $optionsFirst, $selectedFirst, 15);
 		$firstSelect->setHasDescriptiveElements(true);
 		$firstSelect->setMultiSelect(true);
 		$firstSelect->setRightToLeftTextDirection($rightToLeftText);
 		$firstSelect->setSortElements(false);
 		$firstSelect->enableDynamicScrolling();
-		$firstRow->add($firstSelect, 12);
+		$firstRow->add($firstSelect);
 		if ($showFilter) {
 			$firstFilterGroup = new htmlGroup();
 			$firstFilterGroup->addElement(new htmlOutputText(_('Filter')));
 			$firstFilterInput = new htmlInputField($namePrefix . '_filterFirst');
 			$firstFilterInput->filterSelectBox($namePrefix . '_1');
 			$firstFilterGroup->addElement($firstFilterInput);
-			$firstRow->add($firstFilterGroup, 12);
+			$firstRow->add($firstFilterGroup);
 		}
 		$firstContainerDesktop = ($forceTablet) ? 12 : 5;
 		$container->add($firstRow, 12, 12, $firstContainerDesktop);
@@ -1734,21 +1713,21 @@ abstract class baseModule {
 		$container->add($buttonRow, 12, 12, $buttonRowDesktop);
 		// second select
 		$secondRow = new htmlResponsiveRow();
-		$secondRow->add(new htmlOutputText($labelSecond), 12);
+		$secondRow->add(new htmlOutputText($labelSecond));
 		$secondSelect = new htmlSelect($namePrefix . '_2', $optionsSecond, $selectedSecond, 15);
 		$secondSelect->setHasDescriptiveElements(true);
 		$secondSelect->setMultiSelect(true);
 		$secondSelect->setRightToLeftTextDirection($rightToLeftText);
 		$secondSelect->setSortElements(false);
 		$secondSelect->enableDynamicScrolling();
-		$secondRow->add($secondSelect, 12);
+		$secondRow->add($secondSelect);
 		if ($showFilter) {
 			$secondFilterGroup = new htmlGroup();
 			$secondFilterGroup->addElement(new htmlOutputText(_('Filter')));
 			$secondFilterInput = new htmlInputField($namePrefix . '_filterSecond');
 			$secondFilterInput->filterSelectBox($namePrefix . '_2');
 			$secondFilterGroup->addElement($secondFilterInput);
-			$secondRow->add($secondFilterGroup, 12);
+			$secondRow->add($secondFilterGroup);
 		}
 		$secondContainerDesktop = ($forceTablet) ? 12 : 6;
 		$container->add($secondRow, 12, 12, $secondContainerDesktop);
@@ -1772,7 +1751,7 @@ abstract class baseModule {
 		if (!in_array($name, $fields)) {
 			return;
 		}
-		$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
+		$ldapAttrName = $attributeName ?? $name;
 		$value = '';
 		if (isset($attributes[$ldapAttrName][0])) {
 			$value = $attributes[$ldapAttrName][0];
@@ -1822,7 +1801,7 @@ abstract class baseModule {
 													   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
 			$fieldName = static::class . '_' . $name;
-			$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
+			$ldapAttrName = $attributeName ?? $name;
 			if (!empty($_POST[$fieldName])) {
 				if (($validationID != null) && !get_preg($_POST[$fieldName], $validationID)) {
 					if ($validationMessage !== null) {
@@ -1871,7 +1850,7 @@ abstract class baseModule {
 		if (!in_array($name, $fields)) {
 			return;
 		}
-		$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
+		$ldapAttrName = $attributeName ?? $name;
 		$values = [];
 		if (isset($attributes[$ldapAttrName][0])) {
 			$values = $attributes[$ldapAttrName];
@@ -1922,9 +1901,9 @@ abstract class baseModule {
 				}
 				else {
 					$inputField = new htmlOutputText($value);
-					$inputField->setPreformatted(true);
+					$inputField->setPreformatted();
 				}
-				$field->add($inputField, 12);
+				$field->add($inputField);
 			}
 		}
 		$row = new htmlResponsiveRow();
@@ -1954,10 +1933,10 @@ abstract class baseModule {
 														   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
 			$fieldName = static::class . '_' . $name;
-			$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
+			$ldapAttrName = $attributeName ?? $name;
 			$valuesNew = [];
 			foreach ($_POST as $postKey => $postValue) {
-				if (strpos($postKey, $fieldName) === false) {
+				if (!str_contains($postKey, $fieldName)) {
 					continue;
 				}
 				if ($postValue === '') {
@@ -1977,7 +1956,7 @@ abstract class baseModule {
 			if (empty($valuesNew) && ($requiredMessage !== null)) {
 				$container['messages'][] = $requiredMessage;
 			}
-			$valuesOld = isset($attributes[$ldapAttrName]) ? $attributes[$ldapAttrName] : [];
+			$valuesOld = $attributes[$ldapAttrName] ?? [];
 			$intersect = array_intersect($valuesOld, $valuesNew);
 			if ((sizeof($valuesOld) != sizeof($valuesNew)) || (sizeof($intersect) != sizeof($valuesOld))) {
 				$container['mod'][$ldapAttrName] = $valuesNew;
@@ -2206,12 +2185,7 @@ abstract class baseModule {
 	 * @see htmlElement
 	 */
 	public function getSelfServiceSettings($profile) {
-		if (isset($this->meta['selfServiceSettings'])) {
-			return $this->meta['selfServiceSettings'];
-		}
-		else {
-			return null;
-		}
+		return $this->meta['selfServiceSettings'] ?? null;
 	}
 
 	/**
