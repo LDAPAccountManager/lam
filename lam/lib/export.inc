@@ -2,8 +2,8 @@
 
 namespace LAM\TOOLS\IMPORT_EXPORT;
 
-use \htmlStatusMessage;
-use \LAMException;
+use htmlStatusMessage;
+use LAMException;
 use LamTemporaryFilesManager;
 
 /*
@@ -45,10 +45,10 @@ include_once('ldap.inc');
  */
 class Exporter {
 
-	const DATA = 'data';
-	const STATUS = 'status';
-	const FILE = 'file';
-	const OUTPUT = 'output';
+	private const DATA = 'data';
+	private const STATUS = 'status';
+	private const FILE = 'file';
+	private const OUTPUT = 'output';
 
 	private $baseDn;
 	private $searchScope;
@@ -94,10 +94,10 @@ class Exporter {
 			return $this->writeDataAndReturnJson($results);
 		}
 		catch (LAMException $e) {
-			$data = Exporter::formatMessage('ERROR', $e->getTitle(), $e->getMessage());
+			$data = self::formatMessage('ERROR', $e->getTitle(), $e->getMessage());
 			$status = [
-				Exporter::STATUS => 'failed',
-				Exporter::DATA => $data
+				self::STATUS => 'failed',
+				self::DATA => $data
 			];
 			return json_encode($status);
 		}
@@ -184,13 +184,13 @@ class Exporter {
 			fwrite($handle, $output);
 			fclose($handle);
 			return json_encode([
-				Exporter::FILE => $temporaryFilesManager->getDownloadLink($filename),
-				Exporter::STATUS => 'done'
+				self::FILE => $temporaryFilesManager->getDownloadLink($filename),
+				self::STATUS => 'done'
 			]);
 		}
 		return json_encode([
-			Exporter::OUTPUT => htmlspecialchars($output, ENT_NOQUOTES),
-			Exporter::STATUS => 'done'
+			self::OUTPUT => htmlspecialchars($output, ENT_NOQUOTES),
+			self::STATUS => 'done'
 		]);
 	}
 
@@ -214,7 +214,7 @@ class Exporter {
 		sort($attributeNames);
 		array_unshift($attributeNames, 'dn');
 
-		$attributeNamesQuoted = array_map([$this, 'escapeCsvAndAddQuotes'], $attributeNames);
+		$attributeNamesQuoted = array_map($this->escapeCsvAndAddQuotes(...), $attributeNames);
 		$output = '';
 		// header
 		$output .= implode(',', $attributeNamesQuoted) . $lineEnding;
@@ -250,12 +250,11 @@ class Exporter {
 	/**
 	 * Converts the given LDAP entries to LDIF format.
 	 *
-	 * @param string $entries entries
+	 * @param array $entries entries
 	 * @param string $lineEnding line ending
 	 */
 	private function getLdifOutput(&$entries, $lineEnding) {
-		$output = '';
-		$output .= '#' . $lineEnding;
+		$output = '#' . $lineEnding;
 		$output .= '# ' . _('Base DN') . ': ' . $this->baseDn . $lineEnding;
 		$output .= '# ' . _('Search scope') . ': ' . $this->searchScope . $lineEnding;
 		$output .= '# ' . _('Search filter') . ': ' . $this->filter . $lineEnding;

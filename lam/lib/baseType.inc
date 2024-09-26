@@ -253,17 +253,17 @@ class baseType {
 		if (!$radioDisabled) {
 			$radio = new htmlRadio('lam_accountStatusAction', [_('Lock') => 'lock', _('Unlock') => 'unlock'], $selectedRadio);
 			$radio->setOnchangeEvent($onchange);
-			$container->add($radio, 12);
+			$container->add($radio);
 		}
 		else {
 			$radio = new htmlRadio('lam_accountStatusActionDisabled', [_('Lock') => 'lock', _('Unlock') => 'unlock'], $selectedRadio);
 			$radio->setIsEnabled(false);
-			$container->add($radio, 12);
-			$container->add(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), 12);
+			$container->add($radio);
+			$container->add(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio));
 		}
 		$container->addVerticalSpacer('1rem');
 
-		$container->add(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), 12);
+		$container->add(new htmlHiddenInput('lam_accountStatusResult', 'cancel'));
 
 		// locking part
 		if ($hasLockOptions) {
@@ -349,7 +349,7 @@ class baseType {
 			if ($_POST['lam_accountStatusAction'] == 'lock') {
 				$lockIds = [];
 				foreach ($_POST as $key => $value) {
-					if (($value === 'on') && (strpos($key, 'lam_accountStatusLock_') === 0)) {
+					if (($value === 'on') && (str_starts_with($key, 'lam_accountStatusLock_'))) {
 						$lockIds[] = substr($key, strlen('lam_accountStatusLock_'));
 					}
 				}
@@ -366,7 +366,7 @@ class baseType {
 			elseif ($_POST['lam_accountStatusAction'] == 'unlock') {
 				$unlockIds = [];
 				foreach ($_POST as $key => $value) {
-					if (($value === 'on') && (strpos($key, 'lam_accountStatusUnlock_') === 0)) {
+					if (($value === 'on') && (str_starts_with($key, 'lam_accountStatusUnlock_'))) {
 						$unlockIds[] = substr($key, strlen('lam_accountStatusUnlock_'));
 					}
 				}

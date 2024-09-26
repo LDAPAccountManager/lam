@@ -152,17 +152,12 @@ function isFileBasedSession(): bool {
  * The script is stopped if the host is not valid.
  */
 function checkClientIP() {
-	if (isset($_SESSION['cfgMain'])) {
-		$cfg = $_SESSION['cfgMain'];
-	}
-	else {
-		$cfg = new LAMCfgMain();
-	}
+	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	$allowedHosts = $cfg->allowedHosts;
 	$url = getCallingURL();
 	if (($url !== null) &&
-		((strpos($url, '/selfService/selfService') !== false)
-			|| ((strpos($url, '/misc/ajax.php?') !== false) && strpos($url, 'selfservice=1') !== false))) {
+		((str_contains($url, '/selfService/selfService'))
+			|| ((str_contains($url, '/misc/ajax.php?')) && str_contains($url, 'selfservice=1')))) {
 		// self service pages have separate IP list
 		$allowedHosts = $cfg->allowedHostsSelfService;
 	}
@@ -197,7 +192,7 @@ function checkClientIP() {
  * Logs off the user and displays the login page.
  *
  */
-function logoffAndBackToLoginPage() {
+function logoffAndBackToLoginPage(): void {
 	// log message
 	if (isset($_SESSION['ldap'])) {
 		$ldapUser = $_SESSION['ldap']->getUserName();
@@ -205,7 +200,7 @@ function logoffAndBackToLoginPage() {
 		// close LDAP connection
 		@$_SESSION["ldap"]->destroy();
 	}
-	elseif (isset($_SESSION['selfService_clientDN']) || (strpos($_SERVER['REQUEST_URI'], '/selfService/') !== false)) {
+	elseif (isset($_SESSION['selfService_clientDN']) || (str_contains($_SERVER['REQUEST_URI'], '/selfService/'))) {
 		logNewMessage(LOG_WARNING, 'Self service session of DN ' . lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService') . ' expired.');
 	}
 	// delete key and iv in cookie
@@ -217,7 +212,7 @@ function logoffAndBackToLoginPage() {
 	$paths = ['./', '../', '../../', '../../../', '../../../../'];
 	$page = 'login.php';
 	$pageSuffix = '?expired=yes';
-	if (isset($_SESSION['selfService_clientDN']) || (strpos($_SERVER['REQUEST_URI'], '/selfService/') !== false)) {
+	if (isset($_SESSION['selfService_clientDN']) || (str_contains($_SERVER['REQUEST_URI'], '/selfService/'))) {
 		$scope = $_GET['scope'];
 		$name = $_GET['name'];
 		if (!preg_match('/^[0-9a-zA-Z _-]+$/', $scope) || !preg_match('/^[0-9a-zA-Z _-]+$/', $name)) {
@@ -260,12 +255,7 @@ function logoffAndBackToLoginPage() {
  * @return boolean debug enabled
  */
 function isDebugLoggingEnabled() {
-	if (isset($_SESSION['cfgMain'])) {
-		$cfg = $_SESSION['cfgMain'];
-	}
-	else {
-		$cfg = new LAMCfgMain();
-	}
+	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	return $cfg->logLevel >= LOG_DEBUG;
 }
 
@@ -306,7 +296,7 @@ function logNewMessage($level, $message): void {
 		syslog($level, $message);
 	}
 	// remote logging
-	elseif (strpos($cfg->logDestination, 'REMOTE') === 0) {
+	elseif (str_starts_with($cfg->logDestination, 'REMOTE')) {
 		lamLogRemoteMessage($level, $message, $cfg);
 	}
 	// log to file
@@ -421,12 +411,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if ($password == null) {
 		$password = "";
 	}
-	if (isset($_SESSION['cfgMain'])) {
-		$cfg = $_SESSION['cfgMain'];
-	}
-	else {
-		$cfg = new LAMCfgMain();
-	}
+	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	// check length
 	$minLength = $cfg->passwordMinLength;
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinLength())) {
@@ -516,7 +501,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (($cfg->passwordMustNotContainUser == 'true') && !empty($userNames)) {
 		foreach ($userNames as $userName) {
 			$userLow = strtolower($userName);
-			if (strpos($pwdLow, $userLow) !== false) {
+			if (str_contains($pwdLow, $userLow)) {
 				return _('The password is too weak. You may not use the user name as part of the password.');
 			}
 		}
@@ -529,7 +514,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 				$userLow = strtolower($userName);
 				for ($i = 0; $i < strlen($userLow) - 3; $i++) {
 					$part = substr($userLow, 0, 3);
-					if (strpos($pwdLow, $part) !== false) {
+					if (str_contains($pwdLow, $part)) {
 						return _('The password is too weak. You may not use parts of the user name for the password.');
 					}
 				}
@@ -542,7 +527,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 			$low = strtolower($other);
 			for ($i = 0; $i < strlen($low) - 3; $i++) {
 				$part = substr($low, 0, 3);
-				if (strpos($pwdLow, $part) !== false) {
+				if (str_contains($pwdLow, $part)) {
 					return _('The password is too weak. You may not use parts of user attributes for the password.');
 				}
 			}
@@ -682,7 +667,7 @@ function validateSecurityToken() {
 function addSecurityTokenToMetaHTML(&$container) {
 	$token = new htmlHiddenInput(getSecurityTokenName(), $_SESSION[getSecurityTokenName()]);
 	if ($container instanceof htmlResponsiveRow) {
-		$container->add($token, 12);
+		$container->add($token);
 		return;
 	}
 	$container->addElement($token, true);
@@ -811,7 +796,7 @@ function lamLogRemoteMessage($level, $message, $cfgMain) {
  */
 class LamTemporaryFilesManager {
 
-	const SESSION_KEY = 'sec_registered_tmp_files';
+	private const SESSION_KEY = 'sec_registered_tmp_files';
 
 	/**
 	 * Creates a temporary file and registers it for the current session.

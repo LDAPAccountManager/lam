@@ -1,6 +1,6 @@
 <?php
 
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 
 /*
 
@@ -54,7 +54,7 @@ class nisMailAliasUser extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -122,7 +122,7 @@ class nisMailAliasUser extends baseModule {
 	function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if (!$this->isMailAliasTypeActive()) {
-			$return->add(new htmlStatusMessage('ERROR', _('Please activate the mail aliases type for this server profile.')), 12);
+			$return->add(new htmlStatusMessage('ERROR', _('Please activate the mail aliases type for this server profile.')));
 			return $return;
 		}
 		$aliases = $this->getMailAliasList();
@@ -130,7 +130,7 @@ class nisMailAliasUser extends baseModule {
 		$userName = $this->getUserName();
 		$mails = $this->getMailAddresses();
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideUserAliases') && ($userName != null)) {
-			$return->add(new htmlSubTitle(_('Aliases for user name')), 12);
+			$return->add(new htmlSubTitle(_('Aliases for user name')));
 			for ($i = 0; $i < $count; $i++) {
 				if (empty($aliases[$i]['rfc822mailmember'])) {
 					continue;
@@ -156,11 +156,11 @@ class nisMailAliasUser extends baseModule {
 			$return->add($addButton, 12, 12, 12, 'text-center');
 		}
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideMailAliases') && !empty($mails)) {
-			$return->add(new htmlSubTitle(_('Aliases for email')), 12);
+			$return->add(new htmlSubTitle(_('Aliases for email')));
 			for ($m = 0; $m < sizeof($mails); $m++) {
 				if (sizeof($mails) > 1) {
 					$label = new htmlOutputText($mails[$m]);
-					$return->add($label, 12);
+					$return->add($label);
 				}
 				for ($i = 0; $i < $count; $i++) {
 					if (empty($aliases[$i]['rfc822mailmember'])) {
@@ -206,22 +206,22 @@ class nisMailAliasUser extends baseModule {
 		}
 		$mails = $this->getMailAddresses();
 		foreach ($_POST as $key => $value) {
-			if (strpos($key, 'rem_') === 0) {
+			if (str_starts_with($key, 'rem_')) {
 				$index = substr($key, strlen('rem_'));
 				$dn = $this->cachedAliasList[$index]['dn'];
 				$this->removeRecipient($this->getUserName(), $dn);
 			}
-			elseif (strpos($key, 'del_') === 0) {
+			elseif (str_starts_with($key, 'del_')) {
 				$index = substr($key, strlen('del_'));
 				$dn = $this->cachedAliasList[$index]['dn'];
 				$this->deleteAlias($dn);
 			}
-			elseif (strpos($key, 'remMail_') === 0) {
+			elseif (str_starts_with($key, 'remMail_')) {
 				$parts = substr($key, strlen('remMail_'));
 				$parts = explode('_', $parts);
 				$this->removeRecipient($mails[$parts[1]], $this->cachedAliasList[$parts[0]]['dn']);
 			}
-			elseif (strpos($key, 'delMail_') === 0) {
+			elseif (str_starts_with($key, 'delMail_')) {
 				$parts = substr($key, strlen('remMail_'));
 				$parts = explode('_', $parts);
 				$this->deleteAlias($this->cachedAliasList[$parts[0]]['dn']);
@@ -335,10 +335,10 @@ class nisMailAliasUser extends baseModule {
 		}
 		$return->addLabel(new htmlOutputText(_('Recipient')));
 		$return->addField(new htmlOutputText($recipient));
-		$return->add(new htmlHiddenInput('recipient', $recipient), 12);
+		$return->add(new htmlHiddenInput('recipient', $recipient));
 		// new mail alias
-		$return->add(new htmlSubTitle(_('Create new alias')), 12);
-		$typeManager = new \LAM\TYPES\TypeManager();
+		$return->add(new htmlSubTitle(_('Create new alias')));
+		$typeManager = new TypeManager();
 		$mailAliasTypes = $typeManager->getConfiguredTypesForScope('mailAlias');
 		$ous = [];
 		foreach ($mailAliasTypes as $type) {
@@ -349,9 +349,9 @@ class nisMailAliasUser extends baseModule {
 		$suffixSelect = new htmlResponsiveSelect('new_ou', $ous, [], _('Suffix'), 'suffix');
 		$suffixSelect->setRightToLeftTextDirection(true);
 		$suffixSelect->setSortElements(false);
-		$return->add($suffixSelect, 12);
+		$return->add($suffixSelect);
 		$newAliasCn = empty($_POST['new_cn']) ? '' : $_POST['new_cn'];
-		$return->add(new htmlResponsiveInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), 12);
+		$return->add(new htmlResponsiveInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'));
 		$return->addVerticalSpacer('1rem');
 		$addButton = new htmlAccountPageButton(static::class, 'attributes', 'create', _('Create'));
 		$return->add($addButton, 12, 12, 12, 'text-center');
@@ -359,7 +359,7 @@ class nisMailAliasUser extends baseModule {
 		$return->addVerticalSpacer('2rem');
 
 		// add to existing alias
-		$return->add(new htmlSubTitle(_('Add to existing alias')), 12);
+		$return->add(new htmlSubTitle(_('Add to existing alias')));
 		$aliasesToAdd = [];
 		foreach ($aliases as $index => $attrs) {
 			if (!empty($attrs['rfc822mailmember']) && in_array($recipient, $attrs['rfc822mailmember'])) {
@@ -370,14 +370,14 @@ class nisMailAliasUser extends baseModule {
 		$aliasSelect = new htmlResponsiveSelect('ex_cn', $aliasesToAdd, [], _('Alias names'), 'aliasNames', 20);
 		$aliasSelect->setHasDescriptiveElements(true);
 		$aliasSelect->setMultiSelect(true);
-		$return->add($aliasSelect, 12);
+		$return->add($aliasSelect);
 		$return->addVerticalSpacer('1rem');
 		$addButton = new htmlAccountPageButton(static::class, 'attributes', 'recipient', _('Add'));
 		$return->add($addButton, 12, 12, 12, 'text-center');
 
 		$return->addVerticalSpacer('2rem');
 		$cancelButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Cancel'));
-		$return->add($cancelButton, 12);
+		$return->add($cancelButton);
 		return $return;
 	}
 
@@ -549,8 +549,8 @@ class nisMailAliasUser extends baseModule {
 		$configContainer->addLabel($hiddenGroup);
 		$configContainer->addField(new htmlOutputText(''));
 		$configContainer->addVerticalSpacer('0.5rem');
-		$configContainer->add(new htmlResponsiveInputCheckbox('nisMailAliasUser_hideUserAliases', false, _('Aliases for user name')), 12);
-		$configContainer->add(new htmlResponsiveInputCheckbox('nisMailAliasUser_hideMailAliases', false, _('Aliases for email')), 12);
+		$configContainer->add(new htmlResponsiveInputCheckbox('nisMailAliasUser_hideUserAliases', false, _('Aliases for user name')));
+		$configContainer->add(new htmlResponsiveInputCheckbox('nisMailAliasUser_hideMailAliases', false, _('Aliases for email')));
 		return $configContainer;
 	}
 
@@ -591,7 +591,7 @@ class nisMailAliasUser extends baseModule {
 	/**
 	 * Returns the email addresses of this account.
 	 *
-	 * @return String mail addresses
+	 * @return string[]|null mail addresses
 	 */
 	private function getMailAddresses() {
 		if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {

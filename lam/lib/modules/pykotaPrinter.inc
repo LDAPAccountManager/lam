@@ -67,7 +67,7 @@ class pykotaPrinter extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['pykotaPrinterType']);
+		return $this->get_scope() === 'pykotaPrinterType';
 	}
 
 	/**
@@ -138,7 +138,7 @@ class pykotaPrinter extends baseModule {
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Maximum job size'), 'pykotaPrinter_pykotaMaxJobSize', '', 'pykotaMaxJobSize'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Maximum job size'), 'pykotaPrinter_pykotaMaxJobSize', '', 'pykotaMaxJobSize'));
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaPrinter_pykotaMaxJobSize'] = 'pykotaMaxJobSize';
 		$return['profile_checks']['pykotaPrinter_pykotaMaxJobSize'] = [
@@ -256,7 +256,7 @@ class pykotaPrinter extends baseModule {
 		}
 		$pykotaPassThroughSelect = new htmlResponsiveSelect('pykotaPassThrough', $this->passThroughOptions, [$pykotaPassThroughOption], _('Passthrough'), 'pykotaPassThrough');
 		$pykotaPassThroughSelect->setHasDescriptiveElements(true);
-		$container->add($pykotaPassThroughSelect, 12);
+		$container->add($pykotaPassThroughSelect);
 		// description
 		$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
 		// printer groups
@@ -352,7 +352,7 @@ class pykotaPrinter extends baseModule {
 		if (isset($_POST['pykotaPricePerJob']) && ($_POST['pykotaPricePerJob'] != '')) {
 			$pykotaPricePerJob = $_POST['pykotaPricePerJob'];
 			$pykotaPricePerJob = str_replace(',', '.', $pykotaPricePerJob);
-			if (strpos($pykotaPricePerJob, '.') === false) {
+			if (!str_contains($pykotaPricePerJob, '.')) {
 				$pykotaPricePerJob .= '.0';
 			}
 			if (!get_preg($pykotaPricePerJob, 'float')) {
@@ -365,7 +365,7 @@ class pykotaPrinter extends baseModule {
 		if (isset($_POST['pykotaPricePerPage']) && ($_POST['pykotaPricePerPage'] != '')) {
 			$pykotaPricePerPage = $_POST['pykotaPricePerPage'];
 			$pykotaPricePerPage = str_replace(',', '.', $pykotaPricePerPage);
-			if (strpos($pykotaPricePerPage, '.') === false) {
+			if (!str_contains($pykotaPricePerPage, '.')) {
 				$pykotaPricePerPage .= '.0';
 			}
 			if (!get_preg($pykotaPricePerPage, 'float')) {
@@ -377,7 +377,7 @@ class pykotaPrinter extends baseModule {
 		$this->attributes['pykotaPassThrough'][0] = $_POST['pykotaPassThrough'];
 		// delete members
 		foreach ($_POST as $key => $value) {
-			if (strpos($key, 'uniqueMemberDel_') === 0) {
+			if (str_starts_with($key, 'uniqueMemberDel_')) {
 				$index = substr($key, strlen('uniqueMemberDel_'));
 				unset($this->attributes['uniqueMember'][$index]);
 				$this->attributes['uniqueMember'] = array_values($this->attributes['uniqueMember']);
@@ -421,7 +421,7 @@ class pykotaPrinter extends baseModule {
 		$membersSelect->setHasDescriptiveElements(true);
 		$membersSelect->setMultiSelect(true);
 		$membersSelect->setTransformSingleSelect(false);
-		$return->add($membersSelect, 12);
+		$return->add($membersSelect);
 		$filterGroup = new htmlGroup();
 		$filterGroup->addElement(new htmlOutputText(_('Filter')));
 		$filterInput = new htmlInputField('newFilter', null);
@@ -429,13 +429,13 @@ class pykotaPrinter extends baseModule {
 		$filterInput->filterSelectBox('members');
 		$filterGroup->addElement($filterInput);
 		$filterGroup->addElement(new htmlHelpLink('filter'));
-		$return->add($filterGroup, 12);
+		$return->add($filterGroup);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'addMembers', _('Add')));
 		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
-		$return->add($buttonTable, 12);
+		$return->add($buttonTable);
 		return $return;
 	}
 
@@ -474,12 +474,12 @@ class pykotaPrinter extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_cn']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaPrinter_cn']], 'username')) {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				elseif ($this->cnExists($rawAccounts[$i][$ids['pykotaPrinter_cn']])) {
 					$errMsg = $this->messages['cn'][3];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -497,12 +497,12 @@ class pykotaPrinter extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_pykotaPricePerJob']])) {
 				$pykotaPricePerJob = $rawAccounts[$i][$ids['pykotaPrinter_pykotaPricePerJob']];
 				$pykotaPricePerJob = str_replace(',', '.', $pykotaPricePerJob);
-				if (strpos($pykotaPricePerJob, '.') === false) {
+				if (!str_contains($pykotaPricePerJob, '.')) {
 					$pykotaPricePerJob .= '.0';
 				}
 				if (!get_preg($pykotaPricePerJob, 'float')) {
 					$errMsg = $this->messages['pykotaPricePerJob'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -516,12 +516,12 @@ class pykotaPrinter extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaPrinter_pykotaPricePerPage']])) {
 				$pykotaPricePerPage = $rawAccounts[$i][$ids['pykotaPrinter_pykotaPricePerPage']];
 				$pykotaPricePerPage = str_replace(',', '.', $pykotaPricePerPage);
-				if (strpos($pykotaPricePerPage, '.') === false) {
+				if (!str_contains($pykotaPricePerPage, '.')) {
 					$pykotaPricePerPage .= '.0';
 				}
 				if (!get_preg($pykotaPricePerPage, 'float')) {
 					$errMsg = $this->messages['pykotaPricePerPage'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -538,7 +538,7 @@ class pykotaPrinter extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['pykotaPassThrough'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 			}
@@ -564,7 +564,7 @@ class pykotaPrinter extends baseModule {
 					}
 					if (!$found) {
 						$errMsg = $this->messages['uniqueMember'][0];
-						array_push($errMsg, [$i, htmlspecialchars($cn)]);
+						$errMsg[] = [$i, htmlspecialchars($cn)];
 						$messages[] = $errMsg;
 					}
 				}

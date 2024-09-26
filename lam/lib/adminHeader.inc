@@ -30,6 +30,7 @@ use htmlLink;
 use htmlOutputText;
 use htmlResponsiveRow;
 use htmlSpan;
+use LAM\TYPES\TypeManager;
 use LAMException;
 use ServerProfilePersistenceManager;
 
@@ -87,7 +88,7 @@ function printHeader(string $headerPrefix): void {
 			continue;
 		}
 		// check if hidden by config
-		$toolClass = get_class($myTool);
+		$toolClass = $myTool::class;
 		$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 		if (!$_SESSION['config']->isToolActive($toolName)) {
 			continue;
@@ -140,7 +141,7 @@ function printHeader(string $headerPrefix): void {
         </a>
         <div class="lam-header-right lam-header-menublock">
 			<?php
-			$typeManager = new \LAM\TYPES\TypeManager();
+			$typeManager = new TypeManager();
 			$types = $typeManager->getConfiguredTypes();
 			if (!empty($types)) {
 				$accountTypesGroup = new htmlGroup();

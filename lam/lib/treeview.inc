@@ -5,7 +5,6 @@ namespace LAM\TOOLS\TREEVIEW;
 use htmlButton;
 use htmlDiv;
 use htmlElement;
-use htmlForm;
 use htmlGroup;
 use htmlHiddenInput;
 use htmlImage;
@@ -382,7 +381,7 @@ class TreeView {
 		$highlighted = (empty($_POST['highlight'])) ? [] : explode(',', $_POST['highlight']);
 		foreach ($attributes as $attributeName => $values) {
 			$schemaAttribute = null;
-			if (strpos($attributeName, ';binary') !== false) {
+			if (str_contains($attributeName, ';binary')) {
 				$attributeName = substr($attributeName, 0, -1 * strlen(';binary'));
 			}
 			if (isset($schemaAttributes[$attributeName])) {
@@ -454,7 +453,7 @@ class TreeView {
 
 		$internalAttributesContent = new htmlResponsiveRow();
 		$internalAttributesContent->add(new htmlSubTitle(_('Internal attributes')));
-		$internalAttributesButton = new htmlLink(_('Show internal attributes'), '#', null, true);
+		$internalAttributesButton = new htmlLink(_('Show internal attributes'), '#', null);
 		$internalAttributesButton->setOnClick('window.lam.treeview.getInternalAttributesContent(event,
 			"' . getSecurityTokenName() . '",
 			"' . getSecurityTokenValue() . '",
@@ -890,7 +889,7 @@ class TreeView {
 	 */
 	private function getInternalAttributesContent(string $dn): string {
 		$row = new htmlResponsiveRow();
-		$row->add(new htmlSubTitle(_('Internal attributes')), 12);
+		$row->add(new htmlSubTitle(_('Internal attributes')));
 		$attributes = ldapGetDN($dn, ['+', 'creatorsName', 'createTimestamp', 'modifiersName',
 			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime', 'passwordRetryCount', 'accountUnlockTime', 'nsAccountLock',
 			'nsRoleDN', 'passwordExpirationTime']);
@@ -917,13 +916,13 @@ class TreeView {
 		$schemaAttributes = $this->getSchemaAttributes();
 		$attributes = ldapGetDN($dn, ['*']);
 		unset($attributes['dn']);
-		$attributes = array_change_key_case($attributes, CASE_LOWER);
+		$attributes = array_change_key_case($attributes);
 		$changes = json_decode($_POST['changes'], true);
-		$changes = array_change_key_case($changes, CASE_LOWER);
+		$changes = array_change_key_case($changes);
 		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
 		$ldapChanges = [];
 		foreach ($changes as $attrName => $change) {
-			$schemaAttribute = isset($schemaAttributes[$attrName]) ? $schemaAttributes[$attrName] : null;
+			$schemaAttribute = $schemaAttributes[$attrName] ?? null;
 			if (isset($change['new'])) {
 				$newValues = $change['new'];
 				if (isset($change['hash'])) {
@@ -968,7 +967,7 @@ class TreeView {
 		// rename DN if RDN attribute changed
 		$rdnAttribute = strtolower(extractRDNAttribute($dn));
 		$rdnValue = extractRDNValue($dn);
-		if (isset($ldapChanges[$rdnAttribute]) && isset($ldapChanges[$rdnAttribute][0]) && !in_array($rdnValue, $ldapChanges[$rdnAttribute])) {
+		if (isset($ldapChanges[$rdnAttribute][0]) && !in_array($rdnValue, $ldapChanges[$rdnAttribute])) {
 			$pos = 0;
 			$oldPos = array_search($rdnValue, $changes[$rdnAttribute]['old']);
 			if (($oldPos !== false) && isset($ldapChanges[$rdnAttribute][$oldPos])) {
@@ -1040,7 +1039,7 @@ class TreeView {
 			}
 			$schemaAttribute = $schemaAttributes[$attributeName];
 			if ($schemaAttribute->isBinary()
-				&& (strpos($attributeName, ';binary') === false)
+				&& (!str_contains($attributeName, ';binary'))
 				&& ($schemaAttribute->getSyntaxOID() === '1.3.6.1.4.1.1466.115.121.1.8')) {
 				$ldapChanges[$attributeName . ';binary'] = $value;
 				unset($ldapChanges[$attributeName]);
@@ -1106,6 +1105,7 @@ class TreeView {
 				return $this->createNewNodeCheckAttributesStep($dn);
 		}
 		logNewMessage(LOG_ERR, 'Invalid create new node step: ' . $step);
+		return '';
 	}
 
 	/**
@@ -1138,7 +1138,7 @@ class TreeView {
 		$objectClassSelect->setHasDescriptiveElements(true);
 		$objectClassSelect->setMultiSelect(true);
 		$objectClassSelect->setOptionCssClasses($selectCssClasses);
-		$row->add($objectClassSelect, 12);
+		$row->add($objectClassSelect);
 		$row->addVerticalSpacer('0.5rem');
 		$filterGroup = new htmlGroup();
 		$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
@@ -1153,8 +1153,8 @@ class TreeView {
 		$nextButton->setOnClick('window.lam.treeview.createNodeSelectObjectClassesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		$row->addVerticalSpacer('2rem');
-		$row->add(new htmlOutputText(_('Hint: You must choose exactly one structural object class (shown in bold above)')), 12);
-		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)), 12);
+		$row->add(new htmlOutputText(_('Hint: You must choose exactly one structural object class (shown in bold above)')));
+		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)));
 		ob_start();
 		parseHtml(null, $row, [], false, '');
 		$content = ob_get_contents();
@@ -1391,7 +1391,7 @@ class TreeView {
 		$rootDns = TreeViewTool::getRootDns();
 		foreach ($rootDns as $rootDn) {
 			$rootDn = strtolower($rootDn);
-			if (substr($dn, -1 * strlen($rootDn)) === $rootDn) {
+			if (str_ends_with($dn, $rootDn)) {
 				return;
 			}
 		}
@@ -1420,7 +1420,7 @@ class TreeView {
 	 */
 	private function getSchemaAttributes(): array {
 		if ($this->schemaAttributes === null) {
-			$this->schemaAttributes = get_schema_attributes(null);
+			$this->schemaAttributes = get_schema_attributes();
 		}
 		return $this->schemaAttributes;
 	}
@@ -1519,15 +1519,10 @@ class TreeView {
 		global $lamOrderByAttribute;
 		$lamOrderByAttribute = empty($_POST['orderBy']) ? 'dn' : strtolower($_POST['orderBy']);
 		$limit = empty($_POST['limit']) ? 0 : intval($_POST['limit']);
-		$results = [];
-		switch ($scope) {
-			case 'sub':
-				$results = searchLDAP($dn, $filter, $searchAttributes, $limit);
-				break;
-			case 'one':
-				$results = ldapListDN($dn, $filter, $searchAttributes, null, $limit);
-				break;
-		}
+		$results = match ($scope) {
+			'sub' => searchLDAP($dn, $filter, $searchAttributes, $limit),
+			default => ldapListDN($dn, $filter, $searchAttributes, null, $limit),
+		};
 		usort($results, 'LAM\TOOLS\TREEVIEW\compareByAttributes');
 		$row = $this->searchResultsHeader($dn, $filter);
 		if ($format === 'list') {
@@ -1568,7 +1563,7 @@ class TreeView {
 			$row->add(new htmlSubTitle(getAbstractDN($result['dn']), $this->getNodeIcon($result)));
 			$row->addLabel(new htmlOutputText('dn'));
 			$row->addField(new htmlLink(unescapeLdapSpecialCharacters($result['dn']), 'treeView.php?dn=' . base64_encode($result['dn'])));
-			$result = array_change_key_case($result, CASE_LOWER);
+			$result = array_change_key_case($result);
 			foreach ($attributes as $attribute) {
 				$attributeLower = strtolower($attribute);
 				if (!empty($result[$attributeLower])) {
@@ -1598,7 +1593,7 @@ class TreeView {
 		$data = [];
 		foreach ($results as $result) {
 			$dataEntry = [$this->getNodeIcon($result), new htmlLink(unescapeLdapSpecialCharacters($result['dn']), 'treeView.php?dn=' . base64_encode($result['dn']))];
-			$result = array_change_key_case($result, CASE_LOWER);
+			$result = array_change_key_case($result);
 			foreach ($attributes as $attribute) {
 				$attributeLower = strtolower($attribute);
 				if (!empty($result[$attributeLower])) {
@@ -1652,7 +1647,7 @@ class TreeView {
 				if (!empty($errors)) {
 					$row = new htmlResponsiveRow();
 					foreach ($errors as $error) {
-						$row->add(new htmlStatusMessage($error[0], $error[1], isset($error[2]) ? $error[2] : null));
+						$row->add(new htmlStatusMessage($error[0], $error[1], $error[2] ?? null));
 					}
 					ob_start();
 					parseHtml(null, $row, [], false, '');
@@ -1698,8 +1693,8 @@ function compareByAttributes($a, $b): int {
 	if ($lamOrderByAttribute === 'dn') {
 		return compareDN($a['dn'], $b['dn']);
 	}
-	$a = array_change_key_case($a, CASE_LOWER);
-	$b = array_change_key_case($b, CASE_LOWER);
+	$a = array_change_key_case($a);
+	$b = array_change_key_case($b);
 	if (!isset($a[$lamOrderByAttribute]) && !isset($b[$lamOrderByAttribute])) {
 		return 0;
 	}
