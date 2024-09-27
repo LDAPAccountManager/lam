@@ -1,4 +1,5 @@
 December 2024 9.0
+ - Group of (unique) names, organisational roles: added member/owner count to PDF fields
  - Fixed bugs:
   -> Windows: show more than 1000 LDAP entries when paged results is activated in server profile
 
