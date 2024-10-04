@@ -1937,6 +1937,9 @@
       optional notes. This is available for the mails to the group
       owners/managers.</para>
 
+      <para>Use $$request_comment$$ to inject the owner's or approver's
+      comment. This can be used in mails to approvers and requesters.</para>
+
       <para>The wildcards $$approveLink$$ and $$rejectLink$$ resolve to an URL
       that allows to approve/deny all requests listed in $$requested_groups$$.
       This is available for the mails to the group owners/managers and
@@ -1975,6 +1978,8 @@
 
   $$requested_groups$$
 
+  Comment: $$request_comment$$
+
   Approve all: $$approveLink$$
   Deny all: $$rejectLink$$
 
@@ -1989,8 +1994,9 @@
       email:</emphasis><literallayout>
   Dear $$cn$$,
 
-  your access request was approved.
+  your access request was approved/denied.
   Requested groups: $$requested_groups$$
+  Comment: $$request_comment$$
 
   Best regards,
   IT team
