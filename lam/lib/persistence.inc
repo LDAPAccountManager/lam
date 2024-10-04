@@ -405,6 +405,9 @@ class ConfigDataImporter {
 						if (isset($value['historicRequests'])) {
 							$mainStep->addSubStep(new ImporterStep(_('Request history'), 'requestAccess_historicRequests', $value['historicRequests']));
 						}
+						if (isset($value['expirations'])) {
+							$mainStep->addSubStep(new ImporterStep(_('Revocation information'), 'requestAccess_expirations', $value['expirations']));
+						}
 						$steps[] = $mainStep;
 					}
 					break;
@@ -751,6 +754,9 @@ class ConfigDataImporter {
 					break;
 				case 'historicRequests':
 					$database->importRequestHistory($data);
+					break;
+				case 'expirations':
+					$database->importExpirations($data);
 					break;
 			}
 		}
