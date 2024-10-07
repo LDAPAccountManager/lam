@@ -59,7 +59,7 @@ class WebauthnManagerTest extends TestCase {
 	protected function setup(): void {
 		$this->database = $this
 			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
-			->onlyMethods(['getPdoUrl', 'findOneByCredentialId', 'findAllForUserEntity'])
+			->onlyMethods(['getPdoUrl', 'findOneByCredentialId', 'findAllForUserDn'])
 			->getMock();
 		$file = tmpfile();
 		$filePath = stream_get_meta_data($file)['uri'];
@@ -85,7 +85,7 @@ class WebauthnManagerTest extends TestCase {
 	}
 
 	public function test_getAuthenticationObject() {
-		$this->database->method('findAllForUserEntity')->willReturn([]);
+		$this->database->method('findAllForUserDn')->willReturn([]);
 
 		$authenticationObj = $this->manager->getAuthenticationObject('uid=test,o=test', false);
 		$this->assertEquals(32, strlen($authenticationObj->getChallenge()));
@@ -99,14 +99,14 @@ class WebauthnManagerTest extends TestCase {
 	}
 
 	public function test_isRegistered_notRegistered() {
-		$this->database->method('findAllForUserEntity')->willReturn([]);
+		$this->database->method('findAllForUserDn')->willReturn([]);
 
 		$isRegistered = $this->manager->isRegistered('uid=test,o=test');
 		$this->assertFalse($isRegistered);
 	}
 
 	public function test_isRegistered_registered() {
-		$this->database->method('findAllForUserEntity')->willReturn([new PublicKeyCredentialSource(
+		$this->database->method('findAllForUserDn')->willReturn([new PublicKeyCredentialSource(
 				"id1",
 				PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
 				[],

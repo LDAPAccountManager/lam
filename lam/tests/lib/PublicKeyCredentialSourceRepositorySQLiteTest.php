@@ -62,10 +62,8 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 	/**
 	 * Empty DB test
 	 */
-	public function test_findAllForUserEntity_emptyDb() {
-		$entity = new PublicKeyCredentialUserEntity("cn=test,dc=example", WebauthnManager::getUserIdFromDn("cn=test,dc=example"), "test", null);
-
-		$result = $this->database->findAllForUserEntity($entity);
+	public function test_findAllForDn_emptyDb() {
+		$result = $this->database->findAllForUserDn("cn=test,dc=example");
 		$this->assertEmpty($result);
 	}
 
@@ -112,10 +110,10 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$this->assertNotNull($this->database->findOneByCredentialId("id2"));
 		$this->assertNotNull($this->database->findOneByCredentialId("id3"));
 		$this->assertEquals(2, sizeof(
-			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("cn=user1", WebauthnManager::getUserIdFromDn("uh1"), "uh1", null))
+			$this->database->findAllForUserDn("cn=user1")
 		));
 		$this->assertEquals(1, sizeof(
-			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("cn=user2", WebauthnManager::getUserIdFromDn("uh2"), "uh2", null))
+			$this->database->findAllForUserDn("cn=user2")
 		));
 	}
 
