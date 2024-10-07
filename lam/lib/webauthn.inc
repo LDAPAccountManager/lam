@@ -87,12 +87,11 @@ class WebauthnManager {
 	 * Returns if the given DN is registered for webauthn.
 	 *
 	 * @param string $dn DN
-	 * @return boolean is registered
+	 * @return bool is registered
 	 */
-	public function isRegistered($dn) {
+	public function isRegistered($dn): bool {
 		$database = $this->getDatabase();
-		$userEntity = $this->getUserEntity($dn);
-		$results = $database->findAllForUserEntity($userEntity);
+		$results = $database->findAllForUserDn($dn);
 		return !empty($results);
 	}
 
@@ -109,7 +108,7 @@ class WebauthnManager {
 		$userEntity = $this->getUserEntity($dn);
 		$challenge = $this->createChallenge();
 		$credentialParameters = $this->getCredentialParameters();
-		$excludedKeys = $this->getExcludedKeys($userEntity, $extraExcludedKeys);
+		$excludedKeys = $this->getExcludedKeys($dn, $extraExcludedKeys);
 		$timeout = $this->getTimeout();
 		$authenticatorSelectionCriteria = AuthenticatorSelectionCriteria::create()->setUserVerification(AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_DISCOURAGED);
 		$registrationObject = new PublicKeyCredentialCreationOptions(
@@ -184,7 +183,7 @@ class WebauthnManager {
 	 */
 	private function getUserEntity($dn) {
 		return new PublicKeyCredentialUserEntity(
-			$dn,
+			self::getUserIdFromDn($dn),
 			self::getUserIdFromDn($dn),
 			extractRDNValue($dn),
 			null
@@ -238,14 +237,14 @@ class WebauthnManager {
 	/**
 	 * Returns a list of all credential ids that are already registered.
 	 *
-	 * @param PublicKeyCredentialUserEntity $user user data
+	 * @param string $userDn user DN
 	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialDescriptor[] credential ids
 	 */
-	private function getExcludedKeys($user, $extraExcludedKeys = []) {
+	private function getExcludedKeys(string $userDn, $extraExcludedKeys = []) {
 		$keys = [];
 		$repository = $this->getDatabase();
-		$credentialSources = $repository->findAllForUserEntity($user);
+		$credentialSources = $repository->findAllForUserDn($userDn);
 		foreach ($credentialSources as $credentialSource) {
 			$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $credentialSource->getPublicKeyCredentialId());
 		}
@@ -367,8 +366,7 @@ class WebauthnManager {
 		$timeout = $this->getTimeout();
 		$challenge = $this->createChallenge();
 		$database = $this->getDatabase();
-		$userEntity = $this->getUserEntity($userDN);
-		$publicKeyCredentialSources = $database->findAllForUserEntity($userEntity);
+		$publicKeyCredentialSources = $database->findAllForUserDn($userDN);
 		$userVerification = PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
 		$extensions = new AuthenticationExtensionsClientInputs();
 		$relyingParty = $this->createRpEntry($isSelfService);
@@ -486,11 +484,21 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 * @return PublicKeyCredentialSource[] credential sources
 	 */
 	public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array {
+		return $this->findAllForUserDn($publicKeyCredentialUserEntity->getName());
+	}
+
+	/**
+	 * Finds all credential entries for the given user.
+	 *
+	 * @param string $userDn user DN
+	 * @return PublicKeyCredentialSource[] credential sources
+	 */
+	public function findAllForUserDn(string $userDn): array {
 		$credentials = [];
 		try {
 			$pdo = $this->getPDO();
 			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userDN = :userDN');
-			$statement->execute([':userDN' => $publicKeyCredentialUserEntity->getName()]);
+			$statement->execute([':userDN' => $userDn]);
 			$results = $statement->fetchAll();
 			foreach ($results as $result) {
 				$jsonArray = json_decode($result['credentialSource'], true);
