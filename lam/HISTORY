@@ -5,6 +5,7 @@ December 2024 9.0
   -> Request access: added comment field for owners/approvers (339)
  - Fixed bugs:
   -> Windows: show more than 1000 LDAP entries when paged results is activated in server profile
+  -> WebAuthn: support DNs larger than 64 bytes (358)
 
 
 24.09.2024 8.9
