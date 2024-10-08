@@ -3,6 +3,7 @@ December 2024 9.0
  - Usability improvements (350)
  - LAM Pro:
   -> Request access: added comment field for owners/approvers (339)
+  -> Custom scripts: support custom label for module (329)
  - Fixed bugs:
   -> Windows: show more than 1000 LDAP entries when paged results is activated in server profile
   -> WebAuthn: support DNs larger than 64 bytes (358)
