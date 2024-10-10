@@ -50,9 +50,11 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 				'user manual echo $description$',
 				'user postModify echo $dn$',
 				'gon preModify echo NEW $member$ OLD $ORIG.member$',
+				'',
+				'  ',
 				'group:group_3 manual echo group3',
-				'group:group_3 postModify echo group3',
-				'group preModify echo group',
+				'group:group_3 postCreate echo group3',
+				'group preCreate echo group',
 			];
 			$this->configLinesSelfService = [
 				'postModify echo $dn$',
@@ -97,6 +99,7 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertEquals('echo $dn$', $script->getCommand());
 			$this->assertEquals('postModify', $script->getType());
 			$this->assertNull($script->getLabel());
+			$this->assertEquals(_('Post-modify'), $script->getTypeLabel());
 
 			$script = $scripts[3];
 			$configuredType = new ConfiguredType($typeManager, 'gon', 'gon_1');
@@ -107,6 +110,7 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertEquals('echo NEW $member$ OLD $ORIG.member$', $script->getCommand());
 			$this->assertEquals('preModify', $script->getType());
 			$this->assertNull($script->getLabel());
+			$this->assertEquals(_('Pre-modify'), $script->getTypeLabel());
 
 			$script = $scripts[4];
 			$configuredType = new ConfiguredType($typeManager, 'group', 'group_3');
@@ -125,8 +129,9 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertFalse($script->isManual());
 			$this->assertEquals('echo group3', $script->getCommand());
-			$this->assertEquals('postModify', $script->getType());
+			$this->assertEquals('postCreate', $script->getType());
 			$this->assertNull($script->getLabel());
+			$this->assertEquals(_('Post-create'), $script->getTypeLabel());
 
 			$script = $scripts[6];
 			$configuredType = new ConfiguredType($typeManager, 'group', 'group_3');
@@ -135,8 +140,9 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertFalse($script->isManual());
 			$this->assertEquals('echo group', $script->getCommand());
-			$this->assertEquals('preModify', $script->getType());
+			$this->assertEquals('preCreate', $script->getType());
 			$this->assertNull($script->getLabel());
+			$this->assertEquals(_('Pre-create'), $script->getTypeLabel());
 		}
 
 		public function testCustomScriptParserSelfService() {
