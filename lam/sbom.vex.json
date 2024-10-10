@@ -1,0 +1,70 @@
+{
+  "@context": "https://openvex.dev/ns/v0.2.0",
+  "@id": "https://openvex.dev/docs/public/vex-b6051162b0a9891901698e7a96945c2c2286529b4146719fca943937150bbd3b",
+  "author": "Unknown Author",
+  "timestamp": "2024-10-07T15:11:48.761178+02:00",
+  "last_updated": "2024-10-07T15:17:36.955082+02:00",
+  "version": 5,
+  "statements": [
+    {
+      "vulnerability": {
+        "name": "GHSA-457r-cqc8-9vj9"
+      },
+      "timestamp": "2024-10-07T15:11:48.761179+02:00",
+      "products": [
+        {
+          "@id": "pkg:npm/sweetalert2"
+        }
+      ],
+      "status": "under_investigation"
+    },
+    {
+      "vulnerability": {
+        "name": "GHSA-mrr8-v49w-3333"
+      },
+      "timestamp": "2024-10-07T15:13:36.744754+02:00",
+      "products": [
+        {
+          "@id": "pkg:npm/sweetalert2"
+        }
+      ],
+      "status": "under_investigation"
+    },
+    {
+      "vulnerability": {
+        "name": "GHSA-8jh9-wqpf-q52c"
+      },
+      "timestamp": "2024-10-07T15:15:07.044344+02:00",
+      "products": [
+        {
+          "@id": "pkg:npm/sweetalert2@8.19.1"
+        }
+      ],
+      "status": "under_investigation"
+    },
+    {
+      "vulnerability": {
+        "name": "GHSA-pg98-6v7f-2xfv"
+      },
+      "timestamp": "2024-10-07T15:15:49.106046+02:00",
+      "products": [
+        {
+          "@id": "pkg:npm/sweetalert2@9.17.4"
+        }
+      ],
+      "status": "under_investigation"
+    },
+    {
+      "vulnerability": {
+        "name": "GHSA-qq6h-5g6j-q3cm"
+      },
+      "timestamp": "2024-10-07T15:17:36.955082+02:00",
+      "products": [
+        {
+          "@id": "pkg:npm/sweetalert2@11.4.9"
+        }
+      ],
+      "status": "under_investigation"
+    }
+  ]
+}
