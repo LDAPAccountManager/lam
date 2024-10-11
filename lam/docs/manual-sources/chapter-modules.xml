@@ -6021,6 +6021,11 @@ OK (10 msec)</programlisting>
       </mediaobject>
     </screenshot>
 
+    <para><emphasis role="bold">Label:</emphasis></para>
+
+    <para>Here you can enter a descriptive label for the module tab inside
+    LAM.</para>
+
     <para><emphasis role="bold">Syntax:</emphasis></para>
 
     <para>Please enter one script per line. Each line has the following
@@ -6240,6 +6245,25 @@ OK (10 msec)</programlisting>
         modified accounts</para>
       </listitem>
     </itemizedlist>
+
+    <para><emphasis role="bold">Grouping of manual scripts:</emphasis></para>
+
+    <para>If you have a larger number of manual scripts then you can divide
+    them into groups. Add a line "LAM_GROUP: My group description" when you
+    want to start a new group.</para>
+
+    <para>Example:</para>
+
+    <literallayout>user preModify /opt/myapp/preModify.sh -u $uid$
+group postDelete /opt/myapp/postDelete.sh -g $gid$
+LAM_GROUP: Mail actions
+user manual LAMLABEL="Clean" /bin/myscripts/cleanMailbox -u $uid$
+user manual LAMLABEL="Extend" /bin/myscripts/extendMailbox -u $uid$
+LAM_GROUP: Sync actions
+user manual /bin/myscripts/syncWithCRM -u $uid$
+user manual LAMLABEL="Some app" /bin/myscripts/syncWithSomeApp -u $uid$
+
+</literallayout>
 
     <para><emphasis role="bold">Output may contain HTML:</emphasis> If your
     scripts generate HTML output then activate this option.</para>
