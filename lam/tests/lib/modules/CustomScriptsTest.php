@@ -46,7 +46,9 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 
 		protected function setUp(): void {
 			$this->configLines = [
+				'LAM_GROUP: Group 1',
 				'user manual LAMLABEL="echo uid" echo $uid$',
+				'LAM_GROUP: Group 2',
 				'user manual echo $description$',
 				'user postModify echo $dn$',
 				'gon preModify echo NEW $member$ OLD $ORIG.member$',
@@ -79,6 +81,7 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertEquals('echo $uid$', $script->getCommand());
 			$this->assertEquals('manual', $script->getType());
 			$this->assertEquals('echo uid', $script->getLabel());
+			$this->assertEquals('Group 1', $script->getGroupLabel());
 
 			$script = $scripts[1];
 			$configuredType = new ConfiguredType($typeManager, 'user', 'user');
@@ -89,6 +92,7 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertEquals('echo $description$', $script->getCommand());
 			$this->assertEquals('manual', $script->getType());
 			$this->assertNull($script->getLabel());
+			$this->assertEquals('Group 2', $script->getGroupLabel());
 
 			$script = $scripts[2];
 			$configuredType = new ConfiguredType($typeManager, 'user', 'user');
