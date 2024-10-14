@@ -694,7 +694,6 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$file_array[] = "\n" . "jobsDBUser: " . $profile->getJobsDBUser() . "\n";
 			$file_array[] = "\n" . "jobsDBPassword: " . $profile->getJobsDBPassword() . "\n";
 			$file_array[] = "\n" . "jobsDBName: " . $profile->getJobsDBName() . "\n";
-			$file_array[] = "\n" . "jobToken: " . $profile->getJobToken() . "\n";
 			$file_array[] = "\n" . "pwdResetAllowSpecificPassword: " . $profile->getPwdResetAllowSpecificPassword() . "\n";
 			$file_array[] = "\n" . "pwdResetAllowScreenPassword: " . $profile->getPwdResetAllowScreenPassword() . "\n";
 			$file_array[] = "\n" . "pwdResetForcePasswordChange: " . $profile->getPwdResetForcePasswordChange() . "\n";
@@ -1124,8 +1123,6 @@ class LAMConfig {
 	private $jobsDBPassword;
 	/** name of job database */
 	private $jobsDBName;
-	/** random job token */
-	private $jobToken;
 	/** job configuration */
 	private $jobSettings = [];
 
@@ -1157,7 +1154,7 @@ class LAMConfig {
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
-		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobToken', 'jobs',
+		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobs',
 		'jobsDBHost', 'jobsDBPort', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName', 'pwdResetAllowSpecificPassword',
 		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput',
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
@@ -2527,18 +2524,6 @@ class LAMConfig {
 	 */
 	public function getJobSettings() {
 		return $this->jobSettings;
-	}
-
-	/**
-	 * Returns the job token.
-	 *
-	 * @return String job token
-	 */
-	public function getJobToken() {
-		if (empty($this->jobToken)) {
-			$this->jobToken = generateRandomText();
-		}
-		return $this->jobToken;
 	}
 
 	/**

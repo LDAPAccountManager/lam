@@ -609,6 +609,19 @@
       intermediate release.</para>
 
       <section>
+        <title>8.9 -&gt; 9.0</title>
+
+        <para>LAM Pro:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Cron jobs of server profiles no longer use the job token
+            parameter</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
         <title>8.8 -&gt; 8.9</title>
 
         <para>No actions required.</para>

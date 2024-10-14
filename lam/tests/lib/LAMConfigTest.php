@@ -890,14 +890,6 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
-	 * Tests LAMConfig->getJobToken()
-	 */
-	public function testGetJobToken() {
-		$token = $this->lAMConfig->getJobToken();
-		$this->assertFalse(empty($token));
-	}
-
-	/**
 	 * Tests the password policy options.
 	 */
 	public function testPwdPolicy() {
