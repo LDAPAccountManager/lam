@@ -46,6 +46,10 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 
 		protected function setUp(): void {
 			$this->configLines = [
+				'LAM_SELECTION_ENV: Environment=dev;qa;prod',
+				'LAM_SELECTION_TENANT: Tenant=foo;bar',
+				'LAM_TEXT_COMMENT: Comment=no comment',
+				'LAM_TEXT_AMOUNT:Amount',
 				'LAM_GROUP: Group 1',
 				'user manual LAMLABEL="echo uid" echo $uid$',
 				'LAM_GROUP: Group 2',
@@ -147,6 +151,25 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertEquals('preCreate', $script->getType());
 			$this->assertNull($script->getLabel());
 			$this->assertEquals(_('Pre-create'), $script->getTypeLabel());
+
+			$this->assertEquals(4, sizeof($parser->getManualOptions()));
+			$this->assertEquals('select', $parser->getManualOptions()[0]['type']);
+			$this->assertEquals('select', $parser->getManualOptions()[1]['type']);
+			$this->assertEquals('LAM_SELECTION_ENV', $parser->getManualOptions()[0]['name']);
+			$this->assertEquals('LAM_SELECTION_TENANT', $parser->getManualOptions()[1]['name']);
+			$this->assertEquals('Environment', $parser->getManualOptions()[0]['label']);
+			$this->assertEquals('Tenant', $parser->getManualOptions()[1]['label']);
+			$this->assertEquals(['dev', 'qa', 'prod'], $parser->getManualOptions()[0]['values']);
+			$this->assertEquals(['foo', 'bar'], $parser->getManualOptions()[1]['values']);
+
+			$this->assertEquals('text', $parser->getManualOptions()[2]['type']);
+			$this->assertEquals('text', $parser->getManualOptions()[3]['type']);
+			$this->assertEquals('LAM_TEXT_COMMENT', $parser->getManualOptions()[2]['name']);
+			$this->assertEquals('LAM_TEXT_AMOUNT', $parser->getManualOptions()[3]['name']);
+			$this->assertEquals('Comment', $parser->getManualOptions()[2]['label']);
+			$this->assertEquals('Amount', $parser->getManualOptions()[3]['label']);
+			$this->assertEquals('no comment', $parser->getManualOptions()[2]['default']);
+			$this->assertFalse(isset($parser->getManualOptions()[3]['default']));
 		}
 
 		public function testCustomScriptParserSelfService() {
