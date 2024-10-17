@@ -46,7 +46,7 @@ include_once(__DIR__ . "/../lib/config.inc");
 /** persistence */
 include_once(__DIR__ . "/../lib/persistence.inc");
 
-// check if PHP >= 7.4
+// check PHP version
 if (version_compare(phpversion(), '8.1') < 0) {
 	echo "<!DOCTYPE html>\n\n";
 	echo "<html>\n<head>\n";
