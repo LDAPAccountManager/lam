@@ -732,7 +732,7 @@ if (isset($_POST['submitFormData'])) {
     // global cron job
     if ($supportsGlobalCronJob) {
 		$row->add(new htmlSubTitle(_('Global cron job')));
-        $cronCommand = dirname(__FILE__, 3) . '/lib/runCronJobs.sh global';
+        $cronCommand = dirname(__FILE__, 3) . '/lib/runCronJobs.sh all';
         $row->addLabel(new htmlOutputText('Cron command'));
 		$cmdGroup = new htmlGroup();
 		$cmdGroup->addElement(new htmlOutputText('0 0 * * * ' . $cronCommand));

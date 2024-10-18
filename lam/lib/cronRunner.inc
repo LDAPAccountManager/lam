@@ -148,7 +148,7 @@ class CronRunner {
 		// get jobs to run
 		if (empty($cronDatabase->getJobs())) {
 			if ($this->isDryRun) {
-				echo "No jobs configured for " . $serverProfileName . "\n";
+				echo "No jobs configured for " . $serverProfileName . "\n\n";
 			}
 			return;
 		}

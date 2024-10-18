@@ -1302,9 +1302,9 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
 
         <para>Dry-run: You can perform a dry-run of the job. This will not
         perform any actions but only print what would be done. For this please
-        put "--dryRun" at the end of the command. E.g.:</para>
+        put "--dry-run" at the end of the command. E.g.:</para>
 
-        <literallayout>  /usr/share/ldap-account-manager/lib/cron.sh lam 123456789 --dryRun</literallayout>
+        <literallayout>  /usr/share/ldap-account-manager/lib/runCronJobs.sh serverProfile lam --dry-run</literallayout>
 
         <para/>
       </section>

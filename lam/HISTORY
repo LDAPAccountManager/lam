@@ -6,6 +6,7 @@ December 2024 9.0
   -> Custom scripts: support custom label for module (329)
   -> Custom scripts: support grouping of manual scripts (329)
   -> Custom scripts: allow interactive parameters for manual scripts (327)
+  -> Cron jobs: new script to run all types of cron jobs (runCronJobs.sh), the scripts cron.sh and cronGlobal.sh are deprecated
  - Fixed bugs:
   -> Windows: show more than 1000 LDAP entries when paged results is activated in server profile
   -> WebAuthn: support DNs larger than 64 bytes (358)

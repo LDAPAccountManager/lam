@@ -25,6 +25,7 @@ namespace LAM\Cron;
 
 use LAMConfig;
 use LAMException;
+use ServerProfilePersistenceManager;
 
 /**
  * Global cron job for LAM.
@@ -44,7 +45,21 @@ $cronRunner = new CronRunner($isDryRun);
 
 $runGlobalActions = isset($argv[2]) && ($argv[2] === 'global');
 $runSingleServerProfileActions = isset($argv[2]) && ($argv[2] === 'serverProfile');
-if ($runGlobalActions) {
+$runAll = isset($argv[2]) && ($argv[2] === 'all');
+if ($runAll) {
+	try {
+		$cronRunner->runGlobalCronJobs();
+		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+		foreach ($serverProfilePersistenceManager->getProfiles() as $serverProfile) {
+			$cronRunner->runSingleServerProfileActions($serverProfile);
+		}
+	}
+	catch (LAMException $e) {
+		echo escapeshellcmd($e->getTitle()) . "\n";
+		exit(1);
+	}
+}
+elseif ($runGlobalActions) {
 	try {
 		$cronRunner->runGlobalCronJobs();
 	}
@@ -66,6 +81,14 @@ else {
 	echo "LAM - Run cron jobs\n"
 		. "\n"
 		. "Usage:\n"
+		. "\n"
+		. "Run all cron jobs (global and server profiles):\n"
+		. "\n"
+		. " runCronJobs.sh all\n"
+		. "\n"
+		. "Run all cron jobs (global and server profiles) in dry-run:\n"
+		. "\n"
+		. " runCronJobs.sh all --dry-run\n"
 		. "\n"
 		. "Run all global cron jobs:\n"
 		. "\n"
