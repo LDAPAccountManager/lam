@@ -618,6 +618,14 @@
             <para>Cron jobs of server profiles no longer use the job token
             parameter</para>
           </listitem>
+
+          <listitem>
+            <para>cron.sh and cronGlobal.sh are deprecated and will be removed
+            in the next release. Use the new command "runCronJobs.sh". E.g.
+            "runCronJobs.sh all" will run all global jobs and all server
+            profile jobs. Execute "runCronJobs.sh" to get a list of possible
+            options.</para>
+          </listitem>
         </itemizedlist>
       </section>
 

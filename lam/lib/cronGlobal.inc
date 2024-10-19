@@ -2,22 +2,28 @@
 
 namespace LAM\Cron;
 
-use Exception;
-use LAM\DB\CronDatabase;
-use LAMCfgMain;
-use LAMConfig;
-use LAMException;
-use PDOException;
-use Ldap;
-use LAM\JOB\JobResultLog;
-use ServerProfilePersistenceManager;
-
 /*
 
-  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2024  Roland Gruber
+ This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+ Copyright (C) 2024  Roland Gruber
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+
+use LAMException;
 
 /**
  * Global cron job for LAM.
@@ -26,46 +32,17 @@ use ServerProfilePersistenceManager;
  * @author Roland Gruber
  */
 
-/** access to configuration data */
-include_once(__DIR__ . "/config.inc");
-/** access to ldap data */
-include_once(__DIR__ . "/ldap.inc");
-/** access to modules */
-include_once(__DIR__ . "/modules.inc");
+/** cron runner */
+include_once(__DIR__ . "/cronRunner.inc");
 
 // check parameters
-$isDryRun = (isset($argv[2]) && ($argv[2] == '--dryRun')) ? true : false;
+$isDryRun = isset($argv[2]) && ($argv[2] === '--dryRun');
 
-$_SESSION['cfgMain'] = new LAMCfgMain();
-
-if ($isDryRun) {
-	echo "Dry run: no changes, only logging.\n";
+$cronRunner = new CronRunner($isDryRun);
+try {
+	$cronRunner->runGlobalCronJobs();
 }
-
-// execute jobs
-$errorsOccurred = false;
-$allModules = getAllModules();
-foreach ($allModules as $module) {
-	if (!$module->supportsGlobalCronJob()) {
-		continue;
-	}
-	try {
-		if ($isDryRun) {
-			echo "Started actions for " . $module->get_alias() . "\n";
-		}
-		logNewMessage(LOG_NOTICE, 'Started actions for ' . $module->get_alias());
-		$module->runGlobalCronActions($isDryRun);
-		if ($isDryRun) {
-			echo "Finished actions for " . $module->get_alias() . "\n";
-		}
-		logNewMessage(LOG_NOTICE, 'Finished actions for ' . $module->get_alias());
-	}
-	catch (Exception $e) {
-		$errorsOccurred = true;
-		echo "Error in " . $module->get_alias() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n";
-	}
-}
-if ($errorsOccurred) {
-	echo "Problems occurred during cron execution\n";
-	die(1);
+catch (LAMException $e) {
+	echo escapeshellcmd($e->getTitle()) . "\n";
+	exit(1);
 }

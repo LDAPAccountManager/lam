@@ -90,6 +90,13 @@ EOF
 
 fi
 
+LAM_CONFIGURE_CRON="${LAM_CONFIGURE_CRON:-false}"
+if [ "$LAM_CONFIGURE_CRON" = "true" ]; then
+  echo "Configuring Cron"
+  echo "0 0 * * * www-data /usr/share/ldap-account-manager/lib/runCronJobs.sh all" > /etc/cron.d/ldap-account-manager
+  /usr/sbin/cron
+fi
+
 echo "Starting Apache"
 rm -f /run/apache2/apache2.pid
 set +u
