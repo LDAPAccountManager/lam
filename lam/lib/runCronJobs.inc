@@ -40,7 +40,7 @@ include_once(__DIR__ . "/config.inc");
 include_once(__DIR__ . "/cronRunner.inc");
 
 // check parameters
-$isDryRun = in_array('--dryRun', $argv) || in_array('--dry-run', $argv);
+$isDryRun = isset($argv) && (in_array('--dryRun', $argv) || in_array('--dry-run', $argv));
 $cronRunner = new CronRunner($isDryRun);
 
 $runGlobalActions = isset($argv[2]) && ($argv[2] === 'global');
