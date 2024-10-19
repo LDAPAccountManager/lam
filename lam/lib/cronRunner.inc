@@ -192,6 +192,9 @@ class CronRunner {
 			$ldap->connect($_SESSION['config']->getJobsBindUser(), deobfuscateText($_SESSION['config']->getJobsBindPassword()), true);
 		}
 		catch (LAMException) {
+			if ($ldap->server() === null) {
+				throw new LAMException("Unable to connect to LDAP");
+			}
 			throw new LAMException("Unable to connect to LDAP with error: " . ldap_error($ldap->server()) . "\n" . getExtendedLDAPErrorMessage($ldap->server()));
 		}
 		$_SESSION['ldap'] = $ldap;
