@@ -48,8 +48,6 @@ include_once(__DIR__ . "/config.inc");
 include_once(__DIR__ . "/ldap.inc");
 /** access to modules */
 include_once(__DIR__ . "/modules.inc");
-/** Access to database */
-include_once(__DIR__ . "/database.inc");
 
 /**
  * Executes cron jobs.
@@ -118,6 +116,8 @@ class CronRunner {
 	 * @throws LAMException error running actions
 	 */
 	public function runSingleServerProfileActions(string $serverProfileName): void {
+		/** Access to database */
+		include_once(__DIR__ . "/database.inc");
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		$this->validateServerProfileName($serverProfileName, $serverProfilePersistenceManager);
 		if ($this->isDryRun) {
