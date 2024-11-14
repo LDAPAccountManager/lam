@@ -1136,7 +1136,7 @@ class accountContainer {
 		echo '<tr><td class="lam-vertical-tabs-navigation">';
 		// tab menu
 		$this->printModuleTabs();
-		echo '</td><td style="vertical-align: top;" width="100%">';
+		echo '</td><td style="vertical-align: top; width: 100%;">';
 		echo "<div class=\"lam-vertical-tab-content fullwidth module-content-row\">\n";
 		// content area
 		// display html-code from modules
