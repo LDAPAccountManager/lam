@@ -208,6 +208,14 @@ div.account-types-popup div.columns:last-child {
 	float: left;
 }
 
+table.lam-account-edit-table {
+	border-collapse: collapse;
+	width: 100%;
+	border-width: 0;
+	margin-right: auto;
+	margin-left: auto;
+}
+
 /* mobile */
 @media only screen and (max-width: 40.0625em) {
 
@@ -420,6 +428,10 @@ div.account-types-popup div.columns:last-child {
 		max-width: 60rem;
 		padding-top: 2rem;
 		padding-bottom: 2rem;
+	}
+
+	table.lam-account-edit-table {
+		max-width: 90rem;
 	}
 
 }

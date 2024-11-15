@@ -284,28 +284,40 @@ function appendDialogInputsToFormAndSubmit(dialogDiv, formName) {
  * Shows a simple confirmation dialog.
  * If the user presses Cancel then the current action is stopped (event.preventDefault()).
  *
+ * @param title dialog title
  * @param text dialog text
  * @param okText text for OK button
  * @param cancelText text for cancel button
  * @param e event
  */
-function confirmLoadProfile(text, okText, cancelText, e) {
-	Swal.fire({
+async function confirmLoadProfile(title, text, okText, cancelText, e) {
+	const button = document.getElementById('btn_accountContainerLoadProfileButton');
+	const lastProfile = button.dataset.lastprofile;
+	const profiles = JSON.parse(button.dataset.profiles);
+	const {value: selectedProfile} = await Swal.fire({
 		confirmButtonText: okText,
 		cancelButtonText: cancelText,
 		showCancelButton: true,
+		title: title,
 		text: text,
-	}).then(result => {
-		if (result.isConfirmed) {
-			const form = document.forms["inputForm"];
-			let buttonValue = document.createElement("input");
-			buttonValue.type = "hidden";
-			buttonValue.name = "accountContainerLoadProfile";
-			buttonValue.value = "yes";
-			form.appendChild(buttonValue);
-			form.submit();
-		}
+		input: 'select',
+		inputValue: lastProfile,
+		inputOptions: profiles
 	});
+	if (selectedProfile) {
+		const form = document.forms["inputForm"];
+		let buttonValue = document.createElement("input");
+		buttonValue.type = "hidden";
+		buttonValue.name = "accountContainerLoadProfile";
+		buttonValue.value = "yes";
+		form.appendChild(buttonValue);
+		let selectValue = document.createElement('input');
+		selectValue.type = 'hidden';
+		selectValue.name = 'accountContainerSelectLoadProfile';
+		selectValue.value = selectedProfile;
+		form.appendChild(selectValue);
+		form.submit();
+	};
 	if (e.preventDefault) {
 		e.preventDefault();
 	}

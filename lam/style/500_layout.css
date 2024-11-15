@@ -699,7 +699,7 @@ button.lam-account-type img {
 
 div.lam-vertical-tab-content {
 	border-width: 0;
-	padding: 0em 1em 1em 1em;
+	padding: 1rem 2rem 1rem 1rem;
 	float: left;
 }
 
@@ -983,6 +983,10 @@ div.swal2-html-container {
 
 .swal2-html-container select {
 	overflow: auto;
+}
+
+#swal2-select {
+	width: unset;
 }
 
 .modal {

@@ -1085,7 +1085,7 @@ class accountContainer {
 			}
 		}
 		echo '<div id="passwordMessageArea"></div>';
-		echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		echo "<table class=\"lam-account-edit-table\">\n";
 		echo "<tr><td style=\"padding: 5px 0px 0px 0px;\">\n";
 		$this->printCommonControls();
 		echo "</td></tr>\n";
@@ -1415,16 +1415,15 @@ class accountContainer {
 			$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 			$profilelist = $accountProfilePersistenceManager->getAccountProfileNames($this->type->getId(), $_SESSION['config']->getName());
 			if (sizeof($profilelist) > 0) {
-				$profilesSelect = new htmlSelect('accountContainerSelectLoadProfile', $profilelist, [$this->lastLoadedProfile]);
-				$profilesSelect->setCSSClasses(['auto-width']);
-				$profilesSelect->setAccessibilityLabel(_('Profile name'));
-				$rightGroup->addElement($profilesSelect);
-				$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
-				if (!$this->isNewAccount) {
-					$profileButton->setType('submit');
-					$profileButton->setOnClick('confirmLoadProfile(\'' . _('This may overwrite existing values with profile data. Continue?') . '\','
-						. ' \'' . _('Ok') . '\', \'' . _('Cancel') . '\', event);');
+				$profileButton = new htmlButton('accountContainerLoadProfileButton', _('Load profile'));
+				$profileButton->setOnClick('confirmLoadProfile(\'' . _('Load profile') . '\', \'' . _('This may overwrite existing values with profile data. Continue?') . '\','
+						. ' \'' . _('Ok') . '\', \'' . _('Cancel') . '\', event); return false;');
+				$profileButton->addDataAttribute('lastprofile', $this->lastLoadedProfile);
+				$profileListOptions = [];
+				foreach ($profilelist as $profileName) {
+					$profileListOptions[$profileName] = $profileName;
 				}
+				$profileButton->addDataAttribute('profiles', json_encode($profileListOptions));
 				$rightGroup->addElement($profileButton);
 				$rightGroup->addElement(new htmlSpacer('1px', null));
 				$rightGroup->addElement(new htmlHelpLink('401'));
