@@ -119,7 +119,7 @@ else {
 		$saveButton->addDataAttribute('credential', $credentialId);
 		$saveButton->addDataAttribute('dn', $result['dn']);
 		$saveButton->addDataAttribute('nameelement', 'deviceName_' . $id);
-		$saveButton->setOnClick('window.lam.webauthn.updateOwnDeviceName(event, false);');
+		$saveButton->setOnClick('window.lam.webauthn.updateOwnDeviceName(event);');
 		$nameField = new htmlInputField('deviceName_' . $id, $result['name']);
 		$nameFieldClasses = ['maxwidth20'];
 		if (!empty($_GET['updated']) && ($_GET['updated'] === $credentialId)) {

@@ -2222,9 +2222,8 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successC
  * Updates a device name.
  *
  * @param event click event
- * @param isSelfService run in self service or admin context
  */
-window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
+window.lam.webauthn.updateOwnDeviceName = function(event) {
 	event.preventDefault();
 	const element = event.currentTarget;
 	const dn = element.dataset.dn;
@@ -2241,20 +2240,12 @@ window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
 	data.append('name', name);
 	data.append('credentialId', credential);
 	let action = 'webauthnOwnDevices';
-	if (isSelfService) {
-		action = action + '&selfservice=true&module=webauthn&scope=user';
-	}
 	fetch('../misc/ajax.php?function=' + action, {
 		method: 'POST',
 		body: data
 	})
 	.then(async response => {
-		if (isSelfService) {
-			nameElement.classList.add('markPass');
-		}
-		else {
-			window.location.href = 'webauthn.php?updated=' + encodeURIComponent(credential);
-		}
+		window.location.href = 'webauthn.php?updated=' + encodeURIComponent(credential);
 	})
 	.catch(function(err) {
 		console.log('WebAuthn device name change failed: ' + err.message);
