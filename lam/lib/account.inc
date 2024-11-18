@@ -1273,6 +1273,27 @@ function compareLDAPEntriesByDn(array $a, array $b): int {
 }
 
 /**
+ * Does a Base64 encoding that is URL safe.
+ *
+ * @param string $data input
+ * @return string encoded output
+ */
+function lam_base64url_encode(string $data): string {
+	return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+/**
+ * Does a Base64 decoding that is URL safe.
+ *
+ * @param string $data encoded input
+ * @return string decoded output
+ */
+function lam_base64url_decode(string $data): string {
+	return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '='), true);
+}
+
+
+/**
  * Formats an LDAP time string (e.g. from createTimestamp).
  *
  * @param String $time LDAP time value

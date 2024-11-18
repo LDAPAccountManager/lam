@@ -2152,7 +2152,7 @@ window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
 	if (isSelfService) {
 		action = action + '&selfservice=true&module=webauthn&scope=user';
 	}
-	window.lam.webauthn.removeDeviceDialog(element, action, successCallback);
+	window.lam.webauthn.removeDeviceDialog(element, action, successCallback, isSelfService);
 	return false;
 }
 
@@ -2162,8 +2162,9 @@ window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
  * @param element delete button
  * @param action action for request (delete|deleteOwn)
  * @param successCallback callback if all was fine (optional)
+ * @param isSelfService run in self service or admin context
  */
-window.lam.webauthn.removeDeviceDialog = function(element, action, successCallback) {
+window.lam.webauthn.removeDeviceDialog = function(element, action, successCallback, isSelfService) {
 	const dialogTitle = element.dataset.dialogtitle;
 	const okText = element.dataset.oktext;
 	const cancelText = element.dataset.canceltext;
@@ -2178,7 +2179,7 @@ window.lam.webauthn.removeDeviceDialog = function(element, action, successCallba
 		width: 'auto'
 	}).then(result => {
 		if (result.isConfirmed) {
-			window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback);
+			window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback, isSelfService);
 		}
 	});
 }
@@ -2189,8 +2190,9 @@ window.lam.webauthn.removeDeviceDialog = function(element, action, successCallba
  * @param element button element
  * @param action action (delete|deleteOwn)
  * @param successCallback callback if all was fine (optional)
+ * @param isSelfService run in self service or admin context
  */
-window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successCallback) {
+window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successCallback, isSelfService) {
 	const dn = element.dataset.dn;
 	const credential = element.dataset.credential;
 	const resultDiv = document.getElementById('webauthn_results');
@@ -2200,6 +2202,11 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successC
 	data.append('action', 'delete');
 	data.append('dn', dn);
 	data.append('credentialId', credential);
+	if (isSelfService) {
+		document.querySelectorAll('.webauthn_device_name').forEach(item => {
+			data.append(item.name, item.value);
+		});
+	}
 	fetch('../misc/ajax.php?function=' + action, {
 		method: 'POST',
 		body: data
@@ -2222,9 +2229,8 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successC
  * Updates a device name.
  *
  * @param event click event
- * @param isSelfService run in self service or admin context
  */
-window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
+window.lam.webauthn.updateOwnDeviceName = function(event) {
 	event.preventDefault();
 	const element = event.currentTarget;
 	const dn = element.dataset.dn;
@@ -2241,20 +2247,12 @@ window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
 	data.append('name', name);
 	data.append('credentialId', credential);
 	let action = 'webauthnOwnDevices';
-	if (isSelfService) {
-		action = action + '&selfservice=true&module=webauthn&scope=user';
-	}
 	fetch('../misc/ajax.php?function=' + action, {
 		method: 'POST',
 		body: data
 	})
 	.then(async response => {
-		if (isSelfService) {
-			nameElement.classList.add('markPass');
-		}
-		else {
-			window.location.href = 'webauthn.php?updated=' + encodeURIComponent(credential);
-		}
+		window.location.href = 'webauthn.php?updated=' + encodeURIComponent(credential);
 	})
 	.catch(function(err) {
 		console.log('WebAuthn device name change failed: ' + err.message);
@@ -2288,6 +2286,9 @@ window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 			data.append('action', 'register');
 			data.append('dn', dn);
 			data.append('credential', btoa(JSON.stringify(publicKeyCredential)));
+			document.querySelectorAll('.webauthn_device_name').forEach(item => {
+				data.append(item.name, item.value);
+			});
 			fetch('../misc/ajax.php?selfservice=true&module=webauthn&scope=user', {
 				method: 'POST',
 				body: data
