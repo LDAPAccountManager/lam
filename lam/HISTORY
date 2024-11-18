@@ -1,7 +1,7 @@
 December 2024 9.0
  - Unix users: allow to create group with same name via account profile (#332)
  - Group of (unique) names, organisational roles: added member/owner count to PDF fields
- - Usability improvements (342, 350)
+ - Usability improvements (342, 350, 372)
  - LAM Pro:
   -> Request access: added comment field for owners/approvers (339)
   -> Custom scripts: support custom label for module (329)
