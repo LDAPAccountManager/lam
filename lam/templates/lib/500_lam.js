@@ -2286,6 +2286,9 @@ window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 			data.append('action', 'register');
 			data.append('dn', dn);
 			data.append('credential', btoa(JSON.stringify(publicKeyCredential)));
+			document.querySelectorAll('.webauthn_device_name').forEach(item => {
+				data.append(item.name, item.value);
+			});
 			fetch('../misc/ajax.php?selfservice=true&module=webauthn&scope=user', {
 				method: 'POST',
 				body: data

@@ -609,6 +609,33 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	}
 
 	/**
+	 * Performs a full-text search on the user names and returns all devices found.
+	 *
+	 * @param string $userDn user DN
+	 * @return array list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
+	 */
+	public function getAllUserDevices(string $userDn) {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userDN = :userDn order by userId,registrationTime');
+		$statement->execute([
+			':userDn' => $userDn
+		]);
+		$results = $statement->fetchAll();
+		$devices = [];
+		foreach ($results as $result) {
+			$name = !empty($result['name']) ? $result['name'] : '';
+			$devices[] = [
+				'dn' => $result['userDN'],
+				'credentialId' => $result['credentialId'],
+				'lastUseTime' => $result['lastUseTime'],
+				'registrationTime' => $result['registrationTime'],
+				'name' => $name
+			];
+		}
+		return $devices;
+	}
+
+	/**
 	 * Deletes a single device from the database.
 	 *
 	 * @param string $dn user DN
