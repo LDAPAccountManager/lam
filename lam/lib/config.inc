@@ -3546,6 +3546,7 @@ class LAMCfgMain {
 				fputs($file, $file_array[$i]);
 			}
 			fclose($file);
+			chmod($this->conffile, 0600);
 		}
 		else {
 			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $this->conffile . ")");
