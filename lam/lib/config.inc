@@ -585,24 +585,14 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			// search keywords
 			$parts = explode(': ', $line);
 			$keyword = $parts[0];
+			$keyword = trim($keyword, ':');
 			$startIndex = strlen($keyword) + 2;
-			if (sizeof($parts) == 1) {
-				// empty global settings
+			$value = (sizeof($parts) > 1) ? substr($line, $startIndex) : '';
+			if (!in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
 				try {
 					$property = $reflectionConfig->getProperty($keyword);
 					$property->setAccessible(true);
-					$property->setValue($config, '');
-				}
-				catch (ReflectionException) {
-					// ignore
-				}
-			}
-			elseif ((sizeof($parts) > 1) && !in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
-				// global setting with value
-				try {
-					$property = $reflectionConfig->getProperty($keyword);
-					$property->setAccessible(true);
-					$property->setValue($config, substr($line, $startIndex));
+					$property->setValue($config, $value);
 				}
 				catch (ReflectionException) {
 					// ignore
