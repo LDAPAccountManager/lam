@@ -571,56 +571,60 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		if (!$file) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		$data = [];
-		$moduleSettings = [];
-		$typeSettings = [];
-		$toolSettings = [];
-		$jobSettings = [];
-		while (!feof($file)) {
-			$line = fgets($file, 1000000);
-			$line = trim($line);  // remove spaces at the beginning and end
-			if (($line == "") || ($line[0] == "#")) {
-				continue; // ignore comments and empty lines
+		$json = fgets($file, 1000000);
+		$data = json_decode($json, true);
+		if ($data === null) {
+			$data = [];
+			$moduleSettings = [];
+			$typeSettings = [];
+			$toolSettings = [];
+			$jobSettings = [];
+			while (!feof($file)) {
+				$line = fgets($file, 1000000);
+				$line = trim($line);  // remove spaces at the beginning and end
+				if (($line == "") || ($line[0] == "#")) {
+					continue; // ignore comments and empty lines
+				}
+				// search keywords
+				$parts = explode(': ', $line);
+				$keyword = $parts[0];
+				$keyword = trim($keyword, ':');
+				$startIndex = strlen($keyword) + 2;
+				$value = (sizeof($parts) > 1) ? substr($line, $startIndex) : '';
+				if (!in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
+					$data[$keyword] = $value;
+				}
+				else {
+					$subKeyword = $parts[1];
+					$startIndex = $startIndex + strlen($subKeyword) + 2;
+					$option = substr($line, $startIndex);
+					if (empty($option)) {
+						continue;
+					}
+					// module settings
+					if ($keyword == 'modules') {
+						$moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
+					}
+					// type settings
+					if ($keyword == 'types') {
+						$typeSettings[$subKeyword] = $option;
+					}
+					// tool settings
+					if ($keyword == 'tools') {
+						$toolSettings[$subKeyword] = $option;
+					}
+					// job settings
+					if ($keyword == 'jobs') {
+						$jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
+					}
+				}
 			}
-			// search keywords
-			$parts = explode(': ', $line);
-			$keyword = $parts[0];
-			$keyword = trim($keyword, ':');
-			$startIndex = strlen($keyword) + 2;
-			$value = (sizeof($parts) > 1) ? substr($line, $startIndex) : '';
-			if (!in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
-				$data[$keyword] = $value;
-			}
-			else {
-				$subKeyword = $parts[1];
-				$startIndex = $startIndex + strlen($subKeyword) + 2;
-				$option = substr($line, $startIndex);
-				if (empty($option)) {
-					continue;
-				}
-				// module settings
-				if ($keyword == 'modules') {
-					$moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
-				}
-				// type settings
-				if ($keyword == 'types') {
-					$typeSettings[$subKeyword] = $option;
-				}
-				// tool settings
-				if ($keyword == 'tools') {
-					$toolSettings[$subKeyword] = $option;
-				}
-				// job settings
-				if ($keyword == 'jobs') {
-					$jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
-				}
-			}
+			$data['moduleSettings'] = $moduleSettings;
+			$data['typeSettings'] = $typeSettings;
+			$data['toolSettings'] = $toolSettings;
+			$data['jobSettings'] = $jobSettings;
 		}
 		fclose($file);
-		$data['moduleSettings'] = $moduleSettings;
-		$data['typeSettings'] = $typeSettings;
-		$data['toolSettings'] = $toolSettings;
-		$data['jobSettings'] = $jobSettings;
 		$config->importData($data);
 		$config->removeInvalidTypes();
 		$config->removeInvalidModules();
@@ -637,95 +641,9 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			fclose($newFile);
 		}
 		if (is_file($confFile) && is_readable($confFile)) {
-			$file_array = [];
-			$file_array[] = "\n" . "ServerURL: " . $profile->get_ServerURL() . "\n";
-			$file_array[] = "\n" . "serverDisplayName: " . $profile->getServerDisplayName() . "\n";
-			$file_array[] = "\n" . "useTLS: " . $profile->getUseTLS() . "\n";
-			$file_array[] = "\n" . "followReferrals: " . $profile->getFollowReferrals() . "\n";
-			$file_array[] = "\n" . "pagedResults: " . $profile->getPagedResults() . "\n";
-			$file_array[] = "\n" . "referentialIntegrityOverlay: " . $profile->getReferentialIntegrityOverlay() . "\n";
-			$file_array[] = "\n" . "hidePasswordPromptForExpiredPasswords: " . $profile->getHidePasswordPromptForExpiredPasswords() . "\n";
-			$file_array[] = "\n" . "Passwd: " . $profile->getPasswd() . "\n";
-			$file_array[] = "\n" . "Admins: " . $profile->get_Adminstring() . "\n";
-			$file_array[] = "\n" . "defaultLanguage: " . $profile->get_defaultLanguage() . "\n";
-			$file_array[] = "\n" . "timeZone: " . $profile->getTimeZone() . "\n";
-			$file_array[] = "\n" . "scriptPath: " . $profile->get_scriptPath() . "\n";
-			$file_array[] = "\n" . "scriptServer: " . $profile->get_scriptServers() . "\n";
-			$file_array[] = "\n" . "scriptRights: " . $profile->get_scriptRights() . "\n";
-			$file_array[] = "\n" . "scriptUserName: " . $profile->getScriptUserName() . "\n";
-			$file_array[] = "\n" . "scriptSSHKey: " . $profile->getScriptSSHKey() . "\n";
-			$file_array[] = "\n" . "scriptSSHKeyPassword: " . $profile->getScriptSSHKeyPassword() . "\n";
-			$file_array[] = "\n" . "searchLimit: " . $profile->get_searchLimit() . "\n";
-			$file_array[] = "\n" . "activeTypes: " . $profile->getActiveTypesString() . "\n";
-			$file_array[] = "\n" . "accessLevel: " . $profile->getAccessLevel() . "\n";
-			$file_array[] = "\n" . "loginMethod: " . $profile->getLoginMethod() . "\n";
-			$file_array[] = "\n" . "loginSearchSuffix: " . $profile->getLoginSearchSuffix() . "\n";
-			$file_array[] = "\n" . "loginSearchFilter: " . $profile->getLoginSearchFilter() . "\n";
-			$file_array[] = "\n" . "loginSearchDN: " . $profile->getLoginSearchDN() . "\n";
-			$file_array[] = "\n" . "loginSearchPassword: " . $profile->getLoginSearchPassword() . "\n";
-			$file_array[] = "\n" . "httpAuthentication: " . $profile->getHttpAuthentication() . "\n";
-			$file_array[] = "\n" . "lamProMailFrom: " . $profile->getLamProMailFrom() . "\n";
-			$file_array[] = "\n" . "lamProMailReplyTo: " . $profile->getLamProMailReplyTo() . "\n";
-			$file_array[] = "\n" . "lamProMailSubject: " . $profile->getLamProMailSubject() . "\n";
-			$file_array[] = "\n" . "lamProMailIsHTML: " . $profile->getLamProMailIsHTML() . "\n";
-			$file_array[] = "\n" . "lamProMailAllowAlternateAddress: " . $profile->getLamProMailAllowAlternateAddress() . "\n";
-			$file_array[] = "\n" . "lamProMailText: " . $profile->getLamProMailTextRaw() . "\n";
-			$file_array[] = "\n" . "jobsBindPassword: " . $profile->getJobsBindPassword() . "\n";
-			$file_array[] = "\n" . "jobsBindUser: " . $profile->getJobsBindUser() . "\n";
-			$file_array[] = "\n" . "jobsDatabase: " . $profile->getJobsDatabase() . "\n";
-			$file_array[] = "\n" . "jobsDBHost: " . $profile->getJobsDBHost() . "\n";
-			$file_array[] = "\n" . "jobsDBPort: " . $profile->getJobsDBPort() . "\n";
-			$file_array[] = "\n" . "jobsDBUser: " . $profile->getJobsDBUser() . "\n";
-			$file_array[] = "\n" . "jobsDBPassword: " . $profile->getJobsDBPassword() . "\n";
-			$file_array[] = "\n" . "jobsDBName: " . $profile->getJobsDBName() . "\n";
-			$file_array[] = "\n" . "pwdResetAllowSpecificPassword: " . $profile->getPwdResetAllowSpecificPassword() . "\n";
-			$file_array[] = "\n" . "pwdResetAllowScreenPassword: " . $profile->getPwdResetAllowScreenPassword() . "\n";
-			$file_array[] = "\n" . "pwdResetForcePasswordChange: " . $profile->getPwdResetForcePasswordChange() . "\n";
-			$file_array[] = "\n" . "pwdResetDefaultPasswordOutput: " . $profile->getPwdResetDefaultPasswordOutput() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthentication: " . $profile->getTwoFactorAuthentication() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationURL: " . $profile->getTwoFactorAuthenticationURLRaw() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationClientId: " . $profile->getTwoFactorAuthenticationClientId() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationSecretKey: " . $profile->getTwoFactorAuthenticationSecretKey() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationDomain: " . $profile->getTwoFactorAuthenticationDomain() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationInsecure: " . $profile->getTwoFactorAuthenticationInsecure() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationLabel: " . $profile->getTwoFactorAuthenticationLabel() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationOptional: " . $profile->getTwoFactorAuthenticationOptional() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationCaption: " . $profile->getTwoFactorAuthenticationCaption() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationAttribute: " . $profile->getTwoFactorAuthenticationAttribute() . "\n";
-			$file_array[] = "\n" . "twoFactorAllowToRememberDevice: " . $profile->getTwoFactorAllowToRememberDevice() . "\n";
-			$file_array[] = "\n" . "twoFactorRememberDeviceDuration: " . $profile->getTwoFactorRememberDeviceDuration() . "\n";
-			$file_array[] = "\n" . "twoFactorRememberDevicePassword: " . $profile->getTwoFactorRememberDevicePassword() . "\n";
-			$file_array[] = "\n" . "hideDnPart: " . $profile->getHideDnPart() . "\n";
-			$file_array[] = "\n" . "pwdPolicyMinLength: " . $profile->getPwdPolicyMinLength() . "\n";
-			$file_array[] = "\n" . "pwdPolicyMinLowercase: " . $profile->getPwdPolicyMinLowercase() . "\n";
-			$file_array[] = "\n" . "pwdPolicyMinUppercase: " . $profile->getPwdPolicyMinUppercase() . "\n";
-			$file_array[] = "\n" . "pwdPolicyMinNumeric: " . $profile->getPwdPolicyMinNumeric() . "\n";
-			$file_array[] = "\n" . "pwdPolicyMinSymbolic: " . $profile->getPwdPolicyMinSymbolic() . "\n";
-			// module settings
-			$moduleSettings = $profile->get_moduleSettings();
-			foreach ($moduleSettings as $moduleSettingKey => $moduleSettingValue) {
-				$file_array[] = "modules: " . $moduleSettingKey . ": " . implode(LAMConfig::LINE_SEPARATOR, $moduleSettingValue) . "\n";
-			}
-			// type settings
-			$typeSettings = $profile->get_typeSettings();
-			foreach ($typeSettings as $typeSettingKey => $typeSettingValue) {
-				$file_array[] = "types: " . $typeSettingKey . ": " . $typeSettingValue . "\n";
-			}
-			// tool settings
-			$toolSettings = $profile->getToolSettings();
-			foreach ($toolSettings as $toolSettingKey => $toolSettingValue) {
-				$file_array[] = "tools: " . $toolSettingKey . ": " . $toolSettingValue . "\n";
-			}
-			// job settings
-			$jobSettings = $profile->getJobSettings();
-			foreach ($jobSettings as $jobSettingKey => $jobSettingValue) {
-				$file_array[] = "jobs: " . $jobSettingKey . ": " . implode(LAMConfig::LINE_SEPARATOR, $jobSettingValue) . "\n";
-			}
 			$file = @fopen($confFile, "w");
 			if ($file) {
-				foreach ($file_array as $line) {
-					fputs($file, $line);
-				}
+				fputs($file, json_encode($profile->exportData()));
 				fclose($file);
 				@chmod($confFile, 0600);
 			}
