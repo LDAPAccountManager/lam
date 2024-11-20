@@ -353,7 +353,7 @@ class ServerProfilePersistenceManager {
 	 * Saves a server profile.
 	 *
 	 * @param LAMConfig $profile profile
-	 * @param $name profile name
+	 * @param string $name profile name
 	 * @throws LAMException error saving profile
 	 */
 	public function saveProfile(LAMConfig $profile, $name): void {
@@ -563,7 +563,6 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	 */
 	public function loadProfile(string $name): LAMConfig {
 		$config = new LAMConfig();
-		$reflectionConfig = new ReflectionObject($config);
 		$confFilePath = $this->getPath($name);
 		if (!is_file($confFilePath)) {
 			throw new LAMException(_('Unable to read file.'));
@@ -572,6 +571,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		if (!$file) {
 			throw new LAMException(_('Unable to read file.'));
 		}
+		$data = [];
 		$moduleSettings = [];
 		$typeSettings = [];
 		$toolSettings = [];
@@ -589,14 +589,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$startIndex = strlen($keyword) + 2;
 			$value = (sizeof($parts) > 1) ? substr($line, $startIndex) : '';
 			if (!in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
-				try {
-					$property = $reflectionConfig->getProperty($keyword);
-					$property->setAccessible(true);
-					$property->setValue($config, $value);
-				}
-				catch (ReflectionException) {
-					// ignore
-				}
+				$data[$keyword] = $value;
 			}
 			else {
 				$subKeyword = $parts[1];
@@ -624,10 +617,11 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			}
 		}
 		fclose($file);
-		$config->set_moduleSettings($moduleSettings);
-		$config->set_typeSettings($typeSettings);
-		$config->setToolSettings($toolSettings);
-		$config->setJobSettings($jobSettings);
+		$data['moduleSettings'] = $moduleSettings;
+		$data['typeSettings'] = $typeSettings;
+		$data['toolSettings'] = $toolSettings;
+		$data['jobSettings'] = $jobSettings;
+		$config->importData($data);
 		$config->removeInvalidTypes();
 		$config->removeInvalidModules();
 		return $config;
