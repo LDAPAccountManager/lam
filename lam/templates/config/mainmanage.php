@@ -256,16 +256,7 @@ if (isset($_POST['submitFormData'])) {
 			$errors[] = _("Please enter a valid remote server in format \"server:port\".");
 		}
 	} else {
-	    $isValidLogFile = true;
-		if (!isset($_POST['logFile'])
-            || empty($_POST['logFile'])
-            || !preg_match("/^[a-z0-9\\/._-]+$/i", $_POST['logFile'])
-            || !(str_ends_with($_POST['logFile'], '.log') || str_ends_with($_POST['logFile'], '.txt'))
-            || str_contains($_POST['logFile'], '..')
-            || str_starts_with($_POST['logFile'], './')
-        ) {
-		    $isValidLogFile = false;
-		}
+	    $isValidLogFile = isset($_POST['logFile']) && LAMCfgMain::isValidLogFilename($_POST['logFile']);
 		$blockedPrefixes = ['/usr', '/etc', '/dev', '/boot', '/lib', '/proc', '/root', '/run', '/sys', '/snap'];
 		if (!empty($_SERVER['DOCUMENT_ROOT'])) {
             $blockedPrefixes[] = $_SERVER['DOCUMENT_ROOT'];

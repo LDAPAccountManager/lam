@@ -3715,4 +3715,18 @@ class LAMCfgMain {
 		$this->moduleSettings = base64_encode(json_encode($settings));
 	}
 
+	/**
+	 * Checks if the log filename is valid.
+	 *
+	 * @param string $path path
+	 * @return bool is valid
+	 */
+	public static function isValidLogFilename(string $path): bool {
+		return !empty($path)
+			&& preg_match("/^[a-z0-9\\/._-]+$/i", $path)
+			&& (str_ends_with($path, '.log') || str_ends_with($path, '.txt'))
+			&& !str_contains($path, '..')
+			&& !str_starts_with($path, './');
+	}
+
 }

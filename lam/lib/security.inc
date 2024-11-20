@@ -300,7 +300,7 @@ function logNewMessage($level, $message): void {
 		lamLogRemoteMessage($level, $message, $cfg);
 	}
 	// log to file
-	else {
+	elseif (LAMCfgMain::isValidLogFilename($cfg->logDestination)) {
 		@touch($cfg->logDestination);
 		if (is_writable($cfg->logDestination)) {
 			$file = fopen($cfg->logDestination, 'a');
