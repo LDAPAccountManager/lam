@@ -611,6 +611,15 @@
       <section>
         <title>8.9 -&gt; 9.0</title>
 
+        <para><emphasis role="bold">Main configuration and server profiles:
+        </emphasis>Both use a new file format (JSON). The configuration will
+        be converted to JSON if you save your settings. The old format is
+        still supported when the configuration will be read. As the old format
+        will be supported for a limited time, it is recommended to open LAM
+        and save the main configuration and all server profiles after the
+        upgrade. If you have any external processes to modify/generate these
+        configurations please adapt them.</para>
+
         <para>LAM Pro:</para>
 
         <itemizedlist>
