@@ -1,6 +1,6 @@
 {
   "name": "ldap-account-manager/ldap-account-manager",
-  "version": "8.9",
+  "version": "9.0",
   "config": {
     "vendor-dir": "lib/3rdParty/composer",
     "platform": {
