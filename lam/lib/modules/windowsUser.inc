@@ -4780,33 +4780,6 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Returns a list of password policy options. The options are later passed to function checkSingleUser().
-		 * This reads the password policy to calculate expiration times later. Maxpwdage is the maximum amount of
-		 * time, in 100-nanosecond intervals, a password is valid.
-		 *
-		 * @return array options ('maxpwdage' => max age in ns)
-		 */
-		protected function getPolicyOptions() {
-			$typeManager = new TypeManager();
-			$maxPwdAge = [];
-			foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
-				$userSuffix = $type->getSuffix();
-				if (empty($userSuffix)) {
-					$this->jobResultLog->logError('No user suffix set in server profile for ' . $type->getAlias() . '.');
-					continue;
-				}
-				$policyAttrs = windowsUser::getDomainPolicyAttribute('maxPwdAge');
-				if (empty($policyAttrs[0])) {
-					$this->jobResultLog->logError('No maxPwdAge found for this domain in ' . $type->getAlias() . '.');
-					continue;
-				}
-				$maxPwdAge = $policyAttrs[0];
-				$this->jobResultLog->logDebug("Using maxPwdAge = " . $maxPwdAge . ".");
-			}
-			return ['maxpwdage' => $maxPwdAge];
-		}
-
-		/**
 		 * Searches for users in LDAP.
 		 *
 		 * @param String $jobID unique job identifier
@@ -4815,10 +4788,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'pwdLastSet', 'accountexpires', 'useraccountcontrol'];
+			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'accountexpires', 'useraccountcontrol', 'msds-userpasswordexpirytimecomputed'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(pwdLastSet=*)(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, ['user']);
+			return searchLDAPByFilter('(&(' . $_SESSION['cfgMain']->getMailAttribute() . '=*))', $attrs, ['user']);
 		}
 
 		/**
@@ -4828,7 +4801,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @param array $options job settings
 		 * @param PDO $pdo PDO
 		 * @param DateTime $now current time
-		 * @param array $policyOptions list of max age values (policy DN => maxAge)
+		 * @param array $policyOptions not used
 		 * @param array $user user attributes
 		 * @param boolean $isDryRun just do a dry run, nothing is modified
 		 */
@@ -4839,9 +4812,11 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$this->jobResultLog->logDebug($dn . ' does not expire.');
 				return;
 			}
-			// skip if no information about last password change
-			if (empty($user['pwdlastset'][0]) || ($user['pwdlastset'][0] < 1)) {
-				$this->jobResultLog->logDebug($dn . ' has no valid "pwdLastSet".');
+			// skip if password does not expire
+			if (empty($user['msds-userpasswordexpirytimecomputed'][0])
+				|| ($user['msds-userpasswordexpirytimecomputed'][0] == '9223372036854775807')
+				|| ($user['msds-userpasswordexpirytimecomputed'][0] == '0')) {
+				$this->jobResultLog->logDebug($dn . ': password does not expire.');
 				return;
 			}
 			// skip if account itself is expired
@@ -4857,33 +4832,22 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$this->jobResultLog->logDebug($dn . ' is deactivated.');
 				return;
 			}
-			if (empty($policyOptions['maxpwdage'])) {
-				$this->jobResultLog->logDebug('Skipping ' . $dn . ' as maxpwdage is empty or 0.');
+			$passwordExpirationDate = windowsUser::getFileTime($user['msds-userpasswordexpirytimecomputed'][0]);
+			if ($passwordExpirationDate === null) {
+				$this->jobResultLog->logWarning('Invalid expiration value ' . $user['msds-userpasswordexpirytimecomputed'][0]);
 				return;
 			}
-			$maxPwdAge = $policyOptions['maxpwdage'];
-			// calculate time when password expires
-			$lastPwdTime = windowsUser::getFileTime($user['pwdlastset'][0]);
-			$this->jobResultLog->logDebug("Last password change on " . $lastPwdTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Password expires on " . $passwordExpirationDate->format('Y-m-d'));
 			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
 			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
-			// expiration date = pwdLastSet - maxpwdage
-			$expirationValue = $user['pwdlastset'][0] - $maxPwdAge;
-			$this->jobResultLog->logDebug("PwdLastSet: " . $user['pwdlastset'][0]);
-			$this->jobResultLog->logDebug("Expiration raw value: " . $expirationValue);
-			$expireTime = windowsUser::getFileTime($expirationValue);
-			if ($expireTime === null) {
-				$this->jobResultLog->logWarning('Invalid expiration values ' . $user['pwdlastset'][0] . ' - ' . $expirationValue);
-				return;
-			}
-			$this->jobResultLog->logDebug("Password expires on " . $expireTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Expiration raw value: " . $user['msds-userpasswordexpirytimecomputed'][0]);
 			// skip already expired accounts
-			if ($expireTime <= $now) {
-				$this->jobResultLog->logDebug($dn . ' already expired');
+			if ($passwordExpirationDate <= $now) {
+				$this->jobResultLog->logDebug($dn . ': password already expired');
 				return;
 			}
 			// calculate time of notification
-			$notifyTime = clone $expireTime;
+			$notifyTime = clone $passwordExpirationDate;
 			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
 			$notifyTime->setTimeZone(getTimeZone());
 			$this->jobResultLog->logDebug("Password notification on " . $notifyTime->format('Y-m-d H:i'));
@@ -4894,7 +4858,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			}
 			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $dn);
 			// skip entries where mail was already sent
-			if ($dbLastChange == $user['pwdlastset'][0]) {
+			if ($dbLastChange == $user['msds-userpasswordexpirytimecomputed'][0]) {
 				$this->jobResultLog->logDebug($dn . ' was already notified.');
 				return;
 			}
@@ -4904,10 +4868,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				return;
 			}
 			// send email
-			$success = $this->sendMail($options, $jobID, $user, $expireTime);
+			$success = $this->sendMail($options, $jobID, $user, $passwordExpirationDate);
 			// update DB if mail was sent successfully
 			if ($success) {
-				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['pwdlastset'][0]);
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['msds-userpasswordexpirytimecomputed'][0]);
 			}
 		}
 
