@@ -2,6 +2,7 @@ December 2024 9.0
  - New configuration file format for main configuration and server profiles (applied on save, old format can still be read)
  - Unix users: allow to create group with same name via account profile (#332)
  - Group of (unique) names, organisational roles: added member/owner count to PDF fields
+ - Windows: display password expiration date
  - Usability improvements (342, 350, 372)
  - LAM Pro:
   -> Request access: added comment field for owners/approvers (339)
@@ -10,6 +11,7 @@ December 2024 9.0
   -> Custom scripts: allow interactive parameters for manual scripts (327)
   -> Cron jobs: new script to run all types of cron jobs (runCronJobs.sh), the scripts cron.sh and cronGlobal.sh are deprecated
   -> Docker: added option to run cron jobs (346)
+  -> Windows: use msds-userpasswordexpirytimecomputed for password expiration job (387)
  - Fixed bugs:
   -> Windows: show more than 1000 LDAP entries when paged results is activated in server profile
   -> WebAuthn: support DNs larger than 64 bytes (358)

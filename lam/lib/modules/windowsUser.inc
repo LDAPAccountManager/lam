@@ -154,6 +154,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockouttime', 'userWorkstations', 'roomnumber',
 			'personaltitle'
 		];
+		$return['hiddenAttributes'] = ['msds-userpasswordexpirytimecomputed'];
 		// help Entries
 		$return['help'] = [
 			'cn' => [
@@ -1132,6 +1133,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdLastSet')) {
 			$return['PDF_fields']['pwdLastSet'] = _('Last password change');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdChangeRequired')) {
+			$return['PDF_fields']['msds-userpasswordexpirytimecomputed'] = _('Password expiration');
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidelastLogonTimestamp')) {
 			$return['PDF_fields']['lastLogonTimestamp'] = _('Last login');
 		}
@@ -1202,6 +1206,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'postalCode' => _('Postal code'),
 			'unicodePwd' => _('Password'),
 			'pwdLastSet' => _('Last password change (read-only)'),
+			'msds-userpasswordexpirytimecomputed' => _('Password expiration (read-only)'),
 			'accountExpires' => _('Account expiration date (read-only)'),
 			'department' => _('Department'),
 			'departmentNumber' => _('Department number'),
@@ -1573,6 +1578,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
 			$pwdLastSetGroup->addElement(new htmlHelpLink('pwdLastSet'));
 			$containerLeft->addField($pwdLastSetGroup);
+		}
+		// password change required
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdChangeRequired')) {
+			$containerLeft->addLabel(new htmlOutputText(_('Password expiration')));
+			$containerLeft->addField(new htmlOutputText($this->formatPasswordExpires($this->attributes)));
 		}
 		// last login
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidelastLogonTimestamp')) {
@@ -3370,6 +3380,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		$this->addPDFKeyValue($return, 'noExpire', _('Password does not expire'), $noExpire);
 		$this->addPDFKeyValue($return, 'accountExpires', _('Account expiration date'), $this->formatAccountExpires());
+		$this->addPDFKeyValue($return, 'msds-userpasswordexpirytimecomputed', _('Password expiration'), $this->formatPasswordExpires($this->attributes));
 		$requireCard = _('no');
 		if (windowsUser::isSmartCardRequired($this->attributes)) {
 			$requireCard = _('yes');
@@ -3577,6 +3588,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pwdLastSet', _('Last password change'))));
 		$row->addField(new htmlOutputText($this->formatPwdLastSet($attributes)));
 		$return['pwdLastSet'] = $row;
+		// password change required
+		$row = new htmlResponsiveRow();
+		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('msds-userpasswordexpirytimecomputed', _('Password expiration'))));
+		$row->addField(new htmlOutputText($this->formatPasswordExpires($attributes)));
+		$return['msds-userpasswordexpirytimecomputed'] = $row;
 		// account expiration
 		$row = new htmlResponsiveRow();
 		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('accountExpires', _('Account expiration date'))));
@@ -4114,6 +4130,23 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
+	 * Returns the formatted value for the password expiration date.
+	 *
+	 * @param array $attributes user attributes ($this->attributes if null)
+	 * @return String date or -
+	 */
+	private function formatPasswordExpires($attributes = null) {
+		if ($attributes == null) {
+			$attributes = &$this->attributes;
+		}
+		if (empty($attributes['msds-userpasswordexpirytimecomputed'][0]) || ($attributes['msds-userpasswordexpirytimecomputed'][0] == '0')
+			|| ($attributes['msds-userpasswordexpirytimecomputed'][0] == '9223372036854775807')) {
+			return ' - ';
+		}
+		return $this->formatFileTime($attributes['msds-userpasswordexpirytimecomputed'][0]);
+	}
+
+	/**
 	 * Formats a value in file time (100 ns since 1601-01-01).
 	 *
 	 * @param integer $value time value
@@ -4212,6 +4245,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$hiddenOptions[_('NIS name')] = ['windowsUser_hidemsSFU30Name', true];
 		$hiddenOptions[_('NIS domain')] = ['windowsUser_hidemsSFU30NisDomain', true];
 		$hiddenOptions[_('Last password change')] = ['windowsUser_hidepwdLastSet', false];
+		$hiddenOptions[_('Password expiration')] = ['windowsUser_hidepwdChangeRequired', false];
 		$hiddenOptions[_('Last login')] = ['windowsUser_hidelastLogonTimestamp', false];
 		$hiddenOptions[_('Workstations')] = ['windowsUser_hideWorkstations', false];
 		$hiddenOptions[_('Photo')] = ['windowsUser_hidejpegPhoto', true];
