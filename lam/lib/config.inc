@@ -571,9 +571,11 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		if (!$file) {
 			throw new LAMException(_('Unable to read file.'));
 		}
-		$json = fgets($file, 1000000);
+		$json = fread($file, 1000000);
 		$data = json_decode($json, true);
 		if ($data === null) {
+			fclose($file);
+			$file = @fopen($confFilePath, "r");
 			$data = [];
 			$moduleSettings = [];
 			$typeSettings = [];
@@ -643,7 +645,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		if (is_file($confFile) && is_readable($confFile)) {
 			$file = @fopen($confFile, "w");
 			if ($file) {
-				fputs($file, json_encode($profile->exportData()));
+				fputs($file, json_encode($profile->exportData(), JSON_PRETTY_PRINT));
 				fclose($file);
 				@chmod($confFile, 0600);
 			}
@@ -3190,7 +3192,7 @@ class LAMCfgMain {
 			if (!$file) {
 				throw new LAMException(_('The config file is not readable.'));
 			}
-			$json = fgets($file, 1000000);
+			$json = fread($file, 1000000);
 			$data = json_decode($json, true);
 			if ($data !== null) {
 				$this->importData($data);
@@ -3326,7 +3328,7 @@ class LAMCfgMain {
 		else {
 			$data = $this->exportData();
 		}
-		$json = json_encode($data);
+		$json = json_encode($data, JSON_PRETTY_PRINT);
 
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
