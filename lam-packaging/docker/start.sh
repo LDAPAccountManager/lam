@@ -59,14 +59,14 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   LAM_CONFIGURATION_PASSWORD="${LAM_CONFIGURATION_PASSWORD:-}"
 
   sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
-    s|"password":"[^"]*"|"password":"${LAM_PASSWORD_SSHA}"|;
-    s|"license":"[^"]*"|"license":"${LAM_LICENSE}"|;
-    s|"configDatabaseType":"[^"]*"|"configDatabaseType":"${LAM_CONFIGURATION_DATABASE}"|;
-    s|"configDatabaseServer":"[^"]*"|"configDatabaseServer":"${LAM_CONFIGURATION_HOST}"|;
-    s|"configDatabasePort":"[^"]*"|"configDatabasePort":"${LAM_CONFIGURATION_PORT}"|;
-    s|"configDatabaseName":"[^"]*"|"configDatabaseName":"${LAM_CONFIGURATION_DATABASE_NAME}"|;
-    s|"configDatabaseUser":"[^"]*"|"configDatabaseUser":"${LAM_CONFIGURATION_USER}"|;
-    s|"configDatabasePassword":"[^"]*"|"configDatabasePassword":"${LAM_CONFIGURATION_PASSWORD}"|;
+    s|"password": "[^"]*"|"password": "${LAM_PASSWORD_SSHA}"|;
+    s|"license": "[^"]*"|"license": "${LAM_LICENSE}"|;
+    s|"configDatabaseType": "[^"]*"|"configDatabaseType": "${LAM_CONFIGURATION_DATABASE}"|;
+    s|"configDatabaseServer": "[^"]*"|"configDatabaseServer": "${LAM_CONFIGURATION_HOST}"|;
+    s|"configDatabasePort": "[^"]*"|"configDatabasePort": "${LAM_CONFIGURATION_PORT}"|;
+    s|"configDatabaseName": "[^"]*"|"configDatabaseName": "${LAM_CONFIGURATION_DATABASE_NAME}"|;
+    s|"configDatabaseUser": "[^"]*"|"configDatabaseUser": "${LAM_CONFIGURATION_USER}"|;
+    s|"configDatabasePassword": "[^"]*"|"configDatabasePassword": "${LAM_CONFIGURATION_PASSWORD}"|;
 EOF
   unset LAM_PASSWORD
 
@@ -80,13 +80,13 @@ EOF
   fi
 
   sed -i -f- /var/lib/ldap-account-manager/config/lam.conf <<- EOF
-    s|"ServerURL":"[^"]*"|"ServerURL":"${LDAP_SERVER}"|;
-    s|"Admins":"[^"]*"|"Admins":"${LDAP_ADMIN_USER}"|;
-    s|"Passwd":"[^"]*"|"Passwd":"${LAM_PASSWORD_SSHA}"|;
-    s|"treeViewSuffix":"[^"]*"|"treeViewSuffix":"${LDAP_BASE_DN}"|;
-    s|"defaultLanguage":"[^"]*"|"defaultLanguage":"${LAM_LANG}.utf8"|;
-    s|"suffix_user":"[^"]*"|"suffix_user":"${LDAP_USERS_DN}"|;
-    s|"suffix_group":"[^"]*"|"suffix_group":"${LDAP_GROUPS_DN}"|;
+    s|"ServerURL": "[^"]*"|"ServerURL": "${LDAP_SERVER}"|;
+    s|"Admins": "[^"]*"|"Admins": "${LDAP_ADMIN_USER}"|;
+    s|"Passwd": "[^"]*"|"Passwd": "${LAM_PASSWORD_SSHA}"|;
+    s|"treeViewSuffix": "[^"]*"|"treeViewSuffix": "${LDAP_BASE_DN}"|;
+    s|"defaultLanguage": "[^"]*"|"defaultLanguage": "${LAM_LANG}.utf8"|;
+    s|"suffix_user": "[^"]*"|"suffix_user": "${LDAP_USERS_DN}"|;
+    s|"suffix_group": "[^"]*"|"suffix_group": "${LDAP_GROUPS_DN}"|;
 EOF
 
 fi
