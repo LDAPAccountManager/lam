@@ -1,5 +1,5 @@
 /*!
-* sweetalert2 v11.13.2
+* sweetalert2 v11.14.5
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -879,28 +879,6 @@
   };
 
   /**
-   * @returns {'webkitAnimationEnd' | 'animationend' | false}
-   */
-  const animationEndEvent = (() => {
-    // Prevent run in Node env
-    if (isNodeEnv()) {
-      return false;
-    }
-    const testEl = document.createElement('div');
-
-    // Chrome, Safari and Opera
-    if (typeof testEl.style.webkitAnimation !== 'undefined') {
-      return 'webkitAnimationEnd';
-    }
-
-    // Standard syntax
-    if (typeof testEl.style.animation !== 'undefined') {
-      return 'animationend';
-    }
-    return false;
-  })();
-
-  /**
    * @param {SweetAlert} instance
    * @param {SweetAlertOptions} params
    */
@@ -1336,7 +1314,7 @@
     checkbox.value = '1';
     checkbox.checked = Boolean(params.inputValue);
     const label = checkboxContainer.querySelector('span');
-    setInnerHtml(label, params.inputPlaceholder);
+    setInnerHtml(label, params.inputPlaceholder || params.inputLabel);
     return checkbox;
   };
 
@@ -1767,6 +1745,7 @@
     if (typeof params.didRender === 'function' && popup) {
       params.didRender(popup);
     }
+    globalState.eventEmitter.emit('didRender', popup);
   };
 
   /*
@@ -2320,12 +2299,14 @@
    * @param {SweetAlertOptions} innerParams
    */
   const handlePopupAnimation = (instance, popup, innerParams) => {
+    var _globalState$eventEmi;
     const container = getContainer();
     // If animation is supported, animate
-    const animationIsSupported = animationEndEvent && hasCssAnimation(popup);
+    const animationIsSupported = hasCssAnimation(popup);
     if (typeof innerParams.willClose === 'function') {
       innerParams.willClose(popup);
     }
+    (_globalState$eventEmi = globalState.eventEmitter) === null || _globalState$eventEmi === void 0 || _globalState$eventEmi.emit('willClose', popup);
     if (animationIsSupported) {
       animatePopup(instance, popup, container, innerParams.returnFocus, innerParams.didClose);
     } else {
@@ -2342,16 +2323,21 @@
    * @param {Function} didClose
    */
   const animatePopup = (instance, popup, container, returnFocus, didClose) => {
-    if (!animationEndEvent) {
-      return;
-    }
     globalState.swalCloseEventFinishedCallback = removePopupAndResetState.bind(null, instance, container, returnFocus, didClose);
-    popup.addEventListener(animationEndEvent, function (e) {
+    /**
+     * @param {AnimationEvent | TransitionEvent} e
+     */
+    const swalCloseAnimationFinished = function (e) {
       if (e.target === popup) {
-        globalState.swalCloseEventFinishedCallback();
+        var _globalState$swalClos;
+        (_globalState$swalClos = globalState.swalCloseEventFinishedCallback) === null || _globalState$swalClos === void 0 || _globalState$swalClos.call(globalState);
         delete globalState.swalCloseEventFinishedCallback;
+        popup.removeEventListener('animationend', swalCloseAnimationFinished);
+        popup.removeEventListener('transitionend', swalCloseAnimationFinished);
       }
-    });
+    };
+    popup.addEventListener('animationend', swalCloseAnimationFinished);
+    popup.addEventListener('transitionend', swalCloseAnimationFinished);
   };
 
   /**
@@ -2360,9 +2346,11 @@
    */
   const triggerDidCloseAndDispose = (instance, didClose) => {
     setTimeout(() => {
+      var _globalState$eventEmi2;
       if (typeof didClose === 'function') {
         didClose.bind(instance.params)();
       }
+      (_globalState$eventEmi2 = globalState.eventEmitter) === null || _globalState$eventEmi2 === void 0 || _globalState$eventEmi2.emit('didClose');
       // instance might have been destroyed already
       if (instance._destroy) {
         instance._destroy();
@@ -3195,6 +3183,7 @@
     if (typeof innerParams.didDestroy === 'function') {
       innerParams.didDestroy();
     }
+    globalState.eventEmitter.emit('didDestroy');
     disposeSwal(this);
   }
 
@@ -3533,6 +3522,141 @@
     }
   };
 
+  // Source: https://gist.github.com/mudge/5830382?permalink_comment_id=2691957#gistcomment-2691957
+
+  class EventEmitter {
+    constructor() {
+      /** @type {Events} */
+      this.events = {};
+    }
+
+    /**
+     * @param {string} eventName
+     * @returns {EventHandlers}
+     */
+    _getHandlersByEventName(eventName) {
+      if (typeof this.events[eventName] === 'undefined') {
+        // not Set because we need to keep the FIFO order
+        // https://github.com/sweetalert2/sweetalert2/pull/2763#discussion_r1748990334
+        this.events[eventName] = [];
+      }
+      return this.events[eventName];
+    }
+
+    /**
+     * @param {string} eventName
+     * @param {EventHandler} eventHandler
+     */
+    on(eventName, eventHandler) {
+      const currentHandlers = this._getHandlersByEventName(eventName);
+      if (!currentHandlers.includes(eventHandler)) {
+        currentHandlers.push(eventHandler);
+      }
+    }
+
+    /**
+     * @param {string} eventName
+     * @param {EventHandler} eventHandler
+     */
+    once(eventName, eventHandler) {
+      var _this = this;
+      /**
+       * @param {Array} args
+       */
+      const onceFn = function () {
+        _this.removeListener(eventName, onceFn);
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+        eventHandler.apply(_this, args);
+      };
+      this.on(eventName, onceFn);
+    }
+
+    /**
+     * @param {string} eventName
+     * @param {Array} args
+     */
+    emit(eventName) {
+      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
+      }
+      this._getHandlersByEventName(eventName).forEach(
+      /**
+       * @param {EventHandler} eventHandler
+       */
+      eventHandler => {
+        try {
+          eventHandler.apply(this, args);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    }
+
+    /**
+     * @param {string} eventName
+     * @param {EventHandler} eventHandler
+     */
+    removeListener(eventName, eventHandler) {
+      const currentHandlers = this._getHandlersByEventName(eventName);
+      const index = currentHandlers.indexOf(eventHandler);
+      if (index > -1) {
+        currentHandlers.splice(index, 1);
+      }
+    }
+
+    /**
+     * @param {string} eventName
+     */
+    removeAllListeners(eventName) {
+      if (this.events[eventName] !== undefined) {
+        // https://github.com/sweetalert2/sweetalert2/pull/2763#discussion_r1749239222
+        this.events[eventName].length = 0;
+      }
+    }
+    reset() {
+      this.events = {};
+    }
+  }
+
+  globalState.eventEmitter = new EventEmitter();
+
+  /**
+   * @param {string} eventName
+   * @param {EventHandler} eventHandler
+   */
+  const on = (eventName, eventHandler) => {
+    globalState.eventEmitter.on(eventName, eventHandler);
+  };
+
+  /**
+   * @param {string} eventName
+   * @param {EventHandler} eventHandler
+   */
+  const once = (eventName, eventHandler) => {
+    globalState.eventEmitter.once(eventName, eventHandler);
+  };
+
+  /**
+   * @param {string} [eventName]
+   * @param {EventHandler} [eventHandler]
+   */
+  const off = (eventName, eventHandler) => {
+    // Remove all handlers for all events
+    if (!eventName) {
+      globalState.eventEmitter.reset();
+      return;
+    }
+    if (eventHandler) {
+      // Remove a specific handler
+      globalState.eventEmitter.removeListener(eventName, eventHandler);
+    } else {
+      // Remove all handlers for a specific event
+      globalState.eventEmitter.removeAllListeners(eventName);
+    }
+  };
+
   var staticMethods = /*#__PURE__*/Object.freeze({
     __proto__: null,
     argsToParams: argsToParams,
@@ -3570,6 +3694,9 @@
     isValidParameter: isValidParameter,
     isVisible: isVisible,
     mixin: mixin,
+    off: off,
+    on: on,
+    once: once,
     resumeTimer: resumeTimer,
     showLoading: showLoading,
     stopTimer: stopTimer,
@@ -3883,6 +4010,7 @@
     if (typeof params.willOpen === 'function') {
       params.willOpen(popup);
     }
+    globalState.eventEmitter.emit('willOpen', popup);
     const bodyStyles = window.getComputedStyle(document.body);
     const initialBodyOverflow = bodyStyles.overflowY;
     addClasses(container, popup, params);
@@ -3901,6 +4029,7 @@
     if (typeof params.didOpen === 'function') {
       setTimeout(() => params.didOpen(popup));
     }
+    globalState.eventEmitter.emit('didOpen', popup);
     removeClass(container, swalClasses['no-transition']);
   };
 
@@ -3909,11 +4038,12 @@
    */
   const swalOpenAnimationFinished = event => {
     const popup = getPopup();
-    if (event.target !== popup || !animationEndEvent) {
+    if (event.target !== popup) {
       return;
     }
     const container = getContainer();
-    popup.removeEventListener(animationEndEvent, swalOpenAnimationFinished);
+    popup.removeEventListener('animationend', swalOpenAnimationFinished);
+    popup.removeEventListener('transitionend', swalOpenAnimationFinished);
     container.style.overflowY = 'auto';
   };
 
@@ -3922,9 +4052,10 @@
    * @param {HTMLElement} popup
    */
   const setScrollingVisibility = (container, popup) => {
-    if (animationEndEvent && hasCssAnimation(popup)) {
+    if (hasCssAnimation(popup)) {
       container.style.overflowY = 'hidden';
-      popup.addEventListener(animationEndEvent, swalOpenAnimationFinished);
+      popup.addEventListener('animationend', swalOpenAnimationFinished);
+      popup.addEventListener('transitionend', swalOpenAnimationFinished);
     } else {
       container.style.overflowY = 'auto';
     }
@@ -4268,7 +4399,7 @@
    * @returns {boolean}
    */
   const focusAutofocus = domCache => {
-    const autofocusElements = domCache.popup.querySelectorAll('[autofocus]');
+    const autofocusElements = Array.from(domCache.popup.querySelectorAll('[autofocus]'));
     for (const autofocusElement of autofocusElements) {
       if (autofocusElement instanceof HTMLElement && isVisible$1(autofocusElement)) {
         autofocusElement.focus();
@@ -4361,7 +4492,7 @@
     };
   });
   SweetAlert.DismissReason = DismissReason;
-  SweetAlert.version = '11.13.2';
+  SweetAlert.version = '11.14.5';
 
   const Swal = SweetAlert;
   // @ts-ignore

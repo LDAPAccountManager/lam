@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:2b7c174d-f91f-4cf4-ab67-7a39f7f9d8ae",
+  "serialNumber" : "urn:uuid:1fe94969-44ff-4623-a3df-6fa83e6d6d7d",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-09-05T17:36:52Z",
+    "timestamp" : "2024-12-04T18:53:46Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -129,7 +129,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "sortablejs",
-      "version" : "1.15.3",
+      "version" : "1.15.6",
       "licenses" : [
         {
           "license" : {
@@ -137,14 +137,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sortablejs@1.15.3",
+      "purl" : "pkg:npm/sortablejs@1.15.6",
       "type" : "library",
       "bom-ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265"
     },
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.13.2",
+      "version" : "11.14.5",
       "licenses" : [
         {
           "license" : {
@@ -152,7 +152,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.13.2",
+      "purl" : "pkg:npm/sweetalert2@11.14.5",
       "type" : "library",
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f"
     },
