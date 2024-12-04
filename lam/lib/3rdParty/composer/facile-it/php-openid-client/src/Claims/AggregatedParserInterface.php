@@ -17,6 +17,7 @@ interface AggregatedParserInterface
      * @return array<string, mixed>
      *
      * @psalm-param TokenSetClaimsType $claims
+     *
      * @psalm-return TokenSetClaimsType
      */
     public function unpack(ClientInterface $client, array $claims): array;

@@ -11,8 +11,8 @@ use Facile\OpenIDClient\Exception\RuntimeException;
 use Facile\OpenIDClient\Token\TokenSetInterface;
 use Facile\OpenIDClient\Token\TokenVerifierBuilderInterface;
 use function http_build_query;
-use function is_array;
 use function json_decode;
+use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -100,12 +100,12 @@ final class UserInfoService
             $payload = $this->userInfoVerifierBuilder->build($client)
                 ->verify((string) $response->getBody());
         } else {
-            /** @var false|TokenSetClaimsType $payload */
-            $payload = json_decode((string) $response->getBody(), true);
-        }
-
-        if (! is_array($payload)) {
-            throw new RuntimeException('Unable to parse userinfo claims');
+            try {
+                /** @var TokenSetClaimsType $payload */
+                $payload = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                throw new RuntimeException('Unable to parse userinfo claims', 0, $e);
+            }
         }
 
         $idToken = $tokenSet->getIdToken();

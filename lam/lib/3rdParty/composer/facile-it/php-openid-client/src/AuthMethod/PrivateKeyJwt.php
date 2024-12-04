@@ -9,6 +9,7 @@ use Facile\OpenIDClient\AlgorithmManagerBuilder;
 use function Facile\OpenIDClient\base64url_encode;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\RuntimeException;
+use function Facile\OpenIDClient\get_endpoint_uri;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSBuilder;
@@ -57,9 +58,6 @@ final class PrivateKeyJwt extends AbstractJwtAuth
      */
     protected function createAuthJwt(OpenIDClient $client, array $claims = []): string
     {
-        $issuer = $client->getIssuer();
-        $issuerMetadata = $issuer->getMetadata();
-
         $clientId = $client->getMetadata()->getClientId();
 
         $jwk = $this->jwk ?? JWKSet::createFromKeyData($client->getJwksProvider()->getJwks())->selectKey('sig');
@@ -71,22 +69,27 @@ final class PrivateKeyJwt extends AbstractJwtAuth
         $time = time();
         $jti = base64url_encode(random_bytes(32));
 
-        /** @var string $payload */
         $payload = json_encode(array_merge(
             $claims,
             [
                 'iss' => $clientId,
                 'sub' => $clientId,
-                'aud' => $issuerMetadata->getIssuer(),
+                'aud' => get_endpoint_uri($client, 'token_endpoint'),
                 'iat' => $time,
                 'exp' => $time + $this->tokenTTL,
                 'jti' => $jti,
             ]
-        ));
+        ), JSON_THROW_ON_ERROR);
+
+        $jwkAlg = $jwk->get('alg');
+
+        if (! is_string($jwkAlg)) {
+            throw new RuntimeException('Invalid JWK `alg` value');
+        }
 
         $jws = $this->jwsBuilder->create()
             ->withPayload($payload)
-            ->addSignature($jwk, ['alg' => $jwk->get('alg'), 'jti' => $jti])
+            ->addSignature($jwk, ['alg' => $jwkAlg, 'jti' => $jti])
             ->build();
 
         return $this->jwsSerializer->serialize($jws, 0);

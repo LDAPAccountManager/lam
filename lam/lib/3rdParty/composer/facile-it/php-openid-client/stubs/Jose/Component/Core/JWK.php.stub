@@ -1,0 +1,96 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jose\Component\Core;
+
+use InvalidArgumentException;
+use JsonSerializable;
+
+/**
+ * @psalm-type JWKType = array{kty: "RSA"|"EC"|"oct"|string, use?: "sig"|"enc"|string, key_ops?: list<"sign"|"verify"|"encrypt"|"decrypt"|"wrapKey"|"unwrapKey"|"deriveKey"|"deriveBits"|string>, kid?: string, alg?: string, x5u?: string, x5c?: list<string>, x5t?: string, x5t#S256?: string, crv?: string, x?: string, y?: string, k?: string, n?: string, e?: string, d?: string, p?: string, q?: string, dp?: string, dq?: string, qi?: string}
+ *
+ * @template T of array<string, mixed>&array{kty: string}
+ */
+class JWK implements JsonSerializable
+{
+
+    /**
+     * Creates a JWK object using the given values. The member "kty" is mandatory. Other members are NOT checked.
+     * @psalm-param T $values
+     */
+    public function __construct(array $values)
+    {
+    }
+
+    /**
+     * Creates a JWK object using the given Json string.
+     *
+     * @return JWK<array<string, mixed>&array{kty: string}>
+     */
+    public static function createFromJson(string $json): self
+    {
+    }
+
+    /**
+     * Returns the values to be serialized.
+     *
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+    }
+
+    /**
+     * Get the value with a specific key.
+     *
+     * @psalm-param key-of<T> $key
+     *
+     * @return mixed
+     *
+     * @throws InvalidArgumentException When key does not exist
+     */
+    public function get(string $key)
+    {
+    }
+
+    /**
+     * Returns true if the JWK has the value identified by.
+     *
+     * @param string $key The key
+     */
+    public function has(string $key): bool
+    {
+    }
+
+    /**
+     * Get all values stored in the JWK object.
+     *
+     * @psalm-return T
+     */
+    public function all(): array
+    {
+    }
+
+    /**
+     * Returns the thumbprint of the key.
+     *
+     * @see https://tools.ietf.org/html/rfc7638
+     */
+    public function thumbprint(string $hash_algorithm): string
+    {
+    }
+
+    /**
+     * Returns the associated public key.
+     * This method has no effect for:
+     * - public keys
+     * - shared keys
+     * - unknown keys.
+     *
+     * Known keys are "oct", "RSA", "EC" and "OKP".
+     */
+    public function toPublic(): self
+    {
+    }
+}

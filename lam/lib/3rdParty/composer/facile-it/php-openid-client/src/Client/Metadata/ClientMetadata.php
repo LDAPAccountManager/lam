@@ -19,6 +19,7 @@ final class ClientMetadata implements ClientMetadataInterface
 {
     /**
      * @var array<string, mixed>
+     *
      * @psalm-var ClientMetadataObject
      */
     private $metadata;
@@ -35,6 +36,7 @@ final class ClientMetadata implements ClientMetadataInterface
      * IssuerMetadata constructor.
      *
      * @param array<string, mixed> $claims
+     *
      * @psalm-param ClientMetadataObject|array<empty, empty> $claims
      */
     public function __construct(string $clientId, array $claims = [])

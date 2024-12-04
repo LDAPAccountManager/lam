@@ -99,11 +99,16 @@ $serverRequest = null; // get your server request
 $callbackParams = $authorizationService->getCallbackParams($serverRequest, $client);
 $tokenSet = $authorizationService->callback($client, $callbackParams);
 
-$idToken = $tokenSet->getIdToken(); // Unencrypted id_token
-$accessToken = $tokenSet->getAccessToken(); // Access token
-$refreshToken = $tokenSet->getRefreshToken(); // Refresh token
+$idToken = $tokenSet->getIdToken(); // Unencrypted id_token, if returned
+$accessToken = $tokenSet->getAccessToken(); // Access token, if returned
+$refreshToken = $tokenSet->getRefreshToken(); // Refresh token, if returned
 
-$claims = $tokenSet->claims(); // IdToken claims (if id_token is available)
+// check if we have an authenticated user
+if ($idToken) {
+    $claims = $tokenSet->claims(); // IdToken claims
+} else {
+    throw new \RuntimeException('Unauthorized')
+}
 
 
 // Refresh token

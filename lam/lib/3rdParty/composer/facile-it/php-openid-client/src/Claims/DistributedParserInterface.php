@@ -18,6 +18,7 @@ interface DistributedParserInterface
      * @return array<string, mixed>
      *
      * @psalm-param TokenSetClaimsType $claims
+     *
      * @psalm-return TokenSetClaimsType
      */
     public function fetch(ClientInterface $client, array $claims, array $accessTokens = []): array;

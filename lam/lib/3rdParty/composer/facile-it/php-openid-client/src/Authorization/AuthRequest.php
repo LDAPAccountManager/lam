@@ -20,6 +20,7 @@ final class AuthRequest implements AuthRequestInterface
 {
     /**
      * @var array<string, mixed>
+     *
      * @psalm-var AuthRequestParams
      */
     private $params;

@@ -15,6 +15,7 @@ use Facile\OpenIDClient\Exception\RuntimeException;
 use Facile\OpenIDClient\Issuer\IssuerInterface;
 use function Facile\OpenIDClient\parse_metadata_response;
 use function json_encode;
+use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -65,10 +66,10 @@ final class RegistrationService
             throw new InvalidArgumentException('Issuer does not support dynamic client registration');
         }
 
-        $encodedMetadata = json_encode($metadata);
-
-        if (false === $encodedMetadata) {
-            throw new RuntimeException('Unable to encode client metadata');
+        try {
+            $encodedMetadata = json_encode($metadata, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new RuntimeException('Unable to encode client metadata', 0, $e);
         }
 
         $request = $this->requestFactory->createRequest('POST', $registrationEndpoint)
@@ -133,10 +134,10 @@ final class RegistrationService
         $clientRegistrationMetadata = array_intersect_key($metadata, array_flip(self::$registrationClaims));
         $metadata = array_diff_key($metadata, $clientRegistrationMetadata);
 
-        $encodedMetadata = json_encode($metadata);
-
-        if (false === $encodedMetadata) {
-            throw new RuntimeException('Unable to encode client metadata');
+        try {
+            $encodedMetadata = json_encode($metadata, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new RuntimeException('Unable to encode client metadata', 0, $e);
         }
 
         $request = $this->requestFactory->createRequest('PUT', $clientUri)

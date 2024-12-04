@@ -9,6 +9,7 @@ use function Facile\OpenIDClient\base64url_encode;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\InvalidArgumentException;
 use Facile\OpenIDClient\Exception\LogicException;
+use function Facile\OpenIDClient\get_endpoint_uri;
 use function Facile\OpenIDClient\jose_secret_key;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Signature\Algorithm\HS256;
@@ -65,26 +66,21 @@ final class ClientSecretJwt extends AbstractJwtAuth
         }
 
         $clientId = $client->getMetadata()->getClientId();
-        $issuer = $client->getIssuer();
-        $issuerMetadata = $issuer->getMetadata();
 
         $jwk = jose_secret_key($clientSecret);
 
         $time = time();
         $jti = base64url_encode(random_bytes(32));
 
-        /** @var string $payload */
-        $payload = json_encode(
-            $claims +
+        $payload = json_encode($claims +
             [
                 'iss' => $clientId,
                 'sub' => $clientId,
-                'aud' => $issuerMetadata->getIssuer(),
+                'aud' => get_endpoint_uri($client, 'token_endpoint'),
                 'iat' => $time,
                 'exp' => $time + 60,
                 'jti' => $jti,
-            ]
-        );
+            ], JSON_THROW_ON_ERROR);
 
         $jws = $this->getJwsBuilder()->create()
             ->withPayload($payload)

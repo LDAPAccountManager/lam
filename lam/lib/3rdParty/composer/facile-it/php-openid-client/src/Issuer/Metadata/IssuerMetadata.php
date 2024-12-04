@@ -19,6 +19,7 @@ final class IssuerMetadata implements IssuerMetadataInterface
 {
     /**
      * @var array<string, mixed>
+     *
      * @psalm-var IssuerMetadataObject
      */
     private $metadata;

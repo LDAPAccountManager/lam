@@ -74,9 +74,9 @@
             'dev_requirement' => false,
         ),
         'facile-it/php-openid-client' => array(
-            'pretty_version' => '0.2.0',
-            'version' => '0.2.0.0',
-            'reference' => '8396adf100f32d96f9d943e729eb9608a9e15504',
+            'pretty_version' => '0.3.5',
+            'version' => '0.3.5.0',
+            'reference' => '5a1e370f57cc822d06fa580160df44fd68eb2c94',
             'type' => 'library',
             'install_path' => __DIR__ . '/../facile-it/php-openid-client',
             'aliases' => array(),

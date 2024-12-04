@@ -65,13 +65,13 @@ final class WebFingerProvider implements RemoteProviderInterface, WebFingerProvi
         return true;
     }
 
-    public function fetch(string $resource): array
+    public function fetch(string $uri): array
     {
-        $resource = $this->normalizeWebfinger($resource);
+        $uri = $this->normalizeWebfinger($uri);
         $parsedUrl = parse_url(
-            false !== strpos($resource, '@')
-                ? 'https://' . explode('@', $resource)[1]
-                : $resource
+            false !== strpos($uri, '@')
+                ? 'https://' . explode('@', $uri)[1]
+                : $uri
         );
 
         if (! is_array($parsedUrl) || ! array_key_exists('host', $parsedUrl)) {
@@ -88,7 +88,7 @@ final class WebFingerProvider implements RemoteProviderInterface, WebFingerProvi
         }
 
         $webFingerUrl = $this->uriFactory->createUri('https://' . $host . self::WEBFINGER)
-            ->withQuery(http_build_query(['resource' => $resource, 'rel' => self::REL]));
+            ->withQuery(http_build_query(['resource' => $uri, 'rel' => self::REL]));
 
         $request = $this->requestFactory->createRequest('GET', $webFingerUrl)
             ->withHeader('accept', 'application/json');

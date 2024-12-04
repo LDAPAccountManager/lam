@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ebcc864bc725d4b59b4acd088924a39a",
+    "content-hash": "e65b6b4acb9ae7806399f8439e4c9004",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -490,69 +490,68 @@
         },
         {
             "name": "facile-it/php-openid-client",
-            "version": "0.2.0",
+            "version": "0.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facile-it/php-openid-client.git",
-                "reference": "8396adf100f32d96f9d943e729eb9608a9e15504"
+                "reference": "5a1e370f57cc822d06fa580160df44fd68eb2c94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facile-it/php-openid-client/zipball/8396adf100f32d96f9d943e729eb9608a9e15504",
-                "reference": "8396adf100f32d96f9d943e729eb9608a9e15504",
+                "url": "https://api.github.com/repos/facile-it/php-openid-client/zipball/5a1e370f57cc822d06fa580160df44fd68eb2c94",
+                "reference": "5a1e370f57cc822d06fa580160df44fd68eb2c94",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "facile-it/php-jose-verifier": "^0.3.0",
-                "php": "^7.2 || ^8.0",
+                "facile-it/php-jose-verifier": "^0.3 || ^0.4.3",
+                "php": "^7.4 || ^8.0",
                 "php-http/discovery": "^1.6",
                 "psr/http-client": "^1.0",
                 "psr/http-client-implementation": "^1.0",
                 "psr/http-factory": "^1.0",
                 "psr/http-factory-implementation": "^1.0",
-                "psr/http-message": "^1.0",
+                "psr/http-message": "^1.0 || ^2.0",
                 "psr/http-message-implementation": "^1.0",
                 "psr/http-server-middleware": "^1.0",
-                "web-token/jwt-checker": "^2.0",
-                "web-token/jwt-core": "^2.0",
-                "web-token/jwt-easy": "^2.1",
-                "web-token/jwt-encryption": "^2.0",
-                "web-token/jwt-key-mgmt": "^2.0.7",
-                "web-token/jwt-signature": "^2.0",
-                "web-token/jwt-signature-algorithm-rsa": "^2.0"
+                "web-token/jwt-checker": "^2.0 || ^3.0",
+                "web-token/jwt-core": "^2.0 || ^3.0",
+                "web-token/jwt-encryption": "^2.0 || ^3.0",
+                "web-token/jwt-key-mgmt": "^2.0.7 || ^3.0",
+                "web-token/jwt-signature": "^2.0 || ^3.0",
+                "web-token/jwt-signature-algorithm-rsa": "^2.0 || ^3.0"
             },
             "require-dev": {
-                "dflydev/fig-cookies": "^2.0",
-                "facile-it/facile-coding-standard": "^0.4.1",
-                "friendsofphp/php-cs-fixer": "^2.15",
-                "laminas/laminas-component-installer": "^2.1",
+                "dflydev/fig-cookies": "^2.0 || ^3.0",
+                "facile-it/facile-coding-standard": "^0.5.2",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "laminas/laminas-component-installer": "^2.1 || ^3.0",
                 "laminas/laminas-config-aggregator": "^1.1",
                 "laminas/laminas-di": "^3.1",
-                "laminas/laminas-diactoros": "^2.1",
+                "laminas/laminas-diactoros": "^2.1 || ^3.0",
                 "laminas/laminas-servicemanager": "^3.4",
                 "php-http/cache-plugin": "^1.6",
                 "php-http/curl-client": "^2.0",
-                "php-http/guzzle7-adapter": "^0.1.0",
+                "php-http/guzzle7-adapter": "^0.1.0 || ^1.0",
                 "phpspec/prophecy": "^1.10.3",
-                "phpspec/prophecy-phpunit": "^1.1 || ^2.0",
+                "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "^8.5.14 || ^9.3",
-                "symfony/console": "^4.3 || ^5.0",
-                "vimeo/psalm": "^4.7.2",
-                "web-token/jwt-encryption-algorithm-aescbc": "^2.0",
-                "web-token/jwt-encryption-algorithm-aesgcm": "^2.0",
-                "web-token/jwt-encryption-algorithm-aesgcmkw": "^2.0",
-                "web-token/jwt-encryption-algorithm-aeskw": "^2.0",
-                "web-token/jwt-encryption-algorithm-dir": "^2.0",
-                "web-token/jwt-encryption-algorithm-ecdh-es": "^2.0",
-                "web-token/jwt-encryption-algorithm-experimental": "^2.0",
-                "web-token/jwt-encryption-algorithm-pbes2": "^2.0",
-                "web-token/jwt-encryption-algorithm-rsa": "^2.0",
-                "web-token/jwt-signature-algorithm-ecdsa": "^2.0",
-                "web-token/jwt-signature-algorithm-eddsa": "^2.0",
-                "web-token/jwt-signature-algorithm-experimental": "^2.0",
-                "web-token/jwt-signature-algorithm-hmac": "^2.0",
-                "web-token/jwt-signature-algorithm-none": "^2.0"
+                "symfony/console": "^4.3 || ^5.0 || ^6.0",
+                "vimeo/psalm": "^5.6.0",
+                "web-token/jwt-encryption-algorithm-aescbc": "^2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-aesgcm": "^2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-aesgcmkw": "^2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-aeskw": "^2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-dir": "^2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-ecdh-es": "^2.2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-experimental": "^2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-pbes2": "^2.0 || ^3.0",
+                "web-token/jwt-encryption-algorithm-rsa": "^2.0 || ^3.0",
+                "web-token/jwt-signature-algorithm-ecdsa": "^2.0 || ^3.0",
+                "web-token/jwt-signature-algorithm-eddsa": "^2.0 || ^3.0",
+                "web-token/jwt-signature-algorithm-experimental": "^2.0 || ^3.0",
+                "web-token/jwt-signature-algorithm-hmac": "^2.0 || ^3.0",
+                "web-token/jwt-signature-algorithm-none": "^2.0 || ^3.0"
             },
             "suggest": {
                 "dflydev/fig-cookies": "To use the SessionCookieMiddleware",
@@ -597,9 +596,9 @@
             ],
             "support": {
                 "issues": "https://github.com/facile-it/php-openid-client/issues",
-                "source": "https://github.com/facile-it/php-openid-client/tree/0.2.0"
+                "source": "https://github.com/facile-it/php-openid-client/tree/0.3.5"
             },
-            "time": "2021-05-07T09:14:22+00:00"
+            "time": "2023-11-21T10:07:21+00:00"
         },
         {
             "name": "fgrosse/phpasn1",

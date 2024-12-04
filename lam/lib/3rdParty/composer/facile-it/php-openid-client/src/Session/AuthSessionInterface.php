@@ -44,6 +44,7 @@ interface AuthSessionInterface extends JsonSerializable
 
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return AuthSessionType
      */
     public function jsonSerialize(): array;

@@ -110,8 +110,6 @@ interface AuthRequestInterface extends JsonSerializable
      * Add other params and return a new instance.
      *
      * @param array<string, mixed> $params
-     *
-     * @return AuthRequestInterface
      */
     public function withParams(array $params): self;
 

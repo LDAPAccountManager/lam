@@ -71,12 +71,14 @@ interface ClientMetadataInterface extends JsonSerializable
 
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return ClientMetadataObject
      */
     public function jsonSerialize(): array;
 
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return ClientMetadataObject
      */
     public function toArray(): array;

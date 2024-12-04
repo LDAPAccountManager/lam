@@ -23,6 +23,7 @@ use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer as SignatureCompactSerializer;
 use Jose\Component\Signature\Serializer\JWSSerializer;
 use function json_encode;
+use JsonException;
 use function preg_match;
 use function random_bytes;
 use function strpos;
@@ -82,17 +83,19 @@ class RequestObjectFactory
         $metadata = $client->getMetadata();
         $issuer = $client->getIssuer();
 
-        $payload = json_encode(array_merge($params, [
+        $payloadParams = array_merge($params, [
             'iss' => $metadata->getClientId(),
             'aud' => $issuer->getMetadata()->getIssuer(),
             'client_id' => $metadata->getClientId(),
             'jti' => base64url_encode(random_bytes(32)),
             'iat' => time(),
             'exp' => time() + 300,
-        ]));
+        ]);
 
-        if (false === $payload) {
-            throw new RuntimeException('Unable to encode payload');
+        try {
+            $payload = json_encode($payloadParams, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new RuntimeException('Unable to encode payload', 0, $e);
         }
 
         return $payload;
@@ -107,7 +110,7 @@ class RequestObjectFactory
 
         if ('none' === $alg) {
             return implode('.', [
-                base64url_encode((string) json_encode(['alg' => $alg])),
+                base64url_encode(json_encode(['alg' => $alg], JSON_THROW_ON_ERROR)),
                 base64url_encode($payload),
                 '',
             ]);

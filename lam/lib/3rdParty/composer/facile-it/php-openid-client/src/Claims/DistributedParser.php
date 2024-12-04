@@ -7,6 +7,7 @@ namespace Facile\OpenIDClient\Claims;
 use function array_filter;
 use function Facile\OpenIDClient\check_server_response;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
+use Facile\OpenIDClient\Exception\RuntimeException;
 use Facile\OpenIDClient\Issuer\IssuerBuilderInterface;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
@@ -54,10 +55,7 @@ final class DistributedParser extends AbstractClaims implements DistributedParse
             return $claims;
         }
 
-        /** @var array<string, array{endpoint: string}> $distributedSources */
-        $distributedSources = array_filter($claimSources, static function ($value): bool {
-            return null !== ($value['endpoint'] ?? null);
-        });
+        $distributedSources = array_filter($claimSources, fn ($value): bool => $this->isDistributedSource($value));
 
         /** @var array<string, ResponseInterface> $responses */
         $responses = [];
@@ -73,6 +71,7 @@ final class DistributedParser extends AbstractClaims implements DistributedParse
             try {
                 $responses[$sourceName] = $this->client->sendRequest($request);
             } catch (Throwable $e) {
+                throw new RuntimeException("Unable to fetch distributed claim for \"{$sourceName}\"", 0, $e);
             }
         }
 
@@ -83,6 +82,7 @@ final class DistributedParser extends AbstractClaims implements DistributedParse
                 $claimPayloads[$sourceName] = $this->claimJWT($client, (string) $response->getBody());
                 unset($claims['_claim_sources'][$sourceName]);
             } catch (Throwable $e) {
+                throw new RuntimeException("Unable to fetch distributed claim for \"{$sourceName}\"", 0, $e);
             }
         }
 

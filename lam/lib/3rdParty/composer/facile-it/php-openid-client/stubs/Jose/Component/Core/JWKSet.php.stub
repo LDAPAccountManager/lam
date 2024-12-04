@@ -1,0 +1,91 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jose\Component\Core;
+
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
+use JsonSerializable;
+use Traversable;
+use Facile\JoseVerifier\Psalm\PsalmTypes;
+
+/**
+ * @psalm-import-type JWKType from JWK
+ * @psalm-type JWKSetType = array{keys: list<JWKType>}
+ *
+ * @template-implements IteratorAggregate<mixed, JWK>
+ */
+class JWKSet implements Countable, IteratorAggregate, JsonSerializable
+{
+    /**
+     * @param JWKSetType $data
+     */
+    public static function createFromKeyData(array $data): self
+    {}
+
+    public static function createFromJson(string $json): self
+    {}
+
+    /**
+     * @param int $mode
+     */
+    public function count($mode = COUNT_NORMAL): int
+    {}
+
+    /**
+     * @internal
+     * @return Traversable<array-key, mixed>
+     */
+    public function getIterator(): Traversable
+    {}
+
+    /**
+     * @return JWK[]
+     */
+    public function all(): array
+    {}
+
+    public function with(JWK $jwk): self
+    {}
+
+    /**
+     * @param int|string $key
+     * @return static
+     */
+    public function without($key): self
+    {}
+
+    /**
+     * @param int|string $index
+     * @return bool
+     */
+    public function has($index): bool
+    {}
+
+    /**
+     * @param int|string $index
+     * @return JWK
+     *
+     * @throws InvalidArgumentException
+     */
+    public function get($index): JWK
+    {}
+
+    /**
+     * Try to find a key that fits on the selected requirements. Returns null if not found.
+     *
+     * @param string $type Must be 'sig' (signature) or 'enc' (encryption)
+     * @param Algorithm|null $algorithm Specifies the algorithm to be used
+     * @param array<string, mixed> $restrictions More restrictions such as 'kid' or 'kty'
+     */
+    public function selectKey(string $type, ?Algorithm $algorithm = null, array $restrictions = []): ?JWK
+    {}
+
+    /**
+     * @return JWKSetType
+     */
+    public function jsonSerialize(): array
+    {}
+}

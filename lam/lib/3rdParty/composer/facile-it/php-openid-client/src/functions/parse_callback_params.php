@@ -11,10 +11,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use function strtoupper;
 
 /**
- * @return array<string, mixed>
+ * @internal
  *
- * @template P as array{error?: string, error_description?: string, error_uri?: string, response?: string}&array<string, mixed>
- * @psalm-return P
+ * @return array<string, mixed>
  */
 function parse_callback_params(ServerRequestInterface $serverRequest): array
 {
@@ -32,6 +31,6 @@ function parse_callback_params(ServerRequestInterface $serverRequest): array
         parse_str($serverRequest->getUri()->getQuery(), $params);
     }
 
-    /** @var P $params */
+    /** @var array<string, mixed> $params */
     return $params;
 }

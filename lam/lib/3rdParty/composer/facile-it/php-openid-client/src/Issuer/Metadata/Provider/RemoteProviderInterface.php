@@ -13,6 +13,7 @@ interface RemoteProviderInterface
 
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return IssuerMetadataObject
      */
     public function fetch(string $uri): array;

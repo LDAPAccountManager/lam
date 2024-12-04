@@ -29,9 +29,16 @@ class AuthRedirectHandler implements RequestHandlerInterface
     /** @var null|ClientInterface */
     private $client;
 
-    /** @var int */
+    /**
+     * @var int
+     *
+     * @psalm-var positive-int
+     */
     private $randomBytes;
 
+    /**
+     * @psalm-param positive-int $randomBytes
+     */
     public function __construct(
         AuthorizationService $authorizationService,
         ?ResponseFactoryInterface $responseFactory = null,

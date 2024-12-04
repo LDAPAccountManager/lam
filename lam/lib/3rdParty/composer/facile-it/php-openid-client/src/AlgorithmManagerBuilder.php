@@ -8,18 +8,20 @@ use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Encryption\Algorithm\ContentEncryption;
 use Jose\Component\Encryption\Algorithm\KeyEncryption;
 use Jose\Component\Signature\Algorithm;
-use Jose\Easy\AlgorithmProvider;
+use Throwable;
 
 class AlgorithmManagerBuilder
 {
     /**
      * @var string[]
+     *
      * @psalm-var list<class-string<\Jose\Component\Core\Algorithm>>
      */
     private $algorithmClasses;
 
     /**
      * @param string[]|null $algorithmClasses
+     *
      * @psalm-param null|list<class-string<\Jose\Component\Core\Algorithm>> $algorithmClasses
      */
     public function __construct(?array $algorithmClasses = null)
@@ -29,11 +31,23 @@ class AlgorithmManagerBuilder
 
     public function build(): AlgorithmManager
     {
-        return new AlgorithmManager((new AlgorithmProvider($this->algorithmClasses))->getAvailableAlgorithms());
+        $algorithms = [];
+        foreach ($this->algorithmClasses as $algorithmClass) {
+            if (class_exists($algorithmClass)) {
+                try {
+                    $algorithms[] = new $algorithmClass();
+                } catch (Throwable $throwable) {
+                    //does nothing
+                }
+            }
+        }
+
+        return new AlgorithmManager($algorithms);
     }
 
     /**
      * @return string[]
+     *
      * @psalm-return list<class-string<\Jose\Component\Core\Algorithm>>
      */
     private function getAlgorithms(): array

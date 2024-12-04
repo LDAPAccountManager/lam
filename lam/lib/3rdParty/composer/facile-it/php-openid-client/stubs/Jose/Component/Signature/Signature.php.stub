@@ -1,0 +1,111 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jose\Component\Signature;
+
+use function array_key_exists;
+use InvalidArgumentException;
+use Facile\JoseVerifier\Psalm\PsalmTypes;
+
+/**
+ * @psalm-type JWTHeaderType = array{alg?: non-empty-string,
+ *     enc?: non-empty-string,
+ *     jku?: non-empty-string,
+ *     jwk?: non-empty-string,
+ *     kid?: non-empty-string,
+ *     x5u?: non-empty-string,
+ *     x5c?: non-empty-string,
+ *     x5t?: non-empty-string,
+ *     "x5t#S256"?: non-empty-string,
+ *     typ?: non-empty-string,
+ *     cty?: non-empty-string,
+ *     crit?: non-empty-string
+ * }
+ */
+class Signature
+{
+    /**
+     * @param JWTHeaderType $protectedHeader
+     * @param JWTHeaderType $header
+     */
+    public function __construct(string $signature, array $protectedHeader, ?string $encodedProtectedHeader, array $header)
+    {
+    }
+
+    /**
+     * The protected header associated with the signature.
+     *
+     * @return JWTHeaderType
+     */
+    public function getProtectedHeader(): array
+    {
+    }
+
+    /**
+     * The unprotected header associated with the signature.
+     *
+     * @return JWTHeaderType
+     */
+    public function getHeader(): array
+    {
+    }
+
+    /**
+     * The protected header associated with the signature.
+     */
+    public function getEncodedProtectedHeader(): ?string
+    {
+    }
+
+    /**
+     * Returns the value of the protected header of the specified key.
+     *
+     * @param string $key The key
+     *
+     * @throws InvalidArgumentException if the header parameter does not exist
+     *
+     * @return null|mixed Header value
+     */
+    public function getProtectedHeaderParameter(string $key)
+    {
+    }
+
+    /**
+     * Returns true if the protected header has the given parameter.
+     *
+     * @param string $key The key
+     */
+    public function hasProtectedHeaderParameter(string $key): bool
+    {
+    }
+
+    /**
+     * Returns the value of the unprotected header of the specified key.
+     *
+     * @param string $key The key
+     *
+     * @return null|mixed Header value
+     *
+     * @throws InvalidArgumentException
+     */
+    public function getHeaderParameter(string $key)
+    {
+    }
+
+    /**
+     * Returns true if the unprotected header has the given parameter.
+     *
+     * @param string $key The key
+     */
+    public function hasHeaderParameter(string $key): bool
+    {
+    }
+
+    /**
+     * Returns the value of the signature.
+     */
+    public function getSignature(): string
+    {
+    }
+}

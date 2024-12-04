@@ -11,6 +11,7 @@ interface DiscoveryProviderInterface extends RemoteProviderInterface
 {
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return IssuerMetadataObject
      */
     public function discovery(string $url): array;

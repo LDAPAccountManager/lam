@@ -9,6 +9,7 @@ use JsonSerializable;
 
 /**
  * @psalm-import-type TokenSetType from TokenSetInterface
+ * @psalm-import-type TokenSetAttributesType from TokenSetInterface
  * @psalm-import-type TokenSetClaimsType from TokenSetInterface
  * @psalm-import-type TokenSetMixedType from TokenSetInterface
  */
@@ -16,18 +17,20 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
 {
     /**
      * @var array<string, mixed>
-     * @psalm-var TokenSetType
+     *
+     * @psalm-var TokenSetAttributesType
      */
     private $attributes = [];
 
     /**
      * @var array<string, mixed>
+     *
      * @psalm-var TokenSetClaimsType
      */
     private $claims = [];
 
     /**
-     * @psalm-param TokenSetType $attributes
+     * @psalm-param TokenSetAttributesType $attributes
      * @psalm-param TokenSetClaimsType $claims
      */
     private function __construct(array $attributes, array $claims)
@@ -38,6 +41,7 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
 
     /**
      * @param array<string, mixed> $data
+     *
      * @psalm-param TokenSetMixedType $data
      */
     public static function fromParams(array $data): TokenSetInterface
@@ -47,6 +51,8 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
             $claims = $data['claims'];
             unset($data['claims']);
         }
+
+        /** @psalm-var TokenSetAttributesType $data */
 
         return new static($data, $claims);
     }
@@ -117,6 +123,7 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
 
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return TokenSetType
      */
     public function jsonSerialize(): array

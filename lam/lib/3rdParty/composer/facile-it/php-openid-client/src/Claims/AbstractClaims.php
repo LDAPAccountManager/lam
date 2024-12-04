@@ -16,16 +16,21 @@ use Facile\OpenIDClient\Exception\InvalidArgumentException;
 use Facile\OpenIDClient\Exception\RuntimeException;
 use Facile\OpenIDClient\Issuer\IssuerBuilder;
 use Facile\OpenIDClient\Issuer\IssuerBuilderInterface;
+use Facile\OpenIDClient\Token\TokenSetInterface;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use Jose\Component\Signature\Serializer\JWSSerializer;
 use function json_decode;
+use JsonException;
 use function sprintf;
 
 /**
- * @psalm-import-type TokenSetClaimsType from \Facile\OpenIDClient\Token\TokenSetInterface
+ * @psalm-import-type TokenSetClaimsType from TokenSetInterface
+ * @psalm-import-type ClaimSourceType from TokenSetInterface
+ * @psalm-import-type ClaimSourceAggregateType from TokenSetInterface
+ * @psalm-import-type ClaimSourceDistributedType from TokenSetInterface
  */
 abstract class AbstractClaims
 {
@@ -54,16 +59,44 @@ abstract class AbstractClaims
     }
 
     /**
+     * @psalm-param array<string, mixed> $data
+     *
+     * @psalm-return bool
+     *
+     * @psalm-assert-if-true ClaimSourceAggregateType $data
+     */
+    protected function isAggregateSource(array $data): bool
+    {
+        return array_key_exists('JWT', $data);
+    }
+
+    /**
+     * @psalm-param array<string, mixed> $data
+     *
+     * @psalm-return bool
+     *
+     * @psalm-assert-if-true ClaimSourceDistributedType $data
+     */
+    protected function isDistributedSource(array $data): bool
+    {
+        return array_key_exists('endpoint', $data);
+    }
+
+    /**
      * @return array<string, mixed>
      */
     protected function claimJWT(OpenIDClient $client, string $jwt): array
     {
         $issuer = $client->getIssuer();
 
-        /** @var null|array<string, mixed> $header */
-        $header = json_decode(base64url_decode(explode('.', $jwt)[0] ?? '{}'), true);
-        /** @var array<string, mixed> $payload */
-        $payload = json_decode(base64url_decode(explode('.', $jwt)[1] ?? '{}'), true);
+        try {
+            /** @var null|array<string, mixed> $header */
+            $header = json_decode(base64url_decode(explode('.', $jwt)[0] ?? '{}'), true, 512, JSON_THROW_ON_ERROR);
+            /** @var array<string, mixed> $payload */
+            $payload = json_decode(base64url_decode(explode('.', $jwt)[1] ?? '{}'), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new InvalidArgumentException('Invalid JWT content', 0, $e);
+        }
 
         /** @var null|string $alg */
         $alg = $header['alg'] ?? null;
@@ -111,6 +144,7 @@ abstract class AbstractClaims
      * @return array<string, mixed>
      *
      * @psalm-param TokenSetClaimsType $claims
+     *
      * @psalm-return TokenSetClaimsType
      */
     protected function assignClaims(array $claims, array $sourceNames, array $sources): array
@@ -124,13 +158,14 @@ abstract class AbstractClaims
                 throw new RuntimeException(sprintf('Unable to find claim "%s" in source "%s"', $claim, $inSource));
             }
 
-            /** @var scalar $value */
+            /** @psalm-var scalar $value */
             $value = $sources[$inSource][$claim];
             $claims[$claim] = $value;
-            /** @var TokenSetClaimsType $claims */
+            /** @psalm-var TokenSetClaimsType $claims */
             $claims['_claim_names'] = array_diff_key($claims['_claim_names'] ?? [], array_flip([$claim]));
         }
 
+        /** @psalm-var TokenSetClaimsType $claims */
         return $claims;
     }
 
@@ -140,6 +175,7 @@ abstract class AbstractClaims
      * @return array<string, mixed>
      *
      * @psalm-param TokenSetClaimsType $claims
+     *
      * @psalm-return TokenSetClaimsType
      */
     protected function cleanClaims(array $claims): array
