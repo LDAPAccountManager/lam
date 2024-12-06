@@ -1192,7 +1192,7 @@ class accountContainer {
 				$forcePwdGroup->addElement(new htmlImage('../../graphics/' . $module->getIcon(), '16px', '16px', $module->get_alias(), $module->get_alias()));
 				$forcePwdGroup->addElement(new htmlSpacer('0.1rem', null));
 			}
-			$forcePwdGroup->addElement(new htmlHelpLink('406'), true);
+			$forcePwdGroup->addElement(new htmlHelpLink('406'));
 			$container->addField($forcePwdGroup);
 		}
 		if (isLAMProVersion() && (isset($this->attributes_orig['mail'][0]) || $this->anyModuleManagesMail())) {
@@ -2232,7 +2232,7 @@ class accountContainer {
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			// insert waiting modules
 			for ($w = 0; $w < sizeof($depModules); $w++) {
-				$dependencies = $this->module[$depModules[$w]]->get_dependencies($this->type->getScope());
+				$dependencies = $this->module[$depModules[$w]]->get_dependencies();
 				$dependencies = $dependencies['depends'];
 				$everything_found = true;
 				for ($d = 0; $d < sizeof($dependencies); $d++) {
@@ -2250,7 +2250,7 @@ class accountContainer {
 				}
 			}
 			// check next module
-			$dependencies = $this->module[$modules[$i]]->get_dependencies($this->type->getScope());
+			$dependencies = $this->module[$modules[$i]]->get_dependencies();
 			if (is_array($dependencies['depends'])) {
 				$everything_found = true;
 				$dependencies = $dependencies['depends'];

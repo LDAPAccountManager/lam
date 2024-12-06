@@ -178,7 +178,7 @@ class Remote {
 			}
 		}
 		catch (NoKeyLoadedException $e) {
-			logNewMessage(LOG_ERR, 'Unable to load key %s: %s', $keyPath, $e->getMessage());
+			logNewMessage(LOG_ERR, sprintf('Unable to load key %s: %s', $keyPath, $e->getMessage()));
 			throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
 		}
 	}
