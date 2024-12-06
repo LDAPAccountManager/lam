@@ -11,6 +11,7 @@ use Rector\Set\ValueObject\SetList;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 
 return RectorConfig::configure()
+	->withParallel(240, 8)
 	->withPaths([
 		__DIR__ . '/lam/help',
 		__DIR__ . '/lam/lib',
