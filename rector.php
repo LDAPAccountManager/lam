@@ -1,5 +1,7 @@
 <?php
 
+use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
+use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\Config\RectorConfig;
 use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
@@ -20,7 +22,8 @@ return RectorConfig::configure()
 	])
 	->withSets([
 		SetList::DEAD_CODE,
-		LevelSetList::UP_TO_PHP_81
+		LevelSetList::UP_TO_PHP_81,
+		SetList::CODE_QUALITY,
 	])
 	->withSkip([
 		__DIR__ . '/lam/lib/3rdParty',
@@ -30,6 +33,8 @@ return RectorConfig::configure()
 		StaticCallOnNonStaticToInstanceCallRector::class,
 		StringifyStrNeedlesRector::class,
 		RestoreDefaultNullToNullableTypePropertyRector::class,
+		ForRepeatedCountToOwnVariableRector::class,
+		SimplifyEmptyCheckOnEmptyArrayRector::class
 	])
 	->withFileExtensions([
 		'php',
