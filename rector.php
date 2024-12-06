@@ -11,6 +11,7 @@ use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
+use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return RectorConfig::configure()
 	->withParallel(240, 8)
@@ -34,7 +35,8 @@ return RectorConfig::configure()
 		StringifyStrNeedlesRector::class,
 		RestoreDefaultNullToNullableTypePropertyRector::class,
 		ForRepeatedCountToOwnVariableRector::class,
-		SimplifyEmptyCheckOnEmptyArrayRector::class
+		SimplifyEmptyCheckOnEmptyArrayRector::class,
+		DisallowedEmptyRuleFixerRector::class
 	])
 	->withFileExtensions([
 		'php',
