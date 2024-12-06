@@ -32,5 +32,5 @@ return RectorConfig::configure()
 	])
 	->withFileExtensions([
 		'php',
-//		'inc'
+		'inc'
 	]);
