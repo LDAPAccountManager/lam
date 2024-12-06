@@ -577,8 +577,8 @@ class imapAccess extends baseModule {
 		$user = $this->moduleSettings['ImapAccess_ImapAdmin'][0];
 		// check if username contains any wildcards that need to be replaced with LDAP attribute values
 		$matches = [];
-		preg_match_all('/\\$[a-z0-9_-]+\\$/i', $this->moduleSettings['ImapAccess_ImapAdmin'][0], $matches);
-		if (sizeof($matches) > 0) {
+		$isMatching = preg_match_all('/\\$[a-z0-9_-]+\\$/i', $this->moduleSettings['ImapAccess_ImapAdmin'][0], $matches);
+		if ($isMatching) {
 			// find wildcards
 			$attrNames = [];
 			foreach ($matches as $match) {
@@ -737,11 +737,11 @@ class imapAccess extends baseModule {
 	function isWrongDomain($email_domain) {
 		if (isset($this->moduleSettings['ImapAccess_ImapDomain'][0])) {
 			$domain_list_string = $this->moduleSettings['ImapAccess_ImapDomain'][0];
-			if ($domain_list_string == '*') {
+			if (empty($domain_list_string) || ($domain_list_string == '*')) {
 				return false;
 			}
 			$domains_array = explode(",", $domain_list_string);
-			if ((sizeof($domains_array) == 0) || in_array($email_domain, $domains_array)) {
+			if (in_array($email_domain, $domains_array)) {
 				return false;
 			}
 		}
