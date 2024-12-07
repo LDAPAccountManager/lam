@@ -97,7 +97,7 @@ function printHeader(string $headerPrefix): void {
 	}
 	asort($toSort);
 	$tools = [];
-	foreach ($toSort as $key => $value) {
+	foreach (array_keys($toSort) as $key) {
 		$tools[] = new $key();
 	}
 	$userData = $_SESSION['ldap']->getUserName();
@@ -122,7 +122,7 @@ function printHeader(string $headerPrefix): void {
 					$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
 					try {
 						$serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
-						if (sizeof($serverProfileNames) < 2) {
+						if (count($serverProfileNames) < 2) {
 							$serverProfileLabel = '';
 						}
 					}
@@ -166,7 +166,7 @@ function printHeader(string $headerPrefix): void {
 
 				parseHtml(null, $accountTypesGroup, [], false, null);
 			}
-			if (sizeof($tools) > 0) {
+			if ($tools !== []) {
 				$toolGroup = new htmlGroup();
 				$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
 				$toolLink->setOnClick("window.lam.topmenu.openSubmenu(event, 'lam-navigation-tools', window.lam.topmenu.subMenuCloseListenerTools);");
