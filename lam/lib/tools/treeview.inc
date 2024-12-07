@@ -107,7 +107,7 @@ class TreeViewTool extends LAMTool {
 	public function getConfigOptions(array $settings): ?htmlElement {
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlOutputText(_('Tree view')), 12);
-		$suffix = !empty($settings[self::TREE_SUFFIX_CONFIG]) ? $settings[self::TREE_SUFFIX_CONFIG] : '';
+		$suffix = empty($settings[self::TREE_SUFFIX_CONFIG]) ? '' : $settings[self::TREE_SUFFIX_CONFIG];
 		$row->add(new htmlResponsiveInputField(_('Tree suffix'), self::TREE_SUFFIX_CONFIG, $suffix, '203'), 12);
 		$row->addVerticalSpacer('1rem');
 		return $row;
