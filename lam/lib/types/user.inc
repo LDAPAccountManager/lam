@@ -191,7 +191,7 @@ class user extends baseType {
 		if (isset($personalAttributes['mobile'][0]) && !empty($personalAttributes['mobile'][0])) {
 			$subtitle .= _('Mobile number') . ' ' . htmlspecialchars($personalAttributes['mobile'][0]);
 		}
-		if ($subtitle == '') {
+		if ($subtitle === '') {
 			return null;
 		}
 		return $subtitle;
@@ -238,7 +238,7 @@ class lamUserList extends lamList {
 	protected function listGetParams() {
 		parent::listGetParams();
 		// generate hash table for group translation
-		if ($this->trans_primary == "on" && !$this->refresh && (sizeof($this->trans_primary_hash) == 0)) {
+		if ($this->trans_primary == "on" && !$this->refresh && (count($this->trans_primary_hash) == 0)) {
 			$this->refreshPrimaryGroupTranslation();
 		}
 	}
@@ -261,7 +261,7 @@ class lamUserList extends lamList {
 		$this->trans_primary_hash = [];
 		$attrs = ["cn", "gidNumber"];
 		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, ['group']);
-		$entryCount = sizeof($entries);
+		$entryCount = count($entries);
 		for ($i = 0; $i < $entryCount; $i++) {
 			$this->trans_primary_hash[$entries[$i]['gidnumber'][0]] = $entries[$i]['cn'][0];
 		}
@@ -273,7 +273,7 @@ class lamUserList extends lamList {
 	 */
 	protected function getTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
-		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) {
+		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (count($entry[$attribute]) < 1)) {
 			return parent::getTableCellContent($entry, $attribute);
 		}
 		// translate GID to group name
@@ -321,10 +321,7 @@ class lamUserList extends lamList {
 	 * @return boolean filtering possible
 	 */
 	protected function canBeFiltered($attr) {
-		if (strtolower($attr) == 'jpegphoto') {
-			return false;
-		}
-		return true;
+		return strtolower($attr) !== 'jpegphoto';
 	}
 
 	/**

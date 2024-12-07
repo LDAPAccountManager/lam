@@ -132,7 +132,7 @@ class netgroup extends baseType {
 		if (isset($attributes['description'][0])) {
 			$subtitle .= htmlspecialchars($attributes['description'][0]);
 		}
-		if ($subtitle == '') {
+		if ($subtitle === '') {
 			return null;
 		}
 		return $subtitle;
