@@ -597,13 +597,13 @@ function get_preg($argument, $regexp) {
 		case 'hostObject':
 			$pregexpr = '/^!?([[:alnum:]@. _$:*-])+$/u';
 			break;
-		case 'usernameList':    // comma separated list of user names
+		case 'usernameList':    // comma separated list of usernames
 		case 'groupnameList':    // comma separated list of group names
-			$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_-])+(,([[:alnum:]%#@\\.\\ \\_-])+)*$/u';
+			$pregexpr = '/^([[:alnum:]%#@. _-])+(,([[:alnum:]%#@. _-])+)*$/u';
 			break;
 		case 'realname':    // Allow all but \, <, >, =, $, ?
 		case 'cn':
-			$pregexpr = '/^[^\\\<>=\\$\\?]+(\\$)?$/';
+			$pregexpr = '/^[^\\\\<>=$?]+(\$)?$/';
 			break;
 		case "telephone":    // Allow letters, numbers, space, brackets, /-+.
 			$pregexpr = '/^(\\+)*([0-9a-zA-Z\\.\\ \\(\\)\\/-])*$/';

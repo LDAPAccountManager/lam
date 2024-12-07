@@ -269,6 +269,23 @@ class AccountTest extends TestCase {
 		$this->assertTrue(get_preg('!abc123', 'hostObject'));
 		$this->assertTrue(get_preg('abc@. _$:*-123', 'hostObject'));
 		$this->assertFalse(get_preg('abc!123', 'hostObject'));
+
+		$this->assertTrue(get_preg('abc123', 'usernameList'));
+		$this->assertTrue(get_preg('abc123,def456', 'usernameList'));
+		$this->assertTrue(get_preg('abc123,def456,ghi789', 'usernameList'));
+		$this->assertTrue(get_preg('abc%#@. _-123,def%#@. _-456,ghi%#@. _-789', 'usernameList'));
+		$this->assertFalse(get_preg('abc!123', 'usernameList'));
+		$this->assertFalse(get_preg('abcdef,abc!123', 'usernameList'));
+
+		$this->assertTrue(get_preg('abc123', 'cn'));
+		$this->assertTrue(get_preg('abc123$', 'cn'));
+		$this->assertTrue(get_preg('abc#@. _-123', 'cn'));
+		$this->assertFalse(get_preg('abc\123', 'cn'));
+		$this->assertFalse(get_preg('abc<123', 'cn'));
+		$this->assertFalse(get_preg('abc>123', 'cn'));
+		$this->assertFalse(get_preg('abc=123', 'cn'));
+		$this->assertFalse(get_preg('abc$123', 'cn'));
+		$this->assertFalse(get_preg('abc?123', 'cn'));
 	}
 
 }
