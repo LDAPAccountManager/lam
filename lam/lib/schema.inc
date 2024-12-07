@@ -1,4 +1,5 @@
 <?php
+
 namespace LAM\SCHEMA;
 /*
 
@@ -1644,7 +1645,7 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
  */
 function get_schema_objectclasses($dn = null, $use_cache = true): array {
 	if ($use_cache && cached_schema_available('objectclasses')) {
-		return get_cached_schema('objectclasses' );
+		return get_cached_schema('objectclasses');
 	}
 
 	$raw_oclasses = _get_raw_schema('objectclasses', $dn);
