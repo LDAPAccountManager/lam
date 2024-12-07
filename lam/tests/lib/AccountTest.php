@@ -252,4 +252,23 @@ class AccountTest extends TestCase {
 		$this->assertEquals(20, strlen(generateRandomText(20)));
 	}
 
+	function testGetPreg() {
+		$this->assertTrue(get_preg('abc123', 'password'));
+		$this->assertTrue(get_preg('abc ^|#*,.;:_+!%&/?{}()[]$§°@=-123', 'password'));
+		$this->assertFalse(get_preg('abc\\123', 'password'));
+
+		$this->assertTrue(get_preg('abc123', 'username'));
+		$this->assertTrue(get_preg('abc%#@. _$-123', 'username'));
+		$this->assertFalse(get_preg('abc?123', 'username'));
+
+		$this->assertTrue(get_preg('abc123', 'krbUserName'));
+		$this->assertTrue(get_preg('abc#@. _$-123', 'krbUserName'));
+		$this->assertFalse(get_preg('abc?123', 'krbUserName'));
+
+		$this->assertTrue(get_preg('abc123', 'hostObject'));
+		$this->assertTrue(get_preg('!abc123', 'hostObject'));
+		$this->assertTrue(get_preg('abc@. _$:*-123', 'hostObject'));
+		$this->assertFalse(get_preg('abc!123', 'hostObject'));
+	}
+
 }

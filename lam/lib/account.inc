@@ -584,18 +584,18 @@ function get_preg($argument, $regexp) {
 	$pregexpr = '';
 	switch ($regexp) {
 		case 'password':
-			$pregexpr = '/^([[:alnum:]\\^\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]\\$§°@=-])*$/u';
+			$pregexpr = '/^([[:alnum:]^ |#*,.;:_+!%&\/?{()}\[\]$§°@=-])*$/u';
 			break;
 		case 'groupname':    // all letters, numbers, space and ._- are allowed characters
 		case 'username':
 		case 'hostname':
-			$pregexpr = '/^([[:alnum:]%#@\\.\\ \\_\\$-])+$/u';
+			$pregexpr = '/^([[:alnum:]%#@. _$-])+$/u';
 			break;
 		case 'krbUserName':
-			$pregexpr = '/^([[:alnum:]#@\\/\\.\\ \\_\\$-])+$/u';
+			$pregexpr = '/^([[:alnum:]#@\/. _$-])+$/u';
 			break;
 		case 'hostObject':
-			$pregexpr = '/^[!]?([[:alnum:]@\\.\\ \\_\\$\\:*-])+$/u';
+			$pregexpr = '/^!?([[:alnum:]@. _$:*-])+$/u';
 			break;
 		case 'usernameList':    // comma separated list of user names
 		case 'groupnameList':    // comma separated list of group names
