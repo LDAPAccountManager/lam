@@ -255,7 +255,8 @@ class Ldap {
 		}
 		$rootDse = ldapGetDN('', ['*']);
 		logNewMessage(LOG_DEBUG, 'Root DSE: ' . print_r($rootDse, true));
-		return isset($rootDse['domaincontrollerfunctionality']) || isset($rootDse['forestfunctionality']);
+		$this->isActiveDirectory = isset($rootDse['domaincontrollerfunctionality']) || isset($rootDse['forestfunctionality']);
+		return $this->isActiveDirectory;
 	}
 
 }
