@@ -606,33 +606,33 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^[^\\\\<>=$?]+(\$)?$/';
 			break;
 		case "telephone":    // Allow letters, numbers, space, brackets, /-+.
-			$pregexpr = '/^(\\+)*([0-9a-zA-Z\\.\\ \\(\\)\\/-])*$/';
+			$pregexpr = '/^(\+)*([0-9a-zA-Z. ()\/-])*$/';
 			break;
 		case "email":
-			$pregexpr = '/^([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
+			$pregexpr = '/^([0-9a-zA-Z\'!~#+*%$\/._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
 			break;
 		case "emailWithName":
-			$pregexpr = '/^([[:alnum:] \'!~#+*%\\$\\(\\)_-])+ <([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
+			$pregexpr = '/^([[:alnum:] \'!~#+*%$()_-])+ <([0-9a-zA-Z\'!~#+*%$\/._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
 			break;
 		case "mailLocalAddress":
-			$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
+			$pregexpr = '/^([0-9a-zA-Z+\\/._-])*([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
 			break;
 		case 'kolabEmailPrefix':
-			$pregexpr = '/^([-])?([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z\\.-])*)?$/';
+			$pregexpr = '/^([-])?([0-9a-zA-Z+\\/._-])*([@]([0-9a-zA-Z.-])*)?$/';
 			break;
 		case "postalAddress":    // Allow all but \, <, >, =, ?
-			$pregexpr = '/^[^\\\<>=\\?]*$/';
+			$pregexpr = '/^[^\\\<>=?]*$/';
 			break;
 		case "postalCode":    // Allow all but \, <, >, =, ?
 		case "street":
 		case "title":
 		case "employeeType":
 		case "businessCategory":
-			$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
+			$pregexpr = '/^[^\\\<>=$?]*$/';
 			break;
 		case "homeDirectory":        // Home path, /path/......
 		case "filePath":
-			$pregexpr = '/^([\/]([[:alnum:]@\\$\\.\\ \\_-])+)+(\/)?$/u';
+			$pregexpr = '/^([\/]([[:alnum:]@$. _-])+)+(\/)?$/u';
 			break;
 		case "digit":        // Normal number
 			$pregexpr = '/^[[:digit:]]*$/';
@@ -644,37 +644,34 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^[[:digit:]]+(\\.[[:digit:]]+)?$/';
 			break;
 		case "UNC":            // UNC Path, e.g. \\server\share\folder\...
-			$pregexpr = '/^((([\\\][\\\])|(%))([a-zA-Z0-9@%\\.-])+)([\\\]([[:alnum:]@%\\.\\$\\ \\_-])+)+$/u';
+			$pregexpr = '/^((([\\\][\\\])|(%))([a-zA-Z0-9@%.-])+)([\\\]([[:alnum:]@%.$ _-])+)+$/u';
 			break;
 		case "logonscript":    // path to login-script. normal unix file
-			$pregexpr = '/^(([\/\\\])*([[:alnum:]%\\.\\ \\$\\_-])+([\/\\\]([[:alnum:]%\\.\\ \\$\\_-])+)*((\\.bat)|(\\.cmd)|(\\.exe)|(\\.vbs)))*$/u';
+			$pregexpr = '/^(([\/\\\])*([[:alnum:]%. $_-])+([\/\\\]([[:alnum:]%. $_-])+)*((\\.bat)|(\\.cmd)|(\\.exe)|(\\.vbs)))*$/u';
 			break;
 		case "workstations":    // comma separated list with windows-hosts
-			$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
+			$pregexpr = '/^(([a-zA-Z0-9._-])+(,[a-zA-Z0-9._-])*)*$/';
 			break;
 		case "domainname":        // Windows Domainname
-			$pregexpr = '/^([A-Za-z0-9\\.\\_-])+$/';
+			$pregexpr = '/^([A-Za-z0-9._-])+$/';
 			break;
 		case "unixhost":        // Unix hosts
-			$pregexpr = '/^([a-z0-9,\\.\\*_-])*$/';
+			$pregexpr = '/^([a-z0-9,.*_-])*$/';
 			break;
 		case 'digit2':            // Same as digit but also -1
 			$pregexpr = '/^(([-][1])|([[:digit:]]*))$/';
 			break;
 		case 'gecos':
-			$pregexpr = '/^[[:alnum:] \\._-]+([,][[:alnum:] \\._-]+)*$/u';
+			$pregexpr = '/^[[:alnum:] ._-]+([,][[:alnum:] ._-]+)*$/u';
 			break;
 		case 'macAddress':
 			$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
 			break;
 		case 'date':            // 31-12-2012
-			$pregexpr = '/^((0?[1-9])|([1-2][0-9])|30|31)\\-((0?[1-9])|(1[0-2]))\\-[1-3][0-9][0-9][0-9]$/';
-			break;
-		case 'date2':
-			$pregexpr = '/^((0[1-9])|([1-2][0-9])|30|31)\\.((0[1-9])|(1[0-2]))\\.[1-3][0-9][0-9][0-9]$/';
+			$pregexpr = '/^((0?[1-9])|([1-2][0-9])|30|31)-((0?[1-9])|(1[0-2]))-[1-3][0-9][0-9][0-9]$/';
 			break;
 		case 'dateTime':
-			$pregexpr = '/^[1-3][0-9][0-9][0-9]\\-((0[1-9])|(1[0-2]))\\-((0[1-9])|([1-2][0-9])|30|31) ((0[0-9])|([1][0-9])|20|21|22|23):((0[0-9])|([1-5][0-9])):((0[0-9])|([1-5][0-9]))$/';
+			$pregexpr = '/^[1-3][0-9][0-9][0-9]-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|30|31) ((0[0-9])|([1][0-9])|20|21|22|23):((0[0-9])|([1-5][0-9])):((0[0-9])|([1-5][0-9]))$/';
 			break;
 		case 'sambaLogonHours':
 			$pregexpr = '/^[0-9a-fA-F]{42}$/';
@@ -683,10 +680,10 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
 			break;
 		case 'nis_alias':
-			$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
+			$pregexpr = '/^([[:alnum:]@. _-])+$/u';
 			break;
 		case 'nis_recipient':
-			$pregexpr = '/^([[:alnum:]+@\\.\\ \\_-])+$/u';
+			$pregexpr = '/^([[:alnum:]+@. _-])+$/u';
 			break;
 		case 'country':    // Allow all letters and space
 			$pregexpr = '/^[[:alpha:]]([[:alpha:] ])+$/u';
@@ -695,7 +692,7 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^([^=,]+=[^=,]+)(,([^=,]+=[^=,]+))*$/';
 			break;
 		case 'domainSID': // Samba domain SID
-			$pregexpr = "/^S\\-[0-9]\\-[0-9]\\-[0-9]{2,2}\\-[0-9]+\\-[0-9]+\\-[0-9]+$/";
+			$pregexpr = "/^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]+-[0-9]+-[0-9]+$/";
 			break;
 		case 'ip': // IP address
 			$pregexpr = '/^[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}$/';
@@ -713,7 +710,7 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^[[:digit:]]+[KMGTkmgt]?$/';
 			break;
 		case 'hostAndPort':
-			$pregexpr = '/^[[:alnum:]\\._-]+:[[:digit:]]+$/';
+			$pregexpr = '/^[[:alnum:]._-]+:[[:digit:]]+$/';
 			break;
 		case 'ldapDateAndTime':
 			$pregexpr = '/^[0-9]{14}Z$/';
