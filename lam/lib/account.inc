@@ -467,16 +467,16 @@ function getNumberOfCharacterClasses($password): int {
 		return 0;
 	}
 	$classesCount = 0;
-	if (preg_match("/[a-z]/", $password)) {
+	if (preg_match('/[a-z]/', $password)) {
 		$classesCount++;
 	}
-	if (preg_match("/[A-Z]/", $password)) {
+	if (preg_match('/[A-Z]/', $password)) {
 		$classesCount++;
 	}
-	if (preg_match("/[0-9]/", $password)) {
+	if (preg_match('/[0-9]/', $password)) {
 		$classesCount++;
 	}
-	if (preg_match("/[^a-z0-9]/i", $password)) {
+	if (preg_match('/[^a-z0-9]/i', $password)) {
 		$classesCount++;
 	}
 	return $classesCount;
