@@ -100,8 +100,7 @@ function natCaseKeySort(array $toSort): array {
  */
 function getdays() {
 	$days = time() / 86400;
-	settype($days, 'integer');
-	return $days;
+	return (int) $days;
 }
 
 /**
@@ -273,21 +272,18 @@ function pwd_enable($hash) {
 	if ((str_starts_with($hash, "!{")) || (str_starts_with($hash, "*{"))) {
 		return substr($hash, 1, strlen($hash));
 	}
-	// check for "!" or "*" at beginning of password hash
-	else {
-		if (str_starts_with($hash, "{")) {
-			$pos = strpos($hash, "}");
-			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
-				// enable hash
-				return substr($hash, 0, $pos + 1) . substr($hash, $pos + 2, strlen($hash));
-			}
-			else {
-				return $hash;  // not disabled
-			}
+	elseif (str_starts_with($hash, "{")) {
+		$pos = strpos($hash, "}");
+		if ((substr($hash, $pos + 1, 1) === "!") || (substr($hash, $pos + 1, 1) === "*")) {
+			// enable hash
+			return substr($hash, 0, $pos + 1) . substr($hash, $pos + 2, strlen($hash));
 		}
 		else {
-			return $hash;  // password is plain text
+			return $hash;  // not disabled
 		}
+	}
+	else {
+		return $hash;  // password is plain text
 	}
 }
 
@@ -302,21 +298,18 @@ function pwd_disable($hash) {
 	if ((str_starts_with($hash, "!{")) || (str_starts_with($hash, "*{"))) {
 		return $hash;
 	}
-	// check for "!" or "*" at beginning of password hash
-	else {
-		if (str_starts_with($hash, "{")) {
-			$pos = strpos($hash, "}");
-			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
-				// hash already disabled
-				return $hash;
-			}
-			else {
-				return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
-			}
+	elseif (str_starts_with($hash, "{")) {
+		$pos = strpos($hash, "}");
+		if ((substr($hash, $pos + 1, 1) === "!") || (substr($hash, $pos + 1, 1) === "*")) {
+			// hash already disabled
+			return $hash;
 		}
 		else {
-			return $hash;  // password is plain text
+			return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
 		}
+	}
+	else {
+		return $hash;  // password is plain text
 	}
 }
 
@@ -335,7 +328,7 @@ function pwd_is_lockable($password) {
 	if (str_starts_with($password, '{SASL}')) {
 		return false;
 	}
-	return ((str_starts_with($password, "{")) || (substr($password, 1, 1) == "{")) && (strpos($password, "}") > 3);
+	return ((str_starts_with($password, "{")) || (substr($password, 1, 1) === "{")) && (strpos($password, "}") > 3);
 }
 
 /**
@@ -428,18 +421,18 @@ function checkPasswordHash($type, $hash, $password) {
 			return (strcmp($hash, base64_encode(hex2bin(md5($password)))) == 0);
 		case 'CRYPT':
 			$parts = explode('$', $hash);
-			if (sizeof($parts) === 1) {
+			if (count($parts) === 1) {
 				$salt = substr($hash, 0, 2);
 				$pwdHash = crypt($password, $salt);
 				return (strcmp($hash, $pwdHash) == 0);
 			}
-			if (sizeof($parts) === 4) {
+			if (count($parts) === 4) {
 				$version = $parts[1];
 				$salt = $parts[2];
 				$pwdHash = crypt($password, '$' . $version . '$' . $salt);
 				return (strcmp($hash, $pwdHash) == 0);
 			}
-			elseif (sizeof($parts) === 5) {
+			elseif (count($parts) === 5) {
 				$version = $parts[1];
 				$rounds = $parts[2];
 				$salt = $parts[3];
@@ -473,7 +466,7 @@ function getNumberOfCharacterClasses($password): int {
 	if (preg_match('/[A-Z]/', $password)) {
 		$classesCount++;
 	}
-	if (preg_match('/[0-9]/', $password)) {
+	if (preg_match('/\d/', $password)) {
 		$classesCount++;
 	}
 	if (preg_match('/[^a-z0-9]/i', $password)) {
@@ -504,7 +497,7 @@ function search_domains($server = null, $suffix = null) {
 	$filter = '(objectclass=sambaDomain)';
 	$units = searchLDAPPaged($server, $suffix, $filter, $attr, false, 0);
 	// extract attributes
-	for ($i = 0; $i < sizeof($units); $i++) {
+	for ($i = 0; $i < count($units); $i++) {
 		$ret[$i] = new samba3domain();
 		$ret[$i]->dn = $units[$i]['dn'];
 		$ret[$i]->name = $units[$i]['sambadomainname'][0];
@@ -668,10 +661,10 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
 			break;
 		case 'date':            // 31-12-2012
-			$pregexpr = '/^((0?[1-9])|([1-2][0-9])|30|31)-((0?[1-9])|(1[0-2]))-[1-3][0-9][0-9][0-9]$/';
+			$pregexpr = '/^((0?[1-9])|([1-2]\d)|30|31)-((0?[1-9])|(1[0-2]))-[1-3]\d\d\d$/';
 			break;
 		case 'dateTime':
-			$pregexpr = '/^[1-3][0-9][0-9][0-9]-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|30|31) ((0[0-9])|([1][0-9])|20|21|22|23):((0[0-9])|([1-5][0-9])):((0[0-9])|([1-5][0-9]))$/';
+			$pregexpr = '/^[1-3]\d\d\d\-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2]\d)|30|31) ((0\d)|([1]\d)|20|21|22|23):((0\d)|([1-5]\d)):((0\d)|([1-5]\d))$/';
 			break;
 		case 'sambaLogonHours':
 			$pregexpr = '/^[0-9a-fA-F]{42}$/';
@@ -692,10 +685,10 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^([^=,]+=[^=,]+)(,([^=,]+=[^=,]+))*$/';
 			break;
 		case 'domainSID': // Samba domain SID
-			$pregexpr = "/^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]+-[0-9]+-[0-9]+$/";
+			$pregexpr = "/^S-\\d-\\d-\\d{2,2}-\\d+-\\d+-\\d+\$/";
 			break;
 		case 'ip': // IP address
-			$pregexpr = '/^[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}$/';
+			$pregexpr = '/^\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}$/';
 			break;
 		case 'ip6': // IPv6 address (only basic check)
 			$pregexpr = '/^[0-9a-f:]+$/i';
@@ -713,13 +706,13 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/^[[:alnum:]._-]+:[[:digit:]]+$/';
 			break;
 		case 'ldapDateAndTime':
-			$pregexpr = '/^[0-9]{14}Z$/';
+			$pregexpr = '/^\d{14}Z$/';
 			break;
 		case 'guacamoleProtocol':
 			$pregexpr = '/^(rdp|vnc)$/';
 			break;
 	}
-	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
+	if (($pregexpr !== '') && preg_match($pregexpr, $argument)) {
 		return true;
 	}
 	// Now we check "negative" cases, characters which are not allowed
@@ -735,10 +728,7 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/[[:digit:]]/';
 			break;
 	}
-	if (($pregexpr != '') && !preg_match($pregexpr, $argument)) {
-		return true;
-	}
-	return false;
+ return ($pregexpr !== '') && !preg_match($pregexpr, $argument);
 }
 
 /**
@@ -806,10 +796,10 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	if ($objectClass != null) {
 		$filterParts[] = '(objectClass=' . $objectClass . ')';
 	}
-	if (sizeof($filterParts) == 1) {
+	if (count($filterParts) == 1) {
 		$filter = $filterParts[0];
 	}
-	elseif (sizeof($filterParts) > 1) {
+	elseif (count($filterParts) > 1) {
 		$filter = '(& ' . implode(' ', $filterParts) . ')';
 	}
 	$typeManager = new TypeManager();
@@ -879,7 +869,7 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
  */
 function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
 	if ($limit === -1) {
-		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
+		$limit = empty($_SESSION['config']) ? 0 : $_SESSION['config']->get_searchLimit();
 	}
 	$return = searchLDAPPaged(getLDAPServerHandle(), $suffix, $filter, $attributes,
 		0, $limit);
@@ -1003,7 +993,7 @@ function ldapGetDN($dn, $attributes = ['dn'], $handle = null): ?array {
  */
 function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = ['dn'], $handle = null, $limit = -1) {
 	if ($limit === -1) {
-		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
+		$limit = empty($_SESSION['config']) ? 0 : $_SESSION['config']->get_searchLimit();
 	}
 	if ($handle == null) {
 		$handle = $_SESSION['ldap']->server();
@@ -1039,10 +1029,10 @@ function deleteDN($dn, $recursive) {
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			cleanLDAPResult($entries);
-			for ($i = 0; $i < sizeof($entries); $i++) {
+			for ($i = 0; $i < count($entries); $i++) {
 				// delete recursively
 				$subErrors = deleteDN($entries[$i]['dn'], $recursive);
-				for ($e = 0; $e < sizeof($subErrors); $e++) {
+				for ($e = 0; $e < count($subErrors); $e++) {
 					$errors[] = $subErrors[$e];
 				}
 			}
@@ -1152,7 +1142,7 @@ function cleanLDAPResult(&$entries) {
 		unset($entries['count']);
 	}
 	// iterate over all results
-	$count = sizeof($entries);
+	$count = count($entries);
 	for ($e = 0; $e < $count; $e++) {
 		// remove 'count' entries and numerical entries
 		for ($i = 0; $i < $entries[$e]['count']; $i++) {
@@ -1162,7 +1152,7 @@ function cleanLDAPResult(&$entries) {
 		}
 		unset($entries[$e]['count']);
 		$attrNames = array_keys($entries[$e]);
-		$attrCount = sizeof($attrNames);
+		$attrCount = count($attrNames);
 		for ($i = 0; $i < $attrCount; $i++) {
 			if (is_array($entries[$e][$attrNames[$i]])) {
 				unset($entries[$e][$attrNames[$i]]['count']);
@@ -1188,9 +1178,9 @@ function getAbstractDN($dn) {
 		$dn = str_replace($partToCut, '', $dn);
 	}
 	$parts = explode(',', $dn);
-	for ($i = 0; $i < sizeof($parts); $i++) {
+	for ($i = 0; $i < count($parts); $i++) {
 		$subparts = explode('=', $parts[$i]);
-		if (sizeof($subparts) == 2) {
+		if (count($subparts) == 2) {
 			$parts[$i] = $subparts[1];
 		}
 	}
@@ -1229,8 +1219,8 @@ function compareDN($a, $b): int {
 	// split DNs
 	$array_a = explode(",", strtolower($a));
 	$array_b = explode(",", strtolower($b));
-	$len_a = sizeof($array_a);
-	$len_b = sizeof($array_b);
+	$len_a = count($array_a);
+	$len_b = count($array_b);
 	// check how many parts to compare
 	$len = min($len_a, $len_b);
 	// compare from last part on
@@ -1243,7 +1233,7 @@ function compareDN($a, $b): int {
 		$part_b = explode('=', $part_b);
 		$part_b = $part_b[1] ?? $part_b[0];
 		// compare parts
-		if ($part_a == $part_b) { // part is identical
+		if ($part_a === $part_b) { // part is identical
 			if ($i == ($len - 1)) {
 				return $len_a <=> $len_b;
 			}
@@ -1429,7 +1419,7 @@ function extractDNSuffix($dn) {
 	}
 	unset($parts['count']);
 	array_shift($parts);
-	for ($i = 0; $i < sizeof($parts); $i++) {
+	for ($i = 0; $i < count($parts); $i++) {
 		$parts[$i] = unescapeLdapSpecialCharacters($parts[$i]);
 		$parts[$i] = str_replace(',', '\\2C', $parts[$i]);
 	}
@@ -1473,7 +1463,7 @@ function testSmtpConnection(string $server, string $user, string $password, stri
 		$mailer->smtpConnect();
 	}
 	catch (Exception $e) {
-		throw new LAMException(null, $e->getMessage());
+		throw new LAMException(null, $e->getMessage(), $e);
 	}
 }
 
@@ -1516,12 +1506,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 		$attr = str_replace('@', '', $results[0]);
 		$value = '';
 		if (isset($user[strtolower($attr)][0])) {
-			if (is_array($user[strtolower($attr)])) {
-				$value = $user[strtolower($attr)][0];
-			}
-			else {
-				$value = $user[strtolower($attr)];
-			}
+			$value = is_array($user[strtolower($attr)]) ? $user[strtolower($attr)][0] : $user[strtolower($attr)];
 		}
 		$body = str_replace('@@' . $attr . '@@', $value, $body);
 		$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
@@ -1712,7 +1697,7 @@ function getLDAPSSLCertificate($server, $port) {
 		return false;
 	}
 	$finalPEM = '';
-	for ($i = 0; $i < sizeof($context['options']['ssl']['peer_certificate_chain']); $i++) {
+	for ($i = 0; $i < count($context['options']['ssl']['peer_certificate_chain']); $i++) {
 		$cert = $context['options']['ssl']['peer_certificate_chain'][$i];
 		$pemData = null;
 		$pemResult = @openssl_x509_export($cert, $pemData);
@@ -1783,7 +1768,7 @@ function getDefaultLDAPErrorString($server) {
 	}
 	$genericErrorMessage = ldap_error($server);
 	$message = _('LDAP error, server says:') . ' ' . $genericErrorMessage;
-	if (!empty($extError) && ($genericErrorMessage != $extError)) {
+	if (!empty($extError) && ($genericErrorMessage !== $extError)) {
 		$message .= ' - ' . $extError;
 	}
 	return $message;
@@ -1902,7 +1887,7 @@ function formatSecondsToShortFormat($numSeconds) {
 	$years = '';
 	if ($numSeconds >= 31536000) {
 		$years = floor($numSeconds / 31536000);
-		$numSeconds = $numSeconds - ($years * 31536000);
+		$numSeconds -= $years * 31536000;
 		$years .= 'y';
 	}
 	$seconds = $numSeconds % 60;
@@ -1929,7 +1914,7 @@ function unformatShortFormatToSeconds($text) {
 		return $text;
 	}
 	$matches = [];
-	if (preg_match('/^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?$/', $text, $matches)) {
+	if (preg_match('/^((\d+)y)?((\d+)w)?((\d+)d)?((\d+)h)?((\d+)m)?((\d+)s)?$/', $text, $matches)) {
 		$newValue = 0;
 		if (!empty($matches[2])) {
 			$newValue += $matches[2] * 31536000;
