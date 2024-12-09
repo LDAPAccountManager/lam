@@ -40,15 +40,15 @@ use function LAM\TYPES\getScopeFromTypeId;
  */
 
 /** persistence */
-include_once 'persistence.inc';
+include_once __DIR__ . '/persistence.inc';
 /** Used to print messages. */
-include_once "status.inc";
+include_once __DIR__ . "/status.inc";
 /** Used to get module information. */
-include_once "modules.inc";
+include_once __DIR__ . "/modules.inc";
 /** Used to get type information. */
-include_once "types.inc";
+include_once __DIR__ . "/types.inc";
 /** 2-factor */
-include_once '2factor.inc';
+include_once __DIR__ . '/2factor.inc';
 
 /**
  * Sets the environment variables for custom SSL CA certificates.
@@ -140,12 +140,9 @@ function checkChmod($right, $target, $chmod) {
 	$write = [2, 3, 6, 7];
 	// What numbers allow "execute"
 	$execute = [1, 3, 5, 7];
-	if ((($right == "read") && in_array($chmod_num, $read))
+	return (($right == "read") && in_array($chmod_num, $read))
 		|| (($right == "write") && in_array($chmod_num, $write))
-		|| (($right == "execute") && in_array($chmod_num, $execute))) {
-		return true;
-	}
-	return false;
+		|| (($right == "execute") && in_array($chmod_num, $execute));
 }
 
 /**
@@ -190,12 +187,7 @@ function extractConfigOptionsFromPOST($confTypes) {
 		}
 		// checkboxes
 		elseif ($type == "checkbox") {
-			if (isset($_POST[$element]) && ($_POST[$element] == "on")) {
-				$options[$element] = ['true'];
-			}
-			else {
-				$options[$element] = ['false'];
-			}
+			$options[$element] = isset($_POST[$element]) && ($_POST[$element] == "on") ? ['true'] : ['false'];
 		}
 		// dropdownbox
 		elseif ($type == "select") {
@@ -267,7 +259,7 @@ function getLanguages() {
 		$file = fopen($languagefile, "r");
 		while (!feof($file)) {
 			$line = fgets($file, 1024);
-			if ($line == "" || $line == "\n" || $line[0] == "#") {
+			if ($line == "" || $line === "\n" || $line[0] === "#") {
 				continue; // ignore comment and empty lines
 			}
 			$value = explode(":", $line);
@@ -373,7 +365,7 @@ class ServerProfilePersistenceManager {
 			$ext = substr($entry, strlen($entry) - 12, 12);
 			$name = substr($entry, 0, strlen($entry) - 12);
 			// check if extension is right, add to profile list
-			if ($ext == ".sample.conf") {
+			if ($ext === ".sample.conf") {
 				$ret[$pos] = $name;
 				$pos++;
 			}
@@ -550,7 +542,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$ext = substr($entry, strlen($entry) - 5, 5);
 			$name = substr($entry, 0, strlen($entry) - 5);
 			// check if extension is right, add to profile list
-			if (($ext == ".conf") && (!str_contains($name, '.sample')) && is_readable($dirName . '/' . $entry)) {
+			if (($ext === ".conf") && (!str_contains($name, '.sample')) && is_readable($dirName . '/' . $entry)) {
 				$ret[] = $name;
 			}
 		}
@@ -584,7 +576,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			while (!feof($file)) {
 				$line = fgets($file, 1000000);
 				$line = trim($line);  // remove spaces at the beginning and end
-				if (($line == "") || ($line[0] == "#")) {
+				if (($line === "") || ($line[0] === "#")) {
 					continue; // ignore comments and empty lines
 				}
 				// search keywords
@@ -592,7 +584,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 				$keyword = $parts[0];
 				$keyword = trim($keyword, ':');
 				$startIndex = strlen($keyword) + 2;
-				$value = (sizeof($parts) > 1) ? substr($line, $startIndex) : '';
+				$value = (count($parts) > 1) ? substr($line, $startIndex) : '';
 				if (!in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
 					$data[$keyword] = $value;
 				}
@@ -604,19 +596,19 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 						continue;
 					}
 					// module settings
-					if ($keyword == 'modules') {
+					if ($keyword === 'modules') {
 						$moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
 					}
 					// type settings
-					if ($keyword == 'types') {
+					if ($keyword === 'types') {
 						$typeSettings[$subKeyword] = $option;
 					}
 					// tool settings
-					if ($keyword == 'tools') {
+					if ($keyword === 'tools') {
 						$toolSettings[$subKeyword] = $option;
 					}
 					// job settings
-					if ($keyword == 'jobs') {
+					if ($keyword === 'jobs') {
 						$jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
 					}
 				}
@@ -645,7 +637,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		if (is_file($confFile) && is_readable($confFile)) {
 			$file = @fopen($confFile, "w");
 			if ($file) {
-				fputs($file, json_encode($profile->exportData(), JSON_PRETTY_PRINT));
+				fwrite($file, json_encode($profile->exportData(), JSON_PRETTY_PRINT));
 				fclose($file);
 				@chmod($confFile, 0600);
 			}
@@ -693,11 +685,11 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$dir . 'pdf/' . $name,
 			$dir . 'profiles/' . $name
 		];
-		for ($i = 0; $i < sizeof($subDirs); $i++) {
+		for ($i = 0; $i < count($subDirs); $i++) {
 			if (is_dir($subDirs[$i]) && is_readable($subDirs[$i])) {
 				$dirHandle = @opendir($subDirs[$i]);
 				while (false !== ($path = readdir($dirHandle))) {
-					if (($path != '.') && ($path != '..') && !@unlink($subDirs[$i] . '/' . $path)) {
+					if (($path !== '.') && ($path !== '..') && !@unlink($subDirs[$i] . '/' . $path)) {
 						logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i] . '/' . $path);
 						throw new LAMException(_("Unable to delete profile!"));
 					}
@@ -721,7 +713,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	 * @inheritDoc
 	 */
 	public function isWritable(string $name): bool {
-		return is_writeable($this->getPath($name));
+		return is_writable($this->getPath($name));
 	}
 
 	/**
@@ -1129,7 +1121,7 @@ class LAMConfig {
 	public function removeInvalidTypes() {
 		$allTypes = LAM\TYPES\getTypes();
 		$activeTypes = $this->get_ActiveTypes();
-		for ($i = 0; $i < sizeof($activeTypes); $i++) {
+		for ($i = 0; $i < count($activeTypes); $i++) {
 			if (!in_array(getScopeFromTypeId($activeTypes[$i]), $allTypes)) {
 				unset($activeTypes[$i]);
 			}
@@ -1155,7 +1147,7 @@ class LAMConfig {
 				$available = $availableByScope[$scope];
 				// only return available modules
 				$ret = [];
-				for ($i = 0; $i < sizeof($modules); $i++) {
+				for ($i = 0; $i < count($modules); $i++) {
 					if (in_array($modules[$i], $available)) {
 						$ret[] = $modules[$i];
 					}
@@ -1683,7 +1675,7 @@ class LAMConfig {
 		}
 		// Explode the value to an array
 		$array_string = explode(";", $value);
-		if (count($array_string) > 0) {
+		if ($array_string !== []) {
 			// Check all IPs in the exploded Array
 			$valid_ips = [];
 			foreach ($array_string as $arr_value) {
@@ -1735,7 +1727,7 @@ class LAMConfig {
 	 * @return string rights
 	 */
 	public function get_scriptRights() {
-		if (!isset($this->scriptRights)) {
+		if ($this->scriptRights === null) {
 			return '755';
 		}
 		return $this->scriptRights;
@@ -1846,7 +1838,7 @@ class LAMConfig {
 			$modulesTmp = explode(",", $this->typeSettings["modules_" . $scope]);
 			$modules = [];
 			foreach ($modulesTmp as $mod) {
-				if (trim($mod) != '') {
+				if (trim($mod) !== '') {
 					$modules[] = $mod;
 				}
 			}
@@ -1870,7 +1862,7 @@ class LAMConfig {
 		}
 		// check module names
 		$available = getAvailableModules($scope);
-		for ($i = 0; $i < sizeof($modules); $i++) {
+		for ($i = 0; $i < count($modules); $i++) {
 			if (!in_array($modules[$i], $available)) {
 				return false;
 			}
@@ -1915,7 +1907,7 @@ class LAMConfig {
 	 * @return string[] list of types
 	 */
 	public function get_ActiveTypes() {
-		if (($this->activeTypes == '') || !isset($this->activeTypes)) {
+		if (($this->activeTypes === '') || ($this->activeTypes === null)) {
 			return [];
 		}
 		else {
@@ -2079,10 +2071,7 @@ class LAMConfig {
 	 */
 	public function setLoginSearchDN($loginSearchDN) {
 		$this->loginSearchDN = $loginSearchDN;
-		if (($loginSearchDN == '') || get_preg($loginSearchDN, 'dn')) {
-			return true;
-		}
-		return false;
+		return ($loginSearchDN == '') || get_preg($loginSearchDN, 'dn');
 	}
 
 	/**
@@ -2916,22 +2905,22 @@ class LAMCfgMain {
 	private $password;
 
 	/** Time of inactivity before session times out (minutes) */
-	public $sessionTimeout;
+	public $sessionTimeout = 30;
 
 	/** @var string hides detail messages for login errors */
 	public string $hideLoginErrorDetails = 'false';
 
 	/** log level */
-	public $logLevel;
+	public $logLevel = LOG_NOTICE;
 
 	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none, "REMOTE":server:port) */
-	public $logDestination;
+	public $logDestination = "SYSLOG";
 
 	/** list of hosts which may access LAM */
-	public $allowedHosts;
+	public $allowedHosts = "";
 
 	/** list of hosts which may access LAM Pro self service */
-	public $allowedHostsSelfService;
+	public $allowedHostsSelfService = '';
 
 	/** minimum length for passwords */
 	public $passwordMinLength = 0;
@@ -3064,20 +3053,7 @@ class LAMCfgMain {
 	 * @param string $fileName file path for config file
 	 */
 	function __construct($fileName = null) {
-		if ($fileName === null) {
-			$this->conffile = __DIR__ . "/../config/config.cfg";
-		}
-		else {
-			$this->conffile = $fileName;
-		}
-		// set default values
-		$this->sessionTimeout = 30;
-		$this->hideLoginErrorDetails = 'false';
-		$this->logLevel = LOG_NOTICE;
-		$this->logDestination = "SYSLOG";
-		$this->allowedHosts = "";
-		$this->allowedHostsSelfService = '';
-		$this->moduleSettings = '';
+		$this->conffile = $fileName ?? __DIR__ . "/../config/config.cfg";
 		try {
 			$this->reload();
 		}
@@ -3172,7 +3148,7 @@ class LAMCfgMain {
 		$fileName = $this->getInternalSSLCaCertFileName();
 		$handle = @fopen($fileName, "wb");
 		if ($handle) {
-			fputs($handle, $certsContent);
+			fwrite($handle, $certsContent);
 			fclose($handle);
 			@chmod($fileName, 0600);
 		}
@@ -3204,14 +3180,14 @@ class LAMCfgMain {
 				while (!feof($file)) {
 					$line = fgets($file, 1000000);
 					$line = trim($line);  // remove spaces at the beginning and end
-					if (($line == "") || ($line[0] == "#")) {
+					if (($line === "") || ($line[0] === "#")) {
 						continue; // ignore comments
 					}
 					// search keywords
-					for ($i = 0; $i < sizeof($this->settings); $i++) {
+					for ($i = 0; $i < count($this->settings); $i++) {
 						$keyword = $this->settings[$i];
 						$keylen = strlen($keyword);
-						if (strtolower(substr($line, 0, $keylen + 2)) == strtolower($keyword . ": ")) {
+						if (strtolower(substr($line, 0, $keylen + 2)) === strtolower($keyword . ": ")) {
 							$this->$keyword = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							break;
 						}
@@ -3256,11 +3232,11 @@ class LAMCfgMain {
 		}
 		catch (PDOException $e) {
 			syslog(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'));
+			throw new LAMException(_('Unable to connect to configuration database.'), $e->getCode(), $e);
 		}
 		catch (LAMException $e) {
 			syslog(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'));
+			throw new LAMException(_('Unable to connect to configuration database.'), $e->getCode(), $e);
 		}
 	}
 
@@ -3280,7 +3256,7 @@ class LAMCfgMain {
 			$sslPath = $this->getInternalSSLCaCertFileName();
 			$file = @fopen($sslPath, "w");
 			if ($file) {
-				fputs($file, $this->uploadedSSLCaCert);
+				fwrite($file, $this->uploadedSSLCaCert);
 				fclose($file);
 				@chmod($sslPath, 0600);
 			}
@@ -3322,17 +3298,12 @@ class LAMCfgMain {
 	 * @param bool $persistenceOnly store only persistence related data
 	 */
 	public function saveLocal(bool $persistenceOnly): void {
-		if ($persistenceOnly) {
-			$data = $this->exportPersistenceData();
-		}
-		else {
-			$data = $this->exportData();
-		}
+		$data = $persistenceOnly ? $this->exportPersistenceData() : $this->exportData();
 		$json = json_encode($data, JSON_PRETTY_PRINT);
 
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
-			fputs($file, $json);
+			fwrite($file, $json);
 			fclose($file);
 			chmod($this->conffile, 0600);
 		}
@@ -3393,7 +3364,7 @@ class LAMCfgMain {
 	 * @return boolean writable
 	 */
 	public function isWritable(): bool {
-		return is_writeable($this->conffile);
+		return is_writable($this->conffile);
 	}
 
 	/**
@@ -3491,7 +3462,7 @@ class LAMCfgMain {
 			$temporaryFilesManager = new LamTemporaryFilesManager();
 			$fileName = $temporaryFilesManager->registerTemporaryFile('.pem');
 			$handle = $temporaryFilesManager->openTemporaryFileForWrite($fileName);
-			fputs($handle, $content);
+			fwrite($handle, $content);
 			fclose($handle);
 			return $fileName;
 		}
@@ -3516,7 +3487,7 @@ class LAMCfgMain {
 		$content = $this->getSSLCaCertificateContent();
 		$list = $this->splitSSLCaCertificateContent($content);
 		unset($list[$index]);
-		if (sizeof($list) < 1) {
+		if (count($list) < 1) {
 			$this->delSSLCaCert = true;
 			$this->uploadedSSLCaCert = null;
 		}
@@ -3539,7 +3510,7 @@ class LAMCfgMain {
 			return [];
 		}
 		$list = $this->splitSSLCaCertificateContent($content);
-		for ($i = 0; $i < sizeof($list); $i++) {
+		for ($i = 0; $i < count($list); $i++) {
 			$list[$i] = @openssl_x509_parse($list[$i]);
 		}
 		return $list;
