@@ -35,9 +35,9 @@ use accountContainer;
  */
 
 /** LDAP handle */
-include_once('ldap.inc');
+include_once(__DIR__ . '/ldap.inc');
 /** PDF */
-include_once('pdf.inc');
+include_once(__DIR__ . '/pdf.inc');
 
 /**
  * Creates LDAP accounts for file upload.
@@ -55,7 +55,7 @@ class Uploader {
 	private const TIME_LIMIT = 10;
 
 	public static function cleanSession() {
-		foreach ($_SESSION as $key => &$value) {
+		foreach (array_keys($_SESSION) as $key) {
 			if (str_starts_with($key, 'mass_')) {
 				unset($_SESSION[$key]);
 			}
@@ -92,7 +92,7 @@ class Uploader {
 		if (!isset($_SESSION['mass_counter'])) {
 			return $this->startUpload();
 		}
-		elseif ($_SESSION['mass_counter'] < sizeof($this->accounts)) {
+		elseif ($_SESSION['mass_counter'] < count($this->accounts)) {
 			return $this->continueUpload();
 		}
 		elseif (!isset($_SESSION['mass_postActions']['finished'])) {
@@ -110,12 +110,12 @@ class Uploader {
 	 * @return String JSON of upload status
 	 */
 	private function continueUpload() {
-		while (($_SESSION['mass_counter'] < sizeof($this->accounts)) && ($this->endTime > time())) {
+		while (($_SESSION['mass_counter'] < count($this->accounts)) && ($this->endTime > time())) {
 			$this->uploadEntry($_SESSION['mass_counter']);
 			$_SESSION['mass_counter']++;
 		}
-		$accountsProgress = round(($_SESSION['mass_counter'] * 100) / sizeof($this->accounts));
-		$accountsFinished = ($_SESSION['mass_counter'] == sizeof($this->accounts));
+		$accountsProgress = round(($_SESSION['mass_counter'] * 100) / count($this->accounts));
+		$accountsFinished = ($_SESSION['mass_counter'] == count($this->accounts));
 		return $this->buildUploadStatus($accountsProgress, $accountsFinished);
 	}
 
@@ -142,7 +142,7 @@ class Uploader {
 		$preAttributes['dn'] = &$dn;
 		$preMessages = doUploadPreActions($this->type, $_SESSION['mass_selectedModules'], $preAttributes);
 		$preActionOk = true;
-		for ($i = 0; $i < sizeof($preMessages); $i++) {
+		for ($i = 0; $i < count($preMessages); $i++) {
 			if (($preMessages[$i][0] == 'ERROR') || ($preMessages[$i][0] == 'WARN')) {
 				$preActionOk = false;
 				$_SESSION['mass_errors'][] = $preMessages[$i];
@@ -278,7 +278,7 @@ class Uploader {
 			$_SESSION['mass_postActions']['finished'] = true;
 		}
 		if (isset($return['errors'])) {
-			for ($i = 0; $i < sizeof($return['errors']); $i++) {
+			for ($i = 0; $i < count($return['errors']); $i++) {
 				$_SESSION['mass_errors'][] = $return['errors'][$i];
 			}
 		}
@@ -298,7 +298,7 @@ class Uploader {
 		$tempFilesManager = new LamTemporaryFilesManager();
 		if ($_SESSION['mass_pdf']['counter'] == 0) {
 			$pdfZipResult = @$pdfZip->open($tempFilesManager->getFileSystemPath($file), ZipArchive::OVERWRITE);
-			if (!$pdfZipResult === true) {
+			if (!$pdfZipResult) {
 				$_SESSION['mass_errors'][] = ['ERROR', _('Unable to create ZIP file for PDF export.')];
 				$_SESSION['mass_pdf']['finished'] = true;
 			}
@@ -319,7 +319,7 @@ class Uploader {
 			// load account
 			$_SESSION['mass_pdfAccount'] = new accountContainer($this->type, 'mass_pdfAccount');
 			$pdfErrors = $_SESSION['mass_pdfAccount']->load_account($dn, $infoAttributes);
-			if (sizeof($pdfErrors) > 0) {
+			if (count($pdfErrors) > 0) {
 				$_SESSION['mass_errors'] = array_merge($_SESSION['mass_errors'], $pdfErrors);
 				$_SESSION['mass_pdf']['finished'] = true;
 				break;
@@ -329,12 +329,12 @@ class Uploader {
 			$fileName = $dn . '.pdf';
 			$pdfZip->addFromString($fileName, $pdfContent);
 			$_SESSION['mass_pdf']['counter']++;
-			if ($_SESSION['mass_pdf']['counter'] >= sizeof($this->accounts)) {
+			if ($_SESSION['mass_pdf']['counter'] >= count($this->accounts)) {
 				$_SESSION['mass_pdf']['finished'] = true;
 			}
 		}
 		@$pdfZip->close();
-		$progress = round(($_SESSION['mass_pdf']['counter'] * 100) / sizeof($this->accounts));
+		$progress = round(($_SESSION['mass_pdf']['counter'] * 100) / count($this->accounts));
 		return $this->buildUploadStatus(100, true, '', 100, true, $progress);
 	}
 

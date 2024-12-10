@@ -333,7 +333,7 @@ class WebauthnManager {
 			return new PublicKeyCredentialSourceRepositorySQLite();
 		}
 		catch (PDOException $e) {
-			throw new LAMException(_('Unable to connect to database.'), $e->getMessage());
+			throw new LAMException(_('Unable to connect to database.'), $e->getMessage(), $e);
 		}
 	}
 
@@ -596,7 +596,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		$results = $statement->fetchAll();
 		$devices = [];
 		foreach ($results as $result) {
-			$name = !empty($result['name']) ? $result['name'] : '';
+			$name = empty($result['name']) ? '' : $result['name'];
 			$devices[] = [
 				'dn' => $result['userDN'],
 				'credentialId' => $result['credentialId'],
@@ -623,7 +623,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		$results = $statement->fetchAll();
 		$devices = [];
 		foreach ($results as $result) {
-			$name = !empty($result['name']) ? $result['name'] : '';
+			$name = empty($result['name']) ? '' : $result['name'];
 			$devices[] = [
 				'dn' => $result['userDN'],
 				'credentialId' => $result['credentialId'],
