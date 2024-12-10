@@ -1441,7 +1441,7 @@ class accountContainer {
 		if (!empty($_POST)) {
 			validateSecurityToken();
 		}
-		include __DIR__ . '/../../lib/adminHeader.inc';
+		include __DIR__ . '/adminHeader.inc';
 		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php?editKey=" . htmlspecialchars($this->base) . "\" method=\"post\" onSubmit=\"window.lam.utility.saveScrollPosition('inputForm')\" autocomplete=\"off\" novalidate=\"novalidate\">\n";
 		echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 	}
@@ -1451,7 +1451,7 @@ class accountContainer {
 	 */
 	private function printPageFooter() {
 		echo "</form>\n";
-		include __DIR__ . '/../../lib/adminFooter.inc';
+		include __DIR__ . '/adminFooter.inc';
 	}
 
 	/**
