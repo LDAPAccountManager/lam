@@ -67,7 +67,7 @@ function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', $Messag
 	}
 	$format = "<div " . $class . ">\n<table>\n<tr>\n<td>" . $MessageHeadline . $MessageText . "</td>\n</tr>\n</table>\n</div>\n";
 	if (is_array($MessageVariables)) {
-		if (sizeof($MessageVariables) > 0) {
+		if ($MessageVariables !== []) {
 			array_unshift($MessageVariables, $format);
 			$output = call_user_func_array('sprintf', $MessageVariables);
 		}

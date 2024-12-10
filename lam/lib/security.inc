@@ -28,11 +28,11 @@
  */
 
 /** configuration options */
-include_once('config.inc');
+include_once(__DIR__ . '/config.inc');
 /** ldap connection */
-include_once('ldap.inc');
+include_once(__DIR__ . '/ldap.inc');
 /** common functions */
-include_once('account.inc');
+include_once(__DIR__ . '/account.inc');
 
 // check client IP address
 checkClientIP();
@@ -167,7 +167,7 @@ function checkClientIP() {
 	}
 	$allowedHosts = explode(",", $allowedHosts);
 	$grantAccess = false;
-	for ($i = 0; $i < sizeof($allowedHosts); $i++) {
+	for ($i = 0; $i < count($allowedHosts); $i++) {
 		$host = $allowedHosts[$i];
 		$ipRegex = '/^[0-9a-z\\.:\\*]+$/i';
 		if (!preg_match($ipRegex, $host)) {
@@ -222,7 +222,7 @@ function logoffAndBackToLoginPage(): void {
 		$page = 'selfServiceLogin.php';
 		$pageSuffix = '?expired=yes&scope=' . $scope . '&name=' . $name;
 	}
-	for ($i = 0; $i < sizeof($paths); $i++) {
+	for ($i = 0; $i < count($paths); $i++) {
 		if (file_exists($paths[$i] . $page)) {
 			$page = $paths[$i] . $page;
 			break;
@@ -349,10 +349,7 @@ function checkIfPasswordChangeIsAllowed() {
 	if (!isset($_SESSION['config'])) {
 		return false;
 	}
-	if ($_SESSION['config']->getAccessLevel() >= LAMConfig::ACCESS_PASSWORD_CHANGE) {
-		return true;
-	}
-	return false;
+	return $_SESSION['config']->getAccessLevel() >= LAMConfig::ACCESS_PASSWORD_CHANGE;
 }
 
 /**
@@ -432,7 +429,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 		if (preg_match("/[A-Z]/", $password[$i])) {
 			$upper++;
 		}
-		if (preg_match("/[0-9]/", $password[$i])) {
+		if (preg_match("/\\d/", $password[$i])) {
 			$numeric++;
 		}
 		if (preg_match("/[^a-z0-9]/i", $password[$i])) {
@@ -561,7 +558,7 @@ function checkPwdWithExternalPasswordService($cfg, $password) {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	$results = curl_exec($curl);
 	$code = curl_errno($curl);
-	if ($code) {
+	if ($code !== 0) {
 		logNewMessage(LOG_ERR, 'Error calling the external password service at ' . $url
 			. '. ' . curl_error($curl));
 		return true;
