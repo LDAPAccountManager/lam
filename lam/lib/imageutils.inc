@@ -288,13 +288,13 @@ class ImageManipulatorGd implements ImageManipulator {
 		$thumbHeight = $this->getHeight();
 		if ($thumbWidth > $width) {
 			$factor = $width / $thumbWidth;
-			$thumbWidth = $thumbWidth * $factor;
-			$thumbHeight = $thumbHeight * $factor;
+			$thumbWidth *= $factor;
+			$thumbHeight *= $factor;
 		}
 		if ($thumbHeight > $height) {
 			$factor = $height / $thumbHeight;
-			$thumbWidth = $thumbWidth * $factor;
-			$thumbHeight = $thumbHeight * $factor;
+			$thumbWidth *= $factor;
+			$thumbHeight *= $factor;
 		}
 		$thumbnail = imagecreatetruecolor($thumbWidth, $thumbHeight);
 		imagecopyresampled(
@@ -318,7 +318,7 @@ class ImageManipulatorGd implements ImageManipulator {
 		if ($this->type == IMAGETYPE_JPEG) {
 			imagejpeg($this->image);
 		}
-		else if ($this->type == IMAGETYPE_PNG) {
+		elseif ($this->type == IMAGETYPE_PNG) {
 			imagepng($this->image);
 		}
 		$output = ob_get_contents();

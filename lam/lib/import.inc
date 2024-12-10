@@ -34,7 +34,7 @@ use LAMException;
  */
 
 /** LDAP handle */
-include_once('ldap.inc');
+include_once(__DIR__ . '/ldap.inc');
 
 /**
  * Imports LDIF files.
@@ -84,7 +84,7 @@ class Importer {
 					throw new LAMException(_('Invalid data'), htmlspecialchars($line));
 				}
 				else {
-					$currentEntry[sizeof($currentEntry) - 1] .= substr($line, 1);
+					$currentEntry[count($currentEntry) - 1] .= substr($line, 1);
 				}
 			}
 			elseif ($line === '-') {
@@ -92,7 +92,7 @@ class Importer {
 			}
 			else {
 				$parts = explode(':', $line, 2);
-				if (sizeof($parts) < 2) {
+				if (count($parts) < 2) {
 					throw new LAMException(_('Invalid data'), htmlspecialchars($line));
 				}
 				$currentEntry[] = $line;
@@ -181,7 +181,7 @@ class Importer {
 			];
 			return json_encode($status);
 		}
-		$progress = (sizeof($_SESSION[Importer::SESSION_KEY_TASKS]) / $_SESSION[Importer::SESSION_KEY_COUNT]) * 100.0;
+		$progress = (count($_SESSION[Importer::SESSION_KEY_TASKS]) / $_SESSION[Importer::SESSION_KEY_COUNT]) * 100.0;
 		$progress = floor(100 - $progress);
 		$status = [
 			Importer::STATUS => 'inProgress',
@@ -216,18 +216,18 @@ class Importer {
 	 */
 	private function convertToTasks($entries) {
 		$tasks = [];
-		$count = sizeof($entries);
+		$count = count($entries);
 		for ($i = 0; $i < $count; $i++) {
 			$entry = $entries[$i];
 			$firstParts = explode(':', $entry[0], 2);
-			if ($firstParts[Importer::KEY] == 'version') {
+			if ($firstParts[Importer::KEY] === 'version') {
 				if ($i > 0) {
 					// allow version only as first chunk
 					throw new LAMException(_('Invalid data'), _('Duplicate version entry found.'));
 				}
 				$this->processVersion($entry);
 			}
-			elseif ($firstParts[Importer::KEY] == 'dn') {
+			elseif ($firstParts[Importer::KEY] === 'dn') {
 				$tasks[] = $this->processDnEntry($entry);
 			}
 			else {
@@ -245,7 +245,7 @@ class Importer {
 	 */
 	private function processVersion($entry) {
 		$keyValue = $this->getLineKeyValue($entry[0]);
-		if (($keyValue[Importer::VALUE] != '1') || (sizeof($entry) > 1)) {
+		if (($keyValue[Importer::VALUE] != '1') || (count($entry) > 1)) {
 			$escapedLines = array_map(htmlspecialchars(...), $entry);
 			throw new LAMException(_('LDIF import only supports version 1'), implode('<br>', $escapedLines));
 		}
@@ -302,7 +302,7 @@ class Importer {
 			}
 			$subtasks = [];
 			$currentLines = [];
-			$linesCount = sizeof($entry);
+			$linesCount = count($entry);
 			for ($i = 0; $i < $linesCount; $i++) {
 				$line = $entry[$i];
 				if ($line === '-') {
@@ -327,7 +327,7 @@ class Importer {
 	 * @throws LAMException syntax error
 	 */
 	private function createModRdnTask($dn, $entry) {
-		if (sizeof($entry) !== 2) {
+		if (count($entry) !== 2) {
 			throw new LAMException(_('Invalid data'), htmlspecialchars($dn));
 		}
 		$newRdnData = $this->getLineKeyValue($entry[0]);
@@ -400,7 +400,7 @@ class Importer {
 	 */
 	private function getLineKeyValue($line) {
 		$parts = explode(':', $line, 2);
-		if (sizeof($parts) !== 2) {
+		if (count($parts) !== 2) {
 			throw new LAMException(_('Invalid data'), htmlspecialchars($line));
 		}
 		if (str_starts_with($parts[Importer::VALUE], ':')) {
