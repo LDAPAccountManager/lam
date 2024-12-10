@@ -1945,7 +1945,7 @@ abstract class baseModule {
 			}
 			$valuesOld = $attributes[$ldapAttrName] ?? [];
 			$intersect = array_intersect($valuesOld, $valuesNew);
-			if ((count($valuesOld) !== count($valuesNew)) || (count($intersect) != count($valuesOld))) {
+			if ((count($valuesOld) !== count($valuesNew)) || (count($intersect) !== count($valuesOld))) {
 				$container['mod'][$ldapAttrName] = $valuesNew;
 			}
 		}
