@@ -2,6 +2,7 @@
 
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
 use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
@@ -36,7 +37,8 @@ return RectorConfig::configure()
 		RestoreDefaultNullToNullableTypePropertyRector::class,
 		ForRepeatedCountToOwnVariableRector::class,
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
-		DisallowedEmptyRuleFixerRector::class
+		DisallowedEmptyRuleFixerRector::class,
+		FlipTypeControlToUseExclusiveTypeRector::class
 	])
 	->withFileExtensions([
 		'php',

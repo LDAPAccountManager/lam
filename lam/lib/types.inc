@@ -256,21 +256,21 @@ class ConfiguredType {
 			$units = ldap_get_entries($connection, $sr);
 			cleanLDAPResult($units);
 			// extract Dns
-			$count = sizeof($units);
+			$count = count($units);
 			for ($i = 0; $i < $count; $i++) {
-				if (in_array('container', $units[$i]['objectclass'])) {
-					// Active Directory fix, hide system containers
-					if (preg_match('/.*cn=system,dc=.+/i', $units[$i]['dn']) || preg_match('/.*CN=program data,dc=.+/i', $units[$i]['dn'])) {
-						continue;
-					}
+				// Active Directory fix, hide system containers
+				if (in_array('container', $units[$i]['objectclass'])
+					&& (preg_match('/.*cn=system,dc=.+/i', $units[$i]['dn'])
+						|| preg_match('/.*CN=program data,dc=.+/i', $units[$i]['dn']))) {
+					continue;
 				}
 				$ret[] = $units[$i]['dn'];
 			}
 		}
 		// add root suffix if needed
 		$found = false;
-		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-insensitive
-			if (strtolower($this->getSuffix()) == strtolower($ret[$i])) {
+		for ($i = 0; $i < count($ret); $i++) { // search suffix case-insensitive
+			if (strtolower($this->getSuffix()) === strtolower($ret[$i])) {
 				$found = true;
 				break;
 			}
