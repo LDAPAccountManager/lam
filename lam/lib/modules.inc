@@ -1417,7 +1417,7 @@ class accountContainer {
 			if (sizeof($profilelist) > 0) {
 				$profileButton = new htmlButton('accountContainerLoadProfileButton', _('Load profile'));
 				$profileButton->setOnClick('confirmLoadProfile(\'' . _('Load profile') . '\', \'' . _('This may overwrite existing values with profile data. Continue?') . '\','
-						. ' \'' . _('Ok') . '\', \'' . _('Cancel') . '\', event); return false;');
+					. ' \'' . _('Ok') . '\', \'' . _('Cancel') . '\', event); return false;');
 				$profileButton->addDataAttribute('lastprofile', $this->lastLoadedProfile);
 				$profileListOptions = [];
 				foreach ($profilelist as $profileName) {
