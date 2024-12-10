@@ -1,5 +1,6 @@
 <?php
 
+use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
@@ -38,7 +39,8 @@ return RectorConfig::configure()
 		ForRepeatedCountToOwnVariableRector::class,
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
 		DisallowedEmptyRuleFixerRector::class,
-		FlipTypeControlToUseExclusiveTypeRector::class
+		FlipTypeControlToUseExclusiveTypeRector::class,
+		InlineArrayReturnAssignRector::class,
 	])
 	->withFileExtensions([
 		'php',
