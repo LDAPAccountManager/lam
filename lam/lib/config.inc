@@ -3232,11 +3232,11 @@ class LAMCfgMain {
 		}
 		catch (PDOException $e) {
 			syslog(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'), $e->getCode(), $e);
+			throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
 		}
 		catch (LAMException $e) {
 			syslog(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'), $e->getCode(), $e);
+			throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
 		}
 	}
 
