@@ -65,7 +65,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -799,14 +799,16 @@ class asteriskAccount extends baseModule implements passwordService {
 			// check if caller ID is empty
 			if ($this->attributes['AstAccountCallerID'][0] == '') {
 				$errors[] = $this->messages['AstAccountCallerID'][0];
-			} // check format
-			else if (!get_preg($this->attributes['AstAccountCallerID'][0], 'username')) {
+			}
+			// check format
+			elseif (!get_preg($this->attributes['AstAccountCallerID'][0], 'username')) {
 				$errors[] = $this->messages['AstAccountCallerID'][1];
-			} // check for duplicate caller ID
-			else if (!isset($this->orig['AstAccountCallerID'][0])
+			}
+			// check for duplicate caller ID
+			elseif (!isset($this->orig['AstAccountCallerID'][0])
 				|| ($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0])) {
 				$entries = searchLDAPByAttribute('AstAccountCallerID', $this->attributes['AstAccountCallerID'][0], 'AsteriskSIPUser', ['dn'], ['user']);
-				if (sizeof($entries) > 0) {
+				if (count($entries) > 0) {
 					$errors[] = $this->messages['AstAccountCallerID'][2];
 				}
 			}
@@ -1035,7 +1037,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("AsteriskSIPUser", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "AsteriskSIPUser";
@@ -1119,10 +1121,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 *
 	 */
 	public function managesPasswordAttributes() {
-		if (!in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
-			return false;
-		}
-		return true;
+		return in_array('AsteriskSIPUser', $this->attributes['objectClass']);
 	}
 
 	/**
@@ -1205,16 +1204,12 @@ class asteriskAccount extends baseModule implements passwordService {
 			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
 				return $return;
 			}
-			else {
-				if (!get_preg($_POST['posixAccount_password'], 'password')) {
-					return $return;
-				}
-				else {
-					// sync password
-					if (in_array('syncAsteriskPassword', $fields)) {
-						$return['mod']['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($attributes, $this->selfServiceSettings->moduleSettings, $_POST['posixAccount_password']);
-					}
-				}
+			elseif (!get_preg($_POST['posixAccount_password'], 'password')) {
+				return $return;
+			}
+			elseif (in_array('syncAsteriskPassword', $fields)) {
+				// sync password
+				$return['mod']['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($attributes, $this->selfServiceSettings->moduleSettings, $_POST['posixAccount_password']);
 			}
 		}
 		return $return;

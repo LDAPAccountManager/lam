@@ -57,7 +57,7 @@ class authorizedServiceObject extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -206,7 +206,7 @@ class authorizedServiceObject extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("authorizedServiceObject", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "authorizedServiceObject";
@@ -246,7 +246,7 @@ class authorizedServiceObject extends baseModule {
 		// add ASs
 		if (isset ($profile['authorizedServiceObject_services'][0]) && ($profile['authorizedServiceObject_services'][0] != "")) {
 			$services = explode(',', $profile['authorizedServiceObject_services'][0]);
-			for ($m = 0; $m < sizeof($services); $m++) {
+			for ($m = 0; $m < count($services); $m++) {
 				if (get_preg($services[$m], 'ascii')) {
 					$this->attributes['authorizedservice'][] = trim($services[$m]);
 				}
