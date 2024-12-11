@@ -122,7 +122,7 @@ function displayStartPage(): void {
 	}
 	$treeSuffixes = TreeViewTool::getRootDns();
 	if (!empty($treeSuffixes)) {
-		if (sizeof($treeSuffixes) === 1) {
+		if (count($treeSuffixes) === 1) {
 			$suffixes[_('Tree view')] = $treeSuffixes[0];
 			$hideRules[$treeSuffixes[0]] = ['otherSuffix'];
 		}
@@ -187,7 +187,7 @@ function displayStartPage(): void {
 	$container->add(new htmlButton('addFields', _('Add more fields')), 12);
 	$container->add(new htmlHiddenInput('opcount', $opCount), 12);
 	// error messages
-	if (sizeof($errors) > 0) {
+	if ($errors !== []) {
 		$container->addVerticalSpacer('5rem');
 		foreach ($errors as $error) {
 			$error->colspan = 5;
@@ -209,7 +209,7 @@ function displayStartPage(): void {
 	$container->addVerticalSpacer('1rem');
 
 	// run actions
-	if ((sizeof($errors) == 0) && (isset($_POST['dryRun']) || isset($_POST['applyChanges']))) {
+	if ((count($errors) == 0) && (isset($_POST['dryRun']) || isset($_POST['applyChanges']))) {
 		runActions($container);
 	}
 
@@ -228,12 +228,7 @@ function displayStartPage(): void {
  */
 function runActions(htmlResponsiveRow &$container): void {
 	// LDAP suffix
-	if ($_POST['suffix'] == '-') {
-		$suffix = trim($_POST['otherSuffix']);
-	}
-	else {
-		$suffix = $_POST['suffix'];
-	}
+	$suffix = ($_POST['suffix'] === '-') ? trim($_POST['otherSuffix']) : $_POST['suffix'];
 	if (empty($suffix)) {
 		$error = new htmlStatusMessage('ERROR', _('LDAP Suffix is invalid!'));
 		$error->colspan = 5;
@@ -249,7 +244,7 @@ function runActions(htmlResponsiveRow &$container): void {
 			$operations[] = [$_POST['op_' . $i], strtolower(trim($_POST['attr_' . $i])), trim($_POST['val_' . $i])];
 		}
 	}
-	if (sizeof($operations) == 0) {
+	if (count($operations) == 0) {
 		$error = new htmlStatusMessage('ERROR', _('Please specify at least one operation.'));
 		$error->colspan = 5;
 		$container->add($error, 12);
@@ -290,12 +285,7 @@ function runAjaxActions(): void {
 			break;
 		case STAGE_ACTIONS_CALCULATED:
 		case STAGE_WRITING:
-			if ($_SESSION['multiEdit_dryRun']) {
-				$jsonReturn = dryRun();
-			}
-			else {
-				$jsonReturn = doModify();
-			}
+			$jsonReturn = $_SESSION['multiEdit_dryRun'] ? dryRun() : doModify();
 			break;
 	}
 	echo json_encode($jsonReturn, JSON_THROW_ON_ERROR);
@@ -515,7 +505,7 @@ function doModify(): array {
 	}
 	// run 10 modifications in each call
 	$localCount = 0;
-	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < sizeof($_SESSION['multiEdit_status']['actions']))) {
+	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < count($_SESSION['multiEdit_status']['actions']))) {
 		$action = $_SESSION['multiEdit_status']['actions'][$_SESSION['multiEdit_status']['index']];
 		$opType = $action[0];
 		$dn = $action[1];
@@ -548,7 +538,7 @@ function doModify(): array {
 		$_SESSION['multiEdit_status']['index']++;
 	}
 	// check if finished
-	if ($_SESSION['multiEdit_status']['index'] == sizeof($_SESSION['multiEdit_status']['actions'])) {
+	if ($_SESSION['multiEdit_status']['index'] == count($_SESSION['multiEdit_status']['actions'])) {
 		$_SESSION['multiEdit_status']['modContent'] .= '<br><br>' . _('Finished all operations.');
 		return [
 			'status' => STAGE_FINISHED,
@@ -559,7 +549,7 @@ function doModify(): array {
 	// return current status
 	return [
 		'status' => STAGE_WRITING,
-		'progress' => 20 + (($_SESSION['multiEdit_status']['index'] / sizeof($_SESSION['multiEdit_status']['actions'])) * 80),
+		'progress' => 20 + (($_SESSION['multiEdit_status']['index'] / count($_SESSION['multiEdit_status']['actions'])) * 80),
 		'content' => $_SESSION['multiEdit_status']['modContent']
 	];
 }

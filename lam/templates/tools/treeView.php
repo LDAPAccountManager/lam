@@ -77,7 +77,7 @@ function showTree(): void {
 				$dnParts = ldap_explode_dn($extraDnPart, 0);
 				if ($dnParts !== false) {
 					unset($dnParts['count']);
-					$dnPartsCount = sizeof($dnParts);
+					$dnPartsCount = count($dnParts);
 					for ($i = 0; $i < $dnPartsCount; $i++) {
 						$currentParts = array_slice($dnParts, $dnPartsCount - ($i + 1));
 						$openInitial[] = '"' . base64_encode(implode(',', $currentParts) . ',' . $rootDn) . '"';

@@ -244,7 +244,7 @@ function checkImportData(): void {
 	$importer = new Importer();
 	$tasks = $importer->getTasks($lines);
 	$_SESSION[Importer::SESSION_KEY_TASKS] = $tasks;
-	$_SESSION[Importer::SESSION_KEY_COUNT] = sizeof($tasks);
+	$_SESSION[Importer::SESSION_KEY_COUNT] = count($tasks);
 	$_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR] = (!isset($_POST['noStop']) || ($_POST['noStop'] != 'on'));
 }
 
