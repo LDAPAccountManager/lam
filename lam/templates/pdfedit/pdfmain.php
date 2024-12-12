@@ -296,7 +296,7 @@ if (!empty($_POST['importLogoSourceProfile'])) {
 		try {
 			foreach ($_POST['importLogoSourceProfile'] as $sourceLogo) {
 				$parts = explode('##', $sourceLogo);
-				if (sizeof($parts) !== 2) {
+				if (count($parts) !== 2) {
 				    continue;
                 }
 				$profileName = $parts[0];
@@ -384,7 +384,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$deleteLink->setCSSClasses(['margin3']);
 			$buttonGroup->addElement($deleteLink);
 
-			if (sizeof($configProfiles) > 1) {
+			if (count($configProfiles) > 1) {
 				$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
 				$importLink->setTitle(_('Import PDF structures'));
 				$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import PDF structures") . "', '" .
