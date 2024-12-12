@@ -75,7 +75,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			$name = explode("=", $tmp[0]);
 			array_shift($tmp);
 			$end = implode(",", $tmp);
-			if ($name[0] != "ou") {  // add root entry
+			if ($name[0] !== "ou") {  // add root entry
 				$attr = [];
 				$attr[$name[0]] = $name[1];
 				$attr['objectClass'] = 'organization';
@@ -97,10 +97,10 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						$dnParts = explode(",", $suff);
 						$subsuffs = [];
 						// make list of subsuffixes
-						$dnPartsCount = sizeof($dnParts);
+						$dnPartsCount = count($dnParts);
 						for ($k = 0; $k < $dnPartsCount; $k++) {
 							$part = explode("=", $dnParts[$k]);
-							if ($part[0] == "ou") {
+							if ($part[0] === "ou") {
 								$subsuffs[] = implode(",", array_slice($dnParts, $k));
 							}
 							else {
@@ -109,7 +109,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 							}
 						}
 						// create missing entries
-						$subsuffCount = sizeof($subsuffs);
+						$subsuffCount = count($subsuffs);
 						for ($k = $subsuffCount - 1; $k >= 0; $k--) {
 							// check if subsuffix is present
 							$info = @ldap_read($_SESSION['ldap']->server(), $subsuffs[$k], "(objectclass=*)", ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
@@ -120,7 +120,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 							if (!$res) {
 								$suffarray = explode(",", $subsuffs[$k]);
 								$headarray = explode("=", $suffarray[0]);
-								if ($headarray[0] == "ou") {  // add ou entry
+								if ($headarray[0] === "ou") {  // add ou entry
 									$attr = [];
 									$attr['objectClass'] = 'organizationalunit';
 									$attr['ou'] = $headarray[1];
@@ -134,7 +134,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 									$attr = [];
 									$attr['objectClass'][] = 'organization';
 									$attr[$headarray[0]] = $headarray[1];
-									if ($headarray[0] == "dc") {
+									if ($headarray[0] === "dc") {
 										$attr['o'] = $headarray[1];
 										$attr['objectClass'][] = 'dcObject';
 									}
@@ -154,26 +154,26 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			}
 		}
 	}
-	include '../lib/adminHeader.inc';
+	include __DIR__ . '/../lib/adminHeader.inc';
 	// print error/success messages
 	if (isset($_POST['add_suff'])) {
-		if (sizeof($failedDNs) > 0) {
+		if ($failedDNs !== []) {
 			// print error messages
 			foreach ($failedDNs as $suffix => $error) {
 				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error), htmlspecialchars($suffix));
 			}
-			include '../lib/adminFooter.inc';
+			include __DIR__ . '/../lib/adminFooter.inc';
 		}
 		else {
 			// print success message
 			StatusMessage("INFO", "", _("All changes were successful."));
-			include '../lib/adminFooter.inc';
+			include __DIR__ . '/../lib/adminFooter.inc';
 		}
 	}
 	else {
 		// no suffixes were created
 		StatusMessage("INFO", "", _("No changes were made."));
-		include '../lib/adminFooter.inc';
+		include __DIR__ . '/../lib/adminFooter.inc';
 	}
 	exit;
 }

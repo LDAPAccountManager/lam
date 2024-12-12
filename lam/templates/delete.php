@@ -113,14 +113,14 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	//load account
 	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
 	// Show HTML Page
-	include '../lib/adminHeader.inc';
+	include __DIR__ . '/../lib/adminHeader.inc';
 	echo "<div class=\"smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlOutputText(_("Do you really want to remove the following accounts?")), 12);
 	$container->addVerticalSpacer('2rem');
-	$userCount = sizeof($users);
+	$userCount = count($users);
 	for ($i = 0; $i < $userCount; $i++) {
 		$container->addLabel(new htmlOutputText(_("Account name:")));
 		$container->addField(new htmlOutputText($users[$i]));
@@ -161,7 +161,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	parseHtml(null, $buttonContainer, [], false, $type->getScope());
 	echo "</form>\n";
 	echo "</div>\n";
-	include '../lib/adminFooter.inc';
+	include __DIR__ . '/../lib/adminFooter.inc';
 }
 
 if (isset($_POST['cancel'])) {
@@ -349,5 +349,5 @@ if (isset($_POST['delete'])) {
 */
 function getChildCount($dn) {
 	$entries = searchLDAP($dn, '(objectClass=*)', ['dn']);
-	return (sizeof($entries) - 1);
+	return (count($entries) - 1);
 }

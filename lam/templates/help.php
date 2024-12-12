@@ -1,4 +1,5 @@
 <?php
+
 namespace LAM\HELP;
 /*
 
@@ -68,8 +69,8 @@ function echoHTMLHead(): void {
 	$title = "LDAP Account Manager Help";
 	printHeaderContents($title, '..');
 	?>
-		</head>
-		<body>
+    </head>
+    <body>
 	<?php
 	// include all JavaScript files
 	printJsIncludes('..');
@@ -80,8 +81,8 @@ function echoHTMLHead(): void {
  */
 function echoHTMLFoot(): void {
 	?>
-		</body>
-	</html>
+    </body>
+    </html>
 	<?php
 }
 
@@ -98,7 +99,7 @@ function displayHelp(array $helpEntry): void {
 		$format .= '<br><hr>' . _('Technical name') . ': <i>' . $helpEntry['attr'] . '</i>';
 	}
 	echo $format;
-	if(isset($helpEntry['SeeAlso']) && is_array($helpEntry['SeeAlso'])) {
+	if (isset($helpEntry['SeeAlso']) && is_array($helpEntry['SeeAlso'])) {
 		echo '<p class="help">' . _('See also') . ': <a class="helpSeeAlso" href="' . $helpEntry['SeeAlso']['link'] . '">' . $helpEntry['SeeAlso']['text'] . '</a></p>';
 	}
 	echoHTMLFoot();
@@ -116,24 +117,19 @@ if (!isset($_GET['HelpNumber'])) {
 $helpEntry = [];
 
 // module help
-if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
+if (isset($_GET['module']) && ($_GET['module'] != 'main') && ($_GET['module'] != '')) {
 	include_once(__DIR__ . "/../lib/modules.inc");
 	$moduleName = $_GET['module'];
 	if (!ScopeAndModuleValidation::isValidModuleName($moduleName)) {
-	    logNewMessage(LOG_ERR, 'Invalid module name: ' . $moduleName);
-	    die();
-    }
-	if (!empty($_GET['scope'])) {
-		$scope = $_GET['scope'];
+		logNewMessage(LOG_ERR, 'Invalid module name: ' . $moduleName);
+		die();
 	}
-	else {
-	    $scope = 'user';
-    }
-    if (!ScopeAndModuleValidation::isValidScopeName($scope)) {
-        logNewMessage(LOG_ERR, 'Invalid scope name: ' . $scope);
-        die();
-    }
-    $helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
+	$scope = empty($_GET['scope']) ? 'user' : $_GET['scope'];
+	if (!ScopeAndModuleValidation::isValidScopeName($scope)) {
+		logNewMessage(LOG_ERR, 'Invalid scope name: ' . $scope);
+		die();
+	}
+	$helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
 	if (!$helpEntry) {
 		$variables = [htmlspecialchars((string) $_GET['HelpNumber']), htmlspecialchars((string) $moduleName)];
 		$errorMessage = _("Sorry, the help id '%s' is not available for the module '%s'.");
@@ -143,20 +139,17 @@ if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] 
 		exit;
 	}
 }
-// help entry in help.inc
-else {
+elseif (!array_key_exists($_GET['HelpNumber'], $helpArray)) {
 	/* If submitted help number is not in help/help.inc print error message */
-	if (!array_key_exists($_GET['HelpNumber'], $helpArray)) {
-		$variables = [htmlspecialchars((string) $_GET['HelpNumber'])];
-		$errorMessage = _("Sorry, the help number %s is not available.");
-		echoHTMLHead();
-		statusMessage("ERROR", "", $errorMessage, $variables);
-		echoHTMLFoot();
-		exit;
-	}
-	else {
-		$helpEntry = $helpArray[$_GET['HelpNumber']];
-	}
+	$variables = [htmlspecialchars((string) $_GET['HelpNumber'])];
+	$errorMessage = _("Sorry, the help number %s is not available.");
+	echoHTMLHead();
+	statusMessage("ERROR", "", $errorMessage, $variables);
+	echoHTMLFoot();
+	exit;
+}
+else {
+	$helpEntry = $helpArray[$_GET['HelpNumber']];
 }
 
 displayHelp($helpEntry);
