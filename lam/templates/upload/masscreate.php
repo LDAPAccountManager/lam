@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\UPLOAD;
+
 use htmlInputCheckbox;
 use htmlLabel;
 use \htmlResponsiveTable;
@@ -20,6 +22,7 @@ use \htmlResponsiveSelect;
 use \htmlSpacer;
 use LAM\PDF\PdfStructurePersistenceManager;
 use \moduleCache;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -42,11 +45,11 @@ use \moduleCache;
 */
 
 /**
-* Start page of file upload
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * Start page of file upload
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /** security functions */
 include_once(__DIR__ . "/../../lib/security.inc");
@@ -69,7 +72,9 @@ enforceUserIsLoggedIn();
 checkIfToolIsActive('toolFileUpload');
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolFileUpload');
 
@@ -102,11 +107,11 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 // get possible types and remove those which do not support file upload
 $typeManager = new \LAM\TYPES\TypeManager();
 $types = $typeManager->getConfiguredTypes();
-$count = sizeof($types);
+$count = count($types);
 for ($i = 0; $i < $count; $i++) {
 	$myType = $types[$i];
 	if (!$myType->getBaseType()->supportsFileUpload() || $myType->isHidden()
-			|| !checkIfNewEntriesAreAllowed($myType->getId()) || !checkIfWriteAccessIsAllowed($myType->getId())) {
+		|| !checkIfNewEntriesAreAllowed($myType->getId()) || !checkIfWriteAccessIsAllowed($myType->getId())) {
 		unset($types[$i]);
 	}
 }
@@ -127,11 +132,11 @@ if (isset($_POST['type'])) {
 	}
 	$deps = getModulesDependencies($type->getScope());
 	$depErrors = check_module_depends($selectedModules, $deps);
-	if (is_array($depErrors) && (sizeof($depErrors) > 0)) {
+	if (is_array($depErrors) && ($depErrors !== [])) {
 		foreach ($depErrors as $depError) {
 			StatusMessage('ERROR', _("Unsolved dependency:") . ' ' .
-							getModuleAlias($depError[0], $type->getScope()) . " (" .
-							getModuleAlias($depError[1], $type->getScope()) . ")");
+				getModuleAlias($depError[0], $type->getScope()) . " (" .
+				getModuleAlias($depError[1], $type->getScope()) . ")");
 		}
 	}
 	else {
@@ -214,14 +219,14 @@ foreach ($types as $type) {
 		$moduleGroup->addElement(new htmlLabel($type->getId() . '___' . $moduleName, getModuleAlias($moduleName, $type->getScope())));
 		$innerRow->add($moduleGroup, 12, 6, 4);
 	}
-	$moduleCount = sizeof($modules);
-	if ($moduleCount%3 == 2) {
+	$moduleCount = count($modules);
+	if ($moduleCount % 3 == 2) {
 		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 0, 4);
 	}
-	if ($moduleCount%3 == 1) {
+	if ($moduleCount % 3 == 1) {
 		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 0, 4);
 	}
-	if ($moduleCount%2 == 1) {
+	if ($moduleCount % 2 == 1) {
 		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 6, 0);
 	}
 	$typeDiv = new htmlDiv($type->getId(), $innerRow);
@@ -232,8 +237,8 @@ foreach ($types as $type) {
 // ok button
 $row->addVerticalSpacer('3rem');
 if (!empty($types)) {
-    $okButton = new htmlButton('submit', _('Ok'));
-    $okButton->setCSSClasses(['lam-primary']);
+	$okButton = new htmlButton('submit', _('Ok'));
+	$okButton->setCSSClasses(['lam-primary']);
 	$row->add($okButton);
 }
 
@@ -246,11 +251,11 @@ echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
-* Displays the account type specific main page of the upload.
-*
-* @param \LAM\TYPES\ConfiguredType $type account type
-* @param string[] $selectedModules list of selected account modules
-*/
+ * Displays the account type specific main page of the upload.
+ *
+ * @param \LAM\TYPES\ConfiguredType $type account type
+ * @param string[] $selectedModules list of selected account modules
+ */
 function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): void {
 	$scope = $type->getScope();
 	echo '<div class="smallPaddingContent">';
@@ -297,7 +302,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 		if (isset($_POST['pdfStructure'])) {
 			$pdfSelected = [$_POST['pdfStructure']];
 		}
-		else if (in_array('default', $pdfStructures)) {
+		elseif (in_array('default', $pdfStructures)) {
 			$pdfSelected = ['default'];
 		}
 		$row->add(new htmlResponsiveSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')));
@@ -386,7 +391,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	// module options
 	foreach ($modules as $moduleName) {
 		// skip modules without upload columns
-		if (sizeof($columns[$moduleName]) < 1) {
+		if (count($columns[$moduleName]) < 1) {
 			continue;
 		}
 		$data = [];
@@ -423,18 +428,8 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 				$example = $column['example'];
 			}
 			$rowCells[] = new htmlOutputText($example);
-			if (isset($column['default'])) {
-				$rowCells[] = new htmlOutputText($column['default']);
-			}
-			else {
-				$rowCells[] = new htmlOutputText('');
-			}
-			if (isset($column['values'])) {
-				$rowCells[] = new htmlOutputText($column['values']);
-			}
-			else {
-				$rowCells[] = new htmlOutputText('');
-			}
+			$rowCells[] = isset($column['default']) ? new htmlOutputText($column['default']) : new htmlOutputText('');
+			$rowCells[] = isset($column['values']) ? new htmlOutputText($column['values']) : new htmlOutputText('');
 			$data[] = $rowCells;
 		}
 		$table = new htmlResponsiveTable($titles, $data);
@@ -450,38 +445,33 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	// build sample CSV
 	$sampleCSV_head = [];
 	$sampleCSV_row = [];
-		// DN attributes
-		$sampleCSV_head[] = "\"dn_suffix\"";
-		$sampleCSV_head[] = "\"dn_rdn\"";
-		$sampleCSV_head[] = "\"overwrite\"";
-		// module attributes
-		foreach ($modules as $moduleName) {
-			if (sizeof($columns[$moduleName]) < 1) {
-				continue;
-			}
-			foreach ($columns[$moduleName] as $column) {
-				$sampleCSV_head[] = "\"" . $column['name'] . "\"";
-			}
+	// DN attributes
+	$sampleCSV_head[] = "\"dn_suffix\"";
+	$sampleCSV_head[] = "\"dn_rdn\"";
+	$sampleCSV_head[] = "\"overwrite\"";
+	// module attributes
+	foreach ($modules as $moduleName) {
+		if (count($columns[$moduleName]) < 1) {
+			continue;
 		}
-		$RDNs = getRDNAttributes($type->getId(), $selectedModules);
-		// DN attributes
-		$sampleCSV_row[] = "\"" . $type->getSuffix() . "\"";
-		$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
-		$sampleCSV_row[] = "\"false\"";
-		// module attributes
-		foreach ($modules as $moduleName) {
-			if (sizeof($columns[$moduleName]) < 1) {
-				continue;
-			}
-			foreach ($columns[$moduleName] as $column) {
-				if (isset($column['example'])) {
-					$sampleCSV_row[] = '"' . $column['example'] . '"';
-				}
-				else {
-					$sampleCSV_row[] = '""';
-				}
-			}
+		foreach ($columns[$moduleName] as $column) {
+			$sampleCSV_head[] = "\"" . $column['name'] . "\"";
 		}
+	}
+	$RDNs = getRDNAttributes($type->getId(), $selectedModules);
+	// DN attributes
+	$sampleCSV_row[] = "\"" . $type->getSuffix() . "\"";
+	$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
+	$sampleCSV_row[] = "\"false\"";
+	// module attributes
+	foreach ($modules as $moduleName) {
+		if (count($columns[$moduleName]) < 1) {
+			continue;
+		}
+		foreach ($columns[$moduleName] as $column) {
+			$sampleCSV_row[] = isset($column['example']) ? '"' . $column['example'] . '"' : '""';
+		}
+	}
 	$sampleCSV = implode(",", $sampleCSV_head) . "\n" . implode(",", $sampleCSV_row) . "\n";
 	$_SESSION['mass_csv'] = $sampleCSV;
 

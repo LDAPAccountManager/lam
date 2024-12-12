@@ -56,7 +56,9 @@ enforceUserIsLoggedIn();
 checkIfToolIsActive('toolFileUpload');
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+    die();
+}
 
 // Redirect to startpage if user is not logged in
 if (!isLoggedIn()) {
@@ -196,7 +198,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$values_given[] = $dataRow[$colNumber];
 			}
 			$values_unique = array_unique($values_given);
-			if (sizeof($values_given) != sizeof($values_unique)) {
+			if (count($values_given) !== count($values_unique)) {
 				$duplicates = [];
 				foreach ($values_given as $key => $value) {
 					if (!isset($values_unique[$key]) && ($value !== null)) {
@@ -211,7 +213,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	logNewMessage(LOG_DEBUG, 'End of generic checks');
 
 	// if input data is invalid just display error messages (max 50)
-	if (sizeof($errors) > 0) {
+	if ($errors !== []) {
 		foreach ($errors as $error) {
 			$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1]), 12);
 		}
@@ -237,12 +239,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 						$rdnValue = $rdnValue[0];
 					}
 					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . ldap_escape($rdnValue, '', LDAP_ESCAPE_DN) . ",";
-					if ($data[$i][$ids['dn_suffix']] == "") {
-						$account_dn = $account_dn . $suffix;
-					}
-					else {
-						$account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
-					}
+					$account_dn = ($data[$i][$ids['dn_suffix']] == "") ? $account_dn . $suffix : $account_dn . $data[$i][$ids['dn_suffix']];
 					$accounts[$i]['dn'] = $account_dn;
 				}
 				// set overwrite
@@ -251,7 +248,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				}
 			}
 			// print errors if DN could not be built
-			if (sizeof($errors) > 0) {
+			if ($errors !== []) {
 				foreach ($errors as $error) {
 					$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1], $error[2]), 12);
 				}

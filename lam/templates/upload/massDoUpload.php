@@ -54,7 +54,9 @@ enforceUserIsLoggedIn();
 checkIfToolIsActive('toolFileUpload');
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+    die();
+}
 
 // Redirect to startpage if user is not logged in
 if (!isLoggedIn()) {
