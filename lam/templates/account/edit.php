@@ -76,7 +76,7 @@ foreach ($_SESSION as $key => $value) {
 	if (str_starts_with($key, $sessionAccountPrefix)) {
 		$cleanupCandidates[] = $key;
 	}
-	$candidateCount = sizeof($cleanupCandidates);
+	$candidateCount = count($cleanupCandidates);
 	if ($candidateCount > 100) {
 		$numToDelete = $candidateCount - 100;
 		natsort($cleanupCandidates);
@@ -105,7 +105,7 @@ if (!empty($_GET['DN'])) {
 	}
 	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
 	$result = $_SESSION[$sessionKey]->load_account($dn);
-	if (sizeof($result) > 0) {
+	if (count($result) > 0) {
 		include __DIR__ . '/../../lib/adminHeader.inc';
 		foreach ($result as $message) {
 			call_user_func_array(StatusMessage(...), $message);
