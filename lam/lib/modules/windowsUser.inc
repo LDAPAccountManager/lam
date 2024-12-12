@@ -5082,12 +5082,12 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @return int interval
 		 */
 		private function getMonthInterval($options, $jobId): int {
-			return match($options[$this->getConfigPrefix() . '_period' . $jobId][0]) {
-			   self::PERIOD_HALF_YEARLY => 6,
-			   self::PERIOD_QUARTERLY => 3,
-			   self::PERIOD_MONTHLY => 1,
-			   default => 12,
-		   };
+			return match ($options[$this->getConfigPrefix() . '_period' . $jobId][0]) {
+				self::PERIOD_HALF_YEARLY => 6,
+				self::PERIOD_QUARTERLY => 3,
+				self::PERIOD_MONTHLY => 1,
+				default => 12,
+			};
 		}
 
 		/**
