@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\AJAX;
+
 use htmlResponsiveTable;
 use htmlSpacer;
 use htmlStatusMessage;
@@ -38,11 +40,11 @@ use LAMException;
 */
 
 /**
-* Manages all AJAX requests.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * Manages all AJAX requests.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /** security functions */
 include_once(__DIR__ . "/../../lib/security.inc");
@@ -88,7 +90,7 @@ class Ajax {
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
 			enforceUserIsLoggedIn();
 			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
-				$sessionKey  = htmlspecialchars((string) $_GET['editKey']);
+				$sessionKey = htmlspecialchars((string) $_GET['editKey']);
 				if (!isset($_SESSION[$sessionKey])) {
 					logNewMessage(LOG_ERR, 'Unable to find account container');
 					die();
@@ -128,10 +130,10 @@ class Ajax {
 		}
 		enforceUserIsLoggedIn();
 		if (($function === 'passwordChange') && isset($_POST['jsonInput'])) {
-			self::managePasswordChange(json_decode((string) $_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
+			$this->managePasswordChange(json_decode((string) $_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
 		}
 		elseif ($function === 'import') {
-			include_once('../../lib/import.inc');
+			include_once(__DIR__ . '/../../lib/import.inc');
 			$importer = new Importer();
 			ob_start();
 			$jsonOut = $importer->doImport();
@@ -139,7 +141,7 @@ class Ajax {
 			echo $jsonOut;
 		}
 		elseif ($function === 'export') {
-			include_once('../../lib/export.inc');
+			include_once(__DIR__ . '/../../lib/export.inc');
 			$attributes = $_POST['attributes'];
 			$baseDn = $_POST['baseDn'];
 			$ending = $_POST['ending'];
@@ -155,7 +157,7 @@ class Ajax {
 			echo $jsonOut;
 		}
 		elseif ($function === 'upload') {
-			include_once('../../lib/upload.inc');
+			include_once(__DIR__ . '/../../lib/upload.inc');
 			$typeManager = new \LAM\TYPES\TypeManager();
 			$uploader = new \LAM\UPLOAD\Uploader($typeManager->getConfiguredType($_GET['typeId']));
 			ob_start();
@@ -199,8 +201,8 @@ class Ajax {
 	 *
 	 * @param array<mixed> $input input parameters
 	 */
-	private static function managePasswordChange(array $input): void {
-		$sessionKey  = htmlspecialchars((string) $_GET['editKey']);
+	private function managePasswordChange(array $input): void {
+		$sessionKey = htmlspecialchars((string) $_GET['editKey']);
 		$return = $_SESSION[$sessionKey]->setNewPassword($input);
 		echo json_encode($return, JSON_THROW_ON_ERROR);
 	}
@@ -309,7 +311,7 @@ class Ajax {
 				$delButton->addDataAttribute('oktext', _('Ok'));
 				$delButton->addDataAttribute('canceltext', _('Cancel'));
 				$delButton->setCSSClasses(['webauthn-delete']);
-				$name = !empty($result['name']) ? $result['name'] : '';
+				$name = empty($result['name']) ? '' : $result['name'];
 				$data[] = [
 					new htmlOutputText($result['dn']),
 					new htmlOutputText($name),
@@ -408,12 +410,7 @@ class Ajax {
 	 */
 	private function dnSelection(): string {
 		$dn = trim((string) $_POST['dn']);
-		if (empty($dn) || !get_preg($dn, 'dn')) {
-			$dnList = $this->getDefaultDns();
-		}
-		else {
-			$dnList = $this->getSubDns($dn);
-		}
+		$dnList = (empty($dn) || !get_preg($dn, 'dn')) ? $this->getDefaultDns() : $this->getSubDns($dn);
 		$html = $this->buildDnSelectionHtml($dnList, $dn);
 		return json_encode(['dialogData' => $html], JSON_THROW_ON_ERROR);
 	}
@@ -452,8 +449,8 @@ class Ajax {
 		$fieldId = trim((string) $_POST['fieldId']);
 		$mainRow = new htmlResponsiveRow();
 		$onclickUp = 'window.lam.html.updateDnSelection(this, \''
-				. htmlspecialchars($fieldId) . '\', \'' . getSecurityTokenName() . '\', \''
-				. getSecurityTokenValue() . '\')';
+			. htmlspecialchars($fieldId) . '\', \'' . getSecurityTokenName() . '\', \''
+			. getSecurityTokenValue() . '\')';
 		if (!empty($currentDn)) {
 			$row = new htmlResponsiveRow();
 			$row->addDataAttribute('dn', $currentDn);
@@ -525,12 +522,7 @@ class Ajax {
 	 * Dies if password is not set.
 	 */
 	private function enforceUserIsLoggedInToMainConfiguration(): void {
-		if (!isset($_SESSION['cfgMain'])) {
-			$cfg = new LAMCfgMain();
-		}
-		else {
-			$cfg = $_SESSION['cfgMain'];
-		}
+		$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 		if (isset($_SESSION["mainconf_password"]) && ($cfg->checkPassword($_SESSION["mainconf_password"]))) {
 			return;
 		}
@@ -540,7 +532,7 @@ class Ajax {
 	/**
 	 * Checks if the given password matches the hash value.
 	 */
-	private function checkPassword() : void {
+	private function checkPassword(): void {
 		$hashValue = $_POST['hashValue'];
 		$checkValue = $_POST['checkValue'];
 		$hashPart = preg_replace('/^\\{([A-Z0-9-]+)\\}[!]?/', '', $hashValue);
