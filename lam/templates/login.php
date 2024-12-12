@@ -131,7 +131,7 @@ try {
     elseif (!empty($default_Profile) && in_array($default_Profile, $profiles)) {
 		$_SESSION["config"] = $serverProfilePersistenceManager->loadProfile($default_Profile);
 	} // use first profile as fallback
-	else if (sizeof($profiles) > 0) {
+    elseif (count($profiles) > 0) {
 		$_SESSION["config"] = $serverProfilePersistenceManager->loadProfile($profiles[0]);
 	}
 	else {
@@ -247,11 +247,9 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 		}
 		// check TLS
 		$useTLS = $config_object->getUseTLS();
-		if (isset($useTLS) && ($useTLS == "yes")) {
-			if (!function_exists('ldap_start_tls')) {
-				StatusMessage("ERROR", "Your PHP installation does not support TLS encryption!");
-				echo "<br>";
-			}
+		if (isset($useTLS) && ($useTLS == "yes") && !function_exists('ldap_start_tls')) {
+			StatusMessage("ERROR", "Your PHP installation does not support TLS encryption!");
+			echo "<br>";
 		}
 	}
 	else {
@@ -300,24 +298,22 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 									}
 									$row->addField(new htmlDiv(null, $userSelect));
 								}
+                                elseif ($config_object->getHttpAuthentication() == 'true') {
+									$httpAuth = new htmlDiv(null, new htmlOutputText($_SERVER['PHP_AUTH_USER'] . '&nbsp;', false));
+									$httpAuth->setCSSClasses(['text-left', 'margin3']);
+									$row->addField($httpAuth);
+								}
 								else {
-									if ($config_object->getHttpAuthentication() == 'true') {
-										$httpAuth = new htmlDiv(null, new htmlOutputText($_SERVER['PHP_AUTH_USER'] . '&nbsp;', false));
-										$httpAuth->setCSSClasses(['text-left', 'margin3']);
-										$row->addField($httpAuth);
+									$user = '';
+									if (isset($_COOKIE["lam_login_name"])) {
+										$user = $_COOKIE["lam_login_name"];
 									}
-									else {
-										$user = '';
-										if (isset($_COOKIE["lam_login_name"])) {
-											$user = $_COOKIE["lam_login_name"];
-										}
-										$userNameInput = new htmlInputField('username', $user);
-										if (empty($_COOKIE['lam_login_name'])) {
-											$userNameInput->setCSSClasses(['lam-initial-focus']);
-										}
-										$userInput = new htmlDiv(null, $userNameInput);
-										$row->addField($userInput);
+									$userNameInput = new htmlInputField('username', $user);
+									if (empty($_COOKIE['lam_login_name'])) {
+										$userNameInput->setCSSClasses(['lam-initial-focus']);
 									}
+									$userInput = new htmlDiv(null, $userNameInput);
+									$row->addField($userInput);
 								}
 								// password
 								$row->addLabel(new htmlLabel('passwd', _("Password")));
@@ -349,7 +345,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$languageSelect->setHasDescriptiveElements(true);
 								$row->addField($languageSelect, true);
 								// remember login user
-								if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && !($config_object->getHttpAuthentication() == 'true')) {
+								if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() != 'true')) {
 									$row->add(new htmlOutputText('&nbsp;', false), 0, 6, 6);
 									$rememberGroup = new htmlGroup();
 									$doRemember = false;
@@ -516,7 +512,7 @@ if (isset($_POST['checklogin'])) {
 		if (isset($_POST['rememberLogin']) && ($_POST['rememberLogin'] == 'on')) {
 			setcookie('lam_login_name', (string) $_POST['username'], $cookieOptions);
 		}
-		else if (isset($_COOKIE['lam_login_name']) && ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH)) {
+        elseif (isset($_COOKIE['lam_login_name']) && ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH)) {
 			setcookie('lam_login_name', '', $cookieOptions);
 		}
 		if ($_POST['passwd'] == "") {
@@ -562,7 +558,7 @@ if (isset($_POST['checklogin'])) {
 						logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. Unable to find the user name in LDAP.');
 						header("HTTP/1.1 403 Forbidden");
 					}
-                    elseif (sizeof($searchInfo) > 1) {
+                    elseif (count($searchInfo) > 1) {
 						$searchSuccess = false;
 						if ($default_Config->isHideLoginErrorDetails()) {
 							$searchError = _('Wrong password/user name combination. Please try again.');
