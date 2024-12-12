@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\CONFIG;
+
 use \htmlTable;
 use \htmlSubTitle;
 use \htmlImage;
@@ -12,6 +14,7 @@ use \htmlResponsiveInputCheckbox;
 use \LAMConfig;
 use \htmlResponsiveRow;
 use \htmlResponsiveInputField;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2023  Roland Gruber
@@ -34,19 +37,19 @@ use \htmlResponsiveInputField;
 
 
 /**
-* Here the user can select the account types.
-*
-* @package configuration
-* @author Roland Gruber
-*/
+ * Here the user can select the account types.
+ *
+ * @package configuration
+ * @author Roland Gruber
+ */
 
 
 /** Access to config functions */
-include_once '../../lib/config.inc';
+include_once __DIR__ . '/../../lib/config.inc';
 /** Access to account types */
-include_once '../../lib/types.inc';
+include_once __DIR__ . '/../../lib/types.inc';
 /** common functions */
-include_once '../../lib/configPages.inc';
+include_once __DIR__ . '/../../lib/configPages.inc';
 
 // start session
 if (isFileBasedSession()) {
@@ -60,7 +63,7 @@ setlanguage();
 // if not: load login page
 if (!isset($_SESSION['conf_config'])) {
 	/** go back to login if password is invalid */
-	require('conflogin.php');
+	require(__DIR__ . '/conflogin.php');
 	exit;
 }
 
@@ -75,45 +78,44 @@ $conf = &$_SESSION['conf_config'];
 $errorsToDisplay = checkInput();
 
 // check if button was pressed and if we have to save the settings or go to another tab
-if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
-	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
-	|| isset($_POST['moduleSettings']) || isset($_POST['jobs'])) {
-	if (sizeof($errorsToDisplay) == 0) {
-		// check if all types have modules
-		$activeTypes = $conf->get_ActiveTypes();
-		for ($i = 0; $i < sizeof($activeTypes); $i++) {
-			$selectedModules = $conf->get_AccountModules($activeTypes[$i]);
-			if (sizeof($selectedModules) == 0) {
-				// go to module selection
-				metaRefresh("confmodules.php");
-				exit;
-			}
-		}
-		// go to final page
-		if (isset($_POST['saveSettings'])) {
-			metaRefresh("confsave.php");
-			exit;
-		}
-		// go to modules page
-		elseif (isset($_POST['editmodules'])) {
+if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
+		|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
+		|| isset($_POST['moduleSettings']) || isset($_POST['jobs']))
+	&& (count($errorsToDisplay) == 0)) {
+	// check if all types have modules
+	$activeTypes = $conf->get_ActiveTypes();
+	for ($i = 0; $i < count($activeTypes); $i++) {
+		$selectedModules = $conf->get_AccountModules($activeTypes[$i]);
+		if (count($selectedModules) == 0) {
+			// go to module selection
 			metaRefresh("confmodules.php");
 			exit;
 		}
-		// go to general page
-		elseif (isset($_POST['generalSettingsButton'])) {
-			metaRefresh("confmain.php");
-			exit;
-		}
-		// go to module settings page
-		elseif (isset($_POST['moduleSettings'])) {
-			metaRefresh("moduleSettings.php");
-			exit;
-		}
-		// go to jobs page
-		elseif (isset($_POST['jobs'])) {
-			metaRefresh("jobs.php");
-			exit;
-		}
+	}
+	// go to final page
+	if (isset($_POST['saveSettings'])) {
+		metaRefresh("confsave.php");
+		exit;
+	}
+	// go to modules page
+	elseif (isset($_POST['editmodules'])) {
+		metaRefresh("confmodules.php");
+		exit;
+	}
+	// go to general page
+	elseif (isset($_POST['generalSettingsButton'])) {
+		metaRefresh("confmain.php");
+		exit;
+	}
+	// go to module settings page
+	elseif (isset($_POST['moduleSettings'])) {
+		metaRefresh("moduleSettings.php");
+		exit;
+	}
+	// go to jobs page
+	elseif (isset($_POST['jobs'])) {
+		metaRefresh("jobs.php");
+		exit;
 	}
 }
 
@@ -143,7 +145,7 @@ printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 // print error messages
-for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
+for ($i = 0; $i < count($errorsToDisplay); $i++) {
 	call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
 }
 
@@ -154,7 +156,7 @@ printConfigurationPageTabs(ConfigurationPageTab::TYPES);
 $row = new htmlResponsiveRow();
 
 // show available types
-if (sizeof($availableScopes) > 0) {
+if ($availableScopes !== []) {
 	$row->add(new htmlSubTitle(_("Available account types")), 12);
 	foreach ($availableScopes as $availableScope) {
 		$availableLabelGroup = new htmlGroup();
@@ -179,7 +181,7 @@ $container = new htmlResponsiveRow();
 
 $_SESSION['conftypes_optionTypes'] = [];
 // show active types
-if (sizeof($activeTypes) > 0) {
+if (count($activeTypes) > 0) {
 	$container->add(new htmlSubTitle(_("Active account types")), 12);
 	$index = 0;
 	foreach ($activeTypes as $activeType) {
@@ -196,19 +198,19 @@ if (sizeof($activeTypes) > 0) {
 		$buttons = new htmlGroup();
 		// move buttons
 		if ($index > 0) {
-			$upButton = new htmlButton('moveup_'. $activeType->getId(), 'up.svg', true);
+			$upButton = new htmlButton('moveup_' . $activeType->getId(), 'up.svg', true);
 			$upButton->setTitle(_("Up"));
 			$upButton->setCSSClasses(['size16']);
 			$buttons->addElement($upButton);
 		}
-		if ($index < (sizeof($activeTypes) - 1)) {
-			$upButton = new htmlButton('movedown_'. $activeType->getId(), 'down.svg', true);
+		if ($index < (count($activeTypes) - 1)) {
+			$upButton = new htmlButton('movedown_' . $activeType->getId(), 'down.svg', true);
 			$upButton->setTitle(_("Down"));
 			$upButton->setCSSClasses(['size16']);
 			$buttons->addElement($upButton);
 		}
 		// delete button
-		$delButton = new htmlButton('rem_'. $activeType->getId(), 'del.svg', true);
+		$delButton = new htmlButton('rem_' . $activeType->getId(), 'del.svg', true);
 		$delButton->setTitle(_("Remove this account type"));
 		$delButton->setCSSClasses(['size16']);
 		$buttons->addElement($delButton);
@@ -340,7 +342,7 @@ function checkInput(): array {
 	$typeSettings = $conf->get_typeSettings();
 	$accountTypes = $conf->get_ActiveTypes();
 	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < sizeof($postKeys); $i++) {
+	for ($i = 0; $i < count($postKeys); $i++) {
 		$key = $postKeys[$i];
 		// check if remove button was pressed
 		if (str_starts_with($key, "rem_")) {
@@ -350,7 +352,7 @@ function checkInput(): array {
 			$accountTypes = array_flip($accountTypes);
 			$accountTypes = array_values($accountTypes);
 		}
-	    // check if up button was pressed
+		// check if up button was pressed
 		elseif (str_starts_with($key, "moveup_")) {
 			$type = substr($key, 7);
 			$pos = array_search($type, $accountTypes);
@@ -383,7 +385,7 @@ function checkInput(): array {
 			}
 		}
 		// set filter
-		elseif (substr($key, 0, strlen('filter_')) == "filter_") {
+		elseif (substr($key, 0, strlen('filter_')) === "filter_") {
 			$typeSettings[$key] = $_POST[$key];
 		}
 		// set custom label

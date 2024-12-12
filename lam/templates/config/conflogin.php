@@ -1,5 +1,6 @@
 <?php
 namespace LAM\CONFIG;
+
 use \htmlStatusMessage;
 use \htmlResponsiveRow;
 use \LAMCfgMain;
@@ -35,17 +36,17 @@ use ServerProfilePersistenceManager;
 
 
 /**
-* Login page to change the preferences.
-*
-* @package configuration
-* @author Roland Gruber
-*/
+ * Login page to change the preferences.
+ *
+ * @package configuration
+ * @author Roland Gruber
+ */
 
 
 /** Access to config functions */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** Used to print status messages */
-include_once('../../lib/status.inc');
+include_once(__DIR__ . '/../../lib/status.inc');
 
 // start session
 if (isFileBasedSession()) {
@@ -64,8 +65,10 @@ if (isset($_SESSION['conf_message'])) {
 
 // remove settings from session
 $sessionKeys = array_keys($_SESSION);
-for ($i = 0; $i < sizeof($sessionKeys); $i++) {
-	if (str_starts_with($sessionKeys[$i], "conf_")) unset($_SESSION[$sessionKeys[$i]]);
+for ($i = 0; $i < count($sessionKeys); $i++) {
+	if (str_starts_with($sessionKeys[$i], "conf_")) {
+		unset($_SESSION[$sessionKeys[$i]]);
+	}
 }
 
 echo $_SESSION['header'];
@@ -80,101 +83,102 @@ catch (LAMException $e) {
 }
 printHeaderContents(_("Login"), '../..');
 
-if (sizeof($files) < 1) {
+if (count($files) < 1) {
 	$message = new htmlStatusMessage('INFO', _("No server profiles found. Please create one."));
 }
 ?>
-	</head>
-	<body>
-		<?php
-			printJsIncludes('../..');
-			?>
-        <div id="lam-topnav" class="lam-header">
-            <div class="lam-header-left lam-menu-stay">
-                <a href="https://www.ldap-account-manager.org/" target="new_window">
-                    <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
-                    <span class="hide-on-mobile">
+</head>
+<body>
+<?php
+printJsIncludes('../..');
+?>
+<div id="lam-topnav" class="lam-header">
+    <div class="lam-header-left lam-menu-stay">
+        <a href="https://www.ldap-account-manager.org/" target="new_window">
+            <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
+            <span class="hide-on-mobile">
                         <?php
-                        echo getLAMVersionText();
-                        ?>
+						echo getLAMVersionText();
+						?>
                     </span>
-                </a>
-            </div>
-			<?php
-			if (is_dir(__DIR__ . '/../../docs/manual')) {
-				?>
-                <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
-                    <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
-                    <span class="padding0">&nbsp;</span>
-                </a>
-                <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
-                    <span class="padding0"><?php echo _("Help") ?></span>
-                </a>
-				<?php
-			}
-			?>
-        </div>
-		<br><br>
-		<!-- form to change existing profiles -->
-		<form action="confmain.php" method="post" autocomplete="off">
-
-		<?php
-
-		$row = new htmlResponsiveRow();
-
-		// message
-		if ($message !== null) {
-			$row->add($message, 12);
-			$row->addVerticalSpacer('2rem');
-		}
-
-		$box = new htmlResponsiveRow();
-		if (sizeof($files) > 0) {
-			$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")), 12);
-			$box->addVerticalSpacer('1.5rem');
-			$conf = new LAMCfgMain();
-			$selectedProfile = [];
-			$profilesExisting = false;
-			$profiles = $files;
-			if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
-				$selectedProfile[] = $_COOKIE["lam_default_profile"];
-			}
-			else {
-				$selectedProfile[] = $conf->default;
-			}
-			$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')), 12);
-			$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
-			$passwordInput->setIsPassword(true);
-			$passwordInput->setCSSClasses(['lam-initial-focus']);
-			$box->add($passwordInput, 12);
-			$box->addVerticalSpacer('1rem');
-			$button = new htmlButton('submit', _("Ok"));
-			$button->setCSSClasses(['lam-primary']);
-			$box->addLabel($button);
-			$box->add(new htmlOutputText(''), 0, 6);
-			$box->addVerticalSpacer('1.5rem');
-			$box->add(new htmlHorizontalLine(), 12);
-			$box->addVerticalSpacer('1.5rem');
-		}
-		$manageLink = new htmlLink(_("Manage server profiles"), 'profmanage.php');
-		$box->add($manageLink, 12, 12, 12, 'text-center');
-
-		$boxDiv = new htmlDiv(null, $box);
-		$boxDiv->setCSSClasses(['roundedShadowBox', 'limitWidth', 'text-center']);
-		$row->add($boxDiv, 12);
-
-		// back link
-		$row->addVerticalSpacer('2rem');
-		$backLink = new htmlLink(_("Back to login"), '../login.php');
-		$row->add($backLink, 12, 12, 12, 'text-left');
-
-		parseHtml(null, new htmlDiv(null, $row, ['centeredTable']), [], false, 'user');
-
+        </a>
+    </div>
+	<?php
+	if (is_dir(__DIR__ . '/../../docs/manual')) {
 		?>
-		</form>
+        <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon"
+           onclick="window.lam.topmenu.toggle();">
+            <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
+            <span class="padding0">&nbsp;</span>
+        </a>
+        <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
+            <span class="padding0"><?php echo _("Help") ?></span>
+        </a>
+		<?php
+	}
+	?>
+</div>
+<br><br>
+<!-- form to change existing profiles -->
+<form action="confmain.php" method="post" autocomplete="off">
 
-		<p><br><br></p>
+	<?php
+
+	$row = new htmlResponsiveRow();
+
+	// message
+	if ($message !== null) {
+		$row->add($message, 12);
+		$row->addVerticalSpacer('2rem');
+	}
+
+	$box = new htmlResponsiveRow();
+	if (count($files) > 0) {
+		$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")), 12);
+		$box->addVerticalSpacer('1.5rem');
+		$conf = new LAMCfgMain();
+		$selectedProfile = [];
+		$profilesExisting = false;
+		$profiles = $files;
+		if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
+			$selectedProfile[] = $_COOKIE["lam_default_profile"];
+		}
+		else {
+			$selectedProfile[] = $conf->default;
+		}
+		$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')), 12);
+		$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
+		$passwordInput->setIsPassword(true);
+		$passwordInput->setCSSClasses(['lam-initial-focus']);
+		$box->add($passwordInput, 12);
+		$box->addVerticalSpacer('1rem');
+		$button = new htmlButton('submit', _("Ok"));
+		$button->setCSSClasses(['lam-primary']);
+		$box->addLabel($button);
+		$box->add(new htmlOutputText(''), 0, 6);
+		$box->addVerticalSpacer('1.5rem');
+		$box->add(new htmlHorizontalLine(), 12);
+		$box->addVerticalSpacer('1.5rem');
+	}
+	$manageLink = new htmlLink(_("Manage server profiles"), 'profmanage.php');
+	$box->add($manageLink, 12, 12, 12, 'text-center');
+
+	$boxDiv = new htmlDiv(null, $box);
+	$boxDiv->setCSSClasses(['roundedShadowBox', 'limitWidth', 'text-center']);
+	$row->add($boxDiv, 12);
+
+	// back link
+	$row->addVerticalSpacer('2rem');
+	$backLink = new htmlLink(_("Back to login"), '../login.php');
+	$row->add($backLink, 12, 12, 12, 'text-left');
+
+	parseHtml(null, new htmlDiv(null, $row, ['centeredTable']), [], false, 'user');
+
+	?>
+</form>
+
+<p><br><br></p>
 
 
-	</body>
+</body>
 </html>

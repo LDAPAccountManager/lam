@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\CONFIG;
+
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \LAMConfig;
 use \htmlTable;
@@ -45,12 +47,12 @@ use ServerProfilePersistenceManager;
 
 
 /**
-* Main page of configuration
-*
-* @package configuration
-* @author Roland Gruber
-* @author Thomas Manninger
-*/
+ * Main page of configuration
+ *
+ * @package configuration
+ * @author Roland Gruber
+ * @author Thomas Manninger
+ */
 
 
 /** Access to config functions */
@@ -92,7 +94,8 @@ $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 if (!isset($_SESSION['conf_config']) && isset($_POST['filename'])) {
 	try {
 		$_SESSION['conf_config'] = $serverProfilePersistenceManager->loadProfile($_POST['filename']);
-	} catch (LAMException $e) {
+	}
+	catch (LAMException $e) {
 		$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', $e->getTitle());
 		metaRefresh('conflogin.php');
 		exit;
@@ -102,9 +105,10 @@ $conf = &$_SESSION['conf_config'];
 
 // check if password is valid
 // if not: load login page
-if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthenticated'] === $conf->getName())) && !$conf->check_Passwd($passwd)) {
+if ((!isset($_SESSION['conf_isAuthenticated']) || ($_SESSION['conf_isAuthenticated'] !== $conf->getName()))
+	&& !$conf->check_Passwd($passwd)) {
 	$sessionKeys = array_keys($_SESSION);
-	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
+	for ($i = 0; $i < count($sessionKeys); $i++) {
 		if (str_starts_with($sessionKeys[$i], "conf_")) {
 			unset($_SESSION[$sessionKeys[$i]]);
 		}
@@ -133,29 +137,29 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
 	|| isset($_POST['moduleSettings']) || isset($_POST['jobs'])) {
 	$errorsToDisplay = checkInput();
-	if (sizeof($errorsToDisplay) == 0) {
+	if (count($errorsToDisplay) == 0) {
 		// go to final page
 		if (isset($_POST['saveSettings'])) {
 			metaRefresh("confsave.php");
 			exit;
 		}
 		// go to modules page
-		elseif (isset($_POST['editmodules'])) {
+        elseif (isset($_POST['editmodules'])) {
 			metaRefresh("confmodules.php");
 			exit;
 		}
 		// go to types page
-		elseif (isset($_POST['edittypes'])) {
+        elseif (isset($_POST['edittypes'])) {
 			metaRefresh("conftypes.php");
 			exit;
 		}
 		// go to module settings page
-		elseif (isset($_POST['moduleSettings'])) {
+        elseif (isset($_POST['moduleSettings'])) {
 			metaRefresh("moduleSettings.php");
 			exit;
 		}
 		// go to jobs page
-		elseif (isset($_POST['jobs'])) {
+        elseif (isset($_POST['jobs'])) {
 			metaRefresh("jobs.php");
 			exit;
 		}
@@ -177,8 +181,8 @@ if (!$serverProfilePersistenceManager->isWritable($_SESSION['conf_config']->getN
 }
 
 // display error messages
-if (sizeof($errorsToDisplay) > 0) {
-	for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
+if ($errorsToDisplay !== []) {
+	for ($i = 0; $i < count($errorsToDisplay); $i++) {
 		call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
 	}
 	echo "<br>";
@@ -190,10 +194,10 @@ echo "<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"pos
 printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
 ?>
-<input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
-<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="123">
-<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="321">
-<?php
+    <input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
+    <input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="123">
+    <input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="321">
+	<?php
 
 $row = new htmlResponsiveRow();
 
@@ -210,14 +214,14 @@ $tlsSelect->setHasDescriptiveElements(true);
 $row->add($tlsSelect, 12);
 // LDAP search limit
 $searchLimitOptions = [
-    '-' => 0,
-    100 => 100,
-    500 => 500,
-    1000 => 1000,
-    5000 => 5000,
-    10000 => 10000,
-    50000 => 50000,
-    100000 => 100000
+	'-' => 0,
+	100 => 100,
+	500 => 500,
+	1000 => 1000,
+	5000 => 5000,
+	10000 => 10000,
+	50000 => 50000,
+	100000 => 100000
 ];
 $limitSelect = new htmlResponsiveSelect('searchLimit', $searchLimitOptions, [$conf->get_searchLimit()], _("LDAP search limit"), '222');
 $limitSelect->setHasDescriptiveElements(true);
@@ -229,10 +233,10 @@ $row->add($urlInput, 12);
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
 	$accessOptions = [
-        _('Write access') => LAMConfig::ACCESS_ALL,
-        _('Change passwords') => LAMConfig::ACCESS_PASSWORD_CHANGE,
-        _('Read-only') => LAMConfig::ACCESS_READ_ONLY
-    ];
+		_('Write access') => LAMConfig::ACCESS_ALL,
+		_('Change passwords') => LAMConfig::ACCESS_PASSWORD_CHANGE,
+		_('Read-only') => LAMConfig::ACCESS_READ_ONLY
+	];
 	$accessSelect = new htmlResponsiveSelect('accessLevel', $accessOptions, [$conf->getAccessLevel()], _("Access level"), '215');
 	$accessSelect->setHasDescriptiveElements(true);
 	$row->add($accessSelect, 12);
@@ -241,18 +245,18 @@ if (isLAMProVersion()) {
 $row->addVerticalSpacer('1rem');
 // login method
 $loginOptions = [
-    _('Fixed list') => LAMConfig::LOGIN_LIST,
-    _('LDAP search') => LAMConfig::LOGIN_SEARCH
+	_('Fixed list') => LAMConfig::LOGIN_LIST,
+	_('LDAP search') => LAMConfig::LOGIN_SEARCH
 ];
 $loginSelect = new htmlResponsiveSelect('loginMethod', $loginOptions, [$conf->getLoginMethod()], _("Login method"), '220');
 $loginSelect->setHasDescriptiveElements(true);
 $loginSelect->setTableRowsToHide([
-    LAMConfig::LOGIN_LIST => ['loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication'],
-    LAMConfig::LOGIN_SEARCH => ['admins']
+	LAMConfig::LOGIN_LIST => ['loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication'],
+	LAMConfig::LOGIN_SEARCH => ['admins']
 ]);
 $loginSelect->setTableRowsToShow([
-    LAMConfig::LOGIN_LIST => ['admins'],
-    LAMConfig::LOGIN_SEARCH => ['loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication']
+	LAMConfig::LOGIN_LIST => ['admins'],
+	LAMConfig::LOGIN_SEARCH => ['loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication']
 ]);
 $row->add($loginSelect);
 // admin list
@@ -284,13 +288,13 @@ $advancedOptionsContent = new htmlResponsiveRow();
 $advancedOptionsContent->add(new htmlResponsiveInputField(_('Display name'), 'serverDisplayName', $conf->getServerDisplayName(), '268'), 12);
 // referrals
 $followReferrals = ($conf->getFollowReferrals() === 'true');
-$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('followReferrals', $followReferrals , _('Follow referrals'), '205'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('followReferrals', $followReferrals, _('Follow referrals'), '205'), 12);
 // paged results
 $pagedResults = ($conf->getPagedResults() === 'true');
-$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pagedResults , _('Paged results'), '266'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pagedResults, _('Paged results'), '266'), 12);
 // referential integrity overlay
 $referentialIntegrity = ($conf->isReferentialIntegrityOverlayActive());
-$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('referentialIntegrityOverlay', $referentialIntegrity , _('Referential integrity overlay'), '269'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('referentialIntegrityOverlay', $referentialIntegrity, _('Referential integrity overlay'), '269'), 12);
 // hide password prompt for expired passwords
 $hidePasswordPromptForExpiredPasswords = ($conf->isHidePasswordPromptForExpiredPasswords());
 $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('hidePasswordPromptForExpiredPasswords', $hidePasswordPromptForExpiredPasswords, _('Hide password prompt for expired password'), '291'), 12);
@@ -308,7 +312,7 @@ $row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.svg'
 $possibleLanguages = getLanguages();
 $defaultLanguage = ['en_GB.utf8'];
 if (!empty($possibleLanguages)) {
-    $languages = [];
+	$languages = [];
 	foreach ($possibleLanguages as $lang) {
 		$languages[$lang->description] = $lang->code;
 		if (str_starts_with($conf->get_defaultLanguage(), $lang->code)) {
@@ -339,7 +343,7 @@ $row->add(new htmlResponsiveSelect('timeZone', $timezones, [$conf->getTimeZone()
 $row->addVerticalSpacer('2rem');
 
 // tool settings
-$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/configure.svg',null, true), 12);
+$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/configure.svg', null, true), 12);
 $toolSettings = $conf->getToolSettings();
 $tools = getTools();
 $row->add(new htmlOutputText(_('Hidden tools')), 12);
@@ -389,25 +393,25 @@ if (isLAMProVersion()) {
 	if ($conf->getPwdResetAllowSpecificPassword() == 'false') {
 		$pwdResetAllowSpecific = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowSpecificPassword', $pwdResetAllowSpecific , _('Allow setting specific passwords'), '280'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowSpecificPassword', $pwdResetAllowSpecific, _('Allow setting specific passwords'), '280'), 12);
 
 	$pwdResetAllowScreenPassword = true;
 	if ($conf->getPwdResetAllowScreenPassword() == 'false') {
 		$pwdResetAllowScreenPassword = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowScreenPassword', $pwdResetAllowScreenPassword , _('Allow to display password on screen'), '281'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowScreenPassword', $pwdResetAllowScreenPassword, _('Allow to display password on screen'), '281'), 12);
 
 	$pwdResetForcePasswordChange = true;
 	if ($conf->getPwdResetForcePasswordChange() == 'false') {
 		$pwdResetForcePasswordChange = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange , _('Force password change by default'), '283'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange, _('Force password change by default'), '283'), 12);
 
 	$pwdResetDefaultPasswordOutputOptions = [
-        _('Display on screen') => LAMConfig::PWDRESET_DEFAULT_SCREEN,
-        _('Send via mail') => LAMConfig::PWDRESET_DEFAULT_MAIL,
-        _('Both') => LAMConfig::PWDRESET_DEFAULT_BOTH
-    ];
+		_('Display on screen') => LAMConfig::PWDRESET_DEFAULT_SCREEN,
+		_('Send via mail') => LAMConfig::PWDRESET_DEFAULT_MAIL,
+		_('Both') => LAMConfig::PWDRESET_DEFAULT_BOTH
+	];
 	$pwdResetDefaultPasswordOutputSelect = new htmlResponsiveSelect('pwdResetDefaultPasswordOutput', $pwdResetDefaultPasswordOutputOptions, [$conf->getPwdResetDefaultPasswordOutput()], _("Default password output"), '282');
 	$pwdResetDefaultPasswordOutputSelect->setHasDescriptiveElements(true);
 	$row->add($pwdResetDefaultPasswordOutputSelect, 12);
@@ -430,13 +434,13 @@ if (isLAMProVersion()) {
 	if ($conf->getLamProMailIsHTML() == 'true') {
 		$pwdMailIsHTML = true;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_isHTML',$pwdMailIsHTML , _('HTML format'), '553'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_isHTML', $pwdMailIsHTML, _('HTML format'), '553'), 12);
 
 	$pwdMailAllowAlternate = true;
 	if ($conf->getLamProMailAllowAlternateAddress() == 'false') {
 		$pwdMailAllowAlternate = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_allowAlternate',$pwdMailAllowAlternate , _('Allow alternate address'), '555'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_allowAlternate', $pwdMailAllowAlternate, _('Allow alternate address'), '555'), 12);
 
 	$pwdMailBody = new htmlResponsiveInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
 	$row->add($pwdMailBody, 12);
@@ -469,17 +473,17 @@ $rightsTable->addElement(new htmlOutputText(_("Read")));
 $rightsTable->addElement(new htmlOutputText(_("Write")));
 $rightsTable->addElement(new htmlOutputText(_("Execute")), true);
 $rightsTable->addElement(new htmlOutputText(_("Owner")));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_owr', checkChmod("read","owner", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_oww', checkChmod("write","owner", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_owe', checkChmod("execute","owner", $chmod)), true);
+$rightsTable->addElement(new htmlInputCheckbox('chmod_owr', checkChmod("read", "owner", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_oww', checkChmod("write", "owner", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_owe', checkChmod("execute", "owner", $chmod)), true);
 $rightsTable->addElement(new htmlOutputText(_("Group")));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_grr', checkChmod("read","group", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_grw', checkChmod("write","group", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_gre', checkChmod("execute","group", $chmod)), true);
+$rightsTable->addElement(new htmlInputCheckbox('chmod_grr', checkChmod("read", "group", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_grw', checkChmod("write", "group", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_gre', checkChmod("execute", "group", $chmod)), true);
 $rightsTable->addElement(new htmlOutputText(_("Other")));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_otr', checkChmod("read","other", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_otw', checkChmod("write","other", $chmod)));
-$rightsTable->addElement(new htmlInputCheckbox('chmod_ote', checkChmod("execute","other", $chmod)), true);
+$rightsTable->addElement(new htmlInputCheckbox('chmod_otr', checkChmod("read", "other", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_otw', checkChmod("write", "other", $chmod)));
+$rightsTable->addElement(new htmlInputCheckbox('chmod_ote', checkChmod("execute", "other", $chmod)), true);
 $row->addField($rightsTable);
 
 $row->addVerticalSpacer('2rem');
@@ -502,45 +506,45 @@ $row->add(new htmlResponsiveSelect('pwdPolicyMinSymbolic', $optionsPwdLength, [$
 if (extension_loaded('curl')) {
 	$row->add(new htmlSubTitle(_("2-factor authentication"), '../../graphics/locked.svg'), 12);
 	$twoFactorOptions = [
-        _('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
-        'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
-        'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
-        'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
-        'Okta' => TwoFactorProviderService::TWO_FACTOR_OKTA,
-        'OpenId' => TwoFactorProviderService::TWO_FACTOR_OPENID,
-        'WebAuthn' => TwoFactorProviderService::TWO_FACTOR_WEBAUTHN
-    ];
+		_('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
+		'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+		'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
+		'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
+		'Okta' => TwoFactorProviderService::TWO_FACTOR_OKTA,
+		'OpenId' => TwoFactorProviderService::TWO_FACTOR_OPENID,
+		'WebAuthn' => TwoFactorProviderService::TWO_FACTOR_WEBAUTHN
+	];
 	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, [$conf->getTwoFactorAuthentication()], _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
 	$twoFactorSelect->setTableRowsToHide([
-	        TwoFactorProviderService::TWO_FACTOR_NONE => ['twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-                'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute',
-                'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
-        TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => ['twoFactorURLs', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorDomain'],
-        TwoFactorProviderService::TWO_FACTOR_YUBICO => ['twoFactorURL', 'twoFactorAttribute', 'twoFactorDomain'],
-        TwoFactorProviderService::TWO_FACTOR_DUO => ['twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel',
-            'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
-        TwoFactorProviderService::TWO_FACTOR_OKTA => ['twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel',
-            'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
-        TwoFactorProviderService::TWO_FACTOR_OPENID => ['twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel',
-            'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
-        TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => ['twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-            'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute']
-    ]);
+		TwoFactorProviderService::TWO_FACTOR_NONE => ['twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute',
+			'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
+		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => ['twoFactorURLs', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorDomain'],
+		TwoFactorProviderService::TWO_FACTOR_YUBICO => ['twoFactorURL', 'twoFactorAttribute', 'twoFactorDomain'],
+		TwoFactorProviderService::TWO_FACTOR_DUO => ['twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
+		TwoFactorProviderService::TWO_FACTOR_OKTA => ['twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
+		TwoFactorProviderService::TWO_FACTOR_OPENID => ['twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'],
+		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => ['twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute']
+	]);
 	$twoFactorSelect->setTableRowsToShow([
-        TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => ['twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
-            'twoFactorOptional', 'twoFactorCaption', 'twoFactorAttribute', 'twoFactorAllowToRememberDeviceOptions'],
-        TwoFactorProviderService::TWO_FACTOR_YUBICO => ['twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-            'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAllowToRememberDeviceOptions'],
-        TwoFactorProviderService::TWO_FACTOR_DUO => ['twoFactorURL', 'twoFactorLabel', 'twoFactorCaption',
-            'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'],
-        TwoFactorProviderService::TWO_FACTOR_OKTA => ['twoFactorURL', 'twoFactorCaption', 'twoFactorClientId',
-            'twoFactorSecretKey', 'twoFactorAttribute'],
-        TwoFactorProviderService::TWO_FACTOR_OPENID => ['twoFactorURL', 'twoFactorCaption', 'twoFactorClientId',
-            'twoFactorSecretKey', 'twoFactorAttribute'],
-        TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => ['twoFactorDomain', 'twoFactorOptional',
-            'twoFactorAllowToRememberDeviceOptions']
-    ]);
+		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => ['twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorAttribute', 'twoFactorAllowToRememberDeviceOptions'],
+		TwoFactorProviderService::TWO_FACTOR_YUBICO => ['twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAllowToRememberDeviceOptions'],
+		TwoFactorProviderService::TWO_FACTOR_DUO => ['twoFactorURL', 'twoFactorLabel', 'twoFactorCaption',
+			'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'],
+		TwoFactorProviderService::TWO_FACTOR_OKTA => ['twoFactorURL', 'twoFactorCaption', 'twoFactorClientId',
+			'twoFactorSecretKey', 'twoFactorAttribute'],
+		TwoFactorProviderService::TWO_FACTOR_OPENID => ['twoFactorURL', 'twoFactorCaption', 'twoFactorClientId',
+			'twoFactorSecretKey', 'twoFactorAttribute'],
+		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => ['twoFactorDomain', 'twoFactorOptional',
+			'twoFactorAllowToRememberDeviceOptions']
+	]);
 	$row->add($twoFactorSelect);
 	$twoFactorAttribute = new htmlResponsiveInputField(_("User name attribute"), 'twoFactorAttribute', $conf->getTwoFactorAuthenticationAttribute(), '528');
 	$row->add($twoFactorAttribute);
@@ -608,11 +612,11 @@ $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 parseHtml(null, $buttonContainer, [], false, 'user');
 
 ?>
-</form>
-<script type="text/javascript" src="../lib/extra/jodit/jodit.js"></script>
-</body>
-</html>
-<?php
+    </form>
+    <script type="text/javascript" src="../lib/extra/jodit/jodit.js"></script>
+    </body>
+    </html>
+	<?php
 
 /**
  * Checks user input and saves the entered settings.
@@ -650,12 +654,12 @@ function checkInput(): array {
 	else {
 		$conf->setReferentialIntegrityOverlay('false');
 	}
-    if (isset($_POST['hidePasswordPromptForExpiredPasswords']) && ($_POST['hidePasswordPromptForExpiredPasswords'] == 'on')) {
-        $conf->setHidePasswordPromptForExpiredPasswords('true');
-    }
-    else {
-        $conf->setHidePasswordPromptForExpiredPasswords('false');
-    }
+	if (isset($_POST['hidePasswordPromptForExpiredPasswords']) && ($_POST['hidePasswordPromptForExpiredPasswords'] == 'on')) {
+		$conf->setHidePasswordPromptForExpiredPasswords('true');
+	}
+	else {
+		$conf->setHidePasswordPromptForExpiredPasswords('false');
+	}
 	$conf->set_searchLimit($_POST['searchLimit']);
 	$conf->setHideDnPart($_POST['hideDnPart']);
 	if (isLAMProVersion()) {
@@ -684,7 +688,7 @@ function checkInput(): array {
 		}
 		if (!empty($_POST['pwdResetMail_subject']) && empty($_POST['pwdResetMail_from'])) {
 			$errors[] = ["ERROR", _("From address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_from'])];
-        }
+		}
 		if (!$conf->setLamProMailReplyTo($_POST['pwdResetMail_replyTo'])) {
 			$errors[] = ["ERROR", _("Reply-to address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_replyTo'])];
 		}
@@ -706,9 +710,9 @@ function checkInput(): array {
 	$adminText = $_POST['admins'];
 	$adminText = explode("\n", $adminText);
 	$adminTextNew = [];
-	for ($i = 0; $i < sizeof($adminText); $i++) {
-		if (trim($adminText[$i]) == "") {
-		    continue;
+	for ($i = 0; $i < count($adminText); $i++) {
+		if (trim($adminText[$i]) === "") {
+			continue;
 		}
 		$adminTextNew[] = trim($adminText[$i]);
 	}
@@ -717,10 +721,10 @@ function checkInput(): array {
 	$conf->setLoginSearchSuffix($_POST['loginSearchSuffix']);
 	$conf->setLoginSearchPassword($_POST['loginSearchPassword']);
 	$conf->setLoginSearchDN($_POST['loginSearchDN']);
-	if ($_POST['loginMethod'] == LAMConfig::LOGIN_SEARCH) { // check only if search method
-		if (!$conf->setLoginSearchDN($_POST['loginSearchDN'])) {
-			$errors[] = ["ERROR", _("Please enter a valid bind user.")];
-		}
+	// check only if search method
+	if (($_POST['loginMethod'] == LAMConfig::LOGIN_SEARCH)
+        && !$conf->setLoginSearchDN($_POST['loginSearchDN'])) {
+		$errors[] = ["ERROR", _("Please enter a valid bind user.")];
 	}
 	if (isset($_POST['httpAuthentication']) && ($_POST['httpAuthentication'] == 'on')) {
 		$conf->setHttpAuthentication('true');
@@ -779,7 +783,7 @@ function checkInput(): array {
 	$conf->setScriptSSHKey($_POST['scriptkey']);
 	$conf->setScriptSSHKeyPassword($_POST['scriptkeypassword']);
 	if (!empty($_POST['scriptkey'])) {
-		include_once '../../lib/remote.inc';
+		include_once __DIR__ . '/../../lib/remote.inc';
 		$remote = new \LAM\REMOTE\Remote();
 		try {
 			$remote->loadKey($conf->getScriptSSHKey(), $conf->getScriptSSHKeyPassword());
@@ -792,30 +796,25 @@ function checkInput(): array {
 	$tools = getTools();
 	$toolSettings = extractConfigOptionsFromPOST($_SESSION['confmain_toolTypes']);
 	foreach ($toolSettings as $key => $value) {
-	    $toolSettings[$key] = implode(LAMConfig::LINE_SEPARATOR, $value);
-    }
+		$toolSettings[$key] = implode(LAMConfig::LINE_SEPARATOR, $value);
+	}
 	foreach ($tools as $tool) {
-	    $toolClass = $tool::class;
-	    if ($toolClass === false) {
-	        continue;
-        }
-	    $toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
+		$toolClass = $tool::class;
+		if ($toolClass === false) {
+			continue;
+		}
+		$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 		$toolConfigID = 'tool_hide_' . $toolName;
-		if ((isset($_POST[$toolConfigID])) && ($_POST[$toolConfigID] == 'on')) {
-			$toolSettings[$toolConfigID] = 'true';
-		}
-		else {
-			$toolSettings[$toolConfigID] = 'false';
-		}
+		$toolSettings[$toolConfigID] = (isset($_POST[$toolConfigID])) && ($_POST[$toolConfigID] == 'on') ? 'true' : 'false';
 		$toolErrors = $tool->checkConfigurationOptions($toolSettings);
 		if (!empty($toolErrors)) {
-		    $errors = array_merge($errors, $toolErrors);
-        }
+			$errors = array_merge($errors, $toolErrors);
+		}
 	}
 
 	$conf->setToolSettings($toolSettings);
 	// password policy override
-    $conf->setPwdPolicyMinLength($_POST['pwdPolicyMinLength']);
+	$conf->setPwdPolicyMinLength($_POST['pwdPolicyMinLength']);
 	$conf->setPwdPolicyMinLowercase($_POST['pwdPolicyMinLowercase']);
 	$conf->setPwdPolicyMinUppercase($_POST['pwdPolicyMinUppercase']);
 	$conf->setPwdPolicyMinNumeric($_POST['pwdPolicyMinNumeric']);

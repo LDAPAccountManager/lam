@@ -47,9 +47,9 @@ use ServerProfilePersistenceManager;
 
 
 /** Access to config functions */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** Used to print status messages */
-include_once('../../lib/status.inc');
+include_once(__DIR__ . '/../../lib/status.inc');
 
 // start session
 if (isFileBasedSession()) {
@@ -114,7 +114,7 @@ if (isset($_POST['action'])) {
 	        // update default profile setting if needed
 	        if ($cfg->default == $_POST['delfilename']) {
 		        $filesNew = array_delete([$_POST['delfilename']], $files);
-		        if (sizeof($filesNew) > 0) {
+		        if (count($filesNew) > 0) {
 			        sort($filesNew);
 			        $cfg->default = $filesNew[0];
 			        $cfg->save();
