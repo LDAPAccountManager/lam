@@ -50,7 +50,7 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 
 $container = new htmlResponsiveRow();
@@ -67,4 +67,4 @@ $container->add(new htmlOutputText(_("Check if quotas and homedirectories can be
 parseHtml(null, $container, [], true, 'user');
 
 echo "</div>\n";
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';

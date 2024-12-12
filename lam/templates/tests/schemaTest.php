@@ -58,7 +58,7 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 
 $container = new htmlResponsiveRow();
@@ -78,7 +78,7 @@ else {
 	foreach ($types as $type) {
 		$modules = $_SESSION['config']->get_AccountModules($type->getId());
 		$container->add(new htmlSubTitle($type->getAlias()), 12);
-		for ($m = 0; $m < sizeof($modules); $m++) {
+		for ($m = 0; $m < count($modules); $m++) {
 			$error = checkSchemaForModule($modules[$m], $type->getScope(), $type->getId());
 			$message = _("No problems found.");
 			$icon = '../../graphics/pass.svg';
@@ -100,7 +100,7 @@ else {
 parseHtml(null, $container, [], true, 'user');
 
 echo "</div>\n";
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Checks if the object classes and attributes for this module are available.
@@ -115,13 +115,13 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
 	$classes = $module->getManagedObjectClasses($typeId);
 	$attrs = $module->getManagedAttributes($typeId);
 	$aliases = array_flip($module->getLDAPAliases($typeId));
-	if (sizeof($classes) == 0) {
+	if (count($classes) == 0) {
 		return null;
 	}
 	$schemaClasses = get_cached_schema('objectclasses');
 	$schemaAttrs = [];
 	// check if object classes are supported
-	for ($o = 0; $o < sizeof($classes); $o++) {
+	for ($o = 0; $o < count($classes); $o++) {
 		if (!isset($schemaClasses[strtolower($classes[$o])])) {
 			return sprintf(_("The object class %s is not supported by your LDAP server."), $classes[$o]);
 		}
@@ -129,7 +129,7 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
 		$schemaAttrs = array_merge($schemaAttrs, getRecursiveAttributesFromObjectClass($schemaClasses[strtolower($classes[$o])]));
 	}
 	// check if attributes are supported
-	for ($a = 0; $a < sizeof($attrs); $a++) {
+	for ($a = 0; $a < count($attrs); $a++) {
 		if (str_starts_with($attrs[$a], 'INFO.')) {
 			continue;
 		}
@@ -154,7 +154,7 @@ function getRecursiveAttributesFromObjectClass($oClass): array {
 	$attrs = array_merge($attrs, $oClass->getMustAttrNames());
 	$attrs = array_merge($attrs, $oClass->getMayAttrNames());
 	$subClassNames = $oClass->getSupClasses();
-	for ($i = 0; $i < sizeof($subClassNames); $i++) {
+	for ($i = 0; $i < count($subClassNames); $i++) {
 		$schemaClasses = get_cached_schema('objectclasses');
 		$subClass = $schemaClasses[strtolower($subClassNames[$i])];
 		$attrs = array_merge($attrs, getRecursiveAttributesFromObjectClass($subClass));
