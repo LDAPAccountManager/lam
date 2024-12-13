@@ -44,7 +44,7 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['mailAlias']);
+		return $this->get_scope() === 'mailAlias';
 	}
 
 	/**
@@ -151,9 +151,9 @@ class courierMailAlias extends baseModule {
 		$this->addSimpleInputTextField($return, 'mail', _('Email address'), true);
 		$this->addMultiValueInputTextField($return, 'maildrop', _('Recipient address'), true);
 		$return->addVerticalSpacer('0.5rem');
-		$selectedSource = (!empty($this->attributes['mailsource'][0])) ? $this->attributes['mailsource'][0] : "-";
+		$selectedSource = (empty($this->attributes['mailsource'][0])) ? "-" : $this->attributes['mailsource'][0];
 		$return->add(new htmlResponsiveSelect('mailsource', ['-', 'esmtp', 'local'], [$selectedSource], _('Mail source'), 'mailsource'), 12);
-		$description = (!empty($this->attributes['description'][0])) ? $this->attributes['description'][0] : '';
+		$description = (empty($this->attributes['description'][0])) ? '' : $this->attributes['description'][0];
 		$boxInput = new htmlResponsiveInputField(_('Description'), 'description', $description, 'description');
 		$boxInput->setFieldMaxLength(100);
 		$return->add($boxInput, 12);
@@ -202,7 +202,7 @@ class courierMailAlias extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
 		$possibleSources = ['esmtp', 'local'];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			if (!in_array("courierMailAlias", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "courierMailAlias";
 			}
@@ -215,7 +215,7 @@ class courierMailAlias extends baseModule {
 				}
 				else {
 					$error = $this->messages['mailsource'][0];
-					array_push($error, [$i]);
+					$error[] = [$i];
 					$messages[] = $error;
 				}
 			}
@@ -243,7 +243,7 @@ class courierMailAlias extends baseModule {
 			return function(array $entry, string $attribute): ?htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
-					for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
+					for ($i = 0; $i < count($entry[$attribute]); $i++) {
 						if ($i > 0) {
 							$group->addElement(new htmlOutputText(", "));
 						}
