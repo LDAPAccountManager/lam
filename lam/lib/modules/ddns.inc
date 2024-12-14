@@ -177,7 +177,7 @@ class ddns extends baseModule {
 			}
 
 			$zones = $this->getZoneNames();
-			if (sizeof($zones) < 2) {
+			if (count($zones) < 2) {
 				return false;
 			}
 		}
@@ -300,7 +300,7 @@ class ddns extends baseModule {
 			$errors[] = $this->messages['ip'][0];
 		}
 
-		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+		for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 			if (str_starts_with($this->attributes['dhcpStatements'][$i], 'zone ')) {
 				unset($this->attributes['dhcpStatements'][$i]);
 				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
@@ -317,10 +317,8 @@ class ddns extends baseModule {
 				$this->attributes['dhcpStatements'][] = "zone {$zone}. { key DHCP_UPDATER; }";
 			}
 		}
-		else {
-			if (!empty($ip)) {
-				$errors[] = $this->messages['zone'][0];
-			}
+		elseif (!empty($ip)) {
+			$errors[] = $this->messages['zone'][0];
 		}
 
 		// Zone reverse inserted?
@@ -332,10 +330,8 @@ class ddns extends baseModule {
 				$this->attributes['dhcpStatements'][] = "zone {$zone_reverse}. { key DHCP_UPDATER; }";
 			}
 		}
-		else {
-			if (!empty($ip)) {
-				$errors[] = $this->messages['zone_reverse'][0];
-			}
+		elseif (!empty($ip)) {
+			$errors[] = $this->messages['zone_reverse'][0];
 		}
 		return $errors;
 	}
@@ -352,7 +348,7 @@ class ddns extends baseModule {
 		// check if DHCP main settings and valid DHCP entry
 		if ($this->isRootNode()) {
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
+				$return->add(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
 				return $return;
 			}
 			// DHCP main settings
@@ -362,32 +358,30 @@ class ddns extends baseModule {
 			$keyInput = new htmlResponsiveInputField(_('Path to key for DNS updates'), 'key_path', $this->getUpdateKey(), 'keypath');
 			$return->add($keyInput);
 		}
-		else {
+		elseif (!$this->check_if_ddns_is_enable()) {
 			// Account edit
-			if (!$this->check_if_ddns_is_enable()) {
-				$return->add(new htmlOutputText(_("DDNS is not activated. You can activate it in the DHCP settings (DDNS).")));
-			}
-			else {
-				// DNS server
-				$serverInput = new htmlResponsiveInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
-				$return->add($serverInput);
+			$return->add(new htmlOutputText(_("DDNS is not activated. You can activate it in the DHCP settings (DDNS).")));
+		}
+		else {
+			// DNS server
+			$serverInput = new htmlResponsiveInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
+			$return->add($serverInput);
 
-				$zones = $this->getZoneNames();
-				$zone = '';
-				$revzone = '';
-				if (isset($zones[0])) {
-					$zone = $zones[0];
-				}
-				if (isset($zones[1])) {
-					$revzone = $zones[1];
-				}
-				// zone name
-				$zoneInput = new htmlResponsiveInputField(_('Zone name'), 'zone', $zone, 'zone');
-				$return->add($zoneInput);
-				// reverse zone name
-				$revZoneInput = new htmlResponsiveInputField(_('Reverse zone name'), 'zone_reverse', $revzone, 'zone_reverse');
-				$return->add($revZoneInput);
+			$zones = $this->getZoneNames();
+			$zone = '';
+			$revzone = '';
+			if (isset($zones[0])) {
+				$zone = $zones[0];
 			}
+			if (isset($zones[1])) {
+				$revzone = $zones[1];
+			}
+			// zone name
+			$zoneInput = new htmlResponsiveInputField(_('Zone name'), 'zone', $zone, 'zone');
+			$return->add($zoneInput);
+			// reverse zone name
+			$revZoneInput = new htmlResponsiveInputField(_('Reverse zone name'), 'zone_reverse', $revzone, 'zone_reverse');
+			$return->add($revZoneInput);
 		}
 
 		return $return;
@@ -424,7 +418,7 @@ class ddns extends baseModule {
 	 */
 	private function getDNSServer() {
 		if (isset($this->attributes['dhcpStatements'][0])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'zone ')) {
 					if (!str_contains($this->attributes['dhcpStatements'][$i], ' primary ')) {
 						continue;
@@ -449,7 +443,7 @@ class ddns extends baseModule {
 		$zone = '';
 		$revZone = '';
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'zone ')) {
 					$parts = explode(" ", substr($this->attributes['dhcpStatements'][$i], 5));
 					$value = substr(array_shift($parts), 0, -1);
@@ -475,7 +469,7 @@ class ddns extends baseModule {
 	private function isDynDNSActivated() {
 		$return = false;
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if ($this->attributes['dhcpStatements'][$i] == 'ddns-update-style interim') {
 					$return = true;
 					break;
@@ -492,19 +486,14 @@ class ddns extends baseModule {
 	 */
 	private function setDynDNSActivated($activated) {
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'ddns-update-style ')) {
 					unset($this->attributes['dhcpStatements'][$i]);
 					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 				}
 			}
 		}
-		if ($activated) {
-			$this->attributes['dhcpStatements'][] = 'ddns-update-style interim';
-		}
-		else {
-			$this->attributes['dhcpStatements'][] = 'ddns-update-style none';
-		}
+		$this->attributes['dhcpStatements'][] = $activated ? 'ddns-update-style interim' : 'ddns-update-style none';
 	}
 
 	/**
@@ -515,7 +504,7 @@ class ddns extends baseModule {
 	private function addFixIPs() {
 		$return = false;
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if ($this->attributes['dhcpStatements'][$i] == 'update-static-leases true') {
 					$return = true;
 					break;
@@ -532,7 +521,7 @@ class ddns extends baseModule {
 	 */
 	private function setFixIPs($add) {
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'update-static-leases ')) {
 					unset($this->attributes['dhcpStatements'][$i]);
 					$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
@@ -552,7 +541,7 @@ class ddns extends baseModule {
 	private function isIgnoreClientUpdates() {
 		$return = false;
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (preg_replace('/[ ]+/', ' ', $this->attributes['dhcpStatements'][$i]) == 'ignore client-updates') {
 					$return = true;
 					break;
@@ -569,7 +558,7 @@ class ddns extends baseModule {
 	 */
 	private function setIgnoreClientUpdates($ignore) {
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (preg_replace('/[ ]+/', ' ', $this->attributes['dhcpStatements'][$i]) == 'ignore client-updates') {
 					if ($ignore) {
 						return;  // option already set, no change
@@ -592,7 +581,7 @@ class ddns extends baseModule {
 	private function getUpdateKey() {
 		$return = null;
 		if (is_array($this->attributes['dhcpStatements'])) {
-			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'include ')) {
 					$return = substr($this->attributes['dhcpStatements'][$i], 9, strlen($this->attributes['dhcpStatements'][$i]) - 10);
 					break;
@@ -611,7 +600,7 @@ class ddns extends baseModule {
 		if (!is_array($this->attributes['dhcpStatements'])) {
 			$this->attributes['dhcpStatements'] = [];
 		}
-		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+		for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 			if (str_starts_with($this->attributes['dhcpStatements'][$i], 'include ')) {
 				unset($this->attributes['dhcpStatements'][$i]);
 				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
@@ -645,7 +634,7 @@ class ddns extends baseModule {
 		if (!$this->check_if_ddns_is_enable()) {
 			return $messages;
 		}
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// principal name
 			if (!check_ip($rawAccounts[$i][$ids['ddns_DNSserver']])) {
 				$error = $this->messages['ip'][1];
