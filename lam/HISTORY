@@ -13,6 +13,7 @@
   -> Docker: added option to run cron jobs (346)
   -> Windows: use msDS-UserPasswordExpiryTimeComputed for password expiration job (387)
  - Fixed bugs:
+  -> Security fix: Set arbitrary config values due to improper input validation for config values (GHSA-6cp9-j5r7-xhcc, CVE-2024-52792)
   -> Windows: show more than 1000 LDAP entries when paged results is activated in server profile
   -> WebAuthn: support DNs larger than 64 bytes (358)
   -> Wildcard replacements do not work without switching to the module tab (379)
