@@ -24,7 +24,7 @@ use user;
 
 */
 
-require_once 'lam/lib/types.inc';
+require_once __DIR__ . '/../../lib/types.inc';
 
 /**
  * Checks code in types.inc.

@@ -23,8 +23,8 @@ use PHPUnit\Framework\TestCase;
 
 $_SERVER ['REMOTE_ADDR'] = '127.0.0.1';
 
-include_once 'lam/tests/utils/configuration.inc';
-include_once 'lam/lib/security.inc';
+include_once __DIR__ . '/../../tests/utils/configuration.inc';
+include_once __DIR__ . '/../../lib/security.inc';
 
 /**
  * Checks password checking functions.

@@ -21,9 +21,9 @@ use PHPUnit\Framework\TestCase;
 
  */
 
-include_once 'lam/lib/baseModule.inc';
-include_once 'lam/lib/modules.inc';
-include_once 'lam/lib/modules/sambaSamAccount.inc';
+include_once __DIR__ . '/../../../lib/baseModule.inc';
+include_once __DIR__ . '/../../../lib/modules.inc';
+include_once __DIR__ . '/../../../lib/modules/sambaSamAccount.inc';
 
 /**
  * Checks the shadow expire job.

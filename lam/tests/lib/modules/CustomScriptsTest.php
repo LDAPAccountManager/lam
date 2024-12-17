@@ -27,11 +27,11 @@ use PHPUnit\Framework\TestCase;
 
  */
 
-if (is_readable('lam/lib/modules/customScripts.inc')) {
+if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 
-	include_once 'lam/lib/baseModule.inc';
-	include_once 'lam/lib/modules.inc';
-	include_once 'lam/lib/modules/customScripts.inc';
+	include_once __DIR__ . '/../../../lib/baseModule.inc';
+	include_once __DIR__ . '/../../../lib/modules.inc';
+	include_once __DIR__ . '/../../../lib/modules/customScripts.inc';
 
 	/**
 	 * Checks the custom scripts.
@@ -152,7 +152,7 @@ if (is_readable('lam/lib/modules/customScripts.inc')) {
 			$this->assertNull($script->getLabel());
 			$this->assertEquals(_('Pre-create'), $script->getTypeLabel());
 
-			$this->assertEquals(4, sizeof($parser->getManualOptions()));
+			$this->assertEquals(4, count($parser->getManualOptions()));
 			$this->assertEquals('select', $parser->getManualOptions()[0]['type']);
 			$this->assertEquals('select', $parser->getManualOptions()[1]['type']);
 			$this->assertEquals('LAM_SELECTION_ENV', $parser->getManualOptions()[0]['name']);

@@ -5,11 +5,11 @@ use PHPUnit\Framework\TestCase;
  Copyright (C) 2018 - 2019  Roland Gruber
  */
 
-if (is_readable('lam/lib/modules/bindDLZ.inc')) {
+if (is_readable(__DIR__ . '/../../../lib/modules/bindDLZ.inc')) {
 
-	include_once 'lam/lib/baseModule.inc';
-	include_once 'lam/lib/modules.inc';
-	include_once 'lam/lib/modules/bindDLZ.inc';
+	include_once __DIR__ . '/../../../lib/baseModule.inc';
+	include_once __DIR__ . '/../../../lib/modules.inc';
+	include_once __DIR__ . '/../../../lib/modules/bindDLZ.inc';
 
 	/**
 	 * Checks the bindDLZ module.

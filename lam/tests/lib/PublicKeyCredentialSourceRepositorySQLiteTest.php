@@ -109,10 +109,10 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		$this->assertNotNull($this->database->findOneByCredentialId("id1"));
 		$this->assertNotNull($this->database->findOneByCredentialId("id2"));
 		$this->assertNotNull($this->database->findOneByCredentialId("id3"));
-		$this->assertEquals(2, sizeof(
+		$this->assertEquals(2, count(
 			$this->database->findAllForUserDn("cn=user1")
 		));
-		$this->assertEquals(1, sizeof(
+		$this->assertEquals(1, count(
 			$this->database->findAllForUserDn("cn=user2")
 		));
 	}

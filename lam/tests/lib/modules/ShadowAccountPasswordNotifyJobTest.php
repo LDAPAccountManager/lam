@@ -23,14 +23,14 @@ use PHPUnit\Framework\TestCase;
 
  */
 
-include_once 'lam/lib/baseModule.inc';
-include_once 'lam/lib/modules.inc';
-if (is_readable('lam/lib/passwordExpirationJob.inc')) {
-	include_once 'lam/lib/passwordExpirationJob.inc';
+include_once __DIR__ . '/../../../lib/baseModule.inc';
+include_once __DIR__ . '/../../../lib/modules.inc';
+if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
+	include_once __DIR__ . '/../../../lib/passwordExpirationJob.inc';
 }
-include_once 'lam/lib/modules/shadowAccount.inc';
+include_once __DIR__ . '/../../../lib/modules/shadowAccount.inc';
 
-if (is_readable('lam/lib/passwordExpirationJob.inc')) {
+if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 
 	/**
 	 * Checks the shadow expire job.

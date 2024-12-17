@@ -23,12 +23,12 @@ use PHPUnit\Framework\TestCase;
 
  */
 
-if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
+if (is_readable(__DIR__ . '/../../../lib/modules/ppolicyUser.inc')) {
 
-	include_once 'lam/lib/baseModule.inc';
-	include_once 'lam/lib/modules.inc';
-	include_once 'lam/lib/passwordExpirationJob.inc';
-	include_once 'lam/lib/modules/ppolicyUser.inc';
+	include_once __DIR__ . '/../../../lib/baseModule.inc';
+	include_once __DIR__ . '/../../../lib/modules.inc';
+	include_once __DIR__ . '/../../../lib/passwordExpirationJob.inc';
+	include_once __DIR__ . '/../../../lib/modules/ppolicyUser.inc';
 
 	/**
 	 * Checks the ppolicy expire job.
