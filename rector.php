@@ -5,6 +5,7 @@ use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
@@ -41,6 +42,8 @@ return RectorConfig::configure()
 		DisallowedEmptyRuleFixerRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		InlineArrayReturnAssignRector::class,
+		// TODO private method check is unreliable, recheck with newer rector version
+		RemoveUnusedPrivateMethodRector::class
 	])
 	->withFileExtensions([
 		'php',
