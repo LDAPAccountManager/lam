@@ -311,7 +311,7 @@ class ldapPublicKey extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if ($this->hasObjectClass() && !in_array($this->getObjectClass(), $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = $this->getObjectClass();
@@ -330,7 +330,7 @@ class ldapPublicKey extends baseModule {
 		$return = [];
 		if (!empty($this->attributes[$this->getAttributeName()])) {
 			$pdfTable = new PDFTable(_('SSH public keys'));
-			for ($i = 0; $i < sizeof($this->attributes[$this->getAttributeName()]); $i++) {
+			for ($i = 0; $i < count($this->attributes[$this->getAttributeName()]); $i++) {
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($this->attributes[$this->getAttributeName()][$i]);
 				$pdfTable->rows[] = $pdfRow;
@@ -385,8 +385,8 @@ class ldapPublicKey extends baseModule {
 	private function getSelfServiceKeys(): htmlResponsiveRow {
 		$keys = $_SESSION[self::SESS_KEY_LIST];
 		$content = new htmlResponsiveRow();
-		if (sizeof($keys) > 0) {
-			for ($i = 0; $i < sizeof($keys); $i++) {
+		if (count($keys) > 0) {
+			for ($i = 0; $i < count($keys); $i++) {
 				$group = new htmlGroup();
 				$keyInput = new htmlInputField('sshPublicKey_' . $i, $keys[$i]);
 				$keyInput->setFieldMaxLength(16384);
@@ -395,10 +395,10 @@ class ldapPublicKey extends baseModule {
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('ldapPublicKeyDeleteKey(' . $i . ');return false;');
 				$group->addElement($delLink);
-				if ($i == (sizeof($keys) - 1)) {
+				if ($i === (count($keys) - 1)) {
 					$addLink = new htmlLink('', '#', '../../graphics/add.svg');
 					$addLink->setTitle(_('Add'));
-					$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
+					$addLink->setOnClick('ldapPublicKeyAddKey(' . count($keys) . ');return false;');
 					$group->addElement($addLink);
 				}
 				$content->add($group, 12, 12, 12, 'nowrap');
@@ -407,7 +407,7 @@ class ldapPublicKey extends baseModule {
 		else {
 			$addLink = new htmlLink('', '#', '../../graphics/add.svg');
 			$addLink->setTitle(_('Add'));
-			$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
+			$addLink->setOnClick('ldapPublicKeyAddKey(' . count($keys) . ');return false;');
 			$content->add($addLink);
 		}
 		// upload button
@@ -426,7 +426,7 @@ class ldapPublicKey extends baseModule {
 	 *
 	 * @return htmlJavaScript JS block
 	 */
-	private static function getSelfServiceKeysJSBlock() {
+	private function getSelfServiceKeysJSBlock() {
 		$content = '
 			function ldapPublicKeyDeleteKey(id) {
 				var actionJSON = {
@@ -558,9 +558,9 @@ class ldapPublicKey extends baseModule {
 				$newKeys[] = $_POST['sshPublicKey_' . $counter];
 				$counter++;
 			}
-			$count = sizeof($newKeys);
+			$count = count($newKeys);
 			for ($i = 0; $i < $count; $i++) {
-				if (trim($newKeys[$i]) == '') {
+				if (trim($newKeys[$i]) === '') {
 					unset($newKeys[$i]);
 				}
 			}
@@ -570,11 +570,11 @@ class ldapPublicKey extends baseModule {
 				$oldKeys = $attributes[$this->getAttributeName()];
 			}
 			$update = false;
-			if (sizeof($newKeys) != sizeof($oldKeys)) {
+			if (count($newKeys) !== count($oldKeys)) {
 				$update = true;
 			}
 			else {
-				for ($i = 0; $i < sizeof($newKeys); $i++) {
+				for ($i = 0; $i < count($newKeys); $i++) {
 					if (!in_array($newKeys[$i], $oldKeys)) {
 						$update = true;
 						break;
@@ -582,10 +582,10 @@ class ldapPublicKey extends baseModule {
 				}
 			}
 			if ($update) {
-				if (sizeof($oldKeys) == 0) {
+				if (count($oldKeys) == 0) {
 					$return['add'][$this->getAttributeName()] = $newKeys;
 				}
-				elseif (sizeof($newKeys) == 0) {
+				elseif (count($newKeys) == 0) {
 					$return['del'][$this->getAttributeName()] = $newKeys;
 				}
 				else {
