@@ -179,10 +179,10 @@ class inetLocalMailRecipient extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['inetLocalMailRecipient_addExt'][0]) && ($profile['inetLocalMailRecipient_addExt'][0] == "true")) {
-			if (!in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'inetLocalMailRecipient';
-			}
+		if (isset($profile['inetLocalMailRecipient_addExt'][0])
+			&& ($profile['inetLocalMailRecipient_addExt'][0] == "true")
+			&& !in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'inetLocalMailRecipient';
 		}
 	}
 
@@ -233,7 +233,7 @@ class inetLocalMailRecipient extends baseModule {
 		}
 		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['inetLocalMailRecipient'], $this->attributes['objectClass']);
-			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
+			for ($i = 0; $i < count($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
@@ -302,7 +302,7 @@ class inetLocalMailRecipient extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("inetLocalMailRecipient", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "inetLocalMailRecipient";

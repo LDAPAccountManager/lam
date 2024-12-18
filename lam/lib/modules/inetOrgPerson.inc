@@ -851,12 +851,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (!isset($this->attributes['sn'][0]) || ($this->attributes['sn'][0] == '')) {
 			return false;
 		}
-		if (!$this->isUnixActive()) {
-			if (($this->getAccountContainer()->rdn == 'uid') && !isset($this->attributes['uid'][0])) {
-				return false;
-			}
-		}
-		return true;
+		return $this->isUnixActive()
+			|| ($this->getAccountContainer()->rdn !== 'uid')
+			|| isset($this->attributes['uid'][0]);
 	}
 
 	/**
@@ -907,7 +904,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			unset($return[$this->getAccountContainer()->dn_orig]['remove']['facsimileTelephoneNumber']);
 		}
 		if (isset($return[$this->getAccountContainer()->dn_orig]['add']['facsimileTelephoneNumber'])
-			&& isset($this->orig['facsimileTelephoneNumber']) && (sizeof($this->orig['facsimileTelephoneNumber']) > 0)) {
+			&& isset($this->orig['facsimileTelephoneNumber']) && (count($this->orig['facsimileTelephoneNumber']) > 0)) {
 			$return[$this->getAccountContainer()->dn_orig]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
 			unset($return[$this->getAccountContainer()->dn_orig]['add']['facsimileTelephoneNumber']);
 		}
@@ -1024,7 +1021,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		// first name
 		if (!$this->isAdminReadOnly('givenName')) {
 			$this->attributes['givenName'][0] = trim($_POST['givenName']);
-			if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) {
+			if (($this->attributes['givenName'][0] !== '') && !get_preg($this->attributes['givenName'][0], 'realname')) {
 				$errors[] = $this->messages['givenName'][0];
 			}
 		}
@@ -1035,12 +1032,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$this->processMultiValueInputTextField('mail', $errors, 'email');
 			if (!empty($this->attributes['mail'])) {
 				foreach ($this->attributes['mail'] as &$mail) {
-					if (empty($this->orig['mail']) || !in_array($mail, $this->orig['mail'])) {
-						if ($this->emailExists($mail)) {
-							$msg = $this->messages['mail'][1];
-							$msg[] = [htmlspecialchars($mail)];
-							$errors[] = $msg;
-						}
+					if ((empty($this->orig['mail']) || !in_array($mail, $this->orig['mail'])) && $this->emailExists($mail)) {
+						$msg = $this->messages['mail'][1];
+						$msg[] = [htmlspecialchars($mail)];
+						$errors[] = $msg;
 					}
 				}
 			}
@@ -1079,7 +1074,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				if (!get_preg($this->attributes['postalAddress'][$addressCounter], 'postalAddress')) {
 					$errors[] = $this->messages['postalAddress'][0];
 				}
-				if ($this->attributes['postalAddress'][$addressCounter] == '') {
+				if ($this->attributes['postalAddress'][$addressCounter] === '') {
 					unset($this->attributes['postalAddress'][$addressCounter]);
 				}
 				$addressCounter++;
@@ -1099,7 +1094,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				if (!get_preg($this->attributes['registeredAddress'][$addressCounter], 'postalAddress')) {
 					$errors[] = $this->messages['registeredAddress'][0];
 				}
-				if ($this->attributes['registeredAddress'][$addressCounter] == '') {
+				if ($this->attributes['registeredAddress'][$addressCounter] === '') {
 					unset($this->attributes['registeredAddress'][$addressCounter]);
 				}
 				$addressCounter++;
@@ -1168,12 +1163,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (!$this->isAdminReadOnly('cn')) {
 				$this->processMultiValueInputTextField('cn', $errors, 'cn');
 				if (empty($this->attributes['cn'][0])) {
-					if ($_POST['givenName'] != '') {
-						$this->attributes['cn'][0] = $_POST['givenName'] . " " . $_POST['sn'];
-					}
-					else {
-						$this->attributes['cn'][0] = $_POST['sn'];
-					}
+					$this->attributes['cn'][0] = ($_POST['givenName'] != '') ? $_POST['givenName'] . " " . $_POST['sn'] : $_POST['sn'];
 				}
 			}
 			if (!$this->isAdminReadOnly('userPassword')) {
@@ -1330,22 +1320,22 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
 			$postalAddresses = [];
 			if (isset($this->attributes['postalAddress'][0])) {
-				for ($i = 0; $i < sizeof($this->attributes['postalAddress']); $i++) {
+				for ($i = 0; $i < count($this->attributes['postalAddress']); $i++) {
 					$postalAddresses[] = implode("\r\n", explode('$', $this->attributes['postalAddress'][$i]));
 				}
 			}
-			if (sizeof($postalAddresses) == 0) {
+			if (count($postalAddresses) == 0) {
 				$postalAddresses[] = '';
 			}
 			$addressLabel = new htmlOutputText(_('Postal address'));
 			$addressLabel->alignment = htmlElement::ALIGN_TOP;
 			$fieldContainer->addLabel($addressLabel);
 			$addressContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($postalAddresses); $i++) {
+			for ($i = 0; $i < count($postalAddresses); $i++) {
 				if ($this->isAdminReadOnly('postalAddress')) {
 					$val = str_replace("\r\n", '<br>', htmlspecialchars($postalAddresses[$i]));
 					$addressContainer->addElement(new htmlOutputText($val, false));
-					if ($i < (sizeof($postalAddresses) - 1)) {
+					if ($i < (count($postalAddresses) - 1)) {
 						$addressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 				}
@@ -1353,7 +1343,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$postalAddressTextarea = new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3);
 					$postalAddressTextarea->setAccessibilityLabel(_('Postal address'));
 					$addressContainer->addElement($postalAddressTextarea);
-					if ($i < (sizeof($postalAddresses) - 1)) {
+					if ($i < (count($postalAddresses) - 1)) {
 						$addressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 					else {
@@ -1371,22 +1361,22 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
 			$registeredAddresses = [];
 			if (isset($this->attributes['registeredAddress'][0])) {
-				for ($i = 0; $i < sizeof($this->attributes['registeredAddress']); $i++) {
+				for ($i = 0; $i < count($this->attributes['registeredAddress']); $i++) {
 					$registeredAddresses[] = implode("\r\n", explode('$', $this->attributes['registeredAddress'][$i]));
 				}
 			}
-			if (sizeof($registeredAddresses) == 0) {
+			if (count($registeredAddresses) == 0) {
 				$registeredAddresses[] = '';
 			}
 			$registeredAddressLabel = new htmlOutputText(_('Registered address'));
 			$registeredAddressLabel->alignment = htmlElement::ALIGN_TOP;
 			$fieldContainer->addLabel($registeredAddressLabel);
 			$registeredAddressContainer = new htmlGroup();
-			for ($i = 0; $i < sizeof($registeredAddresses); $i++) {
+			for ($i = 0; $i < count($registeredAddresses); $i++) {
 				if ($this->isAdminReadOnly('registeredAddress')) {
 					$val = str_replace("\r\n", '<br>', htmlspecialchars($registeredAddresses[$i]));
 					$registeredAddressContainer->addElement(new htmlOutputText($val, false));
-					if ($i < (sizeof($registeredAddresses) - 1)) {
+					if ($i < (count($registeredAddresses) - 1)) {
 						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 				}
@@ -1394,7 +1384,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$registeredAddressTextarea = new htmlInputTextarea('registeredAddress' . $i, $registeredAddresses[$i], 30, 3);
 					$registeredAddressTextarea->setAccessibilityLabel(_('Registered address'));
 					$registeredAddressContainer->addElement($registeredAddressTextarea);
-					if ($i < (sizeof($registeredAddresses) - 1)) {
+					if ($i < (count($registeredAddresses) - 1)) {
 						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 					else {
@@ -1569,7 +1559,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$userCertificateGroup = new htmlGroup();
 			$userCertificateCount = 0;
 			if (isset($this->attributes['userCertificate;binary'])) {
-				$userCertificateCount = sizeof($this->attributes['userCertificate;binary']);
+				$userCertificateCount = count($this->attributes['userCertificate;binary']);
 			}
 			$userCertificateGroup->addElement(new htmlOutputText($userCertificateCount));
 			$userCertificateGroup->addElement(new htmlSpacer('10px', null));
@@ -1591,14 +1581,14 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			}
 			if (isset($this->attributes['manager'][0])) {
 				$managerList = [];
-				for ($i = 0; $i < sizeof($this->attributes['manager']); $i++) {
+				for ($i = 0; $i < count($this->attributes['manager']); $i++) {
 					$managerList[] = $this->attributes['manager'][$i];
 				}
 				usort($managerList, 'compareDN');
 				$managers = new htmlTable();
 				$managers->alignment = htmlElement::ALIGN_RIGHT;
 				$managers->colspan = 3;
-				for ($i = 0; $i < sizeof($managerList); $i++) {
+				for ($i = 0; $i < count($managerList); $i++) {
 					$manager = new htmlOutputText(getAbstractDN($managerList[$i]));
 					$manager->alignment = htmlElement::ALIGN_RIGHT;
 					$managers->addElement($manager, true);
@@ -1821,19 +1811,19 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$options = [];
 			$filter = get_ldap_filter('user');
 			$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', ['dn'], ['user']);
-			for ($i = 0; $i < sizeof($entries); $i++) {
+			for ($i = 0; $i < count($entries); $i++) {
 				$entries[$i] = $entries[$i]['dn'];
 			}
 			// sort by DN
 			usort($entries, 'compareDN');
-			for ($i = 0; $i < sizeof($entries); $i++) {
+			for ($i = 0; $i < count($entries); $i++) {
 				if (!isset($this->attributes['manager']) || !in_array($entries[$i], $this->attributes['manager'])) {
 					$options[getAbstractDN($entries[$i])] = $entries[$i];
 				}
 			}
 			$size = 20;
-			if (sizeof($options) < 20) {
-				$size = sizeof($options);
+			if (count($options) < 20) {
+				$size = count($options);
 			}
 			$managerSelect = new htmlSelect('manager', $options, [], $size);
 			$managerSelect->setHasDescriptiveElements(true);
@@ -1864,14 +1854,14 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		// sort by DN
 		usort($managerTemp, 'compareDN');
 		$managers = [];
-		for ($i = 0; $i < sizeof($managerTemp); $i++) {
+		for ($i = 0; $i < count($managerTemp); $i++) {
 			$managers[getAbstractDN($managerTemp[$i])] = $managerTemp[$i];
 		}
 		$size = 20;
-		if (sizeof($this->attributes['manager']) < 20) {
-			$size = sizeof($this->attributes['manager']);
+		if (count($this->attributes['manager']) < 20) {
+			$size = count($this->attributes['manager']);
 		}
-		if (sizeof($managers) > 0) {
+		if ($managers !== []) {
 			$managerSelect = new htmlSelect('manager', $managers, [], $size);
 			$managerSelect->setHasDescriptiveElements(true);
 			$managerSelect->setMultiSelect(true);
@@ -1904,7 +1894,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		if (isset($_POST['form_subpage_' . static::class . '_manager_remove']) && isset($_POST['manager'])) {
 			$managers = array_flip($this->attributes['manager']);
-			for ($i = 0; $i < sizeof($_POST['manager']); $i++) {
+			for ($i = 0; $i < count($_POST['manager']); $i++) {
 				if (isset($managers[$_POST['manager'][$i]])) {
 					unset($managers[$_POST['manager'][$i]]);
 				}
@@ -1912,7 +1902,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$this->attributes['manager'] = array_values(array_flip($managers));
 		}
 		elseif (isset($_POST['form_subpage_' . static::class . '_manager_addManagers']) && isset($_POST['manager'])) {
-			for ($i = 0; $i < sizeof($_POST['manager']); $i++) {
+			for ($i = 0; $i < count($_POST['manager']); $i++) {
 				$this->attributes['manager'][] = $_POST['manager'][$i];
 				$this->attributes['manager'] = array_unique($this->attributes['manager']);
 			}
@@ -1931,7 +1921,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$table = new htmlTable();
 			$table->colspan = 10;
 			$temFilesManager = new LamTemporaryFilesManager();
-			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
+			for ($i = 0; $i < count($this->attributes['userCertificate;binary']); $i++) {
 				$filename = $temFilesManager->registerTemporaryFile('.der');
 				$out = $temFilesManager->openTemporaryFileForWrite($filename);
 				fwrite($out, $this->attributes['userCertificate;binary'][$i]);
@@ -1954,7 +1944,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					if (isset($pemData['name'])) {
 						$data[] = $pemData['name'];
 					}
-					if (sizeof($data) > 0) {
+					if ($data !== []) {
 						$table->addElement(new htmlOutputText(implode(': ', $data)));
 					}
 				}
@@ -1992,7 +1982,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$pemData = explode("\n", $pemData);
 					array_shift($pemData);
 					$last = array_pop($pemData);
-					while (($last != '-----END CERTIFICATE-----') && sizeof($pemData) > 2) {
+					while (($last != '-----END CERTIFICATE-----') && (count($pemData) > 2)) {
 						$last = array_pop($pemData);
 					}
 					$pemData = implode('', $pemData);
@@ -2005,7 +1995,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			}
 		}
 		elseif (isset($this->attributes['userCertificate;binary'])) {
-			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
+			for ($i = 0; $i < count($this->attributes['userCertificate;binary']); $i++) {
 				if (isset($_POST['form_subpage_' . static::class . '_userCertificate_delete_' . $i])) {
 					unset($this->attributes['userCertificate;binary'][$i]);
 					$this->attributes['userCertificate;binary'] = array_values($this->attributes['userCertificate;binary']);
@@ -2031,10 +2021,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$fields['cn'] = _('Common name');
 			$fields['userPassword'] = _('Password');
 		}
-		if (!$this->isSamba3Active($modules)) {
-			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidedisplayName', true)) {
-				$fields['displayName'] = _('Display name');
-			}
+		if (!$this->isSamba3Active($modules)
+			&& !$this->isBooleanConfigOptionSet('inetOrgPerson_hidedisplayName', true)) {
+			$fields['displayName'] = _('Display name');
 		}
 		return $fields;
 	}
@@ -2132,10 +2121,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
 		}
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
-		if (isset($this->clearTextPassword)) {
+		if ($this->clearTextPassword !== null) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->clearTextPassword);
 		}
-		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
+		elseif (isset($this->attributes['INFO.userPasswordClearText'])) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->attributes['INFO.userPasswordClearText']);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto')) {
@@ -2221,9 +2210,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
 			$profileElements[] = new htmlResponsiveInputField(_('Business category'), 'inetOrgPerson_businessCategory', null, 'businessCategory');
 		}
-		if (sizeof($profileElements) > 0) {
+		if ($profileElements !== []) {
 			$profileContainer = new htmlResponsiveRow();
-			for ($i = 0; $i < sizeof($profileElements); $i++) {
+			for ($i = 0; $i < count($profileElements); $i++) {
 				$profileContainer->add($profileElements[$i]);
 			}
 			return $profileContainer;
@@ -2245,13 +2234,13 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (!$this->isUnixActive() && !empty($profile['inetOrgPerson_cn'][0])) {
 			$this->attributes['cn'][0] = $profile['inetOrgPerson_cn'][0];
 		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			// departments
-			if (isset($profile['inetOrgPerson_departmentNumber'][0]) && $profile['inetOrgPerson_departmentNumber'][0] != '') {
-				$departments = explode(';', $profile['inetOrgPerson_departmentNumber'][0]);
-				// remove extra spaces and set attributes
-				$this->attributes['departmentNumber'] = array_map('trim', $departments);
-			}
+		// departments
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')
+			&& isset($profile['inetOrgPerson_departmentNumber'][0])
+			&& ($profile['inetOrgPerson_departmentNumber'][0] != '')) {
+			$departments = explode(';', $profile['inetOrgPerson_departmentNumber'][0]);
+			// remove extra spaces and set attributes
+			$this->attributes['departmentNumber'] = array_map('trim', $departments);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu') && isset($profile['inetOrgPerson_ou'][0])) {
 			$oList = preg_split('/;[ ]*/', $profile['inetOrgPerson_ou'][0]);
@@ -2306,7 +2295,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$messages = parent::check_profileOptions($options, $typeId);
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$telephoneNumberList = preg_split('/;[ ]*/', $options['inetOrgPerson_telephoneNumber'][0]);
-			for ($i = 0; $i < sizeof($telephoneNumberList); $i++) {
+			for ($i = 0; $i < count($telephoneNumberList); $i++) {
 				if (!get_preg($telephoneNumberList[$i], 'telephone')) {
 					$messages[] = $this->messages['telephoneNumber'][0];
 					break;
@@ -2315,7 +2304,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
 			$facsimileTelephoneNumberList = preg_split('/;[ ]*/', $options['inetOrgPerson_facsimileTelephoneNumber'][0]);
-			for ($i = 0; $i < sizeof($facsimileTelephoneNumberList); $i++) {
+			for ($i = 0; $i < count($facsimileTelephoneNumberList); $i++) {
 				if (!get_preg($facsimileTelephoneNumberList[$i], 'telephone')) {
 					$messages[] = $this->messages['facsimileTelephoneNumber'][0];
 					break;
@@ -2384,14 +2373,14 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$errors = [];
 		// get list of existing users
 		$existingUsers = searchLDAPByAttribute('uid', '*', 'inetOrgPerson', ['uid'], ['user']);
-		for ($e = 0; $e < sizeof($existingUsers); $e++) {
+		for ($e = 0; $e < count($existingUsers); $e++) {
 			$existingUsers[$e] = $existingUsers[$e]['uid'][0];
 		}
 		$existingMails = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', ['mail'], ['user']);
-		for ($e = 0; $e < sizeof($existingMails); $e++) {
+		for ($e = 0; $e < count($existingMails); $e++) {
 			$existingMails[$e] = $existingMails[$e]['mail'][0];
 		}
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
 			}
@@ -2415,22 +2404,22 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$errors[] = $errMsg;
 				}
 			}
-			if (!$this->isUnixActive($selectedModules)) {
-				// uid
-				if (isset($ids['inetOrgPerson_userName']) && !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
-					if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
-						$errMsg = $this->messages['uid'][3];
-						$errMsg[] = [$i];
-						$errors[] = $errMsg;
-					}
-					if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
-						$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
-					}
-					else {
-						$errMsg = $this->messages['uid'][1];
-						$errMsg[] = [$i];
-						$errors[] = $errMsg;
-					}
+			// uid
+			if (!$this->isUnixActive($selectedModules)
+				&& isset($ids['inetOrgPerson_userName'])
+				&& !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
+				if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
+					$errMsg = $this->messages['uid'][3];
+					$errMsg[] = [$i];
+					$errors[] = $errMsg;
+				}
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
+					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
+				}
+				else {
+					$errMsg = $this->messages['uid'][1];
+					$errMsg[] = [$i];
+					$errors[] = $errMsg;
 				}
 			}
 			// initials
@@ -2510,7 +2499,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (isset($ids['inetOrgPerson_email']) && ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "")) {
 				$mailList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_email']]));
 				$partialAccounts[$i]['mail'] = $mailList;
-				for ($x = 0; $x < sizeof($mailList); $x++) {
+				for ($x = 0; $x < count($mailList); $x++) {
 					if (!get_preg($mailList[$x], 'email')) {
 						$errMsg = $this->messages['email'][1];
 						$errMsg[] = [$i];
@@ -2524,12 +2513,12 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					}
 				}
 			}
-			if (isLAMProVersion() && isset($ids['inetOrgPerson_sendPasswordMail']) && ($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']] != "")) {
-				if (!in_array($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']], ['true', 'false'])) {
-					$errMsg = $this->messages['sendPasswordMail'][0];
-					$errMsg[] = [$i];
-					$errors[] = $errMsg;
-				}
+			if (isLAMProVersion() && isset($ids['inetOrgPerson_sendPasswordMail'])
+				&& ($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']] != "")
+				&& !in_array($rawAccounts[$i][$ids['inetOrgPerson_sendPasswordMail']], ['true', 'false'])) {
+				$errMsg = $this->messages['sendPasswordMail'][0];
+				$errMsg[] = [$i];
+				$errors[] = $errMsg;
 			}
 			// labeledURI
 			if (isset($ids['inetOrgPerson_labeledURI']) && ($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']] != "")) {
@@ -2547,13 +2536,11 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 						$errors[] = $errMsg;
 					}
 				}
+				elseif ($partialAccounts[$i]['givenName'] != "") {
+					$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
+				}
 				else {
-					if ($partialAccounts[$i]['givenName'] != "") {
-						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
-					}
-					else {
-						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
-					}
+					$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
 				}
 				// password
 				$pwd_enabled = true;
@@ -2583,18 +2570,16 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
 					$partialAccounts[$i]['userpassword'] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
-				// set normal password
-				else {
-					if (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
-						$partialAccounts[$i]['userpassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
-						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']]; // for custom scripts etc.
-					}
-					elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
-						$errMsg = $this->messages['userPassword'][0];
-						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-						$errMsg[] = [$i];
-						$errors[] = $errMsg;
-					}
+				elseif (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
+					$partialAccounts[$i]['userpassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']];
+					// for custom scripts etc.
+				}
+				elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
+					$errMsg = $this->messages['userPassword'][0];
+					$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+					$errMsg[] = [$i];
+					$errors[] = $errMsg;
 				}
 			}
 		}
@@ -2613,19 +2598,19 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$temp['counter'] = 0;
 		}
 		$errors = [];
-		$dataSize = sizeof($data);
+		$dataSize = count($data);
 		if (($temp['counter'] < $dataSize) && !in_array($temp['counter'], $failed)) {
 			// mail sending is LAM Pro only
 			if (isLAMProVersion()
 				&& isset($ids['inetOrgPerson_email'])
-				&& ($data[$temp['counter']][$ids['inetOrgPerson_email']] != "")) {
-				if (isset($ids['inetOrgPerson_sendPasswordMail']) && ($data[$temp['counter']][$ids['inetOrgPerson_sendPasswordMail']] == "true")
-					&& isset($accounts[$temp['counter']]['INFO.userPasswordClearText'])) {
-					$mailMessages = sendPasswordMail($accounts[$temp['counter']]['INFO.userPasswordClearText'], $accounts[$temp['counter']]);
-					for ($i = 0; $i < sizeof($mailMessages); $i++) {
-						if ($mailMessages[$i][0] == 'ERROR') {
-							$errors[] = $mailMessages[$i];
-						}
+				&& ($data[$temp['counter']][$ids['inetOrgPerson_email']] != "")
+				&& isset($ids['inetOrgPerson_sendPasswordMail'])
+				&& ($data[$temp['counter']][$ids['inetOrgPerson_sendPasswordMail']] == "true")
+				&& isset($accounts[$temp['counter']]['INFO.userPasswordClearText'])) {
+				$mailMessages = sendPasswordMail($accounts[$temp['counter']]['INFO.userPasswordClearText'], $accounts[$temp['counter']]);
+				for ($i = 0; $i < count($mailMessages); $i++) {
+					if ($mailMessages[$i][0] == 'ERROR') {
+						$errors[] = $mailMessages[$i];
 					}
 				}
 			}
@@ -2646,19 +2631,20 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				}
 			}
 			// set password via exop
-			if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
-				if (isset($ids['inetOrgPerson_userPassword']) && !empty($data[$temp['counter']][$ids['inetOrgPerson_userPassword']])) {
-					$dn = $accounts[$temp['counter']]['dn'];
-					$password = $data[$temp['counter']][$ids['inetOrgPerson_userPassword']];
-					$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
-					if (!$success) {
-						$errors[] = [
-							"ERROR",
-							_('Unable to set password'),
-							$dn . '<br>' . getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-							[$temp['groups'][$temp['counter']]]
-						];
-					}
+			if (!empty($this->moduleSettings['posixAccount_pwdHash'][0])
+				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')
+				&& isset($ids['inetOrgPerson_userPassword'])
+				&& !empty($data[$temp['counter']][$ids['inetOrgPerson_userPassword']])) {
+				$dn = $accounts[$temp['counter']]['dn'];
+				$password = $data[$temp['counter']][$ids['inetOrgPerson_userPassword']];
+				$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
+				if (!$success) {
+					$errors[] = [
+						"ERROR",
+						_('Unable to set password'),
+						$dn . '<br>' . getDefaultLDAPErrorString($_SESSION['ldap']->server()),
+						[$temp['groups'][$temp['counter']]]
+					];
 				}
 			}
 		}
@@ -2786,7 +2772,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (!empty($attributes['jpegPhoto'][0]) || !$readOnlyPhoto) {
 				$photoSub = new htmlDiv('inetOrgPersonPhotoUploadContent', $this->getSelfServicePhoto($readOnlyPhoto, false));
 				$photoRow = new htmlResponsiveRow();
-				$photoRow->add(self::getSelfServicePhotoJS($readOnlyPhoto), 0);
+				$photoRow->add($this->getSelfServicePhotoJS($readOnlyPhoto), 0);
 				$photoRow->addLabel(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))));
 				$photoRow->addField(new htmlDiv('jpegPhotoDiv', $photoSub));
 				$return['jpegPhoto'] = $photoRow;
@@ -2812,7 +2798,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$certTable = new htmlResponsiveRow();
 			$certTable->add(new htmlDiv('userCertificateDiv', $this->getSelfServiceUserCertificates()));
 			// JavaScript functions
-			$certTable->add(self::getSelfServiceUserCertificatesJSBlock());
+			$certTable->add($this->getSelfServiceUserCertificatesJSBlock());
 			// upload button
 			$uploadButtonGroup = new htmlGroup();
 			$uploadLabel = new htmlLabel('inetOrgPersonCertificate_file', _('Upload a file'));
@@ -2986,7 +2972,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * @param boolean $readOnly content is read-only
 	 * @return htmlJavaScript JS block
 	 */
-	private static function getSelfServicePhotoJS($readOnly) {
+	private function getSelfServicePhotoJS($readOnly) {
 		if ($readOnly) {
 			return new htmlGroup();
 		}
@@ -3067,10 +3053,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	private function getSelfServiceUserCertificates() {
 		$userCertificates = $_SESSION[self::SESS_CERTIFICATES_LIST];
 		$content = new htmlGroup();
-		if (sizeof($userCertificates) > 0) {
+		if (count($userCertificates) > 0) {
 			$certTable = new htmlResponsiveRow();
 			$tempFilesManager = new LamTemporaryFilesManager();
-			for ($i = 0; $i < sizeof($userCertificates); $i++) {
+			for ($i = 0; $i < count($userCertificates); $i++) {
 				$group = new htmlGroup();
 				$filename = $tempFilesManager->registerTemporaryFile('.der', 'userCertificate_');
 				$out = $tempFilesManager->openTemporaryFileForWrite($filename);
@@ -3087,7 +3073,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					if (isset($pemData['name'])) {
 						$data[] = $pemData['name'];
 					}
-					if (sizeof($data) > 0) {
+					if ($data !== []) {
 						$group->addElement(new htmlOutputText(implode(': ', $data)));
 						$group->addElement(new htmlSpacer('5px', null));
 					}
@@ -3114,7 +3100,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 *
 	 * @return htmlJavaScript JS block
 	 */
-	private static function getSelfServiceUserCertificatesJSBlock() {
+	private function getSelfServiceUserCertificatesJSBlock() {
 		$content = '
 			function inetOrgPersonDeleteCertificate(id) {
 				var actionJSON = {
@@ -3273,20 +3259,18 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 					$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
 					$data = $imageManipulator->getImageData();
-					$data = inetOrgPerson::resizeAndConvertImage($data, $moduleSettings);
+					$data = $this->resizeAndConvertImage($data, $moduleSettings);
 					if (!empty($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && ($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0] < (strlen($data) / 1024))) {
 						$msg = $this->messages['file'][3];
 						$msg[] = null;
 						$msg[] = htmlspecialchars($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]);
 						$return['messages'][] = $msg;
 					}
+					elseif (!empty($attributes['jpegPhoto'][0])) {
+						$return['mod']['jpegPhoto'][0] = $data;
+					}
 					else {
-						if (!empty($attributes['jpegPhoto'][0])) {
-							$return['mod']['jpegPhoto'][0] = $data;
-						}
-						else {
-							$return['add']['jpegPhoto'][0] = $data;
-						}
+						$return['add']['jpegPhoto'][0] = $data;
 					}
 				}
 				catch (Exception $e) {
@@ -3313,7 +3297,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$userCertificatesAttrName = 'userCertificate';
 			}
 			$attributeNames[] = $userCertificatesAttrName;
-			if (sizeof($userCertificates) > 0) {
+			if (count($userCertificates) > 0) {
 				$attributesNew[$userCertificatesAttrName] = $userCertificates;
 			}
 			elseif (isset($attributesNew[$userCertificatesAttrName])) {
@@ -3349,7 +3333,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$readOnlyFields, null, null, null, 'displayName');
 
 		// find differences
-		for ($i = 0; $i < sizeof($attributeNames); $i++) {
+		for ($i = 0; $i < count($attributeNames); $i++) {
 			$attrName = $attributeNames[$i];
 			if (isset($attributes[$attrName]) && !isset($attributesNew[$attrName])) {
 				$return['del'][$attrName] = $attributes[$attrName];
@@ -3359,7 +3343,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			}
 			else {
 				if (isset($attributes[$attrName])) {
-					for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
+					for ($a = 0; $a < count($attributes[$attrName]); $a++) {
 						if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
 							$return['mod'][$attrName] = $attributesNew[$attrName];
 							break;
@@ -3367,7 +3351,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					}
 				}
 				if (isset($attributesNew[$attrName])) {
-					for ($a = 0; $a < sizeof($attributesNew[$attrName]); $a++) {
+					for ($a = 0; $a < count($attributesNew[$attrName]); $a++) {
 						if (!in_array($attributesNew[$attrName][$a], $attributes[$attrName])) {
 							$return['mod'][$attrName] = $attributesNew[$attrName];
 							break;
@@ -3386,7 +3370,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * @param array $settings settings
 	 * @return array binary image data
 	 */
-	private static function resizeAndConvertImage($data, $settings) {
+	private function resizeAndConvertImage($data, $settings) {
 		include_once __DIR__ . '/../imageutils.inc';
 		$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 		// resize if maximum values specified
@@ -3442,7 +3426,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$pemData = explode("\n", $pemData);
 				array_shift($pemData);
 				$last = array_pop($pemData);
-				while (($last != '-----END CERTIFICATE-----') && sizeof($pemData) > 2) {
+				while (($last != '-----END CERTIFICATE-----') && count($pemData) > 2) {
 					$last = array_pop($pemData);
 				}
 				$pemData = implode('', $pemData);
@@ -3660,7 +3644,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$titles = [];
 		$employeeTypes = [];
 		$businessCategories = [];
-		if (sizeof($attrs) > 0) {
+		if ($attrs !== []) {
 			$result = searchLDAPByFilter('(objectClass=inetOrgPerson)', $attrs, [$this->get_scope()]);
 			foreach ($result as $attributes) {
 				if (isset($attributes['departmentnumber'])) {
@@ -3840,7 +3824,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			return $this->emailCheckCache[$mail];
 		}
 		$result = searchLDAPByAttribute('mail', $mail, 'inetOrgPerson', ['dn'], ['user']);
-		$this->emailCheckCache[$mail] = (sizeof($result) > 0);
+		$this->emailCheckCache[$mail] = (count($result) > 0);
 		return $this->emailCheckCache[$mail];
 	}
 
@@ -4171,7 +4155,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			return function(array $entry, string $attribute): ?htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
-					for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
+					for ($i = 0; $i < count($entry[$attribute]); $i++) {
 						if ($i > 0) {
 							$group->addElement(new htmlOutputText(", "));
 						}
