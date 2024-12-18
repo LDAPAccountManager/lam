@@ -1,11 +1,13 @@
 <?php
 
+use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
+use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
@@ -43,7 +45,11 @@ return RectorConfig::configure()
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		InlineArrayReturnAssignRector::class,
 		// TODO private method check is unreliable, recheck with newer rector version
-		RemoveUnusedPrivateMethodRector::class
+		RemoveUnusedPrivateMethodRector::class,
+		// TODO parent call check is unreliable, recheck with newer rector version
+		RemoveParentCallWithoutParentRector::class,
+		// TODO inherited properties check is unreliable, recheck with newer rector version
+		CompleteDynamicPropertiesRector::class
 	])
 	->withFileExtensions([
 		'php',
