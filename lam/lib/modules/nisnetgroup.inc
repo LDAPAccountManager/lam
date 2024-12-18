@@ -209,7 +209,7 @@ class nisnetgroup extends baseModule {
 		$subgroupsContainer = new htmlTable();
 		if (isset($this->attributes['memberNisNetgroup']) && is_array($this->attributes['memberNisNetgroup'])) {
 			$membergroups = $this->attributes['memberNisNetgroup'];
-			while (sizeof($membergroups) > 0) {
+			while ($membergroups !== []) {
 				$parts = array_splice($membergroups, 0, 8);
 				$subgroupsContainer->addElement(new htmlOutputText(implode(', ', $parts)), true);
 			}
@@ -228,8 +228,8 @@ class nisnetgroup extends baseModule {
 		$return->add($membersLabel);
 		$titles = [_('Host'), _('User'), _('Domain'), ''];
 		$data = [];
-		if (isset($this->attributes['nisNetgroupTriple']) && (sizeof($this->attributes['nisNetgroupTriple']) > 0)) {
-			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
+		if (isset($this->attributes['nisNetgroupTriple']) && (count($this->attributes['nisNetgroupTriple']) > 0)) {
+			for ($i = 0; $i < count($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
 				$triple = explode(',', $triple);
 				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'host') && ($_POST['position'] == strval($i))) {
@@ -449,7 +449,7 @@ class nisnetgroup extends baseModule {
 		$selectHost = true;
 		$postKeys = array_keys($_POST);
 		$position = 'New';
-		for ($i = 0; $i < sizeof($postKeys); $i++) {
+		for ($i = 0; $i < count($postKeys); $i++) {
 			if (str_starts_with($postKeys[$i], 'form_subpage_nisnetgroup_select_user')) {
 				$selectHost = false;
 				$position = substr($postKeys[$i], 36);
@@ -463,7 +463,7 @@ class nisnetgroup extends baseModule {
 		if ($selectHost) {
 			// load list with all hosts
 			$options = $this->getHostList();
-			$count = sizeof($options);
+			$count = count($options);
 			for ($i = 0; $i < $count; $i++) {
 				if (!get_preg($options[$i], 'DNSname')) {
 					unset($options[$i]);
@@ -524,7 +524,7 @@ class nisnetgroup extends baseModule {
 		$messages = [];
 		// get list of existing groups
 		$existingGroups = $this->getGroupList();
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('nisNetgroup', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'nisNetgroup';
@@ -537,7 +537,7 @@ class nisnetgroup extends baseModule {
 			if ($rawAccounts[$i][$ids['nisnetgroup_subgroups']] != "") {
 				$groups = explode(",", $rawAccounts[$i][$ids['nisnetgroup_subgroups']]);
 				$skipSubgroups = false;
-				for ($g = 0; $g < sizeof($groups); $g++) {
+				for ($g = 0; $g < count($groups); $g++) {
 					if (!in_array($groups[$g], $existingGroups)) {
 						$messages[] = ['ERROR', _('Unable to find group in LDAP.'), $groups[$g]];
 						$skipSubgroups = true;
@@ -559,7 +559,7 @@ class nisnetgroup extends baseModule {
 	 * @return boolean true, if settings are complete
 	 */
 	function module_complete() {
-		return (isset($this->attributes['cn']) && (sizeof($this->attributes['cn']) > 0));
+		return (isset($this->attributes['cn']) && (count($this->attributes['cn']) > 0));
 	}
 
 	/**
@@ -571,14 +571,14 @@ class nisnetgroup extends baseModule {
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'subgroups', _('Subgroups'), 'memberNisNetgroup');
-		if (sizeof($this->attributes['nisNetgroupTriple']) > 0) {
+		if (count($this->attributes['nisNetgroupTriple']) > 0) {
 			$pdfTable = new PDFTable(_('Members'));
 			$pdfRow = new PDFTableRow();
 			$pdfRow->cells[] = new PDFTableCell(_('Host'), '20%', null, true);
 			$pdfRow->cells[] = new PDFTableCell(_('User'), '20%', null, true);
 			$pdfRow->cells[] = new PDFTableCell(_('Domain'), '20%', null, true);
 			$pdfTable->rows[] = $pdfRow;
-			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
+			for ($i = 0; $i < count($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
 				$triple = explode(',', $triple);
 				$pdfRow = new PDFTableRow();
@@ -602,7 +602,7 @@ class nisnetgroup extends baseModule {
 			return $this->cachedGroupList;
 		}
 		$this->cachedGroupList = searchLDAPByAttribute('cn', '*', 'nisNetgroup', ['cn'], ['netgroup']);
-		for ($i = 0; $i < sizeof($this->cachedGroupList); $i++) {
+		for ($i = 0; $i < count($this->cachedGroupList); $i++) {
 			$this->cachedGroupList[$i] = $this->cachedGroupList[$i]['cn'][0];
 		}
 		return $this->cachedGroupList;
@@ -618,7 +618,7 @@ class nisnetgroup extends baseModule {
 			return $this->cachedUserList;
 		}
 		$this->cachedUserList = searchLDAPByAttribute('uid', '*', 'posixAccount', ['uid'], ['user']);
-		for ($i = 0; $i < sizeof($this->cachedUserList); $i++) {
+		for ($i = 0; $i < count($this->cachedUserList); $i++) {
 			$this->cachedUserList[$i] = $this->cachedUserList[$i]['uid'][0];
 		}
 		return $this->cachedUserList;

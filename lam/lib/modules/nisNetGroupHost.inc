@@ -48,7 +48,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['host']);
+		return $this->get_scope() === 'host';
 	}
 
 	/**
@@ -102,7 +102,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 		$return->addElement(new htmlOutputText(_('Group')));
 		$return->addElement(new htmlOutputText(_('User name')));
 		$return->addElement(new htmlOutputText(_('Domain name')), true);
-		for ($i = 0; $i < sizeof($this->groups); $i++) {
+		for ($i = 0; $i < count($this->groups); $i++) {
 			$group = $this->groups[$i];
 			$return->addElement(new htmlOutputText($group['name']));
 			$return->addElement(new htmlInputField('user_' . $i, $group['user']));
@@ -116,7 +116,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 		// new entry
 		$groupList = [];
 		$groupData = $this->findGroups();
-		if (sizeof($groupData) > 0) {
+		if (count($groupData) > 0) {
 			$filterGroup = new htmlGroup();
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
 			$filter = new htmlInputField('group_filter');
