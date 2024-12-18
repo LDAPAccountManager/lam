@@ -204,13 +204,13 @@ class fixed_ip extends baseModule {
 		// Only run it, when ranges already exists:
 		if (is_array($this->fixed_ip)) {
 			$ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
-			foreach ($this->fixed_ip as $id => $arr) {
-				if (!empty($this->fixed_ip[$id]['ip']) && !range::check_subnet_range($this->fixed_ip[$id]['ip'],
+			foreach ($this->fixed_ip as $id => $value) {
+				if (!empty($value['ip']) && !range::check_subnet_range($value['ip'],
 						$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
 						$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 					// Range anpassen:
-					$ex = explode(".", $this->fixed_ip[$id]['ip']);
-					$tmp = $this->fixed_ip[$id]['ip'];
+					$ex = explode(".", $value['ip']);
+					$tmp = $value['ip'];
 					$this->fixed_ip[$id]['ip'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
 					if ($tmp != $this->fixed_ip[$id]['ip']) {
 						$ip_edit = true;
@@ -230,7 +230,7 @@ class fixed_ip extends baseModule {
 		if (!$this->isRootNode()) {
 			$searchAttributes = ['cn', 'dhcphwaddress', 'dhcpstatements', 'dhcpcomments'];
 			$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', $searchAttributes);
-			for ($i = 0; $i < sizeof($entries); $i++) {
+			for ($i = 0; $i < count($entries); $i++) {
 				$dhcphwaddress = explode(" ", $entries[$i]['dhcphwaddress'][0]);
 				$dhcphwaddress = array_pop($dhcphwaddress);
 				$dhcpstatements = [];
@@ -273,7 +273,7 @@ class fixed_ip extends baseModule {
 		}
 		natcasesort($order);
 		$newVal = [];
-		foreach ($order as $index => $sortval) {
+		foreach (array_keys($order) as $index) {
 			$newVal[] = $this->fixed_ip[$index];
 		}
 		$this->fixed_ip = $newVal;
@@ -410,7 +410,7 @@ class fixed_ip extends baseModule {
 		$this->initCache();
 		// auto-completion for host names
 		$autoNames = [];
-		if (!empty($this->hostCache) && (sizeof($this->hostCache) < 200)) {
+		if (!empty($this->hostCache) && (count($this->hostCache) < 200)) {
 			foreach ($this->hostCache as $attrs) {
 				if (!empty($attrs['cn'][0])) {
 					$autoNames[] = $attrs['cn'][0];
@@ -429,21 +429,21 @@ class fixed_ip extends baseModule {
 		}
 		$pcs = [];
 		$messages = [];
-		foreach ($this->fixed_ip as $id => $arr) {
+		foreach ($this->fixed_ip as $id => $value) {
 			// pc name
 			$existsInDifferentDn = false;
 			if (!empty($_POST['pc_' . $id])) {
 				$existsInDifferentDn = $this->hostNameExists($_POST['pc_' . $id]);
 			}
 			if ($this->processed) {
-				if (strlen($this->fixed_ip[$id]['cn']) > 20) {
-					$messages[] = new htmlStatusMessage('ERROR', _("The PC name may not be longer than 20 characters."), htmlspecialchars($this->fixed_ip[$id]['cn']));
+				if (strlen($value['cn']) > 20) {
+					$messages[] = new htmlStatusMessage('ERROR', _("The PC name may not be longer than 20 characters."), htmlspecialchars($value['cn']));
 				}
-				elseif (strlen($this->fixed_ip[$id]['cn']) < 2) {
-					$messages[] = new htmlStatusMessage('ERROR', _("The PC name needs to be at least 2 characters long."), htmlspecialchars($this->fixed_ip[$id]['cn']));
+				elseif (strlen($value['cn']) < 2) {
+					$messages[] = new htmlStatusMessage('ERROR', _("The PC name needs to be at least 2 characters long."), htmlspecialchars($value['cn']));
 				}
-				elseif (in_array($this->fixed_ip[$id]['cn'], $pcs)) {
-					$messages[] = new htmlStatusMessage('ERROR', _("This PC name already exists."), htmlspecialchars($this->fixed_ip[$id]['cn']));
+				elseif (in_array($value['cn'], $pcs)) {
+					$messages[] = new htmlStatusMessage('ERROR', _("This PC name already exists."), htmlspecialchars($value['cn']));
 				}
 				elseif (isset($_POST['pc_' . $id]) && !preg_match("/^[A-Za-z0-9\\._-]*$/", $_POST['pc_' . $id])) {
 					$messages[] = new htmlStatusMessage('ERROR', _("The PC name may only contain A-Z, a-z and 0-9."), htmlspecialchars($_POST['pc_' . $id]));
@@ -452,42 +452,42 @@ class fixed_ip extends baseModule {
 					$messages[] = new htmlStatusMessage('ERROR', sprintf(_('This PC name already exists in %s. Use e.g. %s.'), $existsInDifferentDn[0], $existsInDifferentDn[1]));
 				}
 			}
-			$pcs[] = $this->fixed_ip[$id]['cn'];
+			$pcs[] = $value['cn'];
 
 			// MAC address
-			if ($this->processed && $this->check_mac($this->fixed_ip[$id]['mac'])) {
-				$messages[] = new htmlStatusMessage('ERROR', _("Invalid MAC address."), htmlspecialchars($this->fixed_ip[$id]['mac']));
+			if ($this->processed && $this->check_mac($value['mac'])) {
+				$messages[] = new htmlStatusMessage('ERROR', _("Invalid MAC address."), htmlspecialchars($value['mac']));
 			}
 
 			// description
-			if ($this->processed && !get_preg($this->fixed_ip[$id]['description'], 'ascii')) {
-				$messages[] = new htmlStatusMessage('ERROR', _("Invalid description."), htmlspecialchars($this->fixed_ip[$id]['description']));
+			if ($this->processed && !get_preg($value['description'], 'ascii')) {
+				$messages[] = new htmlStatusMessage('ERROR', _("Invalid description."), htmlspecialchars($value['description']));
 			}
 
 			// fixed ip
-			if ($this->processed && !empty($this->fixed_ip[$id]['ip'])) {
-				if (!check_ip($this->fixed_ip[$id]['ip'])) {
-					$messages[] = new htmlStatusMessage('ERROR', _("The IP address is invalid."), htmlspecialchars($this->fixed_ip[$id]['ip']));
+			if ($this->processed && !empty($value['ip'])) {
+				if (!check_ip($value['ip'])) {
+					$messages[] = new htmlStatusMessage('ERROR', _("The IP address is invalid."), htmlspecialchars($value['ip']));
 				}
-				elseif (!range::check_subnet_range($this->fixed_ip[$id]['ip'],
+				elseif (!range::check_subnet_range($value['ip'],
 					$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
 					$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
-					$messages[] = new htmlStatusMessage('ERROR', _("The IP address does not match the subnet."), htmlspecialchars($this->fixed_ip[$id]['ip']));
+					$messages[] = new htmlStatusMessage('ERROR', _("The IP address does not match the subnet."), htmlspecialchars($value['ip']));
 				}
-				elseif (!$this->isNotOverlappedIp($this->fixed_ip[$id]['ip'])) {
-					$messages[] = new htmlStatusMessage('ERROR', _("The IP address is already in use."), htmlspecialchars($this->fixed_ip[$id]['ip']));
+				elseif (!$this->isNotOverlappedIp($value['ip'])) {
+					$messages[] = new htmlStatusMessage('ERROR', _("The IP address is already in use."), htmlspecialchars($value['ip']));
 				}
 			}
 			$entry = [];
-			$entry[] = new htmlInputField('ip_' . $id, $this->fixed_ip[$id]['ip']);
-			$pcInput = new htmlInputField('pc_' . $id, $this->fixed_ip[$id]['cn']);
+			$entry[] = new htmlInputField('ip_' . $id, $value['ip']);
+			$pcInput = new htmlInputField('pc_' . $id, $value['cn']);
 			if (!empty($autoNames)) {
 				$pcInput->enableAutocompletion($autoNames);
 			}
 			$entry[] = $pcInput;
-			$entry[] = new htmlInputField('mac_' . $id, $this->fixed_ip[$id]['mac']);
-			$entry[] = new htmlInputField('description_' . $id, $this->fixed_ip[$id]['description']);
-			$entry[] = new htmlInputCheckbox('active_' . $id, $this->fixed_ip[$id]['active']);
+			$entry[] = new htmlInputField('mac_' . $id, $value['mac']);
+			$entry[] = new htmlInputField('description_' . $id, $value['description']);
+			$entry[] = new htmlInputCheckbox('active_' . $id, $value['active']);
 			$entry[] = new htmlButton('drop_ip_' . $id, 'del.svg', true);
 			$data[] = $entry;
 		}
@@ -552,7 +552,7 @@ class fixed_ip extends baseModule {
 		$matches = [];
 		$number = 0;
 		$namePrefix = $name;
-		if (preg_match('/(.*[^0-9])([0-9]+)/', $name, $matches)) {
+		if (preg_match('/(.*[^0-9])(\d+)/', $name, $matches)) {
 			$namePrefix = $matches[1];
 			$number = $matches[2];
 		}
@@ -753,7 +753,7 @@ class fixed_ip extends baseModule {
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = [];
-		if (is_array($this->fixed_ip) && (sizeof($this->fixed_ip) > 0)) {
+		if (is_array($this->fixed_ip) && ($this->fixed_ip !== [])) {
 			$pdfTable = new PDFTable();
 			$pdfRow = new PDFTableRow();
 			$pdfRow->cells[] = new PDFTableCell(_('PC name'), '20%', null, true);
@@ -762,7 +762,7 @@ class fixed_ip extends baseModule {
 			$pdfRow->cells[] = new PDFTableCell(_('Active'), '10%', null, true);
 			$pdfRow->cells[] = new PDFTableCell(_('Description'), '30%', null, true);
 			$pdfTable->rows[] = $pdfRow;
-			for ($i = 0; $i < sizeof($this->fixed_ip); $i++) {
+			for ($i = 0; $i < count($this->fixed_ip); $i++) {
 				$name = $this->fixed_ip[$i]['cn'];
 				$mac = $this->fixed_ip[$i]['mac'];
 				$ip = $this->fixed_ip[$i]['ip'];
@@ -792,7 +792,7 @@ class fixed_ip extends baseModule {
 	public static function extractIP($dhcpStatements) {
 		$return = null;
 		if (is_array($dhcpStatements)) {
-			for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
+			for ($i = 0; $i < count($dhcpStatements); $i++) {
 				if (str_starts_with($dhcpStatements[$i], 'fixed-address ')) {
 					$return = substr($dhcpStatements[$i], strlen('fixed-address') + 1);
 					break;
@@ -809,7 +809,7 @@ class fixed_ip extends baseModule {
 	 * @param String $ip new IP
 	 */
 	private function setIP(&$dhcpStatements, $ip) {
-		for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
+		for ($i = 0; $i < count($dhcpStatements); $i++) {
 			if (str_starts_with($dhcpStatements[$i], 'fixed-address ')) {
 				unset($dhcpStatements[$i]);
 				$dhcpStatements = array_values($dhcpStatements);
@@ -827,10 +827,10 @@ class fixed_ip extends baseModule {
 	 */
 	public static function isActive($dhcpStatements) {
 		if (is_array($dhcpStatements)) {
-			for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
+			for ($i = 0; $i < count($dhcpStatements); $i++) {
 				if (strpos($dhcpStatements[$i], ' booting') === (strlen($dhcpStatements[$i]) - strlen(' booting'))) {
 					$val = substr($dhcpStatements[$i], 0, (strlen($dhcpStatements[$i]) - strlen(' booting')));
-					if ($val == 'deny') {
+					if ($val === 'deny') {
 						return false;
 					}
 					break;
@@ -847,18 +847,13 @@ class fixed_ip extends baseModule {
 	 * @param boolean $active is active
 	 */
 	private function setActive(&$dhcpStatements, $active) {
-		for ($i = 0; $i < sizeof($dhcpStatements); $i++) {
+		for ($i = 0; $i < count($dhcpStatements); $i++) {
 			if (str_contains($dhcpStatements[$i], ' booting')) {
 				unset($dhcpStatements[$i]);
 				$dhcpStatements = array_values($dhcpStatements);
 			}
 		}
-		if ($active) {
-			$dhcpStatements[] = 'allow booting';
-		}
-		else {
-			$dhcpStatements[] = 'deny booting';
-		}
+		$dhcpStatements[] = $active ? 'allow booting' : 'deny booting';
 	}
 
 	/**
@@ -920,10 +915,10 @@ class fixed_ip extends baseModule {
 			return function(array $entry, string $attribute): ?htmlElement {
 				// find all fixed addresses:
 				$entries = searchLDAP($entry['dn'], 'objectClass=dhcpHost', ['dhcpstatements', 'dhcphwaddress', 'cn']);
-				if (sizeof($entries) > 0) {
+				if (count($entries) > 0) {
 					// sort by IP
 					$order = [];
-					for ($i = 0; $i < sizeof($entries); $i++) {
+					for ($i = 0; $i < count($entries); $i++) {
 						$order[$i] = '';
 						if (!empty($entries[$i]['dhcpstatements'])) {
 							$order[$i] = fixed_ip::extractIP($entries[$i]['dhcpstatements']);
@@ -931,7 +926,7 @@ class fixed_ip extends baseModule {
 					}
 					$group = new htmlGroup();
 					natcasesort($order);
-					for ($i = 0; $i < sizeof($order); $i++) {
+					for ($i = 0; $i < count($order); $i++) {
 						$dhcpstatements = [];
 						if (isset($entries[$i]['dhcpstatements'][0])) {
 							$dhcpstatements = $entries[$i]['dhcpstatements'];
@@ -959,7 +954,7 @@ class fixed_ip extends baseModule {
 						$name->setCSSClasses($cssClasses);
 						$group->addElement($name);
 						$group->addElement(new htmlOutputText('<br>', false));
-						if ($i < (sizeof($order) - 1)) {
+						if ($i < (count($order) - 1)) {
 							$group->addElement(new htmlOutputText('<br>', false));
 						}
 					}
