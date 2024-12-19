@@ -64,7 +64,7 @@ class puppetClient extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['host']);
+		return $this->get_scope() === 'host';
 	}
 
 	/**
@@ -250,17 +250,17 @@ class puppetClient extends baseModule {
 		if (isset($this->attributes['environment'][0])) {
 			$environments = $this->attributes['environment'];
 		}
-		if (sizeof($environments) == 0) {
+		if (count($environments) == 0) {
 			$environments[] = '';
 		}
 		$environmentLabel = new htmlOutputText(_('Environment'));
 		$return->addLabel($environmentLabel);
 		$environmentContainer = new htmlGroup();
-		for ($i = 0; $i < sizeof($environments); $i++) {
+		for ($i = 0; $i < count($environments); $i++) {
 			$environmentField = new htmlInputField('environment' . $i, $environments[$i]);
 			$environmentField->enableAutocompletion($autocompleteEnvironment);
 			$environmentContainer->addElement($environmentField);
-			if ($i < (sizeof($environments) - 1)) {
+			if ($i < (count($environments) - 1)) {
 				$environmentContainer->addElement(new htmlOutputText('<br>', false));
 			}
 			else {
@@ -303,7 +303,7 @@ class puppetClient extends baseModule {
 	function process_attributes() {
 		if (isset($_POST['form_subpage_puppetClient_attributes_remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['puppetClient'], $this->attributes['objectClass']);
-			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
+			for ($i = 0; $i < count($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
@@ -357,7 +357,7 @@ class puppetClient extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("puppetClient", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "puppetClient";
@@ -408,7 +408,7 @@ class puppetClient extends baseModule {
 		$this->addSimplePDFField($return, 'parentnode', _('Parent node'));
 		if (isset($this->attributes['puppetclass'][0])) {
 			$pdfTable = new PDFTable(_('Classes'));
-			for ($i = 0; $i < sizeof($this->attributes['puppetclass']); $i++) {
+			for ($i = 0; $i < count($this->attributes['puppetclass']); $i++) {
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($this->attributes['puppetclass'][$i]);
 				$pdfTable->rows[] = $pdfRow;
@@ -417,7 +417,7 @@ class puppetClient extends baseModule {
 		}
 		if (isset($this->attributes['puppetvar'][0])) {
 			$pdfTable = new PDFTable(_('Variables'));
-			for ($i = 0; $i < sizeof($this->attributes['puppetvar']); $i++) {
+			for ($i = 0; $i < count($this->attributes['puppetvar']); $i++) {
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($this->attributes['puppetvar'][$i]);
 				$pdfTable->rows[] = $pdfRow;
@@ -448,10 +448,10 @@ class puppetClient extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['puppetClient_addExt'][0]) && ($profile['puppetClient_addExt'][0] == "true")) {
-			if (!in_array('puppetClient', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'puppetClient';
-			}
+		if (isset($profile['puppetClient_addExt'][0])
+			&& ($profile['puppetClient_addExt'][0] == "true")
+			&& !in_array('puppetClient', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'puppetClient';
 		}
 		// parent node
 		if (isset($profile['puppetClient_parentnode'][0]) && ($profile['puppetClient_parentnode'][0] != "-")) {
@@ -475,7 +475,7 @@ class puppetClient extends baseModule {
 	private function getPossibleParentNodes() {
 		$searchResult = searchLDAPByAttribute('cn', '*', 'puppetClient', ['cn'], ['host']);
 		$possibleParentNodes = [];
-		for ($i = 0; $i < sizeof($searchResult); $i++) {
+		for ($i = 0; $i < count($searchResult); $i++) {
 			if (!get_preg($searchResult[$i]['cn'][0], 'ascii')) {
 				continue;
 			}
