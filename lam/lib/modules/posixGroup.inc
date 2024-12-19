@@ -100,7 +100,7 @@ class posixGroup extends baseModule implements passwordService {
 		$error_messages = [];
 		$needAutoGID = [];
 		$typeId = $type->getId();
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "posixGroup";
 			}
@@ -118,7 +118,7 @@ class posixGroup extends baseModule implements passwordService {
 			}
 			else {
 				$errMsg = $this->messages['gidNumber'][8];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$error_messages[] = $errMsg;
 			}
 			if ($this->manageCnAndDescription($selectedModules)) {
@@ -137,7 +137,7 @@ class posixGroup extends baseModule implements passwordService {
 				}
 				else {
 					$errMsg = $this->messages['memberUID'][0];
-					array_push($errMsg, $i);
+					$errMsg[] = $i;
 					$error_messages[] = $errMsg;
 				}
 			}
@@ -152,11 +152,11 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		// fill in autoGIDs
-		if (sizeof($needAutoGID) > 0) {
+		if ($needAutoGID !== []) {
 			$errorsTemp = [];
-			$gids = $this->getNextGIDs(sizeof($needAutoGID), $errorsTemp, $type);
+			$gids = $this->getNextGIDs(count($needAutoGID), $errorsTemp, $type);
 			if (is_array($gids)) {
-				for ($i = 0; $i < sizeof($needAutoGID); $i++) {
+				for ($i = 0; $i < count($needAutoGID); $i++) {
 					$partialAccounts[$i]['gidNumber'] = $gids[$i];
 				}
 			}
@@ -174,10 +174,10 @@ class posixGroup extends baseModule implements passwordService {
 	function delete_attributes(): array {
 		$return = [];
 		$result = searchLDAPByFilter('(&(objectClass=posixAccount)(gidNumber=' . $this->attributes['gidNumber'][0] . '))', ['dn'], ['user', 'host']);
-		if (sizeof($result) > 0) {
+		if (count($result) > 0) {
 			$max = 5;
-			if (sizeof($result) < 5) {
-				$max = sizeof($result);
+			if (count($result) < 5) {
+				$max = count($result);
 			}
 			$users = [];
 			for ($i = 0; $i < $max; $i++) {
@@ -249,12 +249,7 @@ class posixGroup extends baseModule implements passwordService {
 				$members = [];
 				if (isset($this->attributes['memberUid'][0])) {
 					foreach ($this->attributes['memberUid'] as $uid) {
-						if (isset($users[$uid]) && isset($users[$uid]['cn'])) {
-							$members[] = $uid . ' (' . $users[$uid]['cn'] . ')';
-						}
-						else {
-							$members[] = $uid;
-						}
+						$members[] = (isset($users[$uid]) && isset($users[$uid]['cn'])) ? $uid . ' (' . $users[$uid]['cn'] . ')' : $uid;
 					}
 				}
 				$members = array_unique($members);
@@ -363,7 +358,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['group']);
+		return $this->get_scope() === 'group';
 	}
 
 	/**
@@ -510,7 +505,7 @@ class posixGroup extends baseModule implements passwordService {
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlSubTitle(_("Groups")), 12);
 		foreach ($allScopes[static::class] as $typeId) {
-			if (sizeof($allScopes[static::class]) > 1) {
+			if (count($allScopes[static::class]) > 1) {
 				$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
 				$title->setCSSClasses(['bold', 'responsiveLabel']);
 				$configContainer->add($title, 12, 6);
@@ -673,7 +668,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		if (in_array(static::class . '_memberUidPrimary', $pdfKeys)) {
-			$members = !empty($this->attributes['memberUid']) ? $this->attributes['memberUid'] : [];
+			$members = empty($this->attributes['memberUid']) ? [] : $this->attributes['memberUid'];
 			if (!empty($this->attributes['gidNumber'])) {
 				$filter = "(&(&" . get_ldap_filter('user') . ")(gidNumber=" . $this->attributes['gidNumber'][0] . "))";
 				$entries = searchLDAPByFilter($filter, ['uid'], ['user']);
@@ -756,10 +751,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->manageCnAndDescription($modules) && ($this->attributes['cn'][0] == '')) {
 			return false;
 		}
-		if ((!isset($this->attributes['gidNumber'][0])) || $this->attributes['gidNumber'][0] === '') {
-			return false;
-		}
-		return true;
+		return isset($this->attributes['gidNumber'][0]) && $this->attributes['gidNumber'][0] !== '';
 	}
 
 
@@ -825,12 +817,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($_POST['removePassword'])) {
 			unset($this->attributes[$this->passwordAttrName]);
 		}
-		if (isset($_POST['changegids'])) {
-			$this->changegids = true;
-		}
-		else {
-			$this->changegids = false;
-		}
+		$this->changegids = isset($_POST['changegids']);
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] != $_POST['gidNumber'])) {
 			// Check if GID is valid. If none value was entered, the next usable value will be inserted
 			$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
@@ -902,11 +889,11 @@ class posixGroup extends baseModule implements passwordService {
 					// get last character of group name
 					$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0]) - 1, 1);
 					// Last character is no number
-					if (!preg_match('/^([0-9])+$/', $lastchar)) {
+					if (!preg_match('/^(\d)+$/', $lastchar)) {
 						/* Last character is no number. Therefore we only have to
 						* add "2" to it.
 						*/
-						$this->attributes['cn'][0] = $this->attributes['cn'][0] . '2';
+						$this->attributes['cn'][0] .= '2';
 					}
 					else {
 						/* Last character is a number -> we have to increase the number until we've
@@ -918,7 +905,7 @@ class posixGroup extends baseModule implements passwordService {
 						$i = strlen($this->attributes['cn'][0]) - 1;
 						// Set $i to the last character which is a number in $account_new->general_username
 						while (true) {
-							if (preg_match('/^([0-9])+$/', substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0]) - $i))) {
+							if (preg_match('/^(\d)+$/', substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0]) - $i))) {
 								$i--;
 							}
 							else {
@@ -994,7 +981,7 @@ class posixGroup extends baseModule implements passwordService {
 			$gon = $this->getAccountContainer()->getAccountModule('groupOfMembers');
 		}
 		if ($gon == null) {
-			return;
+			return $return;
 		}
 		if (!isset($this->attributes['memberUid'])) {
 			$this->attributes['memberUid'] = [];
@@ -1099,8 +1086,8 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->changegids) {
 			// find all accounts to change
 			$result = searchLDAPByFilter('(&(objectClass=posixAccount)(gidNumber=' . $this->orig['gidNumber'][0] . '))', ['dn'], ['user', 'host']);
-			if (sizeof($result) > 0) {
-				for ($i = 0; $i < sizeof($result); $i++) {
+			if (count($result) > 0) {
+				for ($i = 0; $i < count($result); $i++) {
 					$return[$result[$i]['dn']]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
 				}
 			}
@@ -1314,7 +1301,7 @@ class posixGroup extends baseModule implements passwordService {
 			$suffix = $this->moduleSettings['posixGroup_' . $typeId . '_gidCheckSuffix'][0];
 		}
 		$result = searchLDAP($suffix, $filter, $attrs);
-		for ($i = 0; $i < sizeof($result); $i++) {
+		for ($i = 0; $i < count($result); $i++) {
 			$this->cachedGIDList[] = $result[$i]['gidnumber'][0];
 		}
 		sort($this->cachedGIDList, SORT_NUMERIC);
@@ -1338,7 +1325,7 @@ class posixGroup extends baseModule implements passwordService {
 				$filter = '(&(objectClass=user)(gidNumber=*)(uid=*))';
 			}
 			$result = searchLDAPByFilter($filter, ['uid', 'gidNumber', 'cn'], ['user']);
-			$resultCount = sizeof($result);
+			$resultCount = count($result);
 			for ($i = 0; $i < $resultCount; $i++) {
 				$this->cachedUserToGIDList[$result[$i]['uid'][0]] = [
 					'gid' => $result[$i]['gidnumber'][0],
@@ -1378,7 +1365,7 @@ class posixGroup extends baseModule implements passwordService {
 			$suffix = $this->moduleSettings['posixGroup_' . $typeId . '_gidCheckSuffix'][0];
 		}
 		$result = searchLDAP($suffix, $filter, $attrs);
-		for ($i = 0; $i < sizeof($result); $i++) {
+		for ($i = 0; $i < count($result); $i++) {
 			$this->cachedGroupNameList[] = $result[$i]['cn'][0];
 		}
 		return $this->cachedGroupNameList;
