@@ -173,7 +173,7 @@ class quota extends baseModule {
 	 * @param RemoteServerConfiguration[] $lamdaemonServers server configurations
 	 */
 	function initQuotas($userName = null, $lamdaemonServers = null) {
-		if (isset($this->quota)) {
+		if ($this->quota !== null) {
 			return;
 		}
 		if ($userName === null) {
@@ -185,7 +185,7 @@ class quota extends baseModule {
 					}
 					$userName = $this->attributes['uid'][0];
 				}
-				else if ($this->get_scope() == 'group') {
+				elseif ($this->get_scope() == 'group') {
 					if (!isset($this->attributes['cn'][0])) {
 						return;
 					}
@@ -215,7 +215,7 @@ class quota extends baseModule {
 			}
 			$allQuotas = explode(":", $quotas);
 			array_pop($allQuotas); // remove empty element at the end
-			for ($i = 0; $i < sizeof($allQuotas); $i++) {
+			for ($i = 0; $i < count($allQuotas); $i++) {
 				if (!str_starts_with($allQuotas[$i], self::$QUOTA_PREFIX)) {
 					continue;
 				}
@@ -358,7 +358,7 @@ class quota extends baseModule {
 	 */
 	private function getCn() {
 		$modules = ['posixGroup', 'windowsPosixGroup', 'rfc2307bisPosixGroup', 'groupOfNames', 'groupOfUniqueNames', 'windowsGroup'];
-		for ($i = 0; $i < sizeof($modules); $i++) {
+		for ($i = 0; $i < count($modules); $i++) {
 			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
 				$attrs = $this->getAccountContainer()->getAccountModule($modules[$i])->getAttributes();
 				if (isset($attrs['cn'][0])) {
@@ -396,7 +396,7 @@ class quota extends baseModule {
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = [];
-		if (!isset($this->quota) || !is_array($this->quota)
+		if (!is_array($this->quota)
 			|| ($this->getAccountContainer() === null)
 			|| ($this->getAccountContainer()->finalDN === null)) {
 			return $messages;
@@ -411,10 +411,10 @@ class quota extends baseModule {
 		}
 		// get list of lamdaemon servers
 		$servers = array_keys($this->quota);
-		for ($q = 0; $q < sizeof($servers); $q++) {
+		for ($q = 0; $q < count($servers); $q++) {
 			$server = $servers[$q];
 			$quotastring = "";
-			for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
+			for ($i = 0; $i < count($this->quota[$server]); $i++) {
 				$quotastring .= $this->quota[$server][$i][0];
 				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][2]);
 				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][3]);
@@ -488,7 +488,7 @@ class quota extends baseModule {
 		catch (LAMException $e) {
 			return [['ERROR', $e->getTitle(), $e->getMessage()]];
 		}
-		if (!isset($this->quota) || !is_array($this->quota)) {
+		if (!is_array($this->quota)) {
 			return [];
 		}
 		// determine if this is a user or group account
@@ -502,7 +502,7 @@ class quota extends baseModule {
 		$messages = [];
 		// get list of lamdaemon servers
 		$servers = array_keys($this->quota);
-		for ($q = 0; $q < sizeof($servers); $q++) {
+		for ($q = 0; $q < count($servers); $q++) {
 			$server = $servers[$q];
 			$i = 0;
 			$quotastring = "";
@@ -532,13 +532,13 @@ class quota extends baseModule {
 	 * @return array list of info/error messages
 	 */
 	function process_attributes() {
-		if (!isset($this->quota) || !is_array($this->quota)) {
+		if (!is_array($this->quota)) {
 			return [];
 		}
 		$errors = [];
 		// get list of lamdaemon servers
 		$servers = array_keys($this->quota);
-		for ($q = 0; $q < sizeof($servers); $q++) {
+		for ($q = 0; $q < count($servers); $q++) {
 			$server = $servers[$q];
 			$id = $this->replaceSpecialChars($server);
 			$i = 0;
@@ -594,12 +594,12 @@ class quota extends baseModule {
 		// get list of lamdaemon servers
 		$serverDescriptions = [];
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
-		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+		for ($s = 0; $s < count($lamdaemonServers); $s++) {
 			$lamdaemonServer = $lamdaemonServers[$s];
 			$serverDescriptions[$lamdaemonServer->getServer()] = $lamdaemonServer->getLabel();
 		}
 		$servers = array_keys($this->quota);
-		for ($q = 0; $q < sizeof($servers); $q++) {
+		for ($q = 0; $q < count($servers); $q++) {
 			$server = $servers[$q];
 			$id = $this->replaceSpecialChars($server);
 			$title = $server;
@@ -688,7 +688,7 @@ class quota extends baseModule {
 				if (empty($dirs)) {
 					continue;
 				}
-				for ($i = 0; $i < sizeof($dirs); $i++) {
+				for ($i = 0; $i < count($dirs); $i++) {
 					if (!str_starts_with($dirs[$i], self::$QUOTA_PREFIX)) {
 						unset($dirs[$i]);
 						$dirs = array_values($dirs);
@@ -700,12 +700,12 @@ class quota extends baseModule {
 					$dirs[$i] = $dirs[$i][0];
 				}
 				$dirs = array_values($dirs);
-				if (sizeof($dirs) < 1) {
+				if (count($dirs) < 1) {
 					continue; // stop if no quota directories were found
 				}
 				$optionsAvailable = true;
 				$return->add(new htmlSubTitle($description));
-				for ($i = 0; $i < sizeof($dirs); $i++) {
+				for ($i = 0; $i < count($dirs); $i++) {
 					$return->add(new htmlOutputText($dirs[$i]));
 					$sbLimit = new htmlResponsiveInputField(_('Soft block limit'), "quota_softblock_" . $id . "_" . $dirs[$i], null, 'SoftBlockLimit');
 					$sbLimit->setFieldMaxLength(20);
@@ -806,14 +806,14 @@ class quota extends baseModule {
 		catch (LAMException $e) {
 			logNewMessage(LOG_ERR, $e->getTitle() . ' - ' . $e->getMessage());
 		}
-		if (!isset($this->quota) || !is_array($this->quota)) {
+		if (!is_array($this->quota)) {
 			return;
 		}
 		$servers = array_keys($this->quota);
-		for ($s = 0; $s < sizeof($servers); $s++) {
+		for ($s = 0; $s < count($servers); $s++) {
 			$server = $servers[$s];
 			$id = $this->replaceSpecialChars($server);
-			for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
+			for ($i = 0; $i < count($this->quota[$server]); $i++) {
 				$dir = $this->quota[$server][$i][0];
 				if (isset($profile["quota_softblock_" . $id . "_" . $dir])) {
 					$this->quota[$server][$i][2] = $profile["quota_softblock_" . $id . "_" . $dir][0];
@@ -843,10 +843,10 @@ class quota extends baseModule {
 			logNewMessage(LOG_ERR, $e->getTitle() . ' - ' . $e->getMessage());
 			return [];
 		}
-		if (!isset($this->quota) || !is_array($this->quota)) {
+		if (!is_array($this->quota)) {
 			return [];
 		}
-		if (sizeof($this->quota) > 0) {
+		if ($this->quota !== []) {
 			$pdfTable = new PDFTable();
 			// get list of lamdaemon servers
 			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
@@ -856,7 +856,7 @@ class quota extends baseModule {
 				if ($description != $server) {
 					$description = $description . " (" . $server . ")";
 				}
-				if (!isset($this->quota[$server]) || (sizeof($this->quota[$server]) < 1)) {
+				if (!isset($this->quota[$server]) || (count($this->quota[$server]) < 1)) {
 					continue;
 				}
 				$pdfRow = new PDFTableRow();
@@ -869,7 +869,7 @@ class quota extends baseModule {
 				$pdfRow->cells[] = new PDFTableCell(_('Soft inode'), '18%', null, true);
 				$pdfRow->cells[] = new PDFTableCell(_('Hard inode'), '18%', null, true);
 				$pdfTable->rows[] = $pdfRow;
-				for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
+				for ($i = 0; $i < count($this->quota[$server]); $i++) {
 					$pdfRow = new PDFTableRow();
 					$pdfRow->cells[] = new PDFTableCell($this->quota[$server][$i][0], '28%');
 					$pdfRow->cells[] = new PDFTableCell($this->quota[$server][$i][2], '18%');
@@ -903,11 +903,11 @@ class quota extends baseModule {
 			logNewMessage(LOG_ERR, $e->getTitle() . ' - ' . $e->getMessage());
 			return [];
 		}
-		if (!isset($this->quota) || !is_array($this->quota)) {
+		if (!is_array($this->quota)) {
 			return [];
 		}
 		$return = [];
-		if (sizeof($this->quota) > 0) {
+		if ($this->quota !== []) {
 			// get list of lamdaemon servers
 			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 			foreach ($lamdaemonServers as $lamdaemonServer) {
@@ -925,7 +925,7 @@ class quota extends baseModule {
 				$remote->disconnect();
 				$dirs = explode(":", $quotas);
 				array_pop($dirs); // remove empty element at the end
-				for ($i = 0; $i < sizeof($dirs); $i++) {
+				for ($i = 0; $i < count($dirs); $i++) {
 					if (!str_starts_with($dirs[$i], self::$QUOTA_PREFIX)) {
 						unset($dirs[$i]);
 						$i--;
@@ -936,7 +936,7 @@ class quota extends baseModule {
 					$dirs[$i] = $dirs[$i][0];
 				}
 				$dirs = array_values($dirs);
-				for ($i = 0; $i < sizeof($dirs); $i++) {
+				for ($i = 0; $i < count($dirs); $i++) {
 					$return[] = [
 						'name' => 'quota_' . $server . ':' . $dirs[$i],
 						'description' => sprintf(_('Quota for %s on %s'), $dirs[$i], $server),
@@ -960,7 +960,7 @@ class quota extends baseModule {
 			// create list of quota columns
 			$temp['quotas'] = [];
 			$columns = array_keys($ids);
-			for ($i = 0; $i < sizeof($columns); $i++) {
+			for ($i = 0; $i < count($columns); $i++) {
 				if (str_starts_with($columns[$i], 'quota_')) {
 					$temp['quotas'][] = substr($columns[$i], 6);
 				}
@@ -975,16 +975,16 @@ class quota extends baseModule {
 				$col = $ids['posixGroup_cn'];
 			}
 			// create list of account names and their quota values
-			for ($i = 0; $i < sizeof($data); $i++) {
+			for ($i = 0; $i < count($data); $i++) {
 				if (in_array($i, $failed)) {
 					continue; // ignore failed accounts
 				}
 				$name = $data[$i][$col];
-				for ($m = 0; $m < sizeof($temp['quotas']); $m++) {
+				for ($m = 0; $m < count($temp['quotas']); $m++) {
 					if ($data[$i][$ids['quota_' . $temp['quotas'][$m]]] != '') {
 						$parts = explode(',', $data[$i][$ids['quota_' . $temp['quotas'][$m]]]);
 						// check syntax
-						if (sizeof($parts) != 4) {
+						if (count($parts) != 4) {
 							$errMsg = $this->messages['upload'][0];
 							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;
@@ -1038,12 +1038,12 @@ class quota extends baseModule {
 			return ['status' => 'inProgress', 'progress' => 5, 'errors' => $errors];
 		}
 		// quotas are ready to set
-		elseif ($temp['counter'] < sizeof($temp['accounts'])) {
+		elseif ($temp['counter'] < count($temp['accounts'])) {
 			$names = array_keys($temp['accounts']);
 			$name = $names[$temp['counter']];
 			$mountPoints = array_keys($temp['accounts'][$name]);
 			// set quota
-			for ($m = 0; $m < sizeof($mountPoints); $m++) {
+			for ($m = 0; $m < count($mountPoints); $m++) {
 				$mpParts = explode(":", $mountPoints[$m]);
 				$server = $mpParts[0];
 				$dir = $mpParts[1];
@@ -1062,7 +1062,7 @@ class quota extends baseModule {
 				$remote->disconnect();
 				if (!empty($result)) {
 					$parts = explode(",", $result);
-					if ($parts[0] == 'ERROR') {
+					if ($parts[0] === 'ERROR') {
 						$errors[] = ['ERROR', $parts[1], $parts[2]];
 					}
 				}
@@ -1071,7 +1071,7 @@ class quota extends baseModule {
 			$temp['counter']++;
 			return [
 				'status' => 'inProgress',
-				'progress' => 5 + (95 * ($temp['counter'] / sizeof($temp['accounts']))),
+				'progress' => 5 + (95 * ($temp['counter'] / count($temp['accounts']))),
 				'errors' => $errors];
 		}
 		return ['status' => 'finished'];
