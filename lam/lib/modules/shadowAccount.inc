@@ -616,7 +616,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("shadowAccount", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "shadowAccount";
@@ -684,10 +684,10 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['shadowAccount_addExt'][0]) && ($profile['shadowAccount_addExt'][0] == "true")) {
-			if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'shadowAccount';
-			}
+		if (isset($profile['shadowAccount_addExt'][0])
+			&& ($profile['shadowAccount_addExt'][0] == "true")
+			&& !in_array('shadowAccount', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'shadowAccount';
 		}
 		// expiration date
 		if (!empty($profile['shadowAccount_shadowExpire_day'][0])) {
@@ -992,7 +992,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 			$attributes['shadowexpire'][0] = '1';
 		}
 		if (in_array(self::STATUS_PASSWORD_EXPIRED, $lockIds)) {
-			$inactive = !empty($attributes['shadowinactive'][0]) ? $attributes['shadowinactive'][0] : 0;
+			$inactive = empty($attributes['shadowinactive'][0]) ? 0 : $attributes['shadowinactive'][0];
 			$attributes['shadowlastchange'][0] = intval(time() / 3600 / 24) - $attributes['shadowmax'][0] - $inactive - 1;
 		}
 	}
@@ -1016,7 +1016,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * @inheritDoc
 	 */
 	public function getListFilterFunction(string $attributeName): ?callable {
-		if (($attributeName == 'shadowexpire') || ($attributeName == 'shadowlastchange')) {
+		if (($attributeName === 'shadowexpire') || ($attributeName === 'shadowlastchange')) {
 			return function(?array $values, ?string $filterValue): bool {
 				$regex = str_replace(['*'], ['.*'], $filterValue);
 				$regex = '/' . $regex . '/i';
