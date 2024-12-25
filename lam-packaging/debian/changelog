@@ -1,6 +1,10 @@
 ldap-account-manager (9.0-1) unstable; urgency=medium
 
   * new upstream release
+  * Fix "ldap-account-manager: CVE-2024-52792" by using
+      new file format (Closes: #1090934)
+  * Fix "Please allow recent php-monolog (>= 3)" by using
+      different dependencies (Closes: #1076835)
 
  -- Roland Gruber <post@rolandgruber.de>  Tue, 17 Dec 2024 19:23:11 +0200
 
