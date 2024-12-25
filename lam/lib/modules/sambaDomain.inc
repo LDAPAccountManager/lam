@@ -47,7 +47,7 @@ class sambaDomain extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['smbDomain']);
+		return $this->get_scope() === 'smbDomain';
 	}
 
 	/**
@@ -424,14 +424,14 @@ class sambaDomain extends baseModule {
 				$this->attributes['sambaSID'][0] = $_POST['sambaSID'];
 			}
 			// RID base
-			if (!get_preg($_POST['RIDbase'], 'digit') && !($_POST['RIDbase'] == '')) {
+			if (!get_preg($_POST['RIDbase'], 'digit') && ($_POST['RIDbase'] != '')) {
 				$errors[] = $this->messages['RIDbase'][0];
 			}
 			else {
 				$this->attributes['sambaAlgorithmicRidBase'][0] = $_POST['RIDbase'];
 			}
 			// domain name
-			if (!get_preg($_POST['sambaDomainName'], 'domainname') && !($_POST['sambaDomainName'] == '')) {
+			if (!get_preg($_POST['sambaDomainName'], 'domainname') && ($_POST['sambaDomainName'] != '')) {
 				$errors[] = $this->messages['domainName'][0];
 			}
 			else {
@@ -510,13 +510,11 @@ class sambaDomain extends baseModule {
 				unset($this->attributes['sambaLockoutThreshold'][0]);
 			}
 		}
+		elseif (is_numeric($_POST['lockoutThreshold']) && ($_POST['lockoutThreshold'] >= 0) && ($_POST['lockoutThreshold'] < 1000)) {
+			$this->attributes['sambaLockoutThreshold'][0] = $_POST['lockoutThreshold'];
+		}
 		else {
-			if (is_numeric($_POST['lockoutThreshold']) && ($_POST['lockoutThreshold'] >= 0) && ($_POST['lockoutThreshold'] < 1000)) {
-				$this->attributes['sambaLockoutThreshold'][0] = $_POST['lockoutThreshold'];
-			}
-			else {
-				$errors[] = $this->messages['lockoutThreshold'][0];
-			}
+			$errors[] = $this->messages['lockoutThreshold'][0];
 		}
 		// Minimum password age
 		if (!isset($_POST['minPwdAge']) || ($_POST['minPwdAge'] == '')) {
@@ -524,13 +522,11 @@ class sambaDomain extends baseModule {
 				unset($this->attributes['sambaMinPwdAge'][0]);
 			}
 		}
+		elseif (is_numeric($_POST['minPwdAge']) && ($_POST['minPwdAge'] > -2)) {
+			$this->attributes['sambaMinPwdAge'][0] = $_POST['minPwdAge'];
+		}
 		else {
-			if (is_numeric($_POST['minPwdAge']) && ($_POST['minPwdAge'] > -2)) {
-				$this->attributes['sambaMinPwdAge'][0] = $_POST['minPwdAge'];
-			}
-			else {
-				$errors[] = $this->messages['pwdAgeMin'][0];
-			}
+			$errors[] = $this->messages['pwdAgeMin'][0];
 		}
 		// Maximum password age
 		if (!isset($_POST['maxPwdAge']) || ($_POST['maxPwdAge'] == '')) {
@@ -538,16 +534,14 @@ class sambaDomain extends baseModule {
 				unset($this->attributes['sambaMaxPwdAge'][0]);
 			}
 		}
+		elseif (!is_numeric($_POST['maxPwdAge']) || ($_POST['maxPwdAge'] < -1)) {
+			$errors[] = $this->messages['pwdAgeMax'][0];
+		}
+		elseif (($_POST['maxPwdAge'] > 1) && ($_POST['maxPwdAge'] < $_POST['minPwdAge'])) {
+			$errors[] = $this->messages['pwdAge_cmp'][0];
+		}
 		else {
-			if (!is_numeric($_POST['maxPwdAge']) || ($_POST['maxPwdAge'] < -1)) {
-				$errors[] = $this->messages['pwdAgeMax'][0];
-			}
-			elseif (($_POST['maxPwdAge'] > 1) && ($_POST['maxPwdAge'] < $_POST['minPwdAge'])) {
-				$errors[] = $this->messages['pwdAge_cmp'][0];
-			}
-			else {
-				$this->attributes['sambaMaxPwdAge'][0] = $_POST['maxPwdAge'];
-			}
+			$this->attributes['sambaMaxPwdAge'][0] = $_POST['maxPwdAge'];
 		}
 		// Lockout duration
 		if (!isset($_POST['lockoutDuration']) || ($_POST['lockoutDuration'] == '')) {
@@ -555,13 +549,11 @@ class sambaDomain extends baseModule {
 				unset($this->attributes['sambaLockoutDuration'][0]);
 			}
 		}
+		elseif (is_numeric($_POST['lockoutDuration']) && ($_POST['lockoutDuration'] > -2)) {
+			$this->attributes['sambaLockoutDuration'][0] = $_POST['lockoutDuration'];
+		}
 		else {
-			if (is_numeric($_POST['lockoutDuration']) && ($_POST['lockoutDuration'] > -2)) {
-				$this->attributes['sambaLockoutDuration'][0] = $_POST['lockoutDuration'];
-			}
-			else {
-				$errors[] = $this->messages['lockoutDuration'][0];
-			}
+			$errors[] = $this->messages['lockoutDuration'][0];
 		}
 		// Reset time after lockout
 		if (!isset($_POST['lockoutObservationWindow']) || ($_POST['lockoutObservationWindow'] == '')) {
@@ -569,13 +561,11 @@ class sambaDomain extends baseModule {
 				unset($this->attributes['sambaLockoutObservationWindow'][0]);
 			}
 		}
+		elseif (is_numeric($_POST['lockoutObservationWindow']) && ($_POST['lockoutObservationWindow'] > -1)) {
+			$this->attributes['sambaLockoutObservationWindow'][0] = $_POST['lockoutObservationWindow'];
+		}
 		else {
-			if (is_numeric($_POST['lockoutObservationWindow']) && ($_POST['lockoutObservationWindow'] > -1)) {
-				$this->attributes['sambaLockoutObservationWindow'][0] = $_POST['lockoutObservationWindow'];
-			}
-			else {
-				$errors[] = $this->messages['lockoutObservationWindow'][0];
-			}
+			$errors[] = $this->messages['lockoutObservationWindow'][0];
 		}
 
 		return $errors;
@@ -587,7 +577,7 @@ class sambaDomain extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("sambaDomain", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "sambaDomain";
