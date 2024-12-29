@@ -35,11 +35,11 @@ use function LAM\PERSISTENCE\dbTableExists;
  */
 
 /** modules */
-include_once "modules.inc";
+include_once __DIR__ . "/modules.inc";
 /** account types */
-include_once "types.inc";
+include_once __DIR__ . "/types.inc";
 /** 2-factor */
-include_once '2factor.inc';
+include_once __DIR__ . '/2factor.inc';
 
 /**
  * Returns if this is a LAM Pro installation.
@@ -60,7 +60,7 @@ function isLAMProVersion() {
 function getSelfServiceSearchAttributes($scope) {
 	$return = [];
 	$modules = getAvailableModules($scope);
-	for ($i = 0; $i < sizeof($modules); $i++) {
+	for ($i = 0; $i < count($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$attributes = $m->getSelfServiceSearchAttributes();
 		$return = array_merge($return, $attributes);
@@ -78,10 +78,10 @@ function getSelfServiceSearchAttributes($scope) {
 function getSelfServiceFieldSettings($scope) {
 	$return = [];
 	$modules = getAvailableModules($scope);
-	for ($i = 0; $i < sizeof($modules); $i++) {
+	for ($i = 0; $i < count($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$settings = $m->getSelfServiceFields();
-		if (sizeof($settings) > 0) {
+		if (count($settings) > 0) {
 			$return[$modules[$i]] = $settings;
 		}
 	}
@@ -107,14 +107,14 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
 		}
 		$m = moduleCache::getModule($module, $scope);
 		$modReadOnlyFields = [];
-		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
+		for ($r = 0; $r < count($readOnlyFields); $r++) {
 			$parts = explode('_', $readOnlyFields[$r]);
 			if ($parts[0] == $module) {
 				$modReadOnlyFields[] = $parts[1];
 			}
 		}
 		$code = $m->getSelfServiceOptions($fields[$module], $attributes, $passwordChangeOnly, $modReadOnlyFields);
-		if (sizeof($code) > 0) {
+		if (count($code) > 0) {
 			$return[$module] = $code;
 		}
 	}
@@ -134,32 +134,32 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
 function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 	$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 	$modules = getAvailableModules($scope);
-	for ($i = 0; $i < sizeof($modules); $i++) {
+	for ($i = 0; $i < count($modules); $i++) {
 		if (!isset($fields[$modules[$i]])) {
 			continue;
 		}
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$modReadOnlyFields = [];
-		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
+		for ($r = 0; $r < count($readOnlyFields); $r++) {
 			$parts = explode('_', $readOnlyFields[$r]);
 			if ($parts[0] == $modules[$i]) {
 				$modReadOnlyFields[] = $parts[1];
 			}
 		}
 		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly, $modReadOnlyFields);
-		if (sizeof($result['messages']) > 0) {
+		if (count($result['messages']) > 0) {
 			$return['messages'] = array_merge($result['messages'], $return['messages']);
 		}
-		if (sizeof($result['add']) > 0) {
+		if (count($result['add']) > 0) {
 			$return['add'] = array_merge($result['add'], $return['add']);
 		}
-		if (sizeof($result['del']) > 0) {
+		if (count($result['del']) > 0) {
 			$return['del'] = array_merge($result['del'], $return['del']);
 		}
-		if (sizeof($result['mod']) > 0) {
+		if (count($result['mod']) > 0) {
 			$return['mod'] = array_merge($result['mod'], $return['mod']);
 		}
-		if (sizeof($result['info']) > 0) {
+		if (count($result['info']) > 0) {
 			$return['info'] = array_merge($result['info'], $return['info']);
 		}
 	}
@@ -176,7 +176,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 function getSelfServiceSettings($scope, $profile) {
 	$return = [];
 	$modules = getAvailableModules($scope);
-	for ($i = 0; $i < sizeof($modules); $i++) {
+	for ($i = 0; $i < count($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$return[$modules[$i]] = $m->getSelfServiceSettings($profile);
 	}
@@ -194,7 +194,7 @@ function getSelfServiceSettings($scope, $profile) {
 function checkSelfServiceSettings($scope, &$options, &$profile) {
 	$return = [];
 	$modules = getAvailableModules($scope);
-	for ($i = 0; $i < sizeof($modules); $i++) {
+	for ($i = 0; $i < count($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$errors = $m->checkSelfServiceSettings($options, $profile);
 		$return = array_merge($return, $errors);
@@ -266,7 +266,7 @@ class SelfServicePersistence {
 			}
 			catch (PDOException $e) {
 				logNewMessage(LOG_ERR, _('Unable to connect to configuration database.') . ' ' . $e->getMessage());
-				throw new LAMException(_('Unable to connect to configuration database.'));
+				throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
 			}
 		}
 		else {
@@ -282,7 +282,7 @@ class SelfServicePersistence {
 	public function getProfiles(): array {
 		$profiles = $this->strategy->getProfiles();
 		ksort($profiles);
-		foreach ($profiles as $key => $value) {
+		foreach (array_keys($profiles) as $key) {
 			sort($profiles[$key]);
 		}
 		return $profiles;
@@ -472,7 +472,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 		}
 		$profile = new selfServiceProfile();
 		$file = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
-		if (is_file($file) === True) {
+		if (is_file($file)) {
 			$file = @fopen($file, "r");
 			if ($file) {
 				$data = fread($file, 10000000);
@@ -506,7 +506,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 		$file = @fopen($path, "w");
 		if ($file) {
 			// write settings to file
-			fputs($file, json_encode($profile->export()));
+			fwrite($file, json_encode($profile->export()));
 			// close file
 			fclose($file);
 			@chmod($path, 0600);
@@ -664,25 +664,25 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 class selfServiceProfile {
 
 	/** server address */
-	public $serverURL;
+	public $serverURL = "localhost";
 
 	/** use TLS */
-	public $useTLS;
+	public $useTLS = false;
 
 	/** LDAP suffix */
-	public $LDAPSuffix;
+	public $LDAPSuffix = "dc=my-domain,dc=com";
 
 	/** LDAP user DN*/
-	public $LDAPUser;
+	public $LDAPUser = "";
 
 	/** LDAP password */
-	public $LDAPPassword;
+	public $LDAPPassword = "";
 
 	/** use bind user also for read/modify operations */
-	public $useForAllOperations;
+	public $useForAllOperations = false;
 
 	/** LDAP search attribute */
-	public $searchAttribute;
+	public $searchAttribute = "uid";
 
 	/**
 	 * @var string|null login handler ID
@@ -690,13 +690,13 @@ class selfServiceProfile {
 	public ?string $loginHandler = SelfServiceUserPasswordLoginHandler::ID;
 
 	/** header for self service pages */
-	public $pageHeader;
+	public $pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 
 	/** base color */
 	public $baseColor = '#fffde2';
 
 	/** list of additional CSS links (separated by \n) */
-	public $additionalCSS;
+	public $additionalCSS = '';
 
 	/** describing text for user login */
 	public $loginCaption;
@@ -705,13 +705,13 @@ class selfServiceProfile {
 	public $loginFooter;
 
 	/** label for password input */
-	public $passwordLabel;
+	public $passwordLabel = '';
 
 	/** describing text for search attribute */
 	public $loginAttributeText;
 
 	/** additional LDAP filter for accounts */
-	public $additionalLDAPFilter;
+	public $additionalLDAPFilter = '';
 
 	/** describing text for self service main page */
 	public $mainPageText;
@@ -731,13 +731,13 @@ class selfServiceProfile {
 	/**
 	 * List of fields that are set in read-only mode.
 	 */
-	public $readOnlyFields;
+	public $readOnlyFields = [];
 
 	/** List of override values for field labels: array(<field ID> => label) */
-	public $relabelFields;
+	public $relabelFields = [];
 
 	/** configuration settings of modules */
-	public $moduleSettings;
+	public $moduleSettings = [];
 
 	/** language for self service */
 	public $language = 'en_GB.utf8';
@@ -814,22 +814,8 @@ class selfServiceProfile {
 	 * Constructor
 	 */
 	public function __construct() {
-		// set default values
-		$this->serverURL = "localhost";
-		$this->useTLS = false;
-		$this->LDAPSuffix = "dc=my-domain,dc=com";
-		$this->LDAPUser = "";
-		$this->LDAPPassword = "";
-		$this->useForAllOperations = false;
-		$this->searchAttribute = "uid";
-		$this->additionalLDAPFilter = '';
-		$this->loginHandler = '';
-		$this->pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
-		$this->additionalCSS = '';
-		$this->baseColor = '#fffde2';
 		$this->loginCaption = '<b>' . _("Welcome to LAM self service. Please enter your user name and password.") . '</b>';
 		$this->loginAttributeText = _('User name');
-		$this->passwordLabel = '';
 		$this->mainPageText = "<h1>LAM self service</h1>\n" . _("Here you can change your personal settings.");
 		$this->inputFields = [
 			['name' => _('Personal data'),
@@ -839,28 +825,6 @@ class selfServiceProfile {
 			['name' => _('Password'),
 				'fields' => ['posixAccount_password']]
 		];
-		$this->readOnlyFields = [];
-		$this->relabelFields = [];
-		$this->moduleSettings = [];
-		$this->language = 'en_GB.utf8';
-		$this->enforceLanguage = true;
-		$this->followReferrals = 0;
-		$this->timeZone = 'Europe/London';
-		$this->twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
-		$this->twoFactorAuthenticationURL = 'https://localhost';
-		$this->twoFactorAuthenticationInsecure = false;
-		$this->twoFactorAuthenticationLabel = null;
-		$this->twoFactorAuthenticationOptional = false;
-		$this->twoFactorAuthenticationCaption = '';
-		$this->twoFactorAuthenticationClientId = '';
-		$this->twoFactorAuthenticationSecretKey = '';
-		$this->twoFactorAuthenticationAttribute = 'uid';
-		$this->twoFactorAuthenticationDomain = '';
-		$this->captchaProvider = '-';
-		$this->reCaptchaSiteKey = '';
-		$this->reCaptchaSecretKey = '';
-		$this->captchaOnLogin = false;
-		$this->baseUrl = '';
 	}
 
 	/**
@@ -1078,7 +1042,7 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 	 */
 	function addLoginFields(htmlResponsiveRow $content): void {
 		// user name
-		$userNameVal = !empty($_POST['username']) ? $_POST['username'] : '';
+		$userNameVal = empty($_POST['username']) ? '' : $_POST['username'];
 		$userField = new htmlResponsiveInputField($this->profile->loginAttributeText, 'username', $userNameVal);
 		$userField->setCSSClasses(['lam-initial-focus']);
 		$content->add($userField);
@@ -1087,7 +1051,7 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 		if (!empty($this->profile->passwordLabel)) {
 			$passwordText = $this->profile->passwordLabel;
 		}
-		$passwordVal = !empty($_POST['password']) ? $_POST['password'] : '';
+		$passwordVal = empty($_POST['password']) ? '' : $_POST['password'];
 		$passwordField = new htmlResponsiveInputField($passwordText, 'password', $passwordVal);
 		$passwordField->setIsPassword(true);
 		$content->add($passwordField);
@@ -1162,7 +1126,7 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 		// user name
 		$userLabel = new htmlLabel('username', $this->profile->loginAttributeText);
 		$content->addLabel($userLabel);
-		$userName = !empty($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '-';
+		$userName = empty($_SERVER['PHP_AUTH_USER']) ? '-' : $_SERVER['PHP_AUTH_USER'];
 		$userField = new htmlOutputText($userName);
 		$content->addField($userField);
 		// password field
@@ -1315,7 +1279,7 @@ class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
 		}
 		$info = $entries;
 		cleanLDAPResult($info);
-		if (sizeof($info) === 1) {
+		if (count($info) === 1) {
 			$userDN = $info[0]['dn'];
 			$_SESSION['selfService_clientDN'] = lamEncrypt($userDN, 'SelfService');
 			return;

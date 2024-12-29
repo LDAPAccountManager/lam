@@ -60,9 +60,9 @@ use function LAM\SCHEMA\get_schema_objectclasses;
  * @author Roland Gruber
  */
 
-include_once 'account.inc';
-include_once 'tools.inc';
-include_once 'tools/treeview.inc';
+include_once __DIR__ . '/account.inc';
+include_once __DIR__ . '/tools.inc';
+include_once __DIR__ . '/tools/treeview.inc';
 
 /**
  * Tree view functions.
@@ -583,7 +583,7 @@ class TreeView {
 	 * @return bool is multi-value
 	 */
 	private function isMultiValueAttribute(?array $values, ?AttributeType $schemaAttribute): bool {
-		return (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
+		return (count($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
 	}
 
 	/**
@@ -671,7 +671,7 @@ class TreeView {
 		if (empty($values)) {
 			return false;
 		}
-		$regex = '/^\\{[0-9]+\\}/';
+		$regex = '/^\{\d+\}/';
 		foreach ($values as $value) {
 			if (!preg_match($regex, $value)) {
 				return false;
@@ -763,10 +763,7 @@ class TreeView {
 		if (stripos($attributeName, 'jpegphoto') === 0) {
 			return true;
 		}
-		if (($schemaAttribute !== null) && ($schemaAttribute->getType() === 'JPEG')) {
-			return true;
-		}
-		return false;
+		return ($schemaAttribute !== null) && ($schemaAttribute->getType() === 'JPEG');
 	}
 
 	/**
@@ -872,10 +869,9 @@ class TreeView {
 			if (in_array_ignore_case($schemaAttribute->getName(), $requiredAttributes)) {
 				return true;
 			}
-			if (!empty($schemaObjectClass->getSupClasses())) {
-				if ($this->isAttributeRequired($schemaObjectClasses, $schemaAttribute, $schemaObjectClass->getSupClasses())) {
-					return true;
-				}
+			if (!empty($schemaObjectClass->getSupClasses())
+				&& $this->isAttributeRequired($schemaObjectClasses, $schemaAttribute, $schemaObjectClass->getSupClasses())) {
+				return true;
 			}
 		}
 		return false;
@@ -953,7 +949,7 @@ class TreeView {
 				if (!isset($ldapChanges[$attrName]) && !empty($attributes[$attrName])) {
 					$ldapChanges[$attrName] = $attributes[$attrName];
 				}
-				$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : [];
+				$oldValues = empty($attributes[$attrName]) ? [] : $attributes[$attrName];
 				if ($this->isMultiValueAttribute($oldValues, $schemaAttribute)) {
 					$ldapChanges[$attrName][] = base64_decode($change['upload']);
 				}
@@ -1057,12 +1053,7 @@ class TreeView {
 		$binaryValues = [];
 		foreach ($encoded as $value) {
 			$decoded = base64_decode($value, true);
-			if ($decoded !== false) {
-				$binaryValues[] = $decoded;
-			}
-			else {
-				$binaryValues[] = $value;
-			}
+			$binaryValues[] = ($decoded !== false) ? $decoded : $value;
 		}
 		return $binaryValues;
 	}
@@ -1076,14 +1067,9 @@ class TreeView {
 	 */
 	private function applyPasswordHash(array $values, array $hash): array {
 		$result = [];
-		for ($i = 0; $i < sizeof($values); $i++) {
+		for ($i = 0; $i < count($values); $i++) {
 			$oldType = getHashType($values[$i]);
-			if (($oldType === 'PLAIN') && ($hash[$i] !== 'PLAIN')) {
-				$result[] = pwd_hash($values[$i], true, $hash[$i]);
-			}
-			else {
-				$result[] = $values[$i];
-			}
+			$result[] = (($oldType === 'PLAIN') && ($hash[$i] !== 'PLAIN')) ? pwd_hash($values[$i], true, $hash[$i]) : $values[$i];
 		}
 		return $result;
 	}
@@ -1172,12 +1158,7 @@ class TreeView {
 	 * @return string JSON data
 	 */
 	private function createNewNodeCheckObjectClassesStep(string $dn, ?string $errorMessage = null, ?string $rdnAttribute = null, ?array $attributes = null): string {
-		if ($attributes === null) {
-			$objectClasses = explode(',', $_POST['objectClasses']);
-		}
-		else {
-			$objectClasses = $attributes['objectClass'];
-		}
+		$objectClasses = ($attributes === null) ? explode(',', $_POST['objectClasses']) : $attributes['objectClass'];
 		$structuralObjectClassesCount = 0;
 		$schemaObjectClasses = $this->getSchemaObjectClasses();
 		foreach ($objectClasses as $objectClass) {
@@ -1634,7 +1615,7 @@ class TreeView {
 				throw new LAMException(_('Entry cannot be inserted into itself.'));
 			}
 			$entryAndChildren = ldapListDN($dn);
-			$childrenCount = sizeof($entryAndChildren);
+			$childrenCount = count($entryAndChildren);
 			logNewMessage(LOG_DEBUG, 'Paste operation for entry with ' . $childrenCount . ' child entries.');
 			if (($childrenCount === 0) && ($action === 'CUT')) {
 				// do LDAP move for entries without children and CUT operation

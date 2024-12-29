@@ -318,12 +318,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			];
 		}
 		// available PDF fields
-		if ($this->get_scope() == 'host') {
-			$return['PDF_fields'] = ['uid' => _('Host name')];
-		}
-		else {
-			$return['PDF_fields'] = ['uid' => _('User name')];
-		}
+		$return['PDF_fields'] = ($this->get_scope() === 'host') ? ['uid' => _('Host name')] : ['uid' => _('User name')];
 		$return['PDF_fields'] = array_merge($return['PDF_fields'], [
 			'uidNumber' => _('UID number'),
 			'gidNumber' => _('GID number'),
@@ -563,10 +558,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) {
 			return false;
 		}
-		if (!isset($this->attributes['loginShell'][0]) || ($this->attributes['loginShell'][0] == '')) {
-			return false;
-		}
-		return true;
+		return isset($this->attributes['loginShell'][0]) && ($this->attributes['loginShell'][0] != '');
 	}
 
 	/**
@@ -607,7 +599,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$groupFilter = '(&' . $groupFilter . $typeFilter . ')';
 		}
 		$groupList = searchLDAPByFilter($groupFilter, ['cn'], ['group']);
-		for ($i = 0; $i < sizeof($groupList); $i++) {
+		for ($i = 0; $i < count($groupList); $i++) {
 			$groups[] = $groupList[$i]['cn'][0];
 		}
 		return $groups;
@@ -636,7 +628,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$gonListPart = searchLDAPByFilter($gonFilter, ['dn'], [$type]);
 			$gonList = array_merge($gonList, $gonListPart);
 		}
-		for ($i = 0; $i < sizeof($gonList); $i++) {
+		for ($i = 0; $i < count($gonList); $i++) {
 			$userGoNs[] = $gonList[$i]['dn'];
 		}
 		return array_values(array_unique($userGoNs));
@@ -758,7 +750,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($this->attributes['uid'][0] != $this->orig['uid'][0])) {
 				// find affected groups
 				$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', ['dn'], ['group']);
-				for ($i = 0; $i < sizeof($groupList); $i++) {
+				for ($i = 0; $i < count($groupList); $i++) {
 					// replace old user name with new one
 					$return[$groupList[$i]['dn']]['remove']['memberUid'][] = $this->orig['uid'][0];
 					$return[$groupList[$i]['dn']]['add']['memberUid'][] = $this->attributes['uid'][0];
@@ -770,15 +762,15 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$remove = array_delete($this->groups, $this->groups_orig);
 				$groupList = searchLDAPByAttribute('cn', '*', 'posixGroup', ['cn', 'dn'], ['group']);
 				$cn2dn = [];
-				for ($i = 0; $i < sizeof($groupList); $i++) {
+				for ($i = 0; $i < count($groupList); $i++) {
 					$cn2dn[$groupList[$i]['cn'][0]] = $groupList[$i]['dn'];
 				}
-				for ($i = 0; $i < sizeof($add); $i++) {
+				for ($i = 0; $i < count($add); $i++) {
 					if (isset($cn2dn[$add[$i]])) {
 						$return[$cn2dn[$add[$i]]]['add']['memberUid'][] = $this->attributes['uid'][0];
 					}
 				}
-				for ($i = 0; $i < sizeof($remove); $i++) {
+				for ($i = 0; $i < count($remove); $i++) {
 					if (isset($cn2dn[$remove[$i]])) {
 						$return[$cn2dn[$remove[$i]]]['remove']['memberUid'][] = $this->attributes['uid'][0];
 					}
@@ -788,7 +780,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		elseif (in_array('posixAccount', $this->orig['objectClass']) && !empty($this->orig['uid'][0])) {
 			// Unix extension was removed, clean group memberships
 			$groupList = searchLDAPByAttribute('memberUid', $this->orig['uid'][0], 'posixGroup', ['dn'], ['group']);
-			for ($i = 0; $i < sizeof($groupList); $i++) {
+			for ($i = 0; $i < count($groupList); $i++) {
 				// remove user name
 				$return[$groupList[$i]['dn']]['remove']['memberUid'][] = $this->orig['uid'][0];
 			}
@@ -817,7 +809,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// create home directories if needed
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		$lamdaemonServerList = $_SESSION['config']->getConfiguredScriptServers();
-		if (sizeof($this->lamdaemonServers) > 0) {
+		if (count($this->lamdaemonServers) > 0) {
 			foreach ($lamdaemonServerList as $lamdaemonServer) {
 				if (!in_array($lamdaemonServer->getServer(), $this->lamdaemonServers)) {
 					continue;
@@ -837,7 +829,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
+					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'INFO') || ($singleresult[0] === 'WARN')) {
 						$messages[] = $singleresult;
 					}
 					else {
@@ -873,7 +865,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
+					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'INFO') || ($singleresult[0] === 'WARN')) {
 						$messages[] = $singleresult;
 					}
 				}
@@ -906,7 +898,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
+					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'INFO') || ($singleresult[0] === 'WARN')) {
 						$messages[] = $singleresult;
 					}
 				}
@@ -918,15 +910,15 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$toAdd = array_values(array_diff($this->gonList, $this->gonList_orig));
 			$toRem = array_values(array_diff($this->gonList_orig, $this->gonList));
 			// update groups if DN changed
-			if (isset($accountContainer->dn_orig) && (strtolower($accountContainer->dn_orig) != strtolower($accountContainer->finalDN))) {
+			if (isset($accountContainer->dn_orig) && (strtolower($accountContainer->dn_orig) !== strtolower($accountContainer->finalDN))) {
 				// update owner/member/uniqueMember attributes
 				$searchAttrs = ['member', 'uniquemember', 'owner'];
 				foreach ($searchAttrs as $searchAttr) {
 					$ownerGroups = searchLDAPByAttribute($searchAttr, $accountContainer->dn_orig, null, ['dn', $searchAttr], ['gon', 'group']);
-					for ($i = 0; $i < sizeof($ownerGroups); $i++) {
+					for ($i = 0; $i < count($ownerGroups); $i++) {
 						$found = false;
 						$newOwners = $ownerGroups[$i][$searchAttr];
-						for ($o = 0; $o < sizeof($newOwners); $o++) {
+						for ($o = 0; $o < count($newOwners); $o++) {
 							if ($newOwners[$o] == $accountContainer->dn_orig) {
 								$newOwners[$o] = $accountContainer->finalDN;
 								$found = true;
@@ -947,7 +939,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				}
 			}
 			// add groups
-			for ($i = 0; $i < sizeof($toAdd); $i++) {
+			for ($i = 0; $i < count($toAdd); $i++) {
 				if (isset($gons[$toAdd[$i]])) {
 					$attrName = 'member';
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
@@ -964,7 +956,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				}
 			}
 			// remove groups
-			for ($i = 0; $i < sizeof($toRem); $i++) {
+			for ($i = 0; $i < count($toRem); $i++) {
 				if (isset($gons[$toRem[$i]])) {
 					$attrName = 'member';
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
@@ -998,7 +990,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 */
 	public static function createHomeDirectory(Remote $remote, RemoteServerConfiguration $config, string $userName,
 											   string $path, string $uidNumber, string $gidNumber, string $rights) {
-		if ($rights == '') {
+		if ($rights === '') {
 			$rights = '750';
 		}
 		if (!str_starts_with($rights, '0')) {
@@ -1043,7 +1035,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$return = [];
 		// remove memberUids if set
 		$groups = searchLDAPByAttribute('memberUid', $this->attributes['uid'][0], 'posixGroup', ['dn'], ['group']);
-		for ($i = 0; $i < sizeof($groups); $i++) {
+		for ($i = 0; $i < count($groups); $i++) {
 			$return[$groups[$i]['dn']]['remove']['memberUid'][] = $this->attributes['uid'][0];
 		}
 		// stop here if referential integrity overlay is active
@@ -1055,7 +1047,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$dn = $this->getAccountContainer()->dn_orig;
 		$filter = '(&(|(member=' . $dn . ')(uniquemember=' . $dn . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=groupOfMembers)))';
 		$gons = searchLDAPByFilter($filter, ['member', 'uniquemember'], ['group', 'gon']);
-		for ($i = 0; $i < sizeof($gons); $i++) {
+		for ($i = 0; $i < count($gons); $i++) {
 			if (isset($gons[$i]['member'])) {
 				$return[$gons[$i]['dn']]['remove']['member'][] = $dn;
 			}
@@ -1103,7 +1095,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1165,10 +1157,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (isset($_POST['loginShell'])) {
 			$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		}
-		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-			if (isset($_POST['gecos'])) {
-				$this->attributes['gecos'][0] = $_POST['gecos'];
-			}
+		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos') && isset($_POST['gecos'])) {
+			$this->attributes['gecos'][0] = $_POST['gecos'];
 		}
 		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && (trim($_POST['uid']) != $this->attributes['uid'][0])) {
 			$errors[] = $this->messages['uid'][0];
@@ -1216,7 +1206,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// get list of DNS names or IPs
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		$this->lamdaemonServers = [];
-		for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+		for ($h = 0; $h < count($lamdaemonServers); $h++) {
 			if (isset($_POST['createhomedir_' . $h]) && ($_POST['createhomedir_' . $h] = 'on')) {
 				$this->lamdaemonServers[] = $lamdaemonServers[$h]->getServer();
 			}
@@ -1261,7 +1251,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxMachine'][0]);
 		}
 		$uids = $this->getUIDs($typeId);
-		if ($this->attributes['uidNumber'][0] == '') {
+		if ($this->attributes['uidNumber'][0] === '') {
 			// No id-number given
 			if (!isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] == '')) {
 				// new account -> we have to find a free id-number
@@ -1278,29 +1268,29 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 			// old account -> return id-number which has been used
 		}
-		else {
+		elseif ($this->getAccountContainer()->isNewAccount || !isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
 			// check manual ID
-			if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
-				// check range
-				if (($this->get_scope() == 'user') && (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'range'))) {
-					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
-						$errors[] = ['ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID)];
-					}
-				}
-				if (($this->get_scope() == 'host') && (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'range'))) {
-					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
-						$errors[] = ['ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID)];
-					}
-				}
-				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && !isset($this->orig['uidNumber'][0])) {
-					$errors[] = $this->messages['uidNumber'][3];
-				}
-				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && isset($this->orig['uidNumber'][0]) && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
-					$errors[] = $this->messages['uidNumber'][3];
-					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
-				}
+			// check range
+			if (($this->get_scope() === 'user')
+				&& (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] === 'range'))
+				&& (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID))) {
+				$errors[] = ['ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID)];
+			}
+			if (($this->get_scope() === 'host')
+				&& (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'range'))
+				&& (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID))) {
+				$errors[] = ['ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID)];
+			}
+			// id-number is in use and account is a new account
+			if ((in_array($this->attributes['uidNumber'][0], $uids)) && !isset($this->orig['uidNumber'][0])) {
+				$errors[] = $this->messages['uidNumber'][3];
+			}
+			// id-number is in use, account is existing account and id-number is not used by itself
+			if ((in_array($this->attributes['uidNumber'][0], $uids))
+				&& isset($this->orig['uidNumber'][0])
+				&& ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
+				$errors[] = $this->messages['uidNumber'][3];
+				$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 			}
 		}
 		// Create automatic useraccount with number if original user already exists
@@ -1349,7 +1339,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 			$attributeList[] = 'gecos';
 		}
-		for ($i = 0; $i < sizeof($attributeList); $i++) {
+		for ($i = 0; $i < count($attributeList); $i++) {
 			if (isset($this->attributes[$attributeList[$i]][0])) {
 				$value = $this->attributes[$attributeList[$i]][0];
 				$replacedValue = $this->checkASCII($value);
@@ -1648,7 +1638,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
-		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+		for ($i = 0; $i < count($lamdaemonServers); $i++) {
 			if (isset($_POST['form_subpage_' . static::class . '_homedir_create_' . $i])) {
 				$remote = new Remote();
 				try {
@@ -1665,7 +1655,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1694,7 +1684,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1728,7 +1718,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				&& !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup');
 			$groupList = $this->findGroups($modules); // list of all group names
 			$groups = [];
-			for ($i = 0; $i < sizeof($groupList); $i++) {
+			for ($i = 0; $i < count($groupList); $i++) {
 				$groups[$groupList[$i][1]] = $groupList[$i][0];
 			}
 			$groups = natCaseKeySort($groups);
@@ -1855,7 +1845,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 						$homeDirLabel = new htmlOutputText(_('Create home directory'));
 						$return->addLabel($homeDirLabel);
 						$homeServerContainer = new htmlResponsiveRow();
-						for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+						for ($h = 0; $h < count($lamdaemonServers); $h++) {
 							$createHomedirGroup = new htmlGroup();
 							$createHomedirGroup->addElement(new htmlInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h]->getServer(), $this->lamdaemonServers)));
 							$createHomedirGroup->addElement(new htmlOutputText($lamdaemonServers[$h]->getLabel()));
@@ -1960,7 +1950,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if ($showUnix) {
 			// load list with all groups
 			$groups = $this->findGroups($modules);
-			for ($i = 0; $i < sizeof($groups); $i++) {
+			for ($i = 0; $i < count($groups); $i++) {
 				$groups[$i] = $groups[$i][1];
 			}
 			// remove groups the user is member of from grouplist
@@ -2005,7 +1995,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$gonContainer->add(new htmlSubTitle(_("Groups of names")));
 
 			$selectedGons = [];
-			for ($i = 0; $i < sizeof($this->gonList); $i++) {
+			for ($i = 0; $i < count($this->gonList); $i++) {
 				if (isset($gons[$this->gonList[$i]])) {
 					$selectedGons[getAbstractDN($this->gonList[$i])] = $this->gonList[$i];
 				}
@@ -2074,7 +2064,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$return->addVerticalSpacer('2rem');
 		// get list of lamdaemon servers
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
-		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+		for ($i = 0; $i < count($lamdaemonServers); $i++) {
 			$label = $lamdaemonServers[$i]->getLabel();
 			$remote = new Remote();
 			try {
@@ -2097,7 +2087,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			// lamdaemon results
 			if (!empty($result)) {
 				$returnValue = trim($result);
-				if ($returnValue == 'ok') {
+				if ($returnValue === 'ok') {
 					$return->addLabel(new htmlOutputText($label));
 					$okGroup = new htmlGroup();
 					$okGroup->addElement(new htmlImage('../../graphics/pass.svg', 16, 16));
@@ -2105,7 +2095,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$okGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'delete_' . $i, _('Delete')));
 					$return->addField($okGroup);
 				}
-				elseif ($returnValue == 'missing') {
+				elseif ($returnValue === 'missing') {
 					$return->addLabel(new htmlOutputText($label));
 					$failGroup = new htmlGroup();
 					$failGroup->addElement(new htmlImage('../../graphics/del.svg', 16, 16));
@@ -2113,12 +2103,12 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$failGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'create_' . $i, _('Create')));
 					$return->addField($failGroup);
 				}
-				elseif (trim($returnValue) != '') {
+				elseif (trim($returnValue) !== '') {
 					$messageParams = explode(",", $returnValue);
 					if (isset($messageParams[2])) {
 						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]), htmlspecialchars($messageParams[2]));
 					}
-					elseif (($messageParams[0] == 'ERROR') || ($messageParams[0] == 'WARN') || ($messageParams[0] == 'INFO')) {
+					elseif (($messageParams[0] === 'ERROR') || ($messageParams[0] === 'WARN') || ($messageParams[0] === 'INFO')) {
 						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]));
 					}
 					else {
@@ -2142,7 +2132,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
 		$groupList = $this->findGroups($modules);
 		$groups = [];
-		for ($i = 0; $i < sizeof($groupList); $i++) {
+		for ($i = 0; $i < count($groupList); $i++) {
 			$groups[$groupList[$i][1]] = $groupList[$i][1];
 		}
 		$groups = natCaseKeySort($groups);
@@ -2192,7 +2182,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			if ($_SESSION['config']->get_scriptPath() != null) {
 				$return->add(new htmlSubTitle(_('Create home directory')));
 				$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
-				for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+				for ($h = 0; $h < count($lamdaemonServers); $h++) {
 					$server = $lamdaemonServers[$h]->getServer();
 					$label = $lamdaemonServers[$h]->getLabel();
 					$return->add(new htmlResponsiveInputCheckbox('posixAccount_createHomedir_' . $h, in_array($server, $this->lamdaemonServers), $label, 'createhomedir', false));
@@ -2259,17 +2249,18 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (($this->get_scope() == 'user') && $this->getAccountContainer()->isNewAccount) {
 			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 			$this->lamdaemonServers = [];
-			for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
+			for ($h = 0; $h < count($lamdaemonServers); $h++) {
 				if (isset($profile['posixAccount_createHomedir_' . $h][0]) && ($profile['posixAccount_createHomedir_' . $h][0] == 'true')) {
 					$this->lamdaemonServers[] = $lamdaemonServers[$h]->getServer();
 				}
 			}
 		}
 		// add extension
-		if (isset($profile['posixAccount_addExt'][0]) && ($profile['posixAccount_addExt'][0] == "true")) {
-			if (!$this->skipObjectClass() && !in_array('posixAccount', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'posixAccount';
-			}
+		if (isset($profile['posixAccount_addExt'][0])
+			&& ($profile['posixAccount_addExt'][0] == "true")
+			&& !$this->skipObjectClass()
+			&& !in_array('posixAccount', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'posixAccount';
 		}
 	}
 
@@ -2320,20 +2311,20 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$this->addSimplePDFField($return, 'gecos', _('Gecos'));
 		if (self::areGroupOfNamesActive()) {
 			$gons = [];
-			for ($i = 0; $i < sizeof($this->gonList); $i++) {
+			for ($i = 0; $i < count($this->gonList); $i++) {
 				$gons[] = $this->gonList[$i];
 			}
 			usort($gons, 'compareDN');
-			$gonCount = sizeof($gons);
+			$gonCount = count($gons);
 			for ($i = 0; $i < $gonCount; $i++) {
 				$gons[$i] = getAbstractDN($gons[$i]);
 			}
 			$this->addPDFKeyValue($return, 'gon', _('Groups of names'), $gons, "\n");
 		}
-		if (isset($this->clearTextPassword)) {
+		if ($this->clearTextPassword !== null) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->clearTextPassword);
 		}
-		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
+		elseif (isset($this->attributes['INFO.userPasswordClearText'])) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->attributes['INFO.userPasswordClearText']);
 		}
 		return $return;
@@ -2368,10 +2359,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$configUserContainer = new htmlResponsiveRow();
 			$configUserContainer->add(new htmlSubTitle(_("Users")));
 			foreach ($allScopes[static::class] as $typeId) {
-				if (!(getScopeFromTypeId($typeId) === 'user')) {
+				if (getScopeFromTypeId($typeId) !== 'user') {
 					continue;
 				}
-				if (sizeof($allScopes[static::class]) > 1) {
+				if (count($allScopes[static::class]) > 1) {
 					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
 					$title->setCSSClasses(['bold', 'responsiveLabel']);
 					$configUserContainer->add($title, 12, 6);
@@ -2439,10 +2430,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$configHostContainer = new htmlResponsiveRow();
 			$configHostContainer->add(new htmlSubTitle(_("Hosts")));
 			foreach ($allScopes[static::class] as $typeId) {
-				if (!(getScopeFromTypeId($typeId) === 'host')) {
+				if (getScopeFromTypeId($typeId) !== 'host') {
 					continue;
 				}
-				if (sizeof($allScopes[static::class]) > 1) {
+				if (count($allScopes[static::class]) > 1) {
 					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
 					$title->setCSSClasses(['bold', 'responsiveLabel']);
 					$configHostContainer->add($title, 12, 6);
@@ -2521,17 +2512,17 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			if (getScopeFromTypeId($typeId) === 'user') {
 				if ($options['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'range') {
 					// min/maxUID are required, check if they are numeric
-					if (!isset($options['posixAccount_' . $typeId . '_minUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_minUID'][0])) {
+					if (!isset($options['posixAccount_' . $typeId . '_minUID'][0]) || !preg_match('/^\d+$/', $options['posixAccount_' . $typeId . '_minUID'][0])) {
 						$return[] = $this->messages['minUID'][0];
 					}
-					if (!isset($options['posixAccount_' . $typeId . '_maxUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_maxUID'][0])) {
+					if (!isset($options['posixAccount_' . $typeId . '_maxUID'][0]) || !preg_match('/^\d+$/', $options['posixAccount_' . $typeId . '_maxUID'][0])) {
 						$return[] = $this->messages['maxUID'][0];
 					}
 					// minUID < maxUID
-					if (isset($options['posixAccount_' . $typeId . '_minUID'][0]) && isset($options['posixAccount_' . $typeId . '_maxUID'][0])) {
-						if ($options['posixAccount_' . $typeId . '_minUID'][0] >= $options['posixAccount_' . $typeId . '_maxUID'][0]) {
-							$return[] = $this->messages['cmp_UID'][0];
-						}
+					if (isset($options['posixAccount_' . $typeId . '_minUID'][0])
+						&& isset($options['posixAccount_' . $typeId . '_maxUID'][0])
+						&& ($options['posixAccount_' . $typeId . '_minUID'][0] >= $options['posixAccount_' . $typeId . '_maxUID'][0])) {
+						$return[] = $this->messages['cmp_UID'][0];
 					}
 					$ranges[] = [$options['posixAccount_' . $typeId . '_minUID'][0], $options['posixAccount_' . $typeId . '_maxUID'][0]];
 				}
@@ -2550,17 +2541,17 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			if (getScopeFromTypeId($typeId) === 'host') {
 				if ($options['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'range') {
 					// min/maxUID are required, check if they are numeric
-					if (!isset($options['posixAccount_' . $typeId . '_minMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_minMachine'][0])) {
+					if (!isset($options['posixAccount_' . $typeId . '_minMachine'][0]) || !preg_match('/^\d+$/', $options['posixAccount_' . $typeId . '_minMachine'][0])) {
 						$return[] = $this->messages['minMachine'][0];
 					}
-					if (!isset($options['posixAccount_' . $typeId . '_maxMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_maxMachine'][0])) {
+					if (!isset($options['posixAccount_' . $typeId . '_maxMachine'][0]) || !preg_match('/^\d+$/', $options['posixAccount_' . $typeId . '_maxMachine'][0])) {
 						$return[] = $this->messages['maxMachine'][0];
 					}
 					// minUID < maxUID
-					if (isset($options['posixAccount_' . $typeId . '_minMachine'][0]) && isset($options['posixAccount_' . $typeId . '_maxMachine'][0])) {
-						if ($options['posixAccount_' . $typeId . '_minMachine'][0] >= $options['posixAccount_' . $typeId . '_maxMachine'][0]) {
-							$return[] = $this->messages['cmp_Machine'][0];
-						}
+					if (isset($options['posixAccount_' . $typeId . '_minMachine'][0])
+						&& isset($options['posixAccount_' . $typeId . '_maxMachine'][0])
+						&& ($options['posixAccount_' . $typeId . '_minMachine'][0] >= $options['posixAccount_' . $typeId . '_maxMachine'][0])) {
+						$return[] = $this->messages['cmp_Machine'][0];
 					}
 					$ranges[] = [$options['posixAccount_' . $typeId . '_minMachine'][0], $options['posixAccount_' . $typeId . '_maxMachine'][0]];
 				}
@@ -2659,7 +2650,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// get list of existing groups
 		$groupList = $this->findGroups($selectedModules);
 		$groupMap = [];
-		for ($i = 0; $i < sizeof($groupList); $i++) {
+		for ($i = 0; $i < count($groupList); $i++) {
 			$groupMap[$groupList[$i][1]] = $groupList[$i][0];
 		}
 		$existingGroups = array_keys($groupMap);
@@ -2768,7 +2759,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// additional groups
 				if ($rawAccount[$ids['posixAccount_additionalGroups']] != "") {
 					$groups = explode(",", $rawAccount[$ids['posixAccount_additionalGroups']]);
-					for ($g = 0; $g < sizeof($groups); $g++) {
+					for ($g = 0; $g < count($groups); $g++) {
 						if (!in_array($groups[$g], $existingGroups)) {
 							$errors[] = ['ERROR', _('Unable to find group in LDAP.'), $groups[$g]];
 						}
@@ -2777,7 +2768,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// group of names
 				if (self::areGroupOfNamesActive() && isset($ids['posixAccount_gon']) && ($rawAccount[$ids['posixAccount_gon']] != "")) {
 					$groups = explode(",", $rawAccount[$ids['posixAccount_gon']]);
-					for ($g = 0; $g < sizeof($groups); $g++) {
+					for ($g = 0; $g < count($groups); $g++) {
 						if (!in_array($groups[$g], $gonList)) {
 							$errors[] = ['ERROR', _('Unable to find group in LDAP.'), $groups[$g]];
 						}
@@ -2870,18 +2861,16 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
 						$partialAccounts[$i][$pwdAttrName] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 					}
-					// set normal password
-					else {
-						if (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
-							$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
-							$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']]; // for custom scripts etc.
-						}
-						elseif ($rawAccount[$ids['posixAccount_password']] != "") {
-							$errMsg = $this->messages['userPassword'][4];
-							$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-							$errMsg[] = [$i];
-							$errors[] = $errMsg;
-						}
+					elseif (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
+						$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']];
+						// for custom scripts etc.
+					}
+					elseif ($rawAccount[$ids['posixAccount_password']] != "") {
+						$errMsg = $this->messages['userPassword'][4];
+						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+						$errMsg[] = [$i];
+						$errors[] = $errMsg;
 					}
 				}
 				// cn
@@ -2896,16 +2885,14 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 							$errors[] = $errMsg;
 						}
 					}
+					elseif ($partialAccounts[$i]['givenName']) {
+						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
+					}
+					elseif ($partialAccounts[$i]['sn']) {
+						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
+					}
 					else {
-						if ($partialAccounts[$i]['givenName']) {
-							$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
-						}
-						elseif ($partialAccounts[$i]['sn']) {
-							$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
-						}
-						else {
-							$partialAccounts[$i]['cn'] = $partialAccounts[$i]['uid'];
-						}
+						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['uid'];
 					}
 				}
 			}
@@ -2943,9 +2930,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 		}
 		// fill in autoUIDs
-		if (sizeof($needAutoUID) > 0) {
+		if ($needAutoUID !== []) {
 			$errorsTemp = [];
-			$uids = $this->getNextUIDs(sizeof($needAutoUID), $errorsTemp, $typeId);
+			$uids = $this->getNextUIDs(count($needAutoUID), $errorsTemp, $typeId);
 			if (is_array($uids)) {
 				foreach ($needAutoUID as $i => $index) {
 					$partialAccounts[$index]['uidNumber'] = $uids[$i];
@@ -2985,7 +2972,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			// get list of existing groups
 			$groupList = $this->findGroups($selectedModules);
 			$groupMap = [];
-			for ($i = 0; $i < sizeof($groupList); $i++) {
+			for ($i = 0; $i < count($groupList); $i++) {
 				$groupMap[$groupList[$i][0]] = $groupList[$i][1];
 			}
 			// get list of existing group of names
@@ -3011,13 +2998,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 							$groups[] = $groupMap[$dataRow[$ids['posixAccount_group']]];
 						}
 					}
-					else {
-						if (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
-							$groups[] = $dataRow[$ids['posixAccount_group']];
-						}
+					elseif (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
+						$groups[] = $dataRow[$ids['posixAccount_group']];
 					}
 				}
-				for ($g = 0; $g < sizeof($groups); $g++) {
+				for ($g = 0; $g < count($groups); $g++) {
 					if (!in_array($groups[$g], $temp['groups'])) {
 						$temp['groups'][] = $groups[$g];
 					}
@@ -3026,7 +3011,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				if (isset($ids['posixAccount_gon']) && ($dataRow[$ids['posixAccount_gon']] != "")) {
 					$gons = explode(",", $dataRow[$ids['posixAccount_gon']]);
 					$memberAttr = 'member';
-					for ($g = 0; $g < sizeof($gons); $g++) {
+					for ($g = 0; $g < count($gons); $g++) {
 						if (in_array_ignore_case('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
 							$memberAttr = 'uniquemember';
 						}
@@ -3036,10 +3021,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				if (isset($ids['posixAccount_createHomeDir']) && !empty($dataRow[$ids['posixAccount_createHomeDir']])) {
 					$temp['createHomes'][] = $i;
 				}
-				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
-					if (isset($ids['posixAccount_password']) && !empty($dataRow[$ids['posixAccount_password']])) {
-						$temp['exop'][] = [$accounts[$i]['dn'], $dataRow[$ids['posixAccount_password']]];
-					}
+				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0])
+					&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')
+					&& isset($ids['posixAccount_password'])
+					&& !empty($dataRow[$ids['posixAccount_password']])) {
+					$temp['exop'][] = [$accounts[$i]['dn'], $dataRow[$ids['posixAccount_password']]];
 				}
 			}
 			$temp['dn_gon_keys'] = array_keys($temp['dn_gon']);
@@ -3053,7 +3039,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		elseif (!isset($temp['dn'])) {
 			$temp['dn'] = [];
 			$ldapEntries = searchLDAPByAttribute('cn', '*', 'posixGroup', ['dn', 'cn'], ['group']);
-			for ($i = 0; $i < sizeof($ldapEntries); $i++) {
+			for ($i = 0; $i < count($ldapEntries); $i++) {
 				$temp['dn'][$ldapEntries[$i]['cn'][0]] = $ldapEntries[$i]['dn'];
 			}
 			return [
@@ -3063,7 +3049,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			];
 		}
 		// add users to groups
-		elseif ($temp['counter'] < sizeof($temp['groups'])) {
+		elseif ($temp['counter'] < count($temp['groups'])) {
 			if (isset($temp['dn'][$temp['groups'][$temp['counter']]])) {
 				$memberUid = $temp['members'][$temp['groups'][$temp['counter']]];
 				$dnToUpdate = $temp['dn'][$temp['groups'][$temp['counter']]];
@@ -3088,7 +3074,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$temp['counter']++;
 				return [
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
+					'progress' => ($temp['counter'] * 100) / (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop'])),
 					'errors' => $errors
 				];
 			}
@@ -3096,14 +3082,14 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$temp['counter']++;
 				return [
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups'] + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop']))),
+					'progress' => ($temp['counter'] * 100) / (count($temp['groups'] + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop']))),
 					'errors' => [['ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]]]
 				];
 			}
 		}
 		// create home directories
-		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']))) {
-			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
+		elseif ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']))) {
+			$pos = $temp['createHomes'][$temp['counter'] - count($temp['groups'])];
 			try {
 				$remote = new Remote();
 				$remoteServer = $_SESSION['config']->getScriptServerByName($data[$pos][$ids['posixAccount_createHomeDir']]);
@@ -3126,13 +3112,13 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$temp['counter']++;
 			return [
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
+				'progress' => ($temp['counter'] * 100) / (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop'])),
 				'errors' => $errors
 			];
 		}
 		// add users to group of names
-		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']))) {
-			$gonDn = $temp['dn_gon_keys'][$temp['counter'] - sizeof($temp['groups']) - sizeof($temp['createHomes'])];
+		elseif ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']))) {
+			$gonDn = $temp['dn_gon_keys'][$temp['counter'] - count($temp['groups']) - count($temp['createHomes'])];
 			$gonAttrToAdd = $temp['dn_gon'][$gonDn];
 			$gonAttrNames = array_keys($gonAttrToAdd);
 			$gonAttrs = ldapGetDN($gonDn, $gonAttrNames);
@@ -3160,13 +3146,13 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$temp['counter']++;
 			return [
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
+				'progress' => ($temp['counter'] * 100) / (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop'])),
 				'errors' => $errors
 			];
 		}
 		// run password exop commands
-		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop']))) {
-			$data = $temp['exop'][$temp['counter'] - sizeof($temp['groups']) - sizeof($temp['createHomes']) - sizeof($temp['dn_gon'])];
+		elseif ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop']))) {
+			$data = $temp['exop'][$temp['counter'] - count($temp['groups']) - count($temp['createHomes']) - count($temp['dn_gon'])];
 			$dn = $data[0];
 			$password = $data[1];
 			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
@@ -3182,7 +3168,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$temp['counter']++;
 			return [
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
+				'progress' => ($temp['counter'] * 100) / (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop'])),
 				'errors' => $errors
 			];
 		}
@@ -3448,56 +3434,53 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
-		if (in_array('password', $fields)) {
-			if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
-				if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
-					$return['messages'][] = $this->messages['userPassword'][0];
+		if (in_array('password', $fields)
+			&& (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != ''))) {
+			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
+				$return['messages'][] = $this->messages['userPassword'][0];
+			}
+			elseif (!get_preg($_POST['posixAccount_password'], 'password')) {
+				$return['messages'][] = $this->messages['userPassword'][1];
+			}
+			else {
+				$userName = empty($attributes['uid'][0]) ? null : $attributes['uid'][0];
+				$additionalAttrs = [];
+				if (!empty($attributes['sn'][0])) {
+					$additionalAttrs[] = $attributes['sn'][0];
 				}
-				else {
-					if (!get_preg($_POST['posixAccount_password'], 'password')) {
-						$return['messages'][] = $this->messages['userPassword'][1];
+				if (!empty($attributes['givenName'][0])) {
+					$additionalAttrs[] = $attributes['givenName'][0];
+				}
+				$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password'], $userName, $additionalAttrs);
+				if ($pwdPolicyResult === true) {
+					$passwordHash = $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0];
+					if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
+						// set SASL password
+						if (!empty($attributes['uid'][0]) && ($passwordHash === 'SASL')) {
+							$return['mod']['userpassword'][0] = '{SASL}' . $attributes['uid'][0];
+						}
+						elseif ($passwordHash === 'LDAP_EXOP') {
+							// no LDAP modify action, use ldap_exop_passwd
+							$return['info']['userPasswordModify'][0] = 'exop';
+						}
+						// set other password hashes
+						else {
+							$return['mod']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
+						}
+
 					}
 					else {
-						$userName = empty($attributes['uid'][0]) ? null : $attributes['uid'][0];
-						$additionalAttrs = [];
-						if (!empty($attributes['sn'][0])) {
-							$additionalAttrs[] = $attributes['sn'][0];
-						}
-						if (!empty($attributes['givenName'][0])) {
-							$additionalAttrs[] = $attributes['givenName'][0];
-						}
-						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password'], $userName, $additionalAttrs);
-						if ($pwdPolicyResult === true) {
-							$passwordHash = $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0];
-							if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
-								// set SASL password
-								if (!empty($attributes['uid'][0]) && ($passwordHash === 'SASL')) {
-									$return['mod']['userpassword'][0] = '{SASL}' . $attributes['uid'][0];
-								}
-								elseif ($passwordHash === 'LDAP_EXOP') {
-									// no LDAP modify action, use ldap_exop_passwd
-									$return['info']['userPasswordModify'][0] = 'exop';
-								}
-								// set other password hashes
-								else {
-									$return['mod']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
-								}
-
-							}
-							else {
-								$return['add']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
-								$return['del']['userpassword'][0] = $_POST['posixAccount_passwordOld'];
-							}
-							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
-							if (isset($attributes['shadowlastchange'][0])) {
-								$return['mod']['shadowlastchange'][0] = intval(time() / 3600 / 24);
-							}
-							$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
-						}
-						else {
-							$return['messages'][] = ['ERROR', $pwdPolicyResult];
-						}
+						$return['add']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
+						$return['del']['userpassword'][0] = $_POST['posixAccount_passwordOld'];
 					}
+					$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
+					if (isset($attributes['shadowlastchange'][0])) {
+						$return['mod']['shadowlastchange'][0] = intval(time() / 3600 / 24);
+					}
+					$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
+				}
+				else {
+					$return['messages'][] = ['ERROR', $pwdPolicyResult];
 				}
 			}
 		}
@@ -3640,7 +3623,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 */
 	private function getGID($groupname) {
 		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', ['gidnumber'], ['group']);
-		if ((sizeof($results) > 0) && isset($results[0]['gidnumber'][0])) {
+		if ((count($results) > 0) && isset($results[0]['gidnumber'][0])) {
 			return $results[0]['gidnumber'][0];
 		}
 		return null;
@@ -3654,7 +3637,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 */
 	private function getGroupName($groupID) {
 		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', ['cn'], ['group']);
-		if ((sizeof($results) > 0) && isset($results[0]['cn'][0])) {
+		if ((count($results) > 0) && isset($results[0]['cn'][0])) {
 			return $results[0]['cn'][0];
 		}
 		return null;
@@ -3684,7 +3667,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$filter = '(&' . $filter . $typeFilter . ')';
 			}
 			$results = searchLDAP($type->getSuffix(), $filter, ['cn', 'gidnumber']);
-			for ($i = 0; $i < sizeof($results); $i++) {
+			for ($i = 0; $i < count($results); $i++) {
 				if (isset($results[$i]['cn'][0]) && isset($results[$i]['gidnumber'][0])) {
 					$this->groupCache[] = [$results[$i]['gidnumber'][0], $results[$i]['cn'][0]];
 				}
@@ -3708,7 +3691,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		foreach ($types as $type) {
 			$typeFilter = get_ldap_filter($type->getId());
 			$results = searchLDAP($type->getSuffix(), $typeFilter, ['cn', 'dn', 'objectClass']);
-			for ($i = 0; $i < sizeof($results); $i++) {
+			for ($i = 0; $i < count($results); $i++) {
 				if ((in_array_ignore_case('groupOfNames', $results[$i]['objectclass'])
 						|| in_array_ignore_case('groupOfMembers', $results[$i]['objectclass'])
 						|| in_array_ignore_case('groupOfUniqueNames', $results[$i]['objectclass']))
@@ -3873,7 +3856,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// search for @key@ wildcards in format string and replace with first character of attribute
 		$wildcards = [];
 		if (preg_match_all('/@([^@]|[a-zA-Z_-])+@/', $format, $wildcards) > 0) {
-			for ($i = 0; $i < sizeof($wildcards[0]); $i++) {
+			for ($i = 0; $i < count($wildcards[0]); $i++) {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
 				if (!empty($attributes[$wc][0])) {
@@ -3885,7 +3868,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// search for %key% wildcards in format string and replace with attribute
 		$wildcards = [];
 		if (preg_match_all('/%([^%]|[a-zA-Z_-])+%/', $format, $wildcards) > 0) {
-			for ($i = 0; $i < sizeof($wildcards[0]); $i++) {
+			for ($i = 0; $i < count($wildcards[0]); $i++) {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
 				if (isset($attributes[$wc][0])) {
@@ -3916,11 +3899,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @return boolean lockable
 	 */
 	public function isLockable(&$modules) {
-		if (isset($this->attributes[$this->getPasswordAttrName($modules)][0])
-			&& pwd_is_lockable($this->attributes[$this->getPasswordAttrName($modules)][0])) {
-			return true;
-		}
-		return false;
+		return isset($this->attributes[$this->getPasswordAttrName($modules)][0])
+			&& pwd_is_lockable($this->attributes[$this->getPasswordAttrName($modules)][0]);
 	}
 
 	/**
@@ -3999,7 +3979,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$suffix = '$';
 		}
 		// Last character is no number
-		if (!preg_match('/^([0-9])+$/', $lastchar)) {
+		if (!preg_match('/^(\d)+$/', $lastchar)) {
 			// Last character is no number. Therefore we only have to add "2" to it.
 			$userName = $userName . '2' . $suffix;
 		}
@@ -4014,7 +3994,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$mark = false;
 			// Set $i to the last character which is a number in $account_new->general_username
 			while (!$mark && ($i >= 0)) {
-				if (preg_match('/^([0-9])+$/', substr($userName, $i, strlen($userName) - $i))) {
+				if (preg_match('/^(\d)+$/', substr($userName, $i, strlen($userName) - $i))) {
 					$i--;
 				}
 				else {
@@ -4037,13 +4017,15 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 */
 	private function getShells() {
 		// self service
-		if (!isLoggedIn() && isset($this->selfServiceSettings) && isset($this->selfServiceSettings->moduleSettings['posixAccount_shells'])
-			&& (sizeof($this->selfServiceSettings->moduleSettings['posixAccount_shells'])) > 0) {
+		if (!isLoggedIn() && ($this->selfServiceSettings !== null)
+			&& isset($this->selfServiceSettings->moduleSettings['posixAccount_shells'])
+			&& (count($this->selfServiceSettings->moduleSettings['posixAccount_shells'])) > 0) {
 			return $this->selfServiceSettings->moduleSettings['posixAccount_shells'];
 		}
 		// server profile
-		if (!isset($this->selfServiceSettings) && isset($this->moduleSettings) && isset($this->moduleSettings['posixAccount_shells'])
-			&& (sizeof($this->moduleSettings['posixAccount_shells'])) > 0) {
+		if (($this->selfServiceSettings === null) && ($this->moduleSettings !== null)
+			&& isset($this->moduleSettings['posixAccount_shells'])
+			&& (count($this->moduleSettings['posixAccount_shells'])) > 0) {
 			return $this->moduleSettings['posixAccount_shells'];
 		}
 		// fall back to default
@@ -4165,18 +4147,17 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$replacements['user'] = $this->attributes['uid'][0];
 		}
 		// group name
-		if (isset($this->attributes['gidNumber'][0]) && ($this->attributes['gidNumber'][0] === self::CREATE_GROUP_WITH_SAME_NAME)) {
+		if (isset($this->attributes['gidNumber'][0])
+			&& ($this->attributes['gidNumber'][0] === self::CREATE_GROUP_WITH_SAME_NAME)) {
 			if (isset($replacements['user'])) {
 				$replacements['group'] = $replacements['user'];
 			}
 		}
-		else {
-			if (!empty($_POST['gidNumber'])) {
-				$replacements['group'] = $this->getGroupName($_POST['gidNumber']);
-			}
-			elseif (!empty($this->attributes['gidNumber'][0])) {
-				$replacements['group'] = $this->getGroupName($this->attributes['gidNumber'][0]);
-			}
+		elseif (!empty($_POST['gidNumber'])) {
+			$replacements['group'] = $this->getGroupName($_POST['gidNumber']);
+		}
+		elseif (!empty($this->attributes['gidNumber'][0])) {
+			$replacements['group'] = $this->getGroupName($this->attributes['gidNumber'][0]);
 		}
 		return $replacements;
 	}

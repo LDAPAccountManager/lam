@@ -48,7 +48,7 @@ define('LAMPDF_FONT_SIZE', 7);
 define('LAMPDF_FONT_SIZE_BIG', 10);
 
 /** access to PDF configuration files */
-include_once('pdfstruct.inc');
+include_once(__DIR__ . '/pdfstruct.inc');
 
 /**
  * This function creates the PDF output of one or more accounts.
@@ -152,10 +152,10 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 								if ($valueEntry instanceof PDFLabelValue) {
 									printLabelValue($pdf, $valueEntry, $font);
 								}
-								else if ($valueEntry instanceof PDFTable) {
+								elseif ($valueEntry instanceof PDFTable) {
 									printTable($pdf, $valueEntry, $font);
 								}
-								else if ($valueEntry instanceof PDFImage) {
+								elseif ($valueEntry instanceof PDFImage) {
 									printImage($pdf, $valueEntry, $font);
 								}
 							}

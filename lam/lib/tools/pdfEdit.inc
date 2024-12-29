@@ -95,7 +95,7 @@ class toolPDFEditor extends LAMTool {
 	public function isVisible(): bool {
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypes();
-		return (sizeof($types) > 0);
+		return (count($types) > 0);
 	}
 
 }

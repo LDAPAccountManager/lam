@@ -269,7 +269,7 @@ class ConfigDataExporter {
 		if (!isLAMProVersion()) {
 			return $data;
 		}
-		include_once 'database.inc';
+		include_once __DIR__ . '/database.inc';
 		foreach ($serverProfiles as $serverProfileName => $serverProfile) {
 			try {
 				$cronDatabase = new CronDatabase($serverProfile);
@@ -696,7 +696,7 @@ class ConfigDataImporter {
 			return;
 		}
 		$failedProfiles = [];
-		include_once 'database.inc';
+		include_once __DIR__ . '/database.inc';
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
@@ -708,7 +708,7 @@ class ConfigDataImporter {
 			$cronDatabase = new CronDatabase($serverProfile);
 			$cronDatabase->connect();
 			if (isset($data['jobRuns'])) {
-				logNewMessage(LOG_DEBUG, 'Import ' . sizeof($data['jobRuns']) . ' cron job runs for ' . $serverProfileName);
+				logNewMessage(LOG_DEBUG, 'Import ' . count($data['jobRuns']) . ' cron job runs for ' . $serverProfileName);
 				$cronDatabase->clearJobRuns();
 				foreach ($data['jobRuns'] as $jobRun) {
 					$cronDatabase->importJobRun($jobRun['runId'], $jobRun['name'], $jobRun['jobId'], $jobRun['time'], $jobRun['isOk'], $jobRun['message']);
@@ -721,7 +721,7 @@ class ConfigDataImporter {
 						continue;
 					}
 					$job = $jobs[$jobId];
-					logNewMessage(LOG_DEBUG, 'Import ' . sizeof($jobData) . ' cron data entries for ' . $job->getName() . ' - ' . $jobId);
+					logNewMessage(LOG_DEBUG, 'Import ' . count($jobData) . ' cron data entries for ' . $job->getName() . ' - ' . $jobId);
 					$job->import($cronDatabase->getPdo(), $jobData, $jobId);
 				}
 			}

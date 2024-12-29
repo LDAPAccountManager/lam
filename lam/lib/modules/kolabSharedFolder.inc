@@ -57,7 +57,7 @@ class kolabSharedFolder extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['kolabSharedFolderType']);
+		return $this->get_scope() === 'kolabSharedFolderType';
 	}
 
 	/**
@@ -261,14 +261,14 @@ class kolabSharedFolder extends baseModule {
 		// delegates
 		$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', ['dn'], ['user']);
 		$delegates = [];
-		for ($i = 0; $i < sizeof($delegatesData); $i++) {
+		for ($i = 0; $i < count($delegatesData); $i++) {
 			$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
 		}
 		uksort($delegates, 'compareDN');
 		$container->add(new htmlSubTitle(_('Delegates')));
 		$delegatesContainer = new htmlTable();
 		if (isset($this->attributes['kolabDelegate'])) {
-			for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
+			for ($i = 0; $i < count($this->attributes['kolabDelegate']); $i++) {
 				$delegateSelect = new htmlSelect('delegate' . $i, $delegates, [$this->attributes['kolabDelegate'][$i]]);
 				$delegateSelect->setHasDescriptiveElements(true);
 				$delegateSelect->setSortElements(false);
@@ -347,12 +347,12 @@ class kolabSharedFolder extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
 		$delegates = searchLDAPByAttribute(null, null, 'inetOrgPerson', ['dn'], ['user']);
-		for ($d = 0; $d < sizeof($delegates); $d++) {
+		for ($d = 0; $d < count($delegates); $d++) {
 			if (isset($delegates[$d]['dn'])) {
 				$delegates[$d] = $delegates[$d]['dn'];
 			}
 		}
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object classes
 			if (!in_array('kolabSharedFolder', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'kolabSharedFolder';
@@ -379,14 +379,14 @@ class kolabSharedFolder extends baseModule {
 			if ($rawAccounts[$i][$ids['kolabSharedFolder_delegates']] != "") {
 				$newDelegates = explode(';', $rawAccounts[$i][$ids['kolabSharedFolder_delegates']]);
 				// check format
-				for ($d = 0; $d < sizeof($newDelegates); $d++) {
+				for ($d = 0; $d < count($newDelegates); $d++) {
 					if (in_array($newDelegates[$d], $delegates)) {
 						$partialAccounts[$i]['kolabDelegate'][] = $newDelegates[$d];
 					}
 					// invalid format
 					else {
 						$errMsg = $this->messages['delegate'][0];
-						array_push($errMsg, [$i, $newDelegates[$d]]);
+						$errMsg[] = [$i, $newDelegates[$d]];
 						$messages[] = $errMsg;
 					}
 				}
@@ -439,7 +439,7 @@ class kolabSharedFolder extends baseModule {
 			return function(array $entry, string $attribute): ?htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
-					for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
+					for ($i = 0; $i < count($entry[$attribute]); $i++) {
 						if ($i > 0) {
 							$group->addElement(new htmlOutputText(", "));
 						}

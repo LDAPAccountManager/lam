@@ -169,14 +169,14 @@ class nisMailAlias extends baseModule {
 		$mailList = $this->getMailList();
 		$userList = $this->getUserList();
 		$autoList = [];
-		if ((sizeof($userList) + sizeof($mailList)) < 300) {
+		if ((count($userList) + count($mailList)) < 300) {
 			$autoList = array_merge($userList, $mailList);
 		}
 		$recipientCount = 0;
 		if (isset($this->attributes['rfc822MailMember'])) {
 			natcasesort($this->attributes['rfc822MailMember']);
 			$this->attributes['rfc822MailMember'] = array_values($this->attributes['rfc822MailMember']);
-			$recipientCount = sizeof($this->attributes['rfc822MailMember']);
+			$recipientCount = count($this->attributes['rfc822MailMember']);
 			if ($recipientCount < self::DISPLAY_LIMIT) {
 				for ($i = 0; $i < $recipientCount; $i++) {
 					if (($i == 0) && ($recipientCount == 1)) {
@@ -189,7 +189,7 @@ class nisMailAlias extends baseModule {
 						$return->addLabel(new htmlOutputText('&nbsp;', false));
 					}
 					$mailField = new htmlInputField('rfc822MailMember' . $i, $this->attributes['rfc822MailMember'][$i]);
-					if (sizeof($autoList) > 0) {
+					if ($autoList !== []) {
 						$mailField->enableAutocompletion($autoList);
 					}
 					$mailField->setCSSClasses(['maxwidth20']);
@@ -212,14 +212,14 @@ class nisMailAlias extends baseModule {
 			$return->addLabel(new htmlOutputText(_('New recipient')));
 			$newMailField = new htmlInputField('rfc822MailMember');
 			$newMailField->setOnKeyPress('SubmitForm(\'addRec\', event);');
-			if (sizeof($autoList) > 0) {
+			if ($autoList !== []) {
 				$newMailField->enableAutocompletion($autoList);
 			}
 			$newMailField->setCSSClasses(['maxwidth20']);
 			$newGroup = new htmlGroup();
 			$newGroup->addElement($newMailField);
-			$newGroup->addElement(new htmlAccountPageButton(static::class, 'selectMail', 'recipient' . 'New', 'mail.svg', true, _('Select mail')));
-			$newGroup->addElement(new htmlAccountPageButton(static::class, 'selectUser', 'recipient' . 'New', 'user.svg', true, _('Select user')));
+			$newGroup->addElement(new htmlAccountPageButton(static::class, 'selectMail', 'recipientNew', 'mail.svg', true, _('Select mail')));
+			$newGroup->addElement(new htmlAccountPageButton(static::class, 'selectUser', 'recipientNew', 'user.svg', true, _('Select user')));
 			$newGroup->addElement(new htmlButton('addRec', 'add.svg', true));
 			$newGroup->addElement(new htmlHelpLink('recipient'));
 			$newGroup->addElement(new htmlHiddenInput('rec_number', $recipientCount));
@@ -237,7 +237,7 @@ class nisMailAlias extends baseModule {
 	function process_attributes() {
 		$errors = [];
 		$this->attributes['cn'] = [];
-		$recipientCount = !empty($this->attributes['rfc822MailMember']) ? sizeof($this->attributes['rfc822MailMember']) : 0;
+		$recipientCount = empty($this->attributes['rfc822MailMember']) ? 0 : count($this->attributes['rfc822MailMember']);
 		$this->attributes['rfc822MailMember'] = [];
 		// check alias name
 		$this->attributes['cn'][] = $_POST['cn'];
@@ -357,14 +357,14 @@ class nisMailAlias extends baseModule {
 		$return = new htmlResponsiveRow();
 		$postKeys = array_keys($_POST);
 		$position = 'New';
-		for ($i = 0; $i < sizeof($postKeys); $i++) {
+		for ($i = 0; $i < count($postKeys); $i++) {
 			if (str_starts_with($postKeys[$i], 'form_subpage_' . static::class . '_select' . $suffix . '_recipient')) {
 				$position = substr($postKeys[$i], strlen('form_subpage_' . static::class . '_select' . $suffix . '_recipient'));
 				break;
 			}
 		}
 		// load list with all mail addresses
-		$count = sizeof($options);
+		$count = count($options);
 		for ($i = 0; $i < $count; $i++) {
 			if (!get_preg($options[$i], $regex)) {
 				unset($options[$i]);
@@ -436,7 +436,7 @@ class nisMailAlias extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("nisMailAlias", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "nisMailAlias";
@@ -448,7 +448,7 @@ class nisMailAlias extends baseModule {
 			if ($rawAccounts[$i][$ids['nisMailAlias_recipients']] != "") {
 				$aliases = explode(',', $rawAccounts[$i][$ids['nisMailAlias_recipients']]);
 				// check format
-				for ($a = 0; $a < sizeof($aliases); $a++) {
+				for ($a = 0; $a < count($aliases); $a++) {
 					if (get_preg($aliases[$a], 'nis_recipient') || get_preg($aliases[$a], 'email')) {
 						$partialAccounts[$i]['rfc822MailMember'][] = $aliases[$a];
 					}
@@ -484,7 +484,7 @@ class nisMailAlias extends baseModule {
 			return $this->cachedMailList;
 		}
 		$this->cachedMailList = searchLDAPByAttribute('mail', '*', null, ['mail'], ['user']);
-		for ($i = 0; $i < sizeof($this->cachedMailList); $i++) {
+		for ($i = 0; $i < count($this->cachedMailList); $i++) {
 			$this->cachedMailList[$i] = $this->cachedMailList[$i]['mail'][0];
 		}
 		$this->cachedMailList = array_values(array_unique($this->cachedMailList));
@@ -501,7 +501,7 @@ class nisMailAlias extends baseModule {
 			return $this->cachedUserList;
 		}
 		$this->cachedUserList = searchLDAPByFilter('(|(objectClass=posixAccount)(objectClass=inetOrgPerson))', ['uid'], ['user']);
-		$count = sizeof($this->cachedUserList);
+		$count = count($this->cachedUserList);
 		for ($i = 0; $i < $count; $i++) {
 			if (empty($this->cachedUserList[$i]['uid'][0])) {
 				unset($this->cachedUserList[$i]);

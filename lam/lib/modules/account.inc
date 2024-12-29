@@ -140,10 +140,7 @@ class account extends baseModule {
 	 * @return boolean true if LDAP operation can be done
 	 */
 	function module_complete() {
-		if (!$this->isUnixActive() && empty($this->attributes['uid'][0])) {
-			return false;
-		}
-		return true;
+		return $this->isUnixActive() || !empty($this->attributes['uid'][0]);
 	}
 
 	/**
@@ -263,7 +260,7 @@ class account extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("account", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "account";

@@ -67,7 +67,7 @@ class asteriskExtension extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['asteriskExt']);
+		return $this->get_scope() === 'asteriskExt';
 	}
 
 	/**
@@ -249,11 +249,11 @@ class asteriskExtension extends baseModule {
 		$title->setHelpId('member');
 		$renderContainer->add($title, 12);
 		$ownerList = new htmlTable();
-		if ((!isset($this->extensionOwners) || sizeof($this->extensionOwners) == 0) && isset($this->extensionRows[0]['member'])) {
+		if (($this->extensionOwners === null || count($this->extensionOwners) == 0) && isset($this->extensionRows[0]['member'])) {
 			$this->extensionOwners = $this->extensionRows[0]['member'];
 		}
-		if (isset($this->extensionOwners)) {
-			for ($i = 0; $i < sizeof($this->extensionOwners); $i++) {
+		if ($this->extensionOwners !== null) {
+			for ($i = 0; $i < count($this->extensionOwners); $i++) {
 				$ownerList->addElement(new htmlOutputText(getAbstractDN($this->extensionOwners[$i])), true);
 			}
 		}
@@ -327,7 +327,7 @@ class asteriskExtension extends baseModule {
 		$renderContainer->add(new htmlSubTitle(_('Rules')), 12);
 		$renderContainer->addVerticalSpacer('1rem');
 
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$this->render_extension($entries[$i], $i, $renderContainer);
 			$renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
 
@@ -335,8 +335,8 @@ class asteriskExtension extends baseModule {
 			if ($i > 0) {
 				$upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true), false);
 			}
-			if (($i < sizeof($entries) - 1) &&
-				((sizeof($entries) > 1) || ($this->addRuleFlag))) {
+			if (($i < count($entries) - 1) &&
+				((count($entries) > 1) || ($this->addRuleFlag))) {
 				$upDownButtons->addElement(new htmlButton('rule_down_button_' . $i, 'down.svg', true));
 			}
 			$renderContainer->addField($upDownButtons, true);
@@ -344,11 +344,11 @@ class asteriskExtension extends baseModule {
 			$renderContainer->addVerticalSpacer('2rem');
 		}
 
-		$displayEntrNum = sizeof($entries);
+		$displayEntrNum = count($entries);
 
-		if ($this->addRuleFlag || sizeof($entries) == 0) {
+		if ($this->addRuleFlag || count($entries) == 0) {
 
-			$this->render_extension(null, sizeof($entries), $renderContainer);
+			$this->render_extension(null, count($entries), $renderContainer);
 
 			if ($this->addRuleFlag) {
 				$upDownButtons = new htmlTable();
@@ -423,7 +423,7 @@ class asteriskExtension extends baseModule {
 			else {
 				arsort($sortable_array);
 			}
-			foreach ($sortable_array as $k => $v) {
+			foreach (array_keys($sortable_array) as $k) {
 				$new_array[] = $array[$k];
 			}
 		}
@@ -445,22 +445,17 @@ class asteriskExtension extends baseModule {
 		}
 		$entries = searchLDAPByAttribute(null, null, $searchClass, ['dn'], [$searchScope]);
 		$users_dn = [];
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$dn = $entries[$i]['dn'];
-			if (isset($dn) && (!isset($this->extensionOwners) || !in_array($dn, $this->extensionOwners))) {
+			if (isset($dn) && ($this->extensionOwners === null || !in_array($dn, $this->extensionOwners))) {
 				$users_dn[getAbstractDN($dn)] = $dn;
 			}
 		}
 		uasort($users_dn, compareDN(...));
-		if (isset($this->extensionOwners)) {
-			$memberList = $this->extensionOwners;
-		}
-		else {
-			$memberList = [];
-		}
+		$memberList = $this->extensionOwners ?? [];
 		usort($memberList, compareDN(...));
 		$members = [];
-		for ($i = 0; $i < sizeof($memberList); $i++) {
+		for ($i = 0; $i < count($memberList); $i++) {
 			$members[getAbstractDN($memberList[$i])] = $memberList[$i];
 		}
 		// options
@@ -495,7 +490,7 @@ class asteriskExtension extends baseModule {
 				$this->filterOwnerForAsteriskAccounts = false;
 			}
 		}
-		if (!isset($this->extensionOwners)) {
+		if ($this->extensionOwners === null) {
 			$this->extensionOwners = [];
 		}
 		if (isset($_POST['owners_2']) && isset($_POST['owners_left'])) {
@@ -517,10 +512,8 @@ class asteriskExtension extends baseModule {
 	 */
 	function isMoveToNewSuffix() {
 		$orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
-		if (strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0 && !$this->getAccountContainer()->isNewAccount) {
-			return true;
-		}
-		return false;
+		return strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0
+			&& !$this->getAccountContainer()->isNewAccount;
 	}
 
 
@@ -530,10 +523,7 @@ class asteriskExtension extends baseModule {
 	 * @return boolean true if one or more owners
 	 */
 	function isExtensionOwnerSet() {
-		if (sizeof($this->extensionOwners) > 0) {
-			return true;
-		}
-		return false;
+		return (count($this->extensionOwners) > 0);
 	}
 
 	/**
@@ -606,7 +596,7 @@ class asteriskExtension extends baseModule {
 				$extRow = [];
 				if (!isset($_POST['delete_rule_' . $entryCounter])) {
 					$singleExtAddErrors = $this->processSingleExtension($extRow, $extensionName, $extensionContext, $entryCounter, $extensionPriorityCntr);
-					$errors = $errors + $singleExtAddErrors;
+					$errors += $singleExtAddErrors;
 
 					if ((isset($extRow['astapplication'][0]) && $extRow['astapplication'][0] != "") ||
 						(isset($extRow['astapplicationdata'][0]) && $extRow['astapplicationdata'][0] != "")
@@ -702,13 +692,12 @@ class asteriskExtension extends baseModule {
 	 * Reorders the rules if the user clicked on a move button.
 	 */
 	function processPriorityChange() {
-		for ($entryCounter = 0; $entryCounter < sizeof($this->extensionRows); $entryCounter++) {
+		for ($entryCounter = 0; $entryCounter < count($this->extensionRows); $entryCounter++) {
 			if (isset($_POST["rule_up_button_" . $entryCounter])) {
-
 				$this->extensionRows[$entryCounter]['astpriority'][0]--;
 				$this->extensionRows[$entryCounter - 1]['astpriority'][0]++;
 			}
-			else if (isset($_POST["rule_down_button_" . $entryCounter])) {
+			elseif (isset($_POST["rule_down_button_" . $entryCounter])) {
 				$this->extensionRows[$entryCounter]['astpriority'][0]++;
 				$this->extensionRows[$entryCounter + 1]['astpriority'][0]--;
 			}
@@ -730,7 +719,7 @@ class asteriskExtension extends baseModule {
 		$entries = searchLDAPByAttribute("AstExtension", $extension, $searchClass, ['dn'], [$searchScope]);
 
 		$exists = false;
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$dn = extractDNSuffix($entries[$i]['dn']);
 			if ($dn == $this->getAccountContainer()->dnSuffix) {
 				$exists = true;
@@ -757,8 +746,8 @@ class asteriskExtension extends baseModule {
 			$entries = searchLDAPByAttribute(null, null, $searchClass, ['astextension'], [$searchScope]);
 			$entries = $this->array_sort($entries, 'astextension');
 
-			if (isset($entries[sizeof($entries) - 1]['astextension'][0])) {
-				$greater_ext_name = $entries[sizeof($entries) - 1]['astextension'][0];
+			if (isset($entries[count($entries) - 1]['astextension'][0])) {
+				$greater_ext_name = $entries[count($entries) - 1]['astextension'][0];
 			}
 			else {
 				$greater_ext_name = 0;
@@ -806,7 +795,7 @@ class asteriskExtension extends baseModule {
 		$pdfRow->cells[] = new PDFTableCell(_('Application data'), '30%', null, true);
 		$pdfRow->cells[] = new PDFTableCell(_('Priority'), '20%', null, true);
 		$pdfTable->rows[] = $pdfRow;
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$appdata = ' ';
 			if (isset($entries[$i]['astapplicationdata'][0])) {
 				$appdata = $entries[$i]['astapplicationdata'][0];
@@ -830,7 +819,7 @@ class asteriskExtension extends baseModule {
 		$messages = [];
 		//hash to store extension_name => priority. For new extension priority will be 1
 		$extensionNamePriorityMap = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("AsteriskExtension", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "AsteriskExtension";

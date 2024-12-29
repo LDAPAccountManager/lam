@@ -88,7 +88,7 @@ class windowsGroup extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['group']);
+		return $this->get_scope() === 'group';
 	}
 
 	/**
@@ -323,16 +323,16 @@ class windowsGroup extends baseModule {
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;
 		if (isset($this->attributes['groupType'][0])) {
-			if ($this->attributes['groupType'][0] & 2) {
+			if (($this->attributes['groupType'][0] & 2) !== 0) {
 				$groupScope = windowsGroup::SCOPE_GLOBAL;
 			}
-			elseif ($this->attributes['groupType'][0] & 4) {
+			elseif (($this->attributes['groupType'][0] & 4) !== 0) {
 				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
 			}
-			elseif ($this->attributes['groupType'][0] & 8) {
+			elseif (($this->attributes['groupType'][0] & 8) !== 0) {
 				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
 			}
-			if ($this->attributes['groupType'][0] & 0x80000000) {
+			if (($this->attributes['groupType'][0] & 0x80000000) !== 0) {
 				$groupType = windowsGroup::TYPE_SECURITY;
 			}
 			else {
@@ -343,11 +343,11 @@ class windowsGroup extends baseModule {
 		// do not allow invalid conversions
 		if (isset($this->orig['groupType'][0])) {
 			$flippedScopes = array_flip($this->groupScopes);
-			if ($this->orig['groupType'][0] & 2) {
+			if (($this->orig['groupType'][0] & 2) !== 0) {
 				// no change from global to domain local
 				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_DOMAIN_LOCAL]]);
 			}
-			elseif ($this->orig['groupType'][0] & 4) {
+			elseif (($this->orig['groupType'][0] & 4) !== 0) {
 				// no change from domain local to global
 				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_GLOBAL]]);
 			}
@@ -406,7 +406,7 @@ class windowsGroup extends baseModule {
 		$container->addField($memberButtons);
 		$memberList = [];
 		if (isset($this->attributes['member'])) {
-			for ($i = 0; $i < sizeof($this->attributes['member']); $i++) {
+			for ($i = 0; $i < count($this->attributes['member']); $i++) {
 				$memberList[] = $this->attributes['member'][$i];
 			}
 			usort($memberList, 'compareDN');
@@ -414,7 +414,7 @@ class windowsGroup extends baseModule {
 		$members = new htmlTable();
 		$members->alignment = htmlElement::ALIGN_RIGHT;
 		$members->setCSSClasses(['fullwidth']);
-		for ($i = 0; $i < sizeof($memberList); $i++) {
+		for ($i = 0; $i < count($memberList); $i++) {
 			$member = new htmlOutputText(getAbstractDN($memberList[$i]));
 			$member->alignment = htmlElement::ALIGN_RIGHT;
 			$members->addElement($member, true);
@@ -431,7 +431,7 @@ class windowsGroup extends baseModule {
 		$container->addField($memberOfGroup);
 		$memberList = [];
 		if (isset($this->attributes['memberOf'])) {
-			for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
+			for ($i = 0; $i < count($this->attributes['memberOf']); $i++) {
 				$memberList[] = $this->attributes['memberOf'][$i];
 			}
 			usort($memberList, 'compareDN');
@@ -439,7 +439,7 @@ class windowsGroup extends baseModule {
 		$memberOf = new htmlTable();
 		$memberOf->setCSSClasses(['fullwidth']);
 		$memberOf->alignment = htmlElement::ALIGN_RIGHT;
-		for ($i = 0; $i < sizeof($memberList); $i++) {
+		for ($i = 0; $i < count($memberList); $i++) {
 			$member = new htmlOutputText(getAbstractDN($memberList[$i]));
 			$member->alignment = htmlElement::ALIGN_RIGHT;
 			$memberOf->addElement($member, true);
@@ -487,15 +487,13 @@ class windowsGroup extends baseModule {
 		}
 		// group type
 		if ($_POST['groupType'] == windowsGroup::TYPE_SECURITY) {
-			$this->attributes['groupType'][0] = $this->attributes['groupType'][0] - 2147483648;
+			$this->attributes['groupType'][0] -= 2147483648;
 		}
 		// notes
 		$this->attributes['info'][0] = $_POST['info'];
 		// managed by
-		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
-			if (isset($_POST['form_subpage_' . static::class . '_attributes_removeManagedBy'])) {
-				unset($this->attributes['managedBy']);
-			}
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy') && isset($_POST['form_subpage_' . static::class . '_attributes_removeManagedBy'])) {
+			unset($this->attributes['managedBy']);
 		}
 		// NIS name
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
@@ -534,7 +532,7 @@ class windowsGroup extends baseModule {
 		}
 		// sort by DN
 		usort($this->attributes['memberOf'], 'compareDN');
-		for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
+		for ($i = 0; $i < count($this->attributes['memberOf']); $i++) {
 			if (in_array($this->attributes['memberOf'][$i], $groups)) {
 				$selectedGroups[getAbstractDN($this->attributes['memberOf'][$i])] = $this->attributes['memberOf'][$i];
 			}
@@ -584,12 +582,12 @@ class windowsGroup extends baseModule {
 		$options = [];
 		$filter = get_ldap_filter('user');
 		$entries = searchLDAPByFilter($filter, ['dn'], ['user']);
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$entries[$i] = $entries[$i]['dn'];
 		}
 		// sort by DN
 		usort($entries, 'compareDN');
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}
 		$selected = [];
@@ -659,19 +657,19 @@ class windowsGroup extends baseModule {
 			$options = [];
 			$filter = get_ldap_filter($type->getId());
 			$entries = searchLDAP($type->getSuffix(), $filter, ['dn']);
-			for ($i = 0; $i < sizeof($entries); $i++) {
+			for ($i = 0; $i < count($entries); $i++) {
 				$entries[$i] = $entries[$i]['dn'];
 			}
 			// sort by DN
 			usort($entries, 'compareDN');
-			for ($i = 0; $i < sizeof($entries); $i++) {
+			for ($i = 0; $i < count($entries); $i++) {
 				if (!isset($this->attributes['member']) || !in_array($entries[$i], $this->attributes['member'])) {
 					$options[getAbstractDN($entries[$i])] = $entries[$i];
 				}
 			}
 			$size = 20;
-			if (sizeof($options) < 20) {
-				$size = sizeof($options);
+			if (count($options) < 20) {
+				$size = count($options);
 			}
 			$membersSelect = new htmlSelect('members', $options, [], $size);
 			$membersSelect->setHasDescriptiveElements(true);
@@ -695,14 +693,14 @@ class windowsGroup extends baseModule {
 		// sort by DN
 		usort($membersTemp, 'compareDN');
 		$members = [];
-		for ($i = 0; $i < sizeof($membersTemp); $i++) {
+		for ($i = 0; $i < count($membersTemp); $i++) {
 			$members[getAbstractDN($membersTemp[$i])] = $membersTemp[$i];
 		}
 		$size = 20;
-		if (isset($this->attributes['member']) && (sizeof($this->attributes['member']) < 20)) {
-			$size = sizeof($this->attributes['member']);
+		if (isset($this->attributes['member']) && (count($this->attributes['member']) < 20)) {
+			$size = count($this->attributes['member']);
 		}
-		if (sizeof($members) > 0) {
+		if ($members !== []) {
 			$membersSelect = new htmlSelect('members', $members, [], $size);
 			$membersSelect->setHasDescriptiveElements(true);
 			$membersSelect->setMultiSelect(true);
@@ -747,7 +745,7 @@ class windowsGroup extends baseModule {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_user_remove']) && isset($_POST['members'])) {
 			$members = array_flip($this->attributes['member']);
-			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
+			for ($i = 0; $i < count($_POST['members']); $i++) {
 				if (isset($members[$_POST['members'][$i]])) {
 					unset($members[$_POST['members'][$i]]);
 				}
@@ -755,7 +753,7 @@ class windowsGroup extends baseModule {
 			$this->attributes['member'] = array_values(array_flip($members));
 		}
 		elseif (isset($_POST['form_subpage_' . static::class . '_user_addMembers']) && isset($_POST['members'])) {
-			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
+			for ($i = 0; $i < count($_POST['members']); $i++) {
 				$this->attributes['member'][] = $_POST['members'][$i];
 				$this->attributes['member'] = array_unique($this->attributes['member']);
 			}
@@ -802,7 +800,7 @@ class windowsGroup extends baseModule {
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('group', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'group';
@@ -815,7 +813,7 @@ class windowsGroup extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -853,7 +851,7 @@ class windowsGroup extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['groupScope'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
@@ -864,17 +862,17 @@ class windowsGroup extends baseModule {
 			if ($rawAccounts[$i][$ids['windowsGroup_type']] != "") {
 				if (in_array($rawAccounts[$i][$ids['windowsGroup_type']], $this->groupTypes)) {
 					if ($rawAccounts[$i][$ids['windowsGroup_type']] == windowsGroup::TYPE_SECURITY) {
-						$partialAccounts[$i]['groupType'] = $partialAccounts[$i]['groupType'] - 2147483648;
+						$partialAccounts[$i]['groupType'] -= 2147483648;
 					}
 				}
 				else {
 					$errMsg = $this->messages['groupType'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}
 			else {
-				$partialAccounts[$i]['groupType'] = $partialAccounts[$i]['groupType'] - 2147483648;
+				$partialAccounts[$i]['groupType'] -= 2147483648;
 			}
 			// NIS name
 			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
@@ -905,16 +903,16 @@ class windowsGroup extends baseModule {
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;
 		if (isset($this->attributes['groupType'][0])) {
-			if ($this->attributes['groupType'][0] & 2) {
+			if (($this->attributes['groupType'][0] & 2) !== 0) {
 				$groupScope = windowsGroup::SCOPE_GLOBAL;
 			}
-			elseif ($this->attributes['groupType'][0] & 4) {
+			elseif (($this->attributes['groupType'][0] & 4) !== 0) {
 				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
 			}
-			elseif ($this->attributes['groupType'][0] & 8) {
+			elseif (($this->attributes['groupType'][0] & 8) !== 0) {
 				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
 			}
-			if ($this->attributes['groupType'][0] & 0x80000000) {
+			if (($this->attributes['groupType'][0] & 0x80000000) !== 0) {
 				$groupType = windowsGroup::TYPE_SECURITY;
 			}
 			else {
@@ -941,7 +939,7 @@ class windowsGroup extends baseModule {
 			}
 			usort($memberList, 'compareDN');
 			$pdfTable = new PDFTable(_('Members'));
-			for ($i = 0; $i < sizeof($memberList); $i++) {
+			for ($i = 0; $i < count($memberList); $i++) {
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($memberList[$i]);
 				$pdfTable->rows[] = $pdfRow;
@@ -956,7 +954,7 @@ class windowsGroup extends baseModule {
 			}
 			usort($memberOfList, 'compareDN');
 			$pdfTable = new PDFTable(_('Member of'));
-			for ($i = 0; $i < sizeof($memberOfList); $i++) {
+			for ($i = 0; $i < count($memberOfList); $i++) {
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($memberOfList[$i]);
 				$pdfTable->rows[] = $pdfRow;
@@ -978,7 +976,7 @@ class windowsGroup extends baseModule {
 		$return = [];
 		$types = ['group'];
 		$results = searchLDAPByFilter('(objectClass=group)', ['dn'], $types);
-		$count = sizeof($results);
+		$count = count($results);
 		for ($i = 0; $i < $count; $i++) {
 			if (isset($results[$i]['dn'])) {
 				$return[] = $results[$i]['dn'];
@@ -1038,7 +1036,7 @@ class windowsGroup extends baseModule {
 		$toAdd = array_values(array_diff($this->attributes['memberOf'], $this->orig['memberOf']));
 		$toRem = array_values(array_diff($this->orig['memberOf'], $this->attributes['memberOf']));
 		// add groups
-		for ($i = 0; $i < sizeof($toAdd); $i++) {
+		for ($i = 0; $i < count($toAdd); $i++) {
 			if (in_array($toAdd[$i], $groups)) {
 				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
 				if (!$success) {
@@ -1051,7 +1049,7 @@ class windowsGroup extends baseModule {
 			}
 		}
 		// remove groups
-		for ($i = 0; $i < sizeof($toRem); $i++) {
+		for ($i = 0; $i < count($toRem); $i++) {
 			if (in_array($toRem[$i], $groups)) {
 				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], ['member' => [$this->getAccountContainer()->dn_orig]]);
 				if (!$success) {
@@ -1148,7 +1146,7 @@ class windowsGroup extends baseModule {
 					if (!empty($values)) {
 						usort($values, 'compareDN');
 					}
-					$count = sizeof($values);
+					$count = count($values);
 					for ($i = 0; $i < $count; $i++) {
 						$replaced = false;
 						foreach ($typeManager->getConfiguredTypes() as $type) {

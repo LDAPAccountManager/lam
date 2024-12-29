@@ -165,18 +165,18 @@ class lamList {
 	 * Reads the list options from the cookie value.
 	 */
 	private function listReadOptionsFromCookie() {
-		if ((sizeof($this->configOptions) > 0)
+		if ((count($this->configOptions) > 0)
 			&& isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
 			$cookieValue = $_COOKIE["ListOptions_" . $this->type->getId()];
 			$valueParts = explode(";", $cookieValue);
 			$values = [];
-			for ($i = 0; $i < sizeof($valueParts); $i++) {
+			for ($i = 0; $i < count($valueParts); $i++) {
 				$key_value = explode('=', $valueParts[$i]);
-				if (sizeof($key_value) == 2) {
+				if (count($key_value) == 2) {
 					$values[$key_value[0]] = $key_value[1];
 				}
 			}
-			for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+			for ($i = 0; $i < count($this->configOptions); $i++) {
 				if (isset($values[$this->configOptions[$i]->getID()])) {
 					$this->configOptions[$i]->setValue($values[$this->configOptions[$i]->getID()]);
 				}
@@ -207,7 +207,7 @@ class lamList {
 		// local filtering
 		$this->applyLocalFilters();
 		// sort rows by sort column
-		if (isset($this->entries)) {
+		if ($this->entries !== null) {
 			$this->listCreateSortMapping($this->entries);
 		}
 		// insert HTML fragment from listDoPost
@@ -219,18 +219,18 @@ class lamList {
 		// show form
 		echo "<form action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
 		// draw account list if accounts were found
-		if (sizeof($this->entries) > 0) {
+		if (count($this->entries) > 0) {
 			// buttons
 			$this->listPrintButtons(false);
 			// navigation bar
-			$this->listDrawNavigationBar(sizeof($this->entries));
+			$this->listDrawNavigationBar(count($this->entries));
 			$this->printAccountTable($this->entries);
 		}
 		else {
 			// buttons
 			$this->listPrintButtons(true);
 			// navigation bar
-			$this->listDrawNavigationBar(sizeof($this->entries));
+			$this->listDrawNavigationBar(count($this->entries));
 			$accounts = [];
 			$this->printAccountTable($accounts);
 			echo "</table><br>\n";
@@ -250,7 +250,7 @@ class lamList {
 		$this->filters = [];
 		if (!isset($_POST['clear_filter'])) {
 			// build filter array
-			for ($i = 0; $i < sizeof($this->attrArray); $i++) {
+			for ($i = 0; $i < count($this->attrArray); $i++) {
 				$foundFilter = null;
 				if (isset($_GET["filter" . strtolower($this->attrArray[$i])])) {
 					$foundFilter = $_GET["filter" . strtolower($this->attrArray[$i])];
@@ -293,8 +293,8 @@ class lamList {
 		}
 		$toSort = [];
 		$col = $this->sortColumn;
-		$size = sizeof($info);
-		if ($this->sortColumn != 'dn') {
+		$size = count($info);
+		if ($this->sortColumn !== 'dn') {
 			for ($i = 0; $i < $size; $i++) {
 				// sort by first attribute with name $sort
 				$toSort[] = &$info[$i][$col][0];
@@ -308,13 +308,13 @@ class lamList {
 		natcasesort($toSort);
 		$sortResult = [];
 		if ($this->sortDirection == 1) {
-			foreach ($toSort as $orig => $val) {
+			foreach (array_keys($toSort) as $orig) {
 				$sortResult[] = $orig;
 			}
 		}
 		else {
-			$counter = sizeof($toSort);
-			foreach ($toSort as $orig => $val) {
+			$counter = count($toSort);
+			foreach (array_keys($toSort) as $orig) {
 				$counter--;
 				$sortResult[$counter] = $orig;
 			}
@@ -500,7 +500,7 @@ class lamList {
 		$filterButton = new htmlButton('apply_filter', 'filter.svg', true);
 		$filterButton->setTitle(_("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-insensitive."));
 		$actionElement->addElement($filterButton);
-		if (sizeof($this->filters) > 0) {
+		if (count($this->filters) > 0) {
 			$clearFilterButton = new htmlButton('clear_filter', 'del.svg', true);
 			$clearFilterButton->setTitle(_('Clear filter'));
 			$actionElement->addElement($clearFilterButton);
@@ -578,16 +578,11 @@ class lamList {
 	private function addDataElements(&$data, &$info, &$onClickEvents, &$onDoubleClickEvents) {
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
-		if (($this->page * $this->maxPageEntries) > sizeof($info)) {
-			$table_end = sizeof($info);
-		}
-		else {
-			$table_end = ($this->page * $this->maxPageEntries);
-		}
+		$table_end = ($this->page * $this->maxPageEntries) > count($info) ? count($info) : $this->page * $this->maxPageEntries;
 		// get sort mapping
 		if (empty($this->sortMapping)) {
 			$this->sortMapping = [];
-			$infoSize = sizeof($info);
+			$infoSize = count($info);
 			for ($i = 0; $i < $infoSize; $i++) {
 				$this->sortMapping[$i] = $i;
 			}
@@ -680,7 +675,7 @@ class lamList {
 		}
 		// additional tools
 		$tools = $this->getAdditionalTools();
-		for ($i = 0; $i < sizeof($tools); $i++) {
+		for ($i = 0; $i < count($tools); $i++) {
 			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
 			$toolLink->setTitle($tools[$i]->getName());
 			$toolLink->setCSSClasses(['lam-margin-smaller', 'icon']);
@@ -751,7 +746,7 @@ class lamList {
 			return new htmlOutputText(getAbstractDN($entry[$attribute]));
 		}
 		// print all attribute entries separated by "; "
-		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
+		if (isset($entry[$attribute]) && count($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
 				// sort array
 				sort($entry[$attribute]);
@@ -761,6 +756,7 @@ class lamList {
 				return new htmlOutputText($entry[$attribute]);
 			}
 		}
+		return null;
 	}
 
 	/**
@@ -788,13 +784,13 @@ class lamList {
 				$accounts = array_keys($_POST, "on");
 				// build DN list
 				$_SESSION['delete_dn'] = [];
-				for ($i = 0; $i < sizeof($accounts); $i++) {
+				for ($i = 0; $i < count($accounts); $i++) {
 					if ($accounts[$i] == 'tableSelectAll') {
 						continue;
 					}
 					$_SESSION['delete_dn'][] = base64_decode($accounts[$i]);
 				}
-				if (sizeof($accounts) > 0) {
+				if ($accounts !== []) {
 					metaRefresh("../delete.php?type=" . $this->type->getId());
 					exit;
 				}
@@ -806,10 +802,10 @@ class lamList {
 			}
 		}
 		// PDF button
-		foreach ($_POST as $key => $value) {
+		foreach (array_keys($_POST) as $key) {
 			if (strpos($key, 'createPDF_') > -1) {
 				$parts = explode("_", $key);
-				if (sizeof($parts) == 2) {
+				if (count($parts) == 2) {
 					$this->showPDFPage($parts[1]);
 					exit;
 				}
@@ -834,27 +830,27 @@ class lamList {
 					$accounts = array_keys($_POST, "on");
 					$list = [];
 					// load accounts from LDAP
-					for ($i = 0; $i < sizeof($accounts); $i++) {
+					for ($i = 0; $i < count($accounts); $i++) {
 						$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
 						$_SESSION["accountPDF-$i"]->load_account(base64_decode($accounts[$i]));
 						$list[$i] = $_SESSION["accountPDF-$i"];
 					}
-					if (sizeof($list) > 0) {
+					if ($list !== []) {
 						$fileName = createModulePDF($list, $pdfStruct, $pdfFont);
-						for ($i = 0; $i < sizeof($accounts); $i++) {
+						for ($i = 0; $i < count($accounts); $i++) {
 							unset($_SESSION["accountPDF-$i"]);
 						}
 					}
 				} // create for all accounts
                 elseif ($option == 'ALL') {
 					$list = [];
-					$entriesCount = sizeof($this->entries);
+					$entriesCount = count($this->entries);
 					for ($i = 0; $i < $entriesCount; $i++) {
 						$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
 						$_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
 						$list[$i] = $_SESSION["accountPDF-$i"];
 					}
-					if (sizeof($list) > 0) {
+					if ($list !== []) {
 						$fileName = createModulePDF($list, $pdfStruct, $pdfFont);
 						for ($i = 0; $i < $entriesCount; $i++) {
 							// clean session
@@ -876,9 +872,9 @@ class lamList {
 			}
 		}
 		// check if back from configuration page
-		if ((sizeof($this->configOptions) > 0) && isset($_POST['saveConfigOptions'])) {
+		if ((count($this->configOptions) > 0) && isset($_POST['saveConfigOptions'])) {
 			$cookieValue = '';
-			for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+			for ($i = 0; $i < count($this->configOptions); $i++) {
 				$this->configOptions[$i]->fillFromPostData();
 				$cookieValue .= $this->configOptions[$i]->getID() . "=" . $this->configOptions[$i]->getValue() . ';';
 			}
@@ -944,8 +940,8 @@ class lamList {
 		else {
 			$radioOptions = [
 				getAbstractDN(base64_decode($id)) => 'DN',
-				sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) => 'SELECTED',
-				sprintf(_('All accounts (%s)'), sizeof($this->entries)) => 'ALL'
+				sprintf(_('All selected accounts (%s)'), count($selAccounts)) => 'SELECTED',
+				sprintf(_('All accounts (%s)'), count($this->entries)) => 'ALL'
 			];
 			$container->addField(new htmlRadio('createFor', $radioOptions, 'DN'));
 		}
@@ -958,7 +954,7 @@ class lamList {
 		$buttonContainer->addElement(new htmlButton('createPDFCancel', _('Cancel')));
 		$container->addField($buttonContainer);
 		// hidden inputs for selected accounts
-		for ($i = 0; $i < sizeof($selAccounts); $i++) {
+		for ($i = 0; $i < count($selAccounts); $i++) {
 			$container->add(new htmlHiddenInput($selAccounts[$i], 'on'), 0);
 		}
 		$container->add(new htmlHiddenInput('clickedAccount', $id), 0);
@@ -976,9 +972,9 @@ class lamList {
 	 */
 	protected function listShowOUSelection() {
 		$group = new htmlGroup();
-		if (sizeof($this->possibleSuffixes) > 1) {
+		if (count($this->possibleSuffixes) > 1) {
 			$suffixList = [];
-			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
+			for ($i = 0; $i < count($this->possibleSuffixes); $i++) {
 				$suffixList[getAbstractDN($this->possibleSuffixes[$i])] = $this->possibleSuffixes[$i];
 			}
 			$suffixSelect = new htmlSelect('suffix', $suffixList, [$this->suffix]);
@@ -1057,7 +1053,7 @@ class lamList {
 	 * Prints the header part of the page.
 	 */
 	private function printHeader() {
-		include 'adminHeader.inc';
+		include __DIR__ . '/adminHeader.inc';
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(['maxrow']);
 		$row->add(new htmlTitle($this->type->getAlias()));
@@ -1077,7 +1073,7 @@ class lamList {
 	 */
 	private function printFooter() {
 		$this->printFooterContent();
-		include 'adminFooter.inc';
+		include __DIR__ . '/adminFooter.inc';
 	}
 
 	/**
@@ -1125,12 +1121,7 @@ class lamList {
 			exit();
 		}
 		// get current page
-		if (!empty($_GET["page"])) {
-			$this->page = $_GET["page"];
-		}
-		else {
-			$this->page = 1;
-		}
+		$this->page = empty($_GET["page"]) ? 1 : $_GET["page"];
 		// generate attribute-description table
 		$temp_array = $this->listGetAttributeDescriptionList();
 		$this->attrArray = array_keys($temp_array);    // list of LDAP attributes to show
@@ -1200,7 +1191,7 @@ class lamList {
 		$filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
 		$attrs = $this->attrArray;
 		// remove virtual attributes from list
-		for ($i = 0; $i < sizeof($attrs); $i++) {
+		for ($i = 0; $i < count($attrs); $i++) {
 			if (str_starts_with($attrs[$i], self::VIRTUAL_ATTRIBUTE_PREFIX)) {
 				unset($attrs[$i]);
 			}
@@ -1208,7 +1199,7 @@ class lamList {
 		$attrs = array_values($attrs);
 		// include additional attributes
 		$additionalAttrs = $this->getAdditionalLDAPAttributesToRead();
-		for ($i = 0; $i < sizeof($additionalAttrs); $i++) {
+		for ($i = 0; $i < count($additionalAttrs); $i++) {
 			if (!in_array_ignore_case($additionalAttrs[$i], $attrs)) {
 				$attrs[] = $additionalAttrs[$i];
 			}
@@ -1255,7 +1246,7 @@ class lamList {
 				$filterExpression = substr($filterExpression, 0, -1);
 			}
             elseif (strrpos($filter, '*') !== (strlen($filter) - 1)) {
-				$filterExpression = $filterExpression . '*';
+				$filterExpression .= '*';
 			}
 			$text .= '(' . $attr . '=' . $filterExpression . ')';
 		}
@@ -1314,10 +1305,8 @@ class lamList {
 						$toFilter[] = $index;
 					}
 				}
-				else {
-					if (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
-						$toFilter[] = $index;
-					}
+                elseif (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
+					$toFilter[] = $index;
 				}
 			}
 		}
@@ -1416,7 +1405,7 @@ class lamList {
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
 
 		$configContainer = new htmlResponsiveRow();
-		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+		for ($i = 0; $i < count($this->configOptions); $i++) {
 			$configContainer->add($this->configOptions[$i]->getMetaHTML(), 12);
 		}
 		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'), 12);
@@ -1434,7 +1423,7 @@ class lamList {
 	 * @param String $ID ID
 	 */
 	protected function listGetConfigOptionByID($ID) {
-		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+		for ($i = 0; $i < count($this->configOptions); $i++) {
 			if ($this->configOptions[$i]->getID() === $ID) {
 				return $this->configOptions[$i];
 			}
@@ -1485,7 +1474,7 @@ class lamList {
 			StatusMessage('WARN', _('Please do not edit multiple accounts in parallel in multiple browser tabs.'));
 		}
 		if (isset($_SESSION['listRedirectMessages'])) {
-			for ($i = 0; $i < sizeof($_SESSION['listRedirectMessages']); $i++) {
+			for ($i = 0; $i < count($_SESSION['listRedirectMessages']); $i++) {
 				call_user_func_array(StatusMessage(...), $_SESSION['listRedirectMessages'][$i]);
 			}
 			unset($_SESSION['listRedirectMessages']);
@@ -1496,7 +1485,7 @@ class lamList {
 	 * Injects values for the virtual account status attribute to make it sortable.
 	 */
 	private function injectAccountStatusAttribute() {
-		$entryCount = sizeof($this->ldapEntries);
+		$entryCount = count($this->ldapEntries);
 		for ($i = 0; $i < $entryCount; $i++) {
 			$accountStatus = AccountStatus::fromAttributes($this->type, $this->ldapEntries[$i]);
 			$status = self::FILTER_UNLOCKED;

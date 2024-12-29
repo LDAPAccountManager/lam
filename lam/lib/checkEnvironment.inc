@@ -117,7 +117,7 @@ if (!extension_loaded('filter')) {
 }
 // check file permissions
 $writableDirs = ['sess', 'tmp'];
-for ($i = 0; $i < sizeof($writableDirs); $i++) {
+for ($i = 0; $i < count($writableDirs); $i++) {
 	$path = realpath('../') . "/" . $writableDirs[$i];
 	if (!is_writable($path)) {
 		$criticalErrors[] = ["ERROR", 'The directory %s is not writable for the web server. Please change your file permissions.', '', [$path]];
@@ -130,7 +130,7 @@ if (ini_get("session.auto_start") == "1") {
 // check memory limit
 $memLimit = ini_get('memory_limit');
 if (($memLimit != '')
-	&& (substr(strtoupper($memLimit), strlen($memLimit) - 1) == 'M')
+	&& (substr(strtoupper($memLimit), strlen($memLimit) - 1) === 'M')
 	&& (intval(substr($memLimit, 0, strlen($memLimit) - 1)) < 128)) {
 	$criticalErrors[] = ["ERROR", "Please increase the \"memory_limit\" parameter in your php.ini to at least \"128M\".",
 		"Your current memory limit is $memLimit."];

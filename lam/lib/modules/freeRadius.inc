@@ -188,7 +188,7 @@ class freeRadius extends baseModule {
 			$return['profile_mappings']['freeRadius_radiusProfileDn'] = 'radiusProfileDn';
 		}
 		$profileContainer = new htmlResponsiveRow();
-		for ($i = 0; $i < sizeof($profileElements); $i++) {
+		for ($i = 0; $i < count($profileElements); $i++) {
 			$profileContainer->add($profileElements[$i]);
 		}
 		$return['profile_options'] = $profileContainer;
@@ -449,7 +449,7 @@ class freeRadius extends baseModule {
 		}
 		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['radiusprofile'], $this->attributes['objectClass']);
-			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
+			for ($i = 0; $i < count($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
@@ -557,7 +557,7 @@ class freeRadius extends baseModule {
 		// find button name
 		$buttonName = '';
 		$postKeys = array_keys($_POST);
-		for ($i = 0; $i < sizeof($postKeys); $i++) {
+		for ($i = 0; $i < count($postKeys); $i++) {
 			if (str_contains($postKeys[$i], 'form_subpage_freeRadius_attributes_')) {
 				$buttonName = $postKeys[$i];
 			}
@@ -570,7 +570,7 @@ class freeRadius extends baseModule {
 		if (str_contains($buttonName, 'radiusExpiration')) {
 			$attr = 'radiusExpiration';
 		}
-		if ($attr == '') {
+		if ($attr === '') {
 			return [];
 		}
 		// determine action
@@ -613,7 +613,7 @@ class freeRadius extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("radiusprofile", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "radiusprofile";
@@ -697,7 +697,7 @@ class freeRadius extends baseModule {
 			&& isset($options['freeRadius_radiusGroupName'][0])
 			&& ($options['freeRadius_radiusGroupName'][0] != '')) {
 			$list = preg_split('/;[ ]*/', $options['freeRadius_radiusGroupName'][0]);
-			for ($i = 0; $i < sizeof($list); $i++) {
+			for ($i = 0; $i < count($list); $i++) {
 				if (!get_preg($list[$i], 'groupname')) {
 					$messages[] = $this->messages['radiusGroupName'][0];
 					break;
@@ -716,10 +716,10 @@ class freeRadius extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['freeRadius_addExt'][0]) && ($profile['freeRadius_addExt'][0] === "true")) {
-			if (!in_array('radiusprofile', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'radiusprofile';
-			}
+		if (isset($profile['freeRadius_addExt'][0])
+			&& ($profile['freeRadius_addExt'][0] === "true")
+			&& !in_array('radiusprofile', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'radiusprofile';
 		}
 		// group names
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')

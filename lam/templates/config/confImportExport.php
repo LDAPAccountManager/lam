@@ -47,9 +47,9 @@ use ZipArchive;
 
 
 /** Access to persistence functions */
-include_once('../../lib/persistence.inc');
+include_once(__DIR__ . '/../../lib/persistence.inc');
 /** account modules */
-include_once('../../lib/modules.inc');
+include_once(__DIR__ . '/../../lib/modules.inc');
 
 // start session
 if (isFileBasedSession()) {
@@ -271,7 +271,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		        $tmpFile = __DIR__ . '/../../tmp/internal/import_' . generateRandomText() . '.tmp';
 		        $file = @fopen($tmpFile, "w");
 		        if ($file) {
-			        fputs($file, $data);
+			        fwrite($file, $data);
 			        fclose($file);
 			        chmod($tmpFile, 0600);
 		        }

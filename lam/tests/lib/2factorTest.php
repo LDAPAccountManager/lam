@@ -24,9 +24,9 @@ use PHPUnit\Framework\TestCase;
 
 */
 
-include_once 'lam/tests/utils/configuration.inc';
-include_once 'lam/tests/utils/2factorUtils.inc';
-require_once 'lam/lib/2factor.inc';
+include_once __DIR__ . '/../../tests/utils/configuration.inc';
+include_once __DIR__ . '/../../tests/utils/2factorUtils.inc';
+require_once __DIR__ . '/../../lib/2factor.inc';
 
 /**
  * Checks code in 2factor.inc.

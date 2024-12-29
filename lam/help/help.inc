@@ -42,9 +42,9 @@ if (isset($_SESSION['conf_config'])) {
 		$entry206Example .= "<b>" . $type->getAlias() . ":</b><br>\n";
 		$descriptions = $type->getBaseType()->getListAttributeDescriptions();
 		$attributes = array_keys($descriptions);
-		for ($a = 0; $a < sizeof($attributes); $a++) {
+		for ($a = 0; $a < count($attributes); $a++) {
 			$entry206Example .= "#" . $attributes[$a] . ": " . $descriptions[$attributes[$a]];
-			if ($a < (sizeof($attributes) - 1)) {
+			if ($a < (count($attributes) - 1)) {
 				$entry206Example .= ", ";
 			}
 		}

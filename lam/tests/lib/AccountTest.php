@@ -252,4 +252,77 @@ class AccountTest extends TestCase {
 		$this->assertEquals(20, strlen(generateRandomText(20)));
 	}
 
+	function testGetPreg() {
+		$this->assertTrue(get_preg('abc123', 'password'));
+		$this->assertTrue(get_preg('abc ^|#*,.;:_+!%&/?{}()[]$§°@=-123', 'password'));
+		$this->assertFalse(get_preg('abc\\123', 'password'));
+
+		$this->assertTrue(get_preg('abc123', 'username'));
+		$this->assertTrue(get_preg('abc%#@. _$-123', 'username'));
+		$this->assertFalse(get_preg('abc?123', 'username'));
+
+		$this->assertTrue(get_preg('abc123', 'krbUserName'));
+		$this->assertTrue(get_preg('abc#@. _$-123', 'krbUserName'));
+		$this->assertFalse(get_preg('abc?123', 'krbUserName'));
+
+		$this->assertTrue(get_preg('abc123', 'hostObject'));
+		$this->assertTrue(get_preg('!abc123', 'hostObject'));
+		$this->assertTrue(get_preg('abc@. _$:*-123', 'hostObject'));
+		$this->assertFalse(get_preg('abc!123', 'hostObject'));
+
+		$this->assertTrue(get_preg('abc123', 'usernameList'));
+		$this->assertTrue(get_preg('abc123,def456', 'usernameList'));
+		$this->assertTrue(get_preg('abc123,def456,ghi789', 'usernameList'));
+		$this->assertTrue(get_preg('abc%#@. _-123,def%#@. _-456,ghi%#@. _-789', 'usernameList'));
+		$this->assertFalse(get_preg('abc!123', 'usernameList'));
+		$this->assertFalse(get_preg('abcdef,abc!123', 'usernameList'));
+
+		$this->assertTrue(get_preg('abc123', 'cn'));
+		$this->assertTrue(get_preg('abc123$', 'cn'));
+		$this->assertTrue(get_preg('abc#@. _-123', 'cn'));
+		$this->assertFalse(get_preg('abc\123', 'cn'));
+		$this->assertFalse(get_preg('abc<123', 'cn'));
+		$this->assertFalse(get_preg('abc>123', 'cn'));
+		$this->assertFalse(get_preg('abc=123', 'cn'));
+		$this->assertFalse(get_preg('abc$123', 'cn'));
+		$this->assertFalse(get_preg('abc?123', 'cn'));
+
+		$this->assertTrue(get_preg('abc123ABC', 'telephone'));
+		$this->assertTrue(get_preg('abc -.(123)12/3', 'telephone'));
+		$this->assertFalse(get_preg('abc?123', 'telephone'));
+
+		$this->assertTrue(get_preg('abc@abc123.com', 'email'));
+		$this->assertTrue(get_preg('ab!~#+*%$/._-c@abc123.com', 'email'));
+		$this->assertFalse(get_preg('abc?abc123.com', 'email'));
+		$this->assertFalse(get_preg('abc@abc~123.com', 'email'));
+		$this->assertFalse(get_preg('abc', 'email'));
+
+		$this->assertTrue(get_preg('abc abc <abc@abc123.com>', 'emailWithName'));
+		$this->assertTrue(get_preg('abc \'!~#+*%$()_- abc <ab!~#+*%$/._-c@abc123.com>', 'emailWithName'));
+		$this->assertFalse(get_preg('abc <abc?abc123.com>', 'emailWithName'));
+		$this->assertFalse(get_preg('abc <abc@abc~123.com>', 'emailWithName'));
+		$this->assertFalse(get_preg('abc <ab.c>', 'emailWithName'));
+		$this->assertFalse(get_preg('a?bc <ab.c>', 'emailWithName'));
+
+		$this->assertTrue(get_preg('31-12-2012', 'date'));
+		$this->assertTrue(get_preg('01-02-2012', 'date'));
+		$this->assertTrue(get_preg('1-2-2012', 'date'));
+		$this->assertFalse(get_preg('42-20-9999', 'date'));
+		$this->assertFalse(get_preg('10-10-12345', 'date'));
+
+		$this->assertTrue(get_preg('2012-12-31 10:11:30', 'dateTime'));
+		$this->assertTrue(get_preg('2012-01-02 10:11:30', 'dateTime'));
+		$this->assertTrue(get_preg('2012-02-01 10:11:30', 'dateTime'));
+		$this->assertFalse(get_preg('2012-2-1 10:11:30', 'dateTime'));
+		$this->assertFalse(get_preg('9999-20-41 10:11:30', 'dateTime'));
+		$this->assertFalse(get_preg('12345-10-10 10:11:30', 'dateTime'));
+		$this->assertFalse(get_preg('1234-10-10 99:11:30', 'dateTime'));
+
+		$this->assertTrue(get_preg('abc.123:6567', 'hostAndPort'));
+		$this->assertTrue(get_preg('ab_-c.123:132', 'hostAndPort'));
+		$this->assertFalse(get_preg('abc', 'hostAndPort'));
+		$this->assertFalse(get_preg('abc:abc', 'hostAndPort'));
+		$this->assertFalse(get_preg('ab?c:80', 'hostAndPort'));
+	}
+
 }

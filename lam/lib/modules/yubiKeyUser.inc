@@ -58,7 +58,7 @@ class yubiKeyUser extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -235,7 +235,7 @@ class yubiKeyUser extends baseModule {
 		$objectClass = $this->getObjectClassName();
 		$attributeName = $this->getAttributeName();
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!empty($objectClass) && !in_array($objectClass, $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = $objectClass;
@@ -256,7 +256,7 @@ class yubiKeyUser extends baseModule {
 		$attributeName = $this->getAttributeName();
 		if (!empty($this->attributes[$attributeName])) {
 			$pdfTable = new PDFTable(_('YubiKey ids'));
-			for ($i = 0; $i < sizeof($this->attributes[$attributeName]); $i++) {
+			for ($i = 0; $i < count($this->attributes[$attributeName]); $i++) {
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($this->attributes[$attributeName][$i]);
 				$pdfTable->rows[] = $pdfRow;
@@ -315,8 +315,8 @@ class yubiKeyUser extends baseModule {
 	private function getSelfServiceKeys() {
 		$keys = $_SESSION[self::SESS_KEY_LIST];
 		$content = new htmlResponsiveRow();
-		if (sizeof($keys) > 0) {
-			for ($i = 0; $i < sizeof($keys); $i++) {
+		if (count($keys) > 0) {
+			for ($i = 0; $i < count($keys); $i++) {
 				$group = new htmlGroup();
 				$keyInput = new htmlInputField('yubiKeyId_' . $i, $keys[$i]);
 				$keyInput->setFieldMaxLength(12);
@@ -325,7 +325,7 @@ class yubiKeyUser extends baseModule {
 				$group->addElement($keyInput);
 				$delLink = new htmlLink('', '#', '../../graphics/del.svg');
 				$delLink->setTitle(_('Delete'));
-				$delLink->setOnClick('yubiKeyIdDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
+				$delLink->setOnClick('yubiKeyIdDeleteKey(' . $i . ', ' . count($keys) . ');return false;');
 				$delLink->setCSSClasses(['icon']);
 				$group->addElement($delLink);
 				$content->add($group, 12, 12, 12, 'nowrap');
@@ -334,7 +334,7 @@ class yubiKeyUser extends baseModule {
 		$addGroup = new htmlGroup();
 		$addLink = new htmlLink(_('Add'), '#', '../../graphics/add.svg', true);
 		$addLink->setTitle(_('Add'));
-		$addLink->setOnClick('yubiKeyIdAddKey(' . sizeof($keys) . ');return false;');
+		$addLink->setOnClick('yubiKeyIdAddKey(' . count($keys) . ');return false;');
 		$addLink->setCSSClasses(['icon']);
 		$addGroup->addElement($addLink);
 		$addGroup->addElement(new htmlSpacer('0.5rem', null));
@@ -348,7 +348,7 @@ class yubiKeyUser extends baseModule {
 	 *
 	 * @return htmlJavaScript JS block
 	 */
-	private static function getSelfServiceKeysJSBlock() {
+	private function getSelfServiceKeysJSBlock() {
 		$content = '
 			function yubiKeyIdDeleteKey(id, count) {
 				var actionJSON = {
@@ -449,9 +449,9 @@ class yubiKeyUser extends baseModule {
 				$newKeys[] = $_POST['yubiKeyId_' . $counter];
 				$counter++;
 			}
-			$count = sizeof($newKeys);
+			$count = count($newKeys);
 			for ($i = 0; $i < $count; $i++) {
-				if (trim($newKeys[$i]) == '') {
+				if (trim($newKeys[$i]) === '') {
 					unset($newKeys[$i]);
 				}
 				elseif (!get_preg($newKeys[$i], 'ascii')) {
@@ -464,11 +464,11 @@ class yubiKeyUser extends baseModule {
 				$oldKeys = $attributes[$attributeName];
 			}
 			$update = false;
-			if (sizeof($newKeys) != sizeof($oldKeys)) {
+			if (count($newKeys) !== count($oldKeys)) {
 				$update = true;
 			}
 			else {
-				for ($i = 0; $i < sizeof($newKeys); $i++) {
+				for ($i = 0; $i < count($newKeys); $i++) {
 					if (!in_array($newKeys[$i], $oldKeys)) {
 						$update = true;
 						break;
@@ -476,10 +476,10 @@ class yubiKeyUser extends baseModule {
 				}
 			}
 			if ($update) {
-				if (sizeof($oldKeys) == 0) {
+				if (count($oldKeys) == 0) {
 					$return['add'][$attributeName] = $newKeys;
 				}
-				elseif (sizeof($newKeys) == 0) {
+				elseif (count($newKeys) == 0) {
 					$return['del'][$attributeName] = $newKeys;
 				}
 				else {

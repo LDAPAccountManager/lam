@@ -44,7 +44,7 @@ class systemQuotas extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -136,7 +136,7 @@ class systemQuotas extends baseModule {
 		if (isset($this->attributes['quota'][0])) {
 			natcasesort($this->attributes['quota']);
 			$this->attributes['quota'] = array_values($this->attributes['quota']);
-			for ($i = 0; $i < sizeof($this->attributes['quota']); $i++) {
+			for ($i = 0; $i < count($this->attributes['quota']); $i++) {
 				$parts = explode(',', $this->attributes['quota'][$i]);
 				$container->addElement(new htmlInputField('path_' . $i, $parts[0], 20));
 				$container->addElement($spacer);
@@ -184,7 +184,7 @@ class systemQuotas extends baseModule {
 			$this->attributes['quota'] = [];
 		}
 		// check existing entries
-		for ($i = 0; $i < sizeof($this->attributes['quota']); $i++) {
+		for ($i = 0; $i < count($this->attributes['quota']); $i++) {
 			if (isset($_POST['del_' . $i])) {
 				unset($this->attributes['quota'][$i]);
 				$this->attributes['quota'] = array_values($this->attributes['quota']);
@@ -331,8 +331,8 @@ class systemQuotas extends baseModule {
 	function check_profileOptions($options, $typeId) {
 		$messages = parent::check_profileOptions($options, $typeId);
 		$quotas = explode(';', $options['systemQuotas_quota'][0]);
-		for ($q = 0; $q < sizeof($quotas); $q++) {
-			if ($quotas[$q] == '') {
+		for ($q = 0; $q < count($quotas); $q++) {
+			if ($quotas[$q] === '') {
 				continue;
 			}
 			$parts = explode(',', $quotas[$q]);
@@ -360,7 +360,7 @@ class systemQuotas extends baseModule {
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('systemQuotas', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'systemQuotas';
@@ -368,7 +368,7 @@ class systemQuotas extends baseModule {
 			// add quota
 			if (isset($rawAccounts[$i][$ids['systemQuotas_quota']]) && ($rawAccounts[$i][$ids['systemQuotas_quota']] != '')) {
 				$quotas = explode(';', $rawAccounts[$i][$ids['systemQuotas_quota']]);
-				for ($q = 0; $q < sizeof($quotas); $q++) {
+				for ($q = 0; $q < count($quotas); $q++) {
 					$parts = explode(',', $quotas[$q]);
 					$messages = array_merge($messages, $this->checkQuota($parts[0], $parts[1], $parts[2], $parts[3], $parts[4], $i));
 					$partialAccounts[$i]['quota'][] = $quotas[$q];
@@ -393,7 +393,7 @@ class systemQuotas extends baseModule {
 			$pdfRow->cells[] = new PDFTableCell(_('Soft inode'), '18%', null, true);
 			$pdfRow->cells[] = new PDFTableCell(_('Hard inode'), '18%', null, true);
 			$pdfTable->rows[] = $pdfRow;
-			for ($i = 0; $i < sizeof($this->attributes['quota']); $i++) {
+			for ($i = 0; $i < count($this->attributes['quota']); $i++) {
 				$parts = explode(',', $this->attributes['quota'][$i]);
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($parts[0], '28%');

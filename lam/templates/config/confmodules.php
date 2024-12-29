@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\CONFIG;
+
 use htmlInputField;
 use htmlJavaScript;
 use \htmlTable;
@@ -15,6 +17,7 @@ use \htmlSubTitle;
 use \htmlDiv;
 use \htmlResponsiveRow;
 use \htmlGroup;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2024  Roland Gruber
@@ -36,20 +39,20 @@ use \htmlGroup;
 */
 
 
- /**
-* confmodules lets the user select the account modules
-*
-* @package configuration
-* @author Roland Gruber
-*/
+/**
+ * confmodules lets the user select the account modules
+ *
+ * @package configuration
+ * @author Roland Gruber
+ */
 
 
 /** Access to config functions */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** Access to module lists */
-include_once('../../lib/modules.inc');
+include_once(__DIR__ . '/../../lib/modules.inc');
 /** common functions */
-include_once '../../lib/configPages.inc';
+include_once __DIR__ . '/../../lib/configPages.inc';
 
 // start session
 if (isFileBasedSession()) {
@@ -64,7 +67,7 @@ setlanguage();
 // if not: load login page
 if (!isset($_SESSION['conf_config'])) {
 	/** go back to login if password is invalid */
-	require('conflogin.php');
+	require(__DIR__ . '/conflogin.php');
 	exit;
 }
 
@@ -79,35 +82,34 @@ $conf = &$_SESSION['conf_config'];
 $errorsToDisplay = checkInput();
 
 // check if button was pressed and if we have to save the settings or go to another tab
-if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
-	|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
-	|| isset($_POST['moduleSettings']) || isset($_POST['jobs'])) {
-	if (sizeof($errorsToDisplay) == 0) {
-		// go to final page
-		if (isset($_POST['saveSettings'])) {
-			metaRefresh("confsave.php");
-			exit;
-		}
-		// go to types page
-		elseif (isset($_POST['edittypes'])) {
-			metaRefresh("conftypes.php");
-			exit;
-		}
-		// go to general page
-		elseif (isset($_POST['generalSettingsButton'])) {
-			metaRefresh("confmain.php");
-			exit;
-		}
-		// go to module settings page
-		elseif (isset($_POST['moduleSettings'])) {
-			metaRefresh("moduleSettings.php");
-			exit;
-		}
-		// go to jobs page
-		elseif (isset($_POST['jobs'])) {
-			metaRefresh("jobs.php");
-			exit;
-		}
+if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
+		|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
+		|| isset($_POST['moduleSettings']) || isset($_POST['jobs']))
+	&& ($errorsToDisplay === [])) {
+	// go to final page
+	if (isset($_POST['saveSettings'])) {
+		metaRefresh("confsave.php");
+		exit;
+	}
+	// go to types page
+	elseif (isset($_POST['edittypes'])) {
+		metaRefresh("conftypes.php");
+		exit;
+	}
+	// go to general page
+	elseif (isset($_POST['generalSettingsButton'])) {
+		metaRefresh("confmain.php");
+		exit;
+	}
+	// go to module settings page
+	elseif (isset($_POST['moduleSettings'])) {
+		metaRefresh("moduleSettings.php");
+		exit;
+	}
+	// go to jobs page
+	elseif (isset($_POST['jobs'])) {
+		metaRefresh("jobs.php");
+		exit;
 	}
 }
 
@@ -119,7 +121,7 @@ printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 // print error messages
-for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
+for ($i = 0; $i < count($errorsToDisplay); $i++) {
 	call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
 }
 
@@ -157,7 +159,7 @@ $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 
 if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
-	$buttonContainer->addElement(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] .', ' . $_POST['scrollPositionLeft'] . ')'));
+	$buttonContainer->addElement(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
 }
 
 parseHtml(null, $buttonContainer, [], false, 'user');
@@ -168,56 +170,56 @@ echo "</html>\n";
 
 
 /**
-* Displays the module selection boxes and checks if dependencies are fulfilled.
-*
-* @param \LAM\TYPES\ConfiguredType $type account type
-* @param htmlResponsiveRow $container meta HTML container
-*/
+ * Displays the module selection boxes and checks if dependencies are fulfilled.
+ *
+ * @param \LAM\TYPES\ConfiguredType $type account type
+ * @param htmlResponsiveRow $container meta HTML container
+ */
 function config_showAccountModules($type, &$container): void {
 	// account modules
 	$available = getAvailableModules($type->getScope(), true);
 	$selected = $type->getModules();
 	$sortedAvailable = [];
-	for ($i = 0; $i < sizeof($available); $i++) {
+	for ($i = 0; $i < count($available); $i++) {
 		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $type->getScope());
 	}
 	natcasesort($sortedAvailable);
 
 	// build options for selected and available modules
 	$selOptions = [];
-	for ($i = 0; $i < sizeof($selected); $i++) {
+	for ($i = 0; $i < count($selected); $i++) {
 		if (in_array($selected[$i], $available)) {  // selected modules must be available
 			if (is_base_module($selected[$i], $type->getScope())) {  // mark base modules
-				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] .  ")*"] = $selected[$i];
+				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] . ")*"] = $selected[$i];
 			}
 			else {
-				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] .  ")"] = $selected[$i];
+				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] . ")"] = $selected[$i];
 			}
 		}
 	}
 	$availOptions = [];
 	foreach ($sortedAvailable as $key => $value) {
-		if (! in_array($key, $selected)) {  // display non-selected modules
+		if (!in_array($key, $selected)) {  // display non-selected modules
 			if (is_base_module($key, $type->getScope())) {  // mark base modules
-				$availOptions[$value . " (" . $key .  ")*"] = $key;
+				$availOptions[$value . " (" . $key . ")*"] = $key;
 			}
 			else {
-				$availOptions[$value . " (" . $key .  ")"] = $key;
+				$availOptions[$value . " (" . $key . ")"] = $key;
 			}
 		}
 	}
 
 	// add account module selection
 	$container->add(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getIcon()), 12);
-	if (sizeof($selOptions) > 0) {
+	if ($selOptions !== []) {
 		$container->add(new htmlOutputText(_("Selected modules")), 12, 6);
 	}
-	if (sizeof($availOptions) > 0) {
+	if ($availOptions !== []) {
 		$container->add(new htmlOutputText(_("Available modules")), 0, 6);
 	}
 	$container->addVerticalSpacer('1rem');
 	// selected modules
-	if (sizeof($selOptions) > 0) {
+	if ($selOptions !== []) {
 		$listElements = [];
 		foreach ($selOptions as $key => $value) {
 			$el = new htmlTable('100%');
@@ -241,7 +243,7 @@ function config_showAccountModules($type, &$container): void {
 		$container->add(new htmlOutputText(''), 12, 6);
 	}
 	// available modules
-	if (sizeof($availOptions) > 0) {
+	if ($availOptions !== []) {
 		$container->add(new htmlSpacer(null, '2rem'), 12, 0, 0, 'hide-on-tablet');
 		$container->add(new htmlOutputText(_("Available modules")), 12, 0, 0, 'hide-on-tablet');
 		$container->add(new htmlSpacer(null, '1rem'), 12, 0, 0, 'hide-on-tablet');
@@ -261,7 +263,7 @@ function config_showAccountModules($type, &$container): void {
 		$availDiv->alignment = htmlElement::ALIGN_TOP;
 		$availDiv->setCSSClasses(['confModList']);
 		$availRow->add($availDiv);
-		if (sizeof($availOptions) >= 10) {
+		if (count($availOptions) >= 10) {
 			$availRow->addVerticalSpacer('1rem');
 			$filterGroup = new htmlGroup();
 			$filterGroup->addElement(new htmlOutputText(_('Filter')));
@@ -274,7 +276,7 @@ function config_showAccountModules($type, &$container): void {
 		$container->add($availRow, 12, 6);
 	}
 	$positions = [];
-	for ($i = 0; $i < sizeof($selOptions); $i++) {
+	for ($i = 0; $i < count($selOptions); $i++) {
 		$positions[] = $i;
 	}
 	$container->add(new htmlHiddenInput('positions_' . $type->getId(), implode(',', $positions)), 12);
@@ -304,7 +306,7 @@ function checkInput(): array {
 		$selected_temp = explode(',', $selected_temp);
 		$selected = [];
 		// only use available modules as selected
-		for ($i = 0; $i < sizeof($selected_temp); $i++) {
+		for ($i = 0; $i < count($selected_temp); $i++) {
 			if (in_array($selected_temp[$i], $available)) {
 				$selected[] = $selected_temp[$i];
 			}
@@ -321,7 +323,7 @@ function checkInput(): array {
 		}
 		// remove modules from selection
 		$new_selected = [];
-		for ($i = 0; $i < sizeof($selected); $i++) {
+		for ($i = 0; $i < count($selected); $i++) {
 			if (!isset($_POST['del_' . $typeId . '_' . $selected[$i]])) {
 				$new_selected[] = $selected[$i];
 			}
@@ -339,7 +341,7 @@ function checkInput(): array {
 		// check dependencies
 		$depends = check_module_depends($selected, getModulesDependencies($scope));
 		if ($depends !== false) {
-			for ($i = 0; $i < sizeof($depends); $i++) {
+			for ($i = 0; $i < count($depends); $i++) {
 				$errors[] = ['ERROR', $type->getAlias(), _("Unsolved dependency:") . ' ' .
 					$depends[$i][0] . " (" . $depends[$i][1] . ")"];
 			}
@@ -347,14 +349,14 @@ function checkInput(): array {
 		// check conflicts
 		$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
 		if ($conflicts !== false) {
-			for ($i = 0; $i < sizeof($conflicts); $i++) {
+			for ($i = 0; $i < count($conflicts); $i++) {
 				$errors[] = ['ERROR', $type->getAlias(), _("Conflicting module:") . ' ' .
 					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")"];
 			}
 		}
 		// check for base module
 		$baseCount = 0;
-		for ($i = 0; $i < sizeof($selected); $i++) {
+		for ($i = 0; $i < count($selected); $i++) {
 			if (is_base_module($selected[$i], $scope)) {
 				$baseCount++;
 			}

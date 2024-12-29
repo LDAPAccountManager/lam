@@ -1,5 +1,6 @@
 <?php
 namespace LAM\TOOLS\PROFILE_EDITOR;
+
 use \htmlResponsiveRow;
 use \htmlTitle;
 use \htmlResponsiveInputField;
@@ -32,11 +33,11 @@ use LAMException;
 */
 
 /**
-* Manages creating/changing of profiles.
-*
-* @package profiles
-* @author Roland Gruber
-*/
+ * Manages creating/changing of profiles.
+ *
+ * @package profiles
+ * @author Roland Gruber
+ */
 
 /** security functions */
 include_once(__DIR__ . "/../../lib/security.inc");
@@ -56,7 +57,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolProfileEditor');
 
@@ -109,18 +112,16 @@ if (isset($_POST['save'])) {
 			$options[$element] = [$_POST[$element]];
 		}
 		// checkboxes
-		elseif ($_SESSION['profile_types'][$element] == "checkbox") {
-			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = ['true'];
-			else $options[$element] = ['false'];
+        elseif ($_SESSION['profile_types'][$element] == "checkbox") {
+			$options[$element] = (isset($_POST[$element]) && ($_POST[$element] == "on")) ? ['true'] : ['false'];
 		}
 		// dropdownbox
-		elseif ($_SESSION['profile_types'][$element] == "select") {
+        elseif ($_SESSION['profile_types'][$element] == "select") {
 			$options[$element] = [$_POST[$element]];
 		}
 		// multiselect
-		elseif ($_SESSION['profile_types'][$element] == "multiselect") {
-			if (isset($_POST[$element])) $options[$element] = $_POST[$element];  // value is already an array
-			else $options[$element] = [];
+        elseif ($_SESSION['profile_types'][$element] == "multiselect") {
+			$options[$element] = $_POST[$element] ?? [];
 		}
 		// textareas
 		if ($_SESSION['profile_types'][$element] == "textarea") {
@@ -130,17 +131,17 @@ if (isset($_POST['save'])) {
 
 	// check options
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
-	if (sizeof($errors) == 0) {  // input data is valid, save profile
+	if (count($errors) == 0) {  // input data is valid, save profile
 		// save profile
-        try {
-	        $accountProfilePersistenceManager->writeAccountProfile($_POST['accounttype'], $_POST['profname'], $_SESSION['config']->getName(), $options);
-	        metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
-	        exit();
-        }
-        catch (LAMException $e) {
-            logNewMessage(LOG_ERR, $e->getTitle());
-	        $errors[] = ["ERROR", _("Unable to save profile!"), $_POST['profname']];
-        }
+		try {
+			$accountProfilePersistenceManager->writeAccountProfile($_POST['accounttype'], $_POST['profname'], $_SESSION['config']->getName(), $options);
+			metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
+			exit();
+		}
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, $e->getTitle());
+			$errors[] = ["ERROR", _("Unable to save profile!"), $_POST['profname']];
+		}
 	}
 }
 
@@ -149,7 +150,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="smallPaddingContent">';
 
 // print error messages if any
-if (sizeof($errors) > 0) {
+if (count($errors) > 0) {
 	echo "<br>\n";
 	foreach ($errors as $error) {
 		call_user_func_array(StatusMessage(...), $error);
@@ -166,19 +167,15 @@ $options = getProfileOptions($type->getId());
 $old_options = [];
 if (isset($_POST['save'])) {
 	foreach ($_POST as $key => $value) {
-		if (!is_array($value)) {
-			$old_options[$key] = [$value];
-		}
-		else {
-			$old_options[$key] = $value;
-		}
+		$old_options[$key] = is_array($value) ? $value : [$value];
 	}
 }
 elseif (isset($_GET['edit'])) {
 	try {
 		$old_options = $accountProfilePersistenceManager->loadAccountProfile($type->getId(), $_GET['edit'], $_SESSION['config']->getName());
-	} catch (LAMException $e) {
-	    StatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+	}
+	catch (LAMException $e) {
+		StatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 	}
 }
 

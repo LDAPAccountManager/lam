@@ -43,7 +43,7 @@ use LAMException;
 */
 
 /** config object */
-include_once '../lib/config.inc';
+include_once __DIR__ . '/../lib/config.inc';
 
 // start session
 startSecureSession();

@@ -83,7 +83,7 @@ class pykotaGroup extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['group']);
+		return $this->get_scope() === 'group';
 	}
 
 	/**
@@ -420,7 +420,7 @@ class pykotaGroup extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object classes
 			if (!in_array('pykotaGroup', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'pykotaGroup';
@@ -432,12 +432,12 @@ class pykotaGroup extends baseModule {
 			if ($this->isUnixOrGonInactive($selectedModules) && !empty($rawAccounts[$i][$ids['pykotaGroup_cn']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaGroup_cn']], 'groupname')) {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				elseif ($this->cnExists($rawAccounts[$i][$ids['pykotaGroup_cn']])) {
 					$errMsg = $this->messages['cn'][3];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -450,12 +450,12 @@ class pykotaGroup extends baseModule {
 			if (!empty($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']], 'groupname')) {
 					$errMsg = $this->messages['pykotaGroupName'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				elseif ($this->pykotaGroupNameExists($rawAccounts[$i][$ids['pykotaGroup_pykotaGroupName']])) {
 					$errMsg = $this->messages['pykotaGroupName'][3];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 				else {
@@ -469,7 +469,7 @@ class pykotaGroup extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['pykotaLimitBy'][0];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 			}

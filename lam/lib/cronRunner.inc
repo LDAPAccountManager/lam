@@ -140,10 +140,10 @@ class CronRunner {
 			$pdo = $cronDatabase->getPdo();
 		}
 		catch (PDOException $e) {
-			throw new LAMException("Unable to connect to database. " . $e->getMessage());
+			throw new LAMException("Unable to connect to database. " . $e->getMessage(), null, $e);
 		}
 		catch (LAMException $e) {
-			throw new LAMException("Unable to connect to database. " . $e->getTitle());
+			throw new LAMException("Unable to connect to database. " . $e->getTitle(), null, $e);
 		}
 		// get jobs to run
 		if (empty($cronDatabase->getJobs())) {

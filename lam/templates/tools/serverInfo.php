@@ -54,7 +54,7 @@ if ($result) {
 	$info = ldap_get_entries($_SESSION['ldap']->server(), $result);
 	if (is_array($info) && is_array($info[0])) {
 		$info = $info[0];
-		foreach ($info as $key => $value) {
+		foreach (array_keys($info) as $key) {
 			if (is_array($info[$key]) && isset($info[$key]['count'])) {
 				unset($info[$key]['count']);
 			}
@@ -118,7 +118,7 @@ if ($configcontext != '') {
 $container->addLabel(new htmlOutputText('<b>' . _("Schema suffix") . '</b>', false));
 $container->addField(new htmlOutputText($subschemasubentry));
 
-if ($dynamicSubtrees != '') {
+if ($dynamicSubtrees !== '') {
 	$container->addLabel(new htmlOutputText('<b>' . _("Dynamic subtrees") . '</b>', false));
 	$container->addField(new htmlOutputText($dynamicSubtrees));
 }

@@ -83,7 +83,7 @@ class AccountProfilePersistenceManager {
 	 * @throws LAMException error deleting template
 	 */
 	public function deleteAccountProfileTemplate(string $scope, string $name): void {
-		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope) || ($name == 'default')) {
+		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope) || ($name === 'default')) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to delete profile!"));
 		}
@@ -376,7 +376,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 			$entry = $templateDir->read();
 			while ($entry) {
 				$parts = explode('.', $entry);
-				if ((strlen($entry) > 3) && (sizeof($parts) === 2)) {
+				if ((strlen($entry) > 3) && (count($parts) === 2)) {
 					$name = $parts[0];
 					$scope = $parts[1];
 					$templates[$scope][] = $name;
@@ -439,19 +439,19 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 			if ($file) {
 				while (!feof($file)) {
 					$line = fgets($file, 1024);
-					if (($line === false) || ($line == '') || ($line == "\n") || ($line[0] == "#")) {
+					if (($line === false) || ($line === '') || ($line === "\n") || ($line[0] === "#")) {
 						continue; // ignore comments
 					}
 					// search keywords
 					$parts = explode(": ", $line);
-					if (sizeof($parts) == 2) {
+					if (count($parts) == 2) {
 						$option = $parts[0];
 						if ($option === 'profname') {
 							continue;
 						}
 						$value = $parts[1];
 						// remove line ends
-						$value = chop($value);
+						$value = rtrim($value);
 						$settings[$option] = explode("+::+", $value);
 					}
 				}
@@ -486,14 +486,9 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 		}
 		// write attributes
 		$keys = array_keys($data);
-		for ($i = 0; $i < sizeof($keys); $i++) {
-			if (isset($data[$keys[$i]])) {
-				$line = $keys[$i] . ": " . implode("+::+", $data[$keys[$i]]) . "\n";
-			}
-			else {
-				$line = $keys[$i] . ": \n";
-			}
-			fputs($file, $line);
+		for ($i = 0; $i < count($keys); $i++) {
+			$line = isset($data[$keys[$i]]) ? $keys[$i] . ": " . implode("+::+", $data[$keys[$i]]) . "\n" : $keys[$i] . ": \n";
+			fwrite($file, $line);
 		}
 		// close file
 		fclose($file);
@@ -558,7 +553,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 				// check if filename ends with .<typeId>
 				if (strrpos($entry, '.')) {
 					$pos = strrpos($entry, '.');
-					if (substr($entry, $pos + 1) == $typeId) {
+					if (substr($entry, $pos + 1) === $typeId) {
 						$name = substr($entry, 0, $pos);
 						$ret[] = $name;
 					}

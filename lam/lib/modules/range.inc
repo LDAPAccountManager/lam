@@ -263,20 +263,20 @@ class range extends baseModule {
 			$ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
 			$dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
 			$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
-			foreach ($this->ranges as $id => $arr) {
-				if (!empty($this->ranges[$id]['range_start']) && !range::check_subnet_range($this->ranges[$id]['range_start'], $dhcpAttrs['cn'][0], $mask)) {
-					// Range anpassen:
-					$ex = explode(".", $this->ranges[$id]['range_start']);
-					$tmp = $this->ranges[$id]['range_start'];
+			foreach ($this->ranges as $id => $range) {
+				if (!empty($range['range_start']) && !range::check_subnet_range($range['range_start'], $dhcpAttrs['cn'][0], $mask)) {
+					// adapt range
+					$ex = explode(".", $range['range_start']);
+					$tmp = $range['range_start'];
 					$this->ranges[$id]['range_start'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
 					if ($tmp != $this->ranges[$id]['range_start']) {
 						$range_edit = true;
 					}
 				}
-				if (!empty($this->ranges[$id]['range_end']) && !range::check_subnet_range($this->ranges[$id]['range_end'], $dhcpAttrs['cn'][0], $mask)) {
-					// Range anpassen:
-					$ex = explode(".", $this->ranges[$id]['range_end']);
-					$tmp = $this->ranges[$id]['range_end'];
+				if (!empty($range['range_end']) && !range::check_subnet_range($range['range_end'], $dhcpAttrs['cn'][0], $mask)) {
+					// adapt range
+					$ex = explode(".", $range['range_end']);
+					$tmp = $range['range_end'];
 					$this->ranges[$id]['range_end'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
 					if ($tmp != $this->ranges[$id]['range_end']) {
 						$range_edit = true;
@@ -285,8 +285,8 @@ class range extends baseModule {
 			}
 			if ($range_edit) {
 				// sort the range new, id it was edit.
-				foreach ($this->ranges as $id => $arr) {
-					$this->attributes['dhcpRange'][$id] = $this->ranges[$id]['range_start'] . " " . $this->ranges[$id]['range_end'];
+				foreach ($this->ranges as $id => $range) {
+					$this->attributes['dhcpRange'][$id] = $range['range_start'] . " " . $range['range_end'];
 				}
 			}
 		}
@@ -479,39 +479,39 @@ class range extends baseModule {
 		$this->reset_overlapped_range();
 		$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
 		$subnet = $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0];
-		foreach ($this->ranges as $id => $arr) {
+		foreach ($this->ranges as $id => $range) {
 			// Range start
 			$error = "";
-			if (isset($this->ranges[$id]['range_start']) && !empty($this->ranges[$id]['range_start'])) {
-				if ($this->processed && !check_ip($this->ranges[$id]['range_start'])) {
+			if (isset($range['range_start']) && !empty($range['range_start'])) {
+				if ($this->processed && !check_ip($range['range_start'])) {
 					$error = _("The IP address is invalid.");
 				}
-				elseif ($this->processed && !$this->check_range($this->ranges[$id]['range_start'], $this->ranges[$id]['range_end'])) {
+				elseif ($this->processed && !$this->check_range($range['range_start'], $range['range_end'])) {
 					$error = _("The range end needs to be greater than the range start.");
 				}
-				elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'], $subnet, $mask)) {
+				elseif ($this->processed && !range::check_subnet_range($range['range_start'], $subnet, $mask)) {
 					$error = _("The IP does not match the subnet.");
 				}
-				elseif ($this->processed && !$this->isNotOverlappedRange($this->ranges[$id]['range_start'], $this->ranges[$id]['range_end'])) {
+				elseif ($this->processed && !$this->isNotOverlappedRange($range['range_start'], $range['range_end'])) {
 					$error = _("The range conflicts with another range.");
 				}
 			}
-			$fromInput = new htmlResponsiveInputField(_('Range from'), 'range_start_' . $id, $this->ranges[$id]['range_start'], 'range_from', true);
+			$fromInput = new htmlResponsiveInputField(_('Range from'), 'range_start_' . $id, $range['range_start'], 'range_from', true);
 			$return->add($fromInput);
 			if (!empty($error)) {
 				$return->add(new htmlOutputText($error));
 			}
 			// Range end
 			$error = "";
-			if (isset($this->ranges[$id]['range_end']) && !empty($this->ranges[$id]['range_end'])) {
-				if ($this->processed && !check_ip($this->ranges[$id]['range_end'])) {
+			if (isset($range['range_end']) && !empty($range['range_end'])) {
+				if ($this->processed && !check_ip($range['range_end'])) {
 					$error = _("The IP address is invalid.");
 				}
-				elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_end'], $subnet, $mask)) {
+				elseif ($this->processed && !range::check_subnet_range($range['range_end'], $subnet, $mask)) {
 					$error = _("The IP does not match the subnet.");
 				}
 			}
-			$toInput = new htmlResponsiveInputField(_('Range to'), 'range_end_' . $id, $this->ranges[$id]['range_end'], 'range_to', true);
+			$toInput = new htmlResponsiveInputField(_('Range to'), 'range_end_' . $id, $range['range_end'], 'range_to', true);
 			$return->add($toInput);
 			if (!empty($error)) {
 				$return->add(new htmlOutputText($error));
@@ -532,7 +532,7 @@ class range extends baseModule {
 		if (!empty($this->poolsNew)) {
 			$return->add(new htmlSubTitle(_('Pools')));
 			foreach ($this->poolsNew as $index => $poolAttrs) {
-				$cn = !empty($poolAttrs['cn'][0]) ? $poolAttrs['cn'][0] : '';
+				$cn = empty($poolAttrs['cn'][0]) ? '' : $poolAttrs['cn'][0];
 				$nameField = new htmlResponsiveInputField(_('Name'), 'pool_cn_' . $index, $cn, 'poolName', true);
 				$return->add($nameField);
 				$peer = '';
@@ -551,8 +551,8 @@ class range extends baseModule {
 				if (!empty($poolAttrs['dhcprange'])) {
 					foreach ($poolAttrs['dhcprange'] as $rIndex => $range) {
 						$range = explode(' ', $range);
-						$from = !empty($range[0]) ? $range[0] : '';
-						$to = !empty($range[1]) ? $range[1] : '';
+						$from = empty($range[0]) ? '' : $range[0];
+						$to = empty($range[1]) ? '' : $range[1];
 						$fromInput = new htmlResponsiveInputField(_('Range from'), 'pool_from_' . $index . '_' . $rIndex, $from, 'range_from', true);
 						$toInput = new htmlResponsiveInputField(_('Range to'), 'pool_to_' . $index . '_' . $rIndex, $to, 'range_to', true);
 						$return->add($fromInput);
@@ -660,7 +660,7 @@ class range extends baseModule {
 						}
 						if ((!empty($pool[$attr]) && empty($poolOrig[$attr]))
 							|| (empty($pool[$attr]) && !empty($poolOrig[$attr]))
-							|| (sizeof($pool[$attr]) != sizeof($poolOrig[$attr]))) {
+							|| (count($pool[$attr]) !== count($poolOrig[$attr]))) {
 							$changed = true;
 						}
 						else {
@@ -743,9 +743,9 @@ class range extends baseModule {
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = [];
-		if (is_array($this->ranges) && (sizeof($this->ranges) > 0)) {
+		if (is_array($this->ranges) && ($this->ranges !== [])) {
 			$pdfTable = new PDFTable(_('Ranges'));
-			for ($i = 0; $i < sizeof($this->ranges); $i++) {
+			for ($i = 0; $i < count($this->ranges); $i++) {
 				$start = $this->ranges[$i]['range_start'];
 				$end = $this->ranges[$i]['range_end'];
 				$pdfRow = new PDFTableRow();
@@ -756,7 +756,7 @@ class range extends baseModule {
 
 			if (!empty($this->poolsNew)) {
 				foreach ($this->poolsNew as $poolAttrs) {
-					$cn = !empty($poolAttrs['cn'][0]) ? $poolAttrs['cn'][0] : '';
+					$cn = empty($poolAttrs['cn'][0]) ? '' : $poolAttrs['cn'][0];
 					$peer = '';
 					if (!empty($poolAttrs['dhcpstatements'])) {
 						foreach ($poolAttrs['dhcpstatements'] as $statement) {
@@ -768,8 +768,8 @@ class range extends baseModule {
 					if (!empty($poolAttrs['dhcprange'])) {
 						foreach ($poolAttrs['dhcprange'] as $range) {
 							$range = explode(' ', $range);
-							$from = !empty($range[0]) ? $range[0] : '';
-							$to = !empty($range[1]) ? $range[1] : '';
+							$from = empty($range[0]) ? '' : $range[0];
+							$to = empty($range[1]) ? '' : $range[1];
 							$pdfRow = new PDFTableRow();
 							$pdfRow->cells[] = new PDFTableCell($cn . $peer . ': ' . $from . " - " . $to);
 							$pdfTable->rows[] = $pdfRow;

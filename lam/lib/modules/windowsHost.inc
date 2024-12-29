@@ -48,7 +48,7 @@ class windowsHost extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['host']);
+		return $this->get_scope() === 'host';
 	}
 
 	/**
@@ -265,12 +265,12 @@ class windowsHost extends baseModule {
 		$options = [];
 		$filter = get_ldap_filter('user');
 		$entries = searchLDAPByFilter($filter, ['dn'], ['user']);
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$entries[$i] = $entries[$i]['dn'];
 		}
 		// sort by DN
 		usort($entries, 'compareDN');
-		for ($i = 0; $i < sizeof($entries); $i++) {
+		for ($i = 0; $i < count($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}
 		$selected = [];
@@ -322,7 +322,7 @@ class windowsHost extends baseModule {
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('computer', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'computer';
@@ -335,7 +335,7 @@ class windowsHost extends baseModule {
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$errors[] = $errMsg;
 				}
 			}

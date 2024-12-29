@@ -190,7 +190,7 @@ class hostObject extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("hostObject", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "hostObject";
@@ -220,14 +220,13 @@ class hostObject extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['hostObject_addExt'][0]) && ($profile['hostObject_addExt'][0] == "true")) {
-			if (!in_array('hostObject', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'hostObject';
-			}
+		if (isset($profile['hostObject_addExt'][0])
+			&& ($profile['hostObject_addExt'][0] == "true")
+			&& !in_array('hostObject', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'hostObject';
 		}
 		$hostList = preg_split('/,[ ]*/', $profile['hostObject_host'][0]);
 		$this->attributes['host'] = $hostList;
-
 	}
 
 	/**

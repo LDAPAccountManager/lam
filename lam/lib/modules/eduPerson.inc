@@ -60,7 +60,7 @@ class eduPerson extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -158,7 +158,7 @@ class eduPerson extends baseModule {
 			]];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputCheckbox('eduPerson_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileContainer->add(new htmlResponsiveInputCheckbox('eduPerson_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = [
@@ -273,10 +273,7 @@ class eduPerson extends baseModule {
 	 * @return boolean true, if all is ok
 	 */
 	function module_complete() {
-		if (($this->getAccountContainer()->rdn == 'eduPersonPrincipalName') && !isset($this->attributes['eduPersonPrincipalName'][0])) {
-			return false;
-		}
-		return true;
+		return ($this->getAccountContainer()->rdn !== 'eduPersonPrincipalName') || isset($this->attributes['eduPersonPrincipalName'][0]);
 	}
 
 	/**
@@ -294,14 +291,14 @@ class eduPerson extends baseModule {
 			if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
 				$primaryAffiliation = [$this->attributes['eduPersonPrimaryAffiliation'][0]];
 			}
-			$return->add(new htmlResponsiveSelect('primaryAffiliation', $this->affiliationTypes, $primaryAffiliation, _('Primary affiliation'), 'primaryAffiliation'), 12);
+			$return->add(new htmlResponsiveSelect('primaryAffiliation', $this->affiliationTypes, $primaryAffiliation, _('Primary affiliation'), 'primaryAffiliation'));
 			// scoped affiliations
 			$scopedAffiliationLabel = new htmlOutputText(_('Scoped affiliations'));
 			$scopedAffiliationLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addLabel($scopedAffiliationLabel);
 			$scopedAffiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
-				for ($i = 0; $i < sizeof($this->attributes['eduPersonScopedAffiliation']); $i++) {
+				for ($i = 0; $i < count($this->attributes['eduPersonScopedAffiliation']); $i++) {
 					$parts = explode('@', $this->attributes['eduPersonScopedAffiliation'][$i]);
 					$scopedAffiliationPrefix = [$parts[0]];
 					$scopedAffiliation = substr($this->attributes['eduPersonScopedAffiliation'][$i], strlen($parts[0]) + 1);
@@ -310,7 +307,7 @@ class eduPerson extends baseModule {
 					$scopedAffiliationContainer->addElement(new htmlOutputText('@'));
 					$scopedAffiliationContainer->addElement(new htmlInputField('scopedAffiliation' . $i, $scopedAffiliation));
 					$scopedAffiliationContainer->addElement(new htmlButton('deleduPersonScopedAffiliation' . $i, 'del.svg', true));
-					if ($i == (sizeof($this->attributes['eduPersonScopedAffiliation']) - 1)) {
+					if ($i === count($this->attributes['eduPersonScopedAffiliation']) - 1) {
 						$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.svg', true));
 					}
 					$scopedAffiliations->addElement($scopedAffiliationContainer, true);
@@ -321,14 +318,14 @@ class eduPerson extends baseModule {
 				$scopedAffiliationContainer->addElement(new htmlOutputText('-'));
 				$scopedAffiliationContainer->addElement(new htmlSpacer('10px', null));
 				$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.svg', true));
-				$scopedAffiliationContainer->addElement(new htmlHelpLink('scopedAffiliation'), true);
+				$scopedAffiliationContainer->addElement(new htmlHelpLink('scopedAffiliation'));
 				$scopedAffiliations->addElement($scopedAffiliationContainer);
 			}
 			$return->addField($scopedAffiliations);
 			// affiliations
 			$affiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonAffiliation'][0])) {
-				for ($i = 0; $i < sizeof($this->attributes['eduPersonAffiliation']); $i++) {
+				for ($i = 0; $i < count($this->attributes['eduPersonAffiliation']); $i++) {
 					$affiliations->addElement(new htmlSelect('affiliation' . $i, $this->affiliationTypes, [$this->attributes['eduPersonAffiliation'][$i]]));
 					$affiliationButton = new htmlButton('delAffiliation' . $i, 'del.svg', true);
 					$affiliations->addElement($affiliationButton);
@@ -368,7 +365,7 @@ class eduPerson extends baseModule {
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add EDU person extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add EDU person extension')));
 		}
 		return $return;
 	}
@@ -386,7 +383,7 @@ class eduPerson extends baseModule {
 		}
 		elseif (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['eduPerson'], $this->attributes['objectClass']);
-			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
+			for ($i = 0; $i < count($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
 					unset($this->attributes[$this->meta['attributes'][$i]]);
 				}
@@ -474,7 +471,7 @@ class eduPerson extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("eduPerson", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "eduPerson";
@@ -483,7 +480,7 @@ class eduPerson extends baseModule {
 			if ($rawAccounts[$i][$ids['eduPerson_principalName']] != "") {
 				if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $rawAccounts[$i][$ids['eduPerson_principalName']])) {
 					$error = $this->messages['eduPersonPrincipalName'][1];
-					array_push($error, $i);
+					$error[] = $i;
 					$messages[] = $error;
 				}
 				else {
@@ -494,7 +491,7 @@ class eduPerson extends baseModule {
 			if ($rawAccounts[$i][$ids['eduPerson_primaryAffiliation']] != "") {
 				if (!in_array($rawAccounts[$i][$ids['eduPerson_primaryAffiliation']], $this->affiliationTypes)) {
 					$error = $this->messages['primaryAffiliation'][0];
-					array_push($error, $i);
+					$error[] = $i;
 					$messages[] = $error;
 				}
 				else {
@@ -504,11 +501,11 @@ class eduPerson extends baseModule {
 			// scoped affiliations
 			if ($rawAccounts[$i][$ids['eduPerson_scopedAffiliation']] != "") {
 				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_scopedAffiliation']]);
-				for ($a = 0; $a < sizeof($parts); $a++) {
+				for ($a = 0; $a < count($parts); $a++) {
 					$subparts = explode('@', $parts[$a]);
 					if (!in_array($subparts[0], $this->affiliationTypes)) {
 						$error = $this->messages['scopedAffiliation'][0];
-						array_push($error, $i);
+						$error[] = $i;
 						$messages[] = $error;
 					}
 					else {
@@ -520,11 +517,11 @@ class eduPerson extends baseModule {
 			if ($rawAccounts[$i][$ids['eduPerson_affiliation']] != "") {
 				$parts = explode(', ', $rawAccounts[$i][$ids['eduPerson_affiliation']]);
 				$valid = true;
-				for ($a = 0; $a < sizeof($parts); $a++) {
+				for ($a = 0; $a < count($parts); $a++) {
 					if (!in_array($parts[$a], $this->affiliationTypes)) {
 						$valid = false;
 						$error = $this->messages['affiliation'][0];
-						array_push($error, $i);
+						$error[] = $i;
 						$messages[] = $error;
 						break;
 					}

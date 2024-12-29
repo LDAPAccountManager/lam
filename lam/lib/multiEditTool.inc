@@ -203,7 +203,7 @@ function replaceWildcards(string $value, array $entry): string {
 	// §attr|;§ -> "val1;val2"
 	$matches = [];
 	if (preg_match_all('/§([a-z0-9-_]+)\\|([^§]+)§/i', $replacement, $matches) > 0) {
-		for ($i = 0; $i < sizeof($matches[1]); $i++) {
+		for ($i = 0; $i < count($matches[1]); $i++) {
 			$attributeName = strtolower($matches[1][$i]);
 			$separator = $matches[2][$i];
 			$match = $matches[0][$i];

@@ -5,11 +5,11 @@ use PHPUnit\Framework\TestCase;
  Copyright (C) 2017 - 2023  Roland Gruber
  */
 
-if (is_readable('lam/lib/modules/customFields.inc')) {
+if (is_readable(__DIR__ . '/../../../lib/modules/customFields.inc')) {
 
-	include_once 'lam/lib/baseModule.inc';
-	include_once 'lam/lib/modules.inc';
-	include_once 'lam/lib/modules/customFields.inc';
+	include_once __DIR__ . '/../../../lib/baseModule.inc';
+	include_once __DIR__ . '/../../../lib/modules.inc';
+	include_once __DIR__ . '/../../../lib/modules/customFields.inc';
 
 	/**
 	 * Checks the ppolicy expire job.

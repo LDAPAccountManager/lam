@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\PDF_EDITOR;
+
 use htmlJavaScript;
 use \htmlResponsiveRow;
 use \htmlResponsiveSelect;
@@ -45,12 +47,12 @@ use LAMException;
 */
 
 /**
-* Displays the main page of the PDF editor where the user can select the displayed entries.
-*
-* @author Michael Duergner
-* @author Roland Gruber
-* @package PDF
-*/
+ * Displays the main page of the PDF editor where the user can select the displayed entries.
+ *
+ * @author Michael Duergner
+ * @author Roland Gruber
+ * @package PDF
+ */
 
 /** security functions */
 include_once(__DIR__ . "/../../lib/security.inc");
@@ -100,7 +102,7 @@ if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 
 
 // Abort and go back to main pdf structure page
-if(isset($_GET['abort'])) {
+if (isset($_GET['abort'])) {
 	metarefresh('pdfmain.php');
 	exit;
 }
@@ -113,19 +115,19 @@ if (!isset($_SESSION['currentPDFStructure'])) {
 	try {
 		if (isset($_GET['edit'])) {
 			$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
-                $type->getId(), $_GET['edit']);
+				$type->getId(), $_GET['edit']);
 		}
 		// Load default structure file when creating a new one
 		else {
-		    $structureNames = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(),
-			    $type->getId());
-		    if (in_array('default', $structureNames)) {
-			    $_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
-				    $type->getId(), 'default');
-            }
-		    else {
-			    $_SESSION['currentPDFStructure'] = new PDFStructure();
-            }
+			$structureNames = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(),
+				$type->getId());
+			if (in_array('default', $structureNames)) {
+				$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
+					$type->getId(), 'default');
+			}
+			else {
+				$_SESSION['currentPDFStructure'] = new PDFStructure();
+			}
 		}
 	}
 	catch (LAMException $e) {
@@ -149,9 +151,9 @@ if (!empty($_POST['form_submit'])) {
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
 $saveErrors = [];
-if(isset($_GET['submit'])) {
+if (isset($_GET['submit'])) {
 	try {
-	    $pdfStructurePersistenceManager->savePdfStructure($_SESSION['config']->getName(), $type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
+		$pdfStructurePersistenceManager->savePdfStructure($_SESSION['config']->getName(), $type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
 		unset($_SESSION['currentPDFStructure']);
 		metaRefresh('pdfmain.php?savedSuccessfully=' . $_POST['pdfname']);
 		exit;
@@ -169,40 +171,35 @@ $modules = [];
 $section_items_array = [];
 $section_items = '';
 $sortedModules = [];
-foreach($availablePDFFields as $module => $fields) {
-	if ($module != 'main') {
-		$title = getModuleAlias($module, $type->getScope());
-	}
-	else {
-		$title = _('Main');
-	}
+foreach ($availablePDFFields as $module => $fields) {
+	$title = ($module != 'main') ? getModuleAlias($module, $type->getScope()) : _('Main');
 	$sortedModules[$module] = $title;
 }
 natcasesort($sortedModules);
-foreach($sortedModules as $module => $title) {
+foreach ($sortedModules as $module => $title) {
 	$values = $availablePDFFields[$module];
-	if (!is_array($values) || (sizeof($values) < 1)) {
+	if (!is_array($values) || (count($values) < 1)) {
 		continue;
 	}
 	$modules[] = $module;
 	$section_items .= "<optgroup label=\"" . $title . "\"\n>";
 	natcasesort($values);
-	foreach($values as $attribute => $attributeLabel) {
+	foreach ($values as $attribute => $attributeLabel) {
 		$section_items_array[] = $module . '_' . $attribute;
 		$section_items .= "<option value=\"" . $module . '_' . $attribute . "\">" . $attributeLabel . "</option>\n";
 	}
 	$section_items .= "</optgroup>\n";
 }
-$modules = join(',',$modules);
+$modules = implode(',', $modules);
 
 // print header
 include __DIR__ . '/../../lib/adminHeader.inc';
 ?>
-	<div class="smallPaddingContent">
-<?php
+    <div class="smallPaddingContent">
+	<?php
 
 // print error messages if any
-if (sizeof($saveErrors) > 0) {
+if ($saveErrors !== []) {
 	foreach ($saveErrors as $saveError) {
 		call_user_func_array(StatusMessage(...), $saveError);
 	}
@@ -210,9 +207,9 @@ if (sizeof($saveErrors) > 0) {
 }
 
 $newFieldFieldElements = [];
-foreach($sortedModules as $module => $title) {
+foreach ($sortedModules as $module => $title) {
 	$fields = $availablePDFFields[$module];
-	if (isset($fields) && is_array($fields) && (sizeof($fields) > 0)) {
+	if (isset($fields) && is_array($fields) && ($fields !== [])) {
 		$moduleFields = [];
 		foreach ($fields as $field => $fieldLabel) {
 			$moduleFields[$fieldLabel] = $module . "_" . $field;
@@ -226,14 +223,14 @@ $structureName = '';
 if (isset($_GET['edit'])) {
 	$structureName = $_GET['edit'];
 }
-else if (isset($_POST['pdfname'])) {
+elseif (isset($_POST['pdfname'])) {
 	$structureName = $_POST['pdfname'];
 }
 // headline
 $headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
 $logos = [_('No logo') => 'none'];
-foreach($logoFiles as $logoFile) {
+foreach ($logoFiles as $logoFile) {
 	$logos[$logoFile->getName() . ' (' . $logoFile->getWidth() . ' x ' . $logoFile->getHeight() . ")"] = $logoFile->getName();
 }
 $selectedLogo = ['printLogo.jpg'];
@@ -242,8 +239,9 @@ if (isset($_SESSION['currentPDFStructure'])) {
 }
 
 ?>
-	<form id="inputForm" action="pdfpage.php" method="post" onSubmit="window.lam.utility.saveScrollPosition('inputForm')">
-<?php
+    <form id="inputForm" action="pdfpage.php" method="post"
+          onSubmit="window.lam.utility.saveScrollPosition('inputForm')">
+	<?php
 $sectionElements = [];
 $nonTextSectionElements = [];
 
@@ -264,8 +262,8 @@ if (isset($_SESSION['currentPDFStructure'])) {
 	$foldingMarks = $_SESSION['currentPDFStructure']->getFoldingMarks();
 }
 $possibleFoldingMarks = [
-    _('No') => PDFStructure::FOLDING_NONE,
-    _('Yes') => PDFStructure::FOLDING_STANDARD
+	_('No') => PDFStructure::FOLDING_NONE,
+	_('Yes') => PDFStructure::FOLDING_STANDARD
 ];
 $foldingMarksSelect = new htmlResponsiveSelect('foldingmarks', $possibleFoldingMarks, [$foldingMarks], _('Folding marks'));
 $foldingMarksSelect->setHasDescriptiveElements(true);
@@ -286,8 +284,8 @@ foreach ($sections as $key => $section) {
 	$linkRemove->setTitle(_("Remove"));
 	$emptyBox = new htmlSpacer('19px', null);
 	// We have a new section to start
-	if($section instanceof PDFEntrySection) {
-		if($section->isAttributeTitle()) {
+	if ($section instanceof PDFEntrySection) {
+		if ($section->isAttributeTitle()) {
 			$section_headline = translateFieldIDToName($section->getPdfKey(), $type->getScope(), $availablePDFFields);
 			if ($section_headline === null) {
 				continue;
@@ -300,9 +298,9 @@ foreach ($sections as $key => $section) {
 		$sectionElements[$section_headline] = $key;
 		$structureContent->addVerticalSpacer('2rem');
 		// Section headline is a value entry
-		if($section->isAttributeTitle()) {
+		if ($section->isAttributeTitle()) {
 			$headlineElements = [];
-			foreach($section_items_array as $item) {
+			foreach ($section_items_array as $item) {
 				$headlineElements[translateFieldIDToName($item, $type->getScope(), $availablePDFFields)] = '_' . $item;
 			}
 			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, ['_' . $section->getPdfKey()]);
@@ -321,7 +319,7 @@ foreach ($sections as $key => $section) {
 		else {
 			$actionGroup->addElement($emptyBox);
 		}
-		$hasAdditionalSections = $key < (sizeof($sections) - 1);
+		$hasAdditionalSections = $key < (count($sections) - 1);
 		if ($hasAdditionalSections) {
 			$actionGroup->addElement($linkDown);
 		}
@@ -349,7 +347,7 @@ foreach ($sections as $key => $section) {
 			else {
 				$actionGroup->addElement($emptyBox);
 			}
-			if ($e < (sizeof($sectionEntries) - 1)) {
+			if ($e < (count($sectionEntries) - 1)) {
 				$linkDown = new htmlButton('down_entry_' . $key . '_' . $e, 'down.svg', true);
 				$linkDown->setTitle(_("Down"));
 				$actionGroup->addElement($linkDown);
@@ -364,7 +362,7 @@ foreach ($sections as $key => $section) {
 		}
 	}
 	// We have to include a static text.
-	elseif($section instanceof PDFTextSection) {
+    elseif ($section instanceof PDFTextSection) {
 		// Add current satic text for dropdown box needed for the position when inserting a new
 		// section or static text entry
 		$textSnippet = $section->getText();
@@ -384,7 +382,7 @@ foreach ($sections as $key => $section) {
 		else {
 			$actionGroup->addElement($emptyBox);
 		}
-		if ($key != sizeof($sections) - 1) {
+		if ($key != count($sections) - 1) {
 			$actionGroup->addElement($linkDown);
 		}
 		else {
@@ -398,7 +396,7 @@ foreach ($sections as $key => $section) {
 		$structureContent->add($staticTextOutput, 12);
 	}
 }
-$sectionElements[_('End')] = sizeof($structure->getSections());
+$sectionElements[_('End')] = count($structure->getSections());
 $mainContent->add($structureContent, 12);
 $container->add($mainContent, 12);
 $container->addVerticalSpacer('2rem');
@@ -476,9 +474,9 @@ $buttonContainer->add(new htmlHiddenInput('form_submit', 'true'), 4);
 $container->add($buttonContainer, 12);
 addSecurityTokenToMetaHTML($container);
 
-if ((sizeof($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+if ((count($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
-	$container->add(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] .', ' . $_POST['scrollPositionLeft'] . ')'));
+	$container->add(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
 }
 
 parseHtml(null, $container, [], false, $type->getScope());
@@ -501,11 +499,11 @@ function translateFieldIDToName($id, $scope, $availablePDFFields): ?string {
 			continue;
 		}
 		foreach ($fields as $name => $label) {
-			if ($id == $module . '_' . $name) {
+			if ($id === $module . '_' . $name) {
 				if ($module == 'main') {
 					return _('Main') . ': ' . $label;
 				}
-				else  {
+				else {
 					return getModuleAlias($module, $scope) . ': ' . $label;
 				}
 			}
@@ -527,19 +525,19 @@ function updateBasicSettings(PDFStructure &$structure, array $logoFiles): void {
 	}
 	// set logo
 	if (isset($_POST['logoFile'])) {
-	    $fileName = $_POST['logoFile'];
-	    if ($fileName !== 'none') {
-		    $found = false;
-		    foreach ($logoFiles as $logoFile) {
-			    if ($logoFile->getName() === $fileName) {
-				    $found = true;
-			    }
-		    }
-		    if (!$found) {
-			    logNewMessage(LOG_ERR, 'Invalid PDF logo file: ' . $fileName);
-			    return;
-		    }
-	    }
+		$fileName = $_POST['logoFile'];
+		if ($fileName !== 'none') {
+			$found = false;
+			foreach ($logoFiles as $logoFile) {
+				if ($logoFile->getName() === $fileName) {
+					$found = true;
+				}
+			}
+			if (!$found) {
+				logNewMessage(LOG_ERR, 'Invalid PDF logo file: ' . $fileName);
+				return;
+			}
+		}
 		$structure->setLogo($fileName);
 	}
 	// set folding marks
@@ -571,10 +569,10 @@ function updateSectionTitles(PDFStructure &$structure): void {
 function addSection(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	// add a new text field
-	if(isset($_POST['add_text'])) {
+	if (isset($_POST['add_text'])) {
 		// Check if text for static text field is specified
-		if(empty($_POST['text_text'])) {
-			StatusMessage('ERROR',_('No static text specified'),_('The static text must contain at least one character.'));
+		if (empty($_POST['text_text'])) {
+			StatusMessage('ERROR', _('No static text specified'), _('The static text must contain at least one character.'));
 		}
 		else {
 			$section = new PDFTextSection(str_replace("\r", "", $_POST['text_text']));
@@ -583,10 +581,10 @@ function addSection(PDFStructure &$structure): void {
 		}
 	}
 	// add a new section with text headline
-	elseif(isset($_POST['add_sectionText'])) {
+    elseif (isset($_POST['add_sectionText'])) {
 		// Check if name for new section is specified when needed
-		if(empty($_POST['new_section_text'])) {
-			StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
+		if (empty($_POST['new_section_text'])) {
+			StatusMessage('ERROR', _('No section text specified'), _('The headline for a new section must contain at least one character.'));
 		}
 		else {
 			$section = new PDFEntrySection($_POST['new_section_text']);
@@ -595,7 +593,7 @@ function addSection(PDFStructure &$structure): void {
 		}
 	}
 	// Add a new section with item as headline
-	elseif(isset($_POST['add_section'])) {
+    elseif (isset($_POST['add_section'])) {
 		$section = new PDFEntrySection('_' . $_POST['new_section_item']);
 		array_splice($sections, $_POST['add_section_position'], 0, [$section]);
 		$structure->setSections($sections);
@@ -626,7 +624,7 @@ function addSectionEntry(PDFStructure &$structure): void {
  */
 function removeItem(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
-	foreach ($_POST as $key => $value) {
+	foreach (array_keys($_POST) as $key) {
 		// remove section
 		if (str_starts_with($key, 'remove_section_')) {
 			$pos = substr($key, strlen('remove_section_'));
@@ -656,7 +654,7 @@ function removeItem(PDFStructure &$structure): void {
  */
 function moveUp(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
-	foreach ($_POST as $key => $value) {
+	foreach (array_keys($_POST) as $key) {
 		// move section
 		if (str_starts_with($key, 'up_section_')) {
 			$pos = intval(substr($key, strlen('up_section_')));
@@ -688,7 +686,7 @@ function moveUp(PDFStructure &$structure): void {
  */
 function moveDown(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
-	foreach ($_POST as $key => $value) {
+	foreach (array_keys($_POST) as $key) {
 		// move section
 		if (str_starts_with($key, 'down_section_')) {
 			$pos = intval(substr($key, strlen('down_section_')));

@@ -40,7 +40,7 @@ use LAM\PDF\PDFImage;
  */
 
 /** PDF functions */
-include_once('pdf.inc');
+include_once(__DIR__ . '/pdf.inc');
 
 /**
  * Parent class of all account modules.
@@ -145,7 +145,7 @@ abstract class baseModule {
 		$this->orig['objectClass'] = [];
 		if ($this->autoAddObjectClasses === true) {
 			$objectClasses = $this->getManagedObjectClasses($this->getAccountContainer()->get_type()->getId());
-			for ($i = 0; $i < sizeof($objectClasses); $i++) {
+			for ($i = 0; $i < count($objectClasses); $i++) {
 				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
 					$this->attributes['objectClass'][] = $objectClasses[$i];
 				}
@@ -179,7 +179,7 @@ abstract class baseModule {
 		// add object classes if needed
 		if ($this->autoAddObjectClasses === true) {
 			$objectClasses = $this->getManagedObjectClasses($typeId);
-			for ($i = 0; $i < sizeof($objectClasses); $i++) {
+			for ($i = 0; $i < count($objectClasses); $i++) {
 				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
 					$this->attributes['objectClass'][] = $objectClasses[$i];
 				}
@@ -189,7 +189,7 @@ abstract class baseModule {
 		$attributeNames = array_merge($this->getManagedAttributes($typeId), $this->getManagedHiddenAttributes($typeId));
 		$attributeNames = array_unique($attributeNames);
 		$attributeNames = array_values($attributeNames);
-		for ($i = 0; $i < sizeof($attributeNames); $i++) {
+		for ($i = 0; $i < count($attributeNames); $i++) {
 			if (isset($attributes[$attributeNames[$i]])) {
 				$this->attributes[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
 				$this->orig[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
@@ -620,7 +620,7 @@ abstract class baseModule {
 						$val2 = $options[$check['cmp_name2']][0];
 						// ignore if both fields are empty
 						if (!(empty($val1) && empty($val2))
-							&& (($val1 == '') || ($val2 == '') || !(intval($val1) > intval($val2)))) {
+							&& (($val1 == '') || ($val2 == '') || intval($val1) <= intval($val2))) {
 							$errors[] = $check['error_message'];
 						}
 						break;
@@ -630,7 +630,7 @@ abstract class baseModule {
 						$val2 = $options[$check['cmp_name2']][0];
 						// ignore if both fields are empty
 						if (!(empty($val1) && empty($val2))
-							&& (($val1 == '') || ($val2 == '') || !(intval($val1) >= intval($val2)))) {
+							&& (($val1 == '') || ($val2 == '') || intval($val1) < intval($val2))) {
 							$errors[] = $check['error_message'];
 						}
 						break;
@@ -656,7 +656,7 @@ abstract class baseModule {
 	public function load_profile($profile) {
 		if (isset($this->meta['profile_mappings'])) {
 			$identifiers = array_keys($this->meta['profile_mappings']);
-			for ($i = 0; $i < sizeof($identifiers); $i++) {
+			for ($i = 0; $i < count($identifiers); $i++) {
 				if (isset($profile[$identifiers[$i]])) {
 					$this->attributes[$this->meta['profile_mappings'][$identifiers[$i]]] = $profile[$identifiers[$i]];
 				}
@@ -681,7 +681,7 @@ abstract class baseModule {
 	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$return = [];
-		for ($i = 0; $i < sizeof($scopes); $i++) {
+		for ($i = 0; $i < count($scopes); $i++) {
 			if (isset($this->meta['config_options'][$scopes[$i]])) {
 				if (is_array($this->meta['config_options'][$scopes[$i]])) {
 					$return = array_merge($return, $this->meta['config_options'][$scopes[$i]]);
@@ -733,7 +733,7 @@ abstract class baseModule {
 		foreach ($scopes as $scope) {
 			if (isset($this->meta['config_checks'][$scope]) && is_array($this->meta['config_checks'][$scope])) {
 				$identifiers = array_keys($this->meta['config_checks'][$scope]);
-				for ($i = 0; $i < sizeof($identifiers); $i++) {
+				for ($i = 0; $i < count($identifiers); $i++) {
 					// check if option is required
 					if (isset($this->meta['config_checks'][$scope][$identifiers[$i]]['required']) && ($this->meta['config_checks'][$scope][$identifiers[$i]]['required']) && ($options[$identifiers[$i]][0] == '')) {
 						$messages[] = $this->meta['config_checks'][$scope][$identifiers[$i]]['required_message'];
@@ -781,7 +781,7 @@ abstract class baseModule {
 								break;
 							}
 							// compare
-							if (!(intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name1']][0]) > intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name2']][0]))) {
+							if (intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name1']][0]) <= intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name2']][0])) {
 								$messages[] = $this->meta['config_checks'][$scope][$identifiers[$i]]['error_message'];
 							}
 							break;
@@ -797,7 +797,7 @@ abstract class baseModule {
 								break;
 							}
 							// compare
-							if (!(intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name1']][0]) >= intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name2']][0]))) {
+							if (intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name1']][0]) < intval($options[$this->meta['config_checks'][$scope][$identifiers[$i]]['cmp_name2']][0])) {
 								$messages[] = $this->meta['config_checks'][$scope][$identifiers[$i]]['error_message'];
 							}
 							break;
@@ -939,7 +939,7 @@ abstract class baseModule {
 	 * @param PDFTable $table table
 	 */
 	public function addPDFImage(&$result, $attrName) {
-		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
+		if (isset($this->attributes[$attrName]) && (count($this->attributes[$attrName]) > 0)) {
 			$result[static::class . '_' . $attrName][] = new PDFImage($this->attributes[$attrName][0]);
 		}
 	}
@@ -1039,7 +1039,7 @@ abstract class baseModule {
 				$list = preg_split($regexSplit, trim($rawAccounts[$position][$ids[$colName]]));
 				$partialAccounts[$position][$attrName] = $list;
 				if (!empty($regex)) {
-					for ($x = 0; $x < sizeof($list); $x++) {
+					for ($x = 0; $x < count($list); $x++) {
 						if (!$this->checkUploadRegex($regexIDs, $list[$x], $message, $position, $errors)) {
 							break;
 						}
@@ -1398,7 +1398,7 @@ abstract class baseModule {
 			$val = implode('<br>', $values);
 		}
 		$labelBox = new htmlOutputText($label);
-		if (!empty($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 1)) {
+		if (!empty($this->attributes[$attrName]) && (count($this->attributes[$attrName]) > 1)) {
 			$labelBox->alignment = htmlElement::ALIGN_TOP;
 		}
 		$container->addLabel($labelBox);
@@ -1457,7 +1457,7 @@ abstract class baseModule {
 		if (isset($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
 		}
-		if (sizeof($values) == 0) {
+		if (count($values) == 0) {
 			$values[] = '';
 		}
 		natcasesort($values);
@@ -1472,7 +1472,7 @@ abstract class baseModule {
 		$subContainer = new htmlTable();
 		$subContainer->setCSSClasses(['fullwidth']);
 		$subContainer->alignment = htmlElement::ALIGN_TOP;
-		for ($i = 0; $i < sizeof($values); $i++) {
+		for ($i = 0; $i < count($values); $i++) {
 			if (!$isTextArea) {
 				$input = new htmlInputField($attrName . '_' . $i, $values[$i]);
 				$input->setAccessibilityLabel($label);
@@ -1541,12 +1541,12 @@ abstract class baseModule {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
 			$this->attributes[$attrName][$counter] = trim($_POST[$attrName . '_' . $counter]);
-			if (($this->attributes[$attrName][$counter] == '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
+			if (($this->attributes[$attrName][$counter] === '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
 				unset($this->attributes[$attrName][$counter]);
 			}
-			elseif (($validationID != null) && ($this->attributes[$attrName][$counter] != '') && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
+			elseif (($validationID != null) && ($this->attributes[$attrName][$counter] !== '') && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
 				$msg = $this->messages[$attrName][0];
-				if (sizeof($msg) < 3) {
+				if (count($msg) < 3) {
 					$msg[] = htmlspecialchars($this->attributes[$attrName][$counter]);
 				}
 				else {
@@ -1589,7 +1589,7 @@ abstract class baseModule {
 		if (isset($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
 		}
-		if (sizeof($values) == 0) {
+		if (count($values) == 0) {
 			$values[] = '';
 		}
 		natcasesort($values);
@@ -1601,7 +1601,7 @@ abstract class baseModule {
 		}
 		$subContainer = new htmlTable();
 		$subContainer->alignment = htmlElement::ALIGN_TOP;
-		for ($i = 0; $i < sizeof($values); $i++) {
+		for ($i = 0; $i < count($values); $i++) {
 			$input = new htmlSelect($attrName . '_' . $i, $options, [$values[$i]], $fieldSize);
 			$input->setHasDescriptiveElements($hasDescriptiveOptions);
 			$subContainer->addElement($input);
@@ -1630,7 +1630,7 @@ abstract class baseModule {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
 			$this->attributes[$attrName][$counter] = trim($_POST[$attrName . '_' . $counter]);
-			if (($this->attributes[$attrName][$counter] == '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
+			if (($this->attributes[$attrName][$counter] === '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
 				unset($this->attributes[$attrName][$counter]);
 			}
 			$counter++;
@@ -1765,15 +1765,13 @@ abstract class baseModule {
 		elseif ($isTextArea && !in_array($name, $readOnlyFields)) {
 			$field = new htmlInputTextarea(static::class . '_' . $name, $value, null, null);
 		}
+		elseif (!$isTextArea) {
+			$field = new htmlOutputText($value);
+		}
 		else {
-			if (!$isTextArea) {
-				$field = new htmlOutputText($value);
-			}
-			else {
-				$value = htmlspecialchars($value);
-				$value = str_replace("\n", '<br>', $value);
-				$field = new htmlOutputText($value, false);
-			}
+			$value = htmlspecialchars($value);
+			$value = str_replace("\n", '<br>', $value);
+			$field = new htmlOutputText($value, false);
 		}
 		$row = new htmlResponsiveRow();
 		$fieldLabel = new htmlLabel(static::class . '_' . $name, $this->getSelfServiceLabel($name, $label));
@@ -1805,20 +1803,13 @@ abstract class baseModule {
 			$ldapAttrName = $attributeName ?? $name;
 			if (!empty($_POST[$fieldName])) {
 				if (($validationID != null) && !get_preg($_POST[$fieldName], $validationID)) {
-					if ($validationMessage !== null) {
-						$container['messages'][] = $validationMessage;
-					}
-					else {
-						$container['messages'][] = $this->messages[$name][0];
-					}
+					$container['messages'][] = $validationMessage ?? $this->messages[$name][0];
 				}
-				else {
-					if (isset($attributes[$ldapAttrName]) && ($attributes[$ldapAttrName][0] != $_POST[$fieldName])) {
-						$container['mod'][$ldapAttrName] = [$_POST[$fieldName]];
-					}
-					elseif (!isset($attributes[$ldapAttrName])) {
-						$container['add'][$ldapAttrName] = [$_POST[$fieldName]];
-					}
+				elseif (isset($attributes[$ldapAttrName]) && ($attributes[$ldapAttrName][0] != $_POST[$fieldName])) {
+					$container['mod'][$ldapAttrName] = [$_POST[$fieldName]];
+				}
+				elseif (!isset($attributes[$ldapAttrName])) {
+					$container['add'][$ldapAttrName] = [$_POST[$fieldName]];
 				}
 			}
 			elseif (isset($attributes[$ldapAttrName])) {
@@ -1863,7 +1854,7 @@ abstract class baseModule {
 			if (empty($values)) {
 				$values[] = '';
 			}
-			for ($i = 0; $i < sizeof($values); $i++) {
+			for ($i = 0; $i < count($values); $i++) {
 				$fieldRow = new htmlResponsiveRow();
 				$value = $values[$i];
 				if (!$isTextArea) {
@@ -1884,7 +1875,7 @@ abstract class baseModule {
 					$delLink->setTitle(_('Delete'));
 					$linkGroup->addElement($delLink);
 				}
-				if ($i === (sizeof($values) - 1)) {
+				if ($i === (count($values) - 1)) {
 					$addLink = new htmlLink(null, '#', '../../graphics/add.svg');
 					$addLink->setOnClick('window.lam.selfservice.addMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
 					$addLink->setCSSClasses(['add-link icon', 'margin-left5']);
@@ -1944,12 +1935,7 @@ abstract class baseModule {
 					continue;
 				}
 				if (($validationID != null) && !get_preg($postValue, $validationID)) {
-					if ($validationMessage !== null) {
-						$container['messages'][] = $validationMessage;
-					}
-					else {
-						$container['messages'][] = $this->messages[$name][0];
-					}
+					$container['messages'][] = $validationMessage ?? $this->messages[$name][0];
 					return;
 				}
 				$valuesNew[] = $postValue;
@@ -1959,7 +1945,7 @@ abstract class baseModule {
 			}
 			$valuesOld = $attributes[$ldapAttrName] ?? [];
 			$intersect = array_intersect($valuesOld, $valuesNew);
-			if ((sizeof($valuesOld) != sizeof($valuesNew)) || (sizeof($intersect) != sizeof($valuesOld))) {
+			if ((count($valuesOld) !== count($valuesNew)) || (count($intersect) !== count($valuesOld))) {
 				$container['mod'][$ldapAttrName] = $valuesNew;
 			}
 		}
@@ -2265,7 +2251,7 @@ abstract class baseModule {
 	 * @see accountContainer
 	 */
 	protected function getAccountContainer(): ?accountContainer {
-		if (isset($this->base) && isset($_SESSION[$this->base])) {
+		if ($this->base !== null && isset($_SESSION[$this->base])) {
 			return $_SESSION[$this->base];
 		}
 		else {
@@ -2350,7 +2336,7 @@ abstract class baseModule {
 	 */
 	protected function isBooleanConfigOptionSet($optionName, $default = false) {
 		// abort if configuration is not available
-		if (!isset($this->moduleSettings) || !is_array($this->moduleSettings) || !isset($this->moduleSettings[$optionName][0])) {
+		if ($this->moduleSettings === null || !is_array($this->moduleSettings) || !isset($this->moduleSettings[$optionName][0])) {
 			return $default;
 		}
 		return ($this->moduleSettings[$optionName][0] == 'true');

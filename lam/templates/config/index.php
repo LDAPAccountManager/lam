@@ -33,7 +33,7 @@ use htmlResponsiveRow;
 
 
 /** Access to config functions */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 
 // start session
 if (isFileBasedSession()) {

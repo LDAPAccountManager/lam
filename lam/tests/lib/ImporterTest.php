@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 
 */
 
-require_once 'lam/lib/import.inc';
+require_once __DIR__ . '/../../lib/import.inc';
 
 /**
  * Checks the LDIF importer.
@@ -127,7 +127,7 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 	}
 
 	/**
@@ -162,7 +162,7 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(AddEntryTask::class, $task::class);
 	}
@@ -219,7 +219,7 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(RenameEntryTask::class, $task::class);
 	}
@@ -255,7 +255,7 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(DeleteEntryTask::class, $task::class);
 	}
@@ -314,17 +314,17 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
-		$this->assertEquals(1, sizeof($subtasks));
+		$this->assertEquals(1, count($subtasks));
 		$subTask = $subtasks[0];
 		$this->assertEquals(AddAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
-		$this->assertEquals(1, sizeof($attributes));
-		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertEquals(1, count($attributes));
+		$this->assertEquals(2, count($attributes['uid']));
 		$this->assertTrue(in_array('uid1', $attributes['uid']));
 		$this->assertTrue(in_array('uid2', $attributes['uid']));
 	}
@@ -349,25 +349,25 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
-		$this->assertEquals(2, sizeof($subtasks));
+		$this->assertEquals(2, count($subtasks));
 		$subTask = $subtasks[0];
 		$this->assertEquals(AddAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
-		$this->assertEquals(1, sizeof($attributes));
-		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertEquals(1, count($attributes));
+		$this->assertEquals(2, count($attributes['uid']));
 		$this->assertTrue(in_array('uid1', $attributes['uid']));
 		$this->assertTrue(in_array('uid2', $attributes['uid']));
 		$subTask = $subtasks[1];
 		$this->assertEquals(AddAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
-		$this->assertEquals(1, sizeof($attributes));
-		$this->assertEquals(2, sizeof($attributes['gn']));
+		$this->assertEquals(1, count($attributes));
+		$this->assertEquals(2, count($attributes['gn']));
 		$this->assertTrue(in_array('name1', $attributes['gn']));
 		$this->assertTrue(in_array('name2', $attributes['gn']));
 	}
@@ -388,17 +388,17 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
-		$this->assertEquals(1, sizeof($subtasks));
+		$this->assertEquals(1, count($subtasks));
 		$subTask = $subtasks[0];
 		$this->assertEquals(DeleteAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
-		$this->assertEquals(1, sizeof($attributes));
-		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertEquals(1, count($attributes));
+		$this->assertEquals(2, count($attributes['uid']));
 		$this->assertTrue(in_array('uid1', $attributes['uid']));
 		$this->assertTrue(in_array('uid2', $attributes['uid']));
 	}
@@ -417,11 +417,11 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
-		$this->assertEquals(1, sizeof($subtasks));
+		$this->assertEquals(1, count($subtasks));
 		$subTask = $subtasks[0];
 		$this->assertEquals(DeleteAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
@@ -445,17 +445,17 @@ class ImporterTest extends TestCase {
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
-		$this->assertEquals(1, sizeof($tasks));
+		$this->assertEquals(1, count($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(MultiTask::class, $task::class);
 		$subtasks = $task->getTasks();
-		$this->assertEquals(1, sizeof($subtasks));
+		$this->assertEquals(1, count($subtasks));
 		$subTask = $subtasks[0];
 		$this->assertEquals(ReplaceAttributesTask::class, $subTask::class);
 		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
 		$attributes = $subTask->getAttributes();
-		$this->assertEquals(1, sizeof($attributes));
-		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertEquals(1, count($attributes));
+		$this->assertEquals(2, count($attributes['uid']));
 		$this->assertTrue(in_array('uid1', $attributes['uid']));
 		$this->assertTrue(in_array('uid2', $attributes['uid']));
 	}

@@ -261,7 +261,7 @@ class pykotaUser extends baseModule {
 			'pykotaJobHistory' => _('Job history'),
 		];
 		// self service settings
-		if (static::class == 'pykotaUser') {
+		if (static::class === 'pykotaUser') {
 			$selfServiceContainer = new htmlResponsiveRow();
 			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, ['jobSuffix', static::class]));
 			$return['selfServiceSettings'] = $selfServiceContainer;
@@ -510,12 +510,7 @@ class pykotaUser extends baseModule {
 			$this->processMultiValueInputTextField('description', $errors);
 		}
 		// overcharge factor
-		if (!empty($_POST['pykotaOverCharge'])) {
-			$this->attributes['pykotaOverCharge'][0] = $_POST['pykotaOverCharge'];
-		}
-		else {
-			$this->attributes['pykotaOverCharge'][0] = '1.0';
-		}
+		$this->attributes['pykotaOverCharge'][0] = empty($_POST['pykotaOverCharge']) ? '1.0' : $_POST['pykotaOverCharge'];
 		// add payment
 		if (isset($_POST['addPayment'])) {
 			$amount = $_POST['pykotaBalanceAdd'];
@@ -761,7 +756,7 @@ class pykotaUser extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object classes
 			if (!in_array('pykotaAccount', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'pykotaAccount';
@@ -920,7 +915,7 @@ class pykotaUser extends baseModule {
 			$pdfRow->cells[] = new PDFTableCell(_('Amount'), '10%', null, true);
 			$pdfRow->cells[] = new PDFTableCell(_('Comment'), '70%', null, true);
 			$pdfTable->rows[] = $pdfRow;
-			for ($i = 0; $i < sizeof($this->attributes['pykotaPayments']); $i++) {
+			for ($i = 0; $i < count($this->attributes['pykotaPayments']); $i++) {
 				$parts = explode(' # ', $this->attributes['pykotaPayments'][$i]);
 				$comment = ' ';
 				if (!empty($parts[2])) {
@@ -1046,7 +1041,7 @@ class pykotaUser extends baseModule {
 	 */
 	public function checkSelfServiceSettings(&$options, &$profile) {
 		$errors = [];
-		if ((static::class == 'pykotaUser')
+		if ((static::class === 'pykotaUser')
 			&& !empty($options['pykotaUser_jobSuffix'][0])
 			&& !get_preg($options['pykotaUser_jobSuffix'][0], 'dn')) {
 			$errors[] = $this->messages['jobSuffix'][0];
@@ -1183,7 +1178,7 @@ class pykotaUser extends baseModule {
 			$jobs[$job['createtimestamp'][0] . $index] = $job;
 		}
 		krsort($jobs);
-		if (sizeof($jobs) > 100) {
+		if (count($jobs) > 100) {
 			$jobs = array_slice($jobs, 0, 100);
 		}
 		return array_values($jobs);
@@ -1221,7 +1216,7 @@ class pykotaUser extends baseModule {
 			return function(array $entry, string $attribute): ?htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
-					for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
+					for ($i = 0; $i < count($entry[$attribute]); $i++) {
 						if ($i > 0) {
 							$group->addElement(new htmlOutputText(", "));
 						}

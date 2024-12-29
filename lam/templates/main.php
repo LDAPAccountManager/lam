@@ -35,9 +35,9 @@ use LAMException;
 */
 
 /** config object */
-include_once '../lib/config.inc';
+include_once __DIR__ . '/../lib/config.inc';
 /** profiles */
-include_once '../lib/profiles.inc';
+include_once __DIR__ . '/../lib/profiles.inc';
 
 // start session
 startSecureSession();
@@ -86,12 +86,12 @@ foreach ($types as $type) {
 }
 
 // display page to add suffixes, if needed
-if ((sizeof($new_suffs) > 0) && checkIfWriteAccessIsAllowed()) {
+if (($new_suffs !== []) && checkIfWriteAccessIsAllowed()) {
 	metaRefresh("initsuff.php?suffs='" . implode(";", $new_suffs));
 	exit();
 }
 
-if (sizeof($types) > 0) {
+if (count($types) > 0) {
 	foreach ($types as $type) {
 		if ($type->isHidden()) {
 			continue;

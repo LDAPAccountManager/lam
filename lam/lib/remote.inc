@@ -83,7 +83,7 @@ class Remote {
 		}
 		$this->serverConfig = $server;
 		$serverNameParts = explode(",", $this->serverConfig->getServer());
-		if (sizeof($serverNameParts) > 1) {
+		if (count($serverNameParts) > 1) {
 			$handle = @new SSH2($serverNameParts[0], $serverNameParts[1]);
 		}
 		else {
@@ -131,27 +131,17 @@ class Remote {
 		}
 		$keyPath = $this->serverConfig->getSshKey();
 		$keyPassword = $this->serverConfig->getSshKeyPassword();
-		if (!empty($keyPath)) {
-			$password = $this->loadKey($keyPath, $keyPassword);
-		}
-		else {
-			$password = $_SESSION['ldap']->getPassword();
-		}
+		$password = empty($keyPath) ? $_SESSION['ldap']->getPassword() : $this->loadKey($keyPath, $keyPassword);
 		try {
 			$login = @$handle->login($username, $password);
 			if (!$login) {
 				$errors = $handle->getErrors();
-				if (!empty($errors)) {
-					$errors = implode(' ', $errors);
-				}
-				else {
-					$errors = null;
-				}
+				$errors = empty($errors) ? null : implode(' ', $errors);
 				throw new LAMException(_("Unable to login to lamdaemon server."), $errors);
 			}
 		}
 		catch (Exception $e) {
-			throw new LAMException(_("Unable to login to lamdaemon server."), $e->getMessage());
+			throw new LAMException(_("Unable to login to lamdaemon server."), $e->getMessage(), $e);
 		}
 	}
 
@@ -179,7 +169,7 @@ class Remote {
 		}
 		catch (NoKeyLoadedException $e) {
 			logNewMessage(LOG_ERR, sprintf('Unable to load key %s: %s', $keyPath, $e->getMessage()));
-			throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
+			throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)), null, $e);
 		}
 	}
 

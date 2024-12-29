@@ -80,7 +80,7 @@ else {
 */
 function search_username(string $name): ?string {
 	$entries = searchLDAPByAttribute('uid', $name, null, ['dn'], ['user']);
-	if (sizeof($entries) > 0 ) {
+	if (count($entries) > 0 ) {
 		return $entries[0]['dn'];
 	}
 	else {

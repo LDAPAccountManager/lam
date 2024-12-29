@@ -126,7 +126,7 @@ class nisMailAliasUser extends baseModule {
 			return $return;
 		}
 		$aliases = $this->getMailAliasList();
-		$count = sizeof($aliases);
+		$count = count($aliases);
 		$userName = $this->getUserName();
 		$mails = $this->getMailAddresses();
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideUserAliases') && ($userName != null)) {
@@ -146,7 +146,7 @@ class nisMailAliasUser extends baseModule {
 					$remButton->setTitle(_('Remove user from alias entry.'));
 					$buttonGroup->addElement($remButton);
 					$delButton = new htmlButton('del_' . $i, 'delete.svg', true);
-					$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), sizeof($members)));
+					$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), count($members)));
 					$buttonGroup->addElement($delButton);
 					$return->addField($buttonGroup);
 				}
@@ -157,8 +157,8 @@ class nisMailAliasUser extends baseModule {
 		}
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideMailAliases') && !empty($mails)) {
 			$return->add(new htmlSubTitle(_('Aliases for email')));
-			for ($m = 0; $m < sizeof($mails); $m++) {
-				if (sizeof($mails) > 1) {
+			for ($m = 0; $m < count($mails); $m++) {
+				if (count($mails) > 1) {
 					$label = new htmlOutputText($mails[$m]);
 					$return->add($label);
 				}
@@ -177,7 +177,7 @@ class nisMailAliasUser extends baseModule {
 						$remButton->setTitle(_('Remove user from alias entry.'));
 						$buttonGroup->addElement($remButton);
 						$delButton = new htmlButton('delMail_' . $i . '_' . $m, 'delete.svg', true);
-						$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), sizeof($members)));
+						$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), count($members)));
 						$buttonGroup->addElement($delButton);
 						$return->addField($buttonGroup);
 					}
@@ -185,7 +185,7 @@ class nisMailAliasUser extends baseModule {
 				$return->addVerticalSpacer('1rem');
 				$addButton = new htmlAccountPageButton(static::class, 'add', 'mail' . $m, _('Add'));
 				$return->add($addButton, 12, 12, 12, 'text-center');
-				if ((sizeof($mails) > 1) && ($m < (sizeof($mails) - 1))) {
+				if ((count($mails) > 1) && ($m < (count($mails) - 1))) {
 					$return->addVerticalSpacer('2rem');
 				}
 			}
@@ -205,7 +205,7 @@ class nisMailAliasUser extends baseModule {
 			return $errors;
 		}
 		$mails = $this->getMailAddresses();
-		foreach ($_POST as $key => $value) {
+		foreach (array_keys($_POST) as $key) {
 			if (str_starts_with($key, 'rem_')) {
 				$index = substr($key, strlen('rem_'));
 				$dn = $this->cachedAliasList[$index]['dn'];
@@ -237,10 +237,11 @@ class nisMailAliasUser extends baseModule {
 	 * @param String $dn alias DN
 	 */
 	private function removeRecipient($recipient, $dn) {
-		if (!isset($this->aliasesToAdd[$dn])) { // no new entry update existing
+		if (!isset($this->aliasesToAdd[$dn])) {
+			// no new entry update existing
 			if (isset($this->recipientsToAdd[$dn]) && in_array($recipient, $this->recipientsToAdd[$dn])) {
 				// undo adding of recipient
-				if (sizeof($this->recipientsToAdd[$dn]) == 1) {
+				if (count($this->recipientsToAdd[$dn]) == 1) {
 					// only one entry as marked for adding, remove whole entry
 					unset($this->recipientsToAdd[$dn]);
 				}
@@ -258,23 +259,22 @@ class nisMailAliasUser extends baseModule {
 				}
 			}
 		}
-		else { // new entry
-			if (sizeof($this->aliasesToAdd[$dn]['rfc822mailmember']) == 1) {
-				// single recipient in new entry, do not create new entry at all
-				unset($this->aliasesToAdd[$dn]);
-				foreach ($this->cachedAliasList as $index => $attrs) {
-					if ($dn == $attrs['dn']) {
-						unset($this->cachedAliasList[$index]);
-						$this->cachedAliasList = array_values($this->cachedAliasList);
-					}
+		elseif (count($this->aliasesToAdd[$dn]['rfc822mailmember']) == 1) {
+			// new entry
+			// single recipient in new entry, do not create new entry at all
+			unset($this->aliasesToAdd[$dn]);
+			foreach ($this->cachedAliasList as $index => $attrs) {
+				if ($dn == $attrs['dn']) {
+					unset($this->cachedAliasList[$index]);
+					$this->cachedAliasList = array_values($this->cachedAliasList);
 				}
 			}
-			else {
-				$this->aliasesToAdd[$dn]['rfc822mailmember'] = array_values(array_delete([$recipient], $this->aliasesToAdd[$dn]['rfc822mailmember']));
-				foreach ($this->cachedAliasList as &$attrs) {
-					if ($dn == $attrs['dn']) {
-						$attrs['rfc822mailmember'] = array_values(array_delete([$recipient], $attrs['rfc822mailmember']));
-					}
+		}
+		else {
+			$this->aliasesToAdd[$dn]['rfc822mailmember'] = array_values(array_delete([$recipient], $this->aliasesToAdd[$dn]['rfc822mailmember']));
+			foreach ($this->cachedAliasList as &$attrs) {
+				if ($dn == $attrs['dn']) {
+					$attrs['rfc822mailmember'] = array_values(array_delete([$recipient], $attrs['rfc822mailmember']));
 				}
 			}
 		}
@@ -326,7 +326,7 @@ class nisMailAliasUser extends baseModule {
 			$recipient = $userName;
 		}
 		else {
-			for ($m = 0; $m < sizeof($mails); $m++) {
+			for ($m = 0; $m < count($mails); $m++) {
 				if (isset($_POST['form_subpage_' . static::class . '_add_mail' . $m])) {
 					$recipient = $mails[$m];
 					break;

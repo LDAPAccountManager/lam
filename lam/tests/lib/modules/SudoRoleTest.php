@@ -21,10 +21,10 @@ use PHPUnit\Framework\TestCase;
 
 */
 
-if (is_readable('lam/lib/modules/sudoRole.inc')) {
+if (is_readable(__DIR__ . '/../../../lib/modules/sudoRole.inc')) {
 
-	include_once 'lam/lib/baseModule.inc';
-	include_once 'lam/lib/modules/sudoRole.inc';
+	include_once __DIR__ . '/../../../lib/baseModule.inc';
+	include_once __DIR__ . '/../../../lib/modules/sudoRole.inc';
 
 	/**
 	 * Checks sudo role functions.

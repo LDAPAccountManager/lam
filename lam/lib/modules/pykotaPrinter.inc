@@ -267,7 +267,7 @@ class pykotaPrinter extends baseModule {
 			foreach ($groups as $groupDN) {
 				$parentPrinters[] = $this->printerCache[$groupDN]['cn'];
 			}
-			if (sizeof($parentPrinters) > 0) {
+			if ($parentPrinters !== []) {
 				$container->addLabel(new htmlOutputText(_('Printer groups')));
 				$parentPrinterText = new htmlOutputText(implode(', ', $parentPrinters));
 				$container->addField($parentPrinterText, true);
@@ -282,7 +282,7 @@ class pykotaPrinter extends baseModule {
 		$memberTable = new htmlTable();
 		if (!empty($this->attributes['uniqueMember'][0])) {
 			$memberTable->alignment = htmlElement::ALIGN_TOP;
-			for ($i = 0; $i < sizeof($this->attributes['uniqueMember']); $i++) {
+			for ($i = 0; $i < count($this->attributes['uniqueMember']); $i++) {
 				$member = $this->attributes['uniqueMember'][$i];
 				if (isset($this->printerCache[$member]['cn'])) {
 					$member = $this->printerCache[$member]['cn'];
@@ -291,7 +291,7 @@ class pykotaPrinter extends baseModule {
 				$delButton = new htmlButton('uniqueMemberDel_' . $i, 'del.svg', true);
 				$delButton->setTitle(_('Delete'));
 				$memberTable->addElement($delButton);
-				if ($i == (sizeof($this->attributes['uniqueMember']) - 1)) {
+				if ($i === count($this->attributes['uniqueMember']) - 1) {
 					$memberTable->addElement($addMemberButton);
 					$memberTable->addElement($memberHelp);
 				}
@@ -376,7 +376,7 @@ class pykotaPrinter extends baseModule {
 		// passthrough
 		$this->attributes['pykotaPassThrough'][0] = $_POST['pykotaPassThrough'];
 		// delete members
-		foreach ($_POST as $key => $value) {
+		foreach (array_keys($_POST) as $key) {
 			if (str_starts_with($key, 'uniqueMemberDel_')) {
 				$index = substr($key, strlen('uniqueMemberDel_'));
 				unset($this->attributes['uniqueMember'][$index]);
@@ -397,12 +397,7 @@ class pykotaPrinter extends baseModule {
 		$options = [];
 		$this->loadPrinterNameCache();
 		foreach ($this->printerCache as $dn => $attrs) {
-			if (!empty($attrs['description'])) {
-				$label = $attrs['cn'] . ' (' . $attrs['description'] . ')';
-			}
-			else {
-				$label = $attrs['cn'];
-			}
+			$label = empty($attrs['description']) ? $attrs['cn'] : $attrs['cn'] . ' (' . $attrs['description'] . ')';
 			// skip own entry
 			if (!$this->getAccountContainer()->isNewAccount && ($this->getAccountContainer()->dn_orig == $dn)) {
 				continue;
@@ -414,8 +409,8 @@ class pykotaPrinter extends baseModule {
 			$options[$label] = $dn;
 		}
 		$size = 20;
-		if (sizeof($options) < 20) {
-			$size = sizeof($options);
+		if (count($options) < 20) {
+			$size = count($options);
 		}
 		$membersSelect = new htmlSelect('members', $options, [], $size);
 		$membersSelect->setHasDescriptiveElements(true);
@@ -448,7 +443,7 @@ class pykotaPrinter extends baseModule {
 	function process_members() {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_addMembers']) && isset($_POST['members'])) {
-			for ($i = 0; $i < sizeof($_POST['members']); $i++) {
+			for ($i = 0; $i < count($_POST['members']); $i++) {
 				$this->attributes['uniqueMember'][] = $_POST['members'][$i];
 			}
 		}
@@ -462,7 +457,7 @@ class pykotaPrinter extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
 		$this->loadPrinterNameCache();
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object classes
 			if (!in_array('pykotaPrinter', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'pykotaPrinter';
@@ -568,7 +563,7 @@ class pykotaPrinter extends baseModule {
 						$messages[] = $errMsg;
 					}
 				}
-				if (sizeof($memberDNs) > 0) {
+				if ($memberDNs !== []) {
 					$partialAccounts[$i]['uniqueMember'] = $memberDNs;
 				}
 			}
@@ -599,12 +594,7 @@ class pykotaPrinter extends baseModule {
 		if (!empty($this->attributes['uniqueMember'][0])) {
 			$members = [];
 			foreach ($this->attributes['uniqueMember'] as $member) {
-				if (!empty($this->printerCache[$member]['cn'])) {
-					$members[] = $this->printerCache[$member]['cn'];
-				}
-				else {
-					$members[] = getAbstractDN($member);
-				}
+				$members[] = empty($this->printerCache[$member]['cn']) ? getAbstractDN($member) : $this->printerCache[$member]['cn'];
 			}
 			$this->addPDFKeyValue($return, 'uniqueMember', _('Group members'), implode(', ', $members));
 		}
@@ -612,14 +602,9 @@ class pykotaPrinter extends baseModule {
 		$parentGroups = [];
 		$groups = $this->getPrinterGroups();
 		foreach ($groups as $group) {
-			if (!empty($this->printerCache[$group]['cn'])) {
-				$parentGroups[] = $this->printerCache[$group]['cn'];
-			}
-			else {
-				$parentGroups[] = getAbstractDN($group);
-			}
+			$parentGroups[] = empty($this->printerCache[$group]['cn']) ? getAbstractDN($group) : $this->printerCache[$group]['cn'];
 		}
-		if (sizeof($parentGroups) > 0) {
+		if ($parentGroups !== []) {
 			$this->addPDFKeyValue($return, 'parentUniqueMember', _('Printer groups'), implode(', ', $parentGroups));
 		}
 		return $return;

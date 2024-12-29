@@ -63,7 +63,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() === 'user';
 	}
 
 	/**
@@ -297,7 +297,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		elseif (isset($_POST['remVoicemailObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['AsteriskVoiceMail'], $this->attributes['objectClass']);
 			$attrKeys = array_keys($this->attributes);
-			for ($k = 0; $k < sizeof($attrKeys); $k++) {
+			for ($k = 0; $k < count($attrKeys); $k++) {
 				if (strpos($attrKeys[$k], 'AstVoicemail') > -1) {
 					unset($this->attributes[$attrKeys[$k]]);
 				}
@@ -334,13 +334,13 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				$errors[] = $this->messages['AstVoicemailMailbox'][0];
 			}
 			// check format
-			else if (!get_preg($this->attributes['AstVoicemailMailbox'][0], 'username')) {
+			elseif (!get_preg($this->attributes['AstVoicemailMailbox'][0], 'username')) {
 				$errors[] = $this->messages['AstVoicemailMailbox'][1];
 			}
 			// check for duplicate Voicemail ID
-			else if (!isset($this->orig['AstVoicemailMailbox'][0]) || ($this->orig['AstVoicemailMailbox'][0] != $this->attributes['AstVoicemailMailbox'][0])) {
+			elseif (!isset($this->orig['AstVoicemailMailbox'][0]) || ($this->orig['AstVoicemailMailbox'][0] != $this->attributes['AstVoicemailMailbox'][0])) {
 				$entries = searchLDAPByAttribute('AstVoicemailMailbox', $this->attributes['AstVoicemailMailbox'][0], 'AstVoicemailMailbox', ['dn'], ['user']);
-				if (sizeof($entries) > 0) {
+				if (count($entries) > 0) {
 					$errors[] = $this->messages['AstVoicemailMailbox'][2];
 				}
 			}
@@ -397,7 +397,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = "AsteriskVoiceMail";
@@ -441,10 +441,8 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @return boolean true if LDAP operation can be done
 	 */
 	function module_complete() {
-		if (in_array('AsteriskVoiceMail', $this->attributes['objectClass']) && empty($this->attributes['AstVoicemailPassword'][0])) {
-			return false;
-		}
-		return true;
+		return (!in_array('AsteriskVoiceMail', $this->attributes['objectClass'])
+			|| !empty($this->attributes['AstVoicemailPassword'][0]));
 	}
 
 	/**
@@ -474,10 +472,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 *
 	 */
 	public function managesPasswordAttributes() {
-		if (!in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
-			return false;
-		}
-		return true;
+		return in_array('AsteriskVoiceMail', $this->attributes['objectClass']);
 	}
 
 	/**
@@ -534,16 +529,12 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
 				return $return;
 			}
-			else {
-				if (!get_preg($_POST['posixAccount_password'], 'password')) {
-					return $return;
-				}
-				else {
-					// sync password
-					if (in_array('syncAsteriskVoicemailPassword', $fields)) {
-						$return['mod']['AstVoicemailPassword'][0] = $_POST['posixAccount_password'];
-					}
-				}
+			elseif (!get_preg($_POST['posixAccount_password'], 'password')) {
+				return $return;
+			}
+			elseif (in_array('syncAsteriskVoicemailPassword', $fields)) {
+				// sync password
+				$return['mod']['AstVoicemailPassword'][0] = $_POST['posixAccount_password'];
 			}
 		}
 		return $return;

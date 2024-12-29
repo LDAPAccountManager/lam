@@ -259,7 +259,7 @@ class lamGroupList extends lamList {
 		parent::listGetParams();
 		// generate list primary group members
 		// after parent::listGetParams is $this->refresh set to correct value
-		if ($this->include_primary && !$this->refresh && ($this->refresh_primary || (sizeof($this->primary_hash) == 0))) {
+		if ($this->include_primary && !$this->refresh && ($this->refresh_primary || (count($this->primary_hash) == 0))) {
 			$this->groupRefreshPrimary();
 		}
 	}
@@ -278,13 +278,13 @@ class lamGroupList extends lamList {
 				if (isset($entry['gidnumber']) && is_array($entry['gidnumber'])) {
 					$gid = $entry['gidnumber'][0];
 				}
-				$use_primary = (($gid >= 0) && (sizeof($this->primary_hash) > 0) &&
-					isset($this->primary_hash[$gid]) && is_array($this->primary_hash[$gid]) &&
-					(sizeof($this->primary_hash[$gid]) > 0));
+				$use_primary = (($gid >= 0) && (count($this->primary_hash) > 0)
+					&& isset($this->primary_hash[$gid]) && is_array($this->primary_hash[$gid])
+					&& ($this->primary_hash[$gid] !== []));
 			}
 			if (!$use_primary) {
-				if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) {
-					return;
+				if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (count($entry[$attribute]) < 1)) {
+					return null;
 				}
 				// sort array
 				sort($entry[$attribute]);
@@ -296,17 +296,12 @@ class lamGroupList extends lamList {
 				// merge primary members into secondary ones
 				$primaryvals = array_flip(array_values($primary_hash));
 				// test if group has some secondary members
-				if (isset($entry[$attribute])) {
-					$attr = array_merge($primary_hash, $entry[$attribute]);
-				}
-				else {
-					$attr = $primary_hash;
-				}
+				$attr = isset($entry[$attribute]) ? array_merge($primary_hash, $entry[$attribute]) : $primary_hash;
 				// sort array
 				sort($attr);
 
 				// make a link for each member of the group
-				for ($d = 0; $d < sizeof($attr); $d++) {
+				for ($d = 0; $d < count($attr); $d++) {
 					$user = $attr[$d]; // user name
 					if (isAccountTypeHidden('user')) {
 						$linklist[$d] = $user;
@@ -321,7 +316,7 @@ class lamGroupList extends lamList {
 			}
 			else {
 				// make a link for each member of the group
-				for ($d = 0; $d < sizeof($entry[$attribute]); $d++) {
+				for ($d = 0; $d < count($entry[$attribute]); $d++) {
 					$user = $entry[$attribute][$d]; // user name
 					if (!isAccountTypeHidden('user')) {
 						$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
@@ -355,7 +350,7 @@ class lamGroupList extends lamList {
 	function groupRefreshPrimary() {
 		$this->refresh_primary = false;
 		// return unless some entries
-		if (sizeof($this->ldapEntries) <= 0) {
+		if (count($this->ldapEntries) <= 0) {
 			return;
 		}
 
@@ -363,14 +358,14 @@ class lamGroupList extends lamList {
 		// configure search filter
 		$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
 		$attrs = ["uid"];
-		for ($i = 0; $i < sizeof($this->ldapEntries); $i++) {
+		for ($i = 0; $i < count($this->ldapEntries); $i++) {
 			if (empty($this->ldapEntries[$i]['gidnumber'][0])) {
 				continue;
 			}
 			$gid = $this->ldapEntries[$i]['gidnumber'][0];
 			$filter = "(&(&" . $module_filter . ")(gidNumber=" . $gid . "))";
 			$entries = searchLDAPByFilter($filter, $attrs, [$scope]);
-			for ($j = 0; $j < sizeof($entries); $j++) {
+			for ($j = 0; $j < count($entries); $j++) {
 				$this->primary_hash[$gid][$j] = $entries[$j]['uid'][0];
 			}
 		}

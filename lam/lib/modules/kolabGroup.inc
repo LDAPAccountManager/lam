@@ -56,7 +56,7 @@ class kolabGroup extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['group']);
+		return $this->get_scope() === 'group';
 	}
 
 	/**
@@ -302,7 +302,7 @@ class kolabGroup extends baseModule {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// check if extension should be added
 			if (isset($rawAccounts[$i][$ids['kolabGroup_addExtension']]) && ($rawAccounts[$i][$ids['kolabGroup_addExtension']] != 'true')) {
 				continue;
@@ -320,13 +320,13 @@ class kolabGroup extends baseModule {
 					}
 					else {
 						$errMsg = $this->messages['mail'][3];
-						array_push($errMsg, [$i]);
+						$errMsg[] = [$i];
 						$messages[] = $errMsg;
 					}
 				}
 				else {
 					$errMsg = $this->messages['mail'][1];
-					array_push($errMsg, [$i]);
+					$errMsg[] = [$i];
 					$messages[] = $errMsg;
 				}
 			}

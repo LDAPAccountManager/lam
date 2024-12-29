@@ -39,7 +39,7 @@ function getTools(): array {
 	$entry = $toolsDir->read();
 	// include all files in the tools directory
 	while ($entry) {
-		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($toolsDirName . '/' . $entry)) {
+		if ((substr($entry, strlen($entry) - 4, 4) === '.inc') && is_file($toolsDirName . '/' . $entry)) {
 			include_once($toolsDirName . '/' . $entry);
 		}
 		$entry = $toolsDir->read();

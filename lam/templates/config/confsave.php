@@ -55,7 +55,7 @@ setlanguage();
 if (!isset($_SESSION['conf_isAuthenticated']) || ($_SESSION['conf_config']->getName() !== $_SESSION['conf_isAuthenticated'])) {
 	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("No password was entered!"));
 	/** go back to login if password is empty */
-	require('conflogin.php');
+	require(__DIR__ . '/conflogin.php');
 	exit;
 }
 
@@ -82,7 +82,7 @@ catch (LAMException $e) {
 finally {
 	// remove settings from session
 	$sessionKeys = array_keys($_SESSION);
-	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
+	for ($i = 0; $i < count($sessionKeys); $i++) {
 		if (str_starts_with($sessionKeys[$i], "conf_")) {
 			unset($_SESSION[$sessionKeys[$i]]);
 		}

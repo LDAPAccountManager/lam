@@ -186,7 +186,7 @@ class nisNetGroupUser extends baseModule {
 		$return->addElement(new htmlOutputText(_('Group')));
 		$return->addElement(new htmlOutputText(_('Host name')));
 		$return->addElement(new htmlOutputText(_('Domain name')), true);
-		for ($i = 0; $i < sizeof($this->groups); $i++) {
+		for ($i = 0; $i < count($this->groups); $i++) {
 			$group = $this->groups[$i];
 			$return->addElement(new htmlOutputText($group['name']));
 			$return->addElement(new htmlInputField('host_' . $i, $group['host']));
@@ -200,7 +200,7 @@ class nisNetGroupUser extends baseModule {
 		// new entry
 		$groupList = [];
 		$groupData = $this->findGroups();
-		if (sizeof($groupData) > 0) {
+		if (count($groupData) > 0) {
 			$filterGroup = new htmlGroup();
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
 			$filter = new htmlInputField('group_filter');
@@ -320,7 +320,7 @@ class nisNetGroupUser extends baseModule {
 		// calculate differences
 		$toRem = $this->groupsOrig;
 		$toAdd = $this->groups;
-		$counter = sizeof($toRem);
+		$counter = count($toRem);
 		for ($i = 0; $i < $counter; $i++) {
 			$group_orig = $toRem[$i];
 			foreach ($toAdd as $k => $group) {
@@ -502,7 +502,7 @@ class nisNetGroupUser extends baseModule {
 			$groupNames[] = $group['cn'][0];
 		}
 		// check input
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// group names
 			if (!empty($rawAccounts[$i][$ids['nisNetGroup_memberships']])) {
 				$triples = preg_split('/,[ ]*/', $rawAccounts[$i][$ids['nisNetGroup_memberships']]);
@@ -535,7 +535,7 @@ class nisNetGroupUser extends baseModule {
 			foreach ($groupList as $group) {
 				$groupMap[$group['cn'][0]] = $group['dn'];
 			}
-			for ($i = 0; $i < sizeof($data); $i++) {
+			for ($i = 0; $i < count($data); $i++) {
 				if (in_array($i, $failed)) {
 					continue;
 				} // ignore failed accounts
@@ -560,7 +560,7 @@ class nisNetGroupUser extends baseModule {
 			];
 		}
 		// add users to groups
-		elseif ($temp['counter'] < sizeof($temp['groupDNs'])) {
+		elseif ($temp['counter'] < count($temp['groupDNs'])) {
 			$errors = [];
 			$dn = $temp['groupDNs'][$temp['counter']];
 			$current = ldapGetDN($dn, ['nisnetgrouptriple']);
@@ -569,7 +569,7 @@ class nisNetGroupUser extends baseModule {
 				$temp['counter']++;
 				return [
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / sizeof($temp['groupDNs']),
+					'progress' => ($temp['counter'] * 100) / count($temp['groupDNs']),
 					'errors' => $errors
 				];
 			}
@@ -591,7 +591,7 @@ class nisNetGroupUser extends baseModule {
 			$temp['counter']++;
 			return [
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / sizeof($temp['groupDNs']),
+				'progress' => ($temp['counter'] * 100) / count($temp['groupDNs']),
 				'errors' => $errors
 			];
 		}
@@ -640,7 +640,7 @@ class nisNetGroupUser extends baseModule {
 				$filter = '(&' . $filter . $typeFilter . ')';
 			}
 			$results = searchLDAP($type->getSuffix(), $filter, ['cn', 'dn', 'nisnetgrouptriple']);
-			for ($i = 0; $i < sizeof($results); $i++) {
+			for ($i = 0; $i < count($results); $i++) {
 				if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
 					$return[] = $results[$i];
 				}

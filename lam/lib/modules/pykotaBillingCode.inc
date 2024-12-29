@@ -49,7 +49,7 @@ class pykotaBillingCode extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['pykotaBillingCodeType']);
+		return $this->get_scope() === 'pykotaBillingCodeType';
 	}
 
 	/**
@@ -231,7 +231,7 @@ class pykotaBillingCode extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = [];
 		$this->loadCodeCache();
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object classes
 			if (!in_array('pykotaBilling', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'pykotaBilling';
@@ -242,12 +242,12 @@ class pykotaBillingCode extends baseModule {
 			// pykotaBillingCode
 			if (!get_preg($rawAccounts[$i][$ids['pykotaBillingCode_pykotaBillingCode']], 'username')) {
 				$errMsg = $this->messages['pykotaBillingCode'][1];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$messages[] = $errMsg;
 			}
 			elseif ($this->codeExists($rawAccounts[$i][$ids['pykotaBillingCode_pykotaBillingCode']])) {
 				$errMsg = $this->messages['pykotaBillingCode'][3];
-				array_push($errMsg, [$i]);
+				$errMsg[] = [$i];
 				$messages[] = $errMsg;
 			}
 			else {

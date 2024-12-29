@@ -60,7 +60,7 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
 
@@ -114,7 +114,7 @@ parseHtml(null, $container, [], false, 'user');
 
 echo "</form>\n";
 echo "</div>\n";
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 
 /**
@@ -152,10 +152,10 @@ function testRemoteCommand($command, $stopTest, $remote, $testText, $container) 
 			else {
 				// error messages from lamdaemon
 				$parts = explode(",", $output);
-				if (sizeof($parts) == 2) {
+				if (count($parts) == 2) {
 					$container->add(new htmlStatusMessage($parts[0], $parts[1]), 12, 6);
 				}
-				elseif (sizeof($parts) == 3) {
+				elseif (count($parts) == 3) {
 					$container->add(new htmlStatusMessage($parts[0], $parts[1], $parts[2]), 12, 6);
 				}
 				else {

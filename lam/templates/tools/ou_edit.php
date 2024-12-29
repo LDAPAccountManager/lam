@@ -1,5 +1,7 @@
 <?php
+
 namespace LAM\TOOLS\OU_EDIT;
+
 use \htmlSpacer;
 use \htmlOutputText;
 use \htmlButton;
@@ -35,11 +37,11 @@ use LAM\TYPES\TypeManager;
 */
 
 /**
-* This is an editor for organizational units.
-*
-* @author Roland Gruber
-* @package tools
-*/
+ * This is an editor for organizational units.
+ *
+ * @author Roland Gruber
+ * @package tools
+ */
 
 /** security functions */
 include_once(__DIR__ . "/../../lib/security.inc");
@@ -55,7 +57,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolOUEditor');
 
@@ -96,7 +100,9 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 					$error = _("Unable to create new OU!");
 				}
 			}
-			else $error = _("OU already exists!");
+			else {
+				$error = _("OU already exists!");
+			}
 		}
 		// show errormessage if ou is invalid
 		else {
@@ -124,7 +130,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if (($info !== false) && ($info['count'] === 0)) {
 				// print header
-				include '../../lib/adminHeader.inc';
+				include __DIR__ . '/../../lib/adminHeader.inc';
 				echo '<div class="smallPaddingContent">';
 				echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 				$container = new htmlResponsiveRow();
@@ -149,7 +155,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				parseHtml(null, $container, [], false, 'user');
 				echo "</form>";
 				echo '</div>';
-				include '../../lib/adminFooter.inc';
+				include __DIR__ . '/../../lib/adminFooter.inc';
 				exit();
 			}
 			else {

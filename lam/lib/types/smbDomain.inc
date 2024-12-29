@@ -132,7 +132,7 @@ class smbDomain extends baseType {
 		if (isset($attributes['sambaSID'][0])) {
 			$subtitle .= htmlspecialchars($attributes['sambaSID'][0]);
 		}
-		if ($subtitle == '') {
+		if ($subtitle === '') {
 			return null;
 		}
 		return $subtitle;

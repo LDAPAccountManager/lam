@@ -61,11 +61,11 @@ use PDO;
 
 
 /** Access to config functions */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** Used to print status messages */
-include_once('../../lib/status.inc');
+include_once(__DIR__ . '/../../lib/status.inc');
 /** LAM Pro */
-include_once('../../lib/selfService.inc');
+include_once(__DIR__ . '/../../lib/selfService.inc');
 
 // start session
 if (isFileBasedSession()) {
@@ -83,7 +83,7 @@ $cfg = &$_SESSION['cfgMain'];
 
 // check if user is logged in
 if (!isset($_SESSION["mainconf_password"]) || (!$cfg->checkPassword($_SESSION["mainconf_password"]))) {
-	require('mainlogin.php');
+	require(__DIR__ . '/mainlogin.php');
 	exit();
 }
 
@@ -199,10 +199,10 @@ if (isset($_POST['submitFormData'])) {
 	if (isset($_POST['allowedHosts'])) {
 		$allowedHosts = $_POST['allowedHosts'];
 		$allowedHostsList = explode("\n", $allowedHosts);
-		for ($i = 0; $i < sizeof($allowedHostsList); $i++) {
+		for ($i = 0; $i < count($allowedHostsList); $i++) {
 			$allowedHostsList[$i] = trim($allowedHostsList[$i]);
 			// ignore empty lines
-			if ($allowedHostsList[$i] == "") {
+			if ($allowedHostsList[$i] === "") {
 				unset($allowedHostsList[$i]);
 				continue;
 			}
@@ -222,10 +222,10 @@ if (isset($_POST['submitFormData'])) {
 		if (isset($_POST['allowedHostsSelfService'])) {
 			$allowedHostsSelfService = $_POST['allowedHostsSelfService'];
 			$allowedHostsSelfServiceList = explode("\r\n", $allowedHostsSelfService);
-			for ($i = 0; $i < sizeof($allowedHostsSelfServiceList); $i++) {
+			for ($i = 0; $i < count($allowedHostsSelfServiceList); $i++) {
 				$allowedHostsSelfServiceList[$i] = trim($allowedHostsSelfServiceList[$i]);
 				// ignore empty lines
-				if ($allowedHostsSelfServiceList[$i] == "") {
+				if ($allowedHostsSelfServiceList[$i] === "") {
 					unset($allowedHostsSelfServiceList[$i]);
 					continue;
 				}
@@ -252,7 +252,7 @@ if (isset($_POST['submitFormData'])) {
 	} elseif ($_POST['logDestination'] == "remote") {
 		$cfg->logDestination = "REMOTE:" . $_POST['logRemote'];
 		$remoteParts = explode(':', $_POST['logRemote']);
-		if ((sizeof($remoteParts) !== 2) || !get_preg($remoteParts[0], 'DNSname') || !get_preg($remoteParts[1], 'digit')) {
+		if ((count($remoteParts) !== 2) || !get_preg($remoteParts[0], 'DNSname') || !get_preg($remoteParts[1], 'digit')) {
 			$errors[] = _("Please enter a valid remote server in format \"server:port\".");
 		}
 	} else {
@@ -325,7 +325,7 @@ if (isset($_POST['submitFormData'])) {
 	}
 	if (isset($_POST['sslCaCertImport'])) {
 		$matches = [];
-		if (preg_match('/^ldaps:\\/\\/([a-zA-Z0-9_\\.-]+)(:([0-9]+))?$/', $_POST['serverurl'], $matches)) {
+		if (preg_match('/^ldaps:\/\/([a-zA-Z0-9_.-]+)(:(\d+))?$/', $_POST['serverurl'], $matches)) {
 			$port = '636';
 			if (isset($matches[3]) && !empty($matches[3])) {
 				$port = $matches[3];
@@ -342,7 +342,7 @@ if (isset($_POST['submitFormData'])) {
 			$errors[] = _('Invalid server name. Please enter "server" or "server:port".');
 		}
 	}
-	foreach ($_POST as $key => $value) {
+	foreach (array_keys($_POST) as $key) {
 		if (str_starts_with($key, 'deleteCert_')) {
 			$index = substr($key, strlen('deleteCert_'));
 			$cfg->deleteSSLCaCert($index);
@@ -529,7 +529,7 @@ if (isset($_POST['submitFormData'])) {
 	$sslUploadBtn->setTitle(_('Upload CA certificate in DER/PEM format.'));
 	$row->addField($sslUploadBtn);
 	if (function_exists('stream_socket_client') && function_exists('stream_context_get_params')) {
-		$sslImportServerUrl = !empty($_POST['serverurl']) ? $_POST['serverurl'] : 'ldaps://';
+		$sslImportServerUrl = empty($_POST['serverurl']) ? 'ldaps://' : $_POST['serverurl'];
 		$serverUrlUpload = new htmlInputField('serverurl', $sslImportServerUrl);
 		$row->addLabel($serverUrlUpload);
 		$sslImportBtn = new htmlButton('sslCaCertImport', _('Import from server'));
@@ -538,10 +538,10 @@ if (isset($_POST['submitFormData'])) {
 	}
 
 	$sslCerts = $cfg->getSSLCaCertificates();
-	if (sizeof($sslCerts) > 0) {
+	if (count($sslCerts) > 0) {
 		$certsTitles = [_('Common name'), _('Valid to'), _('Serial number'), _('Delete')];
 		$certsData = [];
-		for ($i = 0; $i < sizeof($sslCerts); $i++) {
+		for ($i = 0; $i < count($sslCerts); $i++) {
 			$serial = $sslCerts[$i]['serialNumber'] ?? '';
 			$validTo = $sslCerts[$i]['validTo_time_t'] ?? '';
 			if (get_preg($validTo, 'digit')) {

@@ -262,7 +262,7 @@ class sambaMungedDial {
 		}
 
 		/* Decode parameters */
-		while ($ctxField != "") {
+		while ($ctxField !== "") {
 
 			/* Read value lengths */
 			$ctxParmNameLength = ord($ctxField[0]) + 16 * ord($ctxField[1]);
@@ -324,15 +324,7 @@ class sambaMungedDial {
 	/** Gets Terminal-Server-Login value: enabled/disabled */
 	function getTsLogin() {
 		$flags = ord(substr($this->ctx['CtxCfgFlags1'], 5, 1));
-
-		if ($flags & 1) {
-			$result = false;
-		}
-		else {
-			$result = true;
-		}
-
-		return $result;
+		return ($flags & 1) === 0;
 	}
 
 	/** Sets Terminal-Server-Login value: enabled/disabled */
@@ -352,14 +344,7 @@ class sambaMungedDial {
 	/** gets Broken-Connection value: disconnect/reset */
 	function getBrokenConn() {
 		$flags = ord(substr($this->ctx['CtxCfgFlags1'], 5, 1));
-		if ($flags & 4) {
-			$result = "1";
-		}
-		else {
-			$result = "0";
-		}
-
-		return $result;
+		return (($flags & 4) !== 0) ? "1" : "0";
 	}
 
 	/** sets Broken-Connection value: disconnect/reset */
@@ -379,14 +364,7 @@ class sambaMungedDial {
 	/** gets Reconnection value: from any client/from previous client only */
 	function getReConn() {
 		$flags = ord(substr($this->ctx['CtxCfgFlags1'], 5, 1));
-		if ($flags & 2) {
-			$result = "1";
-		}
-		else {
-			$result = "0";
-		}
-
-		return $result;
+		return (($flags & 2) !== 0) ? "1" : "0";
 	}
 
 	/** sets Reconnection value: from any client/from previous client only */
@@ -405,24 +383,12 @@ class sambaMungedDial {
 
 	/** gets Inherit-config-from-client value: enabled/disabled */
 	function getInheritMode() {
-		if (substr($this->ctx['CtxCfgFlags1'], 6, 1) == "1") {
-			$result = true;
-		}
-		else {
-			$result = false;
-		}
-
-		return $result;
+		return substr($this->ctx['CtxCfgFlags1'], 6, 1) === "1";
 	}
 
 	/** sets Inherit-config-from-client value: enabled/disabled */
 	function setInheritMode($checked) {
-		if ($checked) {
-			$this->ctx['CtxCfgFlags1'][6] = "1";
-		}
-		else {
-			$this->ctx['CtxCfgFlags1'][6] = "0";
-		}
+		$this->ctx['CtxCfgFlags1'][6] = $checked ? "1" : "0";
 	}
 
 	/** gets shadow value (enum): 0-4
@@ -433,13 +399,7 @@ class sambaMungedDial {
 	 * 4: input off, notify off
 	 */
 	function getShadow() {
-		if ($this->old_behavior) {
-			$result = substr($this->ctx['CtxCfgFlags1'], 1, 1);
-		}
-		else {
-			$result = substr($this->ctx['CtxShadow'], 1, 1);
-		}
-		return $result;
+		return $this->old_behavior ? substr($this->ctx['CtxCfgFlags1'], 1, 1) : substr($this->ctx['CtxShadow'], 1, 1);
 	}
 
 	/** sets shadow value */
@@ -456,14 +416,8 @@ class sambaMungedDial {
 	/** gets connect-client-drive-at-logon value: enabled/disabled */
 	function getConnectClientDrives() {
 		$connections = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
-		if ($connections & 8) {
-			$result = true;
-		}
-		else {
-			$result = false;
-		}
 
-		return $result;
+		return $connections & 8;
 	}
 
 	/** sets connect-client-drive-at-logon value: enabled/disabled */
@@ -482,14 +436,8 @@ class sambaMungedDial {
 	/** gets connect-client-printers-at-logon value: enabled/disabled */
 	function getConnectClientPrinters() {
 		$connections = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
-		if ($connections & 4) {
-			$result = true;
-		}
-		else {
-			$result = false;
-		}
 
-		return $result;
+		return $connections & 4;
 	}
 
 	/** sets connect-client-printers-at-logon value: enabled/disabled */
@@ -509,14 +457,8 @@ class sambaMungedDial {
 	/** gets set-client-printer-to-default value: enabled/disabled */
 	function getDefaultPrinter() {
 		$connections = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
-		if ($connections & 2) {
-			$result = true;
-		}
-		else {
-			$result = false;
-		}
 
-		return $result;
+		return $connections & 2;
 	}
 
 	/** sets set-client-printer-to-default value: enabled/disabled */
@@ -536,14 +478,7 @@ class sambaMungedDial {
 	/** SMARTY: gets the checkbox state of "Connection" */
 	function getCtxMaxConnectionTimeF() {
 		// Connection Time is 0 if disabled
-		if (isset($this->ctx['CtxMaxConnectionTime']) && ($this->ctx['CtxMaxConnectionTime'] != 0)) {
-			$result = true;
-		}
-		else {
-			$result = false;
-		}
-
-		return $result;
+		return isset($this->ctx['CtxMaxConnectionTime']) && ($this->ctx['CtxMaxConnectionTime'] != 0);
 	}
 
 	/** SMARTY: sets the checkbox "Connection" to unchecked */
@@ -556,14 +491,7 @@ class sambaMungedDial {
 	/** SMARTY: gets the checkbox state of "Disconnection" */
 	function getCtxMaxDisconnectionTimeF() {
 		// Connection Time is 0 if disabled
-		if (isset($this->ctx['CtxMaxDisconnectionTime']) && ($this->ctx['CtxMaxDisconnectionTime'] != 0)) {
-			$result = true;
-		}
-		else {
-			$result = false;
-		}
-
-		return $result;
+		return isset($this->ctx['CtxMaxDisconnectionTime']) && ($this->ctx['CtxMaxDisconnectionTime'] != 0);
 	}
 
 	/** SMARTY: sets the checkbox "Disconnection" to unchecked */
@@ -576,14 +504,7 @@ class sambaMungedDial {
 	/** SMARTY: gets the checkbox state of "Idle" */
 	function getCtxMaxIdleTimeF() {
 		// Connection Time is 0 if disabled
-		if (isset($this->ctx['CtxMaxIdleTime']) && ($this->ctx['CtxMaxIdleTime'] != 0)) {
-			$result = true;
-		}
-		else {
-			$result = false;
-		}
-
-		return $result;
+		return isset($this->ctx['CtxMaxIdleTime']) && ($this->ctx['CtxMaxIdleTime'] != 0);
 	}
 
 	/** SMARTY: sets the checkbox "Idle" to unchecked */

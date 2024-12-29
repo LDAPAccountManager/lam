@@ -96,7 +96,7 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error deleting template
 	 */
 	public function deletePdfStructureTemplate(string $scope, string $name): void {
-		if (!$this->isValidPdfStructureName($name) || !TypeManager::isValidTypeId($scope) || ($name == 'default')) {
+		if (!$this->isValidPdfStructureName($name) || !TypeManager::isValidTypeId($scope) || ($name === 'default')) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to delete profile!"));
 		}
@@ -649,7 +649,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			$entry = $templateDir->read();
 			while ($entry) {
 				$parts = explode('.', $entry);
-				if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
+				if ((strlen($entry) > 3) && (count($parts) == 3)) {
 					$name = $parts[0];
 					$scope = $parts[1];
 					$allTemplates[$scope][] = $name;
@@ -698,7 +698,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
 			throw new LAMException(_('Unable to save PDF structure.'));
 		}
-		fputs($file, $xml);
+		fwrite($file, $xml);
 		fclose($file);
 	}
 
@@ -774,7 +774,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
 			throw new LAMException(_('Unable to upload logo file.'));
 		}
-		fputs($file, $data);
+		fwrite($file, $data);
 		fclose($file);
 	}
 
@@ -803,7 +803,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			throw new LAMException(_('Unable to read logos.'));
 		}
 		while ($file = readdir($dirHandle)) {
-			if (!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i', $file)) {
+			if (!is_dir($file) && $file !== '.' && $file !== '..' && preg_match('/\\.(jpg|png)$/i', $file)) {
 				$return[] = $file;
 			}
 		}
@@ -846,7 +846,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
 			throw new LAMException(_('Unable to upload logo file.'));
 		}
-		fputs($file, $data);
+		fwrite($file, $data);
 		fclose($file);
 	}
 
@@ -861,12 +861,12 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			while ($file = readdir($dirHandle)) {
 				$struct_file = explode('.', $file);
 				if (!is_dir($path . $file)
-					&& ($file != '.')
-					&& ($file != '..')
-					&& (sizeof($struct_file) === 3)
+					&& ($file !== '.')
+					&& ($file !== '..')
+					&& (count($struct_file) === 3)
 					&& ($struct_file[1] === $typeId)
 					&& ($struct_file[2] === 'xml')) {
-					array_push($return, $struct_file[0]);
+					$return[] = $struct_file[0];
 				}
 			}
 		}
@@ -920,7 +920,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
 			throw new LAMException(_('Unable to save PDF structure.'));
 		}
-		fputs($file, $xml);
+		fwrite($file, $xml);
 		fclose($file);
 	}
 

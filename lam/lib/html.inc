@@ -282,7 +282,7 @@ class htmlTable extends htmlElement {
 		$colspan = $element->getColspanString();
 		$rowspan = $element->getRowspanString();
 		$css = '';
-		if (sizeof($element->getTableCellCSSClasses()) > 0) {
+		if (count($element->getTableCellCSSClasses()) > 0) {
 			$css = 'class="' . implode(' ', $element->getTableCellCSSClasses()) . '"';
 		}
 		$tagName = 'td';
@@ -301,12 +301,7 @@ class htmlTable extends htmlElement {
 	 * Adds another line to the table.
 	 */
 	public function addNewLine() {
-		if (!$this->rowOpen) {
-			$this->elements[] = "<tr>\n";
-		}
-		else {
-			$this->elements[] = self::NEWLINE;
-		}
+		$this->elements[] = $this->rowOpen ? self::NEWLINE : "<tr>\n";
 	}
 
 	/**
@@ -348,22 +343,19 @@ class htmlTable extends htmlElement {
 			$id = ' id="' . $this->id . '"';
 		}
 		$classAttr = '';
-		if (sizeof($this->cssClasses) > 0) {
+		if (count($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo "<table" . $width . $id . $classAttr . ">\n";
 		// print all contained elements
-		for ($i = 0; $i < sizeof($this->elements); $i++) {
+		for ($i = 0; $i < count($this->elements); $i++) {
 			// print htmlElement objects
 			if ($this->elements[$i] instanceof htmlElement) {
 				$fields = $this->elements[$i]->generateHTML($module, $input, $values, $restricted, $scope);
 				$return = array_merge($return, $fields);
 			}
-			// print simple Strings
-			else {
-				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == self::NEWLINE)) {
-					echo $this->elements[$i];
-				}
+			elseif ($i !== count($this->elements) - 1 || ($this->elements[$i] != self::NEWLINE)) {
+				echo $this->elements[$i];
 			}
 		}
 		if ($this->rowOpen) {
@@ -380,8 +372,8 @@ class htmlTable extends htmlElement {
 	 */
 	public function mergeTableElements(htmlTable $table) {
 		// remove obsolete new lines at the end
-		if ($table->elements[sizeof($table->elements) - 1] == self::NEWLINE) {
-			unset($table->elements[sizeof($table->elements) - 1]);
+		if ($table->elements[count($table->elements) - 1] == self::NEWLINE) {
+			unset($table->elements[count($table->elements) - 1]);
 		}
 		// close last row of other table if needed
 		if ($table->rowOpen) {
@@ -389,8 +381,8 @@ class htmlTable extends htmlElement {
 		}
 		// close last own row if needed
 		if ($this->rowOpen) {
-			if ($this->elements[sizeof($this->elements) - 1] == self::NEWLINE) {
-				unset($this->elements[sizeof($this->elements) - 1]);
+			if ($this->elements[count($this->elements) - 1] == self::NEWLINE) {
+				unset($this->elements[count($this->elements) - 1]);
 			}
 			else {
 				$this->elements[] = "</tr>\n";
@@ -1130,12 +1122,7 @@ class htmlButton extends htmlElement {
 		if ($this->noFormValidation) {
 			$noFormValidation = ' formnovalidate="formnovalidate"';
 		}
-		if ($this->type == null) {
-			$type = ' type="submit"';
-		}
-		else {
-			$type = ' type="' . $this->type . '"';
-		}
+		$type = $this->type == null ? ' type="submit"' : ' type="' . $this->type . '"';
 		$onClick = '';
 		if ($this->onClick != null) {
 			if ($this->type == null) {
@@ -1345,7 +1332,7 @@ class htmlSelect extends htmlElement {
 			$onchange = ' onchange="' . $onchange . '"';
 		}
 		// hide select boxes that contain less than 2 elements
-		if ((sizeof($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
+		if ((count($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '<div class="hidden">';
 		}
 		// print select box
@@ -1353,7 +1340,7 @@ class htmlSelect extends htmlElement {
 			. $name . $size . $multi . $disabled . $onchange . ">\n";
 		if ($this->containsOptgroups) {
 			foreach ($this->elements as $label => $elements) {
-				if (sizeof($elements) > 0) {
+				if (count($elements) > 0) {
 					echo '<optgroup label="' . $label . '">';
 					$this->printOptionsHTML($elements);
 					echo '</optgroup>';
@@ -1365,9 +1352,9 @@ class htmlSelect extends htmlElement {
 		}
 		echo "</select>\n";
 		// if select box has only one element then show it as text
-		if ((sizeof($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
+		if ((count($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '</div>';
-			if (sizeof($this->elements) == 1) {
+			if (count($this->elements) == 1) {
 				echo '&nbsp;';
 				if ($this->hasDescriptiveElements) {
 					$keys = array_keys($this->elements);
@@ -1565,7 +1552,7 @@ class htmlSelect extends htmlElement {
 	 * @param String $onChange onChange code
 	 */
 	private function printCodeForShowHideTableRows(&$onChange) {
-		if ((sizeof($this->tableRowsToHide) == 0) && (sizeof($this->tableRowsToShow) == 0)) {
+		if ((count($this->tableRowsToHide) == 0) && (count($this->tableRowsToShow) == 0)) {
 			return;
 		}
 		$values = [];
@@ -1581,12 +1568,12 @@ class htmlSelect extends htmlElement {
 			// build onChange listener
 			$onChange .= 'if (document.getElementById(\'' . $this->name . '\').value == \'' . $val . '\') {';
 			if (isset($this->tableRowsToShow[$val])) {
-				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
+				for ($i = 0; $i < count($this->tableRowsToShow[$val]); $i++) {
 					$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 				}
 			}
 			if (isset($this->tableRowsToHide[$val])) {
-				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
+				for ($i = 0; $i < count($this->tableRowsToHide[$val]); $i++) {
 					$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 				}
 			}
@@ -1595,13 +1582,13 @@ class htmlSelect extends htmlElement {
 		// build script to set initial state
 		$script = '<script type="text/javascript">window.lam.utility.documentReady(function() {' . "\n";
 		if (isset($this->tableRowsToShow[$this->selectedElements[0]])) {
-			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElements[0]]); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToShow[$this->selectedElements[0]]); $i++) {
 				$classType = 'remove';
 				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$this->selectedElements[0]][$i] . '\')?.closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');' . "\n";
 			}
 		}
 		if (isset($this->tableRowsToHide[$this->selectedElements[0]])) {
-			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElements[0]]); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToHide[$this->selectedElements[0]]); $i++) {
 				$classType = 'add';
 				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$this->selectedElements[0]][$i] . '\')?.closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');' . "\n";
 			}
@@ -1625,7 +1612,7 @@ class htmlSelect extends htmlElement {
 	 */
 	public function enableDynamicScrolling() {
 		// not possible for optgroups and smaller option lists
-		if ((sizeof($this->elements) < 10000) || $this->containsOptgroups) {
+		if ((count($this->elements) < 10000) || $this->containsOptgroups) {
 			return;
 		}
 		$this->dynamicScrolling = true;
@@ -1780,7 +1767,7 @@ class htmlRadio extends htmlElement {
 	 */
 	private function getOnchangeCodeForShowHideTableRows($counter): string {
 		$onChange = '';
-		if ((sizeof($this->tableRowsToHide) == 0) && (sizeof($this->tableRowsToShow) == 0)) {
+		if ((count($this->tableRowsToHide) == 0) && (count($this->tableRowsToShow) == 0)) {
 			return $onChange;
 		}
 		$values = [];
@@ -1797,12 +1784,12 @@ class htmlRadio extends htmlElement {
 			// build onChange listener
 			$onChange .= 'if (document.getElementById(\'' . $this->name . $counter . '\').value == \'' . $val . '\') {';
 			if (isset($this->tableRowsToShow[$val])) {
-				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
+				for ($i = 0; $i < count($this->tableRowsToShow[$val]); $i++) {
 					$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 				}
 			}
 			if (isset($this->tableRowsToHide[$val])) {
-				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
+				for ($i = 0; $i < count($this->tableRowsToHide[$val]); $i++) {
 					$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$val][$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 				}
 			}
@@ -1816,12 +1803,12 @@ class htmlRadio extends htmlElement {
 		// build script to set initial state
 		$script = '<script type="text/javascript">window.lam.utility.documentReady(function() {' . "\n";
 		if (isset($this->tableRowsToShow[$this->selectedElement])) {
-			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElement]); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToShow[$this->selectedElement]); $i++) {
 				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$this->selectedElement][$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');' . "\n";
 			}
 		}
 		if (isset($this->tableRowsToHide[$this->selectedElement])) {
-			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElement]); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToHide[$this->selectedElement]); $i++) {
 				$script .= 'document.getElementById(\'' . $this->tableRowsToHide[$this->selectedElement][$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');' . "\n";
 			}
 		}
@@ -2049,12 +2036,7 @@ class htmlInputCheckbox extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		if (isset($values[$this->name])) {
-			if ($values[$this->name][0] == 'true') {
-				$this->checked = true;
-			}
-			else {
-				$this->checked = false;
-			}
+			$this->checked = ($values[$this->name][0] == 'true');
 		}
 		$checked = '';
 		if ($this->checked) {
@@ -2076,34 +2058,34 @@ class htmlInputCheckbox extends htmlElement {
 		$onChange = '';
 		$script = '';
 		$selector = $this->getShowHideSelector();
-		if ((sizeof($this->tableRowsToShow) > 0) || (sizeof($this->tableRowsToHide) > 0)) {
+		if ((count($this->tableRowsToShow) > 0) || (count($this->tableRowsToHide) > 0)) {
 			// build onChange listener
 			$onChange .= 'if (document.querySelector(\'#' . $this->name . ':checked\') !== null) {';
-			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToShow); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 			}
-			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToHide); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 			}
 			$onChange .= '}';
 			$onChange .= 'else {';
-			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToShow); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\')?.closest(\'' . $selector . '\').classList.add(\'hidden\');';
 			}
-			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToHide); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->tableRowsToHide[$i] . '\')?.closest(\'' . $selector . '\').classList.remove(\'hidden\');';
 			}
 			$onChange .= '};';
 			// build script to set initial state
 			$script .= '<script type="text/javascript">window.lam.utility.documentReady(function() {';
-			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToShow); $i++) {
 				$classType = 'add';
 				if ($this->checked) {
 					$classType = 'remove';
 				}
 				$script .= 'document.getElementById(\'' . $this->tableRowsToShow[$i] . '\')?.closest(\'' . $selector . '\').classList.' . $classType . '(\'hidden\');';
 			}
-			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
+			for ($i = 0; $i < count($this->tableRowsToHide); $i++) {
 				$classType = 'remove';
 				if ($this->checked) {
 					$classType = 'add';
@@ -2113,34 +2095,34 @@ class htmlInputCheckbox extends htmlElement {
 			$script .= '});</script>';
 		}
 		// build Java script to enable/disable elements
-		if ((sizeof($this->elementsToEnable) > 0) || (sizeof($this->elementsToDisable) > 0)) {
+		if ((count($this->elementsToEnable) > 0) || (count($this->elementsToDisable) > 0)) {
 			// build onChange listener
 			$onChange .= 'if (document.querySelector(\'#' . $this->name . ':checked\') !== null) {';
-			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
+			for ($i = 0; $i < count($this->elementsToEnable); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->elementsToEnable[$i] . '\').disabled = false;';
 			}
-			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
+			for ($i = 0; $i < count($this->elementsToDisable); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->elementsToDisable[$i] . '\').disabled = true;';
 			}
 			$onChange .= '}';
 			$onChange .= 'else {';
-			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
+			for ($i = 0; $i < count($this->elementsToEnable); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->elementsToEnable[$i] . '\').disabled = true;';
 			}
-			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
+			for ($i = 0; $i < count($this->elementsToDisable); $i++) {
 				$onChange .= 'document.getElementById(\'' . $this->elementsToDisable[$i] . '\').disabled = false;';
 			}
 			$onChange .= '};';
 			// build script to set initial state
 			$script .= '<script type="text/javascript">window.lam.utility.documentReady(function() {';
-			for ($i = 0; $i < sizeof($this->elementsToEnable); $i++) {
+			for ($i = 0; $i < count($this->elementsToEnable); $i++) {
 				$classType = 'true';
 				if ($this->checked) {
 					$classType = 'false';
 				}
 				$script .= 'document.getElementById(\'' . $this->elementsToEnable[$i] . '\').disabled = ' . $classType . ';';
 			}
-			for ($i = 0; $i < sizeof($this->elementsToDisable); $i++) {
+			for ($i = 0; $i < count($this->elementsToDisable); $i++) {
 				$classType = 'false';
 				if ($this->checked) {
 					$classType = 'true';
@@ -2825,7 +2807,7 @@ class htmlStatusMessage extends htmlElement {
 	 * @return htmlStatusMessage
 	 */
 	public static function fromParamArray($params) {
-		if (sizeof($params) < 2) {
+		if (count($params) < 2) {
 			throw new BadMethodCallException("Invalid parameter count");
 		}
 
@@ -3121,7 +3103,7 @@ class htmlLink extends htmlElement {
 			$idAttr = ' id="' . $this->id . '"';
 		}
 		$classAttr = '';
-		if (sizeof($this->cssClasses) > 0) {
+		if (count($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $onMouseOver . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
@@ -3280,7 +3262,7 @@ class htmlGroup extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		$return = [];
-		for ($i = 0; $i < sizeof($this->subelements); $i++) {
+		for ($i = 0; $i < count($this->subelements); $i++) {
 			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted, $scope));
 		}
 		return $return;
@@ -3367,7 +3349,7 @@ class htmlDiv extends htmlElement {
 			$idValue = ' id="' . $this->id . '"';
 		}
 		$classesValue = '';
-		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
+		if (($this->cssClasses != null) && (count($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<div' . $idValue . $classesValue . $this->getDataAttributesAsString() . '>';
@@ -3418,7 +3400,7 @@ class htmlSpan extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		$return = [];
 		$classesValue = '';
-		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
+		if (($this->cssClasses != null) && (count($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		$onclickHandler = '';
@@ -3653,7 +3635,7 @@ class htmlSortableList extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		if (sizeof($this->elements) == 0) {
+		if (count($this->elements) == 0) {
 			return [];
 		}
 		$return = [];
@@ -3662,7 +3644,7 @@ class htmlSortableList extends htmlElement {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<ul' . $classesValue . ' id="' . $this->id . '">';
-		for ($i = 0; $i < sizeof($this->elements); $i++) {
+		for ($i = 0; $i < count($this->elements); $i++) {
 			$element = $this->elements[$i];
 			echo '<li data-position-orig="' . $i . '">';
 			echo '<span class="lam-sortable-list-icon"></span>';
@@ -3818,7 +3800,6 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param htmlElement $field field element if this is a simple label+field row
 	 */
 	public function __construct($label = null, $field = null) {
-		$this->cells = [];
 		if ($label != null) {
 			$this->addLabel($label);
 		}
@@ -3944,7 +3925,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @return int cell count
 	 */
 	public function getCellCount(): int {
-		return sizeof($this->cells);
+		return count($this->cells);
 	}
 
 }
@@ -4604,7 +4585,7 @@ class htmlResponsiveTable extends htmlElement {
 		echo '</tr>';
 		echo '</thead>';
 		echo '<tbody>';
-		$titleCount = sizeof($this->titles);
+		$titleCount = count($this->titles);
 		$counter = 0;
 		foreach ($this->data as $row) {
 			$cssClass = '';

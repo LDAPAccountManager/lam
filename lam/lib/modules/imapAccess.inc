@@ -189,7 +189,7 @@ class imapAccess extends baseModule {
 				$attrs = array_merge($attrs, $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes());
 			}
 		}
-		$this->email = !empty($attrs['mail'][0]) ? $attrs['mail'][0] : '';
+		$this->email = empty($attrs['mail'][0]) ? '' : $attrs['mail'][0];
 		$this->user = '';
 		// extract user name from email address
 		if (empty($this->moduleSettings['ImapAccess_UserNameAttribute'][0]) || $this->moduleSettings['ImapAccess_UserNameAttribute'][0] == 'mail') {
@@ -204,7 +204,7 @@ class imapAccess extends baseModule {
 		}
 		// extract user name from Unix user name (might be in inetOrgPerson/windowUser or posixAccount module)
 		else {
-			$this->user = !empty($attrs['uid'][0]) ? $attrs['uid'][0] : '';
+			$this->user = empty($attrs['uid'][0]) ? '' : $attrs['uid'][0];
 		}
 
 		if (empty($this->email)) {
@@ -463,31 +463,29 @@ class imapAccess extends baseModule {
 		if ($this->isWrongDomain($email_domain)) {
 			$errors[] = $this->messages['managemailbox'][4];
 		}
+		elseif ($quota == '') {
+			try {
+				$this->runSetQuotaCommand($client, $root, '-1');
+			}
+			catch (Exception $e) {
+				$message = $this->messages['managemailbox'][7];
+				$message[] = $e->getMessage();
+				$errors[] = $message;
+			}
+		}
+		elseif (get_preg($quota, 'digit')) {
+			logNewMessage(LOG_DEBUG, 'Setting quota ' . $quota . ' for ' . $root);
+			try {
+				$this->runSetQuotaCommand($client, $root, $quota);
+			}
+			catch (Exception $e) {
+				$message = $this->messages['managemailbox'][7];
+				$message[] = $e->getMessage();
+				$errors[] = $message;
+			}
+		}
 		else {
-			if ($quota == '') {
-				try {
-					$this->runSetQuotaCommand($client, $root, '-1');
-				}
-				catch (Exception $e) {
-					$message = $this->messages['managemailbox'][7];
-					$message[] = $e->getMessage();
-					$errors[] = $message;
-				}
-			}
-			elseif (get_preg($quota, 'digit')) {
-				logNewMessage(LOG_DEBUG, 'Setting quota ' . $quota . ' for ' . $root);
-				try {
-					$this->runSetQuotaCommand($client, $root, $quota);
-				}
-				catch (Exception $e) {
-					$message = $this->messages['managemailbox'][7];
-					$message[] = $e->getMessage();
-					$errors[] = $message;
-				}
-			}
-			else {
-				$errors[] = $this->messages['managemailbox'][8];
-			}
+			$errors[] = $this->messages['managemailbox'][8];
 		}
 		return $errors;
 	}
@@ -683,12 +681,7 @@ class imapAccess extends baseModule {
 		}
 		else {
 			$serverName = $this->moduleSettings['ImapAccess_ImapServerAddress'][0];
-			if ($encryptionType === "TLS") {
-				$port = 143;
-			}
-			else {
-				$port = 993;
-			}
+			$port = ($encryptionType === "TLS") ? 143 : 993;
 		}
 		$validateCertificate = !isset($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0]) || ($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0] !== 'novalidate-cert');
 		try {
@@ -814,7 +807,7 @@ class imapAccess extends baseModule {
 		if (!isset($ids['imapAccess_createMailbox'])) {
 			return $errors;
 		}
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			if (isset($rawAccounts[$i][$ids['imapAccess_createMailbox']])
 				&& !in_array($rawAccounts[$i][$ids['imapAccess_createMailbox']], ['true', 'false'])) {
 				$errMsg = $this->messages['createMailbox'][0];
@@ -884,7 +877,7 @@ class imapAccess extends baseModule {
 			];
 		}
 		// add mailbox
-		elseif ($temp['counter'] < sizeof($temp['users'])) {
+		elseif ($temp['counter'] < count($temp['users'])) {
 			$errors = [];
 			$data = $temp['users'][$temp['counter']];
 			$uid = $data['uid'];
@@ -915,7 +908,7 @@ class imapAccess extends baseModule {
 			$temp['counter']++;
 			return [
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / sizeof($temp['users']),
+				'progress' => ($temp['counter'] * 100) / count($temp['users']),
 				'errors' => $errors
 			];
 		}
@@ -938,7 +931,7 @@ class imapAccess extends baseModule {
 	 */
 	private function isMailboxExisting($client, string $path): bool {
 		$list = $client->getConnection()->folders($path);
-		return ($list !== null) && is_array($list->data()) && (sizeof($list->data()) >= 1);
+		return ($list !== null) && is_array($list->data()) && (count($list->data()) >= 1);
 	}
 
 	/**

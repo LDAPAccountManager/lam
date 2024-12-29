@@ -196,7 +196,7 @@ function displayObjectClassList(htmlResponsiveRow &$row): void {
     if (isset($_GET['sel']) && (empty($_GET['sel']) || array_key_exists(strtolower($_GET['sel']), $objectClasses))) {
     	$selectedClass[0] = $_GET['sel'];
     }
-    if (empty($selectedClass) && (sizeof($objectClasses) > 0)) {
+    if (empty($selectedClass) && (count($objectClasses) > 0)) {
     	// select first class by default
     	$selectedClassNames = array_keys($objectClasses);
     	$selectedClass[0] = $selectedClassNames[0];
@@ -290,7 +290,7 @@ function displayAttributeList(htmlResponsiveRow $row): void {
 	if (isset($_GET['sel']) && (empty($_GET['sel']) || array_key_exists(strtolower($_GET['sel']), $attributes))) {
 		$selectedAttribute[0] = $_GET['sel'];
 	}
-	if (empty($selectedAttribute) && (sizeof($availableAttributes) > 1)) {
+	if (empty($selectedAttribute) && (count($availableAttributes) > 1)) {
 		// select first attribute by default
 		$attributeNames = array_keys($availableAttributes);
 		$selectedAttribute[0] = $attributeNames[1];

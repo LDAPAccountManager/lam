@@ -302,10 +302,10 @@ class LAMConfigTest extends TestCase {
 		$val = 'server1;server2:label2;server3:label3:/prefix';
 		$this->assertTrue($this->lAMConfig->set_scriptServers($val));
 		$servers = $this->lAMConfig->getConfiguredScriptServers();
-		$this->assertEquals(3, sizeof($servers));
+		$this->assertEquals(3, count($servers));
 		$this->doSave();
 		$servers = $this->lAMConfig->getConfiguredScriptServers();
-		$this->assertEquals(3, sizeof($servers));
+		$this->assertEquals(3, count($servers));
 		$this->assertEquals('server1', $servers[0]->getServer());
 		$this->assertEquals('server2', $servers[1]->getServer());
 		$this->assertEquals('server3', $servers[2]->getServer());
@@ -920,14 +920,14 @@ class LAMConfigTest extends TestCase {
 	 * Checks that number of settings stays constant over multiple saves.
 	 */
 	public function testMultiSave() {
-		$sizeModSettings = sizeof($this->lAMConfig->get_moduleSettings());
-		$sizeTypeSettings = sizeof($this->lAMConfig->get_typeSettings());
+		$sizeModSettings = count($this->lAMConfig->get_moduleSettings());
+		$sizeTypeSettings = count($this->lAMConfig->get_typeSettings());
 		$this->doSave();
-		$this->assertEquals($sizeModSettings, sizeof($this->lAMConfig->get_moduleSettings()));
-		$this->assertEquals($sizeTypeSettings, sizeof($this->lAMConfig->get_typeSettings()));
+		$this->assertEquals($sizeModSettings, count($this->lAMConfig->get_moduleSettings()));
+		$this->assertEquals($sizeTypeSettings, count($this->lAMConfig->get_typeSettings()));
 		$this->doSave();
-		$this->assertEquals($sizeModSettings, sizeof($this->lAMConfig->get_moduleSettings()));
-		$this->assertEquals($sizeTypeSettings, sizeof($this->lAMConfig->get_typeSettings()));
+		$this->assertEquals($sizeModSettings, count($this->lAMConfig->get_moduleSettings()));
+		$this->assertEquals($sizeTypeSettings, count($this->lAMConfig->get_typeSettings()));
 	}
 
 	/**

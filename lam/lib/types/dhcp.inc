@@ -134,7 +134,7 @@ class dhcp extends baseType {
 		if (isset($attributes['dhcpComments'][0])) {
 			$subtitle .= htmlspecialchars($attributes['dhcpComments'][0]);
 		}
-		if ($subtitle == '') {
+		if ($subtitle === '') {
 			return null;
 		}
 		return $subtitle;
@@ -178,7 +178,7 @@ class lamDHCPList extends lamList {
 				return true;
 			}
 			$entries = searchLDAP($data['dn'], 'objectClass=dhcpHost', ['dhcpstatements', 'dhcphwaddress', 'cn']);
-			if (sizeof($entries) > 0) {
+			if (count($entries) > 0) {
 				foreach ($entries as $entry) {
 					foreach ($entry as $attrValues) {
 						if (!is_array($attrValues)) {
@@ -191,10 +191,8 @@ class lamDHCPList extends lamList {
 						}
 						if (!empty($entry['dhcpstatements'])) {
 							$ip = fixed_ip::extractIP($entry['dhcpstatements']);
-							if (!empty($ip)) {
-								if (preg_match($regex, $ip)) {
-									return true;
-								}
+							if (!empty($ip) && preg_match($regex, $ip)) {
+								return true;
 							}
 						}
 					}
