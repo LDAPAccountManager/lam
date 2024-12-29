@@ -478,9 +478,7 @@ class sambaMungedDial {
 	/** SMARTY: gets the checkbox state of "Connection" */
 	function getCtxMaxConnectionTimeF() {
 		// Connection Time is 0 if disabled
-		$result = isset($this->ctx['CtxMaxConnectionTime']) && ($this->ctx['CtxMaxConnectionTime'] != 0);
-
-		return $result;
+		return isset($this->ctx['CtxMaxConnectionTime']) && ($this->ctx['CtxMaxConnectionTime'] != 0);
 	}
 
 	/** SMARTY: sets the checkbox "Connection" to unchecked */
@@ -493,9 +491,7 @@ class sambaMungedDial {
 	/** SMARTY: gets the checkbox state of "Disconnection" */
 	function getCtxMaxDisconnectionTimeF() {
 		// Connection Time is 0 if disabled
-		$result = isset($this->ctx['CtxMaxDisconnectionTime']) && ($this->ctx['CtxMaxDisconnectionTime'] != 0);
-
-		return $result;
+		return isset($this->ctx['CtxMaxDisconnectionTime']) && ($this->ctx['CtxMaxDisconnectionTime'] != 0);
 	}
 
 	/** SMARTY: sets the checkbox "Disconnection" to unchecked */
@@ -508,9 +504,7 @@ class sambaMungedDial {
 	/** SMARTY: gets the checkbox state of "Idle" */
 	function getCtxMaxIdleTimeF() {
 		// Connection Time is 0 if disabled
-		$result = isset($this->ctx['CtxMaxIdleTime']) && ($this->ctx['CtxMaxIdleTime'] != 0);
-
-		return $result;
+		return isset($this->ctx['CtxMaxIdleTime']) && ($this->ctx['CtxMaxIdleTime'] != 0);
 	}
 
 	/** SMARTY: sets the checkbox "Idle" to unchecked */
