@@ -1,6 +1,7 @@
 <?php
 
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
+use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
@@ -49,7 +50,9 @@ return RectorConfig::configure()
 		// TODO parent call check is unreliable, recheck with newer rector version
 		RemoveParentCallWithoutParentRector::class,
 		// TODO inherited properties check is unreliable, recheck with newer rector version
-		CompleteDynamicPropertiesRector::class
+		CompleteDynamicPropertiesRector::class,
+		// TODO unreliable, recheck with newer rector version
+		ExplicitReturnNullRector::class
 	])
 	->withFileExtensions([
 		'php',
