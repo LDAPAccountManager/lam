@@ -235,7 +235,9 @@ class sambaGroupMapping extends baseModule {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		$domains = $this->getDomains();
 		$domainNames = [];
-		for ($i = 0; $i < count($domains); $i++) $domainNames[] = $domains[$i]->name;
+		for ($i = 0; $i < count($domains); $i++) {
+			$domainNames[] = $domains[$i]->name;
+		}
 		$return[] = [
 			'name' => 'sambaGroupMapping_domain',
 			'description' => _('Samba domain name'),

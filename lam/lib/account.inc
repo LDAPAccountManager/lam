@@ -2017,7 +2017,7 @@ function convertUtf8ToUtf16Le($input) {
 		return $input;
 	}
 	$output = iconv('UTF-8', 'UTF-16LE', $input);
-	if (($output == '')) {
+	if ($output == '') {
 		$output = mb_convert_encoding($input, 'UTF-8', 'UTF-16LE');
 	}
 	return $output;
