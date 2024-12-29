@@ -3896,7 +3896,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				if ($deactivated) {
 					$attrs[$key][0] = intval($value[0]) | self::AC_ACCOUNT_DISABLED;
 				}
-				elseif (intval($value[0]) & self::AC_ACCOUNT_DISABLED) {
+				elseif ((intval($value[0]) & self::AC_ACCOUNT_DISABLED) !== 0) {
 					$attrs[$key][0] = intval($value[0]) - self::AC_ACCOUNT_DISABLED;
 				}
 			}
@@ -3928,7 +3928,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				if ($requireCard) {
 					$attrs[$key][0] = intval($value[0]) | self::AC_SMARTCARD_REQUIRED;
 				}
-				elseif (intval($value[0]) & self::AC_SMARTCARD_REQUIRED) {
+				elseif ((intval($value[0]) & self::AC_SMARTCARD_REQUIRED) !== 0) {
 					$attrs[$key][0] = intval($value[0]) - self::AC_SMARTCARD_REQUIRED;
 				}
 			}
@@ -3960,7 +3960,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				if ($neverExpires) {
 					$attrs[$key][0] = (string) (intval($value[0]) | self::AC_PWD_NEVER_EXPIRES);
 				}
-				elseif (intval($value[0]) & self::AC_PWD_NEVER_EXPIRES) {
+				elseif ((intval($value[0]) & self::AC_PWD_NEVER_EXPIRES) !== 0) {
 					$attrs[$key][0] = (string) (intval($value[0]) - self::AC_PWD_NEVER_EXPIRES);
 				}
 			}
