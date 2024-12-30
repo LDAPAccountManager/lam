@@ -189,6 +189,33 @@ class BaseModuleTest extends TestCase {
 		$this->assertEquals([['ERROR', 'errorCMP']], $errors);
 	}
 
+	function test_check_profileOptions_cmpGreater_minMissing() {
+		$meta = [];
+		$module = new baseModuleDummy('user');
+
+		$meta['profile_checks']['test_val1'] = [
+			'type' => 'ext_preg',
+			'regex' => 'digit',
+			'error_message' => ['ERROR', 'error1']];
+		$meta['profile_checks']['test_val2'] = [
+			'type' => 'ext_preg',
+			'regex' => 'digit',
+			'error_message' => ['ERROR', 'error2']];
+		$meta['profile_checks']['test_cmp'] = [
+			'type' => 'int_greater',
+			'cmp_name1' => 'test_val2',
+			'cmp_name2' => 'test_val1',
+			'error_message' => ['ERROR', 'errorCMP']];
+
+		$module->setMeta($meta);
+
+		$options = [
+			'test_val2' => ['20'],
+		];
+		$errors = $module->check_profileOptions($options, 'user1');
+		$this->assertEmpty($errors, print_r($errors, true));
+	}
+
 	function test_check_profileOptions_cmpEqual_greater() {
 		$meta = [];
 		$module = new baseModuleDummy('user');

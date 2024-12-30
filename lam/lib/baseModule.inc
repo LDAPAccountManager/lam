@@ -616,21 +616,23 @@ abstract class baseModule {
 						break;
 					// check by integer comparison (greater)
 					case 'int_greater':
-						$val1 = $options[$check['cmp_name1']][0];
-						$val2 = $options[$check['cmp_name2']][0];
-						// ignore if both fields are empty
-						if (!(empty($val1) && empty($val2))
-							&& (($val1 == '') || ($val2 == '') || intval($val1) <= intval($val2))) {
+						$val1 = $options[$check['cmp_name1']][0] ?? '';
+						$val2 = $options[$check['cmp_name2']][0] ?? '';
+						// ignore if both fields or minimum are empty
+						if (!empty($val1)
+							&& ($val2 !== '')
+							&& (intval($val1) <= intval($val2))) {
 							$errors[] = $check['error_message'];
 						}
 						break;
 					// check by integer comparison (greater or equal)
 					case 'int_greaterOrEqual':
-						$val1 = $options[$check['cmp_name1']][0];
-						$val2 = $options[$check['cmp_name2']][0];
+						$val1 = $options[$check['cmp_name1']][0] ?? '';
+						$val2 = $options[$check['cmp_name2']][0] ?? '';
 						// ignore if both fields are empty
-						if (!(empty($val1) && empty($val2))
-							&& (($val1 == '') || ($val2 == '') || intval($val1) < intval($val2))) {
+						if (!empty($val1)
+							&& ($val2 !== '')
+							&& (intval($val1) < intval($val2))) {
 							$errors[] = $check['error_message'];
 						}
 						break;

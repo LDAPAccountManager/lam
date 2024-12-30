@@ -1,3 +1,8 @@
+March 2025 9.1
+ - Fixed bugs:
+  -> Ambiguous tooltip on profile editor for Shadow users (#394)
+
+
 17.12.2024 9.0
  - New configuration file format for main configuration and server profiles (applied on save, old format can still be read)
  - Unix users: allow to create group with same name via account profile (#332)
