@@ -1299,7 +1299,7 @@ class lamList {
 				}
 				$regex = str_replace(['*'], ['.*'], $filterValue);
 				$regex = '/' . $regex . '/i';
-				if ($filterFunctions[$filterAttribute] !== null) {
+				if (!empty($filterFunctions[$filterAttribute])) {
 					$value = $data[$filterAttribute] ?? null;
 					if (!$filterFunctions[$filterAttribute]($value, $filterValue)) {
 						$toFilter[] = $index;
