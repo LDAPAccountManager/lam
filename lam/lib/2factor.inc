@@ -990,7 +990,9 @@ class WebauthnProvider extends BaseProvider {
 		$errorMessageDiv->addDataAttribute('button', _('Ok'));
 		$errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
 		$row->add($errorMessageDiv);
-		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', ' . $selfServiceParam . ');'), 0);
+		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', ' . $selfServiceParam . ',' .
+			' \'' . _('Do you want to set a name for this device?') . '\', \'' . _('Name') . '\',' .
+			' \'' . _('Ok') . '\', \'' . _('Cancel') . '\');'), 0);
 	}
 
 	/**
@@ -1024,7 +1026,14 @@ class WebauthnProvider extends BaseProvider {
 			}
 			$response = base64_decode($_POST['sig_response']);
 			$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
-			return $webauthnManager->storeNewRegistration($registrationObject, $response);
+			if (!$webauthnManager->storeNewRegistration($registrationObject, $response)) {
+				return false;
+			}
+			if (!empty($_POST['newName'])) {
+				$deviceList = $webauthnManager->getDatabase()->findAllForUserDn($userDn);
+				$webauthnManager->getDatabase()->updateDeviceName($userDn, base64_encode($deviceList[0]->getPublicKeyCredentialId()), $_POST['newName']);
+			}
+			return true;
 		}
 		else {
 			logNewMessage(LOG_DEBUG, 'Checking WebAuthn response of ' . $userDn);

@@ -1863,10 +1863,14 @@ window.lam.webauthn.charAt = function (c) {
  *
  * @param prefix path prefix for Ajax endpoint
  * @param isSelfService runs as part of self service
+ * @param newDeviceNameTitle title for new device name dialog
+ * @param newDeviceNameLabel label for new device name
+ * @param okText text for Ok button
+ * @param cancelText text for cancelButton
  */
-window.lam.webauthn.start = function(prefix, isSelfService) {
+window.lam.webauthn.start = function(prefix, isSelfService, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText) {
 	document.addEventListener("DOMContentLoaded", function(){
-		window.lam.webauthn.run(prefix, isSelfService);
+		window.lam.webauthn.run(prefix, isSelfService, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText);
 	});
 }
 
@@ -1874,9 +1878,13 @@ window.lam.webauthn.start = function(prefix, isSelfService) {
  * Checks if the user is registered and starts login/registration.
  *
  * @param prefix path prefix for Ajax endpoint
- * @param isSelfService runs as part of self service
+ * @param isSelfService runs as part of self-service
+ * @param newDeviceNameTitle title for new device name dialog
+ * @param newDeviceNameLabel label for new device name
+ * @param okText text for Ok button
+ * @param cancelText text for cancelButton
  */
-window.lam.webauthn.run = function(prefix, isSelfService) {
+window.lam.webauthn.run = function(prefix, isSelfService, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText) {
 	const skipButton = document.getElementById('btn_skip_webauthn');
 	if (skipButton) {
 		skipButton.onclick = function () {
@@ -1909,8 +1917,24 @@ window.lam.webauthn.run = function(prefix, isSelfService) {
 		const jsonData = await response.json();
 		if (jsonData.action === 'register') {
 			const registerFunction = function() {
-				const successCallback = function (publicKeyCredential) {
+				const successCallback = async function (publicKeyCredential) {
+					const {value: newName} = await Swal.fire({
+						title: newDeviceNameTitle,
+						confirmButtonText: okText,
+						cancelButtonText: cancelText,
+						showCancelButton: true,
+						input: 'text',
+						inputLabel: newDeviceNameLabel,
+						width: 'auto'
+					});
 					const form = document.getElementById("2faform");
+					if (newName) {
+						const newNameElement = document.createElement('input');
+						newNameElement.type = 'hidden';
+						newNameElement.name = 'newName';
+						newNameElement.value = newName;
+						form.appendChild(newNameElement);
+					}
 					const response = btoa(JSON.stringify(publicKeyCredential));
 					const hiddenResponse = document.createElement('input');
 					hiddenResponse.type = 'hidden';
