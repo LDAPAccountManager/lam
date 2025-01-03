@@ -2928,41 +2928,43 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			}
 			$row->addVerticalSpacer('0.5rem');
 		}
-		// upload button
-		$uploadButtonGroup = new htmlGroup();
-		$uploadLabel = new htmlLabel('inetOrgPersonPhoto_file', _('Upload a file'));
-		$uploadButtonGroup->addElement($uploadLabel);
-		$uploadInput = new htmlInputFileUpload('inetOrgPersonPhoto_file');
-		$uploadInput->setOnChange('inetOrgPersonUploadPhoto();');
-		$uploadButtonGroup->addElement($uploadInput);
-		$row->add(new htmlDiv('inetOrgPersonPhotoUploadId', $uploadButtonGroup, ['lam-upload-button']));
-		// webcam button
-		$webcamContent = new htmlResponsiveRow();
-		$webcamContent->addVerticalSpacer('0.5rem');
-		$errorMessage = new htmlStatusMessage('ERROR', '');
-		$errorMessage->setCSSClasses(['hidden', 'lam-webcam-message']);
-		$webcamContent->add($errorMessage);
-		$webcamContent->addVerticalSpacer('0.5rem');
-		$captureButton = new htmlLink(_('Use webcam'), '#', '../../graphics/webcam.png');
-		$captureButton->setId('btn_lam-webcam-capture');
-		$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
-		$webcamContent->add($captureButton, 12, 12, 12);
-		$video = new htmlVideo('lam-webcam-video');
-		$video->setCSSClasses(['hidden']);
-		$webcamContent->add($video, 12, 12, 12, 'text-center');
-		$webcamContent->addVerticalSpacer('1rem');
-		$webcamUploadButton = new htmlLink(_('Upload'), '#', '../../graphics/upload.svg');
-		$webcamUploadButton->setId('btn-lam-webcam-upload');
-		$webcamUploadButton->setCSSClasses(['btn-lam-webcam-upload', 'hidden']);
-		$webcamUploadButton->setOnClick('window.lam.tools.webcam.uploadSelfService(event, "' . getSecurityTokenName()
-			. '", "' . getSecurityTokenValue() . '", "inetOrgPerson", "user", "' . _('File upload failed!') . '", "inetOrgPersonPhotoUploadContent");');
-		$webcamContent->add($webcamUploadButton, 12, 12, 12);
-		$canvas = new htmlCanvas('lam-webcam-canvas');
-		$canvas->setCSSClasses(['hidden']);
-		$webcamContent->add($canvas);
-		$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
-		$webcamContent->addVerticalSpacer('1rem');
-		$row->add($webcamDiv);
+		if (!$readOnly) {
+			// upload button
+			$uploadButtonGroup = new htmlGroup();
+			$uploadLabel = new htmlLabel('inetOrgPersonPhoto_file', _('Upload a file'));
+			$uploadButtonGroup->addElement($uploadLabel);
+			$uploadInput = new htmlInputFileUpload('inetOrgPersonPhoto_file');
+			$uploadInput->setOnChange('inetOrgPersonUploadPhoto();');
+			$uploadButtonGroup->addElement($uploadInput);
+			$row->add(new htmlDiv('inetOrgPersonPhotoUploadId', $uploadButtonGroup, ['lam-upload-button']));
+			// webcam button
+			$webcamContent = new htmlResponsiveRow();
+			$webcamContent->addVerticalSpacer('0.5rem');
+			$errorMessage = new htmlStatusMessage('ERROR', '');
+			$errorMessage->setCSSClasses(['hidden', 'lam-webcam-message']);
+			$webcamContent->add($errorMessage);
+			$webcamContent->addVerticalSpacer('0.5rem');
+			$captureButton = new htmlLink(_('Use webcam'), '#', '../../graphics/webcam.png');
+			$captureButton->setId('btn_lam-webcam-capture');
+			$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
+			$webcamContent->add($captureButton, 12, 12, 12);
+			$video = new htmlVideo('lam-webcam-video');
+			$video->setCSSClasses(['hidden']);
+			$webcamContent->add($video, 12, 12, 12, 'text-center');
+			$webcamContent->addVerticalSpacer('1rem');
+			$webcamUploadButton = new htmlLink(_('Upload'), '#', '../../graphics/upload.svg');
+			$webcamUploadButton->setId('btn-lam-webcam-upload');
+			$webcamUploadButton->setCSSClasses(['btn-lam-webcam-upload', 'hidden']);
+			$webcamUploadButton->setOnClick('window.lam.tools.webcam.uploadSelfService(event, "' . getSecurityTokenName()
+				. '", "' . getSecurityTokenValue() . '", "inetOrgPerson", "user", "' . _('File upload failed!') . '", "inetOrgPersonPhotoUploadContent");');
+			$webcamContent->add($webcamUploadButton, 12, 12, 12);
+			$canvas = new htmlCanvas('lam-webcam-canvas');
+			$canvas->setCSSClasses(['hidden']);
+			$webcamContent->add($canvas);
+			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
+			$webcamContent->addVerticalSpacer('1rem');
+			$row->add($webcamDiv);
+		}
 		return $row;
 	}
 

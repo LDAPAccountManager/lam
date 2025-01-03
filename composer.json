@@ -13,7 +13,9 @@
     "ext-json": "*",
     "ext-pdo": "*",
     "ext-xmlreader": "*",
-    "ext-zip": "*"
+    "ext-zip": "*",
+    "ext-gd": "*",
+    "ext-imagick": "*"
   },
   "scripts": {
     "test": "vendor/bin/phpunit"

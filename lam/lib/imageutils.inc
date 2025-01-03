@@ -3,6 +3,7 @@
 namespace LAM\ImageUtils;
 
 use Imagick;
+use LAMException;
 
 /*
 
@@ -222,9 +223,13 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * Constructor.
 	 *
 	 * @param string $imageData original image as binary string
+	 * @throws LAMException error reading image
 	 */
 	public function __construct($imageData) {
-		$this->image = imagecreatefromstring($imageData);
+		$this->image = @imagecreatefromstring($imageData);
+		if ($this->image === false) {
+			throw new LAMException(_('Photo'), _('Unable to read image'));
+		}
 		$info = getimagesizefromstring($imageData);
 		$this->type = $info[2];
 	}
