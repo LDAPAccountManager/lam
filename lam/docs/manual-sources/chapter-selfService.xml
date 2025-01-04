@@ -1703,11 +1703,12 @@
 
               <entry>Label that is displayed on page</entry>
 
-              <entry>optional regular expression for validation (e.g.
-              "/^[0-9a-zA-Z]+$/")</entry>
+              <entry>Optional regular expression for validation (e.g.
+              "/^[0-9a-zA-Z]+$/"). For binary fields the file name will be
+              checked.</entry>
 
-              <entry>validation message if value does not match validation
-              expression</entry>
+              <entry>Validation message if value does not match validation
+              expression.</entry>
             </row>
 
             <row>
@@ -1721,11 +1722,12 @@
 
               <entry>Label that is displayed on page</entry>
 
-              <entry>optional regular expression for validation (e.g.
-              "/^[0-9a-zA-Z]+$/")</entry>
+              <entry>Optional regular expression for validation (e.g.
+              "/^[0-9a-zA-Z]+$/"). For binary fields the file name will be
+              checked.</entry>
 
-              <entry>validation message if value does not match validation
-              expression</entry>
+              <entry>Validation message if value does not match validation
+              expression.</entry>
             </row>
 
             <row>
@@ -1799,6 +1801,14 @@
       <para>constant::sAMAccountName::@@uid@@</para>
 
       <para>constant::userAccountControl::512</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>Binary file:</para>
+
+      <para>required::jpegPhoto;binary::Photo::/.jp(e)?g$/i::Please select a
+      JPG file</para>
 
       <literallayout>
 </literallayout>
