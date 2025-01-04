@@ -333,7 +333,7 @@ $helpArray = [
 				'289' => ["Headline" => _('From address'),
 					"Text" => _('This email address will be set as sender address of the mails.')
 				],
-				'290' => ["Headline" => _('TO address'),
+				'290' => ["Headline" => _('To address'),
 					"Text" => _('This email address will be set as TO address for the mails.') . ' '
 						. _("Multiple values are separated by semicolon.")
 				],

@@ -563,6 +563,8 @@ class Ajax {
 		$user = $_POST['user'];
 		$password = $_POST['password'];
 		$encryption = $_POST['encryption'];
+		$mailFrom = $_POST['mailFrom'];
+		$mailTo = $_POST['mailTo'];
 		if (empty($server)) {
 			$result = ['info' => _('Local SMTP server cannot be tested.')];
 			echo json_encode($result, JSON_THROW_ON_ERROR);
@@ -570,7 +572,13 @@ class Ajax {
 		}
 		try {
 			testSmtpConnection($server, $user, $password, $encryption);
-			$result = ['info' => _('Connection to SMTP server was successful.')];
+			$mailOk = sendEMail($mailTo, _('SMTP Test Message'), _('Ok'), $mailFrom, false);
+			if ($mailOk) {
+				$result = ['info' => _('Test email was sent successfully.')];
+			}
+			else {
+				$result = ['error' => _('Connection to SMTP server was successful but email sending failed.')];
+			}
 			echo json_encode($result, JSON_THROW_ON_ERROR);
 		}
 		catch (LAMException $e) {

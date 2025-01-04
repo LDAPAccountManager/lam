@@ -3386,31 +3386,49 @@ window.lam.smtp = window.lam.smtp || {};
  * @param tokenName security token name
  * @param tokenValue security token value
  * @param okText text to close dialog
+ * @param cancelText text to cancel test
+ * @param title dialog title
  */
-window.lam.smtp.test = function(event, tokenName, tokenValue, okText) {
+window.lam.smtp.test = function(event, tokenName, tokenValue, okText, cancelText, title) {
 	event.preventDefault();
-	document.getElementById('btn_testSmtp').disabled = true;
-	let data = new FormData();
-	data.append(tokenName, tokenValue);
-	data.append('server', document.getElementById('mailServer').value);
-	data.append('user', document.getElementById('mailUser').value);
-	data.append('password', document.getElementById('mailPassword').value);
-	data.append('encryption', document.getElementById('mailEncryption').value);
-	const url = '../misc/ajax.php?function=testSmtp';
-	fetch(url, {
-		method: 'POST',
-		body: data
-	})
-	.then(async response => {
-		const jsonData = await response.json();
-		if (jsonData.info) {
-			window.lam.dialog.showInfo(jsonData.info, okText);
+	const runTestPreCallback = function() {
+		const mailFrom = document.getElementById('testSmtpFrom').value;
+		const mailTo = document.getElementById('testSmtpTo').value;
+		if (!mailFrom || !mailTo) {
+			return false;
 		}
-		else if (jsonData.error) {
-			window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
+		return {
+			mailFrom: mailFrom,
+			mailTo: mailTo
 		}
-		document.getElementById('btn_testSmtp').disabled = false;
-	});
+	}
+	const runTestCallback = function(formData) {
+		document.getElementById('btn_testSmtp').disabled = true;
+		let data = new FormData();
+		data.append(tokenName, tokenValue);
+		data.append('server', document.getElementById('mailServer').value);
+		data.append('user', document.getElementById('mailUser').value);
+		data.append('password', document.getElementById('mailPassword').value);
+		data.append('encryption', document.getElementById('mailEncryption').value);
+		data.append('mailFrom', formData.mailFrom);
+		data.append('mailTo', formData.mailTo);
+		const url = '../misc/ajax.php?function=testSmtp';
+		fetch(url, {
+			method: 'POST',
+			body: data
+		})
+		.then(async response => {
+			const jsonData = await response.json();
+			if (jsonData.info) {
+				window.lam.dialog.showInfo(jsonData.info, okText);
+			}
+			else if (jsonData.error) {
+				window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
+			}
+			document.getElementById('btn_testSmtp').disabled = false;
+		});
+	}
+	window.lam.dialog.showConfirmation(title, okText, cancelText, 'smtpTestDialogDiv', runTestCallback, runTestPreCallback);
 }
 
 window.lam.config = window.lam.config || {};

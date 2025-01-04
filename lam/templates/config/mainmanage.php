@@ -184,7 +184,7 @@ if (isset($_POST['submitFormData'])) {
 		    if ($toEmails !== false) {
 				foreach ($toEmails as $toEmail) {
 					if (!get_preg($toEmail, 'email')) {
-						$errors[] = _('Licence') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
+						$errors[] = _('Licence') . ': ' . _('To address') . ' - ' . _('Please enter a valid email address!');
 						break;
 					}
 				}
@@ -482,7 +482,7 @@ if (isset($_POST['submitFormData'])) {
 		$licenseFrom = new htmlResponsiveInputField(_('From address'), 'licenseEmailFrom', $cfg->licenseEmailFrom, '289');
 		$licenseFrom->setRequired(true);
 		$row->add($licenseFrom, 12);
-		$licenseTo = new htmlResponsiveInputField(_('TO address'), 'licenseEmailTo', $cfg->licenseEmailTo, '290');
+		$licenseTo = new htmlResponsiveInputField(_('To address'), 'licenseEmailTo', $cfg->licenseEmailTo, '290');
 		$licenseTo->setRequired(true);
 		$row->add($licenseTo, 12);
 
@@ -672,9 +672,18 @@ if (isset($_POST['submitFormData'])) {
 		addSecurityTokenToSession(false);
 		$mailTestButton = new htmlButton('testSmtp', _('Test settings'));
 		$mailTestButton->setOnClick("window.lam.smtp.test(event, '" . getSecurityTokenName()
-			. "', '" . getSecurityTokenValue() . "', '" . _('Ok') . "')");
+			. "', '" . getSecurityTokenValue() . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . _('Test settings') . "')");
 		$row->addLabel(new htmlOutputText("&nbsp;", false));
 		$row->addField($mailTestButton);
+        $testDialogDivContent = new htmlResponsiveRow();
+        $fromAddressInput = new htmlResponsiveInputField(_('From address'), 'testSmtpFrom', null, null, true);
+        $fromAddressInput->setType('email');
+        $testDialogDivContent->add($fromAddressInput);
+        $toAddressInput = new htmlResponsiveInputField(_('To address'), 'testSmtpTo', null, null, true);
+		$toAddressInput->setType('email');
+		$testDialogDivContent->add($toAddressInput);
+        $testDialogDiv = new htmlDiv('smtpTestDialogDiv', $testDialogDivContent, ['hidden']);
+        $row->add($testDialogDiv);
 	}
 
 	// webauthn management
