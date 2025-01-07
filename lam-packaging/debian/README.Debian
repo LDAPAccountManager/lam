@@ -14,7 +14,6 @@ Configuration:
   All settings can be edited via the webfrontend. Please
   point your browser to the LAM start page and then select
   "LAM configuration".
-  The default password for the configuration is "lam".
 
 
 Lamdaemon:
