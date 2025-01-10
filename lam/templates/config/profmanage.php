@@ -19,7 +19,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -155,9 +155,14 @@ if (isset($_POST['action'])) {
 		if (preg_match("/^[a-z0-9_-]+$/i", (string) $_POST['defaultfilename'])) {
 			$configMain = new LAMCfgMain();
 			$configMain->default = $_POST['defaultfilename'];
-			$configMain->save();
-			$configMain = null;
-			$msg = _("New default profile set successfully.");
+			try {
+				$configMain->save();
+				$configMain = null;
+				$msg = _("New default profile set successfully.");
+			}
+			catch (LAMException $e) {
+				$error = $e->getTitle();
+			}
 		}
 		else {
 		    $error = _("Profile name is invalid!");

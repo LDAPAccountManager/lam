@@ -33,7 +33,7 @@ use PDO;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -388,12 +388,17 @@ if (isset($_POST['submitFormData'])) {
     $cfg->setModuleSettings($moduleSettings);
 	// save settings
 	if (isset($_POST['submit'])) {
-		$cfg->save();
 		if (empty($errors)) {
-			$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
-			parseHtml(null, $scriptTag, [], false, null);
-			echo '</body></html>';
-			exit();
+			try {
+				$cfg->save();
+				$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
+				parseHtml(null, $scriptTag, [], false, null);
+				echo '</body></html>';
+				exit();
+			}
+			catch (LAMException $e) {
+				$errors[] = $e->getTitle();
+			}
 		}
 	}
 }
