@@ -28,27 +28,23 @@
         <orderedlist>
           <listitem>
             <para>Locate config.cfg: On DEB/RPM installations it is in
-            /usr/share/ldap-account-manager/config and for tar.bz2 in config
+            <emphasis
+            role="bold">/usr/share/ldap-account-manager/config</emphasis> and
+            for tar.bz2 in <emphasis role="bold">config</emphasis>
             folder.</para>
           </listitem>
 
           <listitem>
-            <para>Locate the "password" entry in the file</para>
+            <para>Locate the "password" line in the file</para>
           </listitem>
 
           <listitem>
-            <para>Replace the password hash after "password: " with your new
-            clear-text password (e.g. "secret")</para>
+            <para>Remove the password line in the configuration file</para>
           </listitem>
         </orderedlist>
 
-        <para>After the change the line should look like this:</para>
-
-        <literallayout>password: secret</literallayout>
-
-        <para>You can now login using your new password. Set the password once
-        again via GUI in main configuration settings. This will then put again
-        a hash value in the config.cfg file.</para>
+        <para>When you open LAM's start page you will now be asked to set a
+        new password.</para>
       </section>
 
       <section>

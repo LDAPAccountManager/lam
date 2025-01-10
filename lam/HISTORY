@@ -1,5 +1,6 @@
 March 2025 9.1
  - Usability improvements (348, 360)
+ - Security: LAM no longer ships with any default passwords, main configuration password is requested on login if not yet set (#390)
  - Fixed bugs:
   -> Ambiguous tooltip on profile editor for Shadow users (#394)
   -> Self service photo file enhancements (#396)
