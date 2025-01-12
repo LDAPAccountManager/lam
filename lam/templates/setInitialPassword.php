@@ -87,7 +87,7 @@ if (isset($_POST['changePassword'])) {
 	// check password strength
 	$pwdPolicyResult = isValidConfigurationPassword($password1);
 	if (!$pwdPolicyResult) {
-		$message = new htmlStatusMessage('ERROR', _('Please enter at least 8 characters including small and big letters, a number and a symbol.'));
+		$message = new htmlStatusMessage('ERROR', _('Please enter at least 8 characters including letters, a number and a symbol.'));
 		printContent($message);
 		exit();
 	}
