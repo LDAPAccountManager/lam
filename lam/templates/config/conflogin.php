@@ -1,22 +1,22 @@
 <?php
 namespace LAM\CONFIG;
 
-use \htmlStatusMessage;
-use \htmlResponsiveRow;
-use \LAMCfgMain;
-use \htmlButton;
-use \htmlOutputText;
-use \htmlLink;
-use \htmlDiv;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputField;
-use \htmlHorizontalLine;
+use htmlStatusMessage;
+use htmlResponsiveRow;
+use LAMCfgMain;
+use htmlButton;
+use htmlOutputText;
+use htmlLink;
+use htmlDiv;
+use htmlResponsiveSelect;
+use htmlResponsiveInputField;
+use htmlHorizontalLine;
 use LAMException;
 use ServerProfilePersistenceManager;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -74,17 +74,28 @@ for ($i = 0; $i < count($sessionKeys); $i++) {
 echo $_SESSION['header'];
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-$files = [];
+$profileNames = [];
+$profileNamesWithoutPassword = [];
 try {
-	$files = $serverProfilePersistenceManager->getProfiles();
+	$profileNames = $serverProfilePersistenceManager->getProfiles();
+    foreach ($profileNames as $profileName) {
+        $profile = $serverProfilePersistenceManager->loadProfile($profileName);
+        if (!$profile->hasPasswordSet()) {
+            $profileNamesWithoutPassword[] = $profileName;
+        }
+	}
 }
 catch (LAMException $e) {
 	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
 }
 printHeaderContents(_("Login"), '../..');
 
-if (count($files) < 1) {
+if (count($profileNames) < 1) {
 	$message = new htmlStatusMessage('INFO', _("No server profiles found. Please create one."));
+}
+if ($profileNamesWithoutPassword !== []) {
+    $message = new htmlStatusMessage('INFO', _("There is at least one server profile without password. Please click on the manage server profiles link to set a password."),
+        htmlspecialchars(implode(', ', $profileNamesWithoutPassword)));
 }
 ?>
 </head>
@@ -128,36 +139,34 @@ printJsIncludes('../..');
 
 	// message
 	if ($message !== null) {
-		$row->add($message, 12);
+		$row->add($message);
 		$row->addVerticalSpacer('2rem');
 	}
 
 	$box = new htmlResponsiveRow();
-	if (count($files) > 0) {
-		$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")), 12);
+	if (count($profileNames) > 0) {
+		$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")));
 		$box->addVerticalSpacer('1.5rem');
 		$conf = new LAMCfgMain();
 		$selectedProfile = [];
-		$profilesExisting = false;
-		$profiles = $files;
-		if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
+		if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profileNames)) {
 			$selectedProfile[] = $_COOKIE["lam_default_profile"];
 		}
 		else {
 			$selectedProfile[] = $conf->default;
 		}
-		$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')), 12);
+		$box->add(new htmlResponsiveSelect('filename', $profileNames, $selectedProfile, _('Profile name')));
 		$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
 		$passwordInput->setIsPassword(true);
 		$passwordInput->setCSSClasses(['lam-initial-focus']);
-		$box->add($passwordInput, 12);
+		$box->add($passwordInput);
 		$box->addVerticalSpacer('1rem');
 		$button = new htmlButton('submit', _("Ok"));
 		$button->setCSSClasses(['lam-primary']);
 		$box->addLabel($button);
 		$box->add(new htmlOutputText(''), 0, 6);
 		$box->addVerticalSpacer('1.5rem');
-		$box->add(new htmlHorizontalLine(), 12);
+		$box->add(new htmlHorizontalLine());
 		$box->addVerticalSpacer('1.5rem');
 	}
 	$manageLink = new htmlLink(_("Manage server profiles"), 'profmanage.php');
@@ -165,7 +174,7 @@ printJsIncludes('../..');
 
 	$boxDiv = new htmlDiv(null, $box);
 	$boxDiv->setCSSClasses(['roundedShadowBox', 'limitWidth', 'text-center']);
-	$row->add($boxDiv, 12);
+	$row->add($boxDiv);
 
 	// back link
 	$row->addVerticalSpacer('2rem');

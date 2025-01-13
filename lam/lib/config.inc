@@ -12,7 +12,7 @@ use function LAM\TYPES\getScopeFromTypeId;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,6 +49,19 @@ include_once __DIR__ . "/modules.inc";
 include_once __DIR__ . "/types.inc";
 /** 2-factor */
 include_once __DIR__ . '/2factor.inc';
+
+/**
+ * Checks if the configuration password is secure.
+ *
+ * @param string $password password
+ * @return bool is secure
+ */
+function isValidConfigurationPassword(string $password): bool {
+	return preg_match('/[a-zA-Z]/', $password)
+		&& preg_match('/\d/', $password)
+		&& preg_match('/[^a-zA-Z0-9]/', $password)
+		&& (strlen($password) >= 8);
+}
 
 /**
  * Sets the environment variables for custom SSL CA certificates.
@@ -1451,6 +1464,15 @@ class LAMConfig {
 	 */
 	private function hashPassword($password, $salt) {
 		return "{CRYPT-SHA512}" . crypt($password, '$6$' . $salt) . " " . base64_encode($salt);
+	}
+
+	/**
+	 * Returns if the server profile has a password set.
+	 *
+	 * @return bool password is set
+	 */
+	public function hasPasswordSet(): bool {
+		return ($this->Passwd != null) && ($this->Passwd !== '');
 	}
 
 	/**
@@ -3242,8 +3264,9 @@ class LAMCfgMain {
 
 	/**
 	 * Saves the configuration to the persistence layer.
+	 * @throws LAMException error saving config
 	 */
-	public function save() {
+	public function save(): void {
 		if ($this->configDatabaseType === self::DATABASE_MYSQL) {
 			$this->saveLocal(true);
 			$this->saveDb();
@@ -3261,7 +3284,7 @@ class LAMCfgMain {
 				@chmod($sslPath, 0600);
 			}
 			else {
-				StatusMessage("ERROR", _("Cannot write certificate file. Please check the permissions of config/serverCerts.pem."));
+				throw new LAMException(_("Cannot write certificate file. Please check the permissions of config/serverCerts.pem."));
 			}
 		}
 		// delete SSL certificate
@@ -3269,7 +3292,7 @@ class LAMCfgMain {
 			$sslPath = $this->getInternalSSLCaCertFileName();
 			$result = @unlink($sslPath);
 			if (!$result) {
-				StatusMessage("ERROR", _("Cannot write certificate file. Please check the permissions of config/serverCerts.pem."));
+				throw new LAMException(_("Cannot write certificate file. Please check the permissions of config/serverCerts.pem."));
 			}
 		}
 	}
@@ -3296,6 +3319,7 @@ class LAMCfgMain {
 	 * Saves preferences to config file config.cfg
 	 *
 	 * @param bool $persistenceOnly store only persistence related data
+	 * @throws LAMException error saving config
 	 */
 	public function saveLocal(bool $persistenceOnly): void {
 		$data = $persistenceOnly ? $this->exportPersistenceData() : $this->exportData();
@@ -3308,8 +3332,17 @@ class LAMCfgMain {
 			chmod($this->conffile, 0600);
 		}
 		else {
-			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $this->conffile . ")");
+			throw new LAMException(_("Cannot open config file!") . " (" . $this->conffile . ")");
 		}
+	}
+
+	/**
+	 * Returns if the main config has a password set.
+	 *
+	 * @return bool password is set
+	 */
+	public function hasPasswordSet(): bool {
+		return ($this->password != null) && ($this->password !== '');
 	}
 
 	/**

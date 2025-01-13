@@ -5,12 +5,13 @@
 # Julio C. Ortega, 2022-2024
 # Julio C. Ortega, 2015-2021
 # Leandro Lattanzio, 2023
+# Roland Gruber <post@rolandgruber.de>, 2025
 msgid ""
 msgstr ""
 "Project-Id-Version: LDAP Account Manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "PO-Revision-Date: 2011-09-29 18:53+0000\n"
-"Last-Translator: Julio C. Ortega, 2022-2024\n"
+"Last-Translator: Roland Gruber <post@rolandgruber.de>, 2025\n"
 "Language-Team: Spanish (Spain) (http://app.transifex.com/gruberroland/lam/language/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -8775,11 +8776,11 @@ msgstr "Móvil"
 #: ../lib/modules/inetOrgPerson.inc:3760 ../lib/modules/inetOrgPerson.inc:3802
 #: ../lib/modules/inetOrgPerson.inc:4147
 msgid "Mobile number"
-msgstr "Numero de ḿmóbil"
+msgstr "Número de móvil"
 
 #: ../lib/modules/inetOrgPerson.inc:2751
 msgid "Mobile telephone number"
-msgstr "Número de teléfono movil"
+msgstr "Número de teléfono móvil"
 
 #: ../lib/modules/qmailGroup.inc:183 ../lib/modules/qmailGroup.inc:187
 #: ../lib/modules/qmailGroup.inc:316 ../lib/modules/qmailGroup.inc:376
@@ -16357,7 +16358,7 @@ msgstr "Número de Fax del usuario."
 #: ../lib/modules/windowsLDSUser.inc:312 ../lib/modules/inetOrgPerson.inc:648
 #: ../lib/modules/inetOrgPerson.inc:652 ../lib/modules/windowsUser.inc:423
 msgid "The user's mobile number."
-msgstr "Numero de móvil del usuario."
+msgstr "Número de móvil del usuario."
 
 #: ../lib/modules/windowsLDSUser.inc:284 ../lib/modules/windowsLDSUser.inc:288
 #: ../lib/modules/inetOrgPerson.inc:780 ../lib/modules/inetOrgPerson.inc:784

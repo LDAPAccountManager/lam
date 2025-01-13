@@ -44,11 +44,6 @@
   <section id="generalSettings">
     <title>General settings</title>
 
-    <para>After selecting "Edit general settings" you will need to enter the
-    <link linkend="a_configPasswords">master configuration password</link>.
-    The default password for new installations is "lam". Now you can edit the
-    general settings.</para>
-
     <section>
       <title>Configuration Database</title>
 

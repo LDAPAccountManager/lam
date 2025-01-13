@@ -1,5 +1,4 @@
 {
-  "password": "{CRYPT-SHA512}$6$WheNHdlVwDoL4s.x$DrZ10TpIGQa5wd0jbvtm8eaTleJCf1nec3ihOaNwMdPUKVFCphXwtnTSmFFXjhGa45RlrSEWhDVyjLCMiV\/.c. V2hlTkhkbFZ3RG9MNHMueA==",
   "default": "lam",
   "sessionTimeout": "30",
   "hideLoginErrorDetails": "false",

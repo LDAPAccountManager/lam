@@ -4,7 +4,7 @@
 
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2019        Felix Bartels
-#                2019 - 2024 Roland Gruber
+#                2019 - 2025 Roland Gruber
 
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -59,7 +59,6 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   LAM_CONFIGURATION_PASSWORD="${LAM_CONFIGURATION_PASSWORD:-}"
 
   sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
-    s|"password": "[^"]*"|"password": "${LAM_PASSWORD_SSHA}"|;
     s|"license": "[^"]*"|"license": "${LAM_LICENSE}"|;
     s|"configDatabaseType": "[^"]*"|"configDatabaseType": "${LAM_CONFIGURATION_DATABASE}"|;
     s|"configDatabaseServer": "[^"]*"|"configDatabaseServer": "${LAM_CONFIGURATION_HOST}"|;
@@ -68,6 +67,9 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
     s|"configDatabaseUser": "[^"]*"|"configDatabaseUser": "${LAM_CONFIGURATION_USER}"|;
     s|"configDatabasePassword": "[^"]*"|"configDatabasePassword": "${LAM_CONFIGURATION_PASSWORD}"|;
 EOF
+  if ! grep -e '"password":' /etc/ldap-account-manager/config.cfg > /dev/null; then
+    sed -i "2i\ \ \"password\": \"${LAM_PASSWORD_SSHA}\"," /etc/ldap-account-manager/config.cfg
+  fi
   unset LAM_PASSWORD
 
   set +e
@@ -82,12 +84,14 @@ EOF
   sed -i -f- /var/lib/ldap-account-manager/config/lam.conf <<- EOF
     s|"ServerURL": "[^"]*"|"ServerURL": "${LDAP_SERVER}"|;
     s|"Admins": "[^"]*"|"Admins": "${LDAP_ADMIN_USER}"|;
-    s|"Passwd": "[^"]*"|"Passwd": "${LAM_PASSWORD_SSHA}"|;
     s|"treeViewSuffix": "[^"]*"|"treeViewSuffix": "${LDAP_BASE_DN}"|;
     s|"defaultLanguage": "[^"]*"|"defaultLanguage": "${LAM_LANG}.utf8"|;
     s|"suffix_user": "[^"]*"|"suffix_user": "${LDAP_USERS_DN}"|;
     s|"suffix_group": "[^"]*"|"suffix_group": "${LDAP_GROUPS_DN}"|;
 EOF
+  if ! grep -e '"Passwd":' /var/lib/ldap-account-manager/config/lam.conf > /dev/null; then
+    sed -i "2i\ \ \"Passwd\": \"${LAM_PASSWORD_SSHA}\"," /var/lib/ldap-account-manager/config/lam.conf
+  fi
 
 fi
 

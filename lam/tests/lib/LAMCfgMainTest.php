@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020 - 2023  Roland Gruber
+ Copyright (C) 2020 - 2025  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ class LAMCfgMainTest extends TestCase {
 
 	/**
 	 * Mail related settings
+	 * @throws LAMException error saving config
 	 */
 	public function testMail() {
 		$this->assertEquals(LAMCfgMain::MAIL_ATTRIBUTE_DEFAULT, $this->conf->getMailAttribute());
@@ -81,6 +82,7 @@ class LAMCfgMainTest extends TestCase {
 
 	/**
 	 * License related settings.
+	 * @throws LAMException error saving config
 	 */
 	public function testLicense() {
 		$timestamp = '12345';

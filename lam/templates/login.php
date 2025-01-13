@@ -26,7 +26,7 @@ use ServerProfilePersistenceManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2024  Roland Gruber
+                2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -60,10 +60,19 @@ include __DIR__ . '/../lib/checkEnvironment.inc';
 
 /** security functions */
 include_once(__DIR__ . "/../lib/security.inc");
-/** self service functions */
+/** self-service functions */
 include_once(__DIR__ . "/../lib/selfService.inc");
 /** access to configuration options */
 include_once(__DIR__ . "/../lib/config.inc");
+
+$cfgMain = new LAMCfgMain();
+
+// check if main config password is set
+if (!$cfgMain->hasPasswordSet()) {
+    metaRefresh('setInitialPassword.php');
+    die();
+}
+
 $licenseValidator = null;
 if (isLAMProVersion()) {
 	include_once(__DIR__ . "/../lib/env.inc");
@@ -110,12 +119,10 @@ if (isset($_POST['language'])) {
 	setcookie('lam_last_language', htmlspecialchars((string) $_POST['language']), $cookieOptions);
 }
 
-// init some session variables
-$default_Config = new LAMCfgMain();
-$_SESSION["cfgMain"] = $default_Config;
+$_SESSION["cfgMain"] = $cfgMain;
 setSSLCaCert();
 
-$default_Profile = $default_Config->default;
+$default_Profile = $cfgMain->default;
 if (isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profiles)) {
 	$default_Profile = $_COOKIE["lam_default_profile"];
 }
@@ -142,7 +149,7 @@ catch (LAMException $e) {
 	$error_message = $e->getTitle();
 }
 
-if (!isset($default_Config->default) || !in_array($default_Config->default, $profiles)) {
+if (!isset($cfgMain->default) || !in_array($cfgMain->default, $profiles)) {
 	$error_message = _('No default profile set. Please set it in the server profile configuration.');
 }
 
@@ -549,7 +556,7 @@ if (isset($_POST['checklogin'])) {
 					cleanLDAPResult($searchInfo);
 					if (empty($searchInfo)) {
 						$searchSuccess = false;
-						if ($default_Config->isHideLoginErrorDetails()) {
+						if ($cfgMain->isHideLoginErrorDetails()) {
 							$searchError = _('Wrong password/user name combination. Please try again.');
 						}
 						else {
@@ -560,7 +567,7 @@ if (isset($_POST['checklogin'])) {
 					}
                     elseif (count($searchInfo) > 1) {
 						$searchSuccess = false;
-						if ($default_Config->isHideLoginErrorDetails()) {
+						if ($cfgMain->isHideLoginErrorDetails()) {
 							$searchError = _('Wrong password/user name combination. Please try again.');
 						}
 						else {
@@ -575,7 +582,7 @@ if (isset($_POST['checklogin'])) {
 				}
 				else {
 					$searchSuccess = false;
-					if ($default_Config->isHideLoginErrorDetails()) {
+					if ($cfgMain->isHideLoginErrorDetails()) {
 						$searchError = _('Wrong password/user name combination. Please try again.');
 					}
 					else {
@@ -590,7 +597,7 @@ if (isset($_POST['checklogin'])) {
 			}
 			else {
 				$searchSuccess = false;
-				if ($default_Config->isHideLoginErrorDetails()) {
+				if ($cfgMain->isHideLoginErrorDetails()) {
 					$searchError = _('Wrong password/user name combination. Please try again.');
 				}
 				else {
@@ -641,13 +648,13 @@ if (isset($_POST['checklogin'])) {
 		header("HTTP/1.1 403 Forbidden");
 		$extraMessage = null;
 		if (($searchLDAP !== null) && ($e->getLdapErrorCode() == 49)) {
-			if (!$default_Config->isHideLoginErrorDetails()) {
+			if (!$cfgMain->isHideLoginErrorDetails()) {
 				$extraMessage = getExtraInvalidCredentialsMessage($searchLDAP->server(), $username);
 			}
 			$searchLDAP->close();
 		}
 		$message = $e->getMessage();
-		if ($default_Config->isHideLoginErrorDetails()) {
+		if ($cfgMain->isHideLoginErrorDetails()) {
 			$message = null;
 		}
 		display_LoginPage($licenseValidator, $e->getTitle(), $message, $extraMessage);
