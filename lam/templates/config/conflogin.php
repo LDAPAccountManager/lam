@@ -74,16 +74,16 @@ for ($i = 0; $i < count($sessionKeys); $i++) {
 echo $_SESSION['header'];
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-$files = [];
+$profileNames = [];
 try {
-	$files = $serverProfilePersistenceManager->getProfiles();
+	$profileNames = $serverProfilePersistenceManager->getProfiles();
 }
 catch (LAMException $e) {
 	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
 }
 printHeaderContents(_("Login"), '../..');
 
-if (count($files) < 1) {
+if (count($profileNames) < 1) {
 	$message = new htmlStatusMessage('INFO', _("No server profiles found. Please create one."));
 }
 ?>
@@ -133,19 +133,18 @@ printJsIncludes('../..');
 	}
 
 	$box = new htmlResponsiveRow();
-	if (count($files) > 0) {
+	if (count($profileNames) > 0) {
 		$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")));
 		$box->addVerticalSpacer('1.5rem');
 		$conf = new LAMCfgMain();
 		$selectedProfile = [];
-		$profiles = $files;
-		if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
+		if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profileNames)) {
 			$selectedProfile[] = $_COOKIE["lam_default_profile"];
 		}
 		else {
 			$selectedProfile[] = $conf->default;
 		}
-		$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')));
+		$box->add(new htmlResponsiveSelect('filename', $profileNames, $selectedProfile, _('Profile name')));
 		$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
 		$passwordInput->setIsPassword(true);
 		$passwordInput->setCSSClasses(['lam-initial-focus']);
