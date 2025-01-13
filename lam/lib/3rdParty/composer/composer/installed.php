@@ -191,9 +191,9 @@
             'dev_requirement' => false,
         ),
         'nesbot/carbon' => array(
-            'pretty_version' => '2.72.5',
-            'version' => '2.72.5.0',
-            'reference' => 'afd46589c216118ecd48ff2b95d77596af1e57ed',
+            'pretty_version' => '2.72.6',
+            'version' => '2.72.6.0',
+            'reference' => '1e9d50601e7035a4c61441a208cb5bed73e108c5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../nesbot/carbon',
             'aliases' => array(),
