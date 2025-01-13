@@ -399,9 +399,8 @@ if (isset($_POST['submitFormData'])) {
 	}
 	$cfg->setModuleSettings($moduleSettings);
 	// save settings
-	if (isset($_POST['submit'])) {
-		if (empty($errors)) {
-			try {
+	if (isset($_POST['submit']) && empty($errors)) {
+		try {
 				$cfg->save();
 				$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
 				parseHtml(null, $scriptTag, [], false, null);
@@ -411,7 +410,6 @@ if (isset($_POST['submitFormData'])) {
 			catch (LAMException $e) {
 				$errors[] = $e->getTitle();
 			}
-		}
 	}
 }
 

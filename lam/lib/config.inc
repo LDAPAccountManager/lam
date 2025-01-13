@@ -58,7 +58,7 @@ include_once __DIR__ . '/2factor.inc';
  */
 function isValidConfigurationPassword(string $password): bool {
 	return preg_match('/[a-zA-Z]/', $password)
-		&& preg_match('/[0-9]/', $password)
+		&& preg_match('/\d/', $password)
 		&& preg_match('/[^a-zA-Z0-9]/', $password)
 		&& (strlen($password) >= 8);
 }
