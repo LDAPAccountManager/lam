@@ -1,16 +1,16 @@
 <?php
 namespace LAM\CONFIG;
 
-use \htmlStatusMessage;
-use \htmlResponsiveRow;
-use \LAMCfgMain;
-use \htmlButton;
-use \htmlOutputText;
-use \htmlLink;
-use \htmlDiv;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputField;
-use \htmlHorizontalLine;
+use htmlStatusMessage;
+use htmlResponsiveRow;
+use LAMCfgMain;
+use htmlButton;
+use htmlOutputText;
+use htmlLink;
+use htmlDiv;
+use htmlResponsiveSelect;
+use htmlResponsiveInputField;
+use htmlHorizontalLine;
 use LAMException;
 use ServerProfilePersistenceManager;
 
@@ -128,17 +128,16 @@ printJsIncludes('../..');
 
 	// message
 	if ($message !== null) {
-		$row->add($message, 12);
+		$row->add($message);
 		$row->addVerticalSpacer('2rem');
 	}
 
 	$box = new htmlResponsiveRow();
 	if (count($files) > 0) {
-		$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")), 12);
+		$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")));
 		$box->addVerticalSpacer('1.5rem');
 		$conf = new LAMCfgMain();
 		$selectedProfile = [];
-		$profilesExisting = false;
 		$profiles = $files;
 		if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
 			$selectedProfile[] = $_COOKIE["lam_default_profile"];
@@ -146,18 +145,18 @@ printJsIncludes('../..');
 		else {
 			$selectedProfile[] = $conf->default;
 		}
-		$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')), 12);
+		$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')));
 		$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
 		$passwordInput->setIsPassword(true);
 		$passwordInput->setCSSClasses(['lam-initial-focus']);
-		$box->add($passwordInput, 12);
+		$box->add($passwordInput);
 		$box->addVerticalSpacer('1rem');
 		$button = new htmlButton('submit', _("Ok"));
 		$button->setCSSClasses(['lam-primary']);
 		$box->addLabel($button);
 		$box->add(new htmlOutputText(''), 0, 6);
 		$box->addVerticalSpacer('1.5rem');
-		$box->add(new htmlHorizontalLine(), 12);
+		$box->add(new htmlHorizontalLine());
 		$box->addVerticalSpacer('1.5rem');
 	}
 	$manageLink = new htmlLink(_("Manage server profiles"), 'profmanage.php');
@@ -165,7 +164,7 @@ printJsIncludes('../..');
 
 	$boxDiv = new htmlDiv(null, $box);
 	$boxDiv->setCSSClasses(['roundedShadowBox', 'limitWidth', 'text-center']);
-	$row->add($boxDiv, 12);
+	$row->add($boxDiv);
 
 	// back link
 	$row->addVerticalSpacer('2rem');
