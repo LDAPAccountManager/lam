@@ -16,7 +16,7 @@ use ServerProfilePersistenceManager;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,8 +75,15 @@ echo $_SESSION['header'];
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 $profileNames = [];
+$profileNamesWithoutPassword = [];
 try {
 	$profileNames = $serverProfilePersistenceManager->getProfiles();
+    foreach ($profileNames as $profileName) {
+        $profile = $serverProfilePersistenceManager->loadProfile($profileName);
+        if (!$profile->hasPasswordSet()) {
+            $profileNamesWithoutPassword[] = $profileName;
+        }
+	}
 }
 catch (LAMException $e) {
 	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
@@ -85,6 +92,10 @@ printHeaderContents(_("Login"), '../..');
 
 if (count($profileNames) < 1) {
 	$message = new htmlStatusMessage('INFO', _("No server profiles found. Please create one."));
+}
+if ($profileNamesWithoutPassword !== []) {
+    $message = new htmlStatusMessage('INFO', _("There is at least one server profile without password. Please click on the manage server profiles link to set a password."),
+        htmlspecialchars(implode(', ', $profileNamesWithoutPassword)));
 }
 ?>
 </head>

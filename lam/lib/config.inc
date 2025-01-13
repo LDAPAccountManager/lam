@@ -1467,6 +1467,15 @@ class LAMConfig {
 	}
 
 	/**
+	 * Returns if the server profile has a password set.
+	 *
+	 * @return bool password is set
+	 */
+	public function hasPasswordSet(): bool {
+		return ($this->Passwd != null) && ($this->Passwd !== '');
+	}
+
+	/**
 	 * Returns the LDAP suffix for the given account type
 	 *
 	 * @param string $typeId account type
