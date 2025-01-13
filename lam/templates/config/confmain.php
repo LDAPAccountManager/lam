@@ -27,7 +27,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -842,10 +842,13 @@ function checkInput(): array {
 		$conf->setTwoFactorRememberDevicePassword($_POST['twoFactorRememberDevicePassword']);
 	}
 	// check if password was changed
-	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {
-		if ($_POST['passwd1'] != $_POST['passwd2']) {
+	if (!empty($_POST['passwd1'])) {
+		if ($_POST['passwd1'] !== $_POST['passwd2']) {
 			$errors[] = ["ERROR", _("Passwords are different!")];
 		}
+        elseif (!isValidConfigurationPassword($_POST['passwd1'])) {
+            $errors[] = ["ERROR", _('Profile password'), _('Please enter at least 8 characters including letters, a number and a symbol.')];
+        }
 		else {
 			// set new password
 			$conf->set_Passwd($_POST['passwd1']);
