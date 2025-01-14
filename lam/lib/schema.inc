@@ -4,7 +4,7 @@ namespace LAM\SCHEMA;
 /*
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2024 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2025 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -612,7 +612,7 @@ class AttributeType extends SchemaItem {
 						$i++;
 						do {
 							$i++;
-							if (strlen($this->name) == 0) {
+							if (empty($this->name)) {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -632,7 +632,7 @@ class AttributeType extends SchemaItem {
 				case 'DESC':
 					do {
 						$i++;
-						if (strlen($this->description) == 0) {
+						if (empty($this->description)) {
 							$this->description .= $strings[$i];
 						}
 						else {
@@ -702,10 +702,14 @@ class AttributeType extends SchemaItem {
 			$this->description = preg_replace("/^\'/", "", $this->description);
 			$this->description = preg_replace("/\'$/", "", $this->description);
 		}
-		$this->syntax = preg_replace("/^\'/", "", $this->syntax);
-		$this->syntax = preg_replace("/\'$/", "", $this->syntax);
-		$this->syntax_oid = preg_replace("/^\'/", "", $this->syntax_oid);
-		$this->syntax_oid = preg_replace("/\'$/", "", $this->syntax_oid);
+		if (!empty($this->syntax)) {
+			$this->syntax = preg_replace("/^\'/", "", $this->syntax);
+			$this->syntax = preg_replace("/\'$/", "", $this->syntax);
+		}
+		if (!empty($this->syntax_oid)) {
+			$this->syntax_oid = preg_replace("/^\'/", "", $this->syntax_oid);
+			$this->syntax_oid = preg_replace("/\'$/", "", $this->syntax_oid);
+		}
 		if ($this->sup_attribute !== null) {
 			$this->sup_attribute = preg_replace("/^\'/", "", $this->sup_attribute);
 			$this->sup_attribute = preg_replace("/\'$/", "", $this->sup_attribute);
@@ -1016,7 +1020,7 @@ class Syntax extends SchemaItem {
 				case 'DESC':
 					do {
 						$i++;
-						if (strlen($this->description) == 0) {
+						if (empty($this->description)) {
 							$this->description .= $strings[$i];
 						}
 						else {
@@ -1076,7 +1080,7 @@ class MatchingRule extends SchemaItem {
 					if ($strings[$i + 1] !== "(") {
 						do {
 							$i++;
-							if (strlen($this->name) == 0) {
+							if (empty($this->name)) {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -1129,8 +1133,10 @@ class MatchingRule extends SchemaItem {
 					}
 			}
 		}
-		$this->description = preg_replace("/^\'/", "", $this->description);
-		$this->description = preg_replace("/\'$/", "", $this->description);
+		if (!empty($this->description)) {
+			$this->description = preg_replace("/^\'/", "", $this->description);
+			$this->description = preg_replace("/\'$/", "", $this->description);
+		}
 	}
 
 	/**
