@@ -79,7 +79,13 @@ if (isset($_POST['action'])) {
 	// add new profile
 	elseif ($_POST['action'] == "add") {
 		// check profile password
-		if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
+		if (empty($_POST['addpassword']) || ($_POST['addpassword'] !== $_POST['addpassword2'])) {
+			$error = _("Profile passwords are different or empty!");
+		}
+        elseif (!isValidConfigurationPassword($_POST['addpassword'])) {
+			$error = _('Please enter at least 8 characters including letters, a number and a symbol.');
+		}
+		else {
 			try {
 				$serverProfilePersistenceManager->createProfileFromTemplate($_POST['addprofile'], $_POST['addTemplate'], $_POST['addpassword']);
 				$_SESSION['conf_isAuthenticated'] = $_POST['addprofile'];
@@ -88,11 +94,8 @@ if (isset($_POST['action'])) {
 				metaRefresh('confmain.php');
 				exit;
 			} catch (LAMException $e) {
-			    $error = $e->getTitle();
+				$error = $e->getTitle();
 			}
-		}
-		else {
-			$error = _("Profile passwords are different or empty!");
 		}
 	}
 	// rename profile
@@ -131,19 +134,22 @@ if (isset($_POST['action'])) {
 	// set new profile password
 	elseif ($_POST['action'] == "setpass") {
 		if (preg_match("/^[a-z0-9_-]+$/i", (string) $_POST['setprofile'])) {
-			if ($_POST['setpassword'] && $_POST['setpassword2'] && ($_POST['setpassword'] == $_POST['setpassword2'])) {
+			if (empty($_POST['setpassword']) || ($_POST['setpassword'] !== $_POST['setpassword2'])) {
+				$error = _("Profile passwords are different or empty!");
+			}
+            elseif (!isValidConfigurationPassword($_POST['setpassword'])) {
+				$error = _('Please enter at least 8 characters including letters, a number and a symbol.');
+            }
+			else {
 				try {
 					$config = $serverProfilePersistenceManager->loadProfile($_POST['setprofile']);
 					$config->set_Passwd($_POST['setpassword']);
 					$serverProfilePersistenceManager->saveProfile($config, $_POST['setprofile']);
 					$msg = _("New password set successfully.");
 				} catch (LAMException $e) {
-				    $error = $e->getTitle();
+					$error = $e->getTitle();
 				}
 				$config = null;
-			}
-			else {
-			    $error = _("Profile passwords are different or empty!");
 			}
 		}
 		else {
