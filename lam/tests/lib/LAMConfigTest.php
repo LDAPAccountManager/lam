@@ -157,6 +157,17 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getAdShowDeleted() and LAMConfig->setAdShowDeleted()
+	 */
+	public function testAdShowDeleted() {
+		$val = 'yes';
+		$this->lAMConfig->setAdShowDeleted($val);
+		$this->assertEquals($val, $this->lAMConfig->getAdShowDeleted());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getAdShowDeleted());
+	}
+
+	/**
 	 * Tests LAMConfig->getReferentialIntegrityOverlay() and LAMConfig->setReferentialIntegrityOverlay()
 	 */
 	public function testReferentialIntegrityOverlay() {

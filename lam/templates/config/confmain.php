@@ -2,25 +2,24 @@
 
 namespace LAM\CONFIG;
 
-use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
-use \LAMConfig;
-use \htmlTable;
-use \htmlAccordion;
-use \htmlSpacer;
-use \DateTimeZone;
-use \htmlStatusMessage;
-use \htmlOutputText;
-use \htmlInputCheckbox;
-use \htmlHelpLink;
-use \htmlElement;
-use \htmlSubTitle;
-use \htmlButton;
-use \htmlResponsiveRow;
-use \htmlResponsiveInputField;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputCheckbox;
-use \htmlResponsiveInputTextarea;
-use \htmlGroup;
+use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAMConfig;
+use htmlTable;
+use htmlAccordion;
+use htmlSpacer;
+use DateTimeZone;
+use htmlStatusMessage;
+use htmlOutputText;
+use htmlInputCheckbox;
+use htmlHelpLink;
+use htmlSubTitle;
+use htmlButton;
+use htmlResponsiveRow;
+use htmlResponsiveInputField;
+use htmlResponsiveSelect;
+use htmlResponsiveInputCheckbox;
+use htmlResponsiveInputTextarea;
+use htmlGroup;
 use LAMException;
 use ServerProfilePersistenceManager;
 
@@ -202,16 +201,16 @@ printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 $row = new htmlResponsiveRow();
 
 $serverSettings = new htmlSubTitle(_("Server settings"), '../../graphics/world.svg', null, true);
-$row->add($serverSettings, 12);
+$row->add($serverSettings);
 // server URL
 $urlInput = new htmlResponsiveInputField(_("Server address"), 'serverurl', $conf->get_ServerURL(), '201');
 $urlInput->setRequired(true);
-$row->add($urlInput, 12);
+$row->add($urlInput);
 // use TLS
 $tlsOptions = [_("yes") => 'yes', _("no") => 'no'];
 $tlsSelect = new htmlResponsiveSelect('useTLS', $tlsOptions, [$conf->getUseTLS()], _("Activate TLS"), '201');
 $tlsSelect->setHasDescriptiveElements(true);
-$row->add($tlsSelect, 12);
+$row->add($tlsSelect);
 // LDAP search limit
 $searchLimitOptions = [
 	'-' => 0,
@@ -225,10 +224,10 @@ $searchLimitOptions = [
 ];
 $limitSelect = new htmlResponsiveSelect('searchLimit', $searchLimitOptions, [$conf->get_searchLimit()], _("LDAP search limit"), '222');
 $limitSelect->setHasDescriptiveElements(true);
-$row->add($limitSelect, 12);
+$row->add($limitSelect);
 // DN part to hide
 $urlInput = new htmlResponsiveInputField(_("DN part to hide"), 'hideDnPart', $conf->getHideDnPart(), '292');
-$row->add($urlInput, 12);
+$row->add($urlInput);
 
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
@@ -239,7 +238,7 @@ if (isLAMProVersion()) {
 	];
 	$accessSelect = new htmlResponsiveSelect('accessLevel', $accessOptions, [$conf->getAccessLevel()], _("Access level"), '215');
 	$accessSelect->setHasDescriptiveElements(true);
-	$row->add($accessSelect, 12);
+	$row->add($accessSelect);
 }
 
 $row->addVerticalSpacer('1rem');
@@ -273,41 +272,44 @@ $searchFilterInput = new htmlResponsiveInputField(_("LDAP filter"), 'loginSearch
 $searchFilterInput->setRequired(true);
 $row->add($searchFilterInput);
 // login search bind user
-$row->add(new htmlResponsiveInputField(_("Bind user"), 'loginSearchDN', $conf->getLoginSearchDN(), '224'), 12);
+$row->add(new htmlResponsiveInputField(_("Bind user"), 'loginSearchDN', $conf->getLoginSearchDN(), '224'));
 // login search bind password
 $searchPasswordInput = new htmlResponsiveInputField(_("Bind password"), 'loginSearchPassword', $conf->getLoginSearchPassword(), '224');
 $searchPasswordInput->setIsPassword(true);
 $row->add($searchPasswordInput);
 // HTTP authentication
-$row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223'), 12);
+$row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223'));
 $row->addVerticalSpacer('1rem');
 
 // advanced options
 $advancedOptionsContent = new htmlResponsiveRow();
 // display name
-$advancedOptionsContent->add(new htmlResponsiveInputField(_('Display name'), 'serverDisplayName', $conf->getServerDisplayName(), '268'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputField(_('Display name'), 'serverDisplayName', $conf->getServerDisplayName(), '268'));
 // referrals
 $followReferrals = ($conf->getFollowReferrals() === 'true');
-$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('followReferrals', $followReferrals, _('Follow referrals'), '205'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('followReferrals', $followReferrals, _('Follow referrals'), '205'));
 // paged results
 $pagedResults = ($conf->getPagedResults() === 'true');
-$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pagedResults, _('Paged results'), '266'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pagedResults, _('Paged results'), '266'));
+// show deleted entries
+$adShowDeleted = ($conf->getAdShowDeleted() === 'true');
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('adShowDeleted', $adShowDeleted, _('Show deleted entries'), '295'));
 // referential integrity overlay
 $referentialIntegrity = ($conf->isReferentialIntegrityOverlayActive());
-$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('referentialIntegrityOverlay', $referentialIntegrity, _('Referential integrity overlay'), '269'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('referentialIntegrityOverlay', $referentialIntegrity, _('Referential integrity overlay'), '269'));
 // hide password prompt for expired passwords
 $hidePasswordPromptForExpiredPasswords = ($conf->isHidePasswordPromptForExpiredPasswords());
-$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('hidePasswordPromptForExpiredPasswords', $hidePasswordPromptForExpiredPasswords, _('Hide password prompt for expired password'), '291'), 12);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('hidePasswordPromptForExpiredPasswords', $hidePasswordPromptForExpiredPasswords, _('Hide password prompt for expired password'), '291'));
 
 // build advanced options box
 $advancedOptions = new htmlAccordion('advancedOptions_server', [_('Advanced options') => $advancedOptionsContent], false);
 $advancedOptions->colspan = 15;
-$row->add($advancedOptions, 12);
+$row->add($advancedOptions);
 
 $row->addVerticalSpacer('2rem');
 
 // language
-$row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.svg', null, true), 12);
+$row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.svg', null, true));
 // read available languages
 $possibleLanguages = getLanguages();
 $defaultLanguage = ['en_GB.utf8'];
@@ -321,10 +323,10 @@ if (!empty($possibleLanguages)) {
 	}
 	$languageSelect = new htmlResponsiveSelect('lang', $languages, $defaultLanguage, _("Default language"), '209');
 	$languageSelect->setHasDescriptiveElements(true);
-	$row->add($languageSelect, 12);
+	$row->add($languageSelect);
 }
 else {
-	$row->add(new htmlStatusMessage('ERROR', "Unable to load available languages. Setting English as default language."), 12);
+	$row->add(new htmlStatusMessage('ERROR', "Unable to load available languages. Setting English as default language."));
 }
 $timezones = [];
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::AFRICA));
@@ -338,15 +340,15 @@ $timezones = [...$timezones, ...DateTimeZone::listIdentifiers(DateTimeZone::EURO
 $timezones = [...$timezones, ...DateTimeZone::listIdentifiers(DateTimeZone::INDIAN)];
 $timezones = [...$timezones, ...DateTimeZone::listIdentifiers(DateTimeZone::PACIFIC)];
 $timezones = [...$timezones, ...DateTimeZone::listIdentifiers(DateTimeZone::UTC)];
-$row->add(new htmlResponsiveSelect('timeZone', $timezones, [$conf->getTimeZone()], _('Time zone'), '213'), 12);
+$row->add(new htmlResponsiveSelect('timeZone', $timezones, [$conf->getTimeZone()], _('Time zone'), '213'));
 
 $row->addVerticalSpacer('2rem');
 
 // tool settings
-$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/configure.svg', null, true), 12);
+$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/configure.svg', null, true));
 $toolSettings = $conf->getToolSettings();
 $tools = getTools();
-$row->add(new htmlOutputText(_('Hidden tools')), 12);
+$row->add(new htmlOutputText(_('Hidden tools')));
 $row->addVerticalSpacer('0.5rem');
 $hideableTools = 0;
 foreach ($tools as $tool) {
@@ -377,7 +379,7 @@ foreach ($tools as $tool) {
 		ob_end_clean();
 		$toolConfigOptionTypes = array_merge($toolConfigOptionTypes, $optionTypes);
 		$row->addVerticalSpacer('1rem');
-		$row->add($toolConfigContent, 12);
+		$row->add($toolConfigContent);
 	}
 }
 $_SESSION['confmain_toolTypes'] = $toolConfigOptionTypes;
@@ -387,25 +389,25 @@ $row->addVerticalSpacer('2rem');
 // LAM Pro settings
 if (isLAMProVersion()) {
 	// password reset page
-	$row->add(new htmlSubTitle(_("Password reset page settings"), '../../graphics/key.svg', null, true), 12);
+	$row->add(new htmlSubTitle(_("Password reset page settings"), '../../graphics/key.svg', null, true));
 
 	$pwdResetAllowSpecific = true;
 	if ($conf->getPwdResetAllowSpecificPassword() == 'false') {
 		$pwdResetAllowSpecific = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowSpecificPassword', $pwdResetAllowSpecific, _('Allow setting specific passwords'), '280'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowSpecificPassword', $pwdResetAllowSpecific, _('Allow setting specific passwords'), '280'));
 
 	$pwdResetAllowScreenPassword = true;
 	if ($conf->getPwdResetAllowScreenPassword() == 'false') {
 		$pwdResetAllowScreenPassword = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowScreenPassword', $pwdResetAllowScreenPassword, _('Allow to display password on screen'), '281'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowScreenPassword', $pwdResetAllowScreenPassword, _('Allow to display password on screen'), '281'));
 
 	$pwdResetForcePasswordChange = true;
 	if ($conf->getPwdResetForcePasswordChange() == 'false') {
 		$pwdResetForcePasswordChange = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange, _('Force password change by default'), '283'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange, _('Force password change by default'), '283'));
 
 	$pwdResetDefaultPasswordOutputOptions = [
 		_('Display on screen') => LAMConfig::PWDRESET_DEFAULT_SCREEN,
@@ -414,50 +416,50 @@ if (isLAMProVersion()) {
 	];
 	$pwdResetDefaultPasswordOutputSelect = new htmlResponsiveSelect('pwdResetDefaultPasswordOutput', $pwdResetDefaultPasswordOutputOptions, [$conf->getPwdResetDefaultPasswordOutput()], _("Default password output"), '282');
 	$pwdResetDefaultPasswordOutputSelect->setHasDescriptiveElements(true);
-	$row->add($pwdResetDefaultPasswordOutputSelect, 12);
+	$row->add($pwdResetDefaultPasswordOutputSelect);
 
 	$row->addVerticalSpacer('2rem');
 
 	// mail settings
-	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mail.svg', null, true), 12);
+	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mail.svg', null, true));
 
 	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550', true);
-	$row->add($pwdMailFrom, 12);
+	$row->add($pwdMailFrom);
 
 	$pwdMailReplyTo = new htmlResponsiveInputField(_('Reply-to address'), 'pwdResetMail_replyTo', $conf->getLamProMailReplyTo(), '554');
-	$row->add($pwdMailReplyTo, 12);
+	$row->add($pwdMailReplyTo);
 
 	$pwdMailSubject = new htmlResponsiveInputField(_('Subject'), 'pwdResetMail_subject', $conf->getLamProMailSubject(), '551');
-	$row->add($pwdMailSubject, 12);
+	$row->add($pwdMailSubject);
 
 	$pwdMailIsHTML = false;
 	if ($conf->getLamProMailIsHTML() == 'true') {
 		$pwdMailIsHTML = true;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_isHTML', $pwdMailIsHTML, _('HTML format'), '553'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_isHTML', $pwdMailIsHTML, _('HTML format'), '553'));
 
 	$pwdMailAllowAlternate = true;
 	if ($conf->getLamProMailAllowAlternateAddress() == 'false') {
 		$pwdMailAllowAlternate = false;
 	}
-	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_allowAlternate', $pwdMailAllowAlternate, _('Allow alternate address'), '555'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_allowAlternate', $pwdMailAllowAlternate, _('Allow alternate address'), '555'));
 
 	$pwdMailBody = new htmlResponsiveInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
-	$row->add($pwdMailBody, 12);
+	$row->add($pwdMailBody);
 
 	$row->addVerticalSpacer('2rem');
 }
 
 // lamdaemon settings
-$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/script.svg', null, true), 12);
-$row->add(new htmlResponsiveInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), 12);
-$row->add(new htmlResponsiveInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), 12);
+$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/script.svg', null, true));
+$row->add(new htmlResponsiveInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'));
+$row->add(new htmlResponsiveInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'));
 
-$row->add(new htmlResponsiveInputField(_('User name'), 'scriptuser', $conf->getScriptUserName(), '284'), 12);
-$row->add(new htmlResponsiveInputField(_('SSH key file'), 'scriptkey', $conf->getScriptSSHKey(), '285'), 12);
+$row->add(new htmlResponsiveInputField(_('User name'), 'scriptuser', $conf->getScriptUserName(), '284'));
+$row->add(new htmlResponsiveInputField(_('SSH key file'), 'scriptkey', $conf->getScriptSSHKey(), '285'));
 $sshKeyPassword = new htmlResponsiveInputField(_('SSH key password'), 'scriptkeypassword', $conf->getScriptSSHKeyPassword(), '286');
 $sshKeyPassword->setIsPassword(true);
-$row->add($sshKeyPassword, 12);
+$row->add($sshKeyPassword);
 
 $row->addVerticalSpacer('0.5rem');
 $lamdaemonRightsLabel = new htmlGroup();
@@ -489,7 +491,7 @@ $row->addField($rightsTable);
 $row->addVerticalSpacer('2rem');
 
 // security settings
-$row->add(new htmlSubTitle(_("Security settings"), '../../graphics/locked.svg', null, true), 12);
+$row->add(new htmlSubTitle(_("Security settings"), '../../graphics/locked.svg', null, true));
 // password policy override
 $row->add(new htmlSubTitle(_("Global password policy override"), '../../graphics/locked.svg'));
 $optionsPwdLength = [''];
@@ -504,7 +506,7 @@ $row->add(new htmlResponsiveSelect('pwdPolicyMinSymbolic', $optionsPwdLength, [$
 
 // 2factor authentication
 if (extension_loaded('curl')) {
-	$row->add(new htmlSubTitle(_("2-factor authentication"), '../../graphics/locked.svg'), 12);
+	$row->add(new htmlSubTitle(_("2-factor authentication"), '../../graphics/locked.svg'));
 	$twoFactorOptions = [
 		_('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
 		'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
@@ -586,14 +588,14 @@ if (extension_loaded('curl')) {
 }
 
 // new password
-$row->add(new htmlSubTitle(_("Profile password"), '../../graphics/key.svg', null, true), 12);
+$row->add(new htmlSubTitle(_("Profile password"), '../../graphics/key.svg', null, true));
 $password1 = new htmlResponsiveInputField(_("New password"), 'passwd1', null, '212');
 $password1->setIsPassword(true, false, true);
 $password2 = new htmlResponsiveInputField(_("Reenter password"), 'passwd2');
 $password2->setIsPassword(true, false, true);
 $password2->setSameValueFieldID('passwd1');
-$row->add($password1, 12);
-$row->add($password2, 12);
+$row->add($password1);
+$row->add($password2);
 
 $row->addVerticalSpacer('2rem');
 
@@ -647,6 +649,12 @@ function checkInput(): array {
 	}
 	else {
 		$conf->setPagedResults('false');
+	}
+	if (isset($_POST['adShowDeleted']) && ($_POST['adShowDeleted'] == 'on')) {
+		$conf->setAdShowDeleted('true');
+	}
+	else {
+		$conf->setAdShowDeleted('false');
 	}
 	if (isset($_POST['referentialIntegrityOverlay']) && ($_POST['referentialIntegrityOverlay'] == 'on')) {
 		$conf->setReferentialIntegrityOverlay('true');
@@ -788,7 +796,7 @@ function checkInput(): array {
 		try {
 			$remote->loadKey($conf->getScriptSSHKey(), $conf->getScriptSSHKeyPassword());
 		}
-		catch (\LAMException $e) {
+		catch (LAMException $e) {
 			$errors[] = ['ERROR', _('SSH key file'), $e->getTitle()];
 		}
 	}

@@ -541,6 +541,13 @@
         will then query LDAP to return results in chunks of 999
         entries.</para>
 
+        <para>Show deleted entries: This is for Active Directory and Samba 4
+        only. It will unhide LDAP entries in "CN=Deleted Objects,DC=...". You
+        can use this to browse these entries in tree view. To restore an entry
+        run "Restore-ADObject -Identity GUID" in PowerShell where GUID is the
+        value of the "objectGUID" attribute (you might need to base64 decode
+        it).</para>
+
         <para>Referential integrity overlay: Activate this checkbox if you
         have any server side extension for referential integrity in place. In
         this case the server will cleanup references to LDAP entries that are

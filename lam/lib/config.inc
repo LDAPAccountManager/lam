@@ -901,6 +901,9 @@ class LAMConfig {
 	/** use paged results */
 	private $pagedResults = 'false';
 
+	/** Active Directory: show deleted entries */
+	private $adShowDeleted = 'false';
+
 	/** overlay for referential integrity is activated */
 	private $referentialIntegrityOverlay = 'false';
 
@@ -1058,7 +1061,7 @@ class LAMConfig {
 	private $pwdPolicyMinSymbolic = '';
 
 	/** List of all settings in config file */
-	private $settings = ["ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins",
+	private $settings = ["ServerURL", "useTLS", "followReferrals", 'pagedResults', 'adShowDeleted', "Passwd", "Admins",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", 'serverDisplayName',
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
@@ -1315,6 +1318,24 @@ class LAMConfig {
 	 */
 	public function setPagedResults($pagedResults) {
 		$this->pagedResults = $pagedResults;
+	}
+
+	/**
+	 * Returns if deleted entries should be shown.
+	 *
+	 * @return string true or false
+	 */
+	public function getAdShowDeleted(): string {
+		return $this->adShowDeleted;
+	}
+
+	/**
+	 * Sets if deleted entries should be shown.
+	 *
+	 * @param string $adShowDeleted true or false
+	 */
+	public function setAdShowDeleted(string $adShowDeleted) {
+		$this->adShowDeleted = $adShowDeleted;
 	}
 
 	/**
