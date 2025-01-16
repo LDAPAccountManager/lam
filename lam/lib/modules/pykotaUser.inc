@@ -9,7 +9,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2024  Roland Gruber
+  Copyright (C) 2013 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1157,22 +1157,8 @@ class pykotaUser extends baseModule {
 	 */
 	private function getJobs($user, $suffix) {
 		$attrs = ['createTimestamp', 'pykotaTitle', 'pykotaPrinterName', 'pykotaJobPrice', 'pykotaJobSize'];
-		if (isset($_SESSION['ldapHandle']) && ($_SESSION['ldapHandle']->getServer() !== null)) {
-			$handle = $_SESSION['ldapHandle']->getServer();
-		}
-		else {
-			$handle = $_SESSION['ldap']->server();
-		}
-		$sr = @ldap_search($handle, $suffix, '(&(objectClass=pykotaJob)(pykotaUserName=' . $user . '))', $attrs);
-		if (!$sr) {
-			return [];
-		}
-		$jobList = ldap_get_entries($handle, $sr);
-		if (!$jobList) {
-			return [];
-		}
-		cleanLDAPResult($jobList);
-		@ldap_free_result($sr);
+		$filter = '(&(objectClass=pykotaJob)(pykotaUserName=' . $user . '))';
+		$jobList = searchLDAP($suffix, $filter, $attrs);
 		$jobs = [];
 		foreach ($jobList as $index => $job) {
 			$jobs[$job['createtimestamp'][0] . $index] = $job;
