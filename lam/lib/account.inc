@@ -908,7 +908,7 @@ function getLDAPServerHandle() {
  */
 function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit) {
 	if (empty($_SESSION['config']) || ($_SESSION['config']->getPagedResults() !== 'true')) {
-		$sr = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit, 0, LDAP_DEREF_NEVER, getCommonLdapControls());
 		if ($sr) {
 			$entries = ldap_get_entries($server, $sr);
 			if (!$entries) {
@@ -933,6 +933,10 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 					'cookie' => $cookie]
 			]
 		];
+		$commonControls = getCommonLdapControls();
+		if ($commonControls !== null) {
+			$controls += $commonControls;
+		}
 		$sr = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit,
 			0, LDAP_DEREF_NEVER, $controls);
 		if (!$sr) {
@@ -969,7 +973,7 @@ function ldapGetDN($dn, $attributes = ['dn'], $handle = null): ?array {
 		$handle = getLDAPServerHandle();
 	}
 	$return = null;
-	$sr = @ldap_read($handle, $dn, '(objectClass=*)', $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+	$sr = @ldap_read($handle, $dn, '(objectClass=*)', $attributes, 0, 0, 0, LDAP_DEREF_NEVER, getCommonLdapControls());
 	if ($sr) {
 		$entries = ldap_get_entries($handle, $sr);
 		if ($entries) {
@@ -999,7 +1003,7 @@ function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = ['dn'], $han
 		$handle = $_SESSION['ldap']->server();
 	}
 	$return = null;
-	$sr = @ldap_list($handle, $dn, $filter, $attributes, 0, $limit, 0, LDAP_DEREF_NEVER);
+	$sr = @ldap_list($handle, $dn, $filter, $attributes, 0, $limit, 0, LDAP_DEREF_NEVER, getCommonLdapControls());
 	if ($sr) {
 		$entries = ldap_get_entries($handle, $sr);
 		if ($entries) {
@@ -1025,7 +1029,7 @@ function deleteDN($dn, $recursive) {
 		return $errors;
 	}
 	if ($recursive) {
-		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, '(objectClass=*)', ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, '(objectClass=*)', ['dn'], 0, 0, 0, LDAP_DEREF_NEVER, getCommonLdapControls());
 		if ($sr) {
 			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			cleanLDAPResult($entries);
@@ -1052,6 +1056,18 @@ function deleteDN($dn, $recursive) {
 		logNewMessage(LOG_NOTICE, 'Deleted DN: ' . $dn);
 	}
 	return $errors;
+}
+
+/**
+ * Returns a list of LDAP controls for all LDAP calls.
+ *
+ * @return array|null controls
+ */
+function getCommonLdapControls(): ?array {
+	if (isset($_SESSION['config']) && ($_SESSION['config']->getAdShowDeleted() === 'true')) {
+		return [['oid' => '1.2.840.113556.1.4.417']];
+	}
+	return null;
 }
 
 /**
