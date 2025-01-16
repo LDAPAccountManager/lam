@@ -349,6 +349,9 @@ $helpArray = [
 				"294" => ["Headline" => _('Cron command'),
 					"Text" => _('Run this for global cleanup tasks. See manual for details.')
 				],
+				"295" => ["Headline" => _("Show deleted entries"),
+					"Text" => _("This enables to show deleted entries in \"CN=Deleted Objects\" for Active Directory.")
+				],
 				// 300 - 399
 				// profile/PDF editor, file upload
 				"301" => ["Headline" => _("RDN identifier"),

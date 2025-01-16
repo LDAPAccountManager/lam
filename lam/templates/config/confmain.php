@@ -291,6 +291,9 @@ $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('followReferrals', 
 // paged results
 $pagedResults = ($conf->getPagedResults() === 'true');
 $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pagedResults, _('Paged results'), '266'));
+// show deleted entries
+$adShowDeleted = ($conf->getAdShowDeleted() === 'true');
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('adShowDeleted', $adShowDeleted, _('Show deleted entries'), '295'));
 // referential integrity overlay
 $referentialIntegrity = ($conf->isReferentialIntegrityOverlayActive());
 $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('referentialIntegrityOverlay', $referentialIntegrity, _('Referential integrity overlay'), '269'));
@@ -646,6 +649,12 @@ function checkInput(): array {
 	}
 	else {
 		$conf->setPagedResults('false');
+	}
+	if (isset($_POST['adShowDeleted']) && ($_POST['adShowDeleted'] == 'on')) {
+		$conf->setAdShowDeleted('true');
+	}
+	else {
+		$conf->setAdShowDeleted('false');
 	}
 	if (isset($_POST['referentialIntegrityOverlay']) && ($_POST['referentialIntegrityOverlay'] == 'on')) {
 		$conf->setReferentialIntegrityOverlay('true');
