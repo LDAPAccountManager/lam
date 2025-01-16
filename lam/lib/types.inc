@@ -4,7 +4,7 @@ namespace LAM\TYPES;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2024  Roland Gruber
+  Copyright (C) 2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -248,24 +248,19 @@ class ConfiguredType {
 	 * @return array sorted list of possible suffixes for this type.
 	 */
 	public function getSuffixList(): array {
-		$connection = $_SESSION["ldap"]->server();
 		$ret = [];
 		$filter = $this->getBaseType()->getSuffixFilter();
-		$sr = @ldap_search($connection, $this->getSuffix(), $filter, ['dn', 'objectClass'], 0, 0, 0, LDAP_DEREF_NEVER);
-		if ($sr) {
-			$units = ldap_get_entries($connection, $sr);
-			cleanLDAPResult($units);
-			// extract Dns
-			$count = count($units);
-			for ($i = 0; $i < $count; $i++) {
-				// Active Directory fix, hide system containers
-				if (in_array('container', $units[$i]['objectclass'])
-					&& (preg_match('/.*cn=system,dc=.+/i', $units[$i]['dn'])
-						|| preg_match('/.*CN=program data,dc=.+/i', $units[$i]['dn']))) {
-					continue;
-				}
-				$ret[] = $units[$i]['dn'];
+		$attrs = ['dn', 'objectClass'];
+		$units = searchLDAP($this->getSuffix(), $filter, $attrs);
+		foreach ($units as $unit) {
+			// Active Directory fix, hide system containers
+			$isSystemContainer = in_array('container', $unit['objectclass'])
+				&& (preg_match('/.*cn=system,dc=.+/i', $unit['dn']) || preg_match('/.*CN=program data,dc=.+/i', $unit['dn']));
+			$isDnsContainer = preg_match('/.*CN=MicrosoftDNS,CN=System,dc=.+/i', $unit['dn']);
+			if ($isSystemContainer || $isDnsContainer) {
+				continue;
 			}
+			$ret[] = $unit['dn'];
 		}
 		// add root suffix if needed
 		$found = false;
