@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2475,7 +2475,7 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
  */
 window.lam.treeview.deleteNode = function (tokenName, tokenValue, dn, text, okText, cancelText, title, errorOkText, errorTitle) {
 	const textSpan = document.querySelector('.treeview-delete-entry');
-	textSpan.innerText = text;
+	textSpan.innerText = window.atob(text);
 	const dialogContent = document.getElementById('treeview_delete_dlg').cloneNode(true);
 	dialogContent.classList.remove('hidden');
 	Swal.fire({

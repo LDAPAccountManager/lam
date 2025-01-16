@@ -36,7 +36,7 @@ use function LAM\SCHEMA\get_schema_objectclasses;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2024  Roland Gruber
+  Copyright (C) 2021 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -489,7 +489,7 @@ class TreeView {
 
 			$deleteButton = new htmlImage('../../graphics/delete.svg', $buttonSize, $buttonSize, _('Delete'), _('Delete'));
 			$deleteButton->setOnClick('window.lam.treeview.deleteNode(\'' . getSecurityTokenName() . '\', '
-				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . htmlspecialchars(extractRDN($dn)) . '\', '
+				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . base64_encode(htmlspecialchars(extractRDN($dn))) . '\', '
 				. '\'' . _('Delete') . '\', \'' . _('Cancel') . '\', \'' . _('Delete this entry') . '\', \'' . _('Ok') . '\', '
 				. '\'' . _('Error') . '\');');
 			$deleteButton->setCSSClasses($buttonClasses);
