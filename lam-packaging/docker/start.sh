@@ -92,6 +92,8 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
 EOF
   if ! grep -e '"password":' /etc/ldap-account-manager/config.cfg > /dev/null; then
     sed -i "2i\ \ \"password\": \"${LAM_PASSWORD_SSHA}\"," /etc/ldap-account-manager/config.cfg
+  else
+    sed -i "s|\"password\": .*|\"password\": \"${LAM_PASSWORD_SSHA}\",|" /etc/ldap-account-manager/config.cfg
   fi
   unset LAM_PASSWORD
 
@@ -114,6 +116,8 @@ EOF
 EOF
   if ! grep -e '"Passwd":' /var/lib/ldap-account-manager/config/lam.conf > /dev/null; then
     sed -i "2i\ \ \"Passwd\": \"${LAM_PASSWORD_SSHA}\"," /var/lib/ldap-account-manager/config/lam.conf
+  else
+    sed -i "s|\"Passwd\": .*|\"Passwd\": \"${LAM_PASSWORD_SSHA}\",|" /var/lib/ldap-account-manager/config/lam.conf
   fi
 
 fi
