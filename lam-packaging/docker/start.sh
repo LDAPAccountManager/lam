@@ -80,6 +80,7 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
 
   export LAM_PASSWORD
   LAM_PASSWORD_SSHA=$(php -r '$password = getenv("LAM_PASSWORD"); $rand = abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5)))); $salt0 = substr(pack("h*", md5($rand)), 0, 8); $salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4); print "{SSHA}" . base64_encode(pack("H*", sha1($password . $salt))) . " " . base64_encode($salt) . "\n";')
+  unset LAM_PASSWORD
 
   sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
     s|"license": "[^"]*"|"license": "${LAM_LICENSE}"|;
@@ -95,7 +96,6 @@ EOF
   else
     sed -i "s|\"password\": .*|\"password\": \"${LAM_PASSWORD_SSHA}\",|" /etc/ldap-account-manager/config.cfg
   fi
-  unset LAM_PASSWORD
 
   set +e
   ls -l /var/lib/ldap-account-manager/config/lam.conf
