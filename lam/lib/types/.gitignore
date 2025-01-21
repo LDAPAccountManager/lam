@@ -1,6 +1,7 @@
 /alias.inc
 /automountType.inc
 /bind.inc
+/bindDyndbType.inc
 /gon.inc
 /nisObjectType.inc
 /nsviewType.inc
