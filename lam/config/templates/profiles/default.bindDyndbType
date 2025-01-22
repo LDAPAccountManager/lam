@@ -1,0 +1,6 @@
+ldap_suffix: -
+ldap_rdn: idnsname
+bindDyndbZone_idnssoaexpire: 604800
+bindDyndbZone_idnssoaminimum: 86400
+bindDyndbZone_idnssoarefresh: 2800
+bindDyndbZone_idnssoaretry: 7200
