@@ -902,7 +902,7 @@ class lamList {
 		}
 		// search for checkboxes
 		$selAccounts = array_keys($_POST, "on");
-		if (!in_array($id, $selAccounts)) {
+		if (!in_array($id, $selAccounts) && ($id !== null)) {
 			$selAccounts[] = $id;
 		}
 		// get possible PDF structures

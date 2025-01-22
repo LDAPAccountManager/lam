@@ -1,0 +1,18 @@
+<pdf filename="printLogo.jpg" headline="DNS information" foldingmarks="no">
+	<section name="_bindDyndbZone_idnsname">
+		<entry name="bindDyndbZone_idnssoaexpire"/>
+		<entry name="bindDyndbZone_idnssoarefresh"/>
+		<entry name="bindDyndbZone_idnssoaminimum"/>
+		<entry name="bindDyndbZone_idnssoaretry"/>
+		<entry name="bindDyndbZone_idnssoamname"/>
+		<entry name="bindDyndbZone_idnssoarname"/>
+		<entry name="bindDyndbZone_idnssoaserial"/>
+		<entry name="bindDyndbZone_dnsdefaultttl"/>
+		<entry name="bindDyndbZone_idnszoneactive"/>
+		<entry name="bindDyndbZone_nsrecord"/>
+		<entry name="bindDyndbZone_mxrecord"/>
+		<entry name="bindDyndbZone_arecord"/>
+		<entry name="bindDyndbZone_aaaarecord"/>
+		<entry name="bindDyndbZone_txtrecord"/>
+	</section>
+</pdf>
