@@ -5,6 +5,8 @@ March 2025 9.1
  - Fixed bugs:
   -> Ambiguous tooltip on profile editor for Shadow users (#394)
   -> Self service photo file enhancements (#396)
+ - LAM Pro:
+  -> Added support to manage DNS entries of Bind dyndns (#361)
 
 
 17.12.2024 9.0
