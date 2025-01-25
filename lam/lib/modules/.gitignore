@@ -1,6 +1,7 @@
 /aliasEntry.inc
 /automount.inc
 /bindDLZ.inc
+/bindDyndbRecord.inc
 /bindDyndbZone.inc
 /customFields.inc
 /customScripts.inc
