@@ -905,6 +905,9 @@ class lamList {
 		if (!in_array($id, $selAccounts) && ($id !== null)) {
 			$selAccounts[] = $id;
 		}
+        if (in_array('tableSelectAll', $selAccounts)) {
+            $selAccounts = array_delete(['tableSelectAll'], $selAccounts);
+        }
 		// get possible PDF structures
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$pdf_structures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $this->type->getId());
