@@ -669,11 +669,14 @@ function get_preg($argument, $regexp) {
 		case 'sambaLogonHours':
 			$pregexpr = '/^[0-9a-fA-F]{42}$/';
 			break;
-		case 'DNSname':
+		case 'DNSname':  // server.example.com
 			$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
 			break;
 		case 'DNSnameAbsolute':  // server.example.com.
 			$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*\\.$/';
+			break;
+		case 'DNSnameRelativeOrAbsolute':  // server.example.com. or server.example.com
+			$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*(\\.)?$/';
 			break;
 		case 'nis_alias':
 			$pregexpr = '/^([[:alnum:]@. _-])+$/u';
