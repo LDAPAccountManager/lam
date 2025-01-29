@@ -1459,10 +1459,18 @@ abstract class baseModule {
 		if (isset($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
 		}
-		if (count($values) == 0) {
+		if (count($values) === 0) {
 			$values[] = '';
 		}
 		natcasesort($values);
+		$first = array_shift($values);
+		// shift empty value to the end
+		if ($first === '') {
+			$values[] = $first;
+		}
+		else {
+			array_unshift($values, $first);
+		}
 		$values = array_values($values);
 		if ($label !== null) {
 			$labelTextOut = new htmlOutputText($label, true, $required);
