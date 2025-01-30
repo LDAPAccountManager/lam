@@ -468,7 +468,7 @@ class puppetClient extends baseModule {
 	}
 
 	/**
-	 * Reurns a list of valid parent nodes for this node.
+	 * Returns a list of valid parent nodes for this node.
 	 *
 	 * @return array parent nodes (e.g. array('node1', 'node2'))
 	 */

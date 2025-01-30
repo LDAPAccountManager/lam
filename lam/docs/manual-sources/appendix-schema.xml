@@ -476,6 +476,24 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
+                <imagedata fileref="images/schema_bind9.png" width="16"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>Bind dyndb-ldap</entry>
+
+          <entry>idnsZone, idnsRecord</entry>
+
+          <entry>schema.ldif</entry>
+
+          <entry>part of bind-dyndb-ldap</entry>
+
+          <entry>LAM Pro only</entry>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
                 <imagedata fileref="images/schema_bind.png"/>
               </imageobject>
             </inlinemediaobject></entry>

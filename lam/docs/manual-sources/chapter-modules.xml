@@ -4325,6 +4325,289 @@ Run slapindex to rebuild the index.
   </section>
 
   <section>
+    <title>Bind dyndb-ldap (LAM Pro)</title>
+
+    <para>The <ulink
+    url="https://pagure.io/bind-dyndb-ldap">bind-dyndb-ldap</ulink> plugin for
+    <ulink url="https://www.isc.org/bind/">Bind</ulink> allows you to manage
+    DNS entries in LDAP. Please install the bind-dyndb-ldap schema file on
+    your LDAP server. It is part of the bind-dyndb-ldap download. LAM Pro can
+    manage DNS zones and the following record types:<itemizedlist>
+        <listitem>
+          <para>A/AAAA: IP addresses</para>
+        </listitem>
+
+        <listitem>
+          <para>CNAME: alias names</para>
+        </listitem>
+
+        <listitem>
+          <para>DNAME: delegation name</para>
+        </listitem>
+
+        <listitem>
+          <para>MX: mail servers</para>
+        </listitem>
+
+        <listitem>
+          <para>NS: name servers</para>
+        </listitem>
+
+        <listitem>
+          <para>PTR: reverse DNS entries</para>
+        </listitem>
+
+        <listitem>
+          <para>SRV: service entries</para>
+        </listitem>
+
+        <listitem>
+          <para>TXT: text records</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Please open your LAM server profile configuration and add two
+      instances of the "Bind dyndb" account type. One for records and one for
+      zones.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_bind-dyndb-1.png"/>
+      </screenshot>
+
+      <para>The recommended settings are as follows. Please adapt if
+      needed.</para>
+
+      <para>DNS records:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>LDAP suffix: if you manage a single domain then use the DN of
+          the zone entry. If you manage multiple domains then use the DN under
+          which they are stored (e.g. the "nsContainer").</para>
+        </listitem>
+
+        <listitem>
+          <para>List attributes:
+          #idnsName;#aRecord;#aAAARecord;#cNAMERecord;#dNameRecord;#tXTRecord;#mxrecord;#srvrecord;#ptrrecord;#dnsttl</para>
+        </listitem>
+
+        <listitem>
+          <para>Custom label: DNS records</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>DNS zones:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>LDAP suffix: use the DN under which the domains are stored
+          (e.g. the "nsContainer").</para>
+        </listitem>
+
+        <listitem>
+          <para>List attributes:
+          #idnsName;#aRecord;#aAAARecord;#cNAMERecord;#dNameRecord;#tXTRecord;#idnssoaserial</para>
+        </listitem>
+
+        <listitem>
+          <para>Custom label: DNS zones</para>
+        </listitem>
+      </itemizedlist>
+
+      <screenshot>
+        <graphic fileref="images/mod_bind-dyndb-2.png"/>
+      </screenshot>
+
+      <para>Next, switch to the modules tab. Here, select DNS records for your
+      record type and DNS zone for your zone type. Then you can save the
+      server profile and login to LAM.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_bind-dyndb-3.png"/>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>DNS zones</title>
+
+      <para>This allows you to manage your DNS zones (SOA+NS records). You can
+      e.g. specify timeouts and name servers.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_bind-dyndb-4.png"/>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>DNS entries</title>
+
+      <para>LAM supports the following DNS record types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A/AAAA: IP addresses</para>
+        </listitem>
+
+        <listitem>
+          <para>CNAME: alias names</para>
+        </listitem>
+
+        <listitem>
+          <para>DNAME: delegation name</para>
+        </listitem>
+
+        <listitem>
+          <para>MX: mail servers</para>
+        </listitem>
+
+        <listitem>
+          <para>PTR: reverse DNS entries</para>
+        </listitem>
+
+        <listitem>
+          <para>SRV: service entries</para>
+        </listitem>
+
+        <listitem>
+          <para>TXT: text records</para>
+        </listitem>
+      </itemizedlist>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">IP addresses (A/AAAA)</emphasis></para>
+
+      <para>Here you can enter IPv4 (A) or IPv6 (AAAA) addresses for a DNS
+      name.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind-dyndb-5.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Alias names (CNAME)</emphasis></para>
+
+      <para>Sometimes a DNS entry should simply point to a different DNS entry
+      (e.g. for migrations). This can be done by adding an alias name.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind-dyndb-7.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Alias names (DNAME)</emphasis></para>
+
+      <para>You can delegate a DNS zone to a different server.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind-dyndb-11.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Mail servers (MX)</emphasis></para>
+
+      <para>The mail server entries define where mails to a domain should be
+      delivered. The server with the lowest preference has the highest
+      priority.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind-dyndb-8.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Reverse DNS entries (PTR)</emphasis></para>
+
+      <para>Reverse DNS entries are important when you need to find the DNS
+      name that is associated with a given IP address. Reverse DNS entries are
+      stored in a separate DNS zone.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind-dyndb-6.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Services (SRV)</emphasis></para>
+
+      <para>Service records can be used to specify which servers provide
+      common services such as LDAP. Please note that the host name must be
+      _SERVICE._PROTOCOL (e.g. _ldap._tcp).</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>Priority: The priority of the target host, lower value means more
+      preferred.</para>
+
+      <para>Weight: A relative weight for records with the same priority. E.g.
+      weights 20 and 80 for a service will result in 20% queries to the one
+      server and 80% to the other.</para>
+
+      <para>Port: The port number that is used for your service.</para>
+
+      <para>Server: DNS name where service can be reached (relative without or
+      absolute with dot at the end).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind-dyndb-10.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para><emphasis role="bold">Text records (TXT)</emphasis></para>
+
+      <para>Text records can be added to store a description or other data
+      (e.g. SPF information).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind-dyndb-9.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+  </section>
+
+  <section>
     <title>Bind DLZ (LAM Pro)</title>
 
     <para><ulink url="http://bind-dlz.sourceforge.net">Bind DLZ</ulink> is an
