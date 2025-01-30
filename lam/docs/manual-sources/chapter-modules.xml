@@ -4578,8 +4578,8 @@ Run slapindex to rebuild the index.
 
       <para>Port: The port number that is used for your service.</para>
 
-      <para>Server: DNS name where service can be reached (with dot at the
-      end).</para>
+      <para>Server: DNS name where service can be reached (relative without or
+      absolute with dot at the end).</para>
 
       <screenshot>
         <mediaobject>
@@ -4604,7 +4604,6 @@ Run slapindex to rebuild the index.
           </imageobject>
         </mediaobject>
       </screenshot>
-
     </section>
   </section>
 
