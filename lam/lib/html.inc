@@ -4532,7 +4532,7 @@ class htmlResponsiveTable extends htmlElement {
 	/** htmlElement[][] data rows */
 	private $data;
 
-	/** widthes of the columns */
+	/** widths of the columns */
 	private $widths = [];
 
 	/** highlighted rows */
