@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2024  Roland Gruber
+              2007 - 2025  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ class posixGroup extends baseModule implements passwordService {
 				[
 					'name' => 'posixGroup_description',
 					'description' => _('Group description'),
-					'help' => 'description',
+					'help' => 'descriptionList',
 					'example' => _('Administrators group')
 				]
 			);
@@ -127,7 +127,7 @@ class posixGroup extends baseModule implements passwordService {
 					$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
 				}
 				else {
-					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixGroup_description']];
+					$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_description', 'description', null, null, $errors, '/;[ ]*/');
 				}
 			}
 			// group members
@@ -215,7 +215,7 @@ class posixGroup extends baseModule implements passwordService {
 			$gidNumberInput->setMinimumAndMaximumNumber();
 			// description
 			if ($this->manageCnAndDescription($modules)) {
-				$this->addSimpleInputTextField($return, 'description', _('Description'));
+				$this->addMultiValueInputTextField($return, 'description', _('Description'));
 			}
 			// password buttons
 			if (checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes[$this->passwordAttrName][0])) {
@@ -422,6 +422,10 @@ class posixGroup extends baseModule implements passwordService {
 			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Group description. If left empty group name will be used.")
+			],
+			'descriptionList' => [
+				"Headline" => _("Description"), 'attr' => 'description',
+				"Text" => _("Group description. If left empty group name will be used.") . ' ' . _("Multiple values are separated by semicolon.")
 			],
 			'members' => [
 				"Headline" => _("Group members"), 'attr' => 'memberUid',
@@ -806,7 +810,7 @@ class posixGroup extends baseModule implements passwordService {
 			return $errors;
 		}
 		if ($this->manageCnAndDescription($modules)) {
-			$this->attributes['description'][0] = $_POST['description'];
+			$this->processMultiValueInputTextField('description', $errors);
 		}
 		if (isset($_POST['lockPassword'])) {
 			$this->attributes[$this->passwordAttrName][0] = pwd_disable($this->attributes[$this->passwordAttrName][0]);

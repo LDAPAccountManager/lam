@@ -1,18 +1,18 @@
 March 2025 9.1
- - Usability improvements (348, 360)
+ - Usability improvements (348, 360, 403)
  - Active Directory: deleted entries in "CN=Deleted Objects" can be shown (option in server profile, advanced settings)
- - Security: LAM no longer ships with any default passwords, main configuration password is requested on login if not yet set (#390)
+ - Security: LAM no longer ships with any default passwords, main configuration password is requested on login if not yet set (390)
  - Fixed bugs:
-  -> Ambiguous tooltip on profile editor for Shadow users (#394)
-  -> Self service photo file enhancements (#396)
-  -> Tree view: delete does not work in French (#406)
+  -> Ambiguous tooltip on profile editor for Shadow users (394)
+  -> Self service photo file enhancements (396)
+  -> Tree view: delete does not work in French (406)
  - LAM Pro:
-  -> Added support to manage DNS entries of bind-dyndb-ldap (#361)
+  -> Added support to manage DNS entries of bind-dyndb-ldap (361)
 
 
 17.12.2024 9.0
  - New configuration file format for main configuration and server profiles (applied on save, old format can still be read)
- - Unix users: allow to create group with same name via account profile (#332)
+ - Unix users: allow to create group with same name via account profile (332)
  - Group of (unique) names, organisational roles: added member/owner count to PDF fields
  - Windows: display password expiration date
  - Usability improvements (342, 350, 372)
@@ -39,7 +39,7 @@ March 2025 9.1
   -> Self registration: added option to generate password
   -> Request access: allow to define an expiration time for memberships/ownerships (284)
   -> Request access: support additional group next to owners (300)
-  -> Request access: auto-refresh views (#324)
+  -> Request access: auto-refresh views (324)
  - Fixed bugs:
   -> Unix users: error log messages on file upload
 
@@ -260,8 +260,8 @@ March 2025 9.1
   - PHP 8.0 compatibility (except tree view)
   - Support copying LDAP entries from account list
   - Account/PDF profiles: management of global templates and logos
-  - Group of names: allow filter by member/owner (#151)
-  - General information: link to groups (#152)
+  - Group of names: allow filter by member/owner (151)
+  - General information: link to groups (152)
   - LAM Pro:
    -> Self registration: support binary attributes (e.g. for jpegPhoto)
    -> Self registration: support custom mail attributes and mail from constant value (149)
@@ -273,7 +273,7 @@ March 2025 9.1
 
 
 06.12.2020 7.4
-  - Argond2id support for password hashes (requires PHP 7.3) (#113)
+  - Argond2id support for password hashes (requires PHP 7.3) (113)
   - 2-factor authentication:
    -> Support for Okta
    -> WebAuthn devices can be named in Self Service and WebAuthn tool
@@ -399,7 +399,7 @@ March 2025 9.1
   - LAM Pro:
    -> Auto deletion of entries with dynamic directory services support (requires PHP 7.2)
   - Fixed bugs:
-   -> Issue when changing key case of uid (#197)
+   -> Issue when changing key case of uid (197)
 
 
 20.06.2018 6.4

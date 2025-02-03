@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2024  Roland Gruber
+                2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$return['upload_columns'][] = [
 				'name' => 'inetOrgPerson_description',
 				'description' => _('Description'),
-				'help' => 'description',
+				'help' => 'descriptionList',
 				'example' => _('Temp, contract till December')
 			];
 		}
@@ -573,7 +573,11 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$return['help'] = [
 			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
-				"Text" => _("User description. If left empty sur- and give name will be used.")
+				"Text" => _("User description. If left empty surname and given name will be used.")
+			],
+			'descriptionList' => [
+				"Headline" => _("Description"), 'attr' => 'description',
+				"Text" => _("User description. If left empty surname and given name will be used.") . ' ' . _("Multiple values are separated by semicolon.")
 			],
 			'title' => [
 				"Headline" => _("Job title"), 'attr' => 'title',
@@ -2429,7 +2433,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			// display name
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_displayName', 'displayName');
 			// description
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_description', 'description');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_description', 'description', null, null, $errors, '/;[ ]*/');
 			// title
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_title', 'title', 'title', $this->messages['title'][1], $errors, '/;[ ]*/');
 			// employee number
