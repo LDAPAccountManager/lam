@@ -490,8 +490,8 @@ class TreeView {
 			$deleteButton = new htmlImage('../../graphics/delete.svg', $buttonSize, $buttonSize, _('Delete'), _('Delete'));
 			$deleteButton->setOnClick('window.lam.treeview.deleteNode(\'' . getSecurityTokenName() . '\', '
 				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . base64_encode(htmlspecialchars(extractRDN($dn))) . '\', '
-				. '\'' . _('Delete') . '\', \'' . _('Cancel') . '\', \'' . _('Delete this entry') . '\', \'' . _('Ok') . '\', '
-				. '\'' . _('Error') . '\');');
+				. '\'' . addslashes(_('Delete')) . '\', \'' . addslashes(_('Cancel')) . '\', \'' . addslashes(_('Delete this entry')) . '\', \'' . addslashes(_('Ok')) . '\', '
+				. '\'' . addslashes(_('Error')) . '\');');
 			$deleteButton->setCSSClasses($buttonClasses);
 			$buttonGroup->addElement($deleteButton);
 		}
