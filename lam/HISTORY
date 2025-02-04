@@ -2,6 +2,7 @@ March 2025 9.1
  - Usability improvements (348, 360, 403)
  - Active Directory: deleted entries in "CN=Deleted Objects" can be shown (option in server profile, advanced settings)
  - Security: LAM no longer ships with any default passwords, main configuration password is requested on login if not yet set (390)
+ - Docker: support to read e.g. configuration password from file to support Docker swarm
  - Fixed bugs:
   -> Ambiguous tooltip on profile editor for Shadow users (394)
   -> Self service photo file enhancements (396)

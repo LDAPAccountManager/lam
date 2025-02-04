@@ -48,7 +48,7 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   LDAP_BASE_DN="${LDAP_BASE_DN:-dc=${LDAP_DOMAIN//\./,dc=}}"
   LDAP_USERS_DN="${LDAP_USERS_DN:-${LDAP_BASE_DN}}"
   LDAP_GROUPS_DN="${LDAP_GROUPS_DN:-${LDAP_BASE_DN}}"
-  LDAP_ADMIN_USER="${LDAP_USER:-cn=admin,${LDAP_BASE_DN}}"
+  LDAP_USER="${LDAP_USER:-cn=admin,${LDAP_BASE_DN}}"
   LAM_LICENSE="${LAM_LICENSE:-}"
   LAM_CONFIGURATION_DATABASE="${LAM_CONFIGURATION_DATABASE:-files}"
   LAM_CONFIGURATION_HOST="${LAM_CONFIGURATION_HOST:-}"
@@ -59,10 +59,10 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
 
   # Set an environment variable with the _FILE suffix to override the non-suffixed environment variable with the contents of the specified file
   fileVariables=(
+    LDAP_USER
     LAM_PASSWORD
     LAM_CONFIGURATION_PASSWORD
-    LDAP_ADMIN_PASSWORD
-    LDAP_READONLY_USER_PASSWORD
+    LAM_LICENSE
   )
 
   for envVar in "${fileVariables[@]}"; do
@@ -108,7 +108,7 @@ EOF
 
   sed -i -f- /var/lib/ldap-account-manager/config/lam.conf <<- EOF
     s|"ServerURL": "[^"]*"|"ServerURL": "${LDAP_SERVER}"|;
-    s|"Admins": "[^"]*"|"Admins": "${LDAP_ADMIN_USER}"|;
+    s|"Admins": "[^"]*"|"Admins": "${LDAP_USER}"|;
     s|"treeViewSuffix": "[^"]*"|"treeViewSuffix": "${LDAP_BASE_DN}"|;
     s|"defaultLanguage": "[^"]*"|"defaultLanguage": "${LAM_LANG}.utf8"|;
     s|"suffix_user": "[^"]*"|"suffix_user": "${LDAP_USERS_DN}"|;
