@@ -42,14 +42,13 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   echo "Configuring LAM"
 
   LAM_LANG="${LAM_LANG:-en_US}"
-  export LAM_PASSWORD="${LAM_PASSWORD:-lam}"
-  LAM_PASSWORD_SSHA=$(php -r '$password = getenv("LAM_PASSWORD"); $rand = abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5)))); $salt0 = substr(pack("h*", md5($rand)), 0, 8); $salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4); print "{SSHA}" . base64_encode(pack("H*", sha1($password . $salt))) . " " . base64_encode($salt) . "\n";')
+  LAM_PASSWORD="${LAM_PASSWORD:-lam}"
   LDAP_SERVER="${LDAP_SERVER:-ldap://ldap:389}"
   LDAP_DOMAIN="${LDAP_DOMAIN:-my-domain.com}"
   LDAP_BASE_DN="${LDAP_BASE_DN:-dc=${LDAP_DOMAIN//\./,dc=}}"
   LDAP_USERS_DN="${LDAP_USERS_DN:-${LDAP_BASE_DN}}"
   LDAP_GROUPS_DN="${LDAP_GROUPS_DN:-${LDAP_BASE_DN}}"
-  LDAP_ADMIN_USER="${LDAP_USER:-cn=admin,${LDAP_BASE_DN}}"
+  LDAP_USER="${LDAP_USER:-cn=admin,${LDAP_BASE_DN}}"
   LAM_LICENSE="${LAM_LICENSE:-}"
   LAM_CONFIGURATION_DATABASE="${LAM_CONFIGURATION_DATABASE:-files}"
   LAM_CONFIGURATION_HOST="${LAM_CONFIGURATION_HOST:-}"
@@ -57,6 +56,31 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   LAM_CONFIGURATION_DATABASE_NAME="${LAM_CONFIGURATION_DATABASE_NAME:-}"
   LAM_CONFIGURATION_USER="${LAM_CONFIGURATION_USER:-}"
   LAM_CONFIGURATION_PASSWORD="${LAM_CONFIGURATION_PASSWORD:-}"
+
+  # Set an environment variable with the _FILE suffix to override the non-suffixed environment variable with the contents of the specified file
+  fileVariables=(
+    LDAP_USER
+    LAM_PASSWORD
+    LAM_CONFIGURATION_PASSWORD
+    LAM_LICENSE
+  )
+
+  for envVar in "${fileVariables[@]}"; do
+      fileEnvVar="${envVar}_FILE"
+      if [[ -n "${!fileEnvVar:-}" ]]; then
+          if [[ -r "${!fileEnvVar:-}" ]]; then
+              export "${envVar}=$(< "${!fileEnvVar}")"
+              unset "${fileEnvVar}"
+          else
+              warn "Skipping export of '${envVar}'. '${!fileEnvVar:-}' is not readable."
+          fi
+      fi
+  done
+  unset fileVariables
+
+  export LAM_PASSWORD
+  LAM_PASSWORD_SSHA=$(php -r '$password = getenv("LAM_PASSWORD"); $rand = abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5)))); $salt0 = substr(pack("h*", md5($rand)), 0, 8); $salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4); print "{SSHA}" . base64_encode(pack("H*", sha1($password . $salt))) . " " . base64_encode($salt) . "\n";')
+  unset LAM_PASSWORD
 
   sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
     s|"license": "[^"]*"|"license": "${LAM_LICENSE}"|;
@@ -69,8 +93,9 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
 EOF
   if ! grep -e '"password":' /etc/ldap-account-manager/config.cfg > /dev/null; then
     sed -i "2i\ \ \"password\": \"${LAM_PASSWORD_SSHA}\"," /etc/ldap-account-manager/config.cfg
+  else
+    sed -i "s|\"password\": .*|\"password\": \"${LAM_PASSWORD_SSHA}\",|" /etc/ldap-account-manager/config.cfg
   fi
-  unset LAM_PASSWORD
 
   set +e
   ls -l /var/lib/ldap-account-manager/config/lam.conf
@@ -83,7 +108,7 @@ EOF
 
   sed -i -f- /var/lib/ldap-account-manager/config/lam.conf <<- EOF
     s|"ServerURL": "[^"]*"|"ServerURL": "${LDAP_SERVER}"|;
-    s|"Admins": "[^"]*"|"Admins": "${LDAP_ADMIN_USER}"|;
+    s|"Admins": "[^"]*"|"Admins": "${LDAP_USER}"|;
     s|"treeViewSuffix": "[^"]*"|"treeViewSuffix": "${LDAP_BASE_DN}"|;
     s|"defaultLanguage": "[^"]*"|"defaultLanguage": "${LAM_LANG}.utf8"|;
     s|"suffix_user": "[^"]*"|"suffix_user": "${LDAP_USERS_DN}"|;
@@ -91,6 +116,8 @@ EOF
 EOF
   if ! grep -e '"Passwd":' /var/lib/ldap-account-manager/config/lam.conf > /dev/null; then
     sed -i "2i\ \ \"Passwd\": \"${LAM_PASSWORD_SSHA}\"," /var/lib/ldap-account-manager/config/lam.conf
+  else
+    sed -i "s|\"Passwd\": .*|\"Passwd\": \"${LAM_PASSWORD_SSHA}\",|" /var/lib/ldap-account-manager/config/lam.conf
   fi
 
 fi
