@@ -173,7 +173,7 @@ class TreeView {
 			if ($rootData === null) {
 				continue;
 			}
-			$children = ldapListDN($rootDn, '(objectClass=*)', ['objectClass']);
+			$children = ldapListDN($rootDn, '(objectClass=*)', ['objectClass', 'hassubordinates']);
 			$nodeData = $this->createNodeData($rootData, true, true, $children);
 			$result[] = $nodeData;
 		}
@@ -189,10 +189,11 @@ class TreeView {
 	private function getSubNodes(string $dn): string {
 		$this->validateDn($dn);
 		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $dn);
-		$children = ldapListDN($dn, '(objectClass=*)', ['objectClass']);
+		$children = ldapListDN($dn, '(objectClass=*)', ['objectClass', 'hassubordinates']);
 		$childNodes = [];
 		foreach ($children as $child) {
-			$childNodes[] = $this->createNodeData($child);
+			$childHasChildren = !isset($child['hassubordinates'][0]) || ($child['hassubordinates'][0] === 'TRUE');
+			$childNodes[] = $this->createNodeData($child, false, false, [], $childHasChildren);
 		}
 		$this->sortNodes($childNodes);
 		return json_encode($childNodes);
@@ -203,21 +204,24 @@ class TreeView {
 	 *
 	 * @param array $attributes LDAP data
 	 * @param bool $open open node
+	 * @param bool $noShortenFirst do not shorten DN
 	 * @param array $children child LDAP data
+	 * @param bool $hasChildren indicates that the entry has children
 	 * @return array nodes
 	 */
-	private function createNodeData(array $attributes, bool $open = false, $noShortenFirst = false, array $children = []): array {
+	private function createNodeData(array $attributes, bool $open = false, bool $noShortenFirst = false, array $children = [], bool $hasChildren = true): array {
 		$text = ($noShortenFirst) ? $attributes['dn'] : extractRDN($attributes['dn']);
 		$data = [
 			'id' => base64_encode($attributes['dn']),
 			'text' => unescapeLdapSpecialCharacters($text),
 			'icon' => $this->getNodeIcon($attributes),
-			'children' => true
+			'children' => $hasChildren
 		];
 		if (!empty($children)) {
 			$childData = [];
 			foreach ($children as $child) {
-				$childData[] = $this->createNodeData($child);
+				$childHasChildren = !isset($child['hassubordinates'][0]) || ($child['hassubordinates'][0] === 'TRUE');
+				$childData[] = $this->createNodeData($child, false, false, [], $childHasChildren);
 			}
 			$this->sortNodes($childData);
 			$data['children'] = $childData;
