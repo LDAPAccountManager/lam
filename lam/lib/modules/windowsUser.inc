@@ -4404,7 +4404,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!empty($_POST['personaltitle'])) {
 			$replacements['personaltitle'] = $_POST['personaltitle'];
 		}
-		elseif (!empty($this->attributes['givenName'][0])) {
+		elseif (!empty($this->attributes['personaltitle'][0])) {
 			$replacements['personaltitle'] = $this->attributes['personaltitle'][0];
 		}
 		// first name
