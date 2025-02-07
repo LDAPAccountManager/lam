@@ -664,7 +664,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			// skip saving if the extension was not added/modified
 			return [];
 		}
-		if (isset($this->attributes['gidNumber'][0]) && ($this->attributes['gidNumber'][0] === self::CREATE_GROUP_WITH_SAME_NAME)) {
+		if ($this->allowsToCreateGroupWithSameName() && isset($this->attributes['gidNumber'][0]) && ($this->attributes['gidNumber'][0] === self::CREATE_GROUP_WITH_SAME_NAME)) {
 			$newGroupName = $this->attributes['uid'][0];
 			$existingGid = $this->getGID($newGroupName);
 			if ($existingGid !== null) {
@@ -1365,6 +1365,21 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
+	 * Returns if groups with same name can be created.
+	 *
+	 * @return bool creation is possible
+	 */
+	private function allowsToCreateGroupWithSameName(): bool {
+		$typeId = $this->getAccountContainer()->get_type()->getId();
+		if (($this->get_scope() !== 'user')
+			|| $this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup')) {
+			return false;
+		}
+		$groupType = $this->getPosixGroupType();
+		return ($groupType !== null);
+	}
+
+	/**
 	 * Returns the first found group type that contains posixGroup.
 	 *
 	 * @return ConfiguredType|null type
@@ -1713,9 +1728,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!$this->isOptional($modules) || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
 			$this->getAccountContainer()->replaceWildcardsInArray($this->getWildcardTargetAttributeNames(), $this->attributes);
 			$homeDirAttr = $this->getHomedirAttrName($modules);
-			$allowToCreateGroupWithUserName = ($this->get_scope() === 'user')
-				&& $this->getAccountContainer()->isNewAccount
-				&& !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup');
+			$allowToCreateGroupWithUserName = $this->getAccountContainer()->isNewAccount
+				&& $this->allowsToCreateGroupWithSameName();
 			$groupList = $this->findGroups($modules); // list of all group names
 			$groups = [];
 			for ($i = 0; $i < count($groupList); $i++) {
@@ -2139,7 +2153,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if ($this->get_scope() == 'user') {
 			// primary Unix group
 			$primaryGroups = $groups;
-			$allowToCreateGroupWithUserName = !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup');
+			$allowToCreateGroupWithUserName = $this->allowsToCreateGroupWithSameName();
 			if ($allowToCreateGroupWithUserName) {
 				$primaryGroups = [_('Create group with same name') => self::CREATE_GROUP_WITH_SAME_NAME] + $primaryGroups;
 			}
@@ -2227,7 +2241,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// special profile options
 		// GID
 		if (isset($profile['posixAccount_primaryGroup'][0])) {
-			if ($profile['posixAccount_primaryGroup'][0] === self::CREATE_GROUP_WITH_SAME_NAME) {
+			if ($this->allowsToCreateGroupWithSameName() && ($profile['posixAccount_primaryGroup'][0] === self::CREATE_GROUP_WITH_SAME_NAME)) {
 				$this->attributes['gidNumber'][0] = self::CREATE_GROUP_WITH_SAME_NAME;
 			}
 			else {
