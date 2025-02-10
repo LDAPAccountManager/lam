@@ -676,16 +676,31 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$accountContainerTmp = new accountContainer($groupType, $sessionKey);
 				$_SESSION[$sessionKey] = &$accountContainerTmp;
 				$accountContainerTmp->new_account();
+				$isRfc2307bis = false;
 				$posixGroupModule = $accountContainerTmp->getAccountModule('posixGroup');
+				$posixGroupRfc2307bisModule = $accountContainerTmp->getAccountModule('rfc2307bisPosixGroup');
+				if (($posixGroupModule === null) && ($posixGroupRfc2307bisModule !== null)) {
+					$posixGroupModule = $posixGroupRfc2307bisModule;
+					$isRfc2307bis = true;
+				}
 				$nextGid = $posixGroupModule->getNextGIDs(1, $errors, $groupType);
 				unset($_SESSION[$sessionKey]);
 				if ($nextGid !== null) {
 					$dnNewGroup = 'cn=' . $newGroupName . ',' . $groupType->getSuffix();
-					$attributesNewGroup = [
-						'cn' => [$newGroupName],
-						'gidNumber' => $nextGid[0],
-						'objectClass' => ['posixGroup'],
-					];
+					if ($isRfc2307bis) {
+						$attributesNewGroup = [
+							'cn' => [$newGroupName],
+							'gidNumber' => $nextGid[0],
+							'objectClass' => ['namedObject', 'posixGroup'],
+						];
+					}
+					else {
+						$attributesNewGroup = [
+							'cn' => [$newGroupName],
+							'gidNumber' => $nextGid[0],
+							'objectClass' => ['posixGroup'],
+						];
+					}
 					$newGroupSuccess = @ldap_add(getLDAPServerHandle(), $dnNewGroup, $attributesNewGroup);
 					if ($newGroupSuccess) {
 						logNewMessage(LOG_NOTICE, 'Created new group: ' . $newGroupName);
@@ -1390,6 +1405,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		foreach ($groupTypes as $groupType) {
 			$modules = $groupType->getModules();
 			if (in_array('posixGroup', $modules)) {
+				return $groupType;
+			}
+			if (in_array('rfc2307bisPosixGroup', $modules)) {
 				return $groupType;
 			}
 		}
