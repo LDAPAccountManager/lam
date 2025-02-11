@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2024  Roland Gruber
+  Copyright (C) 2010 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1024,6 +1024,9 @@ class htmlHelpLink extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
+		if ($this->helpID === null) {
+			return [];
+		}
 		// overwrite module and scope if needed
 		if ($this->module != null) {
 			$module = $this->module;
