@@ -1187,3 +1187,5 @@ style/jstree/*                                                       B  2014  Iv
 templates/lib/extra/qrcode/*                                         B  2009  Kazuhiko Arase
 templates/lib/extra/tabulator/*                                      B  2024  Oliver Folkerd
 style/tabulator/*                                                    B  2024  Oliver Folkerd
+templates/lib/extra/wunderbaum/*                                     B  2024  Martin Wendt
+style/wunderbaum/*                                                   B  2024  Martin Wendt
