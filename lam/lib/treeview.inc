@@ -1656,7 +1656,7 @@ class TreeView {
  * @return int result
  */
 function compareNodeByIdAsDn($a, $b): int {
-	return strnatcasecmp(extractRDN(base64_decode($a['id'])), extractRDN(base64_decode($b['id'])));
+	return strnatcasecmp(extractRDN(base64_decode($a['key'])), extractRDN(base64_decode($b['key'])));
 }
 
 /**

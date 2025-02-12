@@ -2934,16 +2934,16 @@ window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) 
  * @param tree tree object
  * @param ids array of node IDs.
  */
-window.lam.treeview.openInitial = function(tree, ids) {
+window.lam.treeview.openInitial = async function (tree, ids) {
 	if (ids.length === 0) {
 		return;
 	}
-	const firstNodeId = ids.shift();
-	tree.open_node(firstNodeId, function() {
-		window.lam.treeview.openInitial(tree, ids);
-	});
-	if (ids.length === 0) {
-		tree.select_node(firstNodeId);
+	for (const id of ids) {
+		const node = tree.findKey(id);
+		if (node) {
+			await node.setExpanded();
+			await node.setActive();
+		}
 	}
 }
 

@@ -948,6 +948,10 @@ i.wb-icon {
 	margin-right: 5px;
 }
 
+:root {
+	--wb-node-text-color: var(--lam-text-color-default) !important;
+}
+
 div.swal2-html-container {
 	overflow: visible;
 }

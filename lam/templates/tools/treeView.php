@@ -129,10 +129,10 @@ function showTree(): void {
 				id: "ldap_tree",
 				debugLevel: 2,
 				source: "../misc/ajax.php?function=treeview&command=getRootNodes",
-				// Event handlers:
-				/*init: (e) => {
-					//window.lam.treeview.openInitial(tree, ' . $openInitialJsArray . ');
-				},*/
+				init: (e) => {
+					tree.expandAll(true, {depth: 1, });
+					window.lam.treeview.openInitial(tree, ' . $openInitialJsArray . ');
+				},
 				lazyLoad: function(e) {
 					return {url: "../misc/ajax.php?function=treeview&command=getNodes&dn=" + e.node.key};
 				},
