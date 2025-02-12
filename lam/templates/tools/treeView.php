@@ -11,7 +11,7 @@ use htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2024  Roland Gruber
+  Copyright (C) 2021 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ echo '<link rel="stylesheet" href="../../style/jstree/style.css" />';
 echo '<script src="../lib/extra/jstree/jstree.js"></script>';
 echo '<link rel="stylesheet" href="../../style/wunderbaum/wunderbaum.css" />';
 echo '<script src="../lib/extra/wunderbaum/wunderbaum.umd.js"></script>';
+echo '<link rel="stylesheet" href="../../style/bootstrap-icons/bootstrap-icons.css" />';
 echo '<div class="smallPaddingContent">';
 
 $roots = TreeViewTool::getRootDns();
@@ -98,7 +99,7 @@ function showTree(): void {
 			var maxHeight = document.documentElement.scrollHeight - (document.querySelector("#ldap_tree").getBoundingClientRect().top - window.scrollY) - 50;
 			document.getElementById("ldap_tree").style.maxHeight = maxHeight;
 			document.getElementById("ldap_actionarea").style.maxHeight = maxHeight;
-			jQuery(\'#ldap_tree\').jstree({
+			/*jQuery(\'#ldap_tree\').jstree({
 				"plugins": [
 					"changed"
 				],
@@ -121,7 +122,21 @@ function showTree(): void {
 			.on("ready.jstree", function (e, data) {
 				var tree = jQuery.jstree.reference("#ldap_tree");
 				window.lam.treeview.openInitial(tree, ' . $openInitialJsArray . ');
-			});
+			});*/
+			
+			const tree = new mar10.Wunderbaum({
+				element: document.getElementById("ldap_tree"),
+				id: "ldap_tree",
+				debugLevel: 2,
+				source: "../misc/ajax.php?function=treeview&command=getRootNodes",
+				// Event handlers:
+				/*init: (e) => {
+					//window.lam.treeview.openInitial(tree, ' . $openInitialJsArray . ');
+				},*/
+				lazyLoad: function(e) {
+					return {url: "../misc/ajax.php?function=treeview&command=getNodes&dn=" + e.node.key};
+				},
+			  });
 		});
 	');
 	$row->add($treeScript, 12);

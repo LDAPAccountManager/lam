@@ -92,14 +92,18 @@ class TreeView {
 			die();
 		}
 		$command = $_GET['command'];
+		switch ($command) {
+			case 'getRootNodes':
+				return $this->getRootNodes();
+			case 'getNodes':
+				return $this->getSubNodes(base64_decode($_GET['dn']));
+		}
 		if (empty($_POST['dn'])) {
 			logNewMessage(LOG_ERR, 'No dn for tree view.');
 			die;
 		}
 		$dn = ($_POST['dn'] === '#') ? '#' : base64_decode($_POST['dn']);
 		switch ($command) {
-			case 'getNodes':
-				return $this->getNodes($dn);
 			case 'getNodeContent':
 				$this->validateDn($dn);
 				return $this->getNodeContent($dn);
@@ -144,19 +148,6 @@ class TreeView {
 		$attributeNames = $this->getPossibleNewAttributeNameOptions($objectClasses, true);
 		natcasesort($attributeNames);
 		return json_encode(['data' => $attributeNames]);
-	}
-
-	/**
-	 * Lists LDAP nodes.
-	 *
-	 * @param string $dn DN
-	 * @return string JSON data
-	 */
-	private function getNodes(string $dn): string {
-		if ($dn === '#') {
-			return $this->getRootNodes();
-		}
-		return $this->getSubNodes($dn);
 	}
 
 	/**
@@ -212,11 +203,13 @@ class TreeView {
 	private function createNodeData(array $attributes, bool $open = false, bool $noShortenFirst = false, array $children = [], bool $hasChildren = true): array {
 		$text = ($noShortenFirst) ? $attributes['dn'] : extractRDN($attributes['dn']);
 		$data = [
-			'id' => base64_encode($attributes['dn']),
-			'text' => unescapeLdapSpecialCharacters($text),
+			'key' => base64_encode($attributes['dn']),
+			'title' => unescapeLdapSpecialCharacters($text),
 			'icon' => $this->getNodeIcon($attributes),
-			'children' => $hasChildren
 		];
+		if ($hasChildren) {
+			$data['lazy'] = true;
+		}
 		if (!empty($children)) {
 			$childData = [];
 			foreach ($children as $child) {
@@ -228,7 +221,7 @@ class TreeView {
 		}
 		if ($open) {
 			$data['state'] = [
-				'opened' => true
+				'expanded' => true
 			];
 		}
 		return $data;

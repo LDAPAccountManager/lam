@@ -2344,29 +2344,6 @@ window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 window.lam.treeview = window.lam.treeview || {};
 
 /**
- * Returns the nodes in tree view.
- *
- * @param tokenName security token name
- * @param tokenValue security token value
- * @param node tree node
- * @param callback callback function
- */
-window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) {
-	let data = new FormData();
-	data.append(tokenName, tokenValue);
-	data.append('dn', node.id);
-	fetch('../misc/ajax.php?function=treeview&command=getNodes', {
-		method: 'POST',
-		body: data
-	})
-	.then(async response => {
-		const jsonData = await response.json();
-		window.lam.treeview.checkSession(jsonData);
-		callback.call(this, jsonData);
-	})
-}
-
-/**
  * Creates a new node in tree view.
  *
  * @param tokenName security token name
