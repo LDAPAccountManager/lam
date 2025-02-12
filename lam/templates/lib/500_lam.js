@@ -2938,12 +2938,16 @@ window.lam.treeview.openInitial = async function (tree, ids) {
 	if (ids.length === 0) {
 		return;
 	}
+	let lastNode = null;
 	for (const id of ids) {
 		const node = tree.findKey(id);
 		if (node) {
 			await node.setExpanded();
-			await node.setActive();
+			lastNode = node;
 		}
+	}
+	if (lastNode) {
+		await lastNode.setActive();
 	}
 }
 

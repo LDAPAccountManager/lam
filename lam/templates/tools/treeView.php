@@ -75,7 +75,7 @@ function showTree(): void {
 		$initialDn = base64_decode($_GET['dn']);
 		$roots = TreeViewTool::getRootDns();
 		foreach ($roots as $rootDn) {
-			if ((strlen($initialDn) > strlen($rootDn)) && substr($initialDn, -1 * strlen($rootDn)) === $rootDn) {
+			if ((strlen($initialDn) > strlen($rootDn)) && str_ends_with($initialDn, $rootDn)) {
 				$extraDnPart = substr($initialDn, 0, (-1 * strlen($rootDn)) - 1);
 				$dnParts = ldap_explode_dn($extraDnPart, 0);
 				if ($dnParts !== false) {
@@ -99,34 +99,14 @@ function showTree(): void {
 			var maxHeight = document.documentElement.scrollHeight - (document.querySelector("#ldap_tree").getBoundingClientRect().top - window.scrollY) - 50;
 			document.getElementById("ldap_tree").style.maxHeight = maxHeight;
 			document.getElementById("ldap_actionarea").style.maxHeight = maxHeight;
-			/*jQuery(\'#ldap_tree\').jstree({
-				"plugins": [
-					"changed"
-				],
-				"core": {
-					"worker": false,
-					"strings": {
-						"Loading ...": "' . _('Loading') . '"
-					},
-					"data": function(node, callback) {
-						window.lam.treeview.getNodes("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node, callback);
-					}
-				}
-			})
-			.on("changed.jstree", function (e, data) {
-				if (data && data.action && (data.action == "select_node")) {
-					var node = data.node;
-					window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
-				}
-			})
-			.on("ready.jstree", function (e, data) {
-				var tree = jQuery.jstree.reference("#ldap_tree");
-				window.lam.treeview.openInitial(tree, ' . $openInitialJsArray . ');
-			});*/
-			
 			const tree = new mar10.Wunderbaum({
 				element: document.getElementById("ldap_tree"),
 				id: "ldap_tree",
+				strings: {
+					loading: "' . addslashes(_('Loading')) . '",
+					loadError: "' . addslashes(_('Error')) . '",
+					noData: "' . addslashes(_('No objects found!')) . '"
+				},
 				debugLevel: 2,
 				source: "../misc/ajax.php?function=treeview&command=getRootNodes",
 				init: (e) => {
@@ -136,27 +116,31 @@ function showTree(): void {
 				lazyLoad: function(e) {
 					return {url: "../misc/ajax.php?function=treeview&command=getNodes&dn=" + e.node.key};
 				},
+				activate: function(e) {
+					const node = e.node;
+					window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.key);
+				}
 			  });
 		});
 	');
-	$row->add($treeScript, 12);
+	$row->add($treeScript);
 
 	$deleteDialogContent = new htmlResponsiveRow();
-	$deleteDialogContent->add(new htmlOutputText(_('Do you really want to delete this entry?')), 12);
+	$deleteDialogContent->add(new htmlOutputText(_('Do you really want to delete this entry?')));
 	$deleteDialogContent->addVerticalSpacer('0.5rem');
 	$deleteDialogEntryText = new htmlOutputText('');
 	$deleteDialogEntryText->setCSSClasses(['treeview-delete-entry']);
-	$deleteDialogContent->add($deleteDialogEntryText, 12);
+	$deleteDialogContent->add($deleteDialogEntryText);
 	$deleteDialogDiv = new htmlDiv('treeview_delete_dlg', $deleteDialogContent, ['hidden']);
 	$row->add($deleteDialogDiv);
 
 	$errorDialogContent = new htmlResponsiveRow();
 	$errorDialogEntryTitle = new htmlOutputText('');
 	$errorDialogEntryTitle->setCSSClasses(['treeview-error-title']);
-	$errorDialogContent->add($errorDialogEntryTitle, 12);
+	$errorDialogContent->add($errorDialogEntryTitle);
 	$errorDialogEntryText = new htmlOutputText('');
 	$errorDialogEntryText->setCSSClasses(['treeview-error-text']);
-	$errorDialogContent->add($errorDialogEntryText, 12);
+	$errorDialogContent->add($errorDialogEntryText);
 	$errorDialogDiv = new htmlDiv('treeview_error_dlg', $errorDialogContent, ['hidden']);
 	$row->add($errorDialogDiv);
 
