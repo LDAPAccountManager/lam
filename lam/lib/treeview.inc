@@ -494,7 +494,7 @@ class TreeView {
 		}
 
 		$refreshButton = new htmlImage('../../graphics/refresh.svg', $buttonSize, $buttonSize, _('Refresh'), _('Refresh'));
-		$refreshButton->setOnClick('jQuery.jstree.reference(\'#ldap_tree\').refresh_node(\'' . base64_encode($dn) . '\'); '
+		$refreshButton->setOnClick('mar10.Wunderbaum.getTree(\'#ldap_tree\').findKey(\'' . base64_encode($dn) . '\').loadLazy(true); '
 			. 'window.lam.treeview.getNodeContent(\'' . getSecurityTokenName() . '\', '
 			. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 		$refreshButton->setCSSClasses($buttonClasses);
