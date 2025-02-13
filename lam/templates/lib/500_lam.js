@@ -2960,12 +2960,20 @@ window.lam.treeview.copyNode = function(dn) {
 	if (!window.sessionStorage) {
 		return;
 	}
-	const tree = jQuery.jstree.reference("#ldap_tree");
-	const node = tree.get_node(dn, false);
+	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+	const node = tree.findKey(dn);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'COPY');
+	const oldNodeDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+	if (oldNodeDn) {
+		const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
+		const oldNode = tree.findKey(oldNodeDn);
+		oldNode.icon = oldIcon;
+		oldNode.update();
+	}
 	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
-	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
-	tree.set_icon(node, '../../graphics/copy.svg');
+	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
+	node.icon = '../../graphics/copy.svg';
+	node.update();
 }
 
 /**
@@ -2977,12 +2985,20 @@ window.lam.treeview.cutNode = function(dn) {
 	if (!window.sessionStorage) {
 		return;
 	}
-	const tree = jQuery.jstree.reference("#ldap_tree");
-	const node = tree.get_node(dn, false);
+	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+	const node = tree.findKey(dn);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'CUT');
+	const oldNodeDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+	if (oldNodeDn) {
+		const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
+		const oldNode = tree.findKey(oldNodeDn);
+		oldNode.icon = oldIcon;
+		oldNode.update();
+	}
 	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
-	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
-	tree.set_icon(node, '../../graphics/cut.svg');
+	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
+	node.icon = '../../graphics/cut.svg';
+	node.update();
 }
 
 /**
