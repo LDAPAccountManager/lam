@@ -2430,9 +2430,13 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
-		const tree = jQuery.jstree.reference("#ldap_tree");
-		tree.refresh_node(parentDn);
-		tree.open_node(parentDn);
+		const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+		const node = tree.findKey(parentDn);
+		if (node) {
+			await node.setExpanded(true);
+			node.lazy = true;
+			node.loadLazy(true);
+		}
 		window.scrollTo(0, 0);
 	});
 }
@@ -2474,11 +2478,11 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, dn, text, okTe
 			.then(async response => {
 				const jsonData = await response.json();
 				window.lam.treeview.checkSession(jsonData);
-				const tree = jQuery.jstree.reference("#ldap_tree");
-				const parentId = tree.get_node(dn, false).parent;
-				tree.refresh_node(parentId);
-				const parent = tree.get_node(parentId, false);
-				window.lam.treeview.getNodeContent(tokenName, tokenValue, parent.id);
+				const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+				const parentNode = tree.findKey(dn).parent;
+				await parentNode.setActive();
+				parentNode.loadLazy(true);
+				window.lam.treeview.getNodeContent(tokenName, tokenValue, parentNode.key);
 				if (jsonData['errors']) {
 					const errTextTitle = jsonData['errors'][0][1];
 					const textSpanErrorTitle = document.querySelector('.treeview-error-title');
@@ -2586,8 +2590,8 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		if (jsonData.newDn) {
-			const tree = jQuery.jstree.reference("#ldap_tree");
-			tree.refresh_node(jsonData['parent']);
+			const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+			tree.findKey(jsonData['parent']).loadLazy(true);
 			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData.newDn, jsonData.result, attributesToHighlight);
 		}
 		else {
@@ -3014,11 +3018,6 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 		return;
 	}
 	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
-	const selectedNodes = tree.getSelectedNodes();
-	selectedNodes.forEach(node => function (){
-		node.selected = false;
-		node.update();
-	});
 	const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
 	const action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
 	let data = new FormData();
