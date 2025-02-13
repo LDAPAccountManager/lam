@@ -51,8 +51,6 @@ checkIfToolIsActive('TreeViewTool');
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo '<link rel="stylesheet" href="../../style/jstree/style.css" />';
-echo '<script src="../lib/extra/jstree/jstree.js"></script>';
 echo '<link rel="stylesheet" href="../../style/wunderbaum/wunderbaum.css" />';
 echo '<script src="../lib/extra/wunderbaum/wunderbaum.umd.js"></script>';
 echo '<link rel="stylesheet" href="../../style/bootstrap-icons/bootstrap-icons.css" />';
