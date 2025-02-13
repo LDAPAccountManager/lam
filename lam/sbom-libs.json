@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:1fe94969-44ff-4623-a3df-6fa83e6d6d7d",
+  "serialNumber" : "urn:uuid:556522a0-9eee-458f-823b-6192d17d1046",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-12-04T18:53:46Z",
+    "timestamp" : "2025-02-13T19:33:18Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -113,21 +113,6 @@
     },
     {
       "group" : "cdx:npm:package:bundled",
-      "name" : "jstree",
-      "version" : "3.3.16",
-      "licenses" : [
-        {
-          "license" : {
-            "id" : "MIT"
-          }
-        }
-      ],
-      "purl" : "pkg:npm/jstree@3.3.16",
-      "type" : "library",
-      "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7"
-    },
-    {
-      "group" : "cdx:npm:package:bundled",
       "name" : "sortablejs",
       "version" : "1.15.6",
       "licenses" : [
@@ -193,6 +178,21 @@
       "purl" : "pkg:npm/tippy.js@6.3.7",
       "type" : "library",
       "bom-ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "wunderbaum",
+      "version" : "0.12.0",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/wunderbaum@0.12.0",
+      "type" : "library",
+      "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7"
     }
   ],
   "dependencies" : [
@@ -225,10 +225,6 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
-      "dependsOn" : [ ]
-    },
-    {
       "ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265",
       "dependsOn" : [ ]
     },
@@ -246,6 +242,10 @@
     },
     {
       "ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "dependsOn" : [ ]
     }
   ]
