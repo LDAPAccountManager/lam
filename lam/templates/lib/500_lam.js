@@ -3013,8 +3013,12 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 	if (!dn) {
 		return;
 	}
-	const tree = jQuery.jstree.reference("#ldap_tree");
-	tree.deselect_all();
+	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+	const selectedNodes = tree.getSelectedNodes();
+	selectedNodes.forEach(node => function (){
+		node.selected = false;
+		node.update();
+	});
 	const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
 	const action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
 	let data = new FormData();
@@ -3033,17 +3037,22 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 			document.getElementById('ldap_actionarea_messages').innerHTML = jsonData.error;
 			return;
 		}
-		tree.set_icon(dn, oldIcon);
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_ACTION');
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_OLD_ICON');
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_DN');
-		tree.refresh_node(destinationDn);
-		tree.open_node(destinationDn);
-		tree.select_node(destinationDn);
+		const oldNode = tree.findKey(dn);
 		if (action == 'CUT') {
-			const parentDn = tree.get_parent(dn);
-			tree.refresh_node(parentDn);
+			const parentNode = oldNode.parent;
+			parentNode.loadLazy(true);
 		}
+		else {
+			oldNode.icon = oldIcon;
+			oldNode.update();
+		}
+		const newParentNode = tree.findKey(destinationDn);
+		newParentNode.lazy = true;
+		newParentNode.expanded = true;
+		newParentNode.loadLazy(true);
 	});
 }
 
