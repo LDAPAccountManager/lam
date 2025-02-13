@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:556522a0-9eee-458f-823b-6192d17d1046",
+  "serialNumber" : "urn:uuid:fafdbbc2-01cb-4f11-a60b-cb185328fd43",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-02-13T19:33:18Z",
+    "timestamp" : "2025-02-13T19:42:59Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -80,21 +80,6 @@
       "purl" : "pkg:npm/friendly-challenge@0.9.17",
       "type" : "library",
       "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5"
-    },
-    {
-      "group" : "cdx:npm:package:bundled",
-      "name" : "jQuery",
-      "version" : "3.7.1",
-      "licenses" : [
-        {
-          "license" : {
-            "id" : "MIT"
-          }
-        }
-      ],
-      "purl" : "pkg:npm/jquery@3.7.1",
-      "type" : "library",
-      "bom-ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef"
     },
     {
       "group" : "cdx:npm:package:bundled",
@@ -214,10 +199,6 @@
     },
     {
       "ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
-      "dependsOn" : [ ]
-    },
-    {
-      "ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
       "dependsOn" : [ ]
     },
     {
