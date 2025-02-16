@@ -948,6 +948,27 @@ i.wb-icon {
 	margin-right: 5px;
 }
 
+span.tree-badge {
+	position: absolute;
+	display: inline-block;
+	top: 0;
+	left: -0.6rem;
+	color: white;
+	background-color: var(--lam-background-color-default);
+	padding: 0.2em 0.3rem 0.1em 0.3rem;
+	font-size: 60%;
+	font-weight: 200;
+	line-height: 1;
+	text-align: center;
+	white-space: nowrap;
+	border-radius: 0.5rem;
+	pointer-events: none;
+}
+
+span.tree-badge img {
+	width: 12px;
+}
+
 :root {
 	--wb-node-text-color: var(--lam-text-color-default) !important;
 }

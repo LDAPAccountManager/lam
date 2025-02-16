@@ -2969,14 +2969,14 @@ window.lam.treeview.copyNode = function(dn) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'COPY');
 	const oldNodeDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
 	if (oldNodeDn) {
-		const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
 		const oldNode = tree.findKey(oldNodeDn);
-		oldNode.icon = oldIcon;
-		oldNode.update();
+		if (oldNode) {
+			oldNode.data.badge = null;
+			oldNode.update();
+		}
 	}
-	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
-	node.icon = '../../graphics/copy.svg';
+	node.data.badge = '../../graphics/copy.svg';
 	node.update();
 }
 
@@ -2994,14 +2994,14 @@ window.lam.treeview.cutNode = function(dn) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'CUT');
 	const oldNodeDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
 	if (oldNodeDn) {
-		const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
 		const oldNode = tree.findKey(oldNodeDn);
-		oldNode.icon = oldIcon;
-		oldNode.update();
+		if (oldNode) {
+			oldNode.data.badge = null;
+			oldNode.update();
+		}
 	}
-	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
-	node.icon = '../../graphics/cut.svg';
+	node.data.badge = '../../graphics/cut.svg';
 	node.update();
 }
 
@@ -3018,7 +3018,6 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 		return;
 	}
 	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
-	const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
 	const action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
 	let data = new FormData();
 	data.append(tokenName, tokenValue);
@@ -3037,7 +3036,6 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 			return;
 		}
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_ACTION');
-		window.sessionStorage.removeItem('LAM_COPY_PASTE_OLD_ICON');
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_DN');
 		const oldNode = tree.findKey(dn);
 		if (action == 'CUT') {
@@ -3045,7 +3043,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 			parentNode.loadLazy(true);
 		}
 		else {
-			oldNode.icon = oldIcon;
+			oldNode.data.badge = null;
 			oldNode.update();
 		}
 		const newParentNode = tree.findKey(destinationDn);

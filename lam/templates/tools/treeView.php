@@ -114,6 +114,16 @@ function showTree(): void {
 				lazyLoad: function(e) {
 					return {url: "../misc/ajax.php?function=treeview&command=getNodes&dn=" + e.node.key};
 				},
+				iconBadge: (e) => {
+					if (e.node.data.badge) {
+						const badgeSpan = document.createElement("span");
+						badgeSpan.className = "tree-badge";
+						const badgeImg = document.createElement("img");
+						badgeImg.src = e.node.data.badge;
+						badgeSpan.appendChild(badgeImg);
+						return badgeSpan;
+					}
+				},
 				activate: function(e) {
 					const node = e.node;
 					window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.key);
