@@ -967,6 +967,7 @@ span.tree-badge {
 
 span.tree-badge img {
 	width: 12px;
+	filter: invert(21%) sepia(75%) saturate(2456%) hue-rotate(182deg) brightness(100%) contrast(99%);
 }
 
 :root {
