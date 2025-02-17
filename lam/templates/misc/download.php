@@ -6,7 +6,7 @@ use LamTemporaryFilesManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2023  Roland Gruber
+  Copyright (C) 2023 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,8 +59,10 @@ if (empty($_GET[$fileParamName]) || !$temporaryFilesManager->isRegisteredFile($_
 try {
 	$fileName = $_GET[$fileParamName];
 	$handle = $temporaryFilesManager->openTemporaryFileForRead($fileName);
-	setMimeType($fileName);
-	if (isset($_GET['download']) && ($_GET['download'] === 'true')) {
+	$extension = substr($fileName, strrpos($fileName, '.') + 1);
+	setMimeType($extension);
+	if ((isset($_GET['download']) && ($_GET['download'] === 'true'))
+		|| !$temporaryFilesManager->isAcceptableResourceLinkExtension($extension)) {
 		header('content-disposition: attachment; filename="' . $fileName . '"');
 	}
 	$content = fread($handle, 100000);
@@ -77,13 +79,12 @@ try {
 /**
  * Sets the mime type.
  *
- * @param string $fileName file name
+ * @param string $extension file extension
  */
-function setMimeType(string $fileName): void {
+function setMimeType(string $extension): void {
 	if (headers_sent()) {
 		return;
 	}
-	$extension = substr($fileName, strrpos($fileName, '.') + 1);
 	$mimeType = null;
 	switch ($extension) {
 		case 'crt':

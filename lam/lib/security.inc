@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2024  Roland Gruber
+  Copyright (C) 2006 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -909,6 +909,16 @@ class LamTemporaryFilesManager {
 		}
 		$selfServicePart = isSelfService() ? '&selfservice=true' : '';
 		return $prefix . 'misc/download.php?file=' . $fileName . $selfServicePart;
+	}
+
+	/**
+	 * Returns if the extension is acceptable to be injected as resource on the page.
+	 *
+	 * @param string $extension extension (e.g. jpg)
+	 * @return bool is acceptable
+	 */
+	public function isAcceptableResourceLinkExtension(string $extension): bool {
+		return in_array_ignore_case($extension, ['jpg', 'jpeg', 'gif', 'png', 'pdf']);
 	}
 
 	/**
