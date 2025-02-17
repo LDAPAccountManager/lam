@@ -135,7 +135,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$uploadColumns = getUploadColumns($type, $selectedModules);
 	// read input file
 	logNewMessage(LOG_DEBUG, 'Reading CSV file');
-	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
+	$handle = fopen($_FILES['inputfile']['tmp_name'], "r");
 	if ($handle !== false) {
 		$head = fgetcsv($handle, 2000);
 		if ($head !== false ) { // head row

@@ -3,9 +3,8 @@
   "description": "LDAP Account Manager",
   "require-dev" : {
     "phpunit/phpunit" : "9.5.21",
-    "squizlabs/php_codesniffer" : "3.4.0",
-    "phpstan/phpstan": "^1.10",
-    "rector/rector": "^1",
+    "phpstan/phpstan": "^2",
+    "rector/rector": "^2",
     "cyclonedx/cyclonedx-php-composer": "^5.0"
   },
   "require": {
