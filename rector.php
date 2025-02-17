@@ -45,8 +45,6 @@ return RectorConfig::configure()
 		DisallowedEmptyRuleFixerRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		InlineArrayReturnAssignRector::class,
-		// TODO inherited properties check is unreliable, recheck with newer rector version
-		CompleteDynamicPropertiesRector::class,
 		// TODO unreliable, recheck with newer rector version
 		ExplicitReturnNullRector::class
 	])
