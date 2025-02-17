@@ -7,6 +7,7 @@ March 2025 9.1
   -> Ambiguous tooltip on profile editor for Shadow users (394)
   -> Self service photo file enhancements (396)
   -> Tree view: delete does not work in French (406)
+  -> Cron job mails: show all values for multi-value attribute wildcards (411)
  - LAM Pro:
   -> Added support to manage DNS entries of bind-dyndb-ldap (361)
   -> Unix users: support to create a group with same name for rfc2307bis (404)
