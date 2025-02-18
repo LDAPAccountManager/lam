@@ -48,4 +48,3 @@ parameters:
 		- '#Parameter \#. .* of (function|method) .* expects .*, mixed given.#'
 		- '#Cannot access property .* on mixed#'
 		- '#Cannot use \+\+ on mixed.#'
-		- '#Call to function is_array\(\) with array\<string, class-string\> will always evaluate to true.#'
