@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:1fe94969-44ff-4623-a3df-6fa83e6d6d7d",
+  "serialNumber" : "urn:uuid:fafdbbc2-01cb-4f11-a60b-cb185328fd43",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2024-12-04T18:53:46Z",
+    "timestamp" : "2025-02-13T19:42:59Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -83,21 +83,6 @@
     },
     {
       "group" : "cdx:npm:package:bundled",
-      "name" : "jQuery",
-      "version" : "3.7.1",
-      "licenses" : [
-        {
-          "license" : {
-            "id" : "MIT"
-          }
-        }
-      ],
-      "purl" : "pkg:npm/jquery@3.7.1",
-      "type" : "library",
-      "bom-ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef"
-    },
-    {
-      "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
       "version" : "4.2.24",
       "licenses" : [
@@ -110,21 +95,6 @@
       "purl" : "pkg:npm/jodit@4.2.24",
       "type" : "library",
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e"
-    },
-    {
-      "group" : "cdx:npm:package:bundled",
-      "name" : "jstree",
-      "version" : "3.3.16",
-      "licenses" : [
-        {
-          "license" : {
-            "id" : "MIT"
-          }
-        }
-      ],
-      "purl" : "pkg:npm/jstree@3.3.16",
-      "type" : "library",
-      "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7"
     },
     {
       "group" : "cdx:npm:package:bundled",
@@ -193,6 +163,21 @@
       "purl" : "pkg:npm/tippy.js@6.3.7",
       "type" : "library",
       "bom-ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0"
+    },
+    {
+      "group" : "cdx:npm:package:bundled",
+      "name" : "wunderbaum",
+      "version" : "0.12.0",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/wunderbaum@0.12.0",
+      "type" : "library",
+      "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7"
     }
   ],
   "dependencies" : [
@@ -217,15 +202,7 @@
       "dependsOn" : [ ]
     },
     {
-      "ref" : "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
-      "dependsOn" : [ ]
-    },
-    {
       "ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
-      "dependsOn" : [ ]
-    },
-    {
-      "ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "dependsOn" : [ ]
     },
     {
@@ -246,6 +223,10 @@
     },
     {
       "ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "dependsOn" : [ ]
     }
   ]

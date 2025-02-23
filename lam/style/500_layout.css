@@ -2,7 +2,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2024  Roland Gruber
+  Copyright (C) 2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -938,6 +938,40 @@ div.tree-highlight {
 	margin-left: -1.3em;
 	margin-top: 0.4rem;
 	cursor: grab;
+}
+
+div.wunderbaum {
+	border: none !important;
+}
+
+i.wb-icon {
+	margin-right: 5px;
+}
+
+span.tree-badge {
+	position: absolute;
+	display: inline-block;
+	top: 0;
+	left: -0.6rem;
+	color: white;
+	background-color: var(--lam-background-color-default);
+	padding: 0.2em 0.3rem 0.1em 0.3rem;
+	font-size: 60%;
+	font-weight: 200;
+	line-height: 1;
+	text-align: center;
+	white-space: nowrap;
+	border-radius: 0.5rem;
+	pointer-events: none;
+}
+
+span.tree-badge img {
+	width: 12px;
+	filter: invert(21%) sepia(75%) saturate(2456%) hue-rotate(182deg) brightness(100%) contrast(99%);
+}
+
+:root {
+	--wb-node-text-color: var(--lam-text-color-default) !important;
 }
 
 div.swal2-html-container {

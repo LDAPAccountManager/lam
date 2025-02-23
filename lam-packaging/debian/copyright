@@ -1170,7 +1170,6 @@ lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Pu
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
 style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal
 style/050_grid.css                                                   B
-templates/lib/*jquery*.js                                            B  2018  jQuery Foundation and other contributors
 templates/lib/*popper*.js                                            B
 templates/lib/*tippy*.js                                             B  2021  atomiks
 templates/lib/*flatpickr*.js                                         B  2017  Gregory Petrosyan
@@ -1182,8 +1181,9 @@ style/600_cropper*.css                                               B  2018  Ch
 templates/lib/extra/jodit                                            B        Chupurnov
 templates/lib/extra/friendlyCaptcha                                  B
 templates/lib/400_Sortable*.js                                       B        RubaXa, owenm
-templates/lib/extra/jstree/*                                         B  2014  Ivan Bozhanov
-style/jstree/*                                                       B  2014  Ivan Bozhanov
 templates/lib/extra/qrcode/*                                         B  2009  Kazuhiko Arase
 templates/lib/extra/tabulator/*                                      B  2024  Oliver Folkerd
 style/tabulator/*                                                    B  2024  Oliver Folkerd
+templates/lib/extra/wunderbaum/*                                     B  2024  Martin Wendt
+style/wunderbaum/*                                                   B  2024  Martin Wendt
+style/bootstrap-icons/*                                              B  2024  The Bootstrap Authors

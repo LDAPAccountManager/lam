@@ -2344,29 +2344,6 @@ window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 window.lam.treeview = window.lam.treeview || {};
 
 /**
- * Returns the nodes in tree view.
- *
- * @param tokenName security token name
- * @param tokenValue security token value
- * @param node tree node
- * @param callback callback function
- */
-window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) {
-	let data = new FormData();
-	data.append(tokenName, tokenValue);
-	data.append('dn', node.id);
-	fetch('../misc/ajax.php?function=treeview&command=getNodes', {
-		method: 'POST',
-		body: data
-	})
-	.then(async response => {
-		const jsonData = await response.json();
-		window.lam.treeview.checkSession(jsonData);
-		callback.call(this, jsonData);
-	})
-}
-
-/**
  * Creates a new node in tree view.
  *
  * @param tokenName security token name
@@ -2453,9 +2430,13 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
-		const tree = jQuery.jstree.reference("#ldap_tree");
-		tree.refresh_node(parentDn);
-		tree.open_node(parentDn);
+		const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+		const node = tree.findKey(parentDn);
+		if (node) {
+			await node.setExpanded(true);
+			node.lazy = true;
+			node.loadLazy(true);
+		}
 		window.scrollTo(0, 0);
 	});
 }
@@ -2497,11 +2478,11 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, dn, text, okTe
 			.then(async response => {
 				const jsonData = await response.json();
 				window.lam.treeview.checkSession(jsonData);
-				const tree = jQuery.jstree.reference("#ldap_tree");
-				const parentId = tree.get_node(dn, false).parent;
-				tree.refresh_node(parentId);
-				const parent = tree.get_node(parentId, false);
-				window.lam.treeview.getNodeContent(tokenName, tokenValue, parent.id);
+				const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+				const parentNode = tree.findKey(dn).parent;
+				await parentNode.setActive();
+				parentNode.loadLazy(true);
+				window.lam.treeview.getNodeContent(tokenName, tokenValue, parentNode.key);
 				if (jsonData['errors']) {
 					const errTextTitle = jsonData['errors'][0][1];
 					const textSpanErrorTitle = document.querySelector('.treeview-error-title');
@@ -2609,8 +2590,8 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		const jsonData = await response.json();
 		window.lam.treeview.checkSession(jsonData);
 		if (jsonData.newDn) {
-			const tree = jQuery.jstree.reference("#ldap_tree");
-			tree.refresh_node(jsonData['parent']);
+			const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+			tree.findKey(jsonData['parent']).loadLazy(true);
 			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData.newDn, jsonData.result, attributesToHighlight);
 		}
 		else {
@@ -2957,16 +2938,20 @@ window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) 
  * @param tree tree object
  * @param ids array of node IDs.
  */
-window.lam.treeview.openInitial = function(tree, ids) {
+window.lam.treeview.openInitial = async function (tree, ids) {
 	if (ids.length === 0) {
 		return;
 	}
-	const firstNodeId = ids.shift();
-	tree.open_node(firstNodeId, function() {
-		window.lam.treeview.openInitial(tree, ids);
-	});
-	if (ids.length === 0) {
-		tree.select_node(firstNodeId);
+	let lastNode = null;
+	for (const id of ids) {
+		const node = tree.findKey(id);
+		if (node) {
+			await node.setExpanded();
+			lastNode = node;
+		}
+	}
+	if (lastNode) {
+		await lastNode.setActive();
 	}
 }
 
@@ -2979,12 +2964,20 @@ window.lam.treeview.copyNode = function(dn) {
 	if (!window.sessionStorage) {
 		return;
 	}
-	const tree = jQuery.jstree.reference("#ldap_tree");
-	const node = tree.get_node(dn, false);
+	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+	const node = tree.findKey(dn);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'COPY');
-	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
-	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
-	tree.set_icon(node, '../../graphics/copy.svg');
+	const oldNodeDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+	if (oldNodeDn) {
+		const oldNode = tree.findKey(oldNodeDn);
+		if (oldNode) {
+			oldNode.data.badge = null;
+			oldNode.update();
+		}
+	}
+	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
+	node.data.badge = '../../graphics/copy.svg';
+	node.update();
 }
 
 /**
@@ -2996,12 +2989,20 @@ window.lam.treeview.cutNode = function(dn) {
 	if (!window.sessionStorage) {
 		return;
 	}
-	const tree = jQuery.jstree.reference("#ldap_tree");
-	const node = tree.get_node(dn, false);
+	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+	const node = tree.findKey(dn);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'CUT');
-	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
-	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
-	tree.set_icon(node, '../../graphics/cut.svg');
+	const oldNodeDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+	if (oldNodeDn) {
+		const oldNode = tree.findKey(oldNodeDn);
+		if (oldNode) {
+			oldNode.data.badge = null;
+			oldNode.update();
+		}
+	}
+	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
+	node.data.badge = '../../graphics/cut.svg';
+	node.update();
 }
 
 /**
@@ -3016,9 +3017,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 	if (!dn) {
 		return;
 	}
-	const tree = jQuery.jstree.reference("#ldap_tree");
-	tree.deselect_all();
-	const oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
+	const tree = mar10.Wunderbaum.getTree("#ldap_tree");
 	const action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
 	let data = new FormData();
 	data.append(tokenName, tokenValue);
@@ -3036,17 +3035,21 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 			document.getElementById('ldap_actionarea_messages').innerHTML = jsonData.error;
 			return;
 		}
-		tree.set_icon(dn, oldIcon);
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_ACTION');
-		window.sessionStorage.removeItem('LAM_COPY_PASTE_OLD_ICON');
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_DN');
-		tree.refresh_node(destinationDn);
-		tree.open_node(destinationDn);
-		tree.select_node(destinationDn);
+		const oldNode = tree.findKey(dn);
 		if (action == 'CUT') {
-			const parentDn = tree.get_parent(dn);
-			tree.refresh_node(parentDn);
+			const parentNode = oldNode.parent;
+			parentNode.loadLazy(true);
 		}
+		else {
+			oldNode.data.badge = null;
+			oldNode.update();
+		}
+		const newParentNode = tree.findKey(destinationDn);
+		newParentNode.lazy = true;
+		newParentNode.expanded = true;
+		newParentNode.loadLazy(true);
 	});
 }
 
