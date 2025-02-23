@@ -5,6 +5,11 @@
 })(this, (function (exports) { 'use strict';
 
     /*!
+     * Wunderbaum - debounce.ts
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
+     */
+    /*
      * debounce & throttle, taken from https://github.com/lodash/lodash v4.17.21
      * MIT License: https://raw.githubusercontent.com/lodash/lodash/4.17.21-npm/LICENSE
      * Modified for TypeScript type annotations.
@@ -293,8 +298,8 @@
 
     /*!
      * Wunderbaum - util
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     /** @module util */
     /** Readable names for `MouseEvent.button` */
@@ -1147,8 +1152,8 @@
 
     /*!
      * Wunderbaum - types
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Possible values for {@link WunderbaumNode.update} and {@link Wunderbaum.update}.
@@ -1172,7 +1177,7 @@
         /** Vertical scroll event. Update the 'top' property of all rows. */
         ChangeType["scroll"] = "scroll";
     })(ChangeType || (ChangeType = {}));
-    /* Internal use. */
+    /** @internal */
     var RenderFlag;
     (function (RenderFlag) {
         RenderFlag["clearMarkup"] = "clearMarkup";
@@ -1203,16 +1208,20 @@
     /** Initial navigation mode and possible transition. */
     var NavModeEnum;
     (function (NavModeEnum) {
+        /** Start with row mode, but allow cell-nav mode */
         NavModeEnum["startRow"] = "startRow";
+        /** Cell-nav mode only */
         NavModeEnum["cell"] = "cell";
+        /** Start in cell-nav mode, but allow row mode */
         NavModeEnum["startCell"] = "startCell";
+        /** Row mode only */
         NavModeEnum["row"] = "row";
     })(NavModeEnum || (NavModeEnum = {}));
 
     /*!
      * Wunderbaum - wb_extension_base
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     class WunderbaumExtension {
         constructor(tree, id, defaults) {
@@ -1270,8 +1279,8 @@
 
     /*!
      * Wunderbaum - ext-filter
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     const START_MARKER = "\uFFF7";
     const END_MARKER = "\uFFF8";
@@ -1403,7 +1412,7 @@
                 };
             }
             tree.filterMode = opts.mode;
-            // eslint-disable-next-line prefer-rest-params, prefer-spread
+            // eslint-disable-next-line prefer-rest-params
             this.lastFilterArgs = arguments;
             tree.element.classList.toggle("wb-ext-filter-hide", !!hideMode);
             tree.element.classList.toggle("wb-ext-filter-dim", !hideMode);
@@ -1595,8 +1604,8 @@
 
     /*!
      * Wunderbaum - ext-keynav
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     const QUICKSEARCH_DELAY = 500;
     class KeynavExtension extends WunderbaumExtension {
@@ -1959,8 +1968,8 @@
 
     /*!
      * Wunderbaum - ext-logger
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     class LoggerExtension extends WunderbaumExtension {
         constructor(tree) {
@@ -2001,8 +2010,8 @@
 
     /*!
      * Wunderbaum - ext-dnd
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     const nodeMimeType = "application/x-wunderbaum-node";
     class DndExtension extends WunderbaumExtension {
@@ -2222,7 +2231,7 @@
                 viewportY >= height - sensitivity) {
                 // Mouse in bottom 20px area: scroll down
                 // sp.scrollTop = scrollTop + dndOpts.scrollSpeed;
-                this.currentScrollDir = +1;
+                this.currentScrollDir = 1;
             }
             if (this.currentScrollDir) {
                 this.applyScrollDirThrottled();
@@ -2451,8 +2460,8 @@
 
     /*!
      * Wunderbaum - drag_observer
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Convert mouse- and touch events to 'dragstart', 'drag', and 'dragstop'.
@@ -2600,8 +2609,8 @@
 
     /*!
      * Wunderbaum - common
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     const DEFAULT_DEBUGLEVEL = 3; // Replaced by rollup script
     /**
@@ -2628,8 +2637,11 @@
     // export const RECURSIVE_REQUEST_ERROR = "$recursive_request";
     // export const INVALID_REQUEST_TARGET_ERROR = "$request_target_invalid";
     /**
-     * Default node icons.
-     * Requires bootstrap icons https://icons.getbootstrap.com
+     * Default node icons for icon libraries
+     *
+     *  - 'bootstrap': {@link https://icons.getbootstrap.com}
+     *  - 'fontawesome6' {@link https://fontawesome.com/icons}
+     *
      */
     const iconMaps = {
         bootstrap: {
@@ -2770,10 +2782,12 @@
     /**
      * Convert 'flat' to 'nested' format.
      *
-     *  Flat node entry format:
-     *    [PARENT_ID, [POSITIONAL_ARGS]]
-     *  or
-     *    [PARENT_ID, [POSITIONAL_ARGS], {KEY_VALUE_ARGS}]
+     * Flat node entry format:
+     *    [PARENT_IDX, {KEY_VALUE_ARGS}]
+     * or, if N _positional re defined:
+     *    [PARENT_IDX, POSITIONAL_ARG_1, POSITIONAL_ARG_2, ..., POSITIONAL_ARG_N]
+     * Even if _positional additional are defined, KEY_VALUE_ARGS can be appended:
+     *    [PARENT_IDX, POSITIONAL_ARG_1, ..., {KEY_VALUE_ARGS}]
      *
      * 1. Parent-referencing list is converted to a list of nested dicts with
      *    optional `children` properties.
@@ -2782,10 +2796,11 @@
     function unflattenSource(source) {
         var _a, _b, _c;
         const { _format, _keyMap = {}, _positional = [], children } = source;
+        const _positionalCount = _positional.length;
         if (_format !== "flat") {
             throw new Error(`Expected source._format: "flat", but got ${_format}`);
         }
-        if (_positional && _positional.includes("children")) {
+        if (_positionalCount && _positional.includes("children")) {
             throw new Error(`source._positional must not include "children": ${_positional}`);
         }
         let longToShort = _keyMap;
@@ -2799,7 +2814,7 @@
                 longToShort[value] = key;
             }
         }
-        const positionalShort = _positional.map((e) => longToShort[e]);
+        const positionalShort = _positional.map((e) => { var _a; return (_a = longToShort[e]) !== null && _a !== void 0 ? _a : e; });
         const newChildren = [];
         const keyToNodeMap = {};
         const indexToNodeMap = {};
@@ -2809,19 +2824,32 @@
             // Node entry format:
             //   [PARENT_ID, [POSITIONAL_ARGS]]
             // or
-            //   [PARENT_ID, [POSITIONAL_ARGS], {KEY_VALUE_ARGS}]
-            const [parentId, args, kwargs = {}] = nodeTuple;
+            //   [PARENT_ID, POSITIONAL_ARG_1, POSITIONAL_ARG_2, ..., {KEY_VALUE_ARGS}]
+            let kwargs;
+            const [parentId, ...args] = nodeTuple;
+            if (args.length === _positionalCount) {
+                kwargs = {};
+            }
+            else if (args.length === _positionalCount + 1) {
+                kwargs = args.pop();
+                if (typeof kwargs !== "object") {
+                    throw new Error(`unflattenSource: Expected dict as last tuple element: ${nodeTuple}`);
+                }
+            }
+            else {
+                throw new Error(`unflattenSource: unexpected tuple length: ${nodeTuple}`);
+            }
             // Free up some memory as we go
             nodeTuple[1] = null;
             if (nodeTuple[2] != null) {
                 nodeTuple[2] = null;
             }
-            // console.log("flatten", parentId, args, kwargs)
             // We keep `kwargs` as our new node definition. Then we add all positional
             // values to this object:
             args.forEach((val, positionalIdx) => {
                 kwargs[positionalShort[positionalIdx]] = val;
             });
+            args.length = 0;
             // Find the parent node. `null` means 'toplevel'. PARENT_ID may be the numeric
             // index of the source.children list. If PARENT_ID is a string, we search
             // a parent with node.key of this value.
@@ -2940,8 +2968,8 @@
 
     /*!
      * Wunderbaum - ext-grid
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     class GridExtension extends WunderbaumExtension {
         constructor(tree) {
@@ -3031,8 +3059,8 @@
 
     /*!
      * Wunderbaum - deferred
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Implement a ES6 Promise, that exposes a resolve() and reject() method.
@@ -3084,8 +3112,8 @@
 
     /*!
      * Wunderbaum - wunderbaum_node
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     /** WunderbaumNode properties that can be passed with source data.
      * (Any other source properties will be stored as `node.data.PROP`.)
@@ -5169,7 +5197,8 @@
                 case undefined:
                     changed = this.selected || !this._partsel;
                     this.selected = false;
-                    this._partsel = true;
+                    // #110: end nodess cannot have a `_partsel` flag
+                    this._partsel = this.hasChildren() ? true : false;
                     break;
                 default:
                     error(`Invalid state: ${state}`);
@@ -5630,8 +5659,8 @@
 
     /*!
      * Wunderbaum - ext-edit
-     * Copyright (c) 2021-2024, Martin Wendt. Released under the MIT license.
-     * v0.12.0, Sun, 12 Jan 2025 10:51:41 GMT (https://github.com/mar10/wunderbaum)
+     * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
+     * v0.12.1, Sat, 22 Feb 2025 22:59:20 GMT (https://github.com/mar10/wunderbaum)
      */
     // const START_MARKER = "\uFFF7";
     class EditExtension extends WunderbaumExtension {
@@ -5962,12 +5991,12 @@
      *
      * A treegrid control.
      *
-     * Copyright (c) 2021-2024, Martin Wendt (https://wwWendt.de).
+     * Copyright (c) 2021-2025, Martin Wendt (https://wwWendt.de).
      * https://github.com/mar10/wunderbaum
      *
      * Released under the MIT license.
-     * @version v0.12.0
-     * @date Sun, 12 Jan 2025 10:51:41 GMT
+     * @version v0.12.1
+     * @date Sat, 22 Feb 2025 22:59:20 GMT
      */
     // import "./wunderbaum.scss";
     class WbSystemRoot extends WunderbaumNode {
@@ -5988,7 +6017,7 @@
      */
     class Wunderbaum {
         /** Currently active node if any.
-         * Use @link {WunderbaumNode.setActive|setActive} to modify.
+         * Use {@link WunderbaumNode.setActive|setActive} to modify.
          */
         get activeNode() {
             var _a;
@@ -5996,7 +6025,7 @@
             return ((_a = this._activeNode) === null || _a === void 0 ? void 0 : _a.tree) ? this._activeNode : null;
         }
         /** Current node hat has keyboard focus if any.
-         * Use @link {WunderbaumNode.setFocus|setFocus()} to modify.
+         * Use {@link WunderbaumNode.setFocus|setFocus()} to modify.
          */
         get focusNode() {
             var _a;
@@ -6146,7 +6175,7 @@
             const wantHeader = opts.header == null ? this.columns.length > 1 : !!opts.header;
             if (this.headerElement) {
                 // User existing header markup to define `this.columns`
-                assert(!this.columns, "`opts.columns` must not be set if markup already contains a header");
+                assert(!this.columns, "`opts.columns` must not be set if table markup already contains a header");
                 this.columns = [];
                 const rowElement = this.headerElement.querySelector("div.wb-row");
                 for (const colDiv of rowElement.querySelectorAll("div")) {
@@ -6194,8 +6223,7 @@
             // --- Load initial data
             if (opts.source) {
                 if (opts.showSpinner) {
-                    this.nodeListElement.innerHTML =
-                        "<progress class='spinner'>loading...</progress>";
+                    this.nodeListElement.innerHTML = `<progress class='spinner'>${opts.strings.loading}</progress>`;
                 }
                 this.load(opts.source)
                     .then(() => {
@@ -7990,8 +8018,9 @@
             // this.debug("render", opts);
             const obsoleteNodes = new Set();
             this.nodeListElement.childNodes.forEach((elem) => {
-                const tr = elem;
-                obsoleteNodes.add(tr._wb_node);
+                if (elem._wb_node) {
+                    obsoleteNodes.add(elem._wb_node);
+                }
             });
             let idx = 0;
             let top = 0;
@@ -8292,7 +8321,7 @@
     }
     Wunderbaum.sequence = 0;
     /** Wunderbaum release version number "MAJOR.MINOR.PATCH". */
-    Wunderbaum.version = "v0.12.0"; // Set to semver by 'grunt release'
+    Wunderbaum.version = "v0.12.1"; // Set to semver by 'grunt release'
     /** Expose some useful methods of the util.ts module as `Wunderbaum.util`. */
     Wunderbaum.util = util;
 
