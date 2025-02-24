@@ -609,6 +609,12 @@
       intermediate release.</para>
 
       <section>
+        <title>9.0 -&gt; 9.1</title>
+
+        <para>No actions required.</para>
+      </section>
+
+      <section>
         <title>8.9 -&gt; 9.0</title>
 
         <para><emphasis role="bold">Main configuration and server profiles:
