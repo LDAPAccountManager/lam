@@ -1,7 +1,7 @@
 /*!
  * jodit - Jodit is an awesome and useful wysiwyg editor with filebrowser
  * Author: Chupurnov <chupurnov@gmail.com> (https://xdsoft.net/jodit/)
- * Version: v4.2.24
+ * Version: v4.5.17
  * Url: https://xdsoft.net/jodit/
  * License(s): MIT
  */
@@ -9,7 +9,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-ui-group {
   display: inline-flex;
@@ -37,7 +37,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-ui-list {
   display: flex;
@@ -81,7 +81,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-ui-button-icon-text__icon {
   display: none;
@@ -98,6 +98,8 @@
   display: inline-flex;
   flex-grow: 1;
   justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .jodit-ui-button-icon-text_context_menu .jodit-ui-button-icon-text__text {
   position: relative;
@@ -533,6 +535,8 @@
   display: inline-flex;
   flex-grow: 1;
   justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .jodit-ui-button_context_menu .jodit-ui-button__text {
   position: relative;
@@ -747,7 +751,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-tooltip-color: #fff;
@@ -778,6 +782,7 @@
   transition: opacity 0.2s ease 0s;
   user-select: none;
   white-space: normal;
+  pointer-events: none;
 }
 @media (max-width: 768px) {
   .jodit-ui-tooltip {
@@ -1227,11 +1232,11 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
-  --jd-popup-box-shadow: 0 4px 1px -2px rgba(76, 76, 76, 0.2),
-		0 3px 3px 0 rgb(76 76 76 / 15%), 0 1px 4px 0 rgb(76 76 76 / 13%);
+  --jd-popup-box-shadow: 0 4px 1px -2px rgba(76, 76, 76, 0.2), 0 3px 3px 0 rgba(76, 76, 76, 0.15), 0 1px 4px 0 rgba(76, 76, 76, 0.13);
+  --jd-popup-max-height: max(50vh, 350px);
 }
 .jodit-popup {
   position: static;
@@ -1254,7 +1259,7 @@
   font-family: var(--jd-font-default);
   font-size: var(--jd-font-size-default);
   overflow: auto;
-  max-height: 300px;
+  max-height: var(--jd-popup-max-height, 400px);
   padding: var(--jd-padding-default);
   background: var(--jd-color-background-default);
   overflow-scrolling: touch;
@@ -1269,7 +1274,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 @keyframes pulse {
   30% {
@@ -1324,7 +1329,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-em-color-border: #b6d4fe;
@@ -1394,7 +1399,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-toolbar-collection,
 .jodit-toolbar-editor-collection {
@@ -1506,7 +1511,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-button-trigger-size: 14px;
@@ -1536,6 +1541,8 @@
   display: inline-flex;
   flex-grow: 1;
   justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .jodit-toolbar-button_context_menu .jodit-toolbar-button__text {
   position: relative;
@@ -1753,7 +1760,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-toolbar-content {
   position: relative;
@@ -1894,6 +1901,8 @@
   display: inline-flex;
   flex-grow: 1;
   justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .jodit-toolbar-content_context_menu .jodit-toolbar-content__text {
   position: relative;
@@ -2107,6 +2116,8 @@
   display: inline-flex;
   flex-grow: 1;
   justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .jodit-toolbar-select_context_menu .jodit-toolbar-select__text {
   position: relative;
@@ -2348,7 +2359,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-toolbar__box:not(:empty) {
   --jd-color-background-default: var(--jd-color-panel);
@@ -2364,7 +2375,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-dialog {
   font-family: var(--jd-font-default);
@@ -2636,7 +2647,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-context-menu {
   position: static;
@@ -2662,7 +2673,7 @@
   font-family: var(--jd-font-default);
   font-size: var(--jd-font-size-default);
   overflow: auto;
-  max-height: 300px;
+  max-height: var(--jd-popup-max-height, 400px);
   padding: var(--jd-padding-default);
   background: var(--jd-color-background-default);
   overflow-scrolling: touch;
@@ -2686,7 +2697,7 @@
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-image-editor-resizer-border-color: #05ff00;
@@ -3181,12 +3192,12 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-first-column: 31%;
@@ -3216,7 +3227,7 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-file-browser-preview {
   position: relative;
@@ -3277,7 +3288,7 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-status-bar {
   display: flex;
@@ -3347,7 +3358,7 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-drag-and-drop__file-box,
 .jodit_uploadfile_button {
@@ -3384,7 +3395,7 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-anl-color-new-line: var(--jd-color-border);
@@ -3438,7 +3449,7 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-color-picker-cell-size: 24px;
@@ -3494,10 +3505,10 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-tabs {
-  --jd-box-shadow-tabs: 0 0 #0000, 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1);
+  --jd-box-shadow-tabs: 0 0 #0000, 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
   font-family: var(--jd-font-default);
   font-size: var(--jd-font-size-default);
 }
@@ -3552,6 +3563,12 @@ a + .jodit-file-browser-tree__source-title {
 }
 .jodit-tabs__button {
   min-width: 80px;
+  max-width: 210px;
+}
+.jodit-tabs__button .jodit-ui-button__text {
+  white-space: nowrap;
+  flex: 1;
+  justify-content: space-around;
 }
 .jodit-tabs__button_columns_3 {
   width: calc(100% / 3);
@@ -3590,7 +3607,7 @@ a + .jodit-file-browser-tree__source-title {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit_fullsize-box_true {
   position: static !important;
@@ -3623,7 +3640,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-ui-image-position-tab__lockMargin > svg,
 .jodit-ui-image-properties-form__lockMargin > svg,
@@ -3713,7 +3730,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-popup-inline__container {
   z-index: 1300;
@@ -3746,7 +3763,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 [data-jodit_iframe_wrapper] {
   position: relative;
@@ -3852,7 +3869,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-source {
   position: relative;
@@ -3912,7 +3929,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-symbols {
   width: 460px;
@@ -3963,7 +3980,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-context table,
 .jodit-wysiwyg table {
@@ -4021,6 +4038,7 @@ html.jodit_fullsize-box_true {
   margin-bottom: 2px;
   margin-left: 2px;
   vertical-align: top;
+  cursor: pointer;
 }
 .jodit-form__inserter .jodit-form__table-creator-box .jodit-form__container > div > span:first-child {
   margin-left: 0;
@@ -4049,12 +4067,12 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-color-white: #fff;
@@ -4094,8 +4112,7 @@ html.jodit_fullsize-box_true {
   --jd-color-button-background-hover: #dcdcdc;
   --jd-color-button-background-hover-opacity40: rgba(220, 220, 220, 0.4);
   --jd-color-button-background-hover-opacity60: rgba(220, 220, 220, 0.6);
-  --jd-font-default: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto,
-		oxygen-sans, ubuntu, cantarell, 'Helvetica Neue', sans-serif;
+  --jd-font-default: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen-sans, ubuntu, cantarell, 'Helvetica Neue', sans-serif;
   --jd-font-size-default: 14px;
   --jd-font-size-small: 11px;
   --jd-color-text-icons: rgba(0, 0, 0, 0.75);
@@ -4142,7 +4159,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-wysiwyg {
   outline: 0;
@@ -4179,7 +4196,7 @@ html.jodit_fullsize-box_true {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 :root {
   --jd-switche-width: 60px;
@@ -4397,7 +4414,7 @@ input:focus + .jodit-switcher__slider {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-button-group {
   display: flex;
@@ -4437,7 +4454,7 @@ input:focus + .jodit-switcher__slider {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit_text_icons .jodit_icon {
   width: auto;
@@ -4467,7 +4484,7 @@ input:focus + .jodit-switcher__slider {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-grid {
   display: flex;
@@ -4601,7 +4618,7 @@ input:focus + .jodit-switcher__slider {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 @keyframes rotate {
   to {
@@ -4641,7 +4658,7 @@ svg.jodit-icon {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit,
 .jodit-container,
@@ -4709,7 +4726,7 @@ svg.jodit-icon {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2024 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
  */
 .jodit-dialog_theme_dark,
 .jodit_theme_dark {
