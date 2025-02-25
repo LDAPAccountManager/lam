@@ -275,7 +275,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
           try {
             var response;
             return Promise.resolve(fetchAndRetryWithBackoff(urls[i] + "?sitekey=" + siteKey, {
-              headers: [["x-frc-client", "js-0.9.17"]],
+              headers: [["x-frc-client", "js-0.9.18"]],
               mode: "cors"
             }, 2)).then(function ($await_7) {
               try {
@@ -909,6 +909,21 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
     button_retry: "다시 시도해 주세요",
     text_fetch_error: "연결하지 못했습니다"
   };
+  // Arabic
+  var LANG_AR = {
+    text_init: "...التهيئة",
+    text_ready: "يتم التحقيق",
+    button_start: "إضغط هنا للتحقيق",
+    text_fetching: "تهيئة التحدي",
+    text_solving: "نتحقق من أنك لست روبوتًا...",
+    text_completed: "أنا لست روبوتًا",
+    text_completed_sr: "تم الانتهاء من التحقق التلقائي من البريد العشوائي",
+    text_expired: "انتهت صلاحية التحقق",
+    button_restart: "إعادة تشغيل",
+    text_error: "فشل التحقق",
+    button_retry: "ابدأ مرة أخرى",
+    text_fetch_error: "مشكلة في الاتصال مع"
+  };
   var localizations = {
     en: LANG_EN,
     de: LANG_DE,
@@ -945,6 +960,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
     he: LANG_HE,
     th: LANG_TH,
     kr: LANG_KR,
+    ar: LANG_AR,
     // alternative language codes
     nb: LANG_NO
   };
