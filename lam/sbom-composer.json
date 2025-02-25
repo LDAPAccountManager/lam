@@ -1081,10 +1081,10 @@
             ]
         },
         {
-            "bom-ref": "monolog/monolog-3.8.0.0",
+            "bom-ref": "monolog/monolog-3.8.1.0",
             "type": "library",
             "name": "monolog",
-            "version": "3.8.0",
+            "version": "3.8.1",
             "group": "monolog",
             "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
             "author": "Jordi Boggiano",
@@ -1095,17 +1095,17 @@
                     }
                 }
             ],
-            "purl": "pkg:composer/monolog/monolog@3.8.0",
+            "purl": "pkg:composer/monolog/monolog@3.8.1",
             "externalReferences": [
                 {
                     "type": "distribution",
-                    "url": "https://api.github.com/repos/Seldaek/monolog/zipball/32e515fdc02cdafbe4593e30a9350d486b125b67",
-                    "comment": "dist reference: 32e515fdc02cdafbe4593e30a9350d486b125b67"
+                    "url": "https://api.github.com/repos/Seldaek/monolog/zipball/aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
+                    "comment": "dist reference: aef6ee73a77a66e404dd6540934a9ef1b3c855b4"
                 },
                 {
                     "type": "vcs",
                     "url": "https://github.com/Seldaek/monolog.git",
-                    "comment": "source reference: 32e515fdc02cdafbe4593e30a9350d486b125b67"
+                    "comment": "source reference: aef6ee73a77a66e404dd6540934a9ef1b3c855b4"
                 },
                 {
                     "type": "website",
@@ -1119,18 +1119,18 @@
                 },
                 {
                     "type": "vcs",
-                    "url": "https://github.com/Seldaek/monolog/tree/3.8.0",
+                    "url": "https://github.com/Seldaek/monolog/tree/3.8.1",
                     "comment": "as detected from Composer manifest 'support.source'"
                 }
             ],
             "properties": [
                 {
                     "name": "cdx:composer:package:distReference",
-                    "value": "32e515fdc02cdafbe4593e30a9350d486b125b67"
+                    "value": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4"
                 },
                 {
                     "name": "cdx:composer:package:sourceReference",
-                    "value": "32e515fdc02cdafbe4593e30a9350d486b125b67"
+                    "value": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4"
                 },
                 {
                     "name": "cdx:composer:package:type",
@@ -1429,10 +1429,10 @@
             ]
         },
         {
-            "bom-ref": "phpseclib/phpseclib-3.0.42.0",
+            "bom-ref": "phpseclib/phpseclib-3.0.43.0",
             "type": "library",
             "name": "phpseclib",
-            "version": "3.0.42",
+            "version": "3.0.43",
             "group": "phpseclib",
             "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
             "author": "Jim Wigginton, Patrick Monnerat, Andreas Fischer, Hans-J\u00fcrgen Petrich, Graham Campbell",
@@ -1443,17 +1443,17 @@
                     }
                 }
             ],
-            "purl": "pkg:composer/phpseclib/phpseclib@3.0.42",
+            "purl": "pkg:composer/phpseclib/phpseclib@3.0.43",
             "externalReferences": [
                 {
                     "type": "distribution",
-                    "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/db92f1b1987b12b13f248fe76c3a52cadb67bb98",
-                    "comment": "dist reference: db92f1b1987b12b13f248fe76c3a52cadb67bb98"
+                    "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/709ec107af3cb2f385b9617be72af8cf62441d02",
+                    "comment": "dist reference: 709ec107af3cb2f385b9617be72af8cf62441d02"
                 },
                 {
                     "type": "vcs",
                     "url": "https://github.com/phpseclib/phpseclib.git",
-                    "comment": "source reference: db92f1b1987b12b13f248fe76c3a52cadb67bb98"
+                    "comment": "source reference: 709ec107af3cb2f385b9617be72af8cf62441d02"
                 },
                 {
                     "type": "website",
@@ -1467,18 +1467,18 @@
                 },
                 {
                     "type": "vcs",
-                    "url": "https://github.com/phpseclib/phpseclib/tree/3.0.42",
+                    "url": "https://github.com/phpseclib/phpseclib/tree/3.0.43",
                     "comment": "as detected from Composer manifest 'support.source'"
                 }
             ],
             "properties": [
                 {
                     "name": "cdx:composer:package:distReference",
-                    "value": "db92f1b1987b12b13f248fe76c3a52cadb67bb98"
+                    "value": "709ec107af3cb2f385b9617be72af8cf62441d02"
                 },
                 {
                     "name": "cdx:composer:package:sourceReference",
-                    "value": "db92f1b1987b12b13f248fe76c3a52cadb67bb98"
+                    "value": "709ec107af3cb2f385b9617be72af8cf62441d02"
                 },
                 {
                     "name": "cdx:composer:package:type",
@@ -2151,10 +2151,10 @@
             ]
         },
         {
-            "bom-ref": "symfony/http-client-6.4.16.0",
+            "bom-ref": "symfony/http-client-6.4.18.0",
             "type": "library",
             "name": "http-client",
-            "version": "v6.4.16",
+            "version": "v6.4.18",
             "group": "symfony",
             "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
             "author": "Nicolas Grekas, Symfony Community",
@@ -2165,17 +2165,17 @@
                     }
                 }
             ],
-            "purl": "pkg:composer/symfony/http-client@v6.4.16",
+            "purl": "pkg:composer/symfony/http-client@v6.4.18",
             "externalReferences": [
                 {
                     "type": "distribution",
-                    "url": "https://api.github.com/repos/symfony/http-client/zipball/60a113666fa67e598abace38e5f46a0954d8833d",
-                    "comment": "dist reference: 60a113666fa67e598abace38e5f46a0954d8833d"
+                    "url": "https://api.github.com/repos/symfony/http-client/zipball/394b440934056b8d9d6ba250001458e9d7998b7f",
+                    "comment": "dist reference: 394b440934056b8d9d6ba250001458e9d7998b7f"
                 },
                 {
                     "type": "vcs",
                     "url": "https://github.com/symfony/http-client.git",
-                    "comment": "source reference: 60a113666fa67e598abace38e5f46a0954d8833d"
+                    "comment": "source reference: 394b440934056b8d9d6ba250001458e9d7998b7f"
                 },
                 {
                     "type": "website",
@@ -2184,18 +2184,18 @@
                 },
                 {
                     "type": "vcs",
-                    "url": "https://github.com/symfony/http-client/tree/v6.4.16",
+                    "url": "https://github.com/symfony/http-client/tree/v6.4.18",
                     "comment": "as detected from Composer manifest 'support.source'"
                 }
             ],
             "properties": [
                 {
                     "name": "cdx:composer:package:distReference",
-                    "value": "60a113666fa67e598abace38e5f46a0954d8833d"
+                    "value": "394b440934056b8d9d6ba250001458e9d7998b7f"
                 },
                 {
                     "name": "cdx:composer:package:sourceReference",
-                    "value": "60a113666fa67e598abace38e5f46a0954d8833d"
+                    "value": "394b440934056b8d9d6ba250001458e9d7998b7f"
                 },
                 {
                     "name": "cdx:composer:package:type",
@@ -2204,10 +2204,10 @@
             ]
         },
         {
-            "bom-ref": "symfony/http-client-contracts-3.5.1.0",
+            "bom-ref": "symfony/http-client-contracts-3.5.2.0",
             "type": "library",
             "name": "http-client-contracts",
-            "version": "v3.5.1",
+            "version": "v3.5.2",
             "group": "symfony",
             "description": "Generic abstractions related to HTTP clients",
             "author": "Nicolas Grekas, Symfony Community",
@@ -2218,17 +2218,17 @@
                     }
                 }
             ],
-            "purl": "pkg:composer/symfony/http-client-contracts@v3.5.1",
+            "purl": "pkg:composer/symfony/http-client-contracts@v3.5.2",
             "externalReferences": [
                 {
                     "type": "distribution",
-                    "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/c2f3ad828596624ca39ea40f83617ef51ca8bbf9",
-                    "comment": "dist reference: c2f3ad828596624ca39ea40f83617ef51ca8bbf9"
+                    "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/ee8d807ab20fcb51267fdace50fbe3494c31e645",
+                    "comment": "dist reference: ee8d807ab20fcb51267fdace50fbe3494c31e645"
                 },
                 {
                     "type": "vcs",
                     "url": "https://github.com/symfony/http-client-contracts.git",
-                    "comment": "source reference: c2f3ad828596624ca39ea40f83617ef51ca8bbf9"
+                    "comment": "source reference: ee8d807ab20fcb51267fdace50fbe3494c31e645"
                 },
                 {
                     "type": "website",
@@ -2237,18 +2237,18 @@
                 },
                 {
                     "type": "vcs",
-                    "url": "https://github.com/symfony/http-client-contracts/tree/v3.5.1",
+                    "url": "https://github.com/symfony/http-client-contracts/tree/v3.5.2",
                     "comment": "as detected from Composer manifest 'support.source'"
                 }
             ],
             "properties": [
                 {
                     "name": "cdx:composer:package:distReference",
-                    "value": "c2f3ad828596624ca39ea40f83617ef51ca8bbf9"
+                    "value": "ee8d807ab20fcb51267fdace50fbe3494c31e645"
                 },
                 {
                     "name": "cdx:composer:package:sourceReference",
-                    "value": "c2f3ad828596624ca39ea40f83617ef51ca8bbf9"
+                    "value": "ee8d807ab20fcb51267fdace50fbe3494c31e645"
                 },
                 {
                     "name": "cdx:composer:package:type",
@@ -2257,10 +2257,10 @@
             ]
         },
         {
-            "bom-ref": "symfony/http-foundation-6.4.16.0",
+            "bom-ref": "symfony/http-foundation-6.4.18.0",
             "type": "library",
             "name": "http-foundation",
-            "version": "v6.4.16",
+            "version": "v6.4.18",
             "group": "symfony",
             "description": "Defines an object-oriented layer for the HTTP specification",
             "author": "Fabien Potencier, Symfony Community",
@@ -2271,17 +2271,17 @@
                     }
                 }
             ],
-            "purl": "pkg:composer/symfony/http-foundation@v6.4.16",
+            "purl": "pkg:composer/symfony/http-foundation@v6.4.18",
             "externalReferences": [
                 {
                     "type": "distribution",
-                    "url": "https://api.github.com/repos/symfony/http-foundation/zipball/431771b7a6f662f1575b3cfc8fd7617aa9864d57",
-                    "comment": "dist reference: 431771b7a6f662f1575b3cfc8fd7617aa9864d57"
+                    "url": "https://api.github.com/repos/symfony/http-foundation/zipball/d0492d6217e5ab48f51fca76f64cf8e78919d0db",
+                    "comment": "dist reference: d0492d6217e5ab48f51fca76f64cf8e78919d0db"
                 },
                 {
                     "type": "vcs",
                     "url": "https://github.com/symfony/http-foundation.git",
-                    "comment": "source reference: 431771b7a6f662f1575b3cfc8fd7617aa9864d57"
+                    "comment": "source reference: d0492d6217e5ab48f51fca76f64cf8e78919d0db"
                 },
                 {
                     "type": "website",
@@ -2290,18 +2290,18 @@
                 },
                 {
                     "type": "vcs",
-                    "url": "https://github.com/symfony/http-foundation/tree/v6.4.16",
+                    "url": "https://github.com/symfony/http-foundation/tree/v6.4.18",
                     "comment": "as detected from Composer manifest 'support.source'"
                 }
             ],
             "properties": [
                 {
                     "name": "cdx:composer:package:distReference",
-                    "value": "431771b7a6f662f1575b3cfc8fd7617aa9864d57"
+                    "value": "d0492d6217e5ab48f51fca76f64cf8e78919d0db"
                 },
                 {
                     "name": "cdx:composer:package:sourceReference",
-                    "value": "431771b7a6f662f1575b3cfc8fd7617aa9864d57"
+                    "value": "d0492d6217e5ab48f51fca76f64cf8e78919d0db"
                 },
                 {
                     "name": "cdx:composer:package:type",
@@ -3574,7 +3574,7 @@
             ]
         },
         {
-            "ref": "monolog/monolog-3.8.0.0",
+            "ref": "monolog/monolog-3.8.1.0",
             "dependsOn": [
                 "psr/log-3.0.2.0"
             ]
@@ -3602,7 +3602,7 @@
             "ref": "phpmailer/phpmailer-6.9.3.0"
         },
         {
-            "ref": "phpseclib/phpseclib-3.0.42.0",
+            "ref": "phpseclib/phpseclib-3.0.43.0",
             "dependsOn": [
                 "paragonie/constant_time_encoding-2.7.0.0",
                 "paragonie/random_compat-2.0.21.0"
@@ -3664,19 +3664,19 @@
             "ref": "symfony/deprecation-contracts-3.5.1.0"
         },
         {
-            "ref": "symfony/http-client-6.4.16.0",
+            "ref": "symfony/http-client-6.4.18.0",
             "dependsOn": [
                 "psr/log-3.0.2.0",
                 "symfony/deprecation-contracts-3.5.1.0",
-                "symfony/http-client-contracts-3.5.1.0",
+                "symfony/http-client-contracts-3.5.2.0",
                 "symfony/service-contracts-3.5.1.0"
             ]
         },
         {
-            "ref": "symfony/http-client-contracts-3.5.1.0"
+            "ref": "symfony/http-client-contracts-3.5.2.0"
         },
         {
-            "ref": "symfony/http-foundation-6.4.16.0",
+            "ref": "symfony/http-foundation-6.4.18.0",
             "dependsOn": [
                 "symfony/deprecation-contracts-3.5.1.0",
                 "symfony/polyfill-mbstring-1.31.0.0",
@@ -3699,7 +3699,7 @@
             "ref": "symfony/psr-http-message-bridge-6.4.13.0",
             "dependsOn": [
                 "psr/http-message-1.1.0.0",
-                "symfony/http-foundation-6.4.16.0"
+                "symfony/http-foundation-6.4.18.0"
             ]
         },
         {
@@ -3820,7 +3820,7 @@
             "dependsOn": [
                 "illuminate/pagination-10.48.25.0",
                 "nesbot/carbon-2.72.6.0",
-                "symfony/http-foundation-6.4.16.0"
+                "symfony/http-foundation-6.4.18.0"
             ]
         },
         {
@@ -3830,17 +3830,17 @@
                 "web-auth/cose-lib-4.0.13.0",
                 "web-auth/metadata-service-4.0.5.0",
                 "symfony/psr-http-message-bridge-6.4.13.0",
-                "symfony/http-foundation-6.4.16.0",
-                "symfony/http-client-6.4.16.0",
+                "symfony/http-foundation-6.4.18.0",
+                "symfony/http-client-6.4.18.0",
                 "http-interop/http-factory-guzzle-1.2.0.0",
                 "webklex/php-imap-5.5.0.0",
                 "phpmailer/phpmailer-6.9.3.0",
                 "guzzlehttp/psr7-2.7.0.0",
                 "paragonie/random_compat-2.0.21.0",
-                "phpseclib/phpseclib-3.0.42.0",
+                "phpseclib/phpseclib-3.0.43.0",
                 "christian-riesen/base32-1.6.0.0",
                 "facile-it/php-openid-client-0.3.5.0",
-                "monolog/monolog-3.8.0.0",
+                "monolog/monolog-3.8.1.0",
                 "duosecurity/duo_universal_php-1.0.2.0"
             ]
         }

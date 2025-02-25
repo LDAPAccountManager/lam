@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:af788fbd-50ef-4bab-9f2f-54fc3a49336e",
+  "serialNumber" : "urn:uuid:a0f40653-b904-4292-b488-b77613da7010",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-02-25T06:56:58Z",
+    "timestamp" : "2025-02-25T19:31:31Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -69,7 +69,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "friendly-challenge",
-      "version" : "0.9.17",
+      "version" : "0.9.18",
       "licenses" : [
         {
           "license" : {
@@ -77,7 +77,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/friendly-challenge@0.9.17",
+      "purl" : "pkg:npm/friendly-challenge@0.9.18",
       "type" : "library",
       "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5"
     },
@@ -114,7 +114,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.14.5",
+      "version" : "11.17.2",
       "licenses" : [
         {
           "license" : {
@@ -122,7 +122,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.14.5",
+      "purl" : "pkg:npm/sweetalert2@11.17.2",
       "type" : "library",
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f"
     },
@@ -137,7 +137,7 @@
     {
       "group" : "cdx:composer:package",
       "name" : "tecnickcom/tcpdf",
-      "version" : "6.7.5",
+      "version" : "6.8.2",
       "licenses" : [
         {
           "license" : {
@@ -145,7 +145,7 @@
           }
         }
       ],
-      "purl" : "pkg:composer/tecnickcom/tcpdf@6.7.5",
+      "purl" : "pkg:composer/tecnickcom/tcpdf@6.8.2",
       "type" : "library",
       "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf"
     },
