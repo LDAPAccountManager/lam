@@ -12,17 +12,17 @@
             {
                 "vendor": "cyclonedx",
                 "name": "cyclonedx-php-composer",
-                "version": "v5.2.0",
+                "version": "v5.2.1",
                 "externalReferences": [
                     {
                         "type": "distribution",
-                        "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/f3a3cdc1a9e34bf1d5748e4279a24569cbf31fed",
-                        "comment": "dist reference: f3a3cdc1a9e34bf1d5748e4279a24569cbf31fed"
+                        "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/3d950d4d360cbfe9498f7b90c53766e572d6a951",
+                        "comment": "dist reference: 3d950d4d360cbfe9498f7b90c53766e572d6a951"
                     },
                     {
                         "type": "vcs",
                         "url": "https://github.com/CycloneDX/cyclonedx-php-composer.git",
-                        "comment": "source reference: f3a3cdc1a9e34bf1d5748e4279a24569cbf31fed"
+                        "comment": "source reference: 3d950d4d360cbfe9498f7b90c53766e572d6a951"
                     },
                     {
                         "type": "website",
@@ -44,17 +44,17 @@
             {
                 "vendor": "cyclonedx",
                 "name": "cyclonedx-library",
-                "version": "v3.5.1",
+                "version": "v3.5.2",
                 "externalReferences": [
                     {
                         "type": "distribution",
-                        "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/c079276c96691fe92fa4d8f757f7eecf774e835a",
-                        "comment": "dist reference: c079276c96691fe92fa4d8f757f7eecf774e835a"
+                        "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/267414a34d3ac26f75cce6f341414ed6215d6bc6",
+                        "comment": "dist reference: 267414a34d3ac26f75cce6f341414ed6215d6bc6"
                     },
                     {
                         "type": "vcs",
                         "url": "https://github.com/CycloneDX/cyclonedx-php-library.git",
-                        "comment": "source reference: c079276c96691fe92fa4d8f757f7eecf774e835a"
+                        "comment": "source reference: 267414a34d3ac26f75cce6f341414ed6215d6bc6"
                     },
                     {
                         "type": "website",
@@ -80,12 +80,12 @@
             }
         ],
         "component": {
-            "bom-ref": "ldap-account-manager/ldap-account-manager-9.0.0.0",
+            "bom-ref": "ldap-account-manager/ldap-account-manager-9.1.0.0",
             "type": "application",
             "name": "ldap-account-manager",
-            "version": "9.0",
+            "version": "9.1",
             "group": "ldap-account-manager",
-            "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.0",
+            "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.1",
             "properties": [
                 {
                     "name": "cdx:composer:package:type",
@@ -1139,10 +1139,10 @@
             ]
         },
         {
-            "bom-ref": "nesbot/carbon-2.72.5.0",
+            "bom-ref": "nesbot/carbon-2.72.6.0",
             "type": "library",
             "name": "carbon",
-            "version": "2.72.5",
+            "version": "2.72.6",
             "group": "nesbot",
             "description": "An API extension for DateTime that supports 281 different languages.",
             "author": "Brian Nesbitt, kylekatarnls",
@@ -1153,17 +1153,17 @@
                     }
                 }
             ],
-            "purl": "pkg:composer/nesbot/carbon@2.72.5",
+            "purl": "pkg:composer/nesbot/carbon@2.72.6",
             "externalReferences": [
                 {
                     "type": "distribution",
-                    "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/afd46589c216118ecd48ff2b95d77596af1e57ed",
-                    "comment": "dist reference: afd46589c216118ecd48ff2b95d77596af1e57ed"
+                    "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/1e9d50601e7035a4c61441a208cb5bed73e108c5",
+                    "comment": "dist reference: 1e9d50601e7035a4c61441a208cb5bed73e108c5"
                 },
                 {
                     "type": "vcs",
-                    "url": "https://github.com/briannesbitt/Carbon.git",
-                    "comment": "source reference: afd46589c216118ecd48ff2b95d77596af1e57ed"
+                    "url": "https://github.com/CarbonPHP/carbon.git",
+                    "comment": "source reference: 1e9d50601e7035a4c61441a208cb5bed73e108c5"
                 },
                 {
                     "type": "website",
@@ -1189,11 +1189,11 @@
             "properties": [
                 {
                     "name": "cdx:composer:package:distReference",
-                    "value": "afd46589c216118ecd48ff2b95d77596af1e57ed"
+                    "value": "1e9d50601e7035a4c61441a208cb5bed73e108c5"
                 },
                 {
                     "name": "cdx:composer:package:sourceReference",
-                    "value": "afd46589c216118ecd48ff2b95d77596af1e57ed"
+                    "value": "1e9d50601e7035a4c61441a208cb5bed73e108c5"
                 },
                 {
                     "name": "cdx:composer:package:type",
@@ -3569,7 +3569,7 @@
                 "illuminate/conditionable-10.48.25.0",
                 "illuminate/contracts-10.48.25.0",
                 "illuminate/macroable-10.48.25.0",
-                "nesbot/carbon-2.72.5.0",
+                "nesbot/carbon-2.72.6.0",
                 "voku/portable-ascii-2.0.3.0"
             ]
         },
@@ -3580,7 +3580,7 @@
             ]
         },
         {
-            "ref": "nesbot/carbon-2.72.5.0",
+            "ref": "nesbot/carbon-2.72.6.0",
             "dependsOn": [
                 "carbonphp/carbon-doctrine-types-3.2.0.0",
                 "psr/clock-1.0.0.0",
@@ -3819,12 +3819,12 @@
             "ref": "webklex/php-imap-5.5.0.0",
             "dependsOn": [
                 "illuminate/pagination-10.48.25.0",
-                "nesbot/carbon-2.72.5.0",
+                "nesbot/carbon-2.72.6.0",
                 "symfony/http-foundation-6.4.16.0"
             ]
         },
         {
-            "ref": "ldap-account-manager/ldap-account-manager-9.0.0.0",
+            "ref": "ldap-account-manager/ldap-account-manager-9.1.0.0",
             "dependsOn": [
                 "web-auth/webauthn-lib-4.0.5.0",
                 "web-auth/cose-lib-4.0.13.0",

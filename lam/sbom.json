@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:2986c4b7-ebe7-4cc4-9445-92dc29367a9f",
+  "serialNumber": "urn:uuid:1568d6a3-6383-43ba-b4df-c8f1400a0cd1",
   "version": 1,
   "metadata": {
     "tools": [
@@ -12,17 +12,17 @@
       {
         "vendor": "cyclonedx",
         "name": "cyclonedx-php-composer",
-        "version": "v5.2.0",
+        "version": "v5.2.1",
         "externalReferences": [
           {
-            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/f3a3cdc1a9e34bf1d5748e4279a24569cbf31fed",
+            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/3d950d4d360cbfe9498f7b90c53766e572d6a951",
             "type": "distribution",
-            "comment": "dist reference: f3a3cdc1a9e34bf1d5748e4279a24569cbf31fed"
+            "comment": "dist reference: 3d950d4d360cbfe9498f7b90c53766e572d6a951"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-composer.git",
             "type": "vcs",
-            "comment": "source reference: f3a3cdc1a9e34bf1d5748e4279a24569cbf31fed"
+            "comment": "source reference: 3d950d4d360cbfe9498f7b90c53766e572d6a951"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-composer/#readme",
@@ -44,17 +44,17 @@
       {
         "vendor": "cyclonedx",
         "name": "cyclonedx-library",
-        "version": "v3.5.1",
+        "version": "v3.5.2",
         "externalReferences": [
           {
-            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/c079276c96691fe92fa4d8f757f7eecf774e835a",
+            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/267414a34d3ac26f75cce6f341414ed6215d6bc6",
             "type": "distribution",
-            "comment": "dist reference: c079276c96691fe92fa4d8f757f7eecf774e835a"
+            "comment": "dist reference: 267414a34d3ac26f75cce6f341414ed6215d6bc6"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-library.git",
             "type": "vcs",
-            "comment": "source reference: c079276c96691fe92fa4d8f757f7eecf774e835a"
+            "comment": "source reference: 267414a34d3ac26f75cce6f341414ed6215d6bc6"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-library/#readme",
@@ -87,7 +87,7 @@
     "component": {
       "type": "application",
       "name": "ldap-account-manager",
-      "version": "9.0"
+      "version": "9.1"
     }
   },
   "components": [
@@ -1136,11 +1136,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "nesbot/carbon-2.72.5.0",
+      "bom-ref": "nesbot/carbon-2.72.6.0",
       "author": "Brian Nesbitt, kylekatarnls",
       "group": "nesbot",
       "name": "carbon",
-      "version": "2.72.5",
+      "version": "2.72.6",
       "description": "An API extension for DateTime that supports 281 different languages.",
       "licenses": [
         {
@@ -1149,17 +1149,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/nesbot/carbon@2.72.5",
+      "purl": "pkg:composer/nesbot/carbon@2.72.6",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/afd46589c216118ecd48ff2b95d77596af1e57ed",
+          "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/1e9d50601e7035a4c61441a208cb5bed73e108c5",
           "type": "distribution",
-          "comment": "dist reference: afd46589c216118ecd48ff2b95d77596af1e57ed"
+          "comment": "dist reference: 1e9d50601e7035a4c61441a208cb5bed73e108c5"
         },
         {
-          "url": "https://github.com/briannesbitt/Carbon.git",
+          "url": "https://github.com/CarbonPHP/carbon.git",
           "type": "vcs",
-          "comment": "source reference: afd46589c216118ecd48ff2b95d77596af1e57ed"
+          "comment": "source reference: 1e9d50601e7035a4c61441a208cb5bed73e108c5"
         },
         {
           "url": "https://carbon.nesbot.com",
@@ -1185,11 +1185,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "afd46589c216118ecd48ff2b95d77596af1e57ed"
+          "value": "1e9d50601e7035a4c61441a208cb5bed73e108c5"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "afd46589c216118ecd48ff2b95d77596af1e57ed"
+          "value": "1e9d50601e7035a4c61441a208cb5bed73e108c5"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3452,11 +3452,11 @@
     },
     {
       "type": "application",
-      "bom-ref": "ldap-account-manager/ldap-account-manager-9.0.0.0",
+      "bom-ref": "ldap-account-manager/ldap-account-manager-9.1.0.0",
       "group": "ldap-account-manager",
       "name": "ldap-account-manager",
-      "version": "9.0",
-      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.0",
+      "version": "9.1",
+      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.1",
       "properties": [
         {
           "name": "cdx:composer:package:type",
@@ -3526,25 +3526,10 @@
     },
     {
       "type": "library",
-      "bom-ref": "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
-      "group": "cdx:npm:package:bundled",
-      "name": "jQuery",
-      "version": "3.7.1",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "purl": "pkg:npm/jquery@3.7.1"
-    },
-    {
-      "type": "library",
       "bom-ref": "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group": "cdx:npm:package:bundled",
       "name": "jodit",
-      "version": "4.2.24",
+      "version": "4.5.17",
       "licenses": [
         {
           "license": {
@@ -3553,21 +3538,6 @@
         }
       ],
       "purl": "pkg:npm/jodit@4.2.24"
-    },
-    {
-      "type": "library",
-      "bom-ref": "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
-      "group": "cdx:npm:package:bundled",
-      "name": "jstree",
-      "version": "3.3.16",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "purl": "pkg:npm/jstree@3.3.16"
     },
     {
       "type": "library",
@@ -3638,11 +3608,26 @@
       "purl": "pkg:npm/tippy.js@6.3.7"
     },
     {
+      "type": "library",
+      "bom-ref": "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
+      "group": "cdx:npm:package:bundled",
+      "name": "wunderbaum",
+      "version": "0.12.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/wunderbaum@0.12.1"
+    },
+    {
       "type": "application",
       "bom-ref": "c2095505-c3af-4958-af68-6a61f216807d",
       "group": "ldap-account-manager",
       "name": "ldap-account-manager",
-      "version": "9.0"
+      "version": "9.1"
     }
   ],
   "dependencies": [
@@ -3759,7 +3744,7 @@
         "illuminate/conditionable-10.48.25.0",
         "illuminate/contracts-10.48.25.0",
         "illuminate/macroable-10.48.25.0",
-        "nesbot/carbon-2.72.5.0",
+        "nesbot/carbon-2.72.6.0",
         "voku/portable-ascii-2.0.3.0"
       ]
     },
@@ -3770,7 +3755,7 @@
       ]
     },
     {
-      "ref": "nesbot/carbon-2.72.5.0",
+      "ref": "nesbot/carbon-2.72.6.0",
       "dependsOn": [
         "carbonphp/carbon-doctrine-types-3.2.0.0",
         "psr/clock-1.0.0.0",
@@ -4009,12 +3994,12 @@
       "ref": "webklex/php-imap-5.5.0.0",
       "dependsOn": [
         "illuminate/pagination-10.48.25.0",
-        "nesbot/carbon-2.72.5.0",
+        "nesbot/carbon-2.72.6.0",
         "symfony/http-foundation-6.4.16.0"
       ]
     },
     {
-      "ref": "ldap-account-manager/ldap-account-manager-9.0.0.0",
+      "ref": "ldap-account-manager/ldap-account-manager-9.1.0.0",
       "dependsOn": [
         "web-auth/webauthn-lib-4.0.5.0",
         "web-auth/cose-lib-4.0.13.0",
@@ -4055,15 +4040,7 @@
       "dependsOn": []
     },
     {
-      "ref": "599b305d-5cc9-4fa5-8594-e95bf8c723ef",
-      "dependsOn": []
-    },
-    {
       "ref": "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
-      "dependsOn": []
-    },
-    {
-      "ref": "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "dependsOn": []
     },
     {
@@ -4084,6 +4061,10 @@
     },
     {
       "ref": "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
+      "dependsOn": []
+    },
+    {
+      "ref": "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "dependsOn": []
     }
   ]

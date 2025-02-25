@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:fafdbbc2-01cb-4f11-a60b-cb185328fd43",
+  "serialNumber" : "urn:uuid:af788fbd-50ef-4bab-9f2f-54fc3a49336e",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-02-13T19:42:59Z",
+    "timestamp" : "2025-02-25T06:56:58Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -15,7 +15,7 @@
     "component" : {
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.0",
+      "version" : "9.1",
       "type" : "application",
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d"
     }
@@ -84,7 +84,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.2.24",
+      "version" : "4.5.17",
       "licenses" : [
         {
           "license" : {
@@ -167,7 +167,7 @@
     {
       "group" : "cdx:npm:package:bundled",
       "name" : "wunderbaum",
-      "version" : "0.12.0",
+      "version" : "0.12.1",
       "licenses" : [
         {
           "license" : {
@@ -175,7 +175,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/wunderbaum@0.12.0",
+      "purl" : "pkg:npm/wunderbaum@0.12.1",
       "type" : "library",
       "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7"
     }

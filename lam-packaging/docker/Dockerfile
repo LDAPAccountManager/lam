@@ -29,7 +29,7 @@
 FROM debian:bookworm-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=9.0
+ARG LAM_RELEASE=9.1.RC1
 EXPOSE 80
 
 ENV \
