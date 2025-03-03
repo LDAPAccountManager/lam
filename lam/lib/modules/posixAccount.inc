@@ -1898,6 +1898,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$selectedShell = [];
 				if (isset($this->attributes['loginShell'][0])) {
 					$selectedShell = [$this->attributes['loginShell'][0]];
+					if (!in_array($this->attributes['loginShell'][0], $shelllist)) {
+						$shelllist[] = $this->attributes['loginShell'][0];
+					}
 				}
 				$return->add(new htmlResponsiveSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'));
 			}
