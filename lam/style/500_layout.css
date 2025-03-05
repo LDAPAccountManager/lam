@@ -942,6 +942,7 @@ div.tree-highlight {
 
 div.wunderbaum {
 	border: none !important;
+	max-height: 2000px;
 }
 
 i.wb-icon {
