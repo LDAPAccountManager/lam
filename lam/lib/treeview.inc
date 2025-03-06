@@ -124,6 +124,10 @@ class TreeView {
 				$this->ensureWriteAccess();
 				$this->validateDn($dn);
 				return $this->deleteNode($dn);
+			case 'restoreNode':
+				$this->ensureWriteAccess();
+				$this->validateDn($dn);
+				return $this->restoreNode($dn);
 			case 'search':
 				$this->validateDn($dn);
 				return $this->search($dn);
@@ -366,10 +370,10 @@ class TreeView {
 			$row->addVerticalSpacer('1rem');
 		}
 		$row->add(new htmlTitle(unescapeLdapSpecialCharacters($dn)));
-		$this->addActionBar($row, $dn);
+		$attributes = ldapGetDN($dn, ['*']);
+		$this->addActionBar($row, $dn, $attributes);
 		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')));
 		$row->add(new htmlSubTitle(_('Attributes')));
-		$attributes = ldapGetDN($dn, ['*']);
 		unset($attributes['dn']);
 		ksort($attributes);
 		logNewMessage(LOG_DEBUG, 'LDAP attributes for ' . $dn . ': ' . print_r($attributes, true));
@@ -471,11 +475,13 @@ class TreeView {
 	 *
 	 * @param htmlResponsiveRow $row container
 	 * @param string $dn entry DN
+	 * @param array $attributes LDAP attributes
 	 */
-	private function addActionBar(htmlResponsiveRow $row, string $dn): void {
+	private function addActionBar(htmlResponsiveRow $row, string $dn, array $attributes): void {
 		$buttonGroup = new htmlGroup();
 		$buttonSize = '16px';
 		$buttonClasses = ['clickable', 'lam-margin-small', 'icon'];
+		$isRestorable = isset($attributes['isdeleted'][0]) && ($attributes['isdeleted'][0] === 'TRUE') && str_contains($dn, '\0ADEL');
 
 		if (checkIfWriteAccessIsAllowed()) {
 			$createButton = new htmlImage('../../graphics/add.svg', $buttonSize, $buttonSize, _('Create a child entry'), _('Create a child entry'));
@@ -484,13 +490,15 @@ class TreeView {
 			$createButton->setCSSClasses($buttonClasses);
 			$buttonGroup->addElement($createButton);
 
-			$deleteButton = new htmlImage('../../graphics/delete.svg', $buttonSize, $buttonSize, _('Delete'), _('Delete'));
-			$deleteButton->setOnClick('window.lam.treeview.deleteNode(\'' . getSecurityTokenName() . '\', '
-				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . base64_encode(htmlspecialchars(extractRDN($dn))) . '\', '
-				. '\'' . addslashes(_('Delete')) . '\', \'' . addslashes(_('Cancel')) . '\', \'' . addslashes(_('Delete this entry')) . '\', \'' . addslashes(_('Ok')) . '\', '
-				. '\'' . addslashes(_('Error')) . '\');');
-			$deleteButton->setCSSClasses($buttonClasses);
-			$buttonGroup->addElement($deleteButton);
+			if (!$isRestorable) {
+				$deleteButton = new htmlImage('../../graphics/delete.svg', $buttonSize, $buttonSize, _('Delete'), _('Delete'));
+				$deleteButton->setOnClick('window.lam.treeview.deleteNode(\'' . getSecurityTokenName() . '\', '
+					. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . base64_encode(htmlspecialchars(extractRDN($dn))) . '\', '
+					. '\'' . addslashes(_('Delete')) . '\', \'' . addslashes(_('Cancel')) . '\', \'' . addslashes(_('Delete this entry')) . '\', \'' . addslashes(_('Ok')) . '\', '
+					. '\'' . addslashes(_('Error')) . '\');');
+				$deleteButton->setCSSClasses($buttonClasses);
+				$buttonGroup->addElement($deleteButton);
+			}
 		}
 
 		$refreshButton = new htmlImage('../../graphics/refresh.svg', $buttonSize, $buttonSize, _('Refresh'), _('Refresh'));
@@ -534,7 +542,25 @@ class TreeView {
 			$exportButton->setCSSClasses($buttonClasses);
 			$buttonGroup->addElement($exportButton);
 		}
+
 		$row->add($buttonGroup);
+
+		if (checkIfWriteAccessIsAllowed() && $isRestorable) {
+			$row->addVerticalSpacer('1rem');
+			$row->add(new htmlSubTitle(_('Restore')));
+			$restoreTargetDn = new htmlResponsiveInputField(_('Target DN'), 'treeview-restore-dn', extractDNSuffix(extractDNSuffix($dn)));
+			$restoreTargetDn->showDnSelection();
+			$row->add($restoreTargetDn);
+			$row->addVerticalSpacer('0.5rem');
+			$restoreButton = new htmlButton('restorebutton', _('Restore'));
+			$rdn = explode('\0ADEL:', $dn)[0];
+			$restoreButton->setOnClick('window.lam.treeview.restoreNode(\'' . getSecurityTokenName() . '\', '
+				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . base64_encode(htmlspecialchars($rdn)) . '\', '
+				. '\'' . addslashes(_('Restore')) . '\', \'' . addslashes(_('Cancel')) . '\', \'' . addslashes(_('Restore this entry')) . '\', \'' . addslashes(_('Ok')) . '\', '
+				. '\'' . addslashes(_('Error')) . '\');');
+			$restoreButton->setCSSClasses(['lam-secondary']);
+			$row->add($restoreButton, 12, 12, 12, 'text-center');
+		}
 	}
 
 	/**
@@ -1357,6 +1383,27 @@ class TreeView {
 			return json_encode(['errors' => $errors]);
 		}
 		return json_encode([]);
+	}
+
+	/**
+	 * Restores a node in LDAP.
+	 *
+	 * @param string $dn DN
+	 * @return string JSON
+	 */
+	private function restoreNode(string $dn): string {
+		$rdn = explode('\0ADEL:', $dn)[0];
+		$targetDn = $_POST['targetDn'];
+		$success = ldap_rename(getLDAPServerHandle(), $dn, $rdn, $targetDn, true);
+		if ($success === true) {
+			return json_encode([]);
+		}
+		$error = getDefaultLDAPErrorString(getLDAPServerHandle());
+		logNewMessage(LOG_ERR, 'Tree view restore node failed: ' . $error);
+		return json_encode([
+			'errorTitle' => htmlspecialchars(sprintf(_('Was unable to rename DN: %s.'), $dn)),
+			'errorText' => htmlspecialchars($error)
+		]);
 	}
 
 	/**
