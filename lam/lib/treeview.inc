@@ -70,6 +70,7 @@ include_once __DIR__ . '/tools/treeview.inc';
  * @package LAM\TOOLS\TREEVIEW
  */
 class TreeView {
+	const AD_DELETED_DELIMITER = '\0ADEL:';
 
 	/**
 	 * @var array schema attributes
@@ -548,12 +549,16 @@ class TreeView {
 		if (checkIfWriteAccessIsAllowed() && $isRestorable) {
 			$row->addVerticalSpacer('1rem');
 			$row->add(new htmlSubTitle(_('Restore')));
-			$restoreTargetDn = new htmlResponsiveInputField(_('Target DN'), 'treeview-restore-dn', extractDNSuffix(extractDNSuffix($dn)));
+			$targetDn = extractDNSuffix(extractDNSuffix($dn));
+			if (!empty($attributes['lastknownparent'][0]) && !str_contains($attributes['lastknownparent'][0], self::AD_DELETED_DELIMITER)) {
+				$targetDn = $attributes['lastknownparent'][0];
+			}
+			$restoreTargetDn = new htmlResponsiveInputField(_('Target DN'), 'treeview-restore-dn', $targetDn);
 			$restoreTargetDn->showDnSelection();
 			$row->add($restoreTargetDn);
 			$row->addVerticalSpacer('0.5rem');
 			$restoreButton = new htmlButton('restorebutton', _('Restore'));
-			$rdn = explode('\0ADEL:', $dn)[0];
+			$rdn = explode(self::AD_DELETED_DELIMITER, $dn)[0];
 			$restoreButton->setOnClick('window.lam.treeview.restoreNode(\'' . getSecurityTokenName() . '\', '
 				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\', \'' . base64_encode(htmlspecialchars($rdn)) . '\', '
 				. '\'' . addslashes(_('Restore')) . '\', \'' . addslashes(_('Cancel')) . '\', \'' . addslashes(_('Restore this entry')) . '\', \'' . addslashes(_('Ok')) . '\', '
@@ -1392,9 +1397,20 @@ class TreeView {
 	 * @return string JSON
 	 */
 	private function restoreNode(string $dn): string {
-		$rdn = explode('\0ADEL:', $dn)[0];
+		$rdn = explode(self::AD_DELETED_DELIMITER, $dn)[0];
 		$targetDn = $_POST['targetDn'];
-		$success = ldap_rename(getLDAPServerHandle(), $dn, $rdn, $targetDn, true);
+		$changes = [
+			[
+				'attrib' => 'isDeleted',
+				'modtype' => LDAP_MODIFY_BATCH_REMOVE_ALL
+			],
+			[
+				'attrib' => 'distinguishedName',
+				'modtype' => LDAP_MODIFY_BATCH_REPLACE,
+				'values' => [$rdn . ',' . $targetDn]
+			],
+		];
+		$success = ldap_modify_batch(getLDAPServerHandle(), $dn, $changes, getCommonLdapControls());
 		if ($success === true) {
 			return json_encode([]);
 		}
@@ -1402,7 +1418,7 @@ class TreeView {
 		logNewMessage(LOG_ERR, 'Tree view restore node failed: ' . $error);
 		return json_encode([
 			'errorTitle' => htmlspecialchars(sprintf(_('Was unable to rename DN: %s.'), $dn)),
-			'errorText' => htmlspecialchars($error)
+			'errorText' => $error
 		]);
 	}
 
