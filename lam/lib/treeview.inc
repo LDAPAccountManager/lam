@@ -1417,7 +1417,7 @@ class TreeView {
 		$error = getDefaultLDAPErrorString(getLDAPServerHandle());
 		logNewMessage(LOG_ERR, 'Tree view restore node failed: ' . $error);
 		return json_encode([
-			'errorTitle' => htmlspecialchars(sprintf(_('Was unable to rename DN: %s.'), $dn)),
+			'errorTitle' => htmlspecialchars(sprintf(_('Was unable to restore %s.'), $rdn)),
 			'errorText' => $error
 		]);
 	}
