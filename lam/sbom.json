@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:1fdfc5ec-108c-4290-af7a-df7f50b945c9",
+  "serialNumber": "urn:uuid:6e52c2e0-33ed-4520-ae4d-cd75c0483801",
   "version": 1,
   "metadata": {
     "tools": [
@@ -357,22 +357,29 @@
     },
     {
       "type": "library",
-      "bom-ref": "duosecurity/duo_universal_php-1.0.2.0",
+      "bom-ref": "duosecurity/duo_universal_php-1.1.0.0",
       "group": "duosecurity",
       "name": "duo_universal_php",
-      "version": "1.0.2",
+      "version": "1.1.0",
       "description": "A PHP implementation of the Duo Universal SDK.",
-      "purl": "pkg:composer/duosecurity/duo_universal_php@1.0.2",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:composer/duosecurity/duo_universal_php@1.1.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/8734a47480d2d2f0539e8ee782675e052025d026",
+          "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/a2852c46949a2de9ca6da908e4353a81c61b43a3",
           "type": "distribution",
-          "comment": "dist reference: 8734a47480d2d2f0539e8ee782675e052025d026"
+          "comment": "dist reference: a2852c46949a2de9ca6da908e4353a81c61b43a3"
         },
         {
           "url": "https://github.com/duosecurity/duo_universal_php.git",
           "type": "vcs",
-          "comment": "source reference: 8734a47480d2d2f0539e8ee782675e052025d026"
+          "comment": "source reference: a2852c46949a2de9ca6da908e4353a81c61b43a3"
         },
         {
           "url": "https://duo.com/",
@@ -390,7 +397,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/duosecurity/duo_universal_php/tree/1.0.2",
+          "url": "https://github.com/duosecurity/duo_universal_php/tree/1.1.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -398,11 +405,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "8734a47480d2d2f0539e8ee782675e052025d026"
+          "value": "a2852c46949a2de9ca6da908e4353a81c61b43a3"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "8734a47480d2d2f0539e8ee782675e052025d026"
+          "value": "a2852c46949a2de9ca6da908e4353a81c61b43a3"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3647,7 +3654,7 @@
       "ref": "doctrine/inflector-2.0.10.0"
     },
     {
-      "ref": "duosecurity/duo_universal_php-1.0.2.0",
+      "ref": "duosecurity/duo_universal_php-1.1.0.0",
       "dependsOn": [
         "firebase/php-jwt-6.10.2.0"
       ]
@@ -4016,7 +4023,7 @@
         "christian-riesen/base32-1.6.0.0",
         "facile-it/php-openid-client-0.3.5.0",
         "monolog/monolog-3.8.1.0",
-        "duosecurity/duo_universal_php-1.0.2.0"
+        "duosecurity/duo_universal_php-1.1.0.0"
       ]
     },
     {
