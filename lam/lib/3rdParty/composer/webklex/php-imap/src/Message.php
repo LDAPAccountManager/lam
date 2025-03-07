@@ -12,10 +12,15 @@
 
 namespace Webklex\PHPIMAP;
 
+use Exception;
+use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionException;
+use Webklex\PHPIMAP\Decoder\Decoder;
+use Webklex\PHPIMAP\Decoder\DecoderInterface;
 use Webklex\PHPIMAP\Exceptions\AuthFailedException;
 use Webklex\PHPIMAP\Exceptions\ConnectionFailedException;
+use Webklex\PHPIMAP\Exceptions\DecoderNotFoundException;
 use Webklex\PHPIMAP\Exceptions\EventNotFoundException;
 use Webklex\PHPIMAP\Exceptions\FolderFetchingException;
 use Webklex\PHPIMAP\Exceptions\GetMessagesFailedException;
@@ -34,7 +39,6 @@ use Webklex\PHPIMAP\Exceptions\RuntimeException;
 use Webklex\PHPIMAP\Support\AttachmentCollection;
 use Webklex\PHPIMAP\Support\FlagCollection;
 use Webklex\PHPIMAP\Support\Masks\MessageMask;
-use Illuminate\Support\Str;
 use Webklex\PHPIMAP\Support\MessageCollection;
 use Webklex\PHPIMAP\Traits\HasEvents;
 
@@ -43,22 +47,22 @@ use Webklex\PHPIMAP\Traits\HasEvents;
  *
  * @package Webklex\PHPIMAP
  *
- * @property integer msglist
- * @property integer uid
- * @property integer msgn
- * @property integer size
- * @property Attribute subject
- * @property Attribute message_id
- * @property Attribute message_no
- * @property Attribute references
- * @property Attribute date
- * @property Attribute from
- * @property Attribute to
- * @property Attribute cc
- * @property Attribute bcc
- * @property Attribute reply_to
- * @property Attribute in_reply_to
- * @property Attribute sender
+ * @property integer $msglist
+ * @property integer $uid
+ * @property integer $msgn
+ * @property integer $size
+ * @property Attribute $subject
+ * @property Attribute $message_id
+ * @property Attribute $message_no
+ * @property Attribute $references
+ * @property Attribute $date
+ * @property Attribute $from
+ * @property Attribute $to
+ * @property Attribute $cc
+ * @property Attribute $bcc
+ * @property Attribute $reply_to
+ * @property Attribute $in_reply_to
+ * @property Attribute $sender
  *
  * @method integer getMsglist()
  * @method integer setMsglist($msglist)
@@ -87,7 +91,7 @@ class Message {
      *
      * @var ?Client
      */
-    private ?Client $client = null;
+    private ?Client $client;
 
     /**
      * Default mask
@@ -97,11 +101,25 @@ class Message {
     protected string $mask = MessageMask::class;
 
     /**
-     * Used config
+     * Used options
      *
-     * @var array $config
+     * @var array $options
      */
-    protected array $config = [];
+    protected array $options = [];
+
+    /**
+     * All library configs
+     *
+     * @var Config $config
+     */
+    protected Config $config;
+
+    /**
+     * Decoder instance
+     *
+     * @var DecoderInterface $decoder
+     */
+    protected DecoderInterface $decoder;
 
     /**
      * Attribute holder
@@ -204,8 +222,8 @@ class Message {
      * @throws RuntimeException
      * @throws ResponseException
      */
-    public function __construct(int $uid, ?int $msglist, Client $client, int $fetch_options = null, bool $fetch_body = false, bool $fetch_flags = false, int $sequence = null) {
-        $this->boot();
+    public function __construct(int $uid, ?int $msglist, Client $client, ?int $fetch_options = null, bool $fetch_body = false, bool $fetch_flags = false, ?int $sequence = null) {
+        $this->boot($client->getConfig());
 
         $default_mask = $client->getDefaultMessageMask();
         if ($default_mask != null) {
@@ -269,7 +287,7 @@ class Message {
         $reflection = new ReflectionClass(self::class);
         /** @var Message $instance */
         $instance = $reflection->newInstanceWithoutConstructor();
-        $instance->boot();
+        $instance->boot($client->getConfig());
 
         $default_mask = $client->getDefaultMessageMask();
         if ($default_mask != null) {
@@ -296,29 +314,8 @@ class Message {
 
     /**
      * Create a new message instance by reading and loading a file or remote location
-     *
-     * @throws RuntimeException
-     * @throws MessageContentFetchingException
-     * @throws ResponseException
-     * @throws ImapBadRequestException
-     * @throws InvalidMessageDateException
-     * @throws ConnectionFailedException
-     * @throws ImapServerErrorException
-     * @throws ReflectionException
-     * @throws AuthFailedException
-     * @throws MaskNotFoundException
-     */
-    public static function fromFile($filename): Message {
-        $blob = file_get_contents($filename);
-        if ($blob === false) {
-            throw new RuntimeException("Unable to read file");
-        }
-        return self::fromString($blob);
-    }
-
-    /**
-     * Create a new message instance by reading and loading a string
-     * @param string $blob
+     * @param string $filename
+     * @param ?Config $config
      *
      * @return Message
      * @throws AuthFailedException
@@ -332,13 +329,38 @@ class Message {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    public static function fromString(string $blob): Message {
+    public static function fromFile(string $filename, ?Config $config = null): Message {
+        $blob = file_get_contents($filename);
+        if ($blob === false) {
+            throw new RuntimeException("Unable to read file");
+        }
+        return self::fromString($blob, $config);
+    }
+
+    /**
+     * Create a new message instance by reading and loading a string
+     * @param string $blob
+     * @param ?Config $config
+     *
+     * @return Message
+     * @throws AuthFailedException
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws InvalidMessageDateException
+     * @throws MaskNotFoundException
+     * @throws MessageContentFetchingException
+     * @throws ReflectionException
+     * @throws ResponseException
+     * @throws RuntimeException
+     */
+    public static function fromString(string $blob, ?Config $config = null): Message {
         $reflection = new ReflectionClass(self::class);
         /** @var Message $instance */
         $instance = $reflection->newInstanceWithoutConstructor();
-        $instance->boot();
+        $instance->boot($config);
 
-        $default_mask  = ClientManager::getMask("message");
+        $default_mask  = $instance->getConfig()->getMask("message");
         if($default_mask != ""){
             $instance->setMask($default_mask);
         }else{
@@ -361,15 +383,20 @@ class Message {
 
     /**
      * Boot a new instance
+     * @param ?Config $config
+     * @throws DecoderNotFoundException
      */
-    public function boot(): void {
+    public function boot(?Config $config = null): void {
         $this->attributes = [];
+        $this->client = null;
+        $this->config = $config ?? Config::make();
+        $this->decoder = $this->config->getDecoder("message");
 
-        $this->config = ClientManager::get('options');
-        $this->available_flags = ClientManager::get('flags');
+        $this->options = $this->config->get('options');
+        $this->available_flags = $this->config->get('flags');
 
-        $this->attachments = AttachmentCollection::make([]);
-        $this->flags = FlagCollection::make([]);
+        $this->attachments = AttachmentCollection::make();
+        $this->flags = FlagCollection::make();
     }
 
     /**
@@ -529,7 +556,7 @@ class Message {
      */
     private function parseHeader(): void {
         $sequence_id = $this->getSequenceId();
-        $headers = $this->client->getConnection()->headers([$sequence_id], "RFC822", $this->sequence)->validatedData();
+        $headers = $this->client->getConnection()->headers([$sequence_id], "RFC822", $this->sequence)->setCanBeEmpty(true)->validatedData();
         if (!isset($headers[$sequence_id])) {
             throw new MessageHeaderFetchingException("no headers found", 0);
         }
@@ -543,7 +570,7 @@ class Message {
      * @throws InvalidMessageDateException
      */
     public function parseRawHeader(string $raw_header): void {
-        $this->header = new Header($raw_header);
+        $this->header = new Header($raw_header, $this->getConfig());
     }
 
     /**
@@ -551,7 +578,7 @@ class Message {
      * @param array $raw_flags
      */
     public function parseRawFlags(array $raw_flags): void {
-        $this->flags = FlagCollection::make([]);
+        $this->flags = FlagCollection::make();
 
         foreach ($raw_flags as $flag) {
             if (str_starts_with($flag, "\\")) {
@@ -578,11 +605,11 @@ class Message {
      */
     private function parseFlags(): void {
         $this->client->openFolder($this->folder_path);
-        $this->flags = FlagCollection::make([]);
+        $this->flags = FlagCollection::make();
 
         $sequence_id = $this->getSequenceId();
         try {
-            $flags = $this->client->getConnection()->flags([$sequence_id], $this->sequence)->validatedData();
+            $flags = $this->client->getConnection()->flags([$sequence_id], $this->sequence)->setCanBeEmpty(true)->validatedData();
         } catch (Exceptions\RuntimeException $e) {
             throw new MessageFlagException("flag could not be fetched", 0, $e);
         }
@@ -612,9 +639,9 @@ class Message {
 
         $sequence_id = $this->getSequenceId();
         try {
-            $contents = $this->client->getConnection()->content([$sequence_id], "RFC822", $this->sequence)->validatedData();
+            $contents = $this->client->getConnection()->content([$sequence_id], $this->client->rfc, $this->sequence)->validatedData();
         } catch (Exceptions\RuntimeException $e) {
-            throw new MessageContentFetchingException("failed to fetch content", 0);
+            throw new MessageContentFetchingException("failed to fetch content", 0, $e);
         }
         if (!isset($contents[$sequence_id])) {
             throw new MessageContentFetchingException("no content found", 0);
@@ -717,9 +744,9 @@ class Message {
         if ($part->isAttachment()) {
             $this->fetchAttachment($part);
         } else {
-            $encoding = $this->getEncoding($part);
+            $encoding = $this->decoder->getEncoding($part);
 
-            $content = $this->decodeString($part->content, $part->encoding);
+            $content = $this->decoder->decode($part->content, $part->encoding);
 
             // We don't need to do convertEncoding() if charset is ASCII (us-ascii):
             //     ASCII is a subset of UTF-8, so all ASCII files are already UTF-8 encoded
@@ -733,7 +760,7 @@ class Message {
             //
             // convertEncoding() function basically means convertToUtf8(), so when we convert ASCII string into UTF-8 it gets broken.
             if ($encoding != 'us-ascii') {
-                $content = $this->convertEncoding($content, $encoding);
+                $content = $this->decoder->convertEncoding($content, $encoding);
             }
 
             $this->addBody($part->subtype ?? '', $content);
@@ -786,7 +813,7 @@ class Message {
         if (is_long($option) === true) {
             $this->fetch_options = $option;
         } elseif (is_null($option) === true) {
-            $config = ClientManager::get('options.fetch', IMAP::FT_UID);
+            $config = $this->config->get('options.fetch', IMAP::FT_UID);
             $this->fetch_options = is_long($config) ? $config : 1;
         }
 
@@ -803,7 +830,7 @@ class Message {
         if (is_long($sequence)) {
             $this->sequence = $sequence;
         } elseif (is_null($sequence)) {
-            $config = ClientManager::get('options.sequence', IMAP::ST_MSGN);
+            $config = $this->config->get('options.sequence', IMAP::ST_MSGN);
             $this->sequence = is_long($config) ? $config : IMAP::ST_MSGN;
         }
 
@@ -820,7 +847,7 @@ class Message {
         if (is_bool($option)) {
             $this->fetch_body = $option;
         } elseif (is_null($option)) {
-            $config = ClientManager::get('options.fetch_body', true);
+            $config = $this->config->get('options.fetch_body', true);
             $this->fetch_body = is_bool($config) ? $config : true;
         }
 
@@ -837,105 +864,11 @@ class Message {
         if (is_bool($option)) {
             $this->fetch_flags = $option;
         } elseif (is_null($option)) {
-            $config = ClientManager::get('options.fetch_flags', true);
+            $config = $this->config->get('options.fetch_flags', true);
             $this->fetch_flags = is_bool($config) ? $config : true;
         }
 
         return $this;
-    }
-
-    /**
-     * Decode a given string
-     * @param $string
-     * @param $encoding
-     *
-     * @return string
-     */
-    public function decodeString($string, $encoding): string {
-        switch ($encoding) {
-            case IMAP::MESSAGE_ENC_BINARY:
-                if (extension_loaded('imap')) {
-                    return base64_decode(\imap_binary($string));
-                }
-                return base64_decode($string);
-            case IMAP::MESSAGE_ENC_BASE64:
-                return base64_decode($string);
-            case IMAP::MESSAGE_ENC_QUOTED_PRINTABLE:
-                return quoted_printable_decode($string);
-            case IMAP::MESSAGE_ENC_8BIT:
-            case IMAP::MESSAGE_ENC_7BIT:
-            case IMAP::MESSAGE_ENC_OTHER:
-            default:
-                return $string;
-        }
-    }
-
-    /**
-     * Convert the encoding
-     * @param $str
-     * @param string $from
-     * @param string $to
-     *
-     * @return mixed|string
-     */
-    public function convertEncoding($str, string $from = "ISO-8859-2", string $to = "UTF-8"): mixed {
-
-        $from = EncodingAliases::get($from);
-        $to = EncodingAliases::get($to);
-
-        if ($from === $to) {
-            return $str;
-        }
-
-        // We don't need to do convertEncoding() if charset is ASCII (us-ascii):
-        //     ASCII is a subset of UTF-8, so all ASCII files are already UTF-8 encoded
-        //     https://stackoverflow.com/a/11303410
-        //
-        // us-ascii is the same as ASCII:
-        //     ASCII is the traditional name for the encoding system; the Internet Assigned Numbers Authority (IANA)
-        //     prefers the updated name US-ASCII, which clarifies that this system was developed in the US and
-        //     based on the typographical symbols predominantly in use there.
-        //     https://en.wikipedia.org/wiki/ASCII
-        //
-        // convertEncoding() function basically means convertToUtf8(), so when we convert ASCII string into UTF-8 it gets broken.
-        if (strtolower($from ?? '') == 'us-ascii' && $to == 'UTF-8') {
-            return $str;
-        }
-
-        if (function_exists('iconv') && !EncodingAliases::isUtf7($from) && !EncodingAliases::isUtf7($to)) {
-            try {
-                return iconv($from, $to.'//IGNORE', $str);
-            } catch (\Exception $e) {
-                return @iconv($from, $to, $str);
-            }
-        } else {
-            if (!$from) {
-                return mb_convert_encoding($str, $to);
-            }
-            return mb_convert_encoding($str, $to, $from);
-        }
-    }
-
-    /**
-     * Get the encoding of a given abject
-     * @param object|string $structure
-     *
-     * @return string
-     */
-    public function getEncoding(object|string $structure): string {
-        if (property_exists($structure, 'parameters')) {
-            foreach ($structure->parameters as $parameter) {
-                if (strtolower($parameter->attribute) == "charset") {
-                    return EncodingAliases::get($parameter->value, "ISO-8859-2");
-                }
-            }
-        } elseif (property_exists($structure, 'charset')) {
-            return EncodingAliases::get($structure->charset, "ISO-8859-2");
-        } elseif (is_string($structure) === true) {
-            return EncodingAliases::detectEncoding($structure);
-        }
-
-        return 'UTF-8';
     }
 
     /**
@@ -970,10 +903,10 @@ class Message {
      * @throws RuntimeException
      * @throws ResponseException
      */
-    public function thread(Folder $sent_folder = null, MessageCollection &$thread = null, Folder $folder = null): MessageCollection {
-        $thread = $thread ?: MessageCollection::make([]);
+    public function thread(?Folder $sent_folder = null, ?MessageCollection &$thread = null, ?Folder $folder = null): MessageCollection {
+        $thread = $thread ?: MessageCollection::make();
         $folder = $folder ?: $this->getFolder();
-        $sent_folder = $sent_folder ?: $this->client->getFolderByPath(ClientManager::get("options.common_folders.sent", "INBOX/Sent"));
+        $sent_folder = $sent_folder ?: $this->client->getFolderByPath($this->config->get("options.common_folders.sent", "INBOX/Sent"));
 
         /** @var Message $message */
         foreach ($thread as $message) {
@@ -1163,8 +1096,7 @@ class Message {
         }
 
         $message = $folder->query()->getMessage($sequence_id, null, $this->sequence);
-        $event = $this->getEvent("message", $event);
-        $event::dispatch($this, $message);
+        $this->dispatch("message", $event, $this, $message);
 
         return $message;
     }
@@ -1190,7 +1122,7 @@ class Message {
      * @throws RuntimeException
      * @throws ResponseException
      */
-    public function delete(bool $expunge = true, string $trash_path = null, bool $force_move = false): bool {
+    public function delete(bool $expunge = true, ?string $trash_path = null, bool $force_move = false): bool {
         $status = $this->setFlag("Deleted");
         if ($force_move) {
             $trash_path = $trash_path === null ? $this->config["common_folders"]["trash"] : $trash_path;
@@ -1198,8 +1130,7 @@ class Message {
         }
         if ($expunge) $this->client->expunge();
 
-        $event = $this->getEvent("message", "deleted");
-        $event::dispatch($this);
+        $this->dispatch("message", "deleted", $this);
 
         return $status;
     }
@@ -1222,8 +1153,7 @@ class Message {
         $status = $this->unsetFlag("Deleted");
         if ($expunge) $this->client->expunge();
 
-        $event = $this->getEvent("message", "restored");
-        $event::dispatch($this);
+        $this->dispatch("message", "restored", $this);
 
         return $status;
     }
@@ -1253,8 +1183,7 @@ class Message {
         }
         $this->parseFlags();
 
-        $event = $this->getEvent("flag", "new");
-        $event::dispatch($this, $flag);
+        $this->dispatch("flag", "new", $this, $flag);
 
         return (bool)$status;
     }
@@ -1285,8 +1214,7 @@ class Message {
         }
         $this->parseFlags();
 
-        $event = $this->getEvent("flag", "deleted");
-        $event::dispatch($this, $flag);
+        $this->dispatch("flag", "deleted", $this, $flag);
 
         return (bool)$status;
     }
@@ -1465,7 +1393,7 @@ class Message {
      * @param null|Message $message
      * @return boolean
      */
-    public function is(Message $message = null): bool {
+    public function is(?Message $message = null): bool {
         if (is_null($message)) {
             return false;
         }
@@ -1547,11 +1475,11 @@ class Message {
 
     /**
      * Set the config
-     * @param array $config
+     * @param Config $config
      *
      * @return Message
      */
-    public function setConfig(array $config): Message {
+    public function setConfig(Config $config): Message {
         $this->config = $config;
 
         return $this;
@@ -1560,10 +1488,31 @@ class Message {
     /**
      * Get the config
      *
+     * @return Config
+     */
+    public function getConfig(): Config {
+        return $this->config;
+    }
+
+    /**
+     * Set the options
+     * @param array $options
+     *
+     * @return Message
+     */
+    public function setOptions(array $options): Message {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * Get the options
+     *
      * @return array
      */
-    public function getConfig(): array {
-        return $this->config;
+    public function getOptions(): array {
+        return $this->options;
     }
 
     /**
@@ -1651,7 +1600,7 @@ class Message {
      *
      * @return Message
      */
-    public function setMsgn(int $msgn, int $msglist = null): Message {
+    public function setMsgn(int $msgn, ?int $msglist = null): Message {
         $this->msgn = $msgn;
         $this->msglist = $msglist;
         $this->uid = null;
@@ -1682,13 +1631,33 @@ class Message {
      * @param $uid
      * @param int|null $msglist
      */
-    public function setSequenceId($uid, int $msglist = null): void {
+    public function setSequenceId($uid, ?int $msglist = null): void {
         if ($this->getSequence() === IMAP::ST_UID) {
             $this->setUid($uid);
             $this->setMsglist($msglist);
         } else {
             $this->setMsgn($uid, $msglist);
         }
+    }
+
+    /**
+     * Get the decoder instance
+     *
+     * @return DecoderInterface
+     */
+    public function getDecoder(): DecoderInterface {
+        return $this->decoder;
+    }
+
+    /**
+     * Set the decoder instance
+     * @param DecoderInterface $decoder
+     *
+     * @return $this
+     */
+    public function setDecoder(DecoderInterface $decoder): static {
+        $this->decoder = $decoder;
+        return $this;
     }
 
     /**

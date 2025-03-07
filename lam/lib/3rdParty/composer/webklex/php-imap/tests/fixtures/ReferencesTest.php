@@ -34,8 +34,8 @@ class ReferencesTest extends FixtureTestCase {
 
         self::assertEquals("b9e87bd5e661a645ed6e3b832828fcc5@example.com", $message->in_reply_to);
         self::assertEquals("", $message->from->first()->personal);
-        self::assertEquals("UNKNOWN", $message->from->first()->host);
-        self::assertEquals("no_host@UNKNOWN", $message->from->first()->mail);
+        self::assertEquals("", $message->from->first()->host);
+        self::assertEquals("no_host", $message->from->first()->mail);
         self::assertFalse($message->to->first());
 
         self::assertEquals([
@@ -45,7 +45,7 @@ class ReferencesTest extends FixtureTestCase {
 
         self::assertEquals([
             'This one: is "right" <ding@dong.com>',
-            'No-address@UNKNOWN'
+            'No-address'
             ], $message->cc->map(function($address){
                 /** @var \Webklex\PHPIMAP\Address $address */
                 return $address->full;

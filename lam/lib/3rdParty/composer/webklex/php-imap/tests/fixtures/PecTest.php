@@ -51,7 +51,7 @@ class PecTest extends FixtureTestCase {
         self::assertEquals("application/xml", $attachment->content_type);
         self::assertEquals("<xml/>", $attachment->content);
         self::assertEquals(8, $attachment->size);
-        self::assertEquals(4, $attachment->part_number);
+        self::assertEquals(3, $attachment->part_number);
         self::assertEquals("inline", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
 
@@ -63,7 +63,7 @@ class PecTest extends FixtureTestCase {
         self::assertEquals("message/rfc822", $attachment->content_type);
         self::assertEquals("To: test@example.com\r\nFrom: test@example.com\r\nSubject: test-subject\r\nDate: Mon, 2 Oct 2017 12:13:50 +0200\r\nContent-Type: text/plain; charset=iso-8859-15; format=flowed\r\nContent-Transfer-Encoding: 7bit\r\n\r\ntest-content", $attachment->content);
         self::assertEquals(216, $attachment->size);
-        self::assertEquals(5, $attachment->part_number);
+        self::assertEquals(4, $attachment->part_number);
         self::assertEquals("inline", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
 
@@ -75,7 +75,7 @@ class PecTest extends FixtureTestCase {
         self::assertEquals("application/x-pkcs7-signature", $attachment->content_type);
         self::assertEquals("1", $attachment->content);
         self::assertEquals(4, $attachment->size);
-        self::assertEquals(7, $attachment->part_number);
+        self::assertEquals(5, $attachment->part_number);
         self::assertEquals("attachment", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
     }

@@ -81,7 +81,7 @@ class DateTemplateTest extends FixtureTestCase {
                 "fallback_date" => "2021-01-01 00:00:00",
             ],
         ]);
-        $message = $this->getFixture("date-template.eml");
+        $message = $this->getFixture("date-template.eml", self::$manager->getConfig());
 
         self::assertEquals("test", $message->subject);
         self::assertEquals("1.0", $message->mime_version);

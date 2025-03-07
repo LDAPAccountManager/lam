@@ -13,6 +13,7 @@
 namespace Tests\issues;
 
 use PHPUnit\Framework\TestCase;
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Message;
 
 class Issue412Test extends TestCase {

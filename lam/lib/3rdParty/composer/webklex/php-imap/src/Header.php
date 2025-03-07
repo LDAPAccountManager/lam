@@ -14,8 +14,11 @@ namespace Webklex\PHPIMAP;
 
 
 use Carbon\Carbon;
+use Webklex\PHPIMAP\Decoder\DecoderInterface;
+use Webklex\PHPIMAP\Exceptions\DecoderNotFoundException;
 use Webklex\PHPIMAP\Exceptions\InvalidMessageDateException;
 use Webklex\PHPIMAP\Exceptions\MethodNotFoundException;
+use Webklex\PHPIMAP\Exceptions\SpoofingAttemptDetectedException;
 
 /**
  * Class Header
@@ -41,26 +44,37 @@ class Header {
     /**
      * Config holder
      *
-     * @var array $config
+     * @var Config $config
      */
-    protected array $config = [];
+    protected Config $config;
 
     /**
-     * Fallback Encoding
+     * Config holder
      *
-     * @var string
+     * @var array $options
      */
-    public string $fallback_encoding = 'UTF-8';
+    protected array $options = [];
+
+    /**
+     * Decoder instance
+     *
+     * @var DecoderInterface $decoder
+     */
+    protected DecoderInterface $decoder;
 
     /**
      * Header constructor.
+     * @param Config $config
      * @param string $raw_header
      *
      * @throws InvalidMessageDateException
+     * @throws DecoderNotFoundException
      */
-    public function __construct(string $raw_header) {
+    public function __construct(string $raw_header, Config $config) {
+        $this->decoder = $config->getDecoder("header");
         $this->raw = $raw_header;
-        $this->config = ClientManager::get('options');
+        $this->config = $config;
+        $this->options = $this->config->get('options');
         $this->parse();
     }
 
@@ -162,7 +176,7 @@ class Header {
      * @return string|null
      */
     public function getBoundary(): ?string {
-        $regex = $this->config["boundary"] ?? "/boundary=(.*?(?=;)|(.*))/i";
+        $regex = $this->options["boundary"] ?? "/boundary=(.*?(?=;)|(.*))/i";
         $boundary = $this->find($regex);
 
         if ($boundary === null) {
@@ -186,6 +200,7 @@ class Header {
      * Parse the raw headers
      *
      * @throws InvalidMessageDateException
+     * @throws SpoofingAttemptDetectedException
      */
     protected function parse(): void {
         $header = $this->rfc822_parse_headers($this->raw);
@@ -193,10 +208,10 @@ class Header {
         $this->extractAddresses($header);
 
         if (property_exists($header, 'subject')) {
-            $this->set("subject", $this->decode($header->subject));
+            $this->set("subject", $this->decoder->decode($header->subject));
         }
         if (property_exists($header, 'references')) {
-            $this->set("references", array_map(function ($item) {
+            $this->set("references", array_map(function($item) {
                 return str_replace(['<', '>'], '', $item);
             }, explode(" ", $header->references)));
         }
@@ -217,6 +232,11 @@ class Header {
 
         $this->extractHeaderExtensions();
         $this->findPriority();
+
+        if($this->config->get('security.detect_spoofing', true)) {
+            // Detect spoofing
+            $this->detectSpoofing();
+        }
     }
 
     /**
@@ -229,7 +249,7 @@ class Header {
     public function rfc822_parse_headers($raw_headers): object {
         $headers = [];
         $imap_headers = [];
-        if (extension_loaded('imap') && $this->config["rfc822"]) {
+        if (extension_loaded('imap') && $this->options["rfc822"]) {
             $raw_imap_headers = (array)\imap_rfc822_parse_headers($raw_headers);
             foreach ($raw_imap_headers as $key => $values) {
                 $key = strtolower(str_replace("-", "_", $key));
@@ -323,147 +343,6 @@ class Header {
     }
 
     /**
-     * Decode MIME header elements
-     * @link https://php.net/manual/en/function.imap-mime-header-decode.php
-     * @param string $text The MIME text
-     *
-     * @return array The decoded elements are returned in an array of objects, where each
-     * object has two properties, charset and text.
-     */
-    public function mime_header_decode(string $text): array {
-        if (extension_loaded('imap')) {
-            $result = \imap_mime_header_decode($text);
-            return is_array($result) ? $result : [];
-        }
-        $charset = $this->getEncoding($text);
-        return [(object)[
-            "charset" => $charset,
-            "text"    => $this->convertEncoding($text, $charset)
-        ]];
-    }
-
-    /**
-     * Check if a given pair of strings has been decoded
-     * @param $encoded
-     * @param $decoded
-     *
-     * @return bool
-     */
-    private function notDecoded($encoded, $decoded): bool {
-        return str_starts_with($decoded, '=?')
-            && strlen($decoded) - 2 === strpos($decoded, '?=')
-            && str_contains($encoded, $decoded);
-    }
-
-    /**
-     * Convert the encoding
-     * @param $str
-     * @param string $from
-     * @param string $to
-     *
-     * @return mixed|string
-     */
-    public function convertEncoding($str, string $from = "ISO-8859-2", string $to = "UTF-8"): mixed {
-        $from = EncodingAliases::get($from, $this->fallback_encoding);
-        $to = EncodingAliases::get($to, $this->fallback_encoding);
-
-        if ($from === $to) {
-            return $str;
-        }
-
-        return EncodingAliases::convert($str, $from, $to);
-    }
-
-    /**
-     * Get the encoding of a given abject
-     * @param object|string $structure
-     *
-     * @return string
-     */
-    public function getEncoding(object|string $structure): string {
-        if (property_exists($structure, 'parameters')) {
-            foreach ($structure->parameters as $parameter) {
-                if (strtolower($parameter->attribute) == "charset") {
-                    return EncodingAliases::get($parameter->value, $this->fallback_encoding);
-                }
-            }
-        } elseif (property_exists($structure, 'charset')) {
-            return EncodingAliases::get($structure->charset, $this->fallback_encoding);
-        } elseif (is_string($structure) === true) {
-            $result = mb_detect_encoding($structure);
-            return $result === false ? $this->fallback_encoding : $result;
-        }
-
-        return $this->fallback_encoding;
-    }
-
-    /**
-     * Test if a given value is utf-8 encoded
-     * @param $value
-     *
-     * @return bool
-     */
-    private function is_uft8($value): bool {
-        return str_starts_with(strtolower($value), '=?utf-8?');
-    }
-
-    /**
-     * Try to decode a specific header
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    public function decode(mixed $value): mixed {
-        if (is_array($value)) {
-            return $this->decodeArray($value);
-        }
-        $original_value = $value;
-        $decoder = $this->config['decoder']['message'];
-
-        if ($value !== null) {
-            if ($decoder === 'utf-8') {
-                $decoded_values = $this->mime_header_decode($value);
-                $tempValue = "";
-                foreach ($decoded_values as $decoded_value) {
-                    $tempValue .= $this->convertEncoding($decoded_value->text, $decoded_value->charset);
-                }
-                if ($tempValue) {
-                    $value = $tempValue;
-                } else if (extension_loaded('imap')) {
-                    $value = \imap_utf8($value);
-                }else if (function_exists('iconv_mime_decode')){
-                    $value = iconv_mime_decode($value, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, "UTF-8");
-                }else{
-                    $value = mb_decode_mimeheader($value);
-                }
-            }elseif ($decoder === 'iconv') {
-                $value = iconv_mime_decode($value, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, "UTF-8");
-            }else if ($this->is_uft8($value)) {
-                $value = mb_decode_mimeheader($value);
-            }
-
-            if ($this->notDecoded($original_value, $value)) {
-                $value = $this->convertEncoding($original_value, $this->getEncoding($original_value));
-            }
-        }
-
-        return $value;
-    }
-
-    /**
-     * Decode a given array
-     * @param array $values
-     *
-     * @return array
-     */
-    private function decodeArray(array $values): array {
-        foreach ($values as $key => $value) {
-            $values[$key] = $this->decode($value);
-        }
-        return $values;
-    }
-
-    /**
      * Try to extract the priority from a given raw header string
      */
     private function findPriority(): void {
@@ -490,7 +369,7 @@ class Header {
     private function decodeAddresses($values): array {
         $addresses = [];
 
-        if (extension_loaded('mailparse') && $this->config["rfc822"]) {
+        if (extension_loaded('mailparse') && $this->options["rfc822"]) {
             foreach ($values as $address) {
                 foreach (\mailparse_rfc822_parse_addresses($address) as $parsed_address) {
                     if (isset($parsed_address['address'])) {
@@ -510,7 +389,7 @@ class Header {
         }
 
         foreach ($values as $address) {
-            foreach (preg_split('/, (?=(?:[^"]*"[^"]*")*[^"]*$)/', $address) as $split_address) {
+            foreach (preg_split('/, ?(?=(?:[^"]*"[^"]*")*[^"]*$)/', $address) as $split_address) {
                 $split_address = trim(rtrim($split_address));
 
                 if (strpos($split_address, ",") == strlen($split_address) - 1) {
@@ -522,6 +401,24 @@ class Header {
                     $matches
                 )) {
                     $name = trim(rtrim($matches["name"]));
+                    $email = trim(rtrim($matches["email"]));
+                    list($mailbox, $host) = array_pad(explode("@", $email), 2, null);
+                    $addresses[] = (object)[
+                        "personal" => $name,
+                        "mailbox"  => $mailbox,
+                        "host"     => $host,
+                    ];
+                }elseif (preg_match(
+                    '/^((?P<name>.+)<)(?P<email>[^<]+?)>$/',
+                    $split_address,
+                    $matches
+                )) {
+                    $name = trim(rtrim($matches["name"]));
+                    if(str_starts_with($name, "\"") && str_ends_with($name, "\"")) {
+                        $name = substr($name, 1, -1);
+                    }elseif(str_starts_with($name, "'") && str_ends_with($name, "'")) {
+                        $name = substr($name, 1, -1);
+                    }
                     $email = trim(rtrim($matches["email"]));
                     list($mailbox, $host) = array_pad(explode("@", $email), 2, null);
                     $addresses[] = (object)[
@@ -541,7 +438,7 @@ class Header {
      * @param object $header
      */
     private function extractAddresses(object $header): void {
-        foreach (['from', 'to', 'cc', 'bcc', 'reply_to', 'sender'] as $key) {
+        foreach (['from', 'to', 'cc', 'bcc', 'reply_to', 'sender', 'return_path', 'envelope_from', 'envelope_to', 'delivered_to'] as $key) {
             if (property_exists($header, $key)) {
                 $this->set($key, $this->parseAddresses($header->$key));
             }
@@ -558,7 +455,60 @@ class Header {
         $addresses = [];
 
         if (is_array($list) === false) {
-            return $addresses;
+            if(is_string($list)) {
+                if (preg_match(
+                    '/^(?:(?P<name>.+)\s)?(?(name)<|<?)(?P<email>[^\s]+?)(?(name)>|>?)$/',
+                    $list,
+                    $matches
+                )) {
+                    $name = trim(rtrim($matches["name"]));
+                    $email = trim(rtrim($matches["email"]));
+                    list($mailbox, $host) = array_pad(explode("@", $email), 2, null);
+                    if($mailbox === ">") { // Fix trailing ">" in malformed mailboxes
+                        $mailbox = "";
+                    }
+                    if($name === "" && $mailbox === "" && $host === "") {
+                        return $addresses;
+                    }
+                    $list = [
+                        (object)[
+                            "personal" => $name,
+                            "mailbox"  => $mailbox,
+                            "host"     => $host,
+                        ]
+                    ];
+                }elseif (preg_match(
+                    '/^((?P<name>.+)<)(?P<email>[^<]+?)>$/',
+                    $list,
+                    $matches
+                )) {
+                    $name = trim(rtrim($matches["name"]));
+                    $email = trim(rtrim($matches["email"]));
+                    if(str_starts_with($name, "\"") && str_ends_with($name, "\"")) {
+                        $name = substr($name, 1, -1);
+                    }elseif(str_starts_with($name, "'") && str_ends_with($name, "'")) {
+                        $name = substr($name, 1, -1);
+                    }
+                    list($mailbox, $host) = array_pad(explode("@", $email), 2, null);
+                    if($mailbox === ">") { // Fix trailing ">" in malformed mailboxes
+                        $mailbox = "";
+                    }
+                    if($name === "" && $mailbox === "" && $host === "") {
+                        return $addresses;
+                    }
+                    $list = [
+                        (object)[
+                            "personal" => $name,
+                            "mailbox"  => $mailbox,
+                            "host"     => $host,
+                        ]
+                    ];
+                }else{
+                    return $addresses;
+                }
+            }else{
+                return $addresses;
+            }
         }
 
         foreach ($list as $item) {
@@ -573,27 +523,35 @@ class Header {
             if (!property_exists($address, 'personal')) {
                 $address->personal = false;
             } else {
-                $personalParts = $this->mime_header_decode($address->personal);
+                $personal_slices = explode(" ", $address->personal);
+                $address->personal = "";
+                foreach ($personal_slices as $slice) {
+                    $personalParts = $this->decoder->mimeHeaderDecode($slice);
 
-                $address->personal = '';
-                foreach ($personalParts as $p) {
-                    $address->personal .= $this->convertEncoding($p->text, $this->getEncoding($p));
-                }
+                    $personal = '';
+                    foreach ($personalParts as $p) {
+                        $personal .= $this->decoder->convertEncoding($p->text, $this->decoder->getEncoding($p));
+                    }
 
-                if (str_starts_with($address->personal, "'")) {
-                    $address->personal = str_replace("'", "", $address->personal);
+                    if (str_starts_with($personal, "'")) {
+                        $personal = str_replace("'", "", $personal);
+                    }
+                    $personal = $this->decoder->decode($personal);
+                    $address->personal .= $personal . " ";
                 }
+                $address->personal = trim(rtrim($address->personal));
             }
 
             if ($address->host == ".SYNTAX-ERROR.") {
                 $address->host = "";
+            }elseif ($address->host == "UNKNOWN") {
+                $address->host = "";
             }
             if ($address->mailbox == "UNEXPECTED_DATA_AFTER_ADDRESS") {
                 $address->mailbox = "";
+            }elseif ($address->mailbox == "MISSING_MAILBOX_TERMINATOR") {
+                $address->mailbox = "";
             }
-
-            $address->mail = ($address->mailbox && $address->host) ? $address->mailbox . '@' . $address->host : false;
-            $address->full = ($address->personal) ? $address->personal . ' <' . $address->mail . '>' : $address->mail;
 
             $addresses[] = new Address($address);
         }
@@ -612,61 +570,95 @@ class Header {
                 $value = (string)$value;
             }
             // Only parse strings and don't parse any attributes like the user-agent
-            if (!in_array($key, ["user-agent", "subject"])) {
-                if (($pos = strpos($value, ";")) !== false) {
-                    $original = substr($value, 0, $pos);
-                    $this->set($key, trim(rtrim($original)));
-
-                    // Get all potential extensions
-                    $extensions = explode(";", substr($value, $pos + 1));
-                    $previousKey = null;
-                    $previousValue = '';
-
-                    foreach ($extensions as $extension) {
-                        if (($pos = strpos($extension, "=")) !== false) {
-                            $key = substr($extension, 0, $pos);
-                            $key = trim(rtrim(strtolower($key)));
-
-                            $matches = [];
-
-                            if (preg_match('/^(?P<key_name>\w+)\*/', $key, $matches) !== 0) {
-                                $key = $matches['key_name'];
-                                $previousKey = $key;
-
-                                $value = substr($extension, $pos + 1);
-                                $value = str_replace('"', "", $value);
-                                $previousValue .= trim(rtrim($value));
-
-                                continue;
-                            }
-
-                            if (
-                                $previousKey !== null
-                                && $previousKey !== $key
-                                && isset($this->attributes[$previousKey]) === false
-                            ) {
-                                $this->set($previousKey, $previousValue);
-
-                                $previousValue = '';
-                            }
-
-                            if (isset($this->attributes[$key]) === false) {
-                                $value = substr($extension, $pos + 1);
-                                $value = str_replace('"', "", $value);
-                                $value = trim(rtrim($value));
-
-                                $this->set($key, $value);
-                            }
-
-                            $previousKey = $key;
+            if (!in_array($key, ["user-agent", "subject", "received"])) {
+                if (str_contains($value, ";") && str_contains($value, "=")) {
+                    $_attributes = $this->read_attribute($value);
+                    foreach($_attributes as $_key => $_value) {
+                        if($_value === "") {
+                            $this->set($key, $_key);
                         }
-                    }
-                    if ($previousValue !== '') {
-                        $this->set($previousKey, $previousValue);
+                        if (!isset($this->attributes[$_key])) {
+                            $this->set($_key, $_value);
+                        }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Read a given attribute string
+     * - this isn't pretty, but it works - feel free to improve :)
+     * @param string $raw_attribute
+     * @return array
+     */
+    private function read_attribute(string $raw_attribute): array {
+        $attributes = [];
+        $key = '';
+        $value = '';
+        $inside_word = false;
+        $inside_key = true;
+        $escaped = false;
+        foreach (str_split($raw_attribute) as $char) {
+            if($escaped) {
+                $escaped = false;
+                continue;
+            }
+            if($inside_word) {
+                if($char === '\\') {
+                    $escaped = true;
+                }elseif($char === "\"" && $value !== "") {
+                    $inside_word = false;
+                }else{
+                    $value .= $char;
+                }
+            }else{
+                if($inside_key) {
+                    if($char === '"') {
+                        $inside_word = true;
+                    }elseif($char === ';'){
+                        $attributes[$key] = $value;
+                        $key = '';
+                        $value = '';
+                        $inside_key = true;
+                    }elseif($char === '=') {
+                        $inside_key = false;
+                    }else{
+                        $key .= $char;
+                    }
+                }else{
+                    if($char === '"' && $value === "") {
+                        $inside_word = true;
+                    }elseif($char === ';'){
+                        $attributes[$key] = $value;
+                        $key = '';
+                        $value = '';
+                        $inside_key = true;
+                    }else{
+                        $value .= $char;
+                    }
+                }
+            }
+        }
+        $attributes[$key] = $value;
+        $result = [];
+
+        foreach($attributes as $key => $value) {
+            if (($pos = strpos($key, "*")) !== false) {
+                $key = substr($key, 0, $pos);
+            }
+            $key = trim(rtrim(strtolower($key)));
+
+            if(!isset($result[$key])) {
+                $result[$key] = "";
+            }
+            $value = trim(rtrim(str_replace(["\r", "\n"], "", $value)));
+            if(str_starts_with($value, "\"") && str_ends_with($value, "\"")) {
+                $value = substr($value, 1, -1);
+            }
+            $result[$key] .= $value;
+        }
+        return $result;
     }
 
     /**
@@ -722,7 +714,7 @@ class Header {
                         $date = Carbon::createFromFormat("d M Y H:i:s O", trim(implode(',', $array)));
                         break;
                     case preg_match('/([0-9]{1,2}\ [A-Z]{2,3}\ [0-9]{4}\ [0-9]{1,2}\:[0-9]{1,2}\:[0-9]{1,2}\ UT)+$/i', $date) > 0:
-                    case preg_match('/([A-Z]{2,3}\,\ [0-9]{1,2}\ [A-Z]{2,3}\ [0-9]{4}\ [0-9]{1,2}\:[0-9]{1,2}\:[0-9]{1,2}\ UT)+$/i', $date) > 0:
+                    case preg_match('/([A-Z]{2,3}\,\ [0-9]{1,2}\ [A-Z]{2,3}\ ([0-9]{2}|[0-9]{4})\ [0-9]{1,2}\:[0-9]{1,2}\:[0-9]{1,2}\ UT)+$/i', $date) > 0:
                         $date .= 'C';
                         break;
                     case preg_match('/([A-Z]{2,3}\,\ [0-9]{1,2}[\,]\ [A-Z]{2,3}\ [0-9]{4}\ [0-9]{1,2}\:[0-9]{1,2}\:[0-9]{1,2}\ [\-|\+][0-9]{4})+$/i', $date) > 0:
@@ -762,10 +754,10 @@ class Header {
                 try {
                     $parsed_date = Carbon::parse($date);
                 } catch (\Exception $_e) {
-                    if (!isset($this->config["fallback_date"])) {
+                    if (!isset($this->options["fallback_date"])) {
                         throw new InvalidMessageDateException("Invalid message date. ID:" . $this->get("message_id") . " Date:" . $header->date . "/" . $date, 1100, $e);
                     } else {
-                        $parsed_date = Carbon::parse($this->config["fallback_date"]);
+                        $parsed_date = Carbon::parse($this->options["fallback_date"]);
                     }
                 }
             }
@@ -800,9 +792,79 @@ class Header {
      *
      * @return Header
      */
-    public function setConfig(array $config): Header {
+    public function setOptions(array $config): Header {
+        $this->options = $config;
+        return $this;
+    }
+
+    /**
+     * Get the configuration used for parsing a raw header
+     *
+     * @return array
+     */
+    public function getOptions(): array {
+        return $this->options;
+    }
+
+    /**
+     * Set the configuration used for parsing a raw header
+     * @param Config $config
+     *
+     * @return Header
+     */
+    public function setConfig(Config $config): Header {
         $this->config = $config;
         return $this;
+    }
+
+    /**
+     * Get the configuration used for parsing a raw header
+     *
+     * @return Config
+     */
+    public function getConfig(): Config {
+        return $this->config;
+    }
+
+    /**
+     * Get the decoder instance
+     *
+     * @return DecoderInterface
+     */
+    public function getDecoder(): DecoderInterface {
+        return $this->decoder;
+    }
+
+    /**
+     * Set the decoder instance
+     * @param DecoderInterface $decoder
+     *
+     * @return $this
+     */
+    public function setDecoder(DecoderInterface $decoder): static {
+        $this->decoder = $decoder;
+        return $this;
+    }
+
+    /**
+     * Detect spoofing by checking the from, reply_to, return_path, sender and envelope_from headers
+     * @throws SpoofingAttemptDetectedException
+     */
+    private function detectSpoofing(): void {
+        $header_keys = ["from", "reply_to", "return_path", "sender", "envelope_from"];
+        $potential_senders = [];
+        foreach($header_keys as $key) {
+            $header = $this->get($key);
+            foreach ($header->toArray() as $address) {
+                $potential_senders[] = $address->mailbox . "@" . $address->host;
+            }
+        }
+        if(count($potential_senders) > 1) {
+            $this->set("spoofed", true);
+            if($this->config->get('security.detect_spoofing_exception', false)) {
+                throw new SpoofingAttemptDetectedException("Potential spoofing detected. Message ID: " . $this->get("message_id") . " Senders: " . implode(", ", $potential_senders));
+            }
+        }
     }
 
 }

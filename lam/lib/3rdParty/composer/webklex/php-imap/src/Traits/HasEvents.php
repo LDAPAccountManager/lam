@@ -74,4 +74,13 @@ trait HasEvents {
         return $this->events;
     }
 
+    /**
+     * Dispatch a specific event.
+     * @throws EventNotFoundException
+     */
+    public function dispatch(string $section, string $event, mixed ...$args): void {
+        $event = $this->getEvent($section, $event);
+        $event::dispatch(...$args);
+    }
+
 }

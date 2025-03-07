@@ -48,7 +48,7 @@ class BooleanDecodedContentTest extends FixtureTestCase {
         self::assertEquals("application/pdf", $attachment->content_type);
         self::assertEquals("1c449aaab4f509012fa5eaa180fd017eb7724ccacabdffc1c6066d3756dcde5c", hash("sha256", $attachment->content));
         self::assertEquals(53, $attachment->size);
-        self::assertEquals(3, $attachment->part_number);
+        self::assertEquals(2, $attachment->part_number);
         self::assertEquals("attachment", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
     }

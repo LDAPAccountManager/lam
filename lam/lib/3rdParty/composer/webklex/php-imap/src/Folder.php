@@ -236,7 +236,7 @@ class Folder {
     protected function decodeName($name): string|array|bool|null {
         $parts = [];
         foreach (explode($this->delimiter, $name) as $item) {
-            $parts[] = EncodingAliases::convert($item, "UTF7-IMAP", "UTF-8");
+            $parts[] = EncodingAliases::convert($item, "UTF7-IMAP");
         }
 
         return implode($this->delimiter, $parts);
@@ -287,8 +287,7 @@ class Folder {
         if ($expunge) $this->client->expunge();
 
         $folder = $this->client->getFolder($new_name);
-        $event = $this->getEvent("folder", "moved");
-        $event::dispatch($this, $folder);
+        $this->dispatch("folder", "moved", $this, $folder);
 
         return $status;
     }
@@ -307,10 +306,10 @@ class Folder {
      * @throws MessageNotFoundException
      * @throws ResponseException
      */
-    public function overview(string $sequence = null): array {
+    public function overview(?string $sequence = null): array {
         $this->client->openFolder($this->path);
         $sequence = $sequence === null ? "1:*" : $sequence;
-        $uid = ClientManager::get('options.sequence', IMAP::ST_MSGN);
+        $uid = $this->client->getConfig()->get('options.sequence', IMAP::ST_MSGN);
         $response = $this->client->getConnection()->overview($sequence, $uid);
         return $response->validatedData();
     }
@@ -329,7 +328,7 @@ class Folder {
      * @throws AuthFailedException
      * @throws ResponseException
      */
-    public function appendMessage(string $message, array $options = null, Carbon|string $internal_date = null): array {
+    public function appendMessage(string $message, ?array $options = null, Carbon|string|null $internal_date = null): array {
         /**
          * Check if $internal_date is parsed. If it is null it should not be set. Otherwise, the message can't be stored.
          * If this parameter is set, it will set the INTERNALDATE on the appended message. The parameter should be a
@@ -378,13 +377,12 @@ class Folder {
     public function delete(bool $expunge = true): array {
         $status = $this->client->getConnection()->deleteFolder($this->path)->validatedData();
         if ($this->client->getActiveFolder() == $this->path){
-            $this->client->setActiveFolder(null);
+            $this->client->setActiveFolder();
         }
 
         if ($expunge) $this->client->expunge();
 
-        $event = $this->getEvent("folder", "deleted");
-        $event::dispatch($this);
+        $this->dispatch("folder", "deleted", $this);
 
         return $status;
     }
@@ -448,11 +446,20 @@ class Folder {
 
         $last_action = Carbon::now()->addSeconds($timeout);
 
-        $sequence = ClientManager::get('options.sequence', IMAP::ST_MSGN);
+        $sequence = $this->client->getConfig()->get('options.sequence', IMAP::ST_MSGN);
 
         while (true) {
-            // This polymorphic call is fine - Protocol::idle() will throw an exception beforehand
-            $line = $idle_client->getConnection()->nextLine(Response::empty());
+            try {
+                // This polymorphic call is fine - Protocol::idle() will throw an exception beforehand
+                $line = $idle_client->getConnection()->nextLine(Response::empty());
+            } catch (Exceptions\RuntimeException $e) {
+                if(strpos($e->getMessage(), "empty response") >= 0 && $idle_client->getConnection()->connected()) {
+                    continue;
+                }
+                if(!str_contains($e->getMessage(), "connection closed")) {
+                    throw $e;
+                }
+            }
 
             if (($pos = strpos($line, "EXISTS")) !== false) {
                 $msgn = (int)substr($line, 2, $pos - 2);
@@ -485,14 +492,13 @@ class Folder {
                 $message->setSequence($sequence);
                 $callback($message);
 
-                $event = $this->getEvent("message", "new");
-                $event::dispatch($message);
+                $this->dispatch("message", "new", $message);
             }
         }
     }
 
     /**
-     * Get folder status information
+     * Get folder status information from the EXAMINE command
      *
      * @return array
      * @throws ConnectionFailedException
@@ -502,20 +508,39 @@ class Folder {
      * @throws AuthFailedException
      * @throws ResponseException
      */
-    public function getStatus(): array {
-        return $this->examine();
+    public function status(): array {
+        return $this->client->getConnection()->folderStatus($this->path)->validatedData();
     }
 
     /**
+     * Get folder status information from the EXAMINE command
+     *
+     * @return array
+     * @throws AuthFailedException
      * @throws ConnectionFailedException
      * @throws ImapBadRequestException
      * @throws ImapServerErrorException
-     * @throws RuntimeException
-     * @throws AuthFailedException
      * @throws ResponseException
+     * @throws RuntimeException
+     *
+     * @deprecated Use Folder::status() instead
+     */
+    public function getStatus(): array {
+        return $this->status();
+    }
+
+    /**
+     * Load folder status information from the EXAMINE command
+     * @return Folder
+     * @throws AuthFailedException
+     * @throws ConnectionFailedException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws ResponseException
+     * @throws RuntimeException
      */
     public function loadStatus(): Folder {
-        $this->status = $this->getStatus();
+        $this->status = $this->examine();
         return $this;
     }
 
@@ -564,7 +589,7 @@ class Folder {
      */
     public function setDelimiter($delimiter): void {
         if (in_array($delimiter, [null, '', ' ', false]) === true) {
-            $delimiter = ClientManager::get('options.delimiter', '/');
+            $delimiter = $this->client->getConfig()->get('options.delimiter', '/');
         }
 
         $this->delimiter = $delimiter;

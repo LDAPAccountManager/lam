@@ -187,7 +187,7 @@ class ClientTest extends LiveMailboxTestCase {
     public function testCreateFolder(): void {
         $client = $this->getClient()->connect();
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $folder_path = implode($delimiter, ['INBOX', $this->getSpecialChars()]);
 
         $folder = $client->getFolder($folder_path);

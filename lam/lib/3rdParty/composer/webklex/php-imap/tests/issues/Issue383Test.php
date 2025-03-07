@@ -43,7 +43,7 @@ class Issue383Test extends LiveMailboxTestCase {
         $client = $this->getClient();
         $client->connect();
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $folder_path = implode($delimiter, ['INBOX', 'Entwürfe+']);
 
         $folder = $client->getFolder($folder_path);

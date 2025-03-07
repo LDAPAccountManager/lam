@@ -636,9 +636,9 @@
             'dev_requirement' => false,
         ),
         'webklex/php-imap' => array(
-            'pretty_version' => '5.5.0',
-            'version' => '5.5.0.0',
-            'reference' => '3c23c8f66b772ce8597772816e068326559e7e4b',
+            'pretty_version' => '6.1.0',
+            'version' => '6.1.0.0',
+            'reference' => 'dedff6f679829d4aadfa0b17f150923b2f8dd1fe',
             'type' => 'library',
             'install_path' => __DIR__ . '/../webklex/php-imap',
             'aliases' => array(),

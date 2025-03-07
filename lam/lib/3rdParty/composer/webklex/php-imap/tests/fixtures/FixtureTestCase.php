@@ -14,6 +14,7 @@ namespace Tests\fixtures;
 
 use PHPUnit\Framework\TestCase;
 use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Exceptions\AuthFailedException;
 use Webklex\PHPIMAP\Exceptions\ConnectionFailedException;
 use Webklex\PHPIMAP\Exceptions\ImapBadRequestException;
@@ -83,9 +84,9 @@ abstract class FixtureTestCase extends TestCase {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    final public function getFixture(string $template) : Message {
+    final public function getFixture(string $template, Config $config = null) : Message {
         $filename = implode(DIRECTORY_SEPARATOR, [__DIR__, "..",  "messages", $template]);
-        $message = Message::fromFile($filename);
+        $message = Message::fromFile($filename, $config);
         self::assertInstanceOf(Message::class, $message);
 
         return $message;

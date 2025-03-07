@@ -43,6 +43,24 @@ class Address {
         if (property_exists($object, "host")){ $this->host = $object->host ?? ''; }
         if (property_exists($object, "mail")){ $this->mail = $object->mail ?? ''; }
         if (property_exists($object, "full")){ $this->full = $object->full ?? ''; }
+        $this->boot();
+    }
+
+    /**
+     * Boot the address
+     */
+    private function boot(): void {
+        if($this->mail === "" && $this->mailbox !== "" && $this->host !== ""){
+            $this->mail = $this->mailbox . "@" . $this->host;
+        }elseif($this->mail === "" && $this->mailbox !== ""){
+            $this->mail = $this->mailbox;
+        }
+
+        if($this->full === "" && $this->mail !== "" && $this->personal !== ""){
+            $this->full = $this->personal . " <" . $this->mail . ">";
+        }elseif($this->full === "" && $this->mail !== ""){
+            $this->full = $this->mail;
+        }
     }
 
 

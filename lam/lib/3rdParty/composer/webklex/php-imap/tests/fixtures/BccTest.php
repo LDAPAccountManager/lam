@@ -24,11 +24,17 @@ class BccTest extends FixtureTestCase {
      *
      * @return void
      */
-    public function testFixture() : void {
+    public function testFixture(): void {
         $message = $this->getFixture("bcc.eml");
 
         self::assertEquals("test", $message->subject);
-        self::assertEquals("<return-path@here.com>", $message->return_path);
+        self::assertSame([
+                             'personal' => '',
+                             'mailbox'  => 'return-path',
+                             'host'     => 'here.com',
+                             'mail'     => 'return-path@here.com',
+                             'full'     => 'return-path@here.com',
+                         ], $message->return_path->first()->toArray());
         self::assertEquals("1.0", $message->mime_version);
         self::assertEquals("text/plain", $message->content_type);
         self::assertEquals("Hi!", $message->getTextBody());

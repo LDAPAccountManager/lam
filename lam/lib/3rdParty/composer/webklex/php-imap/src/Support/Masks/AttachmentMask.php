@@ -18,6 +18,7 @@ use Webklex\PHPIMAP\Attachment;
  * Class AttachmentMask
  *
  * @package Webklex\PHPIMAP\Support\Masks
+ * @mixin Attachment
  */
 class AttachmentMask extends Mask {
 

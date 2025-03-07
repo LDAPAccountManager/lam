@@ -43,7 +43,7 @@ class Issue393Test extends LiveMailboxTestCase {
         $client = $this->getClient();
         $client->connect();
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $pattern = implode($delimiter, ['doesnt_exist', '%']);
 
         $folder = $client->getFolder('doesnt_exist');

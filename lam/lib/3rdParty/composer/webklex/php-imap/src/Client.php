@@ -47,6 +47,13 @@ class Client {
     public ?ProtocolInterface $connection = null;
 
     /**
+     * Client configuration
+     *
+     * @var Config
+     */
+    protected Config $config;
+
+    /**
      * Server hostname.
      *
      * @var string
@@ -121,6 +128,13 @@ class Client {
     public array $extensions;
 
     /**
+     * Account rfc.
+     *
+     * @var string
+     */
+    public string $rfc;
+
+    /**
      * Account authentication method.
      *
      * @var ?string
@@ -161,6 +175,7 @@ class Client {
         'validate_cert' => true,
         'username' => '',
         'password' => '',
+        'rfc' => 'RFC822',
         'authentication' => null,
         "extensions" => [],
         'proxy' => [
@@ -174,14 +189,14 @@ class Client {
 
     /**
      * Client constructor.
-     * @param array $config
+     * @param Config $config
      *
      * @throws MaskNotFoundException
      */
-    public function __construct(array $config = []) {
+    public function __construct(Config $config) {
         $this->setConfig($config);
-        $this->setMaskFromConfig($config);
-        $this->setEventsFromConfig($config);
+        $this->setMaskFromConfig();
+        $this->setEventsFromConfig();
     }
 
     /**
@@ -199,16 +214,17 @@ class Client {
      * Clone the current Client instance
      *
      * @return Client
+     * @throws MaskNotFoundException
      */
     public function clone(): Client {
-        $client = new self();
+        $client = new self($this->config);
         $client->events = $this->events;
         $client->timeout = $this->timeout;
         $client->active_folder = $this->active_folder;
         $client->default_account_config = $this->default_account_config;
         $config = $this->getAccountConfig();
         foreach($config as $key => $value) {
-            $client->setAccountConfig($key, $config, $this->default_account_config);
+            $client->setAccountConfig($key, $config);
         }
         $client->default_message_mask = $this->default_message_mask;
         $client->default_attachment_mask = $this->default_message_mask;
@@ -217,16 +233,17 @@ class Client {
 
     /**
      * Set the Client configuration
-     * @param array $config
+     * @param Config $config
      *
      * @return self
      */
-    public function setConfig(array $config): Client {
-        $default_account = ClientManager::get('default');
-        $default_config  = ClientManager::get("accounts.$default_account");
+    public function setConfig(Config $config): Client {
+        $this->config = $config;
+        $default_account = $this->config->get('default');
+        $default_config  = $this->config->get("accounts.$default_account");
 
         foreach ($this->default_account_config as $key => $value) {
-            $this->setAccountConfig($key, $config, $default_config);
+            $this->setAccountConfig($key, $default_config);
         }
 
         return $this;
@@ -235,27 +252,20 @@ class Client {
     /**
      * Get the current config
      *
-     * @return array
+     * @return Config
      */
-    public function getConfig(): array {
-        $config = [];
-        foreach($this->default_account_config as $key => $value) {
-            $config[$key] = $this->$key;
-        }
-        return $config;
+    public function getConfig(): Config {
+        return $this->config;
     }
 
     /**
      * Set a specific account config
      * @param string $key
-     * @param array $config
      * @param array $default_config
      */
-    private function setAccountConfig(string $key, array $config, array $default_config): void {
+    private function setAccountConfig(string $key, array $default_config): void {
         $value = $this->default_account_config[$key];
-        if(isset($config[$key])) {
-            $value = $config[$key];
-        }elseif(isset($default_config[$key])) {
+        if(isset($default_config[$key])) {
             $value = $default_config[$key];
         }
         $this->$key = $value;
@@ -278,10 +288,9 @@ class Client {
 
     /**
      * Look for a possible events in any available config
-     * @param $config
      */
-    protected function setEventsFromConfig($config): void {
-        $this->events = ClientManager::get("events");
+    protected function setEventsFromConfig(): void {
+        $this->events = $this->config->get("events");
         if(isset($config['events'])){
             foreach($config['events'] as $section => $events) {
                 $this->events[$section] = array_merge($this->events[$section], $events);
@@ -291,35 +300,35 @@ class Client {
 
     /**
      * Look for a possible mask in any available config
-     * @param $config
      *
      * @throws MaskNotFoundException
      */
-    protected function setMaskFromConfig($config): void {
+    protected function setMaskFromConfig(): void {
+        $masks = $this->config->get("masks");
 
-        if(isset($config['masks'])){
-            if(isset($config['masks']['message'])) {
-                if(class_exists($config['masks']['message'])) {
-                    $this->default_message_mask = $config['masks']['message'];
+        if(isset($masks)){
+            if(isset($masks['message'])) {
+                if(class_exists($masks['message'])) {
+                    $this->default_message_mask = $masks['message'];
                 }else{
-                    throw new MaskNotFoundException("Unknown mask provided: ".$config['masks']['message']);
+                    throw new MaskNotFoundException("Unknown mask provided: ".$masks['message']);
                 }
             }else{
-                $default_mask  = ClientManager::getMask("message");
+                $default_mask  = $this->config->getMask("message");
                 if($default_mask != ""){
                     $this->default_message_mask = $default_mask;
                 }else{
                     throw new MaskNotFoundException("Unknown message mask provided");
                 }
             }
-            if(isset($config['masks']['attachment'])) {
-                if(class_exists($config['masks']['attachment'])) {
-                    $this->default_attachment_mask = $config['masks']['attachment'];
+            if(isset($masks['attachment'])) {
+                if(class_exists($masks['attachment'])) {
+                    $this->default_attachment_mask = $masks['attachment'];
                 }else{
-                    throw new MaskNotFoundException("Unknown mask provided: ". $config['masks']['attachment']);
+                    throw new MaskNotFoundException("Unknown mask provided: ". $masks['attachment']);
                 }
             }else{
-                $default_mask  = ClientManager::getMask("attachment");
+                $default_mask  = $this->config->getMask("attachment");
                 if($default_mask != ""){
                     $this->default_attachment_mask = $default_mask;
                 }else{
@@ -327,14 +336,14 @@ class Client {
                 }
             }
         }else{
-            $default_mask  = ClientManager::getMask("message");
+            $default_mask  = $this->config->getMask("message");
             if($default_mask != ""){
                 $this->default_message_mask = $default_mask;
             }else{
                 throw new MaskNotFoundException("Unknown message mask provided");
             }
 
-            $default_mask  = ClientManager::getMask("attachment");
+            $default_mask  = $this->config->getMask("attachment");
             if($default_mask != ""){
                 $this->default_attachment_mask = $default_mask;
             }else{
@@ -424,25 +433,25 @@ class Client {
         $protocol = strtolower($this->protocol);
 
         if (in_array($protocol, ['imap', 'imap4', 'imap4rev1'])) {
-            $this->connection = new ImapProtocol($this->validate_cert, $this->encryption);
+            $this->connection = new ImapProtocol($this->config, $this->validate_cert, $this->encryption);
             $this->connection->setConnectionTimeout($this->timeout);
             $this->connection->setProxy($this->proxy);
         }else{
             if (extension_loaded('imap') === false) {
                 throw new ConnectionFailedException("connection setup failed", 0, new ProtocolNotSupportedException($protocol." is an unsupported protocol"));
             }
-            $this->connection = new LegacyProtocol($this->validate_cert, $this->encryption);
+            $this->connection = new LegacyProtocol($this->config, $this->validate_cert, $this->encryption);
             if (str_starts_with($protocol, "legacy-")) {
                 $protocol = substr($protocol, 7);
             }
             $this->connection->setProtocol($protocol);
         }
 
-        if (ClientManager::get('options.debug')) {
+        if ($this->config->get('options.debug')) {
             $this->connection->enableDebug();
         }
 
-        if (!ClientManager::get('options.uid_cache')) {
+        if (!$this->config->get('options.uid_cache')) {
             $this->connection->disableUidCache();
         }
 
@@ -507,7 +516,7 @@ class Client {
      */
     public function getFolder(string $folder_name, ?string $delimiter = null, bool $utf7 = false): ?Folder {
         // Set delimiter to false to force selection via getFolderByName (maybe useful for uncommon folder names)
-        $delimiter = is_null($delimiter) ? ClientManager::get('options.delimiter', "/") : $delimiter;
+        $delimiter = is_null($delimiter) ? $this->config->get('options.delimiter', "/") : $delimiter;
 
         if (str_contains($folder_name, (string)$delimiter)) {
             return $this->getFolderByPath($folder_name, $utf7);
@@ -571,7 +580,7 @@ class Client {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    public function getFolders(bool $hierarchical = true, string $parent_folder = null, bool $soft_fail = false): FolderCollection {
+    public function getFolders(bool $hierarchical = true, ?string $parent_folder = null, bool $soft_fail = false): FolderCollection {
         $this->checkConnection();
         $folders = FolderCollection::make([]);
 
@@ -585,7 +594,7 @@ class Client {
                 if ($hierarchical && $folder->hasChildren()) {
                     $pattern = $folder->full_name.$folder->delimiter.'%';
 
-                    $children = $this->getFolders(true, $pattern, $soft_fail);
+                    $children = $this->getFolders(true, $pattern, true);
                     $folder->setChildren($children);
                 }
 
@@ -617,7 +626,7 @@ class Client {
      * @throws RuntimeException
      * @throws ResponseException
      */
-    public function getFoldersWithStatus(bool $hierarchical = true, string $parent_folder = null, bool $soft_fail = false): FolderCollection {
+    public function getFoldersWithStatus(bool $hierarchical = true, ?string $parent_folder = null, bool $soft_fail = false): FolderCollection {
         $this->checkConnection();
         $folders = FolderCollection::make([]);
 
@@ -631,7 +640,7 @@ class Client {
                 if ($hierarchical && $folder->hasChildren()) {
                     $pattern = $folder->full_name.$folder->delimiter.'%';
 
-                    $children = $this->getFoldersWithStatus(true, $pattern, $soft_fail);
+                    $children = $this->getFoldersWithStatus(true, $pattern, true);
                     $folder->setChildren($children);
                 }
 
@@ -714,8 +723,7 @@ class Client {
 
         $folder = $this->getFolderByPath($folder_path, true);
         if($status && $folder) {
-            $event = $this->getEvent("folder", "new");
-            $event::dispatch($folder);
+            $this->dispatch("folder", "new", $folder);
         }
 
         return $folder;
@@ -746,8 +754,7 @@ class Client {
         $status = $this->getConnection()->deleteFolder($folder->path)->validatedData();
         if ($expunge) $this->expunge();
 
-        $event = $this->getEvent("folder", "deleted");
-        $event::dispatch($folder);
+        $this->dispatch("folder", "deleted", $folder);
 
         return $status;
     }
@@ -772,9 +779,9 @@ class Client {
     /**
      * Get the current active folder
      *
-     * @return string
+     * @return null|string
      */
-    public function getFolderPath(): string {
+    public function getFolderPath(): ?string {
         return $this->active_folder;
     }
 
@@ -792,7 +799,7 @@ class Client {
      * @throws RuntimeException
      * @throws ResponseException
      */
-    public function Id(array $ids = null): array {
+    public function Id(?array $ids = null): array {
         $this->checkConnection();
         return $this->connection->ID($ids)->validatedData();
     }

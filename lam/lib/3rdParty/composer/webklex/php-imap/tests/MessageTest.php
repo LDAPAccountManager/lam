@@ -18,6 +18,7 @@ use ReflectionException;
 use Webklex\PHPIMAP\Attachment;
 use Webklex\PHPIMAP\Attribute;
 use Webklex\PHPIMAP\Client;
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Connection\Protocols\Response;
 use Webklex\PHPIMAP\Exceptions\EventNotFoundException;
 use Webklex\PHPIMAP\Exceptions\InvalidMessageDateException;
@@ -51,21 +52,24 @@ class MessageTest extends TestCase {
      * Setup the test environment.
      *
      * @return void
-     * @throws MaskNotFoundException
      */
     public function setUp(): void {
-        $this->client = new Client([
-                                       'protocol'   => 'imap',
-                                       'encryption' => 'ssl',
-                                       'username'   => 'foo@domain.tld',
-                                       'password'   => 'bar',
-                                       'proxy'      => [
-                                           'socket'          => null,
-                                           'request_fulluri' => false,
-                                           'username'        => null,
-                                           'password'        => null,
-                                       ],
-                                   ]);
+        $config = Config::make([
+                                   "accounts" => [
+                                       "default" => [
+                                           'protocol'   => 'imap',
+                                           'encryption' => 'ssl',
+                                           'username'   => 'foo@domain.tld',
+                                           'password'   => 'bar',
+                                           'proxy'      => [
+                                               'socket'          => null,
+                                               'request_fulluri' => false,
+                                               'username'        => null,
+                                               'password'        => null,
+                                           ],
+                                       ]]
+                               ]);
+        $this->client = new Client($config);
     }
 
     /**
@@ -116,11 +120,11 @@ class MessageTest extends TestCase {
         self::assertInstanceOf(Attribute::class, $subject);
         self::assertSame("Re: [Webklex/php-imap] Read all folders? (Issue #349)", $subject->toString());
         self::assertSame("Re: [Webklex/php-imap] Read all folders? (Issue #349)", (string)$message->subject);
-        self::assertSame("<noreply@github.com>", $returnPath->toString());
+        self::assertSame("noreply@github.com", $returnPath->toString());
         self::assertSame("return_path", $returnPath->getName());
         self::assertSame("-4.299", (string)$message->get("X-Spam-Score"));
         self::assertSame("Webklex/php-imap/issues/349/1365266070@github.com", (string)$message->get("Message-ID"));
-        self::assertSame(6, $message->get("received")->count());
+        self::assertSame(5, $message->get("received")->count());
         self::assertSame(IMAP::MESSAGE_PRIORITY_UNKNOWN, (int)$message->get("priority")());
     }
 
@@ -178,11 +182,11 @@ class MessageTest extends TestCase {
         self::assertInstanceOf(Attribute::class, $subject);
         self::assertSame("Re: [Webklex/php-imap] Read all folders? (Issue #349)", $subject->toString());
         self::assertSame("Re: [Webklex/php-imap] Read all folders? (Issue #349)", (string)$message->subject);
-        self::assertSame("<noreply@github.com>", $returnPath->toString());
+        self::assertSame("noreply@github.com", $returnPath->toString());
         self::assertSame("return_path", $returnPath->getName());
         self::assertSame("-4.299", (string)$message->get("X-Spam-Score"));
         self::assertSame("Webklex/php-imap/issues/349/1365266070@github.com", (string)$message->get("Message-ID"));
-        self::assertSame(6, $message->get("received")->count());
+        self::assertSame(5, $message->get("received")->count());
         self::assertSame(IMAP::MESSAGE_PRIORITY_UNKNOWN, (int)$message->get("priority")());
 
         self::assertNull($message->getClient());
@@ -197,11 +201,11 @@ class MessageTest extends TestCase {
         self::assertInstanceOf(Attribute::class, $subject);
         self::assertSame("ogqMVHhz7swLaq2PfSWsZj0k99w8wtMbrb4RuHdNg53i76B7icIIM0zIWpwGFtnk", $subject->toString());
         self::assertSame("ogqMVHhz7swLaq2PfSWsZj0k99w8wtMbrb4RuHdNg53i76B7icIIM0zIWpwGFtnk", (string)$message->subject);
-        self::assertSame("<someone@domain.tld>", $returnPath->toString());
+        self::assertSame("someone@domain.tld", $returnPath->toString());
         self::assertSame("return_path", $returnPath->getName());
         self::assertSame("1.103", (string)$message->get("X-Spam-Score"));
         self::assertSame("d3a5e91963cb805cee975687d5acb1c6@swift.generated", (string)$message->get("Message-ID"));
-        self::assertSame(5, $message->get("received")->count());
+        self::assertSame(4, $message->get("received")->count());
         self::assertSame(IMAP::MESSAGE_PRIORITY_HIGHEST, (int)$message->get("priority")());
 
         self::assertNull($message->getClient());

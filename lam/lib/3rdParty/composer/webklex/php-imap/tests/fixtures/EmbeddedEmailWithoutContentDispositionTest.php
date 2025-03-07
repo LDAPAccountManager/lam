@@ -32,7 +32,6 @@ class EmbeddedEmailWithoutContentDispositionTest extends FixtureTestCase {
         self::assertEquals("Subject", $message->subject);
         self::assertEquals([
             'from webmail.my-office.cz (localhost [127.0.0.1]) by keira.cofis.cz ; Fri, 29 Jan 2016 14:25:40 +0100',
-            'from webmail.my-office.cz (localhost [127.0.0.1]) by keira.cofis.cz'
         ], $message->received->toArray());
         self::assertEquals("AC39946EBF5C034B87BABD5343E96979012671D9F7E4@VM002.cerk.cc", $message->message_id);
         self::assertEquals("pl-PL, nl-NL", $message->accept_language);
@@ -55,7 +54,7 @@ class EmbeddedEmailWithoutContentDispositionTest extends FixtureTestCase {
         self::assertEquals("image/jpeg", $attachment->content_type);
         self::assertEquals("6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0", hash("sha256", $attachment->content));
         self::assertEquals(96, $attachment->size);
-        self::assertEquals(3, $attachment->part_number);
+        self::assertEquals(2, $attachment->part_number);
         self::assertEquals("inline", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
 
@@ -67,7 +66,7 @@ class EmbeddedEmailWithoutContentDispositionTest extends FixtureTestCase {
         self::assertEquals("message/rfc822", $attachment->content_type);
         self::assertEquals("2476c8b91a93c6b2fe1bfff593cb55956c2fe8e7ca6de9ad2dc9d101efe7a867", hash("sha256", $attachment->content));
         self::assertEquals(2073, $attachment->size);
-        self::assertEquals(5, $attachment->part_number);
+        self::assertEquals(3, $attachment->part_number);
         self::assertNull($attachment->disposition);
         self::assertNotEmpty($attachment->id);
 
@@ -79,7 +78,7 @@ class EmbeddedEmailWithoutContentDispositionTest extends FixtureTestCase {
         self::assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $attachment->content_type);
         self::assertEquals("87737d24c106b96e177f9564af6712e2c6d3e932c0632bfbab69c88b0bb934dc", hash("sha256", $attachment->content));
         self::assertEquals(40, $attachment->size);
-        self::assertEquals(6, $attachment->part_number);
+        self::assertEquals(4, $attachment->part_number);
         self::assertEquals("attachment", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
 
@@ -91,7 +90,7 @@ class EmbeddedEmailWithoutContentDispositionTest extends FixtureTestCase {
         self::assertEquals("application/x-zip-compressed", $attachment->content_type);
         self::assertEquals("87737d24c106b96e177f9564af6712e2c6d3e932c0632bfbab69c88b0bb934dc", hash("sha256", $attachment->content));
         self::assertEquals(40, $attachment->size);
-        self::assertEquals(7, $attachment->part_number);
+        self::assertEquals(5, $attachment->part_number);
         self::assertEquals("attachment", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
     }
