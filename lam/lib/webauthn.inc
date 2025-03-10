@@ -137,8 +137,7 @@ class WebauthnManager {
 	public function storeNewRegistration($registration, $clientResponse) {
 		$tokenBindingHandler = new IgnoreTokenBindingHandler();
 		$attestationSupportManager = $this->getAttestationSupportManager();
-		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager);
-		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader);
+		$publicKeyCredentialLoader = $this->createPublicKeyCredentialLoader();
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$repository = $this->getDatabase();
 		$responseValidator = new AuthenticatorAttestationResponseValidator(
@@ -172,7 +171,7 @@ class WebauthnManager {
 	public function createPublicKeyCredentialLoader() {
 		$attestationSupportManager = $this->getAttestationSupportManager();
 		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager);
-		return $this->getPublicKeyCredentialLoader($attestationObjectLoader);
+		return new PublicKeyCredentialLoader($attestationObjectLoader);
 	}
 
 	/**
@@ -299,16 +298,6 @@ class WebauthnManager {
 	}
 
 	/**
-	 * Creates the public key credential loader.
-	 *
-	 * @param AttestationObjectLoader $attestationObjectLoader attestation object loader
-	 * @return PublicKeyCredentialLoader public key credential loader
-	 */
-	private function getPublicKeyCredentialLoader($attestationObjectLoader) {
-		return new PublicKeyCredentialLoader($attestationObjectLoader);
-	}
-
-	/**
 	 * Returns the extension output checker handler.
 	 * No extensions are checked at this time.
 	 *
@@ -399,9 +388,7 @@ class WebauthnManager {
 			$extensionOutputCheckerHandler,
 			$algorithmManager
 		);
-		$attestationSupportManager = $this->getAttestationSupportManager();
-		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager);
-		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader);
+		$publicKeyCredentialLoader = $this->createPublicKeyCredentialLoader();
 		$publicKeyCredential = $publicKeyCredentialLoader->load($response);
 		$authenticatorAssertionResponse = $publicKeyCredential->getResponse();
 		if (!$authenticatorAssertionResponse instanceof AuthenticatorAssertionResponse) {
