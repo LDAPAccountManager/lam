@@ -1,3 +1,7 @@
+June 2025 9.2
+ - Active Directory: allow to restore deleted entries in tree view (415)
+
+
 13.03.2025 9.1
  - Usability improvements (347, 348, 360, 403)
  - Active Directory: deleted entries in "CN=Deleted Objects" can be shown (option in server profile, advanced settings)
