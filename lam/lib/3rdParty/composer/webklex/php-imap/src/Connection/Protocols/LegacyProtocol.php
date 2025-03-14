@@ -13,6 +13,7 @@
 namespace Webklex\PHPIMAP\Connection\Protocols;
 
 use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Exceptions\AuthFailedException;
 use Webklex\PHPIMAP\Exceptions\ImapBadRequestException;
 use Webklex\PHPIMAP\Exceptions\MethodNotSupportedException;
@@ -32,10 +33,12 @@ class LegacyProtocol extends Protocol {
 
     /**
      * Imap constructor.
+     * @param Config $config
      * @param bool $cert_validation set to false to skip SSL certificate validation
      * @param mixed $encryption Connection encryption method
      */
-    public function __construct(bool $cert_validation = true, mixed $encryption = false) {
+    public function __construct(Config $config, bool $cert_validation = true, mixed $encryption = false) {
+        $this->config = $config;
         $this->setCertValidation($cert_validation);
         $this->encryption = $encryption;
     }
@@ -52,7 +55,7 @@ class LegacyProtocol extends Protocol {
      * @param string $host
      * @param int|null $port
      */
-    public function connect(string $host, int $port = null) {
+    public function connect(string $host, ?int $port = null): void {
         if ($this->encryption) {
             $encryption = strtolower($this->encryption);
             if ($encryption == "ssl") {
@@ -81,7 +84,7 @@ class LegacyProtocol extends Protocol {
                     $password,
                     0,
                     $attempts = 3,
-                    ClientManager::get('options.open')
+                    $this->config->get('options.open')
                 );
                 $response->addCommand("imap_open");
             } catch (\ErrorException $e) {
@@ -122,8 +125,6 @@ class LegacyProtocol extends Protocol {
      * @param string $token access token
      *
      * @return Response
-     * @throws AuthFailedException
-     * @throws RuntimeException
      */
     public function authenticate(string $user, string $token): Response {
         return $this->login($user, $token);
@@ -234,6 +235,16 @@ class LegacyProtocol extends Protocol {
                 "uidnext" => $status->uidnext,
             ] : [];
         });
+    }
+
+    /**
+     * Get the status of a given folder
+     *
+     * @return Response list of STATUS items
+     * @throws MethodNotSupportedException
+     */
+    public function folderStatus(string $folder = 'INBOX', $arguments = ['MESSAGES', 'UNSEEN', 'RECENT', 'UIDNEXT', 'UIDVALIDITY']): Response {
+        throw new MethodNotSupportedException();
     }
 
     /**
@@ -349,7 +360,7 @@ class LegacyProtocol extends Protocol {
      *
      * @return Response message number for given message or all messages as array
      */
-    public function getUid(int $id = null): Response {
+    public function getUid(?int $id = null): Response {
         return $this->response()->wrap(function($response) use ($id) {
             /** @var Response $response */
             if ($id === null) {
@@ -379,7 +390,7 @@ class LegacyProtocol extends Protocol {
     }
 
     /**
-     * Get a message number for a uid
+     * Get the message number of a given uid
      * @param string $id uid
      *
      * @return Response message number
@@ -444,7 +455,7 @@ class LegacyProtocol extends Protocol {
      *
      * @return Response new flags if $silent is false, else true or false depending on success
      */
-    public function store(array|string $flags, int $from, int $to = null, string $mode = null, bool $silent = true, int|string $uid = IMAP::ST_UID, string $item = null): Response {
+    public function store(array|string $flags, int $from, ?int $to = null, ?string $mode = null, bool $silent = true, int|string $uid = IMAP::ST_UID, ?string $item = null): Response {
         $flag = trim(is_array($flags) ? implode(" ", $flags) : $flags);
 
         return $this->response()->wrap(function($response) use ($mode, $from, $flag, $uid, $silent) {
@@ -480,7 +491,7 @@ class LegacyProtocol extends Protocol {
      *
      * @return Response
      */
-    public function appendMessage(string $folder, string $message, array $flags = null, mixed $date = null): Response {
+    public function appendMessage(string $folder, string $message, ?array $flags = null, mixed $date = null): Response {
         return $this->response("imap_append")->wrap(function($response) use ($folder, $message, $flags, $date) {
             /** @var Response $response */
             if ($date != null) {
@@ -511,7 +522,7 @@ class LegacyProtocol extends Protocol {
      *
      * @return Response
      */
-    public function copyMessage(string $folder, $from, int $to = null, int|string $uid = IMAP::ST_UID): Response {
+    public function copyMessage(string $folder, $from, ?int $to = null, int|string $uid = IMAP::ST_UID): Response {
         return $this->response("imap_mail_copy")->wrap(function($response) use ($from, $folder, $uid) {
             /** @var Response $response */
 
@@ -561,7 +572,7 @@ class LegacyProtocol extends Protocol {
      *
      * @return Response success
      */
-    public function moveMessage(string $folder, $from, int $to = null, int|string $uid = IMAP::ST_UID): Response {
+    public function moveMessage(string $folder, $from, ?int $to = null, int|string $uid = IMAP::ST_UID): Response {
         return $this->response("imap_mail_move")->wrap(function($response) use ($from, $folder, $uid) {
             if (\imap_mail_move($this->stream, $from, $this->getAddress() . $folder, $uid ? IMAP::ST_UID : IMAP::NIL)) {
                 return [

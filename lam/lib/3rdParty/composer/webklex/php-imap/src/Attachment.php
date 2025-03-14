@@ -13,6 +13,8 @@
 namespace Webklex\PHPIMAP;
 
 use Illuminate\Support\Str;
+use Webklex\PHPIMAP\Decoder\DecoderInterface;
+use Webklex\PHPIMAP\Exceptions\DecoderNotFoundException;
 use Webklex\PHPIMAP\Exceptions\MaskNotFoundException;
 use Webklex\PHPIMAP\Exceptions\MethodNotFoundException;
 use Webklex\PHPIMAP\Support\Masks\AttachmentMask;
@@ -22,18 +24,18 @@ use Webklex\PHPIMAP\Support\Masks\AttachmentMask;
  *
  * @package Webklex\PHPIMAP
  *
- * @property integer part_number
- * @property integer size
- * @property string content
- * @property string type
- * @property string content_type
- * @property string id
- * @property string hash
- * @property string name
- * @property string description
- * @property string filename
- * @property ?string disposition
- * @property string img_src
+ * @property integer $part_number
+ * @property integer $size
+ * @property string $content
+ * @property string $type
+ * @property string $content_type
+ * @property string $id
+ * @property string $hash
+ * @property string $name
+ * @property string $description
+ * @property string $filename
+ * @property ?string $disposition
+ * @property string $img_src
  *
  * @method integer getPartNumber()
  * @method integer setPartNumber(integer $part_number)
@@ -57,19 +59,33 @@ use Webklex\PHPIMAP\Support\Masks\AttachmentMask;
 class Attachment {
 
     /**
-     * @var Message $oMessage
+     * @var Message $message
      */
-    protected Message $oMessage;
+    protected Message $message;
 
     /**
      * Used config
      *
-     * @var array $config
+     * @var Config $config
      */
-    protected array $config = [];
+    protected Config $config;
+
+    /**
+     * Attachment options
+     *
+     * @var array $options
+     */
+    protected array $options = [];
 
     /** @var Part $part */
     protected Part $part;
+
+    /**
+     * Decoder instance
+     *
+     * @var DecoderInterface $decoder
+     */
+    protected DecoderInterface $decoder;
 
     /**
      * Attribute holder
@@ -100,23 +116,26 @@ class Attachment {
 
     /**
      * Attachment constructor.
-     * @param Message $oMessage
+     * @param Message $message
      * @param Part $part
+     * @throws DecoderNotFoundException
      */
-    public function __construct(Message $oMessage, Part $part) {
-        $this->config = ClientManager::get('options');
+    public function __construct(Message $message, Part $part) {
+        $this->message = $message;
+        $this->config = $this->message->getConfig();
+        $this->options = $this->config->get('options');
+        $this->decoder = $this->config->getDecoder("attachment");
 
-        $this->oMessage = $oMessage;
         $this->part = $part;
         $this->part_number = $part->part_number;
 
-        if ($this->oMessage->getClient()) {
-            $default_mask = $this->oMessage->getClient()?->getDefaultAttachmentMask();
+        if ($this->message->getClient()) {
+            $default_mask = $this->message->getClient()?->getDefaultAttachmentMask();
             if ($default_mask != null) {
                 $this->mask = $default_mask;
             }
         } else {
-            $default_mask = ClientManager::getMask("attachment");
+            $default_mask = $this->config->getMask("attachment");
             if ($default_mask != "") {
                 $this->mask = $default_mask;
             }
@@ -205,7 +224,7 @@ class Attachment {
         $content = $this->part->content;
 
         $this->content_type = $this->part->content_type;
-        $this->content = $this->oMessage->decodeString($content, $this->part->encoding);
+        $this->content = $this->decoder->decode($content, $this->part->encoding);
 
         // Create a hash of the raw part - this can be used to identify the attachment in the message context. However,
         // it is not guaranteed to be unique and collisions are possible.
@@ -237,7 +256,7 @@ class Attachment {
         }
 
         if (($description = $this->part->description) !== null) {
-            $this->description = $this->part->getHeader()->decode($description);
+            $this->description = $this->part->getHeader()->getDecoder()->decode($description);
         }
 
         if (($name = $this->part->name) !== null) {
@@ -288,13 +307,14 @@ class Attachment {
             if (str_contains($name, "''")) {
                 $parts = explode("''", $name);
                 if (EncodingAliases::has($parts[0])) {
+                    $encoding = $parts[0];
                     $name = implode("''", array_slice($parts, 1));
                 }
             }
 
-            $decoder = $this->config['decoder']['message'];
+            $decoder = $this->decoder->getOptions()['message'];
             if (preg_match('/=\?([^?]+)\?(Q|B)\?(.+)\?=/i', $name, $matches)) {
-                $name = $this->part->getHeader()->decode($name);
+                $name = $this->part->getHeader()->getDecoder()->decode($name);
             } elseif ($decoder === 'utf-8' && extension_loaded('imap')) {
                 $name = \imap_utf8($name);
             }
@@ -304,9 +324,15 @@ class Attachment {
                 $name = urldecode($name);
             }
 
-            // sanitize $name
-            // order of '..' is important
-            return str_replace(['\\', '/', chr(0), ':', '..'], '', $name);
+            if (isset($encoding)) {
+                $name = EncodingAliases::convert($name, $encoding);
+            }
+
+            if($this->config->get('security.sanitize_filenames', true)) {
+                $name = $this->sanitizeName($name);
+            }
+
+            return $name;
         }
         return "";
     }
@@ -364,7 +390,7 @@ class Attachment {
      * @return Message
      */
     public function getMessage(): Message {
-        return $this->oMessage;
+        return $this->message;
     }
 
     /**
@@ -391,6 +417,45 @@ class Attachment {
     }
 
     /**
+     * Get the attachment options
+     * @return array
+     */
+    public function getOptions(): array {
+        return $this->options;
+    }
+
+    /**
+     * Set the attachment options
+     * @param array $options
+     *
+     * @return $this
+     */
+    public function setOptions(array $options): Attachment {
+        $this->options = $options;
+        return $this;
+    }
+
+    /**
+     * Get the used config
+     *
+     * @return Config
+     */
+    public function getConfig(): Config {
+        return $this->config;
+    }
+
+    /**
+     * Set the used config
+     * @param Config $config
+     *
+     * @return $this
+     */
+    public function setConfig(Config $config): Attachment {
+        $this->config = $config;
+        return $this;
+    }
+
+    /**
      * Get a masked instance by providing a mask name
      * @param string|null $mask
      *
@@ -404,5 +469,47 @@ class Attachment {
         }
 
         throw new MaskNotFoundException("Unknown mask provided: " . $mask);
+    }
+
+    /**
+     * Get the decoder instance
+     *
+     * @return DecoderInterface
+     */
+    public function getDecoder(): DecoderInterface {
+        return $this->decoder;
+    }
+
+    /**
+     * Set the decoder instance
+     * @param DecoderInterface $decoder
+     *
+     * @return $this
+     */
+    public function setDecoder(DecoderInterface $decoder): static {
+        $this->decoder = $decoder;
+        return $this;
+    }
+
+    /**
+     * Sanitize a given name to prevent common attacks
+     * !!IMPORTANT!! Do not rely on this method alone - this is just the bare minimum. Additional measures should be taken
+     * to ensure that the file is safe to use.
+     * @param string $name
+     *
+     * @return string
+     */
+    private function sanitizeName(string $name): string {
+        $replaces = [
+            '/\\\\/' => '',
+            '/[\/\0:]+/' => '',
+            '/\.+/' => '.',
+        ];
+        $name_starts_with_dots = str_starts_with($name, '..');
+        $name = preg_replace(array_keys($replaces), array_values($replaces), $name);
+        if($name_starts_with_dots) {
+            return substr($name, 1);
+        }
+        return $name;
     }
 }

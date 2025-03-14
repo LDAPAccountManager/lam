@@ -33,8 +33,9 @@ class CustomAttachmentMask extends \Webklex\PHPIMAP\Support\Masks\AttachmentMask
 
 }
 
-/** @var \Webklex\PHPIMAP\Client $client */
 $cm = new \Webklex\PHPIMAP\ClientManager('path/to/config/imap.php');
+
+/** @var \Webklex\PHPIMAP\Client $client */
 $client = $cm->account('default');
 $client->connect();
 $client->setDefaultAttachmentMask(CustomAttachmentMask::class);

@@ -18,7 +18,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use ReflectionException;
 use Webklex\PHPIMAP\Client;
-use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Exceptions\AuthFailedException;
 use Webklex\PHPIMAP\Exceptions\ConnectionFailedException;
 use Webklex\PHPIMAP\Exceptions\EventNotFoundException;
@@ -93,18 +92,19 @@ class Query {
      */
     public function __construct(Client $client, array $extensions = []) {
         $this->setClient($client);
+        $config = $this->client->getConfig();
 
-        $this->sequence = ClientManager::get('options.sequence', IMAP::ST_MSGN);
-        if (ClientManager::get('options.fetch') === IMAP::FT_PEEK) $this->leaveUnread();
+        $this->sequence = $config->get('options.sequence', IMAP::ST_MSGN);
+        if ($config->get('options.fetch') === IMAP::FT_PEEK) $this->leaveUnread();
 
-        if (ClientManager::get('options.fetch_order') === 'desc') {
+        if ($config->get('options.fetch_order') === 'desc') {
             $this->fetch_order = 'desc';
         } else {
             $this->fetch_order = 'asc';
         }
 
-        $this->date_format = ClientManager::get('date_format', 'd M y');
-        $this->soft_fail = ClientManager::get('options.soft_fail', false);
+        $this->date_format = $config->get('date_format', 'd M y');
+        $this->soft_fail = $config->get('options.soft_fail', false);
 
         $this->setExtensions($extensions);
         $this->query = new Collection();
@@ -164,7 +164,10 @@ class Query {
                 if ($statement[1] === null) {
                     $query .= $statement[0];
                 } else {
-                    if (is_numeric($statement[1])) {
+                    if (is_numeric($statement[1]) || (
+                            ($statement[0] === 'SINCE' || $statement[0] === 'BEFORE') &&
+                            $this->client->getConfig()->get('options.unescaped_search_dates', false)
+                    )) {
                         $query .= $statement[0] . ' ' . $statement[1];
                     } else {
                         $query .= $statement[0] . ' "' . $statement[1] . '"';
@@ -235,6 +238,7 @@ class Query {
         $uids = $available_messages->forPage($this->page, $this->limit)->toArray();
         $extensions = $this->getExtensions();
         if (empty($extensions) === false && method_exists($this->client->getConnection(), "fetch")) {
+            // this polymorphic call is fine - the method exists at this point
             $extensions = $this->client->getConnection()->fetch($extensions, $uids, null, $this->sequence)->validatedData();
         }
         $flags = $this->client->getConnection()->flags($uids, $this->sequence)->validatedData();
@@ -242,7 +246,7 @@ class Query {
 
         $contents = [];
         if ($this->getFetchBody()) {
-            $contents = $this->client->getConnection()->content($uids, "RFC822", $this->sequence)->validatedData();
+            $contents = $this->client->getConnection()->content($uids, $this->client->rfc, $this->sequence)->validatedData();
         }
 
         return [
@@ -314,7 +318,7 @@ class Query {
             if ($available_messages->count() > 0) {
                 return $this->populate($available_messages);
             }
-            return MessageCollection::make([]);
+            return MessageCollection::make();
         } catch (Exception $e) {
             throw new GetMessagesFailedException($e->getMessage(), 0, $e);
         }
@@ -336,11 +340,12 @@ class Query {
      * @throws ResponseException
      */
     protected function populate(Collection $available_messages): MessageCollection {
-        $messages = MessageCollection::make([]);
+        $messages = MessageCollection::make();
+        $config = $this->client->getConfig();
 
         $messages->total($available_messages->count());
 
-        $message_key = ClientManager::get('options.message_key');
+        $message_key = $config->get('options.message_key');
 
         $raw_messages = $this->fetch($available_messages);
 
@@ -395,8 +400,14 @@ class Query {
      * @throws ResponseException
      */
     public function chunked(callable $callback, int $chunk_size = 10, int $start_chunk = 1): void {
+        $start_chunk = max($start_chunk,1);
+        $chunk_size = max($chunk_size,1);
+        $skipped_messages_count = $chunk_size * ($start_chunk-1);
+
         $available_messages = $this->search();
-        if (($available_messages_count = $available_messages->count()) > 0) {
+        $available_messages_count = max($available_messages->count() - $skipped_messages_count,0);
+
+        if ($available_messages_count > 0) {
             $old_limit = $this->limit;
             $old_page = $this->page;
 
@@ -640,7 +651,7 @@ class Query {
      *
      * @return $this
      */
-    public function leaveUnread(): Query {
+    public function leaveUnread(): static {
         $this->setFetchOptions(IMAP::FT_PEEK);
 
         return $this;
@@ -651,7 +662,7 @@ class Query {
      *
      * @return $this
      */
-    public function markAsRead(): Query {
+    public function markAsRead(): static {
         $this->setFetchOptions(IMAP::FT_UID);
 
         return $this;
@@ -663,7 +674,7 @@ class Query {
      *
      * @return $this
      */
-    public function setSequence(int $sequence): Query {
+    public function setSequence(int $sequence): static {
         $this->sequence = $sequence;
 
         return $this;
@@ -699,7 +710,7 @@ class Query {
      *
      * @return $this
      */
-    public function limit(int $limit, int $page = 1): Query {
+    public function limit(int $limit, int $page = 1): static {
         if ($page >= 1) $this->page = $page;
         $this->limit = $limit;
 
@@ -719,9 +730,9 @@ class Query {
      * Set all query parameters
      * @param array $query
      *
-     * @return Query
+     * @return $this
      */
-    public function setQuery(array $query): Query {
+    public function setQuery(array $query): static {
         $this->query = new Collection($query);
         return $this;
     }
@@ -739,9 +750,9 @@ class Query {
      * Set the raw query
      * @param string $raw_query
      *
-     * @return Query
+     * @return $this
      */
-    public function setRawQuery(string $raw_query): Query {
+    public function setRawQuery(string $raw_query): static {
         $this->raw_query = $raw_query;
         return $this;
     }
@@ -759,9 +770,9 @@ class Query {
      * Set all extensions that should be used
      * @param string[] $extensions
      *
-     * @return Query
+     * @return $this
      */
-    public function setExtensions(array $extensions): Query {
+    public function setExtensions(array $extensions): static {
         $this->extensions = $extensions;
         if (count($this->extensions) > 0) {
             if (in_array("UID", $this->extensions) === false) {
@@ -775,9 +786,9 @@ class Query {
      * Set the client instance
      * @param Client $client
      *
-     * @return Query
+     * @return $this
      */
-    public function setClient(Client $client): Query {
+    public function setClient(Client $client): static {
         $this->client = $client;
         return $this;
     }
@@ -795,9 +806,9 @@ class Query {
      * Set the fetch limit
      * @param int $limit
      *
-     * @return Query
+     * @return $this
      */
-    public function setLimit(int $limit): Query {
+    public function setLimit(int $limit): static {
         $this->limit = $limit <= 0 ? null : $limit;
         return $this;
     }
@@ -815,9 +826,9 @@ class Query {
      * Set the page
      * @param int $page
      *
-     * @return Query
+     * @return $this
      */
-    public function setPage(int $page): Query {
+    public function setPage(int $page): static {
         $this->page = $page;
         return $this;
     }
@@ -826,9 +837,9 @@ class Query {
      * Set the fetch option flag
      * @param int $fetch_options
      *
-     * @return Query
+     * @return $this
      */
-    public function setFetchOptions(int $fetch_options): Query {
+    public function setFetchOptions(int $fetch_options): static {
         $this->fetch_options = $fetch_options;
         return $this;
     }
@@ -837,9 +848,9 @@ class Query {
      * Set the fetch option flag
      * @param int $fetch_options
      *
-     * @return Query
+     * @return $this
      */
-    public function fetchOptions(int $fetch_options): Query {
+    public function fetchOptions(int $fetch_options): static {
         return $this->setFetchOptions($fetch_options);
     }
 
@@ -865,9 +876,9 @@ class Query {
      * Set the fetch body flag
      * @param boolean $fetch_body
      *
-     * @return Query
+     * @return $this
      */
-    public function setFetchBody(bool $fetch_body): Query {
+    public function setFetchBody(bool $fetch_body): static {
         $this->fetch_body = $fetch_body;
         return $this;
     }
@@ -876,9 +887,9 @@ class Query {
      * Set the fetch body flag
      * @param boolean $fetch_body
      *
-     * @return Query
+     * @return $this
      */
-    public function fetchBody(bool $fetch_body): Query {
+    public function fetchBody(bool $fetch_body): static {
         return $this->setFetchBody($fetch_body);
     }
 
@@ -895,9 +906,9 @@ class Query {
      * Set the fetch flag
      * @param bool $fetch_flags
      *
-     * @return Query
+     * @return $this
      */
-    public function setFetchFlags(bool $fetch_flags): Query {
+    public function setFetchFlags(bool $fetch_flags): static {
         $this->fetch_flags = $fetch_flags;
         return $this;
     }
@@ -906,9 +917,9 @@ class Query {
      * Set the fetch order
      * @param string $fetch_order
      *
-     * @return Query
+     * @return $this
      */
-    public function setFetchOrder(string $fetch_order): Query {
+    public function setFetchOrder(string $fetch_order): static {
         $fetch_order = strtolower($fetch_order);
 
         if (in_array($fetch_order, ['asc', 'desc'])) {
@@ -922,9 +933,9 @@ class Query {
      * Set the fetch order
      * @param string $fetch_order
      *
-     * @return Query
+     * @return $this
      */
-    public function fetchOrder(string $fetch_order): Query {
+    public function fetchOrder(string $fetch_order): static {
         return $this->setFetchOrder($fetch_order);
     }
 
@@ -940,36 +951,36 @@ class Query {
     /**
      * Set the fetch order to ascending
      *
-     * @return Query
+     * @return $this
      */
-    public function setFetchOrderAsc(): Query {
+    public function setFetchOrderAsc(): static {
         return $this->setFetchOrder('asc');
     }
 
     /**
      * Set the fetch order to ascending
      *
-     * @return Query
+     * @return $this
      */
-    public function fetchOrderAsc(): Query {
+    public function fetchOrderAsc(): static {
         return $this->setFetchOrderAsc();
     }
 
     /**
      * Set the fetch order to descending
      *
-     * @return Query
+     * @return $this
      */
-    public function setFetchOrderDesc(): Query {
+    public function setFetchOrderDesc(): static {
         return $this->setFetchOrder('desc');
     }
 
     /**
      * Set the fetch order to descending
      *
-     * @return Query
+     * @return $this
      */
-    public function fetchOrderDesc(): Query {
+    public function fetchOrderDesc(): static {
         return $this->setFetchOrderDesc();
     }
 
@@ -977,9 +988,9 @@ class Query {
      * Set soft fail mode
      * @var boolean $state
      *
-     * @return Query
+     * @return $this
      */
-    public function softFail(bool $state = true): Query {
+    public function softFail(bool $state = true): static {
         return $this->setSoftFail($state);
     }
 
@@ -987,9 +998,9 @@ class Query {
      * Set soft fail mode
      *
      * @var boolean $state
-     * @return Query
+     * @return $this
      */
-    public function setSoftFail(bool $state = true): Query {
+    public function setSoftFail(bool $state = true): static {
         $this->soft_fail = $state;
 
         return $this;

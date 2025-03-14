@@ -19,6 +19,7 @@ use Webklex\PHPIMAP\Message;
  * Class MessageMask
  *
  * @package Webklex\PHPIMAP\Support\Masks
+ * @mixin Message
  */
 class MessageMask extends Mask {
 

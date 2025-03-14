@@ -15,6 +15,7 @@ namespace Tests;
 use PHPUnit\Framework\TestCase;
 use Webklex\PHPIMAP\Client;
 use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Exceptions\MaskNotFoundException;
 use Webklex\PHPIMAP\IMAP;
 
@@ -38,10 +39,12 @@ class ClientManagerTest extends TestCase {
      * @return void
      */
     public function testConfigAccessorAccount(): void {
-        self::assertSame("default", ClientManager::get("default"));
-        self::assertSame("d-M-Y", ClientManager::get("date_format"));
-        self::assertSame(IMAP::FT_PEEK, ClientManager::get("options.fetch"));
-        self::assertSame([], ClientManager::get("options.open"));
+        $config = $this->cm->getConfig();
+        self::assertInstanceOf(Config::class, $config);
+        self::assertSame("default", $config->get("default"));
+        self::assertSame("d-M-Y", $config->get("date_format"));
+        self::assertSame(IMAP::FT_PEEK, $config->get("options.fetch"));
+        self::assertSame([], $config->get("options.open"));
     }
 
     /**
@@ -59,12 +62,12 @@ class ClientManagerTest extends TestCase {
      * @throws MaskNotFoundException
      */
     public function testAccountAccessor(): void {
-        self::assertSame("default", $this->cm->getDefaultAccount());
+        self::assertSame("default", $this->cm->getConfig()->getDefaultAccount());
         self::assertNotEmpty($this->cm->account("default"));
 
-        $this->cm->setDefaultAccount("foo");
-        self::assertSame("foo", $this->cm->getDefaultAccount());
-        $this->cm->setDefaultAccount("default");
+        $this->cm->getConfig()->setDefaultAccount("foo");
+        self::assertSame("foo", $this->cm->getConfig()->getDefaultAccount());
+        $this->cm->getConfig()->setDefaultAccount("default");
     }
 
     /**
@@ -82,10 +85,10 @@ class ClientManagerTest extends TestCase {
         ];
         $cm = new ClientManager($config);
 
-        self::assertSame("foo", $cm->getDefaultAccount());
+        self::assertSame("foo", $cm->getConfig()->getDefaultAccount());
         self::assertInstanceOf(Client::class, $cm->account("foo"));
-        self::assertSame(IMAP::ST_MSGN, $cm->get("options.fetch"));
-        self::assertSame(false, is_array($cm->get("options.open")));
+        self::assertSame(IMAP::ST_MSGN, $cm->getConfig()->get("options.fetch"));
+        self::assertSame(false, is_array($cm->getConfig()->get("options.open")));
 
     }
 }

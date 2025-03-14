@@ -26,7 +26,7 @@ class UndefinedCharsetHeaderTest extends FixtureTestCase {
      *
      * @return void
      */
-    public function testFixture() : void {
+    public function testFixture(): void {
         $message = $this->getFixture("undefined_charset_header.eml");
 
         self::assertEquals("<monitor@bla.bla>", $message->get("x-real-to"));
@@ -34,11 +34,16 @@ class UndefinedCharsetHeaderTest extends FixtureTestCase {
         self::assertEquals("Mon, 27 Feb 2017 13:21:44 +0930", $message->get("Resent-Date"));
         self::assertEquals("<postmaster@bla.bla>", $message->get("Resent-From"));
         self::assertEquals("BlaBla", $message->get("X-Stored-In"));
-        self::assertEquals("<info@bla.bla>", $message->get("Return-Path"));
+        self::assertSame([
+                             'personal' => '',
+                             'mailbox'  => 'info',
+                             'host'     => 'bla.bla',
+                             'mail'     => 'info@bla.bla',
+                             'full'     => 'info@bla.bla',
+                         ], $message->get("Return-Path")->first()->toArray());
         self::assertEquals([
-            'from <postmaster@bla.bla>  by bla.bla (CommuniGate Pro RULE 6.1.13)  with RULE id 14057804; Mon, 27 Feb 2017 13:21:44 +0930',
-            'from <postmaster@bla.bla>  by bla.bla (CommuniGate Pro RULE 6.1.13)  with RULE id 14057804'
-        ], $message->get("Received")->all());
+                               'from <postmaster@bla.bla>  by bla.bla (CommuniGate Pro RULE 6.1.13)  with RULE id 14057804; Mon, 27 Feb 2017 13:21:44 +0930',
+                           ], $message->get("Received")->all());
         self::assertEquals(")", $message->getHTMLBody());
         self::assertFalse($message->hasTextBody());
         self::assertEquals("2017-02-27 03:51:29", $message->date->first()->setTimezone('UTC')->format("Y-m-d H:i:s"));

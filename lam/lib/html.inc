@@ -427,7 +427,7 @@ class htmlDataTable extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		echo '<link href="../../style/tabulator/tabulator.css" rel="stylesheet">';
-		echo '<script type="text/javascript" src="../../templates/lib/extra/tabulator/tabulator.js.js"></script>';
+		echo '<script type="text/javascript" src="../../templates/lib/extra/tabulator/tabulator.js"></script>';
 		echo '<div id="' . $this->id . '" class="lam-data-table" ' . $this->getDataAttributesAsString() . '></div>';
 		$columnOptions = [];
 		foreach ($this->columns as $column) {

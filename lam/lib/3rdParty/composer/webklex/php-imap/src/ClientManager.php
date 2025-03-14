@@ -16,17 +16,15 @@ namespace Webklex\PHPIMAP;
  * Class ClientManager
  *
  * @package Webklex\IMAP
- *
- * @mixin Client
  */
 class ClientManager {
 
     /**
      * All library config
      *
-     * @var array $config
+     * @var Config $config
      */
-    public static array $config = [];
+    public Config $config;
 
     /**
      * @var array $accounts
@@ -35,9 +33,9 @@ class ClientManager {
 
     /**
      * ClientManager constructor.
-     * @param array|string $config
+     * @param array|string|Config $config
      */
-    public function __construct(array|string $config = []) {
+    public function __construct(array|string|Config $config = []) {
         $this->setConfig($config);
     }
 
@@ -63,52 +61,10 @@ class ClientManager {
      * @throws Exceptions\MaskNotFoundException
      */
     public function make(array $config): Client {
-        return new Client($config);
-    }
-
-    /**
-     * Get a dotted config parameter
-     * @param string $key
-     * @param null $default
-     *
-     * @return mixed|null
-     */
-    public static function get(string $key, $default = null): mixed {
-        $parts = explode('.', $key);
-        $value = null;
-        foreach ($parts as $part) {
-            if ($value === null) {
-                if (isset(self::$config[$part])) {
-                    $value = self::$config[$part];
-                } else {
-                    break;
-                }
-            } else {
-                if (isset($value[$part])) {
-                    $value = $value[$part];
-                } else {
-                    break;
-                }
-            }
-        }
-
-        return $value === null ? $default : $value;
-    }
-
-    /**
-     * Get the mask for a given section
-     * @param string $section section name such as "message" or "attachment"
-     *
-     * @return string|null
-     */
-    public static function getMask(string $section): ?string {
-        $default_masks = ClientManager::get("masks");
-        if (isset($default_masks[$section])) {
-            if (class_exists($default_masks[$section])) {
-                return $default_masks[$section];
-            }
-        }
-        return null;
+        $name = $this->config->getDefaultAccount();
+        $clientConfig = $this->config->all();
+        $clientConfig["accounts"] = [$name => $config];
+        return new Client(Config::make($clientConfig));
     }
 
     /**
@@ -118,8 +74,8 @@ class ClientManager {
      * @return Client
      * @throws Exceptions\MaskNotFoundException
      */
-    public function account(string $name = null): Client {
-        $name = $name ?: $this->getDefaultAccount();
+    public function account(?string $name = null): Client {
+        $name = $name ?: $this->config->getDefaultAccount();
 
         // If the connection has not been resolved we will resolve it now as all
         // the connections are resolved when they are actually needed, so we do
@@ -139,43 +95,9 @@ class ClientManager {
      * @throws Exceptions\MaskNotFoundException
      */
     protected function resolve(string $name): Client {
-        $config = $this->getClientConfig($name);
+        $config = $this->config->getClientConfig($name);
 
         return new Client($config);
-    }
-
-    /**
-     * Get the account configuration.
-     * @param string|null $name
-     *
-     * @return array
-     */
-    protected function getClientConfig(?string $name): array {
-        if ($name === null || $name === 'null' || $name === "") {
-            return ['driver' => 'null'];
-        }
-        $account = self::$config["accounts"][$name] ?? [];
-
-        return is_array($account) ? $account : [];
-    }
-
-    /**
-     * Get the name of the default account.
-     *
-     * @return string
-     */
-    public function getDefaultAccount(): string {
-        return self::$config['default'];
-    }
-
-    /**
-     * Set the name of the default account.
-     * @param string $name
-     *
-     * @return void
-     */
-    public function setDefaultAccount(string $name): void {
-        self::$config['default'] = $name;
     }
 
 
@@ -186,108 +108,24 @@ class ClientManager {
      * If however the default account is missing a parameter the package default account parameter will be used.
      * This can be disabled by setting imap.default in your config file to 'false'
      *
-     * @param array|string $config
+     * @param array|string|Config $config
      *
      * @return $this
      */
-    public function setConfig(array|string $config): ClientManager {
-
-        if (is_array($config) === false) {
-            $config = require $config;
+    public function setConfig(array|string|Config $config): ClientManager {
+        if (!$config instanceof Config) {
+            $config = Config::make($config);
         }
-
-        $config_key = 'imap';
-        $path = __DIR__ . '/config/' . $config_key . '.php';
-
-        $vendor_config = require $path;
-        $config = $this->array_merge_recursive_distinct($vendor_config, $config);
-
-        if (is_array($config)) {
-            if (isset($config['default'])) {
-                if (isset($config['accounts']) && $config['default']) {
-
-                    $default_config = $vendor_config['accounts']['default'];
-                    if (isset($config['accounts'][$config['default']])) {
-                        $default_config = array_merge($default_config, $config['accounts'][$config['default']]);
-                    }
-
-                    if (is_array($config['accounts'])) {
-                        foreach ($config['accounts'] as $account_key => $account) {
-                            $config['accounts'][$account_key] = array_merge($default_config, $account);
-                        }
-                    }
-                }
-            }
-        }
-
-        self::$config = $config;
+        $this->config = $config;
 
         return $this;
     }
 
     /**
-     * Marge arrays recursively and distinct
-     *
-     * Merges any number of arrays / parameters recursively, replacing
-     * entries with string keys with values from latter arrays.
-     * If the entry or the next value to be assigned is an array, then it
-     * automatically treats both arguments as an array.
-     * Numeric entries are appended, not replaced, but only if they are
-     * unique
-     *
-     * @return array|mixed
-     *
-     * @link   http://www.php.net/manual/en/function.array-merge-recursive.php#96201
-     * @author Mark Roduner <mark.roduner@gmail.com>
+     * Get the config instance
+     * @return Config
      */
-    private function array_merge_recursive_distinct(): mixed {
-
-        $arrays = func_get_args();
-        $base = array_shift($arrays);
-
-        // From https://stackoverflow.com/a/173479
-        $isAssoc = function(array $arr) {
-            if (array() === $arr) return false;
-            return array_keys($arr) !== range(0, count($arr) - 1);
-        };
-
-        if (!is_array($base)) $base = empty($base) ? array() : array($base);
-
-        foreach ($arrays as $append) {
-
-            if (!is_array($append)) $append = array($append);
-
-            foreach ($append as $key => $value) {
-
-                if (!array_key_exists($key, $base) and !is_numeric($key)) {
-                    $base[$key] = $value;
-                    continue;
-                }
-
-                if (
-                    (
-                        is_array($value)
-                        && $isAssoc($value)
-                    )
-                    || (
-                        is_array($base[$key])
-                        && $isAssoc($base[$key])
-                    )
-                ) {
-                    // If the arrays are not associates we don't want to array_merge_recursive_distinct
-                    // else merging $baseConfig['dispositions'] = ['attachment', 'inline'] with $customConfig['dispositions'] = ['attachment']
-                    // results in $resultConfig['dispositions'] = ['attachment', 'inline']
-                    $base[$key] = $this->array_merge_recursive_distinct($base[$key], $value);
-                } else if (is_numeric($key)) {
-                    if (!in_array($value, $base)) $base[] = $value;
-                } else {
-                    $base[$key] = $value;
-                }
-
-            }
-
-        }
-
-        return $base;
+    public function getConfig(): Config {
+        return $this->config;
     }
 }

@@ -37,7 +37,6 @@ class MultipartWithoutBodyTest extends FixtureTestCase {
             0 => 'from AS8PR02MB6805.eurprd02.prod.outlook.com (2603:10a6:20b:252::8) by PA4PR02MB7071.eurprd02.prod.outlook.com with HTTPS; Sat, 11 Mar 2023 08:24:33 +0000',
             1 => 'from omef0ahNgeoJu.eurprd02.prod.outlook.com (2603:10a6:10:33c::12) by AS8PR02MB6805.eurprd02.prod.outlook.com (2603:10a6:20b:252::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.19; Sat, 11 Mar 2023 08:24:31 +0000',
             2 => 'from omef0ahNgeoJu.eurprd02.prod.outlook.com ([fe80::38c0:9c40:7fc6:93a7]) by omef0ahNgeoJu.eurprd02.prod.outlook.com ([fe80::38c0:9c40:7fc6:93a7%7]) with mapi id 15.20.6178.019; Sat, 11 Mar 2023 08:24:31 +0000',
-            3 => 'from AS8PR02MB6805.eurprd02.prod.outlook.com (2603:10a6:20b:252::8) by PA4PR02MB7071.eurprd02.prod.outlook.com with HTTPS',
         ], $message->received->all());
         self::assertEquals("This mail will not contain a body", $message->thread_topic);
         self::assertEquals("AdlT8uVmpHPvImbCRM6E9LODIvAcQA==", $message->thread_index);

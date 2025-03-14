@@ -1,27 +1,29 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:a0f40653-b904-4292-b488-b77613da7010",
+  "serialNumber" : "urn:uuid:6b64751f-4150-4635-ad1a-01a23b5e3537",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-02-25T19:31:31Z",
+    "timestamp" : "2025-03-10T07:25:14Z",
     "tools" : [
       {
         "vendor" : "OWASP",
         "name" : "Dependency-Track",
-        "version" : "4.10.1"
+        "version" : "4.12.6"
       }
     ],
     "component" : {
+      "type" : "application",
+      "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.1",
-      "type" : "application",
-      "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d"
+      "version" : "9.1"
     }
   },
   "components" : [
     {
+      "type" : "library",
+      "bom-ref" : "73140e29-f689-49c1-9b10-28ff13117f68",
       "group" : "cdx:npm:package:bundled",
       "name" : "@popperjs/core",
       "version" : "2.11.8",
@@ -32,11 +34,11 @@
           }
         }
       ],
-      "purl" : "pkg:npm/%40popperjs/core@2.11.8",
-      "type" : "library",
-      "bom-ref" : "73140e29-f689-49c1-9b10-28ff13117f68"
+      "purl" : "pkg:npm/%40popperjs/core@2.11.8"
     },
     {
+      "type" : "library",
+      "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836",
       "group" : "cdx:npm:package:bundled",
       "name" : "cropperjs",
       "version" : "1.6.2",
@@ -47,11 +49,11 @@
           }
         }
       ],
-      "purl" : "pkg:npm/cropperjs@1.6.2",
-      "type" : "library",
-      "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836"
+      "purl" : "pkg:npm/cropperjs@1.6.2"
     },
     {
+      "type" : "library",
+      "bom-ref" : "c4134441-7211-47d1-a970-202c819157d1",
       "group" : "cdx:npm:package:bundled",
       "name" : "flatpickr",
       "version" : "4.6.13",
@@ -62,11 +64,11 @@
           }
         }
       ],
-      "purl" : "pkg:npm/flatpickr@4.6.13",
-      "type" : "library",
-      "bom-ref" : "c4134441-7211-47d1-a970-202c819157d1"
+      "purl" : "pkg:npm/flatpickr@4.6.13"
     },
     {
+      "type" : "library",
+      "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
       "group" : "cdx:npm:package:bundled",
       "name" : "friendly-challenge",
       "version" : "0.9.18",
@@ -77,11 +79,11 @@
           }
         }
       ],
-      "purl" : "pkg:npm/friendly-challenge@0.9.18",
-      "type" : "library",
-      "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5"
+      "purl" : "pkg:npm/friendly-challenge@0.9.18"
     },
     {
+      "type" : "library",
+      "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
       "version" : "4.5.17",
@@ -92,11 +94,11 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.2.24",
-      "type" : "library",
-      "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e"
+      "purl" : "pkg:npm/jodit@4.2.24"
     },
     {
+      "type" : "library",
+      "bom-ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265",
       "group" : "cdx:npm:package:bundled",
       "name" : "sortablejs",
       "version" : "1.15.6",
@@ -107,11 +109,11 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sortablejs@1.15.6",
-      "type" : "library",
-      "bom-ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265"
+      "purl" : "pkg:npm/sortablejs@1.15.6"
     },
     {
+      "type" : "library",
+      "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
       "version" : "11.17.2",
@@ -122,19 +124,19 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.17.2",
-      "type" : "library",
-      "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f"
+      "purl" : "pkg:npm/sweetalert2@11.17.2"
     },
     {
+      "type" : "library",
+      "bom-ref" : "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a",
       "group" : "cdx:npm:package:bundled",
       "name" : "tabulator-tables",
-      "version" : "6.2.5",
-      "purl" : "pkg:npm/tabulator-tables@6.2.5",
-      "type" : "library",
-      "bom-ref" : "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a"
+      "version" : "6.3.1",
+      "purl" : "pkg:npm/tabulator-tables@6.3.1"
     },
     {
+      "type" : "library",
+      "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf",
       "group" : "cdx:composer:package",
       "name" : "tecnickcom/tcpdf",
       "version" : "6.8.2",
@@ -145,11 +147,11 @@
           }
         }
       ],
-      "purl" : "pkg:composer/tecnickcom/tcpdf@6.8.2",
-      "type" : "library",
-      "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf"
+      "purl" : "pkg:composer/tecnickcom/tcpdf@6.8.2"
     },
     {
+      "type" : "library",
+      "bom-ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
       "group" : "cdx:npm:package:bundled",
       "name" : "tippy.js",
       "version" : "6.3.7",
@@ -160,11 +162,11 @@
           }
         }
       ],
-      "purl" : "pkg:npm/tippy.js@6.3.7",
-      "type" : "library",
-      "bom-ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0"
+      "purl" : "pkg:npm/tippy.js@6.3.7"
     },
     {
+      "type" : "library",
+      "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "group" : "cdx:npm:package:bundled",
       "name" : "wunderbaum",
       "version" : "0.12.1",
@@ -175,9 +177,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/wunderbaum@0.12.1",
-      "type" : "library",
-      "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7"
+      "purl" : "pkg:npm/wunderbaum@0.12.1"
     }
   ],
   "dependencies" : [

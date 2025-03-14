@@ -57,7 +57,7 @@ class MultipleHtmlPartsAndAttachmentsTest extends FixtureTestCase {
         self::assertEquals("application/pdf", $attachment->content_type);
         self::assertEquals("c162adf19e0f67e26ef0b7f791b33a60b2c23b175560a505dc7f9ec490206e49", hash("sha256", $attachment->content));
         self::assertEquals(4814, $attachment->size);
-        self::assertEquals(4, $attachment->part_number);
+        self::assertEquals(2, $attachment->part_number);
         self::assertEquals("inline", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
 
@@ -69,7 +69,7 @@ class MultipleHtmlPartsAndAttachmentsTest extends FixtureTestCase {
         self::assertEquals("application/pdf", $attachment->content_type);
         self::assertEquals("a337b37e9d3edb172a249639919f0eee3d344db352046d15f8f9887e55855a25", hash("sha256", $attachment->content));
         self::assertEquals(5090, $attachment->size);
-        self::assertEquals(6, $attachment->part_number);
+        self::assertEquals(4, $attachment->part_number);
         self::assertEquals("inline", $attachment->disposition);
         self::assertNotEmpty($attachment->id);
     }

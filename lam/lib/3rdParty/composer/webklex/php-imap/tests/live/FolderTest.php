@@ -79,7 +79,7 @@ class FolderTest extends LiveMailboxTestCase {
         $folder = $this->getFolder('INBOX');
         self::assertInstanceOf(Folder::class, $folder);
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $child_path = implode($delimiter, ['INBOX', 'test']);
         if ($folder->getClient()->getFolder($child_path) === null) {
             $folder->getClient()->createFolder($child_path, false);
@@ -107,7 +107,7 @@ class FolderTest extends LiveMailboxTestCase {
         $folder = $this->getFolder('INBOX');
         self::assertInstanceOf(Folder::class, $folder);
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $child_path = implode($delimiter, ['INBOX', 'test']);
         if ($folder->getClient()->getFolder($child_path) === null) {
             $folder->getClient()->createFolder($child_path, false);
@@ -137,7 +137,7 @@ class FolderTest extends LiveMailboxTestCase {
         $folder = $this->getFolder('INBOX');
         self::assertInstanceOf(Folder::class, $folder);
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $child_path = implode($delimiter, ['INBOX', 'test']);
         if ($folder->getClient()->getFolder($child_path) === null) {
             $folder->getClient()->createFolder($child_path, false);
@@ -167,7 +167,7 @@ class FolderTest extends LiveMailboxTestCase {
     public function testMove(): void {
         $client = $this->getClient();
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $folder_path = implode($delimiter, ['INBOX', 'test']);
 
         $folder = $client->getFolder($folder_path);
@@ -208,7 +208,7 @@ class FolderTest extends LiveMailboxTestCase {
     public function testDelete(): void {
         $client = $this->getClient();
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $folder_path = implode($delimiter, ['INBOX', 'test']);
 
         $folder = $client->getFolder($folder_path);
@@ -348,6 +348,31 @@ class FolderTest extends LiveMailboxTestCase {
     }
 
     /**
+     * Test Folder::status()
+     *
+     * @return void
+     * @throws AuthFailedException
+     * @throws ConnectionFailedException
+     * @throws FolderFetchingException
+     * @throws ImapBadRequestException
+     * @throws ImapServerErrorException
+     * @throws MaskNotFoundException
+     * @throws ResponseException
+     * @throws RuntimeException
+     */
+    public function testStatus(): void {
+        $folder = $this->getFolder('INBOX');
+        self::assertInstanceOf(Folder::class, $folder);
+
+        $status = $folder->status();
+        self::assertEquals(0, $status['messages']);
+        self::assertEquals(0, $status['recent']);
+        self::assertEquals(0, $status['unseen']);
+        self::assertGreaterThan(0, $status['uidnext']);
+        self::assertGreaterThan(0, $status['uidvalidity']);
+    }
+
+    /**
      * Test Folder::examine()
      *
      * @return void
@@ -414,7 +439,7 @@ class FolderTest extends LiveMailboxTestCase {
         $folder->setDelimiter(".");
         self::assertEquals(".", $folder->delimiter);
 
-        $default_delimiter = $this->getManager()->get("options.delimiter", "/");
+        $default_delimiter = $this->getManager()->getConfig()->get("options.delimiter", "/");
         $folder->setDelimiter(null);
         self::assertEquals($default_delimiter, $folder->delimiter);
     }

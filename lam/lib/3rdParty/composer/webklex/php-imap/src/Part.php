@@ -140,15 +140,22 @@ class Part {
     private ?Header $header;
 
     /**
+     * @var Config $config
+     */
+    protected Config $config;
+
+    /**
      * Part constructor.
-     * @param $raw_part
+     * @param string $raw_part
+     * @param Config $config
      * @param Header|null $header
      * @param integer $part_number
      *
      * @throws InvalidMessageDateException
      */
-    public function __construct($raw_part, Header $header = null, int $part_number = 0) {
+    public function __construct(string $raw_part, Config $config, ?Header $header = null, int $part_number = 0) {
         $this->raw = $raw_part;
+        $this->config = $config;
         $this->header = $header;
         $this->part_number = $part_number;
         $this->parse();
@@ -211,7 +218,7 @@ class Part {
         $headers = substr($this->raw, 0, strlen($body) * -1);
         $body = substr($body, 0, -2);
 
-        $this->header = new Header($headers);
+        $this->header = new Header($headers, $this->config);
 
         return $body;
     }
@@ -282,7 +289,7 @@ class Part {
      * @return bool
      */
     public function isAttachment(): bool {
-        $valid_disposition = in_array(strtolower($this->disposition ?? ''), ClientManager::get('options.dispositions'));
+        $valid_disposition = in_array(strtolower($this->disposition ?? ''), $this->config->get('options.dispositions'));
 
         if ($this->type == IMAP::MESSAGE_TYPE_TEXT && ($this->ifdisposition == 0 || empty($this->disposition) || !$valid_disposition)) {
             if (($this->subtype == null || in_array((strtolower($this->subtype)), ["plain", "html"])) && $this->filename == null && $this->name == null) {
@@ -303,6 +310,15 @@ class Part {
      */
     public function getHeader(): ?Header {
         return $this->header;
+    }
+
+    /**
+     * Get the Config instance
+     *
+     * @return Config
+     */
+    public function getConfig(): Config {
+        return $this->config;
     }
 
 }

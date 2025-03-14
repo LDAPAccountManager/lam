@@ -12,6 +12,7 @@
 
 namespace Webklex\PHPIMAP\Connection\Protocols;
 
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Exceptions\ConnectionFailedException;
 use Webklex\PHPIMAP\IMAP;
 
@@ -38,9 +39,14 @@ abstract class Protocol implements ProtocolInterface {
     protected bool $enable_uid_cache = true;
 
     /**
-     * @var resource
+     * @var resource|mixed|boolean|null $stream
      */
     public $stream = false;
+
+    /**
+     * @var Config $config
+     */
+    protected Config $config;
 
     /**
      * Connection encryption method
@@ -268,7 +274,7 @@ abstract class Protocol implements ProtocolInterface {
      *
      * @param array|null $uids
      */
-    public function setUidCache(?array $uids) {
+    public function setUidCache(?array $uids): void {
         if (is_null($uids)) {
             $this->uid_cache = [];
             return;
@@ -330,7 +336,7 @@ abstract class Protocol implements ProtocolInterface {
     }
 
     /**
-     * Retrieves header/meta data from the resource stream
+     * Retrieves header/metadata from the resource stream
      *
      * @return array
      */
@@ -362,5 +368,14 @@ abstract class Protocol implements ProtocolInterface {
      */
     public function getStream(): mixed {
         return $this->stream;
+    }
+
+    /**
+     * Set the Config instance
+     *
+     * @return Config
+     */
+    public function getConfig(): Config {
+        return $this->config;
     }
 }

@@ -29,14 +29,19 @@ class ExampleBounceTest extends FixtureTestCase {
     public function testFixture(): void {
         $message = $this->getFixture("example_bounce.eml");
 
-        self::assertEquals("<>", $message->return_path);
+        self::assertEquals([
+                               'personal' => '',
+            'mailbox' => '',
+            'host' => '',
+            'mail' => '',
+            'full' => '',
+                           ], (array)$message->return_path->first());
         self::assertEquals([
             0 => 'from somewhere.your-server.de by somewhere.your-server.de with LMTP id 3TP8LrElAGSOaAAAmBr1xw (envelope-from <>); Thu, 02 Mar 2023 05:27:29 +0100',
             1 => 'from somewhere06.your-server.de ([1b21:2f8:e0a:50e4::2]) by somewhere.your-server.de with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384 (Exim 4.94.2) id 1pXaXR-0006xQ-BN for demo@foo.de; Thu, 02 Mar 2023 05:27:29 +0100',
             2 => 'from [192.168.0.10] (helo=sslproxy01.your-server.de) by somewhere06.your-server.de with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256) (Exim 4.92) id 1pXaXO-000LYP-9R for demo@foo.de; Thu, 02 Mar 2023 05:27:26 +0100',
             3 => 'from localhost ([127.0.0.1] helo=sslproxy01.your-server.de) by sslproxy01.your-server.de with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256) (Exim 4.92) id 1pXaXO-0008gy-7x for demo@foo.de; Thu, 02 Mar 2023 05:27:26 +0100',
             4 => 'from Debian-exim by sslproxy01.your-server.de with local (Exim 4.92) id 1pXaXO-0008gb-6g for demo@foo.de; Thu, 02 Mar 2023 05:27:26 +0100',
-            5 => 'from somewhere.your-server.de by somewhere.your-server.de with LMTP id 3TP8LrElAGSOaAAAmBr1xw (envelope-from <>)',
         ], $message->received->all());
         self::assertEquals("demo@foo.de", $message->envelope_to);
         self::assertEquals("Thu, 02 Mar 2023 05:27:29 +0100", $message->delivery_date);
@@ -50,7 +55,6 @@ class ExampleBounceTest extends FixtureTestCase {
             2 => 'from [192.168.0.10] (helo=sslproxy01.your-server.de) by somewhere06.your-server.de with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256) (Exim 4.92) id 1pXaXO-000LYP-9R for demo@foo.de; Thu, 02 Mar 2023 05:27:26 +0100',
             3 => 'from localhost ([127.0.0.1] helo=sslproxy01.your-server.de) by sslproxy01.your-server.de with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256) (Exim 4.92) id 1pXaXO-0008gy-7x for demo@foo.de; Thu, 02 Mar 2023 05:27:26 +0100',
             4 => 'from Debian-exim by sslproxy01.your-server.de with local (Exim 4.92) id 1pXaXO-0008gb-6g for demo@foo.de; Thu, 02 Mar 2023 05:27:26 +0100',
-            5 => 'from somewhere.your-server.de by somewhere.your-server.de with LMTP id 3TP8LrElAGSOaAAAmBr1xw (envelope-from <>)',
         ], $message->received->all());
         self::assertEquals("ding@ding.de", $message->x_failed_recipients);
         self::assertEquals("auto-replied", $message->auto_submitted);

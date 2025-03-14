@@ -86,7 +86,7 @@ class QueryTest extends LiveMailboxTestCase {
     public function testQueryWhere(): void {
         $client = $this->getClient();
 
-        $delimiter = $this->getManager()->get("options.delimiter");
+        $delimiter = $this->getManager()->getConfig()->get("options.delimiter");
         $folder_path = implode($delimiter, ['INBOX', 'search']);
 
         $folder = $client->getFolder($folder_path);
@@ -239,7 +239,7 @@ class QueryTest extends LiveMailboxTestCase {
         $criteria = str_replace("CUSTOM ", "", $criteria);
         $expected = $value === null ? [$criteria] : [$criteria, $value];
         if ($date === true && $value instanceof Carbon) {
-            $date_format = ClientManager::get('date_format', 'd M y');
+            $date_format = $folder->getClient()->getConfig()->get('date_format', 'd M y');
             $expected[1] = $value->format($date_format);
         }
 

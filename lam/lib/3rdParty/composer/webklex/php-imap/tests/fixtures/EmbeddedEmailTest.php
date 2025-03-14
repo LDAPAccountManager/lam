@@ -32,7 +32,6 @@ class EmbeddedEmailTest extends FixtureTestCase {
         self::assertEquals("embedded message", $message->subject);
         self::assertEquals([
             'from webmail.my-office.cz (localhost [127.0.0.1]) by keira.cofis.cz ; Fri, 29 Jan 2016 14:25:40 +0100',
-            'from webmail.my-office.cz (localhost [127.0.0.1]) by keira.cofis.cz'
         ], $message->received->toArray());
         self::assertEquals("7e5798da5747415e5b82fdce042ab2a6@cerstor.cz", $message->message_id);
         self::assertEquals("demo@cerstor.cz", $message->return_path);

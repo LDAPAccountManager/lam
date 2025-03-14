@@ -6,25 +6,82 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [UNRELEASED]
 ### Fixed
-- Error token length mismatch in `ImapProtocol::readResponse` #400
-- Attachment name parsing fixed #410 #421 (thanks @nuernbergerA)
-- Additional Attachment name fallback added to prevent missing attachments
-- Attachment id is now static (based on the raw part content) and now longer random
-- Always parse the attachment description if it is available
+- NaN
 
 ### Added
-- Attachment content hash added
+- NaN
 
 ### Breaking changes
 - NaN
 
+## [6.1.0] - 2025-01-19
+### Fixed
+- Filename sanitization is now optional (enabled via default)
+- Address parsing improved and extended to include more cases
+- Boundary parsing fixed and improved to support more formats #544
+- Decode partially encoded address names #511
+- Enforce RFC822 parsing if enabled #462
+
+### Added
+- Security configuration options added
+- Spoofing detection added #40
+- RFC4315 MOVE fallback added #123 (thanks @freescout-help-desk)
+- Content fetching RFC standard support added #510 (thanks @ybizeul)
+- Support unescaped dates inside the search conditions #542
+- `Client::clone()` looses account configuration #521 (thanks @netpok)
+
+## [6.0.0] - 2025-01-17
+### Fixed
+- Fixed date issue if timezone is UT and a 2 digit year #429 (thanks @ferrisbuellers)
+- Make the space optional after a comma separator #437 (thanks @marc0adam)
+- Fix bug when multipart message getHTMLBody() method returns null #455 (thanks @michalkortas)
+- Fix: Improve return type hints and return docblocks for query classes #470 (thanks @olliescase)
+- Fix - Query - Chunked - Resolved infinite loop when start chunk > 1 #477 (thanks @NeekTheNook)
+- Attachment with symbols in filename #436 (thanks @nuernbergerA)
+- Ignore possible untagged lines after IDLE and DONE commands #445 (thanks @gazben)
+- Fix Empty Child Folder Error #474 (thanks @bierpub)
+- Filename sanitization improved #501 (thanks @neolip)
+- `Client::getFolderPath()` return null if folder is not set #506 (thanks @arnolem)
+- Fix implicit marking of parameters as nullable, deprecated in PHP 8.4 #518 (thanks @campbell-m)
+
+### Added
+- IMAP STATUS command support added `Folder::status()` #424 (thanks @InterLinked1)
+- Add attributes and special flags #428 (thanks @sazanof)
+- Better connection check for IMAP #449 (thanks @thin-k-design)
+- Config handling moved into a new class `Config::class` to allow class serialization (sponsored by elb-BIT GmbH)
+- Support for Carbon 3 added #483
+- Custom decoder support added
+- Decoding filename with non-standard encoding #535 (thanks @grnsv)
+
+### Breaking changes
+- The decoder config has been moved from `options.decoder` to `decoding` and contains now the `decoder` class to used as well as their decoding fallbacks
+- `Folder::getStatus()` no longer returns the results of `EXAMINE` but `STATUS` instead. If you want to use `EXAMINE` you can use the `Folder::examine()` method instead.
+- `ClientManager::class` has now longer access to all configs. Config handling has been moved to its own class `Config::class`. If you want to access the config you can use the retriever method `::getConfig()` instead. Example: `$client->getConfig()` or `$message->getConfig()`, etc.
+- `ClientManager::get` isn't available anymore. Use the regular config accessor instead. Example: `$cm->getConfig()->get($key)`
+- `M̀essage::getConfig()` now returns the client configuration instead of the fetching options configuration. Please use `$message->getOptions()` instead.
+- `Attachment::getConfig()` now returns the client configuration instead of the fetching options configuration. Please use `$attachment->getOptions()` instead.
+- `Header::getConfig()` now returns the client configuration instead of the fetching options configuration. Please use `$header->getOptions()` instead.
+- `M̀essage::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$message->setOptions` instead.
+- `Attachment::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$attachment->setOptions` instead.
+- `Header::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$header->setOptions` instead.
+- All protocol constructors now require a `Config::class` instance
+- The `Client::class` constructor now require a `Config::class` instance 
+- The `Part::class` constructor now require a `Config::class` instance 
+- The `Header::class` constructor now require a `Config::class` instance 
+- The `Message::fromFile` method now requires a `Config::class` instance 
+- The `Message::fromString` method now requires a `Config::class` instance 
+- The `Message::boot` method now requires a `Config::class` instance 
+- The `Message::decode` method has been removed. Use `Message::getDecoder()->decode($str)` instead.
+- The `Message::getEncoding` method has been removed. Use `Message::getDecoder()->getEncoding($str)` instead.
+- The `Message::convertEncoding` method has been removed. Use `Message::getDecoder()->convertEncoding()` instead.
+- The `Header::decode` method has been removed. Use `Header::getDecoder()->decode($str)` instead.
 
 ## [5.5.0] - 2023-06-28
 ### Fixed
 - Error token length mismatch in `ImapProtocol::readResponse` #400
 - Attachment name parsing fixed #410 #421 (thanks @nuernbergerA)
 - Additional Attachment name fallback added to prevent missing attachments
-- Attachment id is now static (based on the raw part content) and now longer random
+- Attachment id is now static (based on the raw part content) instead of random
 - Always parse the attachment description if it is available
 
 ### Added

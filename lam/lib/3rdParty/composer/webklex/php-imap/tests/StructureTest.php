@@ -13,12 +13,25 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Exceptions\InvalidMessageDateException;
 use Webklex\PHPIMAP\Exceptions\MessageContentFetchingException;
 use Webklex\PHPIMAP\Header;
 use Webklex\PHPIMAP\Structure;
 
 class StructureTest extends TestCase {
+
+    /** @var Config $config */
+    protected Config $config;
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    public function setUp(): void {
+        $this->config = Config::make();
+    }
 
     /**
      * Test parsing email headers
@@ -35,7 +48,7 @@ class StructureTest extends TestCase {
         $raw_header = substr($email, 0, strpos($email, "\r\n\r\n"));
         $raw_body = substr($email, strlen($raw_header)+8);
 
-        $header = new Header($raw_header);
+        $header = new Header($raw_header, $this->config);
         $structure = new Structure($raw_body, $header);
 
         self::assertSame(2, count($structure->parts));

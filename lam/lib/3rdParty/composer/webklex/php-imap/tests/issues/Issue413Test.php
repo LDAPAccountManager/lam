@@ -14,6 +14,7 @@ namespace Tests\issues;
 
 use PHPUnit\Framework\TestCase;
 use Tests\live\LiveMailboxTestCase;
+use Webklex\PHPIMAP\Config;
 use Webklex\PHPIMAP\Folder;
 use Webklex\PHPIMAP\Message;
 
