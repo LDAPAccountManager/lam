@@ -2,19 +2,19 @@ June 2025 9.2
  - Active Directory: allow to restore deleted entries in tree view (415)
 
 
-March 2025 9.1
+13.03.2025 9.1
  - Usability improvements (347, 348, 360, 403)
  - Active Directory: deleted entries in "CN=Deleted Objects" can be shown (option in server profile, advanced settings)
  - Security: LAM no longer ships with any default passwords, main configuration password is requested on login if not yet set (390)
  - Docker: support to read e.g. configuration password from file to support Docker swarm
+ - LAM Pro:
+  -> Added support to manage DNS entries of bind-dyndb-ldap (361)
+  -> Unix users: support to create a group with same name for rfc2307bis (404)
  - Fixed bugs:
   -> Ambiguous tooltip on profile editor for Shadow users (394)
   -> Self service photo file enhancements (396)
   -> Tree view: delete does not work in French (406)
   -> Cron job mails: show all values for multi-value attribute wildcards (411)
- - LAM Pro:
-  -> Added support to manage DNS entries of bind-dyndb-ldap (361)
-  -> Unix users: support to create a group with same name for rfc2307bis (404)
 
 
 17.12.2024 9.0
