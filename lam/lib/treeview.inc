@@ -1411,7 +1411,7 @@ class TreeView {
 			],
 		];
 		$success = ldap_modify_batch(getLDAPServerHandle(), $dn, $changes, getCommonLdapControls());
-		if ($success === true) {
+		if ($success) {
 			return json_encode([]);
 		}
 		$error = getDefaultLDAPErrorString(getLDAPServerHandle());
