@@ -2498,6 +2498,64 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, dn, text, okTe
 }
 
 /**
+ * Restores a node in tree view.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn base64 encoded DN
+ * @param text text for dialog body
+ * @param okText text for OK button
+ * @param cancelText text for cancel button
+ * @param title dialog title
+ * @param errorOkText text for OK button in error dialog
+ * @param errorTitle dialog title in case of error
+ */
+window.lam.treeview.restoreNode = function (tokenName, tokenValue, dn, text, okText, cancelText, title, errorOkText, errorTitle) {
+	const textSpan = document.querySelector('.treeview-restore-entry');
+	textSpan.innerText = window.atob(text);
+	const dialogContent = document.getElementById('treeview_restore_dlg').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	const targetDn = document.getElementById('treeview-restore-dn').value;
+	Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			let data = new FormData();
+			data.append(tokenName, tokenValue);
+			data.append('dn', dn)
+			data.append('targetDn', targetDn)
+			fetch("../misc/ajax.php?function=treeview&command=restoreNode", {
+				method: 'POST',
+				body: data
+			})
+			.then(async response => {
+				const jsonData = await response.json();
+				window.lam.treeview.checkSession(jsonData);
+				const tree = mar10.Wunderbaum.getTree("#ldap_tree");
+				const parentNode = tree.findKey(dn).parent;
+				await parentNode.setActive();
+				parentNode.loadLazy(true);
+				window.lam.treeview.getNodeContent(tokenName, tokenValue, parentNode.key);
+				if (jsonData['errorTitle']) {
+					const errTextTitle = jsonData['errorTitle'];
+					const textSpanErrorTitle = document.querySelector('.treeview-error-title');
+					textSpanErrorTitle.innerText = errTextTitle;
+					const errText = jsonData['errorText'];
+					const textSpanErrorText = document.querySelector('.treeview-error-text');
+					textSpanErrorText.innerText = errText;
+					window.lam.dialog.showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
+				}
+			});
+		}
+	});
+}
+
+/**
  * Returns the node content in tree view action area.
  *
  * @param tokenName security token name

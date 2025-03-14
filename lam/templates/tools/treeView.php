@@ -2,6 +2,7 @@
 namespace LAM\TOOLS\TREEVIEW;
 use htmlDiv;
 use htmlForm;
+use htmlInputField;
 use htmlJavaScript;
 use htmlOutputText;
 use htmlResponsiveInputField;
@@ -142,10 +143,20 @@ function showTree(): void {
 	$deleteDialogDiv = new htmlDiv('treeview_delete_dlg', $deleteDialogContent, ['hidden']);
 	$row->add($deleteDialogDiv);
 
+	$restoreDialogContent = new htmlResponsiveRow();
+	$restoreDialogContent->add(new htmlOutputText(_('Do you really want to restore this entry?')));
+	$restoreDialogContent->addVerticalSpacer('0.5rem');
+	$restoreDialogEntryText = new htmlOutputText('');
+	$restoreDialogEntryText->setCSSClasses(['treeview-restore-entry']);
+	$restoreDialogContent->add($restoreDialogEntryText);
+	$restoreDialogDiv = new htmlDiv('treeview_restore_dlg', $restoreDialogContent, ['hidden']);
+	$row->add($restoreDialogDiv);
+
 	$errorDialogContent = new htmlResponsiveRow();
 	$errorDialogEntryTitle = new htmlOutputText('');
 	$errorDialogEntryTitle->setCSSClasses(['treeview-error-title']);
 	$errorDialogContent->add($errorDialogEntryTitle);
+	$errorDialogContent->addVerticalSpacer('0.5rem');
 	$errorDialogEntryText = new htmlOutputText('');
 	$errorDialogEntryText->setCSSClasses(['treeview-error-text']);
 	$errorDialogContent->add($errorDialogEntryText);

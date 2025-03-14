@@ -14,7 +14,8 @@
     "ext-xmlreader": "*",
     "ext-zip": "*",
     "ext-gd": "*",
-    "ext-imagick": "*"
+    "ext-imagick": "*",
+    "ext-gettext": "*"
   },
   "scripts": {
     "test": "vendor/bin/phpunit"
