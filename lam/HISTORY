@@ -1,6 +1,7 @@
 June 2025 9.2
  - Active Directory: allow to restore deleted entries in tree view (415)
-
+ - Fixed bugs:
+  -> Unix: profile editor for users not working (418)
 
 13.03.2025 9.1
  - Usability improvements (347, 348, 360, 403)
