@@ -387,7 +387,7 @@ class WebauthnManager {
 		);
 		$publicKeyCredentialLoader = $this->createPublicKeyCredentialLoader();
 		$publicKeyCredential = $publicKeyCredentialLoader->load($response);
-		$authenticatorAssertionResponse = $publicKeyCredential->getResponse();
+		$authenticatorAssertionResponse = $publicKeyCredential->response;
 		if (!$authenticatorAssertionResponse instanceof AuthenticatorAssertionResponse) {
 			logNewMessage(LOG_ERR, 'Invalid authenticator assertion response');
 			return false;
@@ -398,16 +398,16 @@ class WebauthnManager {
 			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 			$psr7Request = $psrFactory->createRequest($symfonyRequest);
 			$publicKeyCredentialRequestOptions = PublicKeyCredentialRequestOptions::createFromString($_SESSION['webauthn_authentication']);
-			$credential = $database->findOneByCredentialId($publicKeyCredential->getRawId());
+			$credential = $database->findOneByCredentialId($publicKeyCredential->rawId);
 			if ($credential === null) {
 				throw new LAMException(null, 'Unable to find credential');
 			}
-			$userId = $credential->getUserHandle();
+			$userId = $credential->userHandle;
 			// old entries use DN as user ID
 			$userHandle = ($userId === $userDn) ? $userDn : self::getUserIdFromDn($userDn);
 			$responseValidator->check(
-				$publicKeyCredential->getRawId(),
-				$publicKeyCredential->getResponse(),
+				$credential,
+				$authenticatorAssertionResponse,
 				$publicKeyCredentialRequestOptions,
 				$psr7Request,
 				$userHandle
