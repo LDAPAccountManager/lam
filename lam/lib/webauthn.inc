@@ -109,19 +109,18 @@ class WebauthnManager {
 		$credentialParameters = $this->getCredentialParameters();
 		$excludedKeys = $this->getExcludedKeys($dn, $extraExcludedKeys);
 		$timeout = $this->getTimeout();
-		$authenticatorSelectionCriteria = AuthenticatorSelectionCriteria::create()->setUserVerification(AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_DISCOURAGED);
-		$registrationObject = new PublicKeyCredentialCreationOptions(
+		$authenticatorSelectionCriteria = AuthenticatorSelectionCriteria::create(null, AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_DISCOURAGED);
+		$registrationObject = PublicKeyCredentialCreationOptions::create(
 			$rpEntity,
 			$userEntity,
 			$challenge,
-			$credentialParameters);
-		$registrationObject->setTimeout($timeout);
-		foreach ($excludedKeys as $excludedKey) {
-			$registrationObject->excludeCredential($excludedKey);
-		}
-		$registrationObject->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE);
-		$registrationObject->setAuthenticatorSelection($authenticatorSelectionCriteria);
-		$registrationObject->setExtensions(new AuthenticationExtensions());
+			$credentialParameters,
+			$authenticatorSelectionCriteria,
+			PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
+			$excludedKeys,
+			$timeout,
+			new AuthenticationExtensions()
+		);
 		logNewMessage(LOG_DEBUG, 'WebAuthn registration: ' . json_encode($registrationObject));
 		return $registrationObject;
 	}
