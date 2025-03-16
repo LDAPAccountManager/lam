@@ -138,7 +138,7 @@ class WebauthnManager {
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$repository = $this->getDatabase();
 		$responseValidator = new AuthenticatorAttestationResponseValidator(
-			$attestationSupportManager, $repository, null, $extensionOutputCheckerHandler);
+			$attestationSupportManager, null, null, $extensionOutputCheckerHandler);
 		try {
 			$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
 			$authenticatorAttestationResponse = $publicKeyCredential->response;
