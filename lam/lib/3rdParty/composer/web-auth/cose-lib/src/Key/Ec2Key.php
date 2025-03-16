@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace Cose\Key;
 
-use function array_key_exists;
-use FG\ASN1\ExplicitlyTaggedObject;
-use FG\ASN1\Universal\BitString;
-use FG\ASN1\Universal\Integer;
-use FG\ASN1\Universal\ObjectIdentifier;
-use FG\ASN1\Universal\OctetString;
-use FG\ASN1\Universal\Sequence;
-use function in_array;
 use InvalidArgumentException;
+use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\ObjectIdentifier;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
+use SpomkyLabs\Pki\ASN1\Type\Tagged\ExplicitlyTaggedType;
+use function array_key_exists;
+use function in_array;
+use function is_int;
+use function strlen;
 
 /**
  * @final
+ * @see \Cose\Tests\Key\Ec2KeyTest
  */
 class Ec2Key extends Key
 {
@@ -27,6 +30,14 @@ class Ec2Key extends Key
 
     final public const CURVE_P521 = 3;
 
+    final public const CURVE_NAME_P256 = 'P-256';
+
+    final public const CURVE_NAME_P256K = 'P-256K';
+
+    final public const CURVE_NAME_P384 = 'P-384';
+
+    final public const CURVE_NAME_P521 = 'P-521';
+
     final public const DATA_CURVE = -1;
 
     final public const DATA_X = -2;
@@ -35,7 +46,14 @@ class Ec2Key extends Key
 
     final public const DATA_D = -4;
 
-    private const SUPPORTED_CURVES = [self::CURVE_P256, self::CURVE_P256K, self::CURVE_P384, self::CURVE_P521];
+    private const SUPPORTED_CURVES_INT = [self::CURVE_P256, self::CURVE_P256K, self::CURVE_P384, self::CURVE_P521];
+
+    private const SUPPORTED_CURVES_NAMES = [
+        self::CURVE_NAME_P256,
+        self::CURVE_NAME_P256K,
+        self::CURVE_NAME_P384,
+        self::CURVE_NAME_P521,
+    ];
 
     private const NAMED_CURVE_OID = [
         self::CURVE_P256 => '1.2.840.10045.3.1.7',
@@ -53,6 +71,10 @@ class Ec2Key extends Key
         self::CURVE_P256K => 32,
         self::CURVE_P384 => 48,
         self::CURVE_P521 => 66,
+        self::CURVE_NAME_P256 => 32,
+        self::CURVE_NAME_P256K => 32,
+        self::CURVE_NAME_P384 => 48,
+        self::CURVE_NAME_P521 => 66,
     ];
 
     /**
@@ -60,20 +82,29 @@ class Ec2Key extends Key
      */
     public function __construct(array $data)
     {
+        foreach ([self::DATA_CURVE, self::TYPE] as $key) {
+            if (is_numeric($data[$key])) {
+                $data[$key] = (int) $data[$key];
+            }
+        }
         parent::__construct($data);
-        if (! isset($data[self::TYPE]) || (int) $data[self::TYPE] !== self::TYPE_EC2) {
+        if ($data[self::TYPE] !== self::TYPE_EC2 && $data[self::TYPE] !== self::TYPE_NAME_EC2) {
             throw new InvalidArgumentException('Invalid EC2 key. The key type does not correspond to an EC2 key');
         }
         if (! isset($data[self::DATA_CURVE], $data[self::DATA_X], $data[self::DATA_Y])) {
             throw new InvalidArgumentException('Invalid EC2 key. The curve or the "x/y" coordinates are missing');
         }
-        if (mb_strlen((string) $data[self::DATA_X], '8bit') !== self::CURVE_KEY_LENGTH[(int) $data[self::DATA_CURVE]]) {
+        if (strlen((string) $data[self::DATA_X]) !== self::CURVE_KEY_LENGTH[$data[self::DATA_CURVE]]) {
             throw new InvalidArgumentException('Invalid length for x coordinate');
         }
-        if (mb_strlen((string) $data[self::DATA_Y], '8bit') !== self::CURVE_KEY_LENGTH[(int) $data[self::DATA_CURVE]]) {
+        if (strlen((string) $data[self::DATA_Y]) !== self::CURVE_KEY_LENGTH[$data[self::DATA_CURVE]]) {
             throw new InvalidArgumentException('Invalid length for y coordinate');
         }
-        if (! in_array((int) $data[self::DATA_CURVE], self::SUPPORTED_CURVES, true)) {
+        if (is_int($data[self::DATA_CURVE])) {
+            if (! in_array($data[self::DATA_CURVE], self::SUPPORTED_CURVES_INT, true)) {
+                throw new InvalidArgumentException('The curve is not supported');
+            }
+        } elseif (! in_array($data[self::DATA_CURVE], self::SUPPORTED_CURVES_NAMES, true)) {
             throw new InvalidArgumentException('The curve is not supported');
         }
     }
@@ -117,30 +148,33 @@ class Ec2Key extends Key
         return $this->get(self::DATA_D);
     }
 
-    public function curve(): int
+    public function curve(): int|string
     {
-        return (int) $this->get(self::DATA_CURVE);
+        return $this->get(self::DATA_CURVE);
     }
 
     public function asPEM(): string
     {
         if ($this->isPrivate()) {
-            $der = new Sequence(
-                new Integer(1),
-                new OctetString(bin2hex($this->d())),
-                new ExplicitlyTaggedObject(0, new ObjectIdentifier($this->getCurveOid())),
-                new ExplicitlyTaggedObject(1, new BitString(bin2hex($this->getUncompressedCoordinates())))
+            $der = Sequence::create(
+                Integer::create(1),
+                OctetString::create($this->d()),
+                ExplicitlyTaggedType::create(0, ObjectIdentifier::create($this->getCurveOid())),
+                ExplicitlyTaggedType::create(1, BitString::create($this->getUncompressedCoordinates())),
             );
 
-            return $this->pem('EC PRIVATE KEY', $der->getBinary());
+            return $this->pem('EC PRIVATE KEY', $der->toDER());
         }
 
-        $der = new Sequence(
-            new Sequence(new ObjectIdentifier('1.2.840.10045.2.1'), new ObjectIdentifier($this->getCurveOid())),
-            new BitString(bin2hex($this->getUncompressedCoordinates()))
+        $der = Sequence::create(
+            Sequence::create(
+                ObjectIdentifier::create('1.2.840.10045.2.1'),
+                ObjectIdentifier::create($this->getCurveOid())
+            ),
+            BitString::create($this->getUncompressedCoordinates())
         );
 
-        return $this->pem('PUBLIC KEY', $der->getBinary());
+        return $this->pem('PUBLIC KEY', $der->toDER());
     }
 
     public function getUncompressedCoordinates(): string
@@ -155,8 +189,8 @@ class Ec2Key extends Key
 
     private function pem(string $type, string $der): string
     {
-        return sprintf("-----BEGIN %s-----\n", mb_strtoupper($type)) .
+        return sprintf("-----BEGIN %s-----\n", strtoupper($type)) .
             chunk_split(base64_encode($der), 64, "\n") .
-            sprintf("-----END %s-----\n", mb_strtoupper($type));
+            sprintf("-----END %s-----\n", strtoupper($type));
     }
 }

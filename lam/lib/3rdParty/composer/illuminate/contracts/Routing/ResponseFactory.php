@@ -5,9 +5,9 @@ namespace Illuminate\Contracts\Routing;
 interface ResponseFactory
 {
     /**
-     * Create a new response instance.
+     * Return a new response from the application.
      *
-     * @param  array|string  $content
+     * @param  string  $content
      * @param  int  $status
      * @param  array  $headers
      * @return \Illuminate\Http\Response
@@ -15,18 +15,9 @@ interface ResponseFactory
     public function make($content = '', $status = 200, array $headers = []);
 
     /**
-     * Create a new "no content" response.
+     * Return a new view response from the application.
      *
-     * @param  int  $status
-     * @param  array  $headers
-     * @return \Illuminate\Http\Response
-     */
-    public function noContent($status = 204, array $headers = []);
-
-    /**
-     * Create a new response for a given view.
-     *
-     * @param  string|array  $view
+     * @param  string  $view
      * @param  array  $data
      * @param  int  $status
      * @param  array  $headers
@@ -35,9 +26,9 @@ interface ResponseFactory
     public function view($view, $data = [], $status = 200, array $headers = []);
 
     /**
-     * Create a new JSON response instance.
+     * Return a new JSON response from the application.
      *
-     * @param  mixed  $data
+     * @param  string|array  $data
      * @param  int  $status
      * @param  array  $headers
      * @param  int  $options
@@ -46,10 +37,10 @@ interface ResponseFactory
     public function json($data = [], $status = 200, array $headers = [], $options = 0);
 
     /**
-     * Create a new JSONP response instance.
+     * Return a new JSONP response from the application.
      *
      * @param  string  $callback
-     * @param  mixed  $data
+     * @param  string|array  $data
      * @param  int  $status
      * @param  array  $headers
      * @param  int  $options
@@ -58,9 +49,9 @@ interface ResponseFactory
     public function jsonp($callback, $data = [], $status = 200, array $headers = [], $options = 0);
 
     /**
-     * Create a new streamed response instance.
+     * Return a new streamed response from the application.
      *
-     * @param  callable  $callback
+     * @param  \Closure  $callback
      * @param  int  $status
      * @param  array  $headers
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
@@ -68,35 +59,15 @@ interface ResponseFactory
     public function stream($callback, $status = 200, array $headers = []);
 
     /**
-     * Create a new streamed response instance as a file download.
-     *
-     * @param  callable  $callback
-     * @param  string|null  $name
-     * @param  array  $headers
-     * @param  string|null  $disposition
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     */
-    public function streamDownload($callback, $name = null, array $headers = [], $disposition = 'attachment');
-
-    /**
      * Create a new file download response.
      *
      * @param  \SplFileInfo|string  $file
-     * @param  string|null  $name
+     * @param  string  $name
      * @param  array  $headers
      * @param  string|null  $disposition
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function download($file, $name = null, array $headers = [], $disposition = 'attachment');
-
-    /**
-     * Return the raw contents of a binary file.
-     *
-     * @param  \SplFileInfo|string  $file
-     * @param  array  $headers
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-     */
-    public function file($file, array $headers = []);
 
     /**
      * Create a new redirect response to the given path.
@@ -113,7 +84,7 @@ interface ResponseFactory
      * Create a new redirect response to a named route.
      *
      * @param  string  $route
-     * @param  mixed  $parameters
+     * @param  array  $parameters
      * @param  int  $status
      * @param  array  $headers
      * @return \Illuminate\Http\RedirectResponse
@@ -123,8 +94,8 @@ interface ResponseFactory
     /**
      * Create a new redirect response to a controller action.
      *
-     * @param  array|string  $action
-     * @param  mixed  $parameters
+     * @param  string  $action
+     * @param  array  $parameters
      * @param  int  $status
      * @param  array  $headers
      * @return \Illuminate\Http\RedirectResponse

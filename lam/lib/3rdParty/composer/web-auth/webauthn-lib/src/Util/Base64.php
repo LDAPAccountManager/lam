@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace Webauthn\Util;
 
-use Assert\Assertion;
-use InvalidArgumentException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use Throwable;
+use Webauthn\Exception\InvalidDataException;
 
 abstract class Base64
 {
-    public static function decodeUrlSafe(string $data): string
-    {
-        Assertion::regex($data, '/([A-Z][a-z][0-9]\-_)*/', 'Invalid Base 64 Url Safe character');
-
-        return Base64UrlSafe::decode($data);
-    }
-
     public static function decode(string $data): string
     {
         try {
@@ -26,9 +18,9 @@ abstract class Base64
         }
 
         try {
-            return \ParagonIE\ConstantTime\Base64::decode($data, true);
+            return \ParagonIE\ConstantTime\Base64::decode($data);
         } catch (Throwable $e) {
-            throw new InvalidArgumentException('Invalid data submitted', 0, $e);
+            throw InvalidDataException::create($data, 'Invalid data submitted', $e);
         }
     }
 }

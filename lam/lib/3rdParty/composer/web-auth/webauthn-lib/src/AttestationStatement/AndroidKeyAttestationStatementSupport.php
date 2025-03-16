@@ -4,33 +4,48 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
-use Assert\Assertion;
 use CBOR\Decoder;
 use CBOR\Normalizable;
 use Cose\Algorithms;
 use Cose\Key\Ec2Key;
 use Cose\Key\Key;
 use Cose\Key\RsaKey;
-use function count;
-use FG\ASN1\ASNObject;
-use FG\ASN1\ExplicitlyTaggedObject;
-use FG\ASN1\Universal\OctetString;
-use FG\ASN1\Universal\Sequence;
-use function Safe\hex2bin;
-use function Safe\openssl_pkey_get_public;
-use function Safe\openssl_verify;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
+use SpomkyLabs\Pki\ASN1\Type\Tagged\ExplicitTagging;
 use Webauthn\AuthenticatorData;
-use Webauthn\CertificateToolbox;
+use Webauthn\Event\AttestationStatementLoaded;
+use Webauthn\Event\CanDispatchEvents;
+use Webauthn\Event\NullEventDispatcher;
+use Webauthn\Exception\AttestationStatementLoadingException;
+use Webauthn\Exception\AttestationStatementVerificationException;
+use Webauthn\Exception\InvalidAttestationStatementException;
+use Webauthn\MetadataService\CertificateChain\CertificateToolbox;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
+use function array_key_exists;
+use function count;
+use function is_array;
+use function openssl_pkey_get_public;
+use function openssl_verify;
+use function sprintf;
 
-final class AndroidKeyAttestationStatementSupport implements AttestationStatementSupport
+final class AndroidKeyAttestationStatementSupport implements AttestationStatementSupport, CanDispatchEvents
 {
     private readonly Decoder $decoder;
+
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct()
     {
         $this->decoder = Decoder::create();
+        $this->dispatcher = new NullEventDispatcher();
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->dispatcher = $eventDispatcher;
     }
 
     public static function create(): self
@@ -48,31 +63,30 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
      */
     public function load(array $attestation): AttestationStatement
     {
-        Assertion::keyExists($attestation, 'attStmt', 'Invalid attestation object');
+        array_key_exists('attStmt', $attestation) || throw AttestationStatementLoadingException::create($attestation);
         foreach (['sig', 'x5c', 'alg'] as $key) {
-            Assertion::keyExists(
-                $attestation['attStmt'],
-                $key,
+            array_key_exists($key, $attestation['attStmt']) || throw AttestationStatementLoadingException::create(
+                $attestation,
                 sprintf('The attestation statement value "%s" is missing.', $key)
             );
         }
         $certificates = $attestation['attStmt']['x5c'];
-        Assertion::greaterThan(
-            is_countable($certificates) ? count($certificates) : 0,
-            0,
-            'The attestation statement value "x5c" must be a list with at least one certificate.'
-        );
-        Assertion::allString(
-            $certificates,
+        (is_countable($certificates) ? count(
+            $certificates
+        ) : 0) > 0 || throw AttestationStatementLoadingException::create(
+            $attestation,
             'The attestation statement value "x5c" must be a list with at least one certificate.'
         );
         $certificates = CertificateToolbox::convertAllDERToPEM($certificates);
 
-        return AttestationStatement::createBasic(
+        $attestationStatement = AttestationStatement::createBasic(
             $attestation['fmt'],
             $attestation['attStmt'],
-            new CertificateTrustPath($certificates)
+            CertificateTrustPath::create($certificates)
         );
+        $this->dispatcher->dispatch(AttestationStatementLoaded::create($attestationStatement));
+
+        return $attestationStatement;
     }
 
     public function isValid(
@@ -80,16 +94,19 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         AttestationStatement $attestationStatement,
         AuthenticatorData $authenticatorData
     ): bool {
-        $trustPath = $attestationStatement->getTrustPath();
-        Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
+        $trustPath = $attestationStatement->trustPath;
+        $trustPath instanceof CertificateTrustPath || throw InvalidAttestationStatementException::create(
+            $attestationStatement,
+            'Invalid trust path. Shall contain certificates.'
+        );
 
-        $certificates = $trustPath->getCertificates();
+        $certificates = $trustPath->certificates;
 
         //Decode leaf attestation certificate
         $leaf = $certificates[0];
-        $this->checkCertificateAndGetPublicKey($leaf, $clientDataJSONHash, $authenticatorData);
+        $this->checkCertificate($leaf, $clientDataJSONHash, $authenticatorData);
 
-        $signedData = $authenticatorData->getAuthData() . $clientDataJSONHash;
+        $signedData = $authenticatorData->authData . $clientDataJSONHash;
         $alg = $attestationStatement->get('alg');
 
         return openssl_verify(
@@ -100,76 +117,99 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         ) === 1;
     }
 
-    private function checkCertificateAndGetPublicKey(
+    private function checkCertificate(
         string $certificate,
         string $clientDataHash,
         AuthenticatorData $authenticatorData
     ): void {
         $resource = openssl_pkey_get_public($certificate);
         $details = openssl_pkey_get_details($resource);
-        Assertion::isArray($details, 'Unable to read the certificate');
+        is_array($details) || throw AttestationStatementVerificationException::create(
+            'Unable to read the certificate'
+        );
 
         //Check that authData publicKey matches the public key in the attestation certificate
-        $attestedCredentialData = $authenticatorData->getAttestedCredentialData();
-        Assertion::notNull($attestedCredentialData, 'No attested credential data found');
-        $publicKeyData = $attestedCredentialData->getCredentialPublicKey();
-        Assertion::notNull($publicKeyData, 'No attested public key found');
+        $attestedCredentialData = $authenticatorData->attestedCredentialData;
+        $attestedCredentialData !== null || throw AttestationStatementVerificationException::create(
+            'No attested credential data found'
+        );
+        $publicKeyData = $attestedCredentialData->credentialPublicKey;
+        $publicKeyData !== null || throw AttestationStatementVerificationException::create(
+            'No attested public key found'
+        );
         $publicDataStream = new StringStream($publicKeyData);
         $coseKey = $this->decoder->decode($publicDataStream);
-        Assertion::isInstanceOf($coseKey, Normalizable::class, 'Invalid attested public key found');
+        $coseKey instanceof Normalizable || throw AttestationStatementVerificationException::create(
+            'Invalid attested public key found'
+        );
 
-        Assertion::true($publicDataStream->isEOF(), 'Invalid public key data. Presence of extra bytes.');
+        $publicDataStream->isEOF() || throw AttestationStatementVerificationException::create(
+            'Invalid public key data. Presence of extra bytes.'
+        );
         $publicDataStream->close();
         $publicKey = Key::createFromData($coseKey->normalize());
 
-        Assertion::true(($publicKey instanceof Ec2Key) || ($publicKey instanceof RsaKey), 'Unsupported key type');
-        Assertion::eq($publicKey->asPEM(), $details['key'], 'Invalid key');
+        ($publicKey instanceof Ec2Key) || ($publicKey instanceof RsaKey) || throw AttestationStatementVerificationException::create(
+            'Unsupported key type'
+        );
+        $publicKey->asPEM() === $details['key'] || throw AttestationStatementVerificationException::create(
+            'Invalid key'
+        );
 
         /*---------------------------*/
         $certDetails = openssl_x509_parse($certificate);
 
-        //Find Android KeyStore Extension with OID “1.3.6.1.4.1.11129.2.1.17” in certificate extensions
-        Assertion::isArray($certDetails, 'The certificate is not valid');
-        Assertion::keyExists($certDetails, 'extensions', 'The certificate has no extension');
-        Assertion::isArray($certDetails['extensions'], 'The certificate has no extension');
-        Assertion::keyExists(
-            $certDetails['extensions'],
+        //Find Android KeyStore Extension with OID "1.3.6.1.4.1.11129.2.1.17" in certificate extensions
+        is_array(
+            $certDetails
+        ) || throw AttestationStatementVerificationException::create('The certificate is not valid');
+        array_key_exists('extensions', $certDetails) || throw AttestationStatementVerificationException::create(
+            'The certificate has no extension'
+        );
+        is_array($certDetails['extensions']) || throw AttestationStatementVerificationException::create(
+            'The certificate has no extension'
+        );
+        array_key_exists(
             '1.3.6.1.4.1.11129.2.1.17',
+            $certDetails['extensions']
+        ) || throw AttestationStatementVerificationException::create(
             'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is missing'
         );
         $extension = $certDetails['extensions']['1.3.6.1.4.1.11129.2.1.17'];
-        $extensionAsAsn1 = ASNObject::fromBinary($extension);
-        Assertion::isInstanceOf(
-            $extensionAsAsn1,
-            Sequence::class,
-            'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid'
-        );
-        $objects = $extensionAsAsn1->getChildren();
+        $extensionAsAsn1 = Sequence::fromDER($extension);
+        $extensionAsAsn1->has(4);
 
         //Check that attestationChallenge is set to the clientDataHash.
-        Assertion::keyExists($objects, 4, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
-        Assertion::isInstanceOf(
-            $objects[4],
-            OctetString::class,
+        $extensionAsAsn1->has(4) || throw AttestationStatementVerificationException::create(
             'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid'
         );
-        Assertion::eq($clientDataHash, hex2bin(($objects[4])->getContent()), 'The client data hash is not valid');
+        $ext = $extensionAsAsn1->at(4)
+            ->asElement();
+        $ext instanceof OctetString || throw AttestationStatementVerificationException::create(
+            'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid'
+        );
+        $clientDataHash === $ext->string() || throw AttestationStatementVerificationException::create(
+            'The client data hash is not valid'
+        );
 
-        //Check that both teeEnforced and softwareEnforced structures don’t contain allApplications(600) tag.
-        Assertion::keyExists($objects, 6, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
-        $softwareEnforcedFlags = $objects[6];
-        Assertion::isInstanceOf(
-            $softwareEnforcedFlags,
-            Sequence::class,
+        //Check that both teeEnforced and softwareEnforced structures don't contain allApplications(600) tag.
+        $extensionAsAsn1->has(6) || throw AttestationStatementVerificationException::create(
+            'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid'
+        );
+
+        $softwareEnforcedFlags = $extensionAsAsn1->at(6)
+            ->asElement();
+        $softwareEnforcedFlags instanceof Sequence || throw AttestationStatementVerificationException::create(
             'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid'
         );
         $this->checkAbsenceOfAllApplicationsTag($softwareEnforcedFlags);
 
-        Assertion::keyExists($objects, 7, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
-        $teeEnforcedFlags = $objects[6];
-        Assertion::isInstanceOf(
-            $teeEnforcedFlags,
-            Sequence::class,
+        $extensionAsAsn1->has(7) || throw AttestationStatementVerificationException::create(
+            'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid'
+        );
+        $teeEnforcedFlags = $extensionAsAsn1->at(7)
+            ->asElement();
+        $teeEnforcedFlags instanceof Sequence || throw AttestationStatementVerificationException::create(
             'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid'
         );
         $this->checkAbsenceOfAllApplicationsTag($teeEnforcedFlags);
@@ -177,10 +217,12 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
 
     private function checkAbsenceOfAllApplicationsTag(Sequence $sequence): void
     {
-        foreach ($sequence->getChildren() as $tag) {
-            Assertion::isInstanceOf($tag, ExplicitlyTaggedObject::class, 'Invalid tag');
-            /** @var ExplicitlyTaggedObject $tag */
-            Assertion::notEq(600, (int) $tag->getTag(), 'Forbidden tag 600 found');
+        foreach ($sequence->elements() as $tag) {
+            $tag->asElement() instanceof ExplicitTagging || throw AttestationStatementVerificationException::create(
+                'Invalid tag'
+            );
+            $tag->asElement()
+                ->tag() !== 600 || throw AttestationStatementVerificationException::create('Forbidden tag 600 found');
         }
     }
 }

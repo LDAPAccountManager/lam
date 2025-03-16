@@ -1136,7 +1136,6 @@ Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
 graphics/webauthn.svg                                                F  2017  Duo Security, Inc.
-lib/3rdParty/composer/beberlei                                       G  2013  Benjamin Eberlei
 lib/3rdParty/composer/brick                                          B        Benjamin Morel
 lib/3rdParty/composer/carbonphp                                      B  2023  Carbon
 lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
@@ -1144,13 +1143,13 @@ lib/3rdParty/composer/composer                                       B        Ni
 lib/3rdParty/composer/doctrine                                       B        Doctrine Project
 lib/3rdParty/composer/duo                                            E        Cisco Systems, Inc. and/or its affiliates
 lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu
-lib/3rdParty/composer/fgrosse                                        B  2015  Friedrich Große
 lib/3rdParty/composer/firebase                                       F  2011  Neuman Vong
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
 lib/3rdParty/composer/http-interop                                   B  2016  Woody Gilk
 lib/3rdParty/composer/illuminate                                     B        Taylor Otwell
-lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
+lib/3rdParty/composer/lcobucci                                       B  2017  Luís Cobucci
 lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano
+lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
 lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises
 lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team
 lib/3rdParty/composer/phpmailer                                      I
@@ -1159,8 +1158,6 @@ lib/3rdParty/composer/psr                                            B        PH
 lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs
 lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier
-lib/3rdParty/composer/thecodingmachine                               B        TheCodingMachine
-lib/3rdParty/composer/voku                                           B  2019 Lars Moelleken
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs
 lib/3rdParty/composer/web-token                                      B        Florent Morselli
 lib/3rdParty/composer/webklex                                        B  2016  Webklex

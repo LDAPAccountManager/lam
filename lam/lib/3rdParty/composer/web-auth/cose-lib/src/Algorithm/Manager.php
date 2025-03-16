@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Cose\Algorithm;
 
-use function array_key_exists;
 use InvalidArgumentException;
+use function array_key_exists;
 
 final class Manager
 {

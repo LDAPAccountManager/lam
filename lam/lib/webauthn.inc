@@ -27,6 +27,7 @@ use Webauthn\AttestationStatement\FidoU2FAttestationStatementSupport;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\AttestationStatement\PackedAttestationStatementSupport;
 use Webauthn\AttestationStatement\TPMAttestationStatementSupport;
+use Webauthn\AuthenticationExtensions\AuthenticationExtensions;
 use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
 use Webauthn\AuthenticatorAssertionResponse;
 use Webauthn\AuthenticatorAssertionResponseValidator;
@@ -41,9 +42,7 @@ use \Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialSourceRepository;
 use \Webauthn\PublicKeyCredentialUserEntity;
-use \Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientInputs;
 use \Webauthn\AuthenticatorSelectionCriteria;
-use Webauthn\TokenBinding\IgnoreTokenBindingHandler;
 use \LAMException;
 use function LAM\PERSISTENCE\dbTableExists;
 
@@ -122,7 +121,7 @@ class WebauthnManager {
 		}
 		$registrationObject->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE);
 		$registrationObject->setAuthenticatorSelection($authenticatorSelectionCriteria);
-		$registrationObject->setExtensions(new AuthenticationExtensionsClientInputs());
+		$registrationObject->setExtensions(new AuthenticationExtensions());
 		logNewMessage(LOG_DEBUG, 'WebAuthn registration: ' . json_encode($registrationObject));
 		return $registrationObject;
 	}
@@ -135,13 +134,12 @@ class WebauthnManager {
 	 * @return bool true if response is valid and registration succeeded
 	 */
 	public function storeNewRegistration($registration, $clientResponse) {
-		$tokenBindingHandler = new IgnoreTokenBindingHandler();
 		$attestationSupportManager = $this->getAttestationSupportManager();
 		$publicKeyCredentialLoader = $this->createPublicKeyCredentialLoader();
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$repository = $this->getDatabase();
 		$responseValidator = new AuthenticatorAttestationResponseValidator(
-			$attestationSupportManager, $repository, $tokenBindingHandler, $extensionOutputCheckerHandler);
+			$attestationSupportManager, $repository, null, $extensionOutputCheckerHandler);
 		try {
 			$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
 			$authenticatorAttestationResponse = $publicKeyCredential->getResponse();
@@ -357,7 +355,7 @@ class WebauthnManager {
 		$database = $this->getDatabase();
 		$publicKeyCredentialSources = $database->findAllForUserDn($userDN);
 		$userVerification = PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
-		$extensions = new AuthenticationExtensionsClientInputs();
+		$extensions = new AuthenticationExtensions();
 		$relyingParty = $this->createRpEntry($isSelfService);
 		$options = PublicKeyCredentialRequestOptions::create($challenge)
 			->setTimeout($timeout)
@@ -379,12 +377,11 @@ class WebauthnManager {
 	 */
 	public function isValidAuthentication(string $response, string $userDn) {
 		$database = $this->getDatabase();
-		$tokenBindingHandler = new IgnoreTokenBindingHandler();
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$algorithmManager = $this->getAlgorithmManager();
 		$responseValidator = new AuthenticatorAssertionResponseValidator(
 			$database,
-			$tokenBindingHandler,
+			null,
 			$extensionOutputCheckerHandler,
 			$algorithmManager
 		);

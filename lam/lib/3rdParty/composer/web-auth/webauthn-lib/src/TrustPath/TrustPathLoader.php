@@ -4,28 +4,30 @@ declare(strict_types=1);
 
 namespace Webauthn\TrustPath;
 
-use Assert\Assertion;
-use function in_array;
-use InvalidArgumentException;
-use function Safe\class_implements;
+use Webauthn\Exception\InvalidTrustPathException;
+use function array_key_exists;
+use function is_array;
+use function is_string;
 
-abstract class TrustPathLoader
+/**
+ * @deprecated since 4.9.0 and will be removed in 5.0.0. Use the serializer instead
+ */
+final class TrustPathLoader
 {
     /**
      * @param mixed[] $data
      */
     public static function loadTrustPath(array $data): TrustPath
     {
-        Assertion::keyExists($data, 'type', 'The trust path type is missing');
-        $type = $data['type'];
-        if (class_exists($type) !== true) {
-            throw new InvalidArgumentException(sprintf('The trust path type "%s" is not supported', $data['type']));
-        }
-
-        $implements = class_implements($type);
-        if (in_array(TrustPath::class, $implements, true)) {
-            return $type::createFromArray($data);
-        }
-        throw new InvalidArgumentException(sprintf('The trust path type "%s" is not supported', $data['type']));
+        return match (true) {
+            $data === [] || $data === [
+                'type' => EmptyTrustPath::class,
+            ] => EmptyTrustPath::create(),
+            array_key_exists('x5c', $data) && is_array($data['x5c']) => CertificateTrustPath::create($data['x5c']),
+            array_key_exists('ecdaaKeyId', $data) && is_string($data['ecdaaKeyId']) => new EcdaaKeyIdTrustPath(
+                $data['ecdaaKeyId']
+            ),
+            default => throw InvalidTrustPathException::create('Unsupported trust path'),
+        };
     }
 }

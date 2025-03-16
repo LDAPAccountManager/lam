@@ -11,6 +11,9 @@ use InvalidArgumentException;
 use function openssl_sign;
 use function openssl_verify;
 
+/**
+ * @see \Cose\Tests\Algorithm\Signature\ECDSA\ECDSATest
+ */
 abstract class ECDSA implements Signature
 {
     public function sign(string $data, Key $key): string
@@ -26,7 +29,6 @@ abstract class ECDSA implements Signature
         $key = $this->handleKey($key);
         $publicKey = $key->toPublic();
         $signature = ECSignature::toAsn1($signature, $this->getSignaturePartLength());
-
         return openssl_verify($data, $signature, $publicKey->asPEM(), $this->getHashAlgorithm()) === 1;
     }
 

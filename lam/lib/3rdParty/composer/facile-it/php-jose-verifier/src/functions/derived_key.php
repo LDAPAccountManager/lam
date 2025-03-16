@@ -10,6 +10,9 @@ use Jose\Component\Core\JWK;
 use function round;
 use function substr;
 
+/**
+ * @internal
+ */
 function derived_key(string $secret, int $length): JWK
 {
     $hash = substr(hash('sha256', $secret, true), 0, (int) round($length / 8));

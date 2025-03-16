@@ -13,21 +13,25 @@ use Facile\JoseVerifier\JWK\MemoryJwksProvider;
 
 /**
  * @psalm-import-type ClientMetadataObject from Psalm\PsalmTypes
- * @psalm-import-type IssuerMetadataObject from Psalm\PsalmTypes
  * @psalm-import-type JWKSetObject from Psalm\PsalmTypes
+ * @psalm-import-type IssuerMetadataObject from TokenVerifierBuilderInterface
+ *
  * @template TVerifier of AbstractTokenVerifier
+ *
  * @template-implements TokenVerifierBuilderInterface<TVerifier>
  */
 abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInterface
 {
     /**
      * @var null|array<string, mixed>
+     *
      * @psalm-var null|ClientMetadataObject
      */
     protected $clientMetadata;
 
     /**
      * @var null|array<string, mixed>
+     *
      * @psalm-var null|IssuerMetadataObject
      */
     protected $issuerMetadata;
@@ -49,6 +53,7 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
 
     /**
      * @param array<string, mixed> $clientMetadata
+     *
      * @psalm-param ClientMetadataObject $clientMetadata
      */
     public function setClientMetadata(array $clientMetadata): void
@@ -58,6 +63,7 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
 
     /**
      * @param array<string, mixed> $issuerMetadata
+     *
      * @psalm-param IssuerMetadataObject $issuerMetadata
      */
     public function setIssuerMetadata(array $issuerMetadata): void
@@ -105,10 +111,11 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
             return $this->clientJwksProvider;
         }
 
-        /** @var JWKSetObject $jwks */
+        /** @psalm-var JWKSetObject $jwks */
         $jwks = ['keys' => []];
 
         if ($this->clientMetadata) {
+            /** @psalm-var JWKSetObject $jwks */
             $jwks = $this->clientMetadata['jwks'] ?? $jwks;
         }
 
@@ -133,6 +140,7 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
 
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return ClientMetadataObject
      */
     protected function getClientMetadata(): array
@@ -146,6 +154,7 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
 
     /**
      * @return array<string, mixed>
+     *
      * @psalm-return IssuerMetadataObject
      */
     protected function getIssuerMetadata(): array

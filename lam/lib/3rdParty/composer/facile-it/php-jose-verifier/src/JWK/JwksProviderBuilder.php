@@ -20,6 +20,7 @@ class JwksProviderBuilder
 {
     /**
      * @var array|null
+     *
      * @psalm-var null|JWKSetObject
      */
     private $jwks;

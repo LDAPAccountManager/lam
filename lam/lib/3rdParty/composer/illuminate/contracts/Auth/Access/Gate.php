@@ -22,16 +22,6 @@ interface Gate
     public function define($ability, $callback);
 
     /**
-     * Define abilities for a resource.
-     *
-     * @param  string  $name
-     * @param  string  $class
-     * @param  array|null  $abilities
-     * @return $this
-     */
-    public function resource($name, $class, ?array $abilities = null);
-
-    /**
      * Define a policy class for a given class type.
      *
      * @param  string  $class
@@ -57,40 +47,31 @@ interface Gate
     public function after(callable $callback);
 
     /**
-     * Determine if all of the given abilities should be granted for the current user.
+     * Determine if the given ability should be granted for the current user.
      *
-     * @param  iterable|string  $ability
+     * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
      */
     public function allows($ability, $arguments = []);
 
     /**
-     * Determine if any of the given abilities should be denied for the current user.
+     * Determine if the given ability should be denied for the current user.
      *
-     * @param  iterable|string  $ability
+     * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
      */
     public function denies($ability, $arguments = []);
 
     /**
-     * Determine if all of the given abilities should be granted for the current user.
+     * Determine if the given ability should be granted.
      *
-     * @param  iterable|string  $abilities
+     * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
      */
-    public function check($abilities, $arguments = []);
-
-    /**
-     * Determine if any one of the given abilities should be granted for the current user.
-     *
-     * @param  iterable|string  $abilities
-     * @param  array|mixed  $arguments
-     * @return bool
-     */
-    public function any($abilities, $arguments = []);
+    public function check($ability, $arguments = []);
 
     /**
      * Determine if the given ability should be granted for the current user.
@@ -102,26 +83,6 @@ interface Gate
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function authorize($ability, $arguments = []);
-
-    /**
-     * Inspect the user for the given ability.
-     *
-     * @param  string  $ability
-     * @param  array|mixed  $arguments
-     * @return \Illuminate\Auth\Access\Response
-     */
-    public function inspect($ability, $arguments = []);
-
-    /**
-     * Get the raw result from the authorization callback.
-     *
-     * @param  string  $ability
-     * @param  array|mixed  $arguments
-     * @return mixed
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function raw($ability, $arguments = []);
 
     /**
      * Get a policy instance for a given class.
@@ -140,11 +101,4 @@ interface Gate
      * @return static
      */
     public function forUser($user);
-
-    /**
-     * Get all of the defined abilities.
-     *
-     * @return array
-     */
-    public function abilities();
 }

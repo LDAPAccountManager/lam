@@ -8,6 +8,9 @@ use Base64Url\Base64Url;
 use Jose\Component\Core\JWK;
 use function preg_match;
 
+/**
+ * @internal
+ */
 function jose_secret_key(string $secret, ?string $alg = null): JWK
 {
     if (null !== $alg && (bool) preg_match('/^A(\d{3})(?:GCM)?KW$/', $alg, $matches)) {

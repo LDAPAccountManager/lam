@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Webauthn;
 
+/**
+ * @deprecated
+ * @infection-ignore-all
+ */
 interface PublicKeyCredentialSourceRepository
 {
     public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource;

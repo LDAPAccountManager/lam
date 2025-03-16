@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Webauthn\TokenBinding;
 
-use Assert\Assertion;
 use Psr\Http\Message\ServerRequestInterface;
+use Webauthn\Exception\InvalidDataException;
+use function count;
 
+/**
+ * @deprecated Since 4.3.0 and will be removed in 5.0.0
+ * @infection-ignore-all
+ */
 final class SecTokenBindingHandler implements TokenBindingHandler
 {
     public static function create(): self
@@ -20,13 +25,19 @@ final class SecTokenBindingHandler implements TokenBindingHandler
             return;
         }
 
-        Assertion::true(
-            $request->hasHeader('Sec-Token-Binding'),
+        $request->hasHeader('Sec-Token-Binding') || throw InvalidDataException::create(
+            $tokenBinding,
             'The header parameter "Sec-Token-Binding" is missing.'
         );
         $tokenBindingIds = $request->getHeader('Sec-Token-Binding');
-        Assertion::count($tokenBindingIds, 1, 'The header parameter "Sec-Token-Binding" is invalid.');
+        count($tokenBindingIds) === 1 || throw InvalidDataException::create(
+            $tokenBinding,
+            'The header parameter "Sec-Token-Binding" is invalid.'
+        );
         $tokenBindingId = reset($tokenBindingIds);
-        Assertion::eq($tokenBindingId, $tokenBinding->getId(), 'The header parameter "Sec-Token-Binding" is invalid.');
+        $tokenBindingId === $tokenBinding->getId() || throw InvalidDataException::create(
+            $tokenBinding,
+            'The header parameter "Sec-Token-Binding" is invalid.'
+        );
     }
 }

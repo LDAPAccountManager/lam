@@ -29,6 +29,22 @@ class PaginationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        PaginationState::resolveUsing($this->app);
+        Paginator::viewFactoryResolver(function () {
+            return $this->app['view'];
+        });
+
+        Paginator::currentPathResolver(function () {
+            return $this->app['request']->url();
+        });
+
+        Paginator::currentPageResolver(function ($pageName = 'page') {
+            $page = $this->app['request']->input($pageName);
+
+            if (filter_var($page, FILTER_VALIDATE_INT) !== false && (int) $page >= 1) {
+                return $page;
+            }
+
+            return 1;
+        });
     }
 }
