@@ -242,7 +242,7 @@ class WebauthnManager {
 		$repository = $this->getDatabase();
 		$credentialSources = $repository->findAllForUserDn($userDn);
 		foreach ($credentialSources as $credentialSource) {
-			$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $credentialSource->getPublicKeyCredentialId());
+			$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $credentialSource->publicKeyCredentialId);
 		}
 		foreach ($extraExcludedKeys as $extraExcludedKey) {
 			$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $extraExcludedKey);
