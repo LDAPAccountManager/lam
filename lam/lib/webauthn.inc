@@ -345,7 +345,7 @@ class WebauthnManager {
 	 * Returns the authentication object for a registered user.
 	 *
 	 * @param $userDN user DN
-	 * @param bool $isSelfService self service
+	 * @param bool $isSelfService self-service
 	 * @return PublicKeyCredentialRequestOptions authentication object
 	 */
 	public function getAuthenticationObject($userDN, bool $isSelfService) {
@@ -356,14 +356,18 @@ class WebauthnManager {
 		$userVerification = PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
 		$extensions = new AuthenticationExtensions();
 		$relyingParty = $this->createRpEntry($isSelfService);
-		$options = PublicKeyCredentialRequestOptions::create($challenge)
-			->setTimeout($timeout)
-			->setRpId($relyingParty->getId())
-			->setUserVerification($userVerification)
-			->setExtensions($extensions);
+		$allowCredentials = [];
 		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
-			$options->allowCredential($publicKeyCredentialSource->getPublicKeyCredentialDescriptor());
+			$allowCredentials[] = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();
 		}
+		$options = PublicKeyCredentialRequestOptions::create(
+			$challenge,
+			$relyingParty->id,
+			$allowCredentials,
+			$userVerification,
+			$timeout,
+			$extensions
+		);
 		return $options;
 	}
 
