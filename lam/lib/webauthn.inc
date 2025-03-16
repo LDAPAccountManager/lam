@@ -40,7 +40,6 @@ use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialRpEntity;
 use Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialSource;
-use Webauthn\PublicKeyCredentialSourceRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
 use Webauthn\AuthenticatorSelectionCriteria;
 use LAMException;
@@ -429,7 +428,7 @@ class WebauthnManager {
  *
  * @package LAM\LOGIN\WEBAUTHN
  */
-abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCredentialSourceRepository {
+abstract class PublicKeyCredentialSourceRepositoryBase {
 
 	/**
 	 * Returns the table name to use.
