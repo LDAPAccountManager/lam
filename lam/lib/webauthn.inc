@@ -175,7 +175,7 @@ class WebauthnManager {
 	/**
 	 * Returns the user entity for the registration.
 	 *
-	 * @param $dn DN
+	 * @param string $dn DN
 	 * @return PublicKeyCredentialUserEntity user entity
 	 */
 	private function getUserEntity($dn) {
