@@ -382,7 +382,7 @@ class WebauthnManager {
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$algorithmManager = $this->getAlgorithmManager();
 		$responseValidator = new AuthenticatorAssertionResponseValidator(
-			$database,
+			null,
 			null,
 			$extensionOutputCheckerHandler,
 			$algorithmManager
