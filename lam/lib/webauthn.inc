@@ -11,7 +11,7 @@ use Cose\Algorithm\Signature\RSA\RS1;
 use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
-use \Cose\Algorithms;
+use Cose\Algorithms;
 use Http\Discovery\Psr17Factory;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAMCfgMain;
@@ -33,17 +33,17 @@ use Webauthn\AuthenticatorAssertionResponse;
 use Webauthn\AuthenticatorAssertionResponseValidator;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
-use \Webauthn\PublicKeyCredentialCreationOptions;
+use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialDescriptor;
 use Webauthn\PublicKeyCredentialLoader;
 use Webauthn\PublicKeyCredentialRequestOptions;
-use \Webauthn\PublicKeyCredentialRpEntity;
-use \Webauthn\PublicKeyCredentialParameters;
+use Webauthn\PublicKeyCredentialRpEntity;
+use Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialSourceRepository;
-use \Webauthn\PublicKeyCredentialUserEntity;
-use \Webauthn\AuthenticatorSelectionCriteria;
-use \LAMException;
+use Webauthn\PublicKeyCredentialUserEntity;
+use Webauthn\AuthenticatorSelectionCriteria;
+use LAMException;
 use function LAM\PERSISTENCE\dbTableExists;
 
 /*
@@ -98,7 +98,7 @@ class WebauthnManager {
 	 * Returns a challenge for a new token.
 	 *
 	 * @param string $dn DN
-	 * @param bool $isSelfService is executed in self service
+	 * @param bool $isSelfService is executed in self-service
 	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialCreationOptions registration object
 	 */
@@ -154,7 +154,7 @@ class WebauthnManager {
 			$repository->saveCredentialSource($publicKeyCredentialSource);
 			return true;
 		}
-		catch (\Throwable $exception) {
+		catch (Throwable $exception) {
 			logNewMessage(LOG_ERR, 'WebAuthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
 		}
 		return false;
@@ -199,7 +199,7 @@ class WebauthnManager {
 	/**
 	 * Returns the part that identifies the server and application.
 	 *
-	 * @param bool $isSelfService is executed in self service
+	 * @param bool $isSelfService is executed in self-service
 	 * @return PublicKeyCredentialRpEntity relying party entry
 	 */
 	private function createRpEntry($isSelfService) {
@@ -344,7 +344,7 @@ class WebauthnManager {
 	/**
 	 * Returns the authentication object for a registered user.
 	 *
-	 * @param $userDN user DN
+	 * @param string $userDN user DN
 	 * @param bool $isSelfService self-service
 	 * @return PublicKeyCredentialRequestOptions authentication object
 	 */
@@ -360,7 +360,7 @@ class WebauthnManager {
 		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
 			$allowCredentials[] = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();
 		}
-		$options = PublicKeyCredentialRequestOptions::create(
+		return PublicKeyCredentialRequestOptions::create(
 			$challenge,
 			$relyingParty->id,
 			$allowCredentials,
@@ -368,7 +368,6 @@ class WebauthnManager {
 			$timeout,
 			$extensions
 		);
-		return $options;
 	}
 
 	/**
@@ -471,7 +470,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 * @return PublicKeyCredentialSource[] credential sources
 	 */
 	public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array {
-		return $this->findAllForUserDn($publicKeyCredentialUserEntity->getName());
+		return $this->findAllForUserDn($publicKeyCredentialUserEntity->name);
 	}
 
 	/**
@@ -505,8 +504,8 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 */
 	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
 		$json = json_encode($publicKeyCredentialSource);
-		$credentialId = base64_encode($publicKeyCredentialSource->getPublicKeyCredentialId());
-		$userId = $publicKeyCredentialSource->getUserHandle();
+		$credentialId = base64_encode($publicKeyCredentialSource->publicKeyCredentialId);
+		$userId = $publicKeyCredentialSource->userHandle;
 		$currentTime = time();
 		$pdo = $this->getPDO();
 		if (isset($_SESSION['selfService_clientDN'])) {
@@ -569,7 +568,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	}
 
 	/**
-	 * Performs a full-text search on the user names and returns all devices found.
+	 * Performs a full-text search on the usernames and returns all devices found.
 	 *
 	 * @param string $searchTerm search term for user field
 	 * @return array list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
@@ -596,7 +595,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	}
 
 	/**
-	 * Performs a full-text search on the user names and returns all devices found.
+	 * Performs a full-text search on the usernames and returns all devices found.
 	 *
 	 * @param string $userDn user DN
 	 * @return array list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
@@ -664,7 +663,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 *
 	 * @return PDO PDO
 	 */
-	protected abstract function getPDO(): PDO;
+	abstract protected function getPDO(): PDO;
 
 	/**
 	 * Checks if the schema needs to be updated.
