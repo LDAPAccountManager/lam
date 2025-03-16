@@ -141,7 +141,7 @@ class WebauthnManager {
 			$attestationSupportManager, $repository, null, $extensionOutputCheckerHandler);
 		try {
 			$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
-			$authenticatorAttestationResponse = $publicKeyCredential->getResponse();
+			$authenticatorAttestationResponse = $publicKeyCredential->response;
 			if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
 				logNewMessage(LOG_ERR, 'Invalid webauthn response: ' . $clientResponse);
 				return false;
