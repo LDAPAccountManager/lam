@@ -465,16 +465,6 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	/**
 	 * Finds all credential entries for the given user.
 	 *
-	 * @param PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity credential user entity
-	 * @return PublicKeyCredentialSource[] credential sources
-	 */
-	public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array {
-		return $this->findAllForUserDn($publicKeyCredentialUserEntity->name);
-	}
-
-	/**
-	 * Finds all credential entries for the given user.
-	 *
 	 * @param string $userDn user DN
 	 * @return PublicKeyCredentialSource[] credential sources
 	 */
