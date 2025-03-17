@@ -372,6 +372,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'spomky-labs/aes-key-wrap' => array(
+            'pretty_version' => 'v7.0.0',
+            'version' => '7.0.0.0',
+            'reference' => 'fbeb834b1f83aa8fbdfbd4c12124f71d4c1606ae',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../spomky-labs/aes-key-wrap',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'spomky-labs/base64url' => array(
             'pretty_version' => 'v2.0.4',
             'version' => '2.0.4.0',
