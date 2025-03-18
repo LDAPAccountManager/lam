@@ -95,7 +95,7 @@ class takUser extends baseModule {
 				'name' => 'takUser_takCallsign',
 				'description' => _('TAK Callsign'),
 				'help' => 'takCallsign',
-				'example' => _('UK-ORG-01')
+				'example' => _('UK-ORG-01'),
                 'required' => true
 			],
             [
@@ -104,7 +104,7 @@ class takUser extends baseModule {
 				'help' => 'takRole',
                 'default' => 'Team Member',
 				'values' => 'Team Member, Team Leader, HQ, Sniper, Medic, Forward Observer, RTO, K9',
-				'example' => _('Team Member')
+				'example' => _('Team Member'),
                 'required' => true
 			],
             [
@@ -113,7 +113,7 @@ class takUser extends baseModule {
 				'help' => 'takColor',
                 'default' => 'Cyan',
 				'values' => 'Blue, Brown, Cyan, Dark Blue, Dark Green, Green, Magenta, Maroon, Orange, Purple, Red, Teal, White, Yellow',
-				'example' => _('Cyan')
+				'example' => _('Cyan'),
                 'required' => true
 			],
 		];
@@ -175,7 +175,7 @@ class takUser extends baseModule {
 	*	$this->addSimpleInputTextField($return, 'takColor', _('Color'));
 	*/
 		// takRole
-		$this->new htmlSelect($return, array('takRoles'=> array('Team Member, Team Leader, HQ, Sniper, Medic, Forward Observer, RTO, K9')), array('Team Member'));
+		$this->addMultiValueSelectField($return, 'takRole', _('Role'), array('takRoles'=> array('Team Member, Team Leader, HQ, Sniper, Medic, Forward Observer, RTO, K9')), array('Team Member'));
 		$this->setHasDescriptiveElements(true);
 		$this->setContainsOptgroups(true);
 		//takColor
