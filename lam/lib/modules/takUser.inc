@@ -62,7 +62,7 @@ class takUser extends baseModule {
 		// alias name
 		$return["alias"] = _("TAK User");
 		// this is a base module
-		$return["is_base"] = true;
+		$return["is_base"] = false;
 		// LDAP filter
 		$return["ldap_filter"] = ['or' => "(objectClass=takUser)"];
 		// RDN attribute
@@ -77,16 +77,16 @@ class takUser extends baseModule {
 		// help Entries
 		$return['help'] = [
 			'takCallsign' => [
-				"Headline" => _("Callsign"), 'attr' => 'takCallsign',
-				"Text" => _("The user\'s callsign to be displayed to other TAK users.")
+				"Headline" => _("TAK Callsign"), 'attr' => 'takCallsign',
+				"Text" => _("The user's callsign to be displayed to other TAK users.")
 			],
 			'takRole' => [
-				"Headline" => _("Role"), 'attr' => 'takRole',
-				"Text" => _("The user\'s role to be displayed to other TAK users.")
+				"Headline" => _("TAK Team Role"), 'attr' => 'takRole',
+				"Text" => _("The user's role to be displayed to other TAK users.")
 			],
 			'takColor' => [
-				"Headline" => _("Color"), 'attr' => 'takColor',
-				"Text" => _("The user\'s team color to be displayed to other TAK users.")
+				"Headline" => _("TAK Team Color"), 'attr' => 'takColor',
+				"Text" => _("The user's team color to be displayed to other TAK users.")
             ],
 		];
 		// upload fields
@@ -100,7 +100,7 @@ class takUser extends baseModule {
 			],
             [
 				'name' => 'takUser_takRole',
-				'description' => _('Role'),
+				'description' => _('TAK Team Role'),
 				'help' => 'takRole',
                 'default' => 'Team Member',
 				'values' => 'Team Member, Team Leader, HQ, Sniper, Medic, Forward Observer, RTO, K9',
@@ -109,7 +109,7 @@ class takUser extends baseModule {
 			],
             [
 				'name' => 'takUser_takColor',
-				'description' => _('Team Color'),
+				'description' => _('TAK Team Color'),
 				'help' => 'takColor',
                 'default' => 'Cyan',
 				'values' => 'Blue, Brown, Cyan, Dark Blue, Dark Green, Green, Magenta, Maroon, Orange, Purple, Red, Teal, White, Yellow',
@@ -120,14 +120,14 @@ class takUser extends baseModule {
 		// available PDF fields
 		$return['PDF_fields'] = [
 			'takCallsign' => _('TAK callsign'),
-			'takRole' => _('Role'),
-			'takColor' => _('Team Color'),
+			'takRole' => _('TAK Team Role'),
+			'takColor' => _('TAK Team Color'),
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Callsign'), 'takUser_takCallsign', null, 'takUserCallsign'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Role'), 'takUser_takRole', null, 'takUserRole'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Team'), 'takUser_takColor', null, 'takUserColor'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('TAK Callsign'), 'takUser_takCallsign', null, 'takUserCallsign'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('TAK Team Role'), 'takUser_takRole', null, 'takUserRole'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('TAK Team Color'), 'takUser_takColor', null, 'takUserColor'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['takUser_takCallsign'] = [
@@ -167,21 +167,11 @@ class takUser extends baseModule {
 	function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		// takCallsign
-		$this->addMultiValueInputTextField($return, 'takCallsign', _('TAK callsign'));
-	/**
-	*	// takRole
-	*	$this->addMultiValueInputTextField($return, 'takRole', _('Role'));
-	*	// takColor
-	*	$this->addSimpleInputTextField($return, 'takColor', _('Color'));
-	*/
+		$this->addSimpleInputTextField($return, 'takCallsign', _('TAK callsign'), true);
 		// takRole
-		$this->addMultiValueSelectField($return, 'takRole', _('Role'), array('takRoles'=> array('Team Member, Team Leader, HQ, Sniper, Medic, Forward Observer, RTO, K9')), array('Team Member'));
-		$this->setHasDescriptiveElements(true);
-		$this->setContainsOptgroups(true);
+		$return->add(new htmlResponsiveSelect('takRole', ['Team Member', 'Team Leader', 'HQ', 'Sniper', 'Medic', 'Forward Observer', 'RTO', 'K9'], ['Team Member'], _('TAK Team Role'), 'takRole'), 12);
 		//takColor
-		$this->new htmlSelect($return, array('takColors'=> array('Blue, Brown, Cyan, Dark Blue, Dark Green, Green, Magenta, Maroon, Orange, Purple, Red, Teal, White, Yellow')), array('Cyan'));
-		$this->setHasDescriptiveElements(true);
-		$this->setContainsOptgroups(true);
+		$return->add(new htmlResponsiveSelect('takColor', ['Blue', 'Brown', 'Cyan', 'Dark Blue', 'Dark Green', 'Green', 'Magenta', 'Maroon', 'Orange', 'Purple', 'Red', 'Teal', 'White', 'Yellow'], ['Cyan'], _('TAK Team Color'), 'takColor'), 12);
 		return $return;
 	}
 
@@ -247,8 +237,8 @@ class takUser extends baseModule {
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = [];
 		$this->addSimplePDFField($return, 'takCallsign', _('TAK callsign'));
-		$this->addSimplePDFField($return, 'takRole', _('Role'));
-		$this->addSimplePDFField($return, 'takColor', _('Color'));
+		$this->addSimplePDFField($return, 'takRole', _('TAK Team Role'));
+		$this->addSimplePDFField($return, 'takColor', _('TAK Team Color'));
 		return $return;
 	}
 
@@ -278,8 +268,8 @@ class takUser extends baseModule {
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return [
 			"takCallsign" => _("TAK callsign"),
-			"takRole" => _("Role"),
-			"takColor" => _("Color"),
+			"takRole" => _("TAK Team Role"),
+			"takColor" => _("TAK Team Color"),
 		];
 	}
 }
