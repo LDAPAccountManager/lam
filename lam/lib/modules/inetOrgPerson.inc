@@ -2730,19 +2730,19 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$attributes, $readOnlyFields, false, false, 'givenName');
 		$this->addSimpleSelfServiceTextField($return, 'lastName', _('Last name'), $fields,
 			$attributes, $readOnlyFields, true, false, 'sn');
-		$this->addSimpleSelfServiceTextField($return, 'mail', _('Email address'), $fields,
+		$this->addMultiValueSelfServiceTextField($return, 'mail', _('Email address'), $fields,
 			$attributes, $readOnlyFields);
 		$this->addMultiValueSelfServiceTextField($return, 'labeledURI', _('Web site'), $fields,
 			$attributes, $readOnlyFields, false, false, 'labeledURI');
-		$this->addSimpleSelfServiceTextField($return, 'telephoneNumber', _('Telephone number'), $fields,
+		$this->addMultiValueSelfServiceTextField($return, 'telephoneNumber', _('Telephone number'), $fields,
 			$attributes, $readOnlyFields, false, false, 'telephoneNumber');
-		$this->addSimpleSelfServiceTextField($return, 'homePhone', _('Home telephone number'), $fields,
+		$this->addMultiValueSelfServiceTextField($return, 'homePhone', _('Home telephone number'), $fields,
 			$attributes, $readOnlyFields, false, false, 'homePhone');
-		$this->addSimpleSelfServiceTextField($return, 'mobile', _('Mobile telephone number'), $fields,
+		$this->addMultiValueSelfServiceTextField($return, 'mobile', _('Mobile telephone number'), $fields,
 			$attributes, $readOnlyFields);
-		$this->addSimpleSelfServiceTextField($return, 'faxNumber', _('Fax number'), $fields,
+		$this->addMultiValueSelfServiceTextField($return, 'faxNumber', _('Fax number'), $fields,
 			$attributes, $readOnlyFields, false, false, 'facsimileTelephoneNumber');
-		$this->addSimpleSelfServiceTextField($return, 'pager', _('Pager'), $fields,
+		$this->addMultiValueSelfServiceTextField($return, 'pager', _('Pager'), $fields,
 			$attributes, $readOnlyFields);
 		$this->addMultiValueSelfServiceTextField($return, 'street', _('Street'), $fields,
 			$attributes, $readOnlyFields);
@@ -3200,22 +3200,22 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$this->checkSimpleSelfServiceTextField($return, 'lastName', $attributes, $fields,
 			$readOnlyFields, 'realname', $this->messages['lastname'][0], $this->messages['lastname'][0],
 			'sn');
-		$this->checkSimpleSelfServiceTextField($return, 'mail', $attributes, $fields,
+		$this->checkMultiValueSelfServiceTextField($return, 'mail', $attributes, $fields,
 			$readOnlyFields, 'email', $this->messages['mail'][0]);
 		$this->checkMultiValueSelfServiceTextField($return, 'labeledURI', $attributes, $fields,
 			$readOnlyFields, null, null, null, 'labeledURI');
-		$this->checkSimpleSelfServiceTextField($return, 'telephoneNumber', $attributes, $fields,
+		$this->checkMultiValueSelfServiceTextField($return, 'telephoneNumber', $attributes, $fields,
 			$readOnlyFields, 'telephone', $this->messages['telephoneNumber'][0], null,
 			'telephoneNumber');
-		$this->checkSimpleSelfServiceTextField($return, 'homePhone', $attributes, $fields,
+		$this->checkMultiValueSelfServiceTextField($return, 'homePhone', $attributes, $fields,
 			$readOnlyFields, 'telephone', $this->messages['homePhone'][0], null,
 			'homePhone');
-		$this->checkSimpleSelfServiceTextField($return, 'faxNumber', $attributes, $fields,
+		$this->checkMultiValueSelfServiceTextField($return, 'faxNumber', $attributes, $fields,
 			$readOnlyFields, 'telephone', $this->messages['facsimileTelephoneNumber'][0], null,
 			'facsimileTelephoneNumber');
-		$this->checkSimpleSelfServiceTextField($return, 'mobile', $attributes, $fields,
+		$this->checkMultiValueSelfServiceTextField($return, 'mobile', $attributes, $fields,
 			$readOnlyFields, 'telephone', $this->messages['mobile'][0]);
-		$this->checkSimpleSelfServiceTextField($return, 'pager', $attributes, $fields,
+		$this->checkMultiValueSelfServiceTextField($return, 'pager', $attributes, $fields,
 			$readOnlyFields, 'telephone', $this->messages['pager'][0]);
 		$this->checkMultiValueSelfServiceTextField($return, 'street', $attributes, $fields,
 			$readOnlyFields, 'street', $this->messages['street'][0]);
