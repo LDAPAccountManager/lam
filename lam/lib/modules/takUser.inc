@@ -2,16 +2,11 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2006  Tilo Lutz
+                2005 - 2025  Roland Gruber
+				This code
+				2024		 Mark Halliday
 
-*/
-
-/**
- * Manages TAK User roles.
- *
- * @package modules
- * @author Mark Halliday
- * Copyright (C) 2024  Mark Halliday
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -25,19 +20,19 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+/**
+ * Manages the object class "takuser" for users.
+ *
+ * @package modules
+ *
+ * @author Mark Halliday
  */
 
 use LAM\TYPES\ConfiguredType;
 
-/**
- * Manages TAK User roles.
- *
- * @package modules
- */
-class takUser extends baseModule {
-
-	/** regex for date values */
-	const DATE_REGEX = '/^([\d]{1,2})\\.([\d]{1,2})\\.([\d]{4})( ([\d]{1,2}):([\d]{1,2}))?$/';
+class takuser extends baseModule {
 
 	/**
 	 * Returns true if this module can manage accounts of the current type, otherwise false.
@@ -47,6 +42,14 @@ class takUser extends baseModule {
 	public function can_manage() {
 		return in_array($this->get_scope(), ['user']);
 	}
+
+	/** possible roles */
+	private $roletypes = ['Team Member', 'Team Leader', 'HQ', 'RTO', 'K9', 'Medic', 'Forward Observer', 'Sniper'];
+
+	/** possible colors */
+	private $colortypes = ['Blue', 'Brown', 'Cyan', 'Dark Blue', 'Dark Green', 'Green', 'Magenta', 'Maroon', 'Orange', 'Purple', 'Red', 'Teal', 'White', 'Yellow'];
+
+
 
 	/**
 	 * Returns meta data that is interpreted by parent class
@@ -64,70 +67,70 @@ class takUser extends baseModule {
 		// this is a base module
 		$return["is_base"] = false;
 		// LDAP filter
-		$return["ldap_filter"] = ['or' => "(objectClass=takUser)"];
+		$return["ldap_filter"] = ['or' => "(objectClass=takuser)"];
 		// RDN attribute
 		$return["RDN"] = ["cn" => "normal"];
 		// module dependencies
 		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
-		$return['objectClasses'] = ['takUser'];
+		$return['objectClasses'] = ['takuser'];
 		// managed attributes
-		$return['attributes'] = ['takCallsign', 'takRole', 'takColor'
+		$return['attributes'] = ['takcallsign', 'takrole', 'takcolor'
         ];
 		// help Entries
 		$return['help'] = [
-			'takCallsign' => [
-				"Headline" => _("TAK callsign"), 'attr' => 'takCallsign',
-				"Text" => _("The user's callsign to be displayed to other TAK users.")
+			'takcallsign' => [
+				"Headline" => _("TAK callsign"), 'attr' => 'takcallsign',
+				"Text" => _("The user's callsign to be displayed to other TAK users. It must be unique.")
 			],
-			'takRole' => [
-				"Headline" => _("TAK team role"), 'attr' => 'takRole',
+			'takrole' => [
+				"Headline" => _("TAK team role"), 'attr' => 'takrole',
 				"Text" => _("The user's role to be displayed to other TAK users.")
 			],
-			'takColor' => [
-				"Headline" => _("TAK Team color"), 'attr' => 'takColor',
+			'takcolor' => [
+				"Headline" => _("TAK Team color"), 'attr' => 'takcolor',
 				"Text" => _("The user's team color to be displayed to other TAK users.")
             ],
 		];
 		// upload fields
 		$return['upload_columns'] = [
             [
-				'name' => 'takUser_takCallsign',
+				'name' => 'takuser_takcallsign',
 				'description' => _('TAK callsign'),
-				'help' => 'takCallsign',
+				'help' => 'takcallsign',
 				'example' => _('UK-ORG-01'),
                 'required' => true
 			],
             [
-				'name' => 'takUser_takRole',
+				'name' => 'takuser_takrole',
 				'description' => _('TAK team role'),
-				'help' => 'takRole',
+				'help' => 'takrole',
                 'default' => 'Team Member',
-				'values' => 'Team Member, Team Leader, HQ, Sniper, Medic, Forward Observer, RTO, K9',
+				'values' => implode(", ", $this->roletypes),
 				'example' => _('Team Member'),
                 'required' => true
 			],
             [
-				'name' => 'takUser_takColor',
+				'name' => 'takuser_takcolor',
 				'description' => _('TAK team color'),
-				'help' => 'takColor',
+				'help' => 'takcolor',
                 'default' => 'Cyan',
-				'values' => 'Blue, Brown, Cyan, Dark Blue, Dark Green, Green, Magenta, Maroon, Orange, Purple, Red, Teal, White, Yellow',
+				'values' => implode(", ", $this->colortypes),
 				'example' => _('Cyan'),
                 'required' => true
 			],
 		];
 		// available PDF fields
 		$return['PDF_fields'] = [
-			'takCallsign' => _('TAK callsign'),
-			'takRole' => _('TAK team role'),
-			'takColor' => _('TAK team color'),
+			'takcallsign' => _('TAK callsign'),
+			'takrole' => _('TAK team role'),
+			'takcolor' => _('TAK team color'),
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('TAK Callsign'), 'takUser_takCallsign', null, 'takUserCallsign'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('TAK Team Role'), 'takUser_takRole', null, 'takUserRole'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('TAK Team Color'), 'takUser_takColor', null, 'takUserColor'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('TAK Callsign'), 'takuser_takcallsign', null, 'takusercallsign'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('TAK Team Role'), 'takuser_takrole', null, 'takuserrole'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('TAK Team Color'), 'takuser_takcolor', null, 'takusercolor'), 12);
 		$return['profile_options'] = $profileContainer;
 		/**
 		* not working: will not allow -
@@ -144,12 +147,11 @@ class takUser extends baseModule {
 	 * This function fills the $messages variable with output messages from this module.
 	 */
 	function load_Messages() {
-		$this->messages['takCallsign'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_')];
-		$this->messages['takCallsign'][1] = ['ERROR', _('Please enter a unique callsign.')];
-		$this->messages['takCallsign'][2] = ['ERROR', _('A TAK login with this callsign already exists. Please choose another callsign.')];
-		$this->messages['takRole'][1] = ['ERROR', _('Role'), _('Please select a role.')];
-		$this->messages['takColor'][1] = ['ERROR', _('Please select a team color.')];
-		$this->messages['takUsers'][0] = ['ERROR', _('takUsers'), _('Unable to add the user to the takUsers group')];
+		$this->messages['takcallsign'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_')];
+		$this->messages['takcallsign'][1] = ['ERROR', _('Please enter a unique callsign.')];
+		$this->messages['takcallsign'][2] = ['ERROR', _('A TAK login with this callsign already exists. Please choose another callsign.')];
+		$this->messages['takrole'][1] = ['ERROR', _('Role'), _('Please select a role.')];
+		$this->messages['takcolor'][1] = ['ERROR', _('Please select a team color.')];
 	}
 
 	/**
@@ -162,11 +164,11 @@ class takUser extends baseModule {
 		// Section title
 		$return->add(new htmlSubTitle(_('General')));
 		// takCallsign
-		$this->addSimpleInputTextField($return, 'takCallsign', _('TAK callsign'), true);
+		$this->addSimpleInputTextField($return, 'takcallsign', _('TAK callsign'), true);
 		// takRole
-		$return->add(new htmlResponsiveSelect('takRole', ['Team Member', 'Team Leader', 'HQ', 'Sniper', 'Medic', 'Forward Observer', 'RTO', 'K9'], ['Team Member'], _('TAK team role'), 'takRole'), 12);
+		$return->add(new htmlResponsiveSelect('takrole', $this->roletypes, _('TAK team role'), 'takrole'), 12);
 		//takColor
-		$return->add(new htmlResponsiveSelect('takColor', ['Blue', 'Brown', 'Cyan', 'Dark Blue', 'Dark Green', 'Green', 'Magenta', 'Maroon', 'Orange', 'Purple', 'Red', 'Teal', 'White', 'Yellow'], ['Cyan'], _('TAK team color'), 'takColor'), 12);
+		$return->add(new htmlResponsiveSelect('takcolor', $this->colortypes, ['Cyan'], _('TAK team color'), 'takcolor'), 12);
 		return $return;
 	}
 
@@ -178,28 +180,28 @@ class takUser extends baseModule {
 	 */
 	function process_attributes() {
 		$return = [];
-		$this->attributes['takCallsign'][0] = $_POST['takCallsign'];
-		$this->attributes['takRole'][0] = $_POST['takRole'];
-		$this->attributes['takColor'][0] = $_POST['takColor'];
-		// check if takCallsign is filled
-		if ($_POST['takCallsign'] == '') {
-			$return[] = $this->messages['takCallsign'][0];
+		$this->attributes['takcallsign'][0] = $_POST['takcallsign'];
+		$this->attributes['takrole'][0] = $_POST['takrole'];
+		$this->attributes['takcolor'][0] = $_POST['takcolor'];
+		// check if takcallsign is filled
+		if ($_POST['takcallsign'] == '') {
+			$return[] = $this->messages['takcallsign'][0];
 		}
-		// check if takCallsign is unique
-		else if ($this->getAccountContainer()->isNewAccount || ($this->attributes['takCallsign'][0] != $this->orig['takCallsign'][0])) {
+		// check if takcallsign is unique
+		else if (empty($this->orig['takcallsign'][0]) || ($this->attributes['takcallsign'][0] != $this->orig['takcallsign'][0])) {
 			$suffix = $_POST['accountContainerSuffix'];
-			$search = searchLDAP($suffix, 'takCallsign=' . $_POST['takCallsign'], ['dn']);
+			$search = searchLDAP($suffix, 'takcallsign=' . $_POST['takcallsign'], ['dn']);
 			if (sizeof($search) > 0) {
-				$return[] = $this->messages['takCallsign'][2];
+				$return[] = $this->messages['takcallsign'][2];
 			}
 		}
-		// check if takRole is filled
-		if ($_POST['takRole'] == '') {
-			$return[] = $this->messages['takRole'][1];
+		// check if takrole is filled
+		if ($_POST['takrole'] == '') {
+			$return[] = $this->messages['takrole'][1];
 		}
-		// check if takColor is filled
-		if ($_POST['takColor'] == '') {
-			$return[] = $this->messages['takColor'][1];
+		// check if takcolor is filled
+		if ($_POST['takcolor'] == '') {
+			$return[] = $this->messages['takcolor'][1];
 		}
 		return $return;
     }
@@ -212,15 +214,15 @@ class takUser extends baseModule {
 		$errors = [];
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('takUser', $partialAccounts[$i]['objectClass'])) {
-				$partialAccounts[$i]['objectClass'][] = 'takUser';
+			if (!in_array('takuser', $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = 'takuser';
 			}
-            // takCallsign
-			$partialAccounts[$i]['takCallsign'] = $rawAccounts[$i][$ids['takUser_takCallsign']];
-            // takRole
-			$partialAccounts[$i]['takRole'] = $rawAccounts[$i][$ids['takUser_takRole']];
-            // takColor
-			$partialAccounts[$i]['takColor'] = $rawAccounts[$i][$ids['takUser_takColor']];
+            // takcallsign
+			$partialAccounts[$i]['takcallsign'] = $rawAccounts[$i][$ids['takuser_takcallsign']];
+            // takrole
+			$partialAccounts[$i]['takrole'] = $rawAccounts[$i][$ids['takuser_takrole']];
+            // takcolor
+			$partialAccounts[$i]['takcolor'] = $rawAccounts[$i][$ids['takuser_takcolor']];
 		}
 		return $errors;
 	}
@@ -231,9 +233,9 @@ class takUser extends baseModule {
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = [];
-		$this->addSimplePDFField($return, 'takCallsign', _('TAK callsign'));
-		$this->addSimplePDFField($return, 'takRole', _('TAK team role'));
-		$this->addSimplePDFField($return, 'takColor', _('TAK team color'));
+		$this->addSimplePDFField($return, 'takcallsign', _('TAK callsign'));
+		$this->addSimplePDFField($return, 'takrole', _('TAK team role'));
+		$this->addSimplePDFField($return, 'takcolor', _('TAK team color'));
 		return $return;
 	}
 
@@ -246,14 +248,14 @@ class takUser extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// special profile options
-		if (isset($profile['takUser_takCallsign'][0]) && ($profile['takUser_takCallsign'][0] != '')) {
-			$this->attributes['takCallsign'] = explode(',', $profile['takUser_takCallsign'][0]);
+		if (isset($profile['takuser_takcallsign'][0]) && ($profile['takuser_takcallsign'][0] != '')) {
+			$this->attributes['takcallsign'] = $profile['takuser_takcallsign'][0];
 		}
-		if (isset($profile['takUser_takRole'][0]) && ($profile['takUser_takRole'][0] != '')) {
-			$this->attributes['takRole'] = explode(',', $profile['takUser_takRole'][0]);
+		if (isset($profile['takuser_takrole'][0]) && ($profile['takuser_takrole'][0] != '')) {
+			$this->attributes['takrole'] = $profile['takuser_takrole'][0];
 		}
-		if (isset($profile['takUser_takColor'][0]) && ($profile['takUser_takColor'][0] != '')) {
-			$this->attributes['takColor'] = explode(',', $profile['takUser_takColor'][0]);
+		if (isset($profile['takuser_takcolor'][0]) && ($profile['takuser_takcolor'][0] != '')) {
+			$this->attributes['takcolor'] = $profile['takuser_takcolor'][0];
 		}
 	}
 
@@ -262,9 +264,9 @@ class takUser extends baseModule {
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return [
-			"takCallsign" => _("TAK callsign"),
-			"takRole" => _("TAK team role"),
-			"takColor" => _("TAK team color"),
+			"takcallsign" => _("TAK callsign"),
+			"takrole" => _("TAK team role"),
+			"takcolor" => _("TAK team color"),
 		];
 	}
 }
