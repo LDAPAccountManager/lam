@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2024  Roland Gruber
+                2009 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,6 +75,18 @@ function in_array_ignore_case($needle, $haystack) {
 		}
 	}
 	return false;
+}
+
+/**
+ * Checks if two arrays have the same content.
+ *
+ * @param array $array1 array 1
+ * @param array $array2 array 2
+ * @return bool same content
+ */
+function areArrayContentsEqual(array $array1, array $array2): bool {
+	$intersect = array_intersect($array1, $array2);
+	return ((count($array1) === count($array2)) && (count($intersect) === count($array1)));
 }
 
 /**
