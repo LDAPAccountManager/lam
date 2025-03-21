@@ -9,7 +9,7 @@ use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1954,8 +1954,7 @@ abstract class baseModule {
 				$container['messages'][] = $requiredMessage;
 			}
 			$valuesOld = $attributes[$ldapAttrName] ?? [];
-			$intersect = array_intersect($valuesOld, $valuesNew);
-			if ((count($valuesOld) !== count($valuesNew)) || (count($intersect) !== count($valuesOld))) {
+			if (!areArrayContentsEqual($valuesOld, $valuesNew)) {
 				$container['mod'][$ldapAttrName] = $valuesNew;
 			}
 		}
