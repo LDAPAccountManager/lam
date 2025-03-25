@@ -1,0 +1,58 @@
+#
+#  LDAP schema for LAM TAK functionality
+#
+#  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+#  Copyright (C) 2025  Roland Gruber
+#
+#
+#  OID bases:
+#   1.3.6.1.4.1.34955   Roland Gruber Softwareentwicklung
+#   1.3.6.1.4.1.34955.1 attributes
+#   1.3.6.1.4.1.34955.2 object classes
+#
+#  Please replace DOMAIN_TOP_DN with your LDAP suffix (e.g. dc=samba4,dc=test).
+#  This file must be installed first.
+#
+#  Installation: ldbmodify -H /var/lib/samba/private/sam.ldb tak-Samba4-attributes.ldif --option="dsdb:schema update allowed"=true
+#
+#
+#  Version: 1
+#   1: initial release (LAM 9.2)
+#
+
+dn: CN=takCallsign,CN=Schema,CN=Configuration,DOMAIN_TOP_DN
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.34955.1.100
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+rangeLower: 4
+cn: takCallsign
+name: takCallsign
+lDAPDisplayName: takCallsign
+description: TAK callsign
+
+dn: CN=takRole,CN=Schema,CN=Configuration,DOMAIN_TOP_DN
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.34955.1.101
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+cn: takRole
+name: takRole
+lDAPDisplayName: takRole
+description: TAK team role
+
+dn: CN=takColor,CN=Schema,CN=Configuration,DOMAIN_TOP_DN
+objectClass: top
+objectClass: attributeSchema
+attributeID: 1.3.6.1.4.1.34955.1.102
+attributeSyntax: 2.5.5.12
+oMSyntax: 64
+isSingleValued: TRUE
+cn: takColor
+name: takColor
+LDAPDisplayName: takColor
+Description: TAK team color
