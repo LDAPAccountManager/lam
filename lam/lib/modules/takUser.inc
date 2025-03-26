@@ -24,7 +24,7 @@
 use LAM\TYPES\ConfiguredType;
 
 /**
- * Manages the object class "takuser" for users.
+ * Manages the object class "takUser" for users.
  *
  * @package modules
  *
@@ -129,14 +129,6 @@ class takUser extends baseModule {
 		$profileContainer->add(new htmlResponsiveInputField(_('Team Role'), 'takuser_takrole', null, 'takuserrole'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Team Color'), 'takuser_takcolor', null, 'takusercolor'), 12);
 		$return['profile_options'] = $profileContainer;
-		/**
-		* not working: will not allow -
-		* // profile checks
-		* $return['profile_checks']['takUser_takCallsign'] = [
-		*	'type' => 'ext_preg',
-		*	'regex' => 'ascii',
-		*	'error_message' => $this->messages['takCallsign'][0]];
-		*/
 		return $return;
 	}
 
@@ -230,14 +222,14 @@ class takUser extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// special profile options
-		if (isset($profile['takuser_takcallsign'][0]) && ($profile['takuser_takcallsign'][0] != '')) {
-			$this->attributes['takcallsign'] = $profile['takuser_takcallsign'][0];
+		if (!empty($profile['takuser_takcallsign'][0])) {
+			$this->attributes['takcallsign'][0] = $profile['takuser_takcallsign'][0];
 		}
-		if (isset($profile['takuser_takrole'][0]) && ($profile['takuser_takrole'][0] != '')) {
-			$this->attributes['takrole'] = $profile['takuser_takrole'][0];
+		if (!empty($profile['takuser_takrole'][0])) {
+			$this->attributes['takrole'][0] = $profile['takuser_takrole'][0];
 		}
-		if (isset($profile['takuser_takcolor'][0]) && ($profile['takuser_takcolor'][0] != '')) {
-			$this->attributes['takcolor'] = $profile['takuser_takcolor'][0];
+		if (!empty($profile['takuser_takcolor'][0])) {
+			$this->attributes['takcolor'][0] = $profile['takuser_takcolor'][0];
 		}
 	}
 
