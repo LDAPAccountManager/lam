@@ -39,7 +39,7 @@ class takUser extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return $this->get_scope() == 'user';
+		return $this->get_scope() === 'user';
 	}
 
 	/** possible roles */
@@ -122,9 +122,9 @@ class takUser extends baseModule {
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Callsign'), 'takuser_takcallsign', null, 'takusercallsign'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Team Role'), 'takuser_takrole', null, 'takuserrole'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Team Color'), 'takuser_takcolor', null, 'takusercolor'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Callsign'), 'takuser_takcallsign', null, 'takusercallsign'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Team Role'), 'takuser_takrole', null, 'takuserrole'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Team Color'), 'takuser_takcolor', null, 'takusercolor'));
 		$return['profile_options'] = $profileContainer;
 		// self-service field settings
 		$return['selfServiceFieldSettings'] = [
@@ -142,8 +142,9 @@ class takUser extends baseModule {
 		$this->messages['takcallsign'][0] = ['ERROR', _('Callsign'), _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_')];
 		$this->messages['takcallsign'][1] = ['ERROR', _('A TAK login with this callsign already exists. Please choose a different callsign.')];
 		$this->messages['takcallsign'][2] = ['ERROR', _('Callsign'), _('This field is required.')];
-		$this->messages['takrole'][1] = ['ERROR', _('Role'), _('Please select a role.')];
-		$this->messages['takcolor'][1] = ['ERROR', _('Please select a team color.')];
+		$this->messages['takcallsign'][3] = ['ERROR', _('Account %s:') . ' takuser_takcallsign', _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_')];
+		$this->messages['takrole'][0] = ['ERROR', _('Account %s:') . ' takuser_takrole', _('Please enter a valid option:') . ' ' . implode(', ', self::ROLE_TYPES)];
+		$this->messages['takcolor'][0] = ['ERROR', _('Account %s:') . ' takuser_takcolor', _('Please enter a valid option:') . ' ' . implode(', ', self::COLOR_TYPES)];
 	}
 
 	/**
@@ -200,11 +201,15 @@ class takUser extends baseModule {
 				$partialAccounts[$i]['objectClass'][] = 'takUser';
 			}
             // takcallsign
-			$partialAccounts[$i]['takcallsign'] = $rawAccounts[$i][$ids['takuser_takcallsign']];
-            // takrole
-			$partialAccounts[$i]['takrole'] = $rawAccounts[$i][$ids['takuser_takrole']];
-            // takcolor
-			$partialAccounts[$i]['takcolor'] = $rawAccounts[$i][$ids['takuser_takcolor']];
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takcallsign', 'takcallsign', 'username', $this->messages['takcallsign'][3], $errors);
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takrole', 'takrole', null, null, $errors);
+			if (!in_array($partialAccounts[$i]['takrole'][0], self::ROLE_TYPES)) {
+				$errors[] = array_merge($this->messages['takrole'][0], [[$i]]);
+			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takcolor', 'takcolor', null, null, $errors);
+			if (!in_array($partialAccounts[$i]['takcolor'][0], self::COLOR_TYPES)) {
+				$errors[] = array_merge($this->messages['takcolor'][0], [[$i]]);
+			}
 		}
 		return $errors;
 	}
