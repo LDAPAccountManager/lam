@@ -2510,6 +2510,31 @@ AuthorizedKeysCommandUser root</literallayout>
         <graphic fileref="images/mod_lastBind3.png"/>
       </screenshot>
     </section>
+
+    <section>
+      <title>TAK</title>
+
+      <para>The <ulink url="https://www.civtak.org/">TAK</ulink> module
+      supports the Team Awareness Kit or Tactical Assault Kit (TAK) with the
+      Android Team Awareness Kit (ATAK).</para>
+
+      <para>You can define callsigns, team roles and colors for users.</para>
+
+      <para>Add the TAK module for users in your server profile:</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_tak1.png"/>
+      </screenshot>
+
+      <para>Now you can manage the TAK attributes for users.</para>
+
+      <para>LAM Pro users can add these attributes to the self-service profile
+      if needed.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_tak2.png"/>
+      </screenshot>
+    </section>
   </section>
 
   <section>

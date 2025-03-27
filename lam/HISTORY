@@ -1,4 +1,5 @@
 June 2025 9.2
+ - TAK support added
  - Active Directory: allow to restore deleted entries in tree view (415)
  - Fixed bugs:
   -> Unix: profile editor for users not working (418)
