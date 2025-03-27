@@ -1034,7 +1034,7 @@ abstract class baseModule {
 				if (!empty($regex)) {
 					$this->checkUploadRegex($regexIDs, $rawAccounts[$position][$ids[$colName]], $message, $position, $errors);
 				}
-				$partialAccounts[$position][$attrName] = trim($rawAccounts[$position][$ids[$colName]]);
+				$partialAccounts[$position][$attrName] = [trim($rawAccounts[$position][$ids[$colName]])];
 			}
 			// multi-value
 			else {
