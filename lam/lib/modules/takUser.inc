@@ -39,7 +39,7 @@ class takUser extends baseModule {
 	 * @return boolean true if module fits
 	 */
 	public function can_manage() {
-		return in_array($this->get_scope(), ['user']);
+		return $this->get_scope() == 'user';
 	}
 
 	/** possible roles */
@@ -51,11 +51,7 @@ class takUser extends baseModule {
 
 
 	/**
-	 * Returns meta data that is interpreted by parent class
-	 *
-	 * @return array array with meta data
-	 *
-	 * @see baseModule::get_metaData()
+	 * {@inheritDoc}
 	 */
 	public function get_metaData() {
 		$return = [];
@@ -95,8 +91,9 @@ class takUser extends baseModule {
 				'name' => 'takuser_takcallsign',
 				'description' => _('Callsign'),
 				'help' => 'takcallsign',
-				'example' => _('UK-ORG-01'),
-                'required' => true
+				'example' => 'UK-ORG-01',
+                'required' => true,
+				'unique' => true
 			],
             [
 				'name' => 'takuser_takrole',
@@ -104,7 +101,7 @@ class takUser extends baseModule {
 				'help' => 'takrole',
                 'default' => 'Team Member',
 				'values' => implode(", ", self::ROLE_TYPES),
-				'example' => _('Team Member'),
+				'example' => 'Team Member',
                 'required' => true
 			],
             [
@@ -113,7 +110,7 @@ class takUser extends baseModule {
 				'help' => 'takcolor',
                 'default' => 'Cyan',
 				'values' => implode(", ", self::COLOR_TYPES),
-				'example' => _('Cyan'),
+				'example' => 'Cyan',
                 'required' => true
 			],
 		];
@@ -129,16 +126,22 @@ class takUser extends baseModule {
 		$profileContainer->add(new htmlResponsiveInputField(_('Team Role'), 'takuser_takrole', null, 'takuserrole'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Team Color'), 'takuser_takcolor', null, 'takusercolor'), 12);
 		$return['profile_options'] = $profileContainer;
+		// self-service field settings
+		$return['selfServiceFieldSettings'] = [
+			'takcallsign' => _('Callsign'),
+			'takrole' => _('Team role'),
+			'takcolor' => _('Team color'),
+		];
 		return $return;
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
 	public function load_Messages() {
 		$this->messages['takcallsign'][0] = ['ERROR', _('Callsign'), _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_')];
-		$this->messages['takcallsign'][1] = ['ERROR', _('Please enter a unique callsign.')];
-		$this->messages['takcallsign'][2] = ['ERROR', _('A TAK login with this callsign already exists. Please choose a different callsign.')];
+		$this->messages['takcallsign'][1] = ['ERROR', _('A TAK login with this callsign already exists. Please choose a different callsign.')];
+		$this->messages['takcallsign'][2] = ['ERROR', _('Callsign'), _('This field is required.')];
 		$this->messages['takrole'][1] = ['ERROR', _('Role'), _('Please select a role.')];
 		$this->messages['takcolor'][1] = ['ERROR', _('Please select a team color.')];
 	}
@@ -169,6 +172,9 @@ class takUser extends baseModule {
 		$this->attributes['takcolor'][0] = $_POST['takcolor'];
 		// check if callsign is filled
 		if ($_POST['takcallsign'] == '') {
+			$return[] = $this->messages['takcallsign'][2];
+		}
+		elseif (!get_preg($_POST['takcallsign'], 'username')) {
 			$return[] = $this->messages['takcallsign'][0];
 		}
 		// check if callsign is unique
@@ -176,7 +182,7 @@ class takUser extends baseModule {
 			$suffix = $this->getAccountContainer()->get_type()->getSuffix();
 			$search = searchLDAP($suffix, 'takcallsign=' . $_POST['takcallsign'], ['dn']);
 			if (sizeof($search) > 0) {
-				$return[] = $this->messages['takcallsign'][2];
+				$return[] = $this->messages['takcallsign'][1];
 			}
 		}
 		return $return;
@@ -236,6 +242,76 @@ class takUser extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
+	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = [];
+		if ($passwordChangeOnly) {
+			return $return; // only password fields as long no LDAP content can be read
+		}
+		if (!in_array_ignore_case('takUser', $attributes['objectClass'])) {
+			return $return;
+		}
+		$this->addSimpleSelfServiceTextField($return, 'takcallsign', _('Callsign'), $fields, $attributes, $readOnlyFields, true);
+		if (in_array('takrole', $fields)) {
+			$role = '';
+			if (isset($attributes['takrole'][0])) {
+				$role = $attributes['takrole'][0];
+			}
+			if (in_array('takrole', $readOnlyFields)) {
+				$field = new htmlOutputText($role);
+			}
+			else {
+				$selected = [];
+				if (!empty($attributes['takrole'][0])) {
+					$selected = [$attributes['takrole'][0]];
+				}
+				$field = new htmlSelect('takUser_takrole', self::ROLE_TYPES, $selected);
+			}
+			$return['takrole'] = new htmlResponsiveRow(
+				new htmlLabel('takUser_takrole', $this->getSelfServiceLabel('takrole', _('Team role'))), $field
+			);
+		}
+		if (in_array('takcolor', $fields)) {
+			$color = '';
+			if (isset($attributes['takcolor'][0])) {
+				$color = $attributes['takcolor'][0];
+			}
+			if (in_array('takcolor', $readOnlyFields)) {
+				$field = new htmlOutputText($color);
+			}
+			else {
+				$selected = [];
+				if (!empty($attributes['takcolor'][0])) {
+					$selected = [$attributes['takcolor'][0]];
+				}
+				$field = new htmlSelect('takUser_takcolor', self::COLOR_TYPES, $selected);
+			}
+			$return['takcolor'] = new htmlResponsiveRow(
+				new htmlLabel('takUser_takcolor', $this->getSelfServiceLabel('takcolor', _('Team color'))), $field
+			);
+		}
+		return $return;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
+		if ($passwordChangeOnly) {
+			return $return; // skip processing if only a password change is done
+		}
+		if (!in_array_ignore_case('takUser', $attributes['objectClass'])) {
+			return $return;
+		}
+		$this->checkSimpleSelfServiceTextField($return, 'takcallsign', $attributes, $fields, $readOnlyFields, 'username', $this->messages['takcallsign'][0], $this->messages['takcallsign'][2]);
+		$this->checkSimpleSelfServiceTextField($return, 'takrole', $attributes, $fields, $readOnlyFields);
+		$this->checkSimpleSelfServiceTextField($return, 'takcolor', $attributes, $fields, $readOnlyFields);
+		return $return;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return [
 			"takcallsign" => _("Callsign"),
@@ -243,4 +319,5 @@ class takUser extends baseModule {
 			"takcolor" => _("Team color"),
 		];
 	}
+
 }
