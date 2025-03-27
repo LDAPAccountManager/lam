@@ -179,10 +179,10 @@ class takUser extends baseModule {
 			$return[] = $this->messages['takcallsign'][0];
 		}
 		// check if callsign is unique
-		else if (empty($this->orig['takcallsign'][0]) || ($this->attributes['takcallsign'][0] !== $this->orig['takcallsign'][0])) {
+		elseif (empty($this->orig['takcallsign'][0]) || ($this->attributes['takcallsign'][0] !== $this->orig['takcallsign'][0])) {
 			$suffix = $this->getAccountContainer()->get_type()->getSuffix();
 			$search = searchLDAP($suffix, 'takcallsign=' . $_POST['takcallsign'], ['dn']);
-			if (sizeof($search) > 0) {
+			if (!empty($search)) {
 				$return[] = $this->messages['takcallsign'][1];
 			}
 		}
@@ -195,12 +195,11 @@ class takUser extends baseModule {
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = [];
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
 			if (!in_array('takUser', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'takUser';
 			}
-            // takcallsign
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takcallsign', 'takcallsign', 'username', $this->messages['takcallsign'][3], $errors);
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takrole', 'takrole', null, null, $errors);
 			if (!in_array($partialAccounts[$i]['takrole'][0], self::ROLE_TYPES)) {

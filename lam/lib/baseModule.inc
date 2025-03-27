@@ -1822,13 +1822,11 @@ abstract class baseModule {
 					$container['add'][$ldapAttrName] = [$_POST[$fieldName]];
 				}
 			}
-			else {
-				if ($requiredMessage !== null) {
-					$container['messages'][] = $requiredMessage;
-				}
-				elseif (isset($attributes[$ldapAttrName])) {
-					$container['del'][$ldapAttrName] = $attributes[$ldapAttrName];
-				}
+			elseif ($requiredMessage !== null) {
+				$container['messages'][] = $requiredMessage;
+			}
+			elseif (isset($attributes[$ldapAttrName])) {
+				$container['del'][$ldapAttrName] = $attributes[$ldapAttrName];
 			}
 		}
 	}
