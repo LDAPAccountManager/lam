@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2024  Roland Gruber
+  Copyright (C) 2009 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -157,32 +157,6 @@ class nisnetgroup extends baseModule {
 		$this->messages['user'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['host'][0] = ['ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['domain'][0] = ['ERROR', _('Domain name'), _('Domain name is invalid!')];
-	}
-
-	/**
-	 * Returns a list of modifications which have to be made to the LDAP account.
-	 *
-	 * @return array list of modifications
-	 * <br>This function returns an array with 3 entries:
-	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	 * <br>"add" are attributes which have to be added to LDAP entry
-	 * <br>"remove" are attributes which have to be removed from LDAP entry
-	 * <br>"modify" are attributes which have to been modified in LDAP entry
-	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	 */
-	function save_attributes() {
-		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		// nisNetgroupTriple needs special changing
-		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['nisNetgroupTriple'])) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
-			unset($return[$this->getAccountContainer()->dn_orig]['remove']['nisNetgroupTriple']);
-		}
-		if (isset($return[$this->getAccountContainer()->dn_orig]['add']['nisNetgroupTriple'])) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['nisNetgroupTriple'] = $this->attributes['nisNetgroupTriple'];
-			unset($return[$this->getAccountContainer()->dn_orig]['add']['nisNetgroupTriple']);
-		}
-		return $return;
 	}
 
 	/**

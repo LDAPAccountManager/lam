@@ -13,7 +13,7 @@ use LamTemporaryFilesManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2024  Roland Gruber
+  Copyright (C) 2004 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$checkcolumns = [];
 	$columns = [];
 	foreach ($uploadColumns as $uploadColumn) {
-		$columns = array_merge($columns, $uploadColumns);
+		$columns = array_merge($columns, $uploadColumn);
 	}
 	foreach ($columns as $column) {
 		if (isset($column['required']) && ($column['required'] === true)) {

@@ -17,6 +17,8 @@ time.
 * lib/modules/automount.inc
 * lib/modules/bindDLZ.inc
 * lib/modules/bindDLZXfr.inc
+* lib/modules/bindDyndbRecord.inc
+* lib/modules/bindDyndbZone.inc
 * lib/modules/customBaseType.inc
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
@@ -56,6 +58,7 @@ time.
 * lib/modules/rfc2307bisAutomount.inc
 * lib/modules/rfc2307bisPosixGroup.inc
 * lib/modules/selfRegistration.inc
+* lib/modules/simpleSecurityObject.inc
 * lib/modules/sudoRole.inc
 * lib/modules/uidObject.inc
 * lib/modules/webauthn.inc
@@ -64,6 +67,7 @@ time.
 * lib/types/alias.inc
 * lib/types/automountType.inc
 * lib/types/bind.inc
+* lib/types/bindDyndbType.inc
 * lib/types/customType.inc
 * lib/types/gon.inc
 * lib/types/kopanoAddressListType.inc
@@ -433,7 +437,7 @@ E:
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-F:  
+F:
   3-Clause BSD License
 
   Redistribution and use in source and binary forms, with or without

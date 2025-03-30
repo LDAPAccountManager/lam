@@ -2510,6 +2510,56 @@ AuthorizedKeysCommandUser root</literallayout>
         <graphic fileref="images/mod_lastBind3.png"/>
       </screenshot>
     </section>
+
+    <section>
+      <title>TAK</title>
+
+      <para>The <ulink url="https://www.civtak.org/">TAK</ulink> module
+      supports the Team Awareness Kit or Tactical Assault Kit (TAK) with the
+      Android Team Awareness Kit (ATAK).</para>
+
+      <para>You can define callsigns, team roles and colors for users.</para>
+
+      <para><emphasis role="bold">LDAP schema</emphasis></para>
+
+      <para>The module expects that TAK users use the object class "takUser"
+      and the attributes "takCallsign", "takRole" and "takColor". You can find
+      matching schema files in /usr/share/ldap-account-manager/docs/schema
+      (DEB/RPM) or docs/schema (tar.bz2). Please see the beginning of the
+      files for installation instructions.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>OpenLDAP: tak-OpenLDAP.ldif</para>
+        </listitem>
+
+        <listitem>
+          <para>Samba 4: tak-Samba4-attributes.ldif and
+          tak-Samba4-objectClass.ldif</para>
+        </listitem>
+
+        <listitem>
+          <para>Windows (AD): tak-Windows.ldif</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>Add the TAK module for users in your server profile:</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_tak1.png"/>
+      </screenshot>
+
+      <para>Now you can manage the TAK attributes for users.</para>
+
+      <para>LAM Pro users can add these attributes to the self-service profile
+      if needed.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_tak2.png"/>
+      </screenshot>
+    </section>
   </section>
 
   <section>

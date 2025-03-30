@@ -1,0 +1,33 @@
+#
+#  LDAP schema for LAM TAK functionality
+#
+#  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+#  Copyright (C) 2025  Roland Gruber
+#
+#
+#  OID bases:
+#   1.3.6.1.4.1.34955   Roland Gruber Softwareentwicklung
+#   1.3.6.1.4.1.34955.1 attributes
+#   1.3.6.1.4.1.34955.2 object classes
+#
+#  Installation:
+#  ldapadd -x -W -H ldap://localhost -D "cn=admin,dc=company,dc=com" -f tak-OpenLDAP.ldif
+#
+#  Please replace "localhost" with your LDAP server and "cn=admin,dc=company,dc=com" with your LDAP admin user (usually starts with cn=admin or cn=manager).
+#
+#  In some cases you might need to import directly on the OpenLDAP server as root:
+#  ldapadd -Y EXTERNAL -H ldapi:/// -f tak-OpenLDAP.ldif
+#
+#  Version: 1
+#
+#  Changelog:
+#   1: initial release (LAM 9.2)
+#
+
+dn: cn=tak,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: tak
+olcAttributeTypes: ( 1.3.6.1.4.1.34955.1.100 NAME 'takCallsign' DESC 'TAK callsign' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.34955.1.101 NAME 'takRole' DESC 'TAK team role' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.34955.1.102 NAME 'takColor' DESC 'TAK team color' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE )
+olcObjectClasses: ( 1.3.6.1.4.1.34955.2.10 NAME 'takUser' DESC 'TAK user' SUP top AUXILIARY MAY ( takCallsign $ takRole $ takColor ) MUST ( cn ) )

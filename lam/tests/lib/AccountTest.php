@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2024  Roland Gruber
+ Copyright (C) 2018 - 2025  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -323,6 +323,15 @@ class AccountTest extends TestCase {
 		$this->assertFalse(get_preg('abc', 'hostAndPort'));
 		$this->assertFalse(get_preg('abc:abc', 'hostAndPort'));
 		$this->assertFalse(get_preg('ab?c:80', 'hostAndPort'));
+	}
+
+	function testAreArrayContentsEqual() {
+		$this->assertTrue(areArrayContentsEqual([], []));
+		$this->assertFalse(areArrayContentsEqual(['1'], []));
+		$this->assertFalse(areArrayContentsEqual([], ['1']));
+		$this->assertTrue(areArrayContentsEqual(['a', 'b', 'c'], ['c', 'b', 'a']));
+		$this->assertFalse(areArrayContentsEqual(['a', 'b', 'c'], ['a', 'c', 'd']));
+		$this->assertFalse(areArrayContentsEqual(['a', 'b', 'c'], ['a', 'c']));
 	}
 
 }

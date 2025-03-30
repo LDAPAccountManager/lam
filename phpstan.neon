@@ -27,7 +27,6 @@ parameters:
 		- '#Call to an undefined method object::.*#'
 		- '#Parameter \#2 \$string of function explode expects string, .* given.#'
 		- '#Parameter \#2 \$result of function ldap_.* expects LDAP\\Result, array\|LDAP\\Result given.#'
-		- '#Cannot access an offset on mixed.#'
 		- '#Cannot access offset .* on mixed.#'
 		- '#Cannot access offset .* on array\|int.#'
 		- '#Cannot access an offset on array\|Countable.#'
@@ -47,4 +46,3 @@ parameters:
 		- '#Binary operation .* between .* and .* results in an error.#'
 		- '#Parameter \#. .* of (function|method) .* expects .*, mixed given.#'
 		- '#Cannot access property .* on mixed#'
-		- '#Cannot use \+\+ on mixed.#'

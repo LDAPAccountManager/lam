@@ -1382,10 +1382,13 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Returns if groups with same name can be created.
 	 *
+	 * @param ?string $typeId type ID
 	 * @return bool creation is possible
 	 */
-	private function allowsToCreateGroupWithSameName(): bool {
-		$typeId = $this->getAccountContainer()->get_type()->getId();
+	private function allowsToCreateGroupWithSameName(?string $typeId = null): bool {
+		if ($typeId === null) {
+			$typeId = $this->getAccountContainer()->get_type()->getId();
+		}
 		if (($this->get_scope() !== 'user')
 			|| $this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup')) {
 			return false;
@@ -2174,7 +2177,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if ($this->get_scope() == 'user') {
 			// primary Unix group
 			$primaryGroups = $groups;
-			$allowToCreateGroupWithUserName = $this->allowsToCreateGroupWithSameName();
+			$allowToCreateGroupWithUserName = $this->allowsToCreateGroupWithSameName($typeId);
 			if ($allowToCreateGroupWithUserName) {
 				$primaryGroups = [_('Create group with same name') => self::CREATE_GROUP_WITH_SAME_NAME] + $primaryGroups;
 			}

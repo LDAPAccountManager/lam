@@ -9,7 +9,7 @@ use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1034,7 +1034,7 @@ abstract class baseModule {
 				if (!empty($regex)) {
 					$this->checkUploadRegex($regexIDs, $rawAccounts[$position][$ids[$colName]], $message, $position, $errors);
 				}
-				$partialAccounts[$position][$attrName] = trim($rawAccounts[$position][$ids[$colName]]);
+				$partialAccounts[$position][$attrName] = [trim($rawAccounts[$position][$ids[$colName]])];
 			}
 			// multi-value
 			else {
@@ -1799,7 +1799,7 @@ abstract class baseModule {
 	 * @param array $container return value of checkSelfServiceOptions()
 	 * @param String $name attribute name
 	 * @param array $attributes LDAP attributes
-	 * @param string $fields input fields
+	 * @param array $fields input fields
 	 * @param array $readOnlyFields list of read-only fields
 	 * @param String $validationID validation ID for get_preg()
 	 * @param array $validationMessage validation message data (defaults to $this->messages[$name][0])
@@ -1822,13 +1822,11 @@ abstract class baseModule {
 					$container['add'][$ldapAttrName] = [$_POST[$fieldName]];
 				}
 			}
+			elseif ($requiredMessage !== null) {
+				$container['messages'][] = $requiredMessage;
+			}
 			elseif (isset($attributes[$ldapAttrName])) {
-				if ($requiredMessage !== null) {
-					$container['messages'][] = $requiredMessage;
-				}
-				else {
-					$container['del'][$ldapAttrName] = $attributes[$ldapAttrName];
-				}
+				$container['del'][$ldapAttrName] = $attributes[$ldapAttrName];
 			}
 		}
 	}
@@ -1954,8 +1952,7 @@ abstract class baseModule {
 				$container['messages'][] = $requiredMessage;
 			}
 			$valuesOld = $attributes[$ldapAttrName] ?? [];
-			$intersect = array_intersect($valuesOld, $valuesNew);
-			if ((count($valuesOld) !== count($valuesNew)) || (count($intersect) !== count($valuesOld))) {
+			if (!areArrayContentsEqual($valuesOld, $valuesNew)) {
 				$container['mod'][$ldapAttrName] = $valuesNew;
 			}
 		}

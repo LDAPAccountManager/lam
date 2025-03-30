@@ -467,7 +467,7 @@
 
           <entry>dhcp.schema</entry>
 
-          <entry>docs/schema/dhcp.schema</entry>
+          <entry>Part of LAM installation: docs/schema/dhcp.schema</entry>
 
           <entry>The LDAP suffix should be set to your dhcpServer
           entry.</entry>
@@ -486,7 +486,7 @@
 
           <entry>schema.ldif</entry>
 
-          <entry>part of bind-dyndb-ldap</entry>
+          <entry>Part of bind-dyndb-ldap</entry>
 
           <entry>LAM Pro only</entry>
         </row>
@@ -505,7 +505,7 @@
 
           <entry>dlz.schema</entry>
 
-          <entry>part of <ulink url="http://bind-dlz.sourceforge.net/">Bind
+          <entry>Part of <ulink url="http://bind-dlz.sourceforge.net/">Bind
           DLZ patch</ulink></entry>
 
           <entry>LAM Pro only</entry>
@@ -820,6 +820,24 @@
 
           <entry>LAM Pro only, requires DDS extension on LDAP server
           side</entry>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="images/schema_tak.png" width="16px"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>TAK</entry>
+
+          <entry>takUser</entry>
+
+          <entry>tak-*.ldif</entry>
+
+          <entry>Part of LAM installation: docs/schema/tak-*.ldif</entry>
+
+          <entry/>
         </row>
       </tbody>
     </tgroup>
