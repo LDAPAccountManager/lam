@@ -1602,13 +1602,13 @@ class accountContainer {
 			}
 			$values = array_values($values);
 			// remove empty list of values
-			if (sizeof($values) === 0) {
+			if (count($values) === 0) {
 				unset($attributes[$name]);
 			}
 		}
 		// find deleted attributes (in $orig but no longer in $attributes)
 		foreach ($orig as $name => $value) {
-			if (!isset($attributes[$name]) || (sizeof($attributes[$name]) === 0)) {
+			if (!isset($attributes[$name]) || (count($attributes[$name]) === 0)) {
 				$toModify[$name] = [];
 			}
 		}
