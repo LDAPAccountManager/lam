@@ -894,28 +894,6 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			return [];
 		}
 		$return = parent::save_attributes();
-		// postalAddress, registeredAddress, facsimileTelephoneNumber and jpegPhoto need special removing
-		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['postalAddress'])) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['postalAddress'] = $this->attributes['postalAddress'];
-			unset($return[$this->getAccountContainer()->dn_orig]['remove']['postalAddress']);
-		}
-		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['registeredAddress'])) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['registeredAddress'] = $this->attributes['registeredAddress'];
-			unset($return[$this->getAccountContainer()->dn_orig]['remove']['registeredAddress']);
-		}
-		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['facsimileTelephoneNumber'])) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
-			unset($return[$this->getAccountContainer()->dn_orig]['remove']['facsimileTelephoneNumber']);
-		}
-		if (isset($return[$this->getAccountContainer()->dn_orig]['add']['facsimileTelephoneNumber'])
-			&& isset($this->orig['facsimileTelephoneNumber']) && (count($this->orig['facsimileTelephoneNumber']) > 0)) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['facsimileTelephoneNumber'] = $this->attributes['facsimileTelephoneNumber'];
-			unset($return[$this->getAccountContainer()->dn_orig]['add']['facsimileTelephoneNumber']);
-		}
-		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto'])) {
-			$return[$this->getAccountContainer()->dn_orig]['modify']['jpegPhoto'] = [];
-			unset($return[$this->getAccountContainer()->dn_orig]['remove']['jpegPhoto']);
-		}
 		// add information about clear text password
 		if ($this->clearTextPassword != null) {
 			$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;

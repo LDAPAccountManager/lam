@@ -1589,87 +1589,49 @@ class accountContainer {
 	 */
 	function save_module_attributes($attributes, $orig) {
 		$return = [];
-		$toadd = [];
-		$tomodify = [];
-		$torem = [];
-		$notchanged = [];
-		// get list of all attributes
-		$attr_names = array_keys($attributes);
-		$orig_names = array_keys($orig);
+		$toModify = [];
+		$notChanged = [];
+		// cleanup
+		foreach ($attributes as $name => &$values) {
+			// remove empty values
+			$values = array_values($values);
+			for ($i = 0; $i < count($values); $i++) {
+				if ($values[$i] === '') {
+					unset($values[$i]);
+				}
+			}
+			$values = array_values($values);
+			// remove empty list of values
+			if (sizeof($values) === 0) {
+				unset($attributes[$name]);
+			}
+		}
 		// find deleted attributes (in $orig but no longer in $attributes)
-		foreach ($orig_names as $value) {
-			if (!isset($attributes[$value])) {
-				$torem[$value] = $orig[$value];
+		foreach ($orig as $name => $value) {
+			if (!isset($attributes[$name]) || (sizeof($attributes[$name]) === 0)) {
+				$toModify[$name] = [];
 			}
 		}
 		// find changed attributes
-		foreach ($attr_names as $name) {
-			// find deleted attributes
-			if (isset($orig[$name]) && is_array($orig[$name])) {
-				foreach ($orig[$name] as $value) {
-					if (is_array($attributes[$name])) {
-						if (!in_array($value, $attributes[$name], true)
-							&& ($value !== null)
-							&& ($value !== '')) {
-							$torem[$name][] = $value;
-						}
-					}
-					elseif (($value !== null) && ($value !== '')) {
-						$torem[$name][] = $value;
-					}
-				}
+		foreach ($attributes as $name => $value) {
+			// new attributes
+			if (!isset($orig[$name])) {
+				$toModify[$name] = $value;
 			}
-			// find new attributes
-			if (isset($attributes[$name]) && is_array($attributes[$name])) {
-				foreach ($attributes[$name] as $value) {
-					if (isset($orig[$name]) && is_array($orig[$name])) {
-						if (!in_array($value, $orig[$name], true)
-							&& ($value !== null)
-							&& ($value !== '')) {
-							$toadd[$name][] = $value;
-						}
-					}
-					elseif (($value !== null) && ($value !== '')) {
-						$toadd[$name][] = $value;
-					}
-				}
+			// changed attributes
+			elseif (!areArrayContentsEqual($value, $orig[$name])) {
+				$toModify[$name] = $value;
 			}
-			// find unchanged attributes
-			if (isset($orig[$name]) && is_array($orig[$name]) && is_array($attributes[$name])) {
-				foreach ($attributes[$name] as $value) {
-					if (($value !== null) && ($value !== '') && in_array($value, $orig[$name], true)) {
-						$notchanged[$name][] = $value;
-					}
-				}
+			// unchanged attributes
+			else {
+				$notChanged[$name] = $value;
 			}
 		}
-		// create modify with add and remove
-		$attributes2 = array_keys($toadd);
-		for ($i = 0; $i < count($attributes2); $i++) {
-			if (isset($torem[$attributes2[$i]]) && ($toadd[$attributes2[$i]] !== []) && (count($torem[$attributes2[$i]]) > 0)) {
-				// found attribute which should be modified
-				$tomodify[$attributes2[$i]] = $toadd[$attributes2[$i]];
-				// merge unchanged values
-				if (isset($notchanged[$attributes2[$i]])) {
-					$tomodify[$attributes2[$i]] = array_merge($tomodify[$attributes2[$i]], $notchanged[$attributes2[$i]]);
-					unset($notchanged[$attributes2[$i]]);
-				}
-				// remove old add and remove commands
-				unset($toadd[$attributes2[$i]]);
-				unset($torem[$attributes2[$i]]);
-			}
+		if ($toModify !== []) {
+			$return[$this->dn_orig]['modify'] = $toModify;
 		}
-		if ($toadd !== []) {
-			$return[$this->dn_orig]['add'] = $toadd;
-		}
-		if ($torem !== []) {
-			$return[$this->dn_orig]['remove'] = $torem;
-		}
-		if ($tomodify !== []) {
-			$return[$this->dn_orig]['modify'] = $tomodify;
-		}
-		if ($notchanged !== []) {
-			$return[$this->dn_orig]['notchanged'] = $notchanged;
+		if ($notChanged !== []) {
+			$return[$this->dn_orig]['notchanged'] = $notChanged;
 		}
 		return $return;
 	}
