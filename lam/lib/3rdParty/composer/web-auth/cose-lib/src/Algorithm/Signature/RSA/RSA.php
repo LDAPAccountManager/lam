@@ -8,10 +8,13 @@ use Cose\Algorithm\Signature\Signature;
 use Cose\Key\Key;
 use Cose\Key\RsaKey;
 use InvalidArgumentException;
+use Throwable;
 use function openssl_sign;
 use function openssl_verify;
-use Throwable;
 
+/**
+ * @see \Cose\Tests\Algorithm\Signature\RSA\RSATest
+ */
 abstract class RSA implements Signature
 {
     public function sign(string $data, Key $key): string
@@ -34,7 +37,7 @@ abstract class RSA implements Signature
     {
         $key = $this->handleKey($key);
 
-        return openssl_verify($data, $signature, $key->asPem(), $this->getHashAlgorithm()) === 1;
+        return openssl_verify($data, $signature, $key->toPublic()->asPem(), $this->getHashAlgorithm()) === 1;
     }
 
     abstract protected function getHashAlgorithm(): int;

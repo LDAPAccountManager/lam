@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Cose;
 
-use function array_key_exists;
 use InvalidArgumentException;
+use function array_key_exists;
 use const OPENSSL_ALGO_SHA1;
 use const OPENSSL_ALGO_SHA256;
 use const OPENSSL_ALGO_SHA384;

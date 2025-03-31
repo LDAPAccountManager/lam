@@ -4,19 +4,30 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
+use Webauthn\Exception\InvalidDataException;
 use function array_key_exists;
-use Assert\Assertion;
+use function sprintf;
 
 class AttestationStatementSupportManager
 {
     /**
-     * @var AttestationStatementSupport[]
+     * @param AttestationStatementSupport[] $attestationStatementSupports
      */
-    private array $attestationStatementSupports = [];
+    public function __construct(
+        private array $attestationStatementSupports = []
+    ) {
+        $this->add(new NoneAttestationStatementSupport());
+        foreach ($attestationStatementSupports as $attestationStatementSupport) {
+            $this->add($attestationStatementSupport);
+        }
+    }
 
-    public static function create(): self
+    /**
+     * @param AttestationStatementSupport[] $attestationStatementSupports
+     */
+    public static function create(array $attestationStatementSupports = []): self
     {
-        return new self();
+        return new self($attestationStatementSupports);
     }
 
     public function add(AttestationStatementSupport $attestationStatementSupport): void
@@ -31,7 +42,10 @@ class AttestationStatementSupportManager
 
     public function get(string $name): AttestationStatementSupport
     {
-        Assertion::true($this->has($name), sprintf('The attestation statement format "%s" is not supported.', $name));
+        $this->has($name) || throw InvalidDataException::create($name, sprintf(
+            'The attestation statement format "%s" is not supported.',
+            $name
+        ));
 
         return $this->attestationStatementSupports[$name];
     }

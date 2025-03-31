@@ -1,0 +1,721 @@
+Escaped mutants:
+================
+
+1) /home/florent/PhpstormProjects/aes-key-wrap/src/A128KW.php:11    [M] ProtectedVisibility
+
+--- Original
++++ New
+@@ @@
+ final class A128KW implements Wrapper
+ {
+     use AESKW;
+-    protected static function getMethod() : string
++    private static function getMethod() : string
+     {
+         return 'aes-128-ecb';
+     }
+ }
+
+
+2) /home/florent/PhpstormProjects/aes-key-wrap/src/A192KW.php:11    [M] ProtectedVisibility
+
+--- Original
++++ New
+@@ @@
+ final class A192KW implements Wrapper
+ {
+     use AESKW;
+-    protected static function getMethod() : string
++    private static function getMethod() : string
+     {
+         return 'aes-192-ecb';
+     }
+ }
+
+
+3) /home/florent/PhpstormProjects/aes-key-wrap/src/A256KW.php:11    [M] ProtectedVisibility
+
+--- Original
++++ New
+@@ @@
+ final class A256KW implements Wrapper
+ {
+     use AESKW;
+-    protected static function getMethod() : string
++    private static function getMethod() : string
+     {
+         return 'aes-256-ecb';
+     }
+ }
+
+
+4) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:31    [M] MBString
+
+--- Original
++++ New
+@@ @@
+     {
+         $A = self::getInitialValue($key, $padding_enabled);
+         self::checkKeySize($key, $padding_enabled);
+-        $P = mb_str_split($key, 8, '8bit');
++        $P = str_split($key, 8);
+         $N = count($P);
+         $C = [];
+         if ($N === 1) {
+
+
+5) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:38    [M] IncrementInteger
+
+--- Original
++++ New
+@@ @@
+         if ($N === 1) {
+             $B = self::encrypt($kek, $A . $P[0]);
+             $C[0] = self::getMSB($B);
+-            $C[1] = self::getLSB($B);
++            $C[2] = self::getLSB($B);
+         } elseif ($N > 1) {
+             $R = $P;
+             for ($j = 0; $j <= 5; ++$j) {
+
+
+6) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:39    [M] GreaterThan
+
+--- Original
++++ New
+@@ @@
+             $B = self::encrypt($kek, $A . $P[0]);
+             $C[0] = self::getMSB($B);
+             $C[1] = self::getLSB($B);
+-        } elseif ($N > 1) {
++        } elseif ($N >= 1) {
+             $R = $P;
+             for ($j = 0; $j <= 5; ++$j) {
+                 for ($i = 1; $i <= $N; ++$i) {
+
+
+7) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:62    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+      *
+      * @return string The key unwrapped
+      */
+-    public static function unwrap(string $kek, string $key, bool $padding_enabled = false) : string
++    public static function unwrap(string $kek, string $key, bool $padding_enabled = true) : string
+     {
+         $P = mb_str_split($key, 8, '8bit');
+         $A = $P[0];
+
+
+8) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:64    [M] MBString
+
+--- Original
++++ New
+@@ @@
+      */
+     public static function unwrap(string $kek, string $key, bool $padding_enabled = false) : string
+     {
+-        $P = mb_str_split($key, 8, '8bit');
++        $P = str_split($key, 8);
+         $A = $P[0];
+         $N = count($P);
+         if ($N < 2) {
+
+
+9) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:110    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+     {
+         if ($padding_enabled === false) {
+             $bin = hex2bin('A6A6A6A6A6A6A6A6');
+-            if ($bin === false) {
++            if ($bin === true) {
+                 throw new InvalidArgumentException('Unable to convert the data');
+             }
+             return $bin;
+
+
+10) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:117    [M] MBString
+
+--- Original
++++ New
+@@ @@
+             }
+             return $bin;
+         }
+-        $MLI = mb_strlen($key, '8bit');
++        $MLI = strlen($key);
+         $iv = hex2bin('A65959A6') . self::toXBits(32, $MLI);
+         $n = (int) ceil($MLI / 8);
+         $key = str_pad($key, 8 * $n, "\x00", STR_PAD_RIGHT);
+
+
+11) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:120    [M] DecrementInteger
+
+--- Original
++++ New
+@@ @@
+         }
+         $MLI = mb_strlen($key, '8bit');
+         $iv = hex2bin('A65959A6') . self::toXBits(32, $MLI);
+-        $n = (int) ceil($MLI / 8);
++        $n = (int) ceil($MLI / 7);
+         $key = str_pad($key, 8 * $n, "\x00", STR_PAD_RIGHT);
+         return $iv;
+     }
+
+
+12) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:120    [M] IncrementInteger
+
+--- Original
++++ New
+@@ @@
+         }
+         $MLI = mb_strlen($key, '8bit');
+         $iv = hex2bin('A65959A6') . self::toXBits(32, $MLI);
+-        $n = (int) ceil($MLI / 8);
++        $n = (int) ceil($MLI / 9);
+         $key = str_pad($key, 8 * $n, "\x00", STR_PAD_RIGHT);
+         return $iv;
+     }
+
+
+13) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:120    [M] RoundingFamily
+
+--- Original
++++ New
+@@ @@
+         }
+         $MLI = mb_strlen($key, '8bit');
+         $iv = hex2bin('A65959A6') . self::toXBits(32, $MLI);
+-        $n = (int) ceil($MLI / 8);
++        $n = (int) round($MLI / 8);
+         $key = str_pad($key, 8 * $n, "\x00", STR_PAD_RIGHT);
+         return $iv;
+     }
+
+
+14) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:143    [M] MBString
+
+--- Original
++++ New
+@@ @@
+         if (hex2bin('A65959A6') !== self::getMSB($iv)) {
+             return false;
+         }
+-        $n = mb_strlen($key, '8bit') / 8;
++        $n = strlen($key) / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+
+
+15) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:143    [M] IncrementInteger
+
+--- Original
++++ New
+@@ @@
+         if (hex2bin('A65959A6') !== self::getMSB($iv)) {
+             return false;
+         }
+-        $n = mb_strlen($key, '8bit') / 8;
++        $n = mb_strlen($key, '8bit') / 9;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+
+
+16) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:144    [M] UnwrapLtrim
+
+--- Original
++++ New
+@@ @@
+             return false;
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+-        $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
++        $MLI = (int) hexdec(bin2hex(self::getLSB($iv)));
+         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+
+
+17) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:144    [M] CastInt
+
+--- Original
++++ New
+@@ @@
+             return false;
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+-        $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
++        $MLI = hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+
+
+18) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] DecrementInteger
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(7 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+19) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] IncrementInteger
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(9 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+20) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] IncrementInteger
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(8 * ($n - 2) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+21) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] LessThan
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(8 * ($n - 1) <= $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+22) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] DecrementInteger
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(8 * ($n - 1) < $MLI && $MLI <= 7 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+23) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] IncrementInteger
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(8 * ($n - 1) < $MLI && $MLI <= 9 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+24) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] LessThanOrEqualTo
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(8 * ($n - 1) < $MLI && $MLI < 8 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+25) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:146    [M] LogicalAnd
+
+--- Original
++++ New
+@@ @@
+         }
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
++        if (!(8 * ($n - 1) < $MLI || $MLI <= 8 * $n)) {
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+
+
+26) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:150    [M] DecrementInteger
+
+--- Original
++++ New
+@@ @@
+         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+-        $b = 8 * $n - $MLI;
++        $b = 7 * $n - $MLI;
+         for ($i = 0; $i < $b; ++$i) {
+             if (mb_substr($key, $MLI + $i, 1, '8bit') !== "\x00") {
+                 return false;
+
+
+27) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:150    [M] Multiplication
+
+--- Original
++++ New
+@@ @@
+         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+             return false;
+         }
+-        $b = 8 * $n - $MLI;
++        $b = 8 / $n - $MLI;
+         for ($i = 0; $i < $b; ++$i) {
+             if (mb_substr($key, $MLI + $i, 1, '8bit') !== "\x00") {
+                 return false;
+
+
+28) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:151    [M] LessThanNegotiation
+
+--- Original
++++ New
+@@ @@
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+-        for ($i = 0; $i < $b; ++$i) {
++        for ($i = 0; $i >= $b; ++$i) {
+             if (mb_substr($key, $MLI + $i, 1, '8bit') !== "\x00") {
+                 return false;
+             }
+
+
+29) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:151    [M] For_
+
+--- Original
++++ New
+@@ @@
+             return false;
+         }
+         $b = 8 * $n - $MLI;
+-        for ($i = 0; $i < $b; ++$i) {
++        for ($i = 0; false; ++$i) {
+             if (mb_substr($key, $MLI + $i, 1, '8bit') !== "\x00") {
+                 return false;
+             }
+
+
+30) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:152    [M] MBString
+
+--- Original
++++ New
+@@ @@
+         }
+         $b = 8 * $n - $MLI;
+         for ($i = 0; $i < $b; ++$i) {
+-            if (mb_substr($key, $MLI + $i, 1, '8bit') !== "\x00") {
++            if (substr($key, $MLI + $i, 1) !== "\x00") {
+                 return false;
+             }
+         }
+
+
+31) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:156    [M] MBString
+
+--- Original
++++ New
+@@ @@
+                 return false;
+             }
+         }
+-        $key = mb_substr($key, 0, $MLI, '8bit');
++        $key = substr($key, 0, $MLI);
+         return true;
+     }
+     private static function checkKeySize(string $key, bool $padding_enabled) : void
+
+
+32) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:166    [M] MBString
+
+--- Original
++++ New
+@@ @@
+         if ($key === '') {
+             throw new InvalidArgumentException('Bad key size');
+         }
+-        if ($padding_enabled === false && mb_strlen($key, '8bit') % 8 !== 0) {
++        if ($padding_enabled === false && strlen($key) % 8 !== 0) {
+             throw new InvalidArgumentException('Bad key size');
+         }
+     }
+
+
+33) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:174    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+     private static function toXBits(int $bits, int $value) : string
+     {
+         $bin = hex2bin(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
+-        if ($bin === false) {
++        if ($bin === true) {
+             throw new InvalidArgumentException('Unable to convert the data');
+         }
+         return $bin;
+
+
+34) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:183    [M] MBString
+
+--- Original
++++ New
+@@ @@
+     }
+     private static function getMSB(string $value) : string
+     {
+-        return mb_substr($value, 0, mb_strlen($value, '8bit') / 2, '8bit');
++        return mb_substr($value, 0, strlen($value) / 2, '8bit');
+     }
+     private static function getLSB(string $value) : string
+     {
+
+
+35) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:183    [M] MBString
+
+--- Original
++++ New
+@@ @@
+     }
+     private static function getMSB(string $value) : string
+     {
+-        return mb_substr($value, 0, mb_strlen($value, '8bit') / 2, '8bit');
++        return substr($value, 0, mb_strlen($value, '8bit') / 2);
+     }
+     private static function getLSB(string $value) : string
+     {
+
+
+36) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:188    [M] MBString
+
+--- Original
++++ New
+@@ @@
+     }
+     private static function getLSB(string $value) : string
+     {
+-        return mb_substr($value, mb_strlen($value, '8bit') / 2, null, '8bit');
++        return mb_substr($value, strlen($value) / 2, null, '8bit');
+     }
+     private static function encrypt(string $kek, string $data) : string
+     {
+
+
+37) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:188    [M] MBString
+
+--- Original
++++ New
+@@ @@
+     }
+     private static function getLSB(string $value) : string
+     {
+-        return mb_substr($value, mb_strlen($value, '8bit') / 2, null, '8bit');
++        return substr($value, mb_strlen($value, '8bit') / 2, null);
+     }
+     private static function encrypt(string $kek, string $data) : string
+     {
+
+
+38) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:194    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+     private static function encrypt(string $kek, string $data) : string
+     {
+         $result = openssl_encrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+-        if ($result === false) {
++        if ($result === true) {
+             throw new InvalidArgumentException('Unable to encrypt the data');
+         }
+         return $result;
+
+
+39) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:204    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+     private static function decrypt(string $kek, string $data) : string
+     {
+         $result = openssl_decrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+-        if ($result === false) {
++        if ($result === true) {
+             throw new InvalidArgumentException('Unable to decrypt the data');
+         }
+         return $result;
+     }
+ }
+
+
+Timed Out mutants:
+==================
+
+1) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:41    [M] Increment
+
+--- Original
++++ New
+@@ @@
+             $C[1] = self::getLSB($B);
+         } elseif ($N > 1) {
+             $R = $P;
+-            for ($j = 0; $j <= 5; ++$j) {
++            for ($j = 0; $j <= 5; --$j) {
+                 for ($i = 1; $i <= $N; ++$i) {
+                     $B = self::encrypt($kek, $A . $R[$i - 1]);
+                     $t = $i + $j * $N;
+
+
+2) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:77    [M] Decrement
+
+--- Original
++++ New
+@@ @@
+             $A = self::getMSB($B);
+         } else {
+             $R = $P;
+-            for ($j = 5; $j >= 0; --$j) {
++            for ($j = 5; $j >= 0; ++$j) {
+                 for ($i = $N - 1; $i >= 1; --$i) {
+                     $t = $i + $j * ($N - 1);
+                     $B = self::decrypt($kek, (self::toXBits(64, $t) ^ $A) . $R[$i]);
+
+
+Skipped mutants:
+================
+
+Not Covered mutants:
+====================
+
+1) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:111    [M] Throw_
+
+--- Original
++++ New
+@@ @@
+         if ($padding_enabled === false) {
+             $bin = hex2bin('A6A6A6A6A6A6A6A6');
+             if ($bin === false) {
+-                throw new InvalidArgumentException('Unable to convert the data');
++                new InvalidArgumentException('Unable to convert the data');
+             }
+             return $bin;
+         }
+
+
+2) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:147    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+         $n = mb_strlen($key, '8bit') / 8;
+         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\x00")));
+         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+-            return false;
++            return true;
+         }
+         $b = 8 * $n - $MLI;
+         for ($i = 0; $i < $b; ++$i) {
+
+
+3) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:153    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+         $b = 8 * $n - $MLI;
+         for ($i = 0; $i < $b; ++$i) {
+             if (mb_substr($key, $MLI + $i, 1, '8bit') !== "\x00") {
+-                return false;
++                return true;
+             }
+         }
+         $key = mb_substr($key, 0, $MLI, '8bit');
+
+
+4) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:175    [M] Throw_
+
+--- Original
++++ New
+@@ @@
+     {
+         $bin = hex2bin(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
+         if ($bin === false) {
+-            throw new InvalidArgumentException('Unable to convert the data');
++            new InvalidArgumentException('Unable to convert the data');
+         }
+         return $bin;
+     }
+
+
+5) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:195    [M] Throw_
+
+--- Original
++++ New
+@@ @@
+     {
+         $result = openssl_encrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+         if ($result === false) {
+-            throw new InvalidArgumentException('Unable to encrypt the data');
++            new InvalidArgumentException('Unable to encrypt the data');
+         }
+         return $result;
+     }
+
+
+6) /home/florent/PhpstormProjects/aes-key-wrap/src/AESKW.php:205    [M] Throw_
+
+--- Original
++++ New
+@@ @@
+     {
+         $result = openssl_decrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+         if ($result === false) {
+-            throw new InvalidArgumentException('Unable to decrypt the data');
++            new InvalidArgumentException('Unable to decrypt the data');
+         }
+         return $result;
+     }
+ }

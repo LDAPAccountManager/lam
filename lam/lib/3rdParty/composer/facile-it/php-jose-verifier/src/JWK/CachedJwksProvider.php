@@ -35,9 +35,6 @@ class CachedJwksProvider implements JwksProviderInterface
         $this->ttl = $ttl;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getJwks(): array
     {
         /** @var null|string $cached */

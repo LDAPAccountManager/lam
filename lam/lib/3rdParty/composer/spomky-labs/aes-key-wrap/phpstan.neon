@@ -1,0 +1,11 @@
+parameters:
+    level: max
+    paths:
+        - src
+    ignoreErrors:
+        -
+            message: '#Comparison operation .* between .* and 1 is always true\.#'
+            count: 3
+            path: src/AESKW.php
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon

@@ -45,8 +45,6 @@ class RemoteJwksProvider implements JwksProviderInterface
 
     /**
      * @param array<string, string|string[]> $headers
-     *
-     * @return RemoteJwksProvider
      */
     public function withHeaders(array $headers): self
     {
@@ -88,6 +86,7 @@ class RemoteJwksProvider implements JwksProviderInterface
 
     /**
      * @param mixed $data
+     *
      * @psalm-assert-if-true JWKSetObject $data
      */
     private function isJWKSet($data): bool

@@ -11,6 +11,7 @@ class MemoryJwksProvider implements JwksProviderInterface
 {
     /**
      * @var array
+     *
      * @psalm-var JWKSetObject
      */
     private $jwks;

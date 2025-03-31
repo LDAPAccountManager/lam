@@ -3,6 +3,16 @@ COSE Support for PHP
 
 **CBOR Object Signing and Encryption (COSE) Support for PHP** is a **PHP library** that will help you to perform cypher operations using Cose Keys.
 
+
+![Build Status](https://github.com/web-auth/cose-lib/workflows/Integrate/badge.svg)
+
+[![Latest Stable Version](https://poser.pugx.org/web-auth/cose-lib/v/stable.png)](https://packagist.org/packages/web-auth/cose-lib)
+[![Total Downloads](https://poser.pugx.org/web-auth/cose-lib/downloads.png)](https://packagist.org/packages/web-auth/cose-lib)
+[![Latest Unstable Version](https://poser.pugx.org/web-auth/cose-lib/v/unstable.png)](https://packagist.org/packages/web-auth/cose-lib)
+[![License](https://poser.pugx.org/web-auth/cose-lib/license.png)](https://packagist.org/packages/web-auth/cose-lib)
+
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/web-auth/cose-lib/badge)](https://api.securityscorecards.dev/projects/github.com/web-auth/cose-lib)
+
 # Installation
 
 Install the library with Composer: `composer require web-auth/cose-lib`.

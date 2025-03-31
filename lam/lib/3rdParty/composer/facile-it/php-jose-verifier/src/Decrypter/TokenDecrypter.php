@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Facile\JoseVerifier\Decrypter;
 
 use function class_exists;
+use Facile\JoseVerifier\Checker\ContentEncryptionAlgorithmChecker;
 use Facile\JoseVerifier\Exception\InvalidTokenException;
 use Facile\JoseVerifier\Exception\LogicException;
 use function Facile\JoseVerifier\jose_secret_key;
@@ -24,8 +25,6 @@ use Jose\Component\Encryption\JWELoader;
 use Jose\Component\Encryption\JWETokenSupport;
 use Jose\Component\Encryption\Serializer\CompactSerializer;
 use Jose\Component\Encryption\Serializer\JWESerializerManager;
-use Jose\Easy\AlgorithmProvider;
-use Jose\Easy\ContentEncryptionAlgorithmChecker;
 use function preg_match;
 use Throwable;
 
@@ -44,7 +43,7 @@ class TokenDecrypter implements TokenDecrypterInterface
     private $clientSecret;
 
     /** @var Algorithm[] */
-    private $algorithms;
+    private $algorithms = [];
 
     public function withExpectedAlg(?string $expectedAlg): self
     {
@@ -81,9 +80,15 @@ class TokenDecrypter implements TokenDecrypterInterface
     public function __construct()
     {
         $this->jwksProvider = new MemoryJwksProvider();
-        $this->algorithms = (new AlgorithmProvider($this->getAlgorithmMap()))
-            ->getAvailableAlgorithms()
-        ;
+        foreach ($this->getAlgorithmMap() as $algorithmClass) {
+            if (class_exists($algorithmClass)) {
+                try {
+                    $this->algorithms[] = new $algorithmClass();
+                } catch (Throwable $throwable) {
+                    //does nothing
+                }
+            }
+        }
     }
 
     private function buildJwks(string $jwt): JWKSet
@@ -145,6 +150,7 @@ class TokenDecrypter implements TokenDecrypterInterface
 
     /**
      * @return string[]
+     *
      * @psalm-return list<class-string<Algorithm>>
      */
     protected function getAlgorithmMap(): array

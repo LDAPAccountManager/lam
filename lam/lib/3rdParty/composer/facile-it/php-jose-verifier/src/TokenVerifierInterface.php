@@ -27,6 +27,7 @@ interface TokenVerifierInterface
      * @throws InvalidTokenException
      *
      * @return array The JWT Payload
+     *
      * @psalm-return JWTPayloadObject
      */
     public function verify(string $jwt): array;

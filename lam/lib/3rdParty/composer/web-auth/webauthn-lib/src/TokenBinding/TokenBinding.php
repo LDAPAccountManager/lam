@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Webauthn\TokenBinding;
 
+use ParagonIE\ConstantTime\Base64UrlSafe;
+use Webauthn\Exception\InvalidDataException;
 use function array_key_exists;
-use Assert\Assertion;
-use Webauthn\Util\Base64;
+use function in_array;
+use function sprintf;
 
+/**
+ * @deprecated Since 4.3.0 and will be removed in 5.0.0
+ * @infection-ignore-all
+ */
 class TokenBinding
 {
     final public const TOKEN_BINDING_STATUS_PRESENT = 'present';
@@ -22,8 +28,8 @@ class TokenBinding
 
     public function __construct(string $status, ?string $id)
     {
-        Assertion::false(
-            $status === self::TOKEN_BINDING_STATUS_PRESENT && $id === null,
+        $status === self::TOKEN_BINDING_STATUS_PRESENT && $id === null && throw InvalidDataException::create(
+            [$status, $id],
             'The member "id" is required when status is "present"'
         );
         $this->status = $status;
@@ -35,17 +41,16 @@ class TokenBinding
      */
     public static function createFormArray(array $json): self
     {
-        Assertion::keyExists($json, 'status', 'The member "status" is required');
-        $status = $json['status'];
-        Assertion::inArray(
-            $status,
-            self::getSupportedStatus(),
-            sprintf(
-                'The member "status" is invalid. Supported values are: %s',
-                implode(', ', self::getSupportedStatus())
-            )
+        array_key_exists('status', $json) || throw InvalidDataException::create(
+            $json,
+            'The member "status" is required'
         );
-        $id = array_key_exists('id', $json) ? Base64::decodeUrlSafe($json['id']) : null;
+        $status = $json['status'];
+        in_array($status, self::getSupportedStatus(), true) || throw InvalidDataException::create($json, sprintf(
+            'The member "status" is invalid. Supported values are: %s',
+            implode(', ', self::getSupportedStatus())
+        ));
+        $id = array_key_exists('id', $json) ? Base64UrlSafe::decodeNoPadding($json['id']) : null;
 
         return new self($status, $id);
     }

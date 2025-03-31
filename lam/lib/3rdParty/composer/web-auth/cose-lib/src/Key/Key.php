@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Cose\Key;
 
-use function array_key_exists;
 use InvalidArgumentException;
+use function array_key_exists;
 
 class Key
 {
@@ -18,6 +18,14 @@ class Key
     public const TYPE_RSA = 3;
 
     public const TYPE_OCT = 4;
+
+    public const TYPE_NAME_OKP = 'OKP';
+
+    public const TYPE_NAME_EC2 = 'EC';
+
+    public const TYPE_NAME_RSA = 'RSA';
+
+    public const TYPE_NAME_OCT = 'oct';
 
     public const KID = 2;
 

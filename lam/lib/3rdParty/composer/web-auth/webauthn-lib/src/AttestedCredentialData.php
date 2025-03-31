@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Webauthn;
 
-use Assert\Assertion;
 use JsonSerializable;
 use ParagonIE\ConstantTime\Base64;
-use Symfony\Component\Uid\AbstractUid;
 use Symfony\Component\Uid\Uuid;
+use Webauthn\Exception\InvalidDataException;
+use function array_key_exists;
+use function is_string;
 
 /**
  * @see https://www.w3.org/TR/webauthn/#sec-attested-credential-data
@@ -16,27 +17,48 @@ use Symfony\Component\Uid\Uuid;
 class AttestedCredentialData implements JsonSerializable
 {
     public function __construct(
-        private AbstractUid $aaguid,
-        private readonly string $credentialId,
-        private readonly ?string $credentialPublicKey
+        public Uuid $aaguid,
+        public readonly string $credentialId,
+        public readonly ?string $credentialPublicKey
     ) {
     }
 
-    public function getAaguid(): AbstractUid
+    public static function create(Uuid $aaguid, string $credentialId, ?string $credentialPublicKey = null): self
+    {
+        return new self($aaguid, $credentialId, $credentialPublicKey);
+    }
+
+    /**
+     * @deprecated since 4.7.0. Please use the property directly.
+     * @infection-ignore-all
+     */
+    public function getAaguid(): Uuid
     {
         return $this->aaguid;
     }
 
-    public function setAaguid(AbstractUid $aaguid): void
+    /**
+     * @deprecated since 4.7.0. Please use the property directly.
+     * @infection-ignore-all
+     */
+    public function setAaguid(Uuid $aaguid): void
     {
         $this->aaguid = $aaguid;
     }
 
+    /**
+     * @deprecated since 4.7.0. Please use the property directly.
+     * @infection-ignore-all
+     */
     public function getCredentialId(): string
     {
         return $this->credentialId;
     }
 
+    /**
+     * @deprecated since 4.7.0. Please use the property directly.
+     * @infection-ignore-all
+     */
     public function getCredentialPublicKey(): ?string
     {
         return $this->credentialPublicKey;
@@ -44,18 +66,34 @@ class AttestedCredentialData implements JsonSerializable
 
     /**
      * @param mixed[] $json
+     * @deprecated since 4.9.0 and will be removed in 5.0.0. Please use the serializer instead.
      */
     public static function createFromArray(array $json): self
     {
-        Assertion::keyExists($json, 'aaguid', 'Invalid input. "aaguid" is missing.');
+        array_key_exists('aaguid', $json) || throw InvalidDataException::create(
+            $json,
+            'Invalid input. "aaguid" is missing.'
+        );
         $aaguid = $json['aaguid'];
-        Assertion::string($aaguid, 'Invalid input. "aaguid" shall be a string of 36 characters');
-        Assertion::length($aaguid, 36, 'Invalid input. "aaguid" shall be a string of 36 characters');
-        $uuid = Uuid::fromString($json['aaguid']);
+        is_string($aaguid) || throw InvalidDataException::create(
+            $json,
+            'Invalid input. "aaguid" shall be a string of 36 characters'
+        );
+        mb_strlen($aaguid, '8bit') === 36 || throw InvalidDataException::create(
+            $json,
+            'Invalid input. "aaguid" shall be a string of 36 characters'
+        );
+        $uuid = Uuid::fromString($aaguid);
 
-        Assertion::keyExists($json, 'credentialId', 'Invalid input. "credentialId" is missing.');
+        array_key_exists('credentialId', $json) || throw InvalidDataException::create(
+            $json,
+            'Invalid input. "credentialId" is missing.'
+        );
         $credentialId = $json['credentialId'];
-        Assertion::string($credentialId, 'Invalid input. "credentialId" shall be a string');
+        is_string($credentialId) || throw InvalidDataException::create(
+            $json,
+            'Invalid input. "credentialId" shall be a string'
+        );
         $credentialId = Base64::decode($credentialId, true);
 
         $credentialPublicKey = null;
@@ -63,7 +101,7 @@ class AttestedCredentialData implements JsonSerializable
             $credentialPublicKey = Base64::decode($json['credentialPublicKey'], true);
         }
 
-        return new self($uuid, $credentialId, $credentialPublicKey);
+        return self::create($uuid, $credentialId, $credentialPublicKey);
     }
 
     /**
@@ -71,6 +109,12 @@ class AttestedCredentialData implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        trigger_deprecation(
+            'web-auth/webauthn-bundle',
+            '4.9.0',
+            'The "%s" method is deprecated and will be removed in 5.0. Please use the serializer instead.',
+            __METHOD__
+        );
         $result = [
             'aaguid' => $this->aaguid->__toString(),
             'credentialId' => base64_encode($this->credentialId),

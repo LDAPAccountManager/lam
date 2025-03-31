@@ -8,22 +8,22 @@ interface Translator
      * Get the translation for a given key.
      *
      * @param  string  $key
-     * @param  array  $replace
-     * @param  string|null  $locale
+     * @param  array   $replace
+     * @param  string  $locale
      * @return mixed
      */
-    public function get($key, array $replace = [], $locale = null);
+    public function trans($key, array $replace = [], $locale = null);
 
     /**
      * Get a translation according to an integer value.
      *
      * @param  string  $key
-     * @param  \Countable|int|float|array  $number
-     * @param  array  $replace
-     * @param  string|null  $locale
+     * @param  int|array|\Countable  $number
+     * @param  array   $replace
+     * @param  string  $locale
      * @return string
      */
-    public function choice($key, $number, array $replace = [], $locale = null);
+    public function transChoice($key, $number, array $replace = [], $locale = null);
 
     /**
      * Get the default locale being used.

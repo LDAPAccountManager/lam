@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace Cose\Key;
 
-use function array_key_exists;
 use Brick\Math\BigInteger;
-use FG\ASN1\Universal\BitString;
-use FG\ASN1\Universal\Integer;
-use FG\ASN1\Universal\NullObject;
-use FG\ASN1\Universal\ObjectIdentifier;
-use FG\ASN1\Universal\Sequence;
 use InvalidArgumentException;
-use LogicException;
-use function unpack;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RSA\RSAPrivateKey;
+use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RSA\RSAPublicKey;
+use function array_key_exists;
+use function in_array;
 
 /**
  * @final
+ * @see \Cose\Tests\Key\RsaKeyTest
  */
 class RsaKey extends Key
 {
@@ -49,8 +47,13 @@ class RsaKey extends Key
      */
     public function __construct(array $data)
     {
+        foreach ([self::TYPE] as $key) {
+            if (is_numeric($data[$key])) {
+                $data[$key] = (int) $data[$key];
+            }
+        }
         parent::__construct($data);
-        if (! isset($data[self::TYPE]) || (int) $data[self::TYPE] !== self::TYPE_RSA) {
+        if ($data[self::TYPE] !== self::TYPE_RSA && $data[self::TYPE] !== self::TYPE_NAME_RSA) {
             throw new InvalidArgumentException('Invalid RSA key. The key type does not correspond to a RSA key');
         }
         if (! isset($data[self::DATA_N], $data[self::DATA_E])) {
@@ -193,34 +196,53 @@ class RsaKey extends Key
     public function asPem(): string
     {
         if ($this->isPrivate()) {
-            throw new LogicException('Unsupported for private keys.');
+            $privateKey = RSAPrivateKey::create(
+                $this->binaryToBigInteger($this->n()),
+                $this->binaryToBigInteger($this->e()),
+                $this->binaryToBigInteger($this->d()),
+                $this->binaryToBigInteger($this->p()),
+                $this->binaryToBigInteger($this->q()),
+                $this->binaryToBigInteger($this->dP()),
+                $this->binaryToBigInteger($this->dQ()),
+                $this->binaryToBigInteger($this->QInv())
+            );
+
+            return $privateKey->toPEM()
+                ->string();
         }
-        $bitSring = new Sequence(
-            new Integer($this->fromBase64ToInteger($this->n())),
-            new Integer($this->fromBase64ToInteger($this->e()))
-        );
 
-        $der = new Sequence(
-            new Sequence(new ObjectIdentifier('1.2.840.113549.1.1.1'), new NullObject()),
-            new BitString(bin2hex($bitSring->getBinary()))
+        $publicKey = RSAPublicKey::create(
+            $this->binaryToBigInteger($this->n()),
+            $this->binaryToBigInteger($this->e())
         );
+        $rsaKey = PublicKeyInfo::fromPublicKey($publicKey);
 
-        return $this->pem('PUBLIC KEY', $der->getBinary());
+        return $rsaKey->toPEM()
+            ->string();
     }
 
-    private function fromBase64ToInteger(string $value): string
+    public function toPublic(): static
     {
-        $data = unpack('H*', $value);
-        $hex = current($data);
+        $toBeRemoved = [
+            self::DATA_D,
+            self::DATA_P,
+            self::DATA_Q,
+            self::DATA_DP,
+            self::DATA_DQ,
+            self::DATA_QI,
+            self::DATA_OTHER,
+            self::DATA_RI,
+            self::DATA_DI,
+            self::DATA_TI,
+        ];
+        $data = $this->getData();
+        foreach ($data as $k => $v) {
+            if (in_array($k, $toBeRemoved, true)) {
+                unset($data[$k]);
+            }
+        }
 
-        return BigInteger::fromBase($hex, 16)->toBase(10);
-    }
-
-    private function pem(string $type, string $der): string
-    {
-        return sprintf("-----BEGIN %s-----\n", mb_strtoupper($type)) .
-            chunk_split(base64_encode($der), 64, "\n") .
-            sprintf("-----END %s-----\n", mb_strtoupper($type));
+        return new static($data);
     }
 
     private function checkKeyIsPrivate(): void
@@ -228,5 +250,13 @@ class RsaKey extends Key
         if (! $this->isPrivate()) {
             throw new InvalidArgumentException('The key is not private.');
         }
+    }
+
+    private function binaryToBigInteger(string $data): string
+    {
+        $res = unpack('H*', $data);
+        $res = current($res);
+
+        return BigInteger::fromBase($res, 16)->toBase(10);
     }
 }

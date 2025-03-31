@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Facile\JoseVerifier;
 
-use Facile\JoseVerifier\ClaimChecker\AtHashChecker;
-use Facile\JoseVerifier\ClaimChecker\CHashChecker;
-use Facile\JoseVerifier\ClaimChecker\SHashChecker;
+use Facile\JoseVerifier\Checker\AtHashChecker;
+use Facile\JoseVerifier\Checker\CHashChecker;
+use Facile\JoseVerifier\Checker\SHashChecker;
 use Facile\JoseVerifier\Exception\InvalidTokenException;
 use InvalidArgumentException;
 use Jose\Component\Signature\Serializer\CompactSerializer;
-use Jose\Easy\Validate;
 use Throwable;
 
 /**
@@ -62,6 +61,7 @@ final class IdTokenVerifier extends AbstractTokenVerifier implements IdTokenVeri
 
     /**
      * @inheritDoc
+     *
      * @psalm-suppress MixedReturnTypeCoercion
      */
     public function verify(string $jwt): array
@@ -82,24 +82,21 @@ final class IdTokenVerifier extends AbstractTokenVerifier implements IdTokenVeri
         $alg = $header['alg'] ?? null;
 
         if (null !== $this->accessToken) {
-            $requiredClaims[] = 'at_hash';
-            $validator = $validator->claim('at_hash', new AtHashChecker($this->accessToken, $alg ?: ''));
+            $validator = $validator->claim(new AtHashChecker($this->accessToken, $alg ?: ''));
         }
 
         if (null !== $this->code) {
-            $requiredClaims[] = 'c_hash';
-            $validator = $validator->claim('c_hash', new CHashChecker($this->code, $alg ?: ''));
+            $validator = $validator->claim(new CHashChecker($this->code, $alg ?: ''));
         }
 
         if (null !== $this->state) {
-            $validator = $validator->claim('s_hash', new SHashChecker($this->state, $alg ?: ''));
+            $validator = $validator->claim(new SHashChecker($this->state, $alg ?: ''));
         }
 
-        /** @var Validate $validator */
         $validator = $validator->mandatory($requiredClaims);
 
         try {
-            return $validator->run()->claims->all();
+            return $validator->run();
         } catch (Throwable $e) {
             throw $this->processException($e);
         }

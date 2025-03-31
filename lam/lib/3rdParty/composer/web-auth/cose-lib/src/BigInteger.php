@@ -7,6 +7,7 @@ namespace Cose;
 use Brick\Math\BigInteger as BrickBigInteger;
 use function chr;
 use function hex2bin;
+use function strlen;
 use function unpack;
 
 /**
@@ -42,7 +43,7 @@ final class BigInteger
         }
 
         $temp = $this->value->toBase(16);
-        $temp = 0 !== (mb_strlen($temp, '8bit') & 1) ? '0' . $temp : $temp;
+        $temp = 0 !== (strlen($temp) & 1) ? '0' . $temp : $temp;
         $temp = hex2bin($temp);
 
         return ltrim($temp, chr(0));

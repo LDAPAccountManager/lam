@@ -4,13 +4,31 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
-use Assert\Assertion;
-use function count;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Webauthn\AuthenticatorData;
+use Webauthn\Event\AttestationStatementLoaded;
+use Webauthn\Event\CanDispatchEvents;
+use Webauthn\Event\NullEventDispatcher;
+use Webauthn\Exception\AttestationStatementLoadingException;
 use Webauthn\TrustPath\EmptyTrustPath;
+use function count;
+use function is_array;
+use function is_string;
 
-final class NoneAttestationStatementSupport implements AttestationStatementSupport
+final class NoneAttestationStatementSupport implements AttestationStatementSupport, CanDispatchEvents
 {
+    private EventDispatcherInterface $dispatcher;
+
+    public function __construct()
+    {
+        $this->dispatcher = new NullEventDispatcher();
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->dispatcher = $eventDispatcher;
+    }
+
     public static function create(): self
     {
         return new self();
@@ -26,9 +44,28 @@ final class NoneAttestationStatementSupport implements AttestationStatementSuppo
      */
     public function load(array $attestation): AttestationStatement
     {
-        Assertion::noContent($attestation['attStmt'], 'Invalid attestation object');
+        $format = $attestation['fmt'] ?? null;
+        $attestationStatement = $attestation['attStmt'] ?? [];
 
-        return AttestationStatement::createNone($attestation['fmt'], $attestation['attStmt'], new EmptyTrustPath());
+        (is_string($format) && $format !== '') || throw AttestationStatementLoadingException::create(
+            $attestation,
+            'Invalid attestation object'
+        );
+        (is_array(
+            $attestationStatement
+        ) && $attestationStatement === []) || throw AttestationStatementLoadingException::create(
+            $attestation,
+            'Invalid attestation object'
+        );
+
+        $attestationStatement = AttestationStatement::createNone(
+            $format,
+            $attestationStatement,
+            EmptyTrustPath::create()
+        );
+        $this->dispatcher->dispatch(AttestationStatementLoaded::create($attestationStatement));
+
+        return $attestationStatement;
     }
 
     public function isValid(
@@ -36,6 +73,6 @@ final class NoneAttestationStatementSupport implements AttestationStatementSuppo
         AttestationStatement $attestationStatement,
         AuthenticatorData $authenticatorData
     ): bool {
-        return count($attestationStatement->getAttStmt()) === 0;
+        return count($attestationStatement->attStmt) === 0;
     }
 }
