@@ -20,3 +20,10 @@ Lamdaemon:
 
 If you want to use the lamdaemon you need to install the
 package ldap-account-manager-lamdaemon on the target machine.
+
+
+Packaging:
+
+The Debian's orig.tar.bz2 file differs from the tar.bz2 files that are provided upstream.
+While the upstream files contain minified CSS and JS files, the Debian orig.tar.bz2 file
+contains the sources and minifies during Debian package build.
