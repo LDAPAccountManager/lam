@@ -9,7 +9,7 @@ use function LAM\TYPES\getScopeFromTypeId;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1608,18 +1608,14 @@ class accountContainer {
 		}
 		// find deleted attributes (in $orig but no longer in $attributes)
 		foreach ($orig as $name => $value) {
-			if (!isset($attributes[$name]) || (count($attributes[$name]) === 0)) {
+			if (!isset($attributes[$name])) {
 				$toModify[$name] = [];
 			}
 		}
 		// find changed attributes
 		foreach ($attributes as $name => $value) {
-			// new attributes
-			if (!isset($orig[$name])) {
-				$toModify[$name] = $value;
-			}
-			// changed attributes
-			elseif (!areArrayContentsEqual($value, $orig[$name])) {
+			// new/changed attributes
+			if (!isset($orig[$name]) || !areArrayContentsEqual($value, $orig[$name])) {
 				$toModify[$name] = $value;
 			}
 			// unchanged attributes
