@@ -98,7 +98,7 @@ All other files are licensed under the conditions below.
 
 
 The complete license can be found in the file COPYING or in
-/usr/share/common-licenses/GPL-3.
+/usr/share/common-licenses/GPL-3 (Debian/Ubuntu).
 
 
 Some parts of this package have other, compatible licences. These are:
@@ -412,33 +412,6 @@ D:
 
 
 E:
-  Duo
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-
-  1. Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer.
-  2. Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
-  3. The name of the author may not be used to endorse or promote products
-     derived from this software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-F:
   3-Clause BSD License
 
   Redistribution and use in source and binary forms, with or without
@@ -467,7 +440,7 @@ F:
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-G:
+F:
   2-Clause BSD License
 
   Redistribution and use in source and binary forms, with or without modification,
@@ -491,38 +464,8 @@ G:
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
 
-H:
-  3-Clause BSD License
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-
-    * Neither the name of the copyright holder nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-I:
+G:
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999
 
@@ -977,214 +920,56 @@ SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGES.
 
 
-J:
-Apache 2.0
-
-TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
-
-1. Definitions.
-
-"License" shall mean the terms and conditions for use, reproduction, and
-distribution as defined by Sections 1 through 9 of this document.
-
-"Licensor" shall mean the copyright owner or entity authorized by the copyright
-owner that is granting the License.
-
-"Legal Entity" shall mean the union of the acting entity and all other entities
-that control, are controlled by, or are under common control with that entity.
-For the purposes of this definition, "control" means (i) the power, direct or
-indirect, to cause the direction or management of such entity, whether by
-contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the
-outstanding shares, or (iii) beneficial ownership of such entity.
-
-You" (or "Your") shall mean an individual or Legal Entity exercising
-permissions granted by this License.
-
-"Source" form shall mean the preferred form for making modifications, including
-but not limited to software source code, documentation source, and
-configuration files.
-
-"Object" form shall mean any form resulting from mechanical transformation or
-translation of a Source form, including but not limited to compiled object
-code, generated documentation, and conversions to other media types.
-
-"Work" shall mean the work of authorship, whether in Source or Object form,
-made available under the License, as indicated by a copyright notice that is
-included in or attached to the work (an example is provided in the Appendix
-below).
-
-"Derivative Works" shall mean any work, whether in Source or Object form, that
-is based on (or derived from) the Work and for which the editorial revisions,
-annotations, elaborations, or other modifications represent, as a whole, an
-original work of authorship. For the purposes of this License, Derivative Works
-shall not include works that remain separable from, or merely link (or bind by
-name) to the interfaces of, the Work and Derivative Works thereof.
-
-"Contribution" shall mean any work of authorship, including the original
-version of the Work and any modifications or additions to that Work or
-Derivative Works thereof, that is intentionally submitted to Licensor for
-inclusion in the Work by the copyright owner or by an individual or Legal
-Entity authorized to submit on behalf of the copyright owner. For the purposes
-of this definition, "submitted" means any form of electronic, verbal, or
-written communication sent to the Licensor or its representatives, including
-but not limited to communication on electronic mailing lists, source code
-control systems, and issue tracking systems that are managed by, or on behalf
-of, the Licensor for the purpose of discussing and improving the Work, but
-excluding communication that is conspicuously marked or otherwise designated in
-writing by the copyright owner as "Not a Contribution."
-
-"Contributor" shall mean Licensor and any individual or Legal Entity on behalf
-of whom a Contribution has been received by Licensor and subsequently
-incorporated within the Work.
-2. Grant of Copyright License. Subject to the terms and conditions of this
-License, each Contributor hereby grants to You a perpetual, worldwide,
-non-exclusive, no-charge, royalty-free, irrevocable copyright license to
-reproduce, prepare Derivative Works of, publicly display, publicly perform,
-sublicense, and distribute the Work and such Derivative Works in Source or
-Object form.
-
-3. Grant of Patent License. Subject to the terms and conditions of this
-License, each Contributor hereby grants to You a perpetual, worldwide,
-non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this
-section) patent license to make, have made, use, offer to sell, sell, import,
-and otherwise transfer the Work, where such license applies only to those
-patent claims licensable by such Contributor that are necessarily infringed by
-their Contribution(s) alone or by combination of their Contribution(s) with the
-Work to which such Contribution(s) was submitted. If You institute patent
-litigation against any entity (including a cross-claim or counterclaim in a
-lawsuit) alleging that the Work or a Contribution incorporated within the Work
-constitutes direct or contributory patent infringement, then any patent
-licenses granted to You under this License for that Work shall terminate as of
-the date such litigation is filed.
-
-4. Redistribution. You may reproduce and distribute copies of the Work or
-Derivative Works thereof in any medium, with or without modifications, and in
-Source or Object form, provided that You meet the following conditions:
-
-(a) You must give any other recipients of the Work or Derivative Works a copy
-of this License; and
-
-(b) You must cause any modified files to carry prominent notices stating that
-You changed the files; and
-
-(c) You must retain, in the Source form of any Derivative Works that You
-distribute, all copyright, patent, trademark, and attribution notices from the
-Source form of the Work, excluding those notices that do not pertain to any
-part of the Derivative Works; and
-
-(d) If the Work includes a "NOTICE" text file as part of its distribution, then
-any Derivative Works that You distribute must include a readable copy of the
-attribution notices contained within such NOTICE file, excluding those notices
-that do not pertain to any part of the Derivative Works, in at least one of the
-following places: within a NOTICE text file distributed as part of the
-Derivative Works; within the Source form or documentation, if provided along
-with the Derivative Works; or, within a display generated by the Derivative
-Works, if and wherever such third-party notices normally appear. The contents
-of the NOTICE file are for informational purposes only and do not modify the
-License. You may add Your own attribution notices within Derivative Works that
-You distribute, alongside or as an addendum to the NOTICE text from the Work,
-provided that such additional attribution notices cannot be construed as
-modifying the License.
-
-You may add Your own copyright statement to Your modifications and may provide
-additional or different license terms and conditions for use, reproduction, or
-distribution of Your modifications, or for any such Derivative Works as a
-whole, provided Your use, reproduction, and distribution of the Work otherwise
-complies with the conditions stated in this License.
-
-5. Submission of Contributions. Unless You explicitly state otherwise, any
-Contribution intentionally submitted for inclusion in the Work by You to the
-Licensor shall be under the terms and conditions of this License, without any
-additional terms or conditions. Notwithstanding the above, nothing herein shall
-supersede or modify the terms of any separate license agreement you may have
-executed with Licensor regarding such Contributions.
-
-6. Trademarks. This License does not grant permission to use the trade names,
-trademarks, service marks, or product names of the Licensor, except as required
-for reasonable and customary use in describing the origin of the Work and
-reproducing the content of the NOTICE file.
-
-7. Disclaimer of Warranty. Unless required by applicable law or agreed to in
-writing, Licensor provides the Work (and each Contributor provides its
-Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied, including, without limitation, any warranties
-or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-PARTICULAR PURPOSE. You are solely responsible for determining the
-appropriateness of using or redistributing the Work and assume any risks
-associated with Your exercise of permissions under this License.
-
-8. Limitation of Liability. In no event and under no legal theory, whether in
-tort (including negligence), contract, or otherwise, unless required by
-applicable law (such as deliberate and grossly negligent acts) or agreed to in
-writing, shall any Contributor be liable to You for damages, including any
-direct, indirect, special, incidental, or consequential damages of any
-character arising as a result of this License or out of the use or inability to
-use the Work (including but not limited to damages for loss of goodwill, work
-stoppage, computer failure or malfunction, or any and all other commercial
-damages or losses), even if such Contributor has been advised of the
-possibility of such damages.
-
-9. Accepting Warranty or Additional Liability. While redistributing the Work or
-Derivative Works thereof, You may choose to offer, and charge a fee for,
-acceptance of support, warranty, indemnity, or other liability obligations
-and/or rights consistent with this License. However, in accepting such
-obligations, You may act only on Your own behalf and on Your sole
-responsibility, not on behalf of any other Contributor, and only if You agree
-to indemnify, defend, and hold each Contributor harmless for any liability
-incurred by, or claims asserted against, such Contributor by reason of your
-accepting any such warranty or additional liability.
-
-
 
 
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-graphics/webauthn.svg                                                F  2017  Duo Security, Inc.
-lib/3rdParty/composer/brick                                          B        Benjamin Morel
-lib/3rdParty/composer/carbonphp                                      B  2023  Carbon
-lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
-lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
-lib/3rdParty/composer/doctrine                                       B        Doctrine Project
-lib/3rdParty/composer/duo                                            E        Cisco Systems, Inc. and/or its affiliates
-lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu
-lib/3rdParty/composer/firebase                                       F  2011  Neuman Vong
-lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
-lib/3rdParty/composer/http-interop                                   B  2016  Woody Gilk
-lib/3rdParty/composer/illuminate                                     B        Taylor Otwell
-lib/3rdParty/composer/lcobucci                                       B  2017  Luís Cobucci
-lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano
-lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
-lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises
-lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team
-lib/3rdParty/composer/phpmailer                                      I
-lib/3rdParty/composer/phpseclib                                      B  2019  TerraFrost and other contributors
-lib/3rdParty/composer/psr                                            B        PHP Framework Interoperability Group
-lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar
-lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs
-lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier
-lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs
-lib/3rdParty/composer/web-token                                      B        Florent Morselli
-lib/3rdParty/composer/webklex                                        B  2016  Webklex
-lib/3rdParty/tcpdf                                                   D  2022  Nicola Asuni - Tecnick.com LTD
-lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
-style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal
-style/050_grid.css                                                   B
-templates/lib/*popper*.js                                            B
-templates/lib/*tippy*.js                                             B  2021  atomiks
-templates/lib/*flatpickr*.js                                         B  2017  Gregory Petrosyan
-style/600_flatpickr.css                                              B  2017  Gregory Petrosyan
-templates/lib/*sweetalert2*.js                                       B
-style/*sweetalert2*.css                                              B
-templates/lib/cropper*.js                                            B  2018  Chen Fengyuan
-style/600_cropper*.css                                               B  2018  Chen Fengyuan
-templates/lib/extra/jodit                                            B        Chupurnov
-templates/lib/extra/friendlyCaptcha                                  B
-templates/lib/400_Sortable*.js                                       B        RubaXa, owenm
-templates/lib/extra/qrcode/*                                         B  2009  Kazuhiko Arase
-templates/lib/extra/tabulator/*                                      B  2024  Oliver Folkerd
-style/tabulator/*                                                    B  2024  Oliver Folkerd
-templates/lib/extra/wunderbaum/*                                     B  2024  Martin Wendt
-style/wunderbaum/*                                                   B  2024  Martin Wendt
-style/bootstrap-icons/*                                              B  2024  The Bootstrap Authors
+graphics/webauthn.svg                                                E  2017  Duo Security, Inc.                             https://github.com/duo-labs/webauthn.io
+lib/3rdParty/composer/brick                                          B        Benjamin Morel                                 https://github.com/brick/math
+lib/3rdParty/composer/carbonphp                                      B  2023  Carbon                                         https://github.com/CarbonPHP/carbon-doctrine-types
+lib/3rdParty/composer/christian-riesen                               B        Christian Riesen                               https://github.com/ChristianRiesen/base32
+lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano                  https://github.com/composer/composer
+lib/3rdParty/composer/doctrine                                       B        Doctrine Project                               https://github.com/doctrine
+lib/3rdParty/composer/duosecurity                                    E        Cisco Systems, Inc. and/or its affiliates      https://github.com/duosecurity/duo_universal_php
+lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu                                  https://github.com/facile-it
+lib/3rdParty/composer/firebase                                       E  2011  Neuman Vong                                    https://github.com/firebase/php-jwt
+lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling                                https://github.com/guzzle/psr7
+lib/3rdParty/composer/http-interop                                   B  2016  Woody Gilk                                     https://github.com/http-interop/http-factory-guzzle
+lib/3rdParty/composer/illuminate                                     B        Taylor Otwell                                  https://github.com/illuminate
+lib/3rdParty/composer/lcobucci                                       B  2017  Luís Cobucci                                   https://github.com/lcobucci/clock
+lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano                                 https://github.com/Seldaek/monolog
+lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt                                  https://github.com/CarbonPHP/carbon
+lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises                 https://github.com/paragonie
+lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team                                  https://github.com/php-http/discovery
+lib/3rdParty/composer/phpmailer                                      G                                                       https://github.com/PHPMailer/PHPMailer
+lib/3rdParty/composer/phpseclib                                      B  2019  TerraFrost and other contributors              https://github.com/phpseclib/phpseclib
+lib/3rdParty/composer/psr                                            B        PHP Framework Interoperability Group           https://github.com/php-fig
+lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar                                  https://github.com/ralouphie/getallheaders
+lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs                                    https://github.com/Spomky-Labs
+lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier                               https://github.com/symfony
+lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs                                    https://github.com/web-auth
+lib/3rdParty/composer/web-token                                      B        Florent Morselli                               https://github.com/web-token
+lib/3rdParty/composer/webklex                                        B  2016  Webklex                                        https://github.com/Webklex/php-imap
+lib/3rdParty/tcpdf                                                   D  2022  Nicola Asuni - Tecnick.com LTD                 https://github.com/tecnickcom/TCPDF
+lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah   https://github.com/dejavu-fonts/dejavu-fonts
+lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB                                      https://github.com/Yubico/php-yubico
+style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal            https://github.com/csstools/normalize.css
+style/050_grid.css                                                   B                                                       https://foundation.zurb.com/sites/docs/v/5.5.3/components/grid.html
+templates/lib/*popper*.js                                            B                                                       https://github.com/floating-ui/floating-ui
+templates/lib/*tippy*.js                                             B  2021  atomiks                                        https://github.com/atomiks/tippyjs
+templates/lib/*flatpickr*.js                                         B  2017  Gregory Petrosyan                              https://github.com/flatpickr/flatpickr
+style/600_flatpickr.css                                              B  2017  Gregory Petrosyan                              https://github.com/flatpickr/flatpickr
+templates/lib/*sweetalert2*.js                                       B                                                       https://github.com/sweetalert2/sweetalert2
+style/*sweetalert2*.css                                              B                                                       https://github.com/sweetalert2/sweetalert2
+templates/lib/410_cropper*.js                                        B  2018  Chen Fengyuan                                  https://github.com/fengyuanchen/cropperjs
+style/600_cropper*.css                                               B  2018  Chen Fengyuan                                  https://github.com/fengyuanchen/cropperjs
+templates/lib/extra/jodit                                            B        Chupurnov                                      https://github.com/xdan/jodit/
+templates/lib/extra/friendlyCaptcha                                  B                                                       https://github.com/FriendlyCaptcha/friendly-challenge
+templates/lib/400_Sortable*.js                                       B        RubaXa, owenm                                  https://github.com/SortableJS/Sortable
+templates/lib/extra/qrcode/*                                         B  2009  Kazuhiko Arase                                 https://github.com/kazuhikoarase/qrcode-generator
+templates/lib/extra/tabulator/*                                      B  2024  Oliver Folkerd                                 https://github.com/olifolkerd/tabulator/
+style/tabulator/*                                                    B  2024  Oliver Folkerd                                 https://github.com/olifolkerd/tabulator/
+templates/lib/extra/wunderbaum/*                                     B  2024  Martin Wendt                                   https://github.com/mar10/wunderbaum
+style/wunderbaum/*                                                   B  2024  Martin Wendt                                   https://github.com/mar10/wunderbaum
+style/bootstrap-icons/*                                              B  2024  The Bootstrap Authors                          https://icons.getbootstrap.com/
