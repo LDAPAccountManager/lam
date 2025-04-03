@@ -26,7 +26,7 @@ use LamTemporaryFilesManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2023  Roland Gruber
+  Copyright (C) 2013 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -346,36 +346,62 @@ function readLDAPData(): array {
  */
 function generateActions(): array {
 	$actions = [];
-	foreach ($_SESSION['multiEdit_status']['entries'] as $entry) {
-		$dn = $entry['dn'];
+	foreach ($_SESSION['multiEdit_status']['entries'] as $oldEntry) {
+		$dn = $oldEntry['dn'];
+		$newEntry = $oldEntry;
 		foreach ($_SESSION['multiEdit_operations'] as $op) {
 			$opType = $op[0];
 			$attr = $op[1];
-			$val = replaceWildcards($op[2], $entry);
+			$val = replaceWildcards($op[2], $oldEntry);
 			switch ($opType) {
 				case ADD:
-					if (empty($entry[$attr]) || !in_array_ignore_case($val, $entry[$attr])) {
-						$actions[] = [ADD, $dn, $attr, $val];
+					if (empty($oldEntry[$attr]) || !in_array_ignore_case($val, $oldEntry[$attr])) {
+						$newEntry[$attr][] = $val;
 					}
 					break;
 				case MOD:
-					if (empty($entry[$attr])) {
+					if (empty($oldEntry[$attr]) || !in_array_ignore_case($val, $oldEntry[$attr])) {
 						// attribute not yet exists, add it
-						$actions[] = [ADD, $dn, $attr, $val];
-					}
-					elseif (!empty($entry[$attr]) && !in_array_ignore_case($val, $entry[$attr])) {
-						// attribute exists and value is not included, replace old values
-						$actions[] = [MOD, $dn, $attr, $val];
+						$newEntry[$attr] = [$val];
 					}
 					break;
 				case DEL:
-					if (empty($val) && !empty($entry[$attr])) {
-						$actions[] = [DEL, $dn, $attr, null];
+					if (empty($val) && !empty($oldEntry[$attr])) {
+						unset($newEntry[$attr]);
 					}
-					elseif (!empty($val) && isset($entry[$attr]) && in_array($val, $entry[$attr])) {
-						$actions[] = [DEL, $dn, $attr, $val];
+					elseif (!empty($val) && isset($oldEntry[$attr]) && in_array($val, $oldEntry[$attr])) {
+						$newEntry[$attr] = array_delete([$val], $newEntry[$attr]);
 					}
 					break;
+			}
+		}
+		unset($oldEntry['dn']);
+		unset($newEntry['dn']);
+		// cleanup
+		foreach ($newEntry as $name => &$values) {
+			// remove empty values
+			$values = array_values($values);
+			for ($i = 0; $i < count($values); $i++) {
+				if ($values[$i] === '') {
+					unset($values[$i]);
+				}
+			}
+			$values = array_values($values);
+			// remove empty list of values
+			if (count($values) === 0) {
+				unset($newEntry[$name]);
+			}
+		}
+		// find deleted attributes (in $oldEntry but no longer in $newEntry)
+		foreach ($oldEntry as $name => $value) {
+			if (!isset($newEntry[$name])) {
+				$actions[$dn][$name] = [];
+			}
+		}
+		// find changed attributes
+		foreach ($newEntry as $name => $value) {
+			if (!isset($oldEntry[$name]) || !areArrayContentsEqual($value, $oldEntry[$name])) {
+				$actions[$dn][$name] = $value;
 			}
 		}
 	}
@@ -399,46 +425,24 @@ function dryRun(): array {
 	$ldif = '# LDAP Account Manager' . $pro . ' ' . LAMVersion() . "\n\nversion: 1\n\n";
 	$log = '';
 	// fill LDIF and log file
-	$lastDN = '';
-	foreach ($_SESSION['multiEdit_status']['actions'] as $action) {
-		$opType = $action[0];
-		$dn = $action[1];
-		$attr = $action[2];
-		$val = $action[3];
-		if ($lastDN != $dn) {
-			if ($lastDN != '') {
-				$log .= "\r\n";
-			}
-			$lastDN = $dn;
-			$log .= $dn . "\r\n";
-		}
-		if ($lastDN != '') {
-			$ldif .= "\n";
-		}
+	foreach ($_SESSION['multiEdit_status']['actions'] as $dn => $changes) {
+		$log .= $dn . "\r\n";
 		$ldif .= 'dn: ' . $dn . "\n";
 		$ldif .= 'changetype: modify' . "\n";
-		switch ($opType) {
-			case ADD:
-				$log .= '+' . $attr . '=' . $val . "\r\n";
-				$ldif .= 'add: ' . $attr . "\n";
-				$ldif .= $attr . ': ' . $val . "\n";
-				break;
-			case DEL:
-				$ldif .= 'delete: ' . $attr . "\n";
-				if (empty($val)) {
-					$log .= '-' . $attr . "\r\n";
-				}
-				else {
-					$log .= '-' . $attr . '=' . $val . "\r\n";
-					$ldif .= $attr . ': ' . $val . "\n";
-				}
-				break;
-			case MOD:
-				$log .= '*' . $attr . '=' . $val . "\r\n";
-				$ldif .= 'replace: ' . $attr . "\n";
-				$ldif .= $attr . ': ' . $val . "\n";
-				break;
+		$isFirstChange = true;
+		foreach ($changes as $attr => $values) {
+			$log .= '* ' . $attr . '=' . implode(', ', $values) . "\r\n";
+			if (!$isFirstChange) {
+				$ldif .= "-\n";
+			}
+			$ldif .= 'replace: ' . $attr . "\n";
+			foreach ($values as $value) {
+				$ldif .= $attr . ': ' . $value . "\n";
+			}
+			$isFirstChange = false;
 		}
+		$ldif .= "\n";
+		$log .= "\r\n";
 	}
 	// build meta HTML
 	$container = new htmlTable();
@@ -498,6 +502,7 @@ function doModify(): array {
 	// initial action index
 	if (!isset($_SESSION['multiEdit_status']['index'])) {
 		$_SESSION['multiEdit_status']['index'] = 0;
+		$_SESSION['multiEdit_status']['dnList'] = array_keys($_SESSION['multiEdit_status']['actions']);
 	}
 	// initial content
 	if (!isset($_SESSION['multiEdit_status']['modContent'])) {
@@ -505,31 +510,12 @@ function doModify(): array {
 	}
 	// run 10 modifications in each call
 	$localCount = 0;
-	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < count($_SESSION['multiEdit_status']['actions']))) {
-		$action = $_SESSION['multiEdit_status']['actions'][$_SESSION['multiEdit_status']['index']];
-		$opType = $action[0];
-		$dn = $action[1];
-		$attr = $action[2];
-		$val = $action[3];
+	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < count($_SESSION['multiEdit_status']['dnList']))) {
+		$dn = $_SESSION['multiEdit_status']['dnList'][$_SESSION['multiEdit_status']['index']];
+		$changes = $_SESSION['multiEdit_status']['actions'][$dn];
 		$_SESSION['multiEdit_status']['modContent'] .= htmlspecialchars($dn) . "<br>";
 		// run LDAP commands
-		$success = false;
-		switch ($opType) {
-			case ADD:
-				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
-				break;
-			case DEL:
-				if (empty($val)) {
-					$success = ldap_modify($_SESSION['ldap']->server(), $dn, [$attr => []]);
-				}
-				else {
-					$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
-				}
-				break;
-			case MOD:
-				$success = ldap_modify($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
-				break;
-		}
+		$success = ldap_modify($_SESSION['ldap']->server(), $dn, $changes);
 		if (!$success || isset($_REQUEST['multiEdit_error'])) {
 			$msg = new htmlStatusMessage('ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			$_SESSION['multiEdit_status']['modContent'] .= getMessageHTML($msg);
