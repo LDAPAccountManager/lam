@@ -400,7 +400,7 @@ function generateActions(): array {
 		}
 		// find changed attributes
 		foreach ($newEntry as $name => $value) {
-			if (!isset($orig[$name]) || !areArrayContentsEqual($value, $orig[$name])) {
+			if (!isset($oldEntry[$name]) || !areArrayContentsEqual($value, $oldEntry[$name])) {
 				$actions[$dn][$name] = $value;
 			}
 		}
@@ -502,6 +502,7 @@ function doModify(): array {
 	// initial action index
 	if (!isset($_SESSION['multiEdit_status']['index'])) {
 		$_SESSION['multiEdit_status']['index'] = 0;
+		$_SESSION['multiEdit_status']['dnList'] = array_keys($_SESSION['multiEdit_status']['actions']);
 	}
 	// initial content
 	if (!isset($_SESSION['multiEdit_status']['modContent'])) {
@@ -509,31 +510,12 @@ function doModify(): array {
 	}
 	// run 10 modifications in each call
 	$localCount = 0;
-	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < count($_SESSION['multiEdit_status']['actions']))) {
-		$action = $_SESSION['multiEdit_status']['actions'][$_SESSION['multiEdit_status']['index']];
-		$opType = $action[0];
-		$dn = $action[1];
-		$attr = $action[2];
-		$val = $action[3];
+	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < count($_SESSION['multiEdit_status']['dnList']))) {
+		$dn = $_SESSION['multiEdit_status']['dnList'][$_SESSION['multiEdit_status']['index']];
+		$changes = $_SESSION['multiEdit_status']['actions'][$dn];
 		$_SESSION['multiEdit_status']['modContent'] .= htmlspecialchars($dn) . "<br>";
 		// run LDAP commands
-		$success = false;
-		switch ($opType) {
-			case ADD:
-				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
-				break;
-			case DEL:
-				if (empty($val)) {
-					$success = ldap_modify($_SESSION['ldap']->server(), $dn, [$attr => []]);
-				}
-				else {
-					$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
-				}
-				break;
-			case MOD:
-				$success = ldap_modify($_SESSION['ldap']->server(), $dn, [$attr => [$val]]);
-				break;
-		}
+		$success = ldap_modify($_SESSION['ldap']->server(), $dn, $changes);
 		if (!$success || isset($_REQUEST['multiEdit_error'])) {
 			$msg = new htmlStatusMessage('ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			$_SESSION['multiEdit_status']['modContent'] .= getMessageHTML($msg);
