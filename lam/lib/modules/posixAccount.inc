@@ -10,7 +10,7 @@ use LAM\TYPES\ConfiguredType;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2024  Roland Gruber
+    Copyright (C) 2005 - 2025  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -555,10 +555,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!isset($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] == '')) {
 			return false;
 		}
-		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) {
-			return false;
-		}
-		return true;
+		return (isset($this->attributes['gidNumber'][0]) && ($this->attributes['gidNumber'][0] != ''));
 	}
 
 	/**
