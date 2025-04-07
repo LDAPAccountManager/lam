@@ -558,7 +558,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) {
 			return false;
 		}
-		return isset($this->attributes['loginShell'][0]) && ($this->attributes['loginShell'][0] != '');
+		return true;
 	}
 
 	/**
@@ -3540,9 +3540,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// shell
 		if (in_array('loginShell', $fields) && !in_array('loginShell', $readOnlyFields)) {
 			$shelllist = $this->getShells(); // list of all valid shells
-			if (in_array($_POST['posixAccount_loginShell'], $shelllist)
-				&& (!isset($attributes['loginShell']) || ($attributes['loginShell'][0] != $_POST['posixAccount_loginShell']))) {
-				$return['mod']['loginShell'][0] = $_POST['posixAccount_loginShell'];
+			if (in_array($_POST['posixAccount_loginShell'], $shelllist)) {
+				$this->checkSimpleSelfServiceTextField($return, 'loginShell', $attributes, $fields,
+					$readOnlyFields);
 			}
 		}
 		return $return;
