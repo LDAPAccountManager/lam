@@ -6,6 +6,7 @@ June 2025 9.2
   -> Unix: profile editor for users not working (418)
   -> Custom fields: problems with deleting facsimileTelephoneNumber (419)
 
+
 13.03.2025 9.1
  - Usability improvements (347, 348, 360, 403)
  - Active Directory: deleted entries in "CN=Deleted Objects" can be shown (option in server profile, advanced settings)
