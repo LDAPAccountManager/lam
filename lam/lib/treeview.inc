@@ -754,7 +754,8 @@ class TreeView {
 		if (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
 			$value = base64_encode($value);
 		}
-		if ($isMultiLine) {
+		$value = $this->preProcessValue(strtolower($attributeName), $value);
+		if ($isMultiLine || $this->isPseudoMultiLine(strtolower($attributeName))) {
 			$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $value, 50, 5);
 		}
 		else {
@@ -1054,6 +1055,12 @@ class TreeView {
 				if (!$isOk) {
 					logNewMessage(LOG_ERR, 'Changing olcmoduleload at ' . $dn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 				}
+			}
+		}
+		// olcAccess needs removal of newlines
+		if (isset($ldapChanges['olcaccess'])) {
+			for ($i = 0; $i < count($ldapChanges['olcaccess']); $i++) {
+				$ldapChanges['olcaccess'][$i] = str_replace("\n", ' ', $ldapChanges['olcaccess'][$i]);
 			}
 		}
 		// add ";binary" to binary attributes
@@ -1707,6 +1714,30 @@ class TreeView {
 			return json_encode(['error' => $content]);
 		}
 		return json_encode([]);
+	}
+
+	/**
+	 * Returns if the attribute should be rendered multi-line even if it is single-line defined in schema.
+	 *
+	 * @param string $attributeName attribute name
+	 * @return bool render multi-line
+	 */
+	private function isPseudoMultiLine(string $attributeName): bool {
+		return ($attributeName === 'olcaccess');
+	}
+
+	/**
+	 * Preprocesses the value before rendering.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param string $value value
+	 * @return string preprocessed value
+	 */
+	private function preProcessValue(string $attributeName, string $value): string {
+		if ($attributeName === 'olcaccess') {
+			return preg_replace('/\s+by\s+/', "\r\nby ", $value);
+		}
+		return $value;
 	}
 
 }

@@ -3182,7 +3182,10 @@ window.lam.treeview.updateAttributePositionData = function(containerId) {
 	const container = document.getElementById(containerId);
 	const childLiElements = container.children;
 	for (let i = 0; i < childLiElements.length; i++) {
-		const inputField = childLiElements[i].querySelector('input');
+		let inputField = childLiElements[i].querySelector('input');
+		if (inputField === null) {
+			inputField = childLiElements[i].querySelector('textarea');
+		}
 		inputField.value = '{' + i + '}' + inputField.value.replace(/^\{[0-9]+\}/, '');
 	}
 }
