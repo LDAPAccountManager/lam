@@ -61,7 +61,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['userPrincipalName', 'sAMAccountName', 'displayName',
 		'profilePath', 'scriptPath', 'pwdLastSet', 'otherMailbox', 'homeDirectory', 'msSFU30Name',
-		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime', 'personaltitle', 'roomnumber'];
+		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime', 'personaltitle', 'roomnumber',
+		'jpegPhoto', 'thumbnailphoto'];
 
 	/** initial account flags */
 	private const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
