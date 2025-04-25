@@ -91,8 +91,8 @@ function showTree(): void {
 	$openInitialJsArray = '[' . implode(', ', $openInitial) . ']';
 	$row = new htmlResponsiveRow();
 	$row->setCSSClasses(['maxrow']);
-	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), ['tree-view--tree']), 12, 5, 5, 'tree-left-area');
-	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), ['tree-view--actionarea']), 12, 7, 7, 'tree-right-area');
+	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), ['tree-view--tree']), 12, 4, 4, 'tree-left-area');
+	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), ['tree-view--actionarea']), 12, 8, 8, 'tree-right-area');
 	$treeScript = new htmlJavaScript('
 		window.lam.utility.documentReady(function() {
 			var maxHeight = document.documentElement.scrollHeight - (document.querySelector("#ldap_tree").getBoundingClientRect().top - window.scrollY) - 50;
