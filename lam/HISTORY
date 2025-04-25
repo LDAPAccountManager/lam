@@ -2,6 +2,7 @@ June 2025 9.2
  - TAK support added
  - Active Directory: allow to restore deleted entries in tree view (415)
  - Multi-edit tool: change operations are combined by DN to allow e.g. adding object classes with required attributes (408)
+ - Windows users: support thumbnail images (needs to be activated in server profile) (431)
  - Tree view: better editing of olcAccess (420)
  - Fixed bugs:
   -> Unix: profile editor for users not working (418)

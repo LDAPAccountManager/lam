@@ -10,7 +10,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2024  Roland Gruber
+  Copyright (C) 2013 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -152,7 +152,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'lastLogonTimestamp', 'accountexpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
 			'businessCategory', 'department', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
 			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockouttime', 'userWorkstations', 'roomnumber',
-			'personaltitle'
+			'personaltitle', 'thumbnailphoto'
 		];
 		$return['hiddenAttributes'] = ['msds-userpasswordexpirytimecomputed'];
 		// help Entries
@@ -342,6 +342,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
 				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
 			],
+			'thumbnailphoto' => [
+				"Headline" => _("Add thumbnail"), 'attr' => 'thumbnailPhoto',
+				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
+			],
 			'title' => [
 				"Headline" => _("Job title"), 'attr' => 'title',
 				"Text" => _("Job title of user: President, department manager, ...")
@@ -444,6 +448,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			],
 			'photoUpload' => [
 				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
+				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
+			],
+			'thumbnailphotoUpload' => [
+				"Headline" => _("Add thumbnail"), 'attr' => 'thumbnailPhoto',
 				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
 			],
 			'excludeFromGroupSync' => [
@@ -1670,6 +1678,32 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			$containerRight->addVerticalSpacer('2rem');
 		}
+		// thumbnail
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidethumbnailphoto', true)) {
+			$photoFile = '../../graphics/user.svg';
+			$noPhoto = true;
+			if (isset($this->attributes['thumbnailphoto'][0])) {
+				$tempFilesManager = new LamTemporaryFilesManager();
+				$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
+				$outjpeg = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
+				fwrite($outjpeg, $this->attributes['thumbnailphoto'][0]);
+				fclose($outjpeg);
+				$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
+				$noPhoto = false;
+			}
+			$img = new htmlImage($photoFile);
+			$img->setCSSClasses(['photo']);
+			$img->enableLightbox();
+			$containerRight->add($img);
+			$containerRight->addVerticalSpacer('0.5rem');
+			if ($noPhoto) {
+				$containerRight->add(new htmlAccountPageButton(static::class, 'thumbnailphoto', 'open', _('Add thumbnail')));
+			}
+			else {
+				$containerRight->add(new htmlButton('delthumbnailphoto', _('Delete thumbnail')));
+			}
+			$containerRight->addVerticalSpacer('2rem');
+		}
 		// groups
 		$containerRight->add(new htmlSubTitle(_('Groups')));
 		$containerRight->add(new htmlAccountPageButton(static::class, 'group', 'edit', _('Edit groups')));
@@ -2066,6 +2100,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)
 			&& isset($_POST['delPhoto'])) {
 			unset($this->attributes['jpegPhoto']);
+		}
+		// thumbnail
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidethumbnailphoto', true)
+			&& isset($_POST['delthumbnailphoto'])) {
+			unset($this->attributes['thumbnailphoto']);
 		}
 		return $return;
 	}
@@ -2466,7 +2505,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			return [];
 		}
 		if (isset($_POST['form_subpage_' . static::class . '_photo_upload']) || isset($_POST['webcamData'])) {
-			return $this->uploadPhoto();
+			$maxSize = !empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) ? intval($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) : 0;
+			return $this->uploadPhoto('jpegPhoto', $maxSize);
 		}
 		$messages = [];
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_crop'])) {
@@ -2474,6 +2514,12 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				include_once __DIR__ . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
 				$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
+				// resize if maximum values specified
+				if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
+					$maxWidth = empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0];
+					$maxHeight = empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0];
+					$imageManipulator->thumbnail($maxWidth, $maxHeight);
+				}
 				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
@@ -2486,11 +2532,104 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Uploads the photo file.
+	 * Displays the thumbnail upload page.
 	 *
+	 * @return htmlElement meta HTML code
+	 */
+	public function display_html_thumbnailphoto() {
+		$container = new htmlResponsiveRow();
+		if (empty($this->attributes['thumbnailphoto'][0])) {
+			$container->add(new htmlSubTitle(_('Upload image')));
+			$label = _('Thumbnail file');
+			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'thumbnailphotoUpload'));
+			$container->addVerticalSpacer('0.5rem');
+			$container->addLabel(new htmlOutputText('&nbsp;', false));
+			$container->addField(new htmlAccountPageButton(static::class, 'thumbnailphoto', 'upload', _('Upload')));
+			$container->addVerticalSpacer('1rem');
+			$webcamContent = new htmlResponsiveRow();
+			$webcamContent->add(new htmlSubTitle(_('Use webcam')));
+			$errorMessage = new htmlStatusMessage('ERROR', '');
+			$errorMessage->setCSSClasses(['hidden', 'lam-webcam-message']);
+			$webcamContent->add($errorMessage);
+			$captureButton = new htmlButton('lam-webcam-capture', _('Start capture'));
+			$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
+			$webcamContent->add($captureButton, 12, 12, 12, 'text-center');
+			$video = new htmlVideo('lam-webcam-video');
+			$video->setCSSClasses(['hidden']);
+			$webcamContent->add($video, 12, 12, 12, 'text-center');
+			$webcamContent->addVerticalSpacer('0.5rem');
+			$webcamUploadButton = new htmlButton('uploadWebcam', _('Upload'));
+			$webcamUploadButton->setCSSClasses(['btn-lam-webcam-upload', 'hidden']);
+			$webcamUploadButton->setOnClick('window.lam.tools.webcam.upload();');
+			$webcamContent->add($webcamUploadButton, 12, 12, 12, 'text-center');
+			$canvas = new htmlCanvas('lam-webcam-canvas');
+			$canvas->setCSSClasses(['hidden']);
+			$webcamContent->add($canvas);
+			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, ['hidden']);
+			$container->add($webcamDiv);
+			$container->addVerticalSpacer('1rem');
+			$container->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')));
+		}
+		else {
+			$container->add(new htmlSubTitle(_('Crop image')));
+			$tempFilesManager = new LamTemporaryFilesManager();
+			$jpegFileName = $tempFilesManager->registerTemporaryFile('.jpg');
+			$handle = $tempFilesManager->openTemporaryFileForWrite($jpegFileName);
+			fwrite($handle, $this->attributes['thumbnailphoto'][0]);
+			fclose($handle);
+			$photoFile = $tempFilesManager->getResourceLink($jpegFileName);
+			$img = new htmlImage($photoFile);
+			$img->setCSSClasses(['photo']);
+			$img->enableCropping();
+			$container->add($img);
+			$container->addVerticalSpacer('2rem');
+			$container->add(new htmlAccountPageButton(static::class, 'attributes', 'crop', _('Done')));
+		}
+		return $container;
+	}
+
+	/**
+	 * Sets a new photo.
+	 */
+	public function process_thumbnailphoto() {
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_back'])) {
+			return [];
+		}
+		if (isset($_POST['form_subpage_' . static::class . '_thumbnailphoto_upload']) || isset($_POST['webcamData'])) {
+			$maxSize = !empty($this->moduleSettings['windowsUser_thumbnailphoto_maxSize'][0]) ? intval($this->moduleSettings['windowsUser_thumbnailphoto_maxSize'][0]) : 0;
+			return $this->uploadPhoto('thumbnailphoto', $maxSize);
+		}
+		$messages = [];
+		if (isset($_POST['form_subpage_' . static::class . '_attributes_crop'])) {
+			try {
+				include_once __DIR__ . '/../imageutils.inc';
+				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['thumbnailphoto'][0]);
+				$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
+				// resize if maximum values specified
+				if (!empty($this->moduleSettings['windowsUser_thumbnailphoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_thumbnailphoto_maxHeight'][0])) {
+					$maxWidth = empty($this->moduleSettings['windowsUser_thumbnailphoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['windowsUser_thumbnailphoto_maxWidth'][0];
+					$maxHeight = empty($this->moduleSettings['windowsUser_thumbnailphoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['windowsUser_thumbnailphoto_maxHeight'][0];
+					$imageManipulator->thumbnail($maxWidth, $maxHeight);
+				}
+				$this->attributes['thumbnailphoto'][0] = $imageManipulator->getImageData();
+			}
+			catch (Exception $e) {
+				$msg = $this->messages['file'][2];
+				$msg[] = htmlspecialchars($e->getMessage());
+				$messages[] = $msg;
+			}
+		}
+		return $messages;
+	}
+
+	/**
+	 * Uploads the photo/thumbnail file.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param int $maxSize maximum file size
 	 * @return array error messages if any
 	 */
-	private function uploadPhoto() {
+	private function uploadPhoto(string $attributeName, int $maxSize) {
 		$messages = [];
 		if ((empty($_FILES['photoFile']) || ($_FILES['photoFile']['size'] <= 0)) && empty($_POST['webcamData'])) {
 			$messages[] = $this->messages['file'][0];
@@ -2500,10 +2639,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 100000000);
 			fclose($handle);
-			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]))) {
+			if (($maxSize > 0) && (strlen($data) > (1024 * $maxSize))) {
 				$errMsg = $this->messages['file'][3];
 				$errMsg[] = null;
-				$errMsg[] = [$this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]];
+				$errMsg[] = [$maxSize];
 				return [$errMsg];
 			}
 		}
@@ -2516,12 +2655,6 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		try {
 			include_once __DIR__ . '/../imageutils.inc';
 			$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
-			// resize if maximum values specified
-			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
-				$maxWidth = empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0];
-				$maxHeight = empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0];
-				$imageManipulator->thumbnail($maxWidth, $maxHeight);
-			}
 			$imageManipulator->convertToJpeg();
 			$data = $imageManipulator->getImageData();
 		}
@@ -2531,7 +2664,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$messages[] = $msg;
 			return $messages;
 		}
-		$this->attributes['jpegPhoto'][0] = $data;
+		$this->attributes[$attributeName][0] = $data;
 		return $messages;
 	}
 
@@ -4231,6 +4364,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$hiddenOptions[_('Last login')] = ['windowsUser_hidelastLogonTimestamp', false];
 		$hiddenOptions[_('Workstations')] = ['windowsUser_hideWorkstations', false];
 		$hiddenOptions[_('Photo')] = ['windowsUser_hidejpegPhoto', true];
+		$hiddenOptions[_('Thumbnail')] = ['windowsUser_hidethumbnailphoto', true];
 		$hiddenOptions[_('Job title')] = ['windowsUser_hidetitle', true];
 		$hiddenOptions[_('Room number')] = ['windowsUser_hideroomnumber', true];
 		$hiddenOptions[_('Car license')] = ['windowsUser_hidecarLicense', true];
@@ -4290,6 +4424,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'));
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'));
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'));
+		$advancedOptions->add(new htmlSubTitle(_('Thumbnail')));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_thumbnailphoto_maxWidth', '96', 'crop'));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_thumbnailphoto_maxHeight', '96', 'crop'));
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'windowsUser_thumbnailphoto_maxSize'));
 		$advancedOptionsAccordion = new htmlAccordion('windowsUserAdvancedOptions', [_('Advanced options') => $advancedOptions], false);
 		$configContainer->add($advancedOptionsAccordion);
 		return $configContainer;
@@ -4654,6 +4792,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'whenchanged' => _('Change date'),
 			'personaltitle' => _('Personal title'),
 			'roomnumber' => _('Room number'),
+			'jpegphoto' => _('Photo'),
+			'thumbnailphoto' => _('Thumbnail'),
 		];
 	}
 
@@ -4675,7 +4815,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				return $group;
 			};
 		}
-		elseif ($attributeName === 'jpegphoto') {
+		elseif (($attributeName === 'jpegphoto') || ($attributeName === 'thumbnailphoto')) {
 			return function(array $entry, string $attribute): ?htmlElement {
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] !== '')) {
 					if (strlen($entry[$attribute][0]) < 100) {
