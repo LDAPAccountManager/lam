@@ -2505,7 +2505,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			return [];
 		}
 		if (isset($_POST['form_subpage_' . static::class . '_photo_upload']) || isset($_POST['webcamData'])) {
-			$maxSize = !empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) ? intval($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) : 0;
+			$maxSize = empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) ? 0 : intval($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]);
 			return $this->uploadPhoto('jpegPhoto', $maxSize);
 		}
 		$messages = [];
@@ -2596,7 +2596,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			return [];
 		}
 		if (isset($_POST['form_subpage_' . static::class . '_thumbnailphoto_upload']) || isset($_POST['webcamData'])) {
-			$maxSize = !empty($this->moduleSettings['windowsUser_thumbnailphoto_maxSize'][0]) ? intval($this->moduleSettings['windowsUser_thumbnailphoto_maxSize'][0]) : 0;
+			$maxSize = empty($this->moduleSettings['windowsUser_thumbnailphoto_maxSize'][0]) ? 0 : intval($this->moduleSettings['windowsUser_thumbnailphoto_maxSize'][0]);
 			return $this->uploadPhoto('thumbnailphoto', $maxSize);
 		}
 		$messages = [];
