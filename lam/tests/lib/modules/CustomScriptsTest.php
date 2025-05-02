@@ -70,17 +70,13 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 
 		public function testCustomScriptParser() {
 			$parser = new \CustomScriptParser();
-			$scripts = $parser->parse($this->configLines, false);
+			$scripts = $parser->parse($this->configLines);
 
 			$this->assertNotEmpty($scripts);
 			$this->assertEquals(7, count($scripts));
 			$typeManager = new TypeManager();
 
 			$script = $scripts[0];
-			$configuredType = new ConfiguredType($typeManager, 'user', 'user');
-			$configuredWrongType = new ConfiguredType($typeManager, 'group', 'group_1');
-			$this->assertTrue($script->matchesConfiguredType($configuredType));
-			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertTrue($script->isManual());
 			$this->assertEquals('echo $uid$', $script->getCommand());
 			$this->assertEquals('manual', $script->getType());
@@ -88,10 +84,6 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 			$this->assertEquals('Group 1', $script->getGroupLabel());
 
 			$script = $scripts[1];
-			$configuredType = new ConfiguredType($typeManager, 'user', 'user');
-			$configuredWrongType = new ConfiguredType($typeManager, 'group', 'group_1');
-			$this->assertTrue($script->matchesConfiguredType($configuredType));
-			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertTrue($script->isManual());
 			$this->assertEquals('echo $description$', $script->getCommand());
 			$this->assertEquals('manual', $script->getType());
@@ -99,10 +91,6 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 			$this->assertEquals('Group 2', $script->getGroupLabel());
 
 			$script = $scripts[2];
-			$configuredType = new ConfiguredType($typeManager, 'user', 'user');
-			$configuredWrongType = new ConfiguredType($typeManager, 'group', 'group_1');
-			$this->assertTrue($script->matchesConfiguredType($configuredType));
-			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertFalse($script->isManual());
 			$this->assertEquals('echo $dn$', $script->getCommand());
 			$this->assertEquals('postModify', $script->getType());
@@ -110,10 +98,6 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 			$this->assertEquals(_('Post-modify'), $script->getTypeLabel());
 
 			$script = $scripts[3];
-			$configuredType = new ConfiguredType($typeManager, 'gon', 'gon_1');
-			$configuredWrongType = new ConfiguredType($typeManager, 'group', 'group_1');
-			$this->assertTrue($script->matchesConfiguredType($configuredType));
-			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertFalse($script->isManual());
 			$this->assertEquals('echo NEW $member$ OLD $ORIG.member$', $script->getCommand());
 			$this->assertEquals('preModify', $script->getType());
@@ -121,20 +105,12 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 			$this->assertEquals(_('Pre-modify'), $script->getTypeLabel());
 
 			$script = $scripts[4];
-			$configuredType = new ConfiguredType($typeManager, 'group', 'group_3');
-			$configuredWrongType = new ConfiguredType($typeManager, 'group', 'group_1');
-			$this->assertTrue($script->matchesConfiguredType($configuredType));
-			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertTrue($script->isManual());
 			$this->assertEquals('echo group3', $script->getCommand());
 			$this->assertEquals('manual', $script->getType());
 			$this->assertNull($script->getLabel());
 
 			$script = $scripts[5];
-			$configuredType = new ConfiguredType($typeManager, 'group', 'group_3');
-			$configuredWrongType = new ConfiguredType($typeManager, 'gon', 'gon_1');
-			$this->assertTrue($script->matchesConfiguredType($configuredType));
-			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertFalse($script->isManual());
 			$this->assertEquals('echo group3', $script->getCommand());
 			$this->assertEquals('postCreate', $script->getType());
@@ -142,10 +118,6 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 			$this->assertEquals(_('Post-create'), $script->getTypeLabel());
 
 			$script = $scripts[6];
-			$configuredType = new ConfiguredType($typeManager, 'group', 'group_3');
-			$configuredWrongType = new ConfiguredType($typeManager, 'gon', 'gon_1');
-			$this->assertTrue($script->matchesConfiguredType($configuredType));
-			$this->assertFalse($script->matchesConfiguredType($configuredWrongType));
 			$this->assertFalse($script->isManual());
 			$this->assertEquals('echo group', $script->getCommand());
 			$this->assertEquals('preCreate', $script->getType());
@@ -174,7 +146,7 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 
 		public function testCustomScriptParserSelfService() {
 			$parser = new \CustomScriptParser();
-			$scripts = $parser->parse($this->configLinesSelfService, true);
+			$scripts = $parser->parse($this->configLinesSelfService);
 
 			$this->assertNotEmpty($scripts);
 			$this->assertEquals(2, count($scripts));
