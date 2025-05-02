@@ -51,16 +51,13 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 				'LAM_TEXT_COMMENT: Comment=no comment',
 				'LAM_TEXT_AMOUNT:Amount',
 				'LAM_GROUP: Group 1',
-				'user manual LAMLABEL="echo uid" echo $uid$',
+				'manual LAMLABEL="echo uid" echo $uid$',
 				'LAM_GROUP: Group 2',
-				'user manual echo $description$',
-				'user postModify echo $dn$',
-				'gon preModify echo NEW $member$ OLD $ORIG.member$',
+				'manual echo $description$',
+				'postModify echo $dn$',
 				'',
 				'  ',
-				'group:group_3 manual echo group3',
-				'group:group_3 postCreate echo group3',
-				'group preCreate echo group',
+				'preCreate echo user',
 			];
 			$this->configLinesSelfService = [
 				'postModify echo $dn$',
@@ -73,8 +70,7 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 			$scripts = $parser->parse($this->configLines);
 
 			$this->assertNotEmpty($scripts);
-			$this->assertEquals(7, count($scripts));
-			$typeManager = new TypeManager();
+			$this->assertEquals(4, count($scripts));
 
 			$script = $scripts[0];
 			$this->assertTrue($script->isManual());
@@ -99,27 +95,7 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 
 			$script = $scripts[3];
 			$this->assertFalse($script->isManual());
-			$this->assertEquals('echo NEW $member$ OLD $ORIG.member$', $script->getCommand());
-			$this->assertEquals('preModify', $script->getType());
-			$this->assertNull($script->getLabel());
-			$this->assertEquals(_('Pre-modify'), $script->getTypeLabel());
-
-			$script = $scripts[4];
-			$this->assertTrue($script->isManual());
-			$this->assertEquals('echo group3', $script->getCommand());
-			$this->assertEquals('manual', $script->getType());
-			$this->assertNull($script->getLabel());
-
-			$script = $scripts[5];
-			$this->assertFalse($script->isManual());
-			$this->assertEquals('echo group3', $script->getCommand());
-			$this->assertEquals('postCreate', $script->getType());
-			$this->assertNull($script->getLabel());
-			$this->assertEquals(_('Post-create'), $script->getTypeLabel());
-
-			$script = $scripts[6];
-			$this->assertFalse($script->isManual());
-			$this->assertEquals('echo group', $script->getCommand());
+			$this->assertEquals('echo user', $script->getCommand());
 			$this->assertEquals('preCreate', $script->getType());
 			$this->assertNull($script->getLabel());
 			$this->assertEquals(_('Pre-create'), $script->getTypeLabel());
