@@ -609,6 +609,36 @@
       intermediate release.</para>
 
       <section>
+        <title>9.1 -&gt; 9.2</title>
+
+        <para>LAM Pro:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Custom scripts: The settings in server profile were split by
+            account type. If you use custom scripts then please perform these
+            steps for each server profile that uses them:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Open server profile and switch to tab "Module
+                settings"</para>
+              </listitem>
+
+              <listitem>
+                <para>Review the automated migration of the custom scripts
+                settings</para>
+              </listitem>
+
+              <listitem>
+                <para>Save the server profile</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
         <title>9.0 -&gt; 9.1</title>
 
         <para>No actions required.</para>
