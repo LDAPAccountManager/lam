@@ -120,9 +120,9 @@ function setlanguage() {
  * @param string $target owner, group or other
  * @param string $chmod the chmod rights
  *
- * @return true, if the chmod $right for $target were set
+ * @return bool true, if the chmod $right for $target were set
  */
-function checkChmod($right, $target, $chmod) {
+function checkChmod($right, $target, $chmod): bool {
 	$right_arr = ["read", "write", "execute"];
 	$target_arr = ["owner", "group", "other"];
 
@@ -133,13 +133,13 @@ function checkChmod($right, $target, $chmod) {
 
 	$chmod_num = -1;
 	// owner:
-	if ($target == "owner") {
+	if ($target === "owner") {
 		$chmod_num = 0;
 	}
-	if ($target == "group") {
+	if ($target === "group") {
 		$chmod_num = 1;
 	}
-	if ($target == "other") {
+	if ($target === "other") {
 		$chmod_num = 2;
 	}
 
@@ -153,9 +153,9 @@ function checkChmod($right, $target, $chmod) {
 	$write = [2, 3, 6, 7];
 	// What numbers allow "execute"
 	$execute = [1, 3, 5, 7];
-	return (($right == "read") && in_array($chmod_num, $read))
-		|| (($right == "write") && in_array($chmod_num, $write))
-		|| (($right == "execute") && in_array($chmod_num, $execute));
+	return (($right === "read") && in_array($chmod_num, $read))
+		|| (($right === "write") && in_array($chmod_num, $write))
+		|| (($right === "execute") && in_array($chmod_num, $execute));
 }
 
 /**
