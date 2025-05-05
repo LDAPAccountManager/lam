@@ -616,8 +616,9 @@
         <itemizedlist>
           <listitem>
             <para>Custom scripts: The settings in server profile were split by
-            account type. If you use custom scripts then please perform these
-            steps for each server profile that uses them:</para>
+            account type. If you use custom scripts then you need to perform
+            these steps for each server profile that uses them (no scripts
+            will be executed till migration was done):</para>
 
             <itemizedlist>
               <listitem>
