@@ -4,6 +4,8 @@ June 2025 9.2
  - Multi-edit tool: change operations are combined by DN to allow e.g. adding object classes with required attributes (408)
  - Windows users: support thumbnail images (needs to be activated in server profile) (431)
  - Tree view: better editing of olcAccess (420)
+ - LAM Pro:
+  -> Custom scripts: split config by account type (409)
  - Fixed bugs:
   -> Unix: profile editor for users not working (418)
   -> Custom fields: problems with deleting facsimileTelephoneNumber (419)
