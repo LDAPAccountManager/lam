@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdnyak
-                2009 - 2024  Roland Gruber
+                2009 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1062,7 +1062,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				'username', $this->messages['AstAccountType'][2], $messages);
 			//add password
 			if ($rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']] != "") {
-				$attributes = ['AstAccountCallerID' => [$partialAccounts[$i]['AstAccountCallerID']]]; // fake attribute list for password building
+				$attributes = ['AstAccountCallerID' => $partialAccounts[$i]['AstAccountCallerID']]; // fake attribute list for password building
 				$pwdString = asteriskAccount::buildPasswordString($attributes, $this->moduleSettings, $rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']]);
 				$partialAccounts[$i]['AstAccountRealmedPassword'] = $pwdString;
 			}

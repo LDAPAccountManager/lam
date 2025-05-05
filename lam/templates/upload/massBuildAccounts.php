@@ -137,13 +137,13 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	logNewMessage(LOG_DEBUG, 'Reading CSV file');
 	$handle = fopen($_FILES['inputfile']['tmp_name'], "r");
 	if ($handle !== false) {
-		$head = fgetcsv($handle, 2000);
+		$head = fgetcsv($handle, 2000, escape: '');
 		if ($head !== false ) { // head row
 			foreach ($head as $i => $headItem) {
 				$ids[$headItem] = $i;
 			}
 		}
-		while (($line = fgetcsv($handle, 2000)) !== false ) { // account rows
+		while (($line = fgetcsv($handle, 2000, escape: '')) !== false ) { // account rows
 			$data[] = $line;
 		}
 		fclose($handle);

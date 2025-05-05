@@ -2914,7 +2914,7 @@ class LAMCfgMain {
 	const ERROR_REPORTING_DEFAULT = 'default';
 	/** PHP error reporting setting from php.ini */
 	const ERROR_REPORTING_SYSTEM = 'system';
-	/** PHP error reporting setting as E_ALL | E_STRICT */
+	/** PHP error reporting setting as E_ALL */
 	const ERROR_REPORTING_ALL = 'all';
 
 	/** send license warnings via email */

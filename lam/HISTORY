@@ -1,4 +1,5 @@
 June 2025 9.2
+ - PHP 8.4 compatibility
  - TAK support added
  - Active Directory: allow to restore deleted entries in tree view (415)
  - Multi-edit tool: change operations are combined by DN to allow e.g. adding object classes with required attributes (408)

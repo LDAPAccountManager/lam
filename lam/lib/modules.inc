@@ -763,14 +763,14 @@ class accountContainer {
 	 */
 	function __construct($type, $base) {
 		if (!($type instanceof ConfiguredType)) {
-			trigger_error('Argument of accountContainer must be ConfiguredType.', E_USER_ERROR);
+			die('Argument of accountContainer must be ConfiguredType.');
 		}
 		if (!is_string($base)) {
-			trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
+			die('Argument base of accountContainer must be string: ' . $base);
 		}
 		$this->type = $type;
 		$this->base = $base;
-		// Set startpage
+		// Set start page
 		$this->current_page = 0;
 		$this->subpage = 'attributes';
 		$this->isNewAccount = false;
