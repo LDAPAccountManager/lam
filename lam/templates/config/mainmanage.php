@@ -139,6 +139,7 @@ if (isset($_POST['submitFormData'])) {
 		// set database
 		$cfg->configDatabaseType = $_POST['configDatabaseType'];
 		$cfg->configDatabaseServer = $_POST['configDatabaseServer'];
+		$cfg->configDatabaseSSLCA = $_POST['configDatabaseSSLCA'];
 		$cfg->configDatabasePort = $_POST['configDatabasePort'];
 		$cfg->configDatabaseName = $_POST['configDatabaseName'];
 		$cfg->configDatabaseUser = $_POST['configDatabaseUser'];
@@ -446,11 +447,11 @@ if (isset($_POST['submitFormData'])) {
 		$storageProviderSelect->setHasDescriptiveElements(true);
 		$dbRowsToShow = [
 			LAMCfgMain::DATABASE_FILE_SYSTEM => [],
-			LAMCfgMain::DATABASE_MYSQL => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword']
+			LAMCfgMain::DATABASE_MYSQL => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword', 'configDatabaseSSLCA']
 		];
 		$storageProviderSelect->setTableRowsToShow($dbRowsToShow);
 		$dbRowsToHide = [
-			LAMCfgMain::DATABASE_FILE_SYSTEM => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'],
+			LAMCfgMain::DATABASE_FILE_SYSTEM => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword', 'configDatabaseSSLCA'],
 			LAMCfgMain::DATABASE_MYSQL => []
 		];
 		$storageProviderSelect->setTableRowsToHide($dbRowsToHide);
@@ -458,6 +459,8 @@ if (isset($_POST['submitFormData'])) {
 		$dbHost = new htmlResponsiveInputField(_('Database host'), 'configDatabaseServer', $cfg->configDatabaseServer, '273');
 		$dbHost->setRequired(true);
 		$row->add($dbHost);
+		$dbHostSSLCA = new htmlResponsiveInputField(_('Database host SSL CA'), 'configDatabaseSSLCA', $cfg->configDatabaseSSLCA, '276');
+		$row->add($dbHostSSLCA);
 		$dbPort = new htmlResponsiveInputField(_('Database port'), 'configDatabasePort', $cfg->configDatabasePort, '274');
 		$row->add($dbPort);
 		$dbName = new htmlResponsiveInputField(_('Database name'), 'configDatabaseName', $cfg->configDatabaseName, '276');
