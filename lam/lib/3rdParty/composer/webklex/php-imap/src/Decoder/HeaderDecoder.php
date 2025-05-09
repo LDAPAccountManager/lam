@@ -21,7 +21,7 @@ use Webklex\PHPIMAP\EncodingAliases;
  */
 class HeaderDecoder extends Decoder {
 
-    public function decode(array|string|null $value, string $encoding = null): mixed {
+    public function decode(array|string|null $value, ?string $encoding = null): mixed {
         if (is_array($value)) {
             return $this->decodeHeaderArray($value);
         }

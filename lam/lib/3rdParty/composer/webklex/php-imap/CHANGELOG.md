@@ -14,6 +14,20 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Breaking changes
 - NaN
 
+## [6.2.0] - 2025-04-25
+### Fixed
+- When using the chunk function, some messages do not have an element with index 0 #552 #553 (thanks @zeddmaster)
+- Get folders list in hierarchical order #560 #561 (thanks @rskrzypczak)
+- Fix remaining implicit marking of parameters as nullable (PHP 8.4) #566 (thanks @steffenweber)
+- Fix case sensitivity of folder attribute parsing (\NoSelect, \NoInferiors) #469 #571 (thanks @smajti1)
+- Fix error on getUid(null) with 0 results (#499) #573 (thanks @pierement)
+- Fix Date parsing on non-standard format from Aqua Mail #574 #575 (thanks @lm-cmxkonzepte)
+
+### Added
+- SSL stream context options added #238 #546 (thanks @llemoine)
+- Support copy/move Message with utf7 folder path #559 (thanks @loc4l)
+- Public `Query::search()` method #565 (Thanks @madbob)
+
 ## [6.1.0] - 2025-01-19
 ### Fixed
 - Filename sanitization is now optional (enabled via default)
@@ -65,12 +79,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - `Attachment::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$attachment->setOptions` instead.
 - `Header::setConfig` now expects the client configuration instead of the fetching options configuration. Please use `$header->setOptions` instead.
 - All protocol constructors now require a `Config::class` instance
-- The `Client::class` constructor now require a `Config::class` instance 
-- The `Part::class` constructor now require a `Config::class` instance 
-- The `Header::class` constructor now require a `Config::class` instance 
-- The `Message::fromFile` method now requires a `Config::class` instance 
-- The `Message::fromString` method now requires a `Config::class` instance 
-- The `Message::boot` method now requires a `Config::class` instance 
+- The `Client::class` constructor now require a `Config::class` instance
+- The `Part::class` constructor now require a `Config::class` instance
+- The `Header::class` constructor now require a `Config::class` instance
+- The `Message::fromFile` method now requires a `Config::class` instance
+- The `Message::fromString` method now requires a `Config::class` instance
+- The `Message::boot` method now requires a `Config::class` instance
 - The `Message::decode` method has been removed. Use `Message::getDecoder()->decode($str)` instead.
 - The `Message::getEncoding` method has been removed. Use `Message::getDecoder()->getEncoding($str)` instead.
 - The `Message::convertEncoding` method has been removed. Use `Message::getDecoder()->convertEncoding()` instead.
@@ -366,7 +380,7 @@ If you have any questions, please feel welcome to join this issue: https://githu
 - Extend date parsing error message #173
 - Fixed 'Where' method replaces the content with uppercase #148
 - Don't surround numeric search values with quotes
-- Context added to `InvalidWhereQueryCriteriaException` 
+- Context added to `InvalidWhereQueryCriteriaException`
 - Redundant `stream_set_timeout()` removed
 
 ### Added
@@ -537,7 +551,7 @@ If you have any questions, please feel welcome to join this issue: https://githu
 - Alias `Message::removeFlag()` for `Message::unsetFlag()` added
 - Alias `Message::flags()` for `Message::getFlags()` added
 - New Exception `MessageFlagException::class` added
-- New method `Message::setSequenceId($id)` added 
+- New method `Message::setSequenceId($id)` added
 - Optional Header attributizion option added
 
 ### Affected Classes
@@ -549,7 +563,7 @@ If you have any questions, please feel welcome to join this issue: https://githu
 - [Attribute::class](src/Attribute.php)
 
 ### Breaking changes
-- Stringified message headers are now separated by ", " instead of " ". 
+- Stringified message headers are now separated by ", " instead of " ".
 - All message header values such as subject, message_id, from, to, etc now consists of an `Àttribute::class` instance (should behave the same way as before, but might cause some problem in certain edge cases)
 - The formal address object "from", "to", etc now consists of an `Address::class` instance  (should behave the same way as before, but might cause some problem in certain edge cases)
 - When fetching or manipulating message flags a `MessageFlagException::class` exception can be thrown if a runtime error occurs
@@ -559,12 +573,12 @@ If you have any questions, please feel welcome to join this issue: https://githu
 
 ## [2.3.1] - 2020-12-30
 ### Fixed
-- Missing RFC attributes added 
+- Missing RFC attributes added
 - Set the message sequence when idling
 - Missing UID commands added #64
 
 ### Added
-- Get a message by its message number 
+- Get a message by its message number
 - Get a message by its uid #72 #66 #63
 
 ### Affected Classes
@@ -585,7 +599,7 @@ If you have any questions, please feel welcome to join this issue: https://githu
 - `Message::getTextBody()` fallback value fixed
 
 ### Added
-- Proxy support added 
+- Proxy support added
 - Flexible disposition support added #58
 - New `options.message_key` option `uid` added
 - Protocol UID support added
@@ -919,7 +933,7 @@ If you have any questions, please feel welcome to join this issue: https://githu
 - Imap client timeout can be modified and read #186
 - Decoder config options added #175
 - Message search criteria "NOT" added #181
-- Invalid message date exception added 
+- Invalid message date exception added
 - Blade examples
 
 ### Breaking changes

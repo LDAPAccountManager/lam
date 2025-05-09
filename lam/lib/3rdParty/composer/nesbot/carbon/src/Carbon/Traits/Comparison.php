@@ -461,6 +461,36 @@ trait Comparison
     }
 
     /**
+     * Determines if the instance is now or in the future, ie. greater (after) than or equal to now.
+     *
+     * @example
+     * ```
+     * Carbon::now()->isNowOrFuture(); // true
+     * Carbon::now()->addHours(5)->isNowOrFuture(); // true
+     * Carbon::now()->subHours(5)->isNowOrFuture(); // false
+     * ```
+     */
+    public function isNowOrFuture(): bool
+    {
+        return $this->greaterThanOrEqualTo($this->nowWithSameTz());
+    }
+
+    /**
+     * Determines if the instance is now or in the past, ie. less (before) than or equal to now.
+     *
+     * @example
+     * ```
+     * Carbon::now()->isNowOrPast(); // true
+     * Carbon::now()->subHours(5)->isNowOrPast(); // true
+     * Carbon::now()->addHours(5)->isNowOrPast(); // false
+     * ```
+     */
+    public function isNowOrPast(): bool
+    {
+        return $this->lessThanOrEqualTo($this->nowWithSameTz());
+    }
+
+    /**
      * Determines if the instance is a leap year.
      *
      * @example
@@ -1242,7 +1272,7 @@ trait Comparison
 
         if (preg_match('/^(?:Jan|January|Feb|February|Mar|March|Apr|April|May|Jun|June|Jul|July|Aug|August|Sep|September|Oct|October|Nov|November|Dec|December)$/i', $tester)) {
             return $this->isSameMonth(
-                $this->transmitFactory(static fn () => static::parse($tester)),
+                $this->transmitFactory(static fn () => static::parse("$tester 1st")),
                 false,
             );
         }
@@ -1253,10 +1283,8 @@ trait Comparison
             );
         }
 
-        if (preg_match('/^\d{1,2}-\d{1,2}$/', $tester)) {
-            return $this->isSameDay(
-                $this->transmitFactory(fn () => static::parse($this->year.'-'.$tester)),
-            );
+        if (preg_match('/^(\d{1,2})-(\d{1,2})$/', $tester, $match)) {
+            return $this->month === (int) $match[1] && $this->day === (int) $match[2];
         }
 
         $modifier = preg_replace('/(\d)h$/i', '$1:00', $tester);

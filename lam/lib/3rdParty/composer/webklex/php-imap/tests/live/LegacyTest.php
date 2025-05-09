@@ -236,7 +236,7 @@ class LegacyTest extends TestCase {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    final protected function deleteFolder(Folder $folder = null): bool {
+    final protected function deleteFolder(?Folder $folder = null): bool {
         $response = $folder?->delete(false);
         if (is_array($response)) {
             $valid_response = false;
@@ -423,7 +423,7 @@ class LegacyTest extends TestCase {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    protected function assertWhereSearchCriteria(Folder $folder, string $criteria, Carbon|string $value = null, bool $date = false): void {
+    protected function assertWhereSearchCriteria(Folder $folder, string $criteria, Carbon|string|null $value = null, bool $date = false): void {
         $query = $folder->query()->where($criteria, $value);
         self::assertInstanceOf(WhereQuery::class, $query);
 

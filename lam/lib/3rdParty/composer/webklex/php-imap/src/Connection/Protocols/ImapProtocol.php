@@ -770,6 +770,7 @@ class ImapProtocol extends Protocol {
         if (is_array($from) && count($from) > 1) {
             $set = implode(',', $from);
         } elseif (is_array($from) && count($from) === 1) {
+            $from = array_values($from);
             $set = $from[0] . ':' . $from[0];
         } elseif ($to === null) {
             $set = $from . ':' . $from;
@@ -939,7 +940,7 @@ class ImapProtocol extends Protocol {
         $uids = $this->uid_cache;
 
         if ($id == null) {
-            return Response::empty($this->debug)->setResult($uids);
+            return Response::empty($this->debug)->setResult($uids)->setCanBeEmpty(true);
         }
 
         foreach ($uids as $k => $v) {

@@ -193,7 +193,7 @@ class Query {
      * @throws ImapServerErrorException
      * @throws ResponseException
      */
-    protected function search(): Collection {
+    public function search(): Collection {
         $this->generate_query();
 
         try {

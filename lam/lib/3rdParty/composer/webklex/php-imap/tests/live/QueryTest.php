@@ -231,7 +231,7 @@ class QueryTest extends LiveMailboxTestCase {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    protected function assertWhereSearchCriteria(Folder $folder, string $criteria, Carbon|string $value = null, bool $date = false): void {
+    protected function assertWhereSearchCriteria(Folder $folder, string $criteria, Carbon|string|null $value = null, bool $date = false): void {
         $query = $folder->query()->where($criteria, $value);
         self::assertInstanceOf(WhereQuery::class, $query);
 

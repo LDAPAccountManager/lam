@@ -529,6 +529,8 @@ class CarbonPeriod extends DatePeriodBase implements Countable, JsonSerializable
      * });
      * echo CarbonPeriod::since('2011-05-12')->until('2011-06-03')->middle();
      * ```
+     *
+     * @param-closure-this  static  $macro
      */
     public static function macro(string $name, ?callable $macro): void
     {
@@ -862,8 +864,8 @@ class CarbonPeriod extends DatePeriodBase implements Countable, JsonSerializable
     /**
      * Change the period date interval.
      *
-     * @param DateInterval|string|int $interval
-     * @param Unit|string             $unit     the unit of $interval if it's a number
+     * @param DateInterval|Unit|string|int $interval
+     * @param Unit|string                  $unit     the unit of $interval if it's a number
      *
      * @throws InvalidIntervalException
      *

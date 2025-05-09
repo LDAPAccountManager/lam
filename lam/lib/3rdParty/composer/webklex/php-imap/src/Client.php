@@ -100,6 +100,16 @@ class Client {
         'password' => null,
     ];
 
+
+    /**
+     * SSL stream context options
+     *
+     * @see https://www.php.net/manual/en/context.ssl.php for possible options
+     *
+     * @var array
+     */
+    protected array $ssl_options = [];
+
     /**
      * Connection timeout
      * @var int $timeout
@@ -184,7 +194,8 @@ class Client {
             'username' => null,
             'password' => null,
         ],
-        "timeout" => 30
+        'ssl_options' => [],
+        "timeout" => 30,
     ];
 
     /**
@@ -436,6 +447,7 @@ class Client {
             $this->connection = new ImapProtocol($this->config, $this->validate_cert, $this->encryption);
             $this->connection->setConnectionTimeout($this->timeout);
             $this->connection->setProxy($this->proxy);
+            $this->connection->setSslOptions($this->ssl_options);
         }else{
             if (extension_loaded('imap') === false) {
                 throw new ConnectionFailedException("connection setup failed", 0, new ProtocolNotSupportedException($protocol." is an unsupported protocol"));
@@ -592,7 +604,7 @@ class Client {
                 $folder = new Folder($this, $folder_name, $item["delimiter"], $item["flags"]);
 
                 if ($hierarchical && $folder->hasChildren()) {
-                    $pattern = $folder->full_name.$folder->delimiter.'%';
+                    $pattern = $folder->path.$folder->delimiter.'%';
 
                     $children = $this->getFolders(true, $pattern, true);
                     $folder->setChildren($children);
@@ -638,7 +650,7 @@ class Client {
                 $folder = new Folder($this, $folder_name, $item["delimiter"], $item["flags"]);
 
                 if ($hierarchical && $folder->hasChildren()) {
-                    $pattern = $folder->full_name.$folder->delimiter.'%';
+                    $pattern = $folder->path.$folder->delimiter.'%';
 
                     $children = $this->getFoldersWithStatus(true, $pattern, true);
                     $folder->setChildren($children);

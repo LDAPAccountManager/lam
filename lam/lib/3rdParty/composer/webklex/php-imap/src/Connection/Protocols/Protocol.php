@@ -72,6 +72,15 @@ abstract class Protocol implements ProtocolInterface {
     ];
 
     /**
+     * SSL stream context options
+     *
+     * @see https://www.php.net/manual/en/context.ssl.php for possible options
+     *
+     * @var array
+     */
+    protected array $ssl_options = [];
+
+    /**
      * Cache for uid of active folder.
      *
      * @var array
@@ -163,6 +172,28 @@ abstract class Protocol implements ProtocolInterface {
     }
 
     /**
+     * Set SSL context options settings
+     * @var array $options
+     *
+     * @return Protocol
+     */
+    public function setSslOptions(array $options): Protocol
+    {
+        $this->ssl_options = $options;
+
+        return $this;
+    }
+
+    /**
+     * Get the current SSL context options settings
+     *
+     * @return array
+     */
+    public function getSslOptions(): array {
+        return $this->ssl_options;
+    }
+
+    /**
      * Prepare socket options
      * @return array
      *@var string $transport
@@ -175,6 +206,11 @@ abstract class Protocol implements ProtocolInterface {
                 'verify_peer_name' => $this->getCertValidation(),
                 'verify_peer'      => $this->getCertValidation(),
             ];
+
+            if (count($this->ssl_options)) {
+                /* Get the ssl context options from the config, but prioritize the 'validate_cert' config over the ssl context options */
+                $options["ssl"] = array_replace($this->ssl_options, $options["ssl"]);
+            }
         }
 
         if ($this->proxy["socket"] != null) {

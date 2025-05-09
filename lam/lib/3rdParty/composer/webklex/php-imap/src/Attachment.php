@@ -462,7 +462,7 @@ class Attachment {
      * @return mixed
      * @throws MaskNotFoundException
      */
-    public function mask(string $mask = null): mixed {
+    public function mask(?string $mask = null): mixed {
         $mask = $mask !== null ? $mask : $this->mask;
         if (class_exists($mask)) {
             return new $mask($this);

@@ -983,6 +983,7 @@ class Message {
      * Copy the current Messages to a mailbox
      * @param string $folder_path
      * @param boolean $expunge
+     * @param bool $utf7
      *
      * @return null|Message
      * @throws AuthFailedException
@@ -999,7 +1000,7 @@ class Message {
      * @throws RuntimeException
      * @throws ResponseException
      */
-    public function copy(string $folder_path, bool $expunge = false): ?Message {
+    public function copy(string $folder_path, bool $expunge = false, bool $utf7 = false): ?Message {
         $this->client->openFolder($folder_path);
         $status = $this->client->getConnection()->examineFolder($folder_path)->validatedData();
 
@@ -1010,7 +1011,7 @@ class Message {
             }
 
             /** @var Folder $folder */
-            $folder = $this->client->getFolderByPath($folder_path);
+            $folder = $this->client->getFolderByPath($folder_path, $utf7);
 
             $this->client->openFolder($this->folder_path);
             if ($this->client->getConnection()->copyMessage($folder->path, $this->getSequenceId(), null, $this->sequence)->validatedData()) {
@@ -1025,6 +1026,7 @@ class Message {
      * Move the current Messages to a mailbox
      * @param string $folder_path
      * @param boolean $expunge
+     * @param bool $utf7
      *
      * @return Message|null
      * @throws AuthFailedException
@@ -1041,7 +1043,7 @@ class Message {
      * @throws RuntimeException
      * @throws ResponseException
      */
-    public function move(string $folder_path, bool $expunge = false): ?Message {
+    public function move(string $folder_path, bool $expunge = false, bool $utf7 = false): ?Message {
         $this->client->openFolder($folder_path);
         $status = $this->client->getConnection()->examineFolder($folder_path)->validatedData();
 
@@ -1052,7 +1054,7 @@ class Message {
             }
 
             /** @var Folder $folder */
-            $folder = $this->client->getFolderByPath($folder_path);
+            $folder = $this->client->getFolderByPath($folder_path, $utf7);
 
             $this->client->openFolder($this->folder_path);
             if ($this->client->getConnection()->moveMessage($folder->path, $this->getSequenceId(), null, $this->sequence)->validatedData()) {

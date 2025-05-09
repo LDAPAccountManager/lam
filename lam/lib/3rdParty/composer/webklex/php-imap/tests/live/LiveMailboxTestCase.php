@@ -200,7 +200,7 @@ abstract class LiveMailboxTestCase extends TestCase {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    final protected function deleteFolder(Folder $folder = null): bool {
+    final protected function deleteFolder(?Folder $folder = null): bool {
         $response = $folder?->delete(false);
         if (is_array($response)) {
             $valid_response = false;

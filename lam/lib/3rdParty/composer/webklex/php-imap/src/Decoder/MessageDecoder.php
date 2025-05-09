@@ -23,7 +23,7 @@ use Webklex\PHPIMAP\IMAP;
  */
 class MessageDecoder extends Decoder {
 
-    public function decode(array|string|null $value, string $encoding = null): mixed {
+    public function decode(array|string|null $value, ?string $encoding = null): mixed {
         if(is_array($value)) {
             return array_map(function($item){
                 return $this->decode($item);

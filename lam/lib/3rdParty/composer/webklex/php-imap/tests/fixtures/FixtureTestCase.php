@@ -84,7 +84,7 @@ abstract class FixtureTestCase extends TestCase {
      * @throws ResponseException
      * @throws RuntimeException
      */
-    final public function getFixture(string $template, Config $config = null) : Message {
+    final public function getFixture(string $template, ?Config $config = null) : Message {
         $filename = implode(DIRECTORY_SEPARATOR, [__DIR__, "..",  "messages", $template]);
         $message = Message::fromFile($filename, $config);
         self::assertInstanceOf(Message::class, $message);

@@ -48,5 +48,17 @@ class ImapProtocolTest extends TestCase {
 
         self::assertSame(true, $protocol->getCertValidation());
         self::assertSame("ssl", $protocol->getEncryption());
+
+        $protocol->setSslOptions([
+            'verify_peer' => true,
+            'cafile' => '/dummy/path/for/testing',
+            'peer_fingerprint' => ['md5' => 40],
+        ]);
+
+        self::assertSame([
+            'verify_peer' => true,
+            'cafile' => '/dummy/path/for/testing',
+            'peer_fingerprint' => ['md5' => 40],
+        ], $protocol->getSslOptions());
     }
 }
