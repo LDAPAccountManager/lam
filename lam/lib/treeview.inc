@@ -1136,7 +1136,7 @@ class TreeView {
 	 * @param string|null $errorMessage error if any
 	 * @return string JSON data
 	 */
-	private function createNewNodeGetObjectClassesStep(string $dn, string $errorMessage = null): string {
+	private function createNewNodeGetObjectClassesStep(string $dn, ?string $errorMessage = null): string {
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlTitle(_('Create a child entry')));
 		if ($errorMessage !== null) {
