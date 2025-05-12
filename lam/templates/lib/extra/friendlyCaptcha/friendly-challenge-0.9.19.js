@@ -275,7 +275,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
           try {
             var response;
             return Promise.resolve(fetchAndRetryWithBackoff(urls[i] + "?sitekey=" + siteKey, {
-              headers: [["x-frc-client", "js-0.9.18"]],
+              headers: [["x-frc-client", "js-0.9.19"]],
               mode: "cors"
             }, 2)).then(function ($await_7) {
               try {
