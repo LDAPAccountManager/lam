@@ -3,19 +3,19 @@
 namespace LAM\TOOLS\PDF_EDITOR;
 
 use htmlJavaScript;
-use \htmlResponsiveRow;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputField;
-use \htmlTitle;
-use \htmlButton;
-use \htmlOutputText;
-use \htmlGroup;
-use \htmlSelect;
-use \htmlInputField;
-use \htmlSubTitle;
-use \htmlResponsiveInputTextarea;
-use \htmlHiddenInput;
-use \htmlSpacer;
+use htmlResponsiveRow;
+use htmlResponsiveSelect;
+use htmlResponsiveInputField;
+use htmlTitle;
+use htmlButton;
+use htmlOutputText;
+use htmlGroup;
+use htmlSelect;
+use htmlInputField;
+use htmlSubTitle;
+use htmlResponsiveInputTextarea;
+use htmlHiddenInput;
+use htmlSpacer;
 use LAM\PDF\PdfLogo;
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PDF\PDFTextSection;
@@ -27,7 +27,7 @@ use LAMException;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2024  Roland Gruber
+                2007 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -246,17 +246,17 @@ $sectionElements = [];
 $nonTextSectionElements = [];
 
 $container = new htmlResponsiveRow();
-$container->add(new htmlTitle(_('PDF editor')), 12);
+$container->add(new htmlTitle(_('PDF editor')));
 
 // main content
 $mainContent = new htmlResponsiveRow();
 $structureNameInput = new htmlResponsiveInputField(_("Structure name"), 'pdfname', $structureName, '360');
 $structureNameInput->setRequired(true);
-$mainContent->add($structureNameInput, 12);
-$mainContent->add(new htmlResponsiveInputField(_('Headline'), 'headline', $headline), 12);
+$mainContent->add($structureNameInput);
+$mainContent->add(new htmlResponsiveInputField(_('Headline'), 'headline', $headline));
 $logoSelect = new htmlResponsiveSelect('logoFile', $logos, $selectedLogo, _('Logo'));
 $logoSelect->setHasDescriptiveElements(true);
-$mainContent->add($logoSelect, 12);
+$mainContent->add($logoSelect);
 $foldingMarks = 'no';
 if (isset($_SESSION['currentPDFStructure'])) {
 	$foldingMarks = $_SESSION['currentPDFStructure']->getFoldingMarks();
@@ -267,7 +267,7 @@ $possibleFoldingMarks = [
 ];
 $foldingMarksSelect = new htmlResponsiveSelect('foldingmarks', $possibleFoldingMarks, [$foldingMarks], _('Folding marks'));
 $foldingMarksSelect->setHasDescriptiveElements(true);
-$mainContent->add($foldingMarksSelect, 12);
+$mainContent->add($foldingMarksSelect);
 $mainContent->addVerticalSpacer('3rem');
 // PDF structure
 $structure = $_SESSION['currentPDFStructure'];
@@ -335,7 +335,7 @@ foreach ($sections as $key => $section) {
 			if ($fieldLabel === null) {
 				continue;
 			}
-			$structureContent->addVerticalSpacer('1rem');
+			$structureContent->addVerticalSpacer('0.5rem');
 			$fieldOutput = new htmlOutputText($fieldLabel);
 			$structureContent->addLabel($fieldOutput);
 			$actionGroup = new htmlGroup();
@@ -363,6 +363,7 @@ foreach ($sections as $key => $section) {
 	}
 	// We have to include a static text.
     elseif ($section instanceof PDFTextSection) {
+		$structureContent->addVerticalSpacer('2rem');
 		// Add current satic text for dropdown box needed for the position when inserting a new
 		// section or static text entry
 		$textSnippet = $section->getText();
@@ -374,7 +375,7 @@ foreach ($sections as $key => $section) {
 		$textSnippet = htmlspecialchars($textSnippet);
 		$sectionElements[_('Static text') . ': ' . $textSnippet] = $key;
 		$sectionHeadlineOutput = new htmlOutputText(_('Static text'));
-		$structureContent->addLabel($sectionHeadlineOutput);
+		$structureContent->add($sectionHeadlineOutput, 12, 6);
 		$actionGroup = new htmlGroup();
 		if ($key != 0) {
 			$actionGroup->addElement($linkUp);
@@ -393,40 +394,40 @@ foreach ($sections as $key => $section) {
 		$structureContent->addVerticalSpacer('1rem');
 		$staticTextOutput = new htmlOutputText($section->getText());
 		$staticTextOutput->setPreformatted();
-		$structureContent->add($staticTextOutput, 12);
+		$structureContent->add($staticTextOutput);
 	}
 }
 $sectionElements[_('End')] = count($structure->getSections());
-$mainContent->add($structureContent, 12);
-$container->add($mainContent, 12);
+$mainContent->add($structureContent);
+$container->add($mainContent);
 $container->addVerticalSpacer('2rem');
 
 // new field
 if (!empty($nonTextSectionElements)) {
 	$newFieldContainer = new htmlResponsiveRow();
-	$newFieldContainer->add(new htmlSubTitle(_('New field')), 12);
+	$newFieldContainer->add(new htmlSubTitle(_('New field')));
 	$newFieldFieldSelect = new htmlResponsiveSelect('new_field', $newFieldFieldElements, [], _('Field'));
 	$newFieldFieldSelect->setHasDescriptiveElements(true);
 	$newFieldFieldSelect->setContainsOptgroups(true);
-	$newFieldContainer->add($newFieldFieldSelect, 12);
+	$newFieldContainer->add($newFieldFieldSelect);
 	$newFieldSectionSelect = new htmlResponsiveSelect('add_field_position', $nonTextSectionElements, [], _('Position'));
 	$newFieldSectionSelect->setHasDescriptiveElements(true);
-	$newFieldContainer->add($newFieldSectionSelect, 12);
+	$newFieldContainer->add($newFieldSectionSelect);
 	$newFieldContainer->addLabel(new htmlOutputText('&nbsp;', false));
 	$newFieldContainer->addField(new htmlButton('add_new_field', _('Add')));
-	$container->add($newFieldContainer, 12);
+	$container->add($newFieldContainer);
 }
 
 // new section
 $container->addVerticalSpacer('1rem');
 $newSectionContent = new htmlResponsiveRow();
-$newSectionContent->add(new htmlSubTitle(_('New section')), 12);
+$newSectionContent->add(new htmlSubTitle(_('New section')));
 // add new section with text title
-$newSectionContent->add(new htmlResponsiveInputField(_("Headline"), 'new_section_text'), 12);
+$newSectionContent->add(new htmlResponsiveInputField(_("Headline"), 'new_section_text'));
 $newSectionPositionSelect1 = new htmlResponsiveSelect('add_sectionText_position', $sectionElements, [], _('Position'));
 $newSectionPositionSelect1->setHasDescriptiveElements(true);
 $newSectionPositionSelect1->setSortElements(false);
-$newSectionContent->add($newSectionPositionSelect1, 12);
+$newSectionContent->add($newSectionPositionSelect1);
 $newSectionContent->addLabel(new htmlOutputText('&nbsp;', false));
 $newSectionContent->addField(new htmlButton('add_sectionText', _('Add')));
 $newSectionContent->addVerticalSpacer('2rem');
@@ -434,28 +435,28 @@ $newSectionContent->addVerticalSpacer('2rem');
 $newSectionFieldSelect = new htmlResponsiveSelect('new_section_item', $newFieldFieldElements, [], _("Headline"));
 $newSectionFieldSelect->setHasDescriptiveElements(true);
 $newSectionFieldSelect->setContainsOptgroups(true);
-$newSectionContent->add($newSectionFieldSelect, 12);
+$newSectionContent->add($newSectionFieldSelect);
 $newSectionPositionSelect2 = new htmlResponsiveSelect('add_section_position', $sectionElements, [], _('Position'));
 $newSectionPositionSelect2->setHasDescriptiveElements(true);
 $newSectionPositionSelect2->setSortElements(false);
-$newSectionContent->add($newSectionPositionSelect2, 12);
+$newSectionContent->add($newSectionPositionSelect2);
 $newSectionContent->addLabel(new htmlOutputText('&nbsp;', false));
 $newSectionContent->addField(new htmlButton('add_section', _('Add')));
 
 // new text area
-$container->add($newSectionContent, 12);
+$container->add($newSectionContent);
 $container->addVerticalSpacer('1rem');
 $newTextFieldContent = new htmlResponsiveRow();
-$newTextFieldContent->add(new htmlSubTitle(_('New text area')), 12);
-$newTextFieldContent->add(new htmlResponsiveInputTextarea('text_text', '', 40, 3, _('Static text')), 12);
+$newTextFieldContent->add(new htmlSubTitle(_('New text area')));
+$newTextFieldContent->add(new htmlResponsiveInputTextarea('text_text', '', 40, 3, _('Static text')));
 $newTextFieldPositionSelect = new htmlResponsiveSelect('add_text_position', $sectionElements, [], _('Position'));
 $newTextFieldPositionSelect->setHasDescriptiveElements(true);
 $newTextFieldPositionSelect->setSortElements(false);
-$newTextFieldContent->add($newTextFieldPositionSelect, 12);
+$newTextFieldContent->add($newTextFieldPositionSelect);
 $newTextFieldContent->addLabel(new htmlOutputText('&nbsp;', false));
 $newTextFieldContent->addField(new htmlButton('add_text', _('Add')));
 $newTextFieldContent->addVerticalSpacer('2rem');
-$container->add($newTextFieldContent, 12);
+$container->add($newTextFieldContent);
 
 // buttons
 $buttonContainer = new htmlResponsiveRow();
@@ -466,12 +467,12 @@ $cancelButton->disableFormValidation();
 $buttonGroup = new htmlGroup();
 $buttonGroup->addElement($saveButton);
 $buttonGroup->addElement($cancelButton);
-$buttonContainer->add($buttonGroup, 12);
+$buttonContainer->add($buttonGroup);
 $buttonContainer->add(new htmlHiddenInput('modules', $modules), 4);
 $buttonContainer->add(new htmlHiddenInput('type', $type->getId()), 4);
 $buttonContainer->add(new htmlHiddenInput('form_submit', 'true'), 4);
 
-$container->add($buttonContainer, 12);
+$container->add($buttonContainer);
 addSecurityTokenToMetaHTML($container);
 
 if ((count($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
