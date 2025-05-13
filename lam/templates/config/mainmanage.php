@@ -459,7 +459,7 @@ if (isset($_POST['submitFormData'])) {
 		$dbHost = new htmlResponsiveInputField(_('Database host'), 'configDatabaseServer', $cfg->configDatabaseServer, '273');
 		$dbHost->setRequired(true);
 		$row->add($dbHost);
-		$dbHostSSLCA = new htmlResponsiveInputField(_('Database host SSL CA'), 'configDatabaseSSLCA', $cfg->configDatabaseSSLCA, '276');
+		$dbHostSSLCA = new htmlResponsiveInputField(_('CA certificate path'), 'configDatabaseSSLCA', $cfg->configDatabaseSSLCA, '277');
 		$row->add($dbHostSSLCA);
 		$dbPort = new htmlResponsiveInputField(_('Database port'), 'configDatabasePort', $cfg->configDatabasePort, '274');
 		$row->add($dbPort);
