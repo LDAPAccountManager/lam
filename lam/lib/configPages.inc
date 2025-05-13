@@ -3,7 +3,7 @@
 namespace LAM\CONFIG;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2024  Roland Gruber
+  Copyright (C) 2017 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -45,8 +45,6 @@ class ConfigurationPageTab {
 	const MODULE_SETTINGS = 'moduleSettings';
 	/** jobs */
 	const JOBS = 'jobs';
-	/** job history */
-	const JOB_HISTORY = 'jobHistory';
 
 }
 
@@ -97,7 +95,7 @@ function printConfigurationPageHeaderBar($conf) {
 /**
  * Prints the tab list.
  *
- * @param ConfigurationPageTab $active active tab
+ * @param string $active active tab
  */
 function printConfigurationPageTabs($active) {
 	$tabs = [
