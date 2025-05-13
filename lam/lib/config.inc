@@ -3064,6 +3064,9 @@ class LAMCfgMain {
 	/** database password */
 	public $configDatabasePassword = '';
 
+	/** database options */
+	public $configDatabaseSSLCA = '';
+
 	/** database password */
 	private $moduleSettings = '';
 
@@ -3080,14 +3083,14 @@ class LAMCfgMain {
 		'mailAttribute', 'mailBackupAttribute',
 		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
-		'configDatabasePassword', 'moduleSettings'
+		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings'
 	];
 
 	/** persistence settings are always stored on local file system */
 	private $persistenceSettings = [
 		'configDatabaseType', 'configDatabaseServer',
 		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
-		'configDatabasePassword', 'license'
+		'configDatabasePassword', 'configDatabaseSSLCA', 'license'
 	];
 
 	/**
