@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:6b64751f-4150-4635-ad1a-01a23b5e3537",
+  "serialNumber" : "urn:uuid:ffbec7df-117f-4b36-9f5b-d9808bbee486",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-03-10T07:25:14Z",
+    "timestamp" : "2025-05-13T07:01:31Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.1"
+      "version" : "9.2"
     }
   },
   "components" : [
@@ -71,7 +71,7 @@
       "bom-ref" : "5ffbae18-bc06-4fdb-ba19-f9e9e1afdda5",
       "group" : "cdx:npm:package:bundled",
       "name" : "friendly-challenge",
-      "version" : "0.9.18",
+      "version" : "0.9.19",
       "licenses" : [
         {
           "license" : {
@@ -79,14 +79,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/friendly-challenge@0.9.18"
+      "purl" : "pkg:npm/friendly-challenge@0.9.19"
     },
     {
       "type" : "library",
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.5.17",
+      "version" : "4.6.2",
       "licenses" : [
         {
           "license" : {
@@ -94,7 +94,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.2.24"
+      "purl" : "pkg:npm/jodit@4.6.2"
     },
     {
       "type" : "library",
@@ -116,7 +116,7 @@
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.17.2",
+      "version" : "11.20.0",
       "licenses" : [
         {
           "license" : {
@@ -124,7 +124,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.17.2"
+      "purl" : "pkg:npm/sweetalert2@11.20.0"
     },
     {
       "type" : "library",
@@ -139,7 +139,7 @@
       "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf",
       "group" : "cdx:composer:package",
       "name" : "tecnickcom/tcpdf",
-      "version" : "6.8.2",
+      "version" : "6.9.3",
       "licenses" : [
         {
           "license" : {
@@ -147,7 +147,7 @@
           }
         }
       ],
-      "purl" : "pkg:composer/tecnickcom/tcpdf@6.8.2"
+      "purl" : "pkg:composer/tecnickcom/tcpdf@6.9.3"
     },
     {
       "type" : "library",
@@ -169,7 +169,7 @@
       "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "group" : "cdx:npm:package:bundled",
       "name" : "wunderbaum",
-      "version" : "0.12.1",
+      "version" : "0.13.0",
       "licenses" : [
         {
           "license" : {
@@ -177,7 +177,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/wunderbaum@0.12.1"
+      "purl" : "pkg:npm/wunderbaum@0.13.0"
     }
   ],
   "dependencies" : [

@@ -1,5 +1,5 @@
 /*!
-* sweetalert2 v11.17.2
+* sweetalert2 v11.21.0
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -72,7 +72,7 @@
    */
 
   /** @type {SwalClass[]} */
-  const classNames = ['container', 'shown', 'height-auto', 'iosfix', 'popup', 'modal', 'no-backdrop', 'no-transition', 'toast', 'toast-shown', 'show', 'hide', 'close', 'title', 'html-container', 'actions', 'confirm', 'deny', 'cancel', 'default-outline', 'footer', 'icon', 'icon-content', 'image', 'input', 'file', 'range', 'select', 'radio', 'checkbox', 'label', 'textarea', 'inputerror', 'input-label', 'validation-message', 'progress-steps', 'active-progress-step', 'progress-step', 'progress-step-line', 'loader', 'loading', 'styled', 'top', 'top-start', 'top-end', 'top-left', 'top-right', 'center', 'center-start', 'center-end', 'center-left', 'center-right', 'bottom', 'bottom-start', 'bottom-end', 'bottom-left', 'bottom-right', 'grow-row', 'grow-column', 'grow-fullscreen', 'rtl', 'timer-progress-bar', 'timer-progress-bar-container', 'scrollbar-measure', 'icon-success', 'icon-warning', 'icon-info', 'icon-question', 'icon-error', 'draggable', 'dragging'];
+  const classNames = ['container', 'shown', 'height-auto', 'iosfix', 'popup', 'modal', 'no-backdrop', 'no-transition', 'toast', 'toast-shown', 'show', 'hide', 'close', 'title', 'html-container', 'actions', 'confirm', 'deny', 'cancel', 'footer', 'icon', 'icon-content', 'image', 'input', 'file', 'range', 'select', 'radio', 'checkbox', 'label', 'textarea', 'inputerror', 'input-label', 'validation-message', 'progress-steps', 'active-progress-step', 'progress-step', 'progress-step-line', 'loader', 'loading', 'styled', 'top', 'top-start', 'top-end', 'top-left', 'top-right', 'center', 'center-start', 'center-end', 'center-left', 'center-right', 'bottom', 'bottom-start', 'bottom-end', 'bottom-left', 'bottom-right', 'grow-row', 'grow-column', 'grow-fullscreen', 'rtl', 'timer-progress-bar', 'timer-progress-bar-container', 'scrollbar-measure', 'icon-success', 'icon-warning', 'icon-info', 'icon-question', 'icon-error', 'draggable', 'dragging'];
   const swalClasses = classNames.reduce((acc, className) => {
     acc[className] = swalPrefix + className;
     return acc;
@@ -822,6 +822,10 @@
     container.dataset['swal2Theme'] = params.theme;
     const targetElement = getTarget(params.target);
     targetElement.appendChild(container);
+    if (params.topLayer) {
+      container.setAttribute('popover', '');
+      container.showPopover();
+    }
     setupAccessibility(params);
     setupRTL(targetElement);
     addInputChangeListeners();
@@ -951,19 +955,30 @@
     }
     addClass([confirmButton, denyButton, cancelButton], swalClasses.styled);
 
-    // Buttons background colors
+    // Apply custom background colors to action buttons
     if (params.confirmButtonColor) {
-      confirmButton.style.backgroundColor = params.confirmButtonColor;
-      addClass(confirmButton, swalClasses['default-outline']);
+      confirmButton.style.setProperty('--swal2-confirm-button-background-color', params.confirmButtonColor);
     }
     if (params.denyButtonColor) {
-      denyButton.style.backgroundColor = params.denyButtonColor;
-      addClass(denyButton, swalClasses['default-outline']);
+      denyButton.style.setProperty('--swal2-deny-button-background-color', params.denyButtonColor);
     }
     if (params.cancelButtonColor) {
-      cancelButton.style.backgroundColor = params.cancelButtonColor;
-      addClass(cancelButton, swalClasses['default-outline']);
+      cancelButton.style.setProperty('--swal2-cancel-button-background-color', params.cancelButtonColor);
     }
+
+    // Apply the outline color to action buttons
+    applyOutlineColor(confirmButton);
+    applyOutlineColor(denyButton);
+    applyOutlineColor(cancelButton);
+  }
+
+  /**
+   * @param {HTMLElement} button
+   */
+  function applyOutlineColor(button) {
+    const buttonStyle = window.getComputedStyle(button);
+    const outlineColor = buttonStyle.backgroundColor.replace(/rgba?\((\d+), (\d+), (\d+).*/, 'rgba($1, $2, $3, 0.5)');
+    button.style.setProperty('--swal2-action-button-outline', buttonStyle.getPropertyValue('--swal2-outline').replace(/ rgba\(.*/, ` ${outlineColor}`));
   }
 
   /**
@@ -1928,6 +1943,11 @@
     // search for visible elements and select the next possible match
     if (focusableElements.length) {
       index = index + increment;
+
+      // shift + tab when .swal2-popup is focused
+      if (index === -2) {
+        index = focusableElements.length - 1;
+      }
 
       // rollover to first item
       if (index === focusableElements.length) {
@@ -3137,7 +3157,8 @@
     willClose: undefined,
     didClose: undefined,
     didDestroy: undefined,
-    scrollbarPadding: true
+    scrollbarPadding: true,
+    topLayer: false
   };
   const updatableParams = ['allowEscapeKey', 'allowOutsideClick', 'background', 'buttonsStyling', 'cancelButtonAriaLabel', 'cancelButtonColor', 'cancelButtonText', 'closeButtonAriaLabel', 'closeButtonHtml', 'color', 'confirmButtonAriaLabel', 'confirmButtonColor', 'confirmButtonText', 'currentProgressStep', 'customClass', 'denyButtonAriaLabel', 'denyButtonColor', 'denyButtonText', 'didClose', 'didDestroy', 'draggable', 'footer', 'hideClass', 'html', 'icon', 'iconColor', 'iconHtml', 'imageAlt', 'imageHeight', 'imageUrl', 'imageWidth', 'preConfirm', 'preDeny', 'progressSteps', 'returnFocus', 'reverseButtons', 'showCancelButton', 'showCloseButton', 'showConfirmButton', 'showDenyButton', 'text', 'title', 'titleText', 'theme', 'willClose'];
 
@@ -3214,8 +3235,8 @@
     if (params.backdrop === false && params.allowOutsideClick) {
       warn('"allowOutsideClick" parameter requires `backdrop` parameter to be set to `true`');
     }
-    if (params.theme && !['light', 'dark', 'auto', 'borderless'].includes(params.theme)) {
-      warn(`Invalid theme "${params.theme}". Expected "light", "dark", "auto", or "borderless"`);
+    if (params.theme && !['light', 'dark', 'auto', 'minimal', 'borderless', 'embed-iframe'].includes(params.theme)) {
+      warn(`Invalid theme "${params.theme}". Expected "light", "dark", "auto", "minimal", "borderless", or "embed-iframe"`);
     }
     for (const param in params) {
       checkIfParamIsValid(param);
@@ -4598,7 +4619,7 @@
     };
   });
   SweetAlert.DismissReason = DismissReason;
-  SweetAlert.version = '11.17.2';
+  SweetAlert.version = '11.21.0';
 
   const Swal = SweetAlert;
   // @ts-ignore
