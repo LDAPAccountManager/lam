@@ -428,6 +428,11 @@ div.wunderbaum.wb-checkbox-auto-hide:focus .wb-row.wb-active i.wb-checkbox, div.
 }
 
 /* --- TOOL CLASSES --- */
+a.wb-breadcrumb {
+  cursor: pointer;
+  text-decoration: none;
+}
+
 .wb-helper-center {
   text-align: center;
 }
@@ -459,6 +464,10 @@ div.wunderbaum.wb-checkbox-auto-hide:focus .wb-row.wb-active i.wb-checkbox, div.
 .wb-no-select span.wb-title {
   -webkit-user-select: contain;
   user-select: contain;
+}
+
+button.wb-filter-hide {
+  font-weight: bolder;
 }
 
 /* RTL support */
