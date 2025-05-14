@@ -1,9 +1,11 @@
 <?php
 namespace LAM\CONFIG;
 
+use Exception;
 use htmlJavaScript;
 use htmlResponsiveTable;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAMCfgMain;
 use htmlTable;
 use htmlTitle;
@@ -145,18 +147,32 @@ if (isset($_POST['submitFormData'])) {
 		$cfg->configDatabaseUser = $_POST['configDatabaseUser'];
 		$cfg->configDatabasePassword = $_POST['configDatabasePassword'];
 		if ($cfg->configDatabaseType === LAMCfgMain::DATABASE_MYSQL) {
+            $mySqlConfigOk = true;
 			if (empty($cfg->configDatabaseServer) || !get_preg($cfg->configDatabaseServer, 'hostname')) {
 				$errors[] = _('Please enter a valid database host name.');
+                $mySqlConfigOk = false;
 			}
 			if (empty($cfg->configDatabaseName)) {
 				$errors[] = _('Please enter a valid database name.');
+				$mySqlConfigOk = false;
 			}
 			if (empty($cfg->configDatabaseUser)) {
 				$errors[] = _('Please enter a valid database user.');
+				$mySqlConfigOk = false;
 			}
 			if (empty($cfg->configDatabasePassword)) {
 				$errors[] = _('Please enter a valid database password.');
+				$mySqlConfigOk = false;
 			}
+            if ($mySqlConfigOk) {
+				try {
+					$configurationDatabase = new ConfigurationDatabase($cfg);
+					$configurationDatabase->checkConnection();
+				}
+				catch (Exception $e) {
+					$errors[] = _('Unable to connect to configuration database.');
+				}
+            }
 		}
 	}
 	// set master password
