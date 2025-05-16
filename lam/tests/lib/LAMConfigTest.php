@@ -828,6 +828,17 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getJobsDBCaPath() and LAMConfig->setJobsDBCaPath()
+	 */
+	public function testJobsCaPath() {
+		$val = '/tmp/test.pem';
+		$this->lAMConfig->setJobsDBCaPath($val);
+		$this->assertEquals($val, $this->lAMConfig->getJobsDBCaPath());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getJobsDBCaPath());
+	}
+
+	/**
 	 * Tests LAMConfig->getJobsDBUser() and LAMConfig->setJobsDBUser()
 	 */
 	public function testJobsDBUser() {
