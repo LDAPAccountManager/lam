@@ -170,6 +170,7 @@ if (isset($_POST['submitFormData'])) {
 					$configurationDatabase->checkConnection();
 				}
 				catch (Exception $e) {
+					logNewMessage(LOG_ERR, 'Unable to connect to configuration database: ' . $e->getMessage());
 					$errors[] = _('Unable to connect to configuration database.');
 				}
             }
