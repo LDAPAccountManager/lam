@@ -1029,6 +1029,8 @@ class LAMConfig {
 	private $jobsDBHost;
 	/** port of job database */
 	private $jobsDBPort;
+	/** CA path of job database */
+	private $jobsDBCaPath;
 	/** user of job database */
 	private $jobsDBUser;
 	/** password of job database */
@@ -1067,7 +1069,7 @@ class LAMConfig {
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
 		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobs',
-		'jobsDBHost', 'jobsDBPort', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName', 'pwdResetAllowSpecificPassword',
+		'jobsDBHost', 'jobsDBPort', 'jobsDBCaPath', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName', 'pwdResetAllowSpecificPassword',
 		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput',
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
@@ -2386,6 +2388,24 @@ class LAMConfig {
 	}
 
 	/**
+	 * Returns the CA certificate path.
+	 *
+	 * @return string path
+	 */
+	public function getJobsDBCaPath() {
+		return $this->jobsDBCaPath;
+	}
+
+	/**
+	 * Sets the CA certificate path.
+	 *
+	 * @param string $jobsDBCaPath path
+	 */
+	public function setJobsDBCaPath($jobsDBCaPath) {
+		$this->jobsDBCaPath = $jobsDBCaPath;
+	}
+
+	/**
 	 * Returns the DB user.
 	 *
 	 * @return String user name
@@ -3064,6 +3084,9 @@ class LAMCfgMain {
 	/** database password */
 	public $configDatabasePassword = '';
 
+	/** database options */
+	public $configDatabaseSSLCA = '';
+
 	/** database password */
 	private $moduleSettings = '';
 
@@ -3080,14 +3103,14 @@ class LAMCfgMain {
 		'mailAttribute', 'mailBackupAttribute',
 		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
-		'configDatabasePassword', 'moduleSettings'
+		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings'
 	];
 
 	/** persistence settings are always stored on local file system */
 	private $persistenceSettings = [
 		'configDatabaseType', 'configDatabaseServer',
 		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
-		'configDatabasePassword', 'license'
+		'configDatabasePassword', 'configDatabaseSSLCA', 'license'
 	];
 
 	/**

@@ -1,9 +1,11 @@
 <?php
 namespace LAM\CONFIG;
 
+use Exception;
 use htmlJavaScript;
 use htmlResponsiveTable;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAMCfgMain;
 use htmlTable;
 use htmlTitle;
@@ -139,23 +141,39 @@ if (isset($_POST['submitFormData'])) {
 		// set database
 		$cfg->configDatabaseType = $_POST['configDatabaseType'];
 		$cfg->configDatabaseServer = $_POST['configDatabaseServer'];
+		$cfg->configDatabaseSSLCA = $_POST['configDatabaseSSLCA'];
 		$cfg->configDatabasePort = $_POST['configDatabasePort'];
 		$cfg->configDatabaseName = $_POST['configDatabaseName'];
 		$cfg->configDatabaseUser = $_POST['configDatabaseUser'];
 		$cfg->configDatabasePassword = $_POST['configDatabasePassword'];
 		if ($cfg->configDatabaseType === LAMCfgMain::DATABASE_MYSQL) {
+            $mySqlConfigOk = true;
 			if (empty($cfg->configDatabaseServer) || !get_preg($cfg->configDatabaseServer, 'hostname')) {
 				$errors[] = _('Please enter a valid database host name.');
+                $mySqlConfigOk = false;
 			}
 			if (empty($cfg->configDatabaseName)) {
 				$errors[] = _('Please enter a valid database name.');
+				$mySqlConfigOk = false;
 			}
 			if (empty($cfg->configDatabaseUser)) {
 				$errors[] = _('Please enter a valid database user.');
+				$mySqlConfigOk = false;
 			}
 			if (empty($cfg->configDatabasePassword)) {
 				$errors[] = _('Please enter a valid database password.');
+				$mySqlConfigOk = false;
 			}
+            if ($mySqlConfigOk) {
+				try {
+					$configurationDatabase = new ConfigurationDatabase($cfg);
+					$configurationDatabase->checkConnection();
+				}
+				catch (Exception $e) {
+					logNewMessage(LOG_ERR, 'Unable to connect to configuration database: ' . $e->getMessage());
+					$errors[] = _('Unable to connect to configuration database.');
+				}
+            }
 		}
 	}
 	// set master password
@@ -446,11 +464,11 @@ if (isset($_POST['submitFormData'])) {
 		$storageProviderSelect->setHasDescriptiveElements(true);
 		$dbRowsToShow = [
 			LAMCfgMain::DATABASE_FILE_SYSTEM => [],
-			LAMCfgMain::DATABASE_MYSQL => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword']
+			LAMCfgMain::DATABASE_MYSQL => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword', 'configDatabaseSSLCA']
 		];
 		$storageProviderSelect->setTableRowsToShow($dbRowsToShow);
 		$dbRowsToHide = [
-			LAMCfgMain::DATABASE_FILE_SYSTEM => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'],
+			LAMCfgMain::DATABASE_FILE_SYSTEM => ['configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword', 'configDatabaseSSLCA'],
 			LAMCfgMain::DATABASE_MYSQL => []
 		];
 		$storageProviderSelect->setTableRowsToHide($dbRowsToHide);
@@ -460,6 +478,8 @@ if (isset($_POST['submitFormData'])) {
 		$row->add($dbHost);
 		$dbPort = new htmlResponsiveInputField(_('Database port'), 'configDatabasePort', $cfg->configDatabasePort, '274');
 		$row->add($dbPort);
+		$dbHostSSLCA = new htmlResponsiveInputField(_('CA certificate path'), 'configDatabaseSSLCA', $cfg->configDatabaseSSLCA, '277');
+		$row->add($dbHostSSLCA);
 		$dbName = new htmlResponsiveInputField(_('Database name'), 'configDatabaseName', $cfg->configDatabaseName, '276');
 		$dbName->setRequired(true);
 		$row->add($dbName);

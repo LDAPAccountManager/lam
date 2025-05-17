@@ -5,7 +5,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2024 Roland Gruber
+                2003 - 2025 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -299,6 +299,9 @@ $helpArray = [
 				],
 				"276" => ["Headline" => _('Database name'),
 					"Text" => _('This is the database name on the server.')
+				],
+				"277" => ["Headline" => _('CA certificate path'),
+					"Text" => _('For SSL-secured connections please enter the path to your CA certificate file.')
 				],
 				'280' => ["Headline" => _('Allow setting specific passwords'),
 					"Text" => _('Allows to set a specific password via input field.')

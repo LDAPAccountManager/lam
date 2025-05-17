@@ -20,7 +20,7 @@ use function LAM\PDF\getPDFStructures;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2024  Roland Gruber
+  Copyright (C) 2020 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -918,7 +918,11 @@ class ConfigurationDatabase {
 			return $this->pdo;
 		}
 		$url = $this->getPdoUrl();
-		$this->pdo = new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+		$pdoAttr = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+		if (!empty($this->cfgMain->configDatabaseSSLCA)) {
+			$pdoAttr[PDO::MYSQL_ATTR_SSL_CA] = $this->cfgMain->configDatabaseSSLCA;
+		}
+		$this->pdo = new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, $pdoAttr);
 		return $this->pdo;
 	}
 
