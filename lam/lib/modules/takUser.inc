@@ -58,7 +58,7 @@ class takUser extends baseModule {
 		// icon
 		$return['icon'] = 'tak.png';
 		// alias name
-		$return["alias"] = _("TAK");
+		$return["alias"] = 'TAK';
 		// LDAP filter
 		$return["ldap_filter"] = ['or' => "(objectClass=takUser)"];
 		// RDN attribute
@@ -123,8 +123,8 @@ class takUser extends baseModule {
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Callsign'), 'takuser_takcallsign', null, 'takusercallsign'));
-		$profileContainer->add(new htmlResponsiveInputField(_('Team Role'), 'takuser_takrole', null, 'takuserrole'));
-		$profileContainer->add(new htmlResponsiveInputField(_('Team Color'), 'takuser_takcolor', null, 'takusercolor'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Team role'), 'takuser_takrole', null, 'takuserrole'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Team color'), 'takuser_takcolor', null, 'takusercolor'));
 		$return['profile_options'] = $profileContainer;
 		// self-service field settings
 		$return['selfServiceFieldSettings'] = [
@@ -139,10 +139,10 @@ class takUser extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function load_Messages() {
-		$this->messages['takcallsign'][0] = ['ERROR', _('Callsign'), _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_')];
+		$this->messages['takcallsign'][0] = ['ERROR', _('Callsign'), _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_.')];
 		$this->messages['takcallsign'][1] = ['ERROR', _('A TAK login with this callsign already exists. Please choose a different callsign.')];
 		$this->messages['takcallsign'][2] = ['ERROR', _('Callsign'), _('This field is required.')];
-		$this->messages['takcallsign'][3] = ['ERROR', _('Account %s:') . ' takuser_takcallsign', _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_')];
+		$this->messages['takcallsign'][3] = ['ERROR', _('Account %s:') . ' takuser_takcallsign', _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_.')];
 		$this->messages['takrole'][0] = ['ERROR', _('Account %s:') . ' takuser_takrole', _('Please enter a valid option:') . ' ' . implode(', ', self::ROLE_TYPES)];
 		$this->messages['takcolor'][0] = ['ERROR', _('Account %s:') . ' takuser_takcolor', _('Please enter a valid option:') . ' ' . implode(', ', self::COLOR_TYPES)];
 	}
