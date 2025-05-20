@@ -86,7 +86,6 @@ RUN apt-get install --no-install-recommends -y \
         libldap-common \
         gettext \
         php-phpseclib3 \
-        php-voku-portable-ascii \
         libphp-phpmailer \
         cron \
     && \
