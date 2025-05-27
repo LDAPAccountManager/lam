@@ -6366,13 +6366,15 @@ OK (10 msec)</programlisting>
     </screenshot>
 
     <para>In "Module settings" you can specify multiple scripts for each
-    action type (e.g. modify) and account type (e.g. user). The scripts need
-    to be located on the filesystem of your webserver and will be executed in
-    its user environment. E.g. if you webserver runs as user www-data with the
-    group www-data then the custom scripts will be run under this user with
-    his rights. The output of the scripts will be shown in LAM.</para>
+    action type (e.g. preModify) and account type (e.g. user). The scripts
+    need to be located on the filesystem of your webserver and will be
+    executed in its user environment. E.g. if you webserver runs as user
+    www-data with the group www-data then the custom scripts will be run under
+    this user with his rights. The output of the scripts will be shown in
+    LAM.</para>
 
-    <para>You can specify the scripts on the LAM configuration pages.</para>
+    <para>You can specify the scripts on the LAM configuration pages. Please
+    note that the syntax changed with version 9.2 (see below).</para>
 
     <screenshot>
       <mediaobject>
@@ -6390,15 +6392,21 @@ OK (10 msec)</programlisting>
     <para><emphasis role="bold">Syntax:</emphasis></para>
 
     <para>Please enter one script per line. Each line has the following
-    format: &lt;account type&gt; &lt;action&gt; &lt;script&gt;</para>
+    format: &lt;action&gt; &lt;script&gt;</para>
+
+    <para>E.g.: preModify /usr/bin/myCustomScript -u $uid$</para>
+
+    <para><emphasis role="bold">Syntax (pre 9.2):</emphasis></para>
+
+    <para>Please enter one script per line. Each line has the following
+    format: <emphasis role="bold">&lt;account type&gt;</emphasis>
+    &lt;action&gt; &lt;script&gt;</para>
 
     <para>E.g.: user preModify /usr/bin/myCustomScript -u $uid$</para>
 
-    <para><emphasis role="bold">Account types:</emphasis></para>
-
-    <para>You can setup scripts for all available account types (e.g. user,
-    group, host, ...). Please see the help on the configuration page about
-    your current active account types.</para>
+    <para>Account types: You can setup scripts for all available account types
+    (e.g. user, group, host, ...). Please see the help on the configuration
+    page about your current active account types.</para>
 
     <para><emphasis role="bold">Actions:</emphasis></para>
 
@@ -6615,14 +6623,10 @@ OK (10 msec)</programlisting>
 
     <para>Example:</para>
 
-    <literallayout>user preModify /opt/myapp/preModify.sh -u $uid$
-group postDelete /opt/myapp/postDelete.sh -g $gid$
+    <literallayout>preModify /opt/myapp/preModify.sh -u $uid$
 LAM_GROUP: Mail actions
-user manual LAMLABEL="Clean" /bin/myscripts/cleanMailbox -u $uid$
-user manual LAMLABEL="Extend" /bin/myscripts/extendMailbox -u $uid$
-LAM_GROUP: Sync actions
-user manual /bin/myscripts/syncWithCRM -u $uid$
-user manual LAMLABEL="Some app" /bin/myscripts/syncWithSomeApp -u $uid$
+manual LAMLABEL="Clean" /bin/myscripts/cleanMailbox -u $uid$
+manual LAMLABEL="Extend" /bin/myscripts/extendMailbox -u $uid$
 
 </literallayout>
 
@@ -6683,10 +6687,10 @@ user manual LAMLABEL="Some app" /bin/myscripts/syncWithSomeApp -u $uid$
 LAM_SELECTION_TENANT: Tenant=foo;bar
 LAM_TEXT_COMMENT: Comment=no comment
 LAM_TEXT_AMOUNT: Amount
-user manual LAMLABEL="Clean" /bin/myscripts/cleanMailbox -u $uid$ -e $LAM_SELECTION_ENV$
-user manual LAMLABEL="Extend" /bin/myscripts/extendMailbox -u $uid$ -e $LAM_SELECTION_TENANT$
-user manual /bin/myscripts/syncWithCRM -u $uid$ -c $LAM_TEXT_COMMENT$
-user manual LAMLABEL="Some app" /bin/myscripts/syncWithSomeApp -u $uid$ -a $LAM_TEXT_AMOUNT$</literallayout>
+manual LAMLABEL="Clean" /bin/myscripts/cleanMailbox -u $uid$ -e $LAM_SELECTION_ENV$
+manual LAMLABEL="Extend" /bin/myscripts/extendMailbox -u $uid$ -e $LAM_SELECTION_TENANT$
+manual /bin/myscripts/syncWithCRM -u $uid$ -c $LAM_TEXT_COMMENT$
+manual LAMLABEL="Some app" /bin/myscripts/syncWithSomeApp -u $uid$ -a $LAM_TEXT_AMOUNT$</literallayout>
 
     <screenshot>
       <graphic fileref="images/customScripts4.png"/>
