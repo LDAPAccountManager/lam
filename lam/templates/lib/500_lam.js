@@ -3495,6 +3495,56 @@ window.lam.smtp.test = function(event, tokenName, tokenValue, okText, cancelText
 	window.lam.dialog.showConfirmation(title, okText, cancelText, 'smtpTestDialogDiv', runTestCallback, runTestPreCallback);
 }
 
+window.lam.sms = window.lam.sms || {};
+
+/**
+ * Tests the SMS settings.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param okText text to close dialog
+ * @param cancelText text to cancel test
+ * @param title dialog title
+ */
+window.lam.sms.test = function(event, tokenName, tokenValue, okText, cancelText, title) {
+	event.preventDefault();
+	const runTestPreCallback = function() {
+		const number = document.getElementById('testSmsNumber').value;
+		if (!number) {
+			return false;
+		}
+		return {
+			number: number
+		}
+	}
+	const runTestCallback = function(formData) {
+		document.getElementById('btn_testSms').disabled = true;
+		let data = new FormData();
+		data.append(tokenName, tokenValue);
+		data.append('provider', document.getElementById('smsProvider').value);
+		data.append('apiKey', document.getElementById('smsApiKey').value);
+		data.append('apiToken', document.getElementById('smsApiToken').value);
+		data.append('number', formData.number);
+		const url = '../misc/ajax.php?function=testSms';
+		fetch(url, {
+			method: 'POST',
+			body: data
+		})
+			.then(async response => {
+				const jsonData = await response.json();
+				if (jsonData.info) {
+					window.lam.dialog.showInfo(jsonData.info, okText);
+				}
+				else if (jsonData.error) {
+					window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
+				}
+				document.getElementById('btn_testSms').disabled = false;
+			});
+	}
+	window.lam.dialog.showConfirmation(title, okText, cancelText, 'smsTestDialogDiv', runTestCallback, runTestPreCallback);
+}
+
 window.lam.config = window.lam.config || {};
 
 window.lam.config.updateModuleFilter = function(inputField) {

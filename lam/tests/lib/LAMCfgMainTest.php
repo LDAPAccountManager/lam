@@ -81,6 +81,27 @@ class LAMCfgMainTest extends TestCase {
 	}
 
 	/**
+	 * SMS related settings
+	 * @throws LAMException error saving config
+	 */
+	public function testSms() {
+		$this->assertEquals(explode(';', LAMCfgMain::SMS_ATTRIBUTES_DEFAULT), $this->conf->getSmsAttributes());
+
+		$this->conf->smsAttributes = 'mobile;pager';
+		$this->conf->smsProvider = 'sweego';
+		$this->conf->smsToken = 'token';
+		$this->conf->smsApiKey = 'key';
+
+		$this->conf->save();
+		$this->conf = new LAMCfgMain($this->file);
+
+		$this->assertEquals('sweego', $this->conf->smsProvider);
+		$this->assertEquals('token', $this->conf->smsToken);
+		$this->assertEquals('key', $this->conf->smsApiKey);
+		$this->assertEquals(['mobile', 'pager'], $this->conf->getSmsAttributes());
+	}
+
+	/**
 	 * License related settings.
 	 * @throws LAMException error saving config
 	 */

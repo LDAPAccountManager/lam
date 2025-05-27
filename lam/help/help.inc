@@ -355,6 +355,18 @@ $helpArray = [
 				"295" => ["Headline" => _("Show deleted entries"),
 					"Text" => _("This enables to show deleted entries in \"CN=Deleted Objects\" for Active Directory.")
 				],
+				"296" => ["Headline" => _("SMS provider"),
+					"Text" => _("Please select the SMS provider that should be used for password and reset link sending.")
+				],
+				"297" => ["Headline" => _("SMS API key"),
+					"Text" => _("Please enter the API key of your SMS provider.")
+				],
+				"298" => ["Headline" => _("SMS API token"),
+					"Text" => _("Please enter the API token of your SMS provider.")
+				],
+				"299" => ["Headline" => _("Mobile phone attributes"),
+					"Text" => _("Please enter the LDAP attributes that should be checked to identify the user's mobile phone number.") . ' ' . _("Multiple values are separated by semicolon.")
+				],
 				// 300 - 399
 				// profile/PDF editor, file upload
 				"301" => ["Headline" => _("RDN identifier"),

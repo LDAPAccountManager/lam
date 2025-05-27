@@ -1565,8 +1565,9 @@ class htmlSelect extends htmlElement {
 		if (!empty($this->tableRowsToShow)) {
 			$values = array_merge($values, array_keys($this->tableRowsToShow));
 		}
+		$values = array_unique($values);
 		$selector = $this->getShowHideSelector();
-		// build Java script to show/hide depending fields
+		// build JavaScript to show/hide depending on fields
 		foreach ($values as $val) {
 			// build onChange listener
 			$onChange .= 'if (document.getElementById(\'' . $this->name . '\').value == \'' . $val . '\') {';

@@ -2961,6 +2961,8 @@ class LAMCfgMain {
 	public const MAIL_ATTRIBUTE_DEFAULT = 'mail';
 	public const MAIL_BACKUP_ATTRIBUTE_DEFAULT = 'passwordselfresetbackupmail';
 
+	public const SMS_ATTRIBUTES_DEFAULT = 'mobileTelephoneNumber;mobile;pager';
+
 	/** Default profile */
 	public $default;
 
@@ -3066,6 +3068,18 @@ class LAMCfgMain {
 	 */
 	public string $mailBackupAttribute = self::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
 
+	/** @var string SMS provider ID */
+	public string $smsProvider = '';
+
+	/** @var string SMS API key */
+	public string $smsApiKey = '';
+
+	/** @var string SMS token */
+	public string $smsToken = '';
+
+	/** @var string SMS number attributes */
+	public string $smsAttributes = self::SMS_ATTRIBUTES_DEFAULT;
+
 	/** database type */
 	public $configDatabaseType = self::DATABASE_FILE_SYSTEM;
 
@@ -3103,7 +3117,8 @@ class LAMCfgMain {
 		'mailAttribute', 'mailBackupAttribute',
 		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
-		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings'
+		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings',
+		'smsProvider', 'smsApiKey', 'smsToken', 'smsAttributes',
 	];
 
 	/** persistence settings are always stored on local file system */
@@ -3742,6 +3757,18 @@ class LAMCfgMain {
 			return $this->mailBackupAttribute;
 		}
 		return self::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
+	}
+
+	/**
+	 * Returns the SMS attributes.
+	 *
+	 * @return string[] attribute names
+	 */
+	public function getSmsAttributes(): array {
+		if (!empty($this->smsAttributes)) {
+			return preg_split('/;[ ]*/', $this->smsAttributes);
+		}
+		return preg_split('/;[ ]*/', self::SMS_ATTRIBUTES_DEFAULT);
 	}
 
 	/**
