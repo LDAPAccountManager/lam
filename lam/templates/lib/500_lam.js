@@ -3531,16 +3531,16 @@ window.lam.sms.test = function(event, tokenName, tokenValue, okText, cancelText,
 			method: 'POST',
 			body: data
 		})
-			.then(async response => {
-				const jsonData = await response.json();
-				if (jsonData.info) {
-					window.lam.dialog.showInfo(jsonData.info, okText);
-				}
-				else if (jsonData.error) {
-					window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
-				}
-				document.getElementById('btn_testSms').disabled = false;
-			});
+		.then(async response => {
+			const jsonData = await response.json();
+			if (jsonData.info) {
+				window.lam.dialog.showInfo(jsonData.info, okText);
+			}
+			else if (jsonData.error) {
+				window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
+			}
+			document.getElementById('btn_testSms').disabled = false;
+		});
 	}
 	window.lam.dialog.showConfirmation(title, okText, cancelText, 'smsTestDialogDiv', runTestCallback, runTestPreCallback);
 }
