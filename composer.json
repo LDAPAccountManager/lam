@@ -15,7 +15,8 @@
     "ext-zip": "*",
     "ext-gd": "*",
     "ext-imagick": "*",
-    "ext-gettext": "*"
+    "ext-gettext": "*",
+    "ext-curl": "*"
   },
   "scripts": {
     "test": "vendor/bin/phpunit"

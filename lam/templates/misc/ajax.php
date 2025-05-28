@@ -21,7 +21,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2023  Roland Gruber
+  Copyright (C) 2011 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -126,6 +126,11 @@ class Ajax {
 		if ($function === 'testSmtp') {
 			$this->enforceUserIsLoggedInToMainConfiguration();
 			$this->testSmtpConnection();
+			die();
+		}
+		if ($function === 'testSms') {
+			$this->enforceUserIsLoggedInToMainConfiguration();
+			$this->testSmsConnection();
 			die();
 		}
 		enforceUserIsLoggedIn();
@@ -583,6 +588,30 @@ class Ajax {
 		}
 		catch (LAMException $e) {
 			$result = ['error' => _('Unable to connect to SMTP server.'), 'details' => $e->getMessage()];
+			echo json_encode($result, JSON_THROW_ON_ERROR);
+		}
+	}
+
+	/**
+	 * Checks if the SMS settings in main config are valid.
+	 */
+	private function testSmsConnection(): void {
+		$provider = $_POST['provider'];
+		$apiKey = $_POST['apiKey'];
+		$apiToken = $_POST['apiToken'];
+		$number = $_POST['number'];
+		if (empty($provider)) {
+			$result = ['error' => _('Unable to send SMS.')];
+			echo json_encode($result, JSON_THROW_ON_ERROR);
+			return;
+		}
+		try {
+			sendSmsTestMessage($provider, $apiKey, $apiToken, $number);
+			$result = ['info' => _('The test SMS was sent successfully.')];
+			echo json_encode($result, JSON_THROW_ON_ERROR);
+		}
+		catch (LAMException $e) {
+			$result = ['error' => _('Unable to send SMS.'), 'details' => $e->getMessage()];
 			echo json_encode($result, JSON_THROW_ON_ERROR);
 		}
 	}

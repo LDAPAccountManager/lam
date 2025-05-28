@@ -31,6 +31,7 @@
  */
 
 use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
+use LAM\PLUGINS\SMS\SmsService;
 use LAM\TYPES\TypeManager;
 
 
@@ -1665,6 +1666,26 @@ function isCommandlineSafeEmailAddress($address) {
 		}
 	}
 	return true;
+}
+
+/**
+ * Sends an SMS test message.
+ *
+ * @param string $providerId SMS provider ID
+ * @param string|null $apiKey API key
+ * @param string|null $apiToken API token
+ * @param string $number mobile phone number
+ * @throws LAMException error during SMS connection
+ */
+function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiToken, string $number): void {
+	include_once __DIR__ . '/plugins/sms/SmsProvider.inc';
+	$smsService = new SmsService();
+	try {
+		$smsService->sendSms(_('LAM test message'), $number, $providerId, $apiKey, $apiToken);
+	}
+	catch (Exception $e) {
+		throw new LAMException(null, $e->getMessage(), $e);
+	}
 }
 
 /**

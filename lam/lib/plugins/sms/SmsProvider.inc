@@ -23,6 +23,8 @@ namespace LAM\PLUGINS\SMS;
 
 */
 
+use LAMException;
+
 /**
  * SMS providers.
  *
@@ -66,6 +68,31 @@ class SmsService {
 		return $providers;
 	}
 
+	/**
+	 * Sends out an SMS.
+	 *
+	 * @param string $message message text
+	 * @param string $number mobile phone number
+	 * @param string|null $providerId provider ID
+	 * @param string|null $apiKey API key
+	 * @param string|null $apiToken API token
+	 * @throws LAMException error sending SMS
+	 */
+	public function sendSms(string $message, string $number, ?string $providerId = null, ?string $apiKey = null, ?string $apiToken = null): void {
+		if ($providerId === null) {
+			$providerId = $_SESSION['cfgMain']->smsProvider;
+			$apiKey = $_SESSION['cfgMain']->smsApiKey;
+			$apiToken = $_SESSION['cfgMain']->smsToken;
+		}
+		$providers = $this->findProviders();
+		if (!isset($providers[$providerId])) {
+			logNewMessage(LOG_ERR, 'SMS provider not found: ' . $providerId);
+			throw new LAMException('Provider not found');
+		}
+		$provider = $providers[$providerId];
+		$provider->sendSms($message, $number, $apiKey, $apiToken);
+	}
+
 }
 
 /**
@@ -104,13 +131,15 @@ interface SmsProvider {
 	public function usesApiKey(): bool;
 
 	/**
-	 * Returns the connection string for the SMS service.
+	 * Sends out an SMS.
 	 *
+	 * @param string $message message text
+	 * @param string $number mobile phone number
 	 * @param string|null $apiKey API key
 	 * @param string|null $apiToken API token
-	 * @return string connection string
+	 * @throws LAMException error sending SMS
 	 */
-	public function getConnectionString(?string $apiKey = '', ?string $apiToken = ''): string;
+	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = ''): void;
 
 }
 

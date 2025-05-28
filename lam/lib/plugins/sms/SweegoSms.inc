@@ -23,6 +23,8 @@ namespace LAM\PLUGINS\SMS;
 
 */
 
+use LAMException;
+
 /**
  * Sweego SMS provider.
  *
@@ -53,8 +55,43 @@ class SweegoSms implements SmsProvider {
 	/**
 	 * @inheritDoc
 	 */
-	public function getConnectionString(?string $apiKey = '', ?string $apiToken = ''): string {
-		return "sweego://$apiKey@default";
+	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = ''): void {
+		$curl = curl_init();
+		curl_setopt_array($curl, [
+			CURLOPT_URL => 'https://api.sweego.io/send',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => '{
+			  "campaign_type": "transac",
+			  "channel": "sms",
+			  "message_txt": "' . $message . '",
+			  "provider": "sweego",
+			  "recipients": [
+				{
+				  "num": "' . $number . '",
+				  "region": "DE"
+				}
+			  ]
+			}',
+			CURLOPT_HTTPHEADER => [
+				'Content-Type: application/json',
+				'Accept: application/json',
+				'Api-Key: ' . $apiKey,
+			],
+		]);
+		$response = curl_exec($curl);
+		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		curl_close($curl);
+		if ($httpCode !== 200) {
+			$response = json_decode($response, true);
+			throw new LAMException(null, $response['detail']);
+		}
+		echo $response;
 	}
 
 	/**
