@@ -70,7 +70,7 @@ include_once(__DIR__ . '/../../lib/status.inc');
 /** LAM Pro */
 include_once(__DIR__ . '/../../lib/selfService.inc');
 /** SMS */
-include_once __DIR__ . '/../../lib/plugins/sms/SmsProvider.inc';
+include_once __DIR__ . '/../../lib/plugins/sms/SmsService.inc';
 
 // start session
 if (isFileBasedSession()) {

@@ -1678,7 +1678,7 @@ function isCommandlineSafeEmailAddress($address) {
  * @throws LAMException error during SMS connection
  */
 function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiToken, string $number): void {
-	include_once __DIR__ . '/plugins/sms/SmsProvider.inc';
+	include_once __DIR__ . '/plugins/sms/SmsService.inc';
 	$smsService = new SmsService();
 	try {
 		$smsService->sendSms(_('LAM test message'), $number, $providerId, $apiKey, $apiToken);

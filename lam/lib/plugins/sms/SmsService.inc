@@ -26,7 +26,7 @@ namespace LAM\PLUGINS\SMS;
 use LAMException;
 
 /**
- * SMS providers.
+ * SMS service.
  *
  * @author Roland Gruber
  */

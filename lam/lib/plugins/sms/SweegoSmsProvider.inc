@@ -26,30 +26,30 @@ namespace LAM\PLUGINS\SMS;
 use LAMException;
 
 /**
- * SMSAPI SMS provider.
+ * Sweego SMS provider.
  *
  * @author Roland Gruber
  */
 
 /**
- * SMSAPI SMS provider.
+ * Sweego SMS provider.
  *
- * @package LAM\PLUGINS\CAPTCHA
+ * @package LAM\PLUGINS\SMS
  */
-class SmsApiSms implements SmsProvider {
+class SweegoSms implements SmsProvider {
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getLabel(): string {
-		return 'SMSAPI';
+		return 'Sweego';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getId(): string {
-		return 'smsapi';
+		return 'sweego';
 	}
 
 	/**
@@ -58,20 +58,32 @@ class SmsApiSms implements SmsProvider {
 	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = ''): void {
 		$curl = curl_init();
 		$postData = [
-			"to" => $number,
-			"format" => "json",
-			"message" => $message,
+			"campaign_type" => "transac",
+			"channel" => "sms",
+			"message_txt" => $message,
+			"provider" => "sweego",
+			"recipients" => [
+				(object) [
+					"num" => $number,
+					"region" => "DE" // TODO
+				]
+			]
 		];
 		$postJson = json_encode($postData);
 		curl_setopt_array($curl, [
-			CURLOPT_URL => 'https://api.smsapi.com/sms.do',
+			CURLOPT_URL => 'https://api.sweego.io/send',
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_POST => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
 			CURLOPT_POSTFIELDS => $postJson,
 			CURLOPT_HTTPHEADER => [
 				'Content-Type: application/json',
 				'Accept: application/json',
-				'Authorization: Bearer ' . $apiToken,
+				'Api-Key: ' . $apiKey,
 			],
 		]);
 		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
@@ -79,10 +91,10 @@ class SmsApiSms implements SmsProvider {
 		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		curl_close($curl);
 		logNewMessage(LOG_DEBUG, 'SMS gateway response: ' . $response);
-		$responseJson = json_decode($response, true);
-		if (($httpCode !== 200) || isset($responseJson['error'])) {
+		if ($httpCode !== 200) {
 			logNewMessage(LOG_ERR, 'Unable to send SMS: ' . $response);
-			$message = $responseJson['message'] ?? $responseJson['list'][0]['error'] ?? '';
+			$response = json_decode($response, true);
+			$message = $response['detail'] ?? '';
 			throw new LAMException(null, $message);
 		}
 	}
@@ -91,14 +103,14 @@ class SmsApiSms implements SmsProvider {
 	 * @inheritDoc
 	 */
 	public function usesApiToken(): bool {
-		return true;
+		return false;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function usesApiKey(): bool {
-		return false;
+		return true;
 	}
 
 }
