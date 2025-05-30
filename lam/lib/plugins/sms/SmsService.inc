@@ -39,6 +39,11 @@ use LAMException;
 class SmsService {
 
 	/**
+	 * Sender name for SMS display.
+	 */
+	public const SENDER_NAME = 'LAM Pro';
+
+	/**
 	 * Includes all plugin files.
 	 */
 	private function includeFiles(): void {
@@ -90,7 +95,19 @@ class SmsService {
 			throw new LAMException('Provider not found');
 		}
 		$provider = $providers[$providerId];
+		$number = $this->cleanNumber($number);
+		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
 		$provider->sendSms($message, $number, $apiKey, $apiToken);
+	}
+
+	/**
+	 * Cleans any extra characters from the telephone number.
+	 *
+	 * @param string $number number
+	 * @return string cleaned value
+	 */
+	private function cleanNumber(string $number): string {
+		return preg_replace('/[^0-9+]+/', '', $number);
 	}
 
 }

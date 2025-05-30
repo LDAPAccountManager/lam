@@ -768,8 +768,8 @@ if (isset($_POST['submitFormData'])) {
         $smsProviderSelect->setTableRowsToHide($smsOptionsToHide);
 		$smsProviderSelect->setTableRowsToShow($smsOptionsToShow);
 		$row->add($smsProviderSelect);
-		$row->add(new htmlResponsiveInputField(_('SMS API key'), 'smsApiKey', $cfg->smsApiKey, '297'));
-		$row->add(new htmlResponsiveInputField(_('SMS API token'), 'smsApiToken', $cfg->smsToken, '298'));
+		$row->add(new htmlResponsiveInputField(_('API key'), 'smsApiKey', $cfg->smsApiKey, '297'));
+		$row->add(new htmlResponsiveInputField(_('Token'), 'smsApiToken', $cfg->smsToken, '298'));
 		$row->add(new htmlResponsiveInputField(_("Mobile phone attributes"), 'smsAttributes', implode(';', $cfg->getSmsAttributes()), '299'));
         $smsTestButtonRow = new htmlResponsiveRow();
 		$smsTestButton = new htmlButton('testSms', _('Test settings'));

@@ -26,30 +26,30 @@ namespace LAM\PLUGINS\SMS;
 use LAMException;
 
 /**
- * Sweego SMS provider.
+ * SMSBOX SMS provider.
  *
  * @author Roland Gruber
  */
 
 /**
- * Sweego SMS provider.
+ * SMSBOX SMS provider.
  *
  * @package LAM\PLUGINS\SMS
  */
-class SweegoSms implements SmsProvider {
+class SmsboxSms implements SmsProvider {
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getLabel(): string {
-		return 'Sweego';
+		return 'SMSBOX';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getId(): string {
-		return 'sweego';
+		return 'smsbox';
 	}
 
 	/**
@@ -58,43 +58,29 @@ class SweegoSms implements SmsProvider {
 	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = ''): void {
 		$curl = curl_init();
 		$postData = [
-			"campaign_type" => "transac",
-			"channel" => "sms",
-			"message_txt" => $message,
-			"provider" => "sweego",
-			"recipients" => [
-				(object) [
-					"num" => $number,
-					"region" => "DE" // TODO
-				]
-			]
+			"dest" => $number,
+			"msg" => $message,
+			'charset' => 'utf-8',
+			'mode' => 'Standard',
+			'strategy' => '2'
 		];
-		$postJson = json_encode($postData);
 		curl_setopt_array($curl, [
-			CURLOPT_URL => 'https://api.sweego.io/send',
+			CURLOPT_URL => 'https://api.smsbox.pro/1.1/api.php',
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_ENCODING => '',
-			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
-			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS => $postJson,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => http_build_query($postData),
 			CURLOPT_HTTPHEADER => [
-				'Content-Type: application/json',
-				'Accept: application/json',
-				'Api-Key: ' . $apiKey,
+				'Content-Type: application/x-www-form-urlencoded',
+				'Authorization: App ' . $apiKey,
 			],
 		]);
 		$response = curl_exec($curl);
 		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		curl_close($curl);
 		logNewMessage(LOG_DEBUG, 'SMS gateway response: ' . $response);
-		if ($httpCode !== 200) {
+		if (($httpCode !== 200) || ($response !== 'OK')) {
 			logNewMessage(LOG_ERR, 'Unable to send SMS: ' . $response);
-			$response = json_decode($response, true);
-			$message = $response['detail'] ?? '';
-			throw new LAMException(null, $message);
+			throw new LAMException(null, '');
 		}
 	}
 

@@ -63,7 +63,7 @@ class GatewayApiSmsProvider implements SmsProvider {
 			],
 			"message" => $message,
 			"label" => "LAM Pro",
-			"sender" => "LAM Pro"
+			"sender" => SmsService::SENDER_NAME
 		];
 		$postJson = json_encode($postData);
 		curl_setopt_array($curl, [
@@ -77,7 +77,6 @@ class GatewayApiSmsProvider implements SmsProvider {
 				'Accept: application/json',
 			],
 		]);
-		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
 		$response = curl_exec($curl);
 		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		curl_close($curl);

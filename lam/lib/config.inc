@@ -2961,7 +2961,7 @@ class LAMCfgMain {
 	public const MAIL_ATTRIBUTE_DEFAULT = 'mail';
 	public const MAIL_BACKUP_ATTRIBUTE_DEFAULT = 'passwordselfresetbackupmail';
 
-	public const SMS_ATTRIBUTES_DEFAULT = 'mobileTelephoneNumber;mobile;pager';
+	public const SMS_ATTRIBUTES_DEFAULT = 'mobileTelephoneNumber;mobile';
 
 	/** Default profile */
 	public $default;

@@ -358,10 +358,10 @@ $helpArray = [
 				"296" => ["Headline" => _("SMS provider"),
 					"Text" => _("Please select the SMS provider that should be used for password and reset link sending.")
 				],
-				"297" => ["Headline" => _("SMS API key"),
+				"297" => ["Headline" => _("API key"),
 					"Text" => _("Please enter the API key of your SMS provider.")
 				],
-				"298" => ["Headline" => _("SMS API token"),
+				"298" => ["Headline" => _("Token"),
 					"Text" => _("Please enter the API token of your SMS provider.")
 				],
 				"299" => ["Headline" => _("Mobile phone attributes"),

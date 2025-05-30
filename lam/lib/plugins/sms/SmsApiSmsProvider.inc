@@ -74,7 +74,6 @@ class SmsApiSms implements SmsProvider {
 				'Authorization: Bearer ' . $apiToken,
 			],
 		]);
-		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
 		$response = curl_exec($curl);
 		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		curl_close($curl);
