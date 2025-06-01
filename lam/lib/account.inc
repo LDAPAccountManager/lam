@@ -1720,6 +1720,9 @@ function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiTok
  * @return string|null phone number if found
  */
 function getSmsPhoneNumber(array $attributes): ?string {
+	if (empty($_SESSION['cfgMain']->smsProvider)) {
+		return null;
+	}
 	$phoneAttributes = array_change_key_case($_SESSION['cfgMain']->getSmsAttributes());
 	$attributes = array_change_key_case($attributes);
 	foreach ($phoneAttributes as $phoneAttribute) {
