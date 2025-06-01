@@ -435,6 +435,9 @@ $helpArray = [
 				"411" => ["Headline" => _("Font"),
 					"Text" => _("Please select the font for the PDF file. Dejavu will work on all systems but does not support e.g. Chinese and Japanese. The other fonts require that an appropriate font is installed on the system where the PDF is opened.")
 				],
+				"412" => ["Headline" => _("Send via SMS"),
+					"Text" => _("Sends the password to the user via SMS.")
+				],
 				// 500 - 599
 				// LAM Pro
 				"501" => ["Headline" => _("LDAP suffix"),

@@ -835,8 +835,10 @@ class accountContainer {
 	private $titleBarTitle;
 	/** subtitle in title bar */
 	private $titleBarSubtitle;
-	/** send password via mail */
+	/** password to send via mail */
 	private $sendPasswordViaMail;
+	/** password to send via SMS */
+	private $sendPasswordViaSms;
 	/** send password via mail to this alternate address */
 	private $sendPasswordViaMailAlternateAddress;
 
@@ -1180,9 +1182,9 @@ class accountContainer {
 			}
 			$forcePwdGroup->addElement(new htmlHelpLink('406'));
 			$container->addField($forcePwdGroup);
+			$container->addVerticalSpacer('0.25rem');
 		}
 		if (isLAMProVersion() && (isset($this->attributes_orig['mail'][0]) || $this->anyModuleManagesMail())) {
-			$container->addVerticalSpacer('0.25rem');
 			$pwdMailCheckbox = new htmlResponsiveInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail'), '407');
 			$pwdMailCheckbox->setTableRowsToShow(['lamPasswordChangeMailAddress']);
 			$container->add($pwdMailCheckbox);
@@ -1198,6 +1200,9 @@ class accountContainer {
 				$alternateMailInput = new htmlResponsiveInputField(_('Alternate recipient'), 'lamPasswordChangeMailAddress', $alternateMail, '410');
 				$container->add($alternateMailInput);
 			}
+		}
+		if (isLAMProVersion() && (getSmsPhoneNumber($this->attributes_orig) !== null)) {
+			$container->add(new htmlResponsiveInputCheckbox('lamPasswordChangeSendSms', false, _('Send via SMS'), '412'));
 		}
 		$container->addVerticalSpacer('0.25rem');
 		// password modules
@@ -1265,13 +1270,11 @@ class accountContainer {
 			'messages' => '',
 			'errorsOccurred' => 'false'
 		];
-		$sendMail = false;
-		if (isset($input['sendMail']) && ($input['sendMail'] == 'true')) {
-			$sendMail = true;
-		}
+		$sendMail = isset($input['sendMail']) && ($input['sendMail'] == 'true');
+		$sendSms = isset($input['sendSms']) && ($input['sendSms'] == 'true');
 		if ($random) {
 			$password1 = generateRandomPassword();
-			if (!$sendMail) {
+			if (!$sendMail && !$sendSms) {
 				$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . htmlspecialchars($password1), '', [], true);
 			}
 		}
@@ -1325,6 +1328,9 @@ class accountContainer {
 				$this->sendPasswordViaMailAlternateAddress = $input['sendMailAlternateAddress'];
 			}
 		}
+		if (isLAMProVersion() && $sendSms) {
+			$this->sendPasswordViaSms = $password1;
+		}
 		if ($return['errorsOccurred'] === 'false') {
 			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', [], true);
 			$this->extraInfoAttributes['INFO.passwordUpdated'] = 'yes';
@@ -1332,6 +1338,7 @@ class accountContainer {
 			$this->extraInfoAttributes['INFO.passwordChangeModules'] = implode(', ', $modules);
 			$this->extraInfoAttributes['INFO.passwordChangeType'] = $random ? 'random' : 'manual';
 			$this->extraInfoAttributes['INFO.sendPasswordViaEmail'] = $sendMail ? 'yes' : 'no';
+			$this->extraInfoAttributes['INFO.sendPasswordViaSms'] = $sendSms ? 'yes' : 'no';
 			if (!empty($input['sendMailAlternateAddress'])) {
 				$this->extraInfoAttributes['INFO.sendPasswordAlternateAddress'] = $input['sendMailAlternateAddress'];
 			}
@@ -2105,6 +2112,14 @@ class accountContainer {
 			}
 			$this->sendPasswordViaMail = null;
 			$this->sendPasswordViaMailAlternateAddress = null;
+		}
+		// send password SMS
+		if (!$stopprocessing && isLAMProVersion() && ($this->sendPasswordViaSms != null)) {
+			$smsMessages = sendPasswordSms($this->sendPasswordViaSms, $prePostModifyAttributes);
+			if (count($smsMessages) > 0) {
+				$errors = array_merge($errors, $smsMessages);
+			}
+			$this->sendPasswordViaSms = null;
 		}
 		if (!$stopprocessing) {
 			// post modify actions

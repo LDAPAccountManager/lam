@@ -232,6 +232,11 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 	if (lamPasswordChangeSendMailBox && lamPasswordChangeSendMailBox.checked) {
 		sendMail = true;
 	}
+	let sendSms = false;
+	const lamPasswordChangeSendSmsBox = passwordDialog.querySelector('input[name=lamPasswordChangeSendSms]');
+	if (lamPasswordChangeSendSmsBox && lamPasswordChangeSendSmsBox.checked) {
+		sendSms = true;
+	}
 
 	let sendMailAlternateAddress = '';
 	const lamPasswordChangeMailAddress = passwordDialog.querySelector('[name=lamPasswordChangeMailAddress]');
@@ -245,6 +250,7 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 		"random": random,
 		"forcePasswordChange": forcePasswordChange,
 		"sendMail": sendMail,
+		"sendSms": sendSms,
 		"sendMailAlternateAddress": sendMailAlternateAddress
 	};
 	let data = new FormData();
