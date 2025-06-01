@@ -103,4 +103,11 @@ class GatewayApiSmsProvider implements SmsProvider {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function usesAccountId(): bool {
+		return false;
+	}
+
 }

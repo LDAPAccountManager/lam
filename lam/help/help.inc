@@ -364,8 +364,14 @@ $helpArray = [
 				"298" => ["Headline" => _("Token"),
 					"Text" => _("Please enter the API token of your SMS provider.")
 				],
+				"298a" => ["Headline" => _("Account id"),
+					"Text" => _("Please enter the account id of your SMS provider.")
+				],
 				"299" => ["Headline" => _("Mobile phone attributes"),
 					"Text" => _("Please enter the LDAP attributes that should be checked to identify the user's mobile phone number.") . ' ' . _("Multiple values are separated by semicolon.")
+				],
+				"299a" => ["Headline" => _("Default country prefix"),
+					"Text" => _("Please enter the default country prefix for your phone numbers (e.g. '+49').")
 				],
 				// 300 - 399
 				// profile/PDF editor, file upload

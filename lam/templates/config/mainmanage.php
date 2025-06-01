@@ -417,6 +417,8 @@ if (isset($_POST['submitFormData'])) {
         $cfg->smsAttributes = $_POST['smsAttributes'];
         $cfg->smsApiKey = $_POST['smsApiKey'];
         $cfg->smsToken = $_POST['smsApiToken'];
+        $cfg->smsAccountId = $_POST['smsAccountId'];
+        $cfg->smsDefaultCountryPrefix = $_POST['smsDefaultCountryPrefix'];
     }
 	$cfg->errorReporting = $_POST['errorReporting'];
 	// module settings
@@ -742,7 +744,7 @@ if (isset($_POST['submitFormData'])) {
 			'-' => '',
 		];
         $smsOptionsToHide = [
-            '' => ['smsApiKey', 'smsApiToken', 'smsAttributes', 'btn_testSms']
+            '' => ['smsApiKey', 'smsApiToken', 'smsAccountId', 'smsAttributes', 'smsDefaultCountryPrefix', 'btn_testSms']
         ];
 		$smsOptionsToShow = [];
         foreach ($smsProviders as $provider) {
@@ -761,6 +763,12 @@ if (isset($_POST['submitFormData'])) {
 			else {
 				$smsOptionsToHide[$provider->getId()][] = 'smsApiKey';
 			}
+			if ($provider->usesAccountId()) {
+				$smsOptionsToShow[$provider->getId()][] = 'smsAccountId';
+			}
+			else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsAccountId';
+			}
         }
 		$selectedSmsProvider = empty($cfg->smsProvider) ? '' : $cfg->smsProvider;
 		$smsProviderSelect = new htmlResponsiveSelect('smsProvider', $smsProviderOptions, [$selectedSmsProvider], _('SMS provider'), '296');
@@ -768,8 +776,10 @@ if (isset($_POST['submitFormData'])) {
         $smsProviderSelect->setTableRowsToHide($smsOptionsToHide);
 		$smsProviderSelect->setTableRowsToShow($smsOptionsToShow);
 		$row->add($smsProviderSelect);
+		$row->add(new htmlResponsiveInputField(_('Account id'), 'smsAccountId', $cfg->smsAccountId, '298a'));
 		$row->add(new htmlResponsiveInputField(_('API key'), 'smsApiKey', $cfg->smsApiKey, '297'));
 		$row->add(new htmlResponsiveInputField(_('Token'), 'smsApiToken', $cfg->smsToken, '298'));
+		$row->add(new htmlResponsiveInputField(_('Default country prefix'), 'smsDefaultCountryPrefix', $cfg->smsDefaultCountryPrefix, '299a'));
 		$row->add(new htmlResponsiveInputField(_("Mobile phone attributes"), 'smsAttributes', implode(';', $cfg->getSmsAttributes()), '299'));
         $smsTestButtonRow = new htmlResponsiveRow();
 		$smsTestButton = new htmlButton('testSms', _('Test settings'));

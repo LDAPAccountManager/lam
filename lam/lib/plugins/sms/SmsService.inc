@@ -96,6 +96,7 @@ class SmsService {
 		}
 		$provider = $providers[$providerId];
 		$number = $this->cleanNumber($number);
+		$number = $this->addCountryPrefixIfMissing($number);
 		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
 		$provider->sendSms($message, $number, $apiKey, $apiToken);
 	}
@@ -108,6 +109,23 @@ class SmsService {
 	 */
 	private function cleanNumber(string $number): string {
 		return preg_replace('/[^0-9+]+/', '', $number);
+	}
+
+	/**
+	 * Adds the default country prefix to the telephone number if needed.
+	 *
+	 * @param string $number number
+	 * @return string prefixed value
+	 */
+	private function addCountryPrefixIfMissing(string $number) {
+		$prefix = $_SESSION['cfgMain']->smsDefaultCountryPrefix;
+		if (empty($prefix) || str_starts_with($number, '+') || str_starts_with($number, '00')) {
+			return $number;
+		}
+		if (str_starts_with($number, '0')) {
+			$number = substr($number, 1);
+		}
+		return $prefix . $number;
 	}
 
 }
@@ -132,6 +150,13 @@ interface SmsProvider {
 	 * @return string id
 	 */
 	public function getId(): string;
+
+	/**
+	 * Returns if the provider requires an account ID.
+	 *
+	 * @return bool account id required
+	 */
+	public function usesAccountId(): bool;
 
 	/**
 	 * Returns if the provider requires a token.

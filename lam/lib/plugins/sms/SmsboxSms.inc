@@ -98,4 +98,11 @@ class SmsboxSms implements SmsProvider {
 		return true;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function usesAccountId(): bool {
+		return false;
+	}
+
 }

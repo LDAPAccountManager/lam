@@ -100,4 +100,11 @@ class SmsApiSms implements SmsProvider {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function usesAccountId(): bool {
+		return false;
+	}
+
 }
