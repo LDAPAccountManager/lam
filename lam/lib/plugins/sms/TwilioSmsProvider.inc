@@ -26,30 +26,30 @@ namespace LAM\PLUGINS\SMS;
 use LAMException;
 
 /**
- * SMSAPI SMS provider.
+ * Twilio SMS provider.
  *
  * @author Roland Gruber
  */
 
 /**
- * SMSAPI SMS provider.
+ * Twilio SMS provider.
  *
  * @package LAM\PLUGINS\SMS
  */
-class SmsApiSms implements SmsProvider {
+class TwilioSms implements SmsProvider {
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getLabel(): string {
-		return 'SMSAPI';
+		return 'Twilio';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getId(): string {
-		return 'smsapi';
+		return 'twilio';
 	}
 
 	/**
@@ -59,30 +59,31 @@ class SmsApiSms implements SmsProvider {
 							?string $accountId = '', ?string $from = ''): void {
 		$curl = curl_init();
 		$postData = [
-			"to" => $number,
-			"format" => "json",
-			"message" => $message,
+			"To" => $number,
+			"Body" => $message,
 		];
-		$postJson = json_encode($postData);
+		if (preg_match('/^[0-9+]+/', $from)) {
+			$postData['From'] = $from;
+		}
+		else {
+			$postData['MessagingServiceSid'] = $from;
+		}
 		curl_setopt_array($curl, [
-			CURLOPT_URL => 'https://api.smsapi.com/sms.do',
+			CURLOPT_URL => 'https://api.twilio.com/2010-04-01/Accounts/' . urlencode($accountId) . '/Messages.json',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => $postJson,
-			CURLOPT_HTTPHEADER => [
-				'Content-Type: application/json',
-				'Accept: application/json',
-				'Authorization: Bearer ' . $apiToken,
-			],
+			CURLOPT_POSTFIELDS => $postData,
+			CURLOPT_USERNAME => $accountId,
+			CURLOPT_PASSWORD => $apiToken,
 		]);
 		$response = curl_exec($curl);
 		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		curl_close($curl);
 		logNewMessage(LOG_DEBUG, 'SMS gateway response: ' . $response);
 		$responseJson = json_decode($response, true);
-		if (($httpCode !== 200) || isset($responseJson['error'])) {
+		if ($httpCode !== 201) {
 			logNewMessage(LOG_ERR, 'Unable to send SMS: ' . $response);
-			$message = $responseJson['message'] ?? $responseJson['list'][0]['error'] ?? '';
+			$message = $responseJson['message'] ?? $responseJson['error_message'] ?? '';
 			throw new LAMException(null, $message);
 		}
 	}
@@ -105,14 +106,14 @@ class SmsApiSms implements SmsProvider {
 	 * @inheritDoc
 	 */
 	public function usesAccountId(): bool {
-		return false;
+		return true;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function usesFrom(): bool {
-		return false;
+		return true;
 	}
 
 }

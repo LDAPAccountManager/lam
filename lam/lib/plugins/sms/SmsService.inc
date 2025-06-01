@@ -81,13 +81,18 @@ class SmsService {
 	 * @param string|null $providerId provider ID
 	 * @param string|null $apiKey API key
 	 * @param string|null $apiToken API token
+	 * @param string|null $accountId account ID
+	 * @param string|null $from from
 	 * @throws LAMException error sending SMS
 	 */
-	public function sendSms(string $message, string $number, ?string $providerId = null, ?string $apiKey = null, ?string $apiToken = null): void {
+	public function sendSms(string $message, string $number, ?string $providerId = null, ?string $apiKey = null,
+							?string $apiToken = null, ?string $accountId = null, ?string $from = null): void {
 		if ($providerId === null) {
 			$providerId = $_SESSION['cfgMain']->smsProvider;
 			$apiKey = $_SESSION['cfgMain']->smsApiKey;
 			$apiToken = $_SESSION['cfgMain']->smsToken;
+			$accountId = $_SESSION['cfgMain']->smsAccountId;
+			$from = $_SESSION['cfgMain']->smsFrom;
 		}
 		$providers = $this->findProviders();
 		if (!isset($providers[$providerId])) {
@@ -98,7 +103,7 @@ class SmsService {
 		$number = $this->cleanNumber($number);
 		$number = $this->addCountryPrefixIfMissing($number);
 		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
-		$provider->sendSms($message, $number, $apiKey, $apiToken);
+		$provider->sendSms($message, $number, $apiKey, $apiToken, $accountId, $from);
 	}
 
 	/**
@@ -173,15 +178,24 @@ interface SmsProvider {
 	public function usesApiKey(): bool;
 
 	/**
+	 * Returns if the provider requires a FROM field.
+	 *
+	 * @return bool key required
+	 */
+	public function usesFrom(): bool;
+
+	/**
 	 * Sends out an SMS.
 	 *
 	 * @param string $message message text
 	 * @param string $number mobile phone number
 	 * @param string|null $apiKey API key
 	 * @param string|null $apiToken API token
+	 * @param string|null $accountId account ID
+	 * @param string|null $from from
 	 * @throws LAMException error sending SMS
 	 */
-	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = ''): void;
+	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = '', ?string $accountId = '', ?string $from = ''): void;
 
 }
 

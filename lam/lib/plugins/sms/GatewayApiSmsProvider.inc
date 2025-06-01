@@ -55,7 +55,8 @@ class GatewayApiSmsProvider implements SmsProvider {
 	/**
 	 * @inheritDoc
 	 */
-	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = ''): void {
+	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = '',
+							?string $accountId = '', ?string $from = ''): void {
 		$curl = curl_init();
 		$postData = [
 			"recipients" => [
@@ -107,6 +108,13 @@ class GatewayApiSmsProvider implements SmsProvider {
 	 * @inheritDoc
 	 */
 	public function usesAccountId(): bool {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function usesFrom(): bool {
 		return false;
 	}
 

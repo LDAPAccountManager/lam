@@ -1674,14 +1674,17 @@ function isCommandlineSafeEmailAddress($address) {
  * @param string $providerId SMS provider ID
  * @param string|null $apiKey API key
  * @param string|null $apiToken API token
+ * @param string|null $accountId account ID
+ * @param string|null $from from
  * @param string $number mobile phone number
  * @throws LAMException error during SMS connection
  */
-function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiToken, string $number): void {
+function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiToken, ?string $accountId,
+							?string $from, string $number): void {
 	include_once __DIR__ . '/plugins/sms/SmsService.inc';
 	$smsService = new SmsService();
 	try {
-		$smsService->sendSms(_('LAM test message'), $number, $providerId, $apiKey, $apiToken);
+		$smsService->sendSms(_('LAM test message'), $number, $providerId, $apiKey, $apiToken, $accountId, $from);
 	}
 	catch (Exception $e) {
 		throw new LAMException(null, $e->getMessage(), $e);

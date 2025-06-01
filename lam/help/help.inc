@@ -373,6 +373,9 @@ $helpArray = [
 				"299a" => ["Headline" => _("Default country prefix"),
 					"Text" => _("Please enter the default country prefix for your phone numbers (e.g. '+49').")
 				],
+				"299b" => ["Headline" => _("From"),
+					"Text" => _("Please enter the phone number or messaging service ID that acts as the source of the message.")
+				],
 				// 300 - 399
 				// profile/PDF editor, file upload
 				"301" => ["Headline" => _("RDN identifier"),
