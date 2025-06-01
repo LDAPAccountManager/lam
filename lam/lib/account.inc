@@ -1669,6 +1669,28 @@ function isCommandlineSafeEmailAddress($address) {
 }
 
 /**
+ * Sends the password SMS.
+ *
+ * @param string $pwd new password
+ * @param array $user LDAP attributes of user
+ * @return array list of arrays that can be used to create status messages
+ */
+function sendPasswordSms(string $pwd, array $user): array {
+	$errors = [];
+	$phoneNumber = getSmsPhoneNumber($user);
+	include_once __DIR__ . '/plugins/sms/SmsService.inc';
+	$smsService = new SmsService();
+	try {
+		$smsService->sendSms(sprintf(_('Your new password: %s'), $pwd), $phoneNumber);
+	}
+	catch (LAMException $e) {
+		logNewMessage(LOG_ERR, 'SMS sending failed: ' . $e->getMessage());
+		$errors[] = ['ERROR', _('Unable to send SMS.'), $e->getMessage()];
+	}
+	return $errors;
+}
+
+/**
  * Sends an SMS test message.
  *
  * @param string $providerId SMS provider ID
@@ -1689,6 +1711,23 @@ function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiTok
 	catch (Exception $e) {
 		throw new LAMException(null, $e->getMessage(), $e);
 	}
+}
+
+/**
+ * Returns the SMS phone number of a user.
+ *
+ * @param array $attributes LDAP attributes
+ * @return string|null phone number if found
+ */
+function getSmsPhoneNumber(array $attributes): ?string {
+	$phoneAttributes = array_change_key_case($_SESSION['cfgMain']->getSmsAttributes());
+	$attributes = array_change_key_case($attributes);
+	foreach ($phoneAttributes as $phoneAttribute) {
+		if (!empty($attributes[$phoneAttribute][0])) {
+			return $attributes[$phoneAttribute][0];
+		}
+	}
+	return null;
 }
 
 /**

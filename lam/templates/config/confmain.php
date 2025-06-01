@@ -3,6 +3,7 @@
 namespace LAM\CONFIG;
 
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAMCfgMain;
 use LAMConfig;
 use htmlTable;
 use htmlAccordion;
@@ -186,6 +187,8 @@ if ($errorsToDisplay !== []) {
 	}
 	echo "<br>";
 }
+
+$cfgMain = new LAMCfgMain();
 
 // display formular
 echo "<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"post\" autocomplete=\"off\" novalidate=\"novalidate\">\n";
@@ -412,8 +415,11 @@ if (isLAMProVersion()) {
 	$pwdResetDefaultPasswordOutputOptions = [
 		_('Display on screen') => LAMConfig::PWDRESET_DEFAULT_SCREEN,
 		_('Send via mail') => LAMConfig::PWDRESET_DEFAULT_MAIL,
-		_('Both') => LAMConfig::PWDRESET_DEFAULT_BOTH
+		_('All') => LAMConfig::PWDRESET_DEFAULT_ALL
 	];
+    if (!empty($cfgMain->smsProvider)) {
+		$pwdResetDefaultPasswordOutputOptions[_('Send via SMS')] = LAMConfig::PWDRESET_DEFAULT_SMS;
+    }
 	$pwdResetDefaultPasswordOutputSelect = new htmlResponsiveSelect('pwdResetDefaultPasswordOutput', $pwdResetDefaultPasswordOutputOptions, [$conf->getPwdResetDefaultPasswordOutput()], _("Default password output"), '282');
 	$pwdResetDefaultPasswordOutputSelect->setHasDescriptiveElements(true);
 	$row->add($pwdResetDefaultPasswordOutputSelect);

@@ -868,23 +868,25 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 class LAMConfig {
 
 	/* access levels */
-	const ACCESS_ALL = 100;
-	const ACCESS_PASSWORD_CHANGE = 20;
-	const ACCESS_READ_ONLY = 0;
+	public const ACCESS_ALL = 100;
+	public const ACCESS_PASSWORD_CHANGE = 20;
+	public const ACCESS_READ_ONLY = 0;
 
 	/* login method: predefined list or LDAP search */
-	const LOGIN_LIST = 'list';
-	const LOGIN_SEARCH = 'search';
+	public const LOGIN_LIST = 'list';
+	public const LOGIN_SEARCH = 'search';
 
 	/** line separator */
-	const LINE_SEPARATOR = '+::+';
+	public const LINE_SEPARATOR = '+::+';
 
 	/** show password on screen by default */
-	const PWDRESET_DEFAULT_SCREEN = 1;
+	public const PWDRESET_DEFAULT_SCREEN = 1;
 	/** send password via email by default */
-	const PWDRESET_DEFAULT_MAIL = 2;
+	public const PWDRESET_DEFAULT_MAIL = 2;
+	/** send password via SMS by default */
+	public const PWDRESET_DEFAULT_SMS = 4;
 	/** show password on screen and send via email by default */
-	const PWDRESET_DEFAULT_BOTH = 3;
+	public const PWDRESET_DEFAULT_ALL = 3;
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
