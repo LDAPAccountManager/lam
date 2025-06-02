@@ -296,8 +296,8 @@
       </screenshot>
     </section>
 
-    <section>
-      <title id="smsSetup">SMS options (LAM Pro)</title>
+    <section id="smsSetup">
+      <title>SMS options (LAM Pro)</title>
 
       <para>You can send SMS messages to your users for password resets. To
       activate this feature you need to have an account at one of the
