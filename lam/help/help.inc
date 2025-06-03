@@ -569,6 +569,9 @@ $helpArray = [
 					"Text" => _('This email address will be set as To address of all mails.') . ' '
 						. _('Multiple values are separated by comma.')
 				],
+				"558" => ["Headline" => _("Send SMS"),
+					"Text" => _('Sends the confirmation link by SMS. If no phone number is found then an email will be sent.')
+				],
 				"560" => ["Headline" => _("Remember device"),
 					"Text" => _('This will remember your current device. You will not need to provide your 2nd factor for a configured period of time.')
 				],
