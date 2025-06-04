@@ -1457,20 +1457,25 @@
 
       <literallayout> </literallayout>
 
-      <para>LAM Pro can send your users an email with a confirmation link to
-      validate their email address. Of course, this should only be used if the
-      email account is independent from the user password (e.g. at external
-      provider) or you use the backup email address feature. The mail body
-      must include the confirmation link by using the special wildcard
-      "@@resetLink@@". Additionally, you may want to insert other wildcards
-      that are replaced by the corresponding LDAP attributes. E.g. "@@uid@@"
-      will be replaced by the user name.</para>
+      <para>LAM Pro can send your users an SMS/email with a confirmation link
+      to validate their SMS/email address. If you select to send an SMS then
+      the email mechanism will only be used if no mobile phone number was
+      found for this user. You also need to setup the <link
+      linkend="smsSetup">SMS settings</link>.</para>
+
+      <para>Confirmation mails should only be used if the email account is
+      independent from the user password (e.g. at external provider) or you
+      use the backup email address feature. The mail body must include the
+      confirmation link by using the special wildcard "@@resetLink@@".
+      Additionally, you may want to insert other wildcards that are replaced
+      by the corresponding LDAP attributes. E.g. "@@uid@@" will be replaced by
+      the user name.</para>
 
       <para>There is also an option to skip the security question at all if
       email verification is enabled. In this case the password can be reset
       directly after clicking on the confirmation link. Please handle with
-      care since anybody with access to the user's mail account can reset the
-      password.</para>
+      care since anybody with access to the user's SMS/mail account can reset
+      the password.</para>
 
       <para><emphasis role="bold">Captcha support</emphasis></para>
 
