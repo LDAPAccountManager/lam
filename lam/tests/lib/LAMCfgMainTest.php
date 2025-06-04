@@ -88,7 +88,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals(explode(';', LAMCfgMain::SMS_ATTRIBUTES_DEFAULT), $this->conf->getSmsAttributes());
 
 		$this->conf->smsAttributes = 'mobile;pager';
-		$this->conf->smsProvider = 'sweego';
+		$this->conf->smsProvider = 'twilio';
 		$this->conf->smsToken = 'token';
 		$this->conf->smsApiKey = 'key';
 		$this->conf->smsAccountId = 'id';
@@ -98,7 +98,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->conf->save();
 		$this->conf = new LAMCfgMain($this->file);
 
-		$this->assertEquals('sweego', $this->conf->smsProvider);
+		$this->assertEquals('twilio', $this->conf->smsProvider);
 		$this->assertEquals('token', $this->conf->smsToken);
 		$this->assertEquals('key', $this->conf->smsApiKey);
 		$this->assertEquals('id', $this->conf->smsAccountId);
