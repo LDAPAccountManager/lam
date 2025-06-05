@@ -1201,7 +1201,7 @@ class accountContainer {
 				$container->add($alternateMailInput);
 			}
 		}
-		if (isLAMProVersion() && (getSmsPhoneNumber($this->attributes_orig) !== null)) {
+		if (isLAMProVersion() && ($this->attributes_orig !== null) && (getSmsPhoneNumber($this->attributes_orig) !== null)) {
 			$container->add(new htmlResponsiveInputCheckbox('lamPasswordChangeSendSms', false, _('Send via SMS'), '412'));
 		}
 		$container->addVerticalSpacer('0.25rem');
