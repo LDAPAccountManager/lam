@@ -1608,14 +1608,18 @@ class accountContainer {
 		}
 		// find deleted attributes (in $orig but no longer in $attributes)
 		foreach ($orig as $name => $value) {
-			if (!isset($attributes[$name])) {
+			if (count($value) === 0) {
+				continue;
+			}
+			if (!isset($attributes[$name]) || (count($attributes[$name]) === 0)) {
 				$toModify[$name] = [];
 			}
 		}
 		// find changed attributes
 		foreach ($attributes as $name => $value) {
 			// new/changed attributes
-			if (!isset($orig[$name]) || !areArrayContentsEqual($value, $orig[$name])) {
+			if ((!isset($orig[$name]) && (count($value) !== 0))
+				|| (isset($orig[$name]) && !areArrayContentsEqual($value, $orig[$name]))) {
 				$toModify[$name] = $value;
 			}
 			// unchanged attributes

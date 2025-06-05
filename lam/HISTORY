@@ -10,6 +10,7 @@ June 2025 9.2
  - Fixed bugs:
   -> Unix: profile editor for users not working (418)
   -> Custom fields: problems with deleting facsimileTelephoneNumber (419)
+  -> Cannot add user (windowsUser) to group (windowsGroup) (444)
 
 
 13.03.2025 9.1
