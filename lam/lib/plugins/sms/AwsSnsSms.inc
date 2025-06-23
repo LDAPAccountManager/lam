@@ -79,7 +79,7 @@ class AwsSnsSms implements SmsProvider {
 		}
 		catch (AwsException $e) {
 			logNewMessage(LOG_ERR, 'Unable to send SMS to ' . $number . ': ' . $e->getMessage());
-			throw new LAMException(null, $e->getMessage());
+			throw new LAMException(null, $e->getMessage(), $e);
 		}
 	}
 
