@@ -56,7 +56,7 @@ class TwilioSms implements SmsProvider {
 	 * @inheritDoc
 	 */
 	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = '',
-							?string $accountId = '', ?string $from = ''): void {
+							?string $accountId = '', ?string $region = '', ?string $from = ''): void {
 		$curl = curl_init();
 		$postData = [
 			"To" => $number,
@@ -114,6 +114,13 @@ class TwilioSms implements SmsProvider {
 	 */
 	public function usesFrom(): bool {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function usesRegion(): bool {
+		return false;
 	}
 
 }

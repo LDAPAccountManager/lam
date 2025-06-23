@@ -326,6 +326,24 @@
         </listitem>
       </itemizedlist>
 
+      <para><ulink url="https://aws.amazon.com/sns/"><emphasis role="bold">AWS
+      SNS</emphasis></ulink></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Region: this is your AWS region (e.g. eu-central-1)</para>
+        </listitem>
+
+        <listitem>
+          <para>Account id: please enter the access key id of your IMS user
+          that is allowed to send SMS</para>
+        </listitem>
+
+        <listitem>
+          <para>Token: this is the secret value of your access key</para>
+        </listitem>
+      </itemizedlist>
+
       <para><emphasis role="bold"><ulink
       url="https://gatewayapi.com/">GatewayAPI</ulink></emphasis></para>
 

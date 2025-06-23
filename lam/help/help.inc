@@ -376,6 +376,9 @@ $helpArray = [
 				"299b" => ["Headline" => _("From"),
 					"Text" => _("Please enter the phone number or messaging service ID that acts as the source of the message.")
 				],
+				"299c" => ["Headline" => _("Region"),
+					"Text" => _("Please enter the region ID for the SMS service.")
+				],
 				// 300 - 399
 				// profile/PDF editor, file upload
 				"301" => ["Headline" => _("RDN identifier"),

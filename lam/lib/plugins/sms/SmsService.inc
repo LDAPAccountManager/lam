@@ -82,16 +82,19 @@ class SmsService {
 	 * @param string|null $apiKey API key
 	 * @param string|null $apiToken API token
 	 * @param string|null $accountId account ID
+	 * @param string|null $region region
 	 * @param string|null $from from
 	 * @throws LAMException error sending SMS
 	 */
 	public function sendSms(string $message, string $number, ?string $providerId = null, ?string $apiKey = null,
-							?string $apiToken = null, ?string $accountId = null, ?string $from = null): void {
+							?string $apiToken = null, ?string $accountId = null, ?string $region = null,
+							?string $from = null): void {
 		if ($providerId === null) {
 			$providerId = $_SESSION['cfgMain']->smsProvider;
 			$apiKey = $_SESSION['cfgMain']->smsApiKey;
 			$apiToken = $_SESSION['cfgMain']->smsToken;
 			$accountId = $_SESSION['cfgMain']->smsAccountId;
+			$region = $_SESSION['cfgMain']->smsRegion;
 			$from = $_SESSION['cfgMain']->smsFrom;
 		}
 		$providers = $this->findProviders();
@@ -103,7 +106,7 @@ class SmsService {
 		$number = $this->cleanNumber($number);
 		$number = $this->addCountryPrefixIfMissing($number);
 		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
-		$provider->sendSms($message, $number, $apiKey, $apiToken, $accountId, $from);
+		$provider->sendSms($message, $number, $apiKey, $apiToken, $accountId, $region, $from);
 	}
 
 	/**
@@ -185,6 +188,13 @@ interface SmsProvider {
 	public function usesFrom(): bool;
 
 	/**
+	 * Returns if the provider requires a region field.
+	 *
+	 * @return bool region required
+	 */
+	public function usesRegion(): bool;
+
+	/**
 	 * Sends out an SMS.
 	 *
 	 * @param string $message message text
@@ -195,7 +205,9 @@ interface SmsProvider {
 	 * @param string|null $from from
 	 * @throws LAMException error sending SMS
 	 */
-	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = '', ?string $accountId = '', ?string $from = ''): void;
+	public function sendSms(string $message, string $number, ?string $apiKey = '',
+							?string $apiToken = '', ?string $accountId = '',
+							?string $region = '', ?string $from = ''): void;
 
 }
 

@@ -1334,6 +1334,9 @@ class lamList {
 			return false;
 		}
 		foreach ($data[$filterAttribute] as $value) {
+            if ($value === null) {
+               continue;
+			}
 			if (preg_match($regex, $value)) {
 				return true;
 			}

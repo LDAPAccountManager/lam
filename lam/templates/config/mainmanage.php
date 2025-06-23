@@ -418,6 +418,7 @@ if (isset($_POST['submitFormData'])) {
         $cfg->smsApiKey = $_POST['smsApiKey'];
         $cfg->smsToken = $_POST['smsApiToken'];
         $cfg->smsAccountId = $_POST['smsAccountId'];
+        $cfg->smsRegion = $_POST['smsRegion'];
         $cfg->smsFrom = $_POST['smsFrom'];
         $cfg->smsDefaultCountryPrefix = $_POST['smsDefaultCountryPrefix'];
     }
@@ -745,7 +746,7 @@ if (isset($_POST['submitFormData'])) {
 			'-' => '',
 		];
         $smsOptionsToHide = [
-            '' => ['smsApiKey', 'smsApiToken', 'smsAccountId', 'smsFrom', 'smsAttributes',
+            '' => ['smsApiKey', 'smsApiToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsAttributes',
                 'smsDefaultCountryPrefix', 'btn_testSms']
         ];
 		$smsOptionsToShow = [];
@@ -771,6 +772,12 @@ if (isset($_POST['submitFormData'])) {
 			else {
 				$smsOptionsToHide[$provider->getId()][] = 'smsAccountId';
 			}
+			if ($provider->usesRegion()) {
+				$smsOptionsToShow[$provider->getId()][] = 'smsRegion';
+			}
+			else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsRegion';
+			}
 			if ($provider->usesFrom()) {
 				$smsOptionsToShow[$provider->getId()][] = 'smsFrom';
 			}
@@ -784,6 +791,7 @@ if (isset($_POST['submitFormData'])) {
         $smsProviderSelect->setTableRowsToHide($smsOptionsToHide);
 		$smsProviderSelect->setTableRowsToShow($smsOptionsToShow);
 		$row->add($smsProviderSelect);
+		$row->add(new htmlResponsiveInputField(_('Region'), 'smsRegion', $cfg->smsRegion, '299c'));
 		$row->add(new htmlResponsiveInputField(_('Account id'), 'smsAccountId', $cfg->smsAccountId, '298a'));
 		$row->add(new htmlResponsiveInputField(_('API key'), 'smsApiKey', $cfg->smsApiKey, '297'));
 		$row->add(new htmlResponsiveInputField(_('Token'), 'smsApiToken', $cfg->smsToken, '298'));

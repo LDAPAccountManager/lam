@@ -3082,6 +3082,9 @@ class LAMCfgMain {
 	/** @var string SMS account ID */
 	public string $smsAccountId = '';
 
+	/** @var string SMS region */
+	public string $smsRegion = '';
+
 	/** @var string SMS from */
 	public string $smsFrom = '';
 
@@ -3129,7 +3132,7 @@ class LAMCfgMain {
 		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
 		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings',
-		'smsProvider', 'smsApiKey', 'smsToken', 'smsAccountId', 'smsFrom', 'smsAttributes', 'smsDefaultCountryPrefix'
+		'smsProvider', 'smsApiKey', 'smsToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsAttributes', 'smsDefaultCountryPrefix'
 	];
 
 	/** persistence settings are always stored on local file system */
