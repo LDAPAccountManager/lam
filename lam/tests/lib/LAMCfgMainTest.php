@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 
 include_once __DIR__ . '/../../lib/config.inc';
+include_once __DIR__ . '/../../lib/plugins/sms/SmsService.inc';
 
 /**
  * LAMConfig test case.
