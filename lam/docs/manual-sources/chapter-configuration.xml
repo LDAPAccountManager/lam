@@ -301,7 +301,7 @@
 
       <para>You can send SMS messages to your users for password resets. To
       activate this feature you need to have an account at one of the
-      supported SMS gateways.</para>
+      supported SMS providers.</para>
 
       <para>After all options are filled you can test your settings and check
       if you get an SMS delivered to the entered mobile number.</para>
@@ -336,11 +336,12 @@
 
         <listitem>
           <para>Account id: please enter the access key id of your IMS user
-          that is allowed to send SMS</para>
+          that is allowed to send SMS (e.g. AKIAIOSFODNN7EXAMPLE)</para>
         </listitem>
 
         <listitem>
-          <para>Token: this is the secret value of your access key</para>
+          <para>Token: this is the secret value of your access key (e.g.
+          wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)</para>
         </listitem>
       </itemizedlist>
 
