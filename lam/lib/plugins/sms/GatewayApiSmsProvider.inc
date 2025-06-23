@@ -83,7 +83,7 @@ class GatewayApiSmsProvider implements SmsProvider {
 		curl_close($curl);
 		logNewMessage(LOG_DEBUG, 'SMS gateway response: ' . $response);
 		$responseJson = json_decode($response, true);
-		if (($httpCode !== 200)) {
+		if ($httpCode !== 200) {
 			logNewMessage(LOG_ERR, 'Unable to send SMS: ' . $response);
 			$message = $responseJson['message'] ?? '';
 			throw new LAMException(null, $message);
