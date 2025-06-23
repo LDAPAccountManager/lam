@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 
 include_once __DIR__ . '/../../lib/config.inc';
+include_once __DIR__ . '/../../lib/plugins/sms/SmsService.inc';
 
 /**
  * LAMConfig test case.
@@ -78,6 +79,35 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals(LAMCfgMain::SMTP_SSL, $this->conf->mailEncryption);
 		$this->assertEquals('test', $this->conf->getMailAttribute());
 		$this->assertEquals('test2', $this->conf->getMailBackupAttribute());
+	}
+
+	/**
+	 * SMS related settings
+	 * @throws LAMException error saving config
+	 */
+	public function testSms() {
+		$this->assertEquals(explode(';', LAMCfgMain::SMS_ATTRIBUTES_DEFAULT), $this->conf->getSmsAttributes());
+
+		$this->conf->smsAttributes = 'mobile;pager';
+		$this->conf->smsProvider = 'twilio';
+		$this->conf->smsToken = 'token';
+		$this->conf->smsApiKey = 'key';
+		$this->conf->smsAccountId = 'id';
+		$this->conf->smsRegion = 'eu';
+		$this->conf->smsFrom = '+491234567890';
+		$this->conf->smsDefaultCountryPrefix = '+49';
+
+		$this->conf->save();
+		$this->conf = new LAMCfgMain($this->file);
+
+		$this->assertEquals('twilio', $this->conf->smsProvider);
+		$this->assertEquals('token', $this->conf->smsToken);
+		$this->assertEquals('key', $this->conf->smsApiKey);
+		$this->assertEquals('id', $this->conf->smsAccountId);
+		$this->assertEquals('eu', $this->conf->smsRegion);
+		$this->assertEquals('+491234567890', $this->conf->smsFrom);
+		$this->assertEquals('+49', $this->conf->smsDefaultCountryPrefix);
+		$this->assertEquals(['mobile', 'pager'], $this->conf->getSmsAttributes());
 	}
 
 	/**

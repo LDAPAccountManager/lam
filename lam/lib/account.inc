@@ -31,6 +31,7 @@
  */
 
 use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
+use LAM\PLUGINS\SMS\SmsService;
 use LAM\TYPES\TypeManager;
 
 
@@ -1665,6 +1666,72 @@ function isCommandlineSafeEmailAddress($address) {
 		}
 	}
 	return true;
+}
+
+/**
+ * Sends the password SMS.
+ *
+ * @param string $pwd new password
+ * @param array $user LDAP attributes of user
+ * @return array list of arrays that can be used to create status messages
+ */
+function sendPasswordSms(string $pwd, array $user): array {
+	$errors = [];
+	$phoneNumber = getSmsPhoneNumber($user);
+	include_once __DIR__ . '/plugins/sms/SmsService.inc';
+	$smsService = new SmsService();
+	try {
+		$smsService->sendSms(sprintf(_('Your new password: %s'), $pwd), $phoneNumber);
+	}
+	catch (LAMException $e) {
+		logNewMessage(LOG_ERR, 'SMS sending failed: ' . $e->getMessage());
+		$errors[] = ['ERROR', _('Unable to send SMS.'), $e->getMessage()];
+	}
+	return $errors;
+}
+
+/**
+ * Sends an SMS test message.
+ *
+ * @param string $providerId SMS provider ID
+ * @param string|null $apiKey API key
+ * @param string|null $apiToken API token
+ * @param string|null $accountId account ID
+ * @param string|null $region region
+ * @param string|null $from from
+ * @param string $number mobile phone number
+ * @throws LAMException error during SMS connection
+ */
+function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiToken, ?string $accountId,
+							?string $region, ?string $from, string $number): void {
+	include_once __DIR__ . '/plugins/sms/SmsService.inc';
+	$smsService = new SmsService();
+	try {
+		$smsService->sendSms(_('LAM test message'), $number, $providerId, $apiKey, $apiToken, $accountId, $region, $from);
+	}
+	catch (Exception $e) {
+		throw new LAMException(null, $e->getMessage(), $e);
+	}
+}
+
+/**
+ * Returns the SMS phone number of a user.
+ *
+ * @param array $attributes LDAP attributes
+ * @return string|null phone number if found
+ */
+function getSmsPhoneNumber(array $attributes): ?string {
+	if (empty($_SESSION['cfgMain']->smsProvider)) {
+		return null;
+	}
+	$phoneAttributes = array_change_key_case($_SESSION['cfgMain']->getSmsAttributes());
+	$attributes = array_change_key_case($attributes);
+	foreach ($phoneAttributes as $phoneAttribute) {
+		if (!empty($attributes[$phoneAttribute][0])) {
+			return $attributes[$phoneAttribute][0];
+		}
+	}
+	return null;
 }
 
 /**

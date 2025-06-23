@@ -6,6 +6,7 @@ use htmlJavaScript;
 use htmlResponsiveTable;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAM\PLUGINS\SMS\SmsService;
 use LAMCfgMain;
 use htmlTable;
 use htmlTitle;
@@ -68,6 +69,8 @@ include_once(__DIR__ . '/../../lib/config.inc');
 include_once(__DIR__ . '/../../lib/status.inc');
 /** LAM Pro */
 include_once(__DIR__ . '/../../lib/selfService.inc');
+/** SMS */
+include_once __DIR__ . '/../../lib/plugins/sms/SmsService.inc';
 
 // start session
 if (isFileBasedSession()) {
@@ -408,6 +411,17 @@ if (isset($_POST['submitFormData'])) {
 			$errors[] = _('The mail attributes are invalid.');
 		}
 	}
+    // SMS settings
+    if (isLAMProVersion()) {
+        $cfg->smsProvider = $_POST['smsProvider'];
+        $cfg->smsAttributes = $_POST['smsAttributes'];
+        $cfg->smsApiKey = $_POST['smsApiKey'];
+        $cfg->smsToken = $_POST['smsApiToken'];
+        $cfg->smsAccountId = $_POST['smsAccountId'];
+        $cfg->smsRegion = $_POST['smsRegion'];
+        $cfg->smsFrom = $_POST['smsFrom'];
+        $cfg->smsDefaultCountryPrefix = $_POST['smsDefaultCountryPrefix'];
+    }
 	$cfg->errorReporting = $_POST['errorReporting'];
 	// module settings
 	$allModules = getAllModules();
@@ -721,6 +735,82 @@ if (isset($_POST['submitFormData'])) {
 		$testDialogDivContent->add($toAddressInput);
 		$testDialogDiv = new htmlDiv('smtpTestDialogDiv', $testDialogDivContent, ['hidden']);
 		$row->add($testDialogDiv);
+	}
+
+	// SMS options
+	if (isLAMProVersion()) {
+		$row->add(new htmlSubTitle(_('SMS options')));
+        $smsService = new SmsService();
+        $smsProviders = $smsService->findProviders();
+		$smsProviderOptions = [
+			'-' => '',
+		];
+        $smsOptionsToHide = [
+            '' => ['smsApiKey', 'smsApiToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsAttributes',
+                'smsDefaultCountryPrefix', 'btn_testSms']
+        ];
+		$smsOptionsToShow = [];
+        foreach ($smsProviders as $provider) {
+            $smsProviderOptions[$provider->getLabel()] = $provider->getId();
+			$smsOptionsToShow[$provider->getId()][] = 'smsAttributes';
+			$smsOptionsToShow[$provider->getId()][] = 'btn_testSms';
+            if ($provider->usesApiToken()) {
+                $smsOptionsToShow[$provider->getId()][] = 'smsApiToken';
+            }
+            else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsApiToken';
+            }
+			if ($provider->usesApiKey()) {
+				$smsOptionsToShow[$provider->getId()][] = 'smsApiKey';
+			}
+			else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsApiKey';
+			}
+			if ($provider->usesAccountId()) {
+				$smsOptionsToShow[$provider->getId()][] = 'smsAccountId';
+			}
+			else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsAccountId';
+			}
+			if ($provider->usesRegion()) {
+				$smsOptionsToShow[$provider->getId()][] = 'smsRegion';
+			}
+			else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsRegion';
+			}
+			if ($provider->usesFrom()) {
+				$smsOptionsToShow[$provider->getId()][] = 'smsFrom';
+			}
+			else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsFrom';
+			}
+        }
+		$selectedSmsProvider = empty($cfg->smsProvider) ? '' : $cfg->smsProvider;
+		$smsProviderSelect = new htmlResponsiveSelect('smsProvider', $smsProviderOptions, [$selectedSmsProvider], _('SMS provider'), '296');
+		$smsProviderSelect->setHasDescriptiveElements(true);
+        $smsProviderSelect->setTableRowsToHide($smsOptionsToHide);
+		$smsProviderSelect->setTableRowsToShow($smsOptionsToShow);
+		$row->add($smsProviderSelect);
+		$row->add(new htmlResponsiveInputField(_('Region'), 'smsRegion', $cfg->smsRegion, '299c'));
+		$row->add(new htmlResponsiveInputField(_('Account id'), 'smsAccountId', $cfg->smsAccountId, '298a'));
+		$row->add(new htmlResponsiveInputField(_('API key'), 'smsApiKey', $cfg->smsApiKey, '297'));
+		$row->add(new htmlResponsiveInputField(_('Token'), 'smsApiToken', $cfg->smsToken, '298'));
+		$row->add(new htmlResponsiveInputField(_('From'), 'smsFrom', $cfg->smsFrom, '299b'));
+		$row->add(new htmlResponsiveInputField(_('Default country prefix'), 'smsDefaultCountryPrefix', $cfg->smsDefaultCountryPrefix, '299a'));
+		$row->add(new htmlResponsiveInputField(_("Mobile phone attributes"), 'smsAttributes', implode(';', $cfg->getSmsAttributes()), '299'));
+        $smsTestButtonRow = new htmlResponsiveRow();
+		$smsTestButton = new htmlButton('testSms', _('Test settings'));
+		$smsTestButton->setOnClick("window.lam.sms.test(event, '" . getSecurityTokenName()
+			. "', '" . getSecurityTokenValue() . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . _('Test settings') . "')");
+		$smsTestButtonRow->addLabel(new htmlOutputText("&nbsp;", false));
+		$smsTestButtonRow->addField($smsTestButton);
+        $row->add($smsTestButtonRow);
+		$smsTestDialogDivContent = new htmlResponsiveRow();
+		$smsTestNumber = new htmlResponsiveInputField(_('Mobile number'), 'testSmsNumber', null, null, true);
+		$smsTestNumber->setType('tel');
+		$smsTestDialogDivContent->add($smsTestNumber);
+		$smsTestDialogDiv = new htmlDiv('smsTestDialogDiv', $smsTestDialogDivContent, ['hidden']);
+		$row->add($smsTestDialogDiv);
 	}
 
 	// webauthn management

@@ -10,14 +10,14 @@
       "php-http/discovery": false
     }
   },
-  "require" : {
-    "web-auth/webauthn-lib" : "^4",
+  "require": {
+    "web-auth/webauthn-lib": "^4",
     "web-auth/cose-lib": "^v4",
-    "symfony/psr-http-message-bridge" : "^6",
-    "symfony/http-foundation" : "^6.0",
+    "symfony/psr-http-message-bridge": "^6",
+    "symfony/http-foundation": "^6.0",
     "symfony/http-client": "^6",
     "http-interop/http-factory-guzzle": "^1.2",
-    "webklex/php-imap" : "^6",
+    "webklex/php-imap": "^6",
     "phpmailer/phpmailer": "~6.5",
     "guzzlehttp/psr7": "^2",
     "paragonie/random_compat": "^2.0",
@@ -25,9 +25,19 @@
     "christian-riesen/base32": "^1.6",
 
     "facile-it/php-openid-client": "^0",
-    "spomky-labs/aes-key-wrap":  "^7",
+    "spomky-labs/aes-key-wrap": "^7",
 
     "monolog/monolog": "^3",
-    "duosecurity/duo_universal_php": "^1.0"
+    "duosecurity/duo_universal_php": "^1.0",
+
+    "aws/aws-sdk-php": "^3"
+  },
+  "scripts": {
+    "pre-autoload-dump": "Aws\\Script\\Composer\\Composer::removeUnusedServices"
+  },
+  "extra": {
+    "aws/aws-sdk-php": [
+      "Sns"
+    ]
   }
 }

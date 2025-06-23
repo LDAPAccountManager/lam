@@ -868,23 +868,25 @@ class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStr
 class LAMConfig {
 
 	/* access levels */
-	const ACCESS_ALL = 100;
-	const ACCESS_PASSWORD_CHANGE = 20;
-	const ACCESS_READ_ONLY = 0;
+	public const ACCESS_ALL = 100;
+	public const ACCESS_PASSWORD_CHANGE = 20;
+	public const ACCESS_READ_ONLY = 0;
 
 	/* login method: predefined list or LDAP search */
-	const LOGIN_LIST = 'list';
-	const LOGIN_SEARCH = 'search';
+	public const LOGIN_LIST = 'list';
+	public const LOGIN_SEARCH = 'search';
 
 	/** line separator */
-	const LINE_SEPARATOR = '+::+';
+	public const LINE_SEPARATOR = '+::+';
 
 	/** show password on screen by default */
-	const PWDRESET_DEFAULT_SCREEN = 1;
+	public const PWDRESET_DEFAULT_SCREEN = 1;
 	/** send password via email by default */
-	const PWDRESET_DEFAULT_MAIL = 2;
+	public const PWDRESET_DEFAULT_MAIL = 2;
+	/** send password via SMS by default */
+	public const PWDRESET_DEFAULT_SMS = 4;
 	/** show password on screen and send via email by default */
-	const PWDRESET_DEFAULT_BOTH = 3;
+	public const PWDRESET_DEFAULT_ALL = 3;
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
@@ -2961,6 +2963,8 @@ class LAMCfgMain {
 	public const MAIL_ATTRIBUTE_DEFAULT = 'mail';
 	public const MAIL_BACKUP_ATTRIBUTE_DEFAULT = 'passwordselfresetbackupmail';
 
+	public const SMS_ATTRIBUTES_DEFAULT = 'mobileTelephoneNumber;mobile';
+
 	/** Default profile */
 	public $default;
 
@@ -3066,6 +3070,30 @@ class LAMCfgMain {
 	 */
 	public string $mailBackupAttribute = self::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
 
+	/** @var string SMS provider ID */
+	public string $smsProvider = '';
+
+	/** @var string SMS API key */
+	public string $smsApiKey = '';
+
+	/** @var string SMS token */
+	public string $smsToken = '';
+
+	/** @var string SMS account ID */
+	public string $smsAccountId = '';
+
+	/** @var string SMS region */
+	public string $smsRegion = '';
+
+	/** @var string SMS from */
+	public string $smsFrom = '';
+
+	/** @var string SMS number attributes */
+	public string $smsAttributes = self::SMS_ATTRIBUTES_DEFAULT;
+
+	/** @var string default country prefix */
+	public string $smsDefaultCountryPrefix = '';
+
 	/** database type */
 	public $configDatabaseType = self::DATABASE_FILE_SYSTEM;
 
@@ -3103,7 +3131,8 @@ class LAMCfgMain {
 		'mailAttribute', 'mailBackupAttribute',
 		'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
-		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings'
+		'configDatabasePassword', 'configDatabaseSSLCA', 'moduleSettings',
+		'smsProvider', 'smsApiKey', 'smsToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsAttributes', 'smsDefaultCountryPrefix'
 	];
 
 	/** persistence settings are always stored on local file system */
@@ -3741,6 +3770,18 @@ class LAMCfgMain {
 			return $this->mailBackupAttribute;
 		}
 		return self::MAIL_BACKUP_ATTRIBUTE_DEFAULT;
+	}
+
+	/**
+	 * Returns the SMS attributes.
+	 *
+	 * @return string[] attribute names
+	 */
+	public function getSmsAttributes(): array {
+		if (!empty($this->smsAttributes)) {
+			return preg_split('/;[ ]*/', $this->smsAttributes);
+		}
+		return preg_split('/;[ ]*/', self::SMS_ATTRIBUTES_DEFAULT);
 	}
 
 	/**

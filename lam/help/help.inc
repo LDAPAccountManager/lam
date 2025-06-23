@@ -355,6 +355,30 @@ $helpArray = [
 				"295" => ["Headline" => _("Show deleted entries"),
 					"Text" => _("This enables to show deleted entries in \"CN=Deleted Objects\" for Active Directory.")
 				],
+				"296" => ["Headline" => _("SMS provider"),
+					"Text" => _("Please select the SMS provider that should be used for password and reset link sending.")
+				],
+				"297" => ["Headline" => _("API key"),
+					"Text" => _("Please enter the API key of your SMS provider.")
+				],
+				"298" => ["Headline" => _("Token"),
+					"Text" => _("Please enter the API token of your SMS provider.")
+				],
+				"298a" => ["Headline" => _("Account id"),
+					"Text" => _("Please enter the account id of your SMS provider.")
+				],
+				"299" => ["Headline" => _("Mobile phone attributes"),
+					"Text" => _("Please enter the LDAP attributes that should be checked to identify the user's mobile phone number.") . ' ' . _("Multiple values are separated by semicolon.")
+				],
+				"299a" => ["Headline" => _("Default country prefix"),
+					"Text" => _("Please enter the default country prefix for your phone numbers (e.g. '+49').")
+				],
+				"299b" => ["Headline" => _("From"),
+					"Text" => _("Please enter the phone number or messaging service ID that acts as the source of the message.")
+				],
+				"299c" => ["Headline" => _("Region"),
+					"Text" => _("Please enter the region ID for the SMS service.")
+				],
 				// 300 - 399
 				// profile/PDF editor, file upload
 				"301" => ["Headline" => _("RDN identifier"),
@@ -413,6 +437,9 @@ $helpArray = [
 				],
 				"411" => ["Headline" => _("Font"),
 					"Text" => _("Please select the font for the PDF file. Dejavu will work on all systems but does not support e.g. Chinese and Japanese. The other fonts require that an appropriate font is installed on the system where the PDF is opened.")
+				],
+				"412" => ["Headline" => _("Send via SMS"),
+					"Text" => _("Sends the password to the user via SMS.")
 				],
 				// 500 - 599
 				// LAM Pro
@@ -544,6 +571,9 @@ $helpArray = [
 					"Headline" => _('To address'),
 					"Text" => _('This email address will be set as To address of all mails.') . ' '
 						. _('Multiple values are separated by comma.')
+				],
+				"558" => ["Headline" => _("Send SMS"),
+					"Text" => _('Sends the confirmation link by SMS. If no phone number is found then an email will be sent.')
 				],
 				"560" => ["Headline" => _("Remember device"),
 					"Text" => _('This will remember your current device. You will not need to provide your 2nd factor for a configured period of time.')

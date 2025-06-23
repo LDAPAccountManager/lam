@@ -296,6 +296,102 @@
       </screenshot>
     </section>
 
+    <section id="smsSetup">
+      <title>SMS options (LAM Pro)</title>
+
+      <para>You can send SMS messages to your users for password resets. To
+      activate this feature you need to have an account at one of the
+      supported SMS providers.</para>
+
+      <para>After all options are filled you can test your settings and check
+      if you get an SMS delivered to the entered mobile number.</para>
+
+      <screenshot>
+        <graphic fileref="images/configGeneral12.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Common options</emphasis></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Default country prefix: please enter your country prefix for
+          telephone numbers. It will be applied whenever no country prefix is
+          part of the user's telephone number.</para>
+        </listitem>
+
+        <listitem>
+          <para>Mobile phone attributes: LAM will check these attributes to
+          find the user's mobile telephone number. The first number that is
+          found will be used.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><ulink url="https://aws.amazon.com/sns/"><emphasis role="bold">AWS
+      SNS</emphasis></ulink></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Region: this is your AWS region (e.g. eu-central-1)</para>
+        </listitem>
+
+        <listitem>
+          <para>Account id: please enter the access key id of your IMS user
+          that is allowed to send SMS (e.g. AKIAIOSFODNN7EXAMPLE)</para>
+        </listitem>
+
+        <listitem>
+          <para>Token: this is the secret value of your access key (e.g.
+          wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold"><ulink
+      url="https://gatewayapi.com/">GatewayAPI</ulink></emphasis></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Token: please enter your API token (not key/secret)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold"><ulink
+      url="https://www.smsapi.com">SMSAPI</ulink></emphasis></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Token: please enter your API token</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold"><ulink
+      url="https://www.smsbox.net/">SMSBOX</ulink></emphasis></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>API key: please enter your API key (pub-...)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold"><ulink
+      url="https://www.twilio.com/">Twilio</ulink></emphasis></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Account id: this is your account SID (e.g. AC...)</para>
+        </listitem>
+
+        <listitem>
+          <para>Token: please enter your API token (not API SID/secret)</para>
+        </listitem>
+
+        <listitem>
+          <para>From: this can be a mobile number (needs to be registered in
+          Twilio) or the ID of a messaging service (MG...). The messaging
+          service allows to define a textual sender name.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
     <section id="confmain_webauthn">
       <title>WebAuthn/FIDO2 devices</title>
 

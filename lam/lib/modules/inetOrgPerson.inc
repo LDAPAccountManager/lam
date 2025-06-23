@@ -3951,6 +3951,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$row->addLabel(new htmlOutputText(_('Telephone number')));
 			$row->addField(new htmlOutputText($this->attributes['telephoneNumber'][0]));
 		}
+		if (!empty($this->attributes['mobile'][0])) {
+			$row->addLabel(new htmlOutputText(_('Mobile number')));
+			$row->addField(new htmlOutputText($this->attributes['mobile'][0]));
+		}
 	}
 
 	/**

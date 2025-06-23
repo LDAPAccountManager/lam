@@ -293,8 +293,9 @@
 
     <para>If a module supports to enforce a password change then you will see
     the appropriate checkbox. LAM Pro also offers to send the password via
-    email after the account is saved. Email options are specified in your
-    <link linkend="profile_mail">LAM server profile</link>.</para>
+    email/SMS after the account is saved. Email options are specified in your
+    <link linkend="profile_mail">LAM server profile</link> and SMS options in
+    <link linkend="smsSetup">main configuration</link>.</para>
 
     <screenshot>
       <mediaobject>
@@ -6581,6 +6582,11 @@ OK (10 msec)</programlisting>
       <listitem>
         <para><emphasis role="bold">$INFO.sendPasswordViaEmail$:</emphasis>
         send password via email (yes|no)</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">$INFO.sendPasswordViaSms$:</emphasis> send
+        password via SMS (yes|no)</para>
       </listitem>
 
       <listitem>
