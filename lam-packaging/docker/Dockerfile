@@ -82,6 +82,8 @@ RUN apt-get install --no-install-recommends -y \
         php-mysql \
         php-sqlite3 \
         php-mbstring \
+        php-opcache \
+        php-apcu \
         wget \
         libldap-common \
         gettext \

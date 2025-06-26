@@ -9,17 +9,6 @@ fi
 . /usr/share/debconf/confmodule
 db_version 2.0 || [ $? -lt 30 ]
 
-# 3rd party libs
-if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib ] ; then
-	ln -s /usr/share/php/phpseclib3 /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
-fi
-if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog ] ; then
-	ln -s /usr/share/php/Monolog /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog
-fi
-if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer ] ; then
-	ln -s /usr/share/php/libphp-phpmailer /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer
-fi
-
 cd /usr/share/ldap-account-manager/config-samples/profiles
 files=`ls -a default.*`
 for file in $files; do
@@ -42,15 +31,7 @@ for file in $files; do
 	cp $file /var/lib/ldap-account-manager/config/templates/pdf/logos/$file
 	chown www-data /var/lib/ldap-account-manager/config/templates/pdf/logos/$file
 done
-if [ ! -h /usr/share/ldap-account-manager/config ]; then
-  ln -s /var/lib/ldap-account-manager/config /usr/share/ldap-account-manager/config
-fi
-if [ ! -h /usr/share/ldap-account-manager/sess ]; then
-  ln -s /var/lib/ldap-account-manager/sess /usr/share/ldap-account-manager/sess
-fi
-if [ ! -h /usr/share/ldap-account-manager/tmp ]; then
-  ln -s /var/lib/ldap-account-manager/tmp /usr/share/ldap-account-manager/tmp
-fi
+
 chmod 700 /var/lib/ldap-account-manager/config
 chmod 700 /var/lib/ldap-account-manager/tmp
 chmod 700 /var/lib/ldap-account-manager/sess

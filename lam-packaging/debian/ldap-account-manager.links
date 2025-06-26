@@ -1,0 +1,8 @@
+/usr/share/doc/ldap-account-manager/docs /usr/share/ldap-account-manager/docs
+/etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/config.cfg
+/usr/share/php/phpseclib3 /usr/share/ldap-account-manager/lib/3rdParty/composer/phpseclib/phpseclib/phpseclib
+/usr/share/php/Monolog /usr/share/ldap-account-manager/lib/3rdParty/composer/monolog/monolog/src/Monolog
+/usr/share/php/libphp-phpmailer /usr/share/ldap-account-manager/lib/3rdParty/composer/phpmailer/phpmailer
+/var/lib/ldap-account-manager/config /usr/share/ldap-account-manager/config
+/var/lib/ldap-account-manager/sess /usr/share/ldap-account-manager/sess
+/var/lib/ldap-account-manager/tmp /usr/share/ldap-account-manager/tmp

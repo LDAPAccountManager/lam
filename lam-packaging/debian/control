@@ -11,7 +11,7 @@ Package: ldap-account-manager
 Architecture: all
 Depends: php (>= 8.1), php-ldap,
  php-gd | php-imagick,
- php-json, php-curl,
+ php-json, php-curl, php-sqlite3, php-mysql,
  php-zip, php-xml, php-gmp, php-mbstring,
  libapache2-mod-php | libapache2-mod-fcgid | php-fpm,
  apache2 (>= 2.4.0) | httpd,
@@ -19,7 +19,7 @@ Depends: php (>= 8.1), php-ldap,
  php-phpseclib3, php-monolog,
  libphp-phpmailer (<< 7.0),
  debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
-Recommends: php-opcache
+Recommends: php-opcache, php-apcu
 Suggests: ldap-server, php-mcrypt, ldap-account-manager-lamdaemon, perl
 Conflicts: libapache2-mod-php5, php5, php5-fpm
 Description: webfrontend for managing accounts in an LDAP directory
