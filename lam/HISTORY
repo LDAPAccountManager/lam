@@ -1,4 +1,5 @@
 September 2025 9.3
+ - Lamdaemon: run /usr/sbin/userdel.local before (and no longer after) home directory is deleted (443)
  - LAM Pro:
   -> SMS support for password sending and password self-reset (441)
 
