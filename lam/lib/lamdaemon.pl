@@ -264,10 +264,10 @@ sub removeHomedir {
 	($<, $>) = ($>, $<); # Get root privileges
 	if (-d $vals[3] && $vals[3] ne '/') {
 		if ((stat($vals[3]))[4] eq $vals[4]) {
-			system 'rm', '-Rf', $vals[3]; # delete home directory
 			if (-e '/usr/sbin/userdel.local') {
 				system '/usr/sbin/userdel.local', $vals[0];
 			}
+			system 'rm', '-Rf', $vals[3]; # delete home directory
 			$return = "Ok";
 			logMessage(LOG_INFO, "Home directory removed (" . $vals[3] . ")");
 		}
