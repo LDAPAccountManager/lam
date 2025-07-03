@@ -2590,7 +2590,7 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 		window.lam.html.activateLightboxes();
 		window.lam.treeview.addFileInputListeners();
 		window.lam.treeview.activateSortableInputs();
-		window.lam.treeview.setPasteButtonVisibility();
+		window.lam.treeview.setActionButtonsVisibility();
 	});
 }
 
@@ -2632,19 +2632,18 @@ window.lam.treeview.activateSortableInputs = function () {
 }
 
 /**
- * Sets the visibility of the paste button.
+ * Sets the visibility of the action buttons.
  */
-window.lam.treeview.setPasteButtonVisibility = function () {
+window.lam.treeview.setActionButtonsVisibility = function () {
 	const pasteButton = document.getElementById('action_button_paste');
-	if (!pasteButton) {
-		return;
-	}
-	const copyPasteDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
-	if (copyPasteDn === null) {
-		pasteButton.classList.add('hidden');
-	}
-	else {
-		pasteButton.classList.remove('hidden');
+	if (pasteButton) {
+		const copyPasteDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+		if (copyPasteDn === null) {
+			pasteButton.classList.add('hidden');
+		}
+		else {
+			pasteButton.classList.remove('hidden');
+		}
 	}
 }
 
@@ -3060,7 +3059,7 @@ window.lam.treeview.copyNode = function(dn) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
 	node.data.badge = '../../graphics/copy.svg';
 	node.update();
-	window.lam.treeview.setPasteButtonVisibility();
+	window.lam.treeview.setActionButtonsVisibility();
 }
 
 /**
@@ -3086,7 +3085,7 @@ window.lam.treeview.cutNode = function(dn) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
 	node.data.badge = '../../graphics/cut.svg';
 	node.update();
-	window.lam.treeview.setPasteButtonVisibility();
+	window.lam.treeview.setActionButtonsVisibility();
 }
 
 /**
@@ -3134,7 +3133,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 		newParentNode.lazy = true;
 		newParentNode.expanded = true;
 		newParentNode.loadLazy(true);
-		window.lam.treeview.setPasteButtonVisibility();
+		window.lam.treeview.setActionButtonsVisibility();
 	});
 }
 
