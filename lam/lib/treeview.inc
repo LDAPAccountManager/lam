@@ -526,6 +526,7 @@ class TreeView {
 			$pasteButton->setOnClick('window.lam.treeview.pasteNode(\'' . getSecurityTokenName() . '\', '
 				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 			$pasteButton->setCSSClasses($buttonClasses);
+			$pasteButton->setId('action_button_paste');
 			$buttonGroup->addElement($pasteButton);
 
 			$buttonGroup->addElement(new htmlSpacer('0.5rem'));

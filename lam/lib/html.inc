@@ -2570,6 +2570,8 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
  */
 class htmlImage extends htmlElement {
 
+	/** ID value */
+	private ?string $id = null;
 	/** path to image */
 	private $path;
 	/** width */
@@ -2620,6 +2622,10 @@ class htmlImage extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope) {
+		$idValue = '';
+		if ($this->id != null) {
+			$idValue = ' id="' . $this->id . '"';
+		}
 		$path = ' src="' . $this->path . '"';
 		$width = '';
 		if ($this->width != null) {
@@ -2659,7 +2665,7 @@ class htmlImage extends htmlElement {
 			ob_end_clean();
 			$helpContentValue = ' helpdata="' . htmlspecialchars($helpContentString) . '"';
 		}
-		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . $helpTitleValue . $helpContentValue . $this->getDataAttributesAsString() . ">";
+		echo '<img' . $idValue . $path . $width . $height . $alt . $title . $classes . $onClick . $helpTitleValue . $helpContentValue . $this->getDataAttributesAsString() . ">";
 		if ($this->lightbox) {
 			echo '</a>';
 		}
@@ -2709,6 +2715,15 @@ class htmlImage extends htmlElement {
 	 */
 	public function setOnClick(string $code): void {
 		$this->onClick = $code;
+	}
+
+	/**
+	 * Sets the ID of the image.
+	 *
+	 * @param string|null $id ID
+	 */
+	public function setId(?string $id): void {
+		$this->id = $id;
 	}
 
 }
