@@ -139,6 +139,9 @@ class TreeView {
 				$this->ensureWriteAccess();
 				$this->validateDn($dn);
 				return $this->paste($dn);
+			case 'compare':
+				$this->validateDn($dn);
+				return $this->compare();
 			default:
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
 				die;
@@ -544,6 +547,27 @@ class TreeView {
 			$exportButton->setCSSClasses($buttonClasses);
 			$buttonGroup->addElement($exportButton);
 		}
+
+		$buttonGroup->addElement(new htmlSpacer('0.5rem'));
+
+		$addToComparisonButton = new htmlImage('../../graphics/list-add.svg', $buttonSize, $buttonSize, _('Add to comparison'), _('Add to comparison'));
+		$addToComparisonButton->setOnClick('window.lam.treeview.addToComparison(\'' . base64_encode($dn) . '\');');
+		$addToComparisonButton->setCSSClasses($buttonClasses);
+		$addToComparisonButton->setId('action_button_compare_add');
+		$buttonGroup->addElement($addToComparisonButton);
+
+		$removeFromComparisonButton = new htmlImage('../../graphics/list-remove.svg', $buttonSize, $buttonSize, _('Remove from comparison'), _('Remove from comparison'));
+		$removeFromComparisonButton->setOnClick('window.lam.treeview.removeFromComparison(\'' . base64_encode($dn) . '\');');
+		$removeFromComparisonButton->setCSSClasses($buttonClasses);
+		$removeFromComparisonButton->setId('action_button_compare_remove');
+		$buttonGroup->addElement($removeFromComparisonButton);
+
+		$startComparisonButton = new htmlImage('../../graphics/compare.svg', $buttonSize, $buttonSize, _('Open comparison'), _('Open comparison'));
+		$startComparisonButton->setOnClick('window.lam.treeview.openComparison(\'' . getSecurityTokenName() . '\', '
+			. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+		$startComparisonButton->setCSSClasses($buttonClasses);
+		$startComparisonButton->setId('action_button_compare');
+		$buttonGroup->addElement($startComparisonButton);
 
 		$row->add($buttonGroup);
 
@@ -1715,6 +1739,112 @@ class TreeView {
 			return json_encode(['error' => $content]);
 		}
 		return json_encode([]);
+	}
+
+	/**
+	 * Starts the DN comparison.
+	 *
+	 * @return string JSON data
+	 */
+	private function compare(): string {
+		$dnList = explode(',', $_POST['dnList']);
+		for ($i = 0; $i < count($dnList); $i++) {
+			$dn = base64_decode($dnList[$i]);
+			$this->validateDn($dn);
+			$dnList[$i] = $dn;
+		}
+		natcasesort($dnList);
+		try {
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlTitle(_('Comparison')));
+			$attributeData = [];
+			foreach ($dnList as $dn) {
+				$attributes = ldapGetDN($dn, ['*']);
+				unset($attributes['dn']);
+				$attributeData[$dn] = $attributes;
+			}
+			$this->addCompareArea($row, $attributeData, _('Attributes'), true);
+			$attributeData = [];
+			foreach ($dnList as $dn) {
+				$attributes = ldapGetDN($dn, ['+', 'creatorsName', 'createTimestamp', 'modifiersName',
+					'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime', 'passwordRetryCount', 'accountUnlockTime', 'nsAccountLock',
+					'nsRoleDN', 'passwordExpirationTime']);
+				unset($attributes['dn']);
+				$attributeData[$dn] = $attributes;
+			}
+			$this->addCompareArea($row, $attributeData, _('Internal attributes'), false);
+			ob_start();
+			parseHtml(null, $row, [], false, '');
+			$content = ob_get_contents();
+			ob_end_clean();
+			return json_encode(['content' => $content]);
+		}
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, $e->getMessage());
+			$message = new htmlStatusMessage('ERROR', _('Comparison failed'));
+			ob_start();
+			parseHtml(null, $message, [], false, '');
+			$content = ob_get_contents();
+			ob_end_clean();
+			return json_encode(['content' => $content]);
+		}
+	}
+
+	/**
+	 * Adds a comparison area.
+	 *
+	 * @param htmlResponsiveRow $row row
+	 * @param array $attributeData dn => attributes
+	 * @param string $title table title
+	 * @param bool $showActions show action icons
+	 */
+	private function addCompareArea(htmlResponsiveRow $row, array $attributeData, string $title, bool $showActions): void {
+		$attributeNames = [];
+		$labels = [];
+		foreach ($attributeData as $dn => $data) {
+			$attributeNames = array_merge($attributeNames, array_keys($data));
+			$labels[] = $dn;
+		}
+		array_unshift($labels, _('Attribute'));
+		$attributeNames = array_values(array_unique($attributeNames));
+		natcasesort($attributeNames);
+		$data = [];
+		$differentValueIndexes = [];
+		for ($i = 0; $i < count($attributeNames); $i++) {
+			$attributeName = $attributeNames[$i];
+			$dataEntry = [new htmlOutputText($this->getProperAttributeName($attributeName))];
+			$allValues = [];
+			foreach ($attributeData as $singleData) {
+				$values = $singleData[$attributeName] ?? [];
+				$allValues[] = implode(', ', $values);
+				$dataEntry[] = new htmlOutputText(implode(', ', $values));
+			}
+			$data[] = $dataEntry;
+			$allValues = array_unique($allValues);
+			if (count($allValues) > 1) {
+				$differentValueIndexes[] = $i;
+			}
+		}
+		if ($showActions) {
+			$removeFromComparisonRow = [new htmlOutputText('')];
+			foreach ($attributeData as $dn => $singleData) {
+				$removeFromComparisonButton = new htmlImage('../../graphics/list-remove.svg', '16px', '16px', _('Remove from comparison'), _('Remove from comparison'));
+				if (count($attributeData) > 2) {
+					$removeFromComparisonButton->setOnClick('window.lam.treeview.removeFromComparison(\'' . base64_encode($dn) . '\'); window.lam.treeview.openComparison(\'' . getSecurityTokenName() . '\', '
+						. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+				}
+				else {
+					$removeFromComparisonButton->setOnClick('window.lam.treeview.removeFromComparison(\'' . base64_encode($dn) . '\'); window.lam.treeview.getNodeContent(\'' . getSecurityTokenName() . '\', '
+						. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+				}
+				$removeFromComparisonRow[] = $removeFromComparisonButton;
+			}
+			$data[] = $removeFromComparisonRow;
+		}
+		$attributeTable = new htmlResponsiveTable($labels, $data, $differentValueIndexes);
+		$attributeTable->setCSSClasses(['colored--table', 'no-wrap-first-column']);
+		$row->add(new htmlSubTitle($title));
+		$row->add($attributeTable);
 	}
 
 	/**

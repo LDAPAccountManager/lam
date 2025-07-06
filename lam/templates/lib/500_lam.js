@@ -2590,7 +2590,7 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 		window.lam.html.activateLightboxes();
 		window.lam.treeview.addFileInputListeners();
 		window.lam.treeview.activateSortableInputs();
-		window.lam.treeview.setActionButtonsVisibility();
+		window.lam.treeview.setActionButtonsVisibility(dn);
 	});
 }
 
@@ -2633,8 +2633,10 @@ window.lam.treeview.activateSortableInputs = function () {
 
 /**
  * Sets the visibility of the action buttons.
+ *
+ * @param dn current DN (base64 encoded)
  */
-window.lam.treeview.setActionButtonsVisibility = function () {
+window.lam.treeview.setActionButtonsVisibility = function (dn) {
 	const pasteButton = document.getElementById('action_button_paste');
 	if (pasteButton) {
 		const copyPasteDn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
@@ -2643,6 +2645,36 @@ window.lam.treeview.setActionButtonsVisibility = function () {
 		}
 		else {
 			pasteButton.classList.remove('hidden');
+		}
+	}
+	const addToCompareButton = document.getElementById('action_button_compare_add');
+	if (addToCompareButton) {
+		const compareDNs = window.lam.treeview.getComparisonDNs();
+		if (compareDNs.includes(dn)) {
+			addToCompareButton.classList.add('hidden');
+		}
+		else {
+			addToCompareButton.classList.remove('hidden');
+		}
+	}
+	const removeFromCompareButton = document.getElementById('action_button_compare_remove');
+	if (removeFromCompareButton) {
+		const compareDNs = window.lam.treeview.getComparisonDNs();
+		if (compareDNs.includes(dn)) {
+			removeFromCompareButton.classList.remove('hidden');
+		}
+		else {
+			removeFromCompareButton.classList.add('hidden');
+		}
+	}
+	const startCompareButton = document.getElementById('action_button_compare');
+	if (startCompareButton) {
+		const compareDNs = window.lam.treeview.getComparisonDNs();
+		if (compareDNs.length > 1) {
+			startCompareButton.classList.remove('hidden');
+		}
+		else {
+			startCompareButton.classList.add('hidden');
 		}
 	}
 }
@@ -3059,7 +3091,7 @@ window.lam.treeview.copyNode = function(dn) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
 	node.data.badge = '../../graphics/copy.svg';
 	node.update();
-	window.lam.treeview.setActionButtonsVisibility();
+	window.lam.treeview.setActionButtonsVisibility(dn);
 }
 
 /**
@@ -3085,7 +3117,7 @@ window.lam.treeview.cutNode = function(dn) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.key);
 	node.data.badge = '../../graphics/cut.svg';
 	node.update();
-	window.lam.treeview.setActionButtonsVisibility();
+	window.lam.treeview.setActionButtonsVisibility(dn);
 }
 
 /**
@@ -3133,8 +3165,85 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, destinationDn) 
 		newParentNode.lazy = true;
 		newParentNode.expanded = true;
 		newParentNode.loadLazy(true);
-		window.lam.treeview.setActionButtonsVisibility();
+		window.lam.treeview.setActionButtonsVisibility(dn);
 	});
+}
+
+/**
+ * Adds a DN to the comparison.
+ *
+ * @param dn DN (base64 encoded)
+ */
+window.lam.treeview.addToComparison = function(dn) {
+	let comparisonDNs = window.lam.treeview.getComparisonDNs();
+	if (comparisonDNs.includes(dn)) {
+		return;
+	}
+	comparisonDNs.push(dn);
+	window.lam.treeview.setComparisonDNs(comparisonDNs);
+	window.lam.treeview.setActionButtonsVisibility(dn);
+}
+
+/**
+ * Removes a DN from the comparison.
+ *
+ * @param dn DN (base64 encoded)
+ */
+window.lam.treeview.removeFromComparison = function(dn) {
+	let comparisonDNs = window.lam.treeview.getComparisonDNs();
+	if (!comparisonDNs.includes(dn)) {
+		return;
+	}
+	comparisonDNs.splice(comparisonDNs.indexOf(dn), 1);
+	window.lam.treeview.setComparisonDNs(comparisonDNs);
+	window.lam.treeview.setActionButtonsVisibility(dn);
+}
+
+/**
+ * Compares the selected DNs.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN
+ */
+window.lam.treeview.openComparison = function(tokenName, tokenValue, dn) {
+	const comparisonDNs = window.lam.treeview.getComparisonDNs();
+	if (comparisonDNs.length < 2) {
+		return;
+	}
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('dnList', comparisonDNs.join(','));
+	data.append('dn', dn);
+	fetch("../misc/ajax.php?function=treeview&command=compare", {
+		method: 'POST',
+		body: data
+	})
+	.then(async response => {
+		const jsonData = await response.json();
+		window.lam.treeview.checkSession(jsonData);
+		document.getElementById('ldap_actionarea').innerHTML = jsonData.content;
+		window.scrollTo(0, 0);
+	});
+}
+
+/**
+ * Returns the comparison DNs.
+ *
+ * @return the comparison DNs
+ */
+window.lam.treeview.getComparisonDNs = function() {
+	const comparisonDNs = window.sessionStorage.getItem('LAM_COMPARE_DNS');
+	return (comparisonDNs) ? comparisonDNs.split(',') : [];
+}
+
+/**
+ * Sets the comparison DNs.
+ *
+ * @param dnList the comparison DNs
+ */
+window.lam.treeview.setComparisonDNs = function(dnList) {
+	window.sessionStorage.setItem('LAM_COMPARE_DNS', dnList.join(','));
 }
 
 /**

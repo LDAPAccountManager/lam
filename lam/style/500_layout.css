@@ -224,6 +224,10 @@ table.colored--table > tbody > tr.highlighted {
 	color: var(--lam-table-text-color-hover);
 }
 
+table.no-wrap-first-column td:first-child {
+	white-space: nowrap;
+}
+
 table.accountlist {
 	border: 1px solid var(--lam-table-border-color);
 }
