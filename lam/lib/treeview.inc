@@ -648,13 +648,17 @@ class TreeView {
 	 * @param bool $isMultiValue multi-value attribute
 	 * @param bool $isMultiLine textarea attribute
 	 * @param AttributeType|null $schemaAttribute schema attribute
+	 * @param bool $readOnly render read-only
 	 * @return htmlElement content
 	 */
 	private function getAttributeContentField(string $attributeName, array $values, bool $required, bool $isMultiValue,
-											  bool   $isMultiLine, ?AttributeType $schemaAttribute): htmlElement {
+											  bool   $isMultiLine, ?AttributeType $schemaAttribute, bool $readOnly = false): htmlElement {
 		if (!$isMultiValue) {
-			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0);
-			return $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
+			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0, $readOnly);
+			if (!$readOnly) {
+				$field = $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
+			}
+			return $field;
 		}
 		$valueListContents = [];
 		$autoCompleteValues = [];
@@ -670,7 +674,7 @@ class TreeView {
 			$onInput = "window.lam.treeview.updatePossibleNewAttributes('" . getSecurityTokenName() . "', '" . getSecurityTokenValue() . "');";
 		}
 		foreach ($values as $index => $value) {
-			$inputField = $this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index);
+			$inputField = $this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index, $readOnly);
 			$cssClasses = $inputField->getCSSClasses();
 			$cssClasses[] = 'lam-attr-' . $safeAttributeName;
 			$inputField->setCSSClasses($cssClasses);
@@ -678,13 +682,13 @@ class TreeView {
 				$inputField->enableAutocompletion($autoCompleteValues);
 				$inputField->setId($attributeName . $index);
 			}
-			if ($onInput !== null) {
+			if (($onInput !== null) && !$readOnly) {
 				$inputField->setOnInput($onInput);
 			}
 			$valueLine = new htmlTable();
 			$valueLine->setCSSClasses(['fullwidth']);
 			$valueLine->addElement($inputField);
-			if (checkIfWriteAccessIsAllowed()) {
+			if (checkIfWriteAccessIsAllowed() && !$readOnly) {
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute)) {
 					$addButton = new htmlLink(null, '#', '../../graphics/add.svg');
 					$addButton->setCSSClasses(['margin2']);
@@ -711,7 +715,10 @@ class TreeView {
 			$valueList = new htmlList($valueListContents, 'attributeList_' . $safeAttributeName);
 		}
 		$valueList->setCSSClasses($listClasses);
-		return $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
+		if (!$readOnly) {
+			$valueList = $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
+		}
+		return $valueList;
 	}
 
 	/**
@@ -734,7 +741,7 @@ class TreeView {
 	}
 
 	/**
-	 * Adds any entry content to the element.
+	 * Adds any additional entry content to the element.
 	 *
 	 * @param htmlElement $element original element
 	 * @param string $attributeName attribute name
@@ -765,13 +772,14 @@ class TreeView {
 	 * @param bool $isSingleValue is single value attribute
 	 * @param AttributeType|null $schemaAttribute schema attribute
 	 * @param int $index value position
+	 * @param bool $readOnly render read-only
 	 * @return htmlElement input field
 	 * @throws LAMException error generating field
 	 */
 	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine,
-											bool   $isSingleValue, ?AttributeType $schemaAttribute, int $index): htmlElement {
+											bool   $isSingleValue, ?AttributeType $schemaAttribute, int $index, bool $readOnly): htmlElement {
 		if ($this->isPasswordAttribute($attributeName)) {
-			return $this->getAttributePasswordInputField($attributeName, $value, $required, $isSingleValue);
+			return $this->getAttributePasswordInputField($attributeName, $value, $required, $isSingleValue, $readOnly);
 		}
 		if ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
 			return $this->getAttributeJpegInputField($attributeName, $value, $index);
@@ -781,9 +789,21 @@ class TreeView {
 		}
 		$value = $this->preProcessValue(strtolower($attributeName), $value);
 		if ($isMultiLine || $this->isPseudoMultiLine(strtolower($attributeName))) {
+			if ($readOnly) {
+				$text = new htmlOutputText(chunk_split($value, 40));
+				$text->setPreformatted();
+				return $text;
+			}
 			$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $value, 50, 5);
 		}
 		else {
+			if ($readOnly) {
+				$text = new htmlOutputText(chunk_split($value, 40));
+				if (strlen($value) > 40) {
+					$text->setPreformatted();
+				}
+				return $text;
+			}
 			$inputField = new htmlInputField('lam_attr_' . $attributeName, $value);
 		}
 		$inputField->addDataAttribute('value-orig', $value);
@@ -827,9 +847,13 @@ class TreeView {
 	 * @param string $value value
 	 * @param bool $required required
 	 * @param bool $isSingleValue is single value attribute
+	 * @param bool $readOnly render read-only
 	 * @return htmlElement input field
 	 */
-	private function getAttributePasswordInputField(string $attributeName, string $value, bool $required, bool $isSingleValue): htmlElement {
+	private function getAttributePasswordInputField(string $attributeName, string $value, bool $required, bool $isSingleValue, bool $readOnly): htmlElement {
+		if ($readOnly) {
+			return new htmlOutputText('*******');
+		}
 		$inputField = new htmlInputField('lam_attr_' . $attributeName, $value);
 		$inputField->addDataAttribute('value-orig', $value);
 		$inputField->addDataAttribute('attr-name', $attributeName);
@@ -1810,14 +1834,19 @@ class TreeView {
 		natcasesort($attributeNames);
 		$data = [];
 		$differentValueIndexes = [];
+		$schemaAttributes = $this->getSchemaAttributes();
 		for ($i = 0; $i < count($attributeNames); $i++) {
 			$attributeName = $attributeNames[$i];
 			$dataEntry = [new htmlOutputText($this->getProperAttributeName($attributeName))];
 			$allValues = [];
 			foreach ($attributeData as $singleData) {
-				$values = $singleData[$attributeName] ?? [];
+				$schemaAttribute = $schemaAttributes[$attributeName] ?? null;
+				$attributeNameSchema = ($schemaAttribute === null) ? $attributeName : $schemaAttribute->getName();
+				$values = $singleData[$attributeName] ?? [''];
+				$isMultiValue = $this->isMultiValueAttribute($values, $schemaAttribute);
+				$isMultiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute);
+				$dataEntry[] = $this->getAttributeContentField($attributeNameSchema, $values, false, $isMultiValue, $isMultiLine, $schemaAttribute, true);
 				$allValues[] = implode(', ', $values);
-				$dataEntry[] = new htmlOutputText(implode(', ', $values));
 			}
 			$data[] = $dataEntry;
 			$allValues = array_unique($allValues);
@@ -1826,8 +1855,9 @@ class TreeView {
 			}
 		}
 		if ($showActions) {
-			$removeFromComparisonRow = [new htmlOutputText('')];
+			$actionsRow = [new htmlOutputText('')];
 			foreach ($attributeData as $dn => $singleData) {
+				$buttonClasses = ['clickable', 'lam-margin-small', 'icon'];
 				$removeFromComparisonButton = new htmlImage('../../graphics/list-remove.svg', '16px', '16px', _('Remove from comparison'), _('Remove from comparison'));
 				if (count($attributeData) > 2) {
 					$removeFromComparisonButton->setOnClick('window.lam.treeview.removeFromComparison(\'' . base64_encode($dn) . '\'); window.lam.treeview.openComparison(\'' . getSecurityTokenName() . '\', '
@@ -1837,9 +1867,17 @@ class TreeView {
 					$removeFromComparisonButton->setOnClick('window.lam.treeview.removeFromComparison(\'' . base64_encode($dn) . '\'); window.lam.treeview.getNodeContent(\'' . getSecurityTokenName() . '\', '
 						. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 				}
-				$removeFromComparisonRow[] = $removeFromComparisonButton;
+				$removeFromComparisonButton->setCSSClasses($buttonClasses);
+				$linkButton = new htmlImage('../../graphics/link.svg', '16px', '16px', _('Open entry'), _('Open entry'));
+				$linkButton->setOnClick('window.lam.treeview.getNodeContent(\'' . getSecurityTokenName() . '\', '
+					. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+				$linkButton->setCSSClasses($buttonClasses);
+				$actionsGroup = new htmlGroup();
+				$actionsGroup->addElement($removeFromComparisonButton);
+				$actionsGroup->addElement($linkButton);
+				$actionsRow[] = $actionsGroup;
 			}
-			$data[] = $removeFromComparisonRow;
+			$data[] = $actionsRow;
 		}
 		$attributeTable = new htmlResponsiveTable($labels, $data, $differentValueIndexes);
 		$attributeTable->setCSSClasses(['colored--table', 'no-wrap-first-column']);
