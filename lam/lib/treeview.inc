@@ -1482,15 +1482,19 @@ class TreeView {
 	 * Stops processing if DN is invalid.
 	 *
 	 * @param string $dn DN
+	 * @return bool DN is valid
 	 */
-	private function validateDn(string $dn): void {
+	private function validateDn(string $dn, bool $die = true): bool {
 		$dn = strtolower($dn);
 		$rootDns = TreeViewTool::getRootDns();
 		foreach ($rootDns as $rootDn) {
 			$rootDn = strtolower($rootDn);
 			if (str_ends_with($dn, $rootDn)) {
-				return;
+				return true;
 			}
+		}
+		if (!$die) {
+			return false;
 		}
 		logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
 		die();
@@ -1771,11 +1775,13 @@ class TreeView {
 	 * @return string JSON data
 	 */
 	private function compare(): string {
-		$dnList = explode(',', $_POST['dnList']);
-		for ($i = 0; $i < count($dnList); $i++) {
-			$dn = base64_decode($dnList[$i]);
-			$this->validateDn($dn);
-			$dnList[$i] = $dn;
+		$dnListToCheck = explode(',', $_POST['dnList']);
+		$dnList = [];
+		foreach ($dnListToCheck as $dn) {
+			$dn = base64_decode($dn);
+			if ($this->validateDn($dn, false)) {
+				$dnList[] = $dn;
+			}
 		}
 		natcasesort($dnList);
 		try {
