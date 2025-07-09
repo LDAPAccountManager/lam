@@ -1862,7 +1862,7 @@ class TreeView {
 		}
 		if ($showActions) {
 			$actionsRow = [new htmlOutputText('')];
-			foreach ($attributeData as $dn => $singleData) {
+			foreach (array_keys($attributeData) as $dn) {
 				$buttonClasses = ['clickable', 'lam-margin-small', 'icon'];
 				$removeFromComparisonButton = new htmlImage('../../graphics/list-remove.svg', '16px', '16px', _('Remove from comparison'), _('Remove from comparison'));
 				if (count($attributeData) > 2) {
