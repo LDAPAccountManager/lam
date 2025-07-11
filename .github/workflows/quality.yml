@@ -44,7 +44,7 @@ jobs:
       run: php --version
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: composer install --no-progress
 
     - name: Install CodeSpell
       run: pipx install codespell
