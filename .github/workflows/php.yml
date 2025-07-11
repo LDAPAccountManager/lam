@@ -15,7 +15,7 @@ jobs:
     permissions:
       contents: read  # for actions/checkout to fetch code
       pull-requests: read  # for sonarsource/sonarcloud-github-action to determine which PR to decorate
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
 
     steps:
     - name: Harden Runner
