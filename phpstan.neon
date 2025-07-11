@@ -8,6 +8,7 @@ parameters:
 		- lam/templates
 	fileExtensions:
 	    - php
+	    - lib
 	excludePaths:
 		analyseAndScan:
 			- */3rdParty/*

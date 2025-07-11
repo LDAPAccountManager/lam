@@ -111,7 +111,7 @@ printContent($message);
  * @param htmlStatusMessage|null $message status message
  * @param bool $showPasswordInputs show password input fields
  */
-function printContent(htmlStatusMessage $message = null, bool $showPasswordInputs = true): void {
+function printContent(?htmlStatusMessage $message = null, bool $showPasswordInputs = true): void {
 	echo '
 		<!DOCTYPE html>
 		<html><head>
