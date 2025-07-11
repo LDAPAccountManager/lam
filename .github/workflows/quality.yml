@@ -47,7 +47,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Install CodeSpell
-      run: pip install --user codespell
+      run: pipx install codespell
 
     - name: CodeSpell
       run: ./codespell.sh
