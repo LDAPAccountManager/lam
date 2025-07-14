@@ -262,7 +262,7 @@ function isDebugLoggingEnabled() {
 /**
  * Puts a new message in the log file.
  *
- * @param string $level log level (LOG_DEBUG, LOG_NOTICE, LOG_WARNING, LOG_ERR)
+ * @param int $level log level (LOG_DEBUG, LOG_NOTICE, LOG_WARNING, LOG_ERR)
  * @param string $message log message
  */
 function logNewMessage($level, $message): void {

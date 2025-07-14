@@ -2743,7 +2743,7 @@ class htmlSpacer extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $width width (e.g. 10px)
+	 * @param string|null $width width (e.g. 10px)
 	 * @param string|null $height height (e.g. 10px)
 	 * @param array|null $cssClasses CSS classes
 	 */

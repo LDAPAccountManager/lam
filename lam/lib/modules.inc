@@ -678,11 +678,11 @@ function getRequiredExtensions() {
  * The modules are not allowed to display HTML code directly but return
  * meta HTML code. This allows to have a common design for all module pages.
  *
- * @param string $module Name of account module
+ * @param string|null $module Name of account module
  * @param htmlElement|htmlElement[] $input htmlElement or array of htmlElement elements
  * @param array $values List of values which override the defaults in $input (name => value)
  * @param boolean $restricted If true then no buttons will be displayed
- * @param string $scope Account type
+ * @param string|null $scope Account type
  * @return array List of input field names and their type (name => type)
  */
 function parseHtml($module, $input, $values, $restricted, $scope) {
