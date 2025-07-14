@@ -65,7 +65,7 @@ interface TwoFactorProvider {
 	 * @param string $password password
 	 * @param string $serial serial number of token
 	 * @param string $twoFactorInput input for 2nd factor
-	 * @return boolean true if verified and false if verification failed
+	 * @return bool true if verified and false if verification failed
 	 * @throws Exception error during check
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput);
@@ -74,7 +74,7 @@ interface TwoFactorProvider {
 	 * Returns if the service has a custom input form.
 	 * In this case the token field is not displayed.
 	 *
-	 * @return has custom input form
+	 * @return bool has custom input form
 	 */
 	public function hasCustomInputForm();
 
