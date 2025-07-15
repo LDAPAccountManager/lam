@@ -567,9 +567,9 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Constructor
 	 *
-	 * @param String $fieldName unique field name
-	 * @param String $fieldValue value of input field (optional)
-	 * @param String $fieldSize input field length (default 30)
+	 * @param string $fieldName unique field name
+	 * @param string $fieldValue value of input field (optional)
+	 * @param string|null $fieldSize input field length (default 30)
 	 */
 	function __construct($fieldName, $fieldValue = null, $fieldSize = null) {
 		if (isObfuscatedText($fieldValue)) {
@@ -632,15 +632,15 @@ class htmlInputField extends htmlElement {
 		$idValue = $this->id ?? $this->fieldName;
 		$id = ' id="' . $idValue . '"';
 		$value = '';
-		if ($this->fieldValue != null) {
+		if ($this->fieldValue !== null) {
 			$value = ' value="' . $this->fieldValue . '"';
 		}
 		$maxLength = '';
-		if ($this->fieldMaxLength != null) {
+		if ($this->fieldMaxLength !== null) {
 			$maxLength = ' maxlength="' . $this->fieldMaxLength . '"';
 		}
 		$size = '';
-		if ($this->fieldSize != null) {
+		if ($this->fieldSize !== null) {
 			$size = ' size="' . $this->fieldSize . '"';
 		}
 		$inputType = $this->type;
@@ -777,7 +777,7 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Sets the field size (default is 30).
 	 *
-	 * @param int $fieldSize size
+	 * @param string|null $fieldSize size
 	 */
 	public function setFieldSize($fieldSize) {
 		$this->fieldSize = $fieldSize;

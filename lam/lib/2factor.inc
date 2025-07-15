@@ -23,7 +23,7 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2024  Roland Gruber
+  Copyright (C) 2017 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1081,7 +1081,7 @@ class TwoFactorProviderService {
 	 *
 	 * @param selfServiceProfile|LAMConfig $configObj profile
 	 */
-	public function __construct(&$configObj) {
+	public function __construct(selfServiceProfile|LAMConfig $configObj) {
 		if ($configObj instanceof selfServiceProfile) {
 			$this->config = $this->getConfigSelfService($configObj);
 		}
