@@ -3338,12 +3338,11 @@ class htmlDiv extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $id unique ID
+	 * @param string|null $id unique ID
 	 * @param htmlElement $content inner content
-	 * @param array $classes CSS classes
-	 * @param string[] $cssClasses CSS classes
+	 * @param string[]|null $cssClasses CSS classes
 	 */
-	function __construct($id, $content, $cssClasses = null) {
+	function __construct(?string $id, htmlElement $content, ?array $cssClasses = null) {
 		if ($id !== null) {
 			$this->id = htmlspecialchars($id);
 		}

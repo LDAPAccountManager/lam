@@ -11,7 +11,7 @@ use function \LAM\SCHEMA\get_cached_schema;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2023  Roland Gruber
+  Copyright (C) 2007 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -76,10 +76,10 @@ else {
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypes();
 	foreach ($types as $type) {
-		$modules = $_SESSION['config']->get_AccountModules($type->getId());
+		$moduleNames = $_SESSION['config']->get_AccountModules($type->getId());
 		$container->add(new htmlSubTitle($type->getAlias()), 12);
-		for ($m = 0; $m < count($modules); $m++) {
-			$error = checkSchemaForModule($modules[$m], $type->getScope(), $type->getId());
+		foreach ($moduleNames as $moduleName) {
+			$error = checkSchemaForModule($moduleName, $type->getScope(), $type->getId());
 			$message = _("No problems found.");
 			$icon = '../../graphics/pass.svg';
 			if ($error != null) {
@@ -87,7 +87,8 @@ else {
 				$message = $error;
 			}
 			// module name
-			$container->add(new htmlOutputText(getModuleAlias($modules[$m], $type->getScope())), 10, 3);
+			$aliasName = getModuleAlias($moduleName, $type->getScope()) ?? '';
+			$container->add(new htmlOutputText($aliasName), 10, 3);
 			// icon
 			$container->add(new htmlImage($icon), 2);
 			// text

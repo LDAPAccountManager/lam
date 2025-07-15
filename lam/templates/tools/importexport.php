@@ -160,7 +160,7 @@ function printImportTabContent(): void {
 	$container->add($sourceRadio, 12);
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlResponsiveInputFileUpload('file', _('File'), '750'), 12);
-	$container->add(new htmlResponsiveInputTextarea('text', '', '60', '20', _('LDIF data'), '750'), 12);
+	$container->add(new htmlResponsiveInputTextarea('text', '', 60, 20, _('LDIF data'), '750'), 12);
 	$container->add(new htmlResponsiveInputCheckbox('noStop', false, _('Don\'t stop on errors')), 12);
 
 	$container->addVerticalSpacer('3rem');
@@ -200,7 +200,7 @@ function printImportTabProcessing(): void {
 	$button = new htmlButton('submitImportCancel', _('Cancel'));
 	$container->add($button, 12, 12, 12, 'text-center');
 
-	$newImportButton = new htmlLink(_('New import'), null);
+	$newImportButton = new htmlLink(_('New import'), '');
 	$container->add($newImportButton, 12, 12, 12, 'text-center hidden newimport');
 
 	$container->addVerticalSpacer('3rem');
@@ -241,6 +241,9 @@ function checkImportData(): void {
 		throw new LAMException(_('You must either upload a file or provide an import in the text box.'));
 	}
 	$lines = preg_split("/\n|\r\n|\r/", $ldif);
+    if ($lines === false) {
+		throw new LAMException(_('You must either upload a file or provide an import in the text box.'));
+    }
 	$importer = new Importer();
 	$tasks = $importer->getTasks($lines);
 	$_SESSION[Importer::SESSION_KEY_TASKS] = $tasks;
@@ -395,7 +398,7 @@ function printExportTabProcessing(): void {
 	$button = new htmlButton('submitExportCancel', _('Cancel'));
 	$container->add($button, 12, 12, 12, 'text-center');
 
-	$newExportButton = new htmlLink(_('New export'), null);
+	$newExportButton = new htmlLink(_('New export'), '');
 	$container->add($newExportButton, 12, 12, 12, 'text-center hidden newexport');
 
 	$container->addVerticalSpacer('3rem');

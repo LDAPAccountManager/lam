@@ -661,7 +661,7 @@ function validateSecurityToken() {
  *
  * @param htmlTable|htmlGroup|htmlResponsiveRow $container table
  */
-function addSecurityTokenToMetaHTML(&$container) {
+function addSecurityTokenToMetaHTML($container) {
 	$token = new htmlHiddenInput(getSecurityTokenName(), $_SESSION[getSecurityTokenName()]);
 	if ($container instanceof htmlResponsiveRow) {
 		$container->add($token);

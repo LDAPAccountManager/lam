@@ -125,7 +125,7 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
  * Checks if all input values are correct and returns the LDAP commands which should be executed.
  *
  * @param string $scope account type
- * @param string $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
+ * @param array $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
  * @param array $attributes LDAP attributes
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
  * @param array $readOnlyFields list of read-only fields

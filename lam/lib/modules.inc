@@ -281,10 +281,10 @@ function check_module_conflicts($selected, $deps) {
  * Returns an array with all available user module names
  *
  * @param string $scope account type (user, group, host)
- * @param boolean $mustSupportAdminInterface module must support LAM admin interface (default: false)
- * @return array list of possible modules
+ * @param bool $mustSupportAdminInterface module must support LAM admin interface (default: false)
+ * @return string[] list of possible modules
  */
-function getAvailableModules($scope, $mustSupportAdminInterface = false) {
+function getAvailableModules($scope, bool $mustSupportAdminInterface = false): array {
 	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 12) . "/modules";
 	$dir = dir($dirname);
 	$return = [];
