@@ -560,7 +560,7 @@ class fixed_ip extends baseModule {
 			$number++;
 			$newName = $namePrefix . $number;
 			$found = false;
-			foreach ($this->existingDhcpHostsCache as &$host) {
+			foreach ($this->existingDhcpHostsCache as $host) {
 				if ($host['name'] === $newName) {
 					$found = true;
 					break;
