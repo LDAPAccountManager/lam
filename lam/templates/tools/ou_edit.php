@@ -18,7 +18,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -206,6 +206,9 @@ function display_main(?string $message, ?string $error): void {
 	$optionsToInsert = [];
 	foreach ($types as $typeId => $title) {
 		$type = $typeManager->getConfiguredType($typeId);
+		if ($type === null) {
+			continue;
+		}
 		$elements = [];
 		$units = searchLDAP($type->getSuffix(), '(|(objectclass=organizationalunit)(objectclass=organization))', ['dn']);
 		foreach ($units as $unit) {

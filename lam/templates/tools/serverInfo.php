@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2024  Roland Gruber
+  Copyright (C) 2009 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -180,7 +180,7 @@ if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=st
 	if (isset($monitorEntries['cn=start,cn=time,cn=monitor'])) {
 		$time = formatLDAPTimestamp($monitorEntries['cn=start,cn=time,cn=monitor']['monitortimestamp'][0]);
 		$container->addLabel(new htmlOutputText('<b>' . _("Start time") . '</b>', false));
-		$container->addField(new htmlOutputText($time), 12);
+		$container->addField(new htmlOutputText($time));
 	}
 	elseif (isset($monitorEntries['cn=monitor']['starttime'])) { // Fedora 389
 		$time = formatLDAPTimestamp($monitorEntries['cn=monitor']['starttime'][0]);

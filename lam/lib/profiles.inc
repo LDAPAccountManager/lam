@@ -204,7 +204,6 @@ class AccountProfilePersistenceManager {
 	 * @param string $confName server profile name
 	 * @return bool profile exists
 	 * @throws LAMException error while checking
-	 * @throws LAMException error writing template
 	 */
 	public function isAccountProfileExisting(string $typeId, string $name, string $confName): bool {
 		if (!$this->isValidAccountProfileName($name)

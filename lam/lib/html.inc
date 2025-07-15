@@ -1072,9 +1072,9 @@ class htmlButton extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name button name
-	 * @param String $value button text or image (16x16px, relative to graphics folder)
-	 * @param String $isImageButton image or text button (default text)
+	 * @param string $name button name
+	 * @param string $value button text or image (16x16px, relative to graphics folder)
+	 * @param bool $isImageButton image or text button (default text)
 	 */
 	function __construct($name, $value, $isImageButton = false) {
 		$this->name = htmlspecialchars($name);

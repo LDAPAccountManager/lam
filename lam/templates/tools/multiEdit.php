@@ -1,26 +1,28 @@
 <?php
 namespace LAM\TOOLS\MULTI_EDIT;
 use htmlProgressbar;
-use \htmlTable;
-use \htmlTitle;
-use \htmlSelect;
-use \htmlOutputText;
-use \htmlInputField;
-use \htmlSubTitle;
-use \htmlButton;
-use \htmlStatusMessage;
-use \htmlSpacer;
-use \htmlHiddenInput;
-use \htmlGroup;
-use \htmlDiv;
-use \htmlJavaScript;
-use \htmlLink;
-use \htmlInputTextarea;
-use \htmlResponsiveRow;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputField;
-use \htmlResponsiveTable;
+use htmlTable;
+use htmlTitle;
+use htmlSelect;
+use htmlOutputText;
+use htmlInputField;
+use htmlSubTitle;
+use htmlButton;
+use htmlStatusMessage;
+use htmlSpacer;
+use htmlHiddenInput;
+use htmlGroup;
+use htmlDiv;
+use htmlJavaScript;
+use htmlLink;
+use htmlInputTextarea;
+use htmlResponsiveRow;
+use htmlResponsiveSelect;
+use htmlResponsiveInputField;
+use htmlResponsiveTable;
 use LAM\TOOLS\TREEVIEW\TreeViewTool;
+use LAM\TYPES\TypeManager;
+use LAMException;
 use LamTemporaryFilesManager;
 
 /*
@@ -106,11 +108,11 @@ function displayStartPage(): void {
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = [];
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlTitle(_("Multi edit")), 12);
+	$container->add(new htmlTitle(_("Multi edit")));
 	// LDAP suffix
 	$showRules = ['-' => ['otherSuffix']];
 	$hideRules = [];
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager();
 	$types = $typeManager->getConfiguredTypes();
 	$suffixes = [];
 	foreach ($types as $type) {
@@ -144,16 +146,16 @@ function displayStartPage(): void {
 	$suffixSelect->setSortElements(false);
 	$suffixSelect->setTableRowsToShow($showRules);
 	$suffixSelect->setTableRowsToHide($hideRules);
-	$container->add($suffixSelect, 12);
-	$valOtherSuffix = empty($_POST['otherSuffix']) ? '' : $_POST['otherSuffix'];
-	$container->add(new htmlResponsiveInputField(_('Other'), 'otherSuffix', $valOtherSuffix), 12);
+	$container->add($suffixSelect);
+	$valOtherSuffix = empty($_POST['otherSuffix']) ? '' : (string) $_POST['otherSuffix'];
+	$container->add(new htmlResponsiveInputField(_('Other'), 'otherSuffix', $valOtherSuffix));
 	// LDAP filter
-	$valFilter = empty($_POST['filter']) ? '(objectClass=inetOrgPerson)' : $_POST['filter'];
-	$container->add(new htmlResponsiveInputField(_('LDAP filter'), 'filter', $valFilter, '701'), 12);
+	$valFilter = empty($_POST['filter']) ? '(objectClass=inetOrgPerson)' : (string) $_POST['filter'];
+	$container->add(new htmlResponsiveInputField(_('LDAP filter'), 'filter', $valFilter, '701'));
 	// operation fields
 	$operationsTitle = new htmlSubTitle(_('Operations'));
 	$operationsTitle->setHelpId('702');
-	$container->add($operationsTitle, 12);
+	$container->add($operationsTitle);
 	$operationsTitles = [_('Type'), _('Attribute name'), _('Value')];
 	$data = [];
 	$opCount = empty($_POST['opcount']) ? '3' : $_POST['opcount'];
@@ -168,9 +170,9 @@ function displayStartPage(): void {
 		$opSelect->setHasDescriptiveElements(true);
 		$data[$i][] = $opSelect;
 		// attribute name
-		$attrVal = empty($_POST['attr_' . $i]) ? '' : $_POST['attr_' . $i];
+		$attrVal = empty($_POST['attr_' . $i]) ? '' : (string) $_POST['attr_' . $i];
 		$data[$i][] = new htmlInputField('attr_' . $i, $attrVal);
-		$valVal = empty($_POST['val_' . $i]) ? '' : $_POST['val_' . $i];
+		$valVal = empty($_POST['val_' . $i]) ? '' : (string) $_POST['val_' . $i];
 		$data[$i][] = new htmlInputField('val_' . $i, $valVal);
 		// check input
 		if (($selOp == ADD) && !empty($attrVal) && empty($valVal)) {
@@ -181,17 +183,17 @@ function displayStartPage(): void {
 		}
 	}
 	$operationsTable = new htmlResponsiveTable($operationsTitles, $data);
-	$container->add($operationsTable, 12);
+	$container->add($operationsTable);
 	// add more fields
 	$container->addVerticalSpacer('1rem');
-	$container->add(new htmlButton('addFields', _('Add more fields')), 12);
-	$container->add(new htmlHiddenInput('opcount', $opCount), 12);
+	$container->add(new htmlButton('addFields', _('Add more fields')));
+	$container->add(new htmlHiddenInput('opcount', $opCount));
 	// error messages
 	if ($errors !== []) {
 		$container->addVerticalSpacer('5rem');
 		foreach ($errors as $error) {
 			$error->colspan = 5;
-			$container->add($error, 12);
+			$container->add($error);
 		}
 	}
 	// action buttons
@@ -205,7 +207,7 @@ function displayStartPage(): void {
 	$dryRunButton = new htmlButton('dryRun', _('Dry run'));
 	$dryRunButton->setCSSClasses(['lam-secondary']);
 	$buttonGroup->addElement($dryRunButton);
-	$container->add($buttonGroup, 12);
+	$container->add($buttonGroup);
 	$container->addVerticalSpacer('1rem');
 
 	// run actions
@@ -226,13 +228,13 @@ function displayStartPage(): void {
  *
  * @param htmlResponsiveRow $container container
  */
-function runActions(htmlResponsiveRow &$container): void {
+function runActions(htmlResponsiveRow $container): void {
 	// LDAP suffix
 	$suffix = ($_POST['suffix'] === '-') ? trim($_POST['otherSuffix']) : $_POST['suffix'];
 	if (empty($suffix)) {
 		$error = new htmlStatusMessage('ERROR', _('LDAP Suffix is invalid!'));
 		$error->colspan = 5;
-		$container->add($error, 12);
+		$container->add($error);
 		return;
 	}
 	// LDAP filter
@@ -247,7 +249,7 @@ function runActions(htmlResponsiveRow &$container): void {
 	if (count($operations) == 0) {
 		$error = new htmlStatusMessage('ERROR', _('Please specify at least one operation.'));
 		$error->colspan = 5;
-		$container->add($error, 12);
+		$container->add($error);
 		return;
 	}
 	$_SESSION['multiEdit_suffix'] = $suffix;
@@ -264,7 +266,7 @@ function runActions(htmlResponsiveRow &$container): void {
 	$ajaxBlock = '
 		window.lam.multiedit.runActions();
 	';
-	$container->add(new htmlJavaScript($ajaxBlock), 12);
+	$container->add(new htmlJavaScript($ajaxBlock));
 }
 
 /**
@@ -419,6 +421,7 @@ function generateActions(): array {
  * Prints the dryRun output.
  *
  * @return array<mixed> status
+ * @throws LAMException error simulating actions
  */
 function dryRun(): array {
 	$pro = isLAMProVersion() ? ' Pro' : '';
