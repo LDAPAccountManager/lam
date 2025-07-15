@@ -21,6 +21,7 @@ use \htmlInputField;
 use \htmlResponsiveRow;
 use \htmlGroup;
 use \LAM\TYPES\TypeManager;
+use LAMConfig;
 use LAMException;
 use ServerProfilePersistenceManager;
 
@@ -88,7 +89,7 @@ $accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	$type = $typeManager->getConfiguredType($_POST['profileDeleteType']);
-	if ($type->isHidden()) {
+	if (($type === null) || $type->isHidden()) {
 		logNewMessage(LOG_ERR, 'User tried to delete hidden account type profile: ' . $_POST['profileDeleteType']);
 		die();
 	}
@@ -264,20 +265,20 @@ foreach ($profileClasses as $profileClass) {
 	$editButton = new htmlButton('editProfile_' . $profileClass['typeId'], 'edit.svg', true);
 	$editButton->setTitle(_('Edit'));
 	$buttonGroup->addElement($editButton);
-	$deleteLink = new htmlLink(null, '#', '../../graphics/del.svg');
+	$deleteLink = new htmlLink('', '#', '../../graphics/del.svg');
 	$deleteLink->setTitle(_('Delete'));
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
 	$deleteLink->setCSSClasses(['margin3']);
 	$buttonGroup->addElement($deleteLink);
 	if (count($configProfiles) > 1) {
-		$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
+		$importLink = new htmlLink('', '#', '../../graphics/import.svg');
 		$importLink->setTitle(_('Import profiles'));
 		$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import profiles") . "', '" .
 								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import'); return false;");
 		$importLink->setCSSClasses(['margin3']);
 		$buttonGroup->addElement($importLink);
 	}
-	$exportLink = new htmlLink(null, '#', '../../graphics/export.svg');
+	$exportLink = new htmlLink('', '#', '../../graphics/export.svg');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Export profile") . "', '" .
 							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
@@ -395,6 +396,9 @@ foreach ($profileClasses as $profileClass) {
 	$exportOptions = [];
 	foreach ($configProfiles as $profile) {
 		$typeManagerExport = new TypeManager($serverProfiles[$profile]);
+		if ($typeManagerExport->getConfig() === null) {
+			continue;
+		}
 		$typesExport = $typeManagerExport->getConfiguredTypesForScope($scope);
 		foreach ($typesExport as $typeExport) {
 			if (($profile != $_SESSION['config']->getName()) || ($typeExport->getId() != $typeId)) {
@@ -449,9 +453,9 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  *
  * @param string $typeId type id
  * @param array<mixed> $options options
- * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
- * @return \htmlStatusMessage message or null
+ * @return htmlStatusMessage message or null
  */
 function importProfiles($typeId, array $options, &$serverProfiles, TypeManager &$typeManager) {
 	$accountProfilesPersistenceManager = new AccountProfilePersistenceManager();
@@ -467,16 +471,19 @@ function importProfiles($typeId, array $options, &$serverProfiles, TypeManager &
 		$targetType = $typeManager->getConfiguredType($typeId);
 		if (($sourceType !== null) && ($targetType !== null)) {
 			try {
+				if ($targetType->getTypeManager()->getConfig() === null) {
+					continue;
+				}
 				$data = $accountProfilesPersistenceManager->loadAccountProfile($sourceType->getId(), $sourceName, $sourceConfName);
 				$accountProfilesPersistenceManager->writeAccountProfile($typeId, $sourceName,
 					$targetType->getTypeManager()->getConfig()->getName(), $data);
 			}
-			catch (\LAMException $e) {
-				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			catch (LAMException $e) {
+				return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
 		}
 	}
-	return new \htmlStatusMessage('INFO', _('Import successful'));
+	return new htmlStatusMessage('INFO', _('Import successful'));
 }
 
 /**
@@ -485,9 +492,9 @@ function importProfiles($typeId, array $options, &$serverProfiles, TypeManager &
  * @param string $typeId source type id
  * @param string $name profile name
  * @param array<mixed> $options options
- * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
- * @return htmlStatusMessage message or null
+ * @return htmlStatusMessage|null message or null
  */
 function exportProfiles($typeId, $name, array $options, &$serverProfiles, TypeManager &$typeManager): ?htmlStatusMessage {
 	$sourceType = $typeManager->getConfiguredType($typeId);

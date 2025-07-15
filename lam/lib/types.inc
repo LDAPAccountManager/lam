@@ -377,8 +377,8 @@ class TypeManager {
 	 *
 	 * @param LAMConfig|null $config configuration (uses $_SESSION['config'] by default)
 	 */
-	public function __construct(LAMConfig &$config = null) {
-		if ($config == null) {
+	public function __construct(?LAMConfig $config = null) {
+		if ($config === null) {
 			$config = &$_SESSION['config'];
 		}
 		$this->config = &$config;

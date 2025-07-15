@@ -1,20 +1,21 @@
 <?php
 namespace LAM\TOOLS\PROFILE_EDITOR;
 
-use \htmlResponsiveRow;
-use \htmlTitle;
-use \htmlResponsiveInputField;
-use \htmlResponsiveSelect;
-use \htmlButton;
-use \htmlHiddenInput;
-use \htmlSubTitle;
+use htmlResponsiveRow;
+use htmlTitle;
+use htmlResponsiveInputField;
+use htmlResponsiveSelect;
+use htmlButton;
+use htmlHiddenInput;
+use htmlSubTitle;
 use LAM\PROFILES\AccountProfilePersistenceManager;
+use LAM\TYPES\TypeManager;
 use LAMException;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -83,9 +84,9 @@ if (isset($_POST['accounttype'])) {
 	$_GET['type'] = $_POST['accounttype'];
 }
 
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 $type = $typeManager->getConfiguredType($_GET['type']);
-if ($type->isHidden() || !checkIfWriteAccessIsAllowed($_GET['type'])) {
+if (($type === null) || $type->isHidden() || !checkIfWriteAccessIsAllowed($_GET['type'])) {
 	logNewMessage(LOG_ERR, 'User tried to access hidden account type profile: ' . $_GET['type']);
 	die();
 }
@@ -185,17 +186,17 @@ echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getS
 
 $profName = '';
 if (isset($_GET['edit'])) {
-	$profName = $_GET['edit'];
+	$profName = (string) $_GET['edit'];
 }
 
 $container = new htmlResponsiveRow();
-$container->add(new htmlTitle(_("Profile editor")), 12);
+$container->add(new htmlTitle(_("Profile editor")));
 
 // general options
-$container->add(new htmlSubTitle(_("General settings"), '../../graphics/logo32.png', null, true), 12);
+$container->add(new htmlSubTitle(_("General settings"), '../../graphics/logo32.png', null, true));
 $profileNameField = new htmlResponsiveInputField(_("Profile name"), 'profname', $profName, '360', true);
 $profileNameField->setTransient(true);
-$container->add($profileNameField, 12);
+$container->add($profileNameField);
 $container->addVerticalSpacer('1rem');
 // suffix box
 // get root suffix
@@ -214,7 +215,7 @@ $suffixSelect = new htmlResponsiveSelect('ldap_suffix', $suffixes, $selectedSuff
 $suffixSelect->setHasDescriptiveElements(true);
 $suffixSelect->setSortElements(false);
 $suffixSelect->setRightToLeftTextDirection(true);
-$container->add($suffixSelect, 12);
+$container->add($suffixSelect);
 // RDNs
 $rdns = getRDNAttributes($type->getId());
 $selectedRDN = [];
@@ -241,8 +242,8 @@ foreach ($options as $moduleName => $moduleOptions) {
 		$icon = '../../graphics/' . $icon;
 	}
 	$modContainer = new htmlResponsiveRow();
-	$modContainer->add(new htmlSubTitle(getModuleAlias($moduleName, $type->getScope()), $icon, null, true), 12);
-	$modContainer->add($moduleOptions, 12);
+	$modContainer->add(new htmlSubTitle($module->get_alias(), $icon, null, true));
+	$modContainer->add($moduleOptions);
 	$modContainer->addVerticalSpacer('2rem');
 	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $modContainer, $old_options, false, $type->getScope()));
 }
