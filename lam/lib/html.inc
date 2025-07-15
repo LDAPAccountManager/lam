@@ -2596,11 +2596,11 @@ class htmlImage extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $path image location
-	 * @param int $width image width (optional, default original size)
-	 * @param int $height image height (optional, default original size)
-	 * @param String $alt alt text (optional)
-	 * @param String $onClick onClick code (optional)
+	 * @param string $path image location
+	 * @param string $width image width (optional, default original size)
+	 * @param string $height image height (optional, default original size)
+	 * @param string $alt alt text (optional)
+	 * @param string $onClick onClick code (optional)
 	 */
 	public function __construct($path, $width = null, $height = null, $alt = ' ', $title = null, $onClick = null) {
 		$this->path = htmlspecialchars($path);
@@ -4107,10 +4107,10 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name unique name
-	 * @param String $label descriptive label
-	 * @param String $helpID help ID
-	 * @param string $required required field
+	 * @param string $name unique name
+	 * @param string $label descriptive label
+	 * @param string $helpID help ID
+	 * @param bool $required required field
 	 */
 	function __construct($name, $label, $helpID = null, $required = false) {
 		parent::__construct($name);

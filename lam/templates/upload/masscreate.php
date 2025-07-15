@@ -122,6 +122,10 @@ if (isset($_POST['type'])) {
 	// get selected type
 	$typeId = htmlspecialchars((string) $_POST['type']);
 	$type = $typeManager->getConfiguredType($typeId);
+	if ($type === null) {
+		logNewMessage(LOG_ERR, 'Invalid type: ' . $typeId);
+		die();
+	}
 	// get selected modules
 	$selectedModules = [];
 	$checkedBoxes = array_keys($_POST, 'on');
@@ -189,6 +193,9 @@ foreach ($types as $type) {
 	foreach ($modules as $moduleName) {
 		$moduleGroup = new htmlGroup();
 		$module = moduleCache::getModule($moduleName, $type->getScope());
+		if ($module === null) {
+			continue;
+		}
 		$iconImage = $module->getIcon();
 		if (!(str_starts_with($iconImage, 'http')) && !(str_starts_with($iconImage, '/'))) {
 			$iconImage = '../../graphics/' . $iconImage;
@@ -216,7 +223,7 @@ foreach ($types as $type) {
 			$boxGroup->addElement(new htmlHiddenInput($type->getId() . '___' . $moduleName, 'on'));
 			$moduleGroup->addElement($boxGroup);
 		}
-		$moduleGroup->addElement(new htmlLabel($type->getId() . '___' . $moduleName, getModuleAlias($moduleName, $type->getScope())));
+		$moduleGroup->addElement(new htmlLabel($type->getId() . '___' . $moduleName, $module->get_alias()));
 		$innerRow->add($moduleGroup, 12, 6, 4);
 	}
 	$moduleCount = count($modules);
@@ -283,9 +290,9 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$saveLink->setCSSClasses(['icon']);
 	$row->addField($saveLink);
 	$row->addVerticalSpacer('3rem');
-	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file"), null, true), 12);
+	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file"), null, true));
 	$row->add(new htmlHiddenInput('typeId', $type->getId()), 12);
-	$row->add(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), 12);
+	$row->add(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)));
 
 	// PDF
 	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();

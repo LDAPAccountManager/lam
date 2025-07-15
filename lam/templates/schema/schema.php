@@ -14,7 +14,7 @@ use htmlTitle;
 
 /*
 
-  Copyright (C) 2018 - 2024 Roland Gruber
+  Copyright (C) 2018 - 2025 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -182,8 +182,8 @@ function displayRuleList(htmlResponsiveRow &$row): void {
  * @param htmlResponsiveRow $row row
  */
 function displayObjectClassList(htmlResponsiveRow &$row): void {
-	$objectClasses = get_schema_objectclasses(null);
-	if (!$objectClasses) {
+	$objectClasses = get_schema_objectclasses();
+	if (empty($objectClasses)) {
 		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
 		return;
 	}
@@ -196,7 +196,7 @@ function displayObjectClassList(htmlResponsiveRow &$row): void {
     if (isset($_GET['sel']) && (empty($_GET['sel']) || array_key_exists(strtolower($_GET['sel']), $objectClasses))) {
     	$selectedClass[0] = $_GET['sel'];
     }
-    if (empty($selectedClass) && (count($objectClasses) > 0)) {
+    if (empty($selectedClass)) {
     	// select first class by default
     	$selectedClassNames = array_keys($objectClasses);
     	$selectedClass[0] = $selectedClassNames[0];

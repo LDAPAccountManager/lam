@@ -75,12 +75,9 @@ while ($entry = $modulesINC_dir->read()) {
  * @param string $scope the account type ("user", "group", "host")
  * @return string|null alias name
  */
-function getModuleAlias($name, $scope) {
+function getModuleAlias(string $name, string $scope): ?string {
 	$module = moduleCache::getModule($name, $scope);
-	if ($module === null) {
-		return null;
-	}
-	return $module->get_alias();
+	return $module?->get_alias();
 }
 
 /**

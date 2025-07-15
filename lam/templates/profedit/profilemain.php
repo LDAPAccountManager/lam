@@ -27,7 +27,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2023  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -459,6 +459,9 @@ function importProfiles($typeId, array $options, &$serverProfiles, TypeManager &
 		$sourceConfName = $option['conf'];
 		$sourceTypeId = $option['typeId'];
 		$sourceName = $option['name'];
+		if (empty($serverProfiles[$sourceConfName])) {
+			continue;
+		}
 		$sourceTypeManager = new TypeManager($serverProfiles[$sourceConfName]);
 		$sourceType = $sourceTypeManager->getConfiguredType($sourceTypeId);
 		$targetType = $typeManager->getConfiguredType($typeId);
@@ -505,6 +508,9 @@ function exportProfiles($typeId, $name, array $options, &$serverProfiles, TypeMa
 		}
 		else {
 			$targetTypeId = $option['typeId'];
+			if (empty($serverProfiles[$targetConfName])) {
+				continue;
+			}
 			$targetTypeManager = new TypeManager($serverProfiles[$targetConfName]);
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
 			if ($targetType !== null) {

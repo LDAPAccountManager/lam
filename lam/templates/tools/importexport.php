@@ -200,7 +200,7 @@ function printImportTabProcessing(): void {
 	$button = new htmlButton('submitImportCancel', _('Cancel'));
 	$container->add($button, 12, 12, 12, 'text-center');
 
-	$newImportButton = new htmlLink(_('New import'), null, null, true);
+	$newImportButton = new htmlLink(_('New import'), null);
 	$container->add($newImportButton, 12, 12, 12, 'text-center hidden newimport');
 
 	$container->addVerticalSpacer('3rem');
@@ -395,7 +395,7 @@ function printExportTabProcessing(): void {
 	$button = new htmlButton('submitExportCancel', _('Cancel'));
 	$container->add($button, 12, 12, 12, 'text-center');
 
-	$newExportButton = new htmlLink(_('New export'), null, null, true);
+	$newExportButton = new htmlLink(_('New export'), null);
 	$container->add($newExportButton, 12, 12, 12, 'text-center hidden newexport');
 
 	$container->addVerticalSpacer('3rem');
