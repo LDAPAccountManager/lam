@@ -20,7 +20,7 @@ use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return RectorConfig::configure()
-	->withParallel(240, 6)
+	->withParallel(240, 2)
 	->withPaths([
 		__DIR__ . '/lam/help',
 		__DIR__ . '/lam/lib',

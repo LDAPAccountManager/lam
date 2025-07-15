@@ -1,12 +1,11 @@
 <?php
 namespace LAM\UPLOAD;
 use htmlForm;
-use \htmlStatusMessage;
-use \htmlLink;
-use \htmlOutputText;
-use \htmlButton;
-use \htmlHiddenInput;
-use \htmlResponsiveRow;
+use htmlStatusMessage;
+use htmlOutputText;
+use htmlButton;
+use htmlHiddenInput;
+use htmlResponsiveRow;
 use LAM\TYPES\TypeManager;
 use LamTemporaryFilesManager;
 
@@ -112,6 +111,10 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_POST['typeId']);
 $typeManager = new TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
+if ($type === null) {
+	logNewMessage(LOG_ERR, 'User tried to access invalid upload type: ' . $typeId);
+	die();
+}
 
 // check if account type is ok
 if ($type->isHidden()) {
@@ -215,7 +218,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// if input data is invalid just display error messages (max 50)
 	if ($errors !== []) {
 		foreach ($errors as $error) {
-			$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1]), 12);
+			$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1]));
 		}
 		$container->addVerticalSpacer('2rem');
 		massPrintBackButton($type->getId(), $selectedModules, $container);
@@ -250,7 +253,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			// print errors if DN could not be built
 			if ($errors !== []) {
 				foreach ($errors as $error) {
-					$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1], $error[2]), 12);
+					$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1], $error[2]));
 				}
 			}
 			else {
@@ -278,7 +281,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				}
 				// show links for upload and LDIF export
 				$container->addVerticalSpacer('2rem');
-				$container->add(new htmlOutputText(_("LAM has checked your input and is now ready to create the accounts.")), 12);
+				$container->add(new htmlOutputText(_("LAM has checked your input and is now ready to create the accounts.")));
 				$container->addVerticalSpacer('3rem');
 				$formRow = new htmlResponsiveRow();
 				$uploadButton = new htmlButton('upload', _("Upload accounts to LDAP"));
@@ -301,7 +304,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	}
 }
 else {
-	$container->add(new htmlStatusMessage('ERROR', _('Please provide a file to upload.')), 12);
+	$container->add(new htmlStatusMessage('ERROR', _('Please provide a file to upload.')));
 	$container->addVerticalSpacer('2rem');
 	massPrintBackButton($type->getId(), $selectedModules, $container);
 }
@@ -318,19 +321,19 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * @param string[] $selectedModules selected modules for upload
  * @param htmlResponsiveRow $container table container
  */
-function massPrintBackButton(string $typeId, array $selectedModules, htmlResponsiveRow &$container): void {
+function massPrintBackButton(string $typeId, array $selectedModules, htmlResponsiveRow $container): void {
 	$row = new htmlResponsiveRow();
 	$backButton = new htmlButton('submit', _('Back'));
-	$row->add($backButton, 12);
-	$row->add(new htmlHiddenInput('type', $typeId), 12);
-	$createPDF = 0;
+	$row->add($backButton);
+	$row->add(new htmlHiddenInput('type', $typeId));
+	$createPDF = '0';
 	if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
-		$createPDF = 1;
+		$createPDF = '1';
 	}
-	$row->add(new htmlHiddenInput('createPDF', $createPDF), 12);
-	$row->add(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']), 12);
+	$row->add(new htmlHiddenInput('createPDF', $createPDF));
+	$row->add(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']));
 	foreach ($selectedModules as $selectedModule) {
-		$row->add(new htmlHiddenInput($typeId . '___' . $selectedModule, 'on'), 12);
+		$row->add(new htmlHiddenInput($typeId . '___' . $selectedModule, 'on'));
 	}
 	addSecurityTokenToMetaHTML($row);
 	$container->add(new htmlForm('backform', 'masscreate.php', $row));

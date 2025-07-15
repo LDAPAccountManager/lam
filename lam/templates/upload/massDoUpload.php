@@ -3,7 +3,7 @@ namespace LAM\UPLOAD;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2024  Roland Gruber
+  Copyright (C) 2004 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ namespace LAM\UPLOAD;
 use htmlDiv;
 use htmlJavaScript;
 use htmlResponsiveRow;
+use LAM\TYPES\TypeManager;
 
 /**
 * Creates LDAP accounts for file upload.
@@ -69,8 +70,12 @@ setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_SESSION['mass_typeId']);
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
+if ($type === null) {
+	logNewMessage(LOG_ERR, 'User tried to access invalid upload type: ' . $typeId);
+	die();
+}
 
 // check if account type is ok
 if ($type->isHidden()) {

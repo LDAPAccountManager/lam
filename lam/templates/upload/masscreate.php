@@ -26,7 +26,7 @@ use \moduleCache;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2024  Roland Gruber
+  Copyright (C) 2004 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -404,11 +404,14 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 		$data = [];
 		$row->addVerticalSpacer('2rem');
 		$module = moduleCache::getModule($moduleName, $scope);
+		if ($module === null) {
+			continue;
+		}
 		$icon = $module->getIcon();
 		if (!(str_starts_with($icon, 'http')) && !(str_starts_with($icon, '/'))) {
 			$icon = '../../graphics/' . $icon;
 		}
-		$moduleTitle = new htmlSubTitle(getModuleAlias($moduleName, $scope), $icon);
+		$moduleTitle = new htmlSubTitle($module->get_alias(), $icon);
 		$moduleTitle->colspan = 20;
 		$row->add($moduleTitle, 12);
 		foreach ($columns[$moduleName] as $column) {

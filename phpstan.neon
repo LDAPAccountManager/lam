@@ -8,7 +8,7 @@ parameters:
 		- lam/templates
 	fileExtensions:
 	    - php
-	    - lib
+	    - inc
 	excludePaths:
 		analyseAndScan:
 			- */3rdParty/*
@@ -48,3 +48,5 @@ parameters:
 		- '#Binary operation .* between .* and .* results in an error.#'
 		- '#Parameter \#. .* of (function|method) .* expects .*, mixed given.#'
 		- '#Cannot access property .* on mixed#'
+		- '#.* function lamEncrypt expects string.*#'
+		- '#.*class htmlHiddenInput constructor expects string, mixed given.*#'
