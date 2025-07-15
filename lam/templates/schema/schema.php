@@ -349,7 +349,7 @@ function displayAttributeList(htmlResponsiveRow $row): void {
 		}
 		if (!empty($attribute->getMaxLength())) {
 			$row->addLabel(new htmlOutputText(_('Maximum length')), 'bold-mobile-only');
-			$row->addField(new htmlOutputText($attribute->getMaxLength()));
+			$row->addField(new htmlOutputText((string) $attribute->getMaxLength()));
 		}
 		if (!empty($attribute->getAliases())) {
 			$row->addLabel(new htmlOutputText(_('Aliases')), 'bold-mobile-only');
