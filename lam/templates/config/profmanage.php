@@ -1,18 +1,17 @@
 <?php
 namespace LAM\CONFIG;
-use \LAMCfgMain;
-use \LAMConfig;
-use \htmlStatusMessage;
-use \htmlResponsiveRow;
-use \htmlTitle;
-use \htmlSubTitle;
-use \htmlResponsiveInputField;
-use \htmlResponsiveSelect;
-use \htmlButton;
-use \htmlOutputText;
-use \htmlHiddenInput;
-use \htmlDiv;
-use \htmlLink;
+use LAMCfgMain;
+use htmlStatusMessage;
+use htmlResponsiveRow;
+use htmlTitle;
+use htmlSubTitle;
+use htmlResponsiveInputField;
+use htmlResponsiveSelect;
+use htmlButton;
+use htmlOutputText;
+use htmlHiddenInput;
+use htmlDiv;
+use htmlLink;
 use LAMException;
 use ServerProfilePersistenceManager;
 
@@ -222,19 +221,19 @@ $row = new htmlResponsiveRow();
 
 // print messages
 if (isset($error)) {
-	$row->add(new htmlStatusMessage('ERROR', $error), 12);
+	$row->add(new htmlStatusMessage('ERROR', $error));
 	$row->addVerticalSpacer('1rem');
 }
 if (isset($msg)) {
-	$row->add(new htmlStatusMessage('INFO', $msg), 12);
+	$row->add(new htmlStatusMessage('INFO', $msg));
 	$row->addVerticalSpacer('1rem');
 }
 
 $box = new htmlResponsiveRow();
-$box->add(new htmlTitle(_("Profile management")), 12);
+$box->add(new htmlTitle(_("Profile management")));
 
 // new profile
-$box->add(new htmlSubTitle(_("Add profile")), 12);
+$box->add(new htmlSubTitle(_("Add profile")));
 $newProfileInput = new htmlResponsiveInputField(_("Profile name"), 'addprofile', null, '230');
 $box->add($newProfileInput);
 $profileNewPwd1 = new htmlResponsiveInputField(_("Profile password"), 'addpassword');
@@ -259,7 +258,7 @@ $templates = [
 $addTemplateSelect = new htmlResponsiveSelect('addTemplate', $templates, ['unix.sample'], _('Template'), '267');
 $addTemplateSelect->setContainsOptgroups(true);
 $addTemplateSelect->setHasDescriptiveElements(true);
-$box->add($addTemplateSelect, 12);
+$box->add($addTemplateSelect);
 $box->addVerticalSpacer('0.5rem');
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
 $newProfileButton->setCSSClasses(['lam-primary']);
@@ -271,7 +270,7 @@ $box->add(new htmlOutputText(''), 0, 6);
 
 // rename profile
 $box->add(new htmlSubTitle(_("Rename profile")));
-$box->add(new htmlResponsiveSelect('oldfilename', $files, [], _('Profile name'), '231'), 12);
+$box->add(new htmlResponsiveSelect('oldfilename', $files, [], _('Profile name'), '231'));
 $oldProfileInput = new htmlResponsiveInputField(_('New profile name'), 'renfilename');
 $box->add($oldProfileInput);
 $box->addVerticalSpacer('0.5rem');
@@ -284,8 +283,8 @@ $box->addLabel($renameProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
 // delete profile
-$box->add(new htmlSubTitle(_("Delete profile")), 12);
-$box->add(new htmlResponsiveSelect('delfilename', $files, [], _('Profile name'), '232'), 12);
+$box->add(new htmlSubTitle(_("Delete profile")));
+$box->add(new htmlResponsiveSelect('delfilename', $files, [], _('Profile name'), '232'));
 $box->addVerticalSpacer('0.5rem');
 $deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
 $deleteProfileButton->setCSSClasses(['lam-danger']);
@@ -296,8 +295,8 @@ $box->addLabel($deleteProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
 // set password
-$box->add(new htmlSubTitle(_("Set profile password")), 12);
-$box->add(new htmlResponsiveSelect('setprofile', $files, [], _('Profile name'), '233'), 12);
+$box->add(new htmlSubTitle(_("Set profile password")));
+$box->add(new htmlResponsiveSelect('setprofile', $files, [], _('Profile name'), '233'));
 $profileSetPwd1 = new htmlResponsiveInputField(_("Profile password"), 'setpassword');
 $profileSetPwd1->setIsPassword(true);
 $box->add($profileSetPwd1);
@@ -311,7 +310,7 @@ $setPasswordProfileButton->setCSSClasses(['lam-secondary']);
 $setPasswordProfileButton->setOnClick("document.getElementById('action').value = 'setpass';" .
     "window.lam.dialog.requestPasswordAndSendForm('" . _("Set profile password") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
-$box->addLabel($setPasswordProfileButton, 12);
+$box->addLabel($setPasswordProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
 
@@ -319,7 +318,7 @@ $box->add(new htmlOutputText(''), 0, 6);
 $conf = new LAMCfgMain();
 $defaultProfile = $conf->default;
 $box->add(new htmlSubTitle(_("Change default profile")));
-$box->add(new htmlResponsiveSelect('defaultfilename', $files, [$defaultProfile], _('Profile name'), '234'), 12);
+$box->add(new htmlResponsiveSelect('defaultfilename', $files, [$defaultProfile], _('Profile name'), '234'));
 $box->addVerticalSpacer('0.5rem');
 $defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
 $defaultProfileButton->setCSSClasses(['lam-secondary']);

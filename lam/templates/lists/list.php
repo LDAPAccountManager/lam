@@ -45,8 +45,8 @@ $typeManager = new LAM\TYPES\TypeManager();
 $type = $typeManager->getConfiguredType($_GET['type']);
 
 // check if list is hidden
-if ($type->isHidden()) {
-	logNewMessage(LOG_ERR, 'User tried to access hidden account list: ' . $type->getId());
+if (($type === null) || $type->isHidden()) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden account list: ' . $_GET['type']);
 	die();
 }
 

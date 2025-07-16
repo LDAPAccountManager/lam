@@ -2546,7 +2546,7 @@ interface AccountStatusProvider {
 	 * Returns the list of account status detail lines.
 	 *
 	 * @param ConfiguredType $type account type
-	 * @param array|null $attributes LDAP attributes (use account container attributes if not provided)
+	 * @param array<string, array<string>|string>|null $attributes LDAP attributes (use account container attributes if not provided)
 	 * @return AccountStatusDetails[] status details
 	 */
 	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array;
@@ -2563,7 +2563,7 @@ interface AccountStatusProvider {
 	 * Returns a list of options how the account could be locked.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array|null $attributes LDAP attributes
+	 * @param array<string, array<string>|string>|null $attributes LDAP attributes
 	 * @return AccountStatusDetails[] lock options
 	 */
 	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array;
@@ -2572,7 +2572,7 @@ interface AccountStatusProvider {
 	 * Locks the account with the given lock IDs.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array|null $attributes LDAP attributes
+	 * @param array<string, array<string>|string>|null $attributes LDAP attributes
 	 * @param array $lockIds IDs from AccountStatusDetails
 	 * @throws LAMException error during locking
 	 */
@@ -2582,7 +2582,7 @@ interface AccountStatusProvider {
 	 * Unlocks the account with the given lock IDs.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array|null $attributes LDAP attributes
+	 * @param array<string, array<string>|string>|null $attributes LDAP attributes
 	 * @param array $lockIds IDs from AccountStatusDetails
 	 */
 	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
