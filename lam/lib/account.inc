@@ -1748,8 +1748,8 @@ class moduleCache {
 	/**
 	 * Returns a new/cached module with the given name and scope.
 	 *
-	 * @param String $name module name
-	 * @param String $scope module scope (e.g. user)
+	 * @param string $name module name
+	 * @param string|null $scope module scope (e.g. user)
 	 * @return null|baseModule module object
 	 */
 	public static function getModule($name, $scope): ?object {

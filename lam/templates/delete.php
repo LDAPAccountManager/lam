@@ -1,18 +1,23 @@
 <?php
 namespace LAM\DELETE;
-use \htmlGroup;
+use accountContainer;
+use DateTime;
+use htmlGroup;
 use htmlJavaScript;
-use \htmlResponsiveRow;
-use \htmlButton;
-use \htmlSpacer;
-use \htmlHiddenInput;
-use \htmlOutputText;
-use \htmlStatusMessage;
+use htmlResponsiveRow;
+use htmlButton;
+use htmlSpacer;
+use htmlHiddenInput;
+use htmlOutputText;
+use htmlStatusMessage;
+use LAM\TYPES\TypeManager;
+use moduleCache;
+
 /*
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2023  Roland Gruber
+	Copyright (C) 2007 - 2025  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -83,7 +88,7 @@ foreach ($_SESSION as $key => $value) {
 	}
 }
 
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 
 if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) === null)) {
 	logNewMessage(LOG_ERR, 'Invalid type: ' . $_POST['type']);
@@ -109,42 +114,45 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		$users[] = substr($dn, $start, $end-$start);
 	}
 
-	$sessionKey = $sessionAccountPrefix . (new \DateTime('now', getTimeZone()))->getTimestamp() . generateRandomText();
+	$sessionKey = $sessionAccountPrefix . (new DateTime('now', getTimeZone()))->getTimestamp() . generateRandomText();
 	//load account
-	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
+	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
 	// Show HTML Page
 	include __DIR__ . '/../lib/adminHeader.inc';
 	echo "<div class=\"smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlOutputText(_("Do you really want to remove the following accounts?")), 12);
+	$container->add(new htmlOutputText(_("Do you really want to remove the following accounts?")));
 	$container->addVerticalSpacer('2rem');
 	$userCount = count($users);
 	for ($i = 0; $i < $userCount; $i++) {
 		$container->addLabel(new htmlOutputText(_("Account name:")));
 		$container->addField(new htmlOutputText($users[$i]));
 		$container->addLabel(new htmlOutputText(_('DN') . ':'));
-		$container->addField(new htmlOutputText($_SESSION['delete_dn'][$i]));
+		$container->addField(new htmlOutputText((string) $_SESSION['delete_dn'][$i]));
 		$_SESSION[$sessionKey]->load_account($_SESSION['delete_dn'][$i]);
 		if (!$_SESSION[$sessionKey]->hasOnlyVirtualChildren()) {
 			$childCount = getChildCount($_SESSION['delete_dn'][$i]);
 			if ($childCount > 0) {
 				$container->addLabel(new htmlOutputText(_('Number of child entries') . ':'));
-				$container->addField(new htmlOutputText($childCount));
+				$container->addField(new htmlOutputText((string) $childCount));
 			}
 		}
 		$container->addVerticalSpacer('0.5rem');
 	}
 	addSecurityTokenToMetaHTML($container);
-	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
+	$container->add(new htmlHiddenInput('type', $type->getId()));
 	$container->addVerticalSpacer('1rem');
 	parseHtml(null, $container, [], false, $type->getScope());
 	// Print delete rows from modules
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
 	$values = [];
 	foreach ($modules as $module) {
-		$module = \moduleCache::getModule($module, $type->getScope());
+		$module = moduleCache::getModule($module, $type->getScope());
+		if ($module === null) {
+			continue;
+		}
 		parseHtml($module::class, $module->display_html_delete(), $values, true, $type->getScope());
 	}
 	$buttonContainer = new htmlResponsiveRow();
@@ -156,7 +164,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 	$cancelButton = new htmlButton('cancel', _('Cancel'));
 	$buttonGroup->addElement($cancelButton);
-	$buttonContainer->add($buttonGroup, 12);
+	$buttonContainer->add($buttonGroup);
 	$buttonContainer->addVerticalSpacer('1rem');
 	parseHtml(null, $buttonContainer, [], false, $type->getScope());
 	echo "</form>\n";
@@ -180,8 +188,8 @@ elseif (isset($_POST['cancelAllOk'])) {
 if (isset($_POST['delete'])) {
 	$typeId = $_POST['type'];
 	$type = $typeManager->getConfiguredType($typeId);
-	if (!checkIfDeleteEntriesIsAllowed($type->getId()) || !checkIfWriteAccessIsAllowed($type->getId())) {
-		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $type->getId());
+	if (($type === null) || !checkIfDeleteEntriesIsAllowed($type->getId()) || !checkIfWriteAccessIsAllowed($type->getId())) {
+		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $typeId);
 		die();
 	}
 	// Show HTML Page
@@ -190,15 +198,15 @@ if (isset($_POST['delete'])) {
 	echo "<div class=\"smallPaddingContent\"><br>\n";
 	$container = new htmlResponsiveRow();
 	addSecurityTokenToMetaHTML($container);
-	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
+	$container->add(new htmlHiddenInput('type', $type->getId()));
 
-	$sessionKey = $sessionAccountPrefix . (new \DateTime('now', getTimeZone()))->getTimestamp() . generateRandomText();
-	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
+	$sessionKey = $sessionAccountPrefix . (new DateTime('now', getTimeZone()))->getTimestamp() . generateRandomText();
+	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
 	// Delete dns
 	$allOk = true;
 	$allErrors = [];
 	foreach ($_SESSION['delete_dn'] as $deleteDN) {
-		// Set to true if an real error has happened
+		// Set to true if a real error has happened
 		$stopProcessing = false;
 		// First load DN.
 		$_SESSION[$sessionKey]->load_account($deleteDN);
@@ -313,22 +321,19 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		if (!$stopProcessing) {
-			$container->add(new htmlOutputText(sprintf(_('Deleted DN: %s'), $deleteDN)), 12);
-			foreach ($errors as $error) {
-				$container->add(htmlStatusMessage::fromParamArray($error), 12);
-			}
+			$container->add(new htmlOutputText(sprintf(_('Deleted DN: %s'), $deleteDN)));
 		}
 		else {
-			$container->add(new htmlOutputText(sprintf(_('Error while deleting DN: %s'), $deleteDN)), 12);
-			foreach ($errors as $error) {
-				$container->add(htmlStatusMessage::fromParamArray($error), 12);
-			}
+			$container->add(new htmlOutputText(sprintf(_('Error while deleting DN: %s'), $deleteDN)));
+		}
+		foreach ($errors as $error) {
+			$container->add(htmlStatusMessage::fromParamArray($error));
 		}
 		$allErrors = [...$allErrors, ...$errors];
 	}
 	$container->addVerticalSpacer('2rem');
 	$buttonName = $allOk ? 'cancelAllOk' : 'cancel';
-	$container->add(new htmlButton($buttonName, _('Back to list')), 12);
+	$container->add(new htmlButton($buttonName, _('Back to list')));
 	$container->addVerticalSpacer('1rem');
 	if ($allOk) {
 		$_SESSION['listRedirectMessages'] = $allErrors;

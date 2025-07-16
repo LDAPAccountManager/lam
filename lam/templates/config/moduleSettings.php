@@ -3,17 +3,20 @@
 namespace LAM\CONFIG;
 
 use htmlJavaScript;
-use \moduleCache;
-use \htmlSpacer;
-use \htmlTable;
-use \htmlButton;
-use \htmlResponsiveRow;
-use \htmlSubTitle;
+use LAM\TYPES\TypeManager;
+use LAMConfig;
+use moduleCache;
+use htmlSpacer;
+use htmlTable;
+use htmlButton;
+use htmlResponsiveRow;
+use htmlSubTitle;
+use function LAM\TYPES\getTypes;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2024  Roland Gruber
+  Copyright (C) 2009 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,6 +73,9 @@ if (isset($_POST['cancelSettings'])) {
 }
 
 $conf = &$_SESSION['conf_config'];
+if (!($conf instanceof LAMConfig)) {
+    die();
+}
 
 $errorsToDisplay = checkInput();
 
@@ -105,8 +111,6 @@ if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	}
 }
 
-$allTypes = \LAM\TYPES\getTypes();
-
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
 echo "</head><body>\n";
@@ -130,7 +134,7 @@ printConfigurationPageTabs(ConfigurationPageTab::MODULE_SETTINGS);
 
 
 // module settings
-$typeManager = new \LAM\TYPES\TypeManager($conf);
+$typeManager = new TypeManager($conf);
 $types = $typeManager->getConfiguredTypes();
 
 // get list of scopes of modules
@@ -156,19 +160,22 @@ for ($i = 0; $i < count($modules); $i++) {
 		continue;
 	}
 	$module = moduleCache::getModule($modules[$i], null);
+    if ($module === null) {
+        continue;
+    }
 	$iconImage = $module->getIcon();
 	if (($iconImage != null) && !(str_starts_with($iconImage, 'http')) && !(str_starts_with($iconImage, '/'))) {
 		$iconImage = '../../graphics/' . $iconImage;
 	}
 	$row = new htmlResponsiveRow();
-	$row->add(new htmlSubTitle(getModuleAlias($modules[$i], null), $iconImage, null, true), 12);
+	$row->add(new htmlSubTitle($module->get_alias(), $iconImage, null, true));
 	if (is_array($options[$modules[$i]])) {
 		foreach ($options[$modules[$i]] as $option) {
-			$row->add($option, 12);
+			$row->add($option);
 		}
 	}
 	else {
-		$row->add($options[$modules[$i]], 12);
+		$row->add($options[$modules[$i]]);
 	}
 	$configTypes = parseHtml($modules[$i], $row, $old_options, false, null);
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
@@ -210,7 +217,10 @@ function checkInput(): array {
 		return [];
 	}
 	$conf = &$_SESSION['conf_config'];
-	$typeManager = new \LAM\TYPES\TypeManager($conf);
+    if (!($conf instanceof LAMConfig)) {
+        return [];
+    }
+	$typeManager = new TypeManager($conf);
 	$types = $typeManager->getConfiguredTypes();
 
 	// check module options
