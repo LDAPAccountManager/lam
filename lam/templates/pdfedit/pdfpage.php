@@ -95,8 +95,8 @@ if (isset($_POST['type'])) {
 
 $typeManager = new \LAM\TYPES\TypeManager();
 $type = $typeManager->getConfiguredType($_GET['type']);
-if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
-	logNewMessage(LOG_ERR, 'User tried to access hidden PDF structure: ' . $type->getId());
+if (($type === null) || $type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden PDF structure: ' . $_GET['type']);
 	die();
 }
 
@@ -234,7 +234,7 @@ foreach ($logoFiles as $logoFile) {
 	$logos[$logoFile->getName() . ' (' . $logoFile->getWidth() . ' x ' . $logoFile->getHeight() . ")"] = $logoFile->getName();
 }
 $selectedLogo = ['printLogo.jpg'];
-if (isset($_SESSION['currentPDFStructure'])) {
+if ($_SESSION['currentPDFStructure']->getLogo() !== null) {
 	$selectedLogo = [$_SESSION['currentPDFStructure']->getLogo()];
 }
 
@@ -257,8 +257,8 @@ $mainContent->add(new htmlResponsiveInputField(_('Headline'), 'headline', $headl
 $logoSelect = new htmlResponsiveSelect('logoFile', $logos, $selectedLogo, _('Logo'));
 $logoSelect->setHasDescriptiveElements(true);
 $mainContent->add($logoSelect);
-$foldingMarks = 'no';
-if (isset($_SESSION['currentPDFStructure'])) {
+$foldingMarks = PDFStructure::FOLDING_NONE;
+if ($_SESSION['currentPDFStructure']->getFoldingMarks() !== null) {
 	$foldingMarks = $_SESSION['currentPDFStructure']->getFoldingMarks();
 }
 $possibleFoldingMarks = [
@@ -522,7 +522,7 @@ function translateFieldIDToName($id, $scope, $availablePDFFields): ?string {
 function updateBasicSettings(PDFStructure &$structure, array $logoFiles): void {
 	// set headline
 	if (isset($_POST['headline'])) {
-		$structure->setTitle(str_replace('<', '', str_replace('>', '', $_POST['headline'])));
+		$structure->setTitle(str_replace(['<', '>'], ['', ''], $_POST['headline']));
 	}
 	// set logo
 	if (isset($_POST['logoFile'])) {
@@ -552,12 +552,14 @@ function updateBasicSettings(PDFStructure &$structure, array $logoFiles): void {
  *
  * @param PDFStructure $structure PDF structure
  */
-function updateSectionTitles(PDFStructure &$structure): void {
+function updateSectionTitles(PDFStructure $structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		if (str_starts_with($key, 'section_')) {
 			$pos = substr($key, strlen('section_'));
-			$sections[$pos]->setTitle($value);
+            if ($sections[$pos] instanceof PDFEntrySection) {
+				$sections[$pos]->setTitle($value);
+			}
 		}
 	}
 }
@@ -606,15 +608,17 @@ function addSection(PDFStructure &$structure): void {
  *
  * @param PDFStructure $structure PDF structure
  */
-function addSectionEntry(PDFStructure &$structure): void {
+function addSectionEntry(PDFStructure $structure): void {
 	if (isset($_POST['add_new_field'])) {
 		$field = new PDFSectionEntry($_POST['new_field']);
 		$sections = $structure->getSections();
 		$pos = $_POST['add_field_position'];
-		$entries = $sections[$pos]->getEntries();
-		$entries[] = $field;
-		$sections[$pos]->setEntries($entries);
-		$structure->setSections($sections);
+        if ($sections[$pos] instanceof PDFEntrySection) {
+			$entries = $sections[$pos]->getEntries();
+			$entries[] = $field;
+			$sections[$pos]->setEntries($entries);
+			$structure->setSections($sections);
+		}
 	}
 }
 
@@ -639,11 +643,13 @@ function removeItem(PDFStructure &$structure): void {
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
 			$entryPos = $parts[1];
-			$entries = $sections[$sectionPos]->getEntries();
-			unset($entries[$entryPos]);
-			$entries = array_values($entries);
-			$sections[$sectionPos]->setEntries($entries);
-			$structure->setSections($sections);
+            if ($sections[$sectionPos] instanceof PDFEntrySection) {
+				$entries = $sections[$sectionPos]->getEntries();
+				unset($entries[$entryPos]);
+				$entries = array_values($entries);
+				$sections[$sectionPos]->setEntries($entries);
+				$structure->setSections($sections);
+			}
 		}
 	}
 }
@@ -670,12 +676,14 @@ function moveUp(PDFStructure &$structure): void {
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
 			$entryPos = intval($parts[1]);
-			$entries = $sections[$sectionPos]->getEntries();
-			$entryTmp = $entries[$entryPos - 1];
-			$entries[$entryPos - 1] = $entries[$entryPos];
-			$entries[$entryPos] = $entryTmp;
-			$sections[$sectionPos]->setEntries($entries);
-			$structure->setSections($sections);
+            if ($sections[$sectionPos] instanceof PDFEntrySection) {
+				$entries = $sections[$sectionPos]->getEntries();
+				$entryTmp = $entries[$entryPos - 1];
+				$entries[$entryPos - 1] = $entries[$entryPos];
+				$entries[$entryPos] = $entryTmp;
+				$sections[$sectionPos]->setEntries($entries);
+				$structure->setSections($sections);
+			}
 		}
 	}
 }
@@ -702,12 +710,14 @@ function moveDown(PDFStructure &$structure): void {
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
 			$entryPos = intval($parts[1]);
-			$entries = $sections[$sectionPos]->getEntries();
-			$entryTmp = $entries[$entryPos + 1];
-			$entries[$entryPos + 1] = $entries[$entryPos];
-			$entries[$entryPos] = $entryTmp;
-			$sections[$sectionPos]->setEntries($entries);
-			$structure->setSections($sections);
+            if ($sections[$sectionPos] instanceof PDFEntrySection) {
+				$entries = $sections[$sectionPos]->getEntries();
+				$entryTmp = $entries[$entryPos + 1];
+				$entries[$entryPos + 1] = $entries[$entryPos];
+				$entries[$entryPos] = $entryTmp;
+				$sections[$sectionPos]->setEntries($entries);
+				$structure->setSections($sections);
+			}
 		}
 	}
 }
