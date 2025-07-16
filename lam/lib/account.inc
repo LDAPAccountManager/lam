@@ -797,9 +797,9 @@ function connectToLDAP($serverURL, $startTLS) {
 /**
  * This will search the given LDAP suffix for all entries which have the given attribute.
  *
- * @param String $name attribute name (may be null)
- * @param String $value attribute value
- * @param String $objectClass object class (may be null)
+ * @param string $name attribute name (may be null)
+ * @param string $value attribute value
+ * @param string|null $objectClass object class (may be null)
  * @param array $attributes list of attributes to return
  * @param array $scopes account types
  * @return array list of found entries
@@ -812,10 +812,10 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	if ($name != null) {
 		$filterParts[] = '(' . $name . '=' . ldap_escape($value, '*', LDAP_ESCAPE_FILTER) . ')';
 	}
-	if ($objectClass != null) {
+	if ($objectClass !== null) {
 		$filterParts[] = '(objectClass=' . $objectClass . ')';
 	}
-	if (count($filterParts) == 1) {
+	if (count($filterParts) === 1) {
 		$filter = $filterParts[0];
 	}
 	elseif (count($filterParts) > 1) {
