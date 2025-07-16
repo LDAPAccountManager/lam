@@ -46,7 +46,7 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-// get user name
+// get username
 $user = $_GET['user'];
 $user = str_replace("\\", '',$user);
 $user = str_replace("'", '',$user);
@@ -73,11 +73,11 @@ else {
 
 
 /**
-* Searches LDAP for a specific user name (uid attribute) and returns its DN entry
-*
-* @param string $name user name
-* @return string DN
-*/
+ * Searches LDAP for a specific username (uid attribute) and returns its DN entry
+ *
+ * @param string $name user name
+ * @return string|null DN
+ */
 function search_username(string $name): ?string {
 	$entries = searchLDAPByAttribute('uid', $name, null, ['dn'], ['user']);
 	if (count($entries) > 0 ) {
