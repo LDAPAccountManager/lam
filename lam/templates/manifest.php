@@ -3,7 +3,7 @@ namespace LAM\PWA;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2023  Roland Gruber
+  Copyright (C) 2019 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -45,12 +45,12 @@ if (str_contains($baseUrl, '/templates/manifest.php')) {
 		$baseUrl = htmlspecialchars($urlMatches[2]);
 	}
 	else {
-		logNewMessage('Unable to get base URL from ' . getCallingURL());
+		logNewMessage(LOG_ERR,'Unable to get base URL from ' . getCallingURL());
 		exit();
 	}
 }
 else {
-	logNewMessage('Unable to get base URL from ' . getCallingURL());
+	logNewMessage(LOG_ERR, 'Unable to get base URL from ' . getCallingURL());
 	exit();
 }
 

@@ -4,33 +4,33 @@ use htmlDiv;
 use htmlForm;
 use htmlResponsiveInputField;
 use htmlResponsiveSelect;
-use \htmlTitle;
-use \htmlStatusMessage;
+use htmlTitle;
+use htmlStatusMessage;
 use LAM\PDF\PdfStructurePersistenceManager;
-use \LAMCfgMain;
-use \htmlSubTitle;
-use \htmlSelect;
-use \htmlImage;
-use \htmlSpacer;
-use \htmlButton;
-use \htmlLink;
-use \htmlOutputText;
-use \htmlInputFileUpload;
-use \htmlHelpLink;
-use \htmlInputField;
-use \htmlHiddenInput;
-use \htmlResponsiveRow;
-use \htmlGroup;
-use \LAM\TYPES\TypeManager;
+use LAMCfgMain;
+use htmlSubTitle;
+use htmlSelect;
+use htmlImage;
+use htmlSpacer;
+use htmlButton;
+use htmlLink;
+use htmlOutputText;
+use htmlInputFileUpload;
+use htmlHelpLink;
+use htmlInputField;
+use htmlHiddenInput;
+use htmlResponsiveRow;
+use htmlGroup;
+use LAM\TYPES\TypeManager;
+use LAMConfig;
 use LAMException;
 use ServerProfilePersistenceManager;
-use function LAM\PDF\getPDFStructures;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2023  Roland Gruber
+                2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -115,20 +115,22 @@ natcasesort($sortedTypes);
 $pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 
 $container = new htmlResponsiveRow();
-$container->add(new htmlTitle(_('PDF editor')), 12);
+$container->add(new htmlTitle(_('PDF editor')));
 
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	$typeToDelete = $typeManager->getConfiguredType($_POST['profileDeleteType']);
 	// delete structure
     try {
-        $pdfStructurePersistenceManager->deletePdfStructure($_SESSION['config']->getName(), $_POST['profileDeleteType'], $_POST['profileDeleteName']);
-	    $message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-	    $container->add($message, 12);
+        if ($typeToDelete !== null) {
+			$pdfStructurePersistenceManager->deletePdfStructure($_SESSION['config']->getName(), $_POST['profileDeleteType'], $_POST['profileDeleteName']);
+			$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+			$container->add($message);
+		}
     }
     catch (LAMException $e) {
         logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
 	    $message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-	    $container->add($message, 12);
+	    $container->add($message);
     }
 }
 
@@ -136,7 +138,7 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelete'])) {
 	$cfg = new LAMCfgMain();
 	if (empty($_POST['globalTemplateDeletePassword']) || !$cfg->checkPassword($_POST['globalTemplateDeletePassword'])) {
-		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')));
 	}
 	else {
 		$selectedOptions = explode(':', $_POST['globalTemplatesDelete']);
@@ -144,9 +146,9 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 		$selectedName = $selectedOptions[1];
 		try {
 			$pdfStructurePersistenceManager->deletePdfStructureTemplate($selectedScope, $selectedName);
-			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName), 12);
+			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName));
 		} catch (LAMException $e) {
-			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 		}
 	}
 }
@@ -155,15 +157,15 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 if (isset($_POST['deleteGlobalLogo']) && !empty($_POST['globalLogoDelete'])) {
 	$cfg = new LAMCfgMain();
 	if (empty($_POST['globalLogoDeletePassword']) || !$cfg->checkPassword($_POST['globalLogoDeletePassword'])) {
-		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')));
 	}
 	else {
 		$selectedLogo = $_POST['globalLogoDelete'];
 		try {
 		    $pdfStructurePersistenceManager->deletePdfTemplateLogo($selectedLogo);
-			$container->add(new htmlStatusMessage('INFO', _('Logo file deleted.'), $selectedLogo), 12);
+			$container->add(new htmlStatusMessage('INFO', _('Logo file deleted.'), $selectedLogo));
 		} catch (LAMException $e) {
-			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 		}
 	}
 }
@@ -198,7 +200,7 @@ if (!empty($_POST['import'])) {
 		$errMessage = importStructures($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
 	if ($errMessage !== null) {
-		$container->add($errMessage, 12);
+		$container->add($errMessage);
 	}
 }
 
@@ -217,12 +219,11 @@ if (!empty($_POST['export'])) {
 			$parts = explode('##', $importProfiles);
 			$options[] = ['conf' => $parts[0], 'typeId' => $parts[1]];
 		}
-		$typeId = $_POST['typeId'];
 		$name = $_POST['name_' . $typeId];
 		$errMessage = exportStructures($typeId, $name, $options, $serverProfiles, $typeManager);
 	}
 	if ($errMessage !== null) {
-		$container->add($errMessage, 12);
+		$container->add($errMessage);
 	}
 }
 
@@ -239,12 +240,12 @@ if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FIL
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
         fclose($handle);
-        $filename = $_FILES['logoUpload']['name'];
+        $filename = (string) $_FILES['logoUpload']['name'];
 		$pdfStructurePersistenceManager->savePdfLogo($_SESSION['config']->getName(), $filename, $data);
-		$container->add(new htmlStatusMessage('INFO', _('Uploaded logo file.'), $filename), 12);
+		$container->add(new htmlStatusMessage('INFO', _('Uploaded logo file.'), $filename));
     }
     catch (LAMException $e) {
-	    $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+	    $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
     }
 }
 
@@ -253,10 +254,10 @@ if (isset($_POST['delLogo'])) {
 	$toDel = $_POST['logo'];
 	try {
 	    $pdfStructurePersistenceManager->deletePdfLogo($_SESSION['config']->getName(), $toDel);
-		$container->add(new htmlStatusMessage('INFO', _('Logo file deleted.'), $toDel), 12);
+		$container->add(new htmlStatusMessage('INFO', _('Logo file deleted.'), $toDel));
     }
     catch (LAMException $e) {
-	    $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+	    $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
     }
 }
 
@@ -264,7 +265,7 @@ if (isset($_POST['delLogo'])) {
 if (!empty($_POST['exportLogoTargetProfile'])) {
 	$cfg = new LAMCfgMain();
 	if (!$cfg->checkPassword($_POST['exportLogoPassword'])) {
-		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')));
 	}
 	else {
 		try {
@@ -278,10 +279,10 @@ if (!empty($_POST['exportLogoTargetProfile'])) {
 	                $pdfStructurePersistenceManager->savePdfLogo($targetProfile, $fileName, $binary);
                 }
             }
-			$container->add(new htmlStatusMessage('INFO', _('Exported logo file.')), 12);
+			$container->add(new htmlStatusMessage('INFO', _('Exported logo file.')));
 		}
 		catch (LAMException $e) {
-			$container->add(new htmlStatusMessage($e->getTitle(), $e->getMessage()), 12);
+			$container->add(new htmlStatusMessage($e->getTitle(), $e->getMessage()));
 		}
     }
 }
@@ -290,7 +291,7 @@ if (!empty($_POST['exportLogoTargetProfile'])) {
 if (!empty($_POST['importLogoSourceProfile'])) {
 	$cfg = new LAMCfgMain();
 	if (!$cfg->checkPassword($_POST['importLogoPassword'])) {
-		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')));
 	}
 	else {
 		try {
@@ -304,10 +305,10 @@ if (!empty($_POST['importLogoSourceProfile'])) {
 				$binary = $pdfStructurePersistenceManager->getPdfLogoBinary($profileName, $fileName);
 				$pdfStructurePersistenceManager->savePdfLogo($_SESSION['config']->getName(), $fileName, $binary);
 			}
-			$container->add(new htmlStatusMessage('INFO', _('Logo import successful.')), 12);
+			$container->add(new htmlStatusMessage('INFO', _('Logo import successful.')));
 		}
 		catch (LAMException $e) {
-			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 		}
 	}
 }
@@ -317,6 +318,9 @@ $availableTypes = [];
 $templateClasses = [];
 foreach ($sortedTypes as $typeId => $title) {
 	$type = $typeManager->getConfiguredType($typeId);
+    if ($type === null) {
+        continue;
+    }
 	$templateClasses[] = [
 		'typeId' => $type->getId(),
 		'scope' => $type->getScope(),
@@ -342,17 +346,17 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 	<?php
 		if (isset($_GET['savedSuccessfully'])) {
 			$message = new htmlStatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
-			$container->add($message, 12);
+			$container->add($message);
 		}
 
 		if (isset($_GET['loadFailed'])) {
 			$message = new htmlStatusMessage("ERROR", _("Unable to read PDF structure."), htmlspecialchars($_GET['name']));
-			$container->add($message, 12);
+			$container->add($message);
 		}
 
 		// new template
 		if (!empty($availableTypes)) {
-			$container->add(new htmlSubTitle(_('Create a new PDF structure')), 12);
+			$container->add(new htmlSubTitle(_('Create a new PDF structure')));
 			$newProfileSelect = new htmlSelect('typeId', $availableTypes);
 			$newProfileSelect->setHasDescriptiveElements(true);
 			$container->addLabel($newProfileSelect);
@@ -363,7 +367,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		}
 
 		// existing templates
-		$container->add(new htmlSubTitle(_("Manage existing PDF structures")), 12);
+		$container->add(new htmlSubTitle(_("Manage existing PDF structures")));
 		foreach ($templateClasses as $templateClass) {
 			$labelGroup = new htmlGroup();
 			$labelGroup->addElement(new htmlImage('../../graphics/' . $templateClass['icon'], '16px', '16px'));
@@ -376,7 +380,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$exEditButton = new htmlButton('editTemplate_' . $templateClass['typeId'], 'edit.svg', true);
 			$exEditButton->setTitle(_('Edit'));
 			$buttonGroup->addElement($exEditButton);
-			$deleteLink = new htmlLink(null, '#', '../../graphics/del.svg');
+			$deleteLink = new htmlLink('', '#', '../../graphics/del.svg');
 			$deleteLink->setTitle(_('Delete'));
 			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" .
 										_('Cancel') . "', '" . $templateClass['typeId'] . "', '" . 'template_' .
@@ -385,7 +389,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$buttonGroup->addElement($deleteLink);
 
 			if (count($configProfiles) > 1) {
-				$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
+				$importLink = new htmlLink('', '#', '../../graphics/import.svg');
 				$importLink->setTitle(_('Import PDF structures'));
 				$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import PDF structures") . "', '" .
 										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
@@ -393,7 +397,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 				$importLink->setCSSClasses(['margin3']);
 				$buttonGroup->addElement($importLink);
 			}
-			$exportLink = new htmlLink(null, '#', '../../graphics/export.svg');
+			$exportLink = new htmlLink('', '#', '../../graphics/export.svg');
 			$exportLink->setTitle(_('Export PDF structure'));
 			$exportLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Export PDF structure") . "', '" .
 									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
@@ -407,7 +411,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 
 		// manage logos
 		$container->addVerticalSpacer('4rem');
-		$container->add(new htmlSubTitle(_('Manage logos')), 12);
+		$container->add(new htmlSubTitle(_('Manage logos')));
     	$logoOptions = [];
         try {
             $logos = $pdfStructurePersistenceManager->getPdfLogos($_SESSION['config']->getName(), true);
@@ -419,20 +423,20 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         } catch (LAMException $e) {
             $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
         }
-		$logoSelect = new htmlSelect('logo', $logoOptions, null);
+		$logoSelect = new htmlSelect('logo', $logoOptions, []);
 		$logoSelect->setHasDescriptiveElements(true);
 		$container->addLabel($logoSelect);
 		$logoButtonGroup = new htmlGroup();
 		$delLogo = new htmlButton('delLogo', 'del.svg', true);
 		$delLogo->setTitle(_('Delete'));
 	    $logoButtonGroup->addElement($delLogo);
-        $importLogoLink = new htmlLink(null, '#', '../../graphics/import.svg');
+        $importLogoLink = new htmlLink('', '#', '../../graphics/import.svg');
 	    $importLogoLink->setTitle(_('Import logo'));
 	    $importLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoImportDialog('" . _("Import logo") . "', '" .
             _('Ok') . "', '" . _('Cancel') . "'); return false;");
     	$importLogoLink->setCSSClasses(['margin3']);
         $logoButtonGroup->addElement($importLogoLink);
-        $exportLogoLink = new htmlLink(null, '#', '../../graphics/export.svg');
+        $exportLogoLink = new htmlLink('', '#', '../../graphics/export.svg');
 	    $exportLogoLink->setTitle(_('Export logo'));
     	$exportLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoExportDialog('" . _("Export logo") . "', '" .
             _('Ok') . "', '" . _('Cancel') . "'); return false;");
@@ -466,17 +470,17 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         $logoExportConfigSelect->setHasDescriptiveElements(true);
         $logoExportConfigSelect->setSortElements(false);
         $logoExportConfigSelect->setMultiSelect(true);
-        $logoExportFormContent->add($logoExportConfigSelect, 12);
+        $logoExportFormContent->add($logoExportConfigSelect);
         $logoExportFormContent->addVerticalSpacer('1rem');
         $logoExportFormContent->addLabel(new htmlOutputText(''));
-        $logoExportFormContent->addField(new htmlHiddenInput('exportLogoName', null));
+        $logoExportFormContent->addField(new htmlHiddenInput('exportLogoName', ''));
         $logoExportFormPwd = new htmlResponsiveInputField(_("Master password"), 'exportLogoPassword', null, '236');
         $logoExportFormPwd->setIsPassword(true);
-        $logoExportFormContent->add($logoExportFormPwd, 12);
+        $logoExportFormContent->add($logoExportFormPwd);
         addSecurityTokenToMetaHTML($logoExportFormContent);
         $logoExportForm = new htmlForm('logoExportForm', 'pdfmain.php', $logoExportFormContent);
         $logoExportDialog = new htmlDiv('logoExportDiv', $logoExportForm, ['hidden']);
-        $container->add($logoExportDialog, 12);
+        $container->add($logoExportDialog);
     	parseHtml(null, $container, [], false, 'user');
 
         // import logo form
@@ -496,16 +500,16 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         $logoImportConfigSelect->setHasDescriptiveElements(true);
         $logoImportConfigSelect->setContainsOptgroups(true);
         $logoImportConfigSelect->setMultiSelect(true);
-        $logoImportFormContent->add($logoImportConfigSelect, 12);
+        $logoImportFormContent->add($logoImportConfigSelect);
         $logoImportFormContent->addVerticalSpacer('1rem');
         $logoImportFormContent->addLabel(new htmlOutputText(''));
         $logoImportFormPwd = new htmlResponsiveInputField(_("Master password"), 'importLogoPassword', null, '236');
 	    $logoImportFormPwd->setIsPassword(true);
-    	$logoImportFormContent->add($logoImportFormPwd, 12);
+    	$logoImportFormContent->add($logoImportFormPwd);
         addSecurityTokenToMetaHTML($logoImportFormContent);
         $logoImportForm = new htmlForm('logoImportForm', 'pdfmain.php', $logoImportFormContent);
         $logoImportDialog = new htmlDiv('logoImportDiv', $logoImportForm, ['hidden']);
-        $container->add($logoImportDialog, 12);
+        $container->add($logoImportDialog);
         parseHtml(null, $container, [], false, 'user');
 
 	    foreach ($templateClasses as $templateClass) {
@@ -530,9 +534,9 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			echo "<form id=\"importDialogForm_$typeId\" method=\"post\" action=\"pdfmain.php\">\n";
 
 			$containerStructures = new htmlResponsiveRow();
-			$containerStructures->add(new htmlOutputText(_('PDF structures')), 12);
+			$containerStructures->add(new htmlOutputText(_('PDF structures')));
 
-			$select = new htmlSelect('importProfiles_' . $typeId, $importOptions, [], count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
+			$select = new htmlSelect('importProfiles_' . $typeId, $importOptions, [], min(count($importOptions, 1), 15));
 			$select->setMultiSelect(true);
 			$select->setHasDescriptiveElements(true);
 			$select->setContainsOptgroups(true);
@@ -542,13 +546,13 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 
 			$containerStructures->addVerticalSpacer('2rem');
 
-			$containerStructures->add(new htmlOutputText(_("Master password")), 12);
+			$containerStructures->add(new htmlOutputText(_("Master password")));
 			$exportPasswd = new htmlInputField('passwd_i_' . $typeId);
 			$exportPasswd->setIsPassword(true);
 			$containerStructures->add($exportPasswd, 11);
 			$containerStructures->add(new htmlHelpLink('236'), 1);
-			$containerStructures->add(new htmlHiddenInput('import', '1'), 12);
-			$containerStructures->add(new htmlHiddenInput('typeId', $typeId), 12);
+			$containerStructures->add(new htmlHiddenInput('import', '1'));
+			$containerStructures->add(new htmlHiddenInput('typeId', $typeId));
 			addSecurityTokenToMetaHTML($containerStructures);
 
 			parseHtml(null, $containerStructures, [], false, 'user');
@@ -562,13 +566,14 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 
 			$containerTarget = new htmlResponsiveRow();
 
-			$containerTarget->add(new htmlOutputText(_("Target server profile")), 12);
+			$containerTarget->add(new htmlOutputText(_("Target server profile")));
 			$exportOptions = [];
 			foreach ($configProfiles as $profile) {
 				$typeManagerExport = new TypeManager($serverProfiles[$profile]);
 				$typesExport = $typeManagerExport->getConfiguredTypesForScope($scope);
 				foreach ($typesExport as $typeExport) {
-					if (($profile != $_SESSION['config']->getName()) || ($typeExport->getId() != $typeId)) {
+					if ((($profile != $_SESSION['config']->getName()) || ($typeExport->getId() != $typeId))
+                        && ($typeManagerExport->getConfig() !== null)) {
 						$exportOptions[$typeManagerExport->getConfig()->getName()][$typeExport->getAlias()] = $profile . '##' . $typeExport->getId();
 					}
 				}
@@ -586,14 +591,14 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 
 			$containerTarget->addVerticalSpacer('2rem');
 
-			$containerTarget->add(new htmlOutputText(_("Master password")), 12);
+			$containerTarget->add(new htmlOutputText(_("Master password")));
 			$exportPasswd = new htmlInputField('passwd_e_' . $typeId);
 			$exportPasswd->setIsPassword(true);
 			$containerTarget->add($exportPasswd, 11);
 			$containerTarget->add(new htmlHelpLink('236'), 1);
-			$containerTarget->add(new htmlHiddenInput('export', '1'), 12);
-			$containerTarget->add(new htmlHiddenInput('typeId', $typeId), 12);
-			$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'), 12);
+			$containerTarget->add(new htmlHiddenInput('export', '1'));
+			$containerTarget->add(new htmlHiddenInput('typeId', $typeId));
+			$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'));
 			addSecurityTokenToMetaHTML($containerTarget);
 
 			parseHtml(null, $containerTarget, [], false, 'user');
@@ -683,11 +688,11 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  *
  * @param string $typeId type id
  * @param array<mixed> $options options
- * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
- * @return \htmlStatusMessage message or null
+ * @return htmlStatusMessage message or null
  */
-function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typeManager) {
+function importStructures($typeId, $options, $serverProfiles, TypeManager $typeManager) {
 	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 	foreach ($options as $option) {
 		$sourceConfName = $option['conf'];
@@ -715,11 +720,11 @@ function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typ
  * @param string $typeId source type id
  * @param string $name profile name
  * @param array<mixed> $options options
- * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
  * @return htmlStatusMessage message or null
  */
-function exportStructures($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager): ?htmlStatusMessage {
+function exportStructures($typeId, $name, $options, $serverProfiles, TypeManager $typeManager): ?htmlStatusMessage {
 	$sourceType = $typeManager->getConfiguredType($typeId);
 	if ($sourceType === null) {
 		return null;

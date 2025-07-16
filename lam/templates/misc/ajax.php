@@ -15,6 +15,7 @@ use \htmlLink;
 use \htmlOutputText;
 use \htmlButton;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use LAM\UPLOAD\Uploader;
 use \LAMCfgMain;
 use LAMException;
 
@@ -147,14 +148,14 @@ class Ajax {
 		}
 		elseif ($function === 'export') {
 			include_once(__DIR__ . '/../../lib/export.inc');
-			$attributes = $_POST['attributes'];
-			$baseDn = $_POST['baseDn'];
-			$ending = $_POST['ending'];
-			$filter = $_POST['filter'];
-			$format = $_POST['format'];
+			$attributes = (string) $_POST['attributes'];
+			$baseDn = (string) $_POST['baseDn'];
+			$ending = (string) $_POST['ending'];
+			$filter = (string) $_POST['filter'];
+			$format = (string) $_POST['format'];
 			$includeSystem = ($_POST['includeSystem'] === 'true');
 			$saveAsFile = ($_POST['saveAsFile'] === 'true');
-			$searchScope = $_POST['searchScope'];
+			$searchScope = (string) $_POST['searchScope'];
 			$exporter = new Exporter($baseDn, $searchScope, $filter, $attributes, $includeSystem, $saveAsFile, $format, $ending);
 			ob_start();
 			$jsonOut = $exporter->doExport();
@@ -163,8 +164,13 @@ class Ajax {
 		}
 		elseif ($function === 'upload') {
 			include_once(__DIR__ . '/../../lib/upload.inc');
-			$typeManager = new \LAM\TYPES\TypeManager();
-			$uploader = new \LAM\UPLOAD\Uploader($typeManager->getConfiguredType($_GET['typeId']));
+			$typeManager = new TypeManager();
+			$type = $typeManager->getConfiguredType($_GET['typeId']);
+			if ($type === null) {
+				logNewMessage(LOG_ERR, 'Unable to load type: ' . $_GET['typeId']);
+				die();
+			}
+			$uploader = new Uploader($type);
 			ob_start();
 			$jsonOut = $uploader->doUpload();
 			ob_end_clean();
@@ -219,7 +225,7 @@ class Ajax {
 	 */
 	private function checkPasswordStrength(array $input): void {
 		$password = $input['password'];
-		$result = checkPasswordStrength($password, null, null);
+		$result = checkPasswordStrength($password, [], []);
 		echo json_encode(["result" => $result], JSON_THROW_ON_ERROR);
 	}
 

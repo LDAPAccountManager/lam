@@ -4,20 +4,21 @@ use Exception;
 use htmlJavaScript;
 use htmlResponsiveInputCheckbox;
 use htmlStatusMessage;
-use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
-use \htmlResponsiveRow;
-use \htmlGroup;
-use \htmlOutputText;
-use \htmlSpacer;
-use \htmlSelect;
-use \htmlInputField;
-use \htmlButton;
+use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use htmlResponsiveRow;
+use htmlGroup;
+use htmlOutputText;
+use htmlSpacer;
+use htmlSelect;
+use htmlInputField;
+use htmlButton;
+use LAMConfig;
 use LAMException;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2023  Roland Gruber
+  Copyright (C) 2017 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,6 +54,11 @@ setlanguage();
 $config = $_SESSION['config'];
 $password = $_SESSION['ldap']->getPassword();
 $user = $_SESSION['ldap']->getUserName();
+
+if (!($config instanceof LAMConfig)) {
+    logNewMessage(LOG_ERR, 'Config missing');
+    die();
+}
 
 // get serials
 try {
@@ -186,21 +192,21 @@ echo $config->getTwoFactorAuthenticationCaption();
 	$row = new htmlResponsiveRow();
 	// error
 	if (!empty($errorMessage)) {
-		$row->add(new \htmlStatusMessage('ERROR', $errorMessage), 12);
-		$row->add(new htmlSpacer('1em', '1em'), 12);
+		$row->add(new htmlStatusMessage('ERROR', $errorMessage));
+		$row->add(new htmlSpacer('1em', '1em'));
 	}
 
 	if (!$provider->hasCustomInputForm()) {
 		// serial
 		$row->add(new htmlOutputText(_('Serial number')), 12, 12, 12, 'text-left');
 		$serialSelect = new htmlSelect('serial', $serials);
-		$row->add($serialSelect, 12);
+		$row->add($serialSelect);
 		// token
 		$row->add(new htmlOutputText($twoFactorLabel), 12, 12, 12, 'text-left');
 		$twoFactorInput = new htmlInputField('2factor', '');
 		$twoFactorInput->setFieldSize(null);
 		$twoFactorInput->setIsPassword(true);
-		$row->add($twoFactorInput, 12);
+		$row->add($twoFactorInput);
 	}
 	else {
 	    try {
@@ -208,7 +214,7 @@ echo $config->getTwoFactorAuthenticationCaption();
 	    }
 	    catch (LAMException $e) {
 	        logNewMessage(LOG_ERR, 'Error rendering 2FA form. ' . $e->getTitle());
-	        $row->add(new htmlStatusMessage('ERROR', _('Unable to start 2-factor authentication.')), 12);
+	        $row->add(new htmlStatusMessage('ERROR', _('Unable to start 2-factor authentication.')));
         }
 	}
 
