@@ -5,21 +5,22 @@ namespace LAM\LOGIN;
 use htmlLabel;
 use htmlResponsiveSelect;
 use LAM\ENV\LAMLicenseValidator;
+use LAM\ENV\LicenseWarningMailer;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
-use \LAMConfig;
-use \LAMCfgMain;
-use \htmlSpacer;
-use \htmlOutputText;
-use \htmlSelect;
-use \htmlInputField;
-use \htmlGroup;
-use \htmlInputCheckbox;
-use \htmlButton;
-use \htmlStatusMessage;
+use LAMConfig;
+use LAMCfgMain;
+use htmlSpacer;
+use htmlOutputText;
+use htmlSelect;
+use htmlInputField;
+use htmlGroup;
+use htmlInputCheckbox;
+use htmlButton;
+use htmlStatusMessage;
 use LAMException;
-use \Ldap;
-use \htmlResponsiveRow;
-use \htmlDiv;
+use Ldap;
+use htmlResponsiveRow;
+use htmlDiv;
 use ServerProfilePersistenceManager;
 
 /*
@@ -76,7 +77,7 @@ if (!$cfgMain->hasPasswordSet()) {
 $licenseValidator = null;
 if (isLAMProVersion()) {
 	include_once(__DIR__ . "/../lib/env.inc");
-	$licenseValidator = new \LAM\ENV\LAMLicenseValidator();
+	$licenseValidator = new LAMLicenseValidator();
 	$licenseValidator->validateAndRedirect('config/mainlogin.php?invalidLicense=1', 'config/mainlogin.php?invalidLicense=2');
 }
 
@@ -167,7 +168,7 @@ if (isset($_COOKIE['lam_last_language'])) {
 elseif (!empty($_SESSION["config"])) {
 	$defaultLang = $_SESSION["config"]->get_defaultLanguage();
 	foreach ($possibleLanguages as $lang) {
-		if (str_starts_with((string) $defaultLang, $lang->code)) {
+		if (str_starts_with($defaultLang, $lang->code)) {
 			$_SESSION['language'] = $lang->code;
 			$encoding = $lang->encoding;
 			break;
@@ -216,6 +217,9 @@ setlanguage(); // setting correct language
 function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $error_message, ?string $errorDetails = null, ?string $extraMessage = null): void {
 	$config_object = $_SESSION['config'];
 	$cfgMain = $_SESSION["cfgMain"];
+    if (!($cfgMain instanceof LAMCfgMain)) {
+        die();
+    }
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	$key = openssl_random_pseudo_bytes(32);
@@ -313,7 +317,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								else {
 									$user = '';
 									if (isset($_COOKIE["lam_login_name"])) {
-										$user = $_COOKIE["lam_login_name"];
+										$user = (string) $_COOKIE["lam_login_name"];
 									}
 									$userNameInput = new htmlInputField('username', $user);
 									if (empty($_COOKIE['lam_login_name'])) {
@@ -350,7 +354,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								}
 								$languageSelect = new htmlSelect('language', $languageList, $defaultLanguage);
 								$languageSelect->setHasDescriptiveElements(true);
-								$row->addField($languageSelect, true);
+								$row->addField($languageSelect);
 								// remember login user
 								if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() != 'true')) {
 									$row->add(new htmlOutputText('&nbsp;', false), 0, 6, 6);
@@ -367,7 +371,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 									$row->add($rememberDiv, 12, 6, 6);
 								}
 								// login button
-								$row->add(new htmlSpacer(null, '20px'), 12);
+								$row->add(new htmlSpacer(null, '20px'));
 								$loginButton = new htmlButton('checklogin', _("Login"));
 								$loginButton->setCSSClasses(['lam-primary']);
 								$row->add($loginButton);
@@ -385,13 +389,13 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 							$row = new htmlResponsiveRow();
 							// error message
 							if (!empty($error_message)) {
-								$row->add(new \htmlSpacer(null, '5px'), 12);
+								$row->add(new htmlSpacer(null, '5px'));
 								$message = new htmlStatusMessage('ERROR', $error_message, $errorDetails);
-								$row->add($message, 12);
+								$row->add($message);
 							}
 							if (!empty($extraMessage)) {
 								$extraMessage = new htmlStatusMessage('INFO', $extraMessage);
-								$row->add($extraMessage, 12);
+								$row->add($extraMessage);
 							}
 							parseHtml(null, $row, [], false, 'user');
 							?>
@@ -427,7 +431,8 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 	?>
     <br><br>
 	<?php
-	if (isLAMProVersion() && ($licenseValidator !== null) && $licenseValidator->isExpiringSoon()) {
+	if (isLAMProVersion() && ($licenseValidator !== null)
+		&& ($licenseValidator->getLicense() !== null) && $licenseValidator->isExpiringSoon()) {
 		$expirationDate = $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d');
 		$expirationTimeStamp = $licenseValidator->getLicense()->getExpirationDate()->getTimestamp();
 		if ($cfgMain->showLicenseWarningOnScreen()) {
@@ -437,7 +442,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 		if ($cfgMain->sendLicenseWarningByEmail() && !$cfgMain->wasLicenseWarningSent($expirationTimeStamp)) {
 			$cfgMain->licenseEmailDateSent = $expirationTimeStamp;
 			$cfgMain->save();
-			$mailer = new \LAM\ENV\LicenseWarningMailer($cfgMain);
+			$mailer = new LicenseWarningMailer($cfgMain);
 			$mailer->sendMail($expirationDate);
 		}
 	}

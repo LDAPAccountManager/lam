@@ -5,7 +5,7 @@ namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2024  Roland Gruber
+  Copyright (C) 2020 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class ExtraInvalidCredentials {
 	/**
 	 * Tries to get additional information why invalid credentials was returned. E.g. account is locked.
 	 *
-	 * @param handle $ldap LDAP object to connect for getting extra data
+	 * @param LDAP\Connection $ldap LDAP object to connect for getting extra data
 	 * @param string $userDn failed DN
 	 * @return null|string extra message
 	 */
@@ -99,7 +99,7 @@ class ExtraInvalidCredentials {
 	 *
 	 * @param string $userDn user DN
 	 * @param array $attributes attribute names
-	 * @param handle $ldap LDAP handle
+	 * @param LDAP\Connection $ldap LDAP handle
 	 * @return array|null attribute values
 	 */
 	protected function getLdapData(string $userDn, array $attributes, $ldap) {
@@ -116,7 +116,7 @@ class ExtraInvalidCredentials {
 	 *
 	 * @param ExtraInvalidCredentialsProvider[] $providers providers
 	 * @param array $userData LDAP data
-	 * @param handle $ldap LDAP handle
+	 * @param LDAP\Connection $ldap LDAP handle
 	 * @return null|string extra message
 	 */
 	protected function getMessageFromProviders(array $providers, array $userData, $ldap) {
@@ -149,7 +149,7 @@ interface ExtraInvalidCredentialsProvider {
 	 * Returns an extra message if any.
 	 *
 	 * @param array $attributes LDAP attributes
-	 * @param handle $ldap LDAP handle
+	 * @param LDAP\Connection $ldap LDAP handle
 	 * @return null|string message
 	 */
 	public function getExtraMessage(array $attributes, $ldap);

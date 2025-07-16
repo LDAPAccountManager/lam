@@ -144,7 +144,7 @@ class Ldap {
 	/**
 	 * Returns the LDAP connection handle
 	 *
-	 * @return object connection handle
+	 * @return LDAP\Connection connection handle
 	 */
 	public function server() {
 		if (!$this->is_connected) {

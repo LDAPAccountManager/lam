@@ -1831,7 +1831,7 @@ function getExtendedLDAPErrorMessage($server) {
  * Returns the default error message to display on the web page.
  * HTML special characters are already escaped.
  *
- * @param handle $server LDAP server handle
+ * @param LDAP\Connection $server LDAP server handle
  * @return String error message
  */
 function getDefaultLDAPErrorString($server) {
@@ -1897,7 +1897,7 @@ function ldapIsPasswordExpired($server): bool {
 /**
  * Tries to get additional information why invalid credentials was returned. E.g. account is locked.
  *
- * @param handle $ldap LDAP object to connect for getting extra data
+ * @param LDAP\Connection $ldap LDAP object to connect for getting extra data
  * @param string $userDn failed DN
  * @return string extra message
  */
