@@ -259,7 +259,7 @@ function check_module_depends($selected, $deps) {
  *
  * @param array $selected selected module names
  * @param array $deps module dependencies
- * @return boolean false if no conflict was found,
+ * @return false|array<int, string[]> false if no conflict was found,
  * otherwise an array of array(selected module, conflicting module) if conflicts were found
  */
 function check_module_conflicts($selected, $deps) {

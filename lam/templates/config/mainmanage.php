@@ -29,6 +29,7 @@ use htmlResponsiveInputCheckbox;
 use htmlResponsiveInputField;
 use htmlDiv;
 use htmlHiddenInput;
+use LAMConfig;
 use LAMException;
 use LamTemporaryFilesManager;
 use PDO;
@@ -85,6 +86,9 @@ if (!isset($_SESSION['cfgMain'])) {
 	$_SESSION['cfgMain'] = $cfg;
 }
 $cfg = &$_SESSION['cfgMain'];
+if (!($cfg instanceof LAMCfgMain)) {
+    die();
+}
 
 // check if user is logged in
 if (!isset($_SESSION["mainconf_password"]) || (!$cfg->checkPassword($_SESSION["mainconf_password"]))) {
@@ -377,7 +381,7 @@ if (isset($_POST['submitFormData'])) {
 	}
 	foreach (array_keys($_POST) as $key) {
 		if (str_starts_with($key, 'deleteCert_')) {
-			$index = substr($key, strlen('deleteCert_'));
+			$index = (int) substr($key, strlen('deleteCert_'));
 			$cfg->deleteSSLCaCert($index);
 		}
 	}
@@ -509,7 +513,7 @@ if (isset($_POST['submitFormData'])) {
 	// license
 	if (isLAMProVersion()) {
 		$row->add(new htmlSubTitle(_('Licence')));
-		$row->add(new htmlResponsiveInputTextarea('license', implode("\n", $cfg->getLicenseLines()), '30', '10', _('Licence'), '287'));
+		$row->add(new htmlResponsiveInputTextarea('license', implode("\n", $cfg->getLicenseLines()), 30, 10, _('Licence'), '287'));
 		$warningOptions = [
 			_('Screen') => LAMCfgMain::LICENSE_WARNING_SCREEN,
 			_('Email') => LAMCfgMain::LICENSE_WARNING_EMAIL,
@@ -535,7 +539,7 @@ if (isset($_POST['submitFormData'])) {
 		$licenseTo->setRequired(true);
 		$row->add($licenseTo);
 
-		$row->add(new htmlSpacer(null, '1rem'), true);
+		$row->add(new htmlSpacer(null, '1rem'));
 	}
 
 	// security settings
@@ -544,9 +548,9 @@ if (isset($_POST['submitFormData'])) {
 	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, [$cfg->sessionTimeout], _("Session timeout"), '238'));
 	$hideLoginErrorDetails = ($cfg->hideLoginErrorDetails === 'true');
 	$row->add(new htmlResponsiveInputCheckbox('hideLoginErrorDetails', $hideLoginErrorDetails, _('Hide LDAP details on failed login'), '257'));
-	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'));
+	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), 30, 7, _("Allowed hosts"), '241'));
 	if (isLAMProVersion()) {
-		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), '30', '7', _("Allowed hosts (self service)"), '241'));
+		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), 30, 7, _("Allowed hosts (self service)"), '241'));
 	}
 	// SSL certificate
 	$row->addVerticalSpacer('1rem');
@@ -578,7 +582,7 @@ if (isset($_POST['submitFormData'])) {
 	$sslUploadBtn->setTitle(_('Upload CA certificate in DER/PEM format.'));
 	$row->addField($sslUploadBtn);
 	if (function_exists('stream_socket_client') && function_exists('stream_context_get_params')) {
-		$sslImportServerUrl = empty($_POST['serverurl']) ? 'ldaps://' : $_POST['serverurl'];
+		$sslImportServerUrl = empty($_POST['serverurl']) ? 'ldaps://' : (string) $_POST['serverurl'];
 		$serverUrlUpload = new htmlInputField('serverurl', $sslImportServerUrl);
 		$row->addLabel($serverUrlUpload);
 		$sslImportBtn = new htmlButton('sslCaCertImport', _('Import from server'));

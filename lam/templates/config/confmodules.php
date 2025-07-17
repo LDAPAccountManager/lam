@@ -4,23 +4,26 @@ namespace LAM\CONFIG;
 
 use htmlInputField;
 use htmlJavaScript;
-use \htmlTable;
-use \htmlOutputText;
-use \htmlHelpLink;
-use \htmlHiddenInput;
-use \htmlButton;
-use \htmlSpacer;
-use \htmlElement;
-use \htmlImage;
-use \htmlSortableList;
-use \htmlSubTitle;
-use \htmlDiv;
-use \htmlResponsiveRow;
-use \htmlGroup;
+use htmlTable;
+use htmlOutputText;
+use htmlHelpLink;
+use htmlHiddenInput;
+use htmlButton;
+use htmlSpacer;
+use htmlElement;
+use htmlImage;
+use htmlSortableList;
+use htmlSubTitle;
+use htmlDiv;
+use htmlResponsiveRow;
+use htmlGroup;
+use LAM\TYPES\ConfiguredType;
+use LAM\TYPES\TypeManager;
+use LAMConfig;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2024  Roland Gruber
+  Copyright (C) 2004 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -78,8 +81,11 @@ if (isset($_POST['cancelSettings'])) {
 }
 
 $conf = &$_SESSION['conf_config'];
+if (!($conf instanceof LAMConfig)) {
+	die();
+}
 
-$errorsToDisplay = checkInput();
+$errorsToDisplay = checkModuleInput($conf);
 
 // check if button was pressed and if we have to save the settings or go to another tab
 if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
@@ -129,7 +135,7 @@ echo "<form id=\"inputForm\" action=\"confmodules.php\" method=\"post\" onSubmit
 
 printConfigurationPageTabs(ConfigurationPageTab::MODULES);
 
-$typeManager = new \LAM\TYPES\TypeManager($conf);
+$typeManager = new TypeManager($conf);
 $types = $typeManager->getConfiguredTypes();
 
 $container = new htmlResponsiveRow();
@@ -139,10 +145,10 @@ foreach ($types as $type) {
 
 $legendContainer = new htmlGroup();
 $legendContainer->addElement(new htmlOutputText("* " . _("Base module")));
-$legendContainer->addElement(new \htmlSpacer('2rem', null));
+$legendContainer->addElement(new htmlSpacer('2rem', null));
 $legendContainer->addElement(new htmlHelpLink('237'));
-$container->add($legendContainer, 12);
-$container->add(new htmlHiddenInput('postAvailable', 'yes'), 12);
+$container->add($legendContainer);
+$container->add(new htmlHiddenInput('postAvailable', 'yes'));
 
 parseHtml(null, $container, [], false, 'user');
 
@@ -172,10 +178,10 @@ echo "</html>\n";
 /**
  * Displays the module selection boxes and checks if dependencies are fulfilled.
  *
- * @param \LAM\TYPES\ConfiguredType $type account type
+ * @param ConfiguredType $type account type
  * @param htmlResponsiveRow $container meta HTML container
  */
-function config_showAccountModules($type, &$container): void {
+function config_showAccountModules($type, $container): void {
 	// account modules
 	$available = getAvailableModules($type->getScope(), true);
 	$selected = $type->getModules();
@@ -210,7 +216,7 @@ function config_showAccountModules($type, &$container): void {
 	}
 
 	// add account module selection
-	$container->add(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getIcon()), 12);
+	$container->add(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getIcon()));
 	if ($selOptions !== []) {
 		$container->add(new htmlOutputText(_("Selected modules")), 12, 6);
 	}
@@ -279,7 +285,7 @@ function config_showAccountModules($type, &$container): void {
 	for ($i = 0; $i < count($selOptions); $i++) {
 		$positions[] = $i;
 	}
-	$container->add(new htmlHiddenInput('positions_' . $type->getId(), implode(',', $positions)), 12);
+	$container->add(new htmlHiddenInput('positions_' . $type->getId(), implode(',', $positions)));
 	// spacer to next account type
 	$container->addVerticalSpacer('2rem');
 }
@@ -287,16 +293,16 @@ function config_showAccountModules($type, &$container): void {
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array<mixed> list of errors
+ * @param LAMConfig $conf config
+ * @return array<int, string[]> list of errors
  */
-function checkInput(): array {
+function checkModuleInput(LAMConfig $conf): array {
 	if (!isset($_POST['postAvailable'])) {
 		return [];
 	}
 	$errors = [];
-	$conf = &$_SESSION['conf_config'];
 	$typeSettings = $conf->get_typeSettings();
-	$typeManager = new \LAM\TYPES\TypeManager($conf);
+	$typeManager = new TypeManager($conf);
 	$accountTypes = $typeManager->getConfiguredTypes();
 	foreach ($accountTypes as $type) {
 		$scope = $type->getScope();

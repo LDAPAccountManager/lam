@@ -3517,7 +3517,7 @@ class LAMCfgMain {
 	 * Uploads a new SSL CA cert.
 	 *
 	 * @param String $cert file content in DER/PEM format
-	 * @return mixed TRUE if format is correct, error message if file is not accepted
+	 * @return true|string true if format is correct, error message if file is not accepted
 	 */
 	public function uploadSSLCaCert($cert) {
 		if (!str_contains($cert, '-----BEGIN CERTIFICATE-----')) {
@@ -3680,7 +3680,7 @@ class LAMCfgMain {
 	/**
 	 * Returns the license key as multiple lines.
 	 *
-	 * @return String license
+	 * @return string[] license
 	 */
 	public function getLicenseLines() {
 		return explode(LAMConfig::LINE_SEPARATOR, $this->license);
@@ -3689,7 +3689,7 @@ class LAMCfgMain {
 	/**
 	 * Sets the license key as multiple lines.
 	 *
-	 * @param String[] $licenseLines license lines
+	 * @param string[] $licenseLines license lines
 	 */
 	public function setLicenseLines($licenseLines) {
 		$this->license = implode(LAMConfig::LINE_SEPARATOR, $licenseLines);

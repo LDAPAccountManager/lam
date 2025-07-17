@@ -12,6 +12,7 @@ parameters:
 	excludePaths:
 		analyseAndScan:
 			- */3rdParty/*
+			- */lists/changePassword.php
 	ignoreErrors:
 		- '#.* on an unknown class .*#'
 		- '#.* has invalid type .*#'

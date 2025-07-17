@@ -3,6 +3,7 @@
 namespace LAM\CONFIG;
 
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAM\REMOTE\Remote;
 use LAMCfgMain;
 use LAMConfig;
 use htmlTable;
@@ -263,7 +264,7 @@ $loginSelect->setTableRowsToShow([
 $row->add($loginSelect);
 // admin list
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
-$adminTextInput = new htmlResponsiveInputTextarea('admins', $adminText, '50', '3', _("List of valid users"), '207');
+$adminTextInput = new htmlResponsiveInputTextarea('admins', $adminText, 50, 3, _("List of valid users"), '207');
 $adminTextInput->setRequired(true);
 $row->add($adminTextInput);
 // search suffix
@@ -360,9 +361,6 @@ foreach ($tools as $tool) {
 	}
 	$hideableTools++;
 	$toolClass = $tool::class;
-	if ($toolClass === false) {
-		continue;
-	}
 	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 	$selected = false;
 	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
@@ -559,7 +557,7 @@ if (extension_loaded('curl')) {
 	$twoFactorUrl = new htmlResponsiveInputField(_("Base URL"), 'twoFactorURL', $conf->getTwoFactorAuthenticationURL(), '515');
 	$twoFactorUrl->setRequired(true);
 	$row->add($twoFactorUrl);
-	$twoFactorUrl = new htmlResponsiveInputTextarea('twoFactorURLs', $conf->getTwoFactorAuthenticationURL(), '80', '4', _("Base URLs"), '515a');
+	$twoFactorUrl = new htmlResponsiveInputTextarea('twoFactorURLs', $conf->getTwoFactorAuthenticationURL(), 80, 4, _("Base URLs"), '515a');
 	$twoFactorUrl->setRequired(true);
 	$row->add($twoFactorUrl);
 	$twoFactorClientId = new htmlResponsiveInputField(_("Client id"), 'twoFactorClientId', $conf->getTwoFactorAuthenticationClientId(), '524');
@@ -572,7 +570,7 @@ if (extension_loaded('curl')) {
 	$row->add($twoFactorLabel);
 	$row->add(new htmlResponsiveInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'));
 	$row->add(new htmlResponsiveInputCheckbox('twoFactorInsecure', $conf->getTwoFactorAuthenticationInsecure(), _('Disable certificate check'), '516'));
-	$twoFactorCaption = new htmlResponsiveInputTextarea('twoFactorCaption', $conf->getTwoFactorAuthenticationCaption(), '80', '4', _("Caption"));
+	$twoFactorCaption = new htmlResponsiveInputTextarea('twoFactorCaption', $conf->getTwoFactorAuthenticationCaption(), 80, 4, _("Caption"));
 	$twoFactorCaption->setIsRichEdit(true);
 	$row->add($twoFactorCaption);
 	$row->addVerticalSpacer('0.5rem');
@@ -629,7 +627,7 @@ parseHtml(null, $buttonContainer, [], false, 'user');
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array<mixed> list of errors
+ * @return array<int, string[]> list of errors
  */
 function checkInput(): array {
 	$conf = &$_SESSION['conf_config'];
@@ -798,7 +796,7 @@ function checkInput(): array {
 	$conf->setScriptSSHKeyPassword($_POST['scriptkeypassword']);
 	if (!empty($_POST['scriptkey'])) {
 		include_once __DIR__ . '/../../lib/remote.inc';
-		$remote = new \LAM\REMOTE\Remote();
+		$remote = new Remote();
 		try {
 			$remote->loadKey($conf->getScriptSSHKey(), $conf->getScriptSSHKeyPassword());
 		}
@@ -814,9 +812,6 @@ function checkInput(): array {
 	}
 	foreach ($tools as $tool) {
 		$toolClass = $tool::class;
-		if ($toolClass === false) {
-			continue;
-		}
 		$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 		$toolConfigID = 'tool_hide_' . $toolName;
 		$toolSettings[$toolConfigID] = (isset($_POST[$toolConfigID])) && ($_POST[$toolConfigID] == 'on') ? 'true' : 'false';

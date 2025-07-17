@@ -3634,8 +3634,8 @@ class htmlSortableList extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param string[] $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
-	 * @param string HTML ID
+	 * @param string[]|htmlElement[] $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
+	 * @param string $id HTML ID
 	 */
 	function __construct(array $elements, string $id) {
 		$this->elements = $elements;

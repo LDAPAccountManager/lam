@@ -396,10 +396,10 @@ function checkIfDeleteEntriesIsAllowed($scope) {
 /**
  * Checks if the password fulfills the password policies.
  *
- * @param String $password password
- * @param String|array $userNames user name(s)
+ * @param string $password password
+ * @param string|array|null $userNames user name(s)
  * @param array $otherUserAttrs user's first/last name
- * @return mixed true if ok, string with error message if not valid
+ * @return true|string true if ok, string with error message if not valid
  */
 function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (($userNames !== null) && !is_array($userNames)) {

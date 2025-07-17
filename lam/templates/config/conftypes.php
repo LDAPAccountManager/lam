@@ -2,22 +2,25 @@
 
 namespace LAM\CONFIG;
 
-use \htmlTable;
-use \htmlSubTitle;
-use \htmlImage;
-use \htmlOutputText;
-use \htmlSpacer;
-use \htmlButton;
-use \htmlGroup;
-use \htmlDiv;
-use \htmlResponsiveInputCheckbox;
-use \LAMConfig;
-use \htmlResponsiveRow;
-use \htmlResponsiveInputField;
+use baseType;
+use htmlTable;
+use htmlSubTitle;
+use htmlImage;
+use htmlOutputText;
+use htmlSpacer;
+use htmlButton;
+use htmlGroup;
+use htmlDiv;
+use htmlResponsiveInputCheckbox;
+use LAM\TYPES\TypeManager;
+use LAMConfig;
+use htmlResponsiveRow;
+use htmlResponsiveInputField;
+use function LAM\TYPES\getTypes;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2023  Roland Gruber
+  Copyright (C) 2004 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -74,8 +77,11 @@ if (isset($_POST['cancelSettings'])) {
 }
 
 $conf = &$_SESSION['conf_config'];
+if (!($conf instanceof LAMConfig)) {
+	die();
+}
 
-$errorsToDisplay = checkInput();
+$errorsToDisplay = checkTypeInput($conf);
 
 // check if button was pressed and if we have to save the settings or go to another tab
 if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
@@ -120,8 +126,8 @@ if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 }
 
 $typeSettings = $conf->get_typeSettings();
-$allScopes = \LAM\TYPES\getTypes();
-$typeManager = new \LAM\TYPES\TypeManager($conf);
+$allScopes = getTypes();
+$typeManager = new TypeManager($conf);
 $activeTypes = $typeManager->getConfiguredTypes();
 $activeScopes = [];
 foreach ($activeTypes as $activeType) {
@@ -157,7 +163,7 @@ $row = new htmlResponsiveRow();
 
 // show available types
 if ($availableScopes !== []) {
-	$row->add(new htmlSubTitle(_("Available account types")), 12);
+	$row->add(new htmlSubTitle(_("Available account types")));
 	foreach ($availableScopes as $availableScope) {
 		$availableLabelGroup = new htmlGroup();
 		$availableLabelGroup->addElement(new htmlImage('../../graphics/' . $availableScope->getIcon(), '16px', '16px'));
@@ -182,7 +188,7 @@ $container = new htmlResponsiveRow();
 $_SESSION['conftypes_optionTypes'] = [];
 // show active types
 if (count($activeTypes) > 0) {
-	$container->add(new htmlSubTitle(_("Active account types")), 12);
+	$container->add(new htmlSubTitle(_("Active account types")));
 	$index = 0;
 	foreach ($activeTypes as $activeType) {
 		// title
@@ -224,36 +230,31 @@ if (count($activeTypes) > 0) {
 			$suffix = $typeSettings['suffix_' . $activeType->getId()];
 		}
 		$suffixInput = new htmlResponsiveInputField(_("LDAP suffix"), 'suffix_' . $activeType->getId(), $suffix, '202', true);
-		$container->add($suffixInput, 12);
+		$container->add($suffixInput);
 		// list attributes
-		if (isset($typeSettings['attr_' . $activeType->getId()])) {
-			$attributes = $typeSettings['attr_' . $activeType->getId()];
-		}
-		else {
-			$attributes = $activeType->getBaseType()->getDefaultListAttributes();
-		}
+		$attributes = $typeSettings['attr_' . $activeType->getId()] ?? $activeType->getBaseType()->getDefaultListAttributes();
 		$attrsInput = new htmlResponsiveInputField(_("List attributes"), 'attr_' . $activeType->getId(), $attributes, '206');
 		$attrsInput->setFieldMaxLength(1000);
-		$container->add($attrsInput, 12);
+		$container->add($attrsInput);
 		// custom label
 		$customLabel = '';
 		if (isset($typeSettings['customLabel_' . $activeType->getId()])) {
 			$customLabel = $typeSettings['customLabel_' . $activeType->getId()];
 		}
 		$customLabelInput = new htmlResponsiveInputField(_('Custom label'), 'customLabel_' . $activeType->getId(), $customLabel, '264');
-		$container->add($customLabelInput, 12);
+		$container->add($customLabelInput);
 		// LDAP filter
 		$filter = '';
 		if (isset($typeSettings['filter_' . $activeType->getId()])) {
 			$filter = $typeSettings['filter_' . $activeType->getId()];
 		}
 		$filterInput = new htmlResponsiveInputField(_("Additional LDAP filter"), 'filter_' . $activeType->getId(), $filter, '260');
-		$container->add($filterInput, 12);
+		$container->add($filterInput);
 		// type options
 		$typeConfigOptions = $activeType->getBaseType()->get_configOptions();
 		if (!empty($typeConfigOptions)) {
 			foreach ($typeConfigOptions as $typeConfigOption) {
-				$container->add($typeConfigOption, 12);
+				$container->add($typeConfigOption);
 			}
 			// save option types to session
 			ob_start();
@@ -271,29 +272,29 @@ if (count($activeTypes) > 0) {
 			}
 			$readOnly = new htmlResponsiveInputCheckbox('readOnly_' . $activeType->getId(), $isReadOnly, _('Read-only'), '265');
 			$readOnly->setElementsToDisable(['hideNewButton_' . $activeType->getId(), 'hideDeleteButton_' . $activeType->getId()]);
-			$advancedOptions->add($readOnly, 12);
+			$advancedOptions->add($readOnly);
 		}
 		// hidden type
 		$hidden = false;
 		if (isset($typeSettings['hidden_' . $activeType->getId()])) {
 			$hidden = $typeSettings['hidden_' . $activeType->getId()];
 		}
-		$advancedOptions->add(new htmlResponsiveInputCheckbox('hidden_' . $activeType->getId(), $hidden, _('Hidden'), '261'), 12);
+		$advancedOptions->add(new htmlResponsiveInputCheckbox('hidden_' . $activeType->getId(), $hidden, _('Hidden'), '261'));
 		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
 			// hide button to create new accounts
 			$hideNewButton = false;
 			if (isset($typeSettings['hideNewButton_' . $activeType->getId()])) {
 				$hideNewButton = $typeSettings['hideNewButton_' . $activeType->getId()];
 			}
-			$advancedOptions->add(new htmlResponsiveInputCheckbox('hideNewButton_' . $activeType->getId(), $hideNewButton, _('No new entries'), '262'), 12);
+			$advancedOptions->add(new htmlResponsiveInputCheckbox('hideNewButton_' . $activeType->getId(), $hideNewButton, _('No new entries'), '262'));
 			// hide button to delete accounts
 			$hideDeleteButton = false;
 			if (isset($typeSettings['hideDeleteButton_' . $activeType->getId()])) {
 				$hideDeleteButton = $typeSettings['hideDeleteButton_' . $activeType->getId()];
 			}
-			$advancedOptions->add(new htmlResponsiveInputCheckbox('hideDeleteButton_' . $activeType->getId(), $hideDeleteButton, _('Disallow delete'), '263'), 12);
+			$advancedOptions->add(new htmlResponsiveInputCheckbox('hideDeleteButton_' . $activeType->getId(), $hideDeleteButton, _('Disallow delete'), '263'));
 		}
-		$container->add($advancedOptions, 12);
+		$container->add($advancedOptions);
 
 		$container->addVerticalSpacer('2rem');
 		$index++;
@@ -330,15 +331,15 @@ echo "</html>\n";
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array<mixed> list of errors
+ * @param LAMConfig $conf config
+ * @return array<int, string[]> list of errors
  */
-function checkInput(): array {
+function checkTypeInput(LAMConfig $conf): array {
 	if (!isset($_POST['postAvailable'])) {
 		return [];
 	}
 	$errors = [];
-	$conf = &$_SESSION['conf_config'];
-	$typeManager = new \LAM\TYPES\TypeManager($conf);
+	$typeManager = new TypeManager($conf);
 	$typeSettings = $conf->get_typeSettings();
 	$accountTypes = $conf->get_ActiveTypes();
 	$postKeys = array_keys($_POST);
@@ -372,6 +373,9 @@ function checkInput(): array {
 		elseif (str_starts_with($key, "suffix_")) {
 			$typeSettings[$key] = trim($_POST[$key]);
 			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 7));
+			if ($type === null) {
+				continue;
+			}
 			if (strlen($_POST[$key]) < 1) {
 				$errors[] = ["ERROR", _("LDAP Suffix is invalid!"), $type->getAlias()];
 			}
@@ -380,6 +384,9 @@ function checkInput(): array {
 		elseif (str_starts_with($key, "attr_")) {
 			$typeSettings[$key] = $_POST[$key];
 			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 5));
+			if ($type === null) {
+				continue;
+			}
 			if (!is_string($_POST[$key]) || !preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $_POST[$key])) {
 				$errors[] = ["ERROR", _("List attributes are invalid!"), $type->getAlias()];
 			}
@@ -449,10 +456,10 @@ function checkInput(): array {
 /**
  * Compares types by alias for sorting.
  *
- * @param \baseType $a first type
- * @param \baseType $b second type
+ * @param baseType $a first type
+ * @param baseType $b second type
  * @return int comparison result
  */
-function compareTypesByAlias(\baseType $a, \baseType $b): int {
+function compareTypesByAlias(baseType $a, baseType $b): int {
 	return strnatcasecmp($a->getAlias(), $b->getAlias());
 }
