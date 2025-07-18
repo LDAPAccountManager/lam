@@ -1,5 +1,5 @@
 parameters:
-	level: 9
+	level: 4
 	scanDirectories:
 		- lam/lib
 		- lam/templates
@@ -21,28 +21,4 @@ parameters:
 		- '#Used function [a-zA-Z0-9\\_-]+ not found.#'
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Function [a-zA-Z0-9\(\)\\_-]+ has invalid return type [a-zA-Z0-9\\_-]+.#'
-		- '#Parameter \#[0-9] \$[a-zA-Z_]+ of function [a-zA-Z_]+ expects [(]?callable.*#'
-		- '#Call to an undefined method object::.*#'
-		- '#Parameter \#2 \$string of function explode expects string, .* given.#'
-		- '#Parameter \#2 \$result of function ldap_.* expects LDAP\\Result, array\|LDAP\\Result given.#'
-		- '#Cannot access an offset on mixed.#'
-		- '#Cannot access offset .* on mixed.#'
-		- '#Cannot access an offset on array\|Countable.#'
-		- '#Cannot assign new offset to list\<string\>\|string.#'
-		- '#Parameter \#1 \$haystack of function str_starts_with expects string, int\|string given.#'
-		- '#Parameter \#3 \$length of function substr expects int\|null, int<0, max>\|false given.#'
-		- '#Parameter \#1 \$string of function htmlspecialchars expects string, .* given.#'
-		- '#Parameter \#1 \$name of function LAM\\ACCOUNTLIST\\search_username expects string, list<string>\|string given.#'
-		- '#Parameter \#1 \$array of function array_keys expects array, mixed given.#'
-		- '#Argument of an invalid type mixed supplied for foreach, only iterables are supported.#'
-		- '#Parameter \#2 \$args of function call_user_func_array expects array<int\|string, mixed>, mixed given.#'
-		- '#Unable to resolve the template type T in call to function array_values#'
-		- '#Cannot call method .* on mixed.*#'
-		- '#Cannot cast mixed to string.#'
-		- '#Parameter \#. \(mixed\) of .* cannot be converted to string#'
 		- '#Binary operation .* between .* and .* results in an error.#'
-		- '#Parameter \#. .* of (function|method) .* expects .*, mixed given.#'
-		- '#Cannot access property .* on mixed#'
-		- '#.* function lamEncrypt expects string.*#'
-		- '#.*class htmlHiddenInput constructor expects string, mixed given.*#'
-		- '#Parameter \#1 \$string of class htmlOutputText constructor expects string, \(array\|float\|int\) given.#'

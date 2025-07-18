@@ -9,7 +9,7 @@ use accountContainer;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2024  Roland Gruber
+ Copyright (C) 2016 - 2025  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -200,10 +200,10 @@ class Uploader {
 	 * Returns the upload status as JSON.
 	 *
 	 * @param number $accountsProgress progress for LDAP entries
-	 * @param string $accountsFinished all entries in LDAP
+	 * @param bool $accountsFinished all entries in LDAP
 	 * @param string $postActionsTitle title for current post action
 	 * @param number $postActionsProgress progress for post actions
-	 * @param string $postActionsFinished post actions finished
+	 * @param bool $postActionsFinished post actions finished
 	 * @param number $pdfProgress PDF creation progress
 	 * @return String JSON status
 	 */
