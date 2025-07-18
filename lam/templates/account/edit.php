@@ -8,7 +8,7 @@ use LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2023  Roland Gruber
+                2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -93,8 +93,8 @@ $typeManager = new TypeManager();
 if (!empty($_GET['DN'])) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
 	$dn = cleanDn($_GET['DN']);
-	if ($type->isHidden()) {
-		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
+	if (($type === null) || $type->isHidden()) {
+		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $_GET['type']);
 		die();
 	}
 	$suffix = strtolower($type->getSuffix());
@@ -117,8 +117,8 @@ if (!empty($_GET['DN'])) {
 // new account
 elseif (empty($_POST)) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
-	if ($type->isHidden()) {
-		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
+	if (($type === null) || $type->isHidden()) {
+		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $_GET['type']);
 		die();
 	}
 	elseif (!checkIfNewEntriesAreAllowed($type->getId())) {

@@ -10,16 +10,14 @@ parameters:
 	    - php
 	    - inc
 	excludePaths:
-		analyseAndScan:
+		analyse:
 			- */3rdParty/*
+		analyseAndScan:
 			- */lists/changePassword.php
 	ignoreErrors:
 		- '#.* on an unknown class .*#'
 		- '#.* has invalid type .*#'
 		- '#Function [a-zA-Z0-9\\_-]+ not found.#'
-		- '#Class [a-zA-Z0-9\\_-]+ not found.#'
-		- '#Instantiated class [a-zA-Z0-9\\_-]+ not found.#'
-		- '#Caught class [a-zA-Z0-9\\_-]+ not found.#'
 		- '#Used function [a-zA-Z0-9\\_-]+ not found.#'
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Function [a-zA-Z0-9\(\)\\_-]+ has invalid return type [a-zA-Z0-9\\_-]+.#'
