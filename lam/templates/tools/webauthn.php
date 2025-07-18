@@ -120,7 +120,7 @@ else {
 		$saveButton->addDataAttribute('dn', $result['dn']);
 		$saveButton->addDataAttribute('nameelement', 'deviceName_' . $id);
 		$saveButton->setOnClick('window.lam.webauthn.updateOwnDeviceName(event);');
-		$nameField = new htmlInputField('deviceName_' . $id, $result['name']);
+		$nameField = new htmlInputField('deviceName_' . $id, (string) $result['name']);
 		$nameFieldClasses = ['maxwidth20'];
 		if (!empty($_GET['updated']) && ($_GET['updated'] === $credentialId)) {
 			$nameFieldClasses[] = 'markPass';

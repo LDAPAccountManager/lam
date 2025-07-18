@@ -98,7 +98,7 @@ class WebauthnManager {
 	 *
 	 * @param string $dn DN
 	 * @param bool $isSelfService is executed in self-service
-	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
+	 * @param string[] $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialCreationOptions registration object
 	 */
 	public function getRegistrationObject($dn, $isSelfService, $extraExcludedKeys = []) {
@@ -220,9 +220,9 @@ class WebauthnManager {
 	/**
 	 * Returns the supported credential algorithms.
 	 *
-	 * @return array algorithms
+	 * @return PublicKeyCredentialParameters[] algorithms
 	 */
-	private function getCredentialParameters() {
+	private function getCredentialParameters(): array {
 		return [
 			new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_ES256),
 			new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_RS256),
@@ -233,7 +233,7 @@ class WebauthnManager {
 	 * Returns a list of all credential ids that are already registered.
 	 *
 	 * @param string $userDn user DN
-	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
+	 * @param string[] $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialDescriptor[] credential ids
 	 */
 	private function getExcludedKeys(string $userDn, $extraExcludedKeys = []) {
@@ -325,9 +325,9 @@ class WebauthnManager {
 	/**
 	 * Returns the timeout for user operations.
 	 *
-	 * @return int timeout in ms
+	 * @return positive-int timeout in ms
 	 */
-	private function getTimeout() {
+	private function getTimeout(): int {
 		return 120000;
 	}
 
@@ -398,10 +398,10 @@ class WebauthnManager {
 			$psr17Factory = new Psr17Factory();
 			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 			$psr7Request = $psrFactory->createRequest($symfonyRequest);
-			$publicKeyCredentialRequestOptions = PublicKeyCredentialRequestOptions::createFromString($_SESSION['webauthn_authentication']);
+			$publicKeyCredentialRequestOptions = PublicKeyCredentialRequestOptions::createFromString((string) $_SESSION['webauthn_authentication']);
 			$credential = $database->findOneByCredentialId($publicKeyCredential->rawId);
 			if ($credential === null) {
-				throw new LAMException(null, 'Unable to find credential');
+				throw new LAMException('', 'Unable to find credential');
 			}
 			$userId = $credential->userHandle;
 			// old entries use DN as user ID
@@ -453,6 +453,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 			$results = $statement->fetchAll();
 			if (!empty($results)) {
 				$jsonArray = json_decode($results[0]['credentialSource'], true);
+				if (!is_array($jsonArray)) {
+					return null;
+				}
 				return PublicKeyCredentialSource::createFromArray($jsonArray);
 			}
 		}
@@ -477,6 +480,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 			$results = $statement->fetchAll();
 			foreach ($results as $result) {
 				$jsonArray = json_decode($result['credentialSource'], true);
+				if (!is_array($jsonArray)) {
+					return $credentials;
+				}
 				$credentials[] = PublicKeyCredentialSource::createFromArray($jsonArray);
 			}
 		}
@@ -560,7 +566,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 * Performs a full-text search on the usernames and returns all devices found.
 	 *
 	 * @param string $searchTerm search term for user field
-	 * @return array list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
+	 * @return array<array<string, mixed>> list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
 	 */
 	public function searchDevices(string $searchTerm) {
 		$pdo = $this->getPDO();
@@ -587,7 +593,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 * Performs a full-text search on the usernames and returns all devices found.
 	 *
 	 * @param string $userDn user DN
-	 * @return array list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
+	 * @return array<array<string, mixed>> list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
 	 */
 	public function getAllUserDevices(string $userDn) {
 		$pdo = $this->getPDO();
@@ -678,7 +684,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 *
 	 * @param PDO $pdo PDO object
 	 */
-	public function createInitialSchema(PDO $pdo) {
+	public function createInitialSchema(PDO $pdo): void {
 		logNewMessage(LOG_DEBUG, 'Creating database table ' . $this->getTableName());
 		$sql = 'create table ' . $this->getTableName() . '('
 			. 'userId TEXT NOT NULL,'
@@ -696,9 +702,12 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 *
 	 * @param PDO $pdo PDO
 	 */
-	protected function addNameColumn(PDO $pdo) {
+	protected function addNameColumn(PDO $pdo): void {
 		try {
 			$statement = $pdo->query("select * from pragma_table_info('" . $this->getTableName() . "') where name = 'name';");
+			if ($statement === false) {
+				throw new PDOException('query failed');
+			}
 			$results = $statement->fetchAll();
 			if (empty($results)) {
 				$sql = 'alter table ' . $this->getTableName() . ' add column name VARCHAR(255);';
@@ -719,6 +728,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	protected function addUserDnColumn(PDO $pdo): void {
 		try {
 			$statement = $pdo->query("select * from pragma_table_info('" . $this->getTableName() . "') where name = 'userDN';");
+			if ($statement === false) {
+				throw new PDOException('query failed');
+			}
 			$results = $statement->fetchAll();
 			if (empty($results)) {
 				$sql = 'alter table ' . $this->getTableName() . ' add column userDN VARCHAR(255);';
@@ -737,9 +749,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	/**
 	 * Exports all entries.
 	 *
-	 * @return array data
+	 * @return array<array<string, mixed>> data
 	 */
-	public function export() {
+	public function export(): array {
 		$pdo = $this->getPDO();
 		$statement = $pdo->prepare('select * from ' . $this->getTableName());
 		$statement->execute();
@@ -762,9 +774,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	/**
 	 * Imports entries from export data.
 	 *
-	 * @param array $data export data
+	 * @param null|array<array<string, mixed>> $data export data
 	 */
-	public function import($data) {
+	public function import($data): void {
 		$pdo = $this->getPDO();
 		$statement = $pdo->prepare('delete from ' . $this->getTableName());
 		$statement->execute();
@@ -869,7 +881,7 @@ class PublicKeyCredentialSourceRepositoryMySql extends PublicKeyCredentialSource
 	 *
 	 * @param PDO $pdo PDO object
 	 */
-	public function createInitialSchema(PDO $pdo) {
+	public function createInitialSchema(PDO $pdo): void {
 		logNewMessage(LOG_DEBUG, 'Creating database table ' . $this->getTableName());
 		$sql = 'create table ' . $this->getTableName() . '('
 			// 350 because primary key length is max 3072 bytes and each character can have 4 bytes
@@ -891,7 +903,7 @@ class PublicKeyCredentialSourceRepositoryMySql extends PublicKeyCredentialSource
 	 *
 	 * @param PDO $pdo PDO
 	 */
-	protected function addNameColumn(PDO $pdo) {
+	protected function addNameColumn(PDO $pdo): void {
 		// added via initial schema
 	}
 
@@ -901,6 +913,9 @@ class PublicKeyCredentialSourceRepositoryMySql extends PublicKeyCredentialSource
 	protected function addUserDnColumn(PDO $pdo): void {
 		try {
 			$statement = $pdo->query("show columns from " . $this->getTableName() . " like 'userDN';");
+			if ($statement === false) {
+				throw new PDOException('query failed');
+			}
 			$results = $statement->fetchAll();
 			if (empty($results)) {
 				$sql = 'alter table ' . $this->getTableName() . ' add column userDN VARCHAR(255);';

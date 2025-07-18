@@ -2163,11 +2163,11 @@ class LAMException extends Exception {
 	 *
 	 * @param string $title title
 	 * @param string $message message (optional)
-	 * @param Exception $cause (optional)
-	 * @param int $ldapErrorCode original LDAP error code
+	 * @param Exception|null $cause (optional)
+	 * @param int|null $ldapErrorCode original LDAP error code
 	 */
 	public function __construct($title, $message = '', $cause = null, $ldapErrorCode = null) {
-		Exception::__construct($message, 0, $cause);
+		parent::__construct($message, 0, $cause);
 		$this->title = $title;
 		$this->ldapErrorCode = $ldapErrorCode;
 	}

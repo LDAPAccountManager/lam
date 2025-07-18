@@ -322,9 +322,9 @@ class Ajax {
 				$delButton->addDataAttribute('oktext', _('Ok'));
 				$delButton->addDataAttribute('canceltext', _('Cancel'));
 				$delButton->setCSSClasses(['webauthn-delete']);
-				$name = empty($result['name']) ? '' : $result['name'];
+				$name = empty($result['name']) ? '' : (string) $result['name'];
 				$data[] = [
-					new htmlOutputText($result['dn']),
+					new htmlOutputText((string) $result['dn']),
 					new htmlOutputText($name),
 					new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
 					new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),

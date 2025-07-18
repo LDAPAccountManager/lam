@@ -2807,9 +2807,9 @@ class htmlStatusMessage extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $type message type (e.g. ERROR)
-	 * @param String $title message title
-	 * @param String $text message (optional)
+	 * @param string $type message type (e.g. ERROR)
+	 * @param string $title message title
+	 * @param string $text message (optional)
 	 * @param array $params additional message parameters
 	 */
 	public function __construct($type, $title, $text = null, $params = null) {
