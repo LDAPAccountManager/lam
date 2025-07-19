@@ -106,12 +106,9 @@ class pykotaBillingCodeType extends baseType {
 	}
 
 	/**
-	 * Returns the the subtitle text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container) {
+	public function getTitleBarSubtitle($container): string {
 		// get attributes
 		$attributes = [];
 		if ($container->getAccountModule('pykotaBillingCode') != null) {

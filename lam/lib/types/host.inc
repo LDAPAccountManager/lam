@@ -122,12 +122,9 @@ class host extends baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container) {
+	public function getTitleBarSubtitle($container): string {
 		// get attributes
 		$attributes = null;
 		if ($container->getAccountModule('account') != null) {

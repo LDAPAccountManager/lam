@@ -113,27 +113,21 @@ class smbDomain extends baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container) {
+	public function getTitleBarSubtitle($container): string {
 		// get attributes
 		$attributes = null;
 		if ($container->getAccountModule('sambaDomain') != null) {
 			$attributes = $container->getAccountModule('sambaDomain')->getAttributes();
 		}
 		if ($attributes == null) {
-			return null;
+			return '';
 		}
 		$subtitle = '';
 		// check if a SID can be shown
 		if (isset($attributes['sambaSID'][0])) {
 			$subtitle .= htmlspecialchars($attributes['sambaSID'][0]);
-		}
-		if ($subtitle === '') {
-			return null;
 		}
 		return $subtitle;
 	}

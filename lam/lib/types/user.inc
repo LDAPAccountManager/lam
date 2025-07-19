@@ -3,7 +3,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2024  Roland Gruber
+  Copyright (C) 2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -161,12 +161,9 @@ class user extends baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container) {
+	public function getTitleBarSubtitle($container): string {
 		$personalAttributes = null;
 		if ($container->getAccountModule('inetOrgPerson') != null) {
 			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();
@@ -190,9 +187,6 @@ class user extends baseType {
 		// check if an mobile number can be shown
 		if (isset($personalAttributes['mobile'][0]) && !empty($personalAttributes['mobile'][0])) {
 			$subtitle .= _('Mobile number') . ' ' . htmlspecialchars($personalAttributes['mobile'][0]);
-		}
-		if ($subtitle === '') {
-			return null;
 		}
 		return $subtitle;
 	}

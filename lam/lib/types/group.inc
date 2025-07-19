@@ -153,12 +153,9 @@ class group extends baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container) {
+	public function getTitleBarSubtitle($container): string {
 		// get attributes
 		$attributes = null;
 		if ($container->getAccountModule('posixGroup') != null) {
@@ -180,14 +177,14 @@ class group extends baseType {
 		elseif ($container->getAccountModule('organizationalRole') != null) {
 			$gonAttributes = $container->getAccountModule('organizationalRole')->getAttributes();
 		}
-		// check if an description can be shown
+		// check if a description can be shown
 		if (($attributes != null) && isset($attributes['description'][0])) {
 			return htmlspecialchars($attributes['description'][0]);
 		}
 		if (($gonAttributes != null) && isset($gonAttributes['description'][0])) {
 			return htmlspecialchars($gonAttributes['description'][0]);
 		}
-		return null;
+		return '';
 	}
 
 }

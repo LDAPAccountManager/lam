@@ -113,27 +113,21 @@ class netgroup extends baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container) {
+	public function getTitleBarSubtitle($container): string {
 		// get attributes
 		$attributes = null;
 		if ($container->getAccountModule('nisnetgroup') != null) {
 			$attributes = $container->getAccountModule('nisnetgroup')->getAttributes();
 		}
 		if ($attributes == null) {
-			return null;
+			return '';
 		}
 		$subtitle = '';
-		// check if an description can be shown
+		// check if a description can be shown
 		if (isset($attributes['description'][0])) {
 			$subtitle .= htmlspecialchars($attributes['description'][0]);
-		}
-		if ($subtitle === '') {
-			return null;
 		}
 		return $subtitle;
 	}

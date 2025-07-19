@@ -136,13 +136,13 @@ class baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
+	 * Returns the title text for the title bar on the new/edit page.
 	 *
 	 * @param accountContainer $container account container
-	 * @return String title text
+	 * @return string title text
 	 */
-	public function getTitleBarSubtitle($container) {
-		return null;
+	public function getTitleBarSubtitle($container): string {
+		return '';
 	}
 
 	/**
