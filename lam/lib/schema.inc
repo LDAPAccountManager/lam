@@ -31,9 +31,6 @@ namespace LAM\SCHEMA;
  * @author Roland Gruber
  */
 
-/** To enable/disable session-based schema caching (1: enabled, 0: disabled). */
-@define('SCHEMA_SESSION_CACHE_ENABLED', 1);
-
 /**
  * Generic parent class for all schema items. A schema item is
  * an ObjectClass, an AttributeBype, a MatchingRule, or a Syntax.
@@ -345,13 +342,13 @@ class ObjectClass extends SchemaItem {
 	 *             the inheritance tree. This presents some what of a bootstrapping problem
 	 *             as we must fetch all objectClasses to determine through inheritance which
 	 *             attributes this objectClass provides.
-	 * @return array The array of allowed attribute names (strings).
+	 * @return string[] The array of allowed attribute names (strings).
 	 *
 	 * @see getMustAttrs
 	 * @see getMayAttrs
 	 * @see getMayAttrNames
 	 */
-	function getMustAttrNames($oclasses = null) {
+	function getMustAttrNames($oclasses = null): array {
 		$attrs = $this->getMustAttrs($oclasses);
 		$attr_names = [];
 		foreach ($attrs as $attr)
@@ -368,13 +365,13 @@ class ObjectClass extends SchemaItem {
 	 *             the inheritance tree. This presents some what of a bootstrapping problem
 	 *             as we must fetch all objectClasses to determine through inheritance which
 	 *             attributes this objectClass provides.
-	 * @return array The array of allowed attribute names (strings).
+	 * @return string[] The array of allowed attribute names (strings).
 	 *
 	 * @see getMustAttrs
 	 * @see getMayAttrs
 	 * @see getMustAttrNames
 	 */
-	function getMayAttrNames($oclasses = null) {
+	function getMayAttrNames($oclasses = null): array {
 		$attrs = $this->getMayAttrs($oclasses);
 		$attr_names = [];
 		foreach ($attrs as $attr)
@@ -440,38 +437,6 @@ class ObjectClass extends SchemaItem {
 		return $this->is_obsolete;
 	}
 
-	/**
-	 * Adds the specified array of attributes to this objectClass' list of
-	 * MUST attributes. The resulting array of must attributes will contain
-	 * unique members.
-	 *
-	 * @param array $new_must_attrs An array of attribute names (strings) to add.
-	 */
-	function addMustAttrs($new_must_attrs) {
-		if (!is_array($new_must_attrs)) {
-			return;
-		}
-		if (0 == count($new_must_attrs)) {
-			return;
-		}
-		$this->must_attrs = array_values(array_unique(array_merge($this->must_attrs, $new_must_attrs)));
-	}
-
-	/**
-	 * Behaves identically to addMustAttrs, but it operates on the MAY
-	 * attributes of this objectClass.
-	 *
-	 * @param array $new_may_attrs An array of attribute names (strings) to add.
-	 */
-	function addMayAttrs($new_may_attrs) {
-		if (!is_array($new_may_attrs)) {
-			return;
-		}
-		if (0 == count($new_may_attrs)) {
-			return;
-		}
-		$this->may_attrs = array_values(array_unique(array_merge($this->may_attrs, $new_may_attrs)));
-	}
 }
 
 /**
@@ -1149,9 +1114,10 @@ class MatchingRule extends SchemaItem {
 
 	/**
 	 * Adds an attribute name to the list of attributes who use this MatchingRule
-	 * @return true if the attribute was added and false otherwise (already in the list)
+	 *
+	 * @return bool true if the attribute was added and false otherwise (already in the list)
 	 */
-	function addUsedByAttr($new_attr_name) {
+	function addUsedByAttr($new_attr_name): bool {
 		foreach ($this->used_by_attrs as $attr_name)
 			if (0 == strcasecmp($attr_name, $new_attr_name)) {
 				return false;
@@ -1299,13 +1265,13 @@ class MatchingRuleUse extends SchemaItem {
  * DN whose subSchemaSubEntry you wish to retrieve of specify an empty string
  * to fetch the subScehamSubEntry from the Root DSE.
  *
- * @param string $dn The DN (may be null) which houses the subschemaSubEntry attribute which
+ * @param string $dn the DN (may be null) which houses the subschemaSubEntry attribute which
  *                  this function can use to determine the schema entry's DN.
- * @param bool $debug Switch to true to see some nice and copious output. :)
+ * @param bool $debug switch to true to see some nice and copious output. :)
  *
- * @return string The DN of the entry which houses this LDAP server's schema.
+ * @return string|false the DN of the entry which houses this LDAP server's schema.
  */
-function _get_schema_dn($dn, $debug = false) {
+function _get_schema_dn($dn, $debug = false): bool|string {
 	if ($debug) {
 		echo "<pre>";
 	}
@@ -1337,7 +1303,7 @@ function _get_schema_dn($dn, $debug = false) {
 		var_dump($entries);
 		echo "\n";
 	}
-	if (!$entries || !is_array($entries)) {
+	if ($entries === false) {
 		if ($debug) {
 			echo "_get_schema_dn() returning false (Bad entries val, false or not array).\n";
 		}
@@ -1374,27 +1340,24 @@ function _get_schema_dn($dn, $debug = false) {
  * needfully complicated as it now supports many popular LDAP servers that
  * don't necessarily expose their schema "the right way".
  *
- * @param $schema_to_fetch - A string indicating which type of schema to
+ * @param string $schema_to_fetch - A string indicating which type of schema to
  *        fetch. Five valid values: 'objectclasses', 'attributetypes',
  *        'ldapsyntaxes', 'matchingruleuse', or 'matchingrules'.
  *        Case insensitive.
- * @param $dn (optional) This parameter is the DN of the entry whose schema you
+ * @param string $dn (optional) This parameter is the DN of the entry whose schema you
  *        would like to fetch. Entries have the option of specifying
  *        their own subschemaSubentry that points to the DN of the system
  *        schema entry which applies to this attribute. If unspecified,
  *        this will try to retrieve the schema from the RootDSE subschemaSubentry.
  *        Failing that, we use some commonly known schema DNs. Default
  *        value is the Root DSE DN (zero-length string)
- * @return array an array of strings of this form:
+ * @return array|false an array of strings of this form:
  *    Array (
  *      [0] => "( 1.3.6.1.4.1.7165.1.2.2.4 NAME 'gidPool' DESC 'Pool ...
  *      [1] => "( 1.3.6.1.4.1.7165.2.2.3 NAME 'sambaAccount' DESC 'Sa ...
  *      etc.
  */
 function _get_raw_schema($schema_to_fetch, $dn = '') {
-
-	// Switch to true to enable verbose output of schema fetching progress
-	$debug = false;
 
 	$ds = $_SESSION['ldap']->server();
 
@@ -1410,22 +1373,17 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 	}
 
 	// Try to get the schema DN from the specified entry.
-	$schema_dn = _get_schema_dn($dn, $debug);
+	$schema_dn = _get_schema_dn($dn);
 
 	// Do we need to try again with the Root DSE?
 	if (!$schema_dn) {
-		$schema_dn = _get_schema_dn('', $debug);
+		$schema_dn = _get_schema_dn('');
 	}
 
 	// Store the eventual schema retrieval in $schema_search
 	$schema_search = null;
 
 	if ($schema_dn) {
-		if ($debug) {
-			echo "Found the schema DN: ";
-			var_dump($schema_dn);
-			echo "\n";
-		}
 		$schema_search = @ldap_read($ds, $schema_dn, '(objectClass=*)',
 			[$schema_to_fetch], 0, 0, 0,
 			LDAP_DEREF_ALWAYS);
@@ -1435,9 +1393,6 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 		if ($schema_search === false ||
 			0 == @ldap_count_entries($ds, $schema_search) ||
 			!isset($schema_entries[0][$schema_to_fetch])) {
-			if ($debug) {
-				echo "Did not find the schema with (objectClass=*). Attempting with (objetClass=subschema)\n";
-			}
 			// Try again with a different filter (some servers require (objectClass=subschema) like M-Vault)
 			$schema_search = @ldap_read($ds, $schema_dn, '(objectClass=subschema)',
 				[$schema_to_fetch], 0, 0, 0,
@@ -1449,34 +1404,22 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 			if ($schema_search === false ||
 				0 == @ldap_count_entries($ds, $schema_search) ||
 				!isset($schema_entries[0][$schema_to_fetch])) {
-				if ($debug) {
-					echo "Did not find the schema at DN: $schema_dn (with objectClass=* nor objectClass=subschema).\n";
-				}
 				unset($schema_entries);
 				unset($schema_dn);
 				$schema_search = null;
 			}
-			elseif ($debug) {
-				echo "Found the schema at DN: $schema_dn (with objectClass=subschema).\n";
-			}
-		}
-		elseif ($debug) {
-			echo "Found the schema at DN: $schema_dn (with objectClass=*).\n";
 		}
 	}
 
 	// Second chance: If the DN or Root DSE didn't give us the subschemaSubentry, ie $schema_search
 	// is still null, use some common subSchemaSubentry DNs as a work-around.
 
-	if ($debug && $schema_search == null) {
+	if ($schema_search == null) {
 		echo "Attempting work-arounds for 'broken' LDAP servers...\n";
 	}
 
 	// cn=subschema for OpenLDAP
 	if ($schema_search == null) {
-		if ($debug) {
-			echo "Attempting with cn=subschema (OpenLDAP)...\n";
-		}
 		// try with the standard DN
 		$schema_search = @ldap_read($ds, 'cn=subschema', '(objectClass=*)',
 			[$schema_to_fetch], 0, 0, 0, LDAP_DEREF_ALWAYS);
@@ -1487,9 +1430,6 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 
 	// cn=schema for Novell eDirectory
 	if ($schema_search == null) {
-		if ($debug) {
-			echo "Attempting with cn=schema (Novell)...\n";
-		}
 		// try again, with a different schema DN
 		$schema_search = @ldap_read($ds, 'cn=schema', '(objectClass=*)',
 			[$schema_to_fetch], 0, 0, 0, LDAP_DEREF_ALWAYS);
@@ -1498,14 +1438,12 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 		}
 	}
 
+	$base_dn = null;
 	// cn=schema,cn=configuration,dc=example,dc=com for ActiveDirectory
 	if ($schema_search == null) {
 		// try again, with a different schema DN
 		global $servers;
 		$base_dn = $servers['base'] ?? null;
-		if ($debug) {
-			echo "Attempting with cn=schema,cn=configuration,$base_dn (ActiveDirectory)...\n";
-		}
 		if ($base_dn != null) {
 			$schema_search = @ldap_read($ds, 'cn=schema,cn=configuration,' . $base_dn, '(objectClass=*)',
 				[$schema_to_fetch], 0, 0, 0, LDAP_DEREF_ALWAYS);
@@ -1520,9 +1458,6 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 		// try again, with a different schema DN
 		global $servers;
 		$base_dn = $servers['base'] ?? null;
-		if ($debug) {
-			echo "Attempting with cn=Schema,ou=Admin,$base_dn (ActiveDirectory)...\n";
-		}
 		if ($base_dn != null) {
 			$schema_search = @ldap_read($ds, 'cn=Schema,ou=Admin,' . $base_dn, '(objectClass=*)',
 				[$schema_to_fetch], 0, 0, 0, LDAP_DEREF_ALWAYS);
@@ -1535,9 +1470,6 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 	// Attempt to pull schema from Root DSE with scope "base"
 	if ($schema_search == null) {
 		// try again, with a different schema DN
-		if ($debug) {
-			echo "Attempting to pull schema from Root DSE with scope \"base\"...\n";
-		}
 		if ($base_dn != null) {
 			$schema_search = @ldap_read($ds, '', '(objectClass=*)',
 				[$schema_to_fetch], 0, 0, 0, LDAP_DEREF_ALWAYS);
@@ -1556,9 +1488,6 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 	// Attempt to pull schema from Root DSE with scope "one" (work-around for Isode M-Vault X.500/LDAP)
 	if ($schema_search == null) {
 		// try again, with a different schema DN
-		if ($debug) {
-			echo "Attempting to pull schema from Root DSE with scope \"one\"...\n";
-		}
 		if ($base_dn != null) {
 			$schema_search = @ldap_list($ds, '', '(objectClass=*)',
 				[$schema_to_fetch], 0, 0, 0, LDAP_DEREF_ALWAYS);
@@ -1576,32 +1505,17 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 
 	// Shall we just give up?
 	if ($schema_search == null) {
-		if ($debug) {
-			echo "Returning false since schema_search came back null</pre>\n";
-		}
 		set_schema_cache_unavailable();
 		return false;
 	}
 
 	$schema = @ldap_get_entries($ds, $schema_search);
 	if ($schema === false) {
-		if ($debug) {
-			echo "Returning false since ldap_get_entries() returned false.</pre>\n";
-		}
 		set_schema_cache_unavailable();
 		return false;
 	}
 
 	if (!isset($schema[0][$schema_to_fetch])) {
-		if ($debug) {
-			echo "Returning false since '$schema_to_fetch' isn't in the schema array. Showing schema array:\n";
-		}
-		if ($debug) {
-			var_dump($schema);
-		}
-		if ($debug) {
-			echo "</pre>";
-		}
 		set_schema_cache_unavailable();
 		return false;
 	}
@@ -1614,9 +1528,6 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 	$schema = $schema[0][$schema_to_fetch];
 	unset($schema['count']);
 
-	if ($debug) {
-		echo "</pre>";
-	}
 	return $schema;
 }
 
@@ -1628,12 +1539,12 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
  * @param string $dn (optional) It is easier to fetch schema if a DN is provided
  *             which defines the subschemaSubEntry attribute (all entries should).
  *
- * @return ObjectClass[] An array of ObjectClass objects.
+ * @return ObjectClass[]|false An array of ObjectClass objects.
  *
  * @see ObjectClass
  * @see get_schema_objectclass
  */
-function get_schema_objectclasses($dn = null, $use_cache = true): array {
+function get_schema_objectclasses($dn = null, $use_cache = true): array|false {
 	if ($use_cache && cached_schema_available('objectclasses')) {
 		return get_cached_schema('objectclasses');
 	}
@@ -1669,37 +1580,18 @@ function get_schema_objectclasses($dn = null, $use_cache = true): array {
  * @param string $dn (optional) It is easier to fetch schema if a DN is provided
  *             which defines the subschemaSubEntry attribute (all entries should).
  *
- * @return ObjectClass The specified ObjectClass object or false on error.
+ * @return ObjectClass|false The specified ObjectClass object or false on error.
  *
  * @see ObjectClass
  * @see get_schema_objectclasses
  */
-function get_schema_objectclass($oclass_name, $dn = null, $use_cache = true) {
+function get_schema_objectclass($oclass_name, $dn = null, $use_cache = true): bool|ObjectClass {
 	$oclass_name = strtolower($oclass_name);
 	$oclasses = get_schema_objectclasses($dn, $use_cache);
 	if ($oclasses === []) {
 		return false;
 	}
 	return $oclasses[$oclass_name] ?? false;
-}
-
-/**
- * Gets a single AttributeType object specified by name.
- *
- * @param string $oclass_name The name of the AttributeType to fetch.
- * @param string $dn (optional) It is easier to fetch schema if a DN is provided
- *             which defines the subschemaSubEntry attribute (all entries should).
- *
- * @return AttributeType The specified AttributeType object or false on error.
- *
- * @see AttributeType
- * @see get_schema_attributes
- */
-function get_schema_attribute($attr_name, $dn = null, $use_cache = true) {
-	$attr_name = real_attr_name($attr_name);
-	$schema_attrs = get_schema_attributes($dn, $use_cache);
-	$attr_name = strtolower($attr_name);
-	return $schema_attrs[$attr_name] ?? false;
 }
 
 /**
@@ -1722,7 +1614,7 @@ function get_schema_attributes($dn = null, $use_cache = true): array {
 		return [];
 	}
 
-	// build the array of attribueTypes
+	// build the array of attributeTypes
 	$syntaxes = get_schema_syntaxes($dn);
 	$attrs = [];
 	/**
@@ -1765,7 +1657,7 @@ function get_schema_attributes($dn = null, $use_cache = true): array {
 
 	// Add the used in and required_by values.
 	$schema_object_classes = get_schema_objectclasses();
-	if (!is_array($schema_object_classes)) {
+	if ($schema_object_classes === false) {
 		return [];
 	}
 
@@ -1829,20 +1721,8 @@ function add_aliases_to_attrs(&$attrs) {
  * Bug 856832: require a second parameter that has all attributes indexed by OID
  */
 function add_sup_to_attrs(&$attrs, &$attrs_oid) {
-	$debug = false;
-	if ($debug) {
-		echo "<pre>";
-	}
-
-	if ($debug) {
-		print_r($attrs);
-	}
-
 	// go back and add any inherited descriptions from parent attributes (ie, cn inherits name)
 	foreach ($attrs as $key => $attr) {
-		if ($debug) {
-			echo "Analyzing inheritance for attribute '" . $attr->getName() . "'\n";
-		}
 		$sup_attr_name = $attr->getSupAttribute();
 		$sup_attr = null;
 
@@ -1854,10 +1734,6 @@ function add_sup_to_attrs(&$attrs, &$attrs_oid) {
 			// some weird reason, we have had someone report that it has happened. Oh well.
 			$i = 0;
 			while ($i++ < 100/** 100 == INFINITY ;) */) {
-				if ($debug) {
-					echo "Top of loop.\n";
-				}
-
 				/**
 				 * Bug 856832: check if sup is indexed by OID. If it is,
 				 * replace the OID with the appropriate name. Then reset
@@ -1877,18 +1753,9 @@ function add_sup_to_attrs(&$attrs, &$attrs_oid) {
 					return;
 				}
 
-				if ($debug) {
-					echo " sup_attr_name: $sup_attr_name\n";
-				}
 				$sup_attr = $attrs[strtolower($sup_attr_name)];
-				if ($debug) {
-					echo " Sup attr: " . $sup_attr->getName() . "\n";
-				}
 
 				$sup_attr_name = $sup_attr->getSupAttribute();
-				if ($debug) {
-					echo " Does the sup attr itself have a sup attr?\n";
-				}
 
 				// Does this superior attributeType not have a superior attributeType?
 				if (null == $sup_attr_name || strlen(trim($sup_attr_name)) == 0) {
@@ -1897,21 +1764,12 @@ function add_sup_to_attrs(&$attrs, &$attrs_oid) {
 					// attribute, clone its properties for this attribute. Then, replace
 					// those cloned values with those that can be explicitly set by the child
 					// attribute attr). Save those few properties which the child can set here:
-					if ($debug) {
-						echo "  nope, this is the end of the inheritance chain after $i iterations.\n";
-					}
 					$tmp_name = $attr->getName();
 					$tmp_oid = $attr->getOID();
 					$tmp_sup = $attr->getSupAttribute();
 					$tmp_aliases = $attr->getAliases();
 					$tmp_single_val = $attr->getIsSingleValue();
 
-
-					if ($debug) {
-						echo "  populating values into attribute from sup attribute:\n";
-						echo "Before: ";
-						print_r($attr);
-					}
 
 					// clone the SUP attributeType and populate those values
 					// that were set by the child attributeType
@@ -1921,10 +1779,6 @@ function add_sup_to_attrs(&$attrs, &$attrs_oid) {
 					$attr->setSupAttribute($tmp_sup);
 					$attr->setAliases($tmp_aliases);
 
-					if ($debug) {
-						echo "After (name, sup_attr, and aliases should not have changed!: ";
-						print_r($attr);
-					}
 					// only overwrite the SINGLE-VALUE property if the child explicitly sets it
 					// (note: All LDAP attributes default to multi-value if not explicitly set SINGLE-VALUE)
 					if (true === $tmp_single_val) {
@@ -1941,25 +1795,8 @@ function add_sup_to_attrs(&$attrs, &$attrs_oid) {
 					break;
 
 				}
-				else {
-
-					// do nothing, move on down the chain of inheritance...
-					if ($debug) {
-						echo "  yup, march down the inheritance chain (iteration $i).\n";
-					}
-					if ($debug) {
-						echo "  The sup attr is: ";
-						var_dump($sup_attr_name);
-						echo "\n";
-					}
-
-				}
 			}
 		}
-	}
-
-	if ($debug) {
-		echo "</pre>\n";
 	}
 }
 
@@ -2069,11 +1906,6 @@ function get_schema_syntaxes($dn = null, $use_cache = true) {
  * Note that _get_raw_schema() takes a similar parameter.
  */
 function cached_schema_available($schema_type) {
-	// Check config to make sure session-based caching is enabled.
-	if (SCHEMA_SESSION_CACHE_ENABLED === 0) {
-		return false;
-	}
-
 	// Static memory cache available?
 	// (note: this memory cache buys us a 20% speed improvement over strictly
 	//        checking the session, ie 0.05 to 0.04 secs)
@@ -2103,11 +1935,6 @@ function cached_schema_available($schema_type) {
  * Returns an array of SchemaItem objects on success or false on failure.
  */
 function get_cached_schema($schema_type) {
-	// Check config to make sure session-based caching is enabled.
-	if (SCHEMA_SESSION_CACHE_ENABLED === 0) {
-		return false;
-	}
-
 	static $cache;
 	$schema_type = strtolower($schema_type);
 	if (isset($cache[$schema_type])) {
@@ -2135,11 +1962,6 @@ function get_cached_schema($schema_type) {
  * Returns true on success of false on failure.
  */
 function set_cached_schema($schema_type, $schema_items) {
-	// Check config to make sure session-based caching is enabled.
-	if (SCHEMA_SESSION_CACHE_ENABLED === 0) {
-		return false;
-	}
-
 	// Sanity check. The schema must be in the form of an array
 	if (!is_array($schema_items)) {
 		die("While attempting to cache schema, passed a non-array for \$schema_items!");
@@ -2156,9 +1978,6 @@ function set_cached_schema($schema_type, $schema_items) {
  * fetch it from the server.
  */
 function set_schema_cache_unavailable() {
-	if (SCHEMA_SESSION_CACHE_ENABLED === 0) {
-		return false;
-	}
 	$_SESSION['schema']['unavailable'] = true;
 	return true;
 }

@@ -265,7 +265,7 @@ class lamUserList extends lamList {
 	 * {@inheritDoc}
 	 * @see lamList::getTableCellContent()
 	 */
-	protected function getTableCellContent(&$entry, &$attribute) {
+	protected function getTableCellContent(&$entry, &$attribute): ?htmlElement {
 		// check if there is something to display at all
 		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (count($entry[$attribute]) < 1)) {
 			return parent::getTableCellContent($entry, $attribute);

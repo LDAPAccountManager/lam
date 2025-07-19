@@ -29,6 +29,8 @@
  * @author Thomas Manninger
  **/
 
+use LAM\TYPES\ConfiguredType;
+
 /**
  * The account type for DHCP
  *

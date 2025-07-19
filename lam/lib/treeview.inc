@@ -678,12 +678,14 @@ class TreeView {
 			$cssClasses = $inputField->getCSSClasses();
 			$cssClasses[] = 'lam-attr-' . $safeAttributeName;
 			$inputField->setCSSClasses($cssClasses);
-			if (!empty($autoCompleteValues) && ($inputField instanceof htmlInputField)) {
-				$inputField->enableAutocompletion($autoCompleteValues);
-				$inputField->setId($attributeName . $index);
-			}
-			if (($onInput !== null) && !$readOnly) {
-				$inputField->setOnInput($onInput);
+			if ($inputField instanceof htmlInputField) {
+				if (!empty($autoCompleteValues)) {
+					$inputField->enableAutocompletion($autoCompleteValues);
+					$inputField->setId($attributeName . $index);
+				}
+				if (($onInput !== null) && !$readOnly) {
+					$inputField->setOnInput($onInput);
+				}
 			}
 			$valueLine = new htmlTable();
 			$valueLine->setCSSClasses(['fullwidth']);
@@ -1362,9 +1364,6 @@ class TreeView {
 		$objectClassLower = strtolower($objectClass);
 		$objectClassObject = $objectClasses[$objectClassLower];
 		$attributeNames = $objectClassObject->getMustAttrNames();
-		if ($attributeNames === null) {
-			$attributeNames = [];
-		}
 		foreach ($objectClassObject->getSupClasses() as $superClass) {
 			$attributeNames = array_merge($attributeNames, $this->getMustAttributeNamesRecursive($objectClasses, $superClass));
 		}
@@ -1383,9 +1382,6 @@ class TreeView {
 		$objectClassLower = strtolower($objectClass);
 		$objectClassObject = $objectClasses[$objectClassLower];
 		$attributeNames = $objectClassObject->getMayAttrNames();
-		if ($attributeNames === null) {
-			$attributeNames = [];
-		}
 		foreach ($objectClassObject->getSupClasses() as $superClass) {
 			$attributeNames = array_merge($attributeNames, $this->getMayAttributeNamesRecursive($objectClasses, $superClass));
 		}

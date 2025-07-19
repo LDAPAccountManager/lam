@@ -5,7 +5,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2024  Roland Gruber
+  Copyright (C) 2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -265,7 +265,7 @@ class lamGroupList extends lamList {
 	 * {@inheritDoc}
 	 * @see lamList::getTableCellContent()
 	 */
-	protected function getTableCellContent(&$entry, &$attribute) {
+	protected function getTableCellContent(&$entry, &$attribute): ?htmlElement {
 		if ($attribute == "memberuid") {
 			// $gid is used for linking primary group members
 			$gid = -1;

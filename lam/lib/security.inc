@@ -706,7 +706,7 @@ function setLAMHeaders() {
  *
  * @param string $data string to encrypt
  * @param string $prefix prefix for cookie names
- * @return object encrypted string
+ * @return string encrypted string
  */
 function lamEncrypt($data, $prefix = '') {
 	if (empty($_COOKIE[$prefix . "IV"])) {
@@ -722,7 +722,7 @@ function lamEncrypt($data, $prefix = '') {
 /**
  * Decrypts a string
  *
- * @param object $data string to decrypt
+ * @param string $data string to decrypt
  * @param string $prefix prefix for cookie names
  * @return string decrypted string
  */

@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2024  Roland Gruber
+                2011 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,12 +38,12 @@
  * <br> It may be formatted with special color/link/bold tags.
  * @param string $MessageText The text of the status message.
  * <br> It may be formatted with special color/link/bold tags. This parameter is optional.
- * @param array $MessageVariables The variables that are used to replace the spacers (%s) in the
+ * @param array|string $MessageVariables The variables that are used to replace the spacers (%s) in the
  * submitted text. This parameter is optional.
- * @param boolean $returnOutput if set to true this function will return the generated HTML code instead of printing it directly (default: false)
- * @return String HTML code if $returnOutput is set to true, otherwise null
+ * @param bool $returnOutput if set to true this function will return the generated HTML code instead of printing it directly (default: false)
+ * @return string HTML code if $returnOutput is set to true, otherwise null
  */
-function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', $MessageVariables = [], $returnOutput = false) {
+function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', array|string $MessageVariables = [], bool $returnOutput = false): string {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if ($MessageTyp == "INFO") {
 		$class = "class=\"statusInfo lam-status-message\"";
@@ -75,11 +75,8 @@ function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', $Messag
 			$output = $format;
 		}
 	}
-	elseif ($MessageVariables !== null) {
-		$output = sprintf($format, $MessageVariables);
-	}
 	else {
-		$output = $format;
+		$output = sprintf($format, $MessageVariables);
 	}
 	if ($returnOutput) {
 		return $output;
@@ -87,5 +84,5 @@ function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', $Messag
 	else {
 		echo $output;
 	}
-	return null;
+	return '';
 }

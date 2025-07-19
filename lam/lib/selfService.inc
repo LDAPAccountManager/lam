@@ -2,12 +2,13 @@
 
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
+use LDAP\Connection;
 use function LAM\PERSISTENCE\dbTableExists;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2024  Roland Gruber
+  Copyright (C) 2006 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -215,9 +216,9 @@ function isSelfService() {
  * Opens the LDAP connection and returns the handle. No bind is done.
  *
  * @param selfServiceProfile $profile profile
- * @return handle LDAP handle or null if connection failed
+ * @return Connection|null LDAP handle or null if connection failed
  */
-function openSelfServiceLdapConnection($profile) {
+function openSelfServiceLdapConnection($profile): ?Connection {
 	$server = connectToLDAP($profile->serverURL, $profile->useTLS);
 	if ($server != null) {
 		// follow referrals
@@ -229,13 +230,13 @@ function openSelfServiceLdapConnection($profile) {
 /**
  * Binds the LDAP connections with given user and password.
  *
- * @param handle $handle LDAP handle
- * @param selfServiceProfile profile
+ * @param Connection $handle LDAP handle
+ * @param selfServiceProfile $profile profile
  * @param string $userDn bind DN
  * @param string $password bind password
- * @return boolean binding successful
+ * @return bool binding successful
  */
-function bindLdapUser($handle, $profile, $userDn, $password) {
+function bindLdapUser($handle, $profile, $userDn, $password): bool {
 	if ($profile->useForAllOperations) {
 		$userDn = $profile->LDAPUser;
 		$password = deobfuscateText($profile->LDAPPassword);
@@ -244,7 +245,7 @@ function bindLdapUser($handle, $profile, $userDn, $password) {
 }
 
 /**
- * Manages reading and writing self service profiles.
+ * Manages reading and writing self-service profiles.
  */
 class SelfServicePersistence {
 

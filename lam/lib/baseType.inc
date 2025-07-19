@@ -48,9 +48,9 @@ class baseType {
 	/**
 	 * Creates a new type object.
 	 *
-	 * @param ConfiguredType $type configuration
+	 * @param ConfiguredType|null $type configuration
 	 */
-	public function __construct($type) {
+	public function __construct(?ConfiguredType $type) {
 		$this->type = $type;
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another account');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to account list');

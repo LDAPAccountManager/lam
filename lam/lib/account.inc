@@ -1911,10 +1911,10 @@ function getExtraInvalidCredentialsMessage($ldap, $userDn) {
  * Returns the URL under which the page was loaded.
  * This includes any GET parameters set.
  *
- * @param $baseUrl base URL (e.g. http://www.example.com)
- * @return String URL
+ * @param $baseUrl string base URL (e.g. http://www.example.com)
+ * @return string|null URL
  */
-function getCallingURL($baseUrl = '') {
+function getCallingURL($baseUrl = ''): ?string {
 	$url = null;
 	if (!empty($baseUrl) && !empty($_SERVER['REQUEST_URI'])) {
 		$url = $baseUrl . $_SERVER['REQUEST_URI'];

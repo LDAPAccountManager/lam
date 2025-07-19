@@ -735,9 +735,9 @@ class lamList {
 	 *
 	 * @param array $entry LDAP attributes
 	 * @param string $attribute attribute name
-	 * @return htmlElement content
+	 * @return htmlElement|null content
 	 */
-	protected function getTableCellContent(&$entry, &$attribute) {
+	protected function getTableCellContent(&$entry, &$attribute): ?htmlElement {
 		// account status
 		if ($attribute === self::ATTR_ACCOUNT_STATUS) {
 			return $this->getAccountStatus($entry);
