@@ -2,13 +2,12 @@
 
 namespace LAM\PDF;
 
-use \htmlStatusMessage;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAM\TYPES\TypeManager;
 use LAMCfgMain;
 use LAMConfig;
-use \LAMException;
-use \LAM\ImageUtils\ImageManipulationFactory;
+use LAMException;
+use LAM\ImageUtils\ImageManipulationFactory;
 use PDO;
 use ServerProfilePersistenceManager;
 use XMLReader;
@@ -18,7 +17,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2024  Roland Gruber
+                2011 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1276,7 +1275,7 @@ class PDFStructureReader {
 				$xml->read();
 				$sections[] = new PDFTextSection($xml->value);
 				$xml->read();
-				if (!$xml->name === 'text') {
+				if ($xml->name !== 'text') {
 					logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
 					throw new LAMException(_('Unable to read PDF structure.'));
 				}
@@ -1305,17 +1304,17 @@ class PDFStructureReader {
 		$section = new PDFEntrySection($xml->getAttribute('name'));
 		$entries = [];
 		while ($xml->read()) {
-			if (($xml->name === 'section') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
+			if (($xml->name === 'section') && ($xml->nodeType == XMLReader::END_ELEMENT)) {
 				break;
 			}
-			elseif (($xml->nodeType === \XMLReader::END_ELEMENT)
-				|| ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE)) {
+			elseif (($xml->nodeType === XMLReader::END_ELEMENT)
+				|| ($xml->nodeType === XMLReader::SIGNIFICANT_WHITESPACE)) {
 				continue;
 			}
 			elseif ($xml->name === 'entry') {
 				$entries[] = new PDFSectionEntry($xml->getAttribute('name'));
 			}
-			elseif (!$xml->name === 'entry') {
+			else {
 				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
 				throw new LAMException(_('Unable to read PDF structure.'));
 			}
@@ -1356,7 +1355,6 @@ class PDFStructureWriter {
 			if ($section instanceof PDFTextSection) {
 				$writer->startElement('text');
 				$writer->text($section->getText());
-				$writer->endElement();
 			}
 			else {
 				$writer->startElement('section');
@@ -1371,8 +1369,8 @@ class PDFStructureWriter {
 					$writer->writeAttribute('name', $entry->getKey());
 					$writer->endElement();
 				}
-				$writer->endElement();
 			}
+			$writer->endElement();
 		}
 		$writer->endElement();
 		return $writer->outputMemory();

@@ -15,7 +15,6 @@ use PDOException;
 use SelfServicePersistence;
 use selfServiceProfile;
 use ServerProfilePersistenceManager;
-use function LAM\PDF\getPDFStructures;
 
 /*
 
@@ -103,9 +102,9 @@ class ConfigDataExporter {
 	 * Returns the certificate file content.
 	 *
 	 * @param LAMCfgMain $mainCfg main config
-	 * @return array data
+	 * @return string|null data
 	 */
-	public function _getCertificates($mainCfg) {
+	public function _getCertificates(LAMCfgMain $mainCfg): ?string {
 		return $mainCfg->exportCertificates();
 	}
 
@@ -695,7 +694,6 @@ class ConfigDataImporter {
 		if (!isLAMProVersion()) {
 			return;
 		}
-		$failedProfiles = [];
 		include_once __DIR__ . '/database.inc';
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
@@ -725,9 +723,6 @@ class ConfigDataImporter {
 					$job->import($cronDatabase->getPdo(), $jobData, $jobId);
 				}
 			}
-		}
-		if (!empty($failedProfiles)) {
-			throw new LAMException(_('Could not save PDF structure, access denied.'), implode(', ', $failedProfiles));
 		}
 	}
 
@@ -827,7 +822,7 @@ class ImporterStep {
 	/**
 	 * Returns the value.
 	 *
-	 * @return string value
+	 * @return array value
 	 */
 	public function getValue() {
 		return $this->value;

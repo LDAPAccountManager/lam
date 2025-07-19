@@ -3,13 +3,14 @@
 namespace LAM\PDF;
 
 use LAM\ImageUtils\ImageManipulationFactory;
+use LAM\TYPES\ConfiguredType;
 use LAMException;
 use LamTemporaryFilesManager;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2024  Roland Gruber
+                2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -89,12 +90,11 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
 /**
  * This function creates the PDF output of one or more accounts using TCPDF.
  *
- * @param PDFstructure $structure PDF structure
+ * @param PDFStructure $structure PDF structure
  * @param array $accounts A numbered array containing all accounts the PDF page should
  * be created for. The entries of the array must be AccountContainer objects.
- * @param string $pdf_structure The filename of the structure definition that should be used
- * to create the PDF page. If not submitted the 'default.user' structure definition
- * for the appropriate account type.
+ * @param array $pdfKeys list of elements in PDF
+ * @param ConfiguredType $account_type account type
  * @param string $font font to use
  * @param boolean $returnAsString returns the PDF output as String value instead of writing it to a file
  * @return String PDF file name

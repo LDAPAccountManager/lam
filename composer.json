@@ -17,7 +17,8 @@
     "ext-imagick": "*",
     "ext-gettext": "*",
     "ext-curl": "*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "ext-xmlwriter": "*"
   },
   "scripts": {
     "test": "vendor/bin/phpunit"

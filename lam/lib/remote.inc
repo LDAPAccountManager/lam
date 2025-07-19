@@ -11,7 +11,7 @@ use \phpseclib3\Exception\NoKeyLoadedException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2024  Roland Gruber
+  Copyright (C) 2017 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@ use \phpseclib3\Exception\NoKeyLoadedException;
  */
 class Remote {
 
-	/** @var RemoteServerConfiguration */
-	private $serverConfig;
+	/** @var ?RemoteServerConfiguration */
+	private ?RemoteServerConfiguration $serverConfig = null;
 
 	/**
 	 * Constructor
@@ -54,8 +54,8 @@ class Remote {
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
 	}
 
-	/** SSH2 server handle */
-	private $server;
+	/** @var SSH2|null SSH2 server handle */
+	private ?SSH2 $server = null;
 
 	/**
 	 * Sends commands to remote script.
@@ -65,7 +65,7 @@ class Remote {
 	 */
 	public function execute($command) {
 		if ($this->server == null) {
-			return [];
+			return '';
 		}
 		return $this->server->exec("sudo " . $this->serverConfig->getScriptPath() . ' ' . escapeshellarg($command));
 	}
@@ -73,10 +73,10 @@ class Remote {
 	/**
 	 * Connects to the given SSH server.
 	 *
-	 * @param RemoteServerConfiguration $server server (e.g. localhost or localhost,1234)
+	 * @param RemoteServerConfiguration|null $server server (e.g. localhost or localhost,1234)
 	 * @throws LAMException error connecting to remote server
 	 */
-	public function connect($server) {
+	public function connect(?RemoteServerConfiguration $server): void {
 		if ($server === null) {
 			logNewMessage(LOG_ERR, 'No server provided for lamdaemon');
 			throw new LAMException(_("Unable to connect to remote server!"));
@@ -88,9 +88,6 @@ class Remote {
 		}
 		else {
 			$handle = @new SSH2($serverNameParts[0]);
-		}
-		if (!$handle) {
-			throw new LAMException(_("Unable to connect to remote server!"));
 		}
 		$this->loginSSH($handle);
 		$this->server = $handle;
