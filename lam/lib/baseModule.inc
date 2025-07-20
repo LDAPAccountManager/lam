@@ -1,5 +1,6 @@
 <?php
 
+use LAM\PDF\PDFEntry;
 use LAM\PDF\PDFLabelValue;
 use LAM\PDF\PDFTable;
 use LAM\TYPES\ConfiguredType;

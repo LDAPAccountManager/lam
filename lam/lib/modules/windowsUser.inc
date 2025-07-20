@@ -2652,6 +2652,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$data = str_replace('data:image/png;base64,', '', $data);
 			$data = base64_decode($data);
 		}
+		else {
+			return [];
+		}
 		// convert to JPG
 		try {
 			include_once __DIR__ . '/../imageutils.inc';

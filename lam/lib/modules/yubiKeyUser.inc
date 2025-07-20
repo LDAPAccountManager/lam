@@ -1,13 +1,13 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2024  Roland Gruber
+  Copyright (C) 2018 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ class yubiKeyUser extends baseModule {
 		$attributeName = $this->getAttributeName();
 		if (empty($attributeName)) {
 			$message = new htmlStatusMessage('ERROR', _('Invalid configuration detected. Please edit your server profile (module settings) and fill all required fields.'));
-			$return->add($message, 12);
+			$return->add($message);
 			return $return;
 		}
 		if (empty($objectClass) || in_array($objectClass, $this->attributes['objectClass'])) {
@@ -169,7 +169,7 @@ class yubiKeyUser extends baseModule {
 			}
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add YubiKey extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add YubiKey extension')));
 		}
 		return $return;
 	}
@@ -282,7 +282,7 @@ class yubiKeyUser extends baseModule {
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
 		}
-		$attributes = array_change_key_case($attributes, CASE_LOWER);
+		$attributes = array_change_key_case($attributes);
 		$objectClass = strtolower($this->getObjectClassName());
 		if (!empty($objectClass) && !in_array_ignore_case($objectClass, $attributes['objectclass'])) {
 			return $return;
@@ -310,7 +310,7 @@ class yubiKeyUser extends baseModule {
 	 * Returns the meta HTML code to display the key area.
 	 * This also includes the file upload.
 	 *
-	 * @return htmlTable key content
+	 * @return htmlResponsiveRow key content
 	 */
 	private function getSelfServiceKeys() {
 		$keys = $_SESSION[self::SESS_KEY_LIST];
@@ -332,14 +332,14 @@ class yubiKeyUser extends baseModule {
 			}
 		}
 		$addGroup = new htmlGroup();
-		$addLink = new htmlLink(_('Add'), '#', '../../graphics/add.svg', true);
+		$addLink = new htmlLink(_('Add'), '#', '../../graphics/add.svg');
 		$addLink->setTitle(_('Add'));
 		$addLink->setOnClick('yubiKeyIdAddKey(' . count($keys) . ');return false;');
 		$addLink->setCSSClasses(['icon']);
 		$addGroup->addElement($addLink);
 		$addGroup->addElement(new htmlSpacer('0.5rem', null));
 		$addGroup->addElement(new htmlHelpLink('whereToFind', 'yubiKeyUser'));
-		$content->add($addGroup, 12);
+		$content->add($addGroup);
 		return $content;
 	}
 
@@ -415,28 +415,14 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
-	 * <br>Return values:
-	 * <br>messages: array of parameters to create status messages
-	 * <br>add: array of attributes to add
-	 * <br>del: array of attributes to remove
-	 * <br>mod: array of attributes to modify
-	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @param string $fields input fields
-	 * @param array $attributes LDAP attributes
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
+	 * {@inheritDoc}
 	 */
 	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
-		$attributes = array_change_key_case($attributes, CASE_LOWER);
+		$attributes = array_change_key_case($attributes);
 		$objectClass = strtolower($this->getObjectClassName());
 		if (!in_array_ignore_case($objectClass, $attributes['objectclass'])) {
 			return $return;
@@ -561,9 +547,9 @@ class yubiKeyUser extends baseModule {
 	/**
 	 * Returns the object class used for YubiKey.
 	 *
-	 * @return string object class
+	 * @return string|null object class
 	 */
-	private function getObjectClassName() {
+	private function getObjectClassName(): ?string {
 		if (!empty($this->moduleSettings['yubiKeyUser_objectClass'][0])) {
 			return $this->moduleSettings['yubiKeyUser_objectClass'][0];
 		}
@@ -576,9 +562,9 @@ class yubiKeyUser extends baseModule {
 	/**
 	 * Returns the attribute name used for YubiKey.
 	 *
-	 * @return string attribute name
+	 * @return string|null attribute name
 	 */
-	private function getAttributeName() {
+	private function getAttributeName(): ?string {
 		if (!empty($this->moduleSettings['yubiKeyUser_attributeName'][0])) {
 			return $this->moduleSettings['yubiKeyUser_attributeName'][0];
 		}
@@ -594,8 +580,8 @@ class yubiKeyUser extends baseModule {
 	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
-		$configContainer->add(new htmlResponsiveInputField(_('Object class'), 'yubiKeyUser_objectClass', null, 'objectClass'), 12);
-		$configContainer->add(new htmlResponsiveInputField(_('Attribute name'), 'yubiKeyUser_attributeName', 'yubiKeyId', 'attributeName', true), 12);
+		$configContainer->add(new htmlResponsiveInputField(_('Object class'), 'yubiKeyUser_objectClass', null, 'objectClass'));
+		$configContainer->add(new htmlResponsiveInputField(_('Attribute name'), 'yubiKeyUser_attributeName', 'yubiKeyId', 'attributeName', true));
 		return $configContainer;
 	}
 
@@ -605,8 +591,8 @@ class yubiKeyUser extends baseModule {
 	 */
 	public function getSelfServiceSettings($profile) {
 		$container = new htmlResponsiveRow();
-		$container->add(new htmlResponsiveInputField(_('Object class'), 'yubiKeyUser_objectClass', null, ['objectClass', 'yubiKeyUser']), 12);
-		$container->add(new htmlResponsiveInputField(_('Attribute name'), 'yubiKeyUser_attributeName', 'yubiKeyId', ['attributeName', 'yubiKeyUser']), 12);
+		$container->add(new htmlResponsiveInputField(_('Object class'), 'yubiKeyUser_objectClass', null, ['objectClass', 'yubiKeyUser']));
+		$container->add(new htmlResponsiveInputField(_('Attribute name'), 'yubiKeyUser_attributeName', 'yubiKeyId', ['attributeName', 'yubiKeyUser']));
 		return $container;
 	}
 
