@@ -554,10 +554,10 @@ abstract class baseModule {
 	 * (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	 *
 	 * @param string $typeId type id (user, group, host, ...)
-	 * @return htmlElement meta HTML object
+	 * @return htmlResponsiveRow|null meta HTML object
 	 *
 	 * @see baseModule::get_metaData()
-	 * @see htmlElement
+	 * @see htmlResponsiveRow
 	 */
 	public function get_profileOptions($typeId) {
 		return $this->meta['profile_options'] ?? null;

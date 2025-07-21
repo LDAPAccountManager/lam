@@ -853,16 +853,12 @@ class accountContainer {
 	/**
 	 * Returns the account module with the given class name
 	 *
-	 * @param string $name class name (e.g. posixAccount)
-	 * @return baseModule account module
+	 * @template T of baseModule
+	 * @param class-string<T> $name class name (e.g. posixAccount)
+	 * @return T|null account module
 	 */
-	public function getAccountModule($name) {
-		if (isset($this->module[$name])) {
-			return $this->module[$name];
-		}
-		else {
-			return null;
-		}
+	public function getAccountModule(string $name): ?baseModule {
+		return $this->module[$name] ?? null;
 	}
 
 	/**

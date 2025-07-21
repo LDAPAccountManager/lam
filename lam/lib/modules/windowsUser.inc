@@ -3751,21 +3751,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
-	 * <br>Return values:
-	 * <br>messages: array of parameters to create status messages
-	 * <br>add: array of attributes to add
-	 * <br>del: array of attributes to remove
-	 * <br>mod: array of attributes to modify
-	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @param string $fields input fields
-	 * @param array $attributes LDAP attributes
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
+	 * {@inheritDoc}
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
@@ -3936,14 +3922,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Returns if the account is currently deactivated.
 	 *
 	 * @param array $attrs LDAP attributes
-	 * @return boolean is deactivated
+	 * @return bool is deactivated
 	 */
-	public static function isDeactivated($attrs) {
+	public static function isDeactivated($attrs): bool {
 		$myAttrs = array_change_key_case($attrs);
 		if (!isset($myAttrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($myAttrs['useraccountcontrol'][0]) & self::AC_ACCOUNT_DISABLED;
+		return (intval($myAttrs['useraccountcontrol'][0]) & self::AC_ACCOUNT_DISABLED) === self::AC_ACCOUNT_DISABLED;
 	}
 
 	/**
@@ -4007,9 +3993,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Unlocks the user password. This resets 'lockoutTime' to 0.
 	 *
-	 * @param array|null $attributes LDAP attributes
+	 * @param array<string, array<string>|string>|null $attributes LDAP attributes
 	 */
-	public function unlockPassword(?array &$attributes = null) {
+	public function unlockPassword(?array &$attributes = null): void {
 		if ($attributes === null) {
 			$attributes = &$this->attributes;
 		}
@@ -4022,7 +4008,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Sets if the account is currently deactivated.
 	 *
 	 * @param boolean $deactivated is deactivated
-	 * @param array $attrs LDAP attributes to modify (default $this->attributes)
+	 * @param array<string, array<string>|string>|null $attrs LDAP attributes to modify (default $this->attributes)
 	 */
 	public function setIsDeactivated($deactivated, &$attrs = null) {
 		if ($attrs == null) {
@@ -4044,13 +4030,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Returns if the account requires a smartcard to login.
 	 *
 	 * @param array $attrs LDAP attributes
-	 * @return boolean requires a smartcard
+	 * @return bool requires a smartcard
 	 */
-	public static function isSmartCardRequired($attrs) {
+	public static function isSmartCardRequired($attrs): bool {
 		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($attrs['useraccountcontrol'][0]) & self::AC_SMARTCARD_REQUIRED;
+		return (intval($attrs['useraccountcontrol'][0]) & self::AC_SMARTCARD_REQUIRED) === self::AC_SMARTCARD_REQUIRED;
 	}
 
 	/**
@@ -4076,13 +4062,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Returns if the account never expires.
 	 *
 	 * @param array $attrs LDAP attributes
-	 * @return boolean never expires
+	 * @return bool never expires
 	 */
-	public static function isNeverExpiring($attrs) {
+	public static function isNeverExpiring($attrs): bool {
 		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($attrs['useraccountcontrol'][0]) & self::AC_PWD_NEVER_EXPIRES;
+		return (intval($attrs['useraccountcontrol'][0]) & self::AC_PWD_NEVER_EXPIRES) === self::AC_PWD_NEVER_EXPIRES;
 	}
 
 	/**
@@ -4286,9 +4272,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Returns a value in file time (100 ns since 1601-01-01).
 	 *
 	 * @param integer $value time value as int
-	 * @return DateTime time value
+	 * @return DateTime|null time value
 	 */
-	public static function getFileTime($value) {
+	public static function getFileTime($value): ?DateTime {
 		if (empty($value) || !get_preg($value, 'digit')) {
 			return null;
 		}
@@ -4806,7 +4792,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if ($attributeName === 'mail') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
 					for ($i = 0; $i < count($entry[$attribute]); $i++) {
@@ -4848,10 +4834,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			};
 		}
 		elseif ($attributeName === 'accountexpires') {
-			return fn(array $entry, string $attribute): ?htmlElement => new htmlOutputText($this->formatAccountExpires($entry));
+			return fn(array $entry, string $attribute): htmlElement => new htmlOutputText($this->formatAccountExpires($entry));
 		}
 		elseif (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				$value = ' - ';
 				if (!empty($entry[$attribute][0])) {
 					$value = formatLDAPTimestamp($entry[$attribute][0]);
