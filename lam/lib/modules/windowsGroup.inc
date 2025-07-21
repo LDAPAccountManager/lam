@@ -1,15 +1,15 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2024  Roland Gruber
+  Copyright (C) 2013 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -256,7 +256,7 @@ class windowsGroup extends baseModule {
 		// profile options
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
 			$profileContainer = new htmlResponsiveRow();
-			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsGroup_msSFU30NisDomain', null, 'msSFU30NisDomain'), 12);
+			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsGroup_msSFU30NisDomain', null, 'msSFU30NisDomain'));
 			$return['profile_options'] = $profileContainer;
 			$return['profile_mappings']['windowsGroup_msSFU30NisDomain'] = 'msSFU30NisDomain';
 		}
@@ -315,27 +315,21 @@ class windowsGroup extends baseModule {
 	public function display_html_attributes() {
 		$container = new htmlResponsiveRow();
 		$this->addSimpleInputTextField($container, 'cn', _('Group name'), true);
-		$this->addSimpleInputTextField($container, 'description', _('Description'), false);
+		$this->addSimpleInputTextField($container, 'description', _('Description'));
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
-			$this->addSimpleInputTextField($container, 'mail', _('Email address'), false);
+			$this->addSimpleInputTextField($container, 'mail', _('Email address'));
 		}
 		// group type
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;
 		if (isset($this->attributes['groupType'][0])) {
-			if (($this->attributes['groupType'][0] & 2) !== 0) {
-				$groupScope = windowsGroup::SCOPE_GLOBAL;
-			}
-			elseif (($this->attributes['groupType'][0] & 4) !== 0) {
+			if (($this->attributes['groupType'][0] & 4) !== 0) {
 				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
 			}
 			elseif (($this->attributes['groupType'][0] & 8) !== 0) {
 				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
 			}
-			if (($this->attributes['groupType'][0] & 0x80000000) !== 0) {
-				$groupType = windowsGroup::TYPE_SECURITY;
-			}
-			else {
+			if (($this->attributes['groupType'][0] & 0x80000000) === 0) {
 				$groupType = windowsGroup::TYPE_DISTRIBUTION;
 			}
 		}
@@ -354,10 +348,10 @@ class windowsGroup extends baseModule {
 		}
 		$groupScopeSelect = new htmlResponsiveSelect('groupScope', $scopeList, [$groupScope], _('Group scope'), 'groupScope');
 		$groupScopeSelect->setHasDescriptiveElements(true);
-		$container->add($groupScopeSelect, 12);
+		$container->add($groupScopeSelect);
 		$groupTypeSelect = new htmlResponsiveSelect('groupType', $this->groupTypes, [$groupType], _('Group type'), 'groupType');
 		$groupTypeSelect->setHasDescriptiveElements(true);
-		$container->add($groupTypeSelect, 12);
+		$container->add($groupTypeSelect);
 		// notes
 		$this->addSimpleInputTextField($container, 'info', _('Notes'), false, null, true);
 		// managed by
@@ -370,7 +364,7 @@ class windowsGroup extends baseModule {
 			$managedByGroup = new htmlGroup();
 			$managedByGroup->addElement(new htmlOutputText(getAbstractDN($managedBy)));
 			$managedByGroup->addElement(new htmlSpacer('0.5rem', null));
-			$managedByGroup->addElement(new htmlHelpLink('managedBy'), true);
+			$managedByGroup->addElement(new htmlHelpLink('managedBy'));
 			$container->addField($managedByGroup);
 			$managedByButtons = new htmlGroup();
 			$managedByButtons->addElement(new htmlAccountPageButton(static::class, 'managedBy', 'edit', _('Change')));
@@ -383,7 +377,7 @@ class windowsGroup extends baseModule {
 		}
 		// NIS
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
-			$container->add(new htmlSubTitle(_('NIS')), 12);
+			$container->add(new htmlSubTitle(_('NIS')));
 			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
 				$this->addSimpleInputTextField($container, 'msSFU30Name', _('NIS name'));
 			}
@@ -427,7 +421,7 @@ class windowsGroup extends baseModule {
 		$memberOfGroup = new htmlGroup();
 		$memberOfGroup->addElement(new htmlAccountPageButton(static::class, 'memberof', 'open', _('Edit')));
 		$memberOfGroup->addElement(new htmlSpacer('0.5rem', null));
-		$memberOfGroup->addElement(new htmlHelpLink('memberOf'), true);
+		$memberOfGroup->addElement(new htmlHelpLink('memberOf'));
 		$container->addField($memberOfGroup);
 		$memberList = [];
 		if (isset($this->attributes['memberOf'])) {
@@ -521,7 +515,7 @@ class windowsGroup extends baseModule {
 	 */
 	function display_html_memberof() {
 		$return = new htmlResponsiveRow();
-		$return->add(new htmlSubTitle(_("Groups")), 12);
+		$return->add(new htmlSubTitle(_("Groups")));
 		$groups = $this->findGroups();
 		// sort by DN
 		usort($groups, 'compareDN');
@@ -549,7 +543,7 @@ class windowsGroup extends baseModule {
 
 		$return->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
-		$return->add($backButton, 12);
+		$return->add($backButton);
 
 		return $return;
 	}
@@ -616,7 +610,7 @@ class windowsGroup extends baseModule {
 		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'set', _('Change')));
 		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
-		$return->add($buttonTable, 12);
+		$return->add($buttonTable);
 		return $return;
 	}
 
@@ -651,7 +645,7 @@ class windowsGroup extends baseModule {
 			$filter->setFieldSize('5em');
 			$filter->filterSelectBox('members');
 			$filterGroup->addElement($filter);
-			$return->add($filterGroup, 12);
+			$return->add($filterGroup);
 			$return->addVerticalSpacer('1rem');
 
 			$options = [];
@@ -677,12 +671,12 @@ class windowsGroup extends baseModule {
 			$membersSelect->setRightToLeftTextDirection(true);
 			$membersSelect->setSortElements(false);
 			$membersSelect->setTransformSingleSelect(false);
-			$return->add($membersSelect, 12);
+			$return->add($membersSelect);
 			$return->addVerticalSpacer('2rem');
 			$buttonTable = new htmlGroup();
 			$buttonTable->addElement(new htmlAccountPageButton(static::class, 'user', 'addMembers', _('Add')));
 			$buttonTable->addElement(new htmlAccountPageButton(static::class, 'user', 'cancel', _('Cancel')));
-			$return->add($buttonTable, 12);
+			$return->add($buttonTable);
 			return $return;
 		}
 		// show existing members
@@ -707,12 +701,12 @@ class windowsGroup extends baseModule {
 			$membersSelect->setRightToLeftTextDirection(true);
 			$membersSelect->setSortElements(false);
 			$membersSelect->setTransformSingleSelect(false);
-			$return->add($membersSelect, 12);
+			$return->add($membersSelect);
 			$return->addVerticalSpacer('0.5rem');
 			$removeButton = new htmlAccountPageButton(static::class, 'user', 'remove', _('Remove selected entries'));
-			$return->add($removeButton, 12);
+			$return->add($removeButton);
 			$return->addVerticalSpacer('2rem');
-			$return->add(new htmlHorizontalLine(), 12);
+			$return->add(new htmlHorizontalLine());
 			$return->addVerticalSpacer('2rem');
 		}
 		$types = $typeManager->getConfiguredTypes();
@@ -731,7 +725,7 @@ class windowsGroup extends baseModule {
 		$return->addLabel(new htmlOutputText('&nbsp;', false));
 		$return->addField(new htmlAccountPageButton(static::class, 'user', 'select', _('Ok')));
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'membersBack', _('Back')), 12);
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'membersBack', _('Back')));
 		return $return;
 	}
 
@@ -778,9 +772,9 @@ class windowsGroup extends baseModule {
 			$entry->alignment = htmlElement::ALIGN_RIGHT;
 			$entryTable->addElement($entry, true);
 		}
-		$return->add($entryTable, 12);
+		$return->add($entryTable);
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'membersEffectiveBack', _('Back')), 12);
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'membersEffectiveBack', _('Back')));
 		return $return;
 	}
 
@@ -903,19 +897,13 @@ class windowsGroup extends baseModule {
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;
 		if (isset($this->attributes['groupType'][0])) {
-			if (($this->attributes['groupType'][0] & 2) !== 0) {
-				$groupScope = windowsGroup::SCOPE_GLOBAL;
-			}
-			elseif (($this->attributes['groupType'][0] & 4) !== 0) {
+			if (($this->attributes['groupType'][0] & 4) !== 0) {
 				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
 			}
 			elseif (($this->attributes['groupType'][0] & 8) !== 0) {
 				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
 			}
-			if (($this->attributes['groupType'][0] & 0x80000000) !== 0) {
-				$groupType = windowsGroup::TYPE_SECURITY;
-			}
-			else {
+			if (($this->attributes['groupType'][0] & 0x80000000) === 0) {
 				$groupType = windowsGroup::TYPE_DISTRIBUTION;
 			}
 		}
@@ -1096,7 +1084,7 @@ class windowsGroup extends baseModule {
 		$configContainerHead = new htmlGroup();
 		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->add($configContainerHead, 12);
+		$configContainer->add($configContainerHead);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemail', false, _('Email address'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemanagedBy', false, _('Managed by'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemsSFU30Name', true, _('NIS name'), null, true), 12, 4);
@@ -1130,7 +1118,7 @@ class windowsGroup extends baseModule {
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				$value = ' - ';
 				if (!empty($entry[$attribute][0])) {
 					$value = formatLDAPTimestamp($entry[$attribute][0]);

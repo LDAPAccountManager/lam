@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2024  Roland Gruber
+  Copyright (C) 2013 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -175,8 +175,8 @@ class windowsHost extends baseModule {
 	public function display_html_attributes() {
 		$container = new htmlResponsiveRow();
 		$this->addSimpleInputTextField($container, 'cn', _('Host name'), true);
-		$this->addSimpleInputTextField($container, 'description', _('Description'), false);
-		$this->addSimpleInputTextField($container, 'location', _('Location'), false);
+		$this->addSimpleInputTextField($container, 'description', _('Description'));
+		$this->addSimpleInputTextField($container, 'location', _('Location'));
 		// last password change
 		if (!empty($this->attributes['pwdLastSet'])) {
 			$container->addLabel(new htmlOutputText(_('Last password change')));
@@ -213,7 +213,7 @@ class windowsHost extends baseModule {
 		$managedByGroup = new htmlGroup();
 		$managedByGroup->addElement(new htmlOutputText(getAbstractDN($managedBy)));
 		$managedByGroup->addElement(new htmlSpacer('0.5rem', null));
-		$managedByGroup->addElement(new htmlHelpLink('managedBy'), true);
+		$managedByGroup->addElement(new htmlHelpLink('managedBy'));
 		$container->addField($managedByGroup);
 		$container->addLabel(new htmlOutputText('&nbsp;', false));
 		$managedByButtons = new htmlGroup();
@@ -298,7 +298,7 @@ class windowsHost extends baseModule {
 		$buttonTable = new htmlTable();
 		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'set', _('Change')));
 		$buttonTable->addElement(new htmlAccountPageButton(static::class, 'attributes', 'cancel', _('Cancel')));
-		$return->add($buttonTable, 12);
+		$return->add($buttonTable);
 		return $return;
 	}
 
@@ -405,7 +405,7 @@ class windowsHost extends baseModule {
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				$value = ' - ';
 				if (!empty($entry[$attribute][0])) {
 					$value = formatLDAPTimestamp($entry[$attribute][0]);
