@@ -44,7 +44,6 @@ use \phpseclib3\Exception\NoKeyLoadedException;
  */
 class Remote {
 
-	/** @var ?RemoteServerConfiguration */
 	private ?RemoteServerConfiguration $serverConfig = null;
 
 	/**
