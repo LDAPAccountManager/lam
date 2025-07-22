@@ -33,6 +33,7 @@
 use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
 use LAM\PLUGINS\SMS\SmsService;
 use LAM\TYPES\TypeManager;
+use LDAP\Connection;
 
 
 /**
@@ -917,7 +918,7 @@ function getLDAPServerHandle() {
 /**
  * Runs an LDAP search and uses paging if configured.
  *
- * @param handle $server LDAP connection handle
+ * @param Connection $server LDAP connection handle
  * @param String $dn DN
  * @param String $filter filter
  * @param array $attributes attribute list

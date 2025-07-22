@@ -1,5 +1,7 @@
 <?php
 
+use LAM\JOB\AccountExpirationCleanupJob;
+use LAM\JOB\PasswordExpirationJob;
 use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 use LAM\TYPES\ConfiguredType;
 
@@ -7,7 +9,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2024  Roland Gruber
+  Copyright (C) 2007 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -367,9 +369,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * This function will create the meta HTML code to show a page with all attributes.
-	 *
-	 * @return array meta HTML code
+	 * {@inheritDoc}
 	 */
 	function display_html_attributes() {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_addObjectClass'])) {
@@ -495,7 +495,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * This function will create the meta HTML code to show a page with the expiration date.
 	 *
-	 * @return array meta HTML code
+	 * @return htmlResponsiveRow meta HTML code
 	 */
 	function display_html_expire() {
 		$return = new htmlResponsiveRow();
@@ -559,7 +559,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * This function will create the meta HTML code to show a page with the password change date.
 	 *
-	 * @return array meta HTML code
+	 * @return htmlResponsiveRow meta HTML code
 	 */
 	function display_html_pwdChange() {
 		$return = new htmlResponsiveRow();
@@ -1072,7 +1072,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	 *
 	 * @package jobs
 	 */
-	class ShadowAccountPasswordNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+	class ShadowAccountPasswordNotifyJob extends PasswordExpirationJob {
 
 		/**
 		 * Returns the alias name of the job.
@@ -1085,7 +1085,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::getConfigOptions()
+		 * @see PasswordExpirationJob::getConfigOptions
 		 */
 		public function getConfigOptions($jobID) {
 			$container = parent::getConfigOptions($jobID);
@@ -1184,7 +1184,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	 *
 	 * @package jobs
 	 */
-	class ShadowAccountExpirationNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+	class ShadowAccountExpirationNotifyJob extends PasswordExpirationJob {
 
 		/**
 		 * Returns the alias name of the job.
@@ -1197,7 +1197,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::getDescription()
+		 * @see PasswordExpirationJob::getDescription
 		 */
 		public function getDescription() {
 			return _('This job sends out emails to inform your users that their account will expire soon.');
@@ -1278,7 +1278,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	 *
 	 * @package jobs
 	 */
-	class ShadowAccountExpirationCleanupJob extends \LAM\JOB\AccountExpirationCleanupJob {
+	class ShadowAccountExpirationCleanupJob extends AccountExpirationCleanupJob {
 
 		/**
 		 * Returns the alias name of the job.
