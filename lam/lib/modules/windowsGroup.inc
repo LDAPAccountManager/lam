@@ -914,7 +914,6 @@ class windowsGroup extends baseModule {
 		$this->addPDFKeyValue($return, 'groupScope', _('Group scope'), $groupScope);
 		$this->addPDFKeyValue($return, 'groupType', _('Group type'), $groupType);
 		// managed by
-		$managedBy = '';
 		if (isset($this->attributes['managedBy'][0])) {
 			$managedBy = getAbstractDN($this->attributes['managedBy'][0]);
 			$this->addPDFKeyValue($return, 'managedBy', _('Managed by'), $managedBy);
@@ -922,7 +921,7 @@ class windowsGroup extends baseModule {
 		// members
 		if (!empty($this->attributes['member'])) {
 			$memberList = [];
-			if (isset($this->attributes['member']) && is_array($this->attributes['member'])) {
+			if (isset($this->attributes['member'][0])) {
 				$memberList = $this->attributes['member'];
 			}
 			usort($memberList, 'compareDN');
@@ -937,7 +936,7 @@ class windowsGroup extends baseModule {
 		// member of
 		if (!empty($this->attributes['memberOf'])) {
 			$memberOfList = [];
-			if (isset($this->attributes['memberOf']) && is_array($this->attributes['memberOf'])) {
+			if (isset($this->attributes['memberOf'][0])) {
 				$memberOfList = $this->attributes['memberOf'];
 			}
 			usort($memberOfList, 'compareDN');

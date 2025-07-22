@@ -993,7 +993,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		}
 		if (in_array(self::STATUS_PASSWORD_EXPIRED, $lockIds)) {
 			$inactive = empty($attributes['shadowinactive'][0]) ? 0 : $attributes['shadowinactive'][0];
-			$attributes['shadowlastchange'][0] = intval(time() / 3600 / 24) - $attributes['shadowmax'][0] - $inactive - 1;
+			$attributes['shadowlastchange'][0] = (string) (intval(time() / 3600 / 24) - $attributes['shadowmax'][0] - $inactive - 1);
 		}
 	}
 
@@ -1008,7 +1008,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 			unset($attributes['shadowexpire']);
 		}
 		if (in_array(self::STATUS_PASSWORD_EXPIRED, $lockIds)) {
-			$attributes['shadowlastchange'][0] = intval(time() / 3600 / 24);
+			$attributes['shadowlastchange'][0] = (string) (time() / 3600 / 24);
 		}
 	}
 

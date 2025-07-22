@@ -492,7 +492,7 @@ function getNumberOfCharacterClasses($password): int {
 /**
  * Returns an array with all Samba 3 domain entries under the given suffix
  *
- * @param handle LDAP handle (if null then $_SESSION['ldap']->server() is used)
+ * @param Connection|null $server LDAP handle (if null then $_SESSION['ldap']->server() is used)
  * @param String $suffix LDAP suffix to search (if null then $_SESSION['config']->get_Suffix('smbDomain') is used)
  * @return array list of samba3domain objects
  */

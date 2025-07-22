@@ -235,7 +235,7 @@ class baseType {
 	 */
 	private function buildAccountStatusDialogDiv(AccountStatus $accountStatus, array $lockableOptions): htmlElement {
 		$hasLockOptions = !empty($lockableOptions);
-		$hasUnlockOptions = $accountStatus->isLocked() || $accountStatus->isPartiallyLocked();
+		$hasUnlockOptions = $accountStatus->isLocked() || $accountStatus->isPartiallyLocked() || $accountStatus->isPartiallyExpired();
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlTitle(_('Change account status')));
 

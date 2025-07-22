@@ -77,6 +77,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	private const DISPLAY_GROUPS_DN = 'DN';
 	/** display groups as cn */
 	private const DISPLAY_GROUPS_CN = 'CN';
+	public const ACCOUNT_DOES_NOT_EXPIRE = '9223372036854775807';
 
 	/** current group list */
 	private $groupList = [];
@@ -2119,7 +2120,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$return = new htmlResponsiveRow();
 		$attr = 'accountexpires';
 		$datetime = new DateTime('now', getTimeZone());
-		if (!empty($this->attributes[$attr][0]) && ($this->attributes[$attr][0] != '0')) {
+		$datetime->add(new DateInterval('P1Y'));
+		if (!empty($this->attributes[$attr][0]) && ($this->attributes[$attr][0] !== self::ACCOUNT_DOES_NOT_EXPIRE)) {
 			$datetime = windowsUser::getFileTime($this->attributes[$attr][0]);
 		}
 		$dateInput = new htmlResponsiveInputField(_('Account expiration date'), $attr, $datetime->format('Y-m-d'), 'accountexpires');
@@ -4017,10 +4019,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) === 'useraccountcontrol') {
 				if ($deactivated) {
-					$attrs[$key][0] = intval($value[0]) | self::AC_ACCOUNT_DISABLED;
+					$attrs[$key][0] = (string) (intval($value[0]) | self::AC_ACCOUNT_DISABLED);
 				}
 				elseif ((intval($value[0]) & self::AC_ACCOUNT_DISABLED) !== 0) {
-					$attrs[$key][0] = intval($value[0]) - self::AC_ACCOUNT_DISABLED;
+					$attrs[$key][0] = (string) (intval($value[0]) - self::AC_ACCOUNT_DISABLED);
 				}
 			}
 		}
@@ -4228,7 +4230,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$attributes = &$this->attributes;
 		}
 		if (empty($attributes['accountexpires'][0]) || ($attributes['accountexpires'][0] == '0')
-			|| ($attributes['accountexpires'][0] == '9223372036854775807')) {
+			|| ($attributes['accountexpires'][0] == self::ACCOUNT_DOES_NOT_EXPIRE)) {
 			return ' - ';
 		}
 		return $this->formatFileTime($attributes['accountexpires'][0]);
@@ -4245,7 +4247,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$attributes = &$this->attributes;
 		}
 		if (empty($attributes['msds-userpasswordexpirytimecomputed'][0]) || ($attributes['msds-userpasswordexpirytimecomputed'][0] == '0')
-			|| ($attributes['msds-userpasswordexpirytimecomputed'][0] == '9223372036854775807')) {
+			|| ($attributes['msds-userpasswordexpirytimecomputed'][0] == self::ACCOUNT_DOES_NOT_EXPIRE)) {
 			return ' - ';
 		}
 		return $this->formatFileTime($attributes['msds-userpasswordexpirytimecomputed'][0]);
@@ -4926,7 +4928,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			}
 			// skip if password does not expire
 			if (empty($user['msds-userpasswordexpirytimecomputed'][0])
-				|| ($user['msds-userpasswordexpirytimecomputed'][0] == '9223372036854775807')
+				|| ($user['msds-userpasswordexpirytimecomputed'][0] == windowsUser::ACCOUNT_DOES_NOT_EXPIRE)
 				|| ($user['msds-userpasswordexpirytimecomputed'][0] == '0')) {
 				$this->jobResultLog->logDebug($dn . ': password does not expire.');
 				return;

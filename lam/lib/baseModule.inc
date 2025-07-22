@@ -81,7 +81,7 @@ abstract class baseModule {
 	protected $moduleSettings;
 
 	/**
-	 * self service profile with settings of all modules
+	 * self-service profile with settings of all modules
 	 * @var selfServiceProfile profile
 	 */
 	protected $selfServiceSettings;
@@ -89,10 +89,10 @@ abstract class baseModule {
 	/** name of parent accountContainer ($_SESSION[$base]) */
 	private $base;
 
-	/** contains all ldap attributes which should be written */
+	/** @var array<string, string[]|string>|null contains all ldap attributes which should be written */
 	protected $attributes;
 
-	/** contains all ldap attributes which are loaded from ldap */
+	/** @var array<string, string[]|string>|null contains all ldap attributes which are loaded from LDAP */
 	protected $orig;
 
 	/** contains all error messages of a module */
