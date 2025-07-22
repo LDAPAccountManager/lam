@@ -9,7 +9,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2024  Roland Gruber
+                2008 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -147,10 +147,10 @@ class range extends baseModule {
 	 * @param String $first_ip first ip
 	 * @param String $second_ip second ip
 	 *
-	 * @return true, if it's a valid Range, else false;
+	 * @return bool true, if it's a valid Range, else false;
 	 **/
 
-	public function check_range($first_ip, $second_ip) {
+	public function check_range($first_ip, $second_ip): bool {
 		$ex_first = explode(".", $first_ip);
 		$ex_second = explode(".", $second_ip);
 		return ($ex_first[0] < $ex_second[0])
@@ -165,9 +165,9 @@ class range extends baseModule {
 	 * @param String $ip IP address
 	 * @param String $subnet subnet
 	 * @param String $mask network mask
-	 * @return true if the range and subnet valid, else false
+	 * @return bool true if the range and subnet valid, else false
 	 **/
-	public static function check_subnet_range($ip, $subnet, $mask) {
+	public static function check_subnet_range($ip, $subnet, $mask): bool {
 		$ipSubnet = range::calculateSubnet($ip, $mask);
 		return ($subnet == $ipSubnet);
 	}
@@ -176,13 +176,13 @@ class range extends baseModule {
 	 *
 	 * Checks if ranges are not overlapped.
 	 *
-	 * @param first ip
-	 * @param second ip
+	 * @param $ip first ip
+	 * @param $ipB second ip
 	 *
 	 * @return bool not overlapped
 	 *
 	 **/
-	private function isNotOverlappedRange($ip, $ipB) {
+	private function isNotOverlappedRange($ip, $ipB): bool {
 		$ex = explode(".", $ip);
 		$exB = explode(".", $ipB);
 
@@ -210,9 +210,7 @@ class range extends baseModule {
 	}
 
 	/**
-	 * Controls if the module button the account page is visible and activated.
-	 *
-	 * @return string status ("enabled", "disabled", "hidden")
+	 * {@inheritDoc}
 	 */
 	public function getButtonStatus() {
 		if (!$this->isRootNode()) {
@@ -226,18 +224,18 @@ class range extends baseModule {
 	/**
 	 * This function loads all needed LDAP attributes.
 	 *
-	 * @param array $attr list of attributes
+	 * @param array $attributes list of attributes
 	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
+	function load_attributes($attributes) {
+		parent::load_attributes($attributes);
 		// Load DHCP Options:
 		if (!$this->isRootNode()) {
-			$this->orig = $attr;
-			$this->attributes = $attr;
+			$this->orig = $attributes;
+			$this->attributes = $attributes;
 			// Load DHCP Options:
-			if (isset($attr['dhcpRange']) && is_array($attr['dhcpRange'])) {
-				natcasesort($attr['dhcpRange']);
-				foreach ($attr['dhcpRange'] as $id => $value) {
+			if (isset($attributes['dhcpRange']) && is_array($attributes['dhcpRange'])) {
+				natcasesort($attributes['dhcpRange']);
+				foreach ($attributes['dhcpRange'] as $id => $value) {
 					$ex = explode(" ", $value);
 
 					// DHCP Range ins Array laden:
@@ -253,7 +251,7 @@ class range extends baseModule {
 	 *
 	 * Adapt the Ranges with the subnet.
 	 *
-	 * @return true, if ranges were edit.
+	 * @return bool true, if ranges were edit.
 	 *
 	 **/
 	public function reload_ranges() {
@@ -268,7 +266,7 @@ class range extends baseModule {
 					// adapt range
 					$ex = explode(".", $range['range_start']);
 					$tmp = $range['range_start'];
-					$this->ranges[$id]['range_start'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
+					$this->ranges[$id]['range_start'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
 					if ($tmp != $this->ranges[$id]['range_start']) {
 						$range_edit = true;
 					}
@@ -277,7 +275,7 @@ class range extends baseModule {
 					// adapt range
 					$ex = explode(".", $range['range_end']);
 					$tmp = $range['range_end'];
-					$this->ranges[$id]['range_end'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
+					$this->ranges[$id]['range_end'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
 					if ($tmp != $this->ranges[$id]['range_end']) {
 						$range_edit = true;
 					}

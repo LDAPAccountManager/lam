@@ -10,7 +10,7 @@ use LAM\REMOTE\RemoteServerConfiguration;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2024  Roland Gruber
+                2007 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -250,12 +250,12 @@ class quota extends baseModule {
 	 * @param int $value raw value
 	 * @return string value with unit
 	 */
-	public function addBlockUnits($value) {
+	public function addBlockUnits($value): string {
 		$mebibytes = 1024;
 		$gibibytes = 1024 * $mebibytes;
 		$tebibytes = 1024 * $gibibytes;
 		if (empty($value) || !get_preg($value, 'digit') || ($value < $mebibytes)) {
-			return $value;
+			return (string) $value;
 		}
 		if (($value >= $tebibytes) && (($value % $tebibytes) === 0)) {
 			return ($value / $tebibytes) . 'T';
@@ -263,23 +263,24 @@ class quota extends baseModule {
 		if (($value >= $gibibytes) && (($value % $gibibytes) === 0)) {
 			return ($value / $gibibytes) . 'G';
 		}
-		if (($value >= $mebibytes) && (($value % $mebibytes) === 0)) {
+		if (($value % $mebibytes) === 0) {
 			return ($value / $mebibytes) . 'M';
 		}
-		return $value;
+		return (string) $value;
 	}
 
 	/**
 	 * Formats block usage.
 	 *
 	 * @param int $value raw value
+	 * @return string block usage
 	 */
-	public function formatBlockUsage($value) {
+	public function formatBlockUsage($value): string {
 		$mebibytes = 1024;
 		$gibibytes = 1024 * $mebibytes;
 		$tebibytes = 1024 * $gibibytes;
 		if (empty($value) || !get_preg($value, 'digit') || ($value < $mebibytes)) {
-			return $value;
+			return (string) $value;
 		}
 		if ($value >= $tebibytes) {
 			return round($value / $tebibytes, 2) . 'T';
@@ -287,10 +288,7 @@ class quota extends baseModule {
 		if ($value >= $gibibytes) {
 			return round($value / $gibibytes, 2) . 'G';
 		}
-		if ($value >= $mebibytes) {
-			return round($value / $mebibytes, 2) . 'M';
-		}
-		return $value;
+		return round($value / $mebibytes, 2) . 'M';
 	}
 
 	/**
@@ -299,13 +297,13 @@ class quota extends baseModule {
 	 * @param int $value raw value
 	 * @return string value with unit
 	 */
-	public function addInodeUnits($value) {
+	public function addInodeUnits($value): string {
 		$kilo = 1000;
 		$million = 1000 * $kilo;
 		$billion = 1000 * $million;
 		$trillion = 1000 * $billion;
 		if (empty($value) || !get_preg($value, 'digit')) {
-			return $value;
+			return (string) $value;
 		}
 		if (($value >= $trillion) && (($value % $trillion) === 0)) {
 			return ($value / $trillion) . 't';
@@ -319,7 +317,7 @@ class quota extends baseModule {
 		if (($value >= $kilo) && (($value % $kilo) === 0)) {
 			return ($value / $kilo) . 'k';
 		}
-		return $value;
+		return (string) $value;
 	}
 
 	/**
@@ -328,7 +326,7 @@ class quota extends baseModule {
 	 * @param int $value raw value
 	 * @return string value with unit
 	 */
-	public function formatInodeUsage($value) {
+	public function formatInodeUsage($value): string {
 		$kilo = 1000;
 		$million = 1000 * $kilo;
 		$billion = 1000 * $million;
@@ -348,15 +346,15 @@ class quota extends baseModule {
 		if ($value >= $kilo) {
 			return round($value / $kilo, 2) . 'k';
 		}
-		return $value;
+		return (string) $value;
 	}
 
 	/**
 	 * Gets the cn from the Unix group module.
 	 *
-	 * @return String cn attribute
+	 * @return string|null cn attribute
 	 */
-	private function getCn() {
+	private function getCn(): ?string {
 		$modules = ['posixGroup', 'windowsPosixGroup', 'rfc2307bisPosixGroup', 'groupOfNames', 'groupOfUniqueNames', 'windowsGroup'];
 		for ($i = 0; $i < count($modules); $i++) {
 			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
@@ -402,11 +400,11 @@ class quota extends baseModule {
 			return $messages;
 		}
 		// determine if this is a user or group account
-		if ($this->get_scope() == 'user') {
+		if ($this->get_scope() === 'user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			$id = $attrs['uid'][0];
 		}
-		if ($this->get_scope() == 'group') {
+		else {
 			$id = $this->getCn();
 		}
 		// get list of lamdaemon servers
@@ -447,10 +445,10 @@ class quota extends baseModule {
 	 */
 	public function getQuotaNumber($quotaInput) {
 		if (empty($quotaInput) || (strlen($quotaInput) < 2)) {
-			return $quotaInput;
+			return (int) $quotaInput;
 		}
 		if (str_ends_with($quotaInput, 'K')) {
-			return substr($quotaInput, 0, -1);
+			return (int) substr($quotaInput, 0, -1);
 		}
 		if (str_ends_with($quotaInput, 'M')) {
 			return 1024 * substr($quotaInput, 0, -1);
@@ -473,7 +471,7 @@ class quota extends baseModule {
 		if (str_ends_with($quotaInput, 't')) {
 			return 1000 * 1000 * 1000 * 1000 * substr($quotaInput, 0, -1);
 		}
-		return $quotaInput;
+		return (int) $quotaInput;
 	}
 
 	/**
@@ -492,11 +490,11 @@ class quota extends baseModule {
 			return [];
 		}
 		// determine if this is a user or group account
-		if ($this->get_scope() == 'user') {
+		if ($this->get_scope() === 'user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			$id = $attrs['uid'][0];
 		}
-		if ($this->get_scope() == 'group') {
+		else {
 			$id = $this->getCn();
 		}
 		$messages = [];

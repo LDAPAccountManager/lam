@@ -1199,7 +1199,7 @@ class pykotaUser extends baseModule {
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if ($attributeName === 'mail') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
 					for ($i = 0; $i < count($entry[$attribute]); $i++) {
