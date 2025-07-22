@@ -117,7 +117,7 @@ class ConfiguredType {
 	 * @param string $scope account type
 	 * @param string $id unique ID for this configuration
 	 */
-	public function __construct(?TypeManager &$typeManager, string $scope, string $id) {
+	public function __construct(?TypeManager $typeManager, string $scope, string $id) {
 		$this->typeManager = &$typeManager;
 		$this->scope = $scope;
 		$this->id = $id;

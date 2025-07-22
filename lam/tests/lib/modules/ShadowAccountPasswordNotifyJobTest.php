@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2023  Roland Gruber
+ Copyright (C) 2016 - 2025  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -101,7 +101,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 
 		public function testWarningNotReached() {
 			$now = new DateTime('now', getTimeZone());
-			$lastChangeNow = floor($now->format('U')/3600/24);
+			$lastChangeNow = (string) floor($now->format('U')/3600/24);
 			$this->job->method('getDBLastPwdChangeTime')->willReturn($lastChangeNow);
 			$this->job->method('findUsers')->willReturn([[
 				'dn' => 'cn=some,dc=dn',
@@ -119,7 +119,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 
 		public function testAlreadyWarned() {
 			$now = new DateTime('now', getTimeZone());
-			$lastChangeNow = floor($now->format('U')/3600/24);
+			$lastChangeNow = (string) floor($now->format('U')/3600/24);
 			$this->job->method('getDBLastPwdChangeTime')->willReturn($lastChangeNow);
 			$this->job->method('findUsers')->willReturn([[
 				'dn' => 'cn=some,dc=dn',
