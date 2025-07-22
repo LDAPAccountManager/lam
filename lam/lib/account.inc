@@ -902,7 +902,7 @@ function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
 /**
  * Returns the LDAP server handle.
  *
- * @return handle LDAP handle
+ * @return Connection LDAP handle
  */
 function getLDAPServerHandle() {
 	if (!empty($_SESSION['ldap'])) {
@@ -910,7 +910,7 @@ function getLDAPServerHandle() {
 		return $_SESSION['ldap']->server();
 	}
 	else {
-		// self service
+		// self-service
 		return $_SESSION['ldapHandle']->getServer();
 	}
 }

@@ -1340,7 +1340,7 @@ abstract class baseModule {
 	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 *
-	 * @return htmlElement meta HTML object
+	 * @return htmlElement|htmlElement[] meta HTML object
 	 *
 	 * @see htmlElement
 	 */

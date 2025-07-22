@@ -7,7 +7,7 @@ use LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2024  Roland Gruber
+                2007 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -194,7 +194,7 @@ class sambaGroupMapping extends baseModule {
 	/**
 	 * Gets the GID number from the Unix group module.
 	 *
-	 * @return String GID number
+	 * @return string|null GID number
 	 */
 	private function getGID() {
 		$modules = ['posixGroup', 'rfc2307bisPosixGroup'];
@@ -212,9 +212,9 @@ class sambaGroupMapping extends baseModule {
 	/**
 	 * Gets the cn from the Unix group module.
 	 *
-	 * @return String cn attribute
+	 * @return string|null cn attribute
 	 */
-	private function getCn() {
+	private function getCn(): ?string {
 		$modules = ['posixGroup', 'groupOfNames', 'groupOfUniqueNames'];
 		for ($i = 0; $i < count($modules); $i++) {
 			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
@@ -302,7 +302,7 @@ class sambaGroupMapping extends baseModule {
 					$rid = $this->rids[$rid];
 				}
 				// check if RID has to be calculated
-				if (($rid == "") || (!isset($rid))) {
+				if (($rid == "")) {
 					$ridBase = $nameToRIDBase[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
 					$partialAccounts[$i]['sambaSID'] = $domSID . "-" . (($partialAccounts[$i]['gidNumber'] * 2) + $ridBase + 1);
 				}
@@ -341,6 +341,7 @@ class sambaGroupMapping extends baseModule {
 			if (isset($this->attributes['sambaSID'][0])) {
 				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 			}
+			$SID = '';
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				// List with all valid domains
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -590,13 +591,10 @@ class sambaGroupMapping extends baseModule {
 
 
 	/**
-	 * This function is used to check if this module page can be displayed.
-	 * It returns false if a module depends on data from other modules which was not yet entered.
-	 *
-	 * @return boolean true, if page can be displayed
+	 * {@inheritDoc}
 	 */
 	function module_ready() {
-		return ($this->getGID() != null) && ($this->getGID() != '');
+		return ($this->getGID() !== null) && ($this->getGID() !== '');
 	}
 
 	/**
@@ -653,6 +651,8 @@ class sambaGroupMapping extends baseModule {
 		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$_POST['sambaGroupType']];
 
 		// Get Domain SID from name
+		$SID = '';
+		$RIDbase = 1000;
 		for ($i = 0; $i < count($sambaDomains); $i++) {
 			if (!isset($_POST['sambaDomainName'])) {
 				break;
@@ -663,7 +663,6 @@ class sambaGroupMapping extends baseModule {
 			}
 		}
 		// Load attributes
-		$this->attributes['displayName'][0] = $_POST['displayName'];
 		$rids = array_keys($this->rids);
 		$wrid = false;
 		for ($i = 0; $i < count($rids); $i++) {
