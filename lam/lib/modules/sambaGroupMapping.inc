@@ -302,7 +302,7 @@ class sambaGroupMapping extends baseModule {
 					$rid = $this->rids[$rid];
 				}
 				// check if RID has to be calculated
-				if (($rid == "")) {
+				if ($rid == "") {
 					$ridBase = $nameToRIDBase[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
 					$partialAccounts[$i]['sambaSID'] = $domSID . "-" . (($partialAccounts[$i]['gidNumber'] * 2) + $ridBase + 1);
 				}

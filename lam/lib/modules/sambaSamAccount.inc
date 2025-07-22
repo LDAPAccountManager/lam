@@ -2902,9 +2902,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		$options = [];
-		if ((isset($this->attributes['sambaacctflags'][0])
-			&& ((str_contains($this->attributes['sambaacctflags'][0], 'L'))
-				|| (str_contains($this->attributes['sambaacctflags'][0], 'D'))))) {
+		if (isset($this->attributes['sambaacctflags'][0])
+			&& (str_contains($this->attributes['sambaacctflags'][0], 'L')
+				|| str_contains($this->attributes['sambaacctflags'][0], 'D'))) {
 			$options[] = new PasswordQuickChangeOption('unlockAccountSamba', _('Unlock Samba account'));
 		}
 		if (in_array_ignore_case('sambaSamAccount', $this->attributes['objectClass'])) {

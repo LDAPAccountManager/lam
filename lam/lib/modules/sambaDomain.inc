@@ -323,7 +323,7 @@ class sambaDomain extends baseModule {
 			$sambaLockoutThreshold = $this->attributes['sambaLockoutThreshold'][0];
 		}
 		$sambaLockoutThresholdInput = new htmlResponsiveInputField(_('Lockout users after bad logon attempts'), 'lockoutThreshold', $sambaLockoutThreshold, 'lockoutThreshold');
-		$sambaLockoutThresholdInput->setType('number');;
+		$sambaLockoutThresholdInput->setType('number');
 		$return->add($sambaLockoutThresholdInput);
 		// Minimum password age
 		$sambaMinPwdAge = '';
@@ -331,7 +331,7 @@ class sambaDomain extends baseModule {
 			$sambaMinPwdAge = $this->attributes['sambaMinPwdAge'][0];
 		}
 		$sambaMinPwdAgeInput = new htmlResponsiveInputField(_('Minimum password age'), 'minPwdAge', $sambaMinPwdAge, 'minPwdAge');
-		$sambaMinPwdAgeInput->setType('number');;
+		$sambaMinPwdAgeInput->setType('number');
 		$return->add($sambaMinPwdAgeInput);
 		// Maximum password age
 		$sambaMaxPwdAge = '';

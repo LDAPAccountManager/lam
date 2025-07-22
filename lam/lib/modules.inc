@@ -2307,7 +2307,7 @@ class accountContainer {
 	public function getAccountStatus(): AccountStatus {
 		$details = [];
 		foreach ($this->module as $module) {
-			if (($module instanceof AccountStatusProvider)) {
+			if ($module instanceof AccountStatusProvider) {
 				$details = array_merge($details, $module->getAccountStatusDetails());
 			}
 		}
