@@ -6,7 +6,7 @@ use user;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2023  Roland Gruber
+  Copyright (C) 2016 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ class TypesTest extends TestCase {
 	private $type;
 
 	protected function setUp(): void {
-		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(['getBaseType', 'getModules'])->getMock();
+		$this->type = $this->getMockBuilder('LAM\TYPES\ConfiguredType')->setMethods(['getBaseType', 'getModules'])->getMock();
 		$scope = new user($this->type);
 		$this->type->method('getBaseType')->willReturn($scope);
 		$this->type->method('getModules')->willReturn(['posixAccount']);

@@ -28,6 +28,8 @@
  * @author Roland Gruber
  */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
  * The account type for user accounts (e.g. Unix, Samba and Kolab).
  *
