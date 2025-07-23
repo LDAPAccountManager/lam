@@ -498,9 +498,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * Initializes the module after it became part of an accountContainer
-	 *
-	 * @param string $base the name of the accountContainer object ($_SESSION[$base])
+	 * {@inheritDoc}
 	 */
 	function init($base) {
 		// make optional if needed
@@ -540,9 +538,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * This functions is used to check if all settings for this module have been made.
-	 *
-	 * @return boolean true, if settings are complete
+	 * {@inheritDoc}
 	 */
 	function module_complete() {
 		if (!$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
@@ -559,17 +555,15 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attr list of attributes
+	 * {@inheritDoc}
 	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
+	function load_attributes($attributes) {
+		parent::load_attributes($attributes);
 		// get additional group memberships
-		if (!isset($attr['uid'][0])) {
+		if (!isset($attributes['uid'][0])) {
 			return;
 		}
-		$this->groups = $this->getUnixGroupMemberships($attr['uid'][0]);
+		$this->groups = $this->getUnixGroupMemberships($attributes['uid'][0]);
 		$this->groups_orig = $this->groups;
 		// get additional group of names memberships
 		if (self::areGroupOfNamesActive()) {
@@ -1219,7 +1213,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		$this->lamdaemonServers = [];
 		for ($h = 0; $h < count($lamdaemonServers); $h++) {
-			if (isset($_POST['createhomedir_' . $h]) && ($_POST['createhomedir_' . $h] = 'on')) {
+			if (isset($_POST['createhomedir_' . $h]) && ($_POST['createhomedir_' . $h] === 'on')) {
 				$this->lamdaemonServers[] = $lamdaemonServers[$h]->getServer();
 			}
 		}
@@ -1258,7 +1252,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minUID'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxUID'][0]);
 		}
-		if ($this->get_scope() == 'host') {
+		else {
 			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxMachine'][0]);
 		}
@@ -3043,7 +3037,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					}
 					$temp['members'][$groups[$g]][] = $dataRow[$ids['posixAccount_userName']];
 				}
-				if (isset($ids['posixAccount_gon']) && ($dataRow[$ids['posixAccount_gon']] != "")) {
+				if (self::areGroupOfNamesActive() && isset($ids['posixAccount_gon']) && ($dataRow[$ids['posixAccount_gon']] != "")) {
 					$gons = explode(",", $dataRow[$ids['posixAccount_gon']]);
 					$memberAttr = 'member';
 					for ($g = 0; $g < count($gons); $g++) {
@@ -3093,10 +3087,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					// skip members that are already set
 					$memberUid = array_delete($groupAttrs['memberuid'], $memberUid);
 				}
+				$errors = [];
 				if (!empty($memberUid)) {
 					$toAdd = ['memberUID' => $memberUid];
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $dnToUpdate, $toAdd);
-					$errors = [];
 					if (!$success) {
 						$errors[] = [
 							"ERROR",
@@ -3166,9 +3160,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					unset($gonAttrToAdd[$gonAttrName]);
 				}
 			}
+			$errors = [];
 			if (!empty($gonAttrToAdd)) {
 				$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttrToAdd);
-				$errors = [];
 				if (!$success) {
 					$errors[] = [
 						"ERROR",
@@ -3451,21 +3445,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
-	 * <br>Return values:
-	 * <br>messages: array of parameters to create status messages
-	 * <br>add: array of attributes to add
-	 * <br>del: array of attributes to remove
-	 * <br>mod: array of attributes to modify
-	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @param string $fields input fields
-	 * @param array $attributes LDAP attributes
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
+	 * {@inheritDoc}
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
@@ -3604,9 +3584,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
 	 *
-	 * @param String $password new password
-	 * @param $modules list of modules for which the password should be changed
-	 * @param boolean $forcePasswordChange force the user to change his password at next login
+	 * @param string $password new password
+	 * @param string[] $modules list of modules for which the password should be changed
+	 * @param bool $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
@@ -3653,10 +3633,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Returns the group ID of the given group.
 	 *
-	 * @param String $groupname group name
-	 * @return String GID
+	 * @param string $groupname group name
+	 * @return string|null GID
 	 */
-	private function getGID($groupname) {
+	private function getGID($groupname): ?string {
 		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', ['gidnumber'], ['group']);
 		if ((count($results) > 0) && isset($results[0]['gidnumber'][0])) {
 			return $results[0]['gidnumber'][0];
@@ -3667,10 +3647,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Returns the group name of the group with the given group ID.
 	 *
-	 * @param String $groupID group ID
-	 * @return String group name
+	 * @param string $groupID group ID
+	 * @return string|null group name
 	 */
-	private function getGroupName($groupID) {
+	private function getGroupName($groupID): ?string {
 		$results = searchLDAPByAttribute('gidNumber', $groupID, 'posixGroup', ['cn'], ['group']);
 		if ((count($results) > 0) && isset($results[0]['cn'][0])) {
 			return $results[0]['cn'][0];
@@ -4048,10 +4028,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Returns the list of possible login shells.
 	 *
-	 * @return array login shells
+	 * @return string[] login shells
 	 */
 	private function getShells() {
-		// self service
+		// self-service
 		if (!isLoggedIn() && ($this->selfServiceSettings !== null)
 			&& isset($this->selfServiceSettings->moduleSettings['posixAccount_shells'])
 			&& (count($this->selfServiceSettings->moduleSettings['posixAccount_shells'])) > 0) {
@@ -4079,9 +4059,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * If Windows modules are active then cn will not be managed.
 	 *
 	 * @param string[] $modules account modules
-	 * @return boolean manage cn attribute
+	 * @return bool manage cn attribute
 	 */
-	private function manageCn(&$modules) {
+	private function manageCn($modules): bool {
 		return !$this->isWindows($modules);
 	}
 
@@ -4089,9 +4069,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns if the Unix part can be added and removed.
 	 *
 	 * @param string[] $modules account modules
-	 * @return boolean is optional
+	 * @return bool is optional
 	 */
-	private function isOptional(&$modules) {
+	private function isOptional($modules): bool {
 		return !$this->manageCn($modules);
 	}
 
@@ -4099,9 +4079,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns if the Windows module is active.
 	 *
 	 * @param string[] $modules account modules
-	 * @return boolean is Windows
+	 * @return bool is Windows
 	 */
-	private function isWindows($modules) {
+	private function isWindows($modules): bool {
 		return in_array('windowsUser', $modules);
 	}
 
@@ -4109,9 +4089,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns if the PPolicy module is active.
 	 *
 	 * @param string[] $modules account modules
-	 * @return boolean is PPolicy enabled
+	 * @return bool is PPolicy enabled
 	 */
-	private function hasPPolicy($modules) {
+	private function hasPPolicy($modules): bool {
 		return in_array('ppolicyUser', $modules);
 	}
 
@@ -4120,9 +4100,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Usually, this is userPassword. If Windows modules are active this is unixUserPassword.
 	 *
 	 * @param string[] $modules account modules
-	 * @return boolean attribute name
+	 * @return string attribute name
 	 */
-	private function getPasswordAttrName($modules) {
+	private function getPasswordAttrName($modules): string {
 		if ($this->isWindows($modules)) {
 			return 'unixUserPassword';
 		}
@@ -4134,9 +4114,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Usually, this is homeDirectory. If Windows modules are active this is unixHomeDirectory.
 	 *
 	 * @param string[] $modules account modules
-	 * @return boolean attribute name
+	 * @return string attribute name
 	 */
-	private function getHomedirAttrName(&$modules) {
+	private function getHomedirAttrName($modules): string {
 		if ($this->isWindows($modules)) {
 			return 'unixHomeDirectory';
 		}
@@ -4146,7 +4126,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Syncs the group of names with groups.
 	 */
-	private function syncGonToGroups() {
+	private function syncGonToGroups(): void {
 		$this->groups = [];
 		$allGons = $this->findGroupOfNames();
 		foreach ($this->gonList as $dn) {
@@ -4163,9 +4143,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Returns if the object class should not be added.
 	 *
-	 * @return do not add
+	 * @return bool do not add
 	 */
-	private function skipObjectClass() {
+	private function skipObjectClass(): bool {
 		return $this->isBooleanConfigOptionSet('posixAccount_noObjectClass');
 	}
 

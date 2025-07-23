@@ -191,11 +191,7 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return array HTML meta data
-	 *
-	 * @see baseModule::get_metaData()
+	 * {@inheritDoc}
 	 */
 	function display_html_attributes() {
 		$return = new htmlResponsiveRow();
@@ -276,7 +272,7 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Displays selections to add or remove users from current group.
 	 *
-	 * @return array meta HTML output
+	 * @return htmlElement meta HTML output
 	 */
 	function display_html_user() {
 		$return = new htmlResponsiveRow();
@@ -303,10 +299,7 @@ class posixGroup extends baseModule implements passwordService {
 		natcasesort($users);
 		$return->add(new htmlSubTitle(_("Group members")), 12);
 
-		$remUsers = [];
-		if (isset($this->attributes['memberUid'])) {
-			$remUsers = $this->attributes['memberUid'];
-		}
+		$remUsers = $this->attributes['memberUid'];
 		natcasesort($remUsers);
 		$remUsersDescriptive = [];
 		foreach ($remUsers as $user) {
@@ -318,8 +311,8 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 
-		$this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $remUsersDescriptive, null,
-			$users, null, 'members', false, true);
+		$this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $remUsersDescriptive, [],
+			$users, [], 'members', false, true);
 
 		// sync from group of names
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
@@ -1272,7 +1265,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * must change their password attributes only if the modules list contains their module name.
 	 *
 	 * @param String $password new password
-	 * @param $modules list of modules for which the password should be changed
+	 * @param string[] $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
@@ -1322,20 +1315,17 @@ class posixGroup extends baseModule implements passwordService {
 			return $this->cachedUserToGIDList;
 		}
 		$this->cachedUserToGIDList = [];
-		$typeManager = new TypeManager();
-		foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
-			$filter = '(&(objectClass=posixAccount)(gidNumber=*)(uid=*))';
-			if ($this->isWindows()) {
-				$filter = '(&(objectClass=user)(gidNumber=*)(uid=*))';
-			}
-			$result = searchLDAPByFilter($filter, ['uid', 'gidNumber', 'cn'], ['user']);
-			$resultCount = count($result);
-			for ($i = 0; $i < $resultCount; $i++) {
-				$this->cachedUserToGIDList[$result[$i]['uid'][0]] = [
-					'gid' => $result[$i]['gidnumber'][0],
-					'cn' => $result[$i]['cn'][0],
-					'dn' => $result[$i]['dn']];
-			}
+		$filter = '(&(objectClass=posixAccount)(gidNumber=*)(uid=*))';
+		if ($this->isWindows()) {
+			$filter = '(&(objectClass=user)(gidNumber=*)(uid=*))';
+		}
+		$result = searchLDAPByFilter($filter, ['uid', 'gidNumber', 'cn'], ['user']);
+		$resultCount = count($result);
+		for ($i = 0; $i < $resultCount; $i++) {
+			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = [
+				'gid' => $result[$i]['gidnumber'][0],
+				'cn' => $result[$i]['cn'][0],
+				'dn' => $result[$i]['dn']];
 		}
 		logNewMessage(LOG_DEBUG, 'Found ' . $resultCount . ' Unix users.');
 		return $this->cachedUserToGIDList;
