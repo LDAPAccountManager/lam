@@ -2446,8 +2446,8 @@ interface passwordService {
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
 	 *
-	 * @param String $password new password
-	 * @param array $modules list of modules for which the password should be changed
+	 * @param string $password new password
+	 * @param string[] $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
@@ -2542,7 +2542,7 @@ interface AccountStatusProvider {
 	 * Returns the list of account status detail lines.
 	 *
 	 * @param ConfiguredType $type account type
-	 * @param array<string, array<string>|string>|null $attributes LDAP attributes (use account container attributes if not provided)
+	 * @param array<string, string[]|string>|null $attributes LDAP attributes (use account container attributes if not provided)
 	 * @return AccountStatusDetails[] status details
 	 */
 	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array;
@@ -2559,7 +2559,7 @@ interface AccountStatusProvider {
 	 * Returns a list of options how the account could be locked.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array<string, array<string>|string>|null $attributes LDAP attributes
+	 * @param array<string, string[]|string>|null $attributes LDAP attributes
 	 * @return AccountStatusDetails[] lock options
 	 */
 	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array;
@@ -2568,7 +2568,7 @@ interface AccountStatusProvider {
 	 * Locks the account with the given lock IDs.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array<string, array<string>|string>|null $attributes LDAP attributes
+	 * @param array<string, string[]|string>|null $attributes LDAP attributes
 	 * @param array $lockIds IDs from AccountStatusDetails
 	 * @throws LAMException error during locking
 	 */
@@ -2578,7 +2578,7 @@ interface AccountStatusProvider {
 	 * Unlocks the account with the given lock IDs.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array<string, array<string>|string>|null $attributes LDAP attributes
+	 * @param array<string, string[]|string>|null $attributes LDAP attributes
 	 * @param array $lockIds IDs from AccountStatusDetails
 	 */
 	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;

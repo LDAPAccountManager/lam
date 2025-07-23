@@ -28,12 +28,7 @@ window.lam = window.lam || {};
  */
 function list_click(box) {
 	var cbox = document.getElementsByName(box)[0];
-	if (cbox.checked) {
-		cbox.checked = false;
-	}
-	else {
-		cbox.checked = true;
-	}
+	cbox.checked = !cbox.checked;
 }
 
 /**
@@ -323,7 +318,7 @@ async function confirmLoadProfile(title, text, okText, cancelText, e) {
 		selectValue.value = selectedProfile;
 		form.appendChild(selectValue);
 		form.submit();
-	};
+	}
 	if (e.preventDefault) {
 		e.preventDefault();
 	}
@@ -1353,7 +1348,7 @@ window.lam.tools.webcam.init = function() {
 					if (mediaDevice.kind === 'videoinput') {
 						contentDiv.classList.remove('hidden');
 					}
-				};
+				}
 			});
 	}
 };
@@ -1901,7 +1896,6 @@ window.lam.webauthn.run = function(prefix, isSelfService, newDeviceNameTitle, ne
 			hiddenSkip.value = 'skip';
 			form.appendChild(hiddenSkip);
 			form.submit();
-			return;
 		};
 	}
 	const token = document.getElementById('sec_token').value;
@@ -2923,7 +2917,7 @@ window.lam.treeview.updatePossibleNewAttributes = function(tokenName, tokenValue
 			option.value = data[attributeName];
 			option.innerText = attributeName;
 			select.appendChild(option);
-		};
+		}
 		window.lam.treeview.updatePossibleNewAttributesRequest = null;
 	});
 }
@@ -3698,7 +3692,7 @@ window.lam.config.updateModuleFilter = function(inputField) {
 			if (cell.innerText.toLowerCase().includes(filterValue)) {
 				matches = true;
 			}
-		};
+		}
 		if (matches) {
 			row.classList.remove('hidden');
 		}

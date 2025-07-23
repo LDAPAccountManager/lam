@@ -985,7 +985,7 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
  *
  * @param String $dn DN
  * @param array $attributes list of attributes to fetch
- * @param handle $handle LDAP handle (optional for admin interface pages)
+ * @param Connection $handle LDAP handle (optional for admin interface pages)
  * @return ?array attributes or null if not found
  */
 function ldapGetDN($dn, $attributes = ['dn'], $handle = null): ?array {
@@ -2008,8 +2008,8 @@ function formatSecondsToShortFormat($numSeconds) {
 /**
  * Unformats text like 1m10s back to number of seconds.
  *
- * @param String $text formatted text
- * @return int number of seconds
+ * @param string $text formatted text
+ * @return int|string number of seconds
  */
 function unformatShortFormatToSeconds($text) {
 	if (empty($text)) {
