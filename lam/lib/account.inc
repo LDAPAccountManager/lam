@@ -39,9 +39,10 @@ use LDAP\Connection;
 /**
  * This function will return all values from $array without values of $values.
  *
- * @param array $values list of values which should be removed
- * @param array $array list of original values
- * @return array list of remaining values
+ * @template T
+ * @param T[] $values list of values which should be removed
+ * @param T[] $array list of original values
+ * @return T[] list of remaining values
  */
 function array_delete($values, $array) {
 	// Loop for every entry and check if it should be removed
