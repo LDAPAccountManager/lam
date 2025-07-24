@@ -8,7 +8,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2015 - 2024  Roland Gruber
+  Copyright (C) 2015 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,9 +40,9 @@ use LAM\TYPES\TypeManager;
  */
 class nisNetGroupUser extends baseModule {
 
-	/** list of NIS netgroups the user is memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
+	/** @var array<array<string, string|string[]>> list of NIS netgroups the user is memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
 	protected $groups = [];
-	/** list of NIS netgroups the user was memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
+	/** @var array<array<string, string|string[]>> list of NIS netgroups the user was memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
 	protected $groupsOrig = [];
 	/** group cache (array(array(cn => '', dn => '', nisnetgrouptriple => []))) */
 	protected $groupCache;
@@ -283,9 +283,9 @@ class nisNetGroupUser extends baseModule {
 	/**
 	 * Returns the user ID for this user.
 	 *
-	 * @return String user ID
+	 * @return string|null user ID
 	 */
-	protected function getUid() {
+	protected function getUid(): ?string {
 		if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 			$moduleAttributes = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		}
@@ -328,10 +328,7 @@ class nisNetGroupUser extends baseModule {
 					&& ($group_orig['domain'] == $group['domain'])
 					&& ($group_orig['user'] == $group['user'])
 					&& ($group_orig['host'] == $group['host'])) {
-					if (!empty($this->uidOrig) && ($this->uidOrig != $uid)) {
-						// uid changed, simply update uid in all net groups
-					}
-					else {
+					if (empty($this->uidOrig) || ($this->uidOrig == $uid)) {
 						// do not touch existing memberships
 						unset($toRem[$i]);
 						unset($toAdd[$k]);
@@ -357,10 +354,10 @@ class nisNetGroupUser extends baseModule {
 				continue;
 			}
 			$triples = empty($current['nisnetgrouptriple']) ? [] : $current['nisnetgrouptriple'];
-			if (isset($changeSet['del'])) {
+			if (isset($changeSet['del'][0])) {
 				$triples = array_delete($changeSet['del'], $triples);
 			}
-			if (isset($changeSet['add'])) {
+			if (isset($changeSet['add'][0])) {
 				$triples = array_merge($changeSet['add'], $triples);
 			}
 			$triples = array_values(array_unique($triples));
@@ -379,8 +376,8 @@ class nisNetGroupUser extends baseModule {
 	/**
 	 * Creates a netgroup triple from a group object.
 	 *
-	 * @param String $group group object
-	 * @param String $uid own uid
+	 * @param array<string, string> $group group object
+	 * @param string $uid own uid
 	 */
 	protected function createNetGroupValue($group, $uid) {
 		return '(' . $group['host'] . ',' . $uid . ',' . $group['domain'] . ')';

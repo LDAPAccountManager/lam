@@ -729,13 +729,13 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * must change their password attributes only if the modules list contains their module name.
 	 *
 	 * @param String $password new password
-	 * @param $modules list of modules for which the password should be changed
+	 * @param $modules array of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
-	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
+	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array {
 		// update password timestamp when Unix password was updated
 		if (!in_array('posixAccount', $modules)) {
 			return [];

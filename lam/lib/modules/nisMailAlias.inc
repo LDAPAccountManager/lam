@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2024  Roland Gruber
+  Copyright (C) 2004 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -179,11 +179,13 @@ class nisMailAlias extends baseModule {
 			$recipientCount = count($this->attributes['rfc822MailMember']);
 			if ($recipientCount < self::DISPLAY_LIMIT) {
 				for ($i = 0; $i < $recipientCount; $i++) {
-					if (($i == 0) && ($recipientCount == 1)) {
-						$return->addLabel(new htmlOutputText(_('Recipient')));
-					}
-					elseif (($i == 0) && ($recipientCount > 1)) {
-						$return->addLabel(new htmlOutputText(_('Recipients')));
+					if ($i === 0) {
+						if ($recipientCount === 1) {
+							$return->addLabel(new htmlOutputText(_('Recipient')));
+						}
+						else {
+							$return->addLabel(new htmlOutputText(_('Recipients')));
+						}
 					}
 					else {
 						$return->addLabel(new htmlOutputText('&nbsp;', false));

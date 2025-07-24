@@ -5,7 +5,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2024  Roland Gruber
+  Copyright (C) 2014 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -568,9 +568,9 @@ class nisMailAliasUser extends baseModule {
 	}
 
 	/**
-	 * Returns the user name of this account.
+	 * Returns the username of this account.
 	 *
-	 * @return String user name
+	 * @return string|null user name
 	 */
 	private function getUserName() {
 		if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {

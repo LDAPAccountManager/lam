@@ -7,7 +7,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2024  Roland Gruber
+  Copyright (C) 2016 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -197,10 +197,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	 * Creates a netgroup triple from a group object.
-	 *
-	 * @param String $group group object
-	 * @param String $uid own uid
+	 * {@inheritDoc}
 	 */
 	protected function createNetGroupValue($group, $uid) {
 		return '(' . $uid . ',' . $group['user'] . ',' . $group['domain'] . ')';

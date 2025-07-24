@@ -3882,7 +3882,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 */
-	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
+	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array {
 		if (!in_array(static::class, $modules)) {
 			return [];
 		}

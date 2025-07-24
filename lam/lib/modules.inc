@@ -1278,7 +1278,7 @@ class accountContainer {
 				$return['errorsOccurred'] = 'true';
 			}
 			// check password strength
-			$pwdPolicyResult = checkPasswordStrength($password1, null, null);
+			$pwdPolicyResult = checkPasswordStrength($password1, null, []);
 			if ($pwdPolicyResult !== true) {
 				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', [], true);
 				$return['errorsOccurred'] = 'true';
@@ -2448,11 +2448,11 @@ interface passwordService {
 	 *
 	 * @param string $password new password
 	 * @param string[] $modules list of modules for which the password should be changed
-	 * @param boolean $forcePasswordChange force the user to change his password at next login
+	 * @param bool $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 */
-	public function passwordChangeRequested($password, $modules, $forcePasswordChange);
+	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array;
 
 	/**
 	 * Specifies if the module support password quick change for the current account.

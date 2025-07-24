@@ -3591,7 +3591,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
-	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {
+	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array {
 		if (!in_array(static::class, $modules)) {
 			return [];
 		}
