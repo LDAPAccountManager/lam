@@ -9,7 +9,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2024  Roland Gruber
+                2008 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -151,7 +151,7 @@ class fixed_ip extends baseModule {
 	/**
 	 * Checks if IPs are not overlapped.
 	 *
-	 * @param ip IP address
+	 * @param string $ip IP address
 	 * @return bool not overlapped
 	 **/
 	private function isNotOverlappedIp($ip) {
@@ -173,7 +173,7 @@ class fixed_ip extends baseModule {
 	/**
 	 *
 	 * Check, if a mac address is invalid
-	 * @param string mac address
+	 * @param $mac string mac address
 	 *
 	 * @return bool true, if mac is invalid
 	 **/
@@ -196,7 +196,7 @@ class fixed_ip extends baseModule {
 	 *
 	 * Adapt the fixed ip with the subnet.
 	 *
-	 * @return true, if ip were edit.
+	 * @return bool true, if ip were edited.
 	 *
 	 **/
 	public function reload_ips() {
@@ -211,7 +211,7 @@ class fixed_ip extends baseModule {
 					// Range anpassen:
 					$ex = explode(".", $value['ip']);
 					$tmp = $value['ip'];
-					$this->fixed_ip[$id]['ip'] = $ex_subnet['0'] . "." . $ex_subnet['1'] . "." . $ex_subnet['2'] . "." . $ex['3'];
+					$this->fixed_ip[$id]['ip'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
 					if ($tmp != $this->fixed_ip[$id]['ip']) {
 						$ip_edit = true;
 					}
@@ -224,9 +224,9 @@ class fixed_ip extends baseModule {
 	/**
 	 * This function loads all needed LDAP attributes.
 	 *
-	 * @param array $attr list of attributes
+	 * @param array $attributes list of attributes
 	 */
-	function load_attributes($attr) {
+	function load_attributes($attributes) {
 		if (!$this->isRootNode()) {
 			$searchAttributes = ['cn', 'dhcphwaddress', 'dhcpstatements', 'dhcpcomments'];
 			$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', $searchAttributes);
@@ -787,7 +787,7 @@ class fixed_ip extends baseModule {
 	/**
 	 * Extracts the IP from a list of DHCP statements.
 	 *
-	 * @param string $dhcpStatements values of dhcpStatements attribute
+	 * @param array|null $dhcpStatements values of dhcpStatements attribute
 	 */
 	public static function extractIP($dhcpStatements) {
 		$return = null;
@@ -824,17 +824,16 @@ class fixed_ip extends baseModule {
 	 * Returns if this host is active.
 	 *
 	 * @param array $dhcpStatements values of dhcpStatements attribute
+	 * @return bool is active
 	 */
-	public static function isActive($dhcpStatements) {
-		if (is_array($dhcpStatements)) {
-			for ($i = 0; $i < count($dhcpStatements); $i++) {
-				if (strpos($dhcpStatements[$i], ' booting') === (strlen($dhcpStatements[$i]) - strlen(' booting'))) {
-					$val = substr($dhcpStatements[$i], 0, (strlen($dhcpStatements[$i]) - strlen(' booting')));
-					if ($val === 'deny') {
-						return false;
-					}
-					break;
+	public static function isActive(array $dhcpStatements): bool {
+		for ($i = 0; $i < count($dhcpStatements); $i++) {
+			if (strpos($dhcpStatements[$i], ' booting') === (strlen($dhcpStatements[$i]) - strlen(' booting'))) {
+				$val = substr($dhcpStatements[$i], 0, (strlen($dhcpStatements[$i]) - strlen(' booting')));
+				if ($val === 'deny') {
+					return false;
 				}
+				break;
 			}
 		}
 		return true;

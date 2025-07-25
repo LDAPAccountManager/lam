@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2024  Roland Gruber
+                2008 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -196,19 +196,11 @@ class ddns extends baseModule {
 	}
 
 	/**
-	 * Returns a list of modifications which have to be made to the LDAP account.
-	 *
-	 * @return array list of modifications
-	 * <br>This function returns an array with 3 entries:
-	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	 * <br>"add" are attributes which have to be added to LDAP entry
-	 * <br>"remove" are attributes which have to be removed from LDAP entry
-	 * <br>"modify" are attributes which have to been modified in LDAP entry
-	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 * {@inheritDoc}
 	 */
 	public function save_attributes() {
 		// done by dhcp_server object
+		return [];
 	}
 
 	/**
@@ -414,7 +406,7 @@ class ddns extends baseModule {
 	/**
 	 * Returns the IP of the DNS server.
 	 *
-	 * @return String IP address
+	 * @return string|null IP address
 	 */
 	private function getDNSServer() {
 		if (isset($this->attributes['dhcpStatements'][0])) {
@@ -594,9 +586,9 @@ class ddns extends baseModule {
 	/**
 	 * Sets the key for DNS updates.
 	 *
-	 * @param String $key key
+	 * @param string|null $key key
 	 */
-	private function setUpdateKey($key) {
+	private function setUpdateKey($key): void {
 		if (!is_array($this->attributes['dhcpStatements'])) {
 			$this->attributes['dhcpStatements'] = [];
 		}
@@ -606,7 +598,7 @@ class ddns extends baseModule {
 				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 			}
 		}
-		if (($key != null) && ($key != '')) {
+		if (($key !== null) && ($key !== '')) {
 			$this->attributes['dhcpStatements'][] = 'include "' . $key . '"';
 		}
 	}

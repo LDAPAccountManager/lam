@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2024  Roland Gruber
+  Copyright (C) 2011 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -39,11 +39,6 @@ class freeRadius extends baseModule {
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['radiusFramedIPAddress'];
-
-	/** list of possible months */
-	private static $monthList = ['01' => 'Jan', '02' => 'Feb', '03' => 'Mar', '04' => 'Apr', '05' => 'May',
-		'06' => 'Jun', '07' => 'Jul', '08' => 'Aug', '09' => 'Sep', '10' => 'Oct', '11' => 'Nov', '12' => 'Dec'
-	];
 
 	/** cache for profile DNs */
 	private $profileCache;

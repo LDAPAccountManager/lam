@@ -476,12 +476,12 @@ abstract class baseModule {
 	 * <b>Example:</b> return array('or' => '(objectClass=posixAccount)', 'and' => '(!(uid=*$))')
 	 *
 	 * @param string $typeId account type id
-	 * @return string LDAP filter
+	 * @return array<string, string> LDAP filter
 	 *
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_ldap_filter($typeId) {
-		return $this->meta['ldap_filter'] ?? "";
+		return $this->meta['ldap_filter'] ?? [];
 	}
 
 	/**
