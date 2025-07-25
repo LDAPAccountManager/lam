@@ -1166,7 +1166,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				}
 				// set K5KEY password for new users
 				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
-					$this->attributes[$this->getPasswordAttrName()][0] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$this->attributes['userpassword'][0] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 			}
 		}
@@ -1179,9 +1179,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return array HTML meta data
+	 * {@inheritDoc}
 	 */
 	function display_html_attributes() {
 		$this->initCache();
@@ -1691,6 +1689,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$data = str_replace('data:image/png;base64,', '', $data);
 			$data = base64_decode($data);
 		}
+		else {
+			return $messages;
+		}
 		// convert to JPG
 		try {
 			include_once __DIR__ . '/../imageutils.inc';
@@ -1717,7 +1718,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Displays the photo upload page.
 	 *
-	 * @return array meta HTML code
+	 * @return htmlElement meta HTML code
 	 */
 	public function display_html_photo() {
 		$container = new htmlResponsiveRow();
@@ -1799,7 +1800,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			// sort by DN
 			usort($entries, 'compareDN');
 			for ($i = 0; $i < count($entries); $i++) {
-				if (!isset($this->attributes['manager']) || !in_array($entries[$i], $this->attributes['manager'])) {
+				if (!in_array($entries[$i], $this->attributes['manager'])) {
 					$options[getAbstractDN($entries[$i])] = $entries[$i];
 				}
 			}
@@ -1829,10 +1830,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		}
 		$return->add(new htmlSubTitle(_('Manager')));
 		// show existing managers
-		$managerTemp = [];
-		if (isset($this->attributes['manager'])) {
-			$managerTemp = $this->attributes['manager'];
-		}
+		$managerTemp = $this->attributes['manager'];
 		// sort by DN
 		usort($managerTemp, 'compareDN');
 		$managers = [];
@@ -1895,7 +1893,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Displays the certificate upload page.
 	 *
-	 * @return array meta HTML code
+	 * @return htmlElement meta HTML code
 	 */
 	function display_html_userCertificate() {
 		$container = new htmlResponsiveRow();
@@ -2951,10 +2949,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Returns the Java Script functions to manage the photo.
+	 * Returns the JavaScript functions to manage the photo.
 	 *
 	 * @param boolean $readOnly content is read-only
-	 * @return htmlJavaScript JS block
+	 * @return htmlElement JS block
 	 */
 	private function getSelfServicePhotoJS($readOnly) {
 		if ($readOnly) {
@@ -3031,7 +3029,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * Returns the meta HTML code to display the certificate area.
 	 * This also includes the file upload.
 	 *
-	 * @return htmlTable certificate content
+	 * @return htmlGroup certificate content
 	 * @throws LAMException
 	 */
 	private function getSelfServiceUserCertificates() {
@@ -3149,21 +3147,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
-	 * <br>Return values:
-	 * <br>messages: array of parameters to create status messages
-	 * <br>add: array of attributes to add
-	 * <br>del: array of attributes to remove
-	 * <br>mod: array of attributes to modify
-	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @param string $fields input fields
-	 * @param array $attributes LDAP attributes
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
+	 * {@inheritDoc}
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
@@ -3350,9 +3334,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Resizes the given image data to the settings provided.
 	 *
-	 * @param array $data binary image data
+	 * @param string $data binary image data
 	 * @param array $settings settings
-	 * @return array binary image data
+	 * @return string binary image data
 	 */
 	private function resizeAndConvertImage($data, $settings) {
 		include_once __DIR__ . '/../imageutils.inc';
@@ -4140,7 +4124,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if (($attributeName === 'mail') || ($attributeName === 'rfc822mailbox')) {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
 					for ($i = 0; $i < count($entry[$attribute]); $i++) {

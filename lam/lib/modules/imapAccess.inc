@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2024  Roland Gruber
+                2010 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,7 +28,9 @@
  * @author Roland Gruber
  */
 
+use Webklex\PHPIMAP\Client;
 use Webklex\PHPIMAP\ClientManager;
+use Webklex\PHPIMAP\Connection\Protocols\ImapProtocol;
 
 /**
  * Manages mailboxes on an IMAP server.
@@ -612,7 +614,7 @@ class imapAccess extends baseModule {
 	/**
 	 * Returns the admin password.
 	 *
-	 * @return String password
+	 * @return string|null password
 	 */
 	private function getAdminPassword() {
 		//perform admin password
@@ -668,10 +670,10 @@ class imapAccess extends baseModule {
 	 *
 	 * @param string $user user name
 	 * @param string $password password
-	 * @return Horde_Imap_Client_Socket IMAP client
+	 * @return Client IMAP client
 	 * @throws LAMException error during connect
 	 */
-	private function connect($user, $password) {
+	private function connect($user, $password): Client {
 		include_once __DIR__ . '/../3rdParty/composer/autoload.php';
 		$encryptionType = $this->moduleSettings['ImapAccess_ImapServerEncriptionProtocol'][0];
 		if (strrpos($this->moduleSettings['ImapAccess_ImapServerAddress'][0], ":")) {
@@ -963,15 +965,18 @@ class imapAccess extends baseModule {
 	/**
 	 * Sets the quota for a user.
 	 *
-	 * @param $client client
+	 * @param Client $client client
 	 * @param string $user user name
 	 * @param string $value quota value
-	 * @return bool successful
 	 * @throws LAMException error setting quota
 	 */
 	private function runSetQuotaCommand($client, string $user, string $value): void {
-		$user = $client->getConnection()->escapeString($user);
-		$result = $client->getConnection()->requestAndResponse('SETQUOTA', [$user, '(STORAGE ' . $value . ')']);
+		$connection = $client->getConnection();
+		if (!($connection instanceof ImapProtocol)) {
+			throw new LAMException(null);
+		}
+		$user = $connection->escapeString($user);
+		$result = $connection->requestAndResponse('SETQUOTA', [$user, '(STORAGE ' . $value . ')']);
 		$result = $result->data();
 		if (isset($result[0][0]) && ($result[0][0] === 'OK')) {
 			return;
@@ -984,19 +989,23 @@ class imapAccess extends baseModule {
 	/**
 	 * Deletes a mailbox on the server.
 	 *
-	 * @param $client client
-	 * @param $user user
+	 * @param Client $client client
+	 * @param string $user user
 	 * @throws LAMException error deleting mailbox
 	 */
 	private function deleteMailbox($client, $user): void {
-		$userEscaped = $client->getConnection()->escapeString($user);
-		$adminUser = $client->getConnection()->escapeString($this->getAdminUser());
-		$result = $client->getConnection()->requestAndResponse('SETACL', [$userEscaped, $adminUser, '+c']);
+		$connection = $client->getConnection();
+		if (!($connection instanceof ImapProtocol)) {
+			throw new LAMException(null);
+		}
+		$userEscaped = $connection->escapeString($user);
+		$adminUser = $connection->escapeString($this->getAdminUser());
+		$result = $connection->requestAndResponse('SETACL', [$userEscaped, $adminUser, '+c']);
 		$result = $result->data();
 		if (!isset($result[0][0]) || ($result[0][0] !== 'OK')) {
 			throw new LAMException(null);
 		}
-		$result = $client->getConnection()->deleteFolder($user);
+		$result = $connection->deleteFolder($user);
 		if (!$result->successful()) {
 			throw new LAMException(null);
 		}
