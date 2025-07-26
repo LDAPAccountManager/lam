@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2024 Roland Gruber
+                2008 - 2025 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,14 +29,6 @@
  * @author Thomas Manninger
  * @author Roland Gruber
  */
-
-/**
- * This function checks if the given IP address is valid.
- *
- * @param string IP to check
- * @param check Subnet
- * @return boolean true or false
- **/
 
 use LAM\TYPES\ConfiguredType;
 
@@ -781,8 +773,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Returns a DHCP option.
 	 *
-	 * @param String $name option name
-	 * @return String value
+	 * @param string $name option name
+	 * @return string|null value
 	 */
 	public function getDHCPOption($name) {
 		$return = null;
@@ -802,8 +794,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets a DHCP option.
 	 *
-	 * @param String $name option name
-	 * @param String $value option value
+	 * @param string $name option name
+	 * @param string|null $value option value
 	 */
 	private function setDHCPOption($name, $value) {
 		if (empty($this->attributes['dhcpOption'])) {
@@ -815,7 +807,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['dhcpOption'] = array_values($this->attributes['dhcpOption']);
 			}
 		}
-		if (($value != null) && ($value != '')) {
+		if (($value !== null) && ($value !== '')) {
 			$this->attributes['dhcpOption'][] = $name . ' ' . $value;
 		}
 	}
@@ -841,7 +833,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets the default lease time.
 	 *
-	 * @param String $time time
+	 * @param string|null $time time
 	 */
 	private function setDefaultLeaseTime($time) {
 		if (empty($this->attributes['dhcpStatements'])) {
@@ -853,7 +845,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 			}
 		}
-		if (($time != null) && ($time != '')) {
+		if (($time !== null) && ($time !== '')) {
 			$this->attributes['dhcpStatements'][] = self::DEFAULT_LEASE_TIME . ' ' . $time;
 		}
 	}
@@ -919,7 +911,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets the maximum lease time.
 	 *
-	 * @param String $time time
+	 * @param string|null $time time
 	 */
 	private function setMaxLeaseTime($time) {
 		if (!is_array($this->attributes['dhcpStatements'])) {
@@ -931,7 +923,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
 			}
 		}
-		if (($time != null) && ($time != '')) {
+		if (($time !== null) && ($time !== '')) {
 			$this->attributes['dhcpStatements'][] = self::MAX_LEASE_TIME . ' ' . $time;
 		}
 	}

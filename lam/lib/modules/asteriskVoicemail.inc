@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2024  Roland Gruber
+                2010 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -504,21 +504,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
-	 * <br>Return values:
-	 * <br>messages: array of parameters to create status messages
-	 * <br>add: array of attributes to add
-	 * <br>del: array of attributes to remove
-	 * <br>mod: array of attributes to modify
-	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @param string $fields input fields
-	 * @param array $attributes LDAP attributes
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
+	 * {@inheritDoc}
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];

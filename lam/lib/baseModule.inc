@@ -81,8 +81,7 @@ abstract class baseModule {
 	protected $moduleSettings;
 
 	/**
-	 * self-service profile with settings of all modules
-	 * @var selfServiceProfile profile
+	 * @var selfServiceProfile|null self-service profile with settings of all modules
 	 */
 	protected $selfServiceSettings;
 

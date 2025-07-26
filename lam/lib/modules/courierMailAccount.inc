@@ -6,7 +6,7 @@ use LAM\TYPES\TypeManager;
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 - 2024 Roland Gruber
+ *               2017 - 2025 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -591,8 +591,8 @@ class courierMailAccount extends baseModule {
 	/**
 	 * Returns if this account is virtual only or also a unix account
 	 *
-	 * @param string[] modules
-	 * @return boolean only virtual account
+	 * @param string[] $modules module names
+	 * @return bool only virtual account
 	 */
 	private function isUnixDisabled($modules) {
 		return !in_array('posixAccount', $modules);

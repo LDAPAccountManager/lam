@@ -2,7 +2,7 @@
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 - 2024 Roland Gruber
+ *               2017 - 2025 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,11 +174,8 @@ class courierMailAlias extends baseModule {
 			$errors[] = $this->messages['maildrop'][0];
 		}
 		$this->attributes['mailsource'] = [];
-		if ($_POST['mailsource'] != "-") {
+		if ($_POST['mailsource'] !== "-") {
 			$this->attributes['mailsource'][0] = $_POST['mailsource'];
-		}
-		elseif (isset($this->attributes['mailsource'])) {
-			unset($this->attributes['mailsource']);
 		}
 		$this->attributes['description'][0] = $_POST['description'];
 		return $errors;
@@ -240,7 +237,7 @@ class courierMailAlias extends baseModule {
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if ($attributeName === 'mail') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				$group = new htmlGroup();
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
 					for ($i = 0; $i < count($entry[$attribute]); $i++) {
