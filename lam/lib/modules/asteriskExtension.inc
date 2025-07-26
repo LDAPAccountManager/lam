@@ -1,15 +1,15 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2024  Roland Gruber
+                2009 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -133,7 +133,7 @@ class asteriskExtension extends baseModule {
 
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'AsteriskExtension_AstContext', null, 'AstContext'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'AsteriskExtension_AstContext', null, 'AstContext'));
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings'] = [
 			'AsteriskExtension_AstContext' => 'AstContext',
@@ -247,7 +247,7 @@ class asteriskExtension extends baseModule {
 		$renderContainer->addVerticalSpacer('1rem');
 		$title = new htmlSubTitle(_("Extension owners"));
 		$title->setHelpId('member');
-		$renderContainer->add($title, 12);
+		$renderContainer->add($title);
 		$ownerList = new htmlTable();
 		if (($this->extensionOwners === null || count($this->extensionOwners) == 0) && isset($this->extensionRows[0]['member'])) {
 			$this->extensionOwners = $this->extensionRows[0]['member'];
@@ -257,9 +257,9 @@ class asteriskExtension extends baseModule {
 				$ownerList->addElement(new htmlOutputText(getAbstractDN($this->extensionOwners[$i])), true);
 			}
 		}
-		$renderContainer->add($ownerList, 12);
+		$renderContainer->add($ownerList);
 		$renderContainer->addVerticalSpacer('1rem');
-		$renderContainer->add(new htmlAccountPageButton(static::class, 'user', 'open', _('Change')), 12);
+		$renderContainer->add(new htmlAccountPageButton(static::class, 'user', 'open', _('Change')));
 	}
 
 	/**
@@ -288,27 +288,21 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Generates the meta HTML for the rules.
 	 *
-	 * @param String $extension extension name
+	 * @param string $extension extension name
 	 * @param htmlResponsiveRow $renderContainer container
 	 */
-	function render_extensions_by_priority($extension, $renderContainer) {
-		if (!isset($extension) || $extension == "") {
-			$extension = "";
-		}
-
+	function render_extensions_by_priority(string $extension, $renderContainer) {
 		$entries = $this->load_extension_parts($extension);
 
 		if ($this->getAccountContainer()->isNewAccount) {
 			$suggestedExtName = $this->generateNextExtensionName();
 			$extNameInput = new htmlResponsiveInputField(_("Extension name"), 'AstExtension', $suggestedExtName, 'AstExtension');
-			$extNameInput->setRequired(true);
-			$renderContainer->add($extNameInput, 12);
 		}
 		else {
 			$extNameInput = new htmlResponsiveInputField(_("Extension name"), 'AstExtension', $extension, 'AstExtension');
-			$extNameInput->setRequired(true);
-			$renderContainer->add($extNameInput, 12);
 		}
+		$extNameInput->setRequired(true);
+		$renderContainer->add($extNameInput);
 
 		$accountContext = '';
 		if (isset($entries[0]['astcontext'][0])) {
@@ -321,10 +315,10 @@ class asteriskExtension extends baseModule {
 		}
 		$accountContextInput = new htmlResponsiveInputField(_("Account context"), 'AstContext', $accountContext, 'AstContext');
 		$accountContextInput->setRequired(true);
-		$renderContainer->add($accountContextInput, 12);
+		$renderContainer->add($accountContextInput);
 
 
-		$renderContainer->add(new htmlSubTitle(_('Rules')), 12);
+		$renderContainer->add(new htmlSubTitle(_('Rules')));
 		$renderContainer->addVerticalSpacer('1rem');
 
 		for ($i = 0; $i < count($entries); $i++) {
@@ -333,7 +327,7 @@ class asteriskExtension extends baseModule {
 
 			$upDownButtons = new htmlTable();
 			if ($i > 0) {
-				$upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true), false);
+				$upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true));
 			}
 			if (($i < count($entries) - 1) &&
 				((count($entries) > 1) || ($this->addRuleFlag))) {
@@ -353,7 +347,7 @@ class asteriskExtension extends baseModule {
 			if ($this->addRuleFlag) {
 				$upDownButtons = new htmlTable();
 				$renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
-				$upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true), false);
+				$upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true));
 				$renderContainer->addField($upDownButtons, true);
 			}
 
@@ -362,9 +356,9 @@ class asteriskExtension extends baseModule {
 		}
 		// the size of found rows plus 1 for new one
 		$hidenInput = new htmlHiddenInput("extension_rows", $displayEntrNum);
-		$renderContainer->add($hidenInput, 12);
+		$renderContainer->add($hidenInput);
 
-		$renderContainer->add(new htmlButton("add_rule", _('Add another rule')), 12);
+		$renderContainer->add(new htmlButton("add_rule", _('Add another rule')));
 	}
 
 	/**
@@ -382,13 +376,13 @@ class asteriskExtension extends baseModule {
 		}
 		$applicationInput = new htmlResponsiveInputField(_("Application"), "AstApplication_" . $placeInList, $application, 'AstApplication');
 		$applicationInput->setRequired(true);
-		$renderContainer->add($applicationInput, 12);
+		$renderContainer->add($applicationInput);
 		// application data
 		$applicationData = '';
 		if (isset($extensLine['astapplicationdata'][0])) {
 			$applicationData = $extensLine['astapplicationdata'][0];
 		}
-		$renderContainer->add(new htmlResponsiveInputField(_("Application data"), "AstApplicationData_" . $placeInList, $applicationData, 'AstApplicationData'), 12);
+		$renderContainer->add(new htmlResponsiveInputField(_("Application data"), "AstApplicationData_" . $placeInList, $applicationData, 'AstApplicationData'));
 		//delimiter
 		$renderContainer->addVerticalSpacer('0.5rem');
 	}
@@ -459,18 +453,18 @@ class asteriskExtension extends baseModule {
 			$members[getAbstractDN($memberList[$i])] = $memberList[$i];
 		}
 		// options
-		$return->add(new htmlSubTitle(_("Filters")), 12);
-		$return->add(new htmlResponsiveInputCheckbox('filterAsteriskUsers', $this->filterOwnerForAsteriskAccounts, _('Show only Asterisk accounts'), 'ownerOptions', false), 12);
+		$return->add(new htmlSubTitle(_("Filters")));
+		$return->add(new htmlResponsiveInputCheckbox('filterAsteriskUsers', $this->filterOwnerForAsteriskAccounts, _('Show only Asterisk accounts'), 'ownerOptions', false));
 		$refreshButton = new htmlButton('changeFilter', _('Refresh'));
-		$return->add($refreshButton, 12);
+		$return->add($refreshButton);
 		$return->addVerticalSpacer('1rem');
 		// owners
-		$return->add(new htmlSubTitle(_("Extension owners")), 12);
+		$return->add(new htmlSubTitle(_("Extension owners")));
 		$this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $members, [], $users_dn, [], 'owners', true);
 		// back button
 		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Ok'));
 		$backButton->colspan = 3;
-		$return->add($backButton, 12);
+		$return->add($backButton);
 		return $return;
 	}
 
@@ -567,7 +561,7 @@ class asteriskExtension extends baseModule {
 			//process fields that are individual for each row
 			$extrow_errors = $this->processExtensionRows($extensionName, $extensionContext);
 
-			if (isset($extrow_errors) && count($extrow_errors) > 0) {
+			if (!empty($extrow_errors)) {
 				$errors = array_merge($errors, $extrow_errors);
 			}
 		}
@@ -582,11 +576,11 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Processes the rule data.
 	 *
-	 * @param String $extensionName extension name
-	 * @param String $extensionContext extension context
+	 * @param string[] $extensionName extension name
+	 * @param string[] $extensionContext extension context
 	 * @return array error messages
 	 */
-	function processExtensionRows($extensionName, $extensionContext) {
+	function processExtensionRows($extensionName, $extensionContext): array {
 		$errors = [];
 		if (isset($_POST['extension_rows']) && get_preg($_POST['extension_rows'], 'digit')) {
 
@@ -619,7 +613,6 @@ class asteriskExtension extends baseModule {
 			//finally sort extensions by priority
 			$this->extensionRows = $this->array_sort($this->extensionRows, 'astpriority');
 		}
-
 		return $errors;
 	}
 
@@ -647,8 +640,8 @@ class asteriskExtension extends baseModule {
 	 * add to processing context field.
 	 *
 	 * @param array $extRow - hash array to store single extension properties;
-	 * @param String $extensionName extension name
-	 * @param String $extensionContext extension context
+	 * @param string[] $extensionName extension name
+	 * @param string[] $extensionContext extension context
 	 * @param int $entryCounter - counter to distinguish single extensuion properties from $_POST
 	 * @param int $extensionPriorityCntr - it is the variable where actual number of extension rules wuld be aggregated
 	 */
@@ -746,19 +739,14 @@ class asteriskExtension extends baseModule {
 			$entries = searchLDAPByAttribute(null, null, $searchClass, ['astextension'], [$searchScope]);
 			$entries = $this->array_sort($entries, 'astextension');
 
-			if (isset($entries[count($entries) - 1]['astextension'][0])) {
-				$greater_ext_name = $entries[count($entries) - 1]['astextension'][0];
-			}
-			else {
-				$greater_ext_name = 0;
-			}
+			$greater_ext_name = $entries[count($entries) - 1]['astextension'][0] ?? 0;
 			if (is_numeric($greater_ext_name)) {
 				$suggested_extension = $greater_ext_name + 1;
 			}
 			else {
 				$ptn = "/(?P<name>[A-Za-z0-9]+)_(?P<digit>\\d+)/";
 				if (preg_match_all($ptn, $greater_ext_name, $matches)) {
-					$next_digit = $matches['digit'][0] + 1;
+					$next_digit = ((int) $matches['digit'][0]) + 1;
 					$suggested_extension = $matches['name'][0] . '_' . $next_digit;
 				}
 				else {
@@ -865,6 +853,7 @@ class asteriskExtension extends baseModule {
 	 * @return array list of error messages
 	 */
 	function moveExtentionToNewSuffix($row) {
+		$errors = [];
 		if ($this->isMoveToNewSuffix()) {
 			$oldDN = "cn=" . $row["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
 			$newRDN = "cn=" . $row["cn"][0];
@@ -874,6 +863,7 @@ class asteriskExtension extends baseModule {
 				logNewMessage(LOG_ERR, 'Unable to rename ' . $oldDN . ' to ' . $newRDN . ',' . $this->getAccountContainer()->dnSuffix);
 			}
 		}
+		return $errors;
 	}
 
 	/**

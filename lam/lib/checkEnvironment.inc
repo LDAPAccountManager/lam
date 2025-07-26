@@ -10,7 +10,7 @@ use function LAM\LOGIN\displayLoginHeader;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2024  Roland Gruber
+  Copyright (C) 2010 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -158,7 +158,7 @@ catch (Exception $e) {
 	$criticalErrors[] = ['ERROR', _('Unable to connect to configuration database.')];
 }
 // stop login if errors occurred
-if (!empty($criticalErrors)) {
+if (!empty($criticalErrors[0])) {
 	echo "<!DOCTYPE html>\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta name=\"robots\" content=\"noindex, nofollow\">\n";

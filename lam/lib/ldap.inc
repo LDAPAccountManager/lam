@@ -28,6 +28,9 @@
  */
 
 /** Access to configuration data */
+
+use LDAP\Connection;
+
 include_once(__DIR__ . "/config.inc");
 
 /**
@@ -144,7 +147,7 @@ class Ldap {
 	/**
 	 * Returns the LDAP connection handle
 	 *
-	 * @return LDAP\Connection connection handle
+	 * @return Connection|null connection handle
 	 */
 	public function server() {
 		if (!$this->is_connected) {
