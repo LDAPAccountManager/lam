@@ -744,10 +744,6 @@ class accountContainer {
 	public function __construct(ConfiguredType $type, string $base) {
 		$this->type = $type;
 		$this->base = $base;
-		// Set start page
-		$this->current_page = 0;
-		$this->subpage = 'attributes';
-		$this->isNewAccount = false;
 	}
 
 	/**
@@ -792,10 +788,10 @@ class accountContainer {
 	private $current_page = 0;
 
 	/** This variable is set to the pagename of a subpage if it should be displayed */
-	private $subpage;
+	private $subpage = 'attributes';
 
 	/** True if this is a newly created account */
-	public $isNewAccount;
+	public $isNewAccount = false;
 
 	/** name of last loaded account profile */
 	private $lastLoadedProfile = '';

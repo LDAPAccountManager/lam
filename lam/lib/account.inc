@@ -2069,7 +2069,7 @@ function printJsIncludes($prefix) {
  * @param string|null $input UTF-8 value
  */
 function convertUtf8ToUtf16Le($input) {
-	if (($input === null) || (strlen($input) === 0)) {
+	if (($input === null) || ($input === '')) {
 		return $input;
 	}
 	$output = iconv('UTF-8', 'UTF-16LE', $input);
