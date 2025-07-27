@@ -41,7 +41,7 @@ use LDAP\Connection;
  *
  * @template T
  * @param T[] $values list of values which should be removed
- * @param T[] $array list of original values
+ * @param T[]|null $array list of original values
  * @return T[] list of remaining values
  */
 function array_delete($values, $array) {
@@ -62,8 +62,8 @@ function array_delete($values, $array) {
 /**
  * Checks if a string exists in an array, ignoring case.
  *
- * @param String $needle search string
- * @param array $haystack array
+ * @param string|null $needle search string
+ * @param array|null $haystack array
  */
 function in_array_ignore_case($needle, $haystack) {
 	if (!is_array($haystack)) {
@@ -109,56 +109,9 @@ function natCaseKeySort(array $toSort): array {
 }
 
 /**
- * This function will return the days from 1.1.1970 until now.
- *
- * @return number of days
- */
-function getdays() {
-	$days = time() / 86400;
-	return (int) $days;
-}
-
-/**
- * Takes a list of Samba flags and creates the corresponding flag string.
- *
- * @param array $input is an array of Samba flags (e.g. X or D)
- * @return string Samba flag string
- */
-function smbflag($input) {
-	// Start character
-	$flag = "[";
-	// Add Options
-	if ($input['W']) {
-		$flag .= "W";
-	}
-	else {
-		$flag .= "U";
-	}
-	if ($input['D']) {
-		$flag .= "D";
-	}
-	if ($input['X']) {
-		$flag .= "X";
-	}
-	if ($input['N']) {
-		$flag .= "N";
-	}
-	if ($input['S']) {
-		$flag .= "S";
-	}
-	if ($input['H']) {
-		$flag .= "H";
-	}
-	// Expand string to fixed length
-	$flag = str_pad($flag, 12);
-	// End character
-	return $flag . "]";
-}
-
-/**
  * Generates the NT hash of a password.
  *
- * @param string password original password
+ * @param string $password password original password
  * @return string password hash
  */
 function ntPassword($password) {
@@ -167,16 +120,17 @@ function ntPassword($password) {
 
 /**
  * Returns the hash value of a plain text password.
- * @param string $password the password string
+ *
+ * @param string|null $password the password string
  * @param boolean $enabled marks the hash as enabled/disabled (e.g. by prefixing "!")
  * @param string $hashType password hash type (CRYPT, CRYPT-SHA512, SHA, SSHA, MD5, SMD5, PLAIN, K5KEY)
  * @return string the password hash
- * @see getSupportedHashTypes()
  *
+ * @see getSupportedHashTypes()
  */
 function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 	// check for empty password
-	if (!$password || ($password == "")) {
+	if (($password === null) || ($password === "")) {
 		return "";
 	}
 	switch ($hashType) {
@@ -412,7 +366,7 @@ function generateRandomText($length = 20): string {
 /**
  * Checks if the given password matches the crypto hash.
  *
- * @param String type hash type (must be one of getSupportedHashTypes())
+ * @param string $type type hash type (must be one of getSupportedHashTypes())
  * @param string $hash password hash value
  * @param string $password plain text password to check
  * @return bool hash matches
@@ -467,7 +421,7 @@ function checkPasswordHash($type, $hash, $password) {
 /**
  * Returns the number of character classes in a password.
  *
- * @param string $password password
+ * @param string|null $password password
  * @return int number of classes
  */
 function getNumberOfCharacterClasses($password): int {
@@ -1039,13 +993,13 @@ function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = ['dn'], $han
 /**
  * Deletes a DN and all child entries.
  *
- * @param string $dn DN to delete
+ * @param string|null $dn DN to delete
  * @param boolean $recursive recursive delete also child entries
  * @return array error messages
  */
 function deleteDN($dn, $recursive) {
 	$errors = [];
-	if (($dn == null) || ($dn == '')) {
+	if (($dn === null) || ($dn === '')) {
 		$errors[] = ['ERROR', _('Entry does not exist')];
 		return $errors;
 	}
@@ -1146,7 +1100,7 @@ function moveDn(string $oldDn, string $targetDn): void {
 /**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
- * @return array parameters for StatusMessage or null if all was ok
+ * @return array|null parameters for StatusMessage or null if all was ok
  */
 function getLastLDAPError() {
 	$errorNumber = ldap_errno($_SESSION["ldap"]->server());
@@ -1351,10 +1305,11 @@ function parseLDAPTimestamp($time) {
 /**
  * Simple function to obfuscate strings.
  *
- * @param String $text text to obfuscate
+ * @param string|null $text text to obfuscate
+ * @return string|null obfuscated text
  */
 function obfuscateText($text) {
-	if (($text == null) || ($text == '')) {
+	if (($text === null) || ($text === '')) {
 		return $text;
 	}
 	return str_rot13(base64_encode('LAM_OBFUSCATE:' . $text));
@@ -1363,10 +1318,11 @@ function obfuscateText($text) {
 /**
  * Simple function to deobfuscate strings.
  *
- * @param String $text text to deobfuscate
+ * @param string|null $text text to deobfuscate
+ * @return string|null deobfuscated text
  */
 function deobfuscateText($text) {
-	if (($text == null) || ($text == '')) {
+	if (($text === null) || ($text === '')) {
 		return $text;
 	}
 	if (!isObfuscatedText($text)) {
@@ -1378,11 +1334,11 @@ function deobfuscateText($text) {
 /**
  * Checks if the given text is obfuscated.
  *
- * @param String $text text to check
- * @return boolean obfuscated or not
+ * @param string|null $text text to check
+ * @return bool obfuscated or not
  */
-function isObfuscatedText($text) {
-	if (($text == null) || ($text == '')) {
+function isObfuscatedText($text): bool {
+	if (($text === null) || ($text === '')) {
 		return false;
 	}
 	$deob = base64_decode(str_rot13($text));
@@ -1392,8 +1348,8 @@ function isObfuscatedText($text) {
 /**
  * Extracts the RDN attribute name from a given DN.
  *
- * @param String $dn DN
- * @return String RDN attribute name
+ * @param string $dn DN
+ * @return string|null RDN attribute name
  */
 function extractRDNAttribute($dn) {
 	$rdn = extractRDN($dn);
@@ -1407,8 +1363,8 @@ function extractRDNAttribute($dn) {
 /**
  * Extracts the RDN attribute value from a given DN.
  *
- * @param String $dn DN
- * @return String RDN attribute value
+ * @param string $dn DN
+ * @return string|null RDN attribute value
  */
 function extractRDNValue($dn) {
 	$rdn = extractRDN($dn);
@@ -1442,11 +1398,11 @@ function extractRDN(?string $dn): ?string {
  * Extracts the DN suffix from a given DN.
  * E.g. ou=people,dc=test,dc=com will result in dc=test,dc=com.
  *
- * @param String $dn DN
- * @return String DN suffix
+ * @param string|null $dn DN
+ * @return string|null DN suffix
  */
 function extractDNSuffix($dn) {
-	if ($dn == null) {
+	if ($dn === null) {
 		return null;
 	}
 	$dn = convertCommaEscaping($dn);
@@ -1479,7 +1435,7 @@ function testSmtpConnection(string $server, string $user, string $password, stri
 		$mailer->isSMTP();
 		$serverParts = explode(':', $server);
 		$mailer->Host = $serverParts[0];
-		$mailer->Port = $serverParts[1];
+		$mailer->Port = (int) $serverParts[1];
 		if (!empty($user)) {
 			$mailer->SMTPAuth = true;
 			$mailer->Username = $user;
@@ -1587,7 +1543,7 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 			$mailer->isSMTP();
 			$serverParts = explode(':', $cfgMain->mailServer);
 			$mailer->Host = $serverParts[0];
-			$mailer->Port = $serverParts[1];
+			$mailer->Port = (int) $serverParts[1];
 			if (!empty($cfgMain->mailUser)) {
 				$mailer->SMTPAuth = true;
 				$mailer->Username = $cfgMain->mailUser;
@@ -1787,10 +1743,7 @@ function getRandomNumber() {
  * @return mixed false on error and certificate if extracted successfully
  */
 function getLDAPSSLCertificate($server, $port) {
-	$stream = @stream_context_create(["ssl" => ["capture_peer_cert_chain" => true, "verify_peer" => false, "allow_self_signed" => true]]);
-	if (!$stream) {
-		return false;
-	}
+	$stream = stream_context_create(["ssl" => ["capture_peer_cert_chain" => true, "verify_peer" => false, "allow_self_signed" => true]]);
 	$client = @stream_socket_client('ssl://' . $server . ':' . $port, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $stream);
 	if (!$client) {
 		return false;
@@ -1817,7 +1770,7 @@ function getLDAPSSLCertificate($server, $port) {
 /**
  * Returns the extended LDAP error message if any.
  *
- * @param handle $server LDAP server handle
+ * @param Connection $server LDAP server handle
  * @return String error message
  */
 function getExtendedLDAPErrorMessage($server) {
@@ -1833,7 +1786,7 @@ function getExtendedLDAPErrorMessage($server) {
  * Returns the default error message to display on the web page.
  * HTML special characters are already escaped.
  *
- * @param LDAP\Connection $server LDAP server handle
+ * @param Connection $server LDAP server handle
  * @return String error message
  */
 function getDefaultLDAPErrorString($server) {
@@ -1937,7 +1890,7 @@ function getCallingURL($baseUrl = ''): ?string {
 /**
  * Returns the offset in hours from configured time zone to GMT.
  *
- * @return int offset
+ * @return float offset
  */
 function getTimeZoneOffsetHours() {
 	$dtz = getTimeZone();
@@ -1963,7 +1916,7 @@ function getTimeZone() {
 /**
  * Returns the current time in formatted form.
  *
- * @param unknown $format format to use (e.g. 'Y-m-d H:i:s')
+ * @param string $format format to use (e.g. 'Y-m-d H:i:s')
  */
 function getFormattedTime($format) {
 	$time = new DateTime('now', getTimeZone());
@@ -1974,8 +1927,8 @@ function getFormattedTime($format) {
  * Formats a number of seconds to a more human readable format with minutes, hours, etc.
  * E.g. 70 seconds will return 1m10s.
  *
- * @param int $numSeconds number of seconds
- * @return String formatted number
+ * @param int|string $numSeconds number of seconds
+ * @return string formatted number
  */
 function formatSecondsToShortFormat($numSeconds) {
 	if (($numSeconds === '0') || ($numSeconds === 0)) {
@@ -2111,12 +2064,12 @@ function printJsIncludes($prefix) {
 }
 
 /**
- * Converts an UTF-8 string to UTF16LE.
+ * Converts a UTF-8 string to UTF16LE.
  *
- * @param string $input UTF-8 value
+ * @param string|null $input UTF-8 value
  */
 function convertUtf8ToUtf16Le($input) {
-	if (($input == null) || (strlen($input) == 0)) {
+	if (($input === null) || (strlen($input) === 0)) {
 		return $input;
 	}
 	$output = iconv('UTF-8', 'UTF-16LE', $input);
@@ -2142,10 +2095,10 @@ function getLAMVersionText() {
 /**
  * Returns if the given release is a developer version.
  *
- * @param string version
+ * @param string $version version
  * @return bool is developer version
  */
-function isDeveloperVersion($version) {
+function isDeveloperVersion($version): bool {
 	return str_contains($version, 'DEV');
 }
 

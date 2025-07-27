@@ -7,6 +7,11 @@ use DateTime;
 use Duo\DuoUniversal\Client;
 use Duo\DuoUniversal\DuoException;
 use Exception;
+use Facile\OpenIDClient\Client\ClientBuilder;
+use Facile\OpenIDClient\Client\ClientInterface;
+use Facile\OpenIDClient\Client\Metadata\ClientMetadata;
+use Facile\OpenIDClient\Issuer\IssuerBuilder;
+use GuzzleHttp\Psr7\ServerRequest;
 use htmlResponsiveRow;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use SelfServiceLoginHandler;
@@ -130,7 +135,7 @@ abstract class BaseProvider implements TwoFactorProvider {
 	 * Returns the value of the user attribute in LDAP.
 	 *
 	 * @param string $userDn user DN
-	 * @return string user name
+	 * @return string|null user name
 	 */
 	protected function getLoginAttributeValue($userDn) {
 		$attrName = $this->config->twoFactorAuthenticationSerialAttributeName;
@@ -831,10 +836,10 @@ class OpenIdProvider extends BaseProvider {
 	/**
 	 * Returns the client object.
 	 *
-	 * @return \Facile\OpenIDClient\Client\Client client
+	 * @return ClientInterface client
 	 */
-	private function getOpenIdClient(): \Facile\OpenIDClient\Client\Client {
-		$issuer = (new \Facile\OpenIDClient\Issuer\IssuerBuilder())->build($this->config->twoFactorAuthenticationURL . '/.well-known/openid-configuration');
+	private function getOpenIdClient(): ClientInterface {
+		$issuer = (new IssuerBuilder())->build($this->config->twoFactorAuthenticationURL . '/.well-known/openid-configuration');
 		$meta = [
 			'client_id' => $this->config->twoFactorAuthenticationClientId,
 			'client_secret' => $this->config->twoFactorAuthenticationSecretKey,
@@ -843,8 +848,8 @@ class OpenIdProvider extends BaseProvider {
 		if (!empty($_GET['redirect_uri'])) {
 			$meta['redirect_uri'] = $_GET['redirect_uri'];
 		}
-		$clientMetadata = \Facile\OpenIDClient\Client\Metadata\ClientMetadata::fromArray($meta);
-		return (new \Facile\OpenIDClient\Client\ClientBuilder())
+		$clientMetadata = ClientMetadata::fromArray($meta);
+		return (new ClientBuilder())
 			->setIssuer($issuer)
 			->setClientMetadata($clientMetadata)
 			->build();
@@ -874,7 +879,7 @@ class OpenIdProvider extends BaseProvider {
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
 		$client = $this->getOpenIdClient();
 		$authorizationService = $this->getAuthorizationService();
-		$serverRequest = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+		$serverRequest = ServerRequest::fromGlobals();
 		try {
 			$callbackParams = $authorizationService->getCallbackParams($serverRequest, $client);
 			$tokenSet = $authorizationService->callback($client, $callbackParams, $_GET['redirect_uri']);
@@ -1093,7 +1098,6 @@ class TwoFactorProviderService {
 	/**
 	 * Returns the provider for the given type.
 	 *
-	 * @param string $type authentication type
 	 * @return TwoFactorProvider provider
 	 * @throws Exception unable to get provider
 	 */

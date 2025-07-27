@@ -5,7 +5,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2024  Roland Gruber
+  Copyright (C) 2005 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -123,10 +123,10 @@ class baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
+	 * Returns the title text for the title bar on the new/edit page.
 	 *
 	 * @param accountContainer $container account container
-	 * @return String title text
+	 * @return string|null title text
 	 */
 	public function getTitleBarTitle($container) {
 		if ($container->dn_orig == null) {
@@ -157,8 +157,7 @@ class baseType {
 		$lockableOptions = [];
 		$statusSupported = false;
 		foreach ($container->getAccountModules() as $module) {
-			$interfaces = class_implements($module);
-			if (!in_array('AccountStatusProvider', $interfaces)) {
+			if (!($module instanceof AccountStatusProvider)) {
 				continue;
 			}
 			$statusSupported = true;
@@ -354,8 +353,7 @@ class baseType {
 					}
 				}
 				foreach ($container->getAccountModules() as $module) {
-					$interfaces = class_implements($module);
-					if (!in_array('AccountStatusProvider', $interfaces)) {
+					if (!($module instanceof AccountStatusProvider)) {
 						continue;
 					}
 					$dummyAttributes = null;
@@ -371,8 +369,7 @@ class baseType {
 					}
 				}
 				foreach ($container->getAccountModules() as $module) {
-					$interfaces = class_implements($module);
-					if (!in_array('AccountStatusProvider', $interfaces)) {
+					if (!($module instanceof AccountStatusProvider)) {
 						continue;
 					}
 					$dummyAttributes = null;

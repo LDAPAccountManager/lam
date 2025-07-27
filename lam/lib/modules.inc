@@ -2357,7 +2357,7 @@ class accountContainer {
 	 *
 	 * @return array list of attributes which are serialized
 	 */
-	function __sleep() {
+	public function __sleep() {
 		// encrypt data
 		$this->attributes = lamEncrypt(json_encode($this->attributes, JSON_INVALID_UTF8_IGNORE));
 		$this->attributes_orig = lamEncrypt(json_encode($this->attributes_orig, JSON_INVALID_UTF8_IGNORE));
@@ -2369,7 +2369,7 @@ class accountContainer {
 	/**
 	 * Decrypts sensitive data after accountContainer was loaded from session.
 	 */
-	function __wakeup() {
+	public function __wakeup() {
 		// decrypt data
 		$this->attributes = json_decode(lamDecrypt($this->attributes), true, 512, JSON_INVALID_UTF8_IGNORE);
 		$this->attributes_orig = json_decode(lamDecrypt($this->attributes_orig), true, 512, JSON_INVALID_UTF8_IGNORE);

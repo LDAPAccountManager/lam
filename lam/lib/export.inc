@@ -9,7 +9,7 @@ use LamTemporaryFilesManager;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2024  Roland Gruber
+ Copyright (C) 2018 - 2025  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -197,7 +197,7 @@ class Exporter {
 	/**
 	 * Converts the given LDAP entries to CSV format.
 	 *
-	 * @param string $entries entries
+	 * @param array $entries entries
 	 * @param string $lineEnding line ending
 	 */
 	private function getCsvOutput(&$entries, $lineEnding) {

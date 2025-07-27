@@ -18,7 +18,8 @@
     "ext-gettext": "*",
     "ext-curl": "*",
     "ext-openssl": "*",
-    "ext-xmlwriter": "*"
+    "ext-xmlwriter": "*",
+    "ext-iconv": "*"
   },
   "scripts": {
     "test": "vendor/bin/phpunit"
