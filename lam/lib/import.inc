@@ -8,7 +8,7 @@ use LAMException;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2024  Roland Gruber
+ Copyright (C) 2018 - 2025  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -59,10 +59,10 @@ class Importer {
 	 * Extracts the single entries in the file.
 	 *
 	 * @param string[] $lines LDIF lines
-	 * @return string|array array of string[]
+	 * @return array<string[]> array of string[]
 	 * @throws LAMException invalid format
 	 */
-	private function extractImportChunks($lines) {
+	private function extractImportChunks($lines): array {
 		$entries = [];
 		$currentEntry = [];
 		foreach ($lines as $line) {
@@ -323,7 +323,7 @@ class Importer {
 	 *
 	 * @param string $dn DN
 	 * @param string[] $entry entry lines
-	 * @return
+	 * @return RenameEntryTask task
 	 * @throws LAMException syntax error
 	 */
 	private function createModRdnTask($dn, $entry) {

@@ -59,10 +59,10 @@ class Ldap {
 	/**
 	 * Creates a new LDAP object.
 	 *
-	 * @param object $config an object of class Config
+	 * @param LAMConfig|null $config configuration
 	 */
-	public function __construct($config) {
-		if (is_object($config)) {
+	public function __construct(?LAMConfig $config) {
+		if ($config !== null) {
 			$this->conf = $config;
 		}
 	}
@@ -70,8 +70,8 @@ class Ldap {
 	/**
 	 * Connects to the server using the given username and password
 	 *
-	 * @param string $user user name
-	 * @param string $passwd password
+	 * @param string|null $user user name
+	 * @param string|null $passwd password
 	 * @param boolean $allowAnonymous specifies if anonymous binds are allowed
 	 * @throws LAMException unable to connect
 	 */
@@ -79,7 +79,7 @@ class Ldap {
 		// close any prior connection
 		@$this->close();
 		// do not allow anonymous bind
-		if (!$allowAnonymous && ((!$user) || ($user == "") || (!$passwd))) {
+		if (!$allowAnonymous && (($user === null) || ($user === '') || ($passwd === null) || ($passwd === ''))) {
 			throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
 		}
 		// save password und username encrypted
@@ -219,9 +219,9 @@ class Ldap {
 	/**
 	 * Returns the LDAP username.
 	 *
-	 * @return string user name
+	 * @return string|null user name
 	 */
-	public function getUserName() {
+	public function getUserName(): ?string {
 		if ($this->username === null) {
 			return null;
 		}
@@ -231,9 +231,9 @@ class Ldap {
 	/**
 	 * Returns the LDAP password.
 	 *
-	 * @return string password
+	 * @return string|null password
 	 */
-	public function getPassword() {
+	public function getPassword(): ?string {
 		if ($this->password === null) {
 			return null;
 		}

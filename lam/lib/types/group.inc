@@ -396,7 +396,7 @@ class lamGroupList extends lamList {
 	 * {@inheritDoc}
 	 * @see lamList::getAdditionalLDAPAttributesToRead()
 	 */
-	protected function getAdditionalLDAPAttributesToRead() {
+	protected function getAdditionalLDAPAttributesToRead(): array {
 		$attrs = $this->type->getAttributes();
 		$ret = [];
 		$countLen = strlen('_count');

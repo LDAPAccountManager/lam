@@ -7,7 +7,7 @@ use function LAM\PDF\createModulePDF;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -891,7 +891,7 @@ class lamList {
 	/**
 	 * Shows the page where the user may select the PDF options.
 	 *
-	 * @param String $id account ID
+	 * @param string|null $id account ID
 	 */
 	private function showPDFPage($id) {
 		$sessionObject = null;
@@ -1359,18 +1359,17 @@ class lamList {
 	 * Returns a list of additional LDAP attributes that should be read.
 	 * This can be used to show additional data even if the user selected other attributes to show in the list.
 	 *
-	 * @return array additional attribute names
+	 * @return string[] additional attribute names
 	 */
-	protected function getAdditionalLDAPAttributesToRead() {
+	protected function getAdditionalLDAPAttributesToRead(): array {
 		$attrs = [];
 		if ($this->showAccountStatus) {
 			$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 			foreach ($modules as $module) {
-				$interfaces = class_implements($module);
-				if (!in_array('AccountStatusProvider', $interfaces)) {
-					continue;
-				}
 				$moduleObject = moduleCache::getModule($module, $this->type->getScope());
+                if (!($moduleObject instanceof AccountStatusProvider)) {
+                    continue;
+				}
 				$attrs = array_merge($attrs, $moduleObject->getAccountStatusRequiredAttributes($this->type));
 			}
 		}
@@ -1635,7 +1634,6 @@ abstract class lamListOption {
 	 * Creates a new config option.
 	 *
 	 * @param String $ID unique ID
-	 * @return lamConfigOption config option
 	 */
 	public function __construct($ID) {
 		$this->ID = $ID;
@@ -1652,10 +1650,8 @@ abstract class lamListOption {
 
 	/**
 	 * Fills the config option from POST data.
-	 *
-	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
 	 */
-	public abstract function fillFromPostData();
+	abstract public function fillFromPostData(): void;
 
 	/**
 	 * Returns the option value. The value must not contain "=" and ";".
@@ -1703,7 +1699,6 @@ class lamBooleanListOption extends lamListOption {
 	 *
 	 * @param String $name name to show on config page
 	 * @param String $ID unique ID
-	 * @return lamBooleanListOption config option
 	 */
 	public function __construct($name, $ID) {
 		parent::__construct($ID);
@@ -1720,11 +1715,9 @@ class lamBooleanListOption extends lamListOption {
 	}
 
 	/**
-	 * Fills the config option from POST data.
-	 *
-	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
+	 * {@inheritDoc}
 	 */
-	public function fillFromPostData() {
+	public function fillFromPostData(): void {
 		if (isset($_POST[$this->getID()])) {
 			$this->setValue("1");
 		}
@@ -1766,7 +1759,6 @@ class lamSelectListOption extends lamListOption {
 	 * @param String $name name to show on config page
 	 * @param array $options list of possible values
 	 * @param String $ID unique ID
-	 * @return lamBooleanListOption config option
 	 */
 	public function __construct($name, $options, $ID) {
 		parent::__construct($ID);
@@ -1777,18 +1769,16 @@ class lamSelectListOption extends lamListOption {
 	/**
 	 * Sets the help ID.
 	 *
-	 * @param Strign $id help ID
+	 * @param string $id help ID
 	 */
 	public function setHelpID($id) {
 		$this->helpID = $id;
 	}
 
 	/**
-	 * Fills the config option from POST data.
-	 *
-	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
+	 * {@inheritDoc}
 	 */
-	public function fillFromPostData() {
+	public function fillFromPostData(): void {
 		if (isset($_POST[$this->getID()])) {
 			$this->setValue($_POST[$this->getID()]);
 		}

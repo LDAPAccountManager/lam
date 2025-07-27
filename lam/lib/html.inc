@@ -1148,7 +1148,7 @@ class htmlButton extends htmlElement {
 	/**
 	 * Sets the button title (tooltip).
 	 *
-	 * @param String $title title
+	 * @param string|null $title title
 	 */
 	public function setTitle($title) {
 		if ($title !== null) {
@@ -2515,7 +2515,7 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 	 * @param string $name unique name
 	 * @param string $colorValue color value (e.g. #000000)
 	 * @param string $label descriptive label
-	 * @param string $helpID help ID
+	 * @param string|array|null $helpID help ID
 	 */
 	public function __construct($name, $colorValue, $label, $helpID = null) {
 		parent::__construct($name, $colorValue);
@@ -3012,9 +3012,9 @@ class htmlHiddenInput extends htmlElement {
 	 * Constructor.
 	 *
 	 * @param string $name input name
-	 * @param string $value input value
+	 * @param string|null $value input value
 	 */
-	function __construct($name, $value = '') {
+	public function __construct($name, $value = '') {
 		$this->name = htmlspecialchars($name);
 		if ($value !== null) {
 			$this->value = htmlspecialchars($value);
@@ -3066,11 +3066,11 @@ class htmlLink extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $text label
-	 * @param String $target target URL
-	 * @param String $image URL of optional image
+	 * @param string|null $text label
+	 * @param string|null $target target URL
+	 * @param string|null $image URL of optional image
 	 */
-	function __construct($text, $target, $image = null) {
+	public function __construct($text, $target, $image = null) {
 		if ($text !== null) {
 			$this->text = htmlspecialchars($text);
 		}
@@ -3212,7 +3212,6 @@ class htmlContentLink extends htmlLink {
 	 *
 	 * @param htmlElement $content content to link
 	 * @param String $target link target
-	 * @param boolean $highlightOnHover highlight content on hover
 	 */
 	function __construct($content, $target) {
 		$this->content = $content;
@@ -3397,8 +3396,7 @@ class htmlSpan extends htmlElement {
 	 * Constructor.
 	 *
 	 * @param htmlElement $content inner content
-	 * @param array $classes CSS classes
-	 * @param string[] $cssClasses CSS classes
+	 * @param string[]|null $cssClasses CSS classes
 	 */
 	function __construct($content, $cssClasses = null) {
 		$this->content = $content;
@@ -3509,9 +3507,9 @@ class htmlIframe extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $content script
+	 * @param string|null $id HTML id
 	 */
-	function __construct($id = null) {
+	public function __construct($id = null) {
 		$this->id = $id;
 	}
 
@@ -4108,7 +4106,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	 *
 	 * @param string $name unique name
 	 * @param string $label descriptive label
-	 * @param string $helpID help ID
+	 * @param string|array|null $helpID help ID
 	 * @param bool $required required field
 	 */
 	function __construct($name, $label, $helpID = null, $required = false) {
@@ -4366,12 +4364,11 @@ class htmlResponsiveRadio extends htmlRadio {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name element name
+	 * @param string $label descriptive label
+	 * @param string $name element name
 	 * @param array $elements list of elements
-	 * @param array $selectedElements list of selected elements
-	 * @param String $label descriptive label
-	 * @param String $helpID help ID (optional, default none)
-	 * @param int $size size (optional, default = 1)
+	 * @param string|null $selectedElement list of selected elements
+	 * @param string|null $helpID help ID (optional, default none)
 	 */
 	function __construct($label, $name, $elements, $selectedElement = null, $helpID = null) {
 		parent::__construct($name, $elements, $selectedElement);
@@ -4569,12 +4566,12 @@ class htmlResponsiveTable extends htmlElement {
 	 *
 	 * @param string[] $titles row titles
 	 * @param htmlElement[][] $data data rows
-	 * @param int[] $highlighted list of row numbers that should be highlighted (starting at 0)
+	 * @param int[]|null $highlighted list of row numbers that should be highlighted (starting at 0)
 	 */
 	public function __construct($titles, $data, $highlighted = null) {
 		$this->titles = $titles;
 		$this->data = $data;
-		if (!empty($highlighted) && is_array($highlighted)) {
+		if (!empty($highlighted)) {
 			$this->highlighted = $highlighted;
 		}
 	}
