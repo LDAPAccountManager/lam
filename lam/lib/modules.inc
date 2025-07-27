@@ -1,5 +1,7 @@
 <?php
 
+use LAM\PDF\PDFEntry;
+use LAM\PDF\PDFLabelValue;
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAM\TYPES\ConfiguredType;
@@ -204,6 +206,7 @@ function getRDNAttributes($typeId, $selectedModules = null) {
  * @return array dependencies
  */
 function getModulesDependencies($scope) {
+	$return = [];
 	$mods = getAvailableModules($scope);
 	for ($i = 0; $i < count($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $scope);
@@ -394,7 +397,7 @@ function checkConfigOptions($moduleToTypeIds, &$options) {
 	foreach ($moduleToTypeIds as $module => $typeIds) {
 		$m = moduleCache::getModule($module, getScopeFromTypeId($typeIds[0]));
 		$errors = $m->check_configOptions($typeIds, $options);
-		if (isset($errors) && is_array($errors)) {
+		if (is_array($errors)) {
 			$return = array_merge($return, $errors);
 		}
 	}
@@ -412,12 +415,8 @@ function checkConfigOptions($moduleToTypeIds, &$options) {
 function getHelp($module, $helpID, $scope) {
 	global $helpArray;
 	if (!isset($module) || ($module == '') || ($module == 'main')) {
-		$helpPath = "../help/help.inc";
-		if (is_file("../../help/help.inc")) {
-			$helpPath = "../../help/help.inc";
-		}
 		if (!isset($helpArray)) {
-			include_once($helpPath);
+			include_once(__DIR__ . '/../help/help.inc');
 		}
 		return $helpArray[$helpID];
 	}
@@ -697,22 +696,6 @@ function parseHtml($module, $input, $values, $restricted, $scope) {
 }
 
 /**
- * Helper function to sort descriptive options in parseHTML().
- * It compares the second entries of two arrays.
- *
- * @param array $a first array
- * @param array $b second array
- * @return integer compare result
- */
-function lamCompareDescriptiveOptions(&$a, &$b) {
-	// check parameters
-	if (!is_array($a) || !isset($a[1]) || !is_array($b) || !isset($b[1])) {
-		return 0;
-	}
-	return strnatcasecmp($a[1], $b[1]);
-}
-
-/**
  * Prints a LAM help link.
  *
  * @param array $entry help entry
@@ -758,13 +741,7 @@ class accountContainer {
 	 * @param ConfiguredType $type account type
 	 * @param string $base key in $_SESSION where this object is saved
 	 */
-	function __construct($type, $base) {
-		if (!($type instanceof ConfiguredType)) {
-			die('Argument of accountContainer must be ConfiguredType.');
-		}
-		if (!is_string($base)) {
-			die('Argument base of accountContainer must be string: ' . $base);
-		}
+	public function __construct(ConfiguredType $type, string $base) {
 		$this->type = $type;
 		$this->base = $base;
 		// Set start page
@@ -1056,14 +1033,12 @@ class accountContainer {
 	 *
 	 * @param array $result list of messages
 	 */
-	private function printModuleContent($result) {
+	private function printModuleContent(array $result): void {
 		$this->printPageHeader();
 		$this->printPasswordPromt();
 		// display error messages
-		if (is_array($result)) {
-			for ($i = 0; $i < count($result); $i++) {
-				call_user_func_array(StatusMessage(...), $result[$i]);
-			}
+		for ($i = 0; $i < count($result); $i++) {
+			call_user_func_array(StatusMessage(...), $result[$i]);
 		}
 		echo '<div id="passwordMessageArea"></div>';
 		echo "<table class=\"lam-account-edit-table\">\n";
@@ -1710,7 +1685,7 @@ class accountContainer {
 	/**
 	 * Fixes spelling errors in the attribute names.
 	 *
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string>|null $attributes LDAP attributes
 	 * @param array $modules list of active modules
 	 * @return array fixed attributes
 	 */
@@ -2055,7 +2030,7 @@ class accountContainer {
 			if (!$stopprocessing) {
 				logNewMessage(LOG_DEBUG, 'Attribute changes for ' . $DNs[$i] . ":\n" . print_r($attributes[$DNs[$i]], true));
 				// modify attributes
-				if (!empty($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
+				if (!empty($attributes[$DNs[$i]]['modify'])) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
@@ -2136,9 +2111,9 @@ class accountContainer {
 	/**
 	 * Defines if the LDAP entry has only virtual child entries. This is the case for e.g. LDAP views.
 	 *
-	 * @return boolean has only virtual children
+	 * @return bool has only virtual children
 	 */
-	public function hasOnlyVirtualChildren() {
+	public function hasOnlyVirtualChildren(): bool {
 		foreach ($this->module as $module) {
 			if ($module->hasOnlyVirtualChildren()) {
 				return true;
@@ -2154,7 +2129,7 @@ class accountContainer {
 	 * @param string $typeId type id (user, group, host)
 	 * @return PDFEntry[] list of key => PDFEntry
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	function get_pdfEntries($pdfKeys, $typeId): array {
 		$return = [];
 		while (($current = current($this->module)) != null) {
 			$return = array_merge($return, $current->get_pdfEntries($pdfKeys, $typeId));
@@ -2164,7 +2139,7 @@ class accountContainer {
 		if ($this->finalDN !== null) {
 			$dn = $this->finalDN;
 		}
-		return array_merge($return, ['main_dn' => [new \LAM\PDF\PDFLabelValue(_('DN'), $dn)]]);
+		return array_merge($return, ['main_dn' => [new PDFLabelValue(_('DN'), $dn)]]);
 	}
 
 	/**
@@ -2263,11 +2238,11 @@ class accountContainer {
 	/**
 	 * Returns the RDN part of a given DN.
 	 *
-	 * @param String $dn DN
-	 * @return String RDN
+	 * @param string|null $dn DN
+	 * @return string RDN
 	 */
-	function getRDN($dn) {
-		if (($dn == "") || ($dn == null)) {
+	function getRDN(?string $dn): string {
+		if (($dn === "") || ($dn === null)) {
 			return "";
 		}
 		return substr($dn, 0, strpos($dn, ","));
@@ -2276,11 +2251,11 @@ class accountContainer {
 	/**
 	 * Returns the parent DN of a given DN.
 	 *
-	 * @param String $dn DN
-	 * @return String DN
+	 * @param string|null $dn DN
+	 * @return string DN
 	 */
-	function getParentDN($dn) {
-		if (($dn == "") || ($dn == null)) {
+	function getParentDN(?string $dn): string {
+		if (($dn === "") || ($dn === null)) {
 			return "";
 		}
 		return substr($dn, strpos($dn, ",") + 1);
@@ -2297,21 +2272,6 @@ class accountContainer {
 		}
 		$this->cachedOUs = $this->type->getSuffixList();
 		return $this->cachedOUs;
-	}
-
-	/**
-	 * Returns the account status.
-	 *
-	 * @return AccountStatus status
-	 */
-	public function getAccountStatus(): AccountStatus {
-		$details = [];
-		foreach ($this->module as $module) {
-			if ($module instanceof AccountStatusProvider) {
-				$details = array_merge($details, $module->getAccountStatusDetails());
-			}
-		}
-		return new AccountStatus($details);
 	}
 
 	/**
@@ -2613,11 +2573,10 @@ class AccountStatus {
 		$modules = $_SESSION['config']->get_AccountModules($type->getId());
 		$details = [];
 		foreach ($modules as $module) {
-			$interfaces = class_implements($module);
-			if (!in_array('AccountStatusProvider', $interfaces)) {
+			$moduleObject = moduleCache::getModule($module, $type->getScope());
+			if (!($moduleObject instanceof AccountStatusProvider)) {
 				continue;
 			}
-			$moduleObject = moduleCache::getModule($module, $type->getScope());
 			$details = array_merge($details, $moduleObject->getAccountStatusDetails($type, $attributes));
 		}
 		return new AccountStatus($details);
@@ -2634,11 +2593,10 @@ class AccountStatus {
 		$modules = $_SESSION['config']->get_AccountModules($type->getId());
 		$details = [];
 		foreach ($modules as $module) {
-			$interfaces = class_implements($module);
-			if (!in_array('AccountStatusProvider', $interfaces)) {
+			$moduleObject = moduleCache::getModule($module, $type->getScope());
+			if (!($moduleObject instanceof AccountStatusProvider)) {
 				continue;
 			}
-			$moduleObject = moduleCache::getModule($module, $type->getScope());
 			$details = array_merge($details, $moduleObject->getAccountStatusPossibleLockOptions($type, $attributes));
 		}
 		return new AccountStatus($details);
