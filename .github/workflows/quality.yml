@@ -56,7 +56,7 @@ jobs:
       run: ./vendor/bin/phpstan -V
 
     - name: PHPStan
-      run: ./vendor/bin/phpstan --xdebug
+      run: ./vendor/bin/phpstan
 
     - name: Rector
       run: ./vendor/bin/rector process --dry-run
