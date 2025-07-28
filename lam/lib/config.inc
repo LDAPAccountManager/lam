@@ -1417,7 +1417,7 @@ class LAMConfig {
 	/**
 	 * Sets the admin string
 	 *
-	 * @param string $value new admin string that contains all admin users separated by semicolons
+	 * @param string|null $value new admin string that contains all admin users separated by semicolons
 	 * @return boolean true if $value has correct format
 	 */
 	public function set_Adminstring($value) {
@@ -1458,7 +1458,7 @@ class LAMConfig {
 	/**
 	 * Sets the preferences wizard password
 	 *
-	 * @param string $value new password
+	 * @param string|null $value new password
 	 * @return boolean true if $value has correct format
 	 */
 	public function set_Passwd($value) {
@@ -1497,7 +1497,7 @@ class LAMConfig {
 	 * @return bool password is set
 	 */
 	public function hasPasswordSet(): bool {
-		return ($this->Passwd != null) && ($this->Passwd !== '');
+		return ($this->Passwd !== null) && ($this->Passwd !== '');
 	}
 
 	/**
@@ -1514,15 +1514,12 @@ class LAMConfig {
 	 * Sets the LDAP suffix where accounts are saved
 	 *
 	 * @param string $scope account type
-	 * @param string $value new LDAP suffix
+	 * @param string|null $value new LDAP suffix
 	 * @return boolean true if $value has correct format
 	 */
 	public function set_Suffix($scope, $value) {
-		if (!$value) {
+		if ($value === null) {
 			$value = "";
-		}
-		elseif (!is_string($value)) {
-			return false;
 		}
 		$this->typeSettings['suffix_' . $scope] = $value;
 		return true;
@@ -1541,7 +1538,7 @@ class LAMConfig {
 	/**
 	 * Sets the list of attributes to show in user list
 	 *
-	 * @param string $value new attribute string
+	 * @param string|null $value new attribute string
 	 * @param string $scope account type
 	 * @return boolean true if $value has correct format
 	 */
@@ -1567,7 +1564,7 @@ class LAMConfig {
 	/**
 	 * Sets the default language string
 	 *
-	 * @param string $value new default language
+	 * @param string|null $value new default language
 	 * @return boolean true if $value has correct format
 	 */
 	public function set_defaultLanguage($value) {
@@ -1585,15 +1582,15 @@ class LAMConfig {
 	 *
 	 * @return string time zone
 	 */
-	public function getTimeZone() {
+	public function getTimeZone(): string {
 		return ($this->timeZone == null) ? 'Europe/London' : $this->timeZone;
 	}
 
 	/**
 	 * Sets the time zone name.
 	 *
-	 * @param string $value new time zone
-	 * @return boolean true if $value has correct format
+	 * @param string|null $value new time zone
+	 * @return bool true if $value has correct format
 	 */
 	public function setTimeZone($value) {
 		if (is_string($value)) {
@@ -1615,14 +1612,14 @@ class LAMConfig {
 	/**
 	 * Sets the path to the external script
 	 *
-	 * @param string $value new script path
+	 * @param string|null $value new script path
 	 * @return boolean true if $value has correct format
 	 */
 	public function set_scriptPath($value) {
-		if (!$value) {
+		if ($value === null) {
 			$this->scriptPath = ""; // optional parameter
 		}
-		elseif (is_string($value) && preg_match("/^\\/([a-z0-9_-])+(\\/([a-z0-9_\\.-])+)+$/i", $value)) {
+		elseif (preg_match("/^\\/([a-z0-9_-])+(\\/([a-z0-9_\\.-])+)+$/i", $value)) {
 			$this->scriptPath = $value;
 		}
 		else {
@@ -1683,7 +1680,7 @@ class LAMConfig {
 	 * Returns the script server object for the given name.
 	 *
 	 * @param string $serverName server name
-	 * @return RemoteServerConfiguration server
+	 * @return RemoteServerConfiguration|null server
 	 */
 	public function getScriptServerByName($serverName) {
 		$serverList = $this->getConfiguredScriptServers();
@@ -1713,57 +1710,52 @@ class LAMConfig {
 	/**
 	 * Parses the script server value from input field.
 	 *
-	 * @param $value input field value
+	 * @param string $value input field value
 	 * @return string|false value to store in configuration
 	 */
 	public static function parseScriptServerValue($value) {
-		if (!$value) {
+		if (empty($value)) {
 			return ""; // optional parameter
 		}
 		// Explode the value to an array
 		$array_string = explode(";", $value);
-		if ($array_string !== []) {
-			// Check all IPs in the exploded Array
-			$valid_ips = [];
-			foreach ($array_string as $arr_value) {
-				// Explode name and IP, if a name exists
-				if (str_contains($arr_value, ":")) {
-					$arr_value_explode = explode(":", $arr_value);
-					$servername = $arr_value_explode[0];
-					$label = $arr_value_explode[1];
-					$homedirPrefix = $arr_value_explode[2] ?? '';
-				}
-				else {
-					$servername = $arr_value;
-					$label = '';
-					$homedirPrefix = '';
-				}
-				if (preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $servername)) {
-					$serverData = [$servername];
-					if (!empty($label)) {
-						$serverData[] = $label;
-					}
-					if (!empty($homedirPrefix)) {
-						$serverData[] = $homedirPrefix;
-					}
-					$serverChunk = implode(':', $serverData);
-					$valid_ips[] = $serverChunk;
-				}
-				else {
-					// wrong format
-					return false;
-				}
-			}
-			// Check that the array is not empty
-			if (!empty($array_string)) {
-				return implode(";", $valid_ips);
+		// Check all IPs in the exploded Array
+		$valid_ips = [];
+		foreach ($array_string as $arr_value) {
+			// Explode name and IP, if a name exists
+			if (str_contains($arr_value, ":")) {
+				$arr_value_explode = explode(":", $arr_value);
+				$servername = $arr_value_explode[0];
+				$label = $arr_value_explode[1];
+				$homedirPrefix = $arr_value_explode[2] ?? '';
 			}
 			else {
-				// The array is empty, there was no valid IP
+				$servername = $arr_value;
+				$label = '';
+				$homedirPrefix = '';
+			}
+			if (preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $servername)) {
+				$serverData = [$servername];
+				if (!empty($label)) {
+					$serverData[] = $label;
+				}
+				if (!empty($homedirPrefix)) {
+					$serverData[] = $homedirPrefix;
+				}
+				$serverChunk = implode(':', $serverData);
+				$valid_ips[] = $serverChunk;
+			}
+			else {
+				// wrong format
 				return false;
 			}
 		}
+		// Check that the array is not empty
+		if ($valid_ips !== []) {
+			return implode(";", $valid_ips);
+		}
 		else {
+			// The array is empty, there was no valid IP
 			return false;
 		}
 	}
@@ -1863,11 +1855,11 @@ class LAMConfig {
 	/**
 	 * Sets the LDAP search limit.
 	 *
-	 * @param integer $value new search limit
-	 * @return boolean true if $value has correct format
+	 * @param int $value new search limit
+	 * @return bool true if $value has correct format
 	 */
-	public function set_searchLimit($value) {
-		if (is_numeric($value) && ($value > -1)) {
+	public function set_searchLimit(int $value): bool {
+		if ($value > -1) {
 			$this->searchLimit = $value;
 			return true;
 		}

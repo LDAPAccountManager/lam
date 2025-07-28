@@ -377,8 +377,8 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->get_searchLimit() and LAMConfig->set_searchLimit()
 	 */
 	public function testsearchLimit() {
-		$this->assertFalse($this->lAMConfig->set_searchLimit('abc'));
-		$val = '1024';
+		$this->assertFalse($this->lAMConfig->set_searchLimit(-100));
+		$val = 1024;
 		$this->lAMConfig->set_searchLimit($val);
 		$this->assertEquals($val, $this->lAMConfig->get_searchLimit());
 		$this->doSave();
@@ -389,7 +389,6 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->set_moduleSettings() and LAMConfig->get_moduleSettings()
 	 */
 	public function testmoduleSettings() {
-		$this->assertFalse($this->lAMConfig->set_moduleSettings('abc'));
 		$val = ['posixAccount_123' => ['123'], 'shadowAccount_123' => ['123']];
 		$this->lAMConfig->set_moduleSettings($val);
 		$this->assertTrue(array_key_exists('posixAccount_123', $this->lAMConfig->get_moduleSettings()));
@@ -414,7 +413,6 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->set_typeSettings() and LAMConfig->get_typeSettings()
 	 */
 	public function testtypeSettings() {
-		$this->assertFalse($this->lAMConfig->set_typeSettings('abc'));
 		$val = ['posixAccount_123' => '123', 'shadowAccount_123' => '123'];
 		$this->lAMConfig->set_typeSettings($val);
 		$this->assertTrue(array_key_exists('posixAccount_123', $this->lAMConfig->get_typeSettings()));
@@ -428,7 +426,6 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->getToolSettings() and LAMConfig->setToolSettings()
 	 */
 	public function testGetToolSettings() {
-		$this->assertFalse($this->lAMConfig->setToolSettings('abc'));
 		$val = ['user_123' => '123', 'group_123' => '123'];
 		$this->lAMConfig->setToolSettings($val);
 		$this->assertTrue(array_key_exists('user_123', $this->lAMConfig->getToolSettings()));

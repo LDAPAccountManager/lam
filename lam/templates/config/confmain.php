@@ -672,7 +672,7 @@ function checkInput(): array {
 	else {
 		$conf->setHidePasswordPromptForExpiredPasswords('false');
 	}
-	$conf->set_searchLimit($_POST['searchLimit']);
+	$conf->set_searchLimit((int) $_POST['searchLimit']);
 	$conf->setHideDnPart($_POST['hideDnPart']);
 	if (isLAMProVersion()) {
 		$conf->setAccessLevel($_POST['accessLevel']);
