@@ -386,19 +386,6 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
-	 * Tests LAMConfig->get_AccountModules() and LAMConfig->set_AccountModules()
-	 */
-	public function testAccountModules() {
-		$scope = 'user';
-		$this->assertFalse($this->lAMConfig->set_AccountModules('abc', $scope));
-		$val = ['posixAccount', 'shadowAccount'];
-		$this->lAMConfig->set_AccountModules($val, $scope);
-		$this->assertEquals($val, $this->lAMConfig->get_AccountModules($scope));
-		$this->doSave();
-		$this->assertEquals($val, $this->lAMConfig->get_AccountModules($scope));
-	}
-
-	/**
 	 * Tests LAMConfig->set_moduleSettings() and LAMConfig->get_moduleSettings()
 	 */
 	public function testmoduleSettings() {

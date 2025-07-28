@@ -1897,46 +1897,12 @@ class LAMConfig {
 	}
 
 	/**
-	 * Sets the selected account modules
-	 *
-	 * @param array $modules array with module names (not aliases!)
-	 * @param string $scope account type
-	 * @return boolean true if $modules has correct format
-	 */
-	public function set_AccountModules($modules, $scope) {
-		if (!is_array($modules)) {
-			return false;
-		}
-		// check module names
-		$available = getAvailableModules($scope);
-		for ($i = 0; $i < count($modules); $i++) {
-			if (!in_array($modules[$i], $available)) {
-				return false;
-			}
-		}
-		// check depends/conflicts
-		if (check_module_conflicts($modules, getModulesDependencies($scope))) {
-			return false;
-		}
-		if (check_module_depends($modules, getModulesDependencies($scope))) {
-			return false;
-		}
-		$this->typeSettings["modules_" . $scope] = implode(",", $modules);
-		return true;
-	}
-
-	/**
 	 * Sets the settings for the account modules.
 	 *
 	 * @param array $settings list of module setting [name => value]
-	 * @return boolean true if $settings has correct format
 	 */
-	public function set_moduleSettings($settings) {
-		if (!is_array($settings)) {
-			return false;
-		}
+	public function set_moduleSettings(array $settings): void {
 		$this->moduleSettings = $settings;
-		return true;
 	}
 
 	/**
@@ -1944,8 +1910,8 @@ class LAMConfig {
 	 *
 	 * @return array list of settings: [name => value]
 	 */
-	public function get_moduleSettings() {
-		return $this->moduleSettings;
+	public function get_moduleSettings(): array {
+		return $this->moduleSettings ?? [];
 	}
 
 	/**
@@ -1974,7 +1940,7 @@ class LAMConfig {
 	/**
 	 * Sets the list of active types.
 	 *
-	 * @param string[] list of types
+	 * @param string[] $types list of types
 	 */
 	public function set_ActiveTypes($types) {
 		$this->activeTypes = implode(",", $types);
@@ -1984,14 +1950,9 @@ class LAMConfig {
 	 * Sets the settings for the account types.
 	 *
 	 * @param array $settings list of type setting [name => value]
-	 * @return boolean true if $settings has correct format
 	 */
-	public function set_typeSettings($settings) {
-		if (!is_array($settings)) {
-			return false;
-		}
+	public function set_typeSettings(array $settings): void {
 		$this->typeSettings = $settings;
-		return true;
 	}
 
 	/**
@@ -1999,8 +1960,8 @@ class LAMConfig {
 	 *
 	 * @return array list of settings: [name => value]
 	 */
-	public function get_typeSettings() {
-		return $this->typeSettings;
+	public function get_typeSettings(): array {
+		return $this->typeSettings ?? [];
 	}
 
 	/**
@@ -2016,14 +1977,9 @@ class LAMConfig {
 	 * Sets the tool settings.
 	 *
 	 * @param array $toolSettings tool settings
-	 * @return boolean true if ok
 	 */
-	public function setToolSettings($toolSettings) {
-		if (!is_array($toolSettings)) {
-			return false;
-		}
+	public function setToolSettings(array $toolSettings): void {
 		$this->toolSettings = $toolSettings;
-		return true;
 	}
 
 	/**
@@ -2465,14 +2421,9 @@ class LAMConfig {
 	 * Sets the settings for the jobs.
 	 *
 	 * @param array $settings list of job settings [name => value]
-	 * @return boolean true if $settings has correct format
 	 */
-	public function setJobSettings($settings) {
-		if (!is_array($settings)) {
-			return false;
-		}
+	public function setJobSettings(array $settings): void {
 		$this->jobSettings = $settings;
-		return true;
 	}
 
 	/**
@@ -3299,7 +3250,6 @@ class LAMCfgMain {
 	 * Loads the settings from the database.
 	 * Persistence settings are ignored as they must be on local file system.
 	 *
-	 * @return bool true when ok
 	 * @throws LAMException error reading config
 	 */
 	private function loadFromDb(): void {
@@ -3414,7 +3364,7 @@ class LAMCfgMain {
 	 * @return bool password is set
 	 */
 	public function hasPasswordSet(): bool {
-		return ($this->password != null) && ($this->password !== '');
+		return ($this->password !== null) && ($this->password !== '');
 	}
 
 	/**
@@ -3494,9 +3444,9 @@ class LAMCfgMain {
 	/**
 	 * Returns the path to the SSL CA certificate file that overrides the system certificates.
 	 *
-	 * @return String path to certificate file or null if certificate is not overridden
+	 * @return string|null path to certificate file or null if certificate is not overridden
 	 */
-	public function getSSLCaCertPath() {
+	public function getSSLCaCertPath(): ?string {
 		$path = $this->getInternalSSLCaCertFileName();
 		if (file_exists($path)) {
 			return $path;
@@ -3624,9 +3574,9 @@ class LAMCfgMain {
 	/**
 	 * Returns the content of the certificate file or uploaded data.
 	 *
-	 * @return String null or certificate content
+	 * @return string|null null or certificate content
 	 */
-	private function getSSLCaCertificateContent() {
+	private function getSSLCaCertificateContent(): ?string {
 		$content = null;
 		if ($this->delSSLCaCert) {
 			return null;
@@ -3656,9 +3606,6 @@ class LAMCfgMain {
 			return [];
 		}
 		$content = str_replace("\n\n", "\n", $content);
-		if (empty($content)) {
-			return [];
-		}
 		if (!(str_starts_with($content, '-----BEGIN CERTIFICATE-----'))) {
 			return [];
 		}
