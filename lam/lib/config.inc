@@ -978,10 +978,10 @@ class LAMConfig {
 	private $name;
 
 	/** access level */
-	private $accessLevel = LAMconfig::ACCESS_ALL;
+	private $accessLevel = LAMConfig::ACCESS_ALL;
 
 	/** login method */
-	private $loginMethod = LAMconfig::LOGIN_LIST;
+	private $loginMethod = LAMConfig::LOGIN_LIST;
 
 	/** search suffix for login */
 	private $loginSearchSuffix = 'dc=yourdomain,dc=org';
@@ -1019,7 +1019,7 @@ class LAMConfig {
 	private $pwdResetForcePasswordChange = 'true';
 	/** password reset page: default selection for password output
 	 * PWDRESET_DEFAULT_SCREEN, PWDRESET_DEFAULT_MAIL, PWDRESET_DEFAULT_BOTH */
-	private $pwdResetDefaultPasswordOutput = LAMconfig::PWDRESET_DEFAULT_MAIL;
+	private $pwdResetDefaultPasswordOutput = LAMConfig::PWDRESET_DEFAULT_MAIL;
 
 	/** LDAP user for jobs */
 	private $jobsBindUser;
@@ -1219,7 +1219,7 @@ class LAMConfig {
 	/**
 	 * Sets the server address
 	 *
-	 * @param string $value new server address
+	 * @param string|null $value new server address
 	 * @return boolean true if $value has correct format
 	 */
 	public function set_ServerURL($value) {
@@ -1254,7 +1254,7 @@ class LAMConfig {
 	/**
 	 * Sets the server display name
 	 *
-	 * @param string $value new server display name
+	 * @param string|null $value new server display name
 	 * @return boolean true if $value has correct format
 	 */
 	public function setServerDisplayName($value) {

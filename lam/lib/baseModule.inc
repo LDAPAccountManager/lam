@@ -103,7 +103,7 @@ abstract class baseModule {
 	/**
 	 * Creates a new base module class
 	 *
-	 * @param string $scope the account type (user, group, host)
+	 * @param string|null $scope the account type (user, group, host)
 	 */
 	public function __construct($scope) {
 		$this->scope = $scope;
@@ -848,7 +848,6 @@ abstract class baseModule {
 	 * Runs any global cron actions.
 	 *
 	 * @param bool $isDryRun dry-run active
-	 * @throws LAMException error during execution
 	 */
 	public function runGlobalCronActions(bool $isDryRun): void {
 		// needs to be implemented by submodule if needed
@@ -937,8 +936,7 @@ abstract class baseModule {
 	 * Adds an image to the PDF.
 	 *
 	 * @param array $result result array (entry will be added here)
-	 * @param String $attrName attribute name
-	 * @param PDFTable $table table
+	 * @param string $attrName attribute name
 	 */
 	public function addPDFImage(&$result, $attrName) {
 		if (isset($this->attributes[$attrName]) && (count($this->attributes[$attrName]) > 0)) {
@@ -1059,7 +1057,7 @@ abstract class baseModule {
 	 * @param array $message error message array if not matching
 	 * @param int $position upload position
 	 * @param array $errors error messages
-	 * @return value is ok
+	 * @return bool value is ok
 	 * @see get_preg()
 	 */
 	private function checkUploadRegex($regexIDs, $value, $message, $position, &$errors) {
@@ -1100,7 +1098,7 @@ abstract class baseModule {
 	 * array('Headline' => 'This is the head line', 'Text' => 'Help content', 'SeeAlso' => array('text' => 'LAM homepage', 'link' => 'http://www.ldap-account-manager.org/'))
 	 *
 	 * @param string $id The id string for the help entry needed.
-	 * @return array The desired help entry.
+	 * @return array|null The desired help entry.
 	 *
 	 * @see baseModule::get_metaData()
 	 */
@@ -1112,7 +1110,7 @@ abstract class baseModule {
 			return $this->meta['help'][$this->scope][$id];
 		}
 		else {
-			return false;
+			return null;
 		}
 	}
 
@@ -1126,7 +1124,7 @@ abstract class baseModule {
 	 * input, otherwise false.<br>
 	 * This method's return value defaults to true.
 	 *
-	 * @return boolean true, if page can be displayed
+	 * @return bool true, if page can be displayed
 	 */
 	public function module_ready() {
 		return true;
@@ -1305,7 +1303,7 @@ abstract class baseModule {
 	 * This can be used to interact with the user, e.g. should the home directory be deleted? The output
 	 * of all modules is displayed on a single page.
 	 *
-	 * @return htmlElement meta HTML object
+	 * @return htmlElement|null meta HTML object
 	 * @see htmlElement
 	 */
 	public function display_html_delete() {
@@ -1443,8 +1441,8 @@ abstract class baseModule {
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
 	 * @param htmlResponsiveRow $container parent container
-	 * @param String $attrName attribute name
-	 * @param String $label label name
+	 * @param string $attrName attribute name
+	 * @param string|null $label label name
 	 * @param boolean $required this is a required field (default false)
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
@@ -1544,7 +1542,7 @@ abstract class baseModule {
 	 *
 	 * @param String $attrName attribute name
 	 * @param array $errors errors array where to put validation errors
-	 * @param String $validationID validation ID for function get_preg() (default: null, null means no validation)
+	 * @param string|null $validationID validation ID for function get_preg() (default: null, null means no validation)
 	 * @param bool $required the field is required (default: false)
 	 */
 	protected function processMultiValueInputTextField($attrName, &$errors, $validationID = null, $required = false) {
@@ -1554,7 +1552,7 @@ abstract class baseModule {
 			if (($this->attributes[$attrName][$counter] === '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
 				unset($this->attributes[$attrName][$counter]);
 			}
-			elseif (($validationID != null) && ($this->attributes[$attrName][$counter] !== '') && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
+			elseif (($validationID !== null) && !get_preg($this->attributes[$attrName][$counter], $validationID)) {
 				$msg = $this->messages[$attrName][0];
 				if (count($msg) < 3) {
 					$msg[] = htmlspecialchars($this->attributes[$attrName][$counter]);
@@ -1585,8 +1583,8 @@ abstract class baseModule {
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
 	 * @param htmlResponsiveRow $container parent container
-	 * @param String $attrName attribute name
-	 * @param String $label label name
+	 * @param string $attrName attribute name
+	 * @param string|null $label label name
 	 * @param array $options options for the selects
 	 * @param boolean $hasDescriptiveOptions has descriptive options
 	 * @param boolean $required this is a required field (default false)
@@ -2239,10 +2237,10 @@ abstract class baseModule {
 
 	/**
 	 * This function creates meta HTML code to display the module specific page
-	 * for the self service.
+	 * for the self-service.
 	 *
-	 * @param selfServiceProfile $profile self service settings
-	 * @return htmlElement meta HTML object
+	 * @param selfServiceProfile $profile self-service settings
+	 * @return htmlElement|null meta HTML object
 	 *
 	 * @see htmlElement
 	 */

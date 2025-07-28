@@ -22,3 +22,6 @@ parameters:
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Binary operation .* between .* and .* results in an error.#'
 		- '#Offset .SID. on array.*in isset\(\) always exists.*#'
+		- '#Offset .preferred_username. does not exist on.*#'
+		- '#Strict comparison using !== between non-empty-list.*will always evaluate to true.*#'
+		- '#Strict comparison using !== between non-empty-array.*will always evaluate to true.*#'
