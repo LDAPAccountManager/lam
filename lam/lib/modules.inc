@@ -397,9 +397,7 @@ function checkConfigOptions($moduleToTypeIds, &$options) {
 	foreach ($moduleToTypeIds as $module => $typeIds) {
 		$m = moduleCache::getModule($module, getScopeFromTypeId($typeIds[0]));
 		$errors = $m->check_configOptions($typeIds, $options);
-		if (is_array($errors)) {
-			$return = array_merge($return, $errors);
-		}
+		$return = array_merge($return, $errors);
 	}
 	return $return;
 }
@@ -407,14 +405,14 @@ function checkConfigOptions($moduleToTypeIds, &$options) {
 /**
  * Returns a help entry from an account module.
  *
- * @param string $module module name
+ * @param string|null $module module name
  * @param string $helpID help identifier
  * @param string $scope account type
  * @return array help entry
  */
 function getHelp($module, $helpID, $scope) {
 	global $helpArray;
-	if (!isset($module) || ($module == '') || ($module == 'main')) {
+	if (($module === null) || ($module === '') || ($module === 'main')) {
 		if (!isset($helpArray)) {
 			include_once(__DIR__ . '/../help/help.inc');
 		}
@@ -440,15 +438,13 @@ function getAvailablePDFFields($typeId) {
 		$fields = $module->get_pdfFields($typeId);
 		$moduleName = $module::class;
 		$return[$moduleName] = [];
-		if (is_array($fields)) {
-			foreach ($fields as $fieldID => $fieldLabel) {
-				if (is_int($fieldID)) {
-					// support old PDF field list which did not contain a label
-					$return[$moduleName][$fieldLabel] = $fieldLabel;
-				}
-				else {
-					$return[$moduleName][$fieldID] = $fieldLabel;
-				}
+		foreach ($fields as $fieldID => $fieldLabel) {
+			if (is_int($fieldID)) {
+				// support old PDF field list which did not contain a label
+				$return[$moduleName][$fieldLabel] = $fieldLabel;
+			}
+			else {
+				$return[$moduleName][$fieldID] = $fieldLabel;
 			}
 		}
 	}
@@ -685,7 +681,7 @@ function parseHtml($module, $input, $values, $restricted, $scope) {
 	if ($input instanceof htmlElement) {
 		return $input->generateHTML($module, $input, $values, $restricted, $scope);
 	}
-	if (is_array($input) && ($input !== [])) {
+	if ($input !== []) {
 		$return = [];
 		for ($i = 0; $i < count($input); $i++) {
 			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $scope));
@@ -759,7 +755,7 @@ class accountContainer {
 
 	/** This is an array with all module objects
 	 *
-	 * @var baseModule[] modules
+	 * @var baseModule[]|string modules
 	 */
 	private $module;
 
@@ -1687,7 +1683,7 @@ class accountContainer {
 	 */
 	function fixLDAPAttributes($attributes, $modules) {
 		if (!is_array($attributes)) {
-			return $attributes;
+			return [];
 		}
 		$keys = array_keys($attributes);
 		// get correct object class names, aliases and attributes
@@ -1706,7 +1702,6 @@ class accountContainer {
 		$ldapAttributes = [];
 		for ($i = 0; $i < count($ldapAttributesTemp); $i++) {
 			$ldapAttributes[strtolower($ldapAttributesTemp[$i])] = $ldapAttributesTemp[$i];
-			unset($ldapAttributes[$i]);
 		}
 		$ldapAttributesKeys = array_keys($ldapAttributes);
 		// convert alias names to lower case (for easier comparison)
@@ -1845,9 +1840,6 @@ class accountContainer {
 		foreach ($module as $singlemodule) {
 			// load changes
 			$temp = $this->module[$singlemodule]->save_attributes();
-			if (!is_array($temp)) {
-				$temp = [];
-			}
 			// merge changes
 			$DNs = array_keys($temp);
 			$attributes = array_merge_recursive($temp, $attributes);
