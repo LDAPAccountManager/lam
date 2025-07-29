@@ -4,7 +4,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pozdnyak Pavel
-                2010 - 2024  Roland Gruber
+                2010 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@
  * @author Pozdnyak Pavel
  * @author Roland Gruber
  */
+
+use LAM\TYPES\ConfiguredType;
 
 /**
  * The account type for Asterisk extensions.

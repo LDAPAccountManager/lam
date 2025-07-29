@@ -306,8 +306,8 @@ class imapAccess extends baseModule {
 	 * Display the mailbox quota.
 	 *
 	 * @param htmlResponsiveRow $container structure that contained information to be displayed
-	 * @param Horde_Imap_Client_Socket $client IMAP client
-	 * @param String $username user name to connect to IMAP server
+	 * @param Client $client IMAP client
+	 * @param String $username username to connect to IMAP server
 	 * @return htmlResponsiveRow table with added information about user quotas or controls to add quota
 	 */
 	function renderQuotasForMailbox($container, $client, $username) {

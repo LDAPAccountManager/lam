@@ -966,7 +966,7 @@ function ldapGetDN($dn, $attributes = ['dn'], $handle = null): ?array {
  * @param String $dn DN
  * @param String $filter LDAP filter
  * @param array $attributes list of attributes to fetch
- * @param handle $handle LDAP handle (optional for admin interface pages)
+ * @param Connection|null $handle LDAP handle (optional for admin interface pages)
  * @param int $limit result limit
  * @return array attributes or null if not found
  */
