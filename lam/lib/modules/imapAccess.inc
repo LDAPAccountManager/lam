@@ -411,7 +411,7 @@ class imapAccess extends baseModule {
 	/**
 	 * Creates the mailbox for a user.
 	 *
-	 * @param Horde_Imap_Client_Socket $client IMAP client
+	 * @param Client $client IMAP client
 	 * @param string $userName user name
 	 * @param string $email_domain email domain
 	 * @return array error messages
@@ -452,7 +452,7 @@ class imapAccess extends baseModule {
 	/**
 	 * Sets the mailbox quota for a user.
 	 *
-	 * @param Horde_Imap_Client_Socket $client IMAP client
+	 * @param Client $client IMAP client
 	 * @param string $userName user name
 	 * @param string $email_domain email domain
 	 * @param string $quota mailbox quota
@@ -927,27 +927,31 @@ class imapAccess extends baseModule {
 	/**
 	 * Returns if the mailbox exists.
 	 *
-	 * @param $client IMAP client
+	 * @param Client $client IMAP client
 	 * @param string $path mailbox path
 	 * @return bool is existing
 	 */
 	private function isMailboxExisting($client, string $path): bool {
 		$list = $client->getConnection()->folders($path);
-		return ($list !== null) && is_array($list->data()) && (count($list->data()) >= 1);
+		return is_array($list->data()) && (count($list->data()) >= 1);
 	}
 
 	/**
 	 * Returns the quota data for the user.
 	 *
-	 * @param $client IMAP client
+	 * @param Client $client IMAP client
 	 * @param string $user user name
 	 * @return array array with keys QUOTA_USAGE and QUOTA_LIMIT
 	 */
 	private function getQuota($client, string $user): array {
-		$user = $client->getConnection()->escapeString($user);
+		$connection = $client->getConnection();
+		if (!($connection instanceof ImapProtocol)) {
+			return [];
+		}
+		$user = $connection->escapeString($user);
 		$quota_values = [];
 		try {
-			$quota = $client->getConnection()->requestAndResponse('GETQUOTA', [$user]);
+			$quota = $connection->requestAndResponse('GETQUOTA', [$user]);
 			$quota = $quota->data();
 			if (isset($quota[0][2][0]) && ($quota[0][2][0] === 'STORAGE')) {
 				$quota_values = [

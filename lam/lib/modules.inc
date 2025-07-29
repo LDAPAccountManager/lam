@@ -671,13 +671,16 @@ function getRequiredExtensions() {
  * meta HTML code. This allows to have a common design for all module pages.
  *
  * @param string|null $module Name of account module
- * @param htmlElement|htmlElement[] $input htmlElement or array of htmlElement elements
+ * @param htmlElement|htmlElement[]|null $input htmlElement or array of htmlElement elements
  * @param array $values List of values which override the defaults in $input (name => value)
  * @param boolean $restricted If true then no buttons will be displayed
  * @param string|null $scope Account type
  * @return array List of input field names and their type (name => type)
  */
 function parseHtml($module, $input, $values, $restricted, $scope) {
+	if ($input === null) {
+		return [];
+	}
 	if ($input instanceof htmlElement) {
 		return $input->generateHTML($module, $input, $values, $restricted, $scope);
 	}

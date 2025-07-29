@@ -820,7 +820,7 @@ class range extends baseModule {
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if ($attributeName === 'dhcprange') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					$table = new htmlTable();
 					$table->setCSSClasses(['nowrap']);
@@ -861,7 +861,7 @@ class range extends baseModule {
 					}
 					return $table;
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		return null;

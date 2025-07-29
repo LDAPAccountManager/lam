@@ -1126,7 +1126,7 @@ class windowsGroup extends baseModule {
 			};
 		}
 		elseif (($attributeName === 'managedby') || ($attributeName === 'member')) {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					$typeManager = new TypeManager();
 					$values = $entry[$attribute];
@@ -1149,7 +1149,7 @@ class windowsGroup extends baseModule {
 					}
 					return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), ['rightToLeftText']);
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		return null;

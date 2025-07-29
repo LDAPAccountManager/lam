@@ -1036,12 +1036,12 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if (($attributeName === 'shadowexpire') || ($attributeName === 'shadowlastchange')) {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, getTimeZone());
 					return new htmlOutputText($time->format('d.m.Y'));
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		return null;

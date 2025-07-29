@@ -4138,7 +4138,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			};
 		}
 		elseif ($attributeName === 'jpegphoto') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] !== '')) {
 					if (strlen($entry[$attribute][0]) < 100) {
 						// looks like we have read broken binary data, reread photo
@@ -4162,7 +4162,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$image->setCSSClasses(['thumbnail']);
 					return $image;
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		return null;

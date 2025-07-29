@@ -414,7 +414,7 @@ class windowsHost extends baseModule {
 			};
 		}
 		elseif ($attributeName === 'managedby') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					$value = $entry[$attribute][0];
 					$typeManager = new TypeManager();
@@ -431,7 +431,7 @@ class windowsHost extends baseModule {
 					}
 					return new htmlDiv(null, new htmlOutputText($value, false), ['rightToLeftText']);
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		return null;

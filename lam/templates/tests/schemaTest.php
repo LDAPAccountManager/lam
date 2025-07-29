@@ -6,6 +6,7 @@ use \htmlStatusMessage;
 use \htmlSubTitle;
 use \htmlOutputText;
 use \htmlImage;
+use LAM\SCHEMA\ObjectClass;
 use function \LAM\SCHEMA\get_schema_objectclasses;
 use function \LAM\SCHEMA\get_cached_schema;
 /*

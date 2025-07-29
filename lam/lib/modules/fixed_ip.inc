@@ -911,7 +911,7 @@ class fixed_ip extends baseModule {
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
 		if ($attributeName === 'fixed_ips') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				// find all fixed addresses:
 				$entries = searchLDAP($entry['dn'], 'objectClass=dhcpHost', ['dhcpstatements', 'dhcphwaddress', 'cn']);
 				if (count($entries) > 0) {
@@ -959,7 +959,7 @@ class fixed_ip extends baseModule {
 					}
 					return $group;
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		return null;

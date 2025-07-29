@@ -4808,7 +4808,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			};
 		}
 		elseif (($attributeName === 'jpegphoto') || ($attributeName === 'thumbnailphoto')) {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] !== '')) {
 					if (strlen($entry[$attribute][0]) < 100) {
 						// looks like we have read broken binary data, reread photo
@@ -4832,7 +4832,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$image->setCSSClasses(['thumbnail']);
 					return $image;
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		elseif ($attributeName === 'accountexpires') {
@@ -4848,7 +4848,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			};
 		}
 		elseif ($attributeName === 'manager') {
-			return function(array $entry, string $attribute): ?htmlElement {
+			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					$value = $entry[$attribute][0];
 					$typeManager = new TypeManager();
@@ -4865,7 +4865,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					}
 					return new htmlDiv(null, new htmlOutputText($value, false), ['rightToLeftText']);
 				}
-				return null;
+				return new htmlGroup();
 			};
 		}
 		return null;

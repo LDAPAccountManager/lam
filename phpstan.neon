@@ -15,7 +15,6 @@ parameters:
 		analyseAndScan:
 			- */lists/changePassword.php
 	ignoreErrors:
-		- '#.* on an unknown class .*#'
 		- '#.* has invalid type .*#'
 		- '#Function [a-zA-Z0-9\\_-]+ not found.#'
 		- '#Used function [a-zA-Z0-9\\_-]+ not found.#'
