@@ -13,6 +13,7 @@ parameters:
 		analyse:
 			- */3rdParty/*
 			# phpstan cannot ignore unknown class errors, skip these files
+			- lam/lib/persistence.inc
 			- lam/lib/modules/freeRadius.inc
 			- lam/lib/modules/shadowAccount.inc
 			- lam/lib/modules/windowsUser.inc
@@ -24,7 +25,13 @@ parameters:
 			- lam/lib/env.inc (?)
 			- lam/lib/jobs.inc (?)
 			- lam/lib/passwordExpirationJob.inc (?)
+			- lam/lib/modules/groupOfMembers.inc (?)
+			- lam/lib/modules/groupOfNames.inc (?)
+			- lam/lib/modules/groupOfNamesUser.inc (?)
+			- lam/lib/modules/groupOfUniqueNames.inc (?)
+			- lam/lib/modules/guacamole.inc (?)
 			- lam/lib/modules/qmailUser.inc (?)
+			- lam/lib/modules/passwordSelfReset.inc (?)
 			- lam/lib/modules/ppolicyUser.inc (?)
 			- lam/lib/modules/lastBind.inc (?)
 			- lam/lib/modules/locking389ds.inc (?)
@@ -44,3 +51,5 @@ parameters:
 		- '#Call to .*method .* on an unknown class LAM\\DB\\CronDatabase.*#'
 		- '#.* has invalid type LAM\\ENV\\.*#'
 		- '#.* has invalid type LAM\\DB\\.*#'
+		- '#Call to an undefined method baseModule::getBackupEmail\(\).#'
+		- '#Call to an undefined method baseModule::getMembers\(\).#'
