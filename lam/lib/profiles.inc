@@ -10,7 +10,6 @@ use \LAMException;
 use PDO;
 use ServerProfilePersistenceManager;
 use function LAM\PERSISTENCE\dbTableExists;
-use function PHPUnit\Framework\isEmpty;
 
 /*
 
