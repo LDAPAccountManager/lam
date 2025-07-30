@@ -17,18 +17,18 @@ parameters:
 			- lam/lib/modules/shadowAccount.inc
 			- lam/lib/modules/windowsUser.inc
 		analyseAndScan:
-			- lam/templates/lists/changePassword.php
-			- lam/templates/selfService/*.php
-			- lam/lib/cron.inc
-			- lam/lib/database.inc
-			- lam/lib/env.inc
-			- lam/lib/jobs.inc
-			- lam/lib/passwordExpirationJob.inc
-			- lam/lib/modules/qmailUser.inc
-			- lam/lib/modules/ppolicyUser.inc
-			- lam/lib/modules/lastBind.inc
-			- lam/lib/modules/locking389ds.inc
-			- lam/lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc
+			- lam/templates/lists/changePassword.php (?)
+			- lam/templates/selfService/*.php (?)
+			- lam/lib/cron.inc (?)
+			- lam/lib/database.inc (?)
+			- lam/lib/env.inc (?)
+			- lam/lib/jobs.inc (?)
+			- lam/lib/passwordExpirationJob.inc (?)
+			- lam/lib/modules/qmailUser.inc (?)
+			- lam/lib/modules/ppolicyUser.inc (?)
+			- lam/lib/modules/lastBind.inc (?)
+			- lam/lib/modules/locking389ds.inc (?)
+			- lam/lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc (?)
 	ignoreErrors:
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Offset .SID. on array.*in isset\(\) always exists.*#'
