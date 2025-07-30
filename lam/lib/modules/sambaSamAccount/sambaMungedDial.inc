@@ -2,7 +2,7 @@
 /*
   This code is part of GOsa (https://gosa.gonicus.de)
   Copyright (C) 2004  Cajus Pollmeier
-                2024  Roland Gruber
+                2024 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -329,7 +329,7 @@ class sambaMungedDial {
 
 	/** Sets Terminal-Server-Login value: enabled/disabled */
 	function setTsLogin($checked) {
-		$flag = substr($this->ctx['CtxCfgFlags1'], 5, 1);
+		$flag = (int) substr($this->ctx['CtxCfgFlags1'], 5, 1);
 
 		if ($checked) {
 			$flag |= 1;
@@ -349,7 +349,7 @@ class sambaMungedDial {
 
 	/** sets Broken-Connection value: disconnect/reset */
 	function setBrokenConn($checked) {
-		$flag = substr($this->ctx['CtxCfgFlags1'], 5, 1);
+		$flag = (int) substr($this->ctx['CtxCfgFlags1'], 5, 1);
 
 		if ($checked) {
 			$flag |= 4;
@@ -369,7 +369,7 @@ class sambaMungedDial {
 
 	/** sets Reconnection value: from any client/from previous client only */
 	function setReConn($checked) {
-		$flag = substr($this->ctx['CtxCfgFlags1'], 5, 1);
+		$flag = (int) substr($this->ctx['CtxCfgFlags1'], 5, 1);
 
 		if ($checked) {
 			$flag |= 2;

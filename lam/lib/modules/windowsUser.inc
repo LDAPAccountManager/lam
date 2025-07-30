@@ -4314,7 +4314,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$timeBase = new DateTime('1601-01-01', getTimeZone());
 		$time = new DateTime("$year-$month-$day", getTimeZone());
 		$timeDiff = $time->diff($timeBase);
-		$days = $timeDiff->format('%a');
+		$days = (int) $timeDiff->format('%a');
 		$seconds = $days * 24 * 3600 - ($time->getOffset());
 		return $seconds . '0000000';
 	}

@@ -253,7 +253,7 @@ class kolabUser extends baseModule {
 			// mailbox quota
 			$mailQuota = '';
 			if (!empty($this->attributes['mailQuota'][0])) {
-				$mailQuota = $this->attributes['mailQuota'][0] / 1024;
+				$mailQuota = ((int) $this->attributes['mailQuota'][0]) / 1024;
 			}
 			$mailQuotaField = new htmlResponsiveInputField(_('Mailbox quota'), 'mailQuota', $mailQuota, 'mailQuota');
 			$mailQuotaField->setMinimumAndMaximumNumber();
@@ -624,7 +624,7 @@ class kolabUser extends baseModule {
 		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		$mailQuota = '';
 		if (!empty($this->attributes['mailQuota'][0])) {
-			$mailQuota = ($this->attributes['mailQuota'][0] / 1024) . 'MB';
+			$mailQuota = (((int) $this->attributes['mailQuota'][0]) / 1024) . 'MB';
 		}
 		$this->addPDFKeyValue($return, 'mailQuota', _('Mailbox quota'), $mailQuota);
 		return $return;

@@ -229,7 +229,7 @@ function printTable(&$pdf, $table, $fontName) {
 		foreach ($row->cells as $cell) {
 			$width = $cell->width;
 			if (!empty($width) && (str_contains($width, '%'))) {
-				$width = ceil(LAMPDF_LINEWIDTH * substr($width, 0, -1) / 100);
+				$width = ceil(LAMPDF_LINEWIDTH * ((int) substr($width, 0, -1)) / 100);
 			}
 			if ($cell->bold) {
 				$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);

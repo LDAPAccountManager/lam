@@ -390,7 +390,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowexpire'][0])) {
-				$shAccExpirationDate = $this->attributes['shadowexpire'][0];
+				$shAccExpirationDate = (int) $this->attributes['shadowexpire'][0];
 				$date = new DateTime('@' . $shAccExpirationDate * 3600 * 24, new DateTimeZone('UTC'));
 				$expirationDate = $date->format('d.m.Y');
 			}
@@ -403,7 +403,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 
 			$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowlastchange'][0])) {
-				$shPwdChangeDate = $this->attributes['shadowlastchange'][0];
+				$shPwdChangeDate = (int) $this->attributes['shadowlastchange'][0];
 				$date = new DateTime('@' . $shPwdChangeDate * 3600 * 24, new DateTimeZone('UTC'));
 				$pwdChangeDate = $date->format('d.m.Y');
 			}
@@ -591,12 +591,12 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		$timeZone = getTimeZone();
 		$shadowLastChange = '';
 		if (!empty($this->attributes['shadowlastchange'][0])) {
-			$time = new DateTime('@' . $this->attributes['shadowlastchange'][0] * 24 * 3600, $timeZone);
+			$time = new DateTime('@' . ((int) $this->attributes['shadowlastchange'][0]) * 24 * 3600, $timeZone);
 			$shadowLastChange = $time->format('d.m.Y');
 		}
 		$shadowExpire = '';
 		if (!empty($this->attributes['shadowexpire'][0])) {
-			$time = new DateTime('@' . $this->attributes['shadowexpire'][0] * 24 * 3600);
+			$time = new DateTime('@' . ((int) $this->attributes['shadowexpire'][0]) * 24 * 3600);
 			$shadowExpire = $time->format('d.m.Y');
 		}
 		$return = [];
@@ -913,7 +913,8 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		if (isset($_POST['forcePasswordChangeUnix'])
 			&& isset($this->attributes['shadowmax'][0])
 			&& ($this->attributes['shadowmax'][0] != 0)) {
-			$attrs['shadowlastchange'][0] = intval(time() / 3600 / 24) - $this->attributes['shadowmax'][0] - 1;
+			$attrs['shadowlastchange'][0] = intval(time() / 3600 / 24)
+				- ((int) $this->attributes['shadowmax'][0]) - 1;
 		}
 		return $attrs;
 	}
@@ -991,8 +992,9 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 			$attributes['shadowexpire'][0] = '1';
 		}
 		if (in_array(self::STATUS_PASSWORD_EXPIRED, $lockIds)) {
-			$inactive = empty($attributes['shadowinactive'][0]) ? 0 : $attributes['shadowinactive'][0];
-			$attributes['shadowlastchange'][0] = (string) (intval(time() / 3600 / 24) - $attributes['shadowmax'][0] - $inactive - 1);
+			$inactive = empty($attributes['shadowinactive'][0]) ? 0 : (int) $attributes['shadowinactive'][0];
+			$attributes['shadowlastchange'][0] = (string) (intval(time() / 3600 / 24)
+				- ((int) $attributes['shadowmax'][0]) - $inactive - 1);
 		}
 	}
 

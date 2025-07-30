@@ -323,13 +323,13 @@ class windowsGroup extends baseModule {
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;
 		if (isset($this->attributes['groupType'][0])) {
-			if (($this->attributes['groupType'][0] & 4) !== 0) {
+			if ((((int) $this->attributes['groupType'][0]) & 4) !== 0) {
 				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
 			}
-			elseif (($this->attributes['groupType'][0] & 8) !== 0) {
+			elseif ((((int) $this->attributes['groupType'][0]) & 8) !== 0) {
 				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
 			}
-			if (($this->attributes['groupType'][0] & 0x80000000) === 0) {
+			if ((((int) $this->attributes['groupType'][0]) & 0x80000000) === 0) {
 				$groupType = windowsGroup::TYPE_DISTRIBUTION;
 			}
 		}
@@ -337,11 +337,11 @@ class windowsGroup extends baseModule {
 		// do not allow invalid conversions
 		if (isset($this->orig['groupType'][0])) {
 			$flippedScopes = array_flip($this->groupScopes);
-			if (($this->orig['groupType'][0] & 2) !== 0) {
+			if ((((int) $this->orig['groupType'][0]) & 2) !== 0) {
 				// no change from global to domain local
 				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_DOMAIN_LOCAL]]);
 			}
-			elseif (($this->orig['groupType'][0] & 4) !== 0) {
+			elseif ((((int) $this->orig['groupType'][0]) & 4) !== 0) {
 				// no change from domain local to global
 				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_GLOBAL]]);
 			}
@@ -897,13 +897,13 @@ class windowsGroup extends baseModule {
 		$groupType = windowsGroup::TYPE_SECURITY;
 		$groupScope = windowsGroup::SCOPE_GLOBAL;
 		if (isset($this->attributes['groupType'][0])) {
-			if (($this->attributes['groupType'][0] & 4) !== 0) {
+			if ((((int) $this->attributes['groupType'][0]) & 4) !== 0) {
 				$groupScope = windowsGroup::SCOPE_DOMAIN_LOCAL;
 			}
-			elseif (($this->attributes['groupType'][0] & 8) !== 0) {
+			elseif ((((int) $this->attributes['groupType'][0]) & 8) !== 0) {
 				$groupScope = windowsGroup::SCOPE_UNIVERSAL;
 			}
-			if (($this->attributes['groupType'][0] & 0x80000000) === 0) {
+			if ((((int) $this->attributes['groupType'][0]) & 0x80000000) === 0) {
 				$groupType = windowsGroup::TYPE_DISTRIBUTION;
 			}
 		}

@@ -682,7 +682,7 @@ class sambaGroupMapping extends baseModule {
 			}
 		}
 		if (!$wrid) {
-			$this->attributes['sambaSID'][0] = $SID . "-" . ($this->getGID() * 2 + $RIDbase + 1);
+			$this->attributes['sambaSID'][0] = $SID . "-" . (((int) $this->getGID()) * 2 + $RIDbase + 1);
 		}
 		// delete local members
 		foreach (array_keys($_POST) as $key) {

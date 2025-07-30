@@ -232,13 +232,13 @@ class quota extends baseModule {
 					$this->quota[$server][$i][4] = '-';
 				}
 				else {
-					$this->quota[$server][$i][4] = intval(($this->quota[$server][$i][4] - time()) / 3600) . ' ' . _('hours');
+					$this->quota[$server][$i][4] = intval((((int) $this->quota[$server][$i][4]) - time()) / 3600) . ' ' . _('hours');
 				}
 				if ($this->quota[$server][$i][8] < time()) {
 					$this->quota[$server][$i][8] = '-';
 				}
 				else {
-					$this->quota[$server][$i][8] = intval(($this->quota[$server][$i][8] - time()) / 3600) . ' ' . _('hours');
+					$this->quota[$server][$i][8] = intval((((int) $this->quota[$server][$i][8]) - time()) / 3600) . ' ' . _('hours');
 				}
 			}
 		}
@@ -448,28 +448,28 @@ class quota extends baseModule {
 			return (int) $quotaInput;
 		}
 		if (str_ends_with($quotaInput, 'K')) {
-			return (int) substr($quotaInput, 0, -1);
+			return (int) ((int) substr($quotaInput, 0, -1));
 		}
 		if (str_ends_with($quotaInput, 'M')) {
-			return 1024 * substr($quotaInput, 0, -1);
+			return 1024 * ((int) substr($quotaInput, 0, -1));
 		}
 		if (str_ends_with($quotaInput, 'G')) {
-			return 1024 * 1024 * substr($quotaInput, 0, -1);
+			return 1024 * 1024 * ((int) substr($quotaInput, 0, -1));
 		}
 		if (str_ends_with($quotaInput, 'T')) {
-			return 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
+			return 1024 * 1024 * 1024 * ((int) substr($quotaInput, 0, -1));
 		}
 		if (str_ends_with($quotaInput, 'k')) {
-			return 1000 * substr($quotaInput, 0, -1);
+			return 1000 * ((int) substr($quotaInput, 0, -1));
 		}
 		if (str_ends_with($quotaInput, 'm')) {
-			return 1000 * 1000 * substr($quotaInput, 0, -1);
+			return 1000 * 1000 * ((int) substr($quotaInput, 0, -1));
 		}
 		if (str_ends_with($quotaInput, 'g')) {
-			return 1000 * 1000 * 1000 * substr($quotaInput, 0, -1);
+			return 1000 * 1000 * 1000 * ((int) substr($quotaInput, 0, -1));
 		}
 		if (str_ends_with($quotaInput, 't')) {
-			return 1000 * 1000 * 1000 * 1000 * substr($quotaInput, 0, -1);
+			return 1000 * 1000 * 1000 * 1000 * ((int) substr($quotaInput, 0, -1));
 		}
 		return (int) $quotaInput;
 	}
