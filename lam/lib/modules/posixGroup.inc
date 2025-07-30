@@ -1401,7 +1401,7 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * @inheritDoc
 	 */
-	public function getPasswordQuickChangeOptions(): array {
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array {
 		return [];
 	}
 

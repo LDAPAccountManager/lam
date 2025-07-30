@@ -2422,9 +2422,10 @@ interface passwordService {
 	/**
 	 * Returns a list of password quick change options.
 	 *
+	 * @param bool $forcePasswordChangeByDefault password change should be preselected
 	 * @return PasswordQuickChangeOption[] options
 	 */
-	public function getPasswordQuickChangeOptions(): array;
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array;
 
 	/**
 	 * Returns a list of LDAP attribute changes to perform.

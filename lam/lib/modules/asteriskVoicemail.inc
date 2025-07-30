@@ -543,7 +543,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	/**
 	 * @inheritDoc
 	 */
-	public function getPasswordQuickChangeOptions(): array {
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array {
 		$options = [];
 		if (in_array_ignore_case('AsteriskVoiceMail', $this->attributes['objectClass'])) {
 			$options[] = new PasswordQuickChangeOption('syncAsteriskVoiceMail', _('Change Asterisk voicemail password'));

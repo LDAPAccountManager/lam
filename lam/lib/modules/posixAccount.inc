@@ -4215,7 +4215,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * @inheritDoc
 	 */
-	public function getPasswordQuickChangeOptions(): array {
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array {
 		if (!in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
 			return [];
 		}

@@ -4648,7 +4648,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * @inheritDoc
 	 */
-	public function getPasswordQuickChangeOptions(): array {
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array {
 		if (!in_array_ignore_case('user', $this->attributes['objectClass'])) {
 			return [];
 		}

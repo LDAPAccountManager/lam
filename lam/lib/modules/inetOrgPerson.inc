@@ -3944,7 +3944,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * @inheritDoc
 	 */
-	public function getPasswordQuickChangeOptions(): array {
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array {
 		if ($this->isUnixActive() && in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
 			return [];
 		}

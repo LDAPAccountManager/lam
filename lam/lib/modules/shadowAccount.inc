@@ -2,7 +2,6 @@
 
 use LAM\JOB\AccountExpirationCleanupJob;
 use LAM\JOB\PasswordExpirationJob;
-use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 use LAM\TYPES\ConfiguredType;
 
 /*
@@ -892,10 +891,10 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * @inheritDoc
 	 */
-	public function getPasswordQuickChangeOptions(): array {
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array {
 		$options = [];
 		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
-			$options[] = new PasswordQuickChangeOption('forcePasswordChangeUnix', _('Force Unix password change'), isPasswordChangeByDefault());
+			$options[] = new PasswordQuickChangeOption('forcePasswordChangeUnix', _('Force Unix password change'), $forcePasswordChangeByDefault);
 		}
 		return $options;
 	}

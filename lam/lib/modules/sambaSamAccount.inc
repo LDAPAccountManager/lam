@@ -3,7 +3,6 @@
 use LAM\REMOTE\Remote;
 use LAM\TYPES\ConfiguredType;
 use LDAP\Connection;
-use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 
 /*
 
@@ -2900,7 +2899,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * @inheritDoc
 	 */
-	public function getPasswordQuickChangeOptions(): array {
+	public function getPasswordQuickChangeOptions(bool $forcePasswordChangeByDefault): array {
 		$options = [];
 		if (isset($this->attributes['sambaacctflags'][0])
 			&& (str_contains($this->attributes['sambaacctflags'][0], 'L')
@@ -2909,7 +2908,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		}
 		if (in_array_ignore_case('sambaSamAccount', $this->attributes['objectClass'])) {
 			$options[] = new PasswordQuickChangeOption('syncSambaNT', _('Change Samba NT password'));
-			$options[] = new PasswordQuickChangeOption('forcePasswordChangeSamba', _('Force Samba password change'), isPasswordChangeByDefault());
+			$options[] = new PasswordQuickChangeOption('forcePasswordChangeSamba', _('Force Samba password change'), $forcePasswordChangeByDefault);
 		}
 		if (isset($this->attributes['sambaPwdLastSet'][0])) {
 			$options[] = new PasswordQuickChangeOption('updateSambaTimestamps', _('Update Samba password timestamp'));

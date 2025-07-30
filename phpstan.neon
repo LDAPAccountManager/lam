@@ -15,8 +15,6 @@ parameters:
 		analyseAndScan:
 			- */lists/changePassword.php
 	ignoreErrors:
-		- '#Function [a-zA-Z0-9\\_-]+ not found.#'
-		- '#Used function [a-zA-Z0-9\\_-]+ not found.#'
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Binary operation .* between .* and .* results in an error.#'
 		- '#Offset .SID. on array.*in isset\(\) always exists.*#'
