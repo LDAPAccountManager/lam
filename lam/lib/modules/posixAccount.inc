@@ -674,6 +674,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$posixGroupModule = $posixGroupRfc2307bisModule;
 					$isRfc2307bis = true;
 				}
+				$errors = [];
 				$nextGid = $posixGroupModule->getNextGIDs(1, $errors, $groupType);
 				unset($_SESSION[$sessionKey]);
 				if ($nextGid !== null) {

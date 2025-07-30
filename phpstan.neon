@@ -18,6 +18,7 @@ parameters:
 			- lam/lib/modules/shadowAccount.inc
 			- lam/lib/modules/windowsUser.inc
 		analyseAndScan:
+			- lam/templates/config/job*.php (?)
 			- lam/templates/lists/changePassword.php (?)
 			- lam/templates/selfService/*.php (?)
 			- lam/lib/cron.inc (?)
@@ -30,12 +31,17 @@ parameters:
 			- lam/lib/modules/groupOfNamesUser.inc (?)
 			- lam/lib/modules/groupOfUniqueNames.inc (?)
 			- lam/lib/modules/guacamole.inc (?)
+			- lam/lib/modules/heimdalKerberos.inc (?)
+			- lam/lib/modules/mitKerberos.inc (?)
+			- lam/lib/modules/mitKerberosStructural.inc (?)
 			- lam/lib/modules/qmailUser.inc (?)
 			- lam/lib/modules/passwordSelfReset.inc (?)
 			- lam/lib/modules/ppolicyUser.inc (?)
 			- lam/lib/modules/lastBind.inc (?)
 			- lam/lib/modules/locking389ds.inc (?)
+			- lam/lib/modules/rfc2307bisPosixGroup.inc (?)
 			- lam/lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc (?)
+			- lam/lib/plugins/extendedInvalidCredentials/MitKerberosExtraInvalidCredentialsProvider.inc (?)
 	ignoreErrors:
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Offset .SID. on array.*in isset\(\) always exists.*#'
@@ -45,7 +51,6 @@ parameters:
 		- '#.*class LAM\\JOB\\.* not found.*#'
 		- '#.*class LAM\\ENV\\.* not found.*#'
 		- '#.*class LAM\\DB\\CronDatabase.* not found.*#'
-		- '#.*Function LAM\\JOB\\.* not found.*#'
 		- '#Call to .*method .* on an unknown class LAM\\ENV\\.*#'
 		- '#Call to .*method .* on an unknown class LAM\\JOB\\.*#'
 		- '#Call to .*method .* on an unknown class LAM\\DB\\CronDatabase.*#'
@@ -53,3 +58,5 @@ parameters:
 		- '#.* has invalid type LAM\\DB\\.*#'
 		- '#Call to an undefined method baseModule::getBackupEmail\(\).#'
 		- '#Call to an undefined method baseModule::getMembers\(\).#'
+		- '#Call to an undefined method baseModule::getNextGIDs\(\).#'
+		- '#Call to an undefined method baseModule::setExpirationDate\(\).#'
