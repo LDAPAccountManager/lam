@@ -448,7 +448,7 @@ class quota extends baseModule {
 			return (int) $quotaInput;
 		}
 		if (str_ends_with($quotaInput, 'K')) {
-			return (int) ((int) substr($quotaInput, 0, -1));
+			return (int) substr($quotaInput, 0, -1);
 		}
 		if (str_ends_with($quotaInput, 'M')) {
 			return 1024 * ((int) substr($quotaInput, 0, -1));
