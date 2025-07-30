@@ -12,11 +12,35 @@ parameters:
 	excludePaths:
 		analyse:
 			- */3rdParty/*
+			# phpstan cannot ignore unknown class errors, skip these files
+			- lam/lib/modules/freeRadius.inc
+			- lam/lib/modules/shadowAccount.inc
+			- lam/lib/modules/windowsUser.inc
 		analyseAndScan:
-			- */lists/changePassword.php
+			- lam/templates/lists/changePassword.php
+			- lam/templates/selfService/*.php
+			- lam/lib/cron.inc
+			- lam/lib/database.inc
+			- lam/lib/env.inc
+			- lam/lib/jobs.inc
+			- lam/lib/passwordExpirationJob.inc
+			- lam/lib/modules/qmailUser.inc
+			- lam/lib/modules/ppolicyUser.inc
+			- lam/lib/modules/lastBind.inc
+			- lam/lib/modules/locking389ds.inc
+			- lam/lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc
 	ignoreErrors:
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Offset .SID. on array.*in isset\(\) always exists.*#'
 		- '#Offset .preferred_username. does not exist on.*#'
 		- '#Strict comparison using !== between non-empty-list.*will always evaluate to true.*#'
 		- '#Strict comparison using !== between non-empty-array.*will always evaluate to true.*#'
+		- '#.*class LAM\\JOB\\.* not found.*#'
+		- '#.*class LAM\\ENV\\.* not found.*#'
+		- '#.*class LAM\\DB\\CronDatabase.* not found.*#'
+		- '#.*Function LAM\\JOB\\.* not found.*#'
+		- '#Call to .*method .* on an unknown class LAM\\ENV\\.*#'
+		- '#Call to .*method .* on an unknown class LAM\\JOB\\.*#'
+		- '#Call to .*method .* on an unknown class LAM\\DB\\CronDatabase.*#'
+		- '#.* has invalid type LAM\\ENV\\.*#'
+		- '#.* has invalid type LAM\\DB\\.*#'
