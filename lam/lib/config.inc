@@ -1616,7 +1616,7 @@ class LAMConfig {
 	 * @return boolean true if $value has correct format
 	 */
 	public function set_scriptPath($value) {
-		if ($value === null) {
+		if (($value === null) || ($value === '')) {
 			$this->scriptPath = ""; // optional parameter
 		}
 		elseif (preg_match("/^\\/([a-z0-9_-])+(\\/([a-z0-9_\\.-])+)+$/i", $value)) {
