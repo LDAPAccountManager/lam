@@ -1888,7 +1888,7 @@ function getCallingURL($baseUrl = ''): ?string {
 }
 
 /**
- * Returns the offset in hours from configured time zone to GMT.
+ * Returns the offset in hours from the configured time zone to GMT.
  *
  * @return float offset
  */
