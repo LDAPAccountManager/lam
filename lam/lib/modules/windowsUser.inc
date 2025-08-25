@@ -64,6 +64,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime', 'personaltitle', 'roomnumber',
 		'jpegPhoto', 'thumbnailphoto'];
 
+	/** HEX to binary conversion table */
+	private const HEX2BIT_STRING = ['0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
+		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'a' => '1010',
+		'b' => '1011', 'c' => '1100', 'd' => '1101', 'e' => '1110', 'f' => '1111'];
+
 	/** initial account flags */
 	private const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
 	/** password never expires */
@@ -154,7 +159,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'lastLogonTimestamp', 'accountexpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
 			'businessCategory', 'department', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
 			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockouttime', 'userWorkstations', 'roomnumber',
-			'personaltitle', 'thumbnailphoto'
+			'personaltitle', 'thumbnailphoto', 'logonhours'
 		];
 		$return['hiddenAttributes'] = ['msds-userpasswordexpirytimecomputed'];
 		// help Entries
@@ -327,6 +332,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'lastLogonTimestamp' => [
 				"Headline" => _('Last login'), 'attr' => 'lastLogonTimestamp',
 				"Text" => _('Time of user\'s last login.')
+			],
+			"logonhours" => [
+				"Headline" => _("Logon hours"), 'attr' => 'logonHours',
+				"Text" => _("This option defines the allowed logon hours for this account.")
 			],
 			'accountexpires' => [
 				"Headline" => _('Account expiration date'), 'attr' => 'accountExpires',
@@ -1611,6 +1620,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$userWorkstationsGroup->addElement(new htmlHelpLink('userWorkstations'));
 			$containerLeft->addField($userWorkstationsGroup);
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidelogonHours')) {
+			$containerLeft->addLabel(new htmlOutputText(_('Logon hours')));
+			$logonHoursGroup = new htmlGroup();
+			$logonHoursGroup->addElement(new htmlAccountPageButton(static::class, 'logonHours', 'open', _('Edit')));
+			$logonHoursGroup->addElement(new htmlSpacer('0.5rem', null));
+			$logonHoursGroup->addElement(new htmlHelpLink('logonhours'));
+			$containerLeft->addField($logonHoursGroup);
+		}
 		// user profile area
 		$showProfilePath = !$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath');
 		$showScriptPath = !$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath');
@@ -2842,6 +2859,96 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				}
 			}
 		}
+		return [];
+	}
+
+	/**
+	 * This function will create the HTML page to edit logon hours.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
+	function display_html_logonHours() {
+		$return = new htmlResponsiveRow();
+		$timeZone = getTimeZoneOffsetHours();
+		$titles = [_('Time'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'),
+			_('Friday'), _('Saturday'), _('Sunday')];
+		$data = [];
+		if (!isset($this->attributes['logonhours'][0]) || ($this->attributes['logonhours'][0] === '')) {
+			$this->attributes['logonhours'][0] = pack( 'H*', 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+		}
+		// convert the existing logonHours string to a bit array
+		$logonHoursHex = unpack('H*', $this->attributes['logonhours'][0])[1];
+		$logonHoursDual = '';
+		for ($i = 0; $i < strlen($logonHoursHex); $i++) {
+			$logonHoursDual .= self::HEX2BIT_STRING[$logonHoursHex[$i]];
+		}
+		// reverse bits low to high (1 is 0:00 Sunday, 2 is 1:00 Sunday, etc.)
+		$logonHours = "";
+		for ($i = 0; $i < 21; $i++) {
+			$logonHours .= strrev(substr($logonHoursDual, $i * 8, 8));
+		}
+		$hour = [];
+		for ($i = 0; $i < 24 * 7; $i++) {
+			$hour[$i] = substr($logonHours, $i, 1);
+		}
+		// display input
+		$boxes = [];
+		// dynamically place boxes depending on time zone
+		for ($i = 0; $i < 24 * 7; $i++) {
+			$hr = $i - $timeZone;
+			if ($hr < 0) {
+				$hr += 24 * 7;
+			}
+			elseif ($hr >= 24 * 7) {
+				$hr -= 24 * 7;
+			}
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
+			$boxes[$i % 24][floor($i / 24)] = $checkbox;
+		}
+		for ($h = 0; $h < 24; $h++) {
+			$hour = str_pad($h, 2, '0', STR_PAD_LEFT);
+			$row = [];
+			$row[] = new htmlOutputText("$hour:00 - " . str_pad($h + 1, 2, '0', STR_PAD_LEFT) . ":00");
+			for ($d = 1; $d < 7; $d++) {
+				$row[] = $boxes[$h][$d];
+			}
+			$row[] = $boxes[$h][0]; // Sunday goes last
+			$data[] = $row;
+		}
+		$return->add(new htmlResponsiveTable($titles, $data));
+
+		$return->addVerticalSpacer('2rem');
+		$return->addLabel(new htmlAccountPageButton(static::class, 'attributes', 'submit', _('Ok')));
+		$return->addField(new htmlAccountPageButton(static::class, 'attributes', 'abort', _('Cancel')));
+		return $return;
+	}
+
+	/**
+	 * Processes user input of the logon hours page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
+	function process_logonHours() {
+		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
+			return [];
+		}
+		// set new logon hours
+		$logonHours = '';
+		for ($i = 0; $i < 24 * 7; $i++) {
+			$logonHours .= isset($_POST['lh_' . $i]) ? '1' : '0';
+		}
+		// reconstruct HEX string
+		$bitstring2hex = array_flip(self::HEX2BIT_STRING);
+		$logonHoursNew = '';
+		for ($i = 0; $i < 21; $i++) {
+			$part = strrev(substr($logonHours, $i * 8, 8));
+			$byte['hi'] = substr($part, 0, 4);
+			$byte['low'] = substr($part, 4, 4);
+			$hex = $bitstring2hex[$byte['hi']] . $bitstring2hex[$byte['low']];
+			$logonHoursNew .= $hex;
+		}
+		$this->attributes['logonhours'][0] = pack('H*', $logonHoursNew);
 		return [];
 	}
 
@@ -4354,6 +4461,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$hiddenOptions[_('Last password change')] = ['windowsUser_hidepwdLastSet', false];
 		$hiddenOptions[_('Password expiration')] = ['windowsUser_hidepwdChangeRequired', false];
 		$hiddenOptions[_('Last login')] = ['windowsUser_hidelastLogonTimestamp', false];
+		$hiddenOptions[_('Logon hours')] = ['windowsUser_hidelogonHours', false];
 		$hiddenOptions[_('Workstations')] = ['windowsUser_hideWorkstations', false];
 		$hiddenOptions[_('Photo')] = ['windowsUser_hidejpegPhoto', true];
 		$hiddenOptions[_('Thumbnail')] = ['windowsUser_hidethumbnailphoto', true];
