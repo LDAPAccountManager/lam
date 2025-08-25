@@ -128,7 +128,11 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) // WebAuthn
 			}
 		}
 		catch (Exception $e) {
-			logNewMessage(LOG_WARNING, '2-factor verification failed: ' . $e->getMessage());
+            $errorMessage = $e->getMessage();
+            if ($e->getPrevious() !== null) {
+                $errorMessage .= ' - ' . $e->getPrevious()->getMessage();
+            }
+			logNewMessage(LOG_WARNING, '2-factor verification failed: ' . $errorMessage);
 			header("HTTP/1.1 403 Forbidden");
 		}
 		if ($twoFactorValid) {
