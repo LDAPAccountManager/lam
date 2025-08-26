@@ -5,6 +5,8 @@ September 2025 9.3
  - LAM Pro:
   -> SMS support for password sending and password self-reset (441)
   -> Self-Service: clear PPolicy "pwdReset" on password change if needed (448)
+ - Fixed bugs:
+  -> WebAuthn: 2-factor verification failed: Unable to load the data (453)
 
 
 06.06.2025 9.2
