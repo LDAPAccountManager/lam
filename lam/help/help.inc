@@ -239,7 +239,7 @@ $helpArray = [
 					"Text" => _("Please select if the connection should be encrypted via TLS, SSL or not at all.")
 				],
 				"257" => ["Headline" => _("Hide LDAP details on failed login"),
-					"Text" => _("If activated, LAM will not display and details why the login to LAM failed. Use this if you have high security requirements and want to prevent e.g. user name guessing.")
+					"Text" => _("If activated, LAM will not display any details why the login to LAM failed. Use this if you have high security requirements and want to prevent e.g. user name guessing.")
 				],
 				"258" => ["Headline" => _("Mail attribute"),
 					"Text" => _("This LDAP attribute contains the account's primary mail address.")
