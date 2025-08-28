@@ -141,7 +141,7 @@ if (isset($_POST['save'])) {
 		}
 		catch (LAMException $e) {
 			logNewMessage(LOG_ERR, $e->getTitle());
-			$errors[] = ["ERROR", _("Unable to save profile!"), $_POST['profname']];
+			$errors[] = ["ERROR", _("Unable to save profile!")];
 		}
 	}
 }

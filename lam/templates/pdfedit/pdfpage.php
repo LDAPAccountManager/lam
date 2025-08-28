@@ -22,6 +22,7 @@ use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFSectionEntry;
+use LAM\TYPES\TypeManager;
 use LAMException;
 
 /*
@@ -88,12 +89,12 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
-// Write $_POST variables to $_GET when form was submitted via post
+// Write $_POST variables to $_GET when the form was submitted via post
 if (isset($_POST['type'])) {
 	$_GET = $_POST;
 }
 
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 $type = $typeManager->getConfiguredType($_GET['type']);
 if (($type === null) || $type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 	logNewMessage(LOG_ERR, 'User tried to access hidden PDF structure: ' . $_GET['type']);
@@ -101,7 +102,7 @@ if (($type === null) || $type->isHidden() || !checkIfWriteAccessIsAllowed($type-
 }
 
 
-// Abort and go back to main pdf structure page
+// Abort and go back to the main PDF structure page
 if (isset($_GET['abort'])) {
 	metarefresh('pdfmain.php');
 	exit;
@@ -109,15 +110,15 @@ if (isset($_GET['abort'])) {
 
 $pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 
-// Load PDF structure from file if it is not defined in session
+// Load PDF structure from the file if it is not defined in session
 if (!isset($_SESSION['currentPDFStructure'])) {
-	// Load structure file to be edit
+	// Load structure file to be edited
 	try {
 		if (isset($_GET['edit'])) {
 			$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
 				$type->getId(), $_GET['edit']);
 		}
-		// Load default structure file when creating a new one
+		// Load the default structure file when creating a new one
 		else {
 			$structureNames = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(),
 				$type->getId());
