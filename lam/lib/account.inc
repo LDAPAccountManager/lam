@@ -325,14 +325,15 @@ function pwd_is_enabled($hash) {
  * Generates a random password with 14 digits by default.
  *
  * @param int $length length of password (defaults to 14)
- * @param bool $checkStrength check if password matches the policy
+ * @param bool $checkStrength check if the password matches the policy
  * @return String password
  */
 function generateRandomPassword($length = 14, bool $checkStrength = true): string {
 	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
 	$minLength = $_SESSION['cfgMain']->passwordMinLength;
-	if ($minLength > $length) {
-		$length = $minLength;
+	$length = max($length, $minLength);
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinLength())) {
+		$length = max($length, $_SESSION['config']->getPwdPolicyMinLength());
 	}
 	for ($x = 0; $x < 10000; $x++) {
 		$password = '';
@@ -340,7 +341,7 @@ function generateRandomPassword($length = 14, bool $checkStrength = true): strin
 			$rand = abs(getRandomNumber() % 65);
 			$password .= $list[$rand];
 		}
-		if (!$checkStrength || checkPasswordStrength($password, null, null) === true) {
+		if (!$checkStrength || checkPasswordStrength($password, null, []) === true) {
 			break;
 		}
 	}

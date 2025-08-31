@@ -7,6 +7,7 @@ September 2025 9.3
   -> Self-Service: clear PPolicy "pwdReset" on password change if needed (448)
  - Fixed bugs:
   -> WebAuthn: 2-factor verification failed: Unable to load the data (453)
+  -> Random password generator does not respect server profile rules (458)
 
 
 06.06.2025 9.2
