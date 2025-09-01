@@ -48,6 +48,11 @@ echo "Generating French translation template"
 tar -czf messages.po_fr.tar.gz messages.po
 echo " "
 
+echo "Generating Greek translation template"
+./make_po_el
+tar -czf messages.po_el.tar.gz messages.po
+echo " "
+
 echo "Generating Hungarian translation template"
 ./make_po_hu
 tar -czf messages.po_hu.tar.gz messages.po

@@ -44,6 +44,7 @@ RUN apt-get install -y locales
 RUN sed -i 's/^# *\(ca_ES.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(cz_CZ.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(el_GR.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(en_GB.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && \
         sed -i 's/^# *\(es_ES.UTF-8\)/\1/' /etc/locale.gen && \
