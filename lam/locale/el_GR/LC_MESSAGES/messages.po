@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: LDAP Account Manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-08-28 09:44+0300\n"
+"PO-Revision-Date: 2025-09-01 20:15+0300\n"
 "Last-Translator: Anastasios Kazakis <anastasios.kazakis@gmail.com>\n"
 "Language-Team: Greek (Greece) (http://app.transifex.com/gruberroland/lam/"
 "language/el_GR/)\n"
@@ -7983,7 +7983,7 @@ msgstr "Τελευταία είσοδος"
 #: ../lib/modules/windowsUser.inc:1412 ../lib/modules/windowsUser.inc:3474
 #: ../lib/modules/windowsUser.inc:4780
 msgid "Last name"
-msgstr "Τελευταίο όνομα"
+msgstr "Επώνυμο"
 
 #: ../lib/modules/windowsLDSUser.inc:782 ../lib/modules/windowsLDSUser.inc:783
 #: ../lib/modules/inetOrgPerson.inc:78 ../lib/modules/inetOrgPerson.inc:79
