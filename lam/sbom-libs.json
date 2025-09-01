@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:ffbec7df-117f-4b36-9f5b-d9808bbee486",
+  "serialNumber" : "urn:uuid:f299eb4c-cd34-4c4e-9f9d-a065d7ba9808",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-05-13T07:01:31Z",
+    "timestamp" : "2025-09-01T18:29:57Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.2"
+      "version" : "9.3"
     }
   },
   "components" : [
@@ -116,7 +116,7 @@
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.20.0",
+      "version" : "11.22.4",
       "licenses" : [
         {
           "license" : {
@@ -124,7 +124,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.20.0"
+      "purl" : "pkg:npm/sweetalert2@11.22.4"
     },
     {
       "type" : "library",
