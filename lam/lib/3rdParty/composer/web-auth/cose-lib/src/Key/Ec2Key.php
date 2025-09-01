@@ -14,6 +14,7 @@ use SpomkyLabs\Pki\ASN1\Type\Tagged\ExplicitlyTaggedType;
 use function array_key_exists;
 use function in_array;
 use function is_int;
+use function sprintf;
 use function strlen;
 
 /**

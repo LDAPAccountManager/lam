@@ -60,7 +60,7 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
 
         if ($time > self::$time || (null !== $mtime && $time !== self::$time)) {
             randomize:
-            self::$rand = unpack('n*', isset(self::$seed) ? random_bytes(10) : self::$seed = random_bytes(16));
+            self::$rand = unpack('S*', isset(self::$seed) ? random_bytes(10) : self::$seed = random_bytes(16));
             self::$rand[1] &= 0x03FF;
             self::$time = $time;
         } else {
@@ -76,7 +76,7 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
             // 24-bit number in the self::$seedParts list and decrement self::$seedIndex.
 
             if (!self::$seedIndex) {
-                $s = unpack('l*', self::$seed = hash('sha512', self::$seed, true));
+                $s = unpack(\PHP_INT_SIZE >= 8 ? 'L*' : 'l*', self::$seed = hash('sha512', self::$seed, true));
                 $s[] = ($s[1] >> 8 & 0xFF0000) | ($s[2] >> 16 & 0xFF00) | ($s[3] >> 24 & 0xFF);
                 $s[] = ($s[4] >> 8 & 0xFF0000) | ($s[5] >> 16 & 0xFF00) | ($s[6] >> 24 & 0xFF);
                 $s[] = ($s[7] >> 8 & 0xFF0000) | ($s[8] >> 16 & 0xFF00) | ($s[9] >> 24 & 0xFF);
@@ -113,7 +113,7 @@ class UuidV7 extends Uuid implements TimeBasedUidInterface
             $time = bin2hex(BinaryUtil::fromBase($time, BinaryUtil::BASE10));
         }
 
-        return substr_replace(sprintf('%012s-%04x-%04x-%04x%04x%04x',
+        return substr_replace(\sprintf('%012s-%04x-%04x-%04x%04x%04x',
             $time,
             0x7000 | (self::$rand[1] << 2) | (self::$rand[2] >> 14),
             0x8000 | (self::$rand[2] & 0x3FFF),

@@ -6,6 +6,7 @@ namespace CBOR;
 
 use InvalidArgumentException;
 use RuntimeException;
+use function sprintf;
 use function strlen;
 
 final class StringStream implements Stream

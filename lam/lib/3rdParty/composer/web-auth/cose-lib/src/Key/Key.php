@@ -6,6 +6,7 @@ namespace Cose\Key;
 
 use InvalidArgumentException;
 use function array_key_exists;
+use function sprintf;
 
 class Key
 {
