@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:c67ed8ce-6024-4df7-8b36-f3a77797b552",
+  "serialNumber": "urn:uuid:b6fbbed0-fd52-4b52-ac76-44afa4c0be57",
   "version": 1,
   "metadata": {
     "tools": [
@@ -12,17 +12,17 @@
       {
         "vendor": "cyclonedx",
         "name": "cyclonedx-php-composer",
-        "version": "v5.2.2",
+        "version": "v5.2.3",
         "externalReferences": [
           {
-            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/a8d672b032bd2abae15da6aeb47e4d87479014ee",
+            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/ca283f9823c937d629180b51ab63e18af117916e",
             "type": "distribution",
-            "comment": "dist reference: a8d672b032bd2abae15da6aeb47e4d87479014ee"
+            "comment": "dist reference: ca283f9823c937d629180b51ab63e18af117916e"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-composer.git",
             "type": "vcs",
-            "comment": "source reference: a8d672b032bd2abae15da6aeb47e4d87479014ee"
+            "comment": "source reference: ca283f9823c937d629180b51ab63e18af117916e"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-composer/#readme",
@@ -44,17 +44,17 @@
       {
         "vendor": "cyclonedx",
         "name": "cyclonedx-library",
-        "version": "v3.5.3",
+        "version": "v3.6.0",
         "externalReferences": [
           {
-            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/7507552f70c54ef166987a55f7278e171d71146f",
+            "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/411301cf229d2e5f40217c38a27b551cdba37ec4",
             "type": "distribution",
-            "comment": "dist reference: 7507552f70c54ef166987a55f7278e171d71146f"
+            "comment": "dist reference: 411301cf229d2e5f40217c38a27b551cdba37ec4"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-library.git",
             "type": "vcs",
-            "comment": "source reference: 7507552f70c54ef166987a55f7278e171d71146f"
+            "comment": "source reference: 411301cf229d2e5f40217c38a27b551cdba37ec4"
           },
           {
             "url": "https://github.com/CycloneDX/cyclonedx-php-library/#readme",
@@ -87,10 +87,131 @@
     "component": {
       "type": "application",
       "name": "ldap-account-manager",
-      "version": "9.2"
+      "version": "9.3"
     }
   },
   "components": [
+    {
+      "type": "library",
+      "bom-ref": "aws/aws-crt-php-1.2.7.0",
+      "author": "AWS SDK Common Runtime Team",
+      "group": "aws",
+      "name": "aws-crt-php",
+      "version": "v1.2.7",
+      "description": "AWS Common Runtime for PHP",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:composer/aws/aws-crt-php@v1.2.7",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/awslabs/aws-crt-php/zipball/d71d9906c7bb63a28295447ba12e74723bd3730e",
+          "type": "distribution",
+          "comment": "dist reference: d71d9906c7bb63a28295447ba12e74723bd3730e"
+        },
+        {
+          "url": "https://github.com/awslabs/aws-crt-php.git",
+          "type": "vcs",
+          "comment": "source reference: d71d9906c7bb63a28295447ba12e74723bd3730e"
+        },
+        {
+          "url": "https://github.com/awslabs/aws-crt-php",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/awslabs/aws-crt-php/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/awslabs/aws-crt-php/tree/v1.2.7",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "d71d9906c7bb63a28295447ba12e74723bd3730e"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "d71d9906c7bb63a28295447ba12e74723bd3730e"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "aws/aws-sdk-php-3.356.8.0",
+      "author": "Amazon Web Services",
+      "group": "aws",
+      "name": "aws-sdk-php",
+      "version": "3.356.8",
+      "description": "AWS SDK for PHP - Use Amazon Web Services in your PHP project",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:composer/aws/aws-sdk-php@3.356.8",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3efa8c62c11fedb17b90f60b2d3a9f815b406e63",
+          "type": "distribution",
+          "comment": "dist reference: 3efa8c62c11fedb17b90f60b2d3a9f815b406e63"
+        },
+        {
+          "url": "https://github.com/aws/aws-sdk-php.git",
+          "type": "vcs",
+          "comment": "source reference: 3efa8c62c11fedb17b90f60b2d3a9f815b406e63"
+        },
+        {
+          "url": "http://aws.amazon.com/sdkforphp",
+          "type": "website",
+          "comment": "as detected from Composer manifest \u0027homepage\u0027"
+        },
+        {
+          "url": "https://github.com/aws/aws-sdk-php/discussions",
+          "type": "other",
+          "comment": "as detected from Composer manifest \u0027support.forum\u0027"
+        },
+        {
+          "url": "https://github.com/aws/aws-sdk-php/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/aws/aws-sdk-php/tree/3.356.8",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "3efa8c62c11fedb17b90f60b2d3a9f815b406e63"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "3efa8c62c11fedb17b90f60b2d3a9f815b406e63"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
     {
       "type": "library",
       "bom-ref": "brick/math-0.12.3.0",
@@ -304,10 +425,10 @@
     },
     {
       "type": "library",
-      "bom-ref": "duosecurity/duo_universal_php-1.1.0.0",
+      "bom-ref": "duosecurity/duo_universal_php-1.1.1.0",
       "group": "duosecurity",
       "name": "duo_universal_php",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "description": "A PHP implementation of the Duo Universal SDK.",
       "licenses": [
         {
@@ -316,17 +437,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/duosecurity/duo_universal_php@1.1.0",
+      "purl": "pkg:composer/duosecurity/duo_universal_php@1.1.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/a2852c46949a2de9ca6da908e4353a81c61b43a3",
+          "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/4ee7253863d84653a60a8cad4b03aa3b66fcfd35",
           "type": "distribution",
-          "comment": "dist reference: a2852c46949a2de9ca6da908e4353a81c61b43a3"
+          "comment": "dist reference: 4ee7253863d84653a60a8cad4b03aa3b66fcfd35"
         },
         {
           "url": "https://github.com/duosecurity/duo_universal_php.git",
           "type": "vcs",
-          "comment": "source reference: a2852c46949a2de9ca6da908e4353a81c61b43a3"
+          "comment": "source reference: 4ee7253863d84653a60a8cad4b03aa3b66fcfd35"
         },
         {
           "url": "https://duo.com/",
@@ -344,7 +465,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/duosecurity/duo_universal_php/tree/1.1.0",
+          "url": "https://github.com/duosecurity/duo_universal_php/tree/1.1.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -352,11 +473,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "a2852c46949a2de9ca6da908e4353a81c61b43a3"
+          "value": "4ee7253863d84653a60a8cad4b03aa3b66fcfd35"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "a2852c46949a2de9ca6da908e4353a81c61b43a3"
+          "value": "4ee7253863d84653a60a8cad4b03aa3b66fcfd35"
         },
         {
           "name": "cdx:composer:package:type",
@@ -530,11 +651,117 @@
     },
     {
       "type": "library",
-      "bom-ref": "guzzlehttp/psr7-2.7.1.0",
+      "bom-ref": "guzzlehttp/guzzle-7.10.0.0",
+      "author": "Graham Campbell, Michael Dowling, Jeremy Lindblom, George Mponos, Tobias Nyholm, M\u00E1rk S\u00E1gi-Kaz\u00E1r, Tobias Schultze",
+      "group": "guzzlehttp",
+      "name": "guzzle",
+      "version": "7.10.0",
+      "description": "Guzzle is a PHP HTTP client library",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:composer/guzzlehttp/guzzle@7.10.0",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b51ac707cfa420b7bfd4e4d5e510ba8008e822b4",
+          "type": "distribution",
+          "comment": "dist reference: b51ac707cfa420b7bfd4e4d5e510ba8008e822b4"
+        },
+        {
+          "url": "https://github.com/guzzle/guzzle.git",
+          "type": "vcs",
+          "comment": "source reference: b51ac707cfa420b7bfd4e4d5e510ba8008e822b4"
+        },
+        {
+          "url": "https://github.com/guzzle/guzzle/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/guzzle/guzzle/tree/7.10.0",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "guzzlehttp/promises-2.3.0.0",
+      "author": "Graham Campbell, Michael Dowling, Tobias Nyholm, Tobias Schultze",
+      "group": "guzzlehttp",
+      "name": "promises",
+      "version": "2.3.0",
+      "description": "Guzzle promises library",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:composer/guzzlehttp/promises@2.3.0",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/guzzle/promises/zipball/481557b130ef3790cf82b713667b43030dc9c957",
+          "type": "distribution",
+          "comment": "dist reference: 481557b130ef3790cf82b713667b43030dc9c957"
+        },
+        {
+          "url": "https://github.com/guzzle/promises.git",
+          "type": "vcs",
+          "comment": "source reference: 481557b130ef3790cf82b713667b43030dc9c957"
+        },
+        {
+          "url": "https://github.com/guzzle/promises/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/guzzle/promises/tree/2.3.0",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "481557b130ef3790cf82b713667b43030dc9c957"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "481557b130ef3790cf82b713667b43030dc9c957"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "guzzlehttp/psr7-2.8.0.0",
       "author": "Graham Campbell, Michael Dowling, George Mponos, Tobias Nyholm, M\u00E1rk S\u00E1gi-Kaz\u00E1r, Tobias Schultze, M\u00E1rk S\u00E1gi-Kaz\u00E1r",
       "group": "guzzlehttp",
       "name": "psr7",
-      "version": "2.7.1",
+      "version": "2.8.0",
       "description": "PSR-7 message implementation that also provides common utility methods",
       "licenses": [
         {
@@ -543,17 +770,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/guzzlehttp/psr7@2.7.1",
+      "purl": "pkg:composer/guzzlehttp/psr7@2.8.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/guzzle/psr7/zipball/c2270caaabe631b3b44c85f99e5a04bbb8060d16",
+          "url": "https://api.github.com/repos/guzzle/psr7/zipball/21dc724a0583619cd1652f673303492272778051",
           "type": "distribution",
-          "comment": "dist reference: c2270caaabe631b3b44c85f99e5a04bbb8060d16"
+          "comment": "dist reference: 21dc724a0583619cd1652f673303492272778051"
         },
         {
           "url": "https://github.com/guzzle/psr7.git",
           "type": "vcs",
-          "comment": "source reference: c2270caaabe631b3b44c85f99e5a04bbb8060d16"
+          "comment": "source reference: 21dc724a0583619cd1652f673303492272778051"
         },
         {
           "url": "https://github.com/guzzle/psr7/issues",
@@ -561,7 +788,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/guzzle/psr7/tree/2.7.1",
+          "url": "https://github.com/guzzle/psr7/tree/2.8.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -569,11 +796,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "c2270caaabe631b3b44c85f99e5a04bbb8060d16"
+          "value": "21dc724a0583619cd1652f673303492272778051"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "c2270caaabe631b3b44c85f99e5a04bbb8060d16"
+          "value": "21dc724a0583619cd1652f673303492272778051"
         },
         {
           "name": "cdx:composer:package:type",
@@ -921,11 +1148,64 @@
     },
     {
       "type": "library",
-      "bom-ref": "nesbot/carbon-3.9.1.0",
+      "bom-ref": "mtdowling/jmespath.php-2.8.0.0",
+      "author": "Graham Campbell, Michael Dowling",
+      "group": "mtdowling",
+      "name": "jmespath.php",
+      "version": "2.8.0",
+      "description": "Declaratively specify how to extract elements from a JSON document",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:composer/mtdowling/jmespath.php@2.8.0",
+      "externalReferences": [
+        {
+          "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/a2a865e05d5f420b50cc2f85bb78d565db12a6bc",
+          "type": "distribution",
+          "comment": "dist reference: a2a865e05d5f420b50cc2f85bb78d565db12a6bc"
+        },
+        {
+          "url": "https://github.com/jmespath/jmespath.php.git",
+          "type": "vcs",
+          "comment": "source reference: a2a865e05d5f420b50cc2f85bb78d565db12a6bc"
+        },
+        {
+          "url": "https://github.com/jmespath/jmespath.php/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from Composer manifest \u0027support.issues\u0027"
+        },
+        {
+          "url": "https://github.com/jmespath/jmespath.php/tree/2.8.0",
+          "type": "vcs",
+          "comment": "as detected from Composer manifest \u0027support.source\u0027"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:composer:package:distReference",
+          "value": "a2a865e05d5f420b50cc2f85bb78d565db12a6bc"
+        },
+        {
+          "name": "cdx:composer:package:sourceReference",
+          "value": "a2a865e05d5f420b50cc2f85bb78d565db12a6bc"
+        },
+        {
+          "name": "cdx:composer:package:type",
+          "value": "library"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "nesbot/carbon-3.10.2.0",
       "author": "Brian Nesbitt, kylekatarnls",
       "group": "nesbot",
       "name": "carbon",
-      "version": "3.9.1",
+      "version": "3.10.2",
       "description": "An API extension for DateTime that supports 281 different languages.",
       "licenses": [
         {
@@ -934,17 +1214,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/nesbot/carbon@3.9.1",
+      "purl": "pkg:composer/nesbot/carbon@3.10.2",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/ced71f79398ece168e24f7f7710462f462310d4d",
+          "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/76b5c07b8a9d2025ed1610e14cef1f3fd6ad2c24",
           "type": "distribution",
-          "comment": "dist reference: ced71f79398ece168e24f7f7710462f462310d4d"
+          "comment": "dist reference: 76b5c07b8a9d2025ed1610e14cef1f3fd6ad2c24"
         },
         {
           "url": "https://github.com/CarbonPHP/carbon.git",
           "type": "vcs",
-          "comment": "source reference: ced71f79398ece168e24f7f7710462f462310d4d"
+          "comment": "source reference: 76b5c07b8a9d2025ed1610e14cef1f3fd6ad2c24"
         },
         {
           "url": "https://carbon.nesbot.com",
@@ -970,11 +1250,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "ced71f79398ece168e24f7f7710462f462310d4d"
+          "value": "76b5c07b8a9d2025ed1610e14cef1f3fd6ad2c24"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "ced71f79398ece168e24f7f7710462f462310d4d"
+          "value": "76b5c07b8a9d2025ed1610e14cef1f3fd6ad2c24"
         },
         {
           "name": "cdx:composer:package:type",
@@ -1264,11 +1544,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "phpseclib/phpseclib-3.0.43.0",
+      "bom-ref": "phpseclib/phpseclib-3.0.46.0",
       "author": "Jim Wigginton, Patrick Monnerat, Andreas Fischer, Hans-J\u00FCrgen Petrich, Graham Campbell",
       "group": "phpseclib",
       "name": "phpseclib",
-      "version": "3.0.43",
+      "version": "3.0.46",
       "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
       "licenses": [
         {
@@ -1277,17 +1557,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/phpseclib/phpseclib@3.0.43",
+      "purl": "pkg:composer/phpseclib/phpseclib@3.0.46",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/709ec107af3cb2f385b9617be72af8cf62441d02",
+          "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6",
           "type": "distribution",
-          "comment": "dist reference: 709ec107af3cb2f385b9617be72af8cf62441d02"
+          "comment": "dist reference: 56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6"
         },
         {
           "url": "https://github.com/phpseclib/phpseclib.git",
           "type": "vcs",
-          "comment": "source reference: 709ec107af3cb2f385b9617be72af8cf62441d02"
+          "comment": "source reference: 56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6"
         },
         {
           "url": "http://phpseclib.sourceforge.net",
@@ -1300,7 +1580,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/phpseclib/phpseclib/tree/3.0.43",
+          "url": "https://github.com/phpseclib/phpseclib/tree/3.0.46",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -1308,11 +1588,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "709ec107af3cb2f385b9617be72af8cf62441d02"
+          "value": "56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "709ec107af3cb2f385b9617be72af8cf62441d02"
+          "value": "56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2044,11 +2324,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "spomky-labs/cbor-php-3.1.0.0",
+      "bom-ref": "spomky-labs/cbor-php-3.1.1.0",
       "author": "Florent Morselli, All contributors",
       "group": "spomky-labs",
       "name": "cbor-php",
-      "version": "3.1.0",
+      "version": "3.1.1",
       "description": "CBOR Encoder/Decoder for PHP",
       "licenses": [
         {
@@ -2057,17 +2337,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/spomky-labs/cbor-php@3.1.0",
+      "purl": "pkg:composer/spomky-labs/cbor-php@3.1.1",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/499d9bff0a6d59c4f1b813cc617fc3fd56d6dca4",
+          "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/5404f3e21cbe72f5cf612aa23db2b922fd2f43bf",
           "type": "distribution",
-          "comment": "dist reference: 499d9bff0a6d59c4f1b813cc617fc3fd56d6dca4"
+          "comment": "dist reference: 5404f3e21cbe72f5cf612aa23db2b922fd2f43bf"
         },
         {
           "url": "https://github.com/Spomky-Labs/cbor-php.git",
           "type": "vcs",
-          "comment": "source reference: 499d9bff0a6d59c4f1b813cc617fc3fd56d6dca4"
+          "comment": "source reference: 5404f3e21cbe72f5cf612aa23db2b922fd2f43bf"
         },
         {
           "url": "https://github.com/Spomky-Labs/cbor-php/issues",
@@ -2075,7 +2355,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/Spomky-Labs/cbor-php/tree/3.1.0",
+          "url": "https://github.com/Spomky-Labs/cbor-php/tree/3.1.1",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2083,11 +2363,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "499d9bff0a6d59c4f1b813cc617fc3fd56d6dca4"
+          "value": "5404f3e21cbe72f5cf612aa23db2b922fd2f43bf"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "499d9bff0a6d59c4f1b813cc617fc3fd56d6dca4"
+          "value": "5404f3e21cbe72f5cf612aa23db2b922fd2f43bf"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2097,11 +2377,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "spomky-labs/pki-framework-1.2.3.0",
+      "bom-ref": "spomky-labs/pki-framework-1.3.0.0",
       "author": "Joni Eskelinen, Florent Morselli",
       "group": "spomky-labs",
       "name": "pki-framework",
-      "version": "1.2.3",
+      "version": "1.3.0",
       "description": "A PHP framework for managing Public Key Infrastructures. It comprises X.509 public key certificates, attribute certificates, certification requests and certification path validation.",
       "licenses": [
         {
@@ -2110,17 +2390,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/spomky-labs/pki-framework@1.2.3",
+      "purl": "pkg:composer/spomky-labs/pki-framework@1.3.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/Spomky-Labs/pki-framework/zipball/5ff1dcc21e961b60149a80e77f744fc047800b31",
+          "url": "https://api.github.com/repos/Spomky-Labs/pki-framework/zipball/eced5b5ce70518b983ff2be486e902bbd15135ae",
           "type": "distribution",
-          "comment": "dist reference: 5ff1dcc21e961b60149a80e77f744fc047800b31"
+          "comment": "dist reference: eced5b5ce70518b983ff2be486e902bbd15135ae"
         },
         {
           "url": "https://github.com/Spomky-Labs/pki-framework.git",
           "type": "vcs",
-          "comment": "source reference: 5ff1dcc21e961b60149a80e77f744fc047800b31"
+          "comment": "source reference: eced5b5ce70518b983ff2be486e902bbd15135ae"
         },
         {
           "url": "https://github.com/spomky-labs/pki-framework",
@@ -2133,7 +2413,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/Spomky-Labs/pki-framework/tree/1.2.3",
+          "url": "https://github.com/Spomky-Labs/pki-framework/tree/1.3.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2141,11 +2421,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "5ff1dcc21e961b60149a80e77f744fc047800b31"
+          "value": "eced5b5ce70518b983ff2be486e902bbd15135ae"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "5ff1dcc21e961b60149a80e77f744fc047800b31"
+          "value": "eced5b5ce70518b983ff2be486e902bbd15135ae"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2155,11 +2435,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/clock-6.4.13.0",
+      "bom-ref": "symfony/clock-6.4.24.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "clock",
-      "version": "v6.4.13",
+      "version": "v6.4.24",
       "description": "Decouples applications from the system clock",
       "licenses": [
         {
@@ -2168,17 +2448,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/clock@v6.4.13",
+      "purl": "pkg:composer/symfony/clock@v6.4.24",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/clock/zipball/b2bf55c4dd115003309eafa87ee7df9ed3dde81b",
+          "url": "https://api.github.com/repos/symfony/clock/zipball/5e15a9c9aeeb44a99f7cf24aa75aa9607795f6f8",
           "type": "distribution",
-          "comment": "dist reference: b2bf55c4dd115003309eafa87ee7df9ed3dde81b"
+          "comment": "dist reference: 5e15a9c9aeeb44a99f7cf24aa75aa9607795f6f8"
         },
         {
           "url": "https://github.com/symfony/clock.git",
           "type": "vcs",
-          "comment": "source reference: b2bf55c4dd115003309eafa87ee7df9ed3dde81b"
+          "comment": "source reference: 5e15a9c9aeeb44a99f7cf24aa75aa9607795f6f8"
         },
         {
           "url": "https://symfony.com",
@@ -2186,7 +2466,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/clock/tree/v6.4.13",
+          "url": "https://github.com/symfony/clock/tree/v6.4.24",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2194,11 +2474,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "b2bf55c4dd115003309eafa87ee7df9ed3dde81b"
+          "value": "5e15a9c9aeeb44a99f7cf24aa75aa9607795f6f8"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "b2bf55c4dd115003309eafa87ee7df9ed3dde81b"
+          "value": "5e15a9c9aeeb44a99f7cf24aa75aa9607795f6f8"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2208,11 +2488,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/console-6.4.21.0",
+      "bom-ref": "symfony/console-6.4.25.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "console",
-      "version": "v6.4.21",
+      "version": "v6.4.25",
       "description": "Eases the creation of beautiful and testable command line interfaces",
       "licenses": [
         {
@@ -2221,17 +2501,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/console@v6.4.21",
+      "purl": "pkg:composer/symfony/console@v6.4.25",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/console/zipball/a3011c7b7adb58d89f6c0d822abb641d7a5f9719",
+          "url": "https://api.github.com/repos/symfony/console/zipball/273fd29ff30ba0a88ca5fb83f7cf1ab69306adae",
           "type": "distribution",
-          "comment": "dist reference: a3011c7b7adb58d89f6c0d822abb641d7a5f9719"
+          "comment": "dist reference: 273fd29ff30ba0a88ca5fb83f7cf1ab69306adae"
         },
         {
           "url": "https://github.com/symfony/console.git",
           "type": "vcs",
-          "comment": "source reference: a3011c7b7adb58d89f6c0d822abb641d7a5f9719"
+          "comment": "source reference: 273fd29ff30ba0a88ca5fb83f7cf1ab69306adae"
         },
         {
           "url": "https://symfony.com",
@@ -2239,7 +2519,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/console/tree/v6.4.21",
+          "url": "https://github.com/symfony/console/tree/v6.4.25",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2247,11 +2527,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "a3011c7b7adb58d89f6c0d822abb641d7a5f9719"
+          "value": "273fd29ff30ba0a88ca5fb83f7cf1ab69306adae"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "a3011c7b7adb58d89f6c0d822abb641d7a5f9719"
+          "value": "273fd29ff30ba0a88ca5fb83f7cf1ab69306adae"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2261,11 +2541,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/deprecation-contracts-3.5.1.0",
+      "bom-ref": "symfony/deprecation-contracts-3.6.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "deprecation-contracts",
-      "version": "v3.5.1",
+      "version": "v3.6.0",
       "description": "A generic function and convention to trigger deprecation notices",
       "licenses": [
         {
@@ -2274,17 +2554,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/deprecation-contracts@v3.5.1",
+      "purl": "pkg:composer/symfony/deprecation-contracts@v3.6.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6",
+          "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/63afe740e99a13ba87ec199bb07bbdee937a5b62",
           "type": "distribution",
-          "comment": "dist reference: 74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6"
+          "comment": "dist reference: 63afe740e99a13ba87ec199bb07bbdee937a5b62"
         },
         {
           "url": "https://github.com/symfony/deprecation-contracts.git",
           "type": "vcs",
-          "comment": "source reference: 74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6"
+          "comment": "source reference: 63afe740e99a13ba87ec199bb07bbdee937a5b62"
         },
         {
           "url": "https://symfony.com",
@@ -2292,7 +2572,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/deprecation-contracts/tree/v3.5.1",
+          "url": "https://github.com/symfony/deprecation-contracts/tree/v3.6.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2300,11 +2580,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6"
+          "value": "63afe740e99a13ba87ec199bb07bbdee937a5b62"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6"
+          "value": "63afe740e99a13ba87ec199bb07bbdee937a5b62"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2314,11 +2594,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/http-client-6.4.19.0",
+      "bom-ref": "symfony/http-client-6.4.25.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "http-client",
-      "version": "v6.4.19",
+      "version": "v6.4.25",
       "description": "Provides powerful methods to fetch HTTP resources synchronously or asynchronously",
       "licenses": [
         {
@@ -2327,17 +2607,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/http-client@v6.4.19",
+      "purl": "pkg:composer/symfony/http-client@v6.4.25",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/http-client/zipball/3294a433fc9d12ae58128174896b5b1822c28dad",
+          "url": "https://api.github.com/repos/symfony/http-client/zipball/b8e9dce2d8acba3c32af467bb58e0c3656886181",
           "type": "distribution",
-          "comment": "dist reference: 3294a433fc9d12ae58128174896b5b1822c28dad"
+          "comment": "dist reference: b8e9dce2d8acba3c32af467bb58e0c3656886181"
         },
         {
           "url": "https://github.com/symfony/http-client.git",
           "type": "vcs",
-          "comment": "source reference: 3294a433fc9d12ae58128174896b5b1822c28dad"
+          "comment": "source reference: b8e9dce2d8acba3c32af467bb58e0c3656886181"
         },
         {
           "url": "https://symfony.com",
@@ -2345,7 +2625,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/http-client/tree/v6.4.19",
+          "url": "https://github.com/symfony/http-client/tree/v6.4.25",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2353,11 +2633,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "3294a433fc9d12ae58128174896b5b1822c28dad"
+          "value": "b8e9dce2d8acba3c32af467bb58e0c3656886181"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "3294a433fc9d12ae58128174896b5b1822c28dad"
+          "value": "b8e9dce2d8acba3c32af467bb58e0c3656886181"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2367,11 +2647,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/http-client-contracts-3.5.2.0",
+      "bom-ref": "symfony/http-client-contracts-3.6.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "http-client-contracts",
-      "version": "v3.5.2",
+      "version": "v3.6.0",
       "description": "Generic abstractions related to HTTP clients",
       "licenses": [
         {
@@ -2380,17 +2660,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/http-client-contracts@v3.5.2",
+      "purl": "pkg:composer/symfony/http-client-contracts@v3.6.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/ee8d807ab20fcb51267fdace50fbe3494c31e645",
+          "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/75d7043853a42837e68111812f4d964b01e5101c",
           "type": "distribution",
-          "comment": "dist reference: ee8d807ab20fcb51267fdace50fbe3494c31e645"
+          "comment": "dist reference: 75d7043853a42837e68111812f4d964b01e5101c"
         },
         {
           "url": "https://github.com/symfony/http-client-contracts.git",
           "type": "vcs",
-          "comment": "source reference: ee8d807ab20fcb51267fdace50fbe3494c31e645"
+          "comment": "source reference: 75d7043853a42837e68111812f4d964b01e5101c"
         },
         {
           "url": "https://symfony.com",
@@ -2398,7 +2678,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/http-client-contracts/tree/v3.5.2",
+          "url": "https://github.com/symfony/http-client-contracts/tree/v3.6.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2406,11 +2686,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "ee8d807ab20fcb51267fdace50fbe3494c31e645"
+          "value": "75d7043853a42837e68111812f4d964b01e5101c"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "ee8d807ab20fcb51267fdace50fbe3494c31e645"
+          "value": "75d7043853a42837e68111812f4d964b01e5101c"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2420,11 +2700,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/http-foundation-6.4.21.0",
+      "bom-ref": "symfony/http-foundation-6.4.25.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "http-foundation",
-      "version": "v6.4.21",
+      "version": "v6.4.25",
       "description": "Defines an object-oriented layer for the HTTP specification",
       "licenses": [
         {
@@ -2433,17 +2713,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/http-foundation@v6.4.21",
+      "purl": "pkg:composer/symfony/http-foundation@v6.4.25",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/http-foundation/zipball/3f0c7ea41db479383b81d436b836d37168fd5b99",
+          "url": "https://api.github.com/repos/symfony/http-foundation/zipball/6bc974c0035b643aa497c58d46d9e25185e4b272",
           "type": "distribution",
-          "comment": "dist reference: 3f0c7ea41db479383b81d436b836d37168fd5b99"
+          "comment": "dist reference: 6bc974c0035b643aa497c58d46d9e25185e4b272"
         },
         {
           "url": "https://github.com/symfony/http-foundation.git",
           "type": "vcs",
-          "comment": "source reference: 3f0c7ea41db479383b81d436b836d37168fd5b99"
+          "comment": "source reference: 6bc974c0035b643aa497c58d46d9e25185e4b272"
         },
         {
           "url": "https://symfony.com",
@@ -2451,7 +2731,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/http-foundation/tree/v6.4.21",
+          "url": "https://github.com/symfony/http-foundation/tree/v6.4.25",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2459,11 +2739,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "3f0c7ea41db479383b81d436b836d37168fd5b99"
+          "value": "6bc974c0035b643aa497c58d46d9e25185e4b272"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "3f0c7ea41db479383b81d436b836d37168fd5b99"
+          "value": "6bc974c0035b643aa497c58d46d9e25185e4b272"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2473,11 +2753,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-ctype-1.32.0.0",
+      "bom-ref": "symfony/polyfill-ctype-1.33.0.0",
       "author": "Gert de Pagter, Symfony Community",
       "group": "symfony",
       "name": "polyfill-ctype",
-      "version": "v1.32.0",
+      "version": "v1.33.0",
       "description": "Symfony polyfill for ctype functions",
       "licenses": [
         {
@@ -2486,7 +2766,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-ctype@v1.32.0",
+      "purl": "pkg:composer/symfony/polyfill-ctype@v1.33.0",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/a3cc8b044a6ea513310cbd48ef7333b384945638",
@@ -2504,7 +2784,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-ctype/tree/v1.32.0",
+          "url": "https://github.com/symfony/polyfill-ctype/tree/v1.33.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2526,11 +2806,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-intl-grapheme-1.32.0.0",
+      "bom-ref": "symfony/polyfill-intl-grapheme-1.33.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-intl-grapheme",
-      "version": "v1.32.0",
+      "version": "v1.33.0",
       "description": "Symfony polyfill for intl\u0027s grapheme_* functions",
       "licenses": [
         {
@@ -2539,17 +2819,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-intl-grapheme@v1.32.0",
+      "purl": "pkg:composer/symfony/polyfill-intl-grapheme@v1.33.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/b9123926e3b7bc2f98c02ad54f6a4b02b91a8abe",
+          "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/380872130d3a5dd3ace2f4010d95125fde5d5c70",
           "type": "distribution",
-          "comment": "dist reference: b9123926e3b7bc2f98c02ad54f6a4b02b91a8abe"
+          "comment": "dist reference: 380872130d3a5dd3ace2f4010d95125fde5d5c70"
         },
         {
           "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
           "type": "vcs",
-          "comment": "source reference: b9123926e3b7bc2f98c02ad54f6a4b02b91a8abe"
+          "comment": "source reference: 380872130d3a5dd3ace2f4010d95125fde5d5c70"
         },
         {
           "url": "https://symfony.com",
@@ -2557,7 +2837,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.32.0",
+          "url": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.33.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2565,11 +2845,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "b9123926e3b7bc2f98c02ad54f6a4b02b91a8abe"
+          "value": "380872130d3a5dd3ace2f4010d95125fde5d5c70"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "b9123926e3b7bc2f98c02ad54f6a4b02b91a8abe"
+          "value": "380872130d3a5dd3ace2f4010d95125fde5d5c70"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2579,11 +2859,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-intl-normalizer-1.32.0.0",
+      "bom-ref": "symfony/polyfill-intl-normalizer-1.33.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-intl-normalizer",
-      "version": "v1.32.0",
+      "version": "v1.33.0",
       "description": "Symfony polyfill for intl\u0027s Normalizer class and related functions",
       "licenses": [
         {
@@ -2592,7 +2872,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-intl-normalizer@v1.32.0",
+      "purl": "pkg:composer/symfony/polyfill-intl-normalizer@v1.33.0",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/3833d7255cc303546435cb650316bff708a1c75c",
@@ -2610,7 +2890,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.32.0",
+          "url": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.33.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2632,11 +2912,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-mbstring-1.32.0.0",
+      "bom-ref": "symfony/polyfill-mbstring-1.33.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-mbstring",
-      "version": "v1.32.0",
+      "version": "v1.33.0",
       "description": "Symfony polyfill for the Mbstring extension",
       "licenses": [
         {
@@ -2645,7 +2925,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-mbstring@v1.32.0",
+      "purl": "pkg:composer/symfony/polyfill-mbstring@v1.33.0",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6d857f4d76bd4b343eac26d6b539585d2bc56493",
@@ -2663,7 +2943,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-mbstring/tree/v1.32.0",
+          "url": "https://github.com/symfony/polyfill-mbstring/tree/v1.33.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2685,11 +2965,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-php83-1.32.0.0",
+      "bom-ref": "symfony/polyfill-php83-1.33.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "polyfill-php83",
-      "version": "v1.32.0",
+      "version": "v1.33.0",
       "description": "Symfony polyfill backporting some PHP 8.3\u002B features to lower PHP versions",
       "licenses": [
         {
@@ -2698,17 +2978,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-php83@v1.32.0",
+      "purl": "pkg:composer/symfony/polyfill-php83@v1.33.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/2fb86d65e2d424369ad2905e83b236a8805ba491",
+          "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/17f6f9a6b1735c0f163024d959f700cfbc5155e5",
           "type": "distribution",
-          "comment": "dist reference: 2fb86d65e2d424369ad2905e83b236a8805ba491"
+          "comment": "dist reference: 17f6f9a6b1735c0f163024d959f700cfbc5155e5"
         },
         {
           "url": "https://github.com/symfony/polyfill-php83.git",
           "type": "vcs",
-          "comment": "source reference: 2fb86d65e2d424369ad2905e83b236a8805ba491"
+          "comment": "source reference: 17f6f9a6b1735c0f163024d959f700cfbc5155e5"
         },
         {
           "url": "https://symfony.com",
@@ -2716,7 +2996,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-php83/tree/v1.32.0",
+          "url": "https://github.com/symfony/polyfill-php83/tree/v1.33.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2724,11 +3004,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "2fb86d65e2d424369ad2905e83b236a8805ba491"
+          "value": "17f6f9a6b1735c0f163024d959f700cfbc5155e5"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "2fb86d65e2d424369ad2905e83b236a8805ba491"
+          "value": "17f6f9a6b1735c0f163024d959f700cfbc5155e5"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2738,11 +3018,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/polyfill-uuid-1.32.0.0",
+      "bom-ref": "symfony/polyfill-uuid-1.33.0.0",
       "author": "Gr\u00E9goire Pineau, Symfony Community",
       "group": "symfony",
       "name": "polyfill-uuid",
-      "version": "v1.32.0",
+      "version": "v1.33.0",
       "description": "Symfony polyfill for uuid functions",
       "licenses": [
         {
@@ -2751,7 +3031,7 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/polyfill-uuid@v1.32.0",
+      "purl": "pkg:composer/symfony/polyfill-uuid@v1.33.0",
       "externalReferences": [
         {
           "url": "https://api.github.com/repos/symfony/polyfill-uuid/zipball/21533be36c24be3f4b1669c4725c7d1d2bab4ae2",
@@ -2769,7 +3049,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/polyfill-uuid/tree/v1.32.0",
+          "url": "https://github.com/symfony/polyfill-uuid/tree/v1.33.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2791,11 +3071,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/psr-http-message-bridge-6.4.13.0",
+      "bom-ref": "symfony/psr-http-message-bridge-6.4.24.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "psr-http-message-bridge",
-      "version": "v6.4.13",
+      "version": "v6.4.24",
       "description": "PSR HTTP message bridge",
       "licenses": [
         {
@@ -2804,17 +3084,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/psr-http-message-bridge@v6.4.13",
+      "purl": "pkg:composer/symfony/psr-http-message-bridge@v6.4.24",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/psr-http-message-bridge/zipball/c9cf83326a1074f83a738fc5320945abf7fb7fec",
+          "url": "https://api.github.com/repos/symfony/psr-http-message-bridge/zipball/6954b4e8aef0e5d46f8558c90edcf27bb01b4724",
           "type": "distribution",
-          "comment": "dist reference: c9cf83326a1074f83a738fc5320945abf7fb7fec"
+          "comment": "dist reference: 6954b4e8aef0e5d46f8558c90edcf27bb01b4724"
         },
         {
           "url": "https://github.com/symfony/psr-http-message-bridge.git",
           "type": "vcs",
-          "comment": "source reference: c9cf83326a1074f83a738fc5320945abf7fb7fec"
+          "comment": "source reference: 6954b4e8aef0e5d46f8558c90edcf27bb01b4724"
         },
         {
           "url": "https://symfony.com",
@@ -2822,7 +3102,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/psr-http-message-bridge/tree/v6.4.13",
+          "url": "https://github.com/symfony/psr-http-message-bridge/tree/v6.4.24",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2830,11 +3110,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "c9cf83326a1074f83a738fc5320945abf7fb7fec"
+          "value": "6954b4e8aef0e5d46f8558c90edcf27bb01b4724"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "c9cf83326a1074f83a738fc5320945abf7fb7fec"
+          "value": "6954b4e8aef0e5d46f8558c90edcf27bb01b4724"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2844,11 +3124,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/service-contracts-3.5.1.0",
+      "bom-ref": "symfony/service-contracts-3.6.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "service-contracts",
-      "version": "v3.5.1",
+      "version": "v3.6.0",
       "description": "Generic abstractions related to writing services",
       "licenses": [
         {
@@ -2857,17 +3137,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/service-contracts@v3.5.1",
+      "purl": "pkg:composer/symfony/service-contracts@v3.6.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/service-contracts/zipball/e53260aabf78fb3d63f8d79d69ece59f80d5eda0",
+          "url": "https://api.github.com/repos/symfony/service-contracts/zipball/f021b05a130d35510bd6b25fe9053c2a8a15d5d4",
           "type": "distribution",
-          "comment": "dist reference: e53260aabf78fb3d63f8d79d69ece59f80d5eda0"
+          "comment": "dist reference: f021b05a130d35510bd6b25fe9053c2a8a15d5d4"
         },
         {
           "url": "https://github.com/symfony/service-contracts.git",
           "type": "vcs",
-          "comment": "source reference: e53260aabf78fb3d63f8d79d69ece59f80d5eda0"
+          "comment": "source reference: f021b05a130d35510bd6b25fe9053c2a8a15d5d4"
         },
         {
           "url": "https://symfony.com",
@@ -2875,7 +3155,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/service-contracts/tree/v3.5.1",
+          "url": "https://github.com/symfony/service-contracts/tree/v3.6.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2883,11 +3163,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "e53260aabf78fb3d63f8d79d69ece59f80d5eda0"
+          "value": "f021b05a130d35510bd6b25fe9053c2a8a15d5d4"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "e53260aabf78fb3d63f8d79d69ece59f80d5eda0"
+          "value": "f021b05a130d35510bd6b25fe9053c2a8a15d5d4"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2897,11 +3177,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/string-6.4.21.0",
+      "bom-ref": "symfony/string-6.4.25.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "string",
-      "version": "v6.4.21",
+      "version": "v6.4.25",
       "description": "Provides an object-oriented API to strings and deals with bytes, UTF-8 code points and grapheme clusters in a unified way",
       "licenses": [
         {
@@ -2910,17 +3190,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/string@v6.4.21",
+      "purl": "pkg:composer/symfony/string@v6.4.25",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/string/zipball/73e2c6966a5aef1d4892873ed5322245295370c6",
+          "url": "https://api.github.com/repos/symfony/string/zipball/7cdec7edfaf2cdd9c18901e35bcf9653d6209ff1",
           "type": "distribution",
-          "comment": "dist reference: 73e2c6966a5aef1d4892873ed5322245295370c6"
+          "comment": "dist reference: 7cdec7edfaf2cdd9c18901e35bcf9653d6209ff1"
         },
         {
           "url": "https://github.com/symfony/string.git",
           "type": "vcs",
-          "comment": "source reference: 73e2c6966a5aef1d4892873ed5322245295370c6"
+          "comment": "source reference: 7cdec7edfaf2cdd9c18901e35bcf9653d6209ff1"
         },
         {
           "url": "https://symfony.com",
@@ -2928,7 +3208,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/string/tree/v6.4.21",
+          "url": "https://github.com/symfony/string/tree/v6.4.25",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2936,11 +3216,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "73e2c6966a5aef1d4892873ed5322245295370c6"
+          "value": "7cdec7edfaf2cdd9c18901e35bcf9653d6209ff1"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "73e2c6966a5aef1d4892873ed5322245295370c6"
+          "value": "7cdec7edfaf2cdd9c18901e35bcf9653d6209ff1"
         },
         {
           "name": "cdx:composer:package:type",
@@ -2950,11 +3230,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/translation-6.4.21.0",
+      "bom-ref": "symfony/translation-6.4.24.0",
       "author": "Fabien Potencier, Symfony Community",
       "group": "symfony",
       "name": "translation",
-      "version": "v6.4.21",
+      "version": "v6.4.24",
       "description": "Provides tools to internationalize your application",
       "licenses": [
         {
@@ -2963,17 +3243,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/translation@v6.4.21",
+      "purl": "pkg:composer/symfony/translation@v6.4.24",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/translation/zipball/bb92ea5588396b319ba43283a5a3087a034cb29c",
+          "url": "https://api.github.com/repos/symfony/translation/zipball/300b72643e89de0734d99a9e3f8494a3ef6936e1",
           "type": "distribution",
-          "comment": "dist reference: bb92ea5588396b319ba43283a5a3087a034cb29c"
+          "comment": "dist reference: 300b72643e89de0734d99a9e3f8494a3ef6936e1"
         },
         {
           "url": "https://github.com/symfony/translation.git",
           "type": "vcs",
-          "comment": "source reference: bb92ea5588396b319ba43283a5a3087a034cb29c"
+          "comment": "source reference: 300b72643e89de0734d99a9e3f8494a3ef6936e1"
         },
         {
           "url": "https://symfony.com",
@@ -2981,7 +3261,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/translation/tree/v6.4.21",
+          "url": "https://github.com/symfony/translation/tree/v6.4.24",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -2989,11 +3269,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "bb92ea5588396b319ba43283a5a3087a034cb29c"
+          "value": "300b72643e89de0734d99a9e3f8494a3ef6936e1"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "bb92ea5588396b319ba43283a5a3087a034cb29c"
+          "value": "300b72643e89de0734d99a9e3f8494a3ef6936e1"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3003,11 +3283,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/translation-contracts-3.5.1.0",
+      "bom-ref": "symfony/translation-contracts-3.6.0.0",
       "author": "Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "translation-contracts",
-      "version": "v3.5.1",
+      "version": "v3.6.0",
       "description": "Generic abstractions related to translation",
       "licenses": [
         {
@@ -3016,17 +3296,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/translation-contracts@v3.5.1",
+      "purl": "pkg:composer/symfony/translation-contracts@v3.6.0",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/4667ff3bd513750603a09c8dedbea942487fb07c",
+          "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/df210c7a2573f1913b2d17cc95f90f53a73d8f7d",
           "type": "distribution",
-          "comment": "dist reference: 4667ff3bd513750603a09c8dedbea942487fb07c"
+          "comment": "dist reference: df210c7a2573f1913b2d17cc95f90f53a73d8f7d"
         },
         {
           "url": "https://github.com/symfony/translation-contracts.git",
           "type": "vcs",
-          "comment": "source reference: 4667ff3bd513750603a09c8dedbea942487fb07c"
+          "comment": "source reference: df210c7a2573f1913b2d17cc95f90f53a73d8f7d"
         },
         {
           "url": "https://symfony.com",
@@ -3034,7 +3314,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/translation-contracts/tree/v3.5.1",
+          "url": "https://github.com/symfony/translation-contracts/tree/v3.6.0",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3042,11 +3322,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "4667ff3bd513750603a09c8dedbea942487fb07c"
+          "value": "df210c7a2573f1913b2d17cc95f90f53a73d8f7d"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "4667ff3bd513750603a09c8dedbea942487fb07c"
+          "value": "df210c7a2573f1913b2d17cc95f90f53a73d8f7d"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3056,11 +3336,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "symfony/uid-6.4.13.0",
+      "bom-ref": "symfony/uid-6.4.24.0",
       "author": "Gr\u00E9goire Pineau, Nicolas Grekas, Symfony Community",
       "group": "symfony",
       "name": "uid",
-      "version": "v6.4.13",
+      "version": "v6.4.24",
       "description": "Provides an object-oriented API to generate and represent UIDs",
       "licenses": [
         {
@@ -3069,17 +3349,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/symfony/uid@v6.4.13",
+      "purl": "pkg:composer/symfony/uid@v6.4.24",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/symfony/uid/zipball/18eb207f0436a993fffbdd811b5b8fa35fa5e007",
+          "url": "https://api.github.com/repos/symfony/uid/zipball/17da16a750541a42cf2183935e0f6008316c23f7",
           "type": "distribution",
-          "comment": "dist reference: 18eb207f0436a993fffbdd811b5b8fa35fa5e007"
+          "comment": "dist reference: 17da16a750541a42cf2183935e0f6008316c23f7"
         },
         {
           "url": "https://github.com/symfony/uid.git",
           "type": "vcs",
-          "comment": "source reference: 18eb207f0436a993fffbdd811b5b8fa35fa5e007"
+          "comment": "source reference: 17da16a750541a42cf2183935e0f6008316c23f7"
         },
         {
           "url": "https://symfony.com",
@@ -3087,7 +3367,7 @@
           "comment": "as detected from Composer manifest \u0027homepage\u0027"
         },
         {
-          "url": "https://github.com/symfony/uid/tree/v6.4.13",
+          "url": "https://github.com/symfony/uid/tree/v6.4.24",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3095,11 +3375,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "18eb207f0436a993fffbdd811b5b8fa35fa5e007"
+          "value": "17da16a750541a42cf2183935e0f6008316c23f7"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "18eb207f0436a993fffbdd811b5b8fa35fa5e007"
+          "value": "17da16a750541a42cf2183935e0f6008316c23f7"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3109,11 +3389,11 @@
     },
     {
       "type": "library",
-      "bom-ref": "web-auth/cose-lib-4.4.0.0",
+      "bom-ref": "web-auth/cose-lib-4.4.2.0",
       "author": "Florent Morselli, All contributors",
       "group": "web-auth",
       "name": "cose-lib",
-      "version": "4.4.0",
+      "version": "4.4.2",
       "description": "CBOR Object Signing and Encryption (COSE) For PHP",
       "licenses": [
         {
@@ -3122,17 +3402,17 @@
           }
         }
       ],
-      "purl": "pkg:composer/web-auth/cose-lib@4.4.0",
+      "purl": "pkg:composer/web-auth/cose-lib@4.4.2",
       "externalReferences": [
         {
-          "url": "https://api.github.com/repos/web-auth/cose-lib/zipball/2166016e48e0214f4f63320a7758a9386d14c92a",
+          "url": "https://api.github.com/repos/web-auth/cose-lib/zipball/a93b61c48fb587855f64a9ec11ad7b60e867cb15",
           "type": "distribution",
-          "comment": "dist reference: 2166016e48e0214f4f63320a7758a9386d14c92a"
+          "comment": "dist reference: a93b61c48fb587855f64a9ec11ad7b60e867cb15"
         },
         {
           "url": "https://github.com/web-auth/cose-lib.git",
           "type": "vcs",
-          "comment": "source reference: 2166016e48e0214f4f63320a7758a9386d14c92a"
+          "comment": "source reference: a93b61c48fb587855f64a9ec11ad7b60e867cb15"
         },
         {
           "url": "https://github.com/web-auth",
@@ -3145,7 +3425,7 @@
           "comment": "as detected from Composer manifest \u0027support.issues\u0027"
         },
         {
-          "url": "https://github.com/web-auth/cose-lib/tree/4.4.0",
+          "url": "https://github.com/web-auth/cose-lib/tree/4.4.2",
           "type": "vcs",
           "comment": "as detected from Composer manifest \u0027support.source\u0027"
         }
@@ -3153,11 +3433,11 @@
       "properties": [
         {
           "name": "cdx:composer:package:distReference",
-          "value": "2166016e48e0214f4f63320a7758a9386d14c92a"
+          "value": "a93b61c48fb587855f64a9ec11ad7b60e867cb15"
         },
         {
           "name": "cdx:composer:package:sourceReference",
-          "value": "2166016e48e0214f4f63320a7758a9386d14c92a"
+          "value": "a93b61c48fb587855f64a9ec11ad7b60e867cb15"
         },
         {
           "name": "cdx:composer:package:type",
@@ -3654,11 +3934,11 @@
     },
     {
       "type": "application",
-      "bom-ref": "ldap-account-manager/ldap-account-manager-9.2.0.0",
+      "bom-ref": "ldap-account-manager/ldap-account-manager-9.3.0.0",
       "group": "ldap-account-manager",
       "name": "ldap-account-manager",
-      "version": "9.2",
-      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.2",
+      "version": "9.3",
+      "purl": "pkg:composer/ldap-account-manager/ldap-account-manager@9.3",
       "properties": [
         {
           "name": "cdx:composer:package:type",
@@ -3761,7 +4041,7 @@
       "bom-ref": "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group": "cdx:npm:package:bundled",
       "name": "sweetalert2",
-      "version": "11.20.0",
+      "version": "11.22.4",
       "licenses": [
         {
           "license": {
@@ -3769,7 +4049,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/sweetalert2@11.20.0"
+      "purl": "pkg:npm/sweetalert2@11.22.4"
     },
     {
       "type": "library",
@@ -3829,10 +4109,24 @@
       "bom-ref": "c2095505-c3af-4958-af68-6a61f216807d",
       "group": "ldap-account-manager",
       "name": "ldap-account-manager",
-      "version": "9.2"
+      "version": "9.3"
     }
   ],
   "dependencies": [
+    {
+      "ref": "aws/aws-crt-php-1.2.7.0"
+    },
+    {
+      "ref": "aws/aws-sdk-php-3.356.8.0",
+      "dependsOn": [
+        "aws/aws-crt-php-1.2.7.0",
+        "guzzlehttp/guzzle-7.10.0.0",
+        "guzzlehttp/promises-2.3.0.0",
+        "guzzlehttp/psr7-2.8.0.0",
+        "mtdowling/jmespath.php-2.8.0.0",
+        "psr/http-message-2.0.0.0"
+      ]
+    },
     {
       "ref": "brick/math-0.12.3.0"
     },
@@ -3846,7 +4140,7 @@
       "ref": "doctrine/inflector-1.4.4.0"
     },
     {
-      "ref": "duosecurity/duo_universal_php-1.1.0.0",
+      "ref": "duosecurity/duo_universal_php-1.1.1.0",
       "dependsOn": [
         "firebase/php-jwt-6.11.1.0"
       ]
@@ -3860,7 +4154,7 @@
         "psr/http-message-2.0.0.0",
         "psr/simple-cache-3.0.0.0",
         "spomky-labs/base64url-2.0.4.0",
-        "symfony/polyfill-mbstring-1.32.0.0",
+        "symfony/polyfill-mbstring-1.33.0.0",
         "web-token/jwt-checker-3.4.8.0",
         "web-token/jwt-core-3.4.8.0",
         "web-token/jwt-key-mgmt-3.4.8.0",
@@ -3889,7 +4183,19 @@
       "ref": "firebase/php-jwt-6.11.1.0"
     },
     {
-      "ref": "guzzlehttp/psr7-2.7.1.0",
+      "ref": "guzzlehttp/guzzle-7.10.0.0",
+      "dependsOn": [
+        "guzzlehttp/promises-2.3.0.0",
+        "guzzlehttp/psr7-2.8.0.0",
+        "psr/http-client-1.0.3.0",
+        "symfony/deprecation-contracts-3.6.0.0"
+      ]
+    },
+    {
+      "ref": "guzzlehttp/promises-2.3.0.0"
+    },
+    {
+      "ref": "guzzlehttp/psr7-2.8.0.0",
       "dependsOn": [
         "psr/http-factory-1.1.0.0",
         "psr/http-message-2.0.0.0",
@@ -3899,7 +4205,7 @@
     {
       "ref": "http-interop/http-factory-guzzle-1.2.0.0",
       "dependsOn": [
-        "guzzlehttp/psr7-2.7.1.0",
+        "guzzlehttp/psr7-2.8.0.0",
         "psr/http-factory-1.1.0.0"
       ]
     },
@@ -3934,13 +4240,19 @@
       ]
     },
     {
-      "ref": "nesbot/carbon-3.9.1.0",
+      "ref": "mtdowling/jmespath.php-2.8.0.0",
+      "dependsOn": [
+        "symfony/polyfill-mbstring-1.33.0.0"
+      ]
+    },
+    {
+      "ref": "nesbot/carbon-3.10.2.0",
       "dependsOn": [
         "carbonphp/carbon-doctrine-types-3.2.0.0",
         "psr/clock-1.0.0.0",
-        "symfony/clock-6.4.13.0",
-        "symfony/polyfill-mbstring-1.32.0.0",
-        "symfony/translation-6.4.21.0"
+        "symfony/clock-6.4.24.0",
+        "symfony/polyfill-mbstring-1.33.0.0",
+        "symfony/translation-6.4.24.0"
       ]
     },
     {
@@ -3959,7 +4271,7 @@
       "ref": "phpmailer/phpmailer-6.10.0.0"
     },
     {
-      "ref": "phpseclib/phpseclib-3.0.43.0",
+      "ref": "phpseclib/phpseclib-3.0.46.0",
       "dependsOn": [
         "paragonie/constant_time_encoding-3.0.0.0",
         "paragonie/random_compat-2.0.21.0"
@@ -4021,119 +4333,120 @@
       "ref": "spomky-labs/base64url-2.0.4.0"
     },
     {
-      "ref": "spomky-labs/cbor-php-3.1.0.0",
+      "ref": "spomky-labs/cbor-php-3.1.1.0",
       "dependsOn": [
         "brick/math-0.12.3.0"
       ]
     },
     {
-      "ref": "spomky-labs/pki-framework-1.2.3.0",
+      "ref": "spomky-labs/pki-framework-1.3.0.0",
       "dependsOn": [
         "brick/math-0.12.3.0"
       ]
     },
     {
-      "ref": "symfony/clock-6.4.13.0",
+      "ref": "symfony/clock-6.4.24.0",
       "dependsOn": [
         "psr/clock-1.0.0.0",
-        "symfony/polyfill-php83-1.32.0.0"
+        "symfony/polyfill-php83-1.33.0.0"
       ]
     },
     {
-      "ref": "symfony/console-6.4.21.0",
+      "ref": "symfony/console-6.4.25.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.5.1.0",
-        "symfony/polyfill-mbstring-1.32.0.0",
-        "symfony/service-contracts-3.5.1.0",
-        "symfony/string-6.4.21.0"
+        "symfony/deprecation-contracts-3.6.0.0",
+        "symfony/polyfill-mbstring-1.33.0.0",
+        "symfony/service-contracts-3.6.0.0",
+        "symfony/string-6.4.25.0"
       ]
     },
     {
-      "ref": "symfony/deprecation-contracts-3.5.1.0"
+      "ref": "symfony/deprecation-contracts-3.6.0.0"
     },
     {
-      "ref": "symfony/http-client-6.4.19.0",
+      "ref": "symfony/http-client-6.4.25.0",
       "dependsOn": [
         "psr/log-3.0.2.0",
-        "symfony/deprecation-contracts-3.5.1.0",
-        "symfony/http-client-contracts-3.5.2.0",
-        "symfony/service-contracts-3.5.1.0"
+        "symfony/deprecation-contracts-3.6.0.0",
+        "symfony/http-client-contracts-3.6.0.0",
+        "symfony/polyfill-php83-1.33.0.0",
+        "symfony/service-contracts-3.6.0.0"
       ]
     },
     {
-      "ref": "symfony/http-client-contracts-3.5.2.0"
+      "ref": "symfony/http-client-contracts-3.6.0.0"
     },
     {
-      "ref": "symfony/http-foundation-6.4.21.0",
+      "ref": "symfony/http-foundation-6.4.25.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.5.1.0",
-        "symfony/polyfill-mbstring-1.32.0.0",
-        "symfony/polyfill-php83-1.32.0.0"
+        "symfony/deprecation-contracts-3.6.0.0",
+        "symfony/polyfill-mbstring-1.33.0.0",
+        "symfony/polyfill-php83-1.33.0.0"
       ]
     },
     {
-      "ref": "symfony/polyfill-ctype-1.32.0.0"
+      "ref": "symfony/polyfill-ctype-1.33.0.0"
     },
     {
-      "ref": "symfony/polyfill-intl-grapheme-1.32.0.0"
+      "ref": "symfony/polyfill-intl-grapheme-1.33.0.0"
     },
     {
-      "ref": "symfony/polyfill-intl-normalizer-1.32.0.0"
+      "ref": "symfony/polyfill-intl-normalizer-1.33.0.0"
     },
     {
-      "ref": "symfony/polyfill-mbstring-1.32.0.0"
+      "ref": "symfony/polyfill-mbstring-1.33.0.0"
     },
     {
-      "ref": "symfony/polyfill-php83-1.32.0.0"
+      "ref": "symfony/polyfill-php83-1.33.0.0"
     },
     {
-      "ref": "symfony/polyfill-uuid-1.32.0.0"
+      "ref": "symfony/polyfill-uuid-1.33.0.0"
     },
     {
-      "ref": "symfony/psr-http-message-bridge-6.4.13.0",
+      "ref": "symfony/psr-http-message-bridge-6.4.24.0",
       "dependsOn": [
         "psr/http-message-2.0.0.0",
-        "symfony/http-foundation-6.4.21.0"
+        "symfony/http-foundation-6.4.25.0"
       ]
     },
     {
-      "ref": "symfony/service-contracts-3.5.1.0",
+      "ref": "symfony/service-contracts-3.6.0.0",
       "dependsOn": [
         "psr/container-2.0.2.0",
-        "symfony/deprecation-contracts-3.5.1.0"
+        "symfony/deprecation-contracts-3.6.0.0"
       ]
     },
     {
-      "ref": "symfony/string-6.4.21.0",
+      "ref": "symfony/string-6.4.25.0",
       "dependsOn": [
-        "symfony/polyfill-ctype-1.32.0.0",
-        "symfony/polyfill-intl-grapheme-1.32.0.0",
-        "symfony/polyfill-intl-normalizer-1.32.0.0",
-        "symfony/polyfill-mbstring-1.32.0.0"
+        "symfony/polyfill-ctype-1.33.0.0",
+        "symfony/polyfill-intl-grapheme-1.33.0.0",
+        "symfony/polyfill-intl-normalizer-1.33.0.0",
+        "symfony/polyfill-mbstring-1.33.0.0"
       ]
     },
     {
-      "ref": "symfony/translation-6.4.21.0",
+      "ref": "symfony/translation-6.4.24.0",
       "dependsOn": [
-        "symfony/deprecation-contracts-3.5.1.0",
-        "symfony/polyfill-mbstring-1.32.0.0",
-        "symfony/translation-contracts-3.5.1.0"
+        "symfony/deprecation-contracts-3.6.0.0",
+        "symfony/polyfill-mbstring-1.33.0.0",
+        "symfony/translation-contracts-3.6.0.0"
       ]
     },
     {
-      "ref": "symfony/translation-contracts-3.5.1.0"
+      "ref": "symfony/translation-contracts-3.6.0.0"
     },
     {
-      "ref": "symfony/uid-6.4.13.0",
+      "ref": "symfony/uid-6.4.24.0",
       "dependsOn": [
-        "symfony/polyfill-uuid-1.32.0.0"
+        "symfony/polyfill-uuid-1.33.0.0"
       ]
     },
     {
-      "ref": "web-auth/cose-lib-4.4.0.0",
+      "ref": "web-auth/cose-lib-4.4.2.0",
       "dependsOn": [
         "brick/math-0.12.3.0",
-        "spomky-labs/pki-framework-1.2.3.0"
+        "spomky-labs/pki-framework-1.3.0.0"
       ]
     },
     {
@@ -4146,11 +4459,11 @@
         "psr/http-client-1.0.3.0",
         "psr/http-factory-1.1.0.0",
         "psr/log-3.0.2.0",
-        "spomky-labs/cbor-php-3.1.0.0",
-        "spomky-labs/pki-framework-1.2.3.0",
-        "symfony/deprecation-contracts-3.5.1.0",
-        "symfony/uid-6.4.13.0",
-        "web-auth/cose-lib-4.4.0.0"
+        "spomky-labs/cbor-php-3.1.1.0",
+        "spomky-labs/pki-framework-1.3.0.0",
+        "symfony/deprecation-contracts-3.6.0.0",
+        "symfony/uid-6.4.24.0",
+        "web-auth/cose-lib-4.4.2.0"
       ]
     },
     {
@@ -4165,7 +4478,7 @@
       "dependsOn": [
         "brick/math-0.12.3.0",
         "paragonie/constant_time_encoding-3.0.0.0",
-        "spomky-labs/pki-framework-1.2.3.0",
+        "spomky-labs/pki-framework-1.3.0.0",
         "web-token/jwt-library-3.4.8.0"
       ]
     },
@@ -4193,10 +4506,10 @@
         "psr/clock-1.0.0.0",
         "psr/http-client-1.0.3.0",
         "psr/http-factory-1.1.0.0",
-        "spomky-labs/pki-framework-1.2.3.0",
-        "symfony/console-6.4.21.0",
-        "symfony/http-client-6.4.19.0",
-        "symfony/polyfill-mbstring-1.32.0.0"
+        "spomky-labs/pki-framework-1.3.0.0",
+        "symfony/console-6.4.25.0",
+        "symfony/http-client-6.4.25.0",
+        "symfony/polyfill-mbstring-1.33.0.0"
       ]
     },
     {
@@ -4216,29 +4529,30 @@
       "ref": "webklex/php-imap-6.2.0.0",
       "dependsOn": [
         "illuminate/pagination-5.4.36.0",
-        "nesbot/carbon-3.9.1.0",
-        "symfony/http-foundation-6.4.21.0"
+        "nesbot/carbon-3.10.2.0",
+        "symfony/http-foundation-6.4.25.0"
       ]
     },
     {
-      "ref": "ldap-account-manager/ldap-account-manager-9.2.0.0",
+      "ref": "ldap-account-manager/ldap-account-manager-9.3.0.0",
       "dependsOn": [
         "web-auth/webauthn-lib-4.9.2.0",
-        "web-auth/cose-lib-4.4.0.0",
-        "symfony/psr-http-message-bridge-6.4.13.0",
-        "symfony/http-foundation-6.4.21.0",
-        "symfony/http-client-6.4.19.0",
+        "web-auth/cose-lib-4.4.2.0",
+        "symfony/psr-http-message-bridge-6.4.24.0",
+        "symfony/http-foundation-6.4.25.0",
+        "symfony/http-client-6.4.25.0",
         "http-interop/http-factory-guzzle-1.2.0.0",
         "webklex/php-imap-6.2.0.0",
         "phpmailer/phpmailer-6.10.0.0",
-        "guzzlehttp/psr7-2.7.1.0",
+        "guzzlehttp/psr7-2.8.0.0",
         "paragonie/random_compat-2.0.21.0",
-        "phpseclib/phpseclib-3.0.43.0",
+        "phpseclib/phpseclib-3.0.46.0",
         "christian-riesen/base32-1.6.0.0",
         "facile-it/php-openid-client-0.3.5.0",
         "spomky-labs/aes-key-wrap-7.0.0.0",
         "monolog/monolog-3.9.0.0",
-        "duosecurity/duo_universal_php-1.1.0.0"
+        "duosecurity/duo_universal_php-1.1.1.0",
+        "aws/aws-sdk-php-3.356.8.0"
       ]
     },
     {
