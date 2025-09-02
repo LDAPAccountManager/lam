@@ -9,6 +9,7 @@ September 2025 9.3
  - Fixed bugs:
   -> WebAuthn: 2-factor verification failed: Unable to load the data (453)
   -> Random password generator does not respect server profile rules (458)
+  -> XSS in profile editor (low, CVE-2025-58174)
 
 
 06.06.2025 9.2
