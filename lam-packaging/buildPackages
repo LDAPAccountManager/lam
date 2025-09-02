@@ -30,7 +30,7 @@ function minify {
 	for file in $files; do
 		jsFiles="$jsFiles $file"
 	done
-	uglifyjs -o $outFile $jsFiles
+	terser $jsFiles -o $outFile
 	rm $files
 	# add final new line to supress Debian warnings
 	echo "" >> $outFile
