@@ -903,7 +903,7 @@ class TreeView {
 		$image->enableLightbox();
 		$image->setCSSClasses(['thumbnail', 'image-input', 'attribute-field']);
 		$image->addDataAttribute('attr-name', $attributeName);
-		$image->addDataAttribute('index', $index);
+		$image->addDataAttribute('index', (string) $index);
 		return $image;
 	}
 

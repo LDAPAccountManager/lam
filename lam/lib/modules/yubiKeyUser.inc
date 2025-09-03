@@ -160,7 +160,7 @@ class yubiKeyUser extends baseModule {
 		}
 		if (empty($objectClass) || in_array($objectClass, $this->attributes['objectClass'])) {
 			$htmlIds = [];
-			$this->addMultiValueInputTextField($return, $attributeName, _('YubiKey ids'), false, '12', false, null, null, $htmlIds, 'lam-prevent-enter');
+			$this->addMultiValueInputTextField($return, $attributeName, _('YubiKey ids'), false, 12, false, null, null, $htmlIds, 'lam-prevent-enter');
 			if (!empty($objectClass)) {
 				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove YubiKey extension'));
@@ -242,7 +242,7 @@ class yubiKeyUser extends baseModule {
 			}
 			// add keys
 			$message = $this->messages['yubiKeyId'][1];
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'yubiKeyUser_yubiKeyId', $attributeName, 'ascii', $message, $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, (string) $i, 'yubiKeyUser_yubiKeyId', $attributeName, 'ascii', $message, $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}

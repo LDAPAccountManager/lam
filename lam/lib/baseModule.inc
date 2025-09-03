@@ -1444,7 +1444,7 @@ abstract class baseModule {
 	 * @param string $attrName attribute name
 	 * @param string|null $label label name
 	 * @param boolean $required this is a required field (default false)
-	 * @param integer $length field length
+	 * @param int|null $length field length
 	 * @param boolean $isTextArea show as text area (default false)
 	 * @param array $autoCompleteValues values for auto-completion
 	 * @param integer $fieldSize field size
