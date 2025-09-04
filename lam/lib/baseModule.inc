@@ -1013,7 +1013,7 @@ abstract class baseModule {
 	 * @param array $rawAccounts the user input data, contains one subarray for each account.
 	 * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
 	 * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	 * @param String $position current position in CSV
+	 * @param int $position current position in CSV
 	 * @param String $colName column name
 	 * @param String $attrName LDAP attribute name
 	 * @param String|String[] $regex for get_preg() (e.g. 'ascii')

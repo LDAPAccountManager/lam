@@ -242,7 +242,7 @@ class yubiKeyUser extends baseModule {
 			}
 			// add keys
 			$message = $this->messages['yubiKeyId'][1];
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, (string) $i, 'yubiKeyUser_yubiKeyId', $attributeName, 'ascii', $message, $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'yubiKeyUser_yubiKeyId', $attributeName, 'ascii', $message, $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}
