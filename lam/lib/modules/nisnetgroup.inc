@@ -522,7 +522,8 @@ class nisnetgroup extends baseModule {
 				}
 			}
 			// members
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'nisnetgroup_members', 'nisNetgroupTriple', null, null, $messages, '/;[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'nisnetgroup_members',
+				'nisNetgroupTriple', null, [], $messages, '/;[ ]*/');
 		}
 		return $messages;
 	}

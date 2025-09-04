@@ -221,12 +221,12 @@ class quota extends baseModule {
 				}
 				$allQuotas[$i] = substr($allQuotas[$i], strlen(self::$QUOTA_PREFIX));
 				$singleQuota = explode(",", $allQuotas[$i]);
-				$singleQuota[1] = $this->formatBlockUsage($singleQuota[1]);
-				$singleQuota[2] = $this->addBlockUnits($singleQuota[2]);
-				$singleQuota[3] = $this->addBlockUnits($singleQuota[3]);
-				$singleQuota[5] = $this->formatInodeUsage($singleQuota[5]);
-				$singleQuota[6] = $this->addInodeUnits($singleQuota[6]);
-				$singleQuota[7] = $this->addInodeUnits($singleQuota[7]);
+				$singleQuota[1] = $this->formatBlockUsage((int) $singleQuota[1]);
+				$singleQuota[2] = $this->addBlockUnits((int) $singleQuota[2]);
+				$singleQuota[3] = $this->addBlockUnits((int) $singleQuota[3]);
+				$singleQuota[5] = $this->formatInodeUsage((int) $singleQuota[5]);
+				$singleQuota[6] = $this->addInodeUnits((int) $singleQuota[6]);
+				$singleQuota[7] = $this->addInodeUnits((int) $singleQuota[7]);
 				$this->quota[$server][$i] = $singleQuota;
 				if ($this->quota[$server][$i][4] < time()) {
 					$this->quota[$server][$i][4] = '-';
@@ -254,7 +254,7 @@ class quota extends baseModule {
 		$mebibytes = 1024;
 		$gibibytes = 1024 * $mebibytes;
 		$tebibytes = 1024 * $gibibytes;
-		if (empty($value) || !get_preg($value, 'digit') || ($value < $mebibytes)) {
+		if (empty($value) || !get_preg((string) $value, 'digit') || ($value < $mebibytes)) {
 			return (string) $value;
 		}
 		if (($value >= $tebibytes) && (($value % $tebibytes) === 0)) {
@@ -279,7 +279,7 @@ class quota extends baseModule {
 		$mebibytes = 1024;
 		$gibibytes = 1024 * $mebibytes;
 		$tebibytes = 1024 * $gibibytes;
-		if (empty($value) || !get_preg($value, 'digit') || ($value < $mebibytes)) {
+		if (empty($value) || !get_preg((string) $value, 'digit') || ($value < $mebibytes)) {
 			return (string) $value;
 		}
 		if ($value >= $tebibytes) {
@@ -302,7 +302,7 @@ class quota extends baseModule {
 		$million = 1000 * $kilo;
 		$billion = 1000 * $million;
 		$trillion = 1000 * $billion;
-		if (empty($value) || !get_preg($value, 'digit')) {
+		if (empty($value) || !get_preg((string) $value, 'digit')) {
 			return (string) $value;
 		}
 		if (($value >= $trillion) && (($value % $trillion) === 0)) {
@@ -331,7 +331,7 @@ class quota extends baseModule {
 		$million = 1000 * $kilo;
 		$billion = 1000 * $million;
 		$trillion = 1000 * $billion;
-		if (empty($value) || !get_preg($value, 'digit')) {
+		if (empty($value) || !get_preg((string) $value, 'digit')) {
 			return '-';
 		}
 		if ($value >= $trillion) {

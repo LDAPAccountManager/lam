@@ -127,7 +127,8 @@ class posixGroup extends baseModule implements passwordService {
 					$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
 				}
 				else {
-					$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_description', 'description', null, null, $errors, '/;[ ]*/');
+					$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_description',
+						'description', null, [], $errors, '/;[ ]*/');
 				}
 			}
 			// group members

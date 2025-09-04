@@ -1026,7 +1026,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	private function setExopPassword($settings) {
 		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
 			&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
-			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, null, $this->clearTextPassword);
+			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, '', $this->clearTextPassword);
 			if (!$success) {
 				return [['ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())]];
 			}
@@ -2120,7 +2120,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				if ($returnValue === 'ok') {
 					$return->addLabel(new htmlOutputText($label));
 					$okGroup = new htmlGroup();
-					$okGroup->addElement(new htmlImage('../../graphics/pass.svg', 16, 16));
+					$okGroup->addElement(new htmlImage('../../graphics/pass.svg', '16', '16'));
 					$okGroup->addElement(new htmlSpacer('5px', null));
 					$okGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'delete_' . $i, _('Delete')));
 					$return->addField($okGroup);
@@ -2128,7 +2128,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				elseif ($returnValue === 'missing') {
 					$return->addLabel(new htmlOutputText($label));
 					$failGroup = new htmlGroup();
-					$failGroup->addElement(new htmlImage('../../graphics/del.svg', 16, 16));
+					$failGroup->addElement(new htmlImage('../../graphics/del.svg', '16', '16'));
 					$failGroup->addElement(new htmlSpacer('5px', null));
 					$failGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'create_' . $i, _('Create')));
 					$return->addField($failGroup);
@@ -2507,7 +2507,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$hiddenOptionsContainerHead = new htmlGroup();
 				$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 				$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-				$configHostContainer->addLabel($hiddenOptionsContainerHead, 12);
+				$configHostContainer->addLabel($hiddenOptionsContainerHead);
 				$configHostContainer->addField(new htmlOutputText(''));
 				$configHostContainer->addVerticalSpacer('0.5rem');
 				$configHostContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegecos', false, _('Gecos'), null, false));
@@ -3112,7 +3112,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$temp['counter']++;
 				return [
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (count($temp['groups'] + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop']))),
+					'progress' => ($temp['counter'] * 100) / (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop'])),
 					'errors' => [['ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]]]
 				];
 			}
@@ -3185,7 +3185,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$data = $temp['exop'][$temp['counter'] - count($temp['groups']) - count($temp['createHomes']) - count($temp['dn_gon'])];
 			$dn = $data[0];
 			$password = $data[1];
-			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
+			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, '', $password);
 			$errors = [];
 			if (!$success) {
 				$errors[] = [
@@ -3535,7 +3535,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			&& ($attributes['INFO.userPasswordModify'][0] === 'exop')) {
 			$password = $attributes['INFO.userPasswordClearText'][0];
 			$dn = $attributes['dn'][0];
-			$success = ldap_exop_passwd($_SESSION['ldapHandle']->getServer(), $dn, null, $password);
+			$success = ldap_exop_passwd($_SESSION['ldapHandle']->getServer(), $dn, '', $password);
 			if (!$success) {
 				StatusMessage('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));
 			}
