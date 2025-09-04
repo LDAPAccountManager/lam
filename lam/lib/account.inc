@@ -465,7 +465,7 @@ function search_domains($server = null, $suffix = null) {
 		$server = $_SESSION['ldap']->server();
 	}
 	$filter = '(objectclass=sambaDomain)';
-	$units = searchLDAPPaged($server, $suffix, $filter, $attr, false, 0);
+	$units = searchLDAPPaged($server, $suffix, $filter, $attr, 0, 0);
 	// extract attributes
 	for ($i = 0; $i < count($units); $i++) {
 		$ret[$i] = new samba3domain();
@@ -878,7 +878,7 @@ function getLDAPServerHandle() {
  * @param String $dn DN
  * @param String $filter filter
  * @param array $attributes attribute list
- * @param boolean $attrsOnly return only attribute names
+ * @param int $attrsOnly return only attribute names (1) or also the values (0)
  * @param int $limit size limit
  * @return array results
  */
