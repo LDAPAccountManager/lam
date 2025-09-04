@@ -750,11 +750,11 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * Sets the expiration date of this account.
-	 * If all parameters are null the expiration date will be removed.
+	 * If all parameters are null, the expiration date will be removed.
 	 *
-	 * @param String $year year (e.g. 2040)
-	 * @param String $month month (e.g. 8)
-	 * @param String $day day (e.g. 27)
+	 * @param string|null $year year (e.g. 2040)
+	 * @param string|null $month month (e.g. 8)
+	 * @param string|null $day day (e.g. 27)
 	 */
 	public function setExpirationDate($year, $month, $day) {
 		if (($year == null) && ($month == null) && ($day == null)) {
