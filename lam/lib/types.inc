@@ -22,6 +22,7 @@ namespace LAM\TYPES;
 
 */
 
+use baseModule;
 use baseType;
 use LAMConfig;
 
@@ -280,7 +281,7 @@ class ConfiguredType {
 	/**
 	 * Returns the names of the active modules for this type.
 	 *
-	 * @return string[] module names
+	 * @return class-string<baseModule>[] module names
 	 */
 	public function getModules(): array {
 		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();

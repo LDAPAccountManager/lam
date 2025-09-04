@@ -962,7 +962,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	private function setExopPassword($settings) {
 		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
 			&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
-			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, null, $this->clearTextPassword);
+			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, '', $this->clearTextPassword);
 			if (!$success) {
 				return [['ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())]];
 			}
@@ -1541,7 +1541,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (isset($this->attributes['userCertificate;binary'])) {
 				$userCertificateCount = count($this->attributes['userCertificate;binary']);
 			}
-			$userCertificateGroup->addElement(new htmlOutputText($userCertificateCount));
+			$userCertificateGroup->addElement(new htmlOutputText((string) $userCertificateCount));
 			$userCertificateGroup->addElement(new htmlSpacer('10px', null));
 			if (!$this->isAdminReadOnly('manager')) {
 				$userCertificateGroup->addElement(new htmlAccountPageButton(static::class, 'userCertificate', 'manage', _('Manage')));
@@ -2409,20 +2409,25 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			// display name
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_displayName', 'displayName');
 			// description
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_description', 'description', null, null, $errors, '/;[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_description',
+				'description', null, [], $errors, '/;[ ]*/');
 			// title
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_title', 'title', 'title', $this->messages['title'][1], $errors, '/;[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_title',
+				'title', 'title', $this->messages['title'][1], $errors, '/;[ ]*/');
 			// employee number
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_employeeNumber', 'employeeNumber');
 			// employee type
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_type', 'employeeType',
 				'employeeType', $this->messages['employeeType'][1], $errors);
 			// business category
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_businessCategory', 'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_businessCategory',
+				'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
 			// manager
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_manager', 'manager', 'dn', $this->messages['manager'][0], $errors, '/;[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_manager',
+				'manager', 'dn', $this->messages['manager'][0], $errors, '/;[ ]*/');
 			// street
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_street', 'street', 'street', $this->messages['street'][1], $errors, '/;[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_street',
+				'street', 'street', $this->messages['street'][1], $errors, '/;[ ]*/');
 			// post office box
 			if (isset($ids['inetOrgPerson_postOfficeBox']) && ($rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']] != "")) {
 				$partialAccounts[$i]['postOfficeBox'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']]);
@@ -2617,7 +2622,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				&& !empty($data[$temp['counter']][$ids['inetOrgPerson_userPassword']])) {
 				$dn = $accounts[$temp['counter']]['dn'];
 				$password = $data[$temp['counter']][$ids['inetOrgPerson_userPassword']];
-				$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
+				$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, '', $password);
 				if (!$success) {
 					$errors[] = [
 						"ERROR",

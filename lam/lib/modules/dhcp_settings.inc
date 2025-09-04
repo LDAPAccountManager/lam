@@ -256,7 +256,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$profileContainer->add(new htmlResponsiveInputField(_('Default gateway'), self::ROUTERS, null, 'gateway'));
 		$profileContainer->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', null, 'netbios'));
 		$nodeList = array_flip($this->all_netbios_node_types);
-		$profileNodeSelect = new htmlResponsiveSelect('netbios_node_type', $nodeList, null, _('Netbios node type'), 'netbios_type');
+		$profileNodeSelect = new htmlResponsiveSelect('netbios_node_type', $nodeList, [], _('Netbios node type'), 'netbios_type');
 		$profileNodeSelect->setHasDescriptiveElements(true);
 		$profileContainer->add($profileNodeSelect);
 		$profileContainer->add(new htmlResponsiveInputField(_('Subnet mask'), 'subnet', null, 'subnetmask'));
@@ -580,7 +580,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$parts = explode('.', $mask);
 		$bits = '';
 		for ($i = 0; $i < count($parts); $i++) {
-			$bits .= decbin($parts[$i]);
+			$bits .= decbin((int) $parts[$i]);
 		}
 		return preg_match('/^1*0*$/', $bits);
 	}
@@ -595,8 +595,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$ex = explode(".", $subnet);
 		$num = 0;
 		foreach ($ex as $mask) {
-			$binary = decbin($mask);
-			$num += substr_count($binary, 1);
+			$binary = decbin((int) $mask);
+			$num += substr_count($binary, '1');
 		}
 		return $num;
 	}
@@ -729,8 +729,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$ex = explode(".", $profile['subnet'][0]);
 			$num = 0;
 			foreach ($ex as $mask) {
-				$binary = decbin($mask);
-				$num += substr_count($binary, 1);
+				$binary = decbin((int) $mask);
+				$num += substr_count($binary, '1');
 			}
 			$this->attributes['dhcpNetMask'][0] = $num;
 		}

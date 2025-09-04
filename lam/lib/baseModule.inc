@@ -1920,7 +1920,7 @@ abstract class baseModule {
 	 * @param array $container return value of checkSelfServiceOptions()
 	 * @param String $name attribute name
 	 * @param array $attributes LDAP attributes
-	 * @param string $fields input fields
+	 * @param string[] $fields input fields
 	 * @param array $readOnlyFields list of read-only fields
 	 * @param String $validationID validation ID for get_preg()
 	 * @param array $validationMessage validation message data (defaults to $this->messages[$name][0])

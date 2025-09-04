@@ -219,10 +219,7 @@ class lamDHCPList extends lamList {
 	}
 
 	/**
-	 * Add DCP main settings button.
-	 *
-	 * @param htmlGroup $left left part
-	 * @param htmlGroup $right right part
+	 * {@inheritDoc}
 	 */
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
