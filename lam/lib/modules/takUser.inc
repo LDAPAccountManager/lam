@@ -200,12 +200,15 @@ class takUser extends baseModule {
 			if (!in_array('takUser', $partialAccounts[$i]['objectClass'])) {
 				$partialAccounts[$i]['objectClass'][] = 'takUser';
 			}
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takcallsign', 'takcallsign', 'username', $this->messages['takcallsign'][3], $errors);
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takrole', 'takrole', null, null, $errors);
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takcallsign',
+				'takcallsign', 'username', $this->messages['takcallsign'][3], $errors);
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takrole',
+				'takrole', null, [], $errors);
 			if (!in_array($partialAccounts[$i]['takrole'][0], self::ROLE_TYPES)) {
 				$errors[] = array_merge($this->messages['takrole'][0], [[$i]]);
 			}
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takcolor', 'takcolor', null, null, $errors);
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'takuser_takcolor',
+				'takcolor', null, [], $errors);
 			if (!in_array($partialAccounts[$i]['takcolor'][0], self::COLOR_TYPES)) {
 				$errors[] = array_merge($this->messages['takcolor'][0], [[$i]]);
 			}
