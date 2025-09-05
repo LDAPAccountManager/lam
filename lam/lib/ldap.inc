@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ class Ldap {
 			if ($errorNumber == 81) {
 				// connection failed
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
-				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."), null, null, $errorNumber);
+				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."), '', null, $errorNumber);
 			}
 			elseif ($errorNumber == 49) {
 				// username/password invalid. Return to login page.

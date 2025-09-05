@@ -347,7 +347,7 @@ class Importer {
 	 * Returns a task for LDIF changetype entry.
 	 *
 	 * @param string $dn DN
-	 * @param string $lines lines
+	 * @param string[] $lines lines
 	 * @return ImporterTask task
 	 */
 	private function getChangeTypeTask($dn, $lines) {
