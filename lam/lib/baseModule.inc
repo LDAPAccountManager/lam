@@ -1771,7 +1771,7 @@ abstract class baseModule {
 			$field->setFieldSize(null);
 		}
 		elseif ($isTextArea && !in_array($name, $readOnlyFields)) {
-			$field = new htmlInputTextarea(static::class . '_' . $name, $value, null, null);
+			$field = new htmlInputTextarea(static::class . '_' . $name, $value, 100, 3);
 		}
 		elseif (!$isTextArea) {
 			$field = new htmlOutputText($value);

@@ -3190,7 +3190,7 @@ class LAMCfgMain {
 			@chmod($fileName, 0600);
 		}
 		else {
-			throw new LAMException(printf(_('Unable to write file %s.'), $fileName));
+			throw new LAMException(sprintf(_('Unable to write file %s.'), $fileName));
 		}
 	}
 
@@ -3268,11 +3268,11 @@ class LAMCfgMain {
 		}
 		catch (PDOException $e) {
 			syslog(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
+			throw new LAMException(_('Unable to connect to configuration database.'), '', $e);
 		}
 		catch (LAMException $e) {
 			syslog(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
+			throw new LAMException(_('Unable to connect to configuration database.'), '', $e);
 		}
 	}
 

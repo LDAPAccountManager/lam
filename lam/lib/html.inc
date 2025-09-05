@@ -1286,7 +1286,7 @@ class htmlSelect extends htmlElement {
 		if ($selectedElements != null) {
 			$this->selectedElements = $selectedElements;
 		}
-		$this->size = htmlspecialchars($size);
+		$this->size = htmlspecialchars((string) $size);
 	}
 
 	/**
@@ -2374,8 +2374,8 @@ class htmlInputTextarea extends htmlElement {
 	function __construct($name, $value, $colCount, $rowCount) {
 		$this->name = htmlspecialchars($name);
 		$this->value = htmlspecialchars($value);
-		$this->colCount = htmlspecialchars($colCount);
-		$this->rowCount = htmlspecialchars($rowCount);
+		$this->colCount = htmlspecialchars((string) $colCount);
+		$this->rowCount = htmlspecialchars((string) $rowCount);
 	}
 
 	/**
@@ -4900,7 +4900,7 @@ class htmlProgressbar extends htmlElement {
 	 */
 	function __construct(string $id = null, int $progress = 0) {
 		$this->id = htmlspecialchars($id);
-		$this->progress = htmlspecialchars($progress);
+		$this->progress = htmlspecialchars((string) $progress);
 	}
 
 	/**
