@@ -5277,8 +5277,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * Returns if the job should run.
 		 *
-		 * @param $pdo PDO
-		 * @param $jobId job id
+		 * @param PDO $pdo PDO
+		 * @param string $jobId job id
 		 * @param DateTime $baseDate base date
 		 * @param int $monthInterval month interval
 		 * @return bool should run
@@ -5512,15 +5512,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Checks if a user is expired.
-		 *
-		 * @param integer $jobID job ID
-		 * @param array $options job settings
-		 * @param PDO $pdo PDO
-		 * @param DateTime $now current time
-		 * @param array $policyOptions list of policy options by getPolicyOptions()
-		 * @param array $user user attributes
-		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 * {@inheritDoc}
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$seconds = substr($user['accountexpires'][0], 0, -7);
