@@ -4396,11 +4396,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 	/**
 	 * Sets the expiration date of this account.
-	 * If all parameters are null the expiration date will be removed.
+	 * If all parameters are null, the expiration date will be removed.
 	 *
-	 * @param String $year year (e.g. 2040)
-	 * @param String $month month (e.g. 8)
-	 * @param String $day day (e.g. 27)
+	 * @param int|null $year year (e.g. 2040)
+	 * @param int|null $month month (e.g. 8)
+	 * @param int|null $day day (e.g. 27)
 	 */
 	public function setExpirationDate($year, $month, $day) {
 		if (($year == null) && ($month == null) && ($day == null)) {
@@ -5017,31 +5017,23 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Checks if a user needs to change his password.
-		 *
-		 * @param integer $jobID job ID
-		 * @param array $options job settings
-		 * @param PDO $pdo PDO
-		 * @param DateTime $now current time
-		 * @param array $policyOptions not used
-		 * @param array $user user attributes
-		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 * {@inheritDoc}
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$dn = $user['dn'];
-			// skip if password does not expire at all
+			// skip if the password does not expire at all
 			if (windowsUser::isNeverExpiring($user)) {
 				$this->jobResultLog->logDebug($dn . ' does not expire.');
 				return;
 			}
-			// skip if password does not expire
+			// skip if the password does not expire
 			if (empty($user['msds-userpasswordexpirytimecomputed'][0])
 				|| ($user['msds-userpasswordexpirytimecomputed'][0] == windowsUser::ACCOUNT_DOES_NOT_EXPIRE)
 				|| ($user['msds-userpasswordexpirytimecomputed'][0] == '0')) {
 				$this->jobResultLog->logDebug($dn . ': password does not expire.');
 				return;
 			}
-			// skip if account itself is expired
+			// skip if the account itself is expired
 			if (!empty($user['accountexpires'][0])) {
 				$accountExpiration = windowsUser::getFileTime($user['accountexpires'][0]);
 				if ($accountExpiration <= $now) {
@@ -5049,7 +5041,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 					return;
 				}
 			}
-			// skip if account is deactivated
+			// skip if the account is deactivated
 			if (windowsUser::isDeactivated($user)) {
 				$this->jobResultLog->logDebug($dn . ' is deactivated.');
 				return;
