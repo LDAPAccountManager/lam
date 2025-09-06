@@ -4347,7 +4347,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Returns the formatted value for the password expiration date.
 	 *
 	 * @param array $attributes user attributes ($this->attributes if null)
-	 * @return String date or -
+	 * @return string date or -
 	 */
 	private function formatPasswordExpires($attributes = null) {
 		if ($attributes == null) {
@@ -4363,8 +4363,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Formats a value in file time (100 ns since 1601-01-01).
 	 *
-	 * @param integer $value time value
-	 * @return String formatted value
+	 * @param string $value time value
+	 * @return string formatted value
 	 */
 	private function formatFileTime($value) {
 		if (empty($value) || ($value == '-1')) {
@@ -4380,7 +4380,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns a value in file time (100 ns since 1601-01-01).
 	 *
-	 * @param integer $value time value as int
+	 * @param string $value time value as int
 	 * @return DateTime|null time value
 	 */
 	public static function getFileTime($value): ?DateTime {
