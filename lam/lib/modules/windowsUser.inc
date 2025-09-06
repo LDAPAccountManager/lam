@@ -1407,7 +1407,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$userPrincipalNameLabel->setMarkAsRequired(true);
 		$containerLeft->addLabel($userPrincipalNameLabel);
 		$userPrincipalNameGroup = new htmlGroup();
-		$userPrincipalNameGroup->addElement(new htmlInputField('userPrincipalName', $userPrincipalName, '15'));
+		$userPrincipalNameGroup->addElement(new htmlInputField('userPrincipalName', $userPrincipalName, 15));
 		$userPrincipalNameGroup->addElement(new htmlSelect('userPrincipalNameDomain', $domains, [$userPrincipalNameDomain]));
 		$userPrincipalNameGroup->addElement(new htmlHelpLink('userPrincipalName'));
 		$containerLeft->addField($userPrincipalNameGroup);
@@ -2192,9 +2192,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// determine action
 		if (str_contains($buttonName, '_change')) {
 			$date = DateTime::createFromFormat('Y-m-d', $_POST['accountexpires'], new DateTimeZone('UTC'));
-			$year = $date->format('Y');
-			$month = $date->format('m');
-			$day = $date->format('d');
+			$year = (int) $date->format('Y');
+			$month = (int) $date->format('m');
+			$day = (int) $date->format('d');
 			// set new time
 			$this->setExpirationDate($year, $month, $day);
 			// sync other modules
@@ -2291,7 +2291,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"),
-			$selectedGroups, null, $availableGroups, null, 'groups', $groupDisplayContainsDn, true);
+			$selectedGroups, [], $availableGroups, [], 'groups', $groupDisplayContainsDn, true);
 
 		// sync options
 		$typeManager = new TypeManager();
@@ -2902,13 +2902,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			elseif ($hr >= 24 * 7) {
 				$hr -= 24 * 7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, ($hour[$hr] === '1'));
 			$boxes[$i % 24][floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
-			$hour = str_pad($h, 2, '0', STR_PAD_LEFT);
+			$hour = str_pad((string) $h, 2, '0', STR_PAD_LEFT);
 			$row = [];
-			$row[] = new htmlOutputText("$hour:00 - " . str_pad($h + 1, 2, '0', STR_PAD_LEFT) . ":00");
+			$row[] = new htmlOutputText("$hour:00 - " . str_pad((string) ($h + 1), 2, '0', STR_PAD_LEFT) . ":00");
 			for ($d = 1; $d < 7; $d++) {
 				$row[] = $boxes[$h][$d];
 			}
@@ -3028,7 +3028,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = [];
-		// get list of existing groups
+		// get the list of existing groups
 		$groupList = $this->findGroups();
 		$groupMap = [];
 		foreach ($groupList as $dn) {
@@ -3238,7 +3238,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// other telephone
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone')) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone', 'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone',
+					'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
 			}
 			// fax number
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
@@ -3251,7 +3252,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// other websites
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites', 'url', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites',
+					'url', null, [], $errors, '/;[ ]*/');
 			}
 			// user account control
 			$userAccountControlAttr['useraccountcontrol'][0] = self::DEFAULT_ACCOUNT_CONTROL;
@@ -3277,7 +3279,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (!empty($rawAccounts[$i][$ids['windowsUser_accountExpires']])) {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_accountExpires']], 'date')) {
 					$dateParts = explode('-', $rawAccounts[$i][$ids['windowsUser_accountExpires']]);
-					$partialAccounts[$i]['accountexpires'] = $this->buildExpirationDate($dateParts[2], $dateParts[1], $dateParts[0]);
+					$partialAccounts[$i]['accountexpires'] = $this->buildExpirationDate((int) $dateParts[2], (int) $dateParts[1], (int) $dateParts[0]);
 				}
 				else {
 					$errMsg = $this->messages['accountexpires'][1];
@@ -3374,7 +3376,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// title
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_title', 'title', 'title', $this->messages['title'][1], $errors);
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_title',
+					'title', 'title', $this->messages['title'][1], $errors);
 			}
 			// room number
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
@@ -3391,28 +3394,33 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// employee type
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_employeeType', 'employeeType',
-					'employeeType', $this->messages['employeeType'][1], $errors);
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_employeeType',
+					'employeeType', 'employeeType', $this->messages['employeeType'][1], $errors);
 			}
 			// business category
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_businessCategory', 'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_businessCategory',
+					'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
 			}
 			// departments
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_department', 'department', null, null, $errors);
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_department',
+					'department', null, [], $errors);
 			}
 			// department numbers
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_departmentNumber', 'departmentNumber', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_departmentNumber',
+					'departmentNumber', null, [], $errors, '/;[ ]*/');
 			}
 			// organisational unit
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_ou', 'ou', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_ou',
+					'ou', null, [], $errors, '/;[ ]*/');
 			}
 			// organisation
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_o', 'o', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_o',
+					'o', null, [], $errors, '/;[ ]*/');
 			}
 			// manager
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
@@ -3445,7 +3453,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			// Proxy-Addresses
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_proxyAddresses', 'proxyAddresses',
-					null, null, $errors, '/;[ ]*/');
+					null, [], $errors, '/;[ ]*/');
 			}
 		}
 		return $errors;
@@ -3722,7 +3730,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$date = new DateTime('now', getTimeZone());
 			$toAdd = new DateInterval('P' . $numDays . 'D');
 			$dateTarget = $date->add($toAdd);
-			$this->setExpirationDate($dateTarget->format('Y'), $dateTarget->format('m'), $dateTarget->format('d'));
+			$this->setExpirationDate((int) $dateTarget->format('Y'), (int) $dateTarget->format('m'), (int) $dateTarget->format('d'));
 		}
 		// departments
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment')
@@ -4058,7 +4066,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$lockoutDurationSeconds = substr($lockoutDuration, 0, -7);
 		$lockoutTime = self::getFileTime($attrs['lockouttime'][0]);
 		$unlockTime = clone $lockoutTime;
-		$unlockTime->add(new DateInterval('PT' . abs($lockoutDurationSeconds) . 'S'));
+		$unlockTime->add(new DateInterval('PT' . abs((int) $lockoutDurationSeconds) . 'S'));
 		$now = new DateTime('now', getTimeZone());
 		if ($unlockTime > $now) {
 			$unlockTime->setTimezone(getTimeZone());
