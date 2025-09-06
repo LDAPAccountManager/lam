@@ -2747,9 +2747,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * Sets the expiration date of this account.
 	 * If all parameters are null the expiration date will be removed.
 	 *
-	 * @param String $year year (e.g. 2040)
-	 * @param String $month month (e.g. 8)
-	 * @param String $day day (e.g. 27)
+	 * @param int|null $year year (e.g. 2040)
+	 * @param int|null $month month (e.g. 8)
+	 * @param int|null $day day (e.g. 27)
 	 */
 	public function setExpirationDate($year, $month, $day) {
 		if (($year == null) && ($month == null) && ($day == null)) {
