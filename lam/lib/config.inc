@@ -1870,7 +1870,7 @@ class LAMConfig {
 	 * Returns an array of all selected account modules
 	 *
 	 * @param string $scope account type
-	 * @return array user modules
+	 * @return class-string<baseModule>[] user modules
 	 */
 	public function get_AccountModules($scope) {
 		if (isset($this->typeSettings["modules_" . $scope])) {
@@ -2322,7 +2322,7 @@ class LAMConfig {
 	/**
 	 * Returns the port.
 	 *
-	 * @return String port
+	 * @return int|null port
 	 */
 	public function getJobsDBPort() {
 		return $this->jobsDBPort;
@@ -2331,7 +2331,7 @@ class LAMConfig {
 	/**
 	 * Sets the port.
 	 *
-	 * @param int $jobsDBPort port
+	 * @param int|null $jobsDBPort port
 	 */
 	public function setJobsDBPort($jobsDBPort) {
 		$this->jobsDBPort = $jobsDBPort;
