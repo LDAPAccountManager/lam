@@ -752,9 +752,9 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * Sets the expiration date of this account.
 	 * If all parameters are null, the expiration date will be removed.
 	 *
-	 * @param string|null $year year (e.g. 2040)
-	 * @param string|null $month month (e.g. 8)
-	 * @param string|null $day day (e.g. 27)
+	 * @param int|null $year year (e.g. 2040)
+	 * @param int|null $month month (e.g. 8)
+	 * @param int|null $day day (e.g. 27)
 	 */
 	public function setExpirationDate($year, $month, $day) {
 		if (($year == null) && ($month == null) && ($day == null)) {
@@ -824,10 +824,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Returns a list of jobs that can be run.
-	 *
-	 * @param LAMConfig $config configuration
-	 * @return array list of jobs
+	 * {@inheritDoc}
 	 */
 	public function getSupportedJobs(&$config) {
 		return [

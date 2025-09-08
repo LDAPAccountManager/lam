@@ -3382,7 +3382,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			// room number
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_roomNumber',
-					'roomnumber', null, null, $errors, '/;[ ]*/');
+					'roomnumber', null, [], $errors, '/;[ ]*/');
 			}
 			// carLicense
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
@@ -4627,10 +4627,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Returns a list of jobs that can be run.
-	 *
-	 * @param LAMConfig $config configuration
-	 * @return array list of jobs
+	 * {@inheritDoc}
 	 */
 	public function getSupportedJobs(&$config) {
 		return [

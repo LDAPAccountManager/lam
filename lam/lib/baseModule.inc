@@ -1,5 +1,6 @@
 <?php
 
+use LAM\JOB\Job;
 use LAM\PDF\PDFEntry;
 use LAM\PDF\PDFLabelValue;
 use LAM\PDF\PDFTable;
@@ -2322,6 +2323,7 @@ abstract class baseModule {
 	 * Returns a list of jobs that can be run.
 	 *
 	 * @param LAMConfig $config configuration
+	 * @return Job[] jobs
 	 */
 	public function getSupportedJobs(&$config) {
 		return [];

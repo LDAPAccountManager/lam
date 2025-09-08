@@ -56,6 +56,7 @@ parameters:
 		- '#Call to .*method .* on an unknown class LAM\\DB\\CronDatabase.*#'
 		- '#.* has invalid type LAM\\ENV\\.*#'
 		- '#.* has invalid type LAM\\DB\\.*#'
+		- '#.* has invalid return type LAM\\JOB\\.*#'
 		- '#Call to an undefined method baseModule::getBackupEmail\(\).#'
 		- '#Call to an undefined method baseModule::getMembers\(\).#'
 		- '#Call to an undefined method baseModule::getNextGIDs\(\).#'
