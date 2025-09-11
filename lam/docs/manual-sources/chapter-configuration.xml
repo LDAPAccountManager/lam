@@ -345,6 +345,28 @@
         </listitem>
       </itemizedlist>
 
+      <para><emphasis role="bold">Email2SMS</emphasis></para>
+
+      <para>This service can be used for all SMS gateways that allow to send
+      SMS via email. This means LAM sends out an email to the gateway and they
+      convert it to an SMS.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Account id: please enter the receiving email address at your
+          email2SMS gateway. The address must contain the wildcard "$number"
+          for the user's phone number. E.g. "$number@sms.clicksend.com".
+          "$number" will be replaced with the actual mobile phone
+          number.</para>
+        </listitem>
+
+        <listitem>
+          <para>From: this is the email FROM address. Typically, email2SMS
+          gateways require that the email comes from a specific email
+          address.</para>
+        </listitem>
+      </itemizedlist>
+
       <para><emphasis role="bold"><ulink
       url="https://gatewayapi.com/">GatewayAPI</ulink></emphasis></para>
 
