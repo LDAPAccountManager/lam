@@ -215,7 +215,7 @@ setlanguage(); // setting correct language
  * @throws LAMException error rendering login page
  */
 function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $error_message, ?string $errorDetails = null, ?string $extraMessage = null): void {
-	$config_object = $_SESSION['config'];
+	$config_object = $_SESSION['config'] ?? null;
 	$cfgMain = $_SESSION["cfgMain"];
     if (!($cfgMain instanceof LAMCfgMain)) {
         die();
@@ -263,6 +263,9 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 			echo "<br>";
 		}
 	}
+    elseif ($error_message !== null) {
+        StatusMessage("ERROR", $error_message);
+    }
 	else {
 		StatusMessage('WARN', _('Please enter the configuration and create a server profile.'));
 	}
