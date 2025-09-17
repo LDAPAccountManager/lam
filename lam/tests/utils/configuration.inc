@@ -36,6 +36,9 @@ function testCreateDefaultConfig() {
 		unlink($cfgPath);
 	}
 	touch($cfgPath);
+	$fileHandle = fopen($cfgPath, 'w');
+	fwrite($fileHandle, '{}');
+	fclose($fileHandle);
 	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 	$config = $serverProfilePersistenceManager->loadProfile(LAMConfigTest::FILE_NAME);
 	$_SESSION['config'] = $config;
