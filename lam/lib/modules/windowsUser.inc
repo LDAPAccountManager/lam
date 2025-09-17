@@ -1407,7 +1407,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$userPrincipalNameLabel->setMarkAsRequired(true);
 		$containerLeft->addLabel($userPrincipalNameLabel);
 		$userPrincipalNameGroup = new htmlGroup();
-		$userPrincipalNameGroup->addElement(new htmlInputField('userPrincipalName', $userPrincipalName, '15'));
+		$userPrincipalNameGroup->addElement(new htmlInputField('userPrincipalName', $userPrincipalName, 15));
 		$userPrincipalNameGroup->addElement(new htmlSelect('userPrincipalNameDomain', $domains, [$userPrincipalNameDomain]));
 		$userPrincipalNameGroup->addElement(new htmlHelpLink('userPrincipalName'));
 		$containerLeft->addField($userPrincipalNameGroup);
@@ -2192,9 +2192,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// determine action
 		if (str_contains($buttonName, '_change')) {
 			$date = DateTime::createFromFormat('Y-m-d', $_POST['accountexpires'], new DateTimeZone('UTC'));
-			$year = $date->format('Y');
-			$month = $date->format('m');
-			$day = $date->format('d');
+			$year = (int) $date->format('Y');
+			$month = (int) $date->format('m');
+			$day = (int) $date->format('d');
 			// set new time
 			$this->setExpirationDate($year, $month, $day);
 			// sync other modules
@@ -2291,7 +2291,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"),
-			$selectedGroups, null, $availableGroups, null, 'groups', $groupDisplayContainsDn, true);
+			$selectedGroups, [], $availableGroups, [], 'groups', $groupDisplayContainsDn, true);
 
 		// sync options
 		$typeManager = new TypeManager();
@@ -2902,13 +2902,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			elseif ($hr >= 24 * 7) {
 				$hr -= 24 * 7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, ($hour[$hr] === '1'));
 			$boxes[$i % 24][floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
-			$hour = str_pad($h, 2, '0', STR_PAD_LEFT);
+			$hour = str_pad((string) $h, 2, '0', STR_PAD_LEFT);
 			$row = [];
-			$row[] = new htmlOutputText("$hour:00 - " . str_pad($h + 1, 2, '0', STR_PAD_LEFT) . ":00");
+			$row[] = new htmlOutputText("$hour:00 - " . str_pad((string) ($h + 1), 2, '0', STR_PAD_LEFT) . ":00");
 			for ($d = 1; $d < 7; $d++) {
 				$row[] = $boxes[$h][$d];
 			}
@@ -3028,7 +3028,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = [];
-		// get list of existing groups
+		// get the list of existing groups
 		$groupList = $this->findGroups();
 		$groupMap = [];
 		foreach ($groupList as $dn) {
@@ -3238,7 +3238,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// other telephone
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone')) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone', 'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone',
+					'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
 			}
 			// fax number
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
@@ -3251,7 +3252,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// other websites
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites', 'url', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites',
+					'url', null, [], $errors, '/;[ ]*/');
 			}
 			// user account control
 			$userAccountControlAttr['useraccountcontrol'][0] = self::DEFAULT_ACCOUNT_CONTROL;
@@ -3277,7 +3279,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (!empty($rawAccounts[$i][$ids['windowsUser_accountExpires']])) {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_accountExpires']], 'date')) {
 					$dateParts = explode('-', $rawAccounts[$i][$ids['windowsUser_accountExpires']]);
-					$partialAccounts[$i]['accountexpires'] = $this->buildExpirationDate($dateParts[2], $dateParts[1], $dateParts[0]);
+					$partialAccounts[$i]['accountexpires'] = $this->buildExpirationDate((int) $dateParts[2], (int) $dateParts[1], (int) $dateParts[0]);
 				}
 				else {
 					$errMsg = $this->messages['accountexpires'][1];
@@ -3374,12 +3376,13 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// title
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_title', 'title', 'title', $this->messages['title'][1], $errors);
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_title',
+					'title', 'title', $this->messages['title'][1], $errors);
 			}
 			// room number
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_roomNumber',
-					'roomnumber', null, null, $errors, '/;[ ]*/');
+					'roomnumber', null, [], $errors, '/;[ ]*/');
 			}
 			// carLicense
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
@@ -3391,28 +3394,33 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			}
 			// employee type
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_employeeType', 'employeeType',
-					'employeeType', $this->messages['employeeType'][1], $errors);
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_employeeType',
+					'employeeType', 'employeeType', $this->messages['employeeType'][1], $errors);
 			}
 			// business category
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_businessCategory', 'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_businessCategory',
+					'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
 			}
 			// departments
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_department', 'department', null, null, $errors);
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_department',
+					'department', null, [], $errors);
 			}
 			// department numbers
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_departmentNumber', 'departmentNumber', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_departmentNumber',
+					'departmentNumber', null, [], $errors, '/;[ ]*/');
 			}
 			// organisational unit
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_ou', 'ou', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_ou',
+					'ou', null, [], $errors, '/;[ ]*/');
 			}
 			// organisation
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_o', 'o', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_o',
+					'o', null, [], $errors, '/;[ ]*/');
 			}
 			// manager
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
@@ -3445,7 +3453,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			// Proxy-Addresses
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_proxyAddresses', 'proxyAddresses',
-					null, null, $errors, '/;[ ]*/');
+					null, [], $errors, '/;[ ]*/');
 			}
 		}
 		return $errors;
@@ -3722,7 +3730,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$date = new DateTime('now', getTimeZone());
 			$toAdd = new DateInterval('P' . $numDays . 'D');
 			$dateTarget = $date->add($toAdd);
-			$this->setExpirationDate($dateTarget->format('Y'), $dateTarget->format('m'), $dateTarget->format('d'));
+			$this->setExpirationDate((int) $dateTarget->format('Y'), (int) $dateTarget->format('m'), (int) $dateTarget->format('d'));
 		}
 		// departments
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment')
@@ -4058,7 +4066,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$lockoutDurationSeconds = substr($lockoutDuration, 0, -7);
 		$lockoutTime = self::getFileTime($attrs['lockouttime'][0]);
 		$unlockTime = clone $lockoutTime;
-		$unlockTime->add(new DateInterval('PT' . abs($lockoutDurationSeconds) . 'S'));
+		$unlockTime->add(new DateInterval('PT' . abs((int) $lockoutDurationSeconds) . 'S'));
 		$now = new DateTime('now', getTimeZone());
 		if ($unlockTime > $now) {
 			$unlockTime->setTimezone(getTimeZone());
@@ -4347,7 +4355,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Returns the formatted value for the password expiration date.
 	 *
 	 * @param array $attributes user attributes ($this->attributes if null)
-	 * @return String date or -
+	 * @return string date or -
 	 */
 	private function formatPasswordExpires($attributes = null) {
 		if ($attributes == null) {
@@ -4363,8 +4371,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Formats a value in file time (100 ns since 1601-01-01).
 	 *
-	 * @param integer $value time value
-	 * @return String formatted value
+	 * @param string $value time value
+	 * @return string formatted value
 	 */
 	private function formatFileTime($value) {
 		if (empty($value) || ($value == '-1')) {
@@ -4380,7 +4388,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns a value in file time (100 ns since 1601-01-01).
 	 *
-	 * @param integer $value time value as int
+	 * @param string $value time value as int
 	 * @return DateTime|null time value
 	 */
 	public static function getFileTime($value): ?DateTime {
@@ -4396,11 +4404,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 	/**
 	 * Sets the expiration date of this account.
-	 * If all parameters are null the expiration date will be removed.
+	 * If all parameters are null, the expiration date will be removed.
 	 *
-	 * @param String $year year (e.g. 2040)
-	 * @param String $month month (e.g. 8)
-	 * @param String $day day (e.g. 27)
+	 * @param int|null $year year (e.g. 2040)
+	 * @param int|null $month month (e.g. 8)
+	 * @param int|null $day day (e.g. 27)
 	 */
 	public function setExpirationDate($year, $month, $day) {
 		if (($year == null) && ($month == null) && ($day == null)) {
@@ -4619,10 +4627,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Returns a list of jobs that can be run.
-	 *
-	 * @param LAMConfig $config configuration
-	 * @return array list of jobs
+	 * {@inheritDoc}
 	 */
 	public function getSupportedJobs(&$config) {
 		return [
@@ -5017,31 +5022,23 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Checks if a user needs to change his password.
-		 *
-		 * @param integer $jobID job ID
-		 * @param array $options job settings
-		 * @param PDO $pdo PDO
-		 * @param DateTime $now current time
-		 * @param array $policyOptions not used
-		 * @param array $user user attributes
-		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 * {@inheritDoc}
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$dn = $user['dn'];
-			// skip if password does not expire at all
+			// skip if the password does not expire at all
 			if (windowsUser::isNeverExpiring($user)) {
 				$this->jobResultLog->logDebug($dn . ' does not expire.');
 				return;
 			}
-			// skip if password does not expire
+			// skip if the password does not expire
 			if (empty($user['msds-userpasswordexpirytimecomputed'][0])
 				|| ($user['msds-userpasswordexpirytimecomputed'][0] == windowsUser::ACCOUNT_DOES_NOT_EXPIRE)
 				|| ($user['msds-userpasswordexpirytimecomputed'][0] == '0')) {
 				$this->jobResultLog->logDebug($dn . ': password does not expire.');
 				return;
 			}
-			// skip if account itself is expired
+			// skip if the account itself is expired
 			if (!empty($user['accountexpires'][0])) {
 				$accountExpiration = windowsUser::getFileTime($user['accountexpires'][0]);
 				if ($accountExpiration <= $now) {
@@ -5049,7 +5046,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 					return;
 				}
 			}
-			// skip if account is deactivated
+			// skip if the account is deactivated
 			if (windowsUser::isDeactivated($user)) {
 				$this->jobResultLog->logDebug($dn . ' is deactivated.');
 				return;
@@ -5277,8 +5274,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * Returns if the job should run.
 		 *
-		 * @param $pdo PDO
-		 * @param $jobId job id
+		 * @param PDO $pdo PDO
+		 * @param string $jobId job id
 		 * @param DateTime $baseDate base date
 		 * @param int $monthInterval month interval
 		 * @return bool should run
@@ -5512,15 +5509,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Checks if a user is expired.
-		 *
-		 * @param integer $jobID job ID
-		 * @param array $options job settings
-		 * @param PDO $pdo PDO
-		 * @param DateTime $now current time
-		 * @param array $policyOptions list of policy options by getPolicyOptions()
-		 * @param array $user user attributes
-		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 * {@inheritDoc}
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$seconds = substr($user['accountexpires'][0], 0, -7);

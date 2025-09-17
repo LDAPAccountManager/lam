@@ -83,7 +83,7 @@ class Remote {
 		$this->serverConfig = $server;
 		$serverNameParts = explode(",", $this->serverConfig->getServer());
 		if (count($serverNameParts) > 1) {
-			$handle = @new SSH2($serverNameParts[0], $serverNameParts[1]);
+			$handle = @new SSH2($serverNameParts[0], (int) $serverNameParts[1]);
 		}
 		else {
 			$handle = @new SSH2($serverNameParts[0]);
@@ -165,7 +165,7 @@ class Remote {
 		}
 		catch (NoKeyLoadedException $e) {
 			logNewMessage(LOG_ERR, sprintf('Unable to load key %s: %s', $keyPath, $e->getMessage()));
-			throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)), null, $e);
+			throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)), '', $e);
 		}
 	}
 

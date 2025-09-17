@@ -1,5 +1,6 @@
 <?php
 
+use LAM\JOB\Job;
 use LAM\PDF\PDFEntry;
 use LAM\PDF\PDFLabelValue;
 use LAM\PDF\PDFTable;
@@ -1013,7 +1014,7 @@ abstract class baseModule {
 	 * @param array $rawAccounts the user input data, contains one subarray for each account.
 	 * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
 	 * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	 * @param String $position current position in CSV
+	 * @param int $position current position in CSV
 	 * @param String $colName column name
 	 * @param String $attrName LDAP attribute name
 	 * @param String|String[] $regex for get_preg() (e.g. 'ascii')
@@ -1444,7 +1445,7 @@ abstract class baseModule {
 	 * @param string $attrName attribute name
 	 * @param string|null $label label name
 	 * @param boolean $required this is a required field (default false)
-	 * @param integer $length field length
+	 * @param int|null $length field length
 	 * @param boolean $isTextArea show as text area (default false)
 	 * @param array $autoCompleteValues values for auto-completion
 	 * @param integer $fieldSize field size
@@ -1771,7 +1772,7 @@ abstract class baseModule {
 			$field->setFieldSize(null);
 		}
 		elseif ($isTextArea && !in_array($name, $readOnlyFields)) {
-			$field = new htmlInputTextarea(static::class . '_' . $name, $value, null, null);
+			$field = new htmlInputTextarea(static::class . '_' . $name, $value, 100, 3);
 		}
 		elseif (!$isTextArea) {
 			$field = new htmlOutputText($value);
@@ -1920,7 +1921,7 @@ abstract class baseModule {
 	 * @param array $container return value of checkSelfServiceOptions()
 	 * @param String $name attribute name
 	 * @param array $attributes LDAP attributes
-	 * @param string $fields input fields
+	 * @param string[] $fields input fields
 	 * @param array $readOnlyFields list of read-only fields
 	 * @param String $validationID validation ID for get_preg()
 	 * @param array $validationMessage validation message data (defaults to $this->messages[$name][0])
@@ -2322,6 +2323,7 @@ abstract class baseModule {
 	 * Returns a list of jobs that can be run.
 	 *
 	 * @param LAMConfig $config configuration
+	 * @return Job[] jobs
 	 */
 	public function getSupportedJobs(&$config) {
 		return [];

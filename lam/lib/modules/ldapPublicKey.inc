@@ -180,7 +180,8 @@ class ldapPublicKey extends baseModule {
 	function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if (!$this->hasObjectClass() || in_array_ignore_case($this->getObjectClass(), $this->attributes['objectClass'])) {
-			$this->addMultiValueInputTextField($return, $this->getAttributeName(), _('SSH public key'), false, '16384', false, null, '50');
+			$this->addMultiValueInputTextField($return, $this->getAttributeName(), _('SSH public key'),
+				false, 16384, false, null, 50);
 			// file upload
 			$return->addVerticalSpacer('2rem');
 			$return->addLabel(new htmlOutputText(_('Upload a file')));
@@ -317,7 +318,8 @@ class ldapPublicKey extends baseModule {
 				$partialAccounts[$i]['objectClass'][] = $this->getObjectClass();
 			}
 			// add keys
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, static::class . '_sshPublicKey', $this->getAttributeName(), null, null, $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, static::class . '_sshPublicKey',
+				$this->getAttributeName(), null, [], $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}

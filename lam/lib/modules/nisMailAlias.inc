@@ -224,7 +224,7 @@ class nisMailAlias extends baseModule {
 			$newGroup->addElement(new htmlAccountPageButton(static::class, 'selectUser', 'recipientNew', 'user.svg', true, _('Select user')));
 			$newGroup->addElement(new htmlButton('addRec', 'add.svg', true));
 			$newGroup->addElement(new htmlHelpLink('recipient'));
-			$newGroup->addElement(new htmlHiddenInput('rec_number', $recipientCount));
+			$newGroup->addElement(new htmlHiddenInput('rec_number', (string) $recipientCount));
 			$return->addField($newGroup);
 		}
 		return $return;

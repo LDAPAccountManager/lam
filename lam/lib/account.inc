@@ -465,7 +465,7 @@ function search_domains($server = null, $suffix = null) {
 		$server = $_SESSION['ldap']->server();
 	}
 	$filter = '(objectclass=sambaDomain)';
-	$units = searchLDAPPaged($server, $suffix, $filter, $attr, false, 0);
+	$units = searchLDAPPaged($server, $suffix, $filter, $attr, 0, 0);
 	// extract attributes
 	for ($i = 0; $i < count($units); $i++) {
 		$ret[$i] = new samba3domain();
@@ -754,9 +754,9 @@ function connectToLDAP($serverURL, $startTLS) {
 /**
  * This will search the given LDAP suffix for all entries which have the given attribute.
  *
- * @param string $name attribute name (may be null)
- * @param string $value attribute value
- * @param string|null $objectClass object class (may be null)
+ * @param string|null $name attribute name
+ * @param string|null $value attribute value (may be null if $name is null)
+ * @param string|null $objectClass object class
  * @param array $attributes list of attributes to return
  * @param array $scopes account types
  * @return array list of found entries
@@ -766,7 +766,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	// build filter
 	$filter = '';
 	$filterParts = [];
-	if ($name != null) {
+	if ($name !== null) {
 		$filterParts[] = '(' . $name . '=' . ldap_escape($value, '*', LDAP_ESCAPE_FILTER) . ')';
 	}
 	if ($objectClass !== null) {
@@ -878,7 +878,7 @@ function getLDAPServerHandle() {
  * @param String $dn DN
  * @param String $filter filter
  * @param array $attributes attribute list
- * @param boolean $attrsOnly return only attribute names
+ * @param int $attrsOnly return only attribute names (1) or also the values (0)
  * @param int $limit size limit
  * @return array results
  */
@@ -1732,7 +1732,7 @@ class moduleCache {
  *
  * @return int random number
  */
-function getRandomNumber() {
+function getRandomNumber(): int {
 	return abs(hexdec(bin2hex(openssl_random_pseudo_bytes(6))));
 }
 
@@ -2110,14 +2110,14 @@ function isDeveloperVersion($version): bool {
  */
 class LAMException extends Exception {
 
-	private $title;
+	private ?string $title;
 
 	private $ldapErrorCode;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string $title title
+	 * @param string|null $title title
 	 * @param string $message message (optional)
 	 * @param Exception|null $cause (optional)
 	 * @param int|null $ldapErrorCode original LDAP error code
@@ -2131,16 +2131,16 @@ class LAMException extends Exception {
 	/**
 	 * Returns the message title.
 	 *
-	 * @return string title
+	 * @return string|null title
 	 */
-	public function getTitle() {
+	public function getTitle(): ?string {
 		return $this->title;
 	}
 
 	/**
 	 * Returns the original LDAP error code.
 	 *
-	 * @return int error code
+	 * @return int|null error code
 	 */
 	public function getLdapErrorCode() {
 		return $this->ldapErrorCode;

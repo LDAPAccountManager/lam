@@ -204,7 +204,7 @@ class nisNetGroupUser extends baseModule {
 			$filterGroup = new htmlGroup();
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
 			$filter = new htmlInputField('group_filter');
-			$filter->setFieldSize('5em');
+			$filter->setFieldSize(5);
 			$filter->filterSelectBox('group_add');
 			$filterGroup->addElement($filter);
 			$return->addElement($filterGroup, true);

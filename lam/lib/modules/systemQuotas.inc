@@ -7,7 +7,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2024  Roland Gruber
+  Copyright (C) 2011 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -157,16 +157,16 @@ class systemQuotas extends baseModule {
 		// new entry
 		$container->addElement(new htmlInputField('path', null, 20));
 		$container->addElement($spacer);
-		$newSoftBlockInput = new htmlInputField('softBlock', 0, 10);
+		$newSoftBlockInput = new htmlInputField('softBlock', '0', 10);
 		$container->addElement($newSoftBlockInput);
 		$container->addElement($spacer);
-		$newHardBlockInput = new htmlInputField('hardBlock', 0, 10);
+		$newHardBlockInput = new htmlInputField('hardBlock', '0', 10);
 		$container->addElement($newHardBlockInput);
 		$container->addElement($spacer);
-		$newSoftInodeInput = new htmlInputField('softInode', 0, 10);
+		$newSoftInodeInput = new htmlInputField('softInode', '0', 10);
 		$container->addElement($newSoftInodeInput);
 		$container->addElement($spacer);
-		$newHardInodeInput = new htmlInputField('hardInode', 0, 10);
+		$newHardInodeInput = new htmlInputField('hardInode', '0', 10);
 		$container->addElement($newHardInodeInput);
 		$container->addElement(new htmlButton('add', 'add.svg', true));
 		return $container;
@@ -242,12 +242,12 @@ class systemQuotas extends baseModule {
 	/**
 	 * Checks if the quota parameters are valid.
 	 *
-	 * @param String $path mountpoint
-	 * @param int $softBlock soft block limit
-	 * @param int $hardBlock hard block limit
-	 * @param int $softInode soft inode limit
-	 * @param int $hardInode hard inode limit
-	 * @param boolean $uploadIndex position is upload table
+	 * @param string $path mountpoint
+	 * @param string $softBlock soft block limit
+	 * @param string $hardBlock hard block limit
+	 * @param string $softInode soft inode limit
+	 * @param string $hardInode hard inode limit
+	 * @param int $uploadIndex position in upload table
 	 * @return array array where error messages are returned
 	 */
 	private function checkQuota($path, $softBlock, $hardBlock, $softInode, $hardInode, $uploadIndex = null) {

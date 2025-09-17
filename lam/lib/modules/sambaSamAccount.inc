@@ -1392,7 +1392,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			elseif ($hr >= 24 * 7) {
 				$hr -= 24 * 7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, (bool) $hour[$hr]);
 			$boxes[$i % 24][floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
@@ -1601,7 +1601,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				if ($returnValue === 'ok') {
 					$return->addLabel(new htmlOutputText($label));
 					$editGroup = new htmlGroup();
-					$editGroup->addElement(new htmlImage('../../graphics/pass.svg', 16, 16));
+					$editGroup->addElement(new htmlImage('../../graphics/pass.svg', '16', '16'));
 					$editGroup->addElement(new htmlSpacer('0.5rem', null));
 					$editGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'delete_' . $i, _('Delete')));
 					$return->addField($editGroup);
@@ -1609,7 +1609,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				elseif ($returnValue === 'missing') {
 					$return->addLabel(new htmlOutputText($label));
 					$editGroup = new htmlGroup();
-					$editGroup->addElement(new htmlImage('../../graphics/del.svg', 16, 16));
+					$editGroup->addElement(new htmlImage('../../graphics/del.svg', '16', '16'));
 					$editGroup->addElement(new htmlSpacer('0.5rem', null));
 					$editGroup->addElement(new htmlAccountPageButton(static::class, 'homedir', 'create_' . $i, _('Create')));
 					$return->addField($editGroup);
@@ -1749,7 +1749,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_mon', $mon, ['1']), 2, 2, 2, 'padding-left-right05');
 			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_yea', $year, ['2030']), 6, 6, 6, 'padding-left-right05');
 			$expireContainer->add(new htmlHelpLink('expireDate'), 2, 2, 2, 'padding-left-right05');
-			$return->addField($expireContainer, 12);
+			$return->addField($expireContainer);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 				// letter of home drive
 				$drives = ['-'];
@@ -1780,7 +1780,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 			}
-			$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'));
+			$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, [], _('Domain'), 'domain'));
 			// Windows group
 			$groups = [];
 			foreach ($this->groupRids as $key => $value) {
@@ -1802,7 +1802,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 			}
-			$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'));
+			$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, [], _('Domain'), 'domain'));
 		}
 		return $return;
 	}
@@ -2747,9 +2747,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * Sets the expiration date of this account.
 	 * If all parameters are null the expiration date will be removed.
 	 *
-	 * @param String $year year (e.g. 2040)
-	 * @param String $month month (e.g. 8)
-	 * @param String $day day (e.g. 27)
+	 * @param int|null $year year (e.g. 2040)
+	 * @param int|null $month month (e.g. 8)
+	 * @param int|null $day day (e.g. 27)
 	 */
 	public function setExpirationDate($year, $month, $day) {
 		if (($year == null) && ($month == null) && ($day == null)) {

@@ -483,16 +483,18 @@ function dryRun(): array {
  * @param string $errstr error message
  * @param string $errfile error file
  * @param int $errline error line
+ * @return bool stop internal error handler
  */
-function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline): void {
-	if ($errno === E_USER_ERROR) {
+function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline): bool {
+	if (($errno === E_USER_ERROR) || ($errno === E_ERROR)) {
 		logNewMessage(LOG_ERR, 'Error occurred: ' . $errstr . " ($errfile: $errline)");
 		$_REQUEST['multiEdit_error'] = true;
 	}
-	elseif ($errno === E_USER_WARNING) {
+	elseif (($errno === E_USER_WARNING) || ($errno === E_WARNING)) {
 		logNewMessage(LOG_WARNING, 'Error occurred: ' . $errstr . " ($errfile: $errline)");
 		$_REQUEST['multiEdit_error'] = true;
 	}
+	return true;
 }
 
 /**

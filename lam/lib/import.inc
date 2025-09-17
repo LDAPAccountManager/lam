@@ -347,7 +347,7 @@ class Importer {
 	 * Returns a task for LDIF changetype entry.
 	 *
 	 * @param string $dn DN
-	 * @param string $lines lines
+	 * @param string[] $lines lines
 	 * @return ImporterTask task
 	 */
 	private function getChangeTypeTask($dn, $lines) {
@@ -496,7 +496,7 @@ class RenameEntryTask implements ImporterTask {
 	 */
 	public function run() {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_rename($ldap, $this->dn, $this->newRdn, null, $this->deleteOldRdn);
+		$success = @ldap_rename($ldap, $this->dn, $this->newRdn, '', $this->deleteOldRdn);
 		if ($success) {
 			return Importer::formatMessage('INFO', _('Rename successful!'), htmlspecialchars($this->dn));
 		}

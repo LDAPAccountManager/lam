@@ -343,7 +343,7 @@ elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
 		$container->addLabel(new htmlOutputText('<b>' . _("Bind") . '</b>', false));
 		$binds = $monitorEntries['cn=snmp,cn=monitor']['anonymousbinds'][0] + $monitorEntries['cn=snmp,cn=monitor']['unauthbinds'][0]
 					+ $monitorEntries['cn=snmp,cn=monitor']['simpleauthbinds'][0] + $monitorEntries['cn=snmp,cn=monitor']['strongauthbinds'][0];
-		$container->addField(new htmlOutputText($binds));
+		$container->addField(new htmlOutputText((string) $binds));
 		$container->addLabel(new htmlOutputText('<b>' . _("Search") . '</b>', false));
 		$searches = $monitorEntries['cn=snmp,cn=monitor']['searchops'][0];
 		$container->addField(new htmlOutputText($searches));

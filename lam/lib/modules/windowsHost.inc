@@ -372,8 +372,8 @@ class windowsHost extends baseModule {
 	/**
 	 * Formats a value in file time (100 ns since 1601-01-01).
 	 *
-	 * @param integer $value time value
-	 * @return String formatted value
+	 * @param string $value time value
+	 * @return string formatted value
 	 */
 	private function formatFileTime($value) {
 		if (empty($value) || ($value == '-1')) {

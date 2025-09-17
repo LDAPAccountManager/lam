@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2024  Roland Gruber
+                2009 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -150,8 +150,7 @@ class lamDHCPList extends lamList {
 	/**
 	 * Constructor
 	 *
-	 * @param string $type account type
-	 * @return lamList list object
+	 * @param ConfiguredType $type account type
 	 */
 	public function __construct($type) {
 		parent::__construct($type);
@@ -220,10 +219,7 @@ class lamDHCPList extends lamList {
 	}
 
 	/**
-	 * Add DCP main settings button.
-	 *
-	 * @param htmlGroup $left left part
-	 * @param htmlGroup $right right part
+	 * {@inheritDoc}
 	 */
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {

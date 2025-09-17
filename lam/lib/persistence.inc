@@ -342,7 +342,7 @@ class ConfigDataImporter {
 					$steps[] = new ImporterStep(_('General settings'), 'mainConfig', $value);
 					break;
 				case 'certificates':
-					$steps[] = new ImporterStep(_('SSL certificates'), 'certificates', $value);
+					$steps[] = new ImporterStep(_('SSL certificates'), 'certificates', [$value]);
 					break;
 				case 'serverProfiles':
 					$mainStep = new ImporterStep(_('Server profiles'), 'serverProfiles', $value);
@@ -424,7 +424,7 @@ class ConfigDataImporter {
 	 * Runs the actual import.
 	 *
 	 * @param ImporterStep[] $steps import steps
-	 * @throws LAMException if error occurred
+	 * @throws LAMException if an error occurred
 	 */
 	public function runImport($steps) {
 		foreach ($steps as $step) {
@@ -434,7 +434,7 @@ class ConfigDataImporter {
 			$key = $step->getKey();
 			match ($key) {
 				'mainConfig' => $this->importMainConfig($step->getValue()),
-				'certificates' => $this->importCertificates($step->getValue()),
+				'certificates' => $this->importCertificates($step->getValue()[0]),
 				'serverProfiles' => $this->importServerProfiles($step),
 				'accountProfiles' => $this->importAccountProfiles($step),
 				'accountProfileTemplates' => $this->importAccountProfileTemplates($step),
