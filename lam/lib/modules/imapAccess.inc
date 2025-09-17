@@ -326,7 +326,7 @@ class imapAccess extends baseModule {
 				if (isset($quota_values[self::QUOTA_USAGE])) {
 					$quotaLimit = $quota_values[self::QUOTA_LIMIT];
 					$container->addLabel(new htmlOutputText(_("Current usage (kB)")));
-					$container->addField(new htmlOutputText($quota_values[self::QUOTA_USAGE]), true);
+					$container->addField(new htmlOutputText($quota_values[self::QUOTA_USAGE]));
 					$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
 					$container->add($quotaLimitInput);
 					$container->addVerticalSpacer('0.5rem');

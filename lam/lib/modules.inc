@@ -682,7 +682,7 @@ function parseHtml($module, $input, $values, $restricted, $scope) {
 		return [];
 	}
 	if ($input instanceof htmlElement) {
-		return $input->generateHTML($module, $input, $values, $restricted, $scope);
+		return $input->generateHTML($module, [$input], $values, $restricted, $scope);
 	}
 	if ($input !== []) {
 		$return = [];

@@ -213,10 +213,9 @@ class lamGroupList extends lamList {
 	/**
 	 * Constructor
 	 *
-	 * @param string $type account type
-	 * @return lamList list object
+	 * @param ConfiguredType $type account type
 	 */
-	function __construct($type) {
+	public function __construct($type) {
 		parent::__construct($type);
 		$this->labels = [
 			'nav' => _("Group count: %s"),

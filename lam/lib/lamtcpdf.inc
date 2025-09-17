@@ -7,7 +7,7 @@ use TCPDF;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2024  Roland Gruber
+  Copyright (C) 2017 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ class LAMTCPDF extends TCPDF {
 			if (!empty($logoBinary)) {
 				$imageConverter = ImageManipulationFactory::getImageManipulator($logoBinary);
 				$imageConverter->convertToJpeg();
-				$this->Image('@' . $imageConverter->getImageData(), 10, 10, '', 15, 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+				$this->Image('@' . $imageConverter->getImageData(), 10, 10, 0, 15, 'JPG', '', 'T');
 			}
 			else {
 				logNewMessage(LOG_ERR, 'Unable to read PDF logo ' . $logoFile);
@@ -91,7 +91,7 @@ class LAMTCPDF extends TCPDF {
 			$this->SetY(10);
 		}
 		$this->SetFont($this->fontName, '', 20);
-		$this->Cell(0, 15, $this->structure->getTitle(), 0, true, 'R', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 15, $this->structure->getTitle(), 0, 1, 'R', false, '', 0, false, 'M');
 		//set folding marks
 		if ($this->structure->getFoldingMarks() == PDFStructure::FOLDING_STANDARD) {
 			$this->SetLineWidth(0.2);
@@ -110,7 +110,7 @@ class LAMTCPDF extends TCPDF {
 		$this->SetY(-15);
 		$this->SetFont($this->fontName, '', LAMPDF_FONT_SIZE);
 		$footerText = _("This document was automatically created by LDAP Account Manager") . ' (' . getFormattedTime('Y-m-d H:i:s T') . ')';
-		$this->Cell(0, 10, $footerText, 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, $footerText, 0, 0, 'C');
 	}
 
 }

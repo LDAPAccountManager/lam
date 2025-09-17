@@ -6,6 +6,7 @@ use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
@@ -45,7 +46,8 @@ return RectorConfig::configure()
 		InlineArrayReturnAssignRector::class,
 		// TODO unreliable, recheck with newer rector version
 		ExplicitReturnNullRector::class,
-		RemoveParentCallWithoutParentRector::class
+		RemoveParentCallWithoutParentRector::class,
+		RemoveAlwaysTrueIfConditionRector::class,
 	])
 	->withFileExtensions([
 		'php',

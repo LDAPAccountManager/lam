@@ -1870,7 +1870,7 @@ class LAMConfig {
 	 * Returns an array of all selected account modules
 	 *
 	 * @param string $scope account type
-	 * @return array user modules
+	 * @return class-string<baseModule>[] user modules
 	 */
 	public function get_AccountModules($scope) {
 		if (isset($this->typeSettings["modules_" . $scope])) {
@@ -2322,7 +2322,7 @@ class LAMConfig {
 	/**
 	 * Returns the port.
 	 *
-	 * @return String port
+	 * @return int|null port
 	 */
 	public function getJobsDBPort() {
 		return $this->jobsDBPort;
@@ -2331,7 +2331,7 @@ class LAMConfig {
 	/**
 	 * Sets the port.
 	 *
-	 * @param int $jobsDBPort port
+	 * @param int|null $jobsDBPort port
 	 */
 	public function setJobsDBPort($jobsDBPort) {
 		$this->jobsDBPort = $jobsDBPort;
@@ -3190,7 +3190,7 @@ class LAMCfgMain {
 			@chmod($fileName, 0600);
 		}
 		else {
-			throw new LAMException(printf(_('Unable to write file %s.'), $fileName));
+			throw new LAMException(sprintf(_('Unable to write file %s.'), $fileName));
 		}
 	}
 
@@ -3268,11 +3268,11 @@ class LAMCfgMain {
 		}
 		catch (PDOException $e) {
 			syslog(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
+			throw new LAMException(_('Unable to connect to configuration database.'), '', $e);
 		}
 		catch (LAMException $e) {
 			syslog(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
-			throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
+			throw new LAMException(_('Unable to connect to configuration database.'), '', $e);
 		}
 	}
 

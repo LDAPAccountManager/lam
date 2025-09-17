@@ -273,12 +273,12 @@ class courierMailAccount extends baseModule {
 			$unitIndex = 2;
 			$value = 0;
 			if (isset($this->attributes['quota'][0]) && (strlen($this->attributes['quota'][0]) > 0)) {
-				$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
+				$unitIndex = floor(log((float) substr($this->attributes['quota'][0], 0, -1), 1000));
 				$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / (1000 ** $unitIndex), 2);
 			}
 			$return->addLabel(new htmlOutputText(_('Mailbox quota')));
 			$tempTable = new htmlTable();
-			$boxInput = new htmlInputField('quotaValue', $value);
+			$boxInput = new htmlInputField('quotaValue', (string) $value);
 			$boxInput->setFieldSize(5);
 			$boxInput->setFieldMaxLength(5);
 			$tempTable->addElement($boxInput);
@@ -473,7 +473,7 @@ class courierMailAccount extends baseModule {
 		$unitIndex = 2;
 		$value = 0;
 		if (isset($this->attributes['quota'][0]) && (strlen($this->attributes['quota'][0]) > 0)) {
-			$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
+			$unitIndex = floor(log((float) substr($this->attributes['quota'][0], 0, -1), 1000));
 			$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / (1000 ** $unitIndex), 2);
 		}
 		$units = [

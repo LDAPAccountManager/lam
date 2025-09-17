@@ -267,7 +267,7 @@ class SelfServicePersistence {
 			}
 			catch (PDOException $e) {
 				logNewMessage(LOG_ERR, _('Unable to connect to configuration database.') . ' ' . $e->getMessage());
-				throw new LAMException(_('Unable to connect to configuration database.'), null, $e);
+				throw new LAMException(_('Unable to connect to configuration database.'), '', $e);
 			}
 		}
 		else {

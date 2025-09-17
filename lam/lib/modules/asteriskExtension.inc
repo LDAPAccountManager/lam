@@ -323,7 +323,7 @@ class asteriskExtension extends baseModule {
 
 		for ($i = 0; $i < count($entries); $i++) {
 			$this->render_extension($entries[$i], $i, $renderContainer);
-			$renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
+			$renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')));
 
 			$upDownButtons = new htmlTable();
 			if ($i > 0) {
@@ -333,7 +333,7 @@ class asteriskExtension extends baseModule {
 				((count($entries) > 1) || ($this->addRuleFlag))) {
 				$upDownButtons->addElement(new htmlButton('rule_down_button_' . $i, 'down.svg', true));
 			}
-			$renderContainer->addField($upDownButtons, true);
+			$renderContainer->addField($upDownButtons);
 
 			$renderContainer->addVerticalSpacer('2rem');
 		}
@@ -342,21 +342,20 @@ class asteriskExtension extends baseModule {
 
 		if ($this->addRuleFlag || count($entries) == 0) {
 
-			$this->render_extension(null, count($entries), $renderContainer);
+			$this->render_extension([], count($entries), $renderContainer);
 
 			if ($this->addRuleFlag) {
 				$upDownButtons = new htmlTable();
-				$renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
+				$renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')));
 				$upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true));
-				$renderContainer->addField($upDownButtons, true);
+				$renderContainer->addField($upDownButtons);
 			}
 
 			$displayEntrNum++;
 			$this->addRuleFlag = false;
 		}
-		// the size of found rows plus 1 for new one
-		$hidenInput = new htmlHiddenInput("extension_rows", $displayEntrNum);
-		$renderContainer->add($hidenInput);
+		// the size of found rows plus 1 for the new one
+		$renderContainer->add(new htmlHiddenInput("extension_rows", (string) $displayEntrNum));
 
 		$renderContainer->add(new htmlButton("add_rule", _('Add another rule')));
 	}

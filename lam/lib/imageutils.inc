@@ -174,7 +174,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * @see \LAM\ImageUtils\ImageManipulator::crop()
 	 */
 	public function crop($x, $y, $width, $height) {
-		$this->image->cropimage(round($width), round($height), round($x), round($y));
+		$this->image->cropimage((int) round($width), (int) round($height), (int) round($x), (int) round($y));
 	}
 
 	/**

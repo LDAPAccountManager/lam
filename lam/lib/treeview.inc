@@ -525,7 +525,7 @@ class TreeView {
 			$cutButton->setCSSClasses($buttonClasses);
 			$buttonGroup->addElement($cutButton);
 
-			$pasteButton = new htmlImage('../../graphics/paste.svg', $buttonSize, $buttonSize, _('Paste'), _('Paste'));
+			$pasteButton = new htmlImage('../../graphics/paste.svg', $buttonSize, $buttonSize, _('Paste as new child entry'), _('Paste as new child entry'));
 			$pasteButton->setOnClick('window.lam.treeview.pasteNode(\'' . getSecurityTokenName() . '\', '
 				. '\'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 			$pasteButton->setCSSClasses($buttonClasses);
@@ -903,7 +903,7 @@ class TreeView {
 		$image->enableLightbox();
 		$image->setCSSClasses(['thumbnail', 'image-input', 'attribute-field']);
 		$image->addDataAttribute('attr-name', $attributeName);
-		$image->addDataAttribute('index', $index);
+		$image->addDataAttribute('index', (string) $index);
 		return $image;
 	}
 

@@ -565,7 +565,7 @@ class pykotaUser extends baseModule {
 		$totalPaidGroup->addElement(new htmlOutputText($total));
 		$totalPaidGroup->addElement(new htmlSpacer('0.5rem', null));
 		$totalPaidGroup->addElement(new htmlHelpLink('pykotaLifeTimePaid'));
-		$container->addField($totalPaidGroup, 12);
+		$container->addField($totalPaidGroup);
 		// payment/job history
 		if (!empty($this->attributes['pykotaPayments'][0])) {
 			$container->add(new htmlSubTitle(_('Payment history')));

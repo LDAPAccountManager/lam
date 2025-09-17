@@ -120,7 +120,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 				$info_string = str_replace("\r", "", $section->getText());
 				$info_string = explode("\n", $info_string);
 				foreach ($info_string as $text) {
-					$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, trim($text), 0, "L", 0);
+					$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, trim($text), 0, "L");
 					$pdf->Ln(0);
 				}
 				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
@@ -156,7 +156,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 									printTable($pdf, $valueEntry, $font);
 								}
 								elseif ($valueEntry instanceof PDFImage) {
-									printImage($pdf, $valueEntry, $font);
+									printImage($pdf, $valueEntry);
 								}
 							}
 						}
@@ -204,9 +204,12 @@ function getSectionHeadline($entry) {
  */
 function printLabelValue(&$pdf, $valueEntry, $fontName) {
 	$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-	$pdf->MultiCell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($valueEntry->getLabel()) . ':', 0, 'R', false, 0, '', '', true, 0, false, true, 0, 'T');
+	$pdf->MultiCell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($valueEntry->getLabel()) . ':',
+		0, 'R', false, 0);
 	$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-	$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($valueEntry->getValue()), 0, 'L', false, 1, '', '', true, 0, false, true, 0, 'M');
+	$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($valueEntry->getValue()),
+		0, 'L', false, 1, null, null, true, 0, false,
+		true, 0, 'M');
 	$pdf->Ln(0);
 }
 
@@ -221,7 +224,8 @@ function printTable(&$pdf, $table, $fontName) {
 	$headline = $table->getHeadline();
 	if (!empty($headline)) {
 		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($headline) . ':', 0, 0, 'L', 0);
+		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($headline) . ':',
+			0, 0, 'L');
 		$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
 		$pdf->Ln(LAMPDF_LINEHEIGHT);
 	}
@@ -234,7 +238,8 @@ function printTable(&$pdf, $table, $fontName) {
 			if ($cell->bold) {
 				$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
 			}
-			$pdf->Cell($width, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($cell->content), 0, 0, $cell->align, 0, '', 1);
+			$pdf->Cell($width, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($cell->content), 0,
+				0, $cell->align, false, '', 1);
 			if ($cell->bold) {
 				$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
 			}
@@ -249,16 +254,15 @@ function printTable(&$pdf, $table, $fontName) {
  *
  * @param LAMTCPDF $pdf PDF
  * @param PDFImage $imageEntry entry
- * @param string $fontName font name
  */
-function printImage(&$pdf, $imageEntry, $fontName) {
+function printImage(&$pdf, $imageEntry) {
 	include_once __DIR__ . '/imageutils.inc';
 	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
 	$height = $imageManipulator->getHeight() / 2.9;
 	if ($height > 40) {
 		$height = 40;
 	}
-	$pdf->Image('@' . $imageManipulator->getImageData(), null, null, null, $height,
+	$pdf->Image('@' . $imageManipulator->getImageData(), null, null, 0, $height,
 		'JPG', null, 'T', true, 300, 'R',
 		false, false, 0, false, false, false);
 	$pdf->Ln($height);

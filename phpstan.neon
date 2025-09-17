@@ -1,5 +1,5 @@
 parameters:
-	level: 4
+	level: 5
 	scanDirectories:
 		- lam/lib
 		- lam/templates
@@ -56,7 +56,9 @@ parameters:
 		- '#Call to .*method .* on an unknown class LAM\\DB\\CronDatabase.*#'
 		- '#.* has invalid type LAM\\ENV\\.*#'
 		- '#.* has invalid type LAM\\DB\\.*#'
+		- '#.* has invalid return type LAM\\JOB\\.*#'
 		- '#Call to an undefined method baseModule::getBackupEmail\(\).#'
 		- '#Call to an undefined method baseModule::getMembers\(\).#'
 		- '#Call to an undefined method baseModule::getNextGIDs\(\).#'
 		- '#Call to an undefined method baseModule::setExpirationDate\(\).#'
+		- '#.*accountContainer::getAccountModule\(\) expects class-string\<baseModule\>, string given.*#'

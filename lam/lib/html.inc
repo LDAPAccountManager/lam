@@ -84,7 +84,7 @@ abstract class htmlElement {
 	/**
 	 * Prints the HTML code for this element.
 	 *
-	 * @param string $module Name of account module
+	 * @param string|null $module Name of account module
 	 * @param array $input List of meta-HTML elements
 	 * @param array $values List of values which override the defaults in $input (name => value)
 	 * @param boolean $restricted If true then no buttons will be displayed
@@ -1286,7 +1286,7 @@ class htmlSelect extends htmlElement {
 		if ($selectedElements != null) {
 			$this->selectedElements = $selectedElements;
 		}
-		$this->size = htmlspecialchars($size);
+		$this->size = htmlspecialchars((string) $size);
 	}
 
 	/**
@@ -2374,8 +2374,8 @@ class htmlInputTextarea extends htmlElement {
 	function __construct($name, $value, $colCount, $rowCount) {
 		$this->name = htmlspecialchars($name);
 		$this->value = htmlspecialchars($value);
-		$this->colCount = htmlspecialchars($colCount);
-		$this->rowCount = htmlspecialchars($rowCount);
+		$this->colCount = htmlspecialchars((string) $colCount);
+		$this->rowCount = htmlspecialchars((string) $rowCount);
 	}
 
 	/**
@@ -2840,14 +2840,7 @@ class htmlStatusMessage extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope) {
 		if (!empty($this->cssClasses)) {
@@ -4907,7 +4900,7 @@ class htmlProgressbar extends htmlElement {
 	 */
 	function __construct(string $id = null, int $progress = 0) {
 		$this->id = htmlspecialchars($id);
-		$this->progress = htmlspecialchars($progress);
+		$this->progress = htmlspecialchars((string) $progress);
 	}
 
 	/**

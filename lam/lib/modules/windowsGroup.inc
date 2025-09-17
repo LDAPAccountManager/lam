@@ -539,7 +539,7 @@ class windowsGroup extends baseModule {
 		}
 
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"), $selectedGroups,
-			null, $availableGroups, null, 'memberof', false, true);
+			[], $availableGroups, [], 'memberof', false, true);
 
 		$return->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back'));
@@ -642,7 +642,6 @@ class windowsGroup extends baseModule {
 			$filterGroup = new htmlGroup();
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
 			$filter = new htmlInputField('windows_filter');
-			$filter->setFieldSize('5em');
 			$filter->filterSelectBox('members');
 			$filterGroup->addElement($filter);
 			$return->add($filterGroup);

@@ -351,7 +351,7 @@ class lamList {
 				$link->setCSSClasses(['icon']);
 				$navGroup->addElement($link);
 			}
-			$pageCount = ceil($count / $this->maxPageEntries);
+			$pageCount = (int) ceil($count / $this->maxPageEntries);
 			for ($i = $this->page - 6; $i < ($this->page + 5); $i++) {
 				if ($i >= $pageCount) {
 					break;
@@ -362,7 +362,7 @@ class lamList {
 				if ($i == $this->page - 1) {
 					$url = "list.php?type=" . $this->type->getId() . "&norefresh=true" .
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
-					$navInput = new htmlInputField('listNavPage', ($i + 1));
+					$navInput = new htmlInputField('listNavPage', (string) ($i + 1));
 					$navInput->setMinimumAndMaximumNumber(1, $pageCount);
 					$navInput->setCSSClasses(['listPageInput']);
 					$navInput->setOnKeyPress('listPageNumberKeyPress(\'' . $url . '\', event);');
@@ -372,7 +372,7 @@ class lamList {
 				else {
 					$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($i + 1) .
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
-					$link = new htmlLink(($i + 1), $linkHref);
+					$link = new htmlLink((string) ($i + 1), $linkHref);
 					$navGroup->addElement($link);
 				}
 			}
@@ -1046,7 +1046,7 @@ class lamList {
 	 * Can be used by subclasses to add e.g. additional buttons to the top area.
 	 *
 	 * @param htmlGroup $left left part
-	 * @param htmlGroup $right right part
+	 * @param htmlResponsiveRow $right right part
 	 */
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		// only used by subclasses
@@ -1656,7 +1656,7 @@ abstract class lamListOption {
 	/**
 	 * Returns the option value. The value must not contain "=" and ";".
 	 *
-	 * @return String value
+	 * @return string value
 	 */
 	public function getValue() {
 		return $this->value;
@@ -1665,7 +1665,7 @@ abstract class lamListOption {
 	/**
 	 * Sets the config option value. The value must not contain "=" and ";".
 	 *
-	 * @param String $value
+	 * @param string $value
 	 */
 	public function setValue($value) {
 		if ((strpos($value, '=') > -1) || (strpos($value, ';') > -1)) {
@@ -1783,7 +1783,7 @@ class lamSelectListOption extends lamListOption {
 			$this->setValue($_POST[$this->getID()]);
 		}
 		else {
-			$this->setValue(null);
+			$this->setValue('');
 		}
 	}
 

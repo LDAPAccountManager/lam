@@ -100,59 +100,58 @@ class user extends baseType {
 	public function getTitleBarTitle($container) {
 		$title = '';
 		// get attributes
-		$personalAttributes = null;
+		$personalAttributes = [];
 		if ($container->getAccountModule('inetOrgPerson') != null) {
 			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();
 		}
 		elseif ($container->getAccountModule('windowsUser') != null) {
 			$personalAttributes = $container->getAccountModule('windowsUser')->getAttributes();
 		}
-		$accountAttributes = null;
+		$accountAttributes = [];
 		if ($container->getAccountModule('account') != null) {
 			$accountAttributes = $container->getAccountModule('account')->getAttributes();
 		}
-		$sambaAttributes = null;
+		$sambaAttributes = [];
 		if ($container->getAccountModule('sambaSamAccount') != null) {
 			$sambaAttributes = $container->getAccountModule('sambaSamAccount')->getAttributes();
 		}
-		$unixAttributes = null;
+		$unixAttributes = [];
 		if ($container->getAccountModule('posixAccount') != null) {
 			$unixAttributes = $container->getAccountModule('posixAccount')->getAttributes();
 		}
-		$mitKerberosAttributes = null;
+		$mitKerberosAttributes = [];
 		if ($container->getAccountModule('mitKerberosStructural') != null) {
 			$mitKerberosAttributes = $container->getAccountModule('mitKerberosStructural')->getAttributes();
 		}
 		elseif ($container->getAccountModule('mitKerberos') != null) {
 			$mitKerberosAttributes = $container->getAccountModule('mitKerberos')->getAttributes();
 		}
-		// check if first and last name can be shown
-		if (($personalAttributes != null) && isset($personalAttributes['sn'][0]) && !empty($personalAttributes['sn'][0])
-			&& isset($personalAttributes['givenName'][0]) && !empty($personalAttributes['givenName'][0])) {
+		// check if the first and last name can be shown
+		if (!empty($personalAttributes['sn'][0]) && !empty($personalAttributes['givenName'][0])) {
 			return $title . htmlspecialchars($personalAttributes['givenName'][0] . ' ' . $personalAttributes['sn'][0]);
 		}
 		// check if a display name is set
-		if (($sambaAttributes != null) && isset($sambaAttributes['displayName'][0]) && !empty($sambaAttributes['displayName'][0])) {
+		if (!empty($sambaAttributes['displayName'][0])) {
 			return $title . htmlspecialchars($sambaAttributes['displayName'][0]);
 		}
 		// check if a common name is set
-		if (($personalAttributes != null) && isset($personalAttributes['cn'][0]) && !empty($personalAttributes['cn'][0])) {
+		if (!empty($personalAttributes['cn'][0])) {
 			return $title . htmlspecialchars($personalAttributes['cn'][0]);
 		}
-		if (($unixAttributes != null) && isset($unixAttributes['cn'][0]) && !empty($unixAttributes['cn'][0])) {
+		if (!empty($unixAttributes['cn'][0])) {
 			return $title . htmlspecialchars($unixAttributes['cn'][0]);
 		}
-		// check if a user name is set
-		if (($unixAttributes != null) && isset($unixAttributes['uid'][0]) && !empty($unixAttributes['uid'][0])) {
+		// check if a username is set
+		if (!empty($unixAttributes['uid'][0])) {
 			return $title . htmlspecialchars($unixAttributes['uid'][0]);
 		}
-		if (($personalAttributes != null) && isset($personalAttributes['uid'][0]) && !empty($personalAttributes['uid'][0])) {
+		if (!empty($personalAttributes['uid'][0])) {
 			return $title . htmlspecialchars($personalAttributes['uid'][0]);
 		}
-		if (($accountAttributes != null) && isset($accountAttributes['uid'][0]) && !empty($accountAttributes['uid'][0])) {
+		if (!empty($accountAttributes['uid'][0])) {
 			return $title . htmlspecialchars($accountAttributes['uid'][0]);
 		}
-		if (($mitKerberosAttributes != null) && isset($mitKerberosAttributes['krbPrincipalName'][0]) && !empty($mitKerberosAttributes['krbPrincipalName'][0])) {
+		if (!empty($mitKerberosAttributes['krbPrincipalName'][0])) {
 			return $title . htmlspecialchars($mitKerberosAttributes['krbPrincipalName'][0]);
 		}
 		if ($container->isNewAccount) {
@@ -216,8 +215,7 @@ class lamUserList extends lamList {
 	/**
 	 * Constructor
 	 *
-	 * @param string $type account type
-	 * @return lamList list object
+	 * @param ConfiguredType $type account type
 	 */
 	public function __construct($type) {
 		parent::__construct($type);

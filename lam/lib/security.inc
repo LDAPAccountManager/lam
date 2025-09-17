@@ -272,7 +272,7 @@ function logNewMessage($level, $message): void {
 		LOG_WARNING => 'WARNING',
 		LOG_ERR => 'ERROR'];
 	if (!in_array($level, array_keys($possibleLevels))) {
-		StatusMessage('ERROR', 'Invalid log level!', $level);
+		StatusMessage('ERROR', 'Invalid log level!', htmlspecialchars((string) $level));
 		return;
 	}
 	if (isset($_SESSION['cfgMain'])) {

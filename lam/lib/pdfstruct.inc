@@ -1441,7 +1441,7 @@ class PDFStructure {
 					$this->sections[] = new PDFTextSection($section['data']);
 				}
 				else {
-					$entrySection = new PDFEntrySection(null);
+					$entrySection = new PDFEntrySection('');
 					$entrySection->import($section['data']);
 					$this->sections[] = $entrySection;
 				}
