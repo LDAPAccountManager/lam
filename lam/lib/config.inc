@@ -570,66 +570,19 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		$config = new LAMConfig();
 		$confFilePath = $this->getPath($name);
 		if (!is_file($confFilePath)) {
+			logNewMessage(LOG_ERR, 'No such file ' . $confFilePath);
 			throw new LAMException(_('Unable to read file.'));
 		}
 		$file = @fopen($confFilePath, "r");
 		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to open for reading: ' . $confFilePath);
 			throw new LAMException(_('Unable to read file.'));
 		}
 		$json = fread($file, 1000000);
 		$data = json_decode($json, true);
 		if ($data === null) {
-			fclose($file);
-			$file = @fopen($confFilePath, "r");
-			$data = [];
-			$moduleSettings = [];
-			$typeSettings = [];
-			$toolSettings = [];
-			$jobSettings = [];
-			while (!feof($file)) {
-				$line = fgets($file, 1000000);
-				$line = trim($line);  // remove spaces at the beginning and end
-				if (($line === "") || ($line[0] === "#")) {
-					continue; // ignore comments and empty lines
-				}
-				// search keywords
-				$parts = explode(': ', $line);
-				$keyword = $parts[0];
-				$keyword = trim($keyword, ':');
-				$startIndex = strlen($keyword) + 2;
-				$value = (count($parts) > 1) ? substr($line, $startIndex) : '';
-				if (!in_array($keyword, ['modules', 'types', 'tools', 'jobs'])) {
-					$data[$keyword] = $value;
-				}
-				else {
-					$subKeyword = $parts[1];
-					$startIndex = $startIndex + strlen($subKeyword) + 2;
-					$option = substr($line, $startIndex);
-					if (empty($option)) {
-						continue;
-					}
-					// module settings
-					if ($keyword === 'modules') {
-						$moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
-					}
-					// type settings
-					if ($keyword === 'types') {
-						$typeSettings[$subKeyword] = $option;
-					}
-					// tool settings
-					if ($keyword === 'tools') {
-						$toolSettings[$subKeyword] = $option;
-					}
-					// job settings
-					if ($keyword === 'jobs') {
-						$jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
-					}
-				}
-			}
-			$data['moduleSettings'] = $moduleSettings;
-			$data['typeSettings'] = $typeSettings;
-			$data['toolSettings'] = $toolSettings;
-			$data['jobSettings'] = $jobSettings;
+			logNewMessage(LOG_ERR, 'Unable to read JSON from ' . $confFilePath);
+			throw new LAMException(_('Unable to read file.'));
 		}
 		fclose($file);
 		$config->importData($data);
@@ -3211,25 +3164,7 @@ class LAMCfgMain {
 				$this->importData($data);
 			}
 			else {
-				// fallback to old format
-				fclose($file);
-				$file = @fopen($this->conffile, "r");
-				while (!feof($file)) {
-					$line = fgets($file, 1000000);
-					$line = trim($line);  // remove spaces at the beginning and end
-					if (($line === "") || ($line[0] === "#")) {
-						continue; // ignore comments
-					}
-					// search keywords
-					for ($i = 0; $i < count($this->settings); $i++) {
-						$keyword = $this->settings[$i];
-						$keylen = strlen($keyword);
-						if (strtolower(substr($line, 0, $keylen + 2)) === strtolower($keyword . ": ")) {
-							$this->$keyword = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							break;
-						}
-					}
-				}
+				throw new LAMException(_('The config file is not readable.'));
 			}
 			fclose($file);
 		}

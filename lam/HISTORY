@@ -1,4 +1,5 @@
 December 2025 9.4
+ - Main configuration and server profiles require latest file format (introduced in 9.0) (389)
  - LAM Pro:
   -> SMS sending can be done with email2SMS providers (465)
 
