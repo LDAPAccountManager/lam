@@ -977,7 +977,7 @@ class WebauthnProvider extends BaseProvider {
 		}
 		$row->addVerticalSpacer('2rem');
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
-		$selfServiceParam = $this->config->isSelfService ? 'true' : 'false';
+		$selfServiceParam = $this->config->isSelfService ? 'selfservice=true' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg', '50%'));
 		$row->addVerticalSpacer('1rem');
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
@@ -995,7 +995,7 @@ class WebauthnProvider extends BaseProvider {
 		$errorMessageDiv->addDataAttribute('button', _('Ok'));
 		$errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
 		$row->add($errorMessageDiv);
-		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', ' . $selfServiceParam . ',' .
+		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', \'' . $selfServiceParam . '\',' .
 			' \'' . _('Do you want to set a name for this device?') . '\', \'' . _('Name') . '\',' .
 			' \'' . _('Ok') . '\', \'' . _('Cancel') . '\');'), 0);
 	}

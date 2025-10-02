@@ -1863,15 +1863,15 @@ window.lam.webauthn.charAt = function (c) {
  * Starts the webauthn process.
  *
  * @param prefix path prefix for Ajax endpoint
- * @param isSelfService runs as part of self service
+ * @param extraParam additional parameter for request (e.g. "selfservice=true")
  * @param newDeviceNameTitle title for new device name dialog
  * @param newDeviceNameLabel label for new device name
  * @param okText text for Ok button
  * @param cancelText text for cancelButton
  */
-window.lam.webauthn.start = function(prefix, isSelfService, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText) {
+window.lam.webauthn.start = function(prefix, extraParam, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText) {
 	document.addEventListener("DOMContentLoaded", function(){
-		window.lam.webauthn.run(prefix, isSelfService, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText);
+		window.lam.webauthn.run(prefix, extraParam, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText);
 	});
 }
 
@@ -1879,13 +1879,13 @@ window.lam.webauthn.start = function(prefix, isSelfService, newDeviceNameTitle, 
  * Checks if the user is registered and starts login/registration.
  *
  * @param prefix path prefix for Ajax endpoint
- * @param isSelfService runs as part of self-service
+ * @param extraParam additional parameter for request (e.g. "selfservice=true")
  * @param newDeviceNameTitle title for new device name dialog
  * @param newDeviceNameLabel label for new device name
  * @param okText text for Ok button
  * @param cancelText text for cancelButton
  */
-window.lam.webauthn.run = function(prefix, isSelfService, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText) {
+window.lam.webauthn.run = function(prefix, extraParam, newDeviceNameTitle, newDeviceNameLabel, okText, cancelText) {
 	const skipButton = document.getElementById('btn_skip_webauthn');
 	if (skipButton) {
 		skipButton.onclick = function () {
@@ -1908,7 +1908,7 @@ window.lam.webauthn.run = function(prefix, isSelfService, newDeviceNameTitle, ne
 	let data = new FormData();
 	data.append('sec_token', token);
 	data.append('action', 'status');
-	var extraParam = isSelfService ? '&selfservice=true' : '';
+	extraParam = (extraParam) ? '&' + extraParam : '';
 	fetch(prefix + 'misc/ajax.php?function=webauthn' + extraParam, {
 		method: 'POST',
 		body: data
