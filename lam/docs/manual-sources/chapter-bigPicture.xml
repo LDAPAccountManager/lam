@@ -272,23 +272,30 @@
       </mediaobject>
     </screenshot>
 
-    <para>Therefore, LAM is split into two separate parts, LAM for admins and
-    for users. LAM for admins allows to manage various types of LDAP entries
-    (e.g. users, groups, hosts, ...). It also contains tools like batch
-    upload, account profiles, LDAP schema viewer and an LDAP browser. LAM for
-    users focuses on end users. It provides a self service for the users to
-    edit their personal data (e.g. contact information). The LAM administrator
-    is able to specify what data may be changed by the users. The design is
-    also adaptable to your corporate design.</para>
+    <para>Therefore, LAM is split into three separate parts, LAM for admins,
+    self-service and white pages.</para>
 
-    <para>LAM for admins/users is accessible via HTTP(S) by all major web
-    browsers (Firefox, IE, Opera, ...).</para>
+    <para>LAM for admins allows to manage various types of LDAP entries (e.g.
+    users, groups, hosts, ...). It also contains tools like batch upload,
+    account profiles, LDAP schema viewer and an LDAP browser.</para>
+
+    <para>Self-service focuses on end users. It provides users the possibility
+    to edit their personal data (e.g. contact information). The LAM
+    administrator is able to specify what data may be changed by the users.
+    The design is also adaptable to your corporate design.</para>
+
+    <para>White Pages allows users to browse the user directory to e.g. search
+    for phone addresses and telephone numbers. It is fully customizable
+    regarding authentication, displayed data and design.</para>
+
+    <para>LAM for admins/self-service is accessible via HTTP(S) by all major
+    web browsers (Firefox, Chrome, ...).</para>
 
     <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
 
     <para>LAM runs on PHP. Therefore, it is independent of CPU architecture
     and operating system (OS). You can run LAM on any OS which supports
-    Apache, Nginx or other PHP compatible web servers.</para>
+    Apache, nginx or other PHP compatible web servers.</para>
 
     <para><emphasis role="bold">Home directory server:</emphasis></para>
 
