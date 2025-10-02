@@ -14,6 +14,7 @@ use Facile\OpenIDClient\Issuer\IssuerBuilder;
 use GuzzleHttp\Psr7\ServerRequest;
 use htmlResponsiveRow;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use LAM_INTERFACE;
 use SelfServiceLoginHandler;
 use selfServiceProfile;
 use LAMConfig;
@@ -461,7 +462,7 @@ class DuoProvider extends BaseProvider {
 	 * @see BaseProvider::addCustomInput
 	 */
 	public function addCustomInput(&$row, $userDn) {
-		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$pathPrefix = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/duo.png'));
 		if (!empty($_GET['duo_code'])) {
 			// authentication is verified
@@ -612,7 +613,7 @@ class OktaProvider extends BaseProvider {
 			return;
 		}
 
-		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$pathPrefix = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/okta.png'));
 		$_SESSION['okta_state'] = bin2hex(random_bytes(10));
 		$_SESSION['okta_code_verifier'] = bin2hex(random_bytes(50));
@@ -797,7 +798,7 @@ class OpenIdProvider extends BaseProvider {
 			return;
 		}
 		$content = new htmlResponsiveRow();
-		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$pathPrefix = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'));
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
 		try {
@@ -976,8 +977,8 @@ class WebauthnProvider extends BaseProvider {
 			$row->add(new htmlStatusMessage('INFO', _('Please register a security device.')));
 		}
 		$row->addVerticalSpacer('2rem');
-		$pathPrefix = $this->config->isSelfService ? '../' : '';
-		$selfServiceParam = $this->config->isSelfService ? 'selfservice=true' : '';
+		$pathPrefix = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? '../' : '';
+		$selfServiceParam = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? 'selfservice=true' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg', '50%'));
 		$row->addVerticalSpacer('1rem');
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
@@ -1244,7 +1245,7 @@ class TwoFactorProviderService {
 	 */
 	private function getConfigSelfService(&$profile): TwoFactorConfiguration {
 		$tfConfig = new TwoFactorConfiguration();
-		$tfConfig->isSelfService = true;
+		$tfConfig->interface = LAM_INTERFACE::SELF_SERVICE;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
 		$tfConfig->twoFactorAuthenticationOptional = $profile->twoFactorAuthenticationOptional;
@@ -1294,7 +1295,7 @@ class TwoFactorProviderService {
 	 */
 	private function getConfigAdmin($conf): TwoFactorConfiguration {
 		$tfConfig = new TwoFactorConfiguration();
-		$tfConfig->isSelfService = false;
+		$tfConfig->interface = LAM_INTERFACE::ADMIN;
 		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
 		$tfConfig->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
 		$tfConfig->twoFactorAuthenticationOptional = $conf->getTwoFactorAuthenticationOptional();
@@ -1340,10 +1341,8 @@ class TwoFactorProviderService {
  */
 class TwoFactorConfiguration {
 
-	/**
-	 * @var bool is self service
-	 */
-	public bool $isSelfService = false;
+	/** LAM UI */
+	public LAM_INTERFACE $interface = LAM_INTERFACE::ADMIN;
 
 	/**
 	 * @var ?string provider id

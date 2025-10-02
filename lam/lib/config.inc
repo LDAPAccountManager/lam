@@ -39,6 +39,18 @@ use function LAM\TYPES\getScopeFromTypeId;
  * @author Thomas Manninger
  */
 
+/**
+ * Defines the possible LAM user interfaces.
+ */
+enum LAM_INTERFACE {
+	/** admin pages to manage any type aof entry */
+	case ADMIN;
+	/** user self-service to manage own data */
+	case SELF_SERVICE;
+	/** white-pages to display users */
+	case WHITE_PAGES;
+}
+
 /** persistence */
 include_once __DIR__ . '/persistence.inc';
 /** Used to print messages. */
