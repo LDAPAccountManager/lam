@@ -44,7 +44,6 @@ parameters:
 			- lam/lib/plugins/extendedInvalidCredentials/MitKerberosExtraInvalidCredentialsProvider.inc (?)
 	ignoreErrors:
 		- '#Variable \$helpArray might not be defined.#'
-		- '#Offset .SID. on array.*in isset\(\) always exists.*#'
 		- '#Offset .preferred_username. does not exist on.*#'
 		- '#Strict comparison using !== between non-empty-list.*will always evaluate to true.*#'
 		- '#Strict comparison using !== between non-empty-array.*will always evaluate to true.*#'

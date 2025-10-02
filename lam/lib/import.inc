@@ -444,7 +444,7 @@ class AddEntryTask implements ImporterTask {
 	 * Constructor
 	 *
 	 * @param string $dn DN
-	 * @param array[string[]] $attributes list of attributes
+	 * @param array<string, string[]> $attributes list of attributes
 	 */
 	public function __construct($dn, $attributes) {
 		$this->dn = $dn;
@@ -601,7 +601,7 @@ class AddAttributesTask implements ImporterTask {
 	 * Constructor
 	 *
 	 * @param string $dn DN
-	 * @param array[string[]] $attributes list of attributes
+	 * @param array<string, string[]> $attributes list of attributes
 	 */
 	public function __construct($dn, $attributes) {
 		$this->dn = $dn;
@@ -657,7 +657,7 @@ class DeleteAttributesTask implements ImporterTask {
 	 *
 	 * @param string $dn DN
 	 * @param string $attributeName attribute name
-	 * @param array[string[]] $attributes list of attributes
+	 * @param array<string, string[]> $attributes list of attributes
 	 */
 	public function __construct($dn, $attributeName, $attributes) {
 		$this->dn = $dn;
@@ -726,7 +726,7 @@ class ReplaceAttributesTask implements ImporterTask {
 	 * Constructor
 	 *
 	 * @param string $dn DN
-	 * @param array[string[]] $attributes list of attributes
+	 * @param array<string, string[]> $attributes list of attributes
 	 */
 	public function __construct($dn, $attributes) {
 		$this->dn = $dn;
