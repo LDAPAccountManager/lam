@@ -489,6 +489,10 @@ table.collapse {
 	white-space: nowrap;
 }
 
+hr {
+    border: 1px solid var(--lam-border-color);
+}
+
 hr.dotted {
 	border-bottom: 1px dotted var(--lam-text-color-default);
 	border-top: none;
@@ -534,7 +538,7 @@ td.loginRightBox {
 }
 
 .roundedShadowBox {
-	border: 2px solid #a0a0a4;
+	border: 2px solid #ffffff;
 	border-radius: 5px;
 	box-shadow: 2px 2px 5px #a0a0a4;
 	display: inline-block;
@@ -566,7 +570,7 @@ a.lamLogo span {
 }
 
 .lam-header {
-	box-shadow: 0px 3px 2px -2px grey;
+	box-shadow: 0px 3px 2px -2px #b9b9b9;
 }
 
 .module-list {
@@ -1151,7 +1155,7 @@ div.tippy-box {
 	color: var(--lam-text-color-default);
 	background: var(--lam-background-color-default);
 	font-size: 85%;
-	border: 2px solid #a0a0a4;
+	border: 2px solid #ffffff;
 	border-radius: var(--lam-default-border-radius);
 	box-shadow: 0px 0px 5px #666666;
 	padding: 0 var(--lam-regular-space) var(--lam-regular-space) var(--lam-regular-space);
