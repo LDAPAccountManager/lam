@@ -81,7 +81,6 @@ enum WP_ITEM_TYPE {
  */
 class WhitePagesProfile {
 
-
 	/**
 	 * @var string LDAP server URL
 	 */
@@ -177,14 +176,28 @@ class WhitePagesProfile {
 	 */
 	public string $twoFactorRememberDevicePassword = '';
 
+	/** provider for captcha (-/google/hCaptcha/friendlyCaptcha) */
+	public $captchaProvider = '-';
+	/** site key */
+	public $captchaSiteKey = '';
+	/** secret key */
+	public $captchaSecretKey = '';
+
+	/** header HTML for login */
+	public string $loginHeader = '';
+	/** describing text for user login */
+	public string $loginCaption = '';
+	/** describing text for user login */
+	public string $loginFooter = '';
+	/** label for password input */
+	public string $passwordLabel = '';
+	/** describing text for search attribute */
+	public string $loginAttributeText = '';
+
 	/**
 	 * @var string header HTML
 	 */
 	public string $header = '';
-	/**
-	 * @var string header HTML for login
-	 */
-	public string $loginHeader = '';
 	/**
 	 * @var string footer HTML
 	 */
@@ -211,16 +224,30 @@ class WhitePagesProfile {
 	 */
 	public array $tabs = [];
 
-	public static function import(mixed $profileData): WhitePagesProfile {
-		// TODO
+	/**
+	 * Imports data to a new profile.
+	 *
+	 * @param array $data data as array
+	 * @return WhitePagesProfile profile
+	 */
+	public static function import(array $data): WhitePagesProfile {
+		$profile = new WhitePagesProfile();
+		$vars = get_class_vars(WhitePagesProfile::class);
+		foreach ($data as $key => $value) {
+			if (array_key_exists($key, $vars)) {
+				$profile->$key = $value;
+			}
+		}
+		return $profile;
 	}
 
-	public function export(): string {
-		// TODO
-	}
-
-	public function getBaseUrl() {
-		// TODO
+	/**
+	 * Exports the profile as an array.
+	 *
+	 * @return array data
+	 */
+	public function export(): array {
+		return json_decode(json_encode($this), true);
 	}
 
 }
@@ -536,7 +563,7 @@ class WhitePagesPersistenceStrategyFileSystem implements WhitePagesPersistenceSt
 		$file = @fopen($path, "w");
 		if ($file) {
 			// write settings to file
-			fwrite($file, json_encode($profile->export()));
+			fwrite($file, json_encode($profile->export(), JSON_PRETTY_PRINT));
 			// close file
 			fclose($file);
 			@chmod($path, 0600);
@@ -658,7 +685,7 @@ class WhitePagesPersistenceStrategyPdo implements WhitePagesPersistenceStrategy 
 		if (!WhitePagesPersistence::isValidProfileName($name)) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
-		$data = json_encode($profile->export());
+		$data = json_encode($profile->export(), JSON_PRETTY_PRINT);
 		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE name = ?");
 		$statement->execute([$name]);
 		$results = $statement->fetchAll();
