@@ -1015,7 +1015,8 @@ class accountContainer {
 		// prints a module content page
 		$this->printModuleContent($result);
 		if (!$errorsOccurred && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
-			&& isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+			&& isset($_POST['scrollPositionTop']) && get_preg($_POST['scrollPositionTop'], 'digit')
+			&& isset($_POST['scrollPositionLeft']) && get_preg($_POST['scrollPositionLeft'], 'digit')) {
 			// scroll to last position
 			$scrollJs = new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')');
 			parseHtml(null, $scrollJs, [], false, $this->type->getScope());
