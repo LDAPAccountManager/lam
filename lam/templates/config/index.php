@@ -95,6 +95,11 @@ $content = new htmlResponsiveRow();
         	$selfServiceLink->setCSSClasses(['lam-margin-large display-as-block']);
 	        $topContent->add($selfServiceLink);
         }
+        if (isLAMProVersion()) {
+            $whitePagesLink = new htmlLink(_("Edit white pages"), '../whitePages/adminLogin.php', '../../graphics/white-pages.svg');
+            $whitePagesLink->setCSSClasses(['lam-margin-large display-as-block icon']);
+            $topContent->add($whitePagesLink);
+        }
         $topContent->addVerticalSpacer('1rem');
         $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/export.svg');
         $importExportLink->setCSSClasses(['lam-margin-large display-as-block']);
