@@ -456,10 +456,10 @@ $helpArray = [
 					"Text" => _("This text should shortly describe your selected LDAP search attribute (e.g. email or user name).")
 				],
 				"505" => ["Headline" => _("Login caption"),
-					"Text" => _("This text is displayed on top of the self service login page. You can also input HTML code here.")
+					"Text" => _("This text is displayed on top of the login page. You can also input HTML code here.")
 				],
 				"506" => ["Headline" => _("Main page caption"),
-					"Text" => _("This text is displayed on top of the self service main page. You can also input HTML code here.")
+					"Text" => _("This text is displayed on top of the main page. You can also input HTML code here.")
 				],
 				"507" => ["Headline" => _("Add new group"),
 					"Text" => _("Adds a new group element to the list of self service options. Use this to structure the input fields.")
@@ -522,7 +522,7 @@ $helpArray = [
 					"Text" => _('Please enter your secret key for the verification API.')
 				],
 				"526" => ["Headline" => _('Login footer'),
-					"Text" => _('This text is displayed as footer on the self service login page.')
+					"Text" => _('This text is displayed as footer on the login page.')
 				],
 				"527" => ["Headline" => _('Main page footer'),
 					"Text" => _('This text is displayed as footer on the self service main page.')
@@ -671,6 +671,17 @@ $helpArray = [
 				'812' => [
 					"Headline" => _('Delay'),
 					"Text" => _('Delay this action by a number of days after last successful login.')
+				],
+				// 900 - 999 white pages
+				'900' => [
+					"Headline" => _('Use for all operations'),
+					"Text" => _('By default, all read operations are done as the user that authenticated in white pages. If active then LAM will use the connection user for all LDAP searches.')
+				],
+				"901" => ["Headline" => _("Additional LDAP filter"),
+					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(objectClass=posixAccount)") to reduce the number of accounts who may use white pages.')
+				],
+				"902" => ["Headline" => _("Language"),
+					"Text" => _("This defines the language of the white pages.")
 				],
 ];
 

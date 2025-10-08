@@ -183,25 +183,25 @@ class WhitePagesProfile {
 	/** secret key */
 	public $captchaSecretKey = '';
 
-	/** header HTML for login */
-	public string $loginHeader = '';
-	/** describing text for user login */
-	public string $loginCaption = '';
-	/** describing text for user login */
-	public string $loginFooter = '';
-	/** label for password input */
-	public string $passwordLabel = '';
 	/** describing text for search attribute */
 	public string $loginAttributeText = '';
+	/** label for password input */
+	public string $passwordLabel = '';
+	/** describing text for user login */
+	public string $loginCaption = '<p><strong>Welcome to LAM white pages. Please enter your user name and password.</strong></p>';
+	/** header HTML for login */
+	public string $loginHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
+	/** describing text for user login */
+	public string $loginFooter = '<p style="text-align: left;">Powered by LDAP Account Manager</p>';
 
 	/**
 	 * @var string header HTML
 	 */
-	public string $header = '';
+	public string $header = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 	/**
 	 * @var string footer HTML
 	 */
-	public string $footer = '';
+	public string $footer = '<p style="text-align: left;">Powered by LDAP Account Manager</p>';
 	/**
 	 * @var string custom CSS
 	 */
