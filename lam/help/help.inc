@@ -683,6 +683,9 @@ $helpArray = [
 				"902" => ["Headline" => _("Language"),
 					"Text" => _("This defines the language of the white pages.")
 				],
+				"903" => ["Headline" => _("Additional LDAP filter"),
+					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(objectClass=posixAccount)") to reduce the number of accounts that are displayed.')
+				],
 ];
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

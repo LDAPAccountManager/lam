@@ -220,7 +220,7 @@ class WhitePagesProfile {
 	public string $backgroundImage = '';
 
 	/**
-	 * @var array tabs for white pages
+	 * @var WhitePagesTab[] tabs for white pages
 	 */
 	public array $tabs = [];
 
@@ -234,7 +234,12 @@ class WhitePagesProfile {
 		$profile = new WhitePagesProfile();
 		$vars = get_class_vars(WhitePagesProfile::class);
 		foreach ($data as $key => $value) {
-			if (array_key_exists($key, $vars)) {
+			if ($key === 'tabs') {
+				foreach ($value as $tabData) {
+					$profile->tabs[] = WhitePagesTab::import($tabData);
+				}
+			}
+			elseif (array_key_exists($key, $vars)) {
 				$profile->$key = $value;
 			}
 		}
@@ -289,6 +294,33 @@ class WhitePagesTab {
 	 * @var WhitePagesDisplayItem[] detail view items
 	 */
 	public array $detailViewItems = [];
+
+	/**
+	 * Creates a new default tab.
+	 *
+	 * @return WhitePagesTab tab
+	 */
+	public static function createDefault(): WhitePagesTab {
+		$tab = new WhitePagesTab();
+		return $tab;
+	}
+
+	/**
+	 * Imports data to a new tab.
+	 *
+	 * @param array $data data as array
+	 * @return WhitePagesTab profile
+	 */
+	public static function import(array $data): WhitePagesTab {
+		$tab = new WhitePagesTab();
+		$vars = get_class_vars(WhitePagesTab::class);
+		foreach ($data as $key => $value) {
+			if (array_key_exists($key, $vars)) {
+				$tab->$key = $value;
+			}
+		}
+		return $tab;
+	}
 
 }
 
