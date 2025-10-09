@@ -65,14 +65,14 @@ enum WP_DISPLAY_MODE {
 /**
  * Defines the display of a single item.
  */
-enum WP_ITEM_TYPE {
+enum WP_ITEM_TYPE: string {
 
-	case TITLE;
-	case IMAGE_JPG;
-	case TEXT;
-	case EMAIL;
-	case TELEPHONE;
-	case LINK;
+	case IMAGE_JPG = 'IMAGE_JPG';
+	case TEXT = 'TEXT';
+	case EMAIL = 'EMAIL';
+	case TELEPHONE = 'TELEPHONE';
+	case LINK = 'LINK';
+	case REFERENCE = 'REFERENCE';
 
 }
 
@@ -252,7 +252,19 @@ class WhitePagesProfile {
 	 * @return array data
 	 */
 	public function export(): array {
-		return json_decode(json_encode($this), true);
+		$data = [];
+		foreach (get_object_vars($this) as $key => $value) {
+			if ($key === 'tabs') {
+				$data[$key] = [];
+				foreach ($this->tabs as $tab) {
+					$data[$key][] = $tab->export();
+				}
+			}
+			else {
+				$data[$key] = $value;
+			}
+		}
+		return $data;
 	}
 
 }
@@ -278,7 +290,7 @@ class WhitePagesTab {
 	/**
 	 * @var string[] searchable LDAP attributes
 	 */
-	public array $searchableAttributes = ['cn', 'sn', 'gn', 'mail', 'telephoneNumber'];
+	public array $searchableAttributes = ['cn', 'sn', 'givenName', 'mail', 'telephoneNumber'];
 
 	/**
 	 * @var WhitePagesDisplayItem[] list items
@@ -286,9 +298,19 @@ class WhitePagesTab {
 	public array $listItems = [];
 
 	/**
+	 * @var string title for gallery view
+	 */
+	public string $galleryTitle = '$givenName $sn';
+
+	/**
 	 * @var WhitePagesDisplayItem[] gallery items
 	 */
 	public array $galleryItems = [];
+
+	/**
+	 * @var string title for gallery view
+	 */
+	public string $detailViewTitle = '$givenName $sn';
 
 	/**
 	 * @var WhitePagesDisplayItem[] detail view items
@@ -302,6 +324,25 @@ class WhitePagesTab {
 	 */
 	public static function createDefault(): WhitePagesTab {
 		$tab = new WhitePagesTab();
+		$tab->listItems = [
+			new WhitePagesDisplayItem('First name', WP_ITEM_TYPE::TEXT, '$givenName'),
+			new WhitePagesDisplayItem('Last name', WP_ITEM_TYPE::TEXT, '$sn'),
+			new WhitePagesDisplayItem('Email', WP_ITEM_TYPE::EMAIL, '$mail'),
+		];
+		$tab->galleryItems = [
+			new WhitePagesDisplayItem('Photo', WP_ITEM_TYPE::IMAGE_JPG, 'jpegPhoto'),
+			new WhitePagesDisplayItem('Name', WP_ITEM_TYPE::TEXT, '$givenName $sn'),
+		];
+		$tab->detailViewItems = [
+			new WhitePagesDisplayItem('Photo', WP_ITEM_TYPE::IMAGE_JPG, 'jpegPhoto'),
+			new WhitePagesDisplayItem('Full name', WP_ITEM_TYPE::TEXT, '$givenName $sn'),
+			new WhitePagesDisplayItem('First name', WP_ITEM_TYPE::TEXT, 'givenName'),
+			new WhitePagesDisplayItem('Last name', WP_ITEM_TYPE::TEXT, 'sn'),
+			new WhitePagesDisplayItem('Email', WP_ITEM_TYPE::EMAIL, 'mail'),
+			new WhitePagesDisplayItem('Telephone', WP_ITEM_TYPE::TELEPHONE, 'telephoneNumber'),
+			new WhitePagesDisplayItem('Manager', WP_ITEM_TYPE::LINK, 'manager:$cn'),
+			new WhitePagesDisplayItem('Groups', WP_ITEM_TYPE::REFERENCE, 'memberOf:$cn'),
+		];
 		return $tab;
 	}
 
@@ -315,11 +356,39 @@ class WhitePagesTab {
 		$tab = new WhitePagesTab();
 		$vars = get_class_vars(WhitePagesTab::class);
 		foreach ($data as $key => $value) {
-			if (array_key_exists($key, $vars)) {
+			if (in_array($key, ['listItems', 'galleryItems', 'detailViewItems'])) {
+				$tab->$key = [];
+				foreach ($value as $item) {
+					$tab->$key[] = WhitePagesDisplayItem::import($item);
+				}
+			}
+			elseif (array_key_exists($key, $vars)) {
 				$tab->$key = $value;
 			}
 		}
 		return $tab;
+	}
+
+	/**
+	 * Exports the tab as an array.
+	 *
+	 * @return array data
+	 */
+	public function export(): array {
+		$data = [];
+		foreach (get_object_vars($this) as $key => $value) {
+			if (in_array($key, ['listItems', 'galleryItems', 'detailViewItems'])) {
+				$itemsData = [];
+				foreach ($value as $item) {
+					$itemsData[] = $item->export();
+				}
+				$data[$key] = $itemsData;
+			}
+			else {
+				$data[$key] = $value;
+			}
+		}
+		return $data;
 	}
 
 }
@@ -332,17 +401,56 @@ class WhitePagesDisplayItem {
 	/**
 	 * @var WP_ITEM_TYPE render type of item
 	 */
-	public WP_ITEM_TYPE $TYPE = WP_ITEM_TYPE::TEXT;
+	public WP_ITEM_TYPE $type;
 
 	/**
 	 * @var string label of this item
 	 */
-	public string $label = 'First name';
+	public string $label;
 
 	/**
-	 * @var string attribute syntax of this item
+	 * @var string syntax of this item
 	 */
-	public string $attributes = 'gn';
+	public string $value;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $label label
+	 * @param WP_ITEM_TYPE $type render type
+	 * @param string $value value
+	 */
+	public function __construct(string $label = 'First name', WP_ITEM_TYPE $type = WP_ITEM_TYPE::TEXT, string $value = 'givenName') {
+		$this->label = $label;
+		$this->type = $type;
+		$this->value = $value;
+	}
+
+	/**
+	 * Imports the display item from a string array.
+	 *
+	 * @param array<string, string> $data data
+	 * @return WhitePagesDisplayItem item
+	 */
+	public static function import(array $data): WhitePagesDisplayItem {
+		$label = $data['label'] ?? '';
+		$type = is_string($data['type']) ? WP_ITEM_TYPE::from($data['type']) : WP_ITEM_TYPE::TEXT;
+		$value = $data['value'] ?? '';
+		return new WhitePagesDisplayItem($label, $type, $value);
+	}
+
+	/**
+	 * Exports the item as an array.
+	 *
+	 * @return array data
+	 */
+	public function export(): array {
+		return [
+			'label' => $this->label,
+			'type' => $this->type->name,
+			'value' => $this->value
+		];
+	}
 
 }
 
@@ -595,6 +703,7 @@ class WhitePagesPersistenceStrategyFileSystem implements WhitePagesPersistenceSt
 		$file = @fopen($path, "w");
 		if ($file) {
 			// write settings to file
+			$x = $profile->export();
 			fwrite($file, json_encode($profile->export(), JSON_PRETTY_PRINT));
 			// close file
 			fclose($file);

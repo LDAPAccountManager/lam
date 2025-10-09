@@ -692,6 +692,12 @@ $helpArray = [
 	"905" => ["Headline" => _("Searchable attributes"),
 		"Text" => _('Please enter a comma separated list of LDAP attributes that can be used to search entries.')
 	],
+	"906" => ["Headline" => _("Label"),
+		"Text" => _('Please enter a descriptive label for this item.')
+	],
+	"907" => ["Headline" => _("Value"),
+		"Text" => _('Please enter the LDAP attribute (e.g. "mail") for this item. Text fields support wildcards (e.g. "$gn $sn") and links and references support an additional text (e.g. "manager:$gn $sn").')
+	],
 ];
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.
