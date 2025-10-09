@@ -2913,6 +2913,10 @@ class htmlTitle extends htmlElement {
  */
 class htmlSubTitle extends htmlElement {
 
+	public const H3 = 'h3';
+	public const H4 = 'h4';
+	public const H5 = 'h5';
+
 	/** descriptive label */
 	private $label;
 	/** optional image */
@@ -2923,6 +2927,8 @@ class htmlSubTitle extends htmlElement {
 	private $largeIcon = false;
 	/** help ID */
 	private $helpId;
+	/** headline type (e.g. h3) */
+	private string $type;
 
 	/**
 	 * Constructor.
@@ -2932,7 +2938,7 @@ class htmlSubTitle extends htmlElement {
 	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
 	 * @param bool $largeIcon show large (32x32px) icon instead of small one (16x16px)
 	 */
-	public function __construct($label, $image = null, $id = null, $largeIcon = false) {
+	public function __construct($label, $image = null, $id = null, $largeIcon = false, $type = self::H3) {
 		$this->label = htmlspecialchars($label);
 		if ($image !== null) {
 			$this->image = htmlspecialchars($image);
@@ -2943,6 +2949,7 @@ class htmlSubTitle extends htmlElement {
 		// the title should not end at a table cell
 		$this->colspan = 100;
 		$this->largeIcon = $largeIcon;
+		$this->type = htmlspecialchars($type);
 	}
 
 	/**
@@ -2961,7 +2968,7 @@ class htmlSubTitle extends htmlElement {
 			$idValue = ' id="' . $this->id . '"';
 		}
 		echo "<div $idValue class=\"subTitle\">\n";
-		echo "<h4 class=\"subTitleText\">\n";
+		echo "<" . $this->type ." class=\"subTitleText\">\n";
 		if ($this->image != null) {
 			$size = $this->largeIcon ? 32 : 16;
 			echo '<img height=' . $size . ' width=' . $size . ' src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
@@ -2973,7 +2980,7 @@ class htmlSubTitle extends htmlElement {
 			$helpLink = new htmlHelpLink($this->helpId);
 			$helpLink->generateHTML($module, $input, $values, $restricted, $scope);
 		}
-		echo "</h4>\n";
+		echo "</" . $this->type . ">\n";
 		echo "</div>\n";
 		return [];
 	}

@@ -32,7 +32,7 @@ h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
   font-family: Arial,Helvetica,sans-serif;
 }
 
-h1,h2,h3 {
+h1,h2,h3,h4,h5 {
 	color: var(--lam-text-color-default);
 	word-wrap: break-word;
 }
@@ -471,10 +471,23 @@ table.collapse {
 	border-bottom: 1px dotted var(--lam-text-color-default);
 }
 
-.subTitleText {
-	margin: 0px 0px 0px 10px;
+h3.subTitleText {
+	margin: 20px 0px 0px 10px;
 	color: var(--lam-text-color-default);
 	text-align: left;
+}
+
+h4.subTitleText {
+    margin: 20px 0px 0px 20px;
+    color: var(--lam-text-color-default);
+    text-align: left;
+}
+
+h5.subTitleText {
+    margin: 20px 0px 0px 30px;
+    color: var(--lam-text-color-default);
+    text-align: left;
+    font-size: 1.00em;
 }
 
 .hidden {

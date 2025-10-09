@@ -45,6 +45,12 @@ $row = new htmlResponsiveRow();
 
 $row->add(new htmlTitle('Design'));
 
+$row->add(new htmlSubTitle('Subtitle default'));
+$row->add(new htmlSubTitle('Subtitle image', '../../graphics/tux.svg'));
+$row->add(new htmlSubTitle('Subtitle image large', '../../graphics/tux.svg', null, true));
+$row->add(new htmlSubTitle('Subtitle h4', null, null, false, htmlSubTitle::H4));
+$row->add(new htmlSubTitle('Subtitle h5', null, null, false, htmlSubTitle::H5));
+
 $row->add(new htmlSubTitle('Buttons'));
 
 $row->addLabel(new htmlOutputText('Default'));
