@@ -23,6 +23,8 @@
 
 namespace LAM\WHITE_PAGES;
 
+use htmlResponsiveInputField;
+use htmlResponsiveRow;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAMCfgMain;
@@ -265,6 +267,19 @@ class WhitePagesProfile {
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * Returns the login handler.
+	 *
+	 * @return WhitePagesLoginHandler handler
+	 */
+	public function getLoginHandler(): WhitePagesLoginHandler {
+		return match ($this->authenticationType) {
+			WP_AUTHENTICATION::AUTH_ANONYMOUS->name => new WhitePagesAnonymousAuthLoginHandler($this),
+			WP_AUTHENTICATION::AUTH_2FA_ONLY->name => new WhitePages2FaLoginHandler($this),
+			default => new WhitePagesUserPasswordLoginHandler($this),
+		};
 	}
 
 }
@@ -854,6 +869,135 @@ class WhitePagesPersistenceStrategyPdo implements WhitePagesPersistenceStrategy 
 	public function rename(string $oldName, string $newName): void {
 		$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET name = ? WHERE name = ?");
 		$statement->execute([$newName, $oldName]);
+	}
+
+}
+
+/**
+ * Login handler for white pages
+ */
+interface WhitePagesLoginHandler {
+
+	/**
+	 * Adds the necessary fields to the login dialog (e.g. user + password).
+	 *
+	 * @param htmlResponsiveRow $content dialog content
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void;
+
+	/**
+	 * Returns the login name.
+	 *
+	 * @return string login name
+	 */
+	function getLoginName(): string;
+
+	/**
+	 * Returns the login password.
+	 *
+	 * @return string password
+	 */
+	function getLoginPassword(): string;
+
+	/**
+	 * Returns if the login handler manages authentication on its own.
+	 *
+	 * @return bool manages authentication
+	 */
+	function managesAuthentication(): bool;
+
+	/**
+	 * Returns if the authentication was successful.
+	 * Only valid if managesAuthentication() returns true.
+	 *
+	 * @return bool authentication successful
+	 * @throws LAMException error during authentication
+	 */
+	function isAuthenticationSuccessful(): bool;
+
+	/**
+	 * Authorizes a user provided by the 2FA provider.
+	 *
+	 * @param string $userName user name
+	 * @throws LAMException error during authentication
+	 */
+	function authorize2FaUser(string $userName): void;
+
+}
+
+/**
+ * Performs login with user and password.
+ */
+class WhitePagesUserPasswordLoginHandler implements WhitePagesLoginHandler {
+
+	private WhitePagesProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param WhitePagesProfile $profile profile
+	 */
+	function __construct(WhitePagesProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void {
+		// user name
+		$userNameVal = empty($_POST['username']) ? '' : $_POST['username'];
+		$userText = _("User name");
+		if (!empty($this->profile->loginAttributeText)) {
+			$userText = $this->profile->loginAttributeText;
+		}
+		$userField = new htmlResponsiveInputField($userText, 'username', $userNameVal);
+		$userField->setCSSClasses(['lam-initial-focus']);
+		$content->add($userField);
+		// password field
+		$passwordText = _("Password");
+		if (!empty($this->profile->passwordLabel)) {
+			$passwordText = $this->profile->passwordLabel;
+		}
+		$passwordVal = empty($_POST['password']) ? '' : $_POST['password'];
+		$passwordField = new htmlResponsiveInputField($passwordText, 'password', $passwordVal);
+		$passwordField->setIsPassword(true);
+		$content->add($passwordField);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginName(): string {
+		return $_POST['username'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function getLoginPassword(): string {
+		return $_POST['password'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function managesAuthentication(): bool {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isAuthenticationSuccessful(): bool {
+		throw new LAMException('Not implemented');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function authorize2FaUser(string $userName): void {
+		// no action
 	}
 
 }
