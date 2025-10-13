@@ -209,13 +209,13 @@ class WhitePagesProfile {
 	 */
 	public string $customCss = '';
 	/**
-	 * @var string base color
+	 * @var string primary color
 	 */
-	public string $baseColor = '';
+	public string $primaryColor = '';
 	/**
-	 * @var string secondary color
+	 * @var string background color
 	 */
-	public string $secondaryColor = '';
+	public string $backgroundColor = '';
 	/**
 	 * @var string background image
 	 */

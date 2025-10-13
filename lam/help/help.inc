@@ -468,10 +468,10 @@ $helpArray = [
 		"Text" => _("Adds a new self service option to the selected group element.")
 	],
 	"509" => ["Headline" => _("Page header"),
-		"Text" => _("This HTML code will be placed on top of all self service pages. E.g. you can use this to place your custom logo. Any HTML code is permitted.")
+		"Text" => _("This HTML code will be placed on top of all pages. E.g. you can use this to place your custom logo. Any HTML code is permitted.")
 	],
 	"510" => ["Headline" => _("Additional CSS links"),
-		"Text" => _("Here you can specify additional CSS links to change the layout of the self service pages. This is useful to adapt them to your corporate design. Please enter one link per line.")
+		"Text" => _("Here you can specify additional CSS links to change the layout of the pages. This is useful to adapt them to your corporate design. Please enter one link per line.")
 	],
 	"511" => ["Headline" => _("Password field label"),
 		"Text" => _('This text is placed as label for the password field on the login page. LAM will use "Password" if you do not enter any text.')
@@ -697,6 +697,21 @@ $helpArray = [
 	],
 	"907" => ["Headline" => _("Value"),
 		"Text" => _('Please enter the LDAP attribute (e.g. "mail") for this item. Text fields support wildcards (e.g. "$gn $sn") and links and references support an additional text (e.g. "manager:$gn $sn").')
+	],
+	"908" => ["Headline" => _('Primary color'),
+		"Text" => _('Please select the primary color for buttons in white pages.')
+	],
+	"909" => ["Headline" => _('Background color'),
+		"Text" => _('Please select the background color for panels in white pages.')
+	],
+	"910" => ["Headline" => _('Background image'),
+		"Text" => _('This is an optional background image for white pages.')
+	],
+	"911" => ["Headline" => _('Login header'),
+		"Text" => _('This text is displayed as header on the login page.')
+	],
+	"912" => ["Headline" => _('Page footer'),
+		"Text" => _('This text is displayed as footer on the white pages.')
 	],
 ];
 
