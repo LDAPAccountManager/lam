@@ -1227,3 +1227,7 @@ div.lam-data-table button.tabulator-page.active {
 div.lam-data-table .tabulator-header,.tabulator-table {
 	color: var(--lam-text-color-default) !important;
 }
+
+div.whitepages-panel {
+  background-color: var(--lam-whitepages-color-background);
+}
