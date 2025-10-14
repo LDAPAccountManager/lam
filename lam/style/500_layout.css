@@ -1230,4 +1230,5 @@ div.lam-data-table .tabulator-header,.tabulator-table {
 
 div.whitepages-panel {
   background-color: var(--lam-whitepages-color-background);
+  border-color: var(--lam-whitepages-color-border);
 }

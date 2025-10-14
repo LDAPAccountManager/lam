@@ -28,6 +28,7 @@ use htmlResponsiveRow;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAMCfgMain;
+use LamColorUtil;
 use LAMException;
 use PDO;
 use PDOException;
@@ -998,6 +999,33 @@ class WhitePagesUserPasswordLoginHandler implements WhitePagesLoginHandler {
 	 */
 	function authorize2FaUser(string $userName): void {
 		// no action
+	}
+
+}
+
+/**
+ * Creates styles for white pages.
+ */
+class WhitePagesStyling {
+
+	/**
+	 * Creates the main style tag for the page header.
+	 *
+	 * @param WhitePagesProfile $profile profile
+	 * @return string style tag
+	 */
+	public static function getMainStyleTag(WhitePagesProfile $profile): string {
+		return '<style>
+        :root {
+            --lam-background-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
+            --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->primaryColor, 0.8)) . ';
+            --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($profile->primaryColor)) . ';
+            --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($profile->backgroundColor)) . ';
+            --lam-whitepages-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
+            --lam-whitepages-color-background: ' . htmlspecialchars($profile->backgroundColor) . ';
+            --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
+        }
+    </style>';
 	}
 
 }

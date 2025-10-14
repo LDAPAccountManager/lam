@@ -2147,3 +2147,46 @@ class LAMException extends Exception {
 	}
 
 }
+
+/**
+ * Color calculations
+ */
+class LamColorUtil {
+
+	/**
+	 * Adjusts the brightness of the given hex color (e.g. #123456).
+	 *
+	 * @param string $color hex color (e.g. #123456)
+	 * @param float $percentage percentage to darken (< 1 darkens, > 1 brightens)
+	 * @return string darker color (e.g. #123456)
+	 */
+	public static function adjustBrightness(string $color, float $percentage): string {
+		$color = str_replace("#", '', $color);
+		$red = hexdec(substr($color, 0, 2));
+		$green = hexdec(substr($color, 2, 2));
+		$blue = hexdec(substr($color, 4, 2));
+		// darken
+		$red = max(0, min(255, $red * $percentage));
+		$green = max(0, min(255, $green * $percentage));
+		$blue = max(0, min(255, $blue * $percentage));
+		return sprintf("#%02x%02x%02x", $red, $green, $blue);
+	}
+
+	/**
+	 * Returns the text color that should be used for the given background color.
+	 *
+	 * @param string $backgroundColor background color (e.g. #123456)
+	 * @return string text color (e.g. #000000)
+	 */
+	public static function getTextColor(string $backgroundColor): string {
+		$color = str_replace("#", '', $backgroundColor);
+		$red = hexdec(substr($color, 0, 2));
+		$green = hexdec(substr($color, 2, 2));
+		$blue = hexdec(substr($color, 4, 2));
+		if (($red + $blue + $green) > (127 * 3)) {
+			return '#000000';
+		}
+		return '#FFFFFF';
+	}
+
+}
