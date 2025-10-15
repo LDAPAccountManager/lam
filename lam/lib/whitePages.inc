@@ -30,6 +30,7 @@ use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAMCfgMain;
 use LamColorUtil;
 use LAMException;
+use LDAP\Connection;
 use PDO;
 use PDOException;
 use function LAM\PERSISTENCE\dbTableExists;
@@ -1074,6 +1075,81 @@ class WhitePagesStyling {
 			$fileName = $dir->read();
 		}
 		return $imageNames;
+	}
+
+}
+
+/**
+ * LDAP connection for white pages.
+ */
+class WhitePagesLdapConnection {
+
+	private $server;
+
+	private WhitePagesProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param WhitePagesProfile $profile profile
+	 */
+	public function __construct(WhitePagesProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * Returns the LDAP handle.
+	 *
+	 * @return Connection LDAP handle
+	 */
+	public function getServer() {
+		if ($this->server !== null) {
+			return $this->server;
+		}
+		$this->server = $this->openSelfServiceLdapConnection($this->profile);
+		return $this->server;
+	}
+
+	/**
+	 * Opens the LDAP connection and returns the handle. No bind is done.
+	 *
+	 * @param WhitePagesProfile $profile profile
+	 * @return Connection|null LDAP handle or null if the connection failed
+	 */
+	function openSelfServiceLdapConnection(WhitePagesProfile $profile): ?Connection {
+		$server = connectToLDAP($profile->serverUrl, $profile->useTLS);
+		if ($server != null) {
+			// follow referrals
+			ldap_set_option($server, LDAP_OPT_REFERRALS, $profile->followReferrals);
+		}
+		return $server;
+	}
+
+	/**
+	 * Binds with the given credentials.
+	 *
+	 * @param string $userDn user DN
+	 * @param string $password password
+	 * @return bool bind was successful
+	 */
+	public function bind(string $userDn, string $password): bool {
+		if ($this->profile->useForAllOperations) {
+			$userDn = $this->profile->ldapConnectionUser;
+			$password = deobfuscateText($this->profile->ldapConnectionPassword);
+		}
+		return @ldap_bind($this->server, $userDn, $password);
+	}
+
+	/**
+	 * Closes connection to the LDAP server before serialization.
+	 */
+	public function __sleep(): array {
+		if ($this->server !== null) {
+			@ldap_close($this->server);
+			$this->server = null;
+		}
+		// define which attributes to save
+		return ['profile'];
 	}
 
 }
