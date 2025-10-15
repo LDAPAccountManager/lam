@@ -713,6 +713,9 @@ $helpArray = [
 	"912" => ["Headline" => _('Page footer'),
 		"Text" => _('This text is displayed as footer on the white pages.')
 	],
+	"913" => ["Headline" => _('Display mode'),
+		"Text" => _('Here you can select if you want to show the list and gallery modes.')
+	],
 ];
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

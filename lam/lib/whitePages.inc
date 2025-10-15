@@ -168,10 +168,10 @@ enum WP_AUTHENTICATION {
 /**
  * Display modes for white pages.
  */
-enum WP_DISPLAY_MODE {
-	case LIST_GALLERY;
-	case LIST_ONLY;
-	case GALLERY_ONLY;
+enum WP_DISPLAY_MODE: string {
+	case LIST_GALLERY = 'LIST_GALLERY';
+	case LIST_ONLY = 'LIST_ONLY';
+	case GALLERY_ONLY = 'GALLERY_ONLY';
 }
 
 /**
@@ -330,6 +330,10 @@ class WhitePagesProfile {
 	 * @var string background image
 	 */
 	public string $backgroundImage = '';
+	/**
+	 * @var string display mode
+	 */
+	public string $displayMode = 'LIST_GALLERY';
 
 	/**
 	 * @var WhitePagesTab[] tabs for white pages
@@ -1057,7 +1061,7 @@ class WhitePagesStyling {
 	 * @return string[] image file names
 	 */
 	public static function getBackgroundImageNames(): array {
-		$dir = dir(__DIR__ . '/../../graphics');
+		$dir = dir(__DIR__ . '/../graphics');
 		if ($dir === false) {
 			return [];
 		}
