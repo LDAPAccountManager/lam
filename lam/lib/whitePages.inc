@@ -1028,6 +1028,7 @@ class WhitePagesStyling {
 		else {
 			$image = 'background-image: url(' . '../../graphics/' . htmlspecialchars($profile->backgroundImage) . ');';
 		}
+		$backGroundColor = LamColorUtil::parseColor($profile->backgroundColor);
 		return '<style>
         :root {
             --lam-background-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
@@ -1036,9 +1037,9 @@ class WhitePagesStyling {
             --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($profile->backgroundColor)) . ';
             --lam-whitepages-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
             --lam-whitepages-color-background: ' . htmlspecialchars($profile->backgroundColor) . ';
+            --lam-whitepages-color-panel: rgba(' . $backGroundColor->red . ', ' . $backGroundColor->green . ', ' . $backGroundColor->blue . ', 0.8);
             --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
             --lam-whitepages-blur: 4px;
-            --lam-whitepages-opacity: 0.8;
         }
         
 		div.lam-full-size-background {

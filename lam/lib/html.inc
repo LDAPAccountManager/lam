@@ -4930,3 +4930,80 @@ class htmlProgressbar extends htmlElement {
 	}
 
 }
+
+/**
+ * Tab container.
+ */
+class htmlTabContainer extends htmlElement {
+
+	/**
+	 * @var htmlTab[] $tabs tabs
+	 */
+	private array $tabs;
+
+	private int $activeTabIndex = 1;
+
+	public function addTab(htmlTab $tab, $isActive = false) {
+		$this->tabs[] = $tab;
+		if ($isActive) {
+			$this->activeTabIndex = count($this->tabs);
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+		echo '<div id="tabs" class="lam-tab-container">
+			<ul class="lam-tab-navigation">';
+		foreach ($this->tabs as $tabIndex => $tab) {
+			$tabNumber = $tabIndex + 1;
+			$tabActiveClass = ($this->activeTabIndex === $tabNumber) ? 'lam-tab-active' : '';
+			$tabImage = ($tab->image !== null) ? '<img alt="" src="../../graphics/' . $tab->image . '">' : '';
+			echo '<li data-tabid="' . $tabNumber . '" class="lam-tab ' . $tabActiveClass . '">
+		            <a href="#tab' . $tabNumber . '" class="lam-tab-anchor">';
+			echo $tabImage;
+			echo '<span class="hide-on-mobile"> ' . $tab->label . ' </span>
+					</a>
+				</li>';
+		}
+		echo '</ul>';
+		$return = [];
+		foreach ($this->tabs as $tabIndex => $tab) {
+			$tabNumber = $tabIndex + 1;
+			$tabActiveClass = ($this->activeTabIndex === $tabNumber) ? 'lam-tab-active' : '';
+			echo '<div id="tab' . $tabNumber . '" class="lam-tab-content ' . $tabActiveClass . '" data-tabid="' . $tabNumber . '">';
+			$data = parseHtml($module, $tab->content, $values, $restricted, $scope);
+			$return = array_merge($return, $data);
+			echo '</div>';
+		}
+		return $return;
+	}
+
+}
+
+/**
+ * Tab inside htmlTabContainer.
+ */
+class htmlTab {
+
+	public string $label;
+
+	public ?string $image;
+
+	public htmlElement $content;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param htmlElement $content tab content
+	 * @param string $label tab label text
+	 * @param string|null $image tab image
+	 */
+	public function __construct(htmlElement $content, string $label = '', ?string $image = null) {
+		$this->content = $content;
+		$this->image = $image;
+		$this->label = htmlspecialchars($label);
+	}
+
+}

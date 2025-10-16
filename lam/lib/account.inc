@@ -2161,14 +2161,11 @@ class LamColorUtil {
 	 * @return string darker color (e.g. #123456)
 	 */
 	public static function adjustBrightness(string $color, float $percentage): string {
-		$color = str_replace("#", '', $color);
-		$red = hexdec(substr($color, 0, 2));
-		$green = hexdec(substr($color, 2, 2));
-		$blue = hexdec(substr($color, 4, 2));
+		$color = self::parseColor($color);
 		// darken
-		$red = max(0, min(255, $red * $percentage));
-		$green = max(0, min(255, $green * $percentage));
-		$blue = max(0, min(255, $blue * $percentage));
+		$red = max(0, min(255, $color->red * $percentage));
+		$green = max(0, min(255, $color->green * $percentage));
+		$blue = max(0, min(255, $color->blue * $percentage));
 		return sprintf("#%02x%02x%02x", $red, $green, $blue);
 	}
 
@@ -2179,14 +2176,47 @@ class LamColorUtil {
 	 * @return string text color (e.g. #000000)
 	 */
 	public static function getTextColor(string $backgroundColor): string {
-		$color = str_replace("#", '', $backgroundColor);
-		$red = hexdec(substr($color, 0, 2));
-		$green = hexdec(substr($color, 2, 2));
-		$blue = hexdec(substr($color, 4, 2));
-		if (($red + $blue + $green) > (127 * 3)) {
+		$color = self::parseColor($backgroundColor);
+		if (($color->red + $color->blue + $color->green) > (127 * 3)) {
 			return '#000000';
 		}
 		return '#FFFFFF';
+	}
+
+	/**
+	 * Parses a color value.
+	 *
+	 * @param string $color color
+	 * @return LamColor color
+	 */
+	public static function parseColor(string $color): LamColor {
+		$color = str_replace("#", '', $color);
+		$red = hexdec(substr($color, 0, 2));
+		$green = hexdec(substr($color, 2, 2));
+		$blue = hexdec(substr($color, 4, 2));
+		return new LamColor($red, $green, $blue);
+	}
+
+}
+
+/**
+ * Color value.
+ */
+class LamColor {
+
+	public int $red;
+	public int $green;
+	public int $blue;
+
+	/**
+	 * @param int $red red
+	 * @param int $green green
+	 * @param int $blue blue
+	 */
+	public function __construct(int $red, int $green, int $blue) {
+		$this->red = $red;
+		$this->green = $green;
+		$this->blue = $blue;
 	}
 
 }

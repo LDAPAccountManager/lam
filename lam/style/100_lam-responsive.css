@@ -481,4 +481,8 @@ table.lam-account-edit-table {
 		margin-left: -2px;
 	}
 
+    div.wide-row {
+        max-width: 110rem;
+    }
+
 }
