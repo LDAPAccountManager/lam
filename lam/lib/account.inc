@@ -2002,7 +2002,7 @@ function unformatShortFormatToSeconds($text) {
  * @param boolean $check2ndFactor check if the 2nd factor was provided if required
  */
 function enforceUserIsLoggedIn($check2ndFactor = true) {
-	if ((!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) && empty($_SESSION['selfService_clientPassword'])) {
+	if ((!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) && empty($_SESSION['selfService_clientPassword']) && empty($_SESSION['whitePages_clientPassword'])) {
 		logNewMessage(LOG_WARNING, 'Detected unauthorized access to page that requires login: ' . $_SERVER["SCRIPT_FILENAME"]);
 		die();
 	}

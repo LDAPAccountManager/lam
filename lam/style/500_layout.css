@@ -1232,4 +1232,5 @@ div.whitepages-panel {
   background-color: var(--lam-whitepages-color-panel);
   border-color: var(--lam-whitepages-color-border);
   padding: var(--lam-large-space) var(--lam-large-space);
+  border-radius: var(--lam-default-border-radius);
 }

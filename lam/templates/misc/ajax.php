@@ -59,8 +59,12 @@ include_once __DIR__ . "/../../lib/tools/treeview.inc";
 
 // start session
 if (isset($_GET['selfservice'])) {
-	// self service uses a different session name
+	// self-service uses a different session name
 	session_name('SELFSERVICE');
+}
+elseif (isset($_GET['whitepages'])) {
+	// self-service uses a different session name
+	session_name('WHITEPAGES');
 }
 
 // return standard JSON response if session expired
@@ -195,6 +199,9 @@ class Ajax {
 		}
 		elseif ($function === 'checkPassword') {
 			$this->checkPassword();
+		}
+		elseif ($function === 'wpListData') {
+			echo json_encode([]);
 		}
 	}
 
