@@ -1037,6 +1037,8 @@ class WhitePagesStyling {
             --lam-whitepages-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
             --lam-whitepages-color-background: ' . htmlspecialchars($profile->backgroundColor) . ';
             --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
+            --lam-whitepages-blur: 4px;
+            --lam-whitepages-opacity: 0.8;
         }
         
 		div.lam-full-size-background {
@@ -1051,7 +1053,7 @@ class WhitePagesStyling {
 		  top: 0;
 		  left: 0;
 		  z-index: -1;
-		  filter: blur(4px);
+		  filter: blur(var(--lam-whitepages-blur));
 		}
     </style>';
 	}
