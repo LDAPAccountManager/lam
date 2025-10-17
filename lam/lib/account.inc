@@ -866,7 +866,7 @@ function getLDAPServerHandle() {
 		return $_SESSION['ldap']->server();
 	}
 	else {
-		// self-service
+		// self-service/white pages
 		return $_SESSION['ldapHandle']->getServer();
 	}
 }

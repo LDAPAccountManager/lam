@@ -436,7 +436,8 @@ class htmlDataTable extends htmlElement {
 				title: "' . $column->label . '",
 				field: "' . $column->name . '",
 				headerTooltip: "' . $column->label . '",
-				formatter: "textarea"
+				formatter: "' . $column->getFormatter() . '",
+				formatterParams: ' . json_encode((object) $column->getFormatterOptions()) . '
 				' . $headerFilter . '
 			}';
 		}
@@ -479,19 +480,48 @@ class htmlDataTable extends htmlElement {
  */
 class htmlDataTableColumn {
 
+	public const TYPE_TEXT = 'text';
+	public const TYPE_EMAIL = 'email';
+
 	public string $label;
 	public string $name;
 	public bool $filterable;
+	public string $formattingType;
 
 	/**
 	 * @param string $label column label text
 	 * @param string $name column ID
 	 * @param bool $filterable can be filtered
 	 */
-	public function __construct(string $label, string $name, bool $filterable = true) {
+	public function __construct(string $label, string $name, bool $filterable = true, string $formattingType = self::TYPE_TEXT) {
 		$this->label = htmlspecialchars($label);
 		$this->name = htmlspecialchars($name);
 		$this->filterable = $filterable;
+		$this->formattingType = $formattingType;
+	}
+
+	/**
+	 * Returns the Tabulator formatter name.
+	 *
+	 * @return string name
+	 */
+	public function getFormatter(): string {
+		return match ($this->formattingType) {
+			self::TYPE_EMAIL => 'link',
+			default => 'textarea',
+		};
+	}
+
+	/**
+	 * Returns the Tabulator formatter options.
+	 *
+	 * @return array options
+	 */
+	public function getFormatterOptions(): array {
+		return match ($this->formattingType) {
+			self::TYPE_EMAIL => ['urlPrefix' => 'mailto:', 'target' => '_blank'],
+			default => [],
+		};
 	}
 
 }

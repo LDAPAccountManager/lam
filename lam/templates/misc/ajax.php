@@ -16,6 +16,7 @@ use \htmlOutputText;
 use \htmlButton;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\UPLOAD\Uploader;
+use LAM\WHITE_PAGES\WhitePagesAjaxHandler;
 use \LAMCfgMain;
 use LAMException;
 
@@ -200,8 +201,10 @@ class Ajax {
 		elseif ($function === 'checkPassword') {
 			$this->checkPassword();
 		}
-		elseif ($function === 'wpListData') {
-			echo json_encode([]);
+		elseif ($function === 'whitePages') {
+			include_once(__DIR__ . "/../../lib/whitePagesData.inc");
+			$wpHandler = new WhitePagesAjaxHandler();
+			$wpHandler->dispatchAjaxRequest();
 		}
 	}
 
