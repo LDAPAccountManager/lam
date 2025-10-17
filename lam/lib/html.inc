@@ -4963,7 +4963,8 @@ class htmlTabContainer extends htmlElement {
 			echo '<li data-tabid="' . $tabNumber . '" class="lam-tab ' . $tabActiveClass . '">
 		            <a href="#tab' . $tabNumber . '" class="lam-tab-anchor">';
 			echo $tabImage;
-			echo '<span class="hide-on-mobile"> ' . $tab->label . ' </span>
+			$labelClass = ($tab->image !== null) ? 'hide-on-mobile' : '';
+			echo '<span class="' . $labelClass . '"> ' . $tab->label . ' </span>
 					</a>
 				</li>';
 		}

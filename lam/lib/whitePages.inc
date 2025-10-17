@@ -36,115 +36,6 @@ use PDOException;
 use function LAM\PERSISTENCE\dbTableExists;
 
 /**
- * Interface for white pages profile persistence.
- */
-interface WhitePagesPersistenceStrategy {
-
-	/**
-	 * Returns a list of available white pages profiles.
-	 *
-	 * @return string[] profile names
-	 */
-	public function getProfiles(): array;
-
-	/**
-	 * Returns if the profile with given name can be written.
-	 *
-	 * @param string $name profile name
-	 * @return bool can be written
-	 */
-	public function canWrite(string $name): bool;
-
-	/**
-	 * Loads the given white pages profile.
-	 *
-	 * @param string $name profile name
-	 * @return WhitePagesProfile profile
-	 * @throws LAMException error during loading
-	 */
-	public function load(string $name): WhitePagesProfile;
-
-	/**
-	 * Stores the given profile.
-	 *
-	 * @param string $name profile name
-	 * @param WhitePagesProfile $profile profile
-	 * @throws LAMException error during saving
-	 */
-	public function save(string $name, WhitePagesProfile $profile): void;
-
-	/**
-	 * Deletes a white pages profile.
-	 *
-	 * @param string $name profile name
-	 * @throws LAMException error renaming profile
-	 */
-	public function delete(string $name): void;
-
-	/**
-	 * Renames a white pages profile.
-	 *
-	 * @param string $oldName existing profile name
-	 * @param string $newName new profile name
-	 * @throws LAMException error renaming profile
-	 */
-	public function rename(string $oldName, string $newName): void;
-
-}
-
-/**
- * Login handler for white pages
- */
-interface WhitePagesLoginHandler {
-
-	/**
-	 * Adds the necessary fields to the login dialog (e.g. user + password).
-	 *
-	 * @param htmlResponsiveRow $content dialog content
-	 */
-	function addLoginFields(htmlResponsiveRow $content): void;
-
-	/**
-	 * Returns the login name.
-	 *
-	 * @return string login name
-	 */
-	function getLoginName(): string;
-
-	/**
-	 * Returns the login password.
-	 *
-	 * @return string password
-	 */
-	function getLoginPassword(): string;
-
-	/**
-	 * Returns if the login handler manages authentication on its own.
-	 *
-	 * @return bool manages authentication
-	 */
-	function managesAuthentication(): bool;
-
-	/**
-	 * Returns if the authentication was successful.
-	 * Only valid if managesAuthentication() returns true.
-	 *
-	 * @return bool authentication successful
-	 * @throws LAMException error during authentication
-	 */
-	function isAuthenticationSuccessful(): bool;
-
-	/**
-	 * Authorizes a user provided by the 2FA provider.
-	 *
-	 * @param string $userName user name
-	 * @throws LAMException error during authentication
-	 */
-	function authorize2FaUser(string $userName): void;
-
-}
-
-/**
  * Supported authentication types.
  */
 enum WP_AUTHENTICATION {
@@ -699,6 +590,63 @@ class WhitePagesPersistence {
 }
 
 /**
+ * Interface for white pages profile persistence.
+ */
+interface WhitePagesPersistenceStrategy {
+
+	/**
+	 * Returns a list of available white pages profiles.
+	 *
+	 * @return string[] profile names
+	 */
+	public function getProfiles(): array;
+
+	/**
+	 * Returns if the profile with given name can be written.
+	 *
+	 * @param string $name profile name
+	 * @return bool can be written
+	 */
+	public function canWrite(string $name): bool;
+
+	/**
+	 * Loads the given white pages profile.
+	 *
+	 * @param string $name profile name
+	 * @return WhitePagesProfile profile
+	 * @throws LAMException error during loading
+	 */
+	public function load(string $name): WhitePagesProfile;
+
+	/**
+	 * Stores the given profile.
+	 *
+	 * @param string $name profile name
+	 * @param WhitePagesProfile $profile profile
+	 * @throws LAMException error during saving
+	 */
+	public function save(string $name, WhitePagesProfile $profile): void;
+
+	/**
+	 * Deletes a white pages profile.
+	 *
+	 * @param string $name profile name
+	 * @throws LAMException error renaming profile
+	 */
+	public function delete(string $name): void;
+
+	/**
+	 * Renames a white pages profile.
+	 *
+	 * @param string $oldName existing profile name
+	 * @param string $newName new profile name
+	 * @throws LAMException error renaming profile
+	 */
+	public function rename(string $oldName, string $newName): void;
+
+}
+
+/**
  * Uses the local file system for storing white pages profiles.
  */
 class WhitePagesPersistenceStrategyFileSystem implements WhitePagesPersistenceStrategy {
@@ -927,6 +875,58 @@ class WhitePagesPersistenceStrategyPdo implements WhitePagesPersistenceStrategy 
 		$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET name = ? WHERE name = ?");
 		$statement->execute([$newName, $oldName]);
 	}
+
+}
+
+/**
+ * Login handler for white pages
+ */
+interface WhitePagesLoginHandler {
+
+	/**
+	 * Adds the necessary fields to the login dialog (e.g. user + password).
+	 *
+	 * @param htmlResponsiveRow $content dialog content
+	 */
+	function addLoginFields(htmlResponsiveRow $content): void;
+
+	/**
+	 * Returns the login name.
+	 *
+	 * @return string login name
+	 */
+	function getLoginName(): string;
+
+	/**
+	 * Returns the login password.
+	 *
+	 * @return string password
+	 */
+	function getLoginPassword(): string;
+
+	/**
+	 * Returns if the login handler manages authentication on its own.
+	 *
+	 * @return bool manages authentication
+	 */
+	function managesAuthentication(): bool;
+
+	/**
+	 * Returns if the authentication was successful.
+	 * Only valid if managesAuthentication() returns true.
+	 *
+	 * @return bool authentication successful
+	 * @throws LAMException error during authentication
+	 */
+	function isAuthenticationSuccessful(): bool;
+
+	/**
+	 * Authorizes a user provided by the 2FA provider.
+	 *
+	 * @param string $userName user name
+	 * @throws LAMException error during authentication
+	 */
+	function authorize2FaUser(string $userName): void;
 
 }
 
