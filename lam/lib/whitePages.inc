@@ -346,23 +346,23 @@ class WhitePagesTab {
 	public static function createDefault(): WhitePagesTab {
 		$tab = new WhitePagesTab();
 		$tab->listItems = [
-			new WhitePagesDisplayItem('First name', WP_ITEM_TYPE::TEXT, '$givenName'),
-			new WhitePagesDisplayItem('Last name', WP_ITEM_TYPE::TEXT, '$sn'),
-			new WhitePagesDisplayItem('Email', WP_ITEM_TYPE::EMAIL, '$mail'),
+			new WhitePagesDisplayItem('First name', WP_ITEM_TYPE::TEXT, 'givenName'),
+			new WhitePagesDisplayItem('Last name', WP_ITEM_TYPE::TEXT, 'sn'),
+			new WhitePagesDisplayItem('Email', WP_ITEM_TYPE::EMAIL, 'mail'),
 		];
 		$tab->galleryItems = [
 			new WhitePagesDisplayItem('Photo', WP_ITEM_TYPE::IMAGE_JPG, 'jpegPhoto'),
-			new WhitePagesDisplayItem('Name', WP_ITEM_TYPE::TEXT, '$givenName $sn'),
+			new WhitePagesDisplayItem('Name', WP_ITEM_TYPE::TEXT, '$givenName$ $sn$'),
 		];
 		$tab->detailViewItems = [
 			new WhitePagesDisplayItem('Photo', WP_ITEM_TYPE::IMAGE_JPG, 'jpegPhoto'),
-			new WhitePagesDisplayItem('Full name', WP_ITEM_TYPE::TEXT, '$givenName $sn'),
+			new WhitePagesDisplayItem('Full name', WP_ITEM_TYPE::TEXT, '$givenName$ $sn$'),
 			new WhitePagesDisplayItem('First name', WP_ITEM_TYPE::TEXT, 'givenName'),
 			new WhitePagesDisplayItem('Last name', WP_ITEM_TYPE::TEXT, 'sn'),
 			new WhitePagesDisplayItem('Email', WP_ITEM_TYPE::EMAIL, 'mail'),
 			new WhitePagesDisplayItem('Telephone', WP_ITEM_TYPE::TELEPHONE, 'telephoneNumber'),
-			new WhitePagesDisplayItem('Manager', WP_ITEM_TYPE::LINK, 'manager:$cn'),
-			new WhitePagesDisplayItem('Groups', WP_ITEM_TYPE::REFERENCE, 'memberOf:$cn'),
+			new WhitePagesDisplayItem('Manager', WP_ITEM_TYPE::LINK, 'manager:cn'),
+			new WhitePagesDisplayItem('Groups', WP_ITEM_TYPE::REFERENCE, 'memberOf:cn'),
 		];
 		return $tab;
 	}
@@ -1040,6 +1040,10 @@ class WhitePagesStyling {
             --lam-whitepages-color-panel: rgba(' . $backGroundColor->red . ', ' . $backGroundColor->green . ', ' . $backGroundColor->blue . ', 0.8);
             --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
             --lam-whitepages-blur: 4px;
+			--lam-table-background-color-dark: ' . htmlspecialchars($profile->backgroundColor) . ';
+			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
+			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8))) . ';
+			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
         }
         
 		div.lam-full-size-background {

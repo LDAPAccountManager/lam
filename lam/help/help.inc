@@ -696,7 +696,7 @@ $helpArray = [
 		"Text" => _('Please enter a descriptive label for this item.')
 	],
 	"907" => ["Headline" => _("Value"),
-		"Text" => _('Please enter the LDAP attribute (e.g. "mail") for this item. Text fields support wildcards (e.g. "$gn $sn") and links and references support an additional text (e.g. "manager:$gn $sn").')
+		"Text" => _('Please enter the LDAP attribute (e.g. "mail") for this item. Text fields support wildcards (e.g. "$gn$ $sn$") and links and references support an additional text (e.g. "manager:$gn$ $sn$").')
 	],
 	"908" => ["Headline" => _('Primary color'),
 		"Text" => _('Please select the primary color for buttons in white pages.')

@@ -482,6 +482,7 @@ class htmlDataTableColumn {
 
 	public const TYPE_TEXT = 'text';
 	public const TYPE_EMAIL = 'email';
+	public const TYPE_TELEPHONE = 'telephone';
 
 	public string $label;
 	public string $name;
@@ -507,7 +508,7 @@ class htmlDataTableColumn {
 	 */
 	public function getFormatter(): string {
 		return match ($this->formattingType) {
-			self::TYPE_EMAIL => 'link',
+			self::TYPE_EMAIL, self::TYPE_TELEPHONE => 'link',
 			default => 'textarea',
 		};
 	}
@@ -520,6 +521,7 @@ class htmlDataTableColumn {
 	public function getFormatterOptions(): array {
 		return match ($this->formattingType) {
 			self::TYPE_EMAIL => ['urlPrefix' => 'mailto:', 'target' => '_blank'],
+			self::TYPE_TELEPHONE => ['urlPrefix' => 'tel:', 'target' => '_blank'],
 			default => [],
 		};
 	}
