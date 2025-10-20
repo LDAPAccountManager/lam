@@ -408,6 +408,8 @@ class htmlDataTable extends htmlElement {
 	private string $id;
 	private int $height;
 	private array $columns;
+	private string $searchFieldId = '';
+	private string $onRowClick = '';
 
 	/**
 	 * Constructor
@@ -442,6 +444,14 @@ class htmlDataTable extends htmlElement {
 			}';
 		}
 		$columnsCode = implode(', ', $columnOptions);
+		$searchFilterCode = '';
+		if (!empty($this->searchFieldId)) {
+			$searchFilterCode = 'window.lam.datatable.addSearchField("' . $this->id . '", "' . $this->searchFieldId . '");';
+		}
+		$onRowClickCode = '';
+		if (!empty($this->onRowClick)) {
+			$onRowClickCode = 'window.lam.datatable.tables["' . $this->id . '"].on("rowClick", ' . $this->onRowClick . ');';
+		}
 		echo '<script type="text/javascript">
 			window.lam.datatable.init("' . $this->id . '", new Tabulator("#' . $this->id . '", {
                 height: ' . $this->height . ',
@@ -469,8 +479,28 @@ class htmlDataTable extends htmlElement {
                     }
 				}
 			}));
+			' . $searchFilterCode . '
+			' . $onRowClickCode . '
 		</script>';
 		return [];
+	}
+
+	/**
+	 * Sets the search field.
+	 *
+	 * @param string $searchFieldId ID of field
+	 */
+	public function setSearchField(string $searchFieldId): void {
+		$this->searchFieldId = $searchFieldId;
+	}
+
+	/**
+	 * Sets the row click handler.
+	 *
+	 * @param string $callback callback code
+	 */
+	public function setOnRowClick(string $callback): void {
+		$this->onRowClick = $callback;
 	}
 
 }

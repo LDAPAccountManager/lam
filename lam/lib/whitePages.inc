@@ -1032,6 +1032,7 @@ class WhitePagesStyling {
 		return '<style>
         :root {
             --lam-background-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
+            --swal2-background: ' . htmlspecialchars($profile->backgroundColor) . ';
             --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->primaryColor, 0.8)) . ';
             --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($profile->primaryColor)) . ';
             --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($profile->backgroundColor)) . ';

@@ -1847,6 +1847,40 @@ window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
 	addButton.remove();
 };
 
+window.lam.whitePages = window.lam.whitePages || {};
+
+/**
+ * Shows the detail view for an entry.
+ *
+ * @param dn DN
+ * @param tabIndex tab index
+ * @param okText label for Ok button
+ * @param tokenName CSRF token name
+ * @param tokenValue CSRF token value
+ */
+window.lam.whitePages.showDetailView = function(dn, tabIndex, okText, tokenName, tokenValue) {
+    console.log(tabIndex + dn);
+    let data = new FormData();
+    data.append(tokenName, tokenValue);
+    data.append('action', 'displayDetails');
+    data.append('dn', dn);
+    data.append('tabIndex', tabIndex);
+    fetch('../misc/ajax.php?whitepages=1&function=whitePages', {
+        method: 'POST',
+        body: data
+    })
+    .then(async response => {
+        const jsonData = await response.json();
+        console.log(jsonData);
+        if (jsonData.error) {
+            window.lam.dialog.showError(null, jsonData.error, okText);
+            return;
+        }
+        document.getElementById('detailView').innerHTML = jsonData.content;
+        window.lam.dialog.showMessage(jsonData.title, okText, 'detailView');
+    })
+}
+
 window.lam.webauthn = window.lam.webauthn || {};
 
 /**
@@ -3788,6 +3822,35 @@ window.lam.datatable.setData = function(id, data) {
 			table.replaceData(data);
 		});
 	}
+}
+
+/**
+ * Adds a search field to the data table.
+ *
+ * @param tableId table ID
+ * @param fieldId field ID
+ */
+window.lam.datatable.addSearchField = function(tableId, fieldId) {
+    const table = window.lam.datatable.tables[tableId];
+    const field = document.getElementById(fieldId);
+    field.onkeyup = function() {
+        const filter = field.value.toLowerCase();
+        table.clearFilter();
+        if (filter === '') {
+            return;
+        }
+        table.setFilter(function(data, filterValue){
+            for (const key in data) {
+                if (!key.startsWith('search_')) {
+                    continue;
+                }
+                if (data[key].toLowerCase().includes(filterValue)) {
+                    return true;
+                }
+            }
+            return false;
+        }, filter);
+    }
 }
 
 window.lam.loadingIndicator = window.lam.loadingIndicator || {};

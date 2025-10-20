@@ -108,6 +108,8 @@ $table->setCSSClasses(['accountlist']);
 $row->add($table);
 
 $row->add(new htmlSubTitle('Data table'));
+$row->addLabel(new htmlOutputText('Search in description'));
+$row->addField(new htmlInputField('dataTableSearch',));
 $dataTableColumns = [
     new htmlDataTableColumn('First Name', 'first'),
 	new htmlDataTableColumn('Last Name', 'last'),
@@ -115,7 +117,9 @@ $dataTableColumns = [
     new htmlDataTableColumn('Description', 'desc'),
     new htmlDataTableColumn('Group', 'group')
 ];
-$row->add(new htmlDataTable('datatable', $dataTableColumns, 300));
+$dataTable = new htmlDataTable('datatable', $dataTableColumns, 300);
+$dataTable->setSearchField('dataTableSearch');
+$row->add($dataTable);
 $row->add(new htmlJavaScript('
     let data = [];
     for (let i = 0; i < 1000; i++) {
@@ -124,12 +128,16 @@ $row->add(new htmlJavaScript('
             last: "last " + i,
             uid: "" + i,
             desc: "description " + i,
+            search_desc: "description " + i,
             group: "group" + i,
         }
         data.push(entry);
     }
     window.lam.datatable.setData("datatable", data);
 '));
+$dataTable->setOnRowClick('function(event, row) {document.getElementById("dataTableClickedRow").value = (row.getIndex() + ": " + row.getData().desc)}');
+$row->addLabel(new htmlOutputText('Clicked row (position + description)'));
+$row->addField(new htmlInputField('dataTableClickedRow',));
 
 $row->add(new htmlSubTitle('Input fields'));
 
