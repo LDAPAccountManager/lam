@@ -716,6 +716,9 @@ $helpArray = [
 	"913" => ["Headline" => _('Display mode'),
 		"Text" => _('Here you can select if you want to show the list and gallery modes.')
 	],
+	"914" => ["Headline" => _("Type"),
+		"Text" => _('Please select how the data should be rendered.')
+	],
 ];
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

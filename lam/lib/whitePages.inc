@@ -76,7 +76,6 @@ enum WP_ITEM_TYPE: string {
 	case EMAIL = 'EMAIL';
 	case TELEPHONE = 'TELEPHONE';
 	case LINK = 'LINK';
-	case REFERENCE = 'REFERENCE';
 
 }
 
@@ -362,7 +361,7 @@ class WhitePagesTab {
 			new WhitePagesDisplayItem('Email', WP_ITEM_TYPE::EMAIL, 'mail'),
 			new WhitePagesDisplayItem('Telephone', WP_ITEM_TYPE::TELEPHONE, 'telephoneNumber'),
 			new WhitePagesDisplayItem('Manager', WP_ITEM_TYPE::LINK, 'manager:cn'),
-			new WhitePagesDisplayItem('Groups', WP_ITEM_TYPE::REFERENCE, 'memberOf:cn'),
+			new WhitePagesDisplayItem('Groups', WP_ITEM_TYPE::LINK, 'memberOf:cn'),
 		];
 		return $tab;
 	}
@@ -1032,13 +1031,14 @@ class WhitePagesStyling {
 		return '<style>
         :root {
             --lam-background-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
+            --lam-background-color-default: ' . htmlspecialchars($profile->backgroundColor) . ';
             --swal2-background: ' . htmlspecialchars($profile->backgroundColor) . ';
             --lam-border-color-primary: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->primaryColor, 0.8)) . ';
             --lam-text-color-primary: ' . htmlspecialchars(LamColorUtil::getTextColor($profile->primaryColor)) . ';
             --lam-text-color-default: ' . htmlspecialchars(LamColorUtil::getTextColor($profile->backgroundColor)) . ';
             --lam-whitepages-color-primary: ' . htmlspecialchars($profile->primaryColor) . ';
             --lam-whitepages-color-background: ' . htmlspecialchars($profile->backgroundColor) . ';
-            --lam-whitepages-color-panel: rgba(' . $backGroundColor->red . ', ' . $backGroundColor->green . ', ' . $backGroundColor->blue . ', 0.8);
+            --lam-whitepages-color-panel: rgba(' . $backGroundColor->red . ', ' . $backGroundColor->green . ', ' . $backGroundColor->blue . ');
             --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
             --lam-whitepages-blur: 4px;
 			--lam-table-background-color-dark: ' . htmlspecialchars($profile->backgroundColor) . ';

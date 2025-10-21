@@ -1852,14 +1852,13 @@ window.lam.whitePages = window.lam.whitePages || {};
 /**
  * Shows the detail view for an entry.
  *
- * @param dn DN
+ * @param dn base64 encoded DN
  * @param tabIndex tab index
  * @param okText label for Ok button
  * @param tokenName CSRF token name
  * @param tokenValue CSRF token value
  */
 window.lam.whitePages.showDetailView = function(dn, tabIndex, okText, tokenName, tokenValue) {
-    console.log(tabIndex + dn);
     let data = new FormData();
     data.append(tokenName, tokenValue);
     data.append('action', 'displayDetails');
@@ -1871,7 +1870,6 @@ window.lam.whitePages.showDetailView = function(dn, tabIndex, okText, tokenName,
     })
     .then(async response => {
         const jsonData = await response.json();
-        console.log(jsonData);
         if (jsonData.error) {
             window.lam.dialog.showError(null, jsonData.error, okText);
             return;

@@ -406,7 +406,7 @@ class htmlDataTable extends htmlElement {
 	public const DATA_OK_TEXT = 'oktext';
 
 	private string $id;
-	private int $height;
+	private mixed $height;
 	private array $columns;
 	private string $searchFieldId = '';
 	private string $onRowClick = '';
@@ -416,9 +416,9 @@ class htmlDataTable extends htmlElement {
 	 *
 	 * @param string $id table ID
 	 * @param htmlDataTableColumn[] $columns columns
-	 * @param int $height table height
+	 * @param int|string $height table height
 	 */
-	public function __construct(string $id, array $columns, int $height = 300) {
+	public function __construct(string $id, array $columns, mixed $height = 300) {
 		$this->id = htmlspecialchars($id);
 		$this->height = $height;
 		$this->columns = $columns;
@@ -454,7 +454,7 @@ class htmlDataTable extends htmlElement {
 		}
 		echo '<script type="text/javascript">
 			window.lam.datatable.init("' . $this->id . '", new Tabulator("#' . $this->id . '", {
-                height: ' . $this->height . ',
+                height: "' . $this->height . '",
                 layout: "fitColumns",
                 pagination:"local",
 				paginationSize:50,
@@ -513,6 +513,8 @@ class htmlDataTableColumn {
 	public const TYPE_TEXT = 'text';
 	public const TYPE_EMAIL = 'email';
 	public const TYPE_TELEPHONE = 'telephone';
+	public const TYPE_IMAGE = 'image';
+	public const TYPE_HTML = 'html';
 
 	public string $label;
 	public string $name;
@@ -539,6 +541,8 @@ class htmlDataTableColumn {
 	public function getFormatter(): string {
 		return match ($this->formattingType) {
 			self::TYPE_EMAIL, self::TYPE_TELEPHONE => 'link',
+			self::TYPE_IMAGE => 'image',
+			self::TYPE_HTML => 'html',
 			default => 'textarea',
 		};
 	}

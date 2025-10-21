@@ -1228,9 +1228,18 @@ div.lam-data-table .tabulator-header,.tabulator-table {
 	color: var(--lam-text-color-default) !important;
 }
 
+.tabulator-row .tabulator-cell {
+    white-space: wrap !important;
+}
+
+.tabulator-row .tabulator-cell > a {
+    margin: unset;
+}
+
 div.whitepages-panel {
   background-color: var(--lam-whitepages-color-panel);
   border-color: var(--lam-whitepages-color-border);
   padding: var(--lam-large-space) var(--lam-large-space);
   border-radius: var(--lam-default-border-radius);
+  opacity: 0.95;
 }
