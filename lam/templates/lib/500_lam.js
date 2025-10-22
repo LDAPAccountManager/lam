@@ -1879,6 +1879,26 @@ window.lam.whitePages.showDetailView = function(dn, tabIndex, okText, tokenName,
     })
 }
 
+/**
+ * Switches the view to gallery mode.
+ */
+window.lam.whitePages.switchToGallery = function() {
+    document.getElementById('container-list').classList.add('hidden');
+    document.getElementById('modeSwitchGallery').classList.add('hidden');
+    document.getElementById('modeSwitchList').classList.remove('hidden');
+    document.getElementById('container-gallery').classList.remove('hidden');
+}
+
+/**
+ * Switches the view to list mode.
+ */
+window.lam.whitePages.switchToList = function() {
+    document.getElementById('container-list').classList.remove('hidden');
+    document.getElementById('modeSwitchGallery').classList.remove('hidden');
+    document.getElementById('modeSwitchList').classList.add('hidden');
+    document.getElementById('container-gallery').classList.add('hidden');
+}
+
 window.lam.webauthn = window.lam.webauthn || {};
 
 /**
@@ -3831,7 +3851,7 @@ window.lam.datatable.setData = function(id, data) {
 window.lam.datatable.addSearchField = function(tableId, fieldId) {
     const table = window.lam.datatable.tables[tableId];
     const field = document.getElementById(fieldId);
-    field.onkeyup = function() {
+    field.addEventListener('keyup', function() {
         const filter = field.value.toLowerCase();
         table.clearFilter();
         if (filter === '') {
@@ -3848,7 +3868,7 @@ window.lam.datatable.addSearchField = function(tableId, fieldId) {
             }
             return false;
         }, filter);
-    }
+    });
 }
 
 window.lam.loadingIndicator = window.lam.loadingIndicator || {};
