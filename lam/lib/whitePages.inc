@@ -1161,3 +1161,35 @@ class WhitePagesLdapConnection {
 	}
 
 }
+
+/**
+ * Utility class for search support.
+ */
+class WhitePagesSearch {
+
+	private const SEPARATOR = '|';
+
+	/**
+	 * Generates the search data.
+	 *
+	 * @param array<string, string[]|string> $attributes LDAP attributes
+	 * @param string[] $searchAttributes LDAP attributes to add to search (lower-case)
+	 * @return string search string
+	 */
+	public static function getSearchData(array $attributes, array $searchAttributes): string {
+		$data = '';
+		foreach ($searchAttributes as $searchAttribute) {
+			if (!isset($attributes[$searchAttribute])) {
+				continue;
+			}
+			if (is_array($attributes[$searchAttribute])) {
+				$data .= self::SEPARATOR . implode(self::SEPARATOR, $attributes[$searchAttribute]);
+			}
+			else {
+				$data .= self::SEPARATOR . $attributes[$searchAttribute];
+			}
+		}
+		return $data;
+	}
+
+}

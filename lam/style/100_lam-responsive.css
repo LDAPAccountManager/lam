@@ -220,6 +220,8 @@ table.lam-account-edit-table {
 @media only screen and (max-width: 40.0625em) {
 
 	:root {
+        --lam-large-space: 0.33rem;
+        --lam-larger-space: 0.66rem;
 		--lam-largest-space: 1rem;
 	}
 

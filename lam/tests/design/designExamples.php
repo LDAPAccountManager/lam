@@ -108,7 +108,7 @@ $table->setCSSClasses(['accountlist']);
 $row->add($table);
 
 $row->add(new htmlSubTitle('Data table'));
-$row->addLabel(new htmlOutputText('Search in description'));
+$row->addLabel(new htmlOutputText('Search in description and first name'));
 $row->addField(new htmlInputField('dataTableSearch',));
 $dataTableColumns = [
     new htmlDataTableColumn('First Name', 'first'),
@@ -128,7 +128,7 @@ $row->add(new htmlJavaScript('
             last: "last " + i,
             uid: "" + i,
             desc: "description " + i,
-            search_desc: "description " + i,
+            _lam_search_: "description " + i + "|first " + i,
             group: "group" + i,
         }
         data.push(entry);

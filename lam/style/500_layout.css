@@ -1243,3 +1243,23 @@ div.whitepages-panel {
   border-radius: var(--lam-default-border-radius);
   opacity: 0.95;
 }
+
+div.whitepages-card {
+    border-radius: var(--lam-default-border-radius);
+    border-color: var(--lam-whitepages-color-border);
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 2px 2px 5px var(--lam-whitepages-color-border);
+    margin: var(--lam-large-space)!important;
+    padding: var(--lam-large-space);
+}
+
+div.whitepages-card img {
+    max-height: 5rem;
+}
+
+div.whitepages-container-gallery {
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

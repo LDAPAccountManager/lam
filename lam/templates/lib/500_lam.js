@@ -1882,21 +1882,50 @@ window.lam.whitePages.showDetailView = function(dn, tabIndex, okText, tokenName,
 /**
  * Switches the view to gallery mode.
  */
-window.lam.whitePages.switchToGallery = function() {
-    document.getElementById('container-list').classList.add('hidden');
-    document.getElementById('modeSwitchGallery').classList.add('hidden');
-    document.getElementById('modeSwitchList').classList.remove('hidden');
-    document.getElementById('container-gallery').classList.remove('hidden');
+window.lam.whitePages.switchToGallery = function(tabIndex) {
+    document.getElementById('container-list_' + tabIndex).classList.add('hidden');
+    document.getElementById('modeSwitchGallery_' + tabIndex).classList.add('hidden');
+    document.getElementById('modeSwitchList_' + tabIndex).classList.remove('hidden');
+    document.getElementById('container-gallery_' + tabIndex).classList.remove('hidden');
 }
 
 /**
  * Switches the view to list mode.
  */
-window.lam.whitePages.switchToList = function() {
-    document.getElementById('container-list').classList.remove('hidden');
-    document.getElementById('modeSwitchGallery').classList.remove('hidden');
-    document.getElementById('modeSwitchList').classList.add('hidden');
-    document.getElementById('container-gallery').classList.add('hidden');
+window.lam.whitePages.switchToList = function(tabIndex) {
+    document.getElementById('container-list_' + tabIndex).classList.remove('hidden');
+    document.getElementById('modeSwitchGallery_' + tabIndex).classList.remove('hidden');
+    document.getElementById('modeSwitchList_' + tabIndex).classList.add('hidden');
+    document.getElementById('container-gallery_' + tabIndex).classList.add('hidden');
+}
+
+/**
+ * Adds the search listener for the gallery view.
+ *
+ * @param containerId container ID
+ * @param searchFieldId search field ID
+ */
+window.lam.whitePages.addGallerySearchListener = function(containerId, searchFieldId) {
+    document.getElementById(searchFieldId).addEventListener('keyup', function(event) {
+        const container = document.getElementById(containerId);
+        const cards = container.querySelectorAll('.whitepages-card');
+        const filterValueString = document.getElementById(searchFieldId).value;
+        const filterValues = filterValueString.split(/\s+/);
+        cards.forEach(card => {
+            let found = true;
+            const searchData = card.dataset._lam_search_;
+            filterValues.forEach(value => {
+                found = found && searchData.toLowerCase().includes(value);
+            })
+            if (found && card.classList.contains('hidden')) {
+                card.classList.remove('hidden');
+            }
+            else if (!found && !card.classList.contains('hidden')) {
+                card.classList.add('hidden');
+            }
+        })
+
+    });
 }
 
 window.lam.webauthn = window.lam.webauthn || {};
@@ -3857,16 +3886,13 @@ window.lam.datatable.addSearchField = function(tableId, fieldId) {
         if (filter === '') {
             return;
         }
-        table.setFilter(function(data, filterValue){
-            for (const key in data) {
-                if (!key.startsWith('search_')) {
-                    continue;
-                }
-                if (data[key].toLowerCase().includes(filterValue)) {
-                    return true;
-                }
-            }
-            return false;
+        table.setFilter(function(data, filterValue) {
+            const filterValues = filterValue.split(/\s+/);
+            let found = true;
+            filterValues.forEach(value => {
+                found = found && data['_lam_search_'].toLowerCase().includes(value);
+            })
+            return found;
         }, filter);
     });
 }
