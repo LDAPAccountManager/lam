@@ -1252,6 +1252,7 @@ div.whitepages-card {
     box-shadow: 2px 2px 5px var(--lam-whitepages-color-border);
     margin: var(--lam-large-space)!important;
     padding: var(--lam-large-space);
+    background-color: var(--lam-whitepages-color-card);
 }
 
 div.whitepages-card img {
@@ -1262,4 +1263,10 @@ div.whitepages-container-gallery {
     max-height: 60vh;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+div.whitepages-card-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
 }

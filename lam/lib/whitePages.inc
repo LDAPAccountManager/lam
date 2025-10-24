@@ -1040,6 +1040,7 @@ class WhitePagesStyling {
             --lam-whitepages-color-background: ' . htmlspecialchars($profile->backgroundColor) . ';
             --lam-whitepages-color-panel: rgba(' . $backGroundColor->red . ', ' . $backGroundColor->green . ', ' . $backGroundColor->blue . ');
             --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
+            --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 2)) . ';
             --lam-whitepages-blur: 4px;
 			--lam-table-background-color-dark: ' . htmlspecialchars($profile->backgroundColor) . ';
 			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
