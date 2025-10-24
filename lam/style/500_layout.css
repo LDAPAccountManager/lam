@@ -1255,8 +1255,13 @@ div.whitepages-card {
     background-color: var(--lam-whitepages-color-card);
 }
 
-div.whitepages-card img {
+div.whitepages-panel img {
     max-height: 5rem;
+}
+
+div.whitepages-detail-view img {
+    max-height: 20rem;
+    margin-bottom: var(--lam-large-space);
 }
 
 div.whitepages-container-gallery {
