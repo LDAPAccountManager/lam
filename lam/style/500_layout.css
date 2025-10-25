@@ -1251,8 +1251,19 @@ div.whitepages-card {
     border-style: solid;
     box-shadow: 2px 2px 5px var(--lam-whitepages-color-border);
     margin: var(--lam-large-space)!important;
-    padding: var(--lam-large-space);
+    padding-top: var(--lam-large-space);
+    padding-bottom: var(--lam-large-space);
     background-color: var(--lam-whitepages-color-card);
+}
+
+div.whitepages-card div {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+div.whitepages-card img {
+    margin-bottom: var(--lam-large-space);
 }
 
 div.whitepages-panel img {

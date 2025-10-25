@@ -404,12 +404,16 @@ class htmlDataTable extends htmlElement {
 	public const DATA_TOKEN_VALUE = 'tokenvalue';
 	public const DATA_ACTION = 'action';
 	public const DATA_OK_TEXT = 'oktext';
+	public const SORT_ASC = 'asc';
+	public const SORT_DESC = 'desc';
 
 	private string $id;
 	private mixed $height;
 	private array $columns;
 	private string $searchFieldId = '';
 	private string $onRowClick = '';
+	private ?string $initialSortColumn = null;
+	private ?string $initialSortOrder = null;
 
 	/**
 	 * Constructor
@@ -452,6 +456,10 @@ class htmlDataTable extends htmlElement {
 		if (!empty($this->onRowClick)) {
 			$onRowClickCode = 'window.lam.datatable.tables["' . $this->id . '"].on("rowClick", ' . $this->onRowClick . ');';
 		}
+		$initialSortingCode = '';
+		if (!empty($this->initialSortColumn)) {
+			$initialSortingCode = 'initialSort: [{column: "' . $this->initialSortColumn . '", dir: "' . $this->initialSortOrder . '"}],';
+		}
 		echo '<script type="text/javascript">
 			window.lam.datatable.init("' . $this->id . '", new Tabulator("#' . $this->id . '", {
                 height: "' . $this->height . '",
@@ -462,6 +470,7 @@ class htmlDataTable extends htmlElement {
 				columns: [' . $columnsCode . '],
 				data: [],
 				locale: "en-gb",
+				' . $initialSortingCode . '
 				langs: {
                     "en-gb": {
                         "pagination": {
@@ -501,6 +510,19 @@ class htmlDataTable extends htmlElement {
 	 */
 	public function setOnRowClick(string $callback): void {
 		$this->onRowClick = $callback;
+	}
+
+	/**
+	 * Sets the initial sort order.
+	 *
+	 * @param string $columnName column name
+	 * @param string $sortOrder htmlDataTable::SORT_ASC|htmlDataTable::SORT_DESC
+	 */
+	public function setInitialSorting(string $columnName, string $sortOrder): void {
+		if (in_array($sortOrder, [self::SORT_ASC, self::SORT_DESC])) {
+			$this->initialSortColumn = $columnName;
+			$this->initialSortOrder = $sortOrder;
+		}
 	}
 
 }
@@ -3874,6 +3896,7 @@ class htmlResponsiveRow extends htmlElement {
 	private $cells = [];
 	/** HTML ID */
 	private $id;
+	private ?string $onClick = null;
 
 	/**
 	 * Creates a new responsive row.
@@ -3984,7 +4007,11 @@ class htmlResponsiveRow extends htmlElement {
 		if ($this->id !== null) {
 			$idParam = ' id="' . $this->id . '"';
 		}
-		echo '<div class="row ' . $cssClasses . '"' . $this->getDataAttributesAsString() . $idParam . '>';
+		$onClickCode = '';
+		if (!empty($this->onClick)) {
+			$onClickCode = ' onclick="' . $this->onClick . '"';
+		}
+		echo '<div class="row ' . $cssClasses . '"' . $this->getDataAttributesAsString() . $idParam . $onClickCode . '>';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $scope));
 		}
@@ -4008,6 +4035,10 @@ class htmlResponsiveRow extends htmlElement {
 	 */
 	public function getCellCount(): int {
 		return count($this->cells);
+	}
+
+	public function setOnClick(string $code): void {
+		$this->onClick = $code;
 	}
 
 }
