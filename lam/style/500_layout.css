@@ -1264,10 +1264,11 @@ div.whitepages-card div {
 
 div.whitepages-card img {
     margin-bottom: var(--lam-large-space);
+    max-height: 10rem;
 }
 
-div.whitepages-panel img {
-    max-height: 5rem;
+div.whitepages-container-list img {
+    max-height: 3rem;
 }
 
 div.whitepages-detail-view img {
