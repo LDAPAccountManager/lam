@@ -1146,7 +1146,7 @@ class WhitePagesLdapConnection {
 			$userDn = $this->profile->ldapConnectionUser;
 			$password = deobfuscateText($this->profile->ldapConnectionPassword);
 		}
-		return @ldap_bind($this->server, $userDn, $password);
+		return @ldap_bind($this->getServer(), $userDn, $password);
 	}
 
 	/**

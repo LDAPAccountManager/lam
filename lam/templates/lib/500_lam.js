@@ -2052,7 +2052,7 @@ window.lam.webauthn.run = function(prefix, extraParam, newDeviceNameTitle, newDe
 		}
 	})
 	.catch(function(err) {
-		console.log('WebAuthn failed');
+		console.log('WebAuthn failed: ' + err);
 	});
 }
 

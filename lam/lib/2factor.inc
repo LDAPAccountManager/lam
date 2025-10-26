@@ -14,6 +14,8 @@ use Facile\OpenIDClient\Issuer\IssuerBuilder;
 use GuzzleHttp\Psr7\ServerRequest;
 use htmlResponsiveRow;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use LAM\WHITE_PAGES\WhitePagesLoginHandler;
+use LAM\WHITE_PAGES\WhitePagesProfile;
 use LAM_INTERFACE;
 use SelfServiceLoginHandler;
 use selfServiceProfile;
@@ -359,6 +361,9 @@ class YubicoProvider extends BaseProvider {
 		$keyAttributeName = strtolower($this->config->twoFactorAuthenticationSerialAttributeName);
 		if (isset($_SESSION['selfService_clientDN'])) {
 			$loginDn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		elseif (isset($_SESSION['whitePages_clientDN'])) {
+			$loginDn = lamDecrypt($_SESSION['whitePages_clientDN'], 'WhitePages');
 		}
 		else {
 			$loginDn = $_SESSION['ldap']->getUserName();
@@ -977,8 +982,14 @@ class WebauthnProvider extends BaseProvider {
 			$row->add(new htmlStatusMessage('INFO', _('Please register a security device.')));
 		}
 		$row->addVerticalSpacer('2rem');
-		$pathPrefix = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? '../' : '';
-		$selfServiceParam = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? 'selfservice=true' : '';
+		$pathPrefix = in_array($this->config->interface, [LAM_INTERFACE::SELF_SERVICE, LAM_INTERFACE::WHITE_PAGES]) ? '../' : '';
+		$interfaceTypeParam = '';
+		if ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) {
+			$interfaceTypeParam = 'selfservice=true';
+		}
+		elseif ($this->config->interface === LAM_INTERFACE::WHITE_PAGES) {
+			$interfaceTypeParam = 'whitepages=true';
+		}
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg', '50%'));
 		$row->addVerticalSpacer('1rem');
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
@@ -996,7 +1007,7 @@ class WebauthnProvider extends BaseProvider {
 		$errorMessageDiv->addDataAttribute('button', _('Ok'));
 		$errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
 		$row->add($errorMessageDiv);
-		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', \'' . $selfServiceParam . '\',' .
+		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', \'' . $interfaceTypeParam . '\',' .
 			' \'' . _('Do you want to set a name for this device?') . '\', \'' . _('Name') . '\',' .
 			' \'' . _('Ok') . '\', \'' . _('Cancel') . '\');'), 0);
 	}
@@ -1021,8 +1032,11 @@ class WebauthnProvider extends BaseProvider {
 		if (!empty($_SESSION['ldap'])) {
 			$userDn = $_SESSION['ldap']->getUserName();
 		}
-		else {
+		elseif (isset($_SESSION['selfService_clientDN'])) {
 			$userDn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		elseif (isset($_SESSION['whitePages_clientDN'])) {
+			$userDn = lamDecrypt($_SESSION['whitePages_clientDN'], 'WhitePages');
 		}
 		$hasTokens = $webauthnManager->isRegistered($userDn);
 		if (!$hasTokens) {
@@ -1085,11 +1099,14 @@ class TwoFactorProviderService {
 	/**
 	 * Constructor.
 	 *
-	 * @param selfServiceProfile|LAMConfig $configObj profile
+	 * @param selfServiceProfile|WhitePagesProfile|LAMConfig $configObj profile
 	 */
-	public function __construct(selfServiceProfile|LAMConfig $configObj) {
+	public function __construct(selfServiceProfile|WhitePagesProfile|LAMConfig $configObj) {
 		if ($configObj instanceof selfServiceProfile) {
 			$this->config = $this->getConfigSelfService($configObj);
+		}
+		elseif ($configObj instanceof WhitePagesProfile) {
+			$this->config = $this->getConfigWhitePages($configObj);
 		}
 		else {
 			$this->config = $this->getConfigAdmin($configObj);
@@ -1288,6 +1305,49 @@ class TwoFactorProviderService {
 	}
 
 	/**
+	 * Returns the configuration from white pages.
+	 *
+	 * @param WhitePagesProfile $profile profile
+	 * @return TwoFactorConfiguration configuration
+	 */
+	private function getConfigWhitePages(WhitePagesProfile &$profile): TwoFactorConfiguration {
+		$tfConfig = new TwoFactorConfiguration();
+		$tfConfig->interface = LAM_INTERFACE::WHITE_PAGES;
+		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthenticationType;
+		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $profile->twoFactorAuthenticationURL);
+		}
+		else {
+			$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		}
+		$tfConfig->twoFactorAuthenticationClientId = $profile->twoFactorAuthenticationClientId;
+		$tfConfig->twoFactorAuthenticationSecretKey = $profile->twoFactorAuthenticationSecretKey;
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
+		}
+		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+			$attrName = $profile->twoFactorAuthenticationAttribute;
+			if (empty($attrName)) {
+				$attrName = 'uid';
+			}
+			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($attrName);
+		}
+		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
+			$tfConfig->twoFactorAllowToRememberDevice = $profile->twoFactorAllowToRememberDevice;
+			$tfConfig->twoFactorRememberDeviceDuration = $profile->twoFactorRememberDeviceDuration;
+			$tfConfig->twoFactorRememberDevicePassword = $profile->twoFactorRememberDevicePassword;
+		}
+		$tfConfig->loginHandler = $profile->getLoginHandler();
+		return $tfConfig;
+	}
+
+	/**
 	 * Returns the configuration for admin interface.
 	 *
 	 * @param LAMConfig $conf configuration
@@ -1395,8 +1455,8 @@ class TwoFactorConfiguration {
 	public string $twoFactorRememberDevicePassword = '';
 
 	/**
-	 * @var SelfServiceLoginHandler|null login handler
+	 * @var SelfServiceLoginHandler|WhitePagesLoginHandler|null login handler
 	 */
-	public ?SelfServiceLoginHandler $loginHandler = null;
+	public SelfServiceLoginHandler|WhitePagesLoginHandler|null $loginHandler = null;
 
 }

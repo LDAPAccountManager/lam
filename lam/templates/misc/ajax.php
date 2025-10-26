@@ -17,6 +17,7 @@ use \htmlButton;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\UPLOAD\Uploader;
 use LAM\WHITE_PAGES\WhitePagesAjaxHandler;
+use LAM_INTERFACE;
 use \LAMCfgMain;
 use LAMException;
 
@@ -92,7 +93,6 @@ class Ajax {
 		static::setHeader();
 		// check token
 		validateSecurityToken();
-		$isSelfService = isset($_GET['selfservice']);
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
 			enforceUserIsLoggedIn();
 			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
@@ -121,7 +121,14 @@ class Ajax {
 		}
 		if ($function === 'webauthn') {
 			enforceUserIsLoggedIn(false);
-			$this->manageWebauthn($isSelfService);
+			$interface = LAM_INTERFACE::ADMIN;
+			if (isset($_GET['selfservice'])) {
+				$interface = LAM_INTERFACE::SELF_SERVICE;
+			}
+			elseif (isset($_GET['whitepages'])) {
+				$interface = LAM_INTERFACE::WHITE_PAGES;
+			}
+			$this->manageWebauthn($interface);
 			die();
 		}
 		if ($function === 'webauthnDevices') {
@@ -242,12 +249,15 @@ class Ajax {
 	/**
 	 * Manages webauthn requests.
 	 *
-	 * @param bool $isSelfService request is from self service
+	 * @param LAM_INTERFACE $interface interface
 	 */
-	private function manageWebauthn($isSelfService): void {
+	private function manageWebauthn(LAM_INTERFACE $interface): void {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
-		if ($isSelfService) {
+		if ($interface === LAM_INTERFACE::SELF_SERVICE) {
 			$userDN = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		elseif ($interface === LAM_INTERFACE::WHITE_PAGES) {
+			$userDN = lamDecrypt($_SESSION['whitePages_clientDN'], 'WhitePages');
 		}
 		else {
 			$userDN = $_SESSION['ldap']->getUserName();
@@ -255,7 +265,7 @@ class Ajax {
 		$webauthnManager = new WebauthnManager();
 		$isRegistered = $webauthnManager->isRegistered($userDN);
 		if (!$isRegistered) {
-			$registrationObject = $webauthnManager->getRegistrationObject($userDN, $isSelfService);
+			$registrationObject = $webauthnManager->getRegistrationObject($userDN, $interface);
 			$_SESSION['webauthn_registration'] = json_encode($registrationObject, JSON_THROW_ON_ERROR);
 			echo json_encode(
 				[
@@ -266,7 +276,7 @@ class Ajax {
 			);
 		}
 		else {
-			$authenticationObject = $webauthnManager->getAuthenticationObject($userDN, $isSelfService);
+			$authenticationObject = $webauthnManager->getAuthenticationObject($userDN, $interface);
 			$_SESSION['webauthn_authentication'] = json_encode($authenticationObject, JSON_THROW_ON_ERROR);
 			echo json_encode(
 				[
