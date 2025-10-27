@@ -830,7 +830,7 @@ class WhitePagesPersistenceStrategyPdo implements WhitePagesPersistenceStrategy 
 		$statement->execute([$name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
-			logNewMessage(LOG_ERR, 'Self service profile not found');
+			logNewMessage(LOG_ERR, 'White pages profile not found');
 			throw new LAMException(_("Unable to load profile!"), $name);
 		}
 		$data = json_decode($results[0]['data'], true);
@@ -887,28 +887,28 @@ interface WhitePagesLoginHandler {
 	 *
 	 * @param htmlResponsiveRow $content dialog content
 	 */
-	function addLoginFields(htmlResponsiveRow $content): void;
+	public function addLoginFields(htmlResponsiveRow $content): void;
 
 	/**
 	 * Returns the login name.
 	 *
 	 * @return string login name
 	 */
-	function getLoginName(): string;
+	public function getLoginName(): string;
 
 	/**
 	 * Returns the login password.
 	 *
 	 * @return string password
 	 */
-	function getLoginPassword(): string;
+	public function getLoginPassword(): string;
 
 	/**
 	 * Returns if the login handler manages authentication on its own.
 	 *
 	 * @return bool manages authentication
 	 */
-	function managesAuthentication(): bool;
+	public function managesAuthentication(): bool;
 
 	/**
 	 * Returns if the authentication was successful.
@@ -917,7 +917,7 @@ interface WhitePagesLoginHandler {
 	 * @return bool authentication successful
 	 * @throws LAMException error during authentication
 	 */
-	function isAuthenticationSuccessful(): bool;
+	public function isAuthenticationSuccessful(): bool;
 
 	/**
 	 * Authorizes a user provided by the 2FA provider.
@@ -925,7 +925,7 @@ interface WhitePagesLoginHandler {
 	 * @param string $userName user name
 	 * @throws LAMException error during authentication
 	 */
-	function authorize2FaUser(string $userName): void;
+	public function authorize2FaUser(string $userName): void;
 
 }
 
@@ -941,14 +941,14 @@ class WhitePagesUserPasswordLoginHandler implements WhitePagesLoginHandler {
 	 *
 	 * @param WhitePagesProfile $profile profile
 	 */
-	function __construct(WhitePagesProfile $profile) {
+	public function __construct(WhitePagesProfile $profile) {
 		$this->profile = $profile;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function addLoginFields(htmlResponsiveRow $content): void {
+	public function addLoginFields(htmlResponsiveRow $content): void {
 		// user name
 		$userNameVal = empty($_POST['username']) ? '' : $_POST['username'];
 		$userText = _("User name");
@@ -972,36 +972,141 @@ class WhitePagesUserPasswordLoginHandler implements WhitePagesLoginHandler {
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginName(): string {
+	public function getLoginName(): string {
 		return $_POST['username'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginPassword(): string {
+	public function getLoginPassword(): string {
 		return $_POST['password'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function managesAuthentication(): bool {
+	public function managesAuthentication(): bool {
 		return false;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function isAuthenticationSuccessful(): bool {
+	public function isAuthenticationSuccessful(): bool {
 		throw new LAMException('Not implemented');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function authorize2FaUser(string $userName): void {
+	public function authorize2FaUser(string $userName): void {
 		// no action
+	}
+
+}
+
+/**
+ * Performs login with pure 2FA.
+ */
+class WhitePages2FaLoginHandler implements WhitePagesLoginHandler {
+
+	public const ID = "2fa";
+
+	private WhitePagesProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param WhitePagesProfile $profile profile
+	 */
+	public function __construct(WhitePagesProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addLoginFields(htmlResponsiveRow $content): void {
+		// no input fields
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getLoginName(): string {
+		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getLoginPassword(): string {
+		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function managesAuthentication(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function isAuthenticationSuccessful(): bool {
+		if (($this->profile->twoFactorAuthenticationType !== TwoFactorProviderService::TWO_FACTOR_OKTA)
+			&& ($this->profile->twoFactorAuthenticationType !== TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+			logNewMessage(LOG_ERR, 'Unsupported 2FA provider: ' . $this->profile->twoFactorAuthenticationType);
+			return false;
+		}
+		if (!$this->profile->useForAllOperations) {
+			logNewMessage(LOG_ERR, 'Use for all operations must be set');
+			return false;
+		}
+		// authentication will be checked on the 2FA page
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function authorize2FaUser(string $userName): void {
+		$bindUser = $this->profile->ldapConnectionUser;
+		if (empty($bindUser)) {
+			throw new LAMException('WhitePages2FaLoginHandler', 'No bind user set');
+		}
+		$bindPassword = deobfuscateText($this->profile->ldapConnectionPassword);
+		$server = connectToLDAP($this->profile->serverUrl, $this->profile->useTLS);
+		if ($server === null) {
+			throw new LAMException('WhitePages2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP connect failed');
+		}
+		ldap_set_option($server, LDAP_OPT_REFERRALS, $this->profile->followReferrals);
+		$bind = @ldap_bind($server, $bindUser, $bindPassword);
+		if (!$bind) {
+			throw new LAMException('WhitePages2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP bind failed');
+		}
+		$filter = '(' . $this->profile->twoFactorAuthenticationAttribute . "=" . ldap_escape($userName) . ')';
+		if (!empty($this->profile->additionalLDAPFilter)) {
+			$filter = '(&' . $filter . $this->profile->additionalLDAPFilter . ')';
+		}
+		$result = @ldap_search($server, $this->profile->authenticationLdapSuffix, $filter, ['DN'], 0, 1, 0, LDAP_DEREF_NEVER);
+		if ($result === false) {
+			throw new LAMException('WhitePages2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP search failed');
+		}
+		$entries = @ldap_get_entries($server, $result);
+		if ($entries === false) {
+			throw new LAMException('WhitePages2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP search failed');
+		}
+		$info = $entries;
+		cleanLDAPResult($info);
+		if (count($info) === 1) {
+			$userDN = $info[0]['dn'];
+			$_SESSION['whitePages_clientDN'] = lamEncrypt($userDN, 'WhitePages');
+			return;
+		}
+		throw new LAMException('WhitePages2FaLoginHandler', 'Multiple or no results for ' . $userName . ' ' . print_r($info, true));
 	}
 
 }
@@ -1115,7 +1220,7 @@ class WhitePagesLdapConnection {
 		if ($this->server !== null) {
 			return $this->server;
 		}
-		$this->server = $this->openSelfServiceLdapConnection($this->profile);
+		$this->server = $this->openLdapConnection($this->profile);
 		return $this->server;
 	}
 
@@ -1125,7 +1230,7 @@ class WhitePagesLdapConnection {
 	 * @param WhitePagesProfile $profile profile
 	 * @return Connection|null LDAP handle or null if the connection failed
 	 */
-	function openSelfServiceLdapConnection(WhitePagesProfile $profile): ?Connection {
+	private function openLdapConnection(WhitePagesProfile $profile): ?Connection {
 		$server = connectToLDAP($profile->serverUrl, $profile->useTLS);
 		if ($server != null) {
 			// follow referrals
