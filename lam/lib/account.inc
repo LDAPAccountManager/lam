@@ -73,7 +73,7 @@ function in_array_ignore_case($needle, $haystack) {
 		return false;
 	}
 	foreach ($haystack as $element) {
-		if (is_string($element) && 0 == strcasecmp($needle, $element)) {
+		if (is_string($element) && 0 === strcasecmp($needle, $element)) {
 			return true;
 		}
 	}
@@ -379,35 +379,35 @@ function checkPasswordHash($type, $hash, $password) {
 			$bin = base64_decode($hash);
 			$salt = substr($bin, 20);
 			$pwdHash = base64_encode(hex2bin(sha1($password . $salt)) . $salt);
-			return (strcmp($hash, $pwdHash) == 0);
+			return (strcmp($hash, $pwdHash) === 0);
 		case 'SHA':
-			return (strcmp($hash, base64_encode(hex2bin(sha1($password)))) == 0);
+			return (strcmp($hash, base64_encode(hex2bin(sha1($password)))) === 0);
 		case 'SMD5':
 			$bin = base64_decode($hash);
 			$salt = substr($bin, 16);
 			$pwdHash = base64_encode(hex2bin(md5($password . $salt)) . $salt);
-			return (strcmp($hash, $pwdHash) == 0);
+			return (strcmp($hash, $pwdHash) === 0);
 		case 'MD5':
-			return (strcmp($hash, base64_encode(hex2bin(md5($password)))) == 0);
+			return (strcmp($hash, base64_encode(hex2bin(md5($password)))) === 0);
 		case 'CRYPT':
 			$parts = explode('$', $hash);
 			if (count($parts) === 1) {
 				$salt = substr($hash, 0, 2);
 				$pwdHash = crypt($password, $salt);
-				return (strcmp($hash, $pwdHash) == 0);
+				return (strcmp($hash, $pwdHash) === 0);
 			}
 			if (count($parts) === 4) {
 				$version = $parts[1];
 				$salt = $parts[2];
 				$pwdHash = crypt($password, '$' . $version . '$' . $salt);
-				return (strcmp($hash, $pwdHash) == 0);
+				return (strcmp($hash, $pwdHash) === 0);
 			}
 			elseif (count($parts) === 5) {
 				$version = $parts[1];
 				$rounds = $parts[2];
 				$salt = $parts[3];
 				$pwdHash = crypt($password, '$' . $version . '$' . $rounds . '$' . $salt);
-				return (strcmp($hash, $pwdHash) == 0);
+				return (strcmp($hash, $pwdHash) === 0);
 			}
 			return false;
 		case 'ARGON2ID':
@@ -742,7 +742,7 @@ function connectToLDAP($serverURL, $startTLS) {
 	// start TLS if possible
 	if ($startTLS) {
 		ldap_start_tls($server);
-		if (ldap_errno($server) != 0) {
+		if (ldap_errno($server) !== 0) {
 			ldap_close($server);
 			logNewMessage(LOG_ERR, 'Unable to start TLS encryption. Please check if your server certificate is valid and if the LDAP server supports TLS at all.');
 			return null;
@@ -787,7 +787,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
 			$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
-		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+		if (ldap_errno($_SESSION['ldap']->server()) === 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
 		$return = array_merge($return, $entries);
@@ -826,7 +826,7 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
 			$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
-		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+		if (ldap_errno($_SESSION['ldap']->server()) === 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
 		$return = array_merge($return, $entries);
@@ -849,7 +849,7 @@ function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
 	}
 	$return = searchLDAPPaged(getLDAPServerHandle(), $suffix, $filter, $attributes,
 		0, $limit);
-	if (ldap_errno(getLDAPServerHandle()) == 4) {
+	if (ldap_errno(getLDAPServerHandle()) === 4) {
 		logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 	}
 	return $return;
@@ -1172,7 +1172,7 @@ function getAbstractDN($dn) {
 	$parts = explode(',', $dn);
 	for ($i = 0; $i < count($parts); $i++) {
 		$subparts = explode('=', $parts[$i]);
-		if (count($subparts) == 2) {
+		if (count($subparts) === 2) {
 			$parts[$i] = $subparts[1];
 		}
 	}
@@ -1187,7 +1187,7 @@ function getAbstractDN($dn) {
  * @return string unescaped DN
  */
 function unescapeLdapSpecialCharacters(string $dn): string {
-	return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', 'unescapeLdapSpecialCharactersCallback', $dn);
+	return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', unescapeLdapSpecialCharactersCallback(...), $dn);
 }
 
 /**
@@ -1948,7 +1948,7 @@ function formatSecondsToShortFormat($numSeconds) {
 		$years .= 'y';
 	}
 	$seconds = $numSeconds % 60;
-	$seconds = ($seconds == 0) ? '' : $seconds . 's';
+	$seconds = ($seconds === 0) ? '' : $seconds . 's';
 	$minutes = floor(($numSeconds % 3600) / 60);
 	$minutes = ($minutes == 0) ? '' : $minutes . 'm';
 	$hours = floor(($numSeconds % 86400) / 3600);

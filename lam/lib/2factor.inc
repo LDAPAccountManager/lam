@@ -1283,19 +1283,17 @@ class TwoFactorProviderService {
 				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
 			}
 		}
-		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+		if (in_array($tfConfig->twoFactorAuthentication, [TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+				TwoFactorProviderService::TWO_FACTOR_DUO, TwoFactorProviderService::TWO_FACTOR_OKTA,
+				TwoFactorProviderService::TWO_FACTOR_OPENID])) {
 			$attrName = $profile->twoFactorAuthenticationAttribute;
 			if (empty($attrName)) {
 				$attrName = 'uid';
 			}
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($attrName);
 		}
-		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
+		if (in_array($tfConfig->twoFactorAuthentication, [TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+				TwoFactorProviderService::TWO_FACTOR_WEBAUTHN, TwoFactorProviderService::TWO_FACTOR_YUBICO])) {
 			$tfConfig->twoFactorAllowToRememberDevice = ($profile->twoFactorAllowToRememberDevice === 'true');
 			$tfConfig->twoFactorRememberDeviceDuration = $profile->twoFactorRememberDeviceDuration;
 			$tfConfig->twoFactorRememberDevicePassword = $profile->twoFactorRememberDevicePassword;
@@ -1326,19 +1324,17 @@ class TwoFactorProviderService {
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
 		}
-		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+		if (in_array($tfConfig->twoFactorAuthentication, [TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+				TwoFactorProviderService::TWO_FACTOR_DUO, TwoFactorProviderService::TWO_FACTOR_OKTA,
+				TwoFactorProviderService::TWO_FACTOR_OPENID])) {
 			$attrName = $profile->twoFactorAuthenticationAttribute;
 			if (empty($attrName)) {
 				$attrName = 'uid';
 			}
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($attrName);
 		}
-		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
+		if (in_array($tfConfig->twoFactorAuthentication, [TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+				TwoFactorProviderService::TWO_FACTOR_WEBAUTHN, TwoFactorProviderService::TWO_FACTOR_YUBICO])) {
 			$tfConfig->twoFactorAllowToRememberDevice = $profile->twoFactorAllowToRememberDevice;
 			$tfConfig->twoFactorRememberDeviceDuration = $profile->twoFactorRememberDeviceDuration;
 			$tfConfig->twoFactorRememberDevicePassword = $profile->twoFactorRememberDevicePassword;
@@ -1376,15 +1372,13 @@ class TwoFactorProviderService {
 				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
 			}
 		}
-		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
+		if (in_array($tfConfig->twoFactorAuthentication, [TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+				TwoFactorProviderService::TWO_FACTOR_DUO, TwoFactorProviderService::TWO_FACTOR_OKTA,
+				TwoFactorProviderService::TWO_FACTOR_OPENID])) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
-		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
-			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
+		if (in_array($tfConfig->twoFactorAuthentication, [TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+				TwoFactorProviderService::TWO_FACTOR_WEBAUTHN, TwoFactorProviderService::TWO_FACTOR_YUBICO])) {
 			$tfConfig->twoFactorAllowToRememberDevice = ($conf->getTwoFactorAllowToRememberDevice() === 'true');
 			$tfConfig->twoFactorRememberDeviceDuration = $conf->getTwoFactorRememberDeviceDuration();
 			$tfConfig->twoFactorRememberDevicePassword = $conf->getTwoFactorRememberDevicePassword();
