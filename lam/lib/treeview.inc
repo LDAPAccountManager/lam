@@ -244,7 +244,7 @@ class TreeView {
 	private function getNodeIcon(array $attributes): string {
 		$base = '../../graphics/';
 		$icon = 'object.svg';
-		$objectClasses = array_map('strtolower', $attributes['objectclass']);
+		$objectClasses = array_map(strtolower(...), $attributes['objectclass']);
 		$rdn = extractRDNValue($attributes['dn']);
 		if (in_array('sambasamaccount', $objectClasses) &&
 			'$' == $rdn[strlen($rdn) - 1]) {
@@ -318,7 +318,7 @@ class TreeView {
 	 * @param array $nodes nodes
 	 */
 	private function sortNodes(array &$nodes): void {
-		usort($nodes, 'LAM\TOOLS\TREEVIEW\compareNodeByIdAsDn');
+		usort($nodes, LAM\TOOLS\TREEVIEW\compareNodeByIdAsDn(...));
 	}
 
 	/**
@@ -1367,7 +1367,7 @@ class TreeView {
 		foreach ($objectClassObject->getSupClasses() as $superClass) {
 			$attributeNames = array_merge($attributeNames, $this->getMustAttributeNamesRecursive($objectClasses, $superClass));
 		}
-		$attributeNames = array_map('strtolower', $attributeNames);
+		$attributeNames = array_map(strtolower(...), $attributeNames);
 		return array_unique($attributeNames);
 	}
 
@@ -1385,7 +1385,7 @@ class TreeView {
 		foreach ($objectClassObject->getSupClasses() as $superClass) {
 			$attributeNames = array_merge($attributeNames, $this->getMayAttributeNamesRecursive($objectClasses, $superClass));
 		}
-		$attributeNames = array_map('strtolower', $attributeNames);
+		$attributeNames = array_map(strtolower(...), $attributeNames);
 		return array_unique($attributeNames);
 	}
 
@@ -1620,7 +1620,7 @@ class TreeView {
 			'sub' => searchLDAP($dn, $filter, $searchAttributes, $limit),
 			default => ldapListDN($dn, $filter, $searchAttributes, null, $limit),
 		};
-		usort($results, 'LAM\TOOLS\TREEVIEW\compareByAttributes');
+		usort($results, LAM\TOOLS\TREEVIEW\compareByAttributes(...));
 		$row = $this->searchResultsHeader($dn, $filter);
 		if ($format === 'list') {
 			return $this->searchResultsAsList($results, $attributes, $row);

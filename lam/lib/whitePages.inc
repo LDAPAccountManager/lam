@@ -1195,7 +1195,7 @@ class WhitePagesStyling {
 			$image = 'background-image: url(' . htmlspecialchars($profile->backgroundImage) . ');';
 		}
 		else {
-			$image = 'background-image: url(' . '../../graphics/' . htmlspecialchars($profile->backgroundImage) . ');';
+			$image = 'background-image: url(../../graphics/' . htmlspecialchars($profile->backgroundImage) . ');';
 		}
 		$backGroundColor = LamColorUtil::parseColor($profile->backgroundColor);
 		return '<style>
