@@ -2902,8 +2902,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			elseif ($hr >= 24 * 7) {
 				$hr -= 24 * 7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, ($hour[$hr] === '1'));
-			$boxes[$i % 24][floor($i / 24)] = $checkbox;
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, ((int) $hour[$hr] === 1));
+			$boxes[$i % 24][(int) floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
 			$hour = str_pad((string) $h, 2, '0', STR_PAD_LEFT);
