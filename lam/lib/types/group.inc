@@ -256,7 +256,7 @@ class lamGroupList extends lamList {
 		parent::listGetParams();
 		// generate list primary group members
 		// after parent::listGetParams is $this->refresh set to correct value
-		if ($this->include_primary && !$this->refresh && ($this->refresh_primary || (count($this->primary_hash) == 0))) {
+		if ($this->include_primary && !$this->refresh && ($this->refresh_primary || (count($this->primary_hash) === 0))) {
 			$this->groupRefreshPrimary();
 		}
 	}
