@@ -1834,7 +1834,7 @@ function getDefaultLDAPErrorString($server) {
 /**
  * Returns if the last LDAP error was due to expired password or forced password change (AD only).
  *
- * @param $server LDAP handle
+ * @param Connection $server LDAP handle
  * @return bool password expired
  */
 function ldapIsPasswordExpired($server): bool {
