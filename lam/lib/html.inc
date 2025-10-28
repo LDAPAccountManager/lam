@@ -1445,7 +1445,7 @@ class htmlSelect extends htmlElement {
 		// if select box has only one element then show it as text
 		if ((count($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '</div>';
-			if (count($this->elements) == 1) {
+			if (count($this->elements) === 1) {
 				echo '&nbsp;';
 				if ($this->hasDescriptiveElements) {
 					$keys = array_keys($this->elements);
@@ -1643,7 +1643,7 @@ class htmlSelect extends htmlElement {
 	 * @param String $onChange onChange code
 	 */
 	private function printCodeForShowHideTableRows(&$onChange) {
-		if ((count($this->tableRowsToHide) == 0) && (count($this->tableRowsToShow) == 0)) {
+		if ((count($this->tableRowsToHide) === 0) && (count($this->tableRowsToShow) === 0)) {
 			return;
 		}
 		$values = [];
@@ -1859,7 +1859,7 @@ class htmlRadio extends htmlElement {
 	 */
 	private function getOnchangeCodeForShowHideTableRows($counter): string {
 		$onChange = '';
-		if ((count($this->tableRowsToHide) == 0) && (count($this->tableRowsToShow) == 0)) {
+		if ((count($this->tableRowsToHide) === 0) && (count($this->tableRowsToShow) === 0)) {
 			return $onChange;
 		}
 		$values = [];
@@ -3739,7 +3739,7 @@ class htmlSortableList extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		if (count($this->elements) == 0) {
+		if (count($this->elements) === 0) {
 			return [];
 		}
 		$return = [];

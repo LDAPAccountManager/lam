@@ -149,11 +149,11 @@ class Exporter {
 				return [ldapGetDN($this->baseDn, $attributes)];
 			case 'one':
 				$entries = ldapListDN($this->baseDn, $this->filter, $attributes);
-				usort($entries, 'compareLDAPEntriesByDn');
+				usort($entries, compareLDAPEntriesByDn(...));
 				return $entries;
 			case 'sub':
 				$entries = searchLDAP($this->baseDn, $this->filter, $attributes);
-				usort($entries, 'compareLDAPEntriesByDn');
+				usort($entries, compareLDAPEntriesByDn(...));
 				return $entries;
 			default:
 				throw new LAMException('Invalid scope');
