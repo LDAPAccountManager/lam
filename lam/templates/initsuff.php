@@ -93,7 +93,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 				$dn = $suff;
 				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
 					// check if we have to add parent entries
-					if (ldap_errno($_SESSION['ldap']->server()) == 32) {
+					if (ldap_errno($_SESSION['ldap']->server()) === 32) {
 						$dnParts = explode(",", $suff);
 						$subsuffs = [];
 						// make list of subsuffixes

@@ -597,7 +597,7 @@ if (isset($_POST['checklogin'])) {
 						$searchError = _('Unable to find the user name in LDAP.');
 					}
 					header("HTTP/1.1 403 Forbidden");
-					if (ldap_errno($searchLDAP->server()) != 0) {
+					if (ldap_errno($searchLDAP->server()) !== 0) {
 						$searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
 					}
 					logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. Unable to find the user name in LDAP.');
@@ -613,7 +613,7 @@ if (isset($_POST['checklogin'])) {
 				}
 				logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. Unable to find the user name in LDAP.');
 				header("HTTP/1.1 403 Forbidden");
-				if (ldap_errno($searchLDAP->server()) != 0) {
+				if (ldap_errno($searchLDAP->server()) !== 0) {
 					$searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
 				}
 			}
