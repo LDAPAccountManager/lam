@@ -227,13 +227,13 @@ foreach ($types as $type) {
 		$innerRow->add($moduleGroup, 12, 6, 4);
 	}
 	$moduleCount = count($modules);
-	if ($moduleCount % 3 == 2) {
+	if ($moduleCount % 3 === 2) {
 		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 0, 4);
 	}
-	if ($moduleCount % 3 == 1) {
+	if ($moduleCount % 3 === 1) {
 		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 0, 4);
 	}
-	if ($moduleCount % 2 == 1) {
+	if ($moduleCount % 2 === 1) {
 		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 6, 0);
 	}
 	$typeDiv = new htmlDiv($type->getId(), $innerRow);

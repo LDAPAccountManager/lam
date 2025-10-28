@@ -152,10 +152,10 @@ function testRemoteCommand($command, $stopTest, $remote, $testText, $container) 
 			else {
 				// error messages from lamdaemon
 				$parts = explode(",", $output);
-				if (count($parts) == 2) {
+				if (count($parts) === 2) {
 					$container->add(new htmlStatusMessage($parts[0], $parts[1]), 12, 6);
 				}
-				elseif (count($parts) == 3) {
+				elseif (count($parts) === 3) {
 					$container->add(new htmlStatusMessage($parts[0], $parts[1], $parts[2]), 12, 6);
 				}
 				else {
