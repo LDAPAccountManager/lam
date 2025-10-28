@@ -249,7 +249,7 @@ class asteriskExtension extends baseModule {
 		$title->setHelpId('member');
 		$renderContainer->add($title);
 		$ownerList = new htmlTable();
-		if (($this->extensionOwners === null || count($this->extensionOwners) == 0) && isset($this->extensionRows[0]['member'])) {
+		if (($this->extensionOwners === null || count($this->extensionOwners) === 0) && isset($this->extensionRows[0]['member'])) {
 			$this->extensionOwners = $this->extensionRows[0]['member'];
 		}
 		if ($this->extensionOwners !== null) {
@@ -340,7 +340,7 @@ class asteriskExtension extends baseModule {
 
 		$displayEntrNum = count($entries);
 
-		if ($this->addRuleFlag || count($entries) == 0) {
+		if ($this->addRuleFlag || count($entries) === 0) {
 
 			$this->render_extension([], count($entries), $renderContainer);
 
@@ -505,7 +505,7 @@ class asteriskExtension extends baseModule {
 	 */
 	function isMoveToNewSuffix() {
 		$orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
-		return strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) != 0
+		return strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) !== 0
 			&& !$this->getAccountContainer()->isNewAccount;
 	}
 
@@ -673,7 +673,7 @@ class asteriskExtension extends baseModule {
 
 		//Fill the member filed
 		$extRow['member'] = $this->extensionOwners;
-		if ((!isset($extRow['member']) || count($extRow['member']) == 0)
+		if ((!isset($extRow['member']) || count($extRow['member']) === 0)
 			&& !isset($_POST['form_subpage_' . static::class . '_user_open'])) {
 			$errors[] = $this->messages['member'][0];
 		}
