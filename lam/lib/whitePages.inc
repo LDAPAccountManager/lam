@@ -882,6 +882,8 @@ class WhitePagesPersistenceStrategyPdo implements WhitePagesPersistenceStrategy 
  */
 interface WhitePagesLoginHandler {
 
+	public const USER_NAME_ANONYMOUS = 'anonymous';
+
 	/**
 	 * Adds the necessary fields to the login dialog (e.g. user + password).
 	 *
@@ -1011,8 +1013,6 @@ class WhitePagesUserPasswordLoginHandler implements WhitePagesLoginHandler {
  */
 class WhitePages2FaLoginHandler implements WhitePagesLoginHandler {
 
-	public const ID = "2fa";
-
 	private WhitePagesProfile $profile;
 
 	/**
@@ -1107,6 +1107,71 @@ class WhitePages2FaLoginHandler implements WhitePagesLoginHandler {
 			return;
 		}
 		throw new LAMException('WhitePages2FaLoginHandler', 'Multiple or no results for ' . $userName . ' ' . print_r($info, true));
+	}
+
+}
+
+/**
+ * Performs anonymous access.
+ */
+class WhitePagesAnonymousAuthLoginHandler implements WhitePagesLoginHandler {
+
+	private WhitePagesProfile $profile;
+
+	/**
+	 * Constructor
+	 *
+	 * @param WhitePagesProfile $profile profile
+	 */
+	public function __construct(WhitePagesProfile $profile) {
+		$this->profile = $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addLoginFields(htmlResponsiveRow $content): void {
+		// no input fields
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getLoginName(): string {
+		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getLoginPassword(): string {
+		return '';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function managesAuthentication(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function isAuthenticationSuccessful(): bool {
+		if (!$this->profile->useForAllOperations) {
+			logNewMessage(LOG_ERR, 'Use for all operations must be set');
+			return false;
+		}
+		// authentication not needed
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function authorize2FaUser(string $userName): void {
+		// not used
 	}
 
 }
