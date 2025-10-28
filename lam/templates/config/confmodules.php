@@ -368,7 +368,7 @@ function checkModuleInput(LAMConfig $conf): array {
 				$baseCount++;
 			}
 		}
-		if ($baseCount != 1) {
+		if ($baseCount !== 1) {
 			$errors[] = ['ERROR', $type->getAlias(), _("No or more than one base module selected!")];
 		}
 	}

@@ -83,7 +83,7 @@ $errorsToDisplay = checkInput();
 if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 		|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
 		|| isset($_POST['moduleSettings']) || isset($_POST['jobs']))
-    && (count($errorsToDisplay) == 0)) {
+    && (count($errorsToDisplay) === 0)) {
 	// go to final page
 	if (isset($_POST['saveSettings'])) {
 		metaRefresh("confsave.php");

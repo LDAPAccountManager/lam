@@ -476,7 +476,7 @@ $buttonContainer->add(new htmlHiddenInput('form_submit', 'true'), 4);
 $container->add($buttonContainer);
 addSecurityTokenToMetaHTML($container);
 
-if ((count($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && get_preg($_POST['scrollPositionTop'], 'digit')
+if ((count($saveErrors) === 0) && isset($_POST['scrollPositionTop']) && get_preg($_POST['scrollPositionTop'], 'digit')
         && isset($_POST['scrollPositionLeft']) && get_preg($_POST['scrollPositionLeft'], 'digit')) {
 	// scroll to last position
 	$container->add(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
