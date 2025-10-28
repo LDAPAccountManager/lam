@@ -333,7 +333,7 @@ class sambaGroupMapping extends baseModule {
 		$return = new htmlResponsiveRow();
 		if (in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
 			$sambaDomains = $this->getDomains();
-			if (count($sambaDomains) == 0) {
+			if (count($sambaDomains) === 0) {
 				$return->add(new htmlStatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.')));
 				return $return;
 			}
@@ -643,7 +643,7 @@ class sambaGroupMapping extends baseModule {
 		}
 		$errors = [];
 		$sambaDomains = $this->getDomains();
-		if (count($sambaDomains) == 0) {
+		if (count($sambaDomains) === 0) {
 			return [];
 		}
 		// Save attributes

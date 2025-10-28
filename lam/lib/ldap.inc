@@ -99,12 +99,12 @@ class Ldap {
 			// return error number
 			$errorNumber = ldap_errno($this->server);
 			$clientSource = empty($_SERVER['REMOTE_ADDR']) ? '' : $_SERVER['REMOTE_ADDR'];
-			if ($errorNumber == 81) {
+			if ($errorNumber === 81) {
 				// connection failed
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
 				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."), '', null, $errorNumber);
 			}
-			elseif ($errorNumber == 49) {
+			elseif ($errorNumber === 49) {
 				// username/password invalid. Return to login page.
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (wrong password). ' . getDefaultLDAPErrorString($this->server));
 				throw new LAMException(_("Wrong password/user name combination. Please try again."), getDefaultLDAPErrorString($this->server), null, $errorNumber);

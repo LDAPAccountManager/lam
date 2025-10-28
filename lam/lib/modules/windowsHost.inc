@@ -269,7 +269,7 @@ class windowsHost extends baseModule {
 			$entries[$i] = $entries[$i]['dn'];
 		}
 		// sort by DN
-		usort($entries, 'compareDN');
+		usort($entries, compareDN(...));
 		for ($i = 0; $i < count($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}

@@ -3525,7 +3525,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					[$group]
 				];
 			}
-			if (count($temp['members'][$group]) == 0) {
+			if (count($temp['members'][$group]) === 0) {
 				unset($temp['members'][$group]);
 			}
 			$memberPercentage = (100 * ($temp['memberCount'] - count($temp['members']))) / $temp['counter'];
@@ -3948,7 +3948,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		];
 		@ldap_modify_batch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
 		$returnCode = ldap_errno($_SESSION['ldapHandle']->getServer());
-		if ($returnCode != 0) {
+		if ($returnCode !== 0) {
 			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));
 			// Active Directory message translations
 			if ((str_contains($outputMessages, 'DSID-03190F80')) && (str_contains($outputMessages, 'unicodePwd'))) {

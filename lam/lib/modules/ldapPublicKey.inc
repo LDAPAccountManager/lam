@@ -570,10 +570,10 @@ class ldapPublicKey extends baseModule {
 				}
 			}
 			if ($update) {
-				if (count($oldKeys) == 0) {
+				if (count($oldKeys) === 0) {
 					$return['add'][$this->getAttributeName()] = $newKeys;
 				}
-				elseif (count($newKeys) == 0) {
+				elseif (count($newKeys) === 0) {
 					$return['del'][$this->getAttributeName()] = $newKeys;
 				}
 				else {

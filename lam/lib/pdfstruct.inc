@@ -648,7 +648,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 			$entry = $templateDir->read();
 			while ($entry) {
 				$parts = explode('.', $entry);
-				if ((strlen($entry) > 3) && (count($parts) == 3)) {
+				if ((strlen($entry) > 3) && (count($parts) === 3)) {
 					$name = $parts[0];
 					$scope = $parts[1];
 					$allTemplates[$scope][] = $name;

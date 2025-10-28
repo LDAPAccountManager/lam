@@ -180,7 +180,7 @@ class fixed_ip extends baseModule {
 	public function check_mac($mac): bool {
 		$ex = explode(":", $mac);
 		$invalid = false;
-		if (count($ex) != 6) {
+		if (count($ex) !== 6) {
 			$invalid = true;
 		}
 

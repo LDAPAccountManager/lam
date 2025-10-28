@@ -264,7 +264,7 @@ class kolabSharedFolder extends baseModule {
 		for ($i = 0; $i < count($delegatesData); $i++) {
 			$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
 		}
-		uksort($delegates, 'compareDN');
+		uksort($delegates, compareDN(...));
 		$container->add(new htmlSubTitle(_('Delegates')));
 		$delegatesContainer = new htmlTable();
 		if (isset($this->attributes['kolabDelegate'])) {
@@ -274,7 +274,7 @@ class kolabSharedFolder extends baseModule {
 				$delegateSelect->setSortElements(false);
 				$delegatesContainer->addElement($delegateSelect);
 				$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.svg', true));
-				if ($i == 0) {
+				if ($i === 0) {
 					$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 				}
 				$delegatesContainer->addNewLine();

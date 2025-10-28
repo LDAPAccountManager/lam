@@ -172,7 +172,7 @@ class lamList {
 			$values = [];
 			for ($i = 0; $i < count($valueParts); $i++) {
 				$key_value = explode('=', $valueParts[$i]);
-				if (count($key_value) == 2) {
+				if (count($key_value) === 2) {
 					$values[$key_value[0]] = $key_value[1];
 				}
 			}
@@ -805,7 +805,7 @@ class lamList {
 		foreach (array_keys($_POST) as $key) {
 			if (strpos($key, 'createPDF_') > -1) {
 				$parts = explode("_", $key);
-				if (count($parts) == 2) {
+				if (count($parts) === 2) {
 					$this->showPDFPage($parts[1]);
 					exit;
 				}
