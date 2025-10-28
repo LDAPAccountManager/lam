@@ -1029,6 +1029,7 @@ class WebauthnProvider extends BaseProvider {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
 		include_once __DIR__ . '/webauthn.inc';
 		$webauthnManager = $this->getWebauthnManager();
+		$userDn = null;
 		if (!empty($_SESSION['ldap'])) {
 			$userDn = $_SESSION['ldap']->getUserName();
 		}
@@ -1037,6 +1038,9 @@ class WebauthnProvider extends BaseProvider {
 		}
 		elseif (isset($_SESSION['whitePages_clientDN'])) {
 			$userDn = lamDecrypt($_SESSION['whitePages_clientDN'], 'WhitePages');
+		}
+		if (empty($userDn)) {
+			return false;
 		}
 		$hasTokens = $webauthnManager->isRegistered($userDn);
 		if (!$hasTokens) {
@@ -1336,7 +1340,7 @@ class TwoFactorProviderService {
 		if (in_array($tfConfig->twoFactorAuthentication, [TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
 				TwoFactorProviderService::TWO_FACTOR_WEBAUTHN, TwoFactorProviderService::TWO_FACTOR_YUBICO])) {
 			$tfConfig->twoFactorAllowToRememberDevice = $profile->twoFactorAllowToRememberDevice;
-			$tfConfig->twoFactorRememberDeviceDuration = $profile->twoFactorRememberDeviceDuration;
+			$tfConfig->twoFactorRememberDeviceDuration = (string) $profile->twoFactorRememberDeviceDuration;
 			$tfConfig->twoFactorRememberDevicePassword = $profile->twoFactorRememberDevicePassword;
 		}
 		$tfConfig->loginHandler = $profile->getLoginHandler();

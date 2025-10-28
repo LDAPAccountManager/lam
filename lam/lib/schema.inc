@@ -1541,7 +1541,7 @@ function get_schema_objectclasses($dn = null, $use_cache = true): array|false {
 	// build the array of objectClasses
 	$object_classes = [];
 	foreach ($raw_oclasses as $class_string) {
-		if ($class_string == null || (string) $class_string === '') {
+		if ($class_string === null || (string) $class_string === '') {
 			continue;
 		}
 		$object_class = new ObjectClass($class_string);
@@ -1609,7 +1609,7 @@ function get_schema_attributes($dn = null, $use_cache = true): array {
 	 */
 	$attrs_oid = [];
 	foreach ($raw_attrs as $attr_string) {
-		if ($attr_string == null || (string) $attr_string === '') {
+		if ($attr_string === null || (string) $attr_string === '') {
 			continue;
 		}
 		$attr = new AttributeType($attr_string);
@@ -1800,7 +1800,7 @@ function get_schema_matching_rules($dn = null, $use_cache = true) {
 	}
 	$rules = [];
 	foreach ($raw_matching_rules as $rule_string) {
-		if ($rule_string == null || (string) $rule_string === '') {
+		if ($rule_string === null || (string) $rule_string === '') {
 			continue;
 		}
 		$rule = new MatchingRule($rule_string);
@@ -1815,7 +1815,7 @@ function get_schema_matching_rules($dn = null, $use_cache = true) {
 	$raw_matching_rule_use = _get_raw_schema('matchingRuleUse');
 	if ($raw_matching_rule_use !== false) {
 		foreach ($raw_matching_rule_use as $rule_use_string) {
-			if ($rule_use_string == null || (string) $rule_use_string === '') {
+			if ($rule_use_string === null || (string) $rule_use_string === '') {
 				continue;
 			}
 			$rule_use = new MatchingRuleUse($rule_use_string);

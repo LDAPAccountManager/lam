@@ -4999,10 +4999,10 @@ class htmlProgressbar extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $id HTML id
+	 * @param ?string $id HTML id
 	 * @param int $progress initial progress
 	 */
-	function __construct(string $id = null, int $progress = 0) {
+	function __construct(?string $id = null, int $progress = 0) {
 		$this->id = htmlspecialchars($id);
 		$this->progress = htmlspecialchars((string) $progress);
 	}

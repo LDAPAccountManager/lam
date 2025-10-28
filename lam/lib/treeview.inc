@@ -318,7 +318,7 @@ class TreeView {
 	 * @param array $nodes nodes
 	 */
 	private function sortNodes(array &$nodes): void {
-		usort($nodes, LAM\TOOLS\TREEVIEW\compareNodeByIdAsDn(...));
+		usort($nodes, compareNodeByIdAsDn(...));
 	}
 
 	/**
@@ -1620,7 +1620,7 @@ class TreeView {
 			'sub' => searchLDAP($dn, $filter, $searchAttributes, $limit),
 			default => ldapListDN($dn, $filter, $searchAttributes, null, $limit),
 		};
-		usort($results, LAM\TOOLS\TREEVIEW\compareByAttributes(...));
+		usort($results, compareByAttributes(...));
 		$row = $this->searchResultsHeader($dn, $filter);
 		if ($format === 'list') {
 			return $this->searchResultsAsList($results, $attributes, $row);

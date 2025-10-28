@@ -61,3 +61,4 @@ parameters:
 		- '#Call to an undefined method baseModule::getNextGIDs\(\).#'
 		- '#Call to an undefined method baseModule::setExpirationDate\(\).#'
 		- '#.*accountContainer::getAccountModule\(\) expects class-string\<baseModule\>, string given.*#'
+		- '#.*array_values is already a list.*#'

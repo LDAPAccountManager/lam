@@ -665,7 +665,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				$this->attributes['sambaPwdLastSet'][0] = '0';
 			}
 			elseif ((isset($this->attributes['sambaPwdLastSet'][0])) && ($this->attributes['sambaPwdLastSet'][0] == '0')) {
-				$this->attributes['sambaPwdLastSet'][0] = time();
+				$this->attributes['sambaPwdLastSet'][0] = (string) time();
 			}
 		}
 		return parent::save_attributes();
@@ -1392,8 +1392,8 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			elseif ($hr >= 24 * 7) {
 				$hr -= 24 * 7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, (bool) $hour[$hr]);
-			$boxes[$i % 24][floor($i / 24)] = $checkbox;
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, (bool) $hour[(int) $hr]);
+			$boxes[$i % 24][(int) floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
 			$hour = $h;

@@ -682,7 +682,7 @@ class quota extends baseModule {
 					continue;
 				}
 				$dirs = explode(":", $quotas);
-				array_pop($dirs); // remove empty element at the end
+				array_pop($dirs); // remove the empty element at the end
 				if (empty($dirs)) {
 					continue;
 				}

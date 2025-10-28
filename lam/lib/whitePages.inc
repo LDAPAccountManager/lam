@@ -454,7 +454,7 @@ class WhitePagesDisplayItem {
 	 */
 	public static function import(array $data): WhitePagesDisplayItem {
 		$label = $data['label'] ?? '';
-		$type = is_string($data['type']) ? WP_ITEM_TYPE::from($data['type']) : WP_ITEM_TYPE::TEXT;
+		$type = isset($data['type']) ? WP_ITEM_TYPE::from($data['type']) : WP_ITEM_TYPE::TEXT;
 		$value = $data['value'] ?? '';
 		return new WhitePagesDisplayItem($label, $type, $value);
 	}
@@ -1163,7 +1163,7 @@ class WhitePagesAnonymousAuthLoginHandler implements WhitePagesLoginHandler {
 			logNewMessage(LOG_ERR, 'Use for all operations must be set');
 			return false;
 		}
-		// authentication not needed
+		// authentication is not needed
 		return true;
 	}
 
@@ -1279,9 +1279,9 @@ class WhitePagesLdapConnection {
 	/**
 	 * Returns the LDAP handle.
 	 *
-	 * @return Connection LDAP handle
+	 * @return Connection|null LDAP handle
 	 */
-	public function getServer() {
+	public function getServer(): ?Connection {
 		if ($this->server !== null) {
 			return $this->server;
 		}
