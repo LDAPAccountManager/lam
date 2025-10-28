@@ -241,7 +241,7 @@ class nisMailAliasUser extends baseModule {
 			// no new entry update existing
 			if (isset($this->recipientsToAdd[$dn]) && in_array($recipient, $this->recipientsToAdd[$dn])) {
 				// undo adding of recipient
-				if (count($this->recipientsToAdd[$dn]) == 1) {
+				if (count($this->recipientsToAdd[$dn]) === 1) {
 					// only one entry as marked for adding, remove whole entry
 					unset($this->recipientsToAdd[$dn]);
 				}
@@ -259,7 +259,7 @@ class nisMailAliasUser extends baseModule {
 				}
 			}
 		}
-		elseif (count($this->aliasesToAdd[$dn]['rfc822mailmember']) == 1) {
+		elseif (count($this->aliasesToAdd[$dn]['rfc822mailmember']) === 1) {
 			// new entry
 			// single recipient in new entry, do not create new entry at all
 			unset($this->aliasesToAdd[$dn]);
@@ -345,7 +345,7 @@ class nisMailAliasUser extends baseModule {
 			$ous = array_merge($ous, $type->getSuffixList());
 		}
 		$ous = array_unique($ous);
-		usort($ous, 'compareDN');
+		usort($ous, compareDN(...));
 		$suffixSelect = new htmlResponsiveSelect('new_ou', $ous, [], _('Suffix'), 'suffix');
 		$suffixSelect->setRightToLeftTextDirection(true);
 		$suffixSelect->setSortElements(false);
