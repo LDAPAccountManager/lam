@@ -403,7 +403,7 @@ class windowsGroup extends baseModule {
 			for ($i = 0; $i < count($this->attributes['member']); $i++) {
 				$memberList[] = $this->attributes['member'][$i];
 			}
-			usort($memberList, 'compareDN');
+			usort($memberList, compareDN(...));
 		}
 		$members = new htmlTable();
 		$members->alignment = htmlElement::ALIGN_RIGHT;
@@ -428,7 +428,7 @@ class windowsGroup extends baseModule {
 			for ($i = 0; $i < count($this->attributes['memberOf']); $i++) {
 				$memberList[] = $this->attributes['memberOf'][$i];
 			}
-			usort($memberList, 'compareDN');
+			usort($memberList, compareDN(...));
 		}
 		$memberOf = new htmlTable();
 		$memberOf->setCSSClasses(['fullwidth']);
@@ -518,14 +518,14 @@ class windowsGroup extends baseModule {
 		$return->add(new htmlSubTitle(_("Groups")));
 		$groups = $this->findGroups();
 		// sort by DN
-		usort($groups, 'compareDN');
+		usort($groups, compareDN(...));
 
 		$selectedGroups = [];
 		if (empty($this->attributes['memberOf'])) {
 			$this->attributes['memberOf'] = [];
 		}
 		// sort by DN
-		usort($this->attributes['memberOf'], 'compareDN');
+		usort($this->attributes['memberOf'], compareDN(...));
 		for ($i = 0; $i < count($this->attributes['memberOf']); $i++) {
 			if (in_array($this->attributes['memberOf'][$i], $groups)) {
 				$selectedGroups[getAbstractDN($this->attributes['memberOf'][$i])] = $this->attributes['memberOf'][$i];
@@ -580,7 +580,7 @@ class windowsGroup extends baseModule {
 			$entries[$i] = $entries[$i]['dn'];
 		}
 		// sort by DN
-		usort($entries, 'compareDN');
+		usort($entries, compareDN(...));
 		for ($i = 0; $i < count($entries); $i++) {
 			$options[getAbstractDN($entries[$i])] = $entries[$i];
 		}
@@ -654,7 +654,7 @@ class windowsGroup extends baseModule {
 				$entries[$i] = $entries[$i]['dn'];
 			}
 			// sort by DN
-			usort($entries, 'compareDN');
+			usort($entries, compareDN(...));
 			for ($i = 0; $i < count($entries); $i++) {
 				if (!isset($this->attributes['member']) || !in_array($entries[$i], $this->attributes['member'])) {
 					$options[getAbstractDN($entries[$i])] = $entries[$i];
@@ -684,7 +684,7 @@ class windowsGroup extends baseModule {
 			$membersTemp = $this->attributes['member'];
 		}
 		// sort by DN
-		usort($membersTemp, 'compareDN');
+		usort($membersTemp, compareDN(...));
 		$members = [];
 		for ($i = 0; $i < count($membersTemp); $i++) {
 			$members[getAbstractDN($membersTemp[$i])] = $membersTemp[$i];
@@ -764,7 +764,7 @@ class windowsGroup extends baseModule {
 		$effectiveMembers = $this->getEffectiveMembers();
 		$entryTable = new htmlTable();
 		// sort by DN, align right
-		usort($effectiveMembers, 'compareDN');
+		usort($effectiveMembers, compareDN(...));
 		$entryTable->alignment = htmlElement::ALIGN_RIGHT;
 		foreach ($effectiveMembers as $member) {
 			$entry = new htmlOutputText(getAbstractDN($member));
@@ -923,7 +923,7 @@ class windowsGroup extends baseModule {
 			if (isset($this->attributes['member'][0])) {
 				$memberList = $this->attributes['member'];
 			}
-			usort($memberList, 'compareDN');
+			usort($memberList, compareDN(...));
 			$pdfTable = new PDFTable(_('Members'));
 			for ($i = 0; $i < count($memberList); $i++) {
 				$pdfRow = new PDFTableRow();
@@ -938,7 +938,7 @@ class windowsGroup extends baseModule {
 			if (isset($this->attributes['memberOf'][0])) {
 				$memberOfList = $this->attributes['memberOf'];
 			}
-			usort($memberOfList, 'compareDN');
+			usort($memberOfList, compareDN(...));
 			$pdfTable = new PDFTable(_('Member of'));
 			for ($i = 0; $i < count($memberOfList); $i++) {
 				$pdfRow = new PDFTableRow();
@@ -1130,7 +1130,7 @@ class windowsGroup extends baseModule {
 					$typeManager = new TypeManager();
 					$values = $entry[$attribute];
 					if (!empty($values)) {
-						usort($values, 'compareDN');
+						usort($values, compareDN(...));
 					}
 					$count = count($values);
 					for ($i = 0; $i < $count; $i++) {
