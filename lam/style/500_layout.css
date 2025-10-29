@@ -1276,6 +1276,10 @@ div.whitepages-detail-view img {
     margin-bottom: var(--lam-large-space);
 }
 
+div.whitepages-detail-view a {
+    margin: unset;
+}
+
 div.whitepages-container-gallery {
     max-height: 60vh;
     overflow-y: auto;

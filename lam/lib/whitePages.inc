@@ -1212,7 +1212,8 @@ class WhitePagesStyling {
             --lam-whitepages-color-border: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
             --lam-whitepages-color-card: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 2)) . ';
             --lam-whitepages-blur: 4px;
-			--lam-table-background-color-dark: ' . htmlspecialchars($profile->backgroundColor) . ';
+			--lam-table-background-color-bright: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 1.5)) . ';
+			--lam-table-background-color-dark: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.95)) . ';
 			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
 			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8))) . ';
 			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';

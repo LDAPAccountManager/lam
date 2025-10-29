@@ -225,7 +225,7 @@ table.lam-account-edit-table {
 		--lam-largest-space: 1rem;
 	}
 
-	.responsiveLabel {
+	.responsiveLabel,.responsiveField {
 		text-align: left;
 	}
 
