@@ -85,6 +85,8 @@ enum WP_THEMES: string {
 	case GRAND_CANYON = 'GRAND_CANYON';
 	case RAIN_FOREST = 'RAIN_FOREST';
 	case COAST = 'COAST';
+	case MOUNTAIN = 'MOUNTAIN';
+	case CITY = 'CITY';
 
 	/**
 	 * Returns the image name.
@@ -98,6 +100,8 @@ enum WP_THEMES: string {
 			self::GRAND_CANYON => 'background_grandcanyon.jpg',
 			self::RAIN_FOREST => 'background_rainforest.jpg',
 			self::COAST => 'background_skyline.jpg',
+			self::MOUNTAIN => 'background_mountain.jpg',
+			self::CITY => 'background_city.jpg',
 		};
 	}
 
@@ -113,6 +117,8 @@ enum WP_THEMES: string {
 			self::GRAND_CANYON => '#E2786F',
 			self::RAIN_FOREST => '#2d5001',
 			self::COAST => '#03395f',
+			self::MOUNTAIN => '#45B3FA',
+			self::CITY => '#333333',
 		};
 	}
 
@@ -128,6 +134,8 @@ enum WP_THEMES: string {
 			self::GRAND_CANYON => '#F5F5DC',
 			self::RAIN_FOREST => '#EFF2E1',
 			self::COAST => '#f1fafc',
+			self::MOUNTAIN => '#FFFFFF',
+			self::CITY => '#F4F4ED',
 		};
 	}
 
@@ -1271,6 +1279,7 @@ class WhitePagesStyling {
 			--lam-table-background-color-hover: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
 			--lam-table-text-color-hover: ' . htmlspecialchars(LamColorUtil::getTextColor(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8))) . ';
 			--lam-table-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
+			--lam-border-color: ' . htmlspecialchars(LamColorUtil::adjustBrightness($profile->backgroundColor, 0.8)) . ';
         }
         
 		div.lam-full-size-background {
