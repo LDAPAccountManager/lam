@@ -79,6 +79,60 @@ enum WP_ITEM_TYPE: string {
 
 }
 
+enum WP_THEMES: string {
+	case OCEAN = 'OCEAN';
+	case STARS = 'STARS';
+	case GRAND_CANYON = 'GRAND_CANYON';
+	case RAIN_FOREST = 'RAIN_FOREST';
+	case COAST = 'COAST';
+
+	/**
+	 * Returns the image name.
+	 *
+	 * @return string image name
+	 */
+	public function getImage(): string {
+		return match($this) {
+			self::OCEAN => 'background_jellyfish.jpg',
+			self::STARS => 'background_milkyway.jpg',
+			self::GRAND_CANYON => 'background_grandcanyon.jpg',
+			self::RAIN_FOREST => 'background_rainforest.jpg',
+			self::COAST => 'background_skyline.jpg',
+		};
+	}
+
+	/**
+	 * Returns the primary color.
+	 *
+	 * @return string color
+	 */
+	public function getPrimaryColor(): string {
+		return match($this) {
+			self::OCEAN => '#1a5fb4',
+			self::STARS => '#2E4053',
+			self::GRAND_CANYON => '#E2786F',
+			self::RAIN_FOREST => '#2d5001',
+			self::COAST => '#03395f',
+		};
+	}
+
+	/**
+	 * Returns the background color.
+	 *
+	 * @return string color
+	 */
+	public function getBackgroundColor(): string {
+		return match($this) {
+			self::OCEAN => '#f9fdff',
+			self::STARS => '#DEDEDE',
+			self::GRAND_CANYON => '#F5F5DC',
+			self::RAIN_FOREST => '#EFF2E1',
+			self::COAST => '#f1fafc',
+		};
+	}
+
+}
+
 /**
  * White pages profile.
  */
