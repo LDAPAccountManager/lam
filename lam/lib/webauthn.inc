@@ -181,8 +181,7 @@ class WebauthnManager {
 		return new PublicKeyCredentialUserEntity(
 			self::getUserIdFromDn($dn),
 			self::getUserIdFromDn($dn),
-			extractRDNValue($dn),
-			null
+			extractRDNValue($dn)
 		);
 	}
 
