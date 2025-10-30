@@ -467,13 +467,13 @@ class DuoProvider extends BaseProvider {
 	 * @see BaseProvider::addCustomInput
 	 */
 	public function addCustomInput(&$row, $userDn) {
-		$pathPrefix = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? '../' : '';
+		$pathPrefix = in_array($this->config->interface, [LAM_INTERFACE::SELF_SERVICE, LAM_INTERFACE::WHITE_PAGES]) ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/duo.png'));
 		if (!empty($_GET['duo_code'])) {
 			// authentication is verified
 			return;
 		}
-		// authentication not started, provide redirect URL
+		// authentication was not started, provide redirect URL
 		if (empty($_GET['duoRedirect'])) {
 			$jsBlock = '
 			document.addEventListener("DOMContentLoaded", function(event) {
@@ -618,7 +618,7 @@ class OktaProvider extends BaseProvider {
 			return;
 		}
 
-		$pathPrefix = ($this->config->interface === LAM_INTERFACE::SELF_SERVICE) ? '../' : '';
+		$pathPrefix = in_array($this->config->interface, [LAM_INTERFACE::SELF_SERVICE, LAM_INTERFACE::WHITE_PAGES]) ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/okta.png'));
 		$_SESSION['okta_state'] = bin2hex(random_bytes(10));
 		$_SESSION['okta_code_verifier'] = bin2hex(random_bytes(50));
