@@ -1055,7 +1055,7 @@ window.lam.dialog.showError = function(title, text, okText) {
  * @param title dialog title
  * @param okText ok button text
  * @param divId DIV id with dialog content
- * @param callbackFunction callback function (optional)
+ * @param callbackFunction callback function on close (optional)
  */
 window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction) {
 	const dialogContent = document.getElementById(divId).cloneNode(true);
@@ -1857,8 +1857,10 @@ window.lam.whitePages = window.lam.whitePages || {};
  * @param okText label for Ok button
  * @param tokenName CSRF token name
  * @param tokenValue CSRF token value
+ * @param dnBefore DN that was opened before, reopen on close
+ * @param tabIndexBefore tab index of DN that was opened before, reopen on close
  */
-window.lam.whitePages.showDetailView = function(dn, tabIndex, okText, tokenName, tokenValue) {
+window.lam.whitePages.showDetailView = function (dn, tabIndex, okText, tokenName, tokenValue, dnBefore, tabIndexBefore) {
     let data = new FormData();
     data.append(tokenName, tokenValue);
     data.append('action', 'displayDetails');
@@ -1875,7 +1877,12 @@ window.lam.whitePages.showDetailView = function(dn, tabIndex, okText, tokenName,
             return;
         }
         document.getElementById('detailView').innerHTML = jsonData.content;
-        window.lam.dialog.showMessage(jsonData.title, okText, 'detailView');
+        window.lam.dialog.showMessage(jsonData.title, okText, 'detailView',
+        function () {
+            if (dnBefore) {
+                window.lam.whitePages.showDetailView(dnBefore, tabIndexBefore, okText, tokenName, tokenValue);
+            }
+        });
     })
 }
 
