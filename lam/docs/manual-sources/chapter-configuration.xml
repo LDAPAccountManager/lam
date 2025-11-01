@@ -2426,10 +2426,16 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
   </section>
 
   <section>
-    <title>Self Service (LAM Pro)</title>
+    <title>Self-service (LAM Pro)</title>
 
-    <para>See <link linkend="a_selfService">Self Service
+    <para>See <link linkend="a_selfService">self-service
     chapter</link>.</para>
+  </section>
+
+  <section>
+    <title>White pages (LAM Pro)</title>
+
+    <para>See <link linkend="a_whitePages">white pages chapter</link>.</para>
   </section>
 
   <section id="importExportConf">

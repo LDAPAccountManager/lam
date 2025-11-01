@@ -11,6 +11,7 @@
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="chapter-tools.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="chapter-accessLevel.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="chapter-selfService.xml"/>
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="chapter-whitePages.xml"/>
 
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-schema.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-security.xml"/>
