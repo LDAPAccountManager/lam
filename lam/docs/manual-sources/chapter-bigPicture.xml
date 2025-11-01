@@ -7,7 +7,7 @@
   <section>
     <title>Overview</title>
 
-    <para>LAM has two major areas:</para>
+    <para>LAM has three major areas:</para>
 
     <itemizedlist>
       <listitem>
@@ -16,8 +16,13 @@
       </listitem>
 
       <listitem>
-        <para>Self service (LAM Pro) where end users can edit their own
+        <para>Self-service (LAM Pro) where end users can edit their own
         data</para>
+      </listitem>
+
+      <listitem>
+        <para>White pages (LAM Pro) where users can browse the user/group
+        directory</para>
       </listitem>
     </itemizedlist>
 
@@ -49,7 +54,7 @@
 
     <orderedlist>
       <listitem>
-        <para>Account types: Here you can switsch between different account
+        <para>Account types: Here you can switch between different account
         types (e.g. user/groups)</para>
       </listitem>
 
@@ -82,13 +87,13 @@
       </listitem>
     </orderedlist>
 
-    <para><emphasis role="bold">Self Service</emphasis></para>
+    <para><emphasis role="bold">Self-Service</emphasis></para>
 
-    <para>The self service provides a simple interface for your users to edit
+    <para>The self-service provides a simple interface for your users to edit
     their own data (e.g. telephone number). It also supports user self
     registration and password reset functionality.</para>
 
-    <para>You can fully customize the layout of the self service page.</para>
+    <para>You can fully customize the layout of the self-service page.</para>
 
     <screenshot>
       <mediaobject>
@@ -98,11 +103,26 @@
       </mediaobject>
     </screenshot>
 
+    <para><emphasis role="bold">White Pages</emphasis></para>
+
+    <para>White pages allows your users to browse the company's directory of
+    e.g. users and groups. This way they can find colleagues and their contact
+    data like email and telephone number. The configuration is fully flexible.
+    You could also allow to search for rooms, servers and other objects inside
+    LDAP.</para>
+
+    <para>The UI theme can be customized and you can setup multiple white
+    pages configurations for different purposes.</para>
+
+    <screenshot>
+      <graphic fileref="images/white-pages-overview.png"/>
+    </screenshot>
+
     <para><emphasis role="bold">Configuration</emphasis></para>
 
     <para>Configuration is done on multiple levels:</para>
 
-    <para><emphasis role="bold">Global</emphasis></para>
+    <para>Global:</para>
 
     <para>Effective for all parts of LAM (e.g. logging and password
     policy).</para>
@@ -110,7 +130,7 @@
     <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
     linkend="generalSettings">Edit general settings</link>.</para>
 
-    <para><emphasis role="bold">Server profile</emphasis></para>
+    <para>Server profile:</para>
 
     <para>All settings for an LDAP connection (e.g. server name, LDAP
     suffixes, account types/modules to activate) in admin interface. There may
@@ -120,20 +140,28 @@
     <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
     linkend="serverProfiles">Edit server profile</link>.</para>
 
-    <para><emphasis role="bold">Self service</emphasis></para>
+    <para>Self-service:</para>
 
-    <para>All settings for a self service interface (e.g. fields that can be
+    <para>All settings for a self-service interface (e.g. fields that can be
     edited, password reset functionality, ...).</para>
 
     <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
-    linkend="a_selfService">Edit self service</link>.</para>
+    linkend="a_selfService">Edit self-service</link>.</para>
 
-    <para><emphasis role="bold">Profiles</emphasis></para>
+    <para>White pages:</para>
+
+    <para>Defines profiles for white pages (e.g. required fields and
+    authentication).</para>
+
+    <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
+    linkend="a_whitePages">Edit white pages</link>.</para>
+
+    <para>Profiles:</para>
 
     <para><link linkend="a_accountProfile">Account profiles</link> store
     default values for new LDAP entries.</para>
 
-    <para><emphasis role="bold">PDF structures</emphasis></para>
+    <para>PDF structures:</para>
 
     <para><link linkend="pdfEditor">PDF structures</link> define the layout
     and list of data fields to include in PDF export.</para>
@@ -217,16 +245,16 @@
           </row>
 
           <row>
-            <entry>Self Service</entry>
+            <entry>Self-service</entry>
 
             <entry>LAM webpages for normal users where they can edit their own
             data</entry>
           </row>
 
           <row>
-            <entry>Self service profile</entry>
+            <entry>Self-service profile</entry>
 
-            <entry>Configuration for self service pages (multiple
+            <entry>Configuration for self-service pages (multiple
             configurations can exist)</entry>
           </row>
 
@@ -260,7 +288,7 @@
 
         <para>This includes all people who need to manage their own data
         inside the LDAP directory. E.g. these people edit their contact
-        information with LAM self service (LAM Pro).</para>
+        information with LAM self-service (LAM Pro).</para>
       </listitem>
     </itemizedlist>
 
