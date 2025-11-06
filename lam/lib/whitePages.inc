@@ -242,11 +242,11 @@ class WhitePagesProfile {
 	public string $twoFactorRememberDevicePassword = '';
 
 	/** provider for captcha (-/google/hCaptcha/friendlyCaptcha) */
-	public $captchaProvider = '-';
+	public string $captchaProvider = '-';
 	/** site key */
-	public $captchaSiteKey = '';
+	public string $captchaSiteKey = '';
 	/** secret key */
-	public $captchaSecretKey = '';
+	public string $captchaSecretKey = '';
 
 	/** describing text for search attribute */
 	public string $loginAttributeText = '';
@@ -785,7 +785,6 @@ class WhitePagesPersistenceStrategyFileSystem implements WhitePagesPersistenceSt
 		$file = @fopen($path, "w");
 		if ($file) {
 			// write settings to file
-			$x = $profile->export();
 			fwrite($file, json_encode($profile->export(), JSON_PRETTY_PRINT));
 			// close file
 			fclose($file);
@@ -1327,7 +1326,7 @@ class WhitePagesStyling {
  */
 class WhitePagesLdapConnection {
 
-	private $server;
+	private ?Connection $server;
 
 	private WhitePagesProfile $profile;
 
