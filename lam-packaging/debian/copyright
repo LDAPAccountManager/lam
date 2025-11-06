@@ -80,6 +80,7 @@ time.
 * lib/types/powerDNSType.inc
 * lib/types/ppolicyType.inc
 * lib/types/sudo.inc
+* lib/whitePagesData.inc
 
 
 All other files are licensed under the conditions below.
