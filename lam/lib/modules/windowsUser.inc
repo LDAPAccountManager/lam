@@ -2902,8 +2902,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			elseif ($hr >= 24 * 7) {
 				$hr -= 24 * 7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, ($hour[$hr] === '1'));
-			$boxes[$i % 24][floor($i / 24)] = $checkbox;
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, ($hour[(int) $hr] === '1'));
+			$boxes[$i % 24][(int) floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
 			$hour = str_pad((string) $h, 2, '0', STR_PAD_LEFT);
@@ -3525,7 +3525,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					[$group]
 				];
 			}
-			if (count($temp['members'][$group]) == 0) {
+			if (count($temp['members'][$group]) === 0) {
 				unset($temp['members'][$group]);
 			}
 			$memberPercentage = (100 * ($temp['memberCount'] - count($temp['members']))) / $temp['counter'];
@@ -3948,7 +3948,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		];
 		@ldap_modify_batch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
 		$returnCode = ldap_errno($_SESSION['ldapHandle']->getServer());
-		if ($returnCode != 0) {
+		if ($returnCode !== 0) {
 			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));
 			// Active Directory message translations
 			if ((str_contains($outputMessages, 'DSID-03190F80')) && (str_contains($outputMessages, 'unicodePwd'))) {

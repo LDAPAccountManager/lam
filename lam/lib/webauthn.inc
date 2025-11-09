@@ -14,6 +14,7 @@ use Cose\Algorithm\Signature\RSA\RS512;
 use Cose\Algorithms;
 use Http\Discovery\Psr17Factory;
 use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAM_INTERFACE;
 use LAMCfgMain;
 use PDO;
 use PDOException;
@@ -97,12 +98,12 @@ class WebauthnManager {
 	 * Returns a challenge for a new token.
 	 *
 	 * @param string $dn DN
-	 * @param bool $isSelfService is executed in self-service
+	 * @param LAM_INTERFACE $interface interface
 	 * @param string[] $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialCreationOptions registration object
 	 */
-	public function getRegistrationObject($dn, $isSelfService, $extraExcludedKeys = []) {
-		$rpEntity = $this->createRpEntry($isSelfService);
+	public function getRegistrationObject($dn, LAM_INTERFACE $interface, $extraExcludedKeys = []) {
+		$rpEntity = $this->createRpEntry($interface);
 		$userEntity = $this->getUserEntity($dn);
 		$challenge = $this->createChallenge();
 		$credentialParameters = $this->getCredentialParameters();
@@ -180,8 +181,7 @@ class WebauthnManager {
 		return new PublicKeyCredentialUserEntity(
 			self::getUserIdFromDn($dn),
 			self::getUserIdFromDn($dn),
-			extractRDNValue($dn),
-			null
+			extractRDNValue($dn)
 		);
 	}
 
@@ -198,14 +198,17 @@ class WebauthnManager {
 	/**
 	 * Returns the part that identifies the server and application.
 	 *
-	 * @param bool $isSelfService is executed in self-service
+	 * @param LAM_INTERFACE $interface interface
 	 * @return PublicKeyCredentialRpEntity relying party entry
 	 */
-	private function createRpEntry($isSelfService) {
-		$pathPrefix = $isSelfService ? '../' : '';
+	private function createRpEntry(LAM_INTERFACE $interface) {
+		$pathPrefix = in_array($interface, [LAM_INTERFACE::SELF_SERVICE, LAM_INTERFACE::WHITE_PAGES]) ? '../' : '';
 		$icon = $pathPrefix . '../graphics/logo136.png';
-		if ($isSelfService) {
+		if ($interface === LAM_INTERFACE::SELF_SERVICE) {
 			$domain = $_SESSION['selfServiceProfile']->twoFactorAuthenticationDomain;
+		}
+		elseif ($interface === LAM_INTERFACE::WHITE_PAGES) {
+			$domain = $_SESSION['whitePagesProfile']->twoFactorAuthenticationDomain;
 		}
 		else {
 			$domain = $_SESSION['config']->getTwoFactorAuthenticationDomain();
@@ -344,17 +347,17 @@ class WebauthnManager {
 	 * Returns the authentication object for a registered user.
 	 *
 	 * @param string $userDN user DN
-	 * @param bool $isSelfService self-service
+	 * @param LAM_INTERFACE $interface interface
 	 * @return PublicKeyCredentialRequestOptions authentication object
 	 */
-	public function getAuthenticationObject($userDN, bool $isSelfService) {
+	public function getAuthenticationObject($userDN, LAM_INTERFACE $interface) {
 		$timeout = $this->getTimeout();
 		$challenge = $this->createChallenge();
 		$database = $this->getDatabase();
 		$publicKeyCredentialSources = $database->findAllForUserDn($userDN);
 		$userVerification = PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
 		$extensions = new AuthenticationExtensions();
-		$relyingParty = $this->createRpEntry($isSelfService);
+		$relyingParty = $this->createRpEntry($interface);
 		$allowCredentials = [];
 		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
 			$allowCredentials[] = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();

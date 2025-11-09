@@ -1395,7 +1395,7 @@ abstract class baseModule {
 		$val = '&nbsp;';
 		if (!empty($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
-			array_map('htmlspecialchars', $values);
+			array_map(htmlspecialchars(...), $values);
 			$val = implode('<br>', $values);
 		}
 		$labelBox = new htmlOutputText($label);
@@ -1519,7 +1519,7 @@ abstract class baseModule {
 				$delButton->setTitle(_('Delete'));
 				$subContainer->addElement($delButton);
 			}
-			if ($i == 0) {
+			if ($i === 0) {
 				$addButton = new htmlButton('add_' . $attrName, 'add.svg', true);
 				$addButton->setCSSClasses(['noMarginSides']);
 				$addButton->setTitle(_('Add'));
@@ -1598,7 +1598,7 @@ abstract class baseModule {
 		if (isset($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
 		}
-		if (count($values) == 0) {
+		if (count($values) === 0) {
 			$values[] = '';
 		}
 		natcasesort($values);
@@ -1620,7 +1620,7 @@ abstract class baseModule {
 			if (!empty($values[$i])) {
 				$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.svg', true));
 			}
-			if ($i == 0) {
+			if ($i === 0) {
 				$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.svg', true));
 				$subContainer->addElement(new htmlHelpLink($attrName));
 			}

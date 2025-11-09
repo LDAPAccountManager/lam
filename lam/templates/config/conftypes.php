@@ -87,12 +87,12 @@ $errorsToDisplay = checkTypeInput($conf);
 if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 		|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
 		|| isset($_POST['moduleSettings']) || isset($_POST['jobs']))
-	&& (count($errorsToDisplay) == 0)) {
+	&& (count($errorsToDisplay) === 0)) {
 	// check if all types have modules
 	$activeTypes = $conf->get_ActiveTypes();
 	for ($i = 0; $i < count($activeTypes); $i++) {
 		$selectedModules = $conf->get_AccountModules($activeTypes[$i]);
-		if (count($selectedModules) == 0) {
+		if (count($selectedModules) === 0) {
 			// go to module selection
 			metaRefresh("confmodules.php");
 			exit;

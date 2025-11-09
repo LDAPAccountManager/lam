@@ -251,7 +251,7 @@ class posixGroup extends baseModule implements passwordService {
 				}
 				$members = array_unique($members);
 				natcasesort($members);
-				$members = array_map('htmlspecialchars', $members);
+				$members = array_map(htmlspecialchars(...), $members);
 				$return->addField(new htmlOutputText(implode('<br>', $members), false));
 			}
 			// remove button
@@ -1145,7 +1145,7 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		for ($i = 0; $i < $count; $i++) {
-			if (count($gids) != 0) {
+			if (count($gids) !== 0) {
 				// there already are some GIDs
 				// store highest id-number
 				$id = $gids[count($gids) - 1];
@@ -1201,7 +1201,7 @@ class posixGroup extends baseModule implements passwordService {
 			$ldapHandle = $_SESSION['ldap']->server();
 			ldap_modify($ldapHandle, $dn, ['gidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
-			if (ldap_errno($ldapHandle) != 0) {
+			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
 				return null;
 			}
@@ -1229,7 +1229,7 @@ class posixGroup extends baseModule implements passwordService {
 			$ldapHandle = $_SESSION['ldap']->server();
 			ldap_modify($ldapHandle, $dn, ['mssfu30maxgidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
-			if (ldap_errno($ldapHandle) != 0) {
+			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
 				return null;
 			}

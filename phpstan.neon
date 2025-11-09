@@ -17,10 +17,12 @@ parameters:
 			- lam/lib/modules/freeRadius.inc
 			- lam/lib/modules/shadowAccount.inc
 			- lam/lib/modules/windowsUser.inc
+			- lam/templates/misc/ajax.php
 		analyseAndScan:
 			- lam/templates/config/job*.php (?)
 			- lam/templates/lists/changePassword.php (?)
 			- lam/templates/selfService/*.php (?)
+			- lam/templates/whitePages/*.php (?)
 			- lam/lib/cron.inc (?)
 			- lam/lib/database.inc (?)
 			- lam/lib/env.inc (?)
@@ -61,3 +63,4 @@ parameters:
 		- '#Call to an undefined method baseModule::getNextGIDs\(\).#'
 		- '#Call to an undefined method baseModule::setExpirationDate\(\).#'
 		- '#.*accountContainer::getAccountModule\(\) expects class-string\<baseModule\>, string given.*#'
+		- '#.*array_values is already a list.*#'

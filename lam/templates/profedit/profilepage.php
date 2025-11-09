@@ -132,7 +132,7 @@ if (isset($_POST['save'])) {
 
 	// check options
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
-	if (count($errors) == 0) {  // input data is valid, save profile
+	if (count($errors) === 0) {  // input data is valid, save profile
 		// save profile
 		try {
 			$accountProfilePersistenceManager->writeAccountProfile($_POST['accounttype'], $_POST['profname'], $_SESSION['config']->getName(), $options);

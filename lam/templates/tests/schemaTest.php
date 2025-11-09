@@ -117,7 +117,7 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
 	$classes = $module->getManagedObjectClasses($typeId);
 	$attrs = $module->getManagedAttributes($typeId);
 	$aliases = array_flip($module->getLDAPAliases($typeId));
-	if (count($classes) == 0) {
+	if (count($classes) === 0) {
 		return null;
 	}
 	$schemaClasses = get_cached_schema('objectclasses');

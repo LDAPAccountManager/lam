@@ -220,10 +220,12 @@ table.lam-account-edit-table {
 @media only screen and (max-width: 40.0625em) {
 
 	:root {
+        --lam-large-space: 0.33rem;
+        --lam-larger-space: 0.66rem;
 		--lam-largest-space: 1rem;
 	}
 
-	.responsiveLabel {
+	.responsiveLabel,.responsiveField {
 		text-align: left;
 	}
 
@@ -480,5 +482,9 @@ table.lam-account-edit-table {
 		border-left: 2px solid #e4e4e4;
 		margin-left: -2px;
 	}
+
+    div.wide-row {
+        max-width: 110rem;
+    }
 
 }

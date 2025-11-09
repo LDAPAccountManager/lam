@@ -404,19 +404,25 @@ class htmlDataTable extends htmlElement {
 	public const DATA_TOKEN_VALUE = 'tokenvalue';
 	public const DATA_ACTION = 'action';
 	public const DATA_OK_TEXT = 'oktext';
+	public const SORT_ASC = 'asc';
+	public const SORT_DESC = 'desc';
 
 	private string $id;
-	private int $height;
+	private mixed $height;
 	private array $columns;
+	private string $searchFieldId = '';
+	private string $onRowClick = '';
+	private ?string $initialSortColumn = null;
+	private ?string $initialSortOrder = null;
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $id table ID
 	 * @param htmlDataTableColumn[] $columns columns
-	 * @param int $height table height
+	 * @param int|string $height table height
 	 */
-	public function __construct(string $id, array $columns, int $height = 300) {
+	public function __construct(string $id, array $columns, mixed $height = 300) {
 		$this->id = htmlspecialchars($id);
 		$this->height = $height;
 		$this->columns = $columns;
@@ -436,14 +442,27 @@ class htmlDataTable extends htmlElement {
 				title: "' . $column->label . '",
 				field: "' . $column->name . '",
 				headerTooltip: "' . $column->label . '",
-				formatter: "textarea"
+				formatter: "' . $column->getFormatter() . '",
+				formatterParams: ' . json_encode((object) $column->getFormatterOptions()) . '
 				' . $headerFilter . '
 			}';
 		}
 		$columnsCode = implode(', ', $columnOptions);
+		$searchFilterCode = '';
+		if (!empty($this->searchFieldId)) {
+			$searchFilterCode = 'window.lam.datatable.addSearchField("' . $this->id . '", "' . $this->searchFieldId . '");';
+		}
+		$onRowClickCode = '';
+		if (!empty($this->onRowClick)) {
+			$onRowClickCode = 'window.lam.datatable.tables["' . $this->id . '"].on("rowClick", ' . $this->onRowClick . ');';
+		}
+		$initialSortingCode = '';
+		if (!empty($this->initialSortColumn)) {
+			$initialSortingCode = 'initialSort: [{column: "' . $this->initialSortColumn . '", dir: "' . $this->initialSortOrder . '"}],';
+		}
 		echo '<script type="text/javascript">
 			window.lam.datatable.init("' . $this->id . '", new Tabulator("#' . $this->id . '", {
-                height: ' . $this->height . ',
+                height: "' . $this->height . '",
                 layout: "fitColumns",
                 pagination:"local",
 				paginationSize:50,
@@ -451,6 +470,7 @@ class htmlDataTable extends htmlElement {
 				columns: [' . $columnsCode . '],
 				data: [],
 				locale: "en-gb",
+				' . $initialSortingCode . '
 				langs: {
                     "en-gb": {
                         "pagination": {
@@ -468,8 +488,41 @@ class htmlDataTable extends htmlElement {
                     }
 				}
 			}));
+			' . $searchFilterCode . '
+			' . $onRowClickCode . '
 		</script>';
 		return [];
+	}
+
+	/**
+	 * Sets the search field.
+	 *
+	 * @param string $searchFieldId ID of field
+	 */
+	public function setSearchField(string $searchFieldId): void {
+		$this->searchFieldId = $searchFieldId;
+	}
+
+	/**
+	 * Sets the row click handler.
+	 *
+	 * @param string $callback callback code
+	 */
+	public function setOnRowClick(string $callback): void {
+		$this->onRowClick = $callback;
+	}
+
+	/**
+	 * Sets the initial sort order.
+	 *
+	 * @param string $columnName column name
+	 * @param string $sortOrder htmlDataTable::SORT_ASC|htmlDataTable::SORT_DESC
+	 */
+	public function setInitialSorting(string $columnName, string $sortOrder): void {
+		if (in_array($sortOrder, [self::SORT_ASC, self::SORT_DESC])) {
+			$this->initialSortColumn = $columnName;
+			$this->initialSortOrder = $sortOrder;
+		}
 	}
 
 }
@@ -479,19 +532,54 @@ class htmlDataTable extends htmlElement {
  */
 class htmlDataTableColumn {
 
+	public const TYPE_TEXT = 'text';
+	public const TYPE_EMAIL = 'email';
+	public const TYPE_TELEPHONE = 'telephone';
+	public const TYPE_IMAGE = 'image';
+	public const TYPE_HTML = 'html';
+
 	public string $label;
 	public string $name;
 	public bool $filterable;
+	public string $formattingType;
 
 	/**
 	 * @param string $label column label text
 	 * @param string $name column ID
 	 * @param bool $filterable can be filtered
 	 */
-	public function __construct(string $label, string $name, bool $filterable = true) {
+	public function __construct(string $label, string $name, bool $filterable = true, string $formattingType = self::TYPE_TEXT) {
 		$this->label = htmlspecialchars($label);
 		$this->name = htmlspecialchars($name);
 		$this->filterable = $filterable;
+		$this->formattingType = $formattingType;
+	}
+
+	/**
+	 * Returns the Tabulator formatter name.
+	 *
+	 * @return string name
+	 */
+	public function getFormatter(): string {
+		return match ($this->formattingType) {
+			self::TYPE_EMAIL, self::TYPE_TELEPHONE => 'link',
+			self::TYPE_IMAGE => 'image',
+			self::TYPE_HTML => 'html',
+			default => 'textarea',
+		};
+	}
+
+	/**
+	 * Returns the Tabulator formatter options.
+	 *
+	 * @return array options
+	 */
+	public function getFormatterOptions(): array {
+		return match ($this->formattingType) {
+			self::TYPE_EMAIL => ['urlPrefix' => 'mailto:', 'target' => '_blank'],
+			self::TYPE_TELEPHONE => ['urlPrefix' => 'tel:', 'target' => '_blank'],
+			default => [],
+		};
 	}
 
 }
@@ -1357,7 +1445,7 @@ class htmlSelect extends htmlElement {
 		// if select box has only one element then show it as text
 		if ((count($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '</div>';
-			if (count($this->elements) == 1) {
+			if (count($this->elements) === 1) {
 				echo '&nbsp;';
 				if ($this->hasDescriptiveElements) {
 					$keys = array_keys($this->elements);
@@ -1555,7 +1643,7 @@ class htmlSelect extends htmlElement {
 	 * @param String $onChange onChange code
 	 */
 	private function printCodeForShowHideTableRows(&$onChange) {
-		if ((count($this->tableRowsToHide) == 0) && (count($this->tableRowsToShow) == 0)) {
+		if ((count($this->tableRowsToHide) === 0) && (count($this->tableRowsToShow) === 0)) {
 			return;
 		}
 		$values = [];
@@ -1771,7 +1859,7 @@ class htmlRadio extends htmlElement {
 	 */
 	private function getOnchangeCodeForShowHideTableRows($counter): string {
 		$onChange = '';
-		if ((count($this->tableRowsToHide) == 0) && (count($this->tableRowsToShow) == 0)) {
+		if ((count($this->tableRowsToHide) === 0) && (count($this->tableRowsToShow) === 0)) {
 			return $onChange;
 		}
 		$values = [];
@@ -2913,6 +3001,10 @@ class htmlTitle extends htmlElement {
  */
 class htmlSubTitle extends htmlElement {
 
+	public const H3 = 'h3';
+	public const H4 = 'h4';
+	public const H5 = 'h5';
+
 	/** descriptive label */
 	private $label;
 	/** optional image */
@@ -2923,6 +3015,8 @@ class htmlSubTitle extends htmlElement {
 	private $largeIcon = false;
 	/** help ID */
 	private $helpId;
+	/** headline type (e.g. h3) */
+	private string $type;
 
 	/**
 	 * Constructor.
@@ -2932,7 +3026,7 @@ class htmlSubTitle extends htmlElement {
 	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
 	 * @param bool $largeIcon show large (32x32px) icon instead of small one (16x16px)
 	 */
-	public function __construct($label, $image = null, $id = null, $largeIcon = false) {
+	public function __construct($label, $image = null, $id = null, $largeIcon = false, $type = self::H3) {
 		$this->label = htmlspecialchars($label);
 		if ($image !== null) {
 			$this->image = htmlspecialchars($image);
@@ -2943,6 +3037,7 @@ class htmlSubTitle extends htmlElement {
 		// the title should not end at a table cell
 		$this->colspan = 100;
 		$this->largeIcon = $largeIcon;
+		$this->type = htmlspecialchars($type);
 	}
 
 	/**
@@ -2961,7 +3056,7 @@ class htmlSubTitle extends htmlElement {
 			$idValue = ' id="' . $this->id . '"';
 		}
 		echo "<div $idValue class=\"subTitle\">\n";
-		echo "<h4 class=\"subTitleText\">\n";
+		echo "<" . $this->type ." class=\"subTitleText\">\n";
 		if ($this->image != null) {
 			$size = $this->largeIcon ? 32 : 16;
 			echo '<img height=' . $size . ' width=' . $size . ' src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
@@ -2973,7 +3068,7 @@ class htmlSubTitle extends htmlElement {
 			$helpLink = new htmlHelpLink($this->helpId);
 			$helpLink->generateHTML($module, $input, $values, $restricted, $scope);
 		}
-		echo "</h4>\n";
+		echo "</" . $this->type . ">\n";
 		echo "</div>\n";
 		return [];
 	}
@@ -3644,7 +3739,7 @@ class htmlSortableList extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
-		if (count($this->elements) == 0) {
+		if (count($this->elements) === 0) {
 			return [];
 		}
 		$return = [];
@@ -3801,6 +3896,7 @@ class htmlResponsiveRow extends htmlElement {
 	private $cells = [];
 	/** HTML ID */
 	private $id;
+	private ?string $onClick = null;
 
 	/**
 	 * Creates a new responsive row.
@@ -3911,7 +4007,11 @@ class htmlResponsiveRow extends htmlElement {
 		if ($this->id !== null) {
 			$idParam = ' id="' . $this->id . '"';
 		}
-		echo '<div class="row ' . $cssClasses . '"' . $this->getDataAttributesAsString() . $idParam . '>';
+		$onClickCode = '';
+		if (!empty($this->onClick)) {
+			$onClickCode = ' onclick="' . $this->onClick . '"';
+		}
+		echo '<div class="row ' . $cssClasses . '"' . $this->getDataAttributesAsString() . $idParam . $onClickCode . '>';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $scope));
 		}
@@ -3935,6 +4035,10 @@ class htmlResponsiveRow extends htmlElement {
 	 */
 	public function getCellCount(): int {
 		return count($this->cells);
+	}
+
+	public function setOnClick(string $code): void {
+		$this->onClick = $code;
 	}
 
 }
@@ -4895,10 +4999,10 @@ class htmlProgressbar extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $id HTML id
+	 * @param ?string $id HTML id
 	 * @param int $progress initial progress
 	 */
-	function __construct(string $id = null, int $progress = 0) {
+	function __construct(?string $id = null, int $progress = 0) {
 		$this->id = htmlspecialchars($id);
 		$this->progress = htmlspecialchars((string) $progress);
 	}
@@ -4920,6 +5024,84 @@ class htmlProgressbar extends htmlElement {
 		echo '</div>';
 		echo '</div>';
 		return [];
+	}
+
+}
+
+/**
+ * Tab container.
+ */
+class htmlTabContainer extends htmlElement {
+
+	/**
+	 * @var htmlTab[] $tabs tabs
+	 */
+	private array $tabs;
+
+	private int $activeTabIndex = 1;
+
+	public function addTab(htmlTab $tab, $isActive = false) {
+		$this->tabs[] = $tab;
+		if ($isActive) {
+			$this->activeTabIndex = count($this->tabs);
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+		echo '<div id="tabs" class="lam-tab-container">
+			<ul class="lam-tab-navigation">';
+		foreach ($this->tabs as $tabIndex => $tab) {
+			$tabNumber = $tabIndex + 1;
+			$tabActiveClass = ($this->activeTabIndex === $tabNumber) ? 'lam-tab-active' : '';
+			$tabImage = ($tab->image !== null) ? '<img alt="" src="../../graphics/' . $tab->image . '">' : '';
+			echo '<li data-tabid="' . $tabNumber . '" class="lam-tab ' . $tabActiveClass . '">
+		            <a href="#tab' . $tabNumber . '" class="lam-tab-anchor">';
+			echo $tabImage;
+			$labelClass = ($tab->image !== null) ? 'hide-on-mobile' : '';
+			echo '<span class="' . $labelClass . '"> ' . $tab->label . ' </span>
+					</a>
+				</li>';
+		}
+		echo '</ul>';
+		$return = [];
+		foreach ($this->tabs as $tabIndex => $tab) {
+			$tabNumber = $tabIndex + 1;
+			$tabActiveClass = ($this->activeTabIndex === $tabNumber) ? 'lam-tab-active' : '';
+			echo '<div id="tab' . $tabNumber . '" class="lam-tab-content ' . $tabActiveClass . '" data-tabid="' . $tabNumber . '">';
+			$data = parseHtml($module, $tab->content, $values, $restricted, $scope);
+			$return = array_merge($return, $data);
+			echo '</div>';
+		}
+		return $return;
+	}
+
+}
+
+/**
+ * Tab inside htmlTabContainer.
+ */
+class htmlTab {
+
+	public string $label;
+
+	public ?string $image;
+
+	public htmlElement $content;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param htmlElement $content tab content
+	 * @param string $label tab label text
+	 * @param string|null $image tab image
+	 */
+	public function __construct(htmlElement $content, string $label = '', ?string $image = null) {
+		$this->content = $content;
+		$this->image = $image;
+		$this->label = htmlspecialchars($label);
 	}
 
 }

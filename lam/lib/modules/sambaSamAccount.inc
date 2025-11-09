@@ -665,7 +665,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				$this->attributes['sambaPwdLastSet'][0] = '0';
 			}
 			elseif ((isset($this->attributes['sambaPwdLastSet'][0])) && ($this->attributes['sambaPwdLastSet'][0] == '0')) {
-				$this->attributes['sambaPwdLastSet'][0] = time();
+				$this->attributes['sambaPwdLastSet'][0] = (string) time();
 			}
 		}
 		return parent::save_attributes();
@@ -711,7 +711,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		$this->getAccountContainer()->replaceWildcardsInPOST($this->getWildcardTargetAttributeNames());
 		$errors = [];
 		$sambaDomains = $this->getDomains();
-		if (count($sambaDomains) == 0) {
+		if (count($sambaDomains) === 0) {
 			return [];
 		}
 		$unixAttributes = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -1069,7 +1069,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			}
 			// Get Domain SID from user SID
 			$sambaDomains = $this->getDomains();
-			if (count($sambaDomains) == 0) {
+			if (count($sambaDomains) === 0) {
 				$return->add(new htmlStatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.')));
 				return $return;
 			}
@@ -1392,8 +1392,8 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			elseif ($hr >= 24 * 7) {
 				$hr -= 24 * 7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, (bool) $hour[$hr]);
-			$boxes[$i % 24][floor($i / 24)] = $checkbox;
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, (bool) $hour[(int) $hr]);
+			$boxes[$i % 24][(int) floor($i / 24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
 			$hour = $h;
@@ -1619,7 +1619,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 					if (isset($messageParams[2])) {
 						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]), htmlspecialchars($messageParams[2]));
 					}
-					elseif (($messageParams[0] === 'ERROR') || ($messageParams[0] === 'WARN') || ($messageParams[0] === 'INFO')) {
+					elseif (in_array($messageParams[0], ['ERROR', 'WARN', 'INFO'], true)) {
 						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]));
 					}
 					else {
@@ -1677,7 +1677,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				// remote command results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
+					if (in_array($singleresult[0], ['ERROR', 'WARN', 'INFO'], true)) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1706,7 +1706,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				// remote command results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
+					if (in_array($singleresult[0], ['ERROR', 'WARN', 'INFO'], true)) {
 						$return[] = $singleresult;
 					}
 				}
@@ -2863,7 +2863,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @return Boolean entry matches password
 	 */
 	public static function validateHistoryEntry($password, $historyEntry) {
-		if (empty($historyEntry) || (strlen($historyEntry) != 64)) {
+		if (empty($historyEntry) || (strlen($historyEntry) !== 64)) {
 			return false;
 		}
 		$salt = hex2bin(substr($historyEntry, 0, 32));

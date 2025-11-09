@@ -168,7 +168,7 @@ if (!empty($criticalErrors[0])) {
 	printHeaderContents('LDAP Account Manager', '..');
 	echo "</head><body>\n";
 	foreach ($criticalErrors as $criticalError) {
-		call_user_func_array("StatusMessage", $criticalError);
+		call_user_func_array(StatusMessage(...), $criticalError);
 		echo "<br><br>";
 	}
 	echo "</body></html>";

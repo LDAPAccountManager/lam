@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2024  Roland Gruber
+  Copyright (C) 2004 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -341,7 +341,7 @@ class inetLocalMailRecipient extends baseModule {
 			if (isset($attributes['mailLocalAddress'])) {
 				$mailLocalAddress = $attributes['mailLocalAddress'];
 			}
-			array_map('htmlspecialchars', $mailLocalAddress);
+			array_map(htmlspecialchars(...), $mailLocalAddress);
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('mailLocalAddress', _('Local address'))));
 			$row->addField(new htmlOutputText(implode('<br>', $mailLocalAddress), false));

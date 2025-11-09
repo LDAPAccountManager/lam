@@ -7,6 +7,8 @@ use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PROFILES\AccountProfilePersistenceManager;
+use LAM\WHITE_PAGES\WhitePagesPersistence;
+use LAM\WHITE_PAGES\WhitePagesProfile;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
@@ -46,6 +48,7 @@ use ServerProfilePersistenceManager;
 
 include_once __DIR__ . '/config.inc';
 include_once __DIR__ . '/profiles.inc';
+include_once __DIR__ . '/whitePages.inc';
 
 /**
  * Exporter for LAM's configuration data.
@@ -73,6 +76,7 @@ class ConfigDataExporter {
 		$jsonData['pdfProfiles'] = $this->_getPdfProfiles($serverProfiles);
 		$jsonData['pdfProfileTemplates'] = $this->_getPdfProfileTemplates();
 		$jsonData['selfServiceProfiles'] = $this->_getSelfServiceProfiles();
+		$jsonData['whitePagesProfiles'] = $this->_getWhitePagesProfiles();
 		$jsonData['webauthn'] = $this->_getWebauthn();
 		$jsonData['cronJobs'] = $this->_getCronJobData($serverProfiles);
 		$jsonData['requestAccess'] = $this->_getRequestAccessData();
@@ -223,7 +227,6 @@ class ConfigDataExporter {
 		$data = [];
 		$selfServicePersistence = new SelfServicePersistence();
 		$profileTypes = $selfServicePersistence->getProfiles();
-		$selfServicePersistence = new SelfServicePersistence();
 		foreach ($profileTypes as $profileType => $profileNames) {
 			foreach ($profileNames as $profileName) {
 				try {
@@ -235,6 +238,28 @@ class ConfigDataExporter {
 				}
 				$data[$profileType][$profileName] = $profile->export();
 			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Returns the content of the white pages profiles.
+	 *
+	 * @return array data
+	 */
+	public function _getWhitePagesProfiles(): array {
+		$data = [];
+		$whitePagesPersistence = new WhitePagesPersistence();
+		$profiles = $whitePagesPersistence->getProfiles();
+		foreach ($profiles as $profileName) {
+			try {
+				$profile = $whitePagesPersistence->load($profileName);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $profileName);
+				continue;
+			}
+			$data[$profileName] = $profile->export();
 		}
 		return $data;
 	}
@@ -380,6 +405,13 @@ class ConfigDataImporter {
 					}
 					$steps[] = $mainStep;
 					break;
+				case 'whitePagesProfiles':
+					$mainStep = new ImporterStep(_('White pages profiles'), 'whitePagesProfiles', $value);
+					foreach ($value as $profileName => $profileData) {
+						$mainStep->addSubStep(new ImporterStep($profileName, 'whitePagesProfile__' . $profileName, $profileData));
+					}
+					$steps[] = $mainStep;
+					break;
 				case 'webauthn':
 					if (extension_loaded('PDO')
 						&& in_array('sqlite', PDO::getAvailableDrivers())) {
@@ -441,6 +473,7 @@ class ConfigDataImporter {
 				'pdfProfiles' => $this->importPdfProfiles($step),
 				'pdfProfileTemplates' => $this->importPdfProfileTemplates($step),
 				'selfServiceProfiles' => $this->importSelfServiceProfiles($step),
+				'whitePagesProfiles' => $this->importWhitePagesProfiles($step),
 				'webauthn' => $this->importWebauthn($step),
 				'cronJobs' => $this->importCronJobs($step),
 				'requestAccess' => $this->importRequestAccess($step),
@@ -667,6 +700,35 @@ class ConfigDataImporter {
 		}
 		if (!empty($failedProfiles)) {
 			throw new LAMException(_('Unable to save self service profile.'), implode(', ', $failedProfiles));
+		}
+	}
+
+	/**
+	 * Imports the white pages profiles.
+	 *
+	 * @param ImporterStep $step importer step
+	 * @throws LAMException error saving profiles
+	 */
+	private function importWhitePagesProfiles(ImporterStep $step): void {
+		$failedProfiles = [];
+		$whitePagesPersistence = new WhitePagesPersistence();
+		foreach ($step->getSubSteps() as $profileStep) {
+			if (!$profileStep->isActive()) {
+				continue;
+			}
+			$data = $profileStep->getValue();
+			$profileName = str_replace('whitePagesProfile__', '', $profileStep->getKey());
+			try {
+				$profile = WhitePagesProfile::import($data);
+				$whitePagesPersistence->save($profileName, $profile);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle());
+				$failedProfiles[] = $profileName;
+			}
+		}
+		if (!empty($failedProfiles)) {
+			throw new LAMException(_('Unable to save white pages profile.'), implode(', ', $failedProfiles));
 		}
 	}
 

@@ -437,12 +437,12 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 			if ($file) {
 				while (!feof($file)) {
 					$line = fgets($file, 1024);
-					if (($line === false) || ($line === '') || ($line === "\n") || ($line[0] === "#")) {
+					if (in_array($line, [false, '', "\n"], true) || ($line[0] === "#")) {
 						continue; // ignore comments
 					}
 					// search keywords
 					$parts = explode(": ", $line);
-					if (count($parts) == 2) {
+					if (count($parts) === 2) {
 						$option = $parts[0];
 						if ($option === 'profname') {
 							continue;

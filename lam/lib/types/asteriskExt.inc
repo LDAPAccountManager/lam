@@ -162,7 +162,7 @@ class lamAsteriskExtList extends lamList {
 		$entries = searchLDAP($this->suffix, $filter, $attrs);
 		$lastError = getLastLDAPError();
 		if ($lastError != null) {
-			call_user_func_array('StatusMessage', $lastError);
+			call_user_func_array(StatusMessage(...), $lastError);
 		}
 
 		$this->ldapEntries = $this->normalizeLdapOutput($entries);

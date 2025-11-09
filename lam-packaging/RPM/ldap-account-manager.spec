@@ -144,6 +144,7 @@ done
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/profiles
 %dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService
+%dir %attr(700, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/whitePages
 /var/lib/%{lam_dir}/config/*.sample
 /var/lib/%{lam_dir}/config/*.sample.conf
 /var/lib/%{lam_dir}/config/.htaccess
@@ -154,6 +155,7 @@ done
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/pdf/default.*
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/templates/profiles/default.*
 %config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/selfService/.placeholder
+%config(noreplace) %attr(-, %{lam_uid}, %{lam_gid}) /var/lib/%{lam_dir}/config/whitePages/.placeholder
 /usr/share/%{lam_dir}
 %{httpd_confdir}
 /etc/%{lam_dir}/lam.nginx.conf

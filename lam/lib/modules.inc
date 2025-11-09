@@ -117,7 +117,7 @@ function get_ldap_filter($typeId) {
 		}
 	}
 	// build OR filter
-	if (count($filters['or']) == 1) {
+	if (count($filters['or']) === 1) {
 		$orFilter = $filters['or'][0];
 	}
 	elseif (count($filters['or']) > 1) {
@@ -412,7 +412,7 @@ function checkConfigOptions($moduleToTypeIds, &$options) {
  */
 function getHelp($module, $helpID, $scope) {
 	global $helpArray;
-	if (($module === null) || ($module === '') || ($module === 'main')) {
+	if (in_array($module, [null, '', 'main'], true)) {
 		if (!isset($helpArray)) {
 			include_once(__DIR__ . '/../help/help.inc');
 		}
@@ -503,7 +503,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 	}
 	// first all modules without predepends can be ordered
 	for ($i = 0; $i < count($unOrdered); $i++) {
-		if (count($predepends[$unOrdered[$i]]) == 0) {
+		if (count($predepends[$unOrdered[$i]]) === 0) {
 			$ordered[] = $unOrdered[$i];
 			unset($unOrdered[$i]);
 			$unOrdered = array_values($unOrdered);
@@ -984,7 +984,7 @@ class accountContainer {
 				if (is_string($postKeys[$p]) && (str_starts_with($postKeys[$p], 'form_subpage_' . $this->order[$this->current_page]))) {
 					$temp = substr($postKeys[$p], strlen($this->order[$this->current_page]) + 14);
 					$temp = explode('_', $temp);
-					if (count($temp) == 2) {
+					if (count($temp) === 2) {
 						$this->subpage = $temp[0];
 					}
 				}
@@ -1015,7 +1015,8 @@ class accountContainer {
 		// prints a module content page
 		$this->printModuleContent($result);
 		if (!$errorsOccurred && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
-			&& isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+			&& isset($_POST['scrollPositionTop']) && get_preg($_POST['scrollPositionTop'], 'digit')
+			&& isset($_POST['scrollPositionLeft']) && get_preg($_POST['scrollPositionLeft'], 'digit')) {
 			// scroll to last position
 			$scrollJs = new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')');
 			parseHtml(null, $scrollJs, [], false, $this->type->getScope());
@@ -1268,13 +1269,13 @@ class accountContainer {
 						if ($messages[$m][0] == 'ERROR') {
 							$return['errorsOccurred'] = 'true';
 						}
-						if (count($messages[$m]) == 2) {
+						if (count($messages[$m]) === 2) {
 							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], '', [], true);
 						}
-						elseif (count($messages[$m]) == 3) {
+						elseif (count($messages[$m]) === 3) {
 							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], [], true);
 						}
-						elseif (count($messages[$m]) == 4) {
+						elseif (count($messages[$m]) === 4) {
 							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], $messages[$m][2], $messages[$m][3], true);
 						}
 					}
@@ -1439,7 +1440,7 @@ class accountContainer {
 		$container->addVerticalSpacer('2rem');
 		// show messages
 		for ($i = 0; $i < count($messages); $i++) {
-			if (count($messages[$i]) == 2) {
+			if (count($messages[$i]) === 2) {
 				$message = new htmlStatusMessage($messages[$i][0], $messages[$i][1]);
 				$container->add($message);
 			}
@@ -1965,7 +1966,7 @@ class accountContainer {
 				}
 				$rdnAttr = strtolower(extractRDNAttribute($this->finalDN));
 				if (isset($attributes[$this->finalDN]['modify'][$rdnAttr])
-					&& (count($attributes[$this->finalDN]['modify'][$rdnAttr]) == 1)
+					&& (count($attributes[$this->finalDN]['modify'][$rdnAttr]) === 1)
 					&& (($attributes[$this->finalDN]['modify'][$rdnAttr][0] == extractRDNValue($this->finalDN))
 						|| (unescapeLdapSpecialCharacters($attributes[$this->finalDN]['modify'][$rdnAttr][0]) == unescapeLdapSpecialCharacters(extractRDNValue($this->finalDN))))) {
 					// remove old RDN if attribute is single valued

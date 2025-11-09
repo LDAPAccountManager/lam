@@ -1304,7 +1304,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$postalAddresses[] = implode("\r\n", explode('$', $this->attributes['postalAddress'][$i]));
 				}
 			}
-			if (count($postalAddresses) == 0) {
+			if (count($postalAddresses) === 0) {
 				$postalAddresses[] = '';
 			}
 			$addressLabel = new htmlOutputText(_('Postal address'));
@@ -1345,7 +1345,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$registeredAddresses[] = implode("\r\n", explode('$', $this->attributes['registeredAddress'][$i]));
 				}
 			}
-			if (count($registeredAddresses) == 0) {
+			if (count($registeredAddresses) === 0) {
 				$registeredAddresses[] = '';
 			}
 			$registeredAddressLabel = new htmlOutputText(_('Registered address'));
@@ -1564,7 +1564,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				for ($i = 0; $i < count($this->attributes['manager']); $i++) {
 					$managerList[] = $this->attributes['manager'][$i];
 				}
-				usort($managerList, 'compareDN');
+				usort($managerList, compareDN(...));
 				$managers = new htmlTable();
 				$managers->alignment = htmlElement::ALIGN_RIGHT;
 				$managers->colspan = 3;
@@ -1798,7 +1798,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$entries[$i] = $entries[$i]['dn'];
 			}
 			// sort by DN
-			usort($entries, 'compareDN');
+			usort($entries, compareDN(...));
 			for ($i = 0; $i < count($entries); $i++) {
 				if (!in_array($entries[$i], $this->attributes['manager'])) {
 					$options[getAbstractDN($entries[$i])] = $entries[$i];
@@ -1832,7 +1832,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		// show existing managers
 		$managerTemp = $this->attributes['manager'];
 		// sort by DN
-		usort($managerTemp, 'compareDN');
+		usort($managerTemp, compareDN(...));
 		$managers = [];
 		for ($i = 0; $i < count($managerTemp); $i++) {
 			$managers[getAbstractDN($managerTemp[$i])] = $managerTemp[$i];
@@ -2220,7 +2220,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			&& ($profile['inetOrgPerson_departmentNumber'][0] != '')) {
 			$departments = explode(';', $profile['inetOrgPerson_departmentNumber'][0]);
 			// remove extra spaces and set attributes
-			$this->attributes['departmentNumber'] = array_map('trim', $departments);
+			$this->attributes['departmentNumber'] = array_map(trim(...), $departments);
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu') && isset($profile['inetOrgPerson_ou'][0])) {
 			$oList = preg_split('/;[ ]*/', $profile['inetOrgPerson_ou'][0]);
@@ -2438,7 +2438,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (isset($ids['inetOrgPerson_departmentNumber']) && ($rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']] != "")) {
 				$partialAccounts[$i]['departmentNumber'] = explode(';', $rawAccounts[$i][$ids['inetOrgPerson_departmentNumber']]);
 				// remove extra spaces
-				$partialAccounts[$i]['departmentNumber'] = array_map('trim', $partialAccounts[$i]['departmentNumber']);
+				$partialAccounts[$i]['departmentNumber'] = array_map(trim(...), $partialAccounts[$i]['departmentNumber']);
 			}
 			// organisational unit
 			if (isset($ids['inetOrgPerson_ou']) && ($rawAccounts[$i][$ids['inetOrgPerson_ou']] != "")) {
@@ -2814,7 +2814,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				}
 				if (!empty($attributes['o'][0]) && !in_array($attributes['o'][0], $oList)) {
 					$oList[] = $attributes['o'][0];
-					usort($oList, 'compareDN');
+					usort($oList, compareDN(...));
 				}
 				$oSelectionList = ['' => ''];
 				foreach ($oList as $singleOU) {
@@ -2852,7 +2852,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				}
 				if (!empty($attributes['ou'][0]) && !in_array($attributes['ou'][0], $ouList)) {
 					$ouList[] = $attributes['ou'][0];
-					usort($ouList, 'compareDN');
+					usort($ouList, compareDN(...));
 				}
 				$ouSelectionList = ['' => ''];
 				foreach ($ouList as $singleOU) {

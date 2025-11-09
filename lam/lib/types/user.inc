@@ -232,7 +232,7 @@ class lamUserList extends lamList {
 	protected function listGetParams() {
 		parent::listGetParams();
 		// generate hash table for group translation
-		if ($this->trans_primary == "on" && !$this->refresh && (count($this->trans_primary_hash) == 0)) {
+		if ($this->trans_primary == "on" && !$this->refresh && (count($this->trans_primary_hash) === 0)) {
 			$this->refreshPrimaryGroupTranslation();
 		}
 	}

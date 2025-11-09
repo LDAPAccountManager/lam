@@ -204,12 +204,14 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			if (count($values_given) !== count($values_unique)) {
 				$duplicates = [];
 				foreach ($values_given as $key => $value) {
-					if (!isset($values_unique[$key]) && ($value !== null)) {
+					if (!isset($values_unique[$key]) && ($value !== null) && ($value !== '')) {
 						$duplicates[] = htmlspecialchars($value);
 					}
 				}
-				$duplicates = array_values(array_unique($duplicates));
-				$errors[] = [_("This column is defined to include unique entries but duplicates were found:") . ' ' . $column['name'], implode(', ', $duplicates)];
+				if (!empty($duplicates)) {
+					$duplicates = array_values(array_unique($duplicates));
+					$errors[] = [_("This column is defined to include unique entries but duplicates were found:") . ' ' . $column['name'], implode(', ', $duplicates)];
+				}
 			}
 		}
 	}

@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020 - 2024  Roland Gruber
+ Copyright (C) 2020 - 2025  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -72,6 +72,10 @@ class ConfigDataExporterTest extends TestCase {
 			'profile1' => ['key' => 'value'],
 			'profile2' => ['key' => 'value'],
 		];
+		$whitePagesData = [
+			'profile1' => ['key' => 'value'],
+			'profile2' => ['key' => 'value'],
+		];
 		$webauthn = [];
 		$expectedJson = json_encode([
 			'mainConfig' => $mainData,
@@ -82,6 +86,7 @@ class ConfigDataExporterTest extends TestCase {
 			'pdfProfiles' => $pdfData,
 			'pdfProfileTemplates' => $pdfTemplateData,
 			'selfServiceProfiles' => $selfServiceData,
+			'whitePagesProfiles' => $whitePagesData,
 			'webauthn' => $webauthn,
 			'cronJobs' => [],
 			'requestAccess' => []
@@ -90,8 +95,8 @@ class ConfigDataExporterTest extends TestCase {
 		$exporter = $this->getMockBuilder('\\' . \LAM\PERSISTENCE\ConfigDataExporter::class)
 			->setMethods(['_getMainConfigData', '_getCertificates', '_getServerProfiles',
 				'_getAccountProfiles', '_getAccountProfileTemplates', '_getPdfProfiles',
-				'_getPdfProfileTemplates', '_getSelfServiceProfiles', '_getWebauthn',
-				'_getCronJobData'])
+				'_getPdfProfileTemplates', '_getSelfServiceProfiles', '_getWhitePagesProfiles',
+				'_getWebauthn', '_getCronJobData'])
 			->getMock();
 		$exporter->method('_getMainConfigData')->willReturn($mainData);
 		$exporter->method('_getCertificates')->willReturn('certs');
@@ -101,6 +106,7 @@ class ConfigDataExporterTest extends TestCase {
 		$exporter->method('_getPdfProfiles')->willReturn($pdfData);
 		$exporter->method('_getPdfProfileTemplates')->willReturn($pdfTemplateData);
 		$exporter->method('_getSelfServiceProfiles')->willReturn($selfServiceData);
+		$exporter->method('_getWhitePagesProfiles')->willReturn($whitePagesData);
 		$exporter->method('_getWebauthn')->willReturn($webauthn);
 		$exporter->method('_getCronJobData')->willReturn([]);
 

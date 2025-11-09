@@ -462,10 +462,10 @@ class yubiKeyUser extends baseModule {
 				}
 			}
 			if ($update) {
-				if (count($oldKeys) == 0) {
+				if (count($oldKeys) === 0) {
 					$return['add'][$attributeName] = $newKeys;
 				}
-				elseif (count($newKeys) == 0) {
+				elseif (count($newKeys) === 0) {
 					$return['del'][$attributeName] = $newKeys;
 				}
 				else {

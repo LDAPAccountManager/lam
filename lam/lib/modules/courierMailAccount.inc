@@ -272,7 +272,7 @@ class courierMailAccount extends baseModule {
 			// quota with selection for unit of measure
 			$unitIndex = 2;
 			$value = 0;
-			if (isset($this->attributes['quota'][0]) && (strlen($this->attributes['quota'][0]) > 0)) {
+			if (isset($this->attributes['quota'][0]) && ((string) $this->attributes['quota'][0] !== '')) {
 				$unitIndex = floor(log((float) substr($this->attributes['quota'][0], 0, -1), 1000));
 				$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / (1000 ** $unitIndex), 2);
 			}
@@ -472,7 +472,7 @@ class courierMailAccount extends baseModule {
 		// quota
 		$unitIndex = 2;
 		$value = 0;
-		if (isset($this->attributes['quota'][0]) && (strlen($this->attributes['quota'][0]) > 0)) {
+		if (isset($this->attributes['quota'][0]) && ((string) $this->attributes['quota'][0] !== '')) {
 			$unitIndex = floor(log((float) substr($this->attributes['quota'][0], 0, -1), 1000));
 			$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / (1000 ** $unitIndex), 2);
 		}

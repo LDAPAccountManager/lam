@@ -1,6 +1,7 @@
 <?php
 namespace LAM\LOGIN\WEBAUTHN;
 
+use LAM_INTERFACE;
 use LAMCfgMain;
 use LAMConfig;
 use LAMConfigTest;
@@ -87,13 +88,13 @@ class WebauthnManagerTest extends TestCase {
 	public function test_getAuthenticationObject() {
 		$this->database->method('findAllForUserDn')->willReturn([]);
 
-		$authenticationObj = $this->manager->getAuthenticationObject('uid=test,o=test', false);
+		$authenticationObj = $this->manager->getAuthenticationObject('uid=test,o=test', LAM_INTERFACE::ADMIN);
 		$this->assertEquals(32, strlen($authenticationObj->getChallenge()));
 		$this->assertEquals('domain', $authenticationObj->getRpId());
 	}
 
 	public function test_getRegistrationObject() {
-		$registrationObject = $this->manager->getRegistrationObject('uid=test,o=test', false);
+		$registrationObject = $this->manager->getRegistrationObject('uid=test,o=test', LAM_INTERFACE::ADMIN);
 		$this->assertEquals(32, strlen($registrationObject->getChallenge()));
 		$this->assertEquals('domain', $registrationObject->getRp()->getId());
 	}

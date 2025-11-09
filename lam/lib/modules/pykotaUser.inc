@@ -524,7 +524,7 @@ class pykotaUser extends baseModule {
 			if (!empty($comment)) {
 				$comment = base64_encode($comment);
 			}
-			if (empty($amount) || (floatval($amount) == 0.0)) {
+			if (empty($amount) || (floatval($amount) === 0.0)) {
 				$errors[] = $this->messages['pykotaPayments'][0];
 			}
 			else {

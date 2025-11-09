@@ -250,7 +250,7 @@ class puppetClient extends baseModule {
 		if (isset($this->attributes['environment'][0])) {
 			$environments = $this->attributes['environment'];
 		}
-		if (count($environments) == 0) {
+		if (count($environments) === 0) {
 			$environments[] = '';
 		}
 		$environmentLabel = new htmlOutputText(_('Environment'));

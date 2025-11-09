@@ -757,7 +757,7 @@ class freeRadius extends baseModule {
 		foreach ($list as $attr) {
 			$this->profileCache[] = $attr['dn'];
 		}
-		usort($this->profileCache, 'compareDN');
+		usort($this->profileCache, compareDN(...));
 		return $this->profileCache;
 	}
 

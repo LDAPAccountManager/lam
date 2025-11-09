@@ -682,7 +682,7 @@ class quota extends baseModule {
 					continue;
 				}
 				$dirs = explode(":", $quotas);
-				array_pop($dirs); // remove empty element at the end
+				array_pop($dirs); // remove the empty element at the end
 				if (empty($dirs)) {
 					continue;
 				}
@@ -982,7 +982,7 @@ class quota extends baseModule {
 					if ($data[$i][$ids['quota_' . $temp['quotas'][$m]]] != '') {
 						$parts = explode(',', $data[$i][$ids['quota_' . $temp['quotas'][$m]]]);
 						// check syntax
-						if (count($parts) != 4) {
+						if (count($parts) !== 4) {
 							$errMsg = $this->messages['upload'][0];
 							$errMsg[] = [$i, 'quota_' . $temp['quotas'][$m]];
 							$errors[] = $errMsg;

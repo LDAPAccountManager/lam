@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<chapter id="a_whitePages">
+  <title>White pages (LAM Pro)</title>
+
+  <para>White pages allows your users to browse the company's directory of
+  e.g. users and groups. This way they can find colleagues and their contact
+  data like email and telephone number. The configuration is fully flexible.
+  You could also allow to search for rooms, servers and other objects inside
+  LDAP.</para>
+
+  <para>The UI theme can be customized and you can setup multiple white pages
+  configurations for different purposes.</para>
+
+  <screenshot>
+    <graphic fileref="images/white-pages-overview.png"/>
+  </screenshot>
+
+  <section>
+    <title>Creating a white pages profile</title>
+
+    <para>A white pages profile defines what data your users see and some
+    other general settings like the login caption.</para>
+
+    <para>When you go to the LAM configuration page you will see the white
+    pages link at the bottom. This will lead you to the white pages
+    configuration pages</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/white-pages-conf1.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Now we need to create a new white pages profile. Click on the link
+    to manage the white pages profiles.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/white-pages-conf2.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Specify a name for the new profile and enter your master
+    configuration password (default is "lam") to save the profile.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/white-pages-conf3.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>Your new profile is created and opened for editing.</para>
+  </section>
+
+  <section>
+    <title>Edit your new profile</title>
+
+    <para>On top of the page you see the link to the user login page. Copy
+    this link address and give it to your users.</para>
+
+    <section id="whitePagesBasicSettings">
+      <title>Server settings</title>
+
+      <para>Below the link you can specify several options.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/white-pages-conf4.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <table border="0">
+        <title/>
+
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry>Server address</entry>
+
+              <entry>The address of your LDAP server. For LDAP+SSL use
+              "ldaps://myserver"</entry>
+            </row>
+
+            <row>
+              <entry>Activate TLS</entry>
+
+              <entry>Activates TLS encryption. Please note that this cannot be
+              combined with LDAP+SSL ("ldaps://").</entry>
+            </row>
+
+            <row>
+              <entry>Follow referrals</entry>
+
+              <entry>By default LAM will not follow LDAP referrals. This is ok
+              for most installations. If you use LDAP referrals please
+              activate the referral option in advanced settings.</entry>
+            </row>
+
+            <row>
+              <entry>LDAP user + password</entry>
+
+              <entry>The DN and password which is used to search for users in
+              the LDAP database. It is sufficient if this DN has only read
+              rights. If you leave these fields empty LAM will try to connect
+              anonymously.</entry>
+            </row>
+
+            <row>
+              <entry>Use for all operations</entry>
+
+              <entry>By default LAM will use the credentials of the user that
+              logged in to white pages for read/modify operations. If you
+              select this box then the connection user specified before will
+              be used instead. Please note that this can be a security risk
+              because the user requires write access to all users. You need to
+              make sure that your LAM server is well protected.</entry>
+            </row>
+
+            <row>
+              <entry>Authentication method</entry>
+
+              <entry>The default method is user and password login. You can
+              choose anonymous authentication if this is a public profile. If
+              you use Okta or OpenID for 2FA then you can also select to trust
+              the 2FA provider. In this case the user does not need to enter
+              any password in LAM itself (SSO).</entry>
+            </row>
+
+            <row>
+              <entry>LDAP suffix</entry>
+
+              <entry>The part of the LDAP tree where LAM should search for
+              users</entry>
+            </row>
+
+            <row>
+              <entry>LDAP search attribute</entry>
+
+              <entry>Here you can specify the attribute that must contain the
+              user name provided at the white pages login.</entry>
+            </row>
+
+            <row>
+              <entry>Additional LDAP filter</entry>
+
+              <entry>Use this to enter an additional LDAP filter (e.g.
+              "(objectClass=inetOrgPerson)") to reduce the number of accounts
+              who may use white pages.</entry>
+            </row>
+
+            <row>
+              <entry>Language</entry>
+
+              <entry>This language for this profile.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para/>
+    </section>
+
+    <section id="whitepages_2fa">
+      <title>2-factor authentication</title>
+
+      <para>LAM supports 2-factor authentication for your users. This means
+      the user will not only authenticate by user+password but also with e.g.
+      a token generated by a mobile device. This adds more security because
+      the token is generated on a physically separated device (typically
+      mobile phone).</para>
+
+      <screenshot>
+        <graphic fileref="images/conf7.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>Please see the <link linkend="a_2fa">2FA appendix</link> for
+      configuration details of the different providers.</para>
+
+      <para><emphasis role="bold">Remember device</emphasis></para>
+
+      <para>You can allow users to remember the 2FA device for privacyIDEA,
+      WebAuthn and YubiKey. When a device is remembered then users can login
+      for the specified time without presenting their 2nd factor.</para>
+
+      <para>The password for the device remembering is used to authenticate
+      the device data. It can be any long passphrase (use &gt; 30 characters).
+      LAM auto-generates one for you. If you change the passphrase then all
+      device data gets invalid and users need to represent their 2nd factor
+      again (which then can be saved again).</para>
+
+      <screenshot>
+        <graphic fileref="images/whitePages2FaRemember.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Login</emphasis></para>
+
+      <para>After logging in with user + password LAM will ask for the 2nd
+      factor. If the user has setup multiple factors then he can choose one of
+      them.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf8.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Captcha</title>
+
+      <para>LAM Pro can optionally display a captcha to verify that logins are
+      not from robots. Captchas will be displayed when you tick the checkbox
+      to secure login with a captcha. The supported captcha providers
+      are:</para>
+
+      <para><emphasis role="bold">Google reCAPTCHA</emphasis></para>
+
+      <para>You will need the site and secret key for your domain. They can be
+      retrieved from here: <ulink
+      url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
+
+      <para>Please note that your web server must be able to access
+      "https://www.google.com/recaptcha/api/siteverify" to verify the
+      captchas.</para>
+
+      <para><emphasis role="bold">Friendly Captcha</emphasis></para>
+
+      <para>Please enter your site (see applications) and API key. The web
+      server must be able to contact "https://api.friendlycaptcha.com" for
+      verification.</para>
+
+      <para><emphasis role="bold">hCaptcha</emphasis></para>
+
+      <para>Please enter your site and secret key (not API key). The web
+      server must be able to contact "https://hcaptcha.com" for
+      verification.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/whitePagesCaptcha.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para/>
+    </section>
+
+    <section id="whitepages_lamdaemon">
+      <title>Captions and labels</title>
+
+      <para>Here you can specify custom labels and text to provide familiar
+      names and explanatory text.<table border="0">
+          <title/>
+
+          <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry>Login attribute label</entry>
+
+                <entry>This is the description for the LDAP search attribute.
+                Set it to something which your users are familiar
+                with.</entry>
+              </row>
+
+              <row>
+                <entry>Password field label</entry>
+
+                <entry>This text is placed as label for the password field on
+                the login page. LAM will use "Password" if you do not enter
+                any text.</entry>
+              </row>
+
+              <row>
+                <entry>Login caption</entry>
+
+                <entry>This text is displayed on the login page inside the
+                login mask.</entry>
+              </row>
+
+              <row>
+                <entry>Login header</entry>
+
+                <entry>This text is displayed on the login page above the
+                login mask.</entry>
+              </row>
+
+              <row>
+                <entry>Login footer</entry>
+
+                <entry>This text is displayed on the login page below the
+                login mask.</entry>
+              </row>
+
+              <row>
+                <entry>Page header</entry>
+
+                <entry>This text is displayed as header on the white pages
+                main page where your users browse the data.</entry>
+              </row>
+
+              <row>
+                <entry>Page footer</entry>
+
+                <entry>This text is displayed as footer on the white pages
+                main page where your users browse the data.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table></para>
+    </section>
+
+    <section>
+      <title>Styling</title>
+
+      <para>LAM provides some predefined themes for the white pages. You are
+      free to use them and/or adapt the colors and background image to your
+      corporate design. The primary color is used for the primary button (e.g.
+      submit button). The background color is used for the panels and page
+      background (if no image is set).</para>
+
+      <para>The background image can be any image URL or one of the provided
+      background images. Enter "background" to get an auto-completion list of
+      existing images.</para>
+
+      <para>Predefined themes:</para>
+
+      <para>City</para>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-theme1.png"/>
+      </screenshot>
+
+      <para>Coast<screenshot>
+          <graphic fileref="images/white-pages-theme2.png"/>
+        </screenshot></para>
+
+      <para>Grand canyon<screenshot>
+          <graphic fileref="images/white-pages-theme3.png"/>
+        </screenshot></para>
+
+      <para>Mountain<screenshot>
+          <graphic fileref="images/white-pages-theme4.png"/>
+        </screenshot></para>
+
+      <para>Ocean<screenshot>
+          <graphic fileref="images/white-pages-theme5.png"/>
+        </screenshot></para>
+
+      <para>Rain forest<screenshot>
+          <graphic fileref="images/white-pages-theme6.png"/>
+        </screenshot></para>
+
+      <para>Stars<screenshot>
+          <graphic fileref="images/white-pages-theme7.png"/>
+        </screenshot></para>
+
+      <para><emphasis role="bold">Additional CSS links</emphasis></para>
+
+      <para>Here you can specify additional CSS links to change the layout of
+      the white pages pages. This is useful to adapt them to your corporate
+      design. Please enter one link per line (e.g.
+      https://example.com/style.css).</para>
+
+      <para><emphasis role="bold">Display</emphasis></para>
+
+      <para>Use this to define if your users can see the list view, gallery
+      view or both. Users can switch between both modes when both are
+      enabled.</para>
+    </section>
+
+    <section>
+      <title>Tabs</title>
+
+      <para>Each profile can have a number of tabs (e.g. users and groups).
+      They are fully configurable regarding their displayed data and can
+      contain any type of LDAP entries. E.g. you could display hardware/room
+      entries next to your users.</para>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf5.png"/>
+      </screenshot>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf12.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Main settings</emphasis></para>
+
+      <para>These are the basic settings for the entries of the tab.</para>
+
+      <table>
+        <title/>
+
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry>Label</entry>
+
+              <entry>Tab label for user GUI</entry>
+            </row>
+
+            <row>
+              <entry>LDAP suffix</entry>
+
+              <entry>LDAP suffix that contains the entries to display</entry>
+            </row>
+
+            <row>
+              <entry>Additional LDAP filter</entry>
+
+              <entry>LDAP filter to limit the entries that are displayed (e.g.
+              "jpegPhoto=*" or "objectClass=person")</entry>
+            </row>
+
+            <row>
+              <entry>Searchable attributes</entry>
+
+              <entry>List of LDAP attribute names that can be searched by the
+              user via the top search. The columns in list view have
+              additional filters that are independent from this
+              setting.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para><emphasis role="bold">List view</emphasis></para>
+
+      <para>This defines how the entries are displayed in the list view
+      (table). Make sure to not add too many items here to keep the table
+      readable.</para>
+
+      <para>Each table column is defined by an item that defines a label and a
+      display value. The items can be one of the following:</para>
+
+      <table>
+        <title/>
+
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry align="center">Type</entry>
+
+              <entry align="center">Description for value option</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>Text</entry>
+
+              <entry>Displays a plain text value. The "value" of the item can
+              be an LDAP attribute name or plain text with wildcards.
+              Wildcards can be LDAP attributes (surrounded by "$") of the LDAP
+              entry (e.g. "$givenName$ $sn$" for first + last name).</entry>
+            </row>
+
+            <row>
+              <entry>Email</entry>
+
+              <entry>Displays a clickable email address. The "value" must be
+              the LDAP attribute name (e.g. "mail"). No wildcards
+              allowed.</entry>
+            </row>
+
+            <row>
+              <entry>Telephone number</entry>
+
+              <entry>Displays a clickable telephone number. The "value" must
+              be the LDAP attribute name (e.g. "telephoneNumber"). No
+              wildcards allowed.</entry>
+            </row>
+
+            <row>
+              <entry>Image</entry>
+
+              <entry>Displays an image. The "value" must be the LDAP attribute
+              name (e.g. "jpegPhoto"). No wildcards allowed.</entry>
+            </row>
+
+            <row>
+              <entry>Link</entry>
+
+              <entry>Displays a clickable link to the detail view of another
+              entry (e.g. group). The "value" must be the LDAP attribute name
+              followed by a colon and the display value (e.g. "manager:cn").
+              You can use wildcards for the display value (e.g.
+              "manager:$givenName$ $sn$"). Wildcards will be resolved using
+              the linked entry's attributes.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf6.png"/>
+      </screenshot>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf7.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Gallery view</emphasis></para>
+
+      <para>The gallery view shows the entries as cards. Each card has a title
+      that can contain wildcards like the text items above (e.g. "$givenName$
+      $sn$" for first + last name). It is recommended to use an image item as
+      first item. See list view for the different item types.</para>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf8.png"/>
+      </screenshot>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf9.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Detail view</emphasis></para>
+
+      <para>When a user clicks on an entry then the detail view is opened.
+      Here you can display more information that does not fit in the
+      list/gallery view.</para>
+
+      <para>The detail view has a title that can contain wildcards like the
+      text items above (e.g. "$givenName$ $sn$" for first + last name). See
+      list view for the different item types.</para>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf10.png"/>
+      </screenshot>
+
+      <screenshot>
+        <graphic fileref="images/white-pages-conf11.png"/>
+      </screenshot>
+    </section>
+  </section>
+</chapter>

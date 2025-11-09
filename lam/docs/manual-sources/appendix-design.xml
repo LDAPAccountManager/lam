@@ -86,8 +86,13 @@
   E.g. you can create a file called "900_myCompany.js" which will be added as
   last file.</para>
 
-  <para><emphasis role="bold">Self service</emphasis></para>
+  <para><emphasis role="bold">Self-service</emphasis></para>
 
-  <para>See <link linkend="selfServiceBasicSettings">here</link> for self
-  service customisations.</para>
+  <para>See <link linkend="selfServiceBasicSettings">here</link> for
+  self-service customisations.</para>
+
+  <para><emphasis role="bold">White pages</emphasis></para>
+
+  <para>The <link linkend="a_whitePages">white pages</link> allow to integrate
+  custom CSS files.</para>
 </appendix>

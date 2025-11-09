@@ -222,6 +222,15 @@ function logoffAndBackToLoginPage(): void {
 		$page = 'selfServiceLogin.php';
 		$pageSuffix = '?expired=yes&scope=' . $scope . '&name=' . $name;
 	}
+	elseif (isset($_SESSION['whitePages_clientDN']) || (str_contains($_SERVER['REQUEST_URI'], '/whitePages/'))) {
+		$name = $_GET['name'];
+		if (!preg_match('/^[0-9a-zA-Z _-]+$/', $name)) {
+			logNewMessage(LOG_ERR, 'GET parameters invalid: ' . $name);
+			die();
+		}
+		$page = 'whitePagesLogin.php';
+		$pageSuffix = '?expired=yes&name=' . $name;
+	}
 	for ($i = 0; $i < count($paths); $i++) {
 		if (file_exists($paths[$i] . $page)) {
 			$page = $paths[$i] . $page;
@@ -237,7 +246,7 @@ function logoffAndBackToLoginPage(): void {
 	echo "<script type=\"text/javascript\">\n";
 	echo "top.location.href = \"" . $page . "\";\n";
 	echo "</script>\n";
-	// print link if refresh does not work
+	// print the link if refresh does not work
 	echo "<p>\n";
 	echo "<a target=\"_top\" href=\"" . $page . "\">" . _("Your session expired, click here to go back to the login page.") . "</a>\n";
 	echo "</p>\n";

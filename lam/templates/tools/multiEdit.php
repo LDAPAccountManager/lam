@@ -211,7 +211,7 @@ function displayStartPage(): void {
 	$container->addVerticalSpacer('1rem');
 
 	// run actions
-	if ((count($errors) == 0) && (isset($_POST['dryRun']) || isset($_POST['applyChanges']))) {
+	if ((count($errors) === 0) && (isset($_POST['dryRun']) || isset($_POST['applyChanges']))) {
 		runActions($container);
 	}
 
@@ -246,7 +246,7 @@ function runActions(htmlResponsiveRow $container): void {
 			$operations[] = [$_POST['op_' . $i], strtolower(trim($_POST['attr_' . $i])), trim($_POST['val_' . $i])];
 		}
 	}
-	if (count($operations) == 0) {
+	if (count($operations) === 0) {
 		$error = new htmlStatusMessage('ERROR', _('Please specify at least one operation.'));
 		$error->colspan = 5;
 		$container->add($error);

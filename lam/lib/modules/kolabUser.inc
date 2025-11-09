@@ -266,7 +266,7 @@ class kolabUser extends baseModule {
 			if (isset($this->attributes['kolabInvitationPolicy'])) {
 				for ($i = 0; $i < count($this->attributes['kolabInvitationPolicy']); $i++) {
 					$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
-					if (count($parts) == 1) {
+					if (count($parts) === 1) {
 						$defaultInvPol = $this->invitationPolicies[$this->attributes['kolabInvitationPolicy'][$i]];
 						unset($this->attributes['kolabInvitationPolicy'][$i]);
 						$this->attributes['kolabInvitationPolicy'] = array_values($this->attributes['kolabInvitationPolicy']);
@@ -281,7 +281,7 @@ class kolabUser extends baseModule {
 			if (isset($this->attributes['kolabInvitationPolicy'])) {
 				for ($i = 0; $i < count($this->attributes['kolabInvitationPolicy']); $i++) {
 					$parts = explode(":", $this->attributes['kolabInvitationPolicy'][$i]);
-					if (count($parts) == 2) {
+					if (count($parts) === 2) {
 						$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
 						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), [$this->invitationPolicies[$parts[1]]]));
 						$invitationContainer->addElement(new htmlButton('delInvPol' . $i, 'del.svg', true));
@@ -304,7 +304,7 @@ class kolabUser extends baseModule {
 			for ($i = 0; $i < count($delegatesData); $i++) {
 				$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
 			}
-			uksort($delegates, 'compareDN');
+			uksort($delegates, compareDN(...));
 			$return->add(new htmlSubTitle(_('Delegates')));
 			$delegatesContainer = new htmlTable();
 			if (isset($this->attributes['kolabDelegate'])) {
@@ -314,7 +314,7 @@ class kolabUser extends baseModule {
 					$delegateSelect->setHasDescriptiveElements(true);
 					$delegatesContainer->addElement($delegateSelect);
 					$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.svg', true));
-					if ($i == 0) {
+					if ($i === 0) {
 						$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 					}
 					$delegatesContainer->addNewLine();
@@ -532,7 +532,7 @@ class kolabUser extends baseModule {
 				for ($p = 0; $p < count($pols); $p++) {
 					$parts = explode(":", $pols[$p]);
 					// default policy
-					if (count($parts) == 1) {
+					if (count($parts) === 1) {
 						if (!$defaultFound && get_preg($parts[0], 'email')) {
 							$partialAccounts[$i]['kolabInvitationPolicy'][] = $parts[0];
 						}
@@ -544,7 +544,7 @@ class kolabUser extends baseModule {
 						$defaultFound = true;
 					}
 					// additional policies
-					elseif (count($parts) == 2) {
+					elseif (count($parts) === 2) {
 						if (get_preg($parts[0], 'email') && in_array($parts[1], $policies)) {
 							$partialAccounts[$i]['kolabInvitationPolicy'][] = $pols[$p];
 						}
@@ -610,7 +610,7 @@ class kolabUser extends baseModule {
 			$pdfTable->rows[] = $pdfRow;
 			for ($i = 0; $i < count($this->attributes['kolabInvitationPolicy']); $i++) {
 				$parts = explode(':', $this->attributes['kolabInvitationPolicy'][$i]);
-				if (count($parts) == 2) {
+				if (count($parts) === 2) {
 					$pdfRow = new PDFTableRow();
 					$pdfRow->cells[] = new PDFTableCell($parts[0] . ": " . $this->invitationPolicies[$parts[1]]);
 					$pdfTable->rows[] = $pdfRow;
@@ -671,7 +671,7 @@ class kolabUser extends baseModule {
 					}
 				}
 			}
-			uksort($delegates, 'compareDN');
+			uksort($delegates, compareDN(...));
 			$_SESSION['kolabUser_kolabDelegate'] = $kolabDelegate;
 			$delegateContainer = new htmlTable();
 			for ($i = 0; $i < count($kolabDelegate); $i++) {
@@ -712,7 +712,7 @@ class kolabUser extends baseModule {
 			if (!empty($attributes['kolabInvitationPolicy'])) {
 				for ($i = 0; $i < count($attributes['kolabInvitationPolicy']); $i++) {
 					$parts = explode(":", $attributes['kolabInvitationPolicy'][$i]);
-					if (count($parts) == 1) {
+					if (count($parts) === 1) {
 						$defaultInvPol = $this->invitationPolicies[$attributes['kolabInvitationPolicy'][$i]];
 						unset($attributes['kolabInvitationPolicy'][$i]);
 						$attributes['kolabInvitationPolicy'] = array_values($attributes['kolabInvitationPolicy']);
@@ -731,7 +731,7 @@ class kolabUser extends baseModule {
 			if (!empty($attributes['kolabInvitationPolicy'])) {
 				for ($i = 0; $i < count($attributes['kolabInvitationPolicy']); $i++) {
 					$parts = explode(":", $attributes['kolabInvitationPolicy'][$i]);
-					if (count($parts) == 2) {
+					if (count($parts) === 2) {
 						if (!in_array('kolabDelegate', $readOnlyFields)) {
 							$newPolicyInput = new htmlInputField('invPol1' . $i, $parts[0]);
 							$newPolicyInput->setAccessibilityLabel(_('Invitation policy'));

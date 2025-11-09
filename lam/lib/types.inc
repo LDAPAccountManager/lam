@@ -274,7 +274,7 @@ class ConfiguredType {
 		if (!$found) {
 			$ret[] = $this->getSuffix();
 		}
-		usort($ret, 'compareDN');
+		usort($ret, compareDN(...));
 		return $ret;
 	}
 

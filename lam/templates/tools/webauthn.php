@@ -12,6 +12,7 @@ use \htmlSpacer;
 use \htmlStatusMessage;
 use \htmlTitle;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use LAM_INTERFACE;
 use Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
@@ -83,7 +84,7 @@ $registerButton = new htmlButton('register', _('Register new device'));
 $registerButton->addDataAttribute('dn', $userDn);
 $registerButton->addDataAttribute('sec_token_value', getSecurityTokenValue());
 $registerButton->addDataAttribute('sec_token_name', getSecurityTokenName());
-$registration = $webauthnManager->getRegistrationObject($userDn, false);
+$registration = $webauthnManager->getRegistrationObject($userDn, LAM_INTERFACE::ADMIN);
 $registrationJson = json_encode($registration, JSON_THROW_ON_ERROR);
 $_SESSION['webauthn_registration'] = $registrationJson;
 $registerButton->addDataAttribute('publickey', $registrationJson);

@@ -73,7 +73,7 @@ function in_array_ignore_case($needle, $haystack) {
 		return false;
 	}
 	foreach ($haystack as $element) {
-		if (is_string($element) && 0 == strcasecmp($needle, $element)) {
+		if (is_string($element) && 0 === strcasecmp($needle, $element)) {
 			return true;
 		}
 	}
@@ -379,35 +379,35 @@ function checkPasswordHash($type, $hash, $password) {
 			$bin = base64_decode($hash);
 			$salt = substr($bin, 20);
 			$pwdHash = base64_encode(hex2bin(sha1($password . $salt)) . $salt);
-			return (strcmp($hash, $pwdHash) == 0);
+			return (strcmp($hash, $pwdHash) === 0);
 		case 'SHA':
-			return (strcmp($hash, base64_encode(hex2bin(sha1($password)))) == 0);
+			return (strcmp($hash, base64_encode(hex2bin(sha1($password)))) === 0);
 		case 'SMD5':
 			$bin = base64_decode($hash);
 			$salt = substr($bin, 16);
 			$pwdHash = base64_encode(hex2bin(md5($password . $salt)) . $salt);
-			return (strcmp($hash, $pwdHash) == 0);
+			return (strcmp($hash, $pwdHash) === 0);
 		case 'MD5':
-			return (strcmp($hash, base64_encode(hex2bin(md5($password)))) == 0);
+			return (strcmp($hash, base64_encode(hex2bin(md5($password)))) === 0);
 		case 'CRYPT':
 			$parts = explode('$', $hash);
 			if (count($parts) === 1) {
 				$salt = substr($hash, 0, 2);
 				$pwdHash = crypt($password, $salt);
-				return (strcmp($hash, $pwdHash) == 0);
+				return (strcmp($hash, $pwdHash) === 0);
 			}
 			if (count($parts) === 4) {
 				$version = $parts[1];
 				$salt = $parts[2];
 				$pwdHash = crypt($password, '$' . $version . '$' . $salt);
-				return (strcmp($hash, $pwdHash) == 0);
+				return (strcmp($hash, $pwdHash) === 0);
 			}
 			elseif (count($parts) === 5) {
 				$version = $parts[1];
 				$rounds = $parts[2];
 				$salt = $parts[3];
 				$pwdHash = crypt($password, '$' . $version . '$' . $rounds . '$' . $salt);
-				return (strcmp($hash, $pwdHash) == 0);
+				return (strcmp($hash, $pwdHash) === 0);
 			}
 			return false;
 		case 'ARGON2ID':
@@ -742,7 +742,7 @@ function connectToLDAP($serverURL, $startTLS) {
 	// start TLS if possible
 	if ($startTLS) {
 		ldap_start_tls($server);
-		if (ldap_errno($server) != 0) {
+		if (ldap_errno($server) !== 0) {
 			ldap_close($server);
 			logNewMessage(LOG_ERR, 'Unable to start TLS encryption. Please check if your server certificate is valid and if the LDAP server supports TLS at all.');
 			return null;
@@ -787,7 +787,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
 			$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
-		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+		if (ldap_errno($_SESSION['ldap']->server()) === 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
 		$return = array_merge($return, $entries);
@@ -826,7 +826,7 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
 			$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
-		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+		if (ldap_errno($_SESSION['ldap']->server()) === 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
 		$return = array_merge($return, $entries);
@@ -849,7 +849,7 @@ function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
 	}
 	$return = searchLDAPPaged(getLDAPServerHandle(), $suffix, $filter, $attributes,
 		0, $limit);
-	if (ldap_errno(getLDAPServerHandle()) == 4) {
+	if (ldap_errno(getLDAPServerHandle()) === 4) {
 		logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 	}
 	return $return;
@@ -866,7 +866,7 @@ function getLDAPServerHandle() {
 		return $_SESSION['ldap']->server();
 	}
 	else {
-		// self-service
+		// self-service/white pages
 		return $_SESSION['ldapHandle']->getServer();
 	}
 }
@@ -1172,7 +1172,7 @@ function getAbstractDN($dn) {
 	$parts = explode(',', $dn);
 	for ($i = 0; $i < count($parts); $i++) {
 		$subparts = explode('=', $parts[$i]);
-		if (count($subparts) == 2) {
+		if (count($subparts) === 2) {
 			$parts[$i] = $subparts[1];
 		}
 	}
@@ -1187,7 +1187,7 @@ function getAbstractDN($dn) {
  * @return string unescaped DN
  */
 function unescapeLdapSpecialCharacters(string $dn): string {
-	return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', 'unescapeLdapSpecialCharactersCallback', $dn);
+	return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', unescapeLdapSpecialCharactersCallback(...), $dn);
 }
 
 /**
@@ -1834,7 +1834,7 @@ function getDefaultLDAPErrorString($server) {
 /**
  * Returns if the last LDAP error was due to expired password or forced password change (AD only).
  *
- * @param $server LDAP handle
+ * @param Connection $server LDAP handle
  * @return bool password expired
  */
 function ldapIsPasswordExpired($server): bool {
@@ -1948,7 +1948,7 @@ function formatSecondsToShortFormat($numSeconds) {
 		$years .= 'y';
 	}
 	$seconds = $numSeconds % 60;
-	$seconds = ($seconds == 0) ? '' : $seconds . 's';
+	$seconds = ($seconds === 0) ? '' : $seconds . 's';
 	$minutes = floor(($numSeconds % 3600) / 60);
 	$minutes = ($minutes == 0) ? '' : $minutes . 'm';
 	$hours = floor(($numSeconds % 86400) / 3600);
@@ -2002,7 +2002,7 @@ function unformatShortFormatToSeconds($text) {
  * @param boolean $check2ndFactor check if the 2nd factor was provided if required
  */
 function enforceUserIsLoggedIn($check2ndFactor = true) {
-	if ((!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) && empty($_SESSION['selfService_clientPassword'])) {
+	if ((!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) && empty($_SESSION['selfService_clientPassword']) && empty($_SESSION['whitePages_clientPassword'])) {
 		logNewMessage(LOG_WARNING, 'Detected unauthorized access to page that requires login: ' . $_SERVER["SCRIPT_FILENAME"]);
 		die();
 	}
@@ -2144,6 +2144,79 @@ class LAMException extends Exception {
 	 */
 	public function getLdapErrorCode() {
 		return $this->ldapErrorCode;
+	}
+
+}
+
+/**
+ * Color calculations
+ */
+class LamColorUtil {
+
+	/**
+	 * Adjusts the brightness of the given hex color (e.g. #123456).
+	 *
+	 * @param string $color hex color (e.g. #123456)
+	 * @param float $percentage percentage to darken (< 1 darkens, > 1 brightens)
+	 * @return string darker color (e.g. #123456)
+	 */
+	public static function adjustBrightness(string $color, float $percentage): string {
+		$color = self::parseColor($color);
+		// darken
+		$red = max(0, min(255, $color->red * $percentage));
+		$green = max(0, min(255, $color->green * $percentage));
+		$blue = max(0, min(255, $color->blue * $percentage));
+		return sprintf("#%02x%02x%02x", $red, $green, $blue);
+	}
+
+	/**
+	 * Returns the text color that should be used for the given background color.
+	 *
+	 * @param string $backgroundColor background color (e.g. #123456)
+	 * @return string text color (e.g. #000000)
+	 */
+	public static function getTextColor(string $backgroundColor): string {
+		$color = self::parseColor($backgroundColor);
+		if (($color->red + $color->blue + $color->green) > (127 * 3)) {
+			return '#000000';
+		}
+		return '#FFFFFF';
+	}
+
+	/**
+	 * Parses a color value.
+	 *
+	 * @param string $color color
+	 * @return LamColor color
+	 */
+	public static function parseColor(string $color): LamColor {
+		$color = str_replace("#", '', $color);
+		$red = hexdec(substr($color, 0, 2));
+		$green = hexdec(substr($color, 2, 2));
+		$blue = hexdec(substr($color, 4, 2));
+		return new LamColor($red, $green, $blue);
+	}
+
+}
+
+/**
+ * Color value.
+ */
+class LamColor {
+
+	public int $red;
+	public int $green;
+	public int $blue;
+
+	/**
+	 * @param int $red red
+	 * @param int $green green
+	 * @param int $blue blue
+	 */
+	public function __construct(int $red, int $green, int $blue) {
+		$this->red = $red;
+		$this->green = $green;
+		$this->blue = $blue;
 	}
 
 }

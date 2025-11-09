@@ -163,7 +163,8 @@ $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 
-if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && get_preg($_POST['scrollPositionTop'], 'digit')
+	&& isset($_POST['scrollPositionLeft']) && get_preg($_POST['scrollPositionLeft'], 'digit')) {
 	// scroll to last position
 	$buttonContainer->addElement(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
 }
@@ -367,7 +368,7 @@ function checkModuleInput(LAMConfig $conf): array {
 				$baseCount++;
 			}
 		}
-		if ($baseCount != 1) {
+		if ($baseCount !== 1) {
 			$errors[] = ['ERROR', $type->getAlias(), _("No or more than one base module selected!")];
 		}
 	}

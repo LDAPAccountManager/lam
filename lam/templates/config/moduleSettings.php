@@ -83,7 +83,7 @@ $errorsToDisplay = checkInput();
 if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 		|| isset($_POST['edittypes']) || isset($_POST['generalSettingsButton'])
 		|| isset($_POST['moduleSettings']) || isset($_POST['jobs']))
-    && (count($errorsToDisplay) == 0)) {
+    && (count($errorsToDisplay) === 0)) {
 	// go to final page
 	if (isset($_POST['saveSettings'])) {
 		metaRefresh("confsave.php");
@@ -195,7 +195,8 @@ $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 
-if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
+if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && get_preg($_POST['scrollPositionTop'], 'digit')
+        && isset($_POST['scrollPositionLeft']) && get_preg($_POST['scrollPositionLeft'], 'digit')) {
 	// scroll to last position
 	$buttonContainer->addElement(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
 }

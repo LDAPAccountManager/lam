@@ -126,7 +126,7 @@ class ObjectClass extends SchemaItem {
 					if ($strings[$i + 1] !== "(") {
 						do {
 							$i++;
-							if (($this->name === null) || (strlen($this->name) == 0)) {
+							if (($this->name === null) || ((string) $this->name === '')) {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -139,7 +139,7 @@ class ObjectClass extends SchemaItem {
 						$i++;
 						do {
 							$i++;
-							if (($this->name === null) || (strlen($this->name) == 0)) {
+							if (($this->name === null) || ((string) $this->name === '')) {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -158,7 +158,7 @@ class ObjectClass extends SchemaItem {
 				case 'DESC':
 					do {
 						$i++;
-						if (($this->description === null) || (strlen($this->description) == 0)) {
+						if (($this->description === null) || ((string) $this->description === '')) {
 							$this->description = $strings[$i];
 						}
 						else {
@@ -260,7 +260,7 @@ class ObjectClass extends SchemaItem {
 					sort($this->may_attrs);
 					break;
 				default:
-					if (preg_match('/[\d\.]+/i', $strings[$i]) && $i == 1) {
+					if (preg_match('/[\d\.]+/i', $strings[$i]) && $i === 1) {
 						$this->oid = $strings[$i];
 					}
 			}
@@ -391,7 +391,7 @@ class ObjectClass extends SchemaItem {
 			$this->children_objectclasses = [];
 		}
 		foreach ($this->children_objectclasses as $existing_objectclass)
-			if (0 == strcasecmp($object_class_name, $existing_objectclass)) {
+			if (0 === strcasecmp($object_class_name, $existing_objectclass)) {
 				return false;
 			}
 		$this->children_objectclasses[] = $object_class_name;
@@ -562,7 +562,7 @@ class AttributeType extends SchemaItem {
 					if ($strings[$i + 1] !== "(") {
 						do {
 							$i++;
-							if (($this->name === null) || (strlen($this->name) == 0)) {
+							if (($this->name === null) || ((string) $this->name === '')) {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -653,7 +653,7 @@ class AttributeType extends SchemaItem {
 					$this->usage = $strings[$i];
 					break;
 				default:
-					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i == 1) {
+					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i === 1) {
 						$this->oid = $strings[$i];
 					}
 			}
@@ -754,7 +754,7 @@ class AttributeType extends SchemaItem {
 	 */
 	function isAliasFor($attr_name) {
 		foreach ($this->aliases as $alias_attr_name)
-			if (0 == strcasecmp($alias_attr_name, $attr_name)) {
+			if (0 === strcasecmp($alias_attr_name, $attr_name)) {
 				return true;
 			}
 		return false;
@@ -837,7 +837,7 @@ class AttributeType extends SchemaItem {
 	 */
 	function removeAlias($remove_alias_name) {
 		foreach ($this->aliases as $i => $alias_name) {
-			if (0 == strcasecmp($alias_name, $remove_alias_name)) {
+			if (0 === strcasecmp($alias_name, $remove_alias_name)) {
 				unset($this->aliases[$i]);
 				$this->aliases = array_values($this->aliases);
 				return true;
@@ -893,7 +893,7 @@ class AttributeType extends SchemaItem {
 	 */
 	function addUsedInObjectClass($object_class_name) {
 		foreach ($this->used_in_object_classes as $used_in_object_class)
-			if (0 == strcasecmp($used_in_object_class, $object_class_name)) {
+			if (0 === strcasecmp($used_in_object_class, $object_class_name)) {
 				return false;
 			}
 		$this->used_in_object_classes[] = $object_class_name;
@@ -916,7 +916,7 @@ class AttributeType extends SchemaItem {
 	 */
 	function addRequiredByObjectClass($object_class_name) {
 		foreach ($this->required_by_object_classes as $required_by_object_class)
-			if (0 == strcasecmp($required_by_object_class, $object_class_name)) {
+			if (0 === strcasecmp($required_by_object_class, $object_class_name)) {
 				return false;
 			}
 		$this->required_by_object_classes[] = $object_class_name;
@@ -995,7 +995,7 @@ class Syntax extends SchemaItem {
 					while (!preg_match("/\'$/", $strings[$i]));
 					break;
 				default:
-					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i == 1) {
+					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i === 1) {
 						$this->oid = $strings[$i];
 					}
 			}
@@ -1058,7 +1058,7 @@ class MatchingRule extends SchemaItem {
 						$i++;
 						do {
 							$i++;
-							if (strlen($this->name) == 0) {
+							if ((string) $this->name === '') {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -1077,7 +1077,7 @@ class MatchingRule extends SchemaItem {
 				case 'DESC':
 					do {
 						$i++;
-						if (strlen($this->description) == 0) {
+						if ((string) $this->description === '') {
 							$this->description .= $strings[$i];
 						}
 						else {
@@ -1093,7 +1093,7 @@ class MatchingRule extends SchemaItem {
 					$this->syntax = $strings[++$i];
 					break;
 				default:
-					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i == 1) {
+					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i === 1) {
 						$this->oid = $strings[$i];
 					}
 			}
@@ -1119,7 +1119,7 @@ class MatchingRule extends SchemaItem {
 	 */
 	function addUsedByAttr($new_attr_name): bool {
 		foreach ($this->used_by_attrs as $attr_name)
-			if (0 == strcasecmp($attr_name, $new_attr_name)) {
+			if (0 === strcasecmp($attr_name, $new_attr_name)) {
 				return false;
 			}
 		$this->used_by_attrs[] = $new_attr_name;
@@ -1182,7 +1182,7 @@ class MatchingRuleUse extends SchemaItem {
 					if ($strings[$i + 1] !== "(") {
 						do {
 							$i++;
-							if ($this->name === null || strlen($this->name) == 0) {
+							if ($this->name === null || (string) $this->name === '') {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -1195,7 +1195,7 @@ class MatchingRuleUse extends SchemaItem {
 						$i++;
 						do {
 							$i++;
-							if (strlen($this->name) == 0) {
+							if ((string) $this->name === '') {
 								$this->name = $strings[$i];
 							}
 							else {
@@ -1233,7 +1233,7 @@ class MatchingRuleUse extends SchemaItem {
 					}
 					break;
 				default:
-					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i == 1) {
+					if (preg_match("/[\d\.]+/i", $strings[$i]) && $i === 1) {
 						$this->oid = $strings[$i];
 					}
 			}
@@ -1290,7 +1290,7 @@ function _get_schema_dn($dn, $debug = false): bool|string {
 		return false;
 	}
 
-	if (@ldap_count_entries($ds, $search) == 0) {
+	if (@ldap_count_entries($ds, $search) === 0) {
 		if ($debug) {
 			echo "_get_schema_dn() returning false (ldap_count_entries() == 0).\n";
 		}
@@ -1383,7 +1383,7 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 		// Were we not able to fetch the schema from the $schema_dn?
 		$schema_entries = $schema_search !== false ? @ldap_get_entries($ds, $schema_search) : [];
 		if ($schema_search === false ||
-			0 == @ldap_count_entries($ds, $schema_search) ||
+			0 === @ldap_count_entries($ds, $schema_search) ||
 			!isset($schema_entries[0][$schema_to_fetch])) {
 			// Try again with a different filter (some servers require (objectClass=subschema) like M-Vault)
 			$schema_search = @ldap_read($ds, $schema_dn, '(objectClass=subschema)',
@@ -1394,7 +1394,7 @@ function _get_raw_schema($schema_to_fetch, $dn = '') {
 			}
 			// Still didn't get it?
 			if ($schema_search === false ||
-				0 == @ldap_count_entries($ds, $schema_search) ||
+				0 === @ldap_count_entries($ds, $schema_search) ||
 				!isset($schema_entries[0][$schema_to_fetch])) {
 				unset($schema_entries);
 				unset($schema_dn);
@@ -1541,7 +1541,7 @@ function get_schema_objectclasses($dn = null, $use_cache = true): array|false {
 	// build the array of objectClasses
 	$object_classes = [];
 	foreach ($raw_oclasses as $class_string) {
-		if ($class_string == null || 0 == strlen($class_string)) {
+		if ($class_string === null || (string) $class_string === '') {
 			continue;
 		}
 		$object_class = new ObjectClass($class_string);
@@ -1609,7 +1609,7 @@ function get_schema_attributes($dn = null, $use_cache = true): array {
 	 */
 	$attrs_oid = [];
 	foreach ($raw_attrs as $attr_string) {
-		if ($attr_string == null || 0 == strlen($attr_string)) {
+		if ($attr_string === null || (string) $attr_string === '') {
 			continue;
 		}
 		$attr = new AttributeType($attr_string);
@@ -1742,7 +1742,7 @@ function add_sup_to_attrs(&$attrs, &$attrs_oid) {
 				$sup_attr_name = $sup_attr->getSupAttribute();
 
 				// Does this superior attributeType not have a superior attributeType?
-				if (null == $sup_attr_name || strlen(trim($sup_attr_name)) == 0) {
+				if (null == $sup_attr_name || trim($sup_attr_name) === '') {
 
 					// Since this attribute's superior attribute does not have another superior
 					// attribute, clone its properties for this attribute. Then, replace
@@ -1800,7 +1800,7 @@ function get_schema_matching_rules($dn = null, $use_cache = true) {
 	}
 	$rules = [];
 	foreach ($raw_matching_rules as $rule_string) {
-		if ($rule_string == null || 0 == strlen($rule_string)) {
+		if ($rule_string === null || (string) $rule_string === '') {
 			continue;
 		}
 		$rule = new MatchingRule($rule_string);
@@ -1815,7 +1815,7 @@ function get_schema_matching_rules($dn = null, $use_cache = true) {
 	$raw_matching_rule_use = _get_raw_schema('matchingRuleUse');
 	if ($raw_matching_rule_use !== false) {
 		foreach ($raw_matching_rule_use as $rule_use_string) {
-			if ($rule_use_string == null || 0 == strlen($rule_use_string)) {
+			if ($rule_use_string === null || (string) $rule_use_string === '') {
 				continue;
 			}
 			$rule_use = new MatchingRuleUse($rule_use_string);

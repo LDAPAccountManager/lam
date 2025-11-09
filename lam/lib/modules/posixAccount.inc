@@ -510,7 +510,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$this->groups_orig = [];
 		// list of all group names
 		$groups = $this->findGroups($modules);
-		if (count($groups) == 0) {
+		if (count($groups) === 0) {
 			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'));
 			return;
 		}
@@ -836,12 +836,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'INFO') || ($singleresult[0] === 'WARN')) {
-						$messages[] = $singleresult;
-					}
-					else {
-						$messages[] = ['ERROR', $result[0]];
-					}
+					$messages[] = in_array($singleresult[0], ['ERROR', 'INFO', 'WARN'], true) ? $singleresult : ['ERROR', $result];
 				}
 			}
 		}
@@ -872,7 +867,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'INFO') || ($singleresult[0] === 'WARN')) {
+					if (in_array($singleresult[0], ['ERROR', 'INFO', 'WARN'], true)) {
 						$messages[] = $singleresult;
 					}
 				}
@@ -905,7 +900,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'INFO') || ($singleresult[0] === 'WARN')) {
+					if (in_array($singleresult[0], ['ERROR', 'INFO', 'WARN'], true)) {
 						$messages[] = $singleresult;
 					}
 				}
@@ -1102,7 +1097,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
+					if (in_array($singleresult[0], ['ERROR', 'WARN', 'INFO'], true)) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1157,7 +1152,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			return $errors;
 		}
 		$groups = $this->findGroups($modules); // list of all group names
-		if (count($groups) == 0) {
+		if (count($groups) === 0) {
 			// abort if no groups were found
 			return [];
 		}
@@ -1487,7 +1482,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'];
-			array_map('trim', $namesToIgnore);
+			array_map(trim(...), $namesToIgnore);
 		}
 		// remove all groups that are not in Unix
 		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
@@ -1540,7 +1535,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'];
-			array_map('trim', $namesToIgnore);
+			array_map(trim(...), $namesToIgnore);
 		}
 		// remove all groups that are not in group of names
 		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
@@ -1590,7 +1585,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'];
-			array_map('trim', $namesToIgnore);
+			array_map(trim(...), $namesToIgnore);
 		}
 		// remove all groups that are not in Windows groups
 		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
@@ -1683,7 +1678,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
+					if (in_array($singleresult[0], ['ERROR', 'WARN', 'INFO'], true)) {
 						$return[] = $singleresult;
 					}
 				}
@@ -1712,7 +1707,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (($singleresult[0] === 'ERROR') || ($singleresult[0] === 'WARN') || ($singleresult[0] === 'INFO')) {
+					if (in_array($singleresult[0], ['ERROR', 'WARN', 'INFO'], true)) {
 						$return[] = $singleresult;
 					}
 				}
@@ -2030,14 +2025,14 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$selectedGons[getAbstractDN($this->gonList[$i])] = $this->gonList[$i];
 				}
 			}
-			uksort($selectedGons, 'compareDN');
+			uksort($selectedGons, compareDN(...));
 			$availableGons = [];
 			foreach ($gons as $dn => $attr) {
 				if (!in_array($dn, $this->gonList)) {
 					$availableGons[getAbstractDN($dn)] = $dn;
 				}
 			}
-			uksort($availableGons, 'compareDN');
+			uksort($availableGons, compareDN(...));
 
 			$this->addDoubleSelectionArea($gonContainer, _("Selected groups"), _("Available groups"),
 				$selectedGons, [], $availableGons, [], 'gon', true, true);
@@ -2138,7 +2133,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					if (isset($messageParams[2])) {
 						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]), htmlspecialchars($messageParams[2]));
 					}
-					elseif (($messageParams[0] === 'ERROR') || ($messageParams[0] === 'WARN') || ($messageParams[0] === 'INFO')) {
+					elseif (in_array($messageParams[0], ['ERROR', 'WARN', 'INFO'], true)) {
 						$message = new htmlStatusMessage($messageParams[0], htmlspecialchars($messageParams[1]));
 					}
 					else {
@@ -2344,7 +2339,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			for ($i = 0; $i < count($this->gonList); $i++) {
 				$gons[] = $this->gonList[$i];
 			}
-			usort($gons, 'compareDN');
+			usort($gons, compareDN(...));
 			$gonCount = count($gons);
 			for ($i = 0; $i < $gonCount; $i++) {
 				$gons[$i] = getAbstractDN($gons[$i]);
@@ -3267,7 +3262,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}  // ignore UIDs > maxID and UIDs < minID
 		}
 		for ($i = 0; $i < $count; $i++) {
-			if (count($uids) != 0) {
+			if (count($uids) !== 0) {
 				// there already are some uids
 				// store highest id-number
 				$id = $uids[count($uids) - 1];
@@ -3328,7 +3323,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$ldapHandle = $_SESSION['ldap']->server();
 			ldap_modify($ldapHandle, $dn, ['uidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
-			if (ldap_errno($ldapHandle) != 0) {
+			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
 				return null;
 			}
@@ -3361,7 +3356,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$ldapHandle = $_SESSION['ldap']->server();
 			ldap_modify($ldapHandle, $dn, ['mssfu30maxuidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
-			if (ldap_errno($ldapHandle) != 0) {
+			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
 				return null;
 			}
