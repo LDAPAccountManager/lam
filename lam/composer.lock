@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.8",
+            "version": "3.359.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "3efa8c62c11fedb17b90f60b2d3a9f815b406e63"
+                "reference": "a5be7ed5efd25d70a74275daeff896b896d9c286"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3efa8c62c11fedb17b90f60b2d3a9f815b406e63",
-                "reference": "3efa8c62c11fedb17b90f60b2d3a9f815b406e63",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a5be7ed5efd25d70a74275daeff896b896d9c286",
+                "reference": "a5be7ed5efd25d70a74275daeff896b896d9c286",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "guzzlehttp/psr7": "^2.4.5",
                 "mtdowling/jmespath.php": "^2.8.0",
                 "php": ">=8.1",
-                "psr/http-message": "^2.0"
+                "psr/http-message": "^1.0 || ^2.0"
             },
             "require-dev": {
                 "andrewsville/php-token-reflection": "^1.4",
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.8"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.359.8"
             },
-            "time": "2025-08-29T18:06:18+00:00"
+            "time": "2025-11-07T19:48:19+00:00"
         },
         {
             "name": "brick/math",
@@ -5334,13 +5334,13 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.1"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
