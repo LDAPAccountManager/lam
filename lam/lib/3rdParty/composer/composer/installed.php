@@ -20,9 +20,9 @@
             'dev_requirement' => false,
         ),
         'aws/aws-sdk-php' => array(
-            'pretty_version' => '3.356.8',
-            'version' => '3.356.8.0',
-            'reference' => '3efa8c62c11fedb17b90f60b2d3a9f815b406e63',
+            'pretty_version' => '3.359.8',
+            'version' => '3.359.8.0',
+            'reference' => 'a5be7ed5efd25d70a74275daeff896b896d9c286',
             'type' => 'library',
             'install_path' => __DIR__ . '/../aws/aws-sdk-php',
             'aliases' => array(),
@@ -257,18 +257,18 @@
             'dev_requirement' => false,
         ),
         'phpmailer/phpmailer' => array(
-            'pretty_version' => 'v6.10.0',
-            'version' => '6.10.0.0',
-            'reference' => 'bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144',
+            'pretty_version' => 'v6.12.0',
+            'version' => '6.12.0.0',
+            'reference' => 'd1ac35d784bf9f5e61b424901d5a014967f15b12',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpmailer/phpmailer',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'phpseclib/phpseclib' => array(
-            'pretty_version' => '3.0.46',
-            'version' => '3.0.46.0',
-            'reference' => '56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6',
+            'pretty_version' => '3.0.47',
+            'version' => '3.0.47.0',
+            'reference' => '9d6ca36a6c2dd434765b1071b2644a1c683b385d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpseclib/phpseclib',
             'aliases' => array(),
@@ -344,9 +344,9 @@
         'psr/http-factory-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '^1.0',
-                1 => '*',
-                2 => '1.0',
+                0 => '*',
+                1 => '1.0',
+                2 => '^1.0',
             ),
         ),
         'psr/http-message' => array(
@@ -395,8 +395,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '3.0.0',
-                1 => '1.0|2.0|3.0',
+                0 => '1.0|2.0|3.0',
+                1 => '3.0.0',
             ),
         ),
         'psr/simple-cache' => array(
@@ -481,9 +481,9 @@
             'dev_requirement' => false,
         ),
         'symfony/http-client' => array(
-            'pretty_version' => 'v6.4.25',
-            'version' => '6.4.25.0',
-            'reference' => 'b8e9dce2d8acba3c32af467bb58e0c3656886181',
+            'pretty_version' => 'v6.4.28',
+            'version' => '6.4.28.0',
+            'reference' => 'c9e69c185c4a845f9d46958cdb0dc7aa847f3981',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/http-client',
             'aliases' => array(),
@@ -505,9 +505,9 @@
             ),
         ),
         'symfony/http-foundation' => array(
-            'pretty_version' => 'v6.4.25',
-            'version' => '6.4.25.0',
-            'reference' => '6bc974c0035b643aa497c58d46d9e25185e4b272',
+            'pretty_version' => 'v6.4.28',
+            'version' => '6.4.28.0',
+            'reference' => '1ba1d5fe6465b0fa39c8627ba552b2c29301aa81',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/http-foundation',
             'aliases' => array(),

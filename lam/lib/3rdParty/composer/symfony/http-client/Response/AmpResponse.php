@@ -140,12 +140,12 @@ final class AmpResponse implements ResponseInterface, StreamableInterface
         return null !== $type ? $this->info[$type] ?? null : $this->info;
     }
 
-    public function __sleep(): array
+    public function __serialize(): array
     {
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }
 
-    public function __wakeup(): void
+    public function __unserialize(array $data): void
     {
         throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
     }
@@ -329,6 +329,10 @@ final class AmpResponse implements ResponseInterface, StreamableInterface
             $request->setTcpConnectTimeout($originRequest->getTcpConnectTimeout());
             $request->setTlsHandshakeTimeout($originRequest->getTlsHandshakeTimeout());
             $request->setTransferTimeout($originRequest->getTransferTimeout());
+            $request->setBodySizeLimit(0);
+            if (method_exists($request, 'setInactivityTimeout')) {
+                $request->setInactivityTimeout(0);
+            }
 
             if (303 === $status || \in_array($status, [301, 302], true) && 'POST' === $response->getRequest()->getMethod()) {
                 // Do like curl and browsers: turn POST to GET on 301, 302 and 303
