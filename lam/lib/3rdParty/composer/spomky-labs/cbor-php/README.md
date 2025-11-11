@@ -1,11 +1,7 @@
 CBOR for PHP
 ============
 
-![Build Status](https://github.com/Spomky-Labs/cbor-php/workflows/Unit%20and%20Functional%20Tests/badge.svg)
-![Build Status](https://github.com/Spomky-Labs/cbor-php/workflows/Mutation%20Testing/badge.svg)
-
-![Coding Standards](https://github.com/Spomky-Labs/cbor-php/workflows/Coding%20Standards/badge.svg)
-![Static Analyze](https://github.com/Spomky-Labs/cbor-php/workflows/Static%20Analyze/badge.svg)
+![Build Status](https://github.com/Spomky-Labs/cbor-php/workflows/Integrate/badge.svg)
 
 [![Latest Stable Version](https://poser.pugx.org/Spomky-Labs/cbor-php/v)](//packagist.org/packages/Spomky-Labs/cbor-php)
 [![Total Downloads](https://poser.pugx.org/Spomky-Labs/cbor-php/downloads)](//packagist.org/packages/Spomky-Labs/cbor-php)

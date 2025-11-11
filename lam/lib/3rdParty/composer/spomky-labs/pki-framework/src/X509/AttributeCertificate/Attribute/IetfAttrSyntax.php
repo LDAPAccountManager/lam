@@ -62,12 +62,7 @@ abstract class IetfAttrSyntax extends AttributeValue implements Countable, Itera
             );
             ++$idx;
         }
-        $values = array_map(
-            static fn (UnspecifiedType $el) => IetfAttrValue::fromASN1($el),
-            $seq->at($idx)
-                ->asSequence()
-                ->elements()
-        );
+        $values = array_map(IetfAttrValue::fromASN1(...), $seq->at($idx) ->asSequence() ->elements());
         $obj = static::create(...$values);
         $obj->_policyAuthority = $authority;
         return $obj;

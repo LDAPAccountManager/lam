@@ -55,7 +55,7 @@ final class RSAEncryptionAlgorithmIdentifier extends SpecificAlgorithmIdentifier
     /**
      * @return NullType
      */
-    protected function paramsASN1(): ?Element
+    protected function paramsASN1(): Element
     {
         return NullType::create();
     }

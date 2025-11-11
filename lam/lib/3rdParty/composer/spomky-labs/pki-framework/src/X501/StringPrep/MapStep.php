@@ -17,7 +17,7 @@ final class MapStep implements PrepareStep
      * @param bool $fold Whether to apply case folding
      */
     private function __construct(
-        protected bool $fold
+        private readonly bool $fold
     ) {
     }
 

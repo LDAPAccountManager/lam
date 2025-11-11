@@ -154,7 +154,7 @@ final class ExtendedKeyUsageExtension extends Extension implements Countable, It
 
     protected function valueASN1(): Element
     {
-        $elements = array_map(static fn ($oid) => ObjectIdentifier::create($oid), $this->purposes);
+        $elements = array_map(ObjectIdentifier::create(...), $this->purposes);
         return Sequence::create(...$elements);
     }
 }

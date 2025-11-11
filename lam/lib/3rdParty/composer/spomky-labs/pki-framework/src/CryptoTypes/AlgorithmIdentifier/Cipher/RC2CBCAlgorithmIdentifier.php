@@ -167,7 +167,7 @@ final class RC2CBCAlgorithmIdentifier extends BlockCipherAlgorithmIdentifier
     /**
      * @return Sequence
      */
-    protected function paramsASN1(): ?Element
+    protected function paramsASN1(): Element
     {
         if ($this->effectiveKeyBits >= 256) {
             $version = $this->effectiveKeyBits;

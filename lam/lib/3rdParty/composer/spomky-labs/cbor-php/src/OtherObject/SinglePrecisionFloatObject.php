@@ -19,6 +19,21 @@ final class SinglePrecisionFloatObject extends Base
         return [self::OBJECT_SINGLE_PRECISION_FLOAT];
     }
 
+    public static function createFromFloat(float $number): self
+    {
+        $value = match (true) {
+            is_nan($number) => hex2bin('7FC00000'),
+            is_infinite($number) && $number > 0 => hex2bin('7F800000'),
+            is_infinite($number) && $number < 0 => hex2bin('FF800000'),
+            default => (fn (): string => unpack('S', "\x01\x00")[1] === 1 ? strrev(pack('f', $number)) : pack(
+                'f',
+                $number
+            ))(),
+        };
+
+        return new self(self::OBJECT_SINGLE_PRECISION_FLOAT, $value);
+    }
+
     public static function createFromLoadedData(int $additionalInformation, ?string $data): Base
     {
         return new self($additionalInformation, $data);

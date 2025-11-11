@@ -14,7 +14,7 @@ final class UnsignedIntegerObject extends AbstractCBORObject implements Normaliz
 
     public function __construct(
         int $additionalInformation,
-        private ?string $data
+        private readonly ?string $data
     ) {
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
     }
@@ -58,18 +58,25 @@ final class UnsignedIntegerObject extends AbstractCBORObject implements Normaliz
         return self::MAJOR_TYPE;
     }
 
-    public function getValue(): string
+    /**
+     * @return numeric-string|int
+     */
+    public function getValue(): string|int
     {
         if ($this->data === null) {
-            return (string) $this->additionalInformation;
+            return $this->additionalInformation;
         }
 
         $integer = BigInteger::fromBase(bin2hex($this->data), 16);
-
-        return $integer->toBase(10);
+        $valueAsString = $integer->toBase(10);
+        $valueAsInt = (int) $valueAsString;
+        return (string) $valueAsInt === $valueAsString ? $valueAsInt : $valueAsString;
     }
 
-    public function normalize(): string
+    /**
+     * @return numeric-string|int
+     */
+    public function normalize(): string|int
     {
         return $this->getValue();
     }

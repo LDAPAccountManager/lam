@@ -20,6 +20,21 @@ final class DoublePrecisionFloatObject extends Base implements Normalizable
         return [self::OBJECT_DOUBLE_PRECISION_FLOAT];
     }
 
+    public static function createFromFloat(float $number): self
+    {
+        $value = match (true) {
+            is_nan($number) => hex2bin('7FF8000000000000'),
+            is_infinite($number) && $number > 0 => hex2bin('7FF0000000000000'),
+            is_infinite($number) && $number < 0 => hex2bin('FFF0000000000000'),
+            default => (fn (): string => unpack('S', "\x01\x00")[1] === 1 ? strrev(pack('d', $number)) : pack(
+                'd',
+                $number
+            ))(),
+        };
+
+        return new self(self::OBJECT_DOUBLE_PRECISION_FLOAT, $value);
+    }
+
     public static function createFromLoadedData(int $additionalInformation, ?string $data): Base
     {
         return new self($additionalInformation, $data);

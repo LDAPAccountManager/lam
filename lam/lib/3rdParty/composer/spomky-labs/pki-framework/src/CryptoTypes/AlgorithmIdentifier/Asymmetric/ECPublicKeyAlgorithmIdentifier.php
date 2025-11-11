@@ -282,7 +282,7 @@ final class ECPublicKeyAlgorithmIdentifier extends SpecificAlgorithmIdentifier i
     /**
      * @return ObjectIdentifier
      */
-    protected function paramsASN1(): ?Element
+    protected function paramsASN1(): Element
     {
         return ObjectIdentifier::create($this->namedCurve);
     }

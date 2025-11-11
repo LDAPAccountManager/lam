@@ -27,7 +27,7 @@ final class IndefiniteLengthByteStringObject extends AbstractCBORObject implemen
     {
         $result = parent::__toString();
         foreach ($this->chunks as $chunk) {
-            $result .= $chunk->__toString();
+            $result .= (string) $chunk;
         }
 
         return $result . "\xFF";

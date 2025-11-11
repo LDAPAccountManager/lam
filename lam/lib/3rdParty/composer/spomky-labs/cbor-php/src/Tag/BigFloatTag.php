@@ -78,6 +78,6 @@ final class BigFloatTag extends Tag implements Normalizable
         /** @var UnsignedIntegerObject|NegativeIntegerObject|NegativeBigIntegerTag|UnsignedBigIntegerTag $m */
         $m = $object->get(1);
 
-        return rtrim(bcmul($m->normalize(), bcpow('2', $e->normalize(), 100), 100), '0');
+        return rtrim(bcmul((string) $m->normalize(), bcpow('2', (string) $e->normalize(), 100), 100), '0');
     }
 }

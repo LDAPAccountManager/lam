@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CBOR\Tag;
 
 use CBOR\CBORObject;
-use CBOR\Tag;
 use CBOR\Utils;
 use InvalidArgumentException;
 use function array_key_exists;
@@ -13,15 +12,24 @@ use function array_key_exists;
 final class TagManager implements TagManagerInterface
 {
     /**
-     * @var string[]
+     * @param class-string<TagInterface>[] $classes
      */
-    private array $classes = [];
-
-    public static function create(): self
-    {
-        return new self();
+    public function __construct(
+        private array $classes = []
+    ) {
     }
 
+    /**
+     * @param array<class-string<TagInterface>> $classes
+     */
+    public static function create(array $classes = []): self
+    {
+        return new self($classes);
+    }
+
+    /**
+     * @param class-string<TagInterface> $class
+     */
     public function add(string $class): self
     {
         if ($class::getTagId() < 0) {
@@ -32,6 +40,9 @@ final class TagManager implements TagManagerInterface
         return $this;
     }
 
+    /**
+     * @return class-string<TagInterface>
+     */
     public function getClassForValue(int $value): string
     {
         return array_key_exists($value, $this->classes) ? $this->classes[$value] : GenericTag::class;
@@ -44,7 +55,6 @@ final class TagManager implements TagManagerInterface
             Utils::assertString($data, 'Invalid data');
             $value = Utils::binToInt($data);
         }
-        /** @var Tag $class */
         $class = $this->getClassForValue($value);
 
         return $class::createFromLoadedData($additionalInformation, $data, $object);

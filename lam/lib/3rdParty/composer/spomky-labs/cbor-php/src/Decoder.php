@@ -38,7 +38,7 @@ use function ord;
 use function sprintf;
 use const STR_PAD_LEFT;
 
-final class Decoder implements DecoderInterface
+final readonly class Decoder implements DecoderInterface
 {
     private TagManagerInterface $tagObjectManager;
 
@@ -199,28 +199,28 @@ final class Decoder implements DecoderInterface
 
     private function generateTagManager(): TagManagerInterface
     {
-        return TagManager::create()
-            ->add(DatetimeTag::class)
-            ->add(TimestampTag::class)
+        return TagManager::create([
+            DatetimeTag::class,
+            TimestampTag::class,
 
-            ->add(UnsignedBigIntegerTag::class)
-            ->add(NegativeBigIntegerTag::class)
+            UnsignedBigIntegerTag::class,
+            NegativeBigIntegerTag::class,
 
-            ->add(DecimalFractionTag::class)
-            ->add(BigFloatTag::class)
+            DecimalFractionTag::class,
+            BigFloatTag::class,
 
-            ->add(Base64UrlEncodingTag::class)
-            ->add(Base64EncodingTag::class)
-            ->add(Base16EncodingTag::class)
-            ->add(CBOREncodingTag::class)
+            Base64UrlEncodingTag::class,
+            Base64EncodingTag::class,
+            Base16EncodingTag::class,
+            CBOREncodingTag::class,
 
-            ->add(UriTag::class)
-            ->add(Base64UrlTag::class)
-            ->add(Base64Tag::class)
-            ->add(MimeTag::class)
+            UriTag::class,
+            Base64UrlTag::class,
+            Base64Tag::class,
+            MimeTag::class,
 
-            ->add(CBORTag::class)
-        ;
+            CBORTag::class,
+        ]);
     }
 
     private function generateOtherObjectManager(): OtherObjectManagerInterface

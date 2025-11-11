@@ -55,7 +55,7 @@ final class RSAPSSSSAEncryptionAlgorithmIdentifier extends SpecificAlgorithmIden
     /**
      * @return NullType
      */
-    protected function paramsASN1(): ?Element
+    protected function paramsASN1(): Element
     {
         return NullType::create();
     }

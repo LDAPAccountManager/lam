@@ -79,6 +79,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
             'Psr\\Container\\' => 14,
             'Psr\\Clock\\' => 10,
             'Psr\\Cache\\' => 10,
+            'ParagonIE\\Sodium\\' => 17,
             'ParagonIE\\ConstantTime\\' => 23,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
@@ -266,6 +267,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'ParagonIE\\Sodium\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paragonie/sodium_compat/namespaced',
         ),
         'ParagonIE\\ConstantTime\\' => 
         array (

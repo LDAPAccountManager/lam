@@ -74,7 +74,7 @@ final class NoticeReference
     public function toASN1(): Sequence
     {
         $org = $this->organization->toASN1();
-        $nums = array_map(static fn ($number) => Integer::create($number), $this->numbers);
+        $nums = array_map(Integer::create(...), $this->numbers);
         return Sequence::create($org, Sequence::create(...$nums));
     }
 }

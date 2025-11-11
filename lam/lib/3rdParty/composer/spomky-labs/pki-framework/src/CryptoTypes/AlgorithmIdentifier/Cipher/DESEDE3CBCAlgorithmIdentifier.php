@@ -76,7 +76,7 @@ final class DESEDE3CBCAlgorithmIdentifier extends BlockCipherAlgorithmIdentifier
     /**
      * @return OctetString
      */
-    protected function paramsASN1(): ?Element
+    protected function paramsASN1(): Element
     {
         if (! isset($this->initializationVector)) {
             throw new LogicException('IV not set.');

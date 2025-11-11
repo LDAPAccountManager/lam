@@ -169,11 +169,11 @@ final class AAControlsExtension extends Extension
             $elements[] = Integer::create($this->pathLenConstraint);
         }
         if (isset($this->permittedAttrs)) {
-            $oids = array_map(static fn ($oid) => ObjectIdentifier::create($oid), $this->permittedAttrs);
+            $oids = array_map(ObjectIdentifier::create(...), $this->permittedAttrs);
             $elements[] = ImplicitlyTaggedType::create(0, Sequence::create(...$oids));
         }
         if (isset($this->excludedAttrs)) {
-            $oids = array_map(static fn ($oid) => ObjectIdentifier::create($oid), $this->excludedAttrs);
+            $oids = array_map(ObjectIdentifier::create(...), $this->excludedAttrs);
             $elements[] = ImplicitlyTaggedType::create(1, Sequence::create(...$oids));
         }
         if ($this->permitUnSpecified !== true) {

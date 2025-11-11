@@ -13,7 +13,7 @@ final class TextStringObject extends AbstractCBORObject implements Normalizable
 
     private ?string $length = null;
 
-    private string $data;
+    private readonly string $data;
 
     public function __construct(string $data)
     {
@@ -27,9 +27,7 @@ final class TextStringObject extends AbstractCBORObject implements Normalizable
     public function __toString(): string
     {
         $result = parent::__toString();
-        if ($this->length !== null) {
-            $result .= $this->length;
-        }
+        $result .= $this->length ?? '';
 
         return $result . $this->data;
     }

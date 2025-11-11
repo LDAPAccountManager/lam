@@ -4,22 +4,30 @@ declare(strict_types=1);
 
 namespace CBOR\OtherObject;
 
-use CBOR\OtherObject;
 use InvalidArgumentException;
 use function array_key_exists;
 
-class OtherObjectManager implements OtherObjectManagerInterface
+final class OtherObjectManager implements OtherObjectManagerInterface
 {
     /**
-     * @var string[]
+     * @param  class-string<OtherObjectInterface>[] $classes
      */
-    private array $classes = [];
-
-    public static function create(): self
-    {
-        return new self();
+    public function __construct(
+        private array $classes = [],
+    ) {
     }
 
+    /**
+     * @param  class-string<OtherObjectInterface>[] $classes
+     */
+    public static function create(array $classes = []): self
+    {
+        return new self($classes);
+    }
+
+    /**
+     * @param class-string<OtherObjectInterface> $class
+     */
     public function add(string $class): self
     {
         foreach ($class::supportedAdditionalInformation() as $ai) {
@@ -32,6 +40,9 @@ class OtherObjectManager implements OtherObjectManagerInterface
         return $this;
     }
 
+    /**
+     * @return class-string<OtherObjectInterface>
+     */
     public function getClassForValue(int $value): string
     {
         return array_key_exists($value, $this->classes) ? $this->classes[$value] : GenericObject::class;
@@ -39,7 +50,6 @@ class OtherObjectManager implements OtherObjectManagerInterface
 
     public function createObjectForValue(int $value, ?string $data): OtherObjectInterface
     {
-        /** @var OtherObject $class */
         $class = $this->getClassForValue($value);
 
         return $class::createFromLoadedData($value, $data);

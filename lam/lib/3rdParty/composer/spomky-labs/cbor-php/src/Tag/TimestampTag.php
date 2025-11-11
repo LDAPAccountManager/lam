@@ -52,7 +52,7 @@ final class TimestampTag extends Tag implements Normalizable
         switch (true) {
             case $object instanceof UnsignedIntegerObject:
             case $object instanceof NegativeIntegerObject:
-                $formatted = DateTimeImmutable::createFromFormat('U', $object->normalize());
+                $formatted = DateTimeImmutable::createFromFormat('U', (string) $object->normalize());
 
                 break;
             case $object instanceof HalfPrecisionFloatObject:

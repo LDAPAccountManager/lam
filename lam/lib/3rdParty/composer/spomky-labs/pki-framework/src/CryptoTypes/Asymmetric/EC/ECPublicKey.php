@@ -116,7 +116,7 @@ final class ECPublicKey extends PublicKey
      */
     public function curvePoint(): array
     {
-        return array_map(static fn ($str) => ECConversion::octetsToNumber($str), $this->curvePointOctets());
+        return array_map(ECConversion::octetsToNumber(...), $this->curvePointOctets());
     }
 
     /**
