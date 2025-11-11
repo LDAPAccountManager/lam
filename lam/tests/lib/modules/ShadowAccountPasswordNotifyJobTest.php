@@ -50,7 +50,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 
 		public function setUp(): void {
 			$this->job = $this->getMockBuilder('ShadowAccountPasswordNotifyJob')
-				->setMethods(['getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail', 'findUsers', 'getConfigPrefix'])
+				->onlyMethods(['getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail', 'findUsers', 'getConfigPrefix'])
 				->getMock();
 			$this->job->method('getConfigPrefix')->willReturn('test');
 			$this->job->method('sendMail')->willReturn(true);

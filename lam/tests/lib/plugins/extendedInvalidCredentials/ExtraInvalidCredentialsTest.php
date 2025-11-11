@@ -44,7 +44,7 @@ class ExtraInvalidCredentialsTest extends TestCase {
 	public function test_getExtraMessage_noMessage() {
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(['getLdapData'])
+			->onlyMethods(['getLdapData'])
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn([]);
 
@@ -57,7 +57,7 @@ class ExtraInvalidCredentialsTest extends TestCase {
 	public function test_getExtraMessage_ppolicy() {
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(['getLdapData'])
+			->onlyMethods(['getLdapData'])
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
 			[
@@ -77,7 +77,7 @@ class ExtraInvalidCredentialsTest extends TestCase {
 		$time = $time->sub(new DateInterval('P1M'));
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(['getLdapData'])
+			->onlyMethods(['getLdapData'])
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
 			[
@@ -97,7 +97,7 @@ class ExtraInvalidCredentialsTest extends TestCase {
 		$time = $time->sub(new DateInterval('P1M'));
 		$extraInvalidCredentials = $this
 			->getMockBuilder(ExtraInvalidCredentials::class)
-			->setMethods(['getLdapData'])
+			->onlyMethods(['getLdapData'])
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
 			[

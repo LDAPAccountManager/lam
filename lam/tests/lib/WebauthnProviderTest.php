@@ -63,13 +63,13 @@ class WebauthnProviderTest extends TestCase {
 		$this->config->twoFactorAuthenticationOptional = true;
 		$manager = $this
 			->getMockBuilder(WebauthnManager::class)
-			->setMethods(['isRegistered'])
+			->onlyMethods(['isRegistered'])
 			->getMock();
 		$manager->method('isRegistered')->willReturn(false);
 		$provider = $this
 			->getMockBuilder(WebauthnProvider::class)
 			->setConstructorArgs([$this->config])
-			->setMethods(['getWebauthnManager'])
+			->onlyMethods(['getWebauthnManager'])
 			->getMock();
 		$provider->method('getWebauthnManager')->willReturn($manager);
 		$row = new \htmlResponsiveRow();

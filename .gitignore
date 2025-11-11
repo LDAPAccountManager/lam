@@ -5,6 +5,7 @@
 /vendor/
 /composer.lock
 /code-coverage/
+/.phpunit.cache
 /.phpunit.result.cache
 /lam/lib/3rdParty/composer/bin/
 /lam/ast.dump

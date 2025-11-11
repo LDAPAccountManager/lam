@@ -40,7 +40,7 @@ class TypesTest extends TestCase {
 		$typeManager = new TypeManager(null);
 		$this->type = $this->getMockBuilder('LAM\TYPES\ConfiguredType')
 			->setConstructorArgs([$typeManager, 'user', 'user'])
-			->setMethods(['getBaseType', 'getModules'])->getMock();
+			->onlyMethods(['getBaseType', 'getModules'])->getMock();
 		$scope = new user($this->type);
 		$this->type->method('getBaseType')->willReturn($scope);
 		$this->type->method('getModules')->willReturn(['posixAccount']);

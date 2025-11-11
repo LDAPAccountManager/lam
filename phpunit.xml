@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage processUncoveredFiles="true">
-    <include>
-      <directory suffix=".inc">lam/lib</directory>
-    </include>
-    <exclude>
-      <directory>lam/tests</directory>
-      <directory>lam/lib/3rdParty</directory>
-      <directory>lam/templates/3rdParty</directory>
-      <file>lam/lib/adminHeader.inc</file>
-      <file>lam/lib/adminFooter.inc</file>
-      <file>lam/lib/cron.inc</file>
-      <file>lam/lib/security.inc</file>
-      <file>lam/lib/checkEnvironment.inc</file>
-    </exclude>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
+  <coverage>
     <report>
       <clover outputFile="code-coverage/clover.xml"/>
       <html outputDirectory="code-coverage/report.html"/>
@@ -30,4 +17,19 @@
   <logging>
     <junit outputFile="code-coverage/junit.xml"/>
   </logging>
+  <source>
+    <include>
+      <directory suffix=".inc">lam/lib</directory>
+    </include>
+    <exclude>
+      <directory>lam/tests</directory>
+      <directory>lam/lib/3rdParty</directory>
+      <directory>lam/templates/3rdParty</directory>
+      <file>lam/lib/adminHeader.inc</file>
+      <file>lam/lib/adminFooter.inc</file>
+      <file>lam/lib/cron.inc</file>
+      <file>lam/lib/security.inc</file>
+      <file>lam/lib/checkEnvironment.inc</file>
+    </exclude>
+  </source>
 </phpunit>

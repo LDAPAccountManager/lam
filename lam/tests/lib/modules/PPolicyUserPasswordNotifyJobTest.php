@@ -52,7 +52,7 @@ if (is_readable(__DIR__ . '/../../../lib/modules/ppolicyUser.inc')) {
 
 		protected function setUp(): void {
 			$this->job = $this->getMockBuilder('PPolicyPasswordNotifyJob')
-				->setMethods(['getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail', 'findUsers', 'getConfigPrefix', 'getPolicyOptions'])
+				->onlyMethods(['getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail', 'findUsers', 'getConfigPrefix', 'getPolicyOptions'])
 				->getMock();
 			$this->job->method('getConfigPrefix')->willReturn('test');
 			$this->job->method('sendMail')->willReturn(true);
