@@ -23,8 +23,6 @@
 use LAM\WHITE_PAGES\WhitePagesEmailItemRenderer;
 use LAM\WHITE_PAGES\WhitePagesImageJpgItemRenderer;
 use LAM\WHITE_PAGES\WhitePagesLinkItemRenderer;
-use LAM\WHITE_PAGES\WhitePagesProfile;
-use LAM\WHITE_PAGES\WhitePagesTab;
 use LAM\WHITE_PAGES\WhitePagesTelephoneItemRenderer;
 use LAM\WHITE_PAGES\WhitePagesTextItemRenderer;
 use PHPUnit\Framework\TestCase;
@@ -101,6 +99,13 @@ if (is_readable(__DIR__ . '/../../lib/whitePagesData.inc')) {
 			$this->assertEquals('data:image/jpeg;base64,MTIzNDU=', $renderer->renderData(['jpgphoto' => [0 => '12345']], 1));
 		}
 
+	}
+
+}
+else {
+
+	class WhitePagesItemRendererTest extends TestCase {
+		public function testDummy() {}
 	}
 
 }
