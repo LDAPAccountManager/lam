@@ -26,6 +26,9 @@
   },
   "license": "GPL-3.0-or-later",
   "config": {
+    "platform": {
+      "php": "8.1"
+    },
     "allow-plugins": {
       "cyclonedx/cyclonedx-php-composer": true
     }
