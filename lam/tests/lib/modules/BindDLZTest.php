@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2019  Roland Gruber
+ Copyright (C) 2018 - 2025  Roland Gruber
  */
 
 if (is_readable(__DIR__ . '/../../../lib/modules/bindDLZ.inc')) {
@@ -30,6 +30,17 @@ if (is_readable(__DIR__ . '/../../../lib/modules/bindDLZ.inc')) {
 			$this->assertEquals($dateStr . '100', bindDLZ::increaseSerial($dateStr . '99'));
 			$this->assertEquals($dateStr . '001', bindDLZ::increaseSerial('20010517003'));
 			$this->assertEquals('20990517004', bindDLZ::increaseSerial('20990517003'));
+		}
+
+	}
+
+}
+else {
+
+	class BindDLZTest extends TestCase {
+
+		public function testDummy() {
+			$this->assertTrue(true);
 		}
 
 	}

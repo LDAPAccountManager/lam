@@ -1326,7 +1326,7 @@ class WhitePagesStyling {
  */
 class WhitePagesLdapConnection {
 
-	private ?Connection $server;
+	private ?Connection $server = null;
 
 	private WhitePagesProfile $profile;
 

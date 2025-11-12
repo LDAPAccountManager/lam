@@ -339,3 +339,14 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 	}
 
 }
+else {
+
+	class ShadowAccountPasswordNotifyJobTest extends TestCase {
+
+		public function testDummy() {
+			$this->assertTrue(true);
+		}
+
+	}
+
+}

@@ -143,3 +143,14 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customScripts.inc')) {
 	}
 
 }
+else {
+
+	class CustomScriptsTest extends TestCase {
+
+		public function testDummy() {
+			$this->assertTrue(true);
+		}
+
+	}
+
+}

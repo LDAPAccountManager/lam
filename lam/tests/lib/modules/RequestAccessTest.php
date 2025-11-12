@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2023 Roland Gruber
+  Copyright (C) 2023 - 2025 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,6 +70,17 @@ if (is_readable(__DIR__ . '/../../../lib/modules/requestAccess.inc')) {
 			$output = requestAccess::replaceWildcards($input, $user, $approver);
 
 			$this->assertEquals('Some &lt;User&gt; with DN user&lt;dn&gt; and &lt;val1&gt;, val2 requested at &lt;Approver&gt; with DN approver&lt;dn&gt; and &lt;val3&gt;, val4', $output);
+		}
+
+	}
+
+}
+else {
+
+	class RequestAccessTest extends TestCase {
+
+		public function testDummy() {
+			$this->assertTrue(true);
 		}
 
 	}

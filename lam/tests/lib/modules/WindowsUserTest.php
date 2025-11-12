@@ -81,7 +81,6 @@ use PHPUnit\Framework\TestCase;
 		public function testWindowsManagedGroupsNotifyJob_getLastEffectiveExecutionDate() {
 			if (!interface_exists('\\' . \LAM\JOB\Job::class, false)) {
 				$this->markTestSkipped();
-				return;
 			}
 			$resultLog = new \LAM\JOB\JobResultLog();
 			$baseDate = DateTime::createFromFormat('Y-m-d', '2020-08-21', getTimeZone());

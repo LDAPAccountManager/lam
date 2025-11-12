@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2023  Roland Gruber
+  Copyright (C) 2014 - 2025  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -76,6 +76,17 @@ if (is_readable(__DIR__ . '/../../../lib/modules/sudoRole.inc')) {
 			foreach ($dates as $output => $input) {
 				$this->assertEquals($output, sudoRole::decodeDate($input), $input . ' ' . $output);
 			}
+		}
+
+	}
+
+}
+else {
+
+	class SudoRoleTest extends TestCase {
+
+		public function testDummy() {
+			$this->assertTrue(true);
 		}
 
 	}

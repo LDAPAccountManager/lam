@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2017 - 2023  Roland Gruber
+ Copyright (C) 2017 - 2025  Roland Gruber
  */
 
 if (is_readable(__DIR__ . '/../../../lib/modules/customFields.inc')) {
@@ -253,6 +253,17 @@ if (is_readable(__DIR__ . '/../../../lib/modules/customFields.inc')) {
 			$this->assertFalse($field->isValidDateValue(''));
 			$this->assertTrue($field->isValidDateValue('20.05.2021'));
 			$this->assertFalse($field->isValidDateValue('32.05.2021'));
+		}
+
+	}
+
+}
+else {
+
+	class CustomFieldsTest extends TestCase {
+
+		public function testDummy() {
+			$this->assertTrue(true);
 		}
 
 	}

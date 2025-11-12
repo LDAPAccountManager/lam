@@ -356,3 +356,14 @@ if (is_readable(__DIR__ . '/../../../lib/modules/ppolicyUser.inc')) {
 	}
 
 }
+else {
+
+	class PPolicyUserPasswordNotifyJobTest extends TestCase {
+
+		public function testDummy() {
+			$this->assertTrue(true);
+		}
+
+	}
+
+}
