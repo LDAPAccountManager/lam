@@ -4158,14 +4158,14 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$replacements['user'] = $this->attributes['uid'][0];
 		}
 		// group name
-		if (isset($this->attributes['gidNumber'][0])
+		if (!empty($_POST['gidNumber']) && ($_POST['gidNumber'] !== self::CREATE_GROUP_WITH_SAME_NAME)) {
+			$replacements['group'] = $this->getGroupName($_POST['gidNumber']);
+		}
+		elseif (isset($this->attributes['gidNumber'][0])
 			&& ($this->attributes['gidNumber'][0] === self::CREATE_GROUP_WITH_SAME_NAME)) {
 			if (isset($replacements['user'])) {
 				$replacements['group'] = $replacements['user'];
 			}
-		}
-		elseif (!empty($_POST['gidNumber'])) {
-			$replacements['group'] = $this->getGroupName($_POST['gidNumber']);
 		}
 		elseif (!empty($this->attributes['gidNumber'][0])) {
 			$replacements['group'] = $this->getGroupName($this->attributes['gidNumber'][0]);
