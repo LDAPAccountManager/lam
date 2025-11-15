@@ -3,6 +3,7 @@ December 2025 9.4
  - LAM Pro:
   -> White pages: new simplified LAM interface for non-technical users to access e.g. contact and group information
   -> SMS sending can be done with email2SMS providers (465)
+  -> PowerDNS: save auto-PTR entries under reverse domain (478)
  - Fixed bugs:
   -> Unix: $group wildcard is evaluated too early (480)
 
