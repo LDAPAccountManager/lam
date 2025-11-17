@@ -5,7 +5,7 @@
     "phpunit/phpunit" : "^10",
     "phpstan/phpstan": "^2",
     "rector/rector": "^2",
-    "cyclonedx/cyclonedx-php-composer": "^5.0"
+    "cyclonedx/cyclonedx-php-composer": "^6.0"
   },
   "require": {
     "ext-ldap": "*",
