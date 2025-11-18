@@ -7,8 +7,8 @@ namespace CBOR;
 class MapItem
 {
     public function __construct(
-        private readonly CBORObject $key,
-        private readonly CBORObject $value
+        private CBORObject $key,
+        private CBORObject $value
     ) {
     }
 

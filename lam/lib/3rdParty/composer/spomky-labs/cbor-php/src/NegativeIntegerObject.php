@@ -14,7 +14,7 @@ final class NegativeIntegerObject extends AbstractCBORObject implements Normaliz
 
     public function __construct(
         int $additionalInformation,
-        private readonly ?string $data
+        private ?string $data
     ) {
         parent::__construct(self::MAJOR_TYPE, $additionalInformation);
     }
@@ -47,28 +47,26 @@ final class NegativeIntegerObject extends AbstractCBORObject implements Normaliz
     }
 
     /**
-     * @return numeric-string|int
+     * @return numeric-string
      */
-    public function getValue(): string|int
+    public function getValue(): string
     {
         if ($this->data === null) {
-            return -1 - $this->additionalInformation;
+            return (string) (-1 - $this->additionalInformation);
         }
 
         $result = Utils::binToBigInteger($this->data);
         $minusOne = BigInteger::of(-1);
 
-        $valueAsString = $minusOne->minus($result)
+        return $minusOne->minus($result)
             ->toBase(10)
         ;
-        $valueAsInt = (int) $valueAsString;
-        return (string) $valueAsInt === $valueAsString ? $valueAsInt : $valueAsString;
     }
 
     /**
-     * @return numeric-string|int
+     * @return numeric-string
      */
-    public function normalize(): string|int
+    public function normalize(): string
     {
         return $this->getValue();
     }

@@ -13,9 +13,9 @@ final class ByteStringObject extends AbstractCBORObject implements Normalizable
 {
     private const MAJOR_TYPE = self::MAJOR_TYPE_BYTE_STRING;
 
-    private readonly string $value;
+    private string $value;
 
-    private readonly ?string $length;
+    private ?string $length;
 
     public function __construct(string $data)
     {

@@ -38,7 +38,7 @@ use function ord;
 use function sprintf;
 use const STR_PAD_LEFT;
 
-final readonly class Decoder implements DecoderInterface
+final class Decoder implements DecoderInterface
 {
     private TagManagerInterface $tagObjectManager;
 

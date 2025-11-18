@@ -9,7 +9,7 @@ use function chr;
 abstract class AbstractCBORObject implements CBORObject
 {
     public function __construct(
-        private readonly int $majorType,
+        private int $majorType,
         protected int $additionalInformation
     ) {
     }
