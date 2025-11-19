@@ -1,0 +1,30 @@
+name: "OWASP dep-scan"
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+    - name: Install dep-scan
+      run: pipx install owasp-depscan
+
+    - name: dep-scan-full
+      run: depscan lam/sbom.json
+
+    - name: dep-scan
+      run: ! depscan lam/sbom.json | grep -v CVE-2025-64500 | grep CVE-
