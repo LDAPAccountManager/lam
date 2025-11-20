@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:f299eb4c-cd34-4c4e-9f9d-a065d7ba9808",
+  "serialNumber" : "urn:uuid:e0c36c7f-9276-425c-b236-8bef5f1ece1b",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-09-01T18:29:57Z",
+    "timestamp" : "2025-11-20T06:58:42Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.3"
+      "version" : "9.4"
     }
   },
   "components" : [
@@ -86,7 +86,7 @@
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.6.2",
+      "version" : "4.7.9",
       "licenses" : [
         {
           "license" : {
@@ -94,7 +94,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.6.2"
+      "purl" : "pkg:npm/jodit@4.7.9"
     },
     {
       "type" : "library",
@@ -116,7 +116,7 @@
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.22.4",
+      "version" : "11.26.3",
       "licenses" : [
         {
           "license" : {
@@ -124,7 +124,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.22.4"
+      "purl" : "pkg:npm/sweetalert2@11.26.3"
     },
     {
       "type" : "library",
