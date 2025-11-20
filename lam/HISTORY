@@ -6,6 +6,7 @@ December 2025 9.4
   -> PowerDNS: save auto-PTR entries under reverse domain (478)
  - Fixed bugs:
   -> Unix: $group wildcard is evaluated too early (480)
+  -> Custom scripts: error on postModify for CSV file upload (517)
 
 
 16.09.2025 9.3
