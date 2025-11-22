@@ -27,4 +27,4 @@ jobs:
       run: ~/.local/bin/depscan --bom lam/sbom.json
 
     - name: dep-scan
-      run: ! ~/.local/bin/depscan --bom lam/sbom.json | grep -v CVE-2025-64500 | grep CVE-
+      run: ! ~/.local/bin/depscan --bom lam/sbom.json | grep CVE-
