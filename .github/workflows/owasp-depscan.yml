@@ -27,4 +27,4 @@ jobs:
       run: ~/.local/bin/depscan --bom lam/sbom.json
 
     - name: dep-scan
-      run: ~/.local/bin/depscan --bom lam/sbom.json | grep "No oss vulnerabilities detected"
+      run: ~/.local/bin/depscan --bom lam/sbom.json 2>&1 | grep "No oss vulnerabilities detected"
