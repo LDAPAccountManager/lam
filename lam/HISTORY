@@ -7,6 +7,7 @@ December 2025 9.4
  - Fixed bugs:
   -> Unix: $group wildcard is evaluated too early (480)
   -> Custom scripts: error on postModify for CSV file upload (517)
+  -> Windows: Force password change not applied on password change (511)
 
 
 16.09.2025 9.3
