@@ -61,8 +61,6 @@ class takUser extends baseModule {
 		$return["alias"] = 'TAK';
 		// LDAP filter
 		$return["ldap_filter"] = ['or' => "(objectClass=takUser)"];
-		// RDN attribute
-		$return["RDN"] = ["cn" => "normal"];
 		// module dependencies
 		$return['dependencies'] = ['depends' => [], 'conflicts' => []];
 		// managed object classes
