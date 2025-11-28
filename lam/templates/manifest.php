@@ -70,6 +70,20 @@ echo '{
       "sizes": "512x512"
     }
   ],
+  "screenshots" : [
+    {
+      "src": "' . $baseUrl . '/graphics/pwa_wide.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "' . $baseUrl . '/graphics/pwa_mobile.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
   "start_url": "' . $baseUrl . '/templates/login.php",
   "display": "standalone",
   "orientation": "any",
