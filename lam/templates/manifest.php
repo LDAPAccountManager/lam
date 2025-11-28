@@ -57,6 +57,7 @@ else {
 echo '{
   "short_name": "LAM",
   "name": "LDAP Account Manager",
+  "description": "LDAP Account Manager is a webfrontend for managing entries stored in an LDAP directory.",
   "icons": [
     {
       "src": "' . $baseUrl . '/graphics/logo_192x192.png",
@@ -70,5 +71,12 @@ echo '{
     }
   ],
   "start_url": "' . $baseUrl . '/templates/login.php",
-  "display": "standalone"
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "categories": [
+    "security",
+    "utilities"
+  ]
 }';
