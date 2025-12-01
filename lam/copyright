@@ -8,7 +8,6 @@ time.
 * templates/selfService/*
 * templates/whitePages/*
 * templates/config/jobs.php
-* lib/cron.inc
 * lib/database.inc
 * lib/env.inc
 * lib/jobs.inc
