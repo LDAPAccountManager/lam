@@ -1,3 +1,8 @@
+March 2026 9.5
+ - LAM Pro:
+  -> Old license key format is no longer supported. You are only affected if your license key section on our website contains a "Old format" entry.
+
+
 December 2025 9.4
  - Main configuration and server profiles require latest file format (introduced in 9.0) (389)
  - LAM Pro:
