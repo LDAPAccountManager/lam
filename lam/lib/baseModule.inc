@@ -381,15 +381,6 @@ abstract class baseModule {
 	 * <br><br>
 	 * </li>
 	 *
-	 * <li><b>{@link getRequiredExtensions()}</b><br>
-	 * <br>
-	 * <b>Key:</b> extensions<br>
-	 * <b>Value:</b> array of extension names<br>
-	 * <br>
-	 * <b>Example:</b> "extensions" => array('hash')
-	 * <br><br>
-	 * </li>
-	 *
 	 * <li><b>{@link get_help()}</b><br>
 	 * <br>
 	 * <b>Key:</b> help<br>
@@ -2024,22 +2015,6 @@ abstract class baseModule {
 	public function getManagedHiddenAttributes($typeId) {
 		if (isset($this->meta['hiddenAttributes']) && is_array($this->meta['hiddenAttributes'])) {
 			return $this->meta['hiddenAttributes'];
-		}
-		return [];
-	}
-
-	/**
-	 * This function returns a list of PHP extensions (e.g. hash) which are needed by this module.
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @return array extensions
-	 *
-	 * @see baseModule::get_metaData()
-	 */
-	public function getRequiredExtensions() {
-		if (isset($this->meta['extensions']) && is_array($this->meta['extensions'])) {
-			return $this->meta['extensions'];
 		}
 		return [];
 	}

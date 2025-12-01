@@ -248,14 +248,6 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 	displayLoginHeader();
 
 	if (!empty($config_object)) {
-		// check extensions
-		$extList = getRequiredExtensions();
-		foreach ($extList as $extension) {
-			if (!extension_loaded($extension)) {
-				StatusMessage("ERROR", "A required PHP extension is missing!", $extension);
-				echo "<br>";
-			}
-		}
 		// check TLS
 		$useTLS = $config_object->getUseTLS();
 		if (isset($useTLS) && ($useTLS == "yes") && !function_exists('ldap_start_tls')) {
