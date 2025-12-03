@@ -32,7 +32,7 @@ class ModulesTest extends TestCase {
 	/**
 	 * Tests unformatShortFormatToSeconds() without characters.
 	 */
-	function testScopeAndModuleValidation() {
+	public function testScopeAndModuleValidation() {
 		$this->assertTrue(ScopeAndModuleValidation::isValidModuleName('posixAccount'));
 		$this->assertTrue(ScopeAndModuleValidation::isValidModuleName('inetOrgPerson'));
 		$this->assertFalse(ScopeAndModuleValidation::isValidModuleName('notExistingModule'));

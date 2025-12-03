@@ -33,7 +33,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests unformatShortFormatToSeconds() without characters.
 	 */
-	function testUnformatShortFormatToSeconds_plainNumber() {
+	public function testUnformatShortFormatToSeconds_plainNumber() {
 		$this->assertEquals(15, unformatShortFormatToSeconds('15'));
 		$this->assertEquals(0, unformatShortFormatToSeconds('0'));
 	}
@@ -41,7 +41,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests unformatShortFormatToSeconds() with characters.
 	 */
-	function testUnformatShortFormatToSeconds_conversion() {
+	public function testUnformatShortFormatToSeconds_conversion() {
 		$this->assertEquals(15, unformatShortFormatToSeconds('15'));
 		$this->assertEquals(12, unformatShortFormatToSeconds('12s'));
 		$this->assertEquals(180, unformatShortFormatToSeconds('3m'));
@@ -58,7 +58,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests unformatShortFormatToSeconds() with invalid values.
 	 */
-	function testUnformatShortFormatToSeconds_invalidNumber() {
+	public function testUnformatShortFormatToSeconds_invalidNumber() {
 		$this->assertEquals('abc', unformatShortFormatToSeconds('abc'));
 		$this->assertEquals('', unformatShortFormatToSeconds(''));
 	}
@@ -66,7 +66,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests formatShortFormatToSeconds() without characters.
 	 */
-	function testFormatSecondsToShortFormat_basic() {
+	public function testFormatSecondsToShortFormat_basic() {
 		$this->assertEquals("15s", formatSecondsToShortFormat('15'));
 		$this->assertEquals("0", formatSecondsToShortFormat('0'));
 	}
@@ -74,7 +74,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests formatShortFormatToSeconds() with characters.
 	 */
-	function testFormatSecondsToShortFormat_conversion() {
+	public function testFormatSecondsToShortFormat_conversion() {
 		$this->assertEquals('12s', formatSecondsToShortFormat(12));
 		$this->assertEquals('3m', formatSecondsToShortFormat(180));
 		$this->assertEquals('2h', formatSecondsToShortFormat(7200));
@@ -90,14 +90,14 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests formatShortFormatToSeconds() with invalid values.
 	 */
-	function testFormatSecondsToShortFormat_invalidNumber() {
+	public function testFormatSecondsToShortFormat_invalidNumber() {
 		$this->assertEquals('', formatSecondsToShortFormat(''));
 	}
 
 	/**
 	 * Tests getCallingURL().
 	 */
-	function testGetCallingURL_noBaseUrl_noHost() {
+	public function testGetCallingURL_noBaseUrl_noHost() {
 		$_SERVER['REQUEST_URI'] = '/test.php';
 		$_SERVER['HTTP_HOST'] = null;
 		$_SERVER['HTTP_REFERER'] = 'http://referrer/test.php';
@@ -110,7 +110,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests getCallingURL().
 	 */
-	function testGetCallingURL_noBaseUrl_host() {
+	public function testGetCallingURL_noBaseUrl_host() {
 		$_SERVER['REQUEST_URI'] = '/test.php';
 		$_SERVER['HTTP_HOST'] = 'host';
 		$_SERVER['HTTP_REFERER'] = 'http://referrer/test.php';
@@ -123,7 +123,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests getCallingURL().
 	 */
-	function testGetCallingURL_baseUrl_host() {
+	public function testGetCallingURL_baseUrl_host() {
 		$_SERVER['REQUEST_URI'] = '/test.php';
 		$_SERVER['HTTP_HOST'] = 'host';
 		$_SERVER['HTTP_REFERER'] = 'http://referrer/test.php';
@@ -136,14 +136,14 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests convertCommaEscaping().
 	 */
-	function testConvertCommaEscaping() {
+	public function testConvertCommaEscaping() {
 		$this->assertEquals('cn=test\\2C user,ou=People,o=test,c=de', convertCommaEscaping('cn=test\\, user,ou=People,o=test,c=de'));
 	}
 
 	/**
 	 * Tests getAbstractDN().
 	 */
-	function testGetAbstractDN() {
+	public function testGetAbstractDN() {
 		$this->assertEquals('test ❭ test ❭ de', getAbstractDN('cn=test,o=test,c=de'));
 		$this->assertEquals('test,user ❭ test ❭ de', getAbstractDN('cn=test\\,user,o=test,c=de'));
 		$this->assertEquals('test,user ❭ test ❭ de', getAbstractDN('cn=test\\2Cuser,o=test,c=de'));
@@ -152,7 +152,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests extractRDNAttribute() and extractRDNValue().
 	 */
-	function testExtractRDN() {
+	public function testExtractRDN() {
 		$dn = 'test';
 		$this->assertEquals(null, extractRDNAttribute($dn));
 		$this->assertEquals(null, extractRDNValue($dn));
@@ -166,7 +166,7 @@ class AccountTest extends TestCase {
 		$this->assertEquals('tes\\2C tä', extractRDNValue($dn));
 	}
 
-	function testExtractDNSuffix() {
+	public function testExtractDNSuffix() {
 		$dn = 'test';
 		$this->assertEquals(null, extractDNSuffix($dn));
 		$dn = 'ou=test';
@@ -178,7 +178,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests isCommandlineSafeEmailAddress().
 	 */
-	function testIsCommandlineSafeEmailAddress() {
+	public function testIsCommandlineSafeEmailAddress() {
 		$this->assertTrue(isCommandlineSafeEmailAddress(''));
 		$this->assertTrue(isCommandlineSafeEmailAddress('test@example.com'));
 		$this->assertTrue(isCommandlineSafeEmailAddress('test-123_abc@example.com'));
@@ -188,7 +188,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests isDeveloperVersion()
 	 */
-	function testIsDeveloperVersion() {
+	public function testIsDeveloperVersion() {
 		$this->assertFalse(isDeveloperVersion('0.4.1'));
 		$this->assertFalse(isDeveloperVersion('3.2.RC1'));
 		$this->assertTrue(isDeveloperVersion('4.5.DEV'));
@@ -197,7 +197,7 @@ class AccountTest extends TestCase {
 	/**
 	 * Tests ARGON2ID
 	 */
-	function testPwdHash() {
+	public function testPwdHash() {
 		$testPassword = '1234556';
 		$types = ['ARGON2ID', 'SSHA', 'SHA', 'SMD5', 'MD5', 'CRYPT', 'CRYPT-SHA512'];
 		foreach ($types as $type) {
@@ -212,7 +212,7 @@ class AccountTest extends TestCase {
 		$this->assertTrue(checkPasswordHash('PLAIN', $hash, $testPassword), $type . ' ' . $hash);
 	}
 
-	function testGetHashType() {
+	public function testGetHashType() {
 		$this->assertEquals('PLAIN', getHashType(''));
 		$this->assertEquals('PLAIN', getHashType(null));
 		$this->assertEquals('PLAIN', getHashType('abc123'));
@@ -225,7 +225,7 @@ class AccountTest extends TestCase {
 		$this->assertEquals('SSHA', getHashType('{SSHA}123'));
 	}
 
-	function testGetNumberOfCharacterClasses() {
+	public function testGetNumberOfCharacterClasses() {
 		$this->assertEquals(0, getNumberOfCharacterClasses(null));
 		$this->assertEquals(1, getNumberOfCharacterClasses('0'));
 		$this->assertEquals(1, getNumberOfCharacterClasses('3'));
@@ -242,17 +242,17 @@ class AccountTest extends TestCase {
 		$this->assertEquals(4, getNumberOfCharacterClasses('a-0AB.a3'));
 	}
 
-	function testGenerateRandomPassword() {
+	public function testGenerateRandomPassword() {
 		global $_SESSION;
 		$_SESSION = ['cfgMain' => new LAMCfgMain()];
 		$this->assertEquals(20, strlen(generateRandomPassword(20)));
 	}
 
-	function testGenerateRandomText() {
+	public function testGenerateRandomText() {
 		$this->assertEquals(20, strlen(generateRandomText(20)));
 	}
 
-	function testGetPreg() {
+	public function testGetPreg() {
 		$this->assertTrue(get_preg('abc123', 'password'));
 		$this->assertTrue(get_preg('abc ^|#*,.;:_+!%&/?{}()[]$§°@=-123', 'password'));
 		$this->assertFalse(get_preg('abc\\123', 'password'));
@@ -325,7 +325,7 @@ class AccountTest extends TestCase {
 		$this->assertFalse(get_preg('ab?c:80', 'hostAndPort'));
 	}
 
-	function testAreArrayContentsEqual() {
+	public function testAreArrayContentsEqual() {
 		$this->assertTrue(areArrayContentsEqual([], []));
 		$this->assertFalse(areArrayContentsEqual(['1'], []));
 		$this->assertFalse(areArrayContentsEqual([], ['1']));
