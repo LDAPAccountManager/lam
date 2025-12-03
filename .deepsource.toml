@@ -1,0 +1,8 @@
+version = 1
+
+test_patterns = ["lam/tests/**"]
+
+exclude_patterns = ["**/3rdParty/**"]
+
+[[analyzers]]
+name = "php"
