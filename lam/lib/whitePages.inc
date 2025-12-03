@@ -343,7 +343,7 @@ class WhitePagesProfile {
 	 */
 	public function getLoginHandler(): WhitePagesLoginHandler {
 		return match ($this->authenticationType) {
-			WP_AUTHENTICATION::AUTH_ANONYMOUS->name => new WhitePagesAnonymousAuthLoginHandler($this),
+			WP_AUTHENTICATION::AUTH_ANONYMOUS->name => new WhitePagesAnonymousAuthLoginHandler(),
 			WP_AUTHENTICATION::AUTH_2FA_ONLY->name => new WhitePages2FaLoginHandler($this),
 			default => new WhitePagesUserPasswordLoginHandler($this),
 		};
@@ -1177,17 +1177,6 @@ class WhitePages2FaLoginHandler implements WhitePagesLoginHandler {
  */
 class WhitePagesAnonymousAuthLoginHandler implements WhitePagesLoginHandler {
 
-	private WhitePagesProfile $profile;
-
-	/**
-	 * Constructor
-	 *
-	 * @param WhitePagesProfile $profile profile
-	 */
-	public function __construct(WhitePagesProfile $profile) {
-		$this->profile = $profile;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -1220,10 +1209,6 @@ class WhitePagesAnonymousAuthLoginHandler implements WhitePagesLoginHandler {
 	 * @inheritDoc
 	 */
 	public function isAuthenticationSuccessful(): bool {
-		if (!$this->profile->useForAllOperations) {
-			logNewMessage(LOG_ERR, 'Use for all operations must be set');
-			return false;
-		}
 		// authentication is not needed
 		return true;
 	}
