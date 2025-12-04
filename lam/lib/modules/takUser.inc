@@ -176,10 +176,10 @@ class takUser extends baseModule {
 		elseif (!get_preg($_POST['takcallsign'], 'username')) {
 			$return[] = $this->messages['takcallsign'][0];
 		}
-		// check if callsign is unique
+		// check if the callsign is unique
 		elseif (empty($this->orig['takcallsign'][0]) || ($this->attributes['takcallsign'][0] !== $this->orig['takcallsign'][0])) {
 			$suffix = $this->getAccountContainer()->get_type()->getSuffix();
-			$search = searchLDAP($suffix, 'takcallsign=' . $_POST['takcallsign'], ['dn']);
+			$search = searchLDAP($suffix, 'takcallsign=' . ldap_escape($_POST['takcallsign'], '', LDAP_ESCAPE_FILTER), ['dn']);
 			if (!empty($search)) {
 				$return[] = $this->messages['takcallsign'][1];
 			}
