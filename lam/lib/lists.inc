@@ -1130,7 +1130,7 @@ class lamList {
 		$this->attrArray = array_keys($temp_array);    // list of LDAP attributes to show
 		$this->descArray = array_values($temp_array);    // list of descriptions for the attributes
 		// get sorting column
-		if (isset($_GET["sort"])) {
+		if (isset($_GET["sort"]) && in_array_ignore_case($_GET["sort"], $this->attrArray)) {
 			if ($_GET["sort"] == $this->sortColumn) {
 				$this->sortDirection = -$this->sortDirection;
 			}
