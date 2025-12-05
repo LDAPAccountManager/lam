@@ -887,7 +887,8 @@ class accountContainer {
 			if (isset($_GET['suffix']) && ($_GET['suffix'] != '') && ($this->dnSuffix == null)) {
 				$this->dnSuffix = $_GET['suffix'];
 			}
-			if (isset($_POST['accountContainerSuffix']) && ($_POST['accountContainerSuffix'] != '')) {
+			$possibleOUs = $this->getOUs();
+			if (!empty($_POST['accountContainerSuffix']) && in_array($_POST['accountContainerSuffix'], $possibleOUs)) {
 				$this->dnSuffix = $_POST['accountContainerSuffix'];
 			}
 			// change RDN
@@ -968,7 +969,7 @@ class accountContainer {
 				}
 			}
 		}
-		// change to next page
+		// change to the next page
 		if (is_array($result)) {  // messages were returned, check for errors
 			for ($i = 0; $i < count($result); $i++) {
 				if ($result[$i][0] == 'ERROR') {
@@ -2259,7 +2260,7 @@ class accountContainer {
 	 * @return array OU list
 	 */
 	public function getOUs() {
-		if ($this->cachedOUs != null) {
+		if ($this->cachedOUs !== null) {
 			return $this->cachedOUs;
 		}
 		$this->cachedOUs = $this->type->getSuffixList();
