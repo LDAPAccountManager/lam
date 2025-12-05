@@ -884,10 +884,10 @@ class accountContainer {
 		}
 		elseif (!$profileLoaded) {
 			// change dn suffix
-			if (isset($_GET['suffix']) && ($_GET['suffix'] != '') && ($this->dnSuffix == null)) {
+			$possibleOUs = $this->getOUs();
+			if (!empty($_GET['suffix']) && in_array($_GET['suffix'], $possibleOUs)) {
 				$this->dnSuffix = $_GET['suffix'];
 			}
-			$possibleOUs = $this->getOUs();
 			if (!empty($_POST['accountContainerSuffix']) && in_array($_POST['accountContainerSuffix'], $possibleOUs)) {
 				$this->dnSuffix = $_POST['accountContainerSuffix'];
 			}
@@ -898,26 +898,26 @@ class accountContainer {
 			}
 			// create another account
 			if (isset($_POST['accountContainerCreateAgain'])) {
-				// open fresh account page
+				// open a fresh account page
 				unset($_SESSION[$this->base]);
 				metaRefresh("edit.php?type=" . $this->type->getId() . "&suffix=" . $this->dnSuffix);
 				exit();
 			}
 			// reedit account
 			if (isset($_POST['accountContainerBackToEdit'])) {
-				// open fresh account page
+				// open a fresh account page
 				unset($_SESSION[$this->base]);
 				metaRefresh("edit.php?type=" . $this->type->getId() . "&DN=" . urlencode($this->finalDN));
 				exit();
 			}
 			// back to account list
 			if (isset($_POST['accountContainerBackToList'])) {
-				// Return to account list
+				// Return to the account list
 				unset($_SESSION[$this->base]);
 				metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&accountEditBack=true');
 				exit;
 			}
-			// create PDF file
+			// create the PDF file
 			if (isset($_POST['accountContainerCreatePDF'])) {
 				metaRefresh('../lists/list.php?printPDF=1&type=' . $this->type->getId() . "&refresh=true&PDFSessionID=" . $this->base);
 				exit;
