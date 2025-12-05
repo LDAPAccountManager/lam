@@ -892,7 +892,8 @@ class accountContainer {
 				$this->dnSuffix = $_POST['accountContainerSuffix'];
 			}
 			// change RDN
-			if (isset($_POST['accountContainerRDN'])) {
+			$rdnList = getRDNAttributes($this->type->getId());
+			if (!empty($_POST['accountContainerRDN']) && in_array($_POST['accountContainerRDN'], $rdnList)) {
 				$this->rdn = $_POST['accountContainerRDN'];
 			}
 			// create another account
