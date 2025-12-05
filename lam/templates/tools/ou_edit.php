@@ -126,6 +126,7 @@ if (isset($_POST['abort'])) {
 
 // check if the submit button was pressed
 if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
+	$validDeletableDns = flattenArray($optionsToDelete);
 	// new ou
 	if (isset($_POST['createOU'])) {
 		// create ou if valid
@@ -158,25 +159,19 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		}
 	}
 	// delete ou, user was sure
-	elseif (isset($_POST['deleteOU']) && isset($_POST['sure'])) {
-		$validDeletableDns = flattenArray($optionsToDelete);
-		if (!in_array_ignore_case($_POST['deletename'], $validDeletableDns)) {
-			$error = _("OU is invalid!") . "<br>" . htmlspecialchars($_POST['deletename']);
+	elseif (isset($_POST['deleteOU']) && isset($_POST['sure']) && in_array_ignore_case($_POST['deletename'], $validDeletableDns)) {
+		$ret = ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
+		if ($ret) {
+			$message = _("OU deleted successfully.");
+			refreshOus($optionsToInsert, $optionsToDelete);
 		}
 		else {
-			$ret = ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
-			if ($ret) {
-				$message = _("OU deleted successfully.");
-				refreshOus($optionsToInsert, $optionsToDelete);
-			}
-			else {
-				$error = _("Unable to delete OU!");
-			}
+			$error = _("Unable to delete OU!");
 		}
 	}
 	// ask if the user is sure to delete
-	elseif (isset($_POST['deleteOU'])) {
-		// check for sub entries
+	elseif (isset($_POST['deleteOU']) && in_array_ignore_case($_POST['deleteableOU'], $validDeletableDns)) {
+		// check for subentries
 		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "(objectClass=*)", [""]);
 		if ($sr === false) {
 			$error = _("OU is not empty or invalid!");
