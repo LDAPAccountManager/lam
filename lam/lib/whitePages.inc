@@ -1148,7 +1148,7 @@ class WhitePages2FaLoginHandler implements WhitePagesLoginHandler {
 		if (!$bind) {
 			throw new LAMException('WhitePages2FaLoginHandler', 'Unable to match provided user with LDAP entry - LDAP bind failed');
 		}
-		$filter = '(' . $this->profile->twoFactorAuthenticationAttribute . "=" . ldap_escape($userName) . ')';
+		$filter = '(' . $this->profile->twoFactorAuthenticationAttribute . "=" . ldap_escape($userName, '', LDAP_ESCAPE_FILTER) . ')';
 		if (!empty($this->profile->additionalLDAPFilter)) {
 			$filter = '(&' . $filter . $this->profile->additionalLDAPFilter . ')';
 		}
