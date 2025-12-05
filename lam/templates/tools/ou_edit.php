@@ -69,23 +69,70 @@ if (!empty($_POST)) {
 	validateSecurityToken();
 }
 
-// check if deletion was canceled
-if (isset($_POST['abort'])) {
-	display_main(null, null);
-	exit;
-}
-
 $error = null;
 $message = null;
 
-// check if submit button was pressed
+$optionsToDelete = [];
+$optionsToInsert = [];
+
+/**
+ * Refreshes the possible OUs.
+ *
+ * @param array $optionsToInsert OUs that can be used for adding
+ * @param array $optionsToDelete OUs that can be deleted
+ */
+function refreshOus(array &$optionsToInsert, array &$optionsToDelete): void {
+	$typeManager = new TypeManager();
+	$typeList = $typeManager->getConfiguredTypes();
+	$types = [];
+	foreach ($typeList as $type) {
+		if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
+			continue;
+		}
+		$types[$type->getId()] = $type->getAlias();
+	}
+	natcasesort($types);
+	foreach ($types as $typeId => $title) {
+		$type = $typeManager->getConfiguredType($typeId);
+		if ($type === null) {
+			continue;
+		}
+		$elements = [];
+		$units = searchLDAP($type->getSuffix(), '(|(objectclass=organizationalunit)(objectclass=organization))', ['dn']);
+		foreach ($units as $unit) {
+			$elements[getAbstractDN($unit['dn'])] = $unit['dn'];
+			$validParentDns[] = $unit['dn'];
+		}
+		if (!empty($elements)) {
+			$optionsToDelete[$title] = $elements;
+			uasort($optionsToDelete[$title], compareDn(...));
+		}
+		$optionsToInsert[$title] = $elements;
+		if (empty($optionsToInsert[$title])) {
+			$optionsToInsert[$title] = [getAbstractDN($type->getSuffix()) => $type->getSuffix()];
+			$validParentDns[] = $type->getSuffix();
+		}
+		uasort($optionsToInsert[$title], compareDn(...));
+	}
+}
+
+refreshOus($optionsToInsert, $optionsToDelete);
+
+// check if deletion was canceled
+if (isset($_POST['abort'])) {
+	display_main(null, null, $optionsToInsert, $optionsToDelete);
+	exit;
+}
+
+// check if the submit button was pressed
 if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	// new ou
 	if (isset($_POST['createOU'])) {
 		// create ou if valid
-		if (preg_match("/^[a-z0-9 _\\-]+$/i", $_POST['newOU'])) {
+		$validParentDns = flattenArray($optionsToInsert);
+		if (preg_match("/^[a-z0-9 _\\-]+$/i", $_POST['newOU']) && in_array_ignore_case($_POST['parentOU'], $validParentDns)) {
 			// check if ou already exists
-			$new_dn = "ou=" . $_POST['newOU'] . "," . $_POST['parentOU'];
+			$new_dn = "ou=" . ldap_escape($_POST['newOU'], '', LDAP_ESCAPE_DN) . "," . $_POST['parentOU'];
 			$found = ldapGetDN($new_dn);
 			if ($found === null) {
 				// add new ou
@@ -95,6 +142,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$ret = @ldap_add($_SESSION['ldap']->server(), $new_dn, $ou);
 				if ($ret) {
 					$message = _("New OU created successfully.");
+					refreshOus($optionsToInsert, $optionsToDelete);
 				}
 				else {
 					$error = _("Unable to create new OU!");
@@ -111,15 +159,22 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	}
 	// delete ou, user was sure
 	elseif (isset($_POST['deleteOU']) && isset($_POST['sure'])) {
-		$ret = ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
-		if ($ret) {
-			$message = _("OU deleted successfully.");
+		$validDeletableDns = flattenArray($optionsToDelete);
+		if (!in_array_ignore_case($_POST['deletename'], $validDeletableDns)) {
+			$error = _("OU is invalid!") . "<br>" . htmlspecialchars($_POST['deletename']);
 		}
 		else {
-			$error = _("Unable to delete OU!");
+			$ret = ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
+			if ($ret) {
+				$message = _("OU deleted successfully.");
+				refreshOus($optionsToInsert, $optionsToDelete);
+			}
+			else {
+				$error = _("Unable to delete OU!");
+			}
 		}
 	}
-	// ask if user is sure to delete
+	// ask if the user is sure to delete
 	elseif (isset($_POST['deleteOU'])) {
 		// check for sub entries
 		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "(objectClass=*)", [""]);
@@ -165,7 +220,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	}
 }
 
-display_main($message, $error);
+display_main($message, $error, $optionsToInsert, $optionsToDelete);
 
 /**
  * Displays the main page of the OU editor
@@ -173,7 +228,7 @@ display_main($message, $error);
  * @param string|null $message info message
  * @param string|null $error error message
  */
-function display_main(?string $message, ?string $error): void {
+function display_main(?string $message, ?string $error, array $optionsToInsert, array $optionsToDelete): void {
 	// display main page
 	include __DIR__ . '/../../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
@@ -190,39 +245,6 @@ function display_main(?string $message, ?string $error): void {
 		$msg = new htmlStatusMessage("INFO", "", $message);
 		$msg->colspan = 5;
 		$container->add($msg, 12);
-	}
-
-	$typeManager = new TypeManager();
-	$typeList = $typeManager->getConfiguredTypes();
-	$types = [];
-	foreach ($typeList as $type) {
-		if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
-			continue;
-		}
-		$types[$type->getId()] = $type->getAlias();
-	}
-	natcasesort($types);
-	$optionsToDelete = [];
-	$optionsToInsert = [];
-	foreach ($types as $typeId => $title) {
-		$type = $typeManager->getConfiguredType($typeId);
-		if ($type === null) {
-			continue;
-		}
-		$elements = [];
-		$units = searchLDAP($type->getSuffix(), '(|(objectclass=organizationalunit)(objectclass=organization))', ['dn']);
-		foreach ($units as $unit) {
-			$elements[getAbstractDN($unit['dn'])] = $unit['dn'];
-		}
-		if (!empty($elements)) {
-			$optionsToDelete[$title] = $elements;
-			uasort($optionsToDelete[$title], compareDn(...));
-		}
-		$optionsToInsert[$title] = $elements;
-		if (empty($optionsToInsert[$title])) {
-			$optionsToInsert[$title] = [getAbstractDN($type->getSuffix()) => $type->getSuffix()];
-		}
-		uasort($optionsToInsert[$title], compareDn(...));
 	}
 
 	if (!empty($optionsToInsert)) {

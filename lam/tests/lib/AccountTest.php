@@ -334,4 +334,17 @@ class AccountTest extends TestCase {
 		$this->assertFalse(areArrayContentsEqual(['a', 'b', 'c'], ['a', 'c']));
 	}
 
+	public function testArray_delete() {
+		$values = ['a', 'b', 'c'];
+		$toDelete = ['a', 'c'];
+
+		$this->assertEquals(['b'], array_delete($toDelete, $values));
+	}
+
+	public function testFlattenArray() {
+		$this->assertEquals(['a', 'b', 'c'], flattenArray([0 => ['a'], 'b', 'x' => ['c']]));
+		$this->assertEquals(['a', 'b', 'c'], flattenArray([0 => ['a'], 'b', 'x' => ['c'], 'y' => ['a']]));
+		$this->assertEquals(['a', 'b', 'c'], flattenArray([0 => ['a'], 'b', 'x' => [0 => ['c']]]));
+	}
+
 }
