@@ -115,6 +115,14 @@ if (!extension_loaded('gmp')) {
 if (!extension_loaded('filter')) {
 	$criticalErrors[] = ["ERROR", "Your PHP has no filter support!", "Please install the filter extension for PHP."];
 }
+// check if PHP has iconv support
+if (!extension_loaded('iconv')) {
+	$criticalErrors[] = ["ERROR", "Your PHP has no iconv support!", "Please install the iconv extension for PHP."];
+}
+// check if PHP has hash support
+if (!extension_loaded('hash')) {
+	$criticalErrors[] = ["ERROR", "Your PHP has no hash support!", "Please install the hash extension for PHP."];
+}
 // check file permissions
 $writableDirs = ['sess', 'tmp'];
 for ($i = 0; $i < count($writableDirs); $i++) {

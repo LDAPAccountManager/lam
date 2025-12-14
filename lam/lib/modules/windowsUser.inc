@@ -139,8 +139,6 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$return['icon'] = 'samba.svg';
 		// this is a base module
 		$return["is_base"] = true;
-		// PHP extensions
-		$return['extensions'] = ['iconv'];
 		// RDN attribute
 		$return["RDN"] = ["cn" => "high"];
 		// LDAP filter

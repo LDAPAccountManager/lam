@@ -641,30 +641,6 @@ function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$a
 }
 
 /**
- * Returns true if the module is a base module
- *
- * @return array required extensions
- */
-function getRequiredExtensions() {
-	$extList = [];
-	$typeManager = new \LAM\TYPES\TypeManager();
-	$types = $typeManager->getConfiguredTypes();
-	foreach ($types as $type) {
-		$mods = $_SESSION['config']->get_AccountModules($type->getId());
-		for ($m = 0; $m < count($mods); $m++) {
-			$module = moduleCache::getModule($mods[$m], $type->getScope());
-			$ext = $module->getRequiredExtensions();
-			for ($e = 0; $e < count($ext); $e++) {
-				if (!in_array($ext[$e], $extList)) {
-					$extList[] = $ext[$e];
-				}
-			}
-		}
-	}
-	return $extList;
-}
-
-/**
  * Takes a list of meta-HTML elements and prints the equivalent HTML output.
  *
  * The modules are not allowed to display HTML code directly but return

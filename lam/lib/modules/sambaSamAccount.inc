@@ -179,8 +179,6 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial',
 			'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange']; // sambaPwdCanChange/sambaPwdMustChange only for extension removal
-		// PHP extensions
-		$return['extensions'] = ['hash', 'iconv'];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'));
