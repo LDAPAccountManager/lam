@@ -3,3 +3,7 @@
   Require all granted
   DirectoryIndex index.html
 </Files>
+
+<Files ~ "\.json$">
+  Require all denied
+</Files>

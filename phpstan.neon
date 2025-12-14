@@ -23,7 +23,6 @@ parameters:
 			- lam/templates/lists/changePassword.php (?)
 			- lam/templates/selfService/*.php (?)
 			- lam/templates/whitePages/*.php (?)
-			- lam/lib/cron.inc (?)
 			- lam/lib/database.inc (?)
 			- lam/lib/env.inc (?)
 			- lam/lib/jobs.inc (?)

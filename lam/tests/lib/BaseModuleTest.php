@@ -33,7 +33,7 @@ class BaseModuleTest extends TestCase {
 		$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
 	}
 
-	function test_check_profileOptions_ext_preg() {
+	public function test_check_profileOptions_ext_preg() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -51,7 +51,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
-	function test_check_profileOptions_ext_preg_fail() {
+	public function test_check_profileOptions_ext_preg_fail() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -69,7 +69,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEquals([['ERROR', 'error1']], $errors);
 	}
 
-	function test_check_profileOptions_regex() {
+	public function test_check_profileOptions_regex() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -87,7 +87,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
-	function test_check_profileOptions_regex_fail() {
+	public function test_check_profileOptions_regex_fail() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -105,7 +105,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEquals([['ERROR', 'error1']], $errors);
 	}
 
-	function test_check_profileOptions_cmp() {
+	public function test_check_profileOptions_cmp() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -133,7 +133,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
-	function test_check_profileOptions_cmp_fail_equal() {
+	public function test_check_profileOptions_cmp_fail_equal() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -161,7 +161,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEquals([['ERROR', 'errorCMP']], $errors);
 	}
 
-	function test_check_profileOptions_cmp_fail_smaller() {
+	public function test_check_profileOptions_cmp_fail_smaller() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -189,7 +189,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEquals([['ERROR', 'errorCMP']], $errors);
 	}
 
-	function test_check_profileOptions_cmpGreater_minMissing() {
+	public function test_check_profileOptions_cmpGreater_minMissing() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -216,7 +216,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
-	function test_check_profileOptions_cmpEqual_greater() {
+	public function test_check_profileOptions_cmpEqual_greater() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -244,7 +244,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
-	function test_check_profileOptions_cmpEqual_equal() {
+	public function test_check_profileOptions_cmpEqual_equal() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
@@ -272,7 +272,7 @@ class BaseModuleTest extends TestCase {
 		$this->assertEmpty($errors, print_r($errors, true));
 	}
 
-	function test_check_profileOptions_cmpEqual_fail() {
+	public function test_check_profileOptions_cmpEqual_fail() {
 		$meta = [];
 		$module = new baseModuleDummy('user');
 
