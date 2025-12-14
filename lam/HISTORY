@@ -1,5 +1,6 @@
 March 2026 9.5
  - LAM Pro:
+  -> Old license key format is no longer supported. You are only affected if your license key section on our website contains a "Old format" entry.
   -> Removed deprecated cron.sh and cronGlobal.sh (please use runCronJobs.sh) (519)
 
 
