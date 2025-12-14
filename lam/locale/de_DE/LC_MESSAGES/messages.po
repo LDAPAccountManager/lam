@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2025-11-21 18:36+0100\n"
+"PO-Revision-Date: 2025-12-05 07:23+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <>\n"
 "Language: de\n"
@@ -4277,7 +4277,7 @@ msgstr "Kein Profil gefunden."
 #: ../templates/selfService/adminLogin.php:119
 #: ../templates/whitePages/adminLogin.php:117
 msgid "Please create a profile by clicking on the link below."
-msgstr "Bitte erstellen Sie ein Profil indem Sie auf den untigen Link klicken."
+msgstr "Bitte erstellen Sie ein Profil indem Sie unten auf den Link klicken."
 
 #: ../templates/selfService/adminLogin.php:126
 msgid ""
@@ -16044,7 +16044,8 @@ msgid ""
 "These options change the list of potential extension owners below. You can "
 "select to show Asterisk accounts or all users."
 msgstr ""
-"Diese Optionen ändern die untige Liste potentieller Erweiterungsbesitzer. "
+"Diese Optionen ändern die nachfolgende Liste potentieller Erweiterungsbesitzer"
+". "
 "Sie können nur Asterisk-Benutzer oder alle Benutzer anzeigen."
 
 #: ../lib/modules/asteriskExtension.inc:146

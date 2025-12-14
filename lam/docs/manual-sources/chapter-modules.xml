@@ -3024,7 +3024,7 @@ AuthorizedKeysCommandUser root</literallayout>
     </section>
 
     <section>
-      <title>Dynamic lists (LAM Pro)</title>
+      <title>Dynamic lists (e.g. groupOfURLs) (LAM Pro)</title>
 
       <para><ulink
       url="http://www.openldap.org/doc/admin24/overlays.html#Dynamic%20Lists">Dynamic
@@ -3033,8 +3033,12 @@ AuthorizedKeysCommandUser root</literallayout>
       contain all users in a certain DN.</para>
 
       <para>Please note that this functionality requires configuration on your
-      LDAP server. E.g. on OpenLDAP you need to activate the "dynlist" overlay
-      and need to specify attribute mappings.</para>
+      LDAP server. On OpenLDAP you need to activate the "dynlist" overlay and
+      need to specify attribute mappings.</para>
+
+      <para>This module is not bound to a specific object class (e.g.
+      groupOfURLs) and attributes (e.g. memberURL, member). You can configure
+      them in the module settings.</para>
 
       <para><emphasis role="bold">Configuration</emphasis></para>
 
@@ -3069,6 +3073,10 @@ AuthorizedKeysCommandUser root</literallayout>
 
       <para>In case you have different types of dynamic lists you can simply
       redo the steps above to create more group types.</para>
+
+      <para>The following example uses the "groupOfURLs" object class. Here,
+      the query is stored in "memberURL" and the result is provided in the
+      virtual attribute "member".</para>
 
       <para><inlinemediaobject>
           <imageobject>

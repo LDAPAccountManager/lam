@@ -3,7 +3,7 @@ March 2026 9.5
   -> Removed deprecated cron.sh and cronGlobal.sh (please use runCronJobs.sh) (519)
 
 
-December 2025 9.4
+13.12.2025 9.4
  - Main configuration and server profiles require latest file format (introduced in 9.0) (389)
  - LAM Pro:
   -> White pages: new simplified LAM interface for non-technical users to access e.g. contact and group information

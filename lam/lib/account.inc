@@ -58,6 +58,25 @@ function array_delete($values, $array) {
 	return [];
 }
 
+/**
+ * Flattens the values of a multidimensional array.
+ * Only unique values are returned.
+ *
+ * @param array $array multidimensional array
+ * @return array flat array
+ */
+function flattenArray(array $array): array {
+	$result = [];
+	foreach ($array as $element) {
+		if (is_array($element)) {
+			$result = array_merge($result, flattenArray($element));
+		}
+		else {
+			$result[] = $element;
+		}
+	}
+	return array_values(array_unique($result));
+}
 
 /**
  * Checks if a string exists in an array, ignoring case.

@@ -302,7 +302,7 @@ function logNewMessage($level, $message): void {
 	$message = $prefix . $message;
 	// Syslog logging
 	if ($cfg->logDestination == 'SYSLOG') {
-		syslog($level, $message);
+		syslog($level, str_replace(["\n", "\r"], ['', ''], $message));
 	}
 	// remote logging
 	elseif (str_starts_with($cfg->logDestination, 'REMOTE')) {
