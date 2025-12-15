@@ -63,6 +63,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\HttpClient\\' => 29,
+            'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Clock\\' => 24,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
@@ -213,6 +214,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Symfony\\Component\\HttpClient\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/http-client',
+        ),
+        'Symfony\\Component\\Filesystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
         'Symfony\\Component\\Console\\' => 
         array (
