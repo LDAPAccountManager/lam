@@ -26,7 +26,7 @@
 #  See possible environment variables here: https://github.com/LDAPAccountManager/lam/blob/develop/lam-packaging/docker/.env
 #
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
 ARG LAM_RELEASE=9.4
@@ -78,7 +78,6 @@ RUN apt-get install --no-install-recommends -y \
         php-phpseclib \
         php-xml \
         php-zip \
-        php-imap \
         php-gmp \
         php-mysql \
         php-sqlite3 \
