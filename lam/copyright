@@ -1092,6 +1092,7 @@ lib/3rdParty/composer/psr                                            B        PH
 lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar                                  https://github.com/ralouphie/getallheaders
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs                                    https://github.com/Spomky-Labs
 lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier                               https://github.com/symfony
+lib/3rdParty/composer/voku                                           B  2019 Lars Moelleken                                  https://github.com/voku/portable-ascii
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs                                    https://github.com/web-auth
 lib/3rdParty/composer/web-token                                      B        Florent Morselli                               https://github.com/web-token
 lib/3rdParty/composer/webklex                                        B  2016  Webklex                                        https://github.com/Webklex/php-imap
