@@ -39,6 +39,7 @@ you want to create an inflector for to the ``createForLanguage()`` method:
 The supported languages are as follows:
 
 - ``Language::ENGLISH``
+- ``Language::ESPERANTO``
 - ``Language::FRENCH``
 - ``Language::NORWEGIAN_BOKMAL``
 - ``Language::PORTUGUESE``
@@ -213,8 +214,7 @@ You can unaccent a string of text using the ``unaccent()`` method:
 Legacy API
 ==========
 
-As of 1.4.0, the API present in Inflector 1.x has been marked as deprecated. In the 2.x release series,
-the legacy API has been dropped completely.
+The API present in Inflector 1.x is still available, but will be deprecated in a future release and dropped for 3.0.
 Support for languages other than English is available in the 2.0 API only.
 
 Acknowledgements
