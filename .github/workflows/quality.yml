@@ -25,7 +25,7 @@ jobs:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
       with:
-        php-version: '8.1'
+        php-version: '8.2'
         extensions: ldap, xdebug, gd, json, xml, curl, zip, mbstring, imagick, pdo_sqlite
 
     - name: Validate composer.json and composer.lock
