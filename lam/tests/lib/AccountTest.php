@@ -185,6 +185,17 @@ class AccountTest extends TestCase {
 		$this->assertFalse(isCommandlineSafeEmailAddress('test+abc@example.com'));
 	}
 
+	public function testParseEmailAddress() {
+		$this->assertEquals(['address' => 'test@example.com', 'name' => ''], parseEmailAddress('test@example.com'));
+		$this->assertEquals(['address' => 'test@example.com', 'name' => ''], parseEmailAddress(' test@example.com '));
+		$this->assertEquals(['address' => 'test@example.com', 'name' => 'John Smith'], parseEmailAddress('John Smith <test@example.com>'));
+		$this->assertEquals(['address' => 'test@example.com', 'name' => 'John Smith'], parseEmailAddress('John Smith<test@example.com>'));
+		$this->assertEquals(['address' => 'test@example.com', 'name' => 'John Smith'], parseEmailAddress('"John Smith" <test@example.com>'));
+		$this->assertEquals(['address' => 'test@example.com', 'name' => 'John Smith'], parseEmailAddress('"John Smith"<test@example.com>'));
+		$this->assertEquals(['address' => 'test@example.com', 'name' => 'John Smith'], parseEmailAddress('\'John Smith\' <test@example.com>'));
+		$this->assertEquals(['address' => 'test@example.com', 'name' => 'John Smith'], parseEmailAddress('\'John Smith\'<test@example.com>'));
+	}
+
 	/**
 	 * Tests isDeveloperVersion()
 	 */
