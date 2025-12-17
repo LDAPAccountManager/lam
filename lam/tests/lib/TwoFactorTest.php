@@ -1,6 +1,7 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
 use LAMConfig;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 /*
@@ -80,26 +81,20 @@ class TwoFactorTest extends TestCase {
 		$this->assertNull($service->getCookieValue());
 	}
 
-	/**
-	 * @runInSeparateProcess
-	 */
+	#[RunInSeparateProcess]
 	public function testTwoFactorProviderService_rememberDevice_valid() {
 		$service = new TwoFactorProviderServiceSpy($this->serverProfile);
 		$service->rememberDevice(self::USER_NAME);
 		$this->assertNotNull($service->getCookieValue());
 	}
 
-	/**
-	 * @runInSeparateProcess
-	 */
+	#[RunInSeparateProcess]
 	public function testTwoFactorProviderService_isValidRememberedDevice_invalid() {
 		$service = new TwoFactorProviderServiceSpy($this->serverProfile);
 		$this->assertFalse($service->isValidRememberedDevice(self::USER_NAME));
 	}
 
-	/**
-	 * @runInSeparateProcess
-	 */
+	#[RunInSeparateProcess]
 	public function testTwoFactorProviderService_isValidRememberedDevice_differentUser() {
 		$service = new TwoFactorProviderServiceSpy($this->serverProfile);
 		$service->rememberDevice("invalid");
@@ -107,9 +102,7 @@ class TwoFactorTest extends TestCase {
 		$this->assertFalse($service->isValidRememberedDevice(self::USER_NAME));
 	}
 
-	/**
-	 * @runInSeparateProcess
-	 */
+	#[RunInSeparateProcess]
 	public function testTwoFactorProviderService_isValidRememberedDevice_valid() {
 		$service = new TwoFactorProviderServiceSpy($this->serverProfile);
 		$service->rememberDevice(self::USER_NAME);
