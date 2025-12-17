@@ -198,7 +198,7 @@ if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=st
 		$container->addField(new htmlOutputText($time));
 	}
 	if (isset($monitorEntries['cn=uptime,cn=time,cn=monitor'])) {
-		$uptime = $monitorEntries['cn=uptime,cn=time,cn=monitor']['monitoredinfo'][0];
+		$uptime = (int) $monitorEntries['cn=uptime,cn=time,cn=monitor']['monitoredinfo'][0];
 		$days = floor($uptime / (3600 * 24));
 		$daysRest = $uptime - ($days * 3600 * 24);
 		$hours = floor($daysRest / 3600);
@@ -229,12 +229,12 @@ if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries
 		$container->addField(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['totalconnections'])));
 	}
 	if (isset($monitorEntries['cn=bytes,cn=statistics,cn=monitor'])) {
-		$bytes = round($monitorEntries['cn=bytes,cn=statistics,cn=monitor']['monitorcounter'][0] / 1_000_000, 2) . 'MB';
+		$bytes = round((int) $monitorEntries['cn=bytes,cn=statistics,cn=monitor']['monitorcounter'][0] / 1_000_000, 2) . 'MB';
 		$container->addLabel(new htmlOutputText('<b>' . _("Bytes sent") . '</b>', false));
 		$container->addField(new htmlOutputText($bytes));
 	}
 	elseif (isset($monitorEntries['cn=monitor']['bytessent'])) { // Fedora 389
-		$bytes = round($monitorEntries['cn=monitor']['bytessent'][0] / 1_000_000, 2) . 'MB';
+		$bytes = round((int) $monitorEntries['cn=monitor']['bytessent'][0] / 1_000_000, 2) . 'MB';
 		$container->addLabel(new htmlOutputText('<b>' . _("Bytes sent") . '</b>', false));
 		$container->addField(new htmlOutputText($bytes));
 	}
@@ -341,8 +341,8 @@ elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
 	$container->addField(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['opscompleted'])));
 	if (isset($monitorEntries['cn=snmp,cn=monitor']['addentryops'])) {
 		$container->addLabel(new htmlOutputText('<b>' . _("Bind") . '</b>', false));
-		$binds = $monitorEntries['cn=snmp,cn=monitor']['anonymousbinds'][0] + $monitorEntries['cn=snmp,cn=monitor']['unauthbinds'][0]
-					+ $monitorEntries['cn=snmp,cn=monitor']['simpleauthbinds'][0] + $monitorEntries['cn=snmp,cn=monitor']['strongauthbinds'][0];
+		$binds = (int) $monitorEntries['cn=snmp,cn=monitor']['anonymousbinds'][0] + (int) $monitorEntries['cn=snmp,cn=monitor']['unauthbinds'][0]
+					+ (int) $monitorEntries['cn=snmp,cn=monitor']['simpleauthbinds'][0] + (int) $monitorEntries['cn=snmp,cn=monitor']['strongauthbinds'][0];
 		$container->addField(new htmlOutputText((string) $binds));
 		$container->addLabel(new htmlOutputText('<b>' . _("Search") . '</b>', false));
 		$searches = $monitorEntries['cn=snmp,cn=monitor']['searchops'][0];

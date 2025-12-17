@@ -860,9 +860,9 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
  * @param String $filter filter
  * @param array $attributes list of attributes to return
  * @param int $limit result limit
- * @return array list of found entries
+ * @return array<string, string[]|string>[] list of found entries
  */
-function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
+function searchLDAP($suffix, $filter, $attributes, $limit = -1): array {
 	if ($limit === -1) {
 		$limit = empty($_SESSION['config']) ? 0 : $_SESSION['config']->get_searchLimit();
 	}
@@ -899,9 +899,9 @@ function getLDAPServerHandle() {
  * @param array $attributes attribute list
  * @param int $attrsOnly return only attribute names (1) or also the values (0)
  * @param int $limit size limit
- * @return array results
+ * @return array<string, string[]|string>[] results
  */
-function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit) {
+function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit): array {
 	if (empty($_SESSION['config']) || ($_SESSION['config']->getPagedResults() !== 'true')) {
 		$sr = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit, 0, LDAP_DEREF_NEVER, getCommonLdapControls());
 		if ($sr) {
@@ -1176,10 +1176,10 @@ function cleanLDAPResult(&$entries) {
  * Transforms a DN into a more user friendly format.
  * E.g. "dc=company,dc=de" is transformed to "company > de".
  *
- * @param String $dn DN
- * @return String transformed DN
+ * @param string $dn DN
+ * @return string transformed DN
  */
-function getAbstractDN($dn) {
+function getAbstractDN($dn): string {
 	if ($dn == '') {
 		return '';
 	}

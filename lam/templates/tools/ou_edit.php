@@ -78,8 +78,8 @@ $optionsToInsert = [];
 /**
  * Refreshes the possible OUs.
  *
- * @param array $optionsToInsert OUs that can be used for adding
- * @param array $optionsToDelete OUs that can be deleted
+ * @param array<string, array<string, string>> $optionsToInsert OUs that can be used for adding
+ * @param array<string, array<string, string>> $optionsToDelete OUs that can be deleted
  */
 function refreshOus(array &$optionsToInsert, array &$optionsToDelete): void {
 	$typeManager = new TypeManager();
@@ -100,8 +100,9 @@ function refreshOus(array &$optionsToInsert, array &$optionsToDelete): void {
 		$elements = [];
 		$units = searchLDAP($type->getSuffix(), '(|(objectclass=organizationalunit)(objectclass=organization))', ['dn']);
 		foreach ($units as $unit) {
-			$elements[getAbstractDN($unit['dn'])] = $unit['dn'];
-			$validParentDns[] = $unit['dn'];
+			if (is_string($unit['dn'])) {
+				$elements[getAbstractDN($unit['dn'])] = $unit['dn'];
+			}
 		}
 		if (!empty($elements)) {
 			$optionsToDelete[$title] = $elements;
@@ -110,7 +111,6 @@ function refreshOus(array &$optionsToInsert, array &$optionsToDelete): void {
 		$optionsToInsert[$title] = $elements;
 		if (empty($optionsToInsert[$title])) {
 			$optionsToInsert[$title] = [getAbstractDN($type->getSuffix()) => $type->getSuffix()];
-			$validParentDns[] = $type->getSuffix();
 		}
 		uasort($optionsToInsert[$title], compareDn(...));
 	}
@@ -222,6 +222,8 @@ display_main($message, $error, $optionsToInsert, $optionsToDelete);
  *
  * @param string|null $message info message
  * @param string|null $error error message
+ * @param array<string, array<string, string>> $optionsToInsert options where new OU can be inserted
+ * @param array<string, array<string, string>> $optionsToDelete OUs that can be deleted
  */
 function display_main(?string $message, ?string $error, array $optionsToInsert, array $optionsToDelete): void {
 	// display main page

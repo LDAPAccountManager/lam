@@ -296,7 +296,7 @@ class WhitePagesProfile {
 	/**
 	 * Imports data to a new profile.
 	 *
-	 * @param array $data data as array
+	 * @param array<string, int|string|array<string, string|string[]|array<string, string>[]>[]> $data data as array
 	 * @return WhitePagesProfile profile
 	 */
 	public static function import(array $data): WhitePagesProfile {
@@ -318,7 +318,7 @@ class WhitePagesProfile {
 	/**
 	 * Exports the profile as an array.
 	 *
-	 * @return array data
+	 * @return array<string, int|string|array<string, string|string[]|array<string, string>[]>[]> data
 	 */
 	public function export(): array {
 		$data = [];
@@ -431,7 +431,7 @@ class WhitePagesTab {
 	/**
 	 * Imports data to a new tab.
 	 *
-	 * @param array $data data as array
+	 * @param array<string, string|string[]|array<string, string>[]> $data data as array
 	 * @return WhitePagesTab profile
 	 */
 	public static function import(array $data): WhitePagesTab {
@@ -454,7 +454,7 @@ class WhitePagesTab {
 	/**
 	 * Exports the tab as an array.
 	 *
-	 * @return array data
+	 * @return array<string, string|string[]|array<string, string>[]> data
 	 */
 	public function export(): array {
 		$data = [];
@@ -524,7 +524,7 @@ class WhitePagesDisplayItem {
 	/**
 	 * Exports the item as an array.
 	 *
-	 * @return array data
+	 * @return array<string, string> data
 	 */
 	public function export(): array {
 		return [
