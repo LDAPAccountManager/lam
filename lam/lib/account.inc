@@ -1554,7 +1554,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = null, $bcc = null) {
 	include_once __DIR__ . '/3rdParty/composer/autoload.php';
 	$returnPath = empty($replyTo) ? $from : $replyTo;
-	$returnPathParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($returnPath);
+	$returnPathParsed = parseEmailAddress($returnPath);
 	logNewMessage(LOG_DEBUG, "Send mail from " . $from . " to " . print_r($to, true) . "\n" . $text);
 	$mailer = new PHPMailer\PHPMailer\PHPMailer(true);
 	try {
@@ -1591,21 +1591,21 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 		}
 		$mailer->Subject = $subject;
 		$mailer->Body = $text;
-		$mailer->Sender = $returnPathParsed[0]['address'];
-		$fromParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($from);
-		$mailer->setFrom($fromParsed[0]['address'], $fromParsed[0]['name']);
+		$mailer->Sender = $returnPathParsed['address'];
+		$fromParsed = parseEmailAddress($from);
+		$mailer->setFrom($fromParsed['address'], $fromParsed['name']);
 		$mailer->isHTML($isHTML);
 		if (!empty($replyTo)) {
-			$replyToParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($replyTo);
-			$mailer->addReplyTo($replyToParsed[0]['address'], $replyToParsed[0]['name']);
+			$replyToParsed = parseEmailAddress($replyTo);
+			$mailer->addReplyTo($replyToParsed['address'], $replyToParsed['name']);
 		}
 		if (!empty($cc)) {
-			$ccParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($cc);
-			$mailer->addCC($ccParsed[0]['address'], $ccParsed[0]['name']);
+			$ccParsed = parseEmailAddress($cc);
+			$mailer->addCC($ccParsed['address'], $ccParsed['name']);
 		}
 		if (!empty($bcc)) {
-			$bccParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($bcc);
-			$mailer->addBCC($bccParsed[0]['address'], $bccParsed[0]['name']);
+			$bccParsed = parseEmailAddress($bcc);
+			$mailer->addBCC($bccParsed['address'], $bccParsed['name']);
 		}
 		$mailer->XMailer = 'LDAP Account Manager';
 		$mailSentOk = $mailer->send();
@@ -1621,6 +1621,44 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 		logNewMessage(LOG_ERR, 'Mail sending failed: ' . $e->getMessage());
 		return false;
 	}
+}
+
+/**
+ * Parses an email address text that optionally contains a display name.
+ *
+ * @param string $addressText address text (either plain email or with display name)
+ * @return array<string, string> parsed email address data ('address' => 'adr@example.com', 'name' => 'John Smith')
+ * @throws LAMException unknown email format
+ */
+function parseEmailAddress(string $addressText): array {
+	$addressText = trim($addressText);
+	if (!str_contains($addressText, '>')) {
+		return [
+			'address' => $addressText,
+			'name' => '',
+		];
+	}
+	$matches = [];
+	if (preg_match('/"([^"]+)"\s*<([^<]+)>/', $addressText, $matches)) {
+		return [
+			'address' => trim($matches[2]),
+			'name' => trim($matches[1]),
+		];
+	}
+	elseif (preg_match('/\'([^\']+)\'\s*<([^<]+)>/', $addressText, $matches)) {
+		return [
+			'address' => trim($matches[2]),
+			'name' => trim($matches[1]),
+		];
+	}
+	elseif (preg_match('/([^"\']+)\s*<([^<]+)>/', $addressText, $matches)) {
+		return [
+			'address' => trim($matches[2]),
+			'name' => trim($matches[1]),
+		];
+	}
+	logNewMessage(LOG_ERR, 'Unable to parse email address: ' . $addressText);
+	throw new LAMException(null, _('Please enter a valid email address!'));
 }
 
 /**
