@@ -322,7 +322,7 @@ class lamUserList extends lamList {
 	 * {@inheritDoc}
 	 * @see lamList::isFilterMatching()
 	 */
-	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
+	protected function isFilterMatching(&$data, $filterAttribute, $regex): bool {
 		if (($filterAttribute == 'gidnumber') && ($this->trans_primary == "on")) {
 			if (!isset($data[$filterAttribute])) {
 				return false;

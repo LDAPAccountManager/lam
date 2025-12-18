@@ -167,7 +167,7 @@ class lamDHCPList extends lamList {
 	 * {@inheritDoc}
 	 * @see lamList::isFilterMatching()
 	 */
-	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
+	protected function isFilterMatching(&$data, $filterAttribute, $regex): bool {
 		if ($filterAttribute === "fixed_ips") {
 			if (empty($regex)) {
 				return true;

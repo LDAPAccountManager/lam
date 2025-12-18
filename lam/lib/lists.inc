@@ -1322,11 +1322,12 @@ class lamList {
 	/**
 	 * Checks if the given LDAP data matches the filter.
 	 *
-	 * @param array $data LDAP attributes
+	 * @param array<string, string|string[]> $data LDAP attributes
 	 * @param string $filterAttribute filter attribute name
 	 * @param string $regex filter attribute regex
+     * @return bool filter matches the entry
 	 */
-	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
+	protected function isFilterMatching(&$data, $filterAttribute, $regex): bool {
 		if ($filterAttribute == self::ATTR_ACCOUNT_STATUS) {
 			return preg_match($regex, $data[self::ATTR_ACCOUNT_STATUS][0]);
 		}
