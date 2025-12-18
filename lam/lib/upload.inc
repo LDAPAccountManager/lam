@@ -2,9 +2,12 @@
 
 namespace LAM\UPLOAD;
 
+use LAM\TYPES\ConfiguredType;
+use LAMException;
 use LamTemporaryFilesManager;
 use ZipArchive;
 use accountContainer;
+use function LAM\PDF\createModulePDF;
 
 /*
 
@@ -47,14 +50,23 @@ include_once(__DIR__ . '/pdf.inc');
  */
 class Uploader {
 
-	private $accounts;
-	private $data;
-	private $type;
-	private $endTime;
+	/**
+	 * @var array<string, string|string[]>[] $accounts LDAP accounts
+	 */
+	private array $accounts;
+	/**
+	 * @var array<string, string>[] $data data
+	 */
+	private array $data;
+	private ConfiguredType $type;
+	private int $endTime;
 
 	private const TIME_LIMIT = 10;
 
-	public static function cleanSession() {
+	/**
+	 * Cleans old session data.
+	 */
+	public static function cleanSession(): void {
 		foreach (array_keys($_SESSION) as $key) {
 			if (str_starts_with($key, 'mass_')) {
 				unset($_SESSION[$key]);
@@ -65,9 +77,9 @@ class Uploader {
 	/**
 	 * Constructor
 	 *
-	 * @param \LAM\TYPES\ConfiguredType $type account type
+	 * @param ConfiguredType $type account type
 	 */
-	public function __construct($type) {
+	public function __construct(ConfiguredType $type) {
 		$this->accounts = json_decode(lamDecrypt($_SESSION['mass_accounts']), true);
 		$this->data = json_decode(lamDecrypt($_SESSION['mass_data']), true);
 		$this->type = $type;
@@ -85,9 +97,9 @@ class Uploader {
 	/**
 	 * Start or continues the file upload.
 	 *
-	 * @return String JSON of upload status
+	 * @return string JSON of upload status
 	 */
-	public function doUpload() {
+	public function doUpload(): string {
 		$this->securityCheck();
 		if (!isset($_SESSION['mass_counter'])) {
 			return $this->startUpload();
@@ -107,9 +119,9 @@ class Uploader {
 	/**
 	 * Continues to upload accounts.
 	 *
-	 * @return String JSON of upload status
+	 * @return string JSON of upload status
 	 */
-	private function continueUpload() {
+	private function continueUpload(): string {
 		while (($_SESSION['mass_counter'] < count($this->accounts)) && ($this->endTime > time())) {
 			$this->uploadEntry($_SESSION['mass_counter']);
 			$_SESSION['mass_counter']++;
@@ -124,7 +136,7 @@ class Uploader {
 	 *
 	 * @param int $position position in $this->accounts.
 	 */
-	private function uploadEntry($position) {
+	private function uploadEntry($position): void {
 		$attrs = $this->accounts[$position];
 		$dn = $attrs['dn'];
 		unset($attrs['dn']);
@@ -170,13 +182,13 @@ class Uploader {
 	}
 
 	/**
-	 * Deletes an existing entry if overwrite option is used.
+	 * Deletes an existing entry if the overwrite option is used.
 	 *
 	 * @param string $dn DN
-	 * @param array $attributes attribute list
-	 * @return array list of error messages
+	 * @param array<string, string|string[]> $attributes attribute list
+	 * @return string[][] list of error messages
 	 */
-	private function deleteOldEntryIfNeeded($dn, $attributes) {
+	private function deleteOldEntryIfNeeded($dn, $attributes): array {
 		if (isset($attributes['INFO.overwrite']) && ($attributes['INFO.overwrite'] === 'true')) {
 			$attrs = ldapGetDN($dn, ['dn']);
 			if ($attrs !== null) {
@@ -189,9 +201,9 @@ class Uploader {
 	/**
 	 * Starts the file upload.
 	 *
-	 * @return String JSON of upload status
+	 * @return string JSON of upload status
 	 */
-	private function startUpload() {
+	private function startUpload(): string {
 		$_SESSION['mass_counter'] = 0;
 		return $this->buildUploadStatus();
 	}
@@ -205,11 +217,11 @@ class Uploader {
 	 * @param number $postActionsProgress progress for post actions
 	 * @param bool $postActionsFinished post actions finished
 	 * @param number $pdfProgress PDF creation progress
-	 * @return String JSON status
+	 * @return string JSON status
 	 */
 	private function buildUploadStatus($accountsProgress = 0, $accountsFinished = false,
 									   $postActionsTitle = '', $postActionsProgress = 0, $postActionsFinished = false,
-									   $pdfProgress = 0) {
+									   $pdfProgress = 0): string {
 		$pdfFinished = ($_SESSION['mass_pdf']['structure'] == null) || isset($_SESSION['mass_pdf']['finished']);
 		$allDone = $accountsFinished && $postActionsFinished && $pdfFinished;
 		$errorHtml = '';
@@ -242,8 +254,8 @@ class Uploader {
 	/**
 	 * Checks for security violations and stops processing if needed.
 	 */
-	private function securityCheck() {
-		if (!isLoggedIn() || empty($this->type)
+	private function securityCheck(): void {
+		if (!isLoggedIn()
 			|| $this->type->isHidden()
 			|| !checkIfNewEntriesAreAllowed($this->type->getId())
 			|| !checkIfWriteAccessIsAllowed($this->type->getId())) {
@@ -252,11 +264,11 @@ class Uploader {
 	}
 
 	/**
-	 * Performs any post create actions by modules.
+	 * Performs any post-create actions by modules.
 	 *
-	 * @return String JSON of upload status
+	 * @return string JSON of upload status
 	 */
-	private function runPostActions() {
+	private function runPostActions(): string {
 		$return = $this->runModulePostActions();
 		while (!isset($_SESSION['mass_postActions']['finished']) && ($this->endTime > time())) {
 			$return = $this->runModulePostActions();
@@ -270,9 +282,9 @@ class Uploader {
 	/**
 	 * Runs a single post create action by modules.
 	 *
-	 * @return array status array
+	 * @return array<string, string|int|string[]> status array
 	 */
-	private function runModulePostActions() {
+	private function runModulePostActions(): array {
 		$return = doUploadPostActions($this->type, $this->data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $this->accounts);
 		if ($return['status'] == 'finished') {
 			$_SESSION['mass_postActions']['finished'] = true;
@@ -288,9 +300,10 @@ class Uploader {
 	/**
 	 * Creates the PDF files.
 	 *
-	 * @return String JSON of upload status
+	 * @return string JSON of upload status
+	 * @throws LAMException error during PDF creation
 	 */
-	private function createPDF() {
+	private function createPDF(): string {
 		$file = $_SESSION['mass_pdf']['file'];
 		$pdfStructure = $_SESSION['mass_pdf']['structure'];
 		$font = $_SESSION['mass_pdf']['font'];
@@ -325,7 +338,7 @@ class Uploader {
 				break;
 			}
 			// create and save PDF
-			$pdfContent = \LAM\PDF\createModulePDF([$_SESSION['mass_pdfAccount']], $pdfStructure, $font, true);
+			$pdfContent = createModulePDF([$_SESSION['mass_pdfAccount']], $pdfStructure, $font, true);
 			$fileName = $dn . '.pdf';
 			$pdfZip->addFromString($fileName, $pdfContent);
 			$_SESSION['mass_pdf']['counter']++;

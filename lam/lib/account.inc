@@ -1015,9 +1015,9 @@ function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = ['dn'], $han
  *
  * @param string|null $dn DN to delete
  * @param boolean $recursive recursive delete also child entries
- * @return array error messages
+ * @return string[][] error messages
  */
-function deleteDN($dn, $recursive) {
+function deleteDN($dn, $recursive): array {
 	$errors = [];
 	if (($dn === null) || ($dn === '')) {
 		$errors[] = ['ERROR', _('Entry does not exist')];

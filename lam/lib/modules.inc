@@ -606,13 +606,13 @@ function doUploadPreActions($type, $selectedModules, $attributes) {
  * @param array $failed list of accounts which were not created successfully
  * @param array $selectedModules list of selected account modules
  * @param array $accounts list of LDAP entries
- * @return array current status
- * <br> array (
- * <br>  'status' => 'finished' | 'inProgress'
- * <br>  'module' => <name of active module>
- * <br>  'progress' => 0..100
- * <br>  'errors' => array (<array of parameters for StatusMessage>)
- * <br> )
+ * @return array<string, string|int|string[]> current status
+ * <br>array (
+ * <br> 'status' => 'finished' | 'inProgress'
+ * <br> 'module' => <name of active module>
+ * <br> 'progress' => 0..100
+ * <br> 'errors' => array (<array of parameters for StatusMessage>)
+ * <br>)
  */
 function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$accounts) {
 	// check if function is called the first time
