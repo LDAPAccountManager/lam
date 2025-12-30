@@ -546,6 +546,10 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 	}
 	$stopUpload = false;
 	for ($i = 0; $i < count($ordered); $i++) {
+		if (!in_array(baseModule::class, class_parents($ordered[$i]))) {
+			logNewMessage(LOG_WARNING, 'Invalid module name: ' . $ordered[$i]);
+			continue;
+		}
 		$module = new $ordered[$i]($type->getScope());
 		logNewMessage(LOG_DEBUG, 'Building data for ' . $ordered[$i]);
 		$moduleErrors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules, $type);
