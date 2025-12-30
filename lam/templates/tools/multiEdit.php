@@ -383,7 +383,8 @@ function generateActions(): array {
 		foreach ($newEntry as $name => &$values) {
 			// remove empty values
 			$values = array_values($values);
-			for ($i = 0; $i < count($values); $i++) {
+			$count = count($values);
+			for ($i = 0; $i < $count; $i++) {
 				if ($values[$i] === '') {
 					unset($values[$i]);
 				}

@@ -123,23 +123,23 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
 	$schemaClasses = get_cached_schema('objectclasses');
 	$schemaAttrs = [];
 	// check if object classes are supported
-	for ($o = 0; $o < count($classes); $o++) {
-		if (!isset($schemaClasses[strtolower($classes[$o])])) {
-			return sprintf(_("The object class %s is not supported by your LDAP server."), $classes[$o]);
+	foreach ($classes as $objectClass) {
+		if (!isset($schemaClasses[strtolower($objectClass)])) {
+			return sprintf(_("The object class %s is not supported by your LDAP server."), $objectClass);
 		}
 		// get attribute names
-		$schemaAttrs = array_merge($schemaAttrs, getRecursiveAttributesFromObjectClass($schemaClasses[strtolower($classes[$o])]));
+		$schemaAttrs = array_merge($schemaAttrs, getRecursiveAttributesFromObjectClass($schemaClasses[strtolower($objectClass)]));
 	}
 	// check if attributes are supported
-	for ($a = 0; $a < count($attrs); $a++) {
-		if (str_starts_with($attrs[$a], 'INFO.')) {
+	foreach ($attrs as $attributeName) {
+		if (str_starts_with($attributeName, 'INFO.')) {
 			continue;
 		}
-		if (!in_array_ignore_case($attrs[$a], $schemaAttrs) && !in_array_ignore_case(str_replace(';binary', '', $attrs[$a]), $schemaAttrs)) {
-			if (isset($aliases[$attrs[$a]]) && in_array_ignore_case($aliases[$attrs[$a]], $schemaAttrs)) {
+		if (!in_array_ignore_case($attributeName, $schemaAttrs) && !in_array_ignore_case(str_replace(';binary', '', $attributeName), $schemaAttrs)) {
+			if (isset($aliases[$attributeName]) && in_array_ignore_case($aliases[$attributeName], $schemaAttrs)) {
 				continue;
 			}
-			return sprintf(_("The attribute %s is not supported for the object class %s by your LDAP server."), $attrs[$a], implode("/", $classes));
+			return sprintf(_("The attribute %s is not supported for the object class %s by your LDAP server."), $attributeName, implode("/", $classes));
 		}
 	}
 	return null;
@@ -156,9 +156,9 @@ function getRecursiveAttributesFromObjectClass($oClass): array {
 	$attrs = array_merge($attrs, $oClass->getMustAttrNames());
 	$attrs = array_merge($attrs, $oClass->getMayAttrNames());
 	$subClassNames = $oClass->getSupClasses();
-	for ($i = 0; $i < count($subClassNames); $i++) {
+	foreach ($subClassNames as $subClassName) {
 		$schemaClasses = get_cached_schema('objectclasses');
-		$subClass = $schemaClasses[strtolower($subClassNames[$i])];
+		$subClass = $schemaClasses[strtolower($subClassName)];
 		$attrs = array_merge($attrs, getRecursiveAttributesFromObjectClass($subClass));
 	}
 	return $attrs;
