@@ -1598,13 +1598,17 @@ class accountContainer {
 	 * @return array error messages
 	 */
 	function load_account($dn, $infoAttributes = []) {
+		if (!str_ends_with(strtolower($dn), strtolower($this->type->getSuffix()))) {
+			logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $this->type->getId() . ' outside suffix ' . $this->type->getSuffix());
+			die();
+		}
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->extraInfoAttributes['INFO.isNewAccount'] = 'no';
 		$this->extraInfoAttributes['INFO.passwordUpdated'] = 'no';
 		$this->extraInfoAttributes['INFO.passwordChangeType'] = 'none';
 		$this->module = [];
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
-		$filter = '(objectClass=*)';
+		$filter = empty($this->type->getAdditionalLdapFilter()) ? '(objectClass=*)' : $this->type->getAdditionalLdapFilter();
 		$searchAttrs = ['*', '+'];
 		foreach ($modules as $module) {
 			$modTmp = new $module($this->type->getScope());

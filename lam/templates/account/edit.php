@@ -98,11 +98,6 @@ if (!empty($_GET['DN'])) {
 		die();
 	}
 	$suffix = strtolower($type->getSuffix());
-	$DNlower = strtolower($dn);
-	if (strpos($DNlower, $suffix) !== (strlen($DNlower) - strlen($suffix))) {
-		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type->getId() . ' outside suffix ' . $suffix);
-		die();
-	}
 	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
 	$result = $_SESSION[$sessionKey]->load_account($dn);
 	if (count($result) > 0) {
