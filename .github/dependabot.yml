@@ -9,6 +9,9 @@ updates:
     directory: "/lam/" # Location of package manifests
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "paragonie/random_compat"
+        versions: [ "9.99.99", "9.99.100" ]
 
   - package-ecosystem: github-actions
     directory: /
