@@ -4,19 +4,23 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\AuthMethod;
 
-use function array_merge;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\InvalidArgumentException;
-use function http_build_query;
 use Psr\Http\Message\RequestInterface;
+use Override;
+
+use function array_merge;
+use function http_build_query;
 
 final class ClientSecretPost implements AuthMethodInterface
 {
+    #[Override]
     public function getSupportedMethod(): string
     {
         return 'client_secret_post';
     }
 
+    #[Override]
     public function createRequest(
         RequestInterface $request,
         OpenIDClient $client,

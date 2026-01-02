@@ -13,20 +13,20 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Override;
 
+/**
+ * @psalm-api
+ */
 class CallbackMiddleware implements MiddlewareInterface
 {
-    /** @var AuthorizationService */
-    private $authorizationService;
+    private AuthorizationService $authorizationService;
 
-    /** @var string|null */
-    private $redirectUri;
+    private ?string $redirectUri;
 
-    /** @var null|ClientInterface */
-    private $client;
+    private ?ClientInterface $client;
 
-    /** @var null|int */
-    private $maxAge;
+    private ?int $maxAge;
 
     public function __construct(
         AuthorizationService $authorizationService,
@@ -40,6 +40,7 @@ class CallbackMiddleware implements MiddlewareInterface
         $this->maxAge = $maxAge;
     }
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $client = $this->client ?? $request->getAttribute(ClientInterface::class);

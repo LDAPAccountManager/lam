@@ -4,34 +4,32 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\AuthMethod;
 
-use function array_merge;
 use Facile\OpenIDClient\AlgorithmManagerBuilder;
-use function Facile\OpenIDClient\base64url_encode;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\RuntimeException;
-use function Facile\OpenIDClient\get_endpoint_uri;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use Jose\Component\Signature\Serializer\JWSSerializer;
+use Override;
+
+use function array_merge;
+use function Facile\OpenIDClient\base64url_encode;
+use function Facile\OpenIDClient\get_endpoint_uri;
 use function json_encode;
 use function random_bytes;
 use function time;
 
 final class PrivateKeyJwt extends AbstractJwtAuth
 {
-    /** @var JWSBuilder */
-    private $jwsBuilder;
+    private JWSBuilder $jwsBuilder;
 
-    /** @var JWSSerializer */
-    private $jwsSerializer;
+    private JWSSerializer $jwsSerializer;
 
-    /** @var null|JWK */
-    private $jwk;
+    private ?JWK $jwk;
 
-    /** @var int */
-    private $tokenTTL;
+    private int $tokenTTL;
 
     /**
      * PrivateKeyJwt constructor.
@@ -48,6 +46,7 @@ final class PrivateKeyJwt extends AbstractJwtAuth
         $this->tokenTTL = $tokenTTL;
     }
 
+    #[Override]
     public function getSupportedMethod(): string
     {
         return 'private_key_jwt';
@@ -56,6 +55,7 @@ final class PrivateKeyJwt extends AbstractJwtAuth
     /**
      * @param array<string, mixed> $claims
      */
+    #[Override]
     protected function createAuthJwt(OpenIDClient $client, array $claims = []): string
     {
         $clientId = $client->getMetadata()->getClientId();

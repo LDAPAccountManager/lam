@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Issuer\Metadata\Provider;
 
+use Facile\JoseVerifier\TokenVerifierInterface;
+use Facile\OpenIDClient\Exception\InvalidArgumentException;
+use Facile\OpenIDClient\Exception\RuntimeException;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
+use Override;
+
 use function array_key_exists;
 use function array_pop;
 use function explode;
-use Facile\OpenIDClient\Exception\InvalidArgumentException;
-use Facile\OpenIDClient\Exception\RuntimeException;
 use function Facile\OpenIDClient\parse_metadata_response;
 use function http_build_query;
 use function is_array;
@@ -16,15 +23,11 @@ use function is_string;
 use function parse_url;
 use function preg_match;
 use function preg_replace;
-use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use function strpos;
 use function substr;
 
 /**
- * @psalm-import-type IssuerMetadataObject from \Facile\JoseVerifier\Psalm\PsalmTypes
+ * @psalm-import-type IssuerRemoteMetadataType from TokenVerifierInterface
  */
 final class WebFingerProvider implements RemoteProviderInterface, WebFingerProviderInterface
 {
@@ -36,17 +39,13 @@ final class WebFingerProvider implements RemoteProviderInterface, WebFingerProvi
 
     private const AAD_MULTITENANT_DISCOVERY = 'https://login.microsoftonline.com/common/v2.0$' . self::OIDC_DISCOVERY;
 
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
-    /** @var RequestFactoryInterface */
-    private $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
-    /** @var UriFactoryInterface */
-    private $uriFactory;
+    private UriFactoryInterface $uriFactory;
 
-    /** @var DiscoveryProviderInterface */
-    private $discoveryProvider;
+    private DiscoveryProviderInterface $discoveryProvider;
 
     public function __construct(
         ClientInterface $client,
@@ -60,19 +59,22 @@ final class WebFingerProvider implements RemoteProviderInterface, WebFingerProvi
         $this->discoveryProvider = $discoveryProvider;
     }
 
+    #[Override]
     public function isAllowedUri(string $uri): bool
     {
         return true;
     }
 
+    #[Override]
     public function fetch(string $uri): array
     {
         $uri = $this->normalizeWebfinger($uri);
-        $parsedUrl = parse_url(
-            false !== strpos($uri, '@')
-                ? 'https://' . explode('@', $uri)[1]
-                : $uri
-        );
+        $parts = explode('@', $uri, 2);
+        if (isset($parts[1])) {
+            $parsedUrl = parse_url('https://' . $parts[1]);
+        } else {
+            $parsedUrl = parse_url($uri);
+        }
 
         if (! is_array($parsedUrl) || ! array_key_exists('host', $parsedUrl)) {
             throw new RuntimeException('Unable to parse resource');
@@ -128,7 +130,7 @@ final class WebFingerProvider implements RemoteProviderInterface, WebFingerProvi
             throw new RuntimeException('Discovered issuer mismatch');
         }
 
-        /** @var IssuerMetadataObject $metadata */
+        /** @var IssuerRemoteMetadataType $metadata */
         return $metadata;
     }
 

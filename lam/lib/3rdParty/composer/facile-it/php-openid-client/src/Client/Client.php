@@ -18,23 +18,19 @@ use Facile\OpenIDClient\AuthMethod\TLSClientAuth;
 use Facile\OpenIDClient\Client\Metadata\ClientMetadataInterface;
 use Facile\OpenIDClient\Issuer\IssuerInterface;
 use Psr\Http\Client\ClientInterface as HttpClient;
+use Override;
 
 final class Client implements ClientInterface
 {
-    /** @var IssuerInterface */
-    private $issuer;
+    private IssuerInterface $issuer;
 
-    /** @var ClientMetadataInterface */
-    private $metadata;
+    private ClientMetadataInterface $metadata;
 
-    /** @var JwksProviderInterface */
-    private $jwksProvider;
+    private JwksProviderInterface $jwksProvider;
 
-    /** @var AuthMethodFactoryInterface */
-    private $authMethodFactory;
+    private AuthMethodFactoryInterface $authMethodFactory;
 
-    /** @var null|HttpClient */
-    private $httpClient;
+    private ?HttpClient $httpClient;
 
     /**
      * Client constructor.
@@ -61,26 +57,31 @@ final class Client implements ClientInterface
         $this->httpClient = $httpClient;
     }
 
+    #[Override]
     public function getIssuer(): IssuerInterface
     {
         return $this->issuer;
     }
 
+    #[Override]
     public function getMetadata(): ClientMetadataInterface
     {
         return $this->metadata;
     }
 
+    #[Override]
     public function getJwksProvider(): JwksProviderInterface
     {
         return $this->jwksProvider;
     }
 
+    #[Override]
     public function getAuthMethodFactory(): AuthMethodFactoryInterface
     {
         return $this->authMethodFactory;
     }
 
+    #[Override]
     public function getHttpClient(): ?HttpClient
     {
         return $this->httpClient;

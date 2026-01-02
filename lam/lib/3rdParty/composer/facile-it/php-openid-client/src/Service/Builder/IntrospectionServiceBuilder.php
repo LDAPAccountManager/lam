@@ -6,6 +6,9 @@ namespace Facile\OpenIDClient\Service\Builder;
 
 use Facile\OpenIDClient\Service\IntrospectionService;
 
+/**
+ * @psalm-api
+ */
 final class IntrospectionServiceBuilder extends AbstractServiceBuilder
 {
     public function build(): IntrospectionService

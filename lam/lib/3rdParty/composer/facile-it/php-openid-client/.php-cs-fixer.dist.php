@@ -48,6 +48,7 @@ $rulesProvider = new Facile\CodingStandards\Rules\CompositeRulesProvider([
 
 $config = new PhpCsFixer\Config();
 $config->setRules($rulesProvider->getRules());
+$config->setRiskyAllowed(true);
 
 $finder = new PhpCsFixer\Finder();
 

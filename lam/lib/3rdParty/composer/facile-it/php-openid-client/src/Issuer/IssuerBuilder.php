@@ -7,14 +7,16 @@ namespace Facile\OpenIDClient\Issuer;
 use Facile\JoseVerifier\JWK\JwksProviderBuilder;
 use Facile\OpenIDClient\Issuer\Metadata\IssuerMetadata;
 use Facile\OpenIDClient\Issuer\Metadata\Provider\MetadataProviderBuilder;
+use Override;
 
+/**
+ * @psalm-api
+ */
 final class IssuerBuilder implements IssuerBuilderInterface
 {
-    /** @var MetadataProviderBuilder|null */
-    private $metadataProviderBuilder;
+    private ?MetadataProviderBuilder $metadataProviderBuilder = null;
 
-    /** @var JwksProviderBuilder|null */
-    private $jwksProviderBuilder;
+    private ?JwksProviderBuilder $jwksProviderBuilder = null;
 
     public function setMetadataProviderBuilder(?MetadataProviderBuilder $metadataProviderBuilder): self
     {
@@ -40,13 +42,13 @@ final class IssuerBuilder implements IssuerBuilderInterface
         return $this->jwksProviderBuilder ?? new JwksProviderBuilder();
     }
 
+    #[Override]
     public function build(string $resource): IssuerInterface
     {
         $metadataBuilder = $this->buildMetadataProviderBuilder();
         $metadata = IssuerMetadata::fromArray($metadataBuilder->build()->fetch($resource));
 
-        $jwksProviderBuilder = $this->buildJwksProviderBuilder();
-        $jwksProviderBuilder->setJwksUri($metadata->getJwksUri());
+        $jwksProviderBuilder = ($this->buildJwksProviderBuilder())->withJwksUri($metadata->getJwksUri());
         $jwksProvider = $jwksProviderBuilder->build();
 
         return new Issuer(

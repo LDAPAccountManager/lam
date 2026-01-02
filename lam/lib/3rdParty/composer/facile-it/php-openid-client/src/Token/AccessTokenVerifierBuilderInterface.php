@@ -7,6 +7,9 @@ namespace Facile\OpenIDClient\Token;
 use Facile\JoseVerifier\TokenVerifierInterface;
 use Facile\OpenIDClient\Client\ClientInterface;
 
+/**
+ * @psalm-api
+ */
 interface AccessTokenVerifierBuilderInterface
 {
     public function build(ClientInterface $client): TokenVerifierInterface;

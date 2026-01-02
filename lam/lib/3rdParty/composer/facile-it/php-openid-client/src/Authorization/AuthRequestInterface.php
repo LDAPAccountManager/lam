@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Facile\OpenIDClient\Authorization;
 
 use JsonSerializable;
+use Override;
 
+/**
+ * @psalm-api
+ */
 interface AuthRequestInterface extends JsonSerializable
 {
     /**
@@ -123,5 +127,6 @@ interface AuthRequestInterface extends JsonSerializable
     /**
      * @return array<string, mixed>
      */
+    #[Override]
     public function jsonSerialize(): array;
 }

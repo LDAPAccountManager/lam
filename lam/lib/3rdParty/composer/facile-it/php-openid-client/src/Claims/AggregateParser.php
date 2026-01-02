@@ -4,26 +4,29 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Claims;
 
-use function array_filter;
 use Facile\OpenIDClient\Client\ClientInterface;
-use function is_array;
+use Override;
 
+use function array_filter;
+use function array_key_exists;
+
+/**
+ * @psalm-api
+ */
 final class AggregateParser extends AbstractClaims implements AggregatedParserInterface
 {
+    #[Override]
     public function unpack(ClientInterface $client, array $claims): array
     {
-        $claimSources = $claims['_claim_sources'] ?? null;
-        $claimNames = $claims['_claim_names'] ?? null;
-
-        if (! is_array($claimSources)) {
+        if (! array_key_exists('_claim_sources', $claims)) {
             return $claims;
         }
 
-        if (! is_array($claimNames)) {
+        if (! array_key_exists('_claim_names', $claims)) {
             return $claims;
         }
 
-        $aggregatedSources = array_filter($claimSources, fn ($value): bool => $this->isAggregateSource($value));
+        $aggregatedSources = array_filter($claims['_claim_sources'], fn($value): bool => $this->isAggregateSource($value));
 
         $claimPayloads = [];
         foreach ($aggregatedSources as $sourceName => $source) {
@@ -31,6 +34,6 @@ final class AggregateParser extends AbstractClaims implements AggregatedParserIn
             unset($claims['_claim_sources'][$sourceName]);
         }
 
-        return $this->cleanClaims($this->assignClaims($claims, $claimNames, $claimPayloads));
+        return $this->cleanClaims($this->assignClaims($claims, $claims['_claim_names'], $claimPayloads));
     }
 }

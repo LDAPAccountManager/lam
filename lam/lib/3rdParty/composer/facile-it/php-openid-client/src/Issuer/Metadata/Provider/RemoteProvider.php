@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Issuer\Metadata\Provider;
 
-use function array_filter;
 use Facile\OpenIDClient\Exception\ExceptionInterface;
 use Facile\OpenIDClient\Exception\RuntimeException;
+use Override;
+
+use function array_filter;
 
 final class RemoteProvider implements RemoteProviderInterface
 {
     /** @var RemoteProviderInterface[] */
-    private $providers;
+    private array $providers;
 
     /**
      * @param RemoteProviderInterface[] $providers
@@ -21,16 +23,18 @@ final class RemoteProvider implements RemoteProviderInterface
         $this->providers = $providers;
     }
 
+    #[Override]
     public function isAllowedUri(string $uri): bool
     {
         return true;
     }
 
+    #[Override]
     public function fetch(string $uri): array
     {
         $lastException = null;
 
-        $providers = array_filter($this->providers, static fn (RemoteProviderInterface $provider): bool => $provider->isAllowedUri($uri));
+        $providers = array_filter($this->providers, static fn(RemoteProviderInterface $provider): bool => $provider->isAllowedUri($uri));
 
         foreach ($providers as $provider) {
             try {

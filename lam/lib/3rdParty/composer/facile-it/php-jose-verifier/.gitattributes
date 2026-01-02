@@ -1,8 +1,11 @@
 tests/              export-ignore
+stubs/              export-ignore
 .github/            export-ignore
-.php_cs*            export-ignore
+.php-cs-fixer.*     export-ignore
 .scrutinizer.yml    export-ignore
 composer.lock       export-ignore
 psalm.xml           export-ignore
 psalm.xml.dist      export-ignore
 phpunit.xml.dist    export-ignore
+Dockerfile          export-ignore
+docker-compose.yml  export-ignore

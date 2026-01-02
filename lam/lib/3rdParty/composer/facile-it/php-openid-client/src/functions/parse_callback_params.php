@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Facile\OpenIDClient;
 
 use Facile\OpenIDClient\Exception\RuntimeException;
+use Psr\Http\Message\ServerRequestInterface;
+
 use function in_array;
 use function parse_str;
-use Psr\Http\Message\ServerRequestInterface;
 use function strtoupper;
 
 /**

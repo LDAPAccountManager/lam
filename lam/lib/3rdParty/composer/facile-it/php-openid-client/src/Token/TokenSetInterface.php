@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Facile\OpenIDClient\Token;
 
 /**
+ * @psalm-api
+ *
  * @psalm-type ClaimSourceAggregateType = array{}&array{JWT: string}
  * @psalm-type ClaimSourceDistributedType = array{}&array{endpoint: string, access_token?: string}
  * @psalm-type ClaimSourceType = ClaimSourceAggregateType|ClaimSourceDistributedType
@@ -56,7 +58,7 @@ namespace Facile\OpenIDClient\Token;
 interface TokenSetInterface
 {
     /**
-     * Get all attributes
+     * Get all attributes.
      *
      * @return array<string, mixed>
      *
@@ -92,9 +94,9 @@ interface TokenSetInterface
     /**
      * @param array<string, mixed> $claims
      *
-     * @return $this
-     *
      * @psalm-param TokenSetClaimsType $claims
+     *
+     * @return $this
      */
     public function withClaims(array $claims): self;
 }

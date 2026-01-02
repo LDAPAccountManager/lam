@@ -141,7 +141,7 @@ final class ValidatorState
         $state->_workingPublicKeyParameters = self::getAlgorithmParameters(
             $state->_workingPublicKey->algorithmIdentifier()
         );
-        $state->_workingIssuerName = $tbsCert->issuer();
+        $state->_workingIssuerName = $tbsCert->subject();
         $state->_maxPathLength = $config->maxLength();
         return $state;
     }

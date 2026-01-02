@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Claims;
 
-use function array_filter;
-use function Facile\OpenIDClient\check_server_response;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\RuntimeException;
 use Facile\OpenIDClient\Issuer\IssuerBuilderInterface;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
-use function is_array;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\JWSSerializer;
@@ -19,14 +16,20 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
+use Override;
 
+use function array_filter;
+use function array_key_exists;
+use function Facile\OpenIDClient\check_server_response;
+
+/**
+ * @psalm-api
+ */
 final class DistributedParser extends AbstractClaims implements DistributedParserInterface
 {
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
-    /** @var RequestFactoryInterface */
-    private $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
     public function __construct(
         ?IssuerBuilderInterface $issuerBuilder = null,
@@ -42,20 +45,18 @@ final class DistributedParser extends AbstractClaims implements DistributedParse
         $this->requestFactory = $requestFactory ?? Psr17FactoryDiscovery::findRequestFactory();
     }
 
+    #[Override]
     public function fetch(OpenIDClient $client, array $claims, array $accessTokens = []): array
     {
-        $claimSources = $claims['_claim_sources'] ?? null;
-        $claimNames = $claims['_claim_names'] ?? null;
-
-        if (! is_array($claimSources)) {
+        if (! array_key_exists('_claim_sources', $claims)) {
             return $claims;
         }
 
-        if (! is_array($claimNames)) {
+        if (! array_key_exists('_claim_names', $claims)) {
             return $claims;
         }
 
-        $distributedSources = array_filter($claimSources, fn ($value): bool => $this->isDistributedSource($value));
+        $distributedSources = array_filter($claims['_claim_sources'], fn($value): bool => $this->isDistributedSource($value));
 
         /** @var array<string, ResponseInterface> $responses */
         $responses = [];
@@ -64,7 +65,7 @@ final class DistributedParser extends AbstractClaims implements DistributedParse
                 ->withHeader('accept', 'application/jwt');
 
             $accessToken = $source['access_token'] ?? ($accessTokens[$sourceName] ?? null);
-            if ($accessToken) {
+            if ($accessToken !== null) {
                 $request = $request->withHeader('authorization', 'Bearer ' . $accessToken);
             }
 
@@ -86,6 +87,6 @@ final class DistributedParser extends AbstractClaims implements DistributedParse
             }
         }
 
-        return $this->cleanClaims($this->assignClaims($claims, $claimNames, $claimPayloads));
+        return $this->cleanClaims($this->assignClaims($claims, $claims['_claim_names'], $claimPayloads));
     }
 }

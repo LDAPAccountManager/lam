@@ -6,11 +6,12 @@ namespace Facile\OpenIDClient;
 
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\RuntimeException;
+
 use function is_string;
 use function strpos;
 
 /**
- * Handle endpoint URI based on auth method
+ * Handle endpoint URI based on auth method.
  *
  * @internal
  */
@@ -27,7 +28,7 @@ function get_endpoint_uri(OpenIDClient $client, string $endpointMetadata): strin
             ->getMtlsEndpointAliases()['token_endpoint'] ?? null;
     }
 
-    if (! $endpoint) {
+    if ($endpoint === null) {
         /** @var null|string $endpoint */
         $endpoint = $client->getIssuer()->getMetadata()->get($endpointMetadata);
     }

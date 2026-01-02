@@ -4,38 +4,39 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Service;
 
+use Facile\OpenIDClient\Exception\InvalidArgumentException;
+use Facile\OpenIDClient\Exception\RuntimeException;
+use Facile\OpenIDClient\Issuer\IssuerInterface;
+use JsonException;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+
 use function array_diff_key;
 use function array_flip;
 use function array_intersect_key;
 use function array_key_exists;
 use function array_merge;
 use function Facile\OpenIDClient\check_server_response;
-use Facile\OpenIDClient\Exception\InvalidArgumentException;
-use Facile\OpenIDClient\Exception\RuntimeException;
-use Facile\OpenIDClient\Issuer\IssuerInterface;
 use function Facile\OpenIDClient\parse_metadata_response;
 use function json_encode;
-use JsonException;
-use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 
 /**
- * Dynamic Client Registration Protocol
+ * Dynamic Client Registration Protocol.
  *
- * @link https://tools.ietf.org/html/rfc7591
- * @link https://openid.net/specs/openid-connect-registration-1_0.html
+ * @see https://tools.ietf.org/html/rfc7591
+ * @see https://openid.net/specs/openid-connect-registration-1_0.html
+ *
+ * @psalm-api
  */
 final class RegistrationService
 {
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
-    /** @var RequestFactoryInterface */
-    private $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
     /** @var string[] */
-    private static $registrationClaims = [
+    private static array $registrationClaims = [
         'registration_access_token',
         'registration_client_uri',
         'client_secret_expires_at',

@@ -8,37 +8,21 @@ use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
 use JsonSerializable;
-use Traversable;
 use Facile\JoseVerifier\Psalm\PsalmTypes;
 
 /**
- * @psalm-import-type JWKType from JWK
- * @psalm-type JWKSetType = array{keys: list<JWKType>}
- *
- * @template-implements IteratorAggregate<mixed, JWK>
+ * @implements IteratorAggregate<mixed, JWK>
  */
 class JWKSet implements Countable, IteratorAggregate, JsonSerializable
 {
     /**
-     * @param JWKSetType $data
+     * @psalm-param array{keys: list<array<string, mixed>>} $data
+     * @return static
      */
     public static function createFromKeyData(array $data): self
     {}
 
     public static function createFromJson(string $json): self
-    {}
-
-    /**
-     * @param int $mode
-     */
-    public function count($mode = COUNT_NORMAL): int
-    {}
-
-    /**
-     * @internal
-     * @return Traversable<array-key, mixed>
-     */
-    public function getIterator(): Traversable
     {}
 
     /**
@@ -84,7 +68,7 @@ class JWKSet implements Countable, IteratorAggregate, JsonSerializable
     {}
 
     /**
-     * @return JWKSetType
+     * @return array{keys: list<array<string, mixed>>}
      */
     public function jsonSerialize(): array
     {}

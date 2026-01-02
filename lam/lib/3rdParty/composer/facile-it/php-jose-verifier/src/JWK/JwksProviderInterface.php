@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace Facile\JoseVerifier\JWK;
 
-/**
- * @psalm-import-type JWKSetObject from \Facile\JoseVerifier\Psalm\PsalmTypes
- */
 interface JwksProviderInterface
 {
     /**
-     * Get keys
+     * Get keys.
      *
-     * @psalm-return JWKSetObject
+     * @psalm-return array{keys: list<array<string, mixed>>}
      */
     public function getJwks(): array;
 
     /**
-     * Require reload keys from source
-     *
-     * @return $this
+     * Require reload keys from source.
      */
-    public function reload(): self;
+    public function reload(): JwksProviderInterface;
 }

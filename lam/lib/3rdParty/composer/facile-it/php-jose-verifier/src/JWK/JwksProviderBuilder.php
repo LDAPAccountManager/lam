@@ -5,96 +5,99 @@ declare(strict_types=1);
 namespace Facile\JoseVerifier\JWK;
 
 use Facile\JoseVerifier\Exception\InvalidArgumentException;
-use Http\Discovery\Psr17FactoryDiscovery;
-use Http\Discovery\Psr18ClientDiscovery;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\HttpClient\Psr18Client;
+
 use function sha1;
 use function substr;
 
 /**
- * @psalm-import-type JWKSetObject from \Facile\JoseVerifier\Psalm\PsalmTypes
+ * @psalm-api
+ *
+ * @psalm-type JWKSetType = array{keys: list<array<string, mixed>>}
  */
-class JwksProviderBuilder
+final class JwksProviderBuilder
 {
-    /**
-     * @var array|null
-     *
-     * @psalm-var null|JWKSetObject
-     */
-    private $jwks;
+    /** @psalm-var null|JWKSetType */
+    private ?array $jwks = null;
 
-    /** @var string|null */
-    private $jwksUri;
+    private ?string $jwksUri = null;
 
-    /** @var ClientInterface|null */
-    private $httpClient;
+    private ?ClientInterface $httpClient = null;
 
-    /** @var RequestFactoryInterface|null */
-    private $requestFactory;
+    private ?RequestFactoryInterface $requestFactory = null;
 
-    /** @var CacheInterface|null */
-    private $cache;
+    private ?CacheInterface $cache = null;
 
-    /** @var int|null */
-    private $cacheTtl = 86400;
+    private ?int $cacheTtl = 86_400;
 
     /**
-     * @psalm-param JWKSetObject $jwks
+     * @psalm-param JWKSetType $jwks
      */
-    public function setJwks(array $jwks): self
+    public function withJwks(array $jwks): static
     {
-        $this->jwks = $jwks;
+        $new = clone $this;
+        $new->jwks = $jwks;
 
-        return $this;
+        return $new;
     }
 
-    public function setJwksUri(?string $jwksUri): self
+    public function withJwksUri(string $jwksUri): static
     {
-        $this->jwksUri = $jwksUri;
+        $new = clone $this;
+        $new->jwksUri = $jwksUri;
 
-        return $this;
+        return $new;
     }
 
-    public function setHttpClient(?ClientInterface $httpClient): self
+    public function withHttpClient(ClientInterface $httpClient): static
     {
-        $this->httpClient = $httpClient;
+        $new = clone $this;
+        $new->httpClient = $httpClient;
 
-        return $this;
+        return $new;
     }
 
-    public function setRequestFactory(?RequestFactoryInterface $requestFactory): self
+    public function withRequestFactory(RequestFactoryInterface $requestFactory): static
     {
-        $this->requestFactory = $requestFactory;
+        $new = clone $this;
+        $new->requestFactory = $requestFactory;
 
-        return $this;
+        return $new;
     }
 
-    public function setCache(?CacheInterface $cache): self
+    public function withCache(CacheInterface $cache): static
     {
-        $this->cache = $cache;
+        $new = clone $this;
+        $new->cache = $cache;
 
-        return $this;
+        return $new;
     }
 
-    public function setCacheTtl(?int $cacheTtl): self
+    public function withCacheTtl(int $cacheTtl): static
     {
-        $this->cacheTtl = $cacheTtl;
+        $new = clone $this;
+        $new->cacheTtl = $cacheTtl;
 
-        return $this;
+        return $new;
     }
 
     protected function buildRequestFactory(): RequestFactoryInterface
     {
-        return $this->requestFactory ?? Psr17FactoryDiscovery::findRequestFactory();
+        return $this->requestFactory ?? new Psr17Factory();
     }
 
     protected function buildHttpClient(): ClientInterface
     {
-        return $this->httpClient ?? Psr18ClientDiscovery::find();
+        return $this->httpClient ?? new Psr18Client();
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function build(): JwksProviderInterface
     {
         if (null !== $this->jwks && null !== $this->jwksUri) {

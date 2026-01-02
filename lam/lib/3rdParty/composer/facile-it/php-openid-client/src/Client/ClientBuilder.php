@@ -21,22 +21,20 @@ use Facile\OpenIDClient\Issuer\IssuerInterface;
 use Http\Discovery\Psr18ClientDiscovery;
 use Psr\Http\Client\ClientInterface as HttpClient;
 
-class ClientBuilder
+/**
+ * @psalm-api
+ */
+final class ClientBuilder
 {
-    /** @var ClientMetadataInterface|null */
-    private $clientMetadata;
+    private ?ClientMetadataInterface $clientMetadata = null;
 
-    /** @var IssuerInterface|null */
-    private $issuer;
+    private ?IssuerInterface $issuer = null;
 
-    /** @var JwksProviderInterface|null */
-    private $jwksProvider;
+    private ?JwksProviderInterface $jwksProvider = null;
 
-    /** @var AuthMethodFactoryInterface|null */
-    private $authMethodFactory;
+    private ?AuthMethodFactoryInterface $authMethodFactory = null;
 
-    /** @var HttpClient|null */
-    private $httpClient;
+    private ?HttpClient $httpClient = null;
 
     public function setClientMetadata(?ClientMetadataInterface $clientMetadata): self
     {

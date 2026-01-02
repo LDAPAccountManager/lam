@@ -4,20 +4,14 @@ declare(strict_types=1);
 
 namespace Facile\JoseVerifier;
 
+/**
+ * @psalm-api
+ */
 interface IdTokenVerifierInterface extends TokenVerifierInterface
 {
-    /**
-     * @return $this
-     */
-    public function withAccessToken(?string $accessToken);
+    public function withAccessToken(?string $accessToken): IdTokenVerifierInterface;
 
-    /**
-     * @return $this
-     */
-    public function withCode(?string $code);
+    public function withCode(?string $code): IdTokenVerifierInterface;
 
-    /**
-     * @return $this
-     */
-    public function withState(?string $state);
+    public function withState(?string $state): IdTokenVerifierInterface;
 }

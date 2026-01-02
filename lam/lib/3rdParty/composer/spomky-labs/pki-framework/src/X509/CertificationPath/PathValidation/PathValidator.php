@@ -222,7 +222,7 @@ final class PathValidator
             if ($pk_info->algorithmIdentifier()->oid() !==
                 $state->workingPublicKeyAlgorithm()
                     ->oid()) {
-                $state = $state->withWorkingPublicKeyParameters(null);
+                $state = $state->withWorkingPublicKeyParameters();
             }
         }
         // assign working_public_key_algorithm

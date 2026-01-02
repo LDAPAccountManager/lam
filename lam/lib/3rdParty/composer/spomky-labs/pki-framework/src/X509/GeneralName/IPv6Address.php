@@ -51,9 +51,9 @@ final class IPv6Address extends IPAddress
 
     protected function octets(): string
     {
-        $words = array_map('hexdec', explode(':', $this->ip));
+        $words = array_map(hexdec(...), explode(':', $this->ip));
         if (isset($this->mask)) {
-            $words = array_merge($words, array_map('hexdec', explode(':', $this->mask)));
+            $words = array_merge($words, array_map(hexdec(...), explode(':', $this->mask)));
         }
         return pack('n*', ...$words);
     }

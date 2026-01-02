@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\AuthMethod;
 
-use function base64_encode;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\InvalidArgumentException;
-use function http_build_query;
 use Psr\Http\Message\RequestInterface;
+use Override;
+
+use function base64_encode;
+use function http_build_query;
 use function urlencode;
 
 final class ClientSecretBasic implements AuthMethodInterface
 {
+    #[Override]
     public function getSupportedMethod(): string
     {
         return 'client_secret_basic';
     }
 
+    #[Override]
     public function createRequest(
         RequestInterface $request,
         OpenIDClient $client,

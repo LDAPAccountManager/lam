@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient;
 
-use function hash;
 use Jose\Component\Core\JWK;
+
+use function hash;
 use function round;
 use function substr;
 

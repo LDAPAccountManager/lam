@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Client\Metadata;
 
+use Facile\JoseVerifier\TokenVerifierInterface;
 use JsonSerializable;
+use Override;
 
 /**
- * @psalm-import-type ClientMetadataObject from \Facile\JoseVerifier\Psalm\PsalmTypes
- * @psalm-import-type JWKObject from \Facile\JoseVerifier\Psalm\PsalmTypes
- * @psalm-import-type JWKSetObject from \Facile\JoseVerifier\Psalm\PsalmTypes
+ * @psalm-api
+ *
+ * @psalm-import-type ClientMetadataType from TokenVerifierInterface
+ * @psalm-import-type JWTPayloadType from TokenVerifierInterface
+ * @psalm-import-type JWKSetType from TokenVerifierInterface
  */
 interface ClientMetadataInterface extends JsonSerializable
 {
@@ -65,21 +69,20 @@ interface ClientMetadataInterface extends JsonSerializable
     public function getRevocationEndpointAuthMethod(): string;
 
     /**
-     * @psalm-return JWKSetObject|null
+     * @psalm-return JWKSetType|null
      */
     public function getJwks(): ?array;
 
     /**
      * @return array<string, mixed>
      *
-     * @psalm-return ClientMetadataObject
-     */
-    public function jsonSerialize(): array;
-
-    /**
-     * @return array<string, mixed>
-     *
-     * @psalm-return ClientMetadataObject
+     * @psalm-return ClientMetadataType
      */
     public function toArray(): array;
+
+    /**
+     * @return ClientMetadataType
+     */
+    #[Override]
+    public function jsonSerialize(): array;
 }

@@ -12,16 +12,16 @@ use Facile\OpenIDClient\Token\TokenSetFactory;
 use Facile\OpenIDClient\Token\TokenSetFactoryInterface;
 use Facile\OpenIDClient\Token\TokenVerifierBuilderInterface;
 
+/**
+ * @psalm-api
+ */
 final class AuthorizationServiceBuilder extends AbstractServiceBuilder
 {
-    /** @var null|TokenSetFactoryInterface */
-    private $tokenSetFactory;
+    private ?TokenSetFactoryInterface $tokenSetFactory = null;
 
-    /** @var null|IdTokenVerifierBuilderInterface */
-    private $idTokenVerifierBuilder;
+    private ?IdTokenVerifierBuilderInterface $idTokenVerifierBuilder = null;
 
-    /** @var null|TokenVerifierBuilderInterface */
-    private $responseVerifierBuilder;
+    private ?TokenVerifierBuilderInterface $responseVerifierBuilder = null;
 
     public function setTokenSetFactory(TokenSetFactoryInterface $tokenSetFactory): self
     {
@@ -46,17 +46,17 @@ final class AuthorizationServiceBuilder extends AbstractServiceBuilder
 
     protected function getTokenSetFactory(): TokenSetFactoryInterface
     {
-        return $this->tokenSetFactory = $this->tokenSetFactory ?? new TokenSetFactory();
+        return $this->tokenSetFactory ??= new TokenSetFactory();
     }
 
     protected function getIdTokenVerifierBuilder(): IdTokenVerifierBuilderInterface
     {
-        return $this->idTokenVerifierBuilder = $this->idTokenVerifierBuilder ?? new IdTokenVerifierBuilder();
+        return $this->idTokenVerifierBuilder ??= new IdTokenVerifierBuilder();
     }
 
     protected function getResponseVerifierBuilder(): TokenVerifierBuilderInterface
     {
-        return $this->responseVerifierBuilder = $this->responseVerifierBuilder ?? new ResponseVerifierBuilder();
+        return $this->responseVerifierBuilder ??= new ResponseVerifierBuilder();
     }
 
     public function build(): AuthorizationService

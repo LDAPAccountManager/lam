@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Service;
 
-use function Facile\OpenIDClient\check_server_response;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
 use Facile\OpenIDClient\Exception\RuntimeException;
-use function Facile\OpenIDClient\get_endpoint_uri;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
+use function Facile\OpenIDClient\check_server_response;
+use function Facile\OpenIDClient\get_endpoint_uri;
+
 /**
- * RFC 7009 Token Revocation
+ * RFC 7009 Token Revocation.
  *
- * @link https://tools.ietf.org/html/rfc7009 RFC 7009
+ * @see https://tools.ietf.org/html/rfc7009 RFC 7009
+ *
+ * @psalm-api
  */
 final class RevocationService
 {
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
-    /** @var RequestFactoryInterface */
-    private $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
     public function __construct(
         ClientInterface $client,

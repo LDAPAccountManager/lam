@@ -4,32 +4,22 @@ declare(strict_types=1);
 
 namespace Facile\JoseVerifier;
 
-use Facile\JoseVerifier\Checker\AtHashChecker;
-use Facile\JoseVerifier\Checker\CHashChecker;
-use Facile\JoseVerifier\Checker\SHashChecker;
 use Facile\JoseVerifier\Exception\InvalidTokenException;
+use Facile\JoseVerifier\Internal\Checker\AtHashChecker;
+use Facile\JoseVerifier\Internal\Checker\CHashChecker;
+use Facile\JoseVerifier\Internal\Checker\SHashChecker;
 use InvalidArgumentException;
 use Jose\Component\Signature\Serializer\CompactSerializer;
-use Throwable;
 
-/**
- * @psalm-import-type JWTHeaderObject from Psalm\PsalmTypes
- */
 final class IdTokenVerifier extends AbstractTokenVerifier implements IdTokenVerifierInterface
 {
-    /** @var string|null */
-    protected $accessToken;
+    protected ?string $accessToken = null;
 
-    /** @var string|null */
-    protected $code;
+    protected ?string $code = null;
 
-    /** @var string|null */
-    protected $state;
+    protected ?string $state = null;
 
-    /**
-     * @return $this
-     */
-    public function withAccessToken(?string $accessToken): self
+    public function withAccessToken(?string $accessToken): static
     {
         $new = clone $this;
         $new->accessToken = $accessToken;
@@ -37,10 +27,7 @@ final class IdTokenVerifier extends AbstractTokenVerifier implements IdTokenVeri
         return $new;
     }
 
-    /**
-     * @return $this
-     */
-    public function withCode(?string $code): self
+    public function withCode(?string $code): static
     {
         $new = clone $this;
         $new->code = $code;
@@ -48,10 +35,7 @@ final class IdTokenVerifier extends AbstractTokenVerifier implements IdTokenVeri
         return $new;
     }
 
-    /**
-     * @return $this
-     */
-    public function withState(?string $state): self
+    public function withState(?string $state): static
     {
         $new = clone $this;
         $new->state = $state;
@@ -59,11 +43,6 @@ final class IdTokenVerifier extends AbstractTokenVerifier implements IdTokenVeri
         return $new;
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @psalm-suppress MixedReturnTypeCoercion
-     */
     public function verify(string $jwt): array
     {
         $jwt = $this->decrypt($jwt);
@@ -82,23 +61,19 @@ final class IdTokenVerifier extends AbstractTokenVerifier implements IdTokenVeri
         $alg = $header['alg'] ?? null;
 
         if (null !== $this->accessToken) {
-            $validator = $validator->claim(new AtHashChecker($this->accessToken, $alg ?: ''));
+            $validator = $validator->withClaim(new AtHashChecker($this->accessToken, $alg ?? ''));
         }
 
         if (null !== $this->code) {
-            $validator = $validator->claim(new CHashChecker($this->code, $alg ?: ''));
+            $validator = $validator->withClaim(new CHashChecker($this->code, $alg ?? ''));
         }
 
         if (null !== $this->state) {
-            $validator = $validator->claim(new SHashChecker($this->state, $alg ?: ''));
+            $validator = $validator->withClaim(new SHashChecker($this->state, $alg ?? ''));
         }
 
-        $validator = $validator->mandatory($requiredClaims);
+        $validator = $validator->withMandatory($requiredClaims);
 
-        try {
-            return $validator->run();
-        } catch (Throwable $e) {
-            throw $this->processException($e);
-        }
+        return $validator->run();
     }
 }

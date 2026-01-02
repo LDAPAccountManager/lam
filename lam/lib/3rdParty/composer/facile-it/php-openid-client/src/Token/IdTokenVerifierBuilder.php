@@ -6,14 +6,16 @@ namespace Facile\OpenIDClient\Token;
 
 use Facile\JoseVerifier\IdTokenVerifierInterface;
 use Facile\OpenIDClient\Client\ClientInterface;
+use Override;
 
+/**
+ * @psalm-api
+ */
 final class IdTokenVerifierBuilder implements IdTokenVerifierBuilderInterface
 {
-    /** @var bool */
-    private $aadIssValidation = false;
+    private bool $aadIssValidation = false;
 
-    /** @var int */
-    private $clockTolerance = 0;
+    private int $clockTolerance = 0;
 
     public function setAadIssValidation(bool $aadIssValidation): self
     {
@@ -29,17 +31,18 @@ final class IdTokenVerifierBuilder implements IdTokenVerifierBuilderInterface
         return $this;
     }
 
+    #[Override]
     public function build(ClientInterface $client): IdTokenVerifierInterface
     {
-        $builder = new \Facile\JoseVerifier\IdTokenVerifierBuilder();
-
-        $builder->setJwksProvider($client->getIssuer()->getJwksProvider());
-        $builder->setClientMetadata($client->getMetadata()->toArray());
-        $builder->setClientJwksProvider($client->getJwksProvider());
-        $builder->setIssuerMetadata($client->getIssuer()->getMetadata()->toArray());
-        $builder->setClockTolerance($this->clockTolerance);
-        $builder->setAadIssValidation($this->aadIssValidation);
-
-        return $builder->build();
+        /** @psalm-var IdTokenVerifierInterface */
+        return \Facile\JoseVerifier\Builder\IdTokenVerifierBuilder::create(
+            $client->getIssuer()->getMetadata()->toArray(),
+            $client->getMetadata()->toArray(),
+        )
+            ->withJwksProvider($client->getIssuer()->getJwksProvider())
+            ->withClientJwksProvider($client->getJwksProvider())
+            ->withClockTolerance($this->clockTolerance)
+            ->withAadIssValidation($this->aadIssValidation)
+            ->build();
     }
 }

@@ -9,17 +9,21 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Override;
 
+/**
+ * @psalm-api
+ */
 final class AuthRequestProviderMiddleware implements MiddlewareInterface
 {
-    /** @var AuthRequestInterface */
-    private $authRequest;
+    private AuthRequestInterface $authRequest;
 
     public function __construct(AuthRequestInterface $authRequest)
     {
         $this->authRequest = $authRequest;
     }
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         return $handler->handle($request->withAttribute(AuthRequestInterface::class, $this->authRequest));

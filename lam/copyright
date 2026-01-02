@@ -1084,6 +1084,7 @@ lib/3rdParty/composer/lcobucci                                       B  2017  Lu
 lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano                                 https://github.com/Seldaek/monolog
 lib/3rdParty/composer/mtdowling                                      B  2014  Michael Dowling                                https://github.com/jmespath/jmespath.php
 lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt                                  https://github.com/CarbonPHP/carbon
+lib/3rdParty/composer/nyholm                                         B  2016  Tobias Nyholm                                  https://github.com/Nyholm
 lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises                 https://github.com/paragonie
 lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team                                  https://github.com/php-http/discovery
 lib/3rdParty/composer/phpmailer                                      G                                                       https://github.com/PHPMailer/PHPMailer

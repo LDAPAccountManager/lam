@@ -4,47 +4,44 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\RequestObject;
 
-use function array_filter;
-use function array_merge;
 use Facile\OpenIDClient\AlgorithmManagerBuilder;
-use function Facile\OpenIDClient\base64url_encode;
 use Facile\OpenIDClient\Client\ClientInterface;
 use Facile\OpenIDClient\Exception\RuntimeException;
-use function Facile\OpenIDClient\jose_secret_key;
-use function implode;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWKSet;
-use Jose\Component\Encryption\Compression\CompressionMethodManager;
-use Jose\Component\Encryption\Compression\Deflate;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Encryption\Serializer\CompactSerializer as EncryptionCompactSerializer;
 use Jose\Component\Encryption\Serializer\JWESerializer;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer as SignatureCompactSerializer;
 use Jose\Component\Signature\Serializer\JWSSerializer;
-use function json_encode;
 use JsonException;
+
+use function array_filter;
+use function array_merge;
+use function Facile\OpenIDClient\base64url_encode;
+use function Facile\OpenIDClient\jose_secret_key;
+use function implode;
+use function json_encode;
 use function preg_match;
 use function random_bytes;
 use function strpos;
 use function time;
 
-class RequestObjectFactory
+/**
+ * @psalm-api
+ */
+final class RequestObjectFactory
 {
-    /** @var AlgorithmManager */
-    private $algorithmManager;
+    private AlgorithmManager $algorithmManager;
 
-    /** @var JWSBuilder */
-    private $jwsBuilder;
+    private JWSBuilder $jwsBuilder;
 
-    /** @var JWEBuilder */
-    private $jweBuilder;
+    private JWEBuilder $jweBuilder;
 
-    /** @var JWSSerializer */
-    private $signatureSerializer;
+    private JWSSerializer $signatureSerializer;
 
-    /** @var JWESerializer */
-    private $encryptionSerializer;
+    private JWESerializer $encryptionSerializer;
 
     public function __construct(
         ?AlgorithmManager $algorithmManager = null,
@@ -55,11 +52,7 @@ class RequestObjectFactory
     ) {
         $this->algorithmManager = $algorithmManager ?? (new AlgorithmManagerBuilder())->build();
         $this->jwsBuilder = $jwsBuilder ?? new JWSBuilder($this->algorithmManager);
-        $this->jweBuilder = $jweBuilder ?? new JWEBuilder(
-            $this->algorithmManager,
-            $this->algorithmManager,
-            new CompressionMethodManager([new Deflate()])
-        );
+        $this->jweBuilder = $jweBuilder ?? new JWEBuilder($this->algorithmManager);
         $this->signatureSerializer = $signatureSerializer ?? new SignatureCompactSerializer();
         $this->encryptionSerializer = $encryptionSerializer ?? new EncryptionCompactSerializer();
     }

@@ -11,28 +11,24 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
 
-class MetadataProviderBuilder
+/**
+ * @psalm-api
+ */
+final class MetadataProviderBuilder
 {
-    /** @var null|DiscoveryProviderInterface */
-    private $discoveryProvider;
+    private ?DiscoveryProviderInterface $discoveryProvider = null;
 
-    /** @var null|WebFingerProviderInterface */
-    private $webFingerProvider;
+    private ?WebFingerProviderInterface $webFingerProvider = null;
 
-    /** @var ClientInterface|null */
-    private $client;
+    private ?ClientInterface $client = null;
 
-    /** @var RequestFactoryInterface|null */
-    private $requestFactory;
+    private ?RequestFactoryInterface $requestFactory = null;
 
-    /** @var UriFactoryInterface|null */
-    private $uriFactory;
+    private ?UriFactoryInterface $uriFactory = null;
 
-    /** @var CacheInterface|null */
-    private $cache;
+    private ?CacheInterface $cache = null;
 
-    /** @var int|null */
-    private $cacheTtl;
+    private ?int $cacheTtl = null;
 
     public function setDiscoveryProvider(DiscoveryProviderInterface $discoveryProvider): self
     {

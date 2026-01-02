@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Token;
 
-use function array_key_exists;
 use JsonSerializable;
+use Override;
+
+use function array_key_exists;
 
 /**
  * @psalm-import-type TokenSetType from TokenSetInterface
@@ -20,14 +22,14 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
      *
      * @psalm-var TokenSetAttributesType
      */
-    private $attributes = [];
+    private array $attributes;
 
     /**
      * @var array<string, mixed>
      *
      * @psalm-var TokenSetClaimsType
      */
-    private $claims = [];
+    private array $claims;
 
     /**
      * @psalm-param TokenSetAttributesType $attributes
@@ -57,41 +59,49 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
         return new static($data, $claims);
     }
 
+    #[Override]
     public function getAttributes(): array
     {
         return $this->attributes;
     }
 
+    #[Override]
     public function getCode(): ?string
     {
         return $this->attributes['code'] ?? null;
     }
 
+    #[Override]
     public function getState(): ?string
     {
         return $this->attributes['state'] ?? null;
     }
 
+    #[Override]
     public function getTokenType(): ?string
     {
         return $this->attributes['token_type'] ?? null;
     }
 
+    #[Override]
     public function getAccessToken(): ?string
     {
         return $this->attributes['access_token'] ?? null;
     }
 
+    #[Override]
     public function getIdToken(): ?string
     {
         return $this->attributes['id_token'] ?? null;
     }
 
+    #[Override]
     public function getRefreshToken(): ?string
     {
         return $this->attributes['refresh_token'] ?? null;
     }
 
+    #[Override]
     public function getExpiresIn(): ?int
     {
         /** @var int|string|null $expiresIn */
@@ -100,11 +110,13 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
         return null !== $expiresIn ? (int) $expiresIn : null;
     }
 
+    #[Override]
     public function getCodeVerifier(): ?string
     {
         return $this->attributes['code_verifier'] ?? null;
     }
 
+    #[Override]
     public function withIdToken(string $idToken): TokenSetInterface
     {
         $clone = clone $this;
@@ -113,6 +125,7 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
         return $clone;
     }
 
+    #[Override]
     public function withClaims(array $claims): TokenSetInterface
     {
         $clone = clone $this;
@@ -126,11 +139,13 @@ final class TokenSet implements TokenSetInterface, JsonSerializable
      *
      * @psalm-return TokenSetType
      */
+    #[Override]
     public function jsonSerialize(): array
     {
         return $this->attributes;
     }
 
+    #[Override]
     public function claims(): array
     {
         return $this->claims;

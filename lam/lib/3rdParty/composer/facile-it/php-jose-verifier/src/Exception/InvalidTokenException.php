@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Facile\JoseVerifier\Exception;
 
-class InvalidTokenException extends RuntimeException
-{
-}
+/**
+ * @psalm-api
+ */
+class InvalidTokenException extends RuntimeException implements InvalidTokenExceptionInterface {}

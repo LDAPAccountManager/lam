@@ -4,32 +4,34 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Session;
 
+use Override;
+
 use function array_filter;
 
 final class AuthSession implements AuthSessionInterface
 {
-    /** @var null|string */
-    private $state;
+    private ?string $state = null;
 
-    /** @var null|string */
-    private $nonce;
+    private ?string $nonce = null;
 
-    /** @var null|string */
-    private $codeVerifier;
+    private ?string $codeVerifier = null;
 
     /** @var array<string, mixed> */
-    private $customs = [];
+    private array $customs = [];
 
+    #[Override]
     public function getState(): ?string
     {
         return $this->state;
     }
 
+    #[Override]
     public function getNonce(): ?string
     {
         return $this->nonce;
     }
 
+    #[Override]
     public function getCodeVerifier(): ?string
     {
         return $this->codeVerifier;
@@ -38,21 +40,25 @@ final class AuthSession implements AuthSessionInterface
     /**
      * @return array<string, mixed>
      */
+    #[Override]
     public function getCustoms(): array
     {
         return $this->customs;
     }
 
+    #[Override]
     public function setState(?string $state): void
     {
         $this->state = $state;
     }
 
+    #[Override]
     public function setNonce(?string $nonce): void
     {
         $this->nonce = $nonce;
     }
 
+    #[Override]
     public function setCodeVerifier(?string $codeVerifier): void
     {
         $this->codeVerifier = $codeVerifier;
@@ -61,11 +67,13 @@ final class AuthSession implements AuthSessionInterface
     /**
      * @param array<string, mixed> $customs
      */
+    #[Override]
     public function setCustoms(array $customs): void
     {
         $this->customs = $customs;
     }
 
+    #[Override]
     public static function fromArray(array $array): AuthSessionInterface
     {
         $session = new static();
@@ -77,6 +85,7 @@ final class AuthSession implements AuthSessionInterface
         return $session;
     }
 
+    #[Override]
     public function jsonSerialize(): array
     {
         return array_filter([

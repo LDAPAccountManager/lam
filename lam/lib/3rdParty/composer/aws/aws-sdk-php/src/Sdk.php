@@ -300,8 +300,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionElasticLoadBalancing(array $args = [])
  * @method \Aws\ElasticLoadBalancingV2\ElasticLoadBalancingV2Client createElasticLoadBalancingV2(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionElasticLoadBalancingV2(array $args = [])
- * @method \Aws\ElasticTranscoder\ElasticTranscoderClient createElasticTranscoder(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionElasticTranscoder(array $args = [])
  * @method \Aws\ElasticsearchService\ElasticsearchServiceClient createElasticsearchService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionElasticsearchService(array $args = [])
  * @method \Aws\Emr\EmrClient createEmr(array $args = [])
@@ -802,6 +800,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionWafRegional(array $args = [])
  * @method \Aws\WellArchitected\WellArchitectedClient createWellArchitected(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWellArchitected(array $args = [])
+ * @method \Aws\Wickr\WickrClient createWickr(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionWickr(array $args = [])
  * @method \Aws\WorkDocs\WorkDocsClient createWorkDocs(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkDocs(array $args = [])
  * @method \Aws\WorkMail\WorkMailClient createWorkMail(array $args = [])
@@ -835,7 +835,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.367.3';
+    const VERSION = '3.369.6';
 
     /** @var array Arguments for creating clients */
     private $args;

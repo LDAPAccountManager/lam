@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient;
 
-use function base64_decode;
 use Facile\OpenIDClient\Exception\RuntimeException;
+
+use function base64_decode;
 use function str_pad;
 use function strlen;
 use function strtr;

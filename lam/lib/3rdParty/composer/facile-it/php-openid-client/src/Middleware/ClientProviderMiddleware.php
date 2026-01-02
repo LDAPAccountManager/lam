@@ -9,17 +9,21 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Override;
 
-class ClientProviderMiddleware implements MiddlewareInterface
+/**
+ * @psalm-api
+ */
+final class ClientProviderMiddleware implements MiddlewareInterface
 {
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
     }
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         return $handler->handle($request->withAttribute(ClientInterface::class, $this->client));

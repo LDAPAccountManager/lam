@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\Issuer\Metadata\Provider;
 
-use function array_key_exists;
+use Facile\JoseVerifier\TokenVerifierInterface;
 use Facile\OpenIDClient\Exception\RuntimeException;
-use function Facile\OpenIDClient\parse_metadata_response;
-use function preg_match;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
+use Override;
+
+use function array_key_exists;
+use function Facile\OpenIDClient\parse_metadata_response;
+use function preg_match;
 use function rtrim;
-use function strpos;
 
 /**
- * @psalm-import-type IssuerMetadataObject from \Facile\JoseVerifier\Psalm\PsalmTypes
+ * @psalm-import-type IssuerRemoteMetadataType from TokenVerifierInterface
  */
 final class DiscoveryProvider implements DiscoveryProviderInterface
 {
@@ -24,14 +26,11 @@ final class DiscoveryProvider implements DiscoveryProviderInterface
 
     private const OAUTH2_DISCOVERY = '/.well-known/oauth-authorization-server';
 
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
-    /** @var RequestFactoryInterface */
-    private $requestFactory;
+    private RequestFactoryInterface $requestFactory;
 
-    /** @var UriFactoryInterface */
-    private $uriFactory;
+    private UriFactoryInterface $uriFactory;
 
     public function __construct(
         ClientInterface $client,
@@ -43,6 +42,7 @@ final class DiscoveryProvider implements DiscoveryProviderInterface
         $this->uriFactory = $uriFactory;
     }
 
+    #[Override]
     public function isAllowedUri(string $uri): bool
     {
         return (int) preg_match('/https?:\/\//', $uri) > 0;
@@ -51,16 +51,17 @@ final class DiscoveryProvider implements DiscoveryProviderInterface
     /**
      * @return array<string, mixed>
      *
-     * @psalm-return IssuerMetadataObject
+     * @psalm-return IssuerRemoteMetadataType
      *
      * @psalm-suppress MixedReturnTypeCoercion
      */
+    #[Override]
     public function discovery(string $url): array
     {
         $uri = $this->uriFactory->createUri($url);
         $uriPath = $uri->getPath() ?: '/';
 
-        if (false !== strpos($uriPath, '/.well-known/')) {
+        if (str_contains($uriPath, '/.well-known/')) {
             return $this->fetchOpenIdConfiguration((string) $uri);
         }
 
@@ -84,7 +85,7 @@ final class DiscoveryProvider implements DiscoveryProviderInterface
     /**
      * @return array<mixed, string>
      *
-     * @psalm-return IssuerMetadataObject
+     * @psalm-return IssuerRemoteMetadataType
      */
     private function fetchOpenIdConfiguration(string $uri): array
     {
@@ -92,7 +93,7 @@ final class DiscoveryProvider implements DiscoveryProviderInterface
             ->withHeader('accept', 'application/json');
 
         try {
-            /** @psalm-var IssuerMetadataObject $data */
+            /** @psalm-var IssuerRemoteMetadataType $data */
             $data = parse_metadata_response($this->client->sendRequest($request));
         } catch (ClientExceptionInterface $e) {
             throw new RuntimeException('Unable to fetch provider metadata', 0, $e);
@@ -105,6 +106,7 @@ final class DiscoveryProvider implements DiscoveryProviderInterface
         return $data;
     }
 
+    #[Override]
     public function fetch(string $uri): array
     {
         return $this->discovery($uri);

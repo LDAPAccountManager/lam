@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Facile\JoseVerifier\Decrypter;
 
-use function class_exists;
-use Facile\JoseVerifier\Checker\ContentEncryptionAlgorithmChecker;
 use Facile\JoseVerifier\Exception\InvalidTokenException;
 use Facile\JoseVerifier\Exception\LogicException;
-use function Facile\JoseVerifier\jose_secret_key;
+use Facile\JoseVerifier\Internal\Checker\ContentEncryptionAlgorithmChecker;
 use Facile\JoseVerifier\JWK\JwksProviderInterface;
 use Facile\JoseVerifier\JWK\MemoryJwksProvider;
 use Jose\Component\Checker\AlgorithmChecker;
@@ -18,34 +16,31 @@ use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Encryption\Algorithm\ContentEncryption;
 use Jose\Component\Encryption\Algorithm\KeyEncryption;
-use Jose\Component\Encryption\Compression\CompressionMethodManager;
-use Jose\Component\Encryption\Compression\Deflate;
 use Jose\Component\Encryption\JWEDecrypter;
 use Jose\Component\Encryption\JWELoader;
 use Jose\Component\Encryption\JWETokenSupport;
 use Jose\Component\Encryption\Serializer\CompactSerializer;
 use Jose\Component\Encryption\Serializer\JWESerializerManager;
-use function preg_match;
 use Throwable;
 
-class TokenDecrypter implements TokenDecrypterInterface
+use function class_exists;
+use function Facile\JoseVerifier\jose_secret_key;
+use function preg_match;
+
+final class TokenDecrypter implements TokenDecrypterInterface
 {
-    /** @var string|null */
-    private $expectedAlg;
+    private ?string $expectedAlg = null;
 
-    /** @var string|null */
-    private $expectedEnc;
+    private ?string $expectedEnc = null;
 
-    /** @var JwksProviderInterface */
-    private $jwksProvider;
+    private JwksProviderInterface $jwksProvider;
 
-    /** @var string|null */
-    private $clientSecret;
+    private ?string $clientSecret = null;
 
     /** @var Algorithm[] */
-    private $algorithms = [];
+    private array $algorithms = [];
 
-    public function withExpectedAlg(?string $expectedAlg): self
+    public function withExpectedAlg(?string $expectedAlg): static
     {
         $new = clone $this;
         $new->expectedAlg = $expectedAlg;
@@ -53,7 +48,7 @@ class TokenDecrypter implements TokenDecrypterInterface
         return $new;
     }
 
-    public function withExpectedEnc(?string $expectedEnc): self
+    public function withExpectedEnc(?string $expectedEnc): static
     {
         $new = clone $this;
         $new->expectedEnc = $expectedEnc;
@@ -61,7 +56,7 @@ class TokenDecrypter implements TokenDecrypterInterface
         return $new;
     }
 
-    public function withJwksProvider(JwksProviderInterface $jwksProvider): self
+    public function withJwksProvider(JwksProviderInterface $jwksProvider): static
     {
         $new = clone $this;
         $new->jwksProvider = $jwksProvider;
@@ -69,7 +64,7 @@ class TokenDecrypter implements TokenDecrypterInterface
         return $new;
     }
 
-    public function withClientSecret(?string $clientSecret): self
+    public function withClientSecret(?string $clientSecret): static
     {
         $new = clone $this;
         $new->clientSecret = $clientSecret;
@@ -85,7 +80,7 @@ class TokenDecrypter implements TokenDecrypterInterface
                 try {
                     $this->algorithms[] = new $algorithmClass();
                 } catch (Throwable $throwable) {
-                    //does nothing
+                    // does nothing
                 }
             }
         }
@@ -99,7 +94,7 @@ class TokenDecrypter implements TokenDecrypterInterface
         $alg = $header['alg'] ?? '';
         $enc = $header['enc'] ?? '';
 
-        if ((bool) preg_match('/^(?:RSA|ECDH)/', $alg)) {
+        if (preg_match('/^(?:RSA|ECDH)/', $alg)) {
             $jwks = JWKSet::createFromKeyData($this->jwksProvider->getJwks());
         } else {
             $jwk = jose_secret_key($this->clientSecret ?? '', $alg === 'dir' ? $enc : $alg);
@@ -109,6 +104,10 @@ class TokenDecrypter implements TokenDecrypterInterface
         return $jwks;
     }
 
+    /**
+     * @throws InvalidTokenException
+     * @throws LogicException When web-token/jwt-encryption is not installed
+     */
     public function decrypt(string $jwt): ?string
     {
         if (! class_exists(JWELoader::class)) {
@@ -131,8 +130,7 @@ class TokenDecrypter implements TokenDecrypterInterface
             new JWESerializerManager([new CompactSerializer()]),
             new JWEDecrypter(
                 new AlgorithmManager($this->algorithms),
-                new AlgorithmManager($this->algorithms),
-                new CompressionMethodManager([new Deflate()])
+                new AlgorithmManager($this->algorithms)
             ),
             $headerChecker
         );
@@ -158,15 +156,19 @@ class TokenDecrypter implements TokenDecrypterInterface
         return [
             KeyEncryption\A128GCMKW::class,
             KeyEncryption\A192GCMKW::class,
+            KeyEncryption\A128GCMKW::class,
+            KeyEncryption\A192GCMKW::class,
             KeyEncryption\A256GCMKW::class,
-            KeyEncryption\A128KW::class,
-            KeyEncryption\A192KW::class,
-            KeyEncryption\A256KW::class,
+            ...(class_exists('AESKW\Wrapper') ? [
+                KeyEncryption\A128KW::class,
+                KeyEncryption\A192KW::class,
+                KeyEncryption\A256KW::class,
+                KeyEncryption\ECDHESA128KW::class,
+                KeyEncryption\ECDHESA192KW::class,
+                KeyEncryption\ECDHESA256KW::class,
+            ] : []),
             KeyEncryption\Dir::class,
             KeyEncryption\ECDHES::class,
-            KeyEncryption\ECDHESA128KW::class,
-            KeyEncryption\ECDHESA192KW::class,
-            KeyEncryption\ECDHESA256KW::class,
             KeyEncryption\PBES2HS256A128KW::class,
             KeyEncryption\PBES2HS384A192KW::class,
             KeyEncryption\PBES2HS512A256KW::class,

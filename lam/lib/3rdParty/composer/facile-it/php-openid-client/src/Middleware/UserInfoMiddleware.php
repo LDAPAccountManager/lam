@@ -13,16 +13,18 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Override;
 
-class UserInfoMiddleware implements MiddlewareInterface
+/**
+ * @psalm-api
+ */
+final class UserInfoMiddleware implements MiddlewareInterface
 {
     public const USERINFO_ATTRIBUTE = self::class;
 
-    /** @var UserInfoService */
-    private $userInfoService;
+    private UserInfoService $userInfoService;
 
-    /** @var null|ClientInterface */
-    private $client;
+    private ?ClientInterface $client;
 
     public function __construct(
         UserInfoService $userInfoService,
@@ -32,6 +34,7 @@ class UserInfoMiddleware implements MiddlewareInterface
         $this->client = $client;
     }
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $tokenSet = $request->getAttribute(TokenSetInterface::class);

@@ -19,7 +19,7 @@ For better performance you should install `ext-gmp`.
 
 Usually an OpenID provider provides an openid-configuration (`/.well-known/openid-configuration`).
 
-You can fetch the configuration and use it with the builders, but usually only `issuer` and `jwks_uri` are necessary.
+You can fetch the configuration and use it with builders, but usually only `issuer` and `jwks_uri` are necessary.
 
 ```php
 // Fetched issuer metadata:
@@ -59,14 +59,17 @@ $clientMetadata = [
 ```
 
 ```php
-use Facile\JoseVerifier\AccessTokenVerifierBuilder;
+use Facile\JoseVerifier\Builder\AccessTokenVerifierBuilder;
+use Facile\JoseVerifier\Exception\InvalidTokenExceptionInterface;
 
-$builder = new AccessTokenVerifierBuilder();
-$builder->setIssuerMetadata($issuerMetadata);
-$builder->setClientMetadata($clientMetadata);
+$builder = AccessTokenVerifierBuilder::create($issuerMetadata, $clientMetadata);
 
 $verifier = $builder->build();
-$payload = $verifier->verify($token);
+try {
+    $payload = $verifier->verify($jwt);
+} catch (InvalidTokenExceptionInterface $e) {
+    // your logic here
+}
 ```
 
 The verifier will decrypt and validate the token for you. The result is the token payload.
@@ -78,23 +81,24 @@ In order to use cache you can inject a partially configured
 `JwksProviderBuilder`.
 
 ```php
-use Facile\JoseVerifier\JWK\JwksProviderBuilder;
-use Facile\JoseVerifier\AccessTokenVerifierBuilder;
+use Facile\JoseVerifier\Builder\AccessTokenVerifierBuilder;use Facile\JoseVerifier\JWK\JwksProviderBuilder;
 
 // Use your PSR SimpleCache implementation
 $cache = $container->get(\Psr\SimpleCache\CacheInterface::class);
 
-$jwksProviderBuilder = new JwksProviderBuilder();
-$jwksProviderBuilder->setCache($cache);
-$jwksProviderBuilder->setCacheTtl(86400); // 86400 is the default value
+$jwksProviderBuilder = (new JwksProviderBuilder())
+    ->withCache($cache)
+    ->withCacheTtl(86400); // 86400 is the default value
 
-$builder = new AccessTokenVerifierBuilder();
-$builder->setIssuerMetadata($issuerMetadata);
-$builder->setClientMetadata($clientMetadata);
-$builder->setJwksProviderBuilder($jwksProviderBuilder);
+$builder = AccessTokenVerifierBuilder::create($issuerMetadata, $clientMetadata)
+    ->withJwksProviderBuilder($jwksProviderBuilder);
 
 $verifier = $builder->build();
-$payload = $verifier->verify($token);
+try {
+    $payload = $verifier->verify($jwt);
+} catch (InvalidTokenExceptionInterface $e) {
+    // your logic here
+}
 ```
 
 ## Provided verifiers
@@ -104,14 +108,16 @@ $payload = $verifier->verify($token);
 The AccessTokenVerifier will validate a JWT access token.
 
 ```php
-use Facile\JoseVerifier\AccessTokenVerifierBuilder;
+use Facile\JoseVerifier\Builder\AccessTokenVerifierBuilder;
 
-$builder = new AccessTokenVerifierBuilder();
-$builder->setIssuerMetadata($issuerMetadata);
-$builder->setClientMetadata($clientMetadata);
+$builder = AccessTokenVerifierBuilder::create($issuerMetadata, $clientMetadata);
 
 $verifier = $builder->build();
-$payload = $verifier->verify($token);
+try {
+    $payload = $verifier->verify($jwt);
+} catch (InvalidTokenExceptionInterface $e) {
+    // your logic here
+}
 ```
 
 ### ID Token Verifier
@@ -121,11 +127,9 @@ The IdTokenVerifier will validate an OpenID `id_token`.
 Create the verifier:
 
 ```php
-use Facile\JoseVerifier\IdTokenVerifierBuilder;
+use Facile\JoseVerifier\Builder\IdTokenVerifierBuilder;
 
-$builder = new IdTokenVerifierBuilder();
-$builder->setIssuerMetadata($issuerMetadata);
-$builder->setClientMetadata($clientMetadata);
+$builder = IdTokenVerifierBuilder::create($issuerMetadata, $clientMetadata);
 
 $verifier = $builder->build();
 ```
@@ -143,12 +147,15 @@ $verifier = $verifier->withState($state);
 
 // Optionally provide these parameters to validate the correct hash values:
 
-// Provide the `access_token` used in the Code Grant Flow
-$verifier = $verifier->withAccessToken($accessToken);
-// Provide the `code` used in the Code Grant Flow
-$verifier = $verifier->withCode($code);
+$verifier = $verifier
+    ->withAccessToken($accessToken) // Provide the `access_token` used in the Code Grant Flow
+    ->withCode($code) // Provide the `code` used in the Code Grant Flow
 
-$payload = $verifier->verify($token);
+try {
+    $payload = $verifier->verify($jwt);
+} catch (InvalidTokenExceptionInterface $e) {
+    // your logic here
+}
 ``` 
 
 ### UserInfo Verifier
@@ -157,22 +164,15 @@ When UserInfo returns a signed (and maybe encrypted) JWT as response content of 
 this verifier to decrypt, verify, and obtain user info claims.
 
 ```php
-use Facile\JoseVerifier\UserInfoVerifierBuilder;
+use Facile\JoseVerifier\Builder\UserInfoVerifierBuilder;
 
-$builder = new UserInfoVerifierBuilder();
-$builder->setIssuerMetadata($issuerMetadata);
-$builder->setClientMetadata($clientMetadata);
+$builder = UserInfoVerifierBuilder::create($issuerMetadata, $clientMetadata);
 
 $verifier = $builder->build();
-$payload = $verifier->verify($jwt);
+try {
+    $payload = $verifier->verify($jwt);
+} catch (InvalidTokenExceptionInterface $e) {
+    // your logic here
+}
 ```
 
-## Using Psalm
-
-If you need to use Psalm you can include the plugin in your `psalm.xml`.
-
-```
-<plugins>
-    <pluginClass class="Facile\JoseVerifier\Psalm\Plugin" />
-</plugins>
-```

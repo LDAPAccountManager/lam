@@ -6,6 +6,9 @@ namespace Facile\OpenIDClient\Service\Builder;
 
 use Facile\OpenIDClient\Service\RevocationService;
 
+/**
+ * @psalm-api
+ */
 final class RevocationServiceBuilder extends AbstractServiceBuilder
 {
     public function build(): RevocationService

@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Facile\OpenIDClient;
 
 use Facile\OpenIDClient\Exception\InvalidArgumentException;
-use function is_array;
-use function json_decode;
 use JsonException;
 use Psr\Http\Message\ResponseInterface;
+
+use function is_array;
+use function json_decode;
 
 /**
  * @internal

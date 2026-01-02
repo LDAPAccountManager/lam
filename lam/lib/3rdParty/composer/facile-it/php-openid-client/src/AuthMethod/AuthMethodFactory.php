@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Facile\OpenIDClient\AuthMethod;
 
 use Facile\OpenIDClient\Exception\InvalidArgumentException;
+use Override;
 
 final class AuthMethodFactory implements AuthMethodFactoryInterface
 {
     /** @var AuthMethodInterface[] */
-    private $methods = [];
+    private array $methods = [];
 
     /**
      * AuthMethodFactory constructor.
@@ -29,6 +30,8 @@ final class AuthMethodFactory implements AuthMethodFactoryInterface
     }
 
     /**
+     * @psalm-api
+     *
      * @return AuthMethodInterface[]
      */
     public function all(): array
@@ -36,6 +39,7 @@ final class AuthMethodFactory implements AuthMethodFactoryInterface
         return $this->methods;
     }
 
+    #[Override]
     public function create(string $authMethod): AuthMethodInterface
     {
         $method = $this->methods[$authMethod] ?? null;

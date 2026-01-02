@@ -39,9 +39,9 @@ final class IPv4Address extends IPAddress
 
     protected function octets(): string
     {
-        $bytes = array_map('intval', explode('.', $this->ip));
+        $bytes = array_map(intval(...), explode('.', $this->ip));
         if (isset($this->mask)) {
-            $bytes = array_merge($bytes, array_map('intval', explode('.', $this->mask)));
+            $bytes = array_merge($bytes, array_map(intval(...), explode('.', $this->mask)));
         }
         return pack('C*', ...$bytes);
     }

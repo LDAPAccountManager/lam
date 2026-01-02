@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Facile\OpenIDClient\Middleware;
 
 use Facile\OpenIDClient\Authorization\AuthRequestInterface;
-use function Facile\OpenIDClient\base64url_encode;
 use Facile\OpenIDClient\Client\ClientInterface;
 use Facile\OpenIDClient\Exception\LogicException;
 use Facile\OpenIDClient\Exception\RuntimeException;
@@ -16,25 +15,24 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Override;
+
+use function Facile\OpenIDClient\base64url_encode;
 use function random_bytes;
 
-class AuthRedirectHandler implements RequestHandlerInterface
+/**
+ * @psalm-api
+ */
+final class AuthRedirectHandler implements RequestHandlerInterface
 {
-    /** @var AuthorizationService */
-    private $authorizationService;
+    private AuthorizationService $authorizationService;
 
-    /** @var ResponseFactoryInterface */
-    private $responseFactory;
+    private ResponseFactoryInterface $responseFactory;
 
-    /** @var null|ClientInterface */
-    private $client;
+    private ?ClientInterface $client = null;
 
-    /**
-     * @var int
-     *
-     * @psalm-var positive-int
-     */
-    private $randomBytes;
+    /** @psalm-var positive-int */
+    private int $randomBytes;
 
     /**
      * @psalm-param positive-int $randomBytes
@@ -51,6 +49,7 @@ class AuthRedirectHandler implements RequestHandlerInterface
         $this->randomBytes = $randomBytes;
     }
 
+    #[Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $authRequest = $request->getAttribute(AuthRequestInterface::class);

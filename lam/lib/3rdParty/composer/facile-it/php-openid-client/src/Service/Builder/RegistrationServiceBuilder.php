@@ -6,6 +6,9 @@ namespace Facile\OpenIDClient\Service\Builder;
 
 use Facile\OpenIDClient\Service\RegistrationService;
 
+/**
+ * @psalm-api
+ */
 final class RegistrationServiceBuilder extends AbstractServiceBuilder
 {
     public function build(): RegistrationService

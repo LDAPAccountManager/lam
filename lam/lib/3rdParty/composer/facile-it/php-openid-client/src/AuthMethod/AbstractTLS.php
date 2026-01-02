@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Facile\OpenIDClient\AuthMethod;
 
-use function array_merge;
 use Facile\OpenIDClient\Client\ClientInterface as OpenIDClient;
-use function http_build_query;
 use Psr\Http\Message\RequestInterface;
+use Override;
+
+use function array_merge;
+use function http_build_query;
 
 abstract class AbstractTLS implements AuthMethodInterface
 {
+    #[Override]
     public function createRequest(
         RequestInterface $request,
         OpenIDClient $client,
