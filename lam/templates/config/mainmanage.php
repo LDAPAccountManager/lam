@@ -37,7 +37,7 @@ use PDO;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -229,19 +229,21 @@ if (isset($_POST['submitFormData'])) {
 	if (isset($_POST['allowedHosts'])) {
 		$allowedHosts = $_POST['allowedHosts'];
 		$allowedHostsList = explode("\n", $allowedHosts);
-		for ($i = 0; $i < count($allowedHostsList); $i++) {
-			$allowedHostsList[$i] = trim($allowedHostsList[$i]);
+		$allowedHostsListNew = [];
+		foreach ($allowedHostsList as $allowedHostEntry) {
+			$allowedHostEntry = trim($allowedHostEntry);
 			// ignore empty lines
-			if ($allowedHostsList[$i] === "") {
-				unset($allowedHostsList[$i]);
+			if ($allowedHostEntry === '') {
 				continue;
 			}
 			// check each line
 			$ipRegex = '/^[0-9a-f\\.:\\*]+$/i';
-			if (!preg_match($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 45)) {
-				$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostsList[$i])));
+			if (!preg_match($ipRegex, $allowedHostEntry) || (strlen($allowedHostEntry) > 45)) {
+				$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostEntry)));
 			}
+            $allowedHostsListNew[] = $allowedHostEntry;
 		}
+		$allowedHostsList = array_unique($allowedHostsListNew);
 		$allowedHosts = implode(",", $allowedHostsList);
 	}
 	else {
@@ -253,20 +255,21 @@ if (isset($_POST['submitFormData'])) {
 		if (isset($_POST['allowedHostsSelfService'])) {
 			$allowedHostsSelfService = $_POST['allowedHostsSelfService'];
 			$allowedHostsSelfServiceList = explode("\r\n", $allowedHostsSelfService);
-			for ($i = 0; $i < count($allowedHostsSelfServiceList); $i++) {
-				$allowedHostsSelfServiceList[$i] = trim($allowedHostsSelfServiceList[$i]);
+			$allowedHostsSelfServiceListNew = [];
+			foreach ($allowedHostsSelfServiceList as $allowedHostsSelfServiceEntry) {
+				$allowedHostsSelfServiceEntry = trim($allowedHostsSelfServiceEntry);
 				// ignore empty lines
-				if ($allowedHostsSelfServiceList[$i] === "") {
-					unset($allowedHostsSelfServiceList[$i]);
+				if ($allowedHostsSelfServiceEntry === '') {
 					continue;
 				}
 				// check each line
 				$ipRegex = '/^[0-9a-f\\.:\\*]+$/i';
-				if (!preg_match($ipRegex, $allowedHostsSelfServiceList[$i]) || (strlen($allowedHostsSelfServiceList[$i]) > 45)) {
-					$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostsSelfServiceList[$i])));
+				if (!preg_match($ipRegex, $allowedHostsSelfServiceEntry) || (strlen($allowedHostsSelfServiceEntry) > 45)) {
+					$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostsSelfServiceEntry)));
 				}
+                $allowedHostsSelfServiceListNew[] = $allowedHostsSelfServiceEntry;
 			}
-			$allowedHostsSelfServiceList = array_unique($allowedHostsSelfServiceList);
+			$allowedHostsSelfServiceList = array_unique($allowedHostsSelfServiceListNew);
 			$allowedHostsSelfService = implode(",", $allowedHostsSelfServiceList);
 		}
 		else {
@@ -594,16 +597,16 @@ if (isset($_POST['submitFormData'])) {
 	if (count($sslCerts) > 0) {
 		$certsTitles = [_('Common name'), _('Valid to'), _('Serial number'), _('Delete')];
 		$certsData = [];
-		for ($i = 0; $i < count($sslCerts); $i++) {
-			$serial = $sslCerts[$i]['serialNumber'] ?? '';
-			$validTo = $sslCerts[$i]['validTo_time_t'] ?? '';
+		foreach ($sslCerts as $i => $sslCert) {
+			$serial = $sslCert['serialNumber'] ?? '';
+			$validTo = $sslCert['validTo_time_t'] ?? '';
 			if (get_preg($validTo, 'digit')) {
 				$date = DateTime::createFromFormat('U', $validTo, new DateTimeZone('UTC'));
 				if ($date !== false) {
 					$validTo = $date->format('Y-m-d');
 				}
 			}
-			$cn = $sslCerts[$i]['subject']['CN'] ?? '';
+			$cn = $sslCert['subject']['CN'] ?? '';
 			$delBtn = new htmlButton('deleteCert_' . $i, 'del.svg', true);
 			$certsData[] = [
 				new htmlOutputText($cn),
