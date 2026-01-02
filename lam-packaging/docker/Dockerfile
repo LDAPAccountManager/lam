@@ -95,22 +95,22 @@ RUN apt-get install --no-install-recommends -y \
     rm -rf /var/cache/apt /var/lib/apt/lists/*
 
 # install letsencrypt certificates
-RUN wget https://letsencrypt.org/certs/isrgrootx1.pem \
+RUN wget --max-redirect=0 https://letsencrypt.org/certs/isrgrootx1.pem \
     -O /usr/local/share/ca-certificates/isrgrootx1.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/isrgrootx1.pem -inform PEM -out /usr/local/share/ca-certificates/isrgrootx1.crt && \
-    wget https://letsencrypt.org/certs/isrg-root-x2.pem \
+    wget --max-redirect=0 https://letsencrypt.org/certs/isrg-root-x2.pem \
     -O /usr/local/share/ca-certificates/isrg-root-x2.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/isrg-root-x2.pem -inform PEM -out /usr/local/share/ca-certificates/isrg-root-x2.crt && \
-    wget https://letsencrypt.org/certs/lets-encrypt-r3.pem \
+    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-r3.pem \
     -O /usr/local/share/ca-certificates/lets-encrypt-r3.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-r3.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-r3.crt && \
-    wget https://letsencrypt.org/certs/lets-encrypt-e1.pem \
+    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-e1.pem \
     -O /usr/local/share/ca-certificates/lets-encrypt-e1.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e1.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e1.crt && \
-    wget https://letsencrypt.org/certs/lets-encrypt-r4.pem \
+    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-r4.pem \
     -O /usr/local/share/ca-certificates/lets-encrypt-r4.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-r4.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-r4.crt && \
-    wget https://letsencrypt.org/certs/lets-encrypt-e2.pem \
+    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-e2.pem \
     -O /usr/local/share/ca-certificates/lets-encrypt-e2.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e2.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e2.crt && \
     update-ca-certificates
