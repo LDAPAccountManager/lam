@@ -20,7 +20,7 @@ use function LAM\TYPES\getTypes;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2025  Roland Gruber
+  Copyright (C) 2004 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -151,8 +151,8 @@ printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 // print error messages
-for ($i = 0; $i < count($errorsToDisplay); $i++) {
-	call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
+foreach ($errorsToDisplay as $errorToDisplay) {
+	call_user_func_array(StatusMessage(...), $errorToDisplay);
 }
 
 echo "<form action=\"conftypes.php\" method=\"post\" novalidate=\"novalidate\">\n";
@@ -343,8 +343,7 @@ function checkTypeInput(LAMConfig $conf): array {
 	$typeSettings = $conf->get_typeSettings();
 	$accountTypes = $conf->get_ActiveTypes();
 	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < count($postKeys); $i++) {
-		$key = $postKeys[$i];
+	foreach ($postKeys as $key) {
 		// check if remove button was pressed
 		if (str_starts_with($key, "rem_")) {
 			$type = substr($key, 4);
@@ -372,7 +371,7 @@ function checkTypeInput(LAMConfig $conf): array {
 		// set suffixes
 		elseif (str_starts_with($key, "suffix_")) {
 			$typeSettings[$key] = trim($_POST[$key]);
-			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 7));
+			$type = $typeManager->getConfiguredType(substr($key, 7));
 			if ($type === null) {
 				continue;
 			}
@@ -383,7 +382,7 @@ function checkTypeInput(LAMConfig $conf): array {
 		// set attributes
 		elseif (str_starts_with($key, "attr_")) {
 			$typeSettings[$key] = $_POST[$key];
-			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 5));
+			$type = $typeManager->getConfiguredType(substr($key, 5));
 			if ($type === null) {
 				continue;
 			}
