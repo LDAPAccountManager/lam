@@ -11,12 +11,11 @@ use htmlTable;
 use htmlButton;
 use htmlResponsiveRow;
 use htmlSubTitle;
-use function LAM\TYPES\getTypes;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2025  Roland Gruber
+  Copyright (C) 2009 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -99,12 +98,12 @@ if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 		metaRefresh("confmodules.php");
 		exit;
 	}
-	// go to types page
+	// go to the types page
     elseif (isset($_POST['generalSettingsButton'])) {
 		metaRefresh("confmain.php");
 		exit;
 	}
-	// go to jobs page
+	// go to the jobs page
     elseif (isset($_POST['jobs'])) {
 		metaRefresh("jobs.php");
 		exit;
@@ -118,8 +117,8 @@ printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 // print error messages
-for ($i = 0; $i < count($errorsToDisplay); $i++) {
-	call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
+foreach ($errorsToDisplay as $errorToDisplay) {
+	call_user_func_array(StatusMessage(...), $errorToDisplay);
 }
 
 echo "<form id=\"inputForm\" action=\"moduleSettings.php\" method=\"post\" autocomplete=\"off\" onSubmit=\"window.lam.utility.saveScrollPosition('inputForm')\" novalidate=\"novalidate\">\n";
@@ -137,12 +136,12 @@ printConfigurationPageTabs(ConfigurationPageTab::MODULE_SETTINGS);
 $typeManager = new TypeManager($conf);
 $types = $typeManager->getConfiguredTypes();
 
-// get list of scopes of modules
+// get the list of module scopes
 $scopes = [];
 foreach ($types as $type) {
-	$mods = $conf->get_AccountModules($type->getId());
-	for ($i = 0; $i < count($mods); $i++) {
-		$scopes[$mods[$i]][] = $type->getId();
+	$moduleNames = $conf->get_AccountModules($type->getId());
+	foreach ($moduleNames as $moduleName) {
+		$scopes[$moduleName][] = $type->getId();
 	}
 }
 
@@ -153,13 +152,13 @@ $old_options = $conf->get_moduleSettings();
 
 
 // display module boxes
-$modules = array_keys($options);
+$moduleNames = array_keys($options);
 $_SESSION['conf_types'] = [];
-for ($i = 0; $i < count($modules); $i++) {
-	if (empty($options[$modules[$i]])) {
+foreach ($moduleNames as $moduleName) {
+	if (empty($options[$moduleName])) {
 		continue;
 	}
-	$module = moduleCache::getModule($modules[$i], null);
+	$module = moduleCache::getModule($moduleName, null);
     if ($module === null) {
         continue;
     }
@@ -169,15 +168,15 @@ for ($i = 0; $i < count($modules); $i++) {
 	}
 	$row = new htmlResponsiveRow();
 	$row->add(new htmlSubTitle($module->get_alias(), $iconImage, null, true));
-	if (is_array($options[$modules[$i]])) {
-		foreach ($options[$modules[$i]] as $option) {
+	if (is_array($options[$moduleName])) {
+		foreach ($options[$moduleName] as $option) {
 			$row->add($option);
 		}
 	}
 	else {
-		$row->add($options[$modules[$i]]);
+		$row->add($options[$moduleName]);
 	}
-	$configTypes = parseHtml($modules[$i], $row, $old_options, false, null);
+	$configTypes = parseHtml($moduleName, $row, $old_options, false, null);
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "<br>";
 }
@@ -211,7 +210,7 @@ echo "</html>\n";
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array<mixed> list of errors
+ * @return array<string[]> list of errors
  */
 function checkInput(): array {
 	if (!isset($_POST['postAvailable'])) {
@@ -225,15 +224,15 @@ function checkInput(): array {
 	$types = $typeManager->getConfiguredTypes();
 
 	// check module options
-	// create option array to check and save
+	// create the option array to check and save
 	$options = extractConfigOptionsFromPOST($_SESSION['conf_types']);
 
-	// get list of scopes of modules
+	// get the list of the modules' scopes
 	$scopes = [];
 	foreach ($types as $type) {
-		$mods = $conf->get_AccountModules($type->getId());
-		for ($i = 0; $i < count($mods); $i++) {
-			$scopes[$mods[$i]][] = $type->getId();
+		$moduleNames = $conf->get_AccountModules($type->getId());
+		foreach ($moduleNames as $moduleName) {
+			$scopes[$moduleName][] = $type->getId();
 		}
 	}
 	// check options

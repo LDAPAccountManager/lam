@@ -11,7 +11,7 @@ use function LAM\TYPES\getScopeFromTypeId;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -374,7 +374,7 @@ function checkProfileOptions($typeId, $options) {
  * Returns a hash array (module name => elements) of all module options for the configuration page.
  *
  * @param array $moduleToScopes hash array (module name => array(account types))
- * @return array configuration options
+ * @return array<class-string<baseModule>, htmlElement|htmlElement[]> configuration options
  */
 function getConfigOptions(array $moduleToScopes): array {
 	$return = [];
