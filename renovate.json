@@ -9,6 +9,10 @@
       "matchPackageNames": ["/aws/"],
       "groupName": "aws",
       "schedule": ["* 0-3 * * 1"]
+    },
+    {
+      "matchPackageNames": ["/paragonie/"],
+      "allowedVersions": "<9"
     }
   ],
   "ignorePaths": ["**/3rdParty/**"]
