@@ -23,7 +23,7 @@ use LAMConfig;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2025  Roland Gruber
+  Copyright (C) 2004 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -127,8 +127,8 @@ printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 // print error messages
-for ($i = 0; $i < count($errorsToDisplay); $i++) {
-	call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
+foreach ($errorsToDisplay as $errorToDisplay) {
+	call_user_func_array(StatusMessage(...), $errorToDisplay);
 }
 
 echo "<form id=\"inputForm\" action=\"confmodules.php\" method=\"post\" onSubmit=\"window.lam.utility.saveScrollPosition('inputForm')\" novalidate=\"novalidate\">\n";
@@ -187,20 +187,20 @@ function config_showAccountModules($type, $container): void {
 	$available = getAvailableModules($type->getScope(), true);
 	$selected = $type->getModules();
 	$sortedAvailable = [];
-	for ($i = 0; $i < count($available); $i++) {
-		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $type->getScope());
+	foreach ($available as $availableModule) {
+		$sortedAvailable[$availableModule] = getModuleAlias($availableModule, $type->getScope());
 	}
 	natcasesort($sortedAvailable);
 
 	// build options for selected and available modules
 	$selOptions = [];
-	for ($i = 0; $i < count($selected); $i++) {
-		if (in_array($selected[$i], $available)) {  // selected modules must be available
-			if (is_base_module($selected[$i], $type->getScope())) {  // mark base modules
-				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] . ")*"] = $selected[$i];
+	foreach ($selected as $selectedModule) {
+		if (in_array($selectedModule, $available)) {  // selected modules must be available
+			if (is_base_module($selectedModule, $type->getScope())) {  // mark base modules
+				$selOptions[getModuleAlias($selectedModule, $type->getScope()) . " (" . $selectedModule . ")*"] = $selectedModule;
 			}
 			else {
-				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] . ")"] = $selected[$i];
+				$selOptions[getModuleAlias($selectedModule, $type->getScope()) . " (" . $selectedModule . ")"] = $selectedModule;
 			}
 		}
 	}
@@ -283,7 +283,8 @@ function config_showAccountModules($type, $container): void {
 		$container->add($availRow, 12, 6);
 	}
 	$positions = [];
-	for ($i = 0; $i < count($selOptions); $i++) {
+	$selOptionsCount = count($selOptions);
+	for ($i = 0; $i < $selOptionsCount; $i++) {
 		$positions[] = $i;
 	}
 	$container->add(new htmlHiddenInput('positions_' . $type->getId(), implode(',', $positions)));
@@ -313,9 +314,9 @@ function checkModuleInput(LAMConfig $conf): array {
 		$selected_temp = explode(',', $selected_temp);
 		$selected = [];
 		// only use available modules as selected
-		for ($i = 0; $i < count($selected_temp); $i++) {
-			if (in_array($selected_temp[$i], $available)) {
-				$selected[] = $selected_temp[$i];
+		foreach ($selected_temp as $selectedName) {
+			if (in_array($selectedName, $available)) {
+				$selected[] = $selectedName;
 			}
 		}
 		// reorder based on sortable list
@@ -330,9 +331,9 @@ function checkModuleInput(LAMConfig $conf): array {
 		}
 		// remove modules from selection
 		$new_selected = [];
-		for ($i = 0; $i < count($selected); $i++) {
-			if (!isset($_POST['del_' . $typeId . '_' . $selected[$i]])) {
-				$new_selected[] = $selected[$i];
+		foreach ($selected as $selectedName) {
+			if (!isset($_POST['del_' . $typeId . '_' . $selectedName])) {
+				$new_selected[] = $selectedName;
 			}
 		}
 		$selected = $new_selected;
@@ -348,23 +349,23 @@ function checkModuleInput(LAMConfig $conf): array {
 		// check dependencies
 		$depends = check_module_depends($selected, getModulesDependencies($scope));
 		if ($depends !== false) {
-			for ($i = 0; $i < count($depends); $i++) {
+			foreach ($depends as $dependency) {
 				$errors[] = ['ERROR', $type->getAlias(), _("Unsolved dependency:") . ' ' .
-					$depends[$i][0] . " (" . $depends[$i][1] . ")"];
+					$dependency[0] . " (" . $dependency[1] . ")"];
 			}
 		}
 		// check conflicts
 		$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
 		if ($conflicts !== false) {
-			for ($i = 0; $i < count($conflicts); $i++) {
+			foreach ($conflicts as $conflict) {
 				$errors[] = ['ERROR', $type->getAlias(), _("Conflicting module:") . ' ' .
-					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")"];
+					$conflict[0] . " (" . $conflict[1] . ")"];
 			}
 		}
 		// check for base module
 		$baseCount = 0;
-		for ($i = 0; $i < count($selected); $i++) {
-			if (is_base_module($selected[$i], $scope)) {
+		foreach ($selected as $selectedName) {
+			if (is_base_module($selectedName, $scope)) {
 				$baseCount++;
 			}
 		}

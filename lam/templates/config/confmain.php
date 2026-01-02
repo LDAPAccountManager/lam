@@ -28,7 +28,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -109,9 +109,9 @@ $conf = &$_SESSION['conf_config'];
 if ((!isset($_SESSION['conf_isAuthenticated']) || ($_SESSION['conf_isAuthenticated'] !== $conf->getName()))
 	&& !$conf->check_Passwd($passwd)) {
 	$sessionKeys = array_keys($_SESSION);
-	for ($i = 0; $i < count($sessionKeys); $i++) {
-		if (str_starts_with($sessionKeys[$i], "conf_")) {
-			unset($_SESSION[$sessionKeys[$i]]);
+	foreach ($sessionKeys as $sessionKey) {
+		if (str_starts_with($sessionKey, "conf_")) {
+			unset($_SESSION[$sessionKey]);
 		}
 	}
 	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("The password is invalid! Please try again."));
@@ -183,8 +183,8 @@ if (!$serverProfilePersistenceManager->isWritable($_SESSION['conf_config']->getN
 
 // display error messages
 if ($errorsToDisplay !== []) {
-	for ($i = 0; $i < count($errorsToDisplay); $i++) {
-		call_user_func_array(StatusMessage(...), $errorsToDisplay[$i]);
+	foreach ($errorsToDisplay as $errorToDisplay) {
+		call_user_func_array(StatusMessage(...), $errorToDisplay);
 	}
 	echo "<br>";
 }
@@ -722,11 +722,12 @@ function checkInput(): array {
 	$adminText = $_POST['admins'];
 	$adminText = explode("\n", $adminText);
 	$adminTextNew = [];
-	for ($i = 0; $i < count($adminText); $i++) {
-		if (trim($adminText[$i]) === "") {
+	foreach ($adminText as $adminLine) {
+        $adminLine = trim($adminLine);
+		if ($adminLine === '') {
 			continue;
 		}
-		$adminTextNew[] = trim($adminText[$i]);
+		$adminTextNew[] = $adminLine;
 	}
 	$conf->setLoginMethod($_POST['loginMethod']);
 	$conf->setLoginSearchFilter($_POST['loginSearchFilter']);

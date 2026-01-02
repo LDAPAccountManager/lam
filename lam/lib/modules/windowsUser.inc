@@ -10,7 +10,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2025  Roland Gruber
+  Copyright (C) 2013 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -260,7 +260,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			],
 			'wWWHomePage' => [
 				"Headline" => _('Web site'), 'attr' => 'wWWHomePage',
-				"Text" => _('The user\'s web site (e.g. http://www.company.com).')
+				"Text" => _('The user\'s web site (e.g. https://www.company.com).')
 			],
 			"deactivated" => [
 				"Headline" => _("Account is deactivated"),
@@ -672,7 +672,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				'name' => 'windowsUser_webSite',
 				'description' => _('Web site'),
 				'help' => 'wWWHomePage',
-				'example' => _('http://www.company.com'),
+				'example' => _('https://www.company.com'),
 			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
@@ -680,7 +680,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				'name' => 'windowsUser_otherWebSites',
 				'description' => _('Other web sites'),
 				'help' => 'urlList',
-				'example' => _('http://www.company.com'),
+				'example' => _('https://www.company.com'),
 			];
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {

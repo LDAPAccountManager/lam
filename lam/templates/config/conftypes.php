@@ -90,8 +90,8 @@ if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	&& (count($errorsToDisplay) === 0)) {
 	// check if all types have modules
 	$activeTypes = $conf->get_ActiveTypes();
-	for ($i = 0; $i < count($activeTypes); $i++) {
-		$selectedModules = $conf->get_AccountModules($activeTypes[$i]);
+	foreach ($activeTypes as $activeType) {
+		$selectedModules = $conf->get_AccountModules($activeType);
 		if (count($selectedModules) === 0) {
 			// go to module selection
 			metaRefresh("confmodules.php");

@@ -10,7 +10,7 @@ use LAM\REMOTE\RemoteServerConfiguration;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2025  Roland Gruber
+                2007 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,19 +116,19 @@ class quota extends baseModule {
 			"SoftBlockLimit" => [
 				"Headline" => _("Soft block limit"),
 				"Text" => _("Soft block limit.") . '<br>' . $numbersHelp, "SeeAlso" => [
-					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
+					'link' => 'https://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
 					'text' => 'Quota How-To']
 			],
 			"HardBlockLimit" => [
 				"Headline" => _("Hard block limit"),
 				"Text" => _("Hard block limit") . '<br>' . $numbersHelp, "SeeAlso" => [
-					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
+					'link' => 'https://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
 					'text' => 'Quota How-To']
 			],
 			"GraceBlockPeriod" => [
 				"Headline" => _("Grace block period"),
 				"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => [
-					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
+					'link' => 'https://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
 					'text' => 'Quota How-To']
 			],
 			"UsedInodes" => [
@@ -138,19 +138,19 @@ class quota extends baseModule {
 			"SoftInodeLimit" => [
 				"Headline" => _("Soft inode limit"),
 				"Text" => _("Soft inode (files) limit.") . '<br>' . $numbersHelp, "SeeAlso" => [
-					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
+					'link' => 'https://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
 					'text' => 'Quota How-To']
 			],
 			"HardInodeLimit" => [
 				"Headline" => _("Hard inode limit"),
 				"Text" => _("Hard inode (files) limit") . '<br>' . $numbersHelp, "SeeAlso" => [
-					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
+					'link' => 'https://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
 					'text' => 'Quota How-To']
 			],
 			"GraceInodePeriod" => [
 				"Headline" => _("Grace inode period"),
 				"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => [
-					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
+					'link' => 'https://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6',
 					'text' => 'Quota How-To']
 			],
 			"upload" => [

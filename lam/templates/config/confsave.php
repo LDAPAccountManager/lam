@@ -8,7 +8,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2023  Roland Gruber
+  Copyright (C) 2009 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,11 +80,11 @@ catch (LAMException $e) {
 	parseHtml(null, $scriptTag, [], false, null);
 }
 finally {
-	// remove settings from session
+	// remove settings from the session
 	$sessionKeys = array_keys($_SESSION);
-	for ($i = 0; $i < count($sessionKeys); $i++) {
-		if (str_starts_with($sessionKeys[$i], "conf_")) {
-			unset($_SESSION[$sessionKeys[$i]]);
+	foreach ($sessionKeys as $sessionKey) {
+		if (str_starts_with($sessionKey, "conf_")) {
+			unset($_SESSION[$sessionKey]);
 		}
 	}
 }

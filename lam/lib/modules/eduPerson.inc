@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2024  Roland Gruber
+  Copyright (C) 2009 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -199,7 +199,7 @@ class eduPerson extends baseModule {
 				'name' => 'eduPerson_entitlement',
 				'description' => _('Entitlements'),
 				'help' => 'entitlementUpload',
-				'example' => 'http://xstor.com/contracts/HEd123'
+				'example' => 'https://wiki.refeds.org/display/STAN/eduPerson+2020-01#eduPerson202001-eduPersonEntitlement'
 			],
 			[
 				'name' => 'eduPerson_orgDN',

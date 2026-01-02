@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2025  Roland Gruber
+                2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -413,7 +413,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				'name' => 'inetOrgPerson_labeledURI',
 				'description' => _('Web site'),
 				'help' => 'labeledURIList',
-				'example' => _('http://www.company.com')
+				'example' => _('https://www.company.com')
 			];
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
@@ -684,11 +684,11 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				"Text" => _("Sends the password to the user via mail. Please edit your LAM server profile to setup the mail settings.")],
 			'labeledURI' => [
 				"Headline" => _("Web site"), 'attr' => 'labeledURI',
-				"Text" => _("The user's web site (e.g. http://www.company.com).")
+				"Text" => _("The user's web site (e.g. https://www.company.com).")
 			],
 			'labeledURIList' => [
 				"Headline" => _("Web site"), 'attr' => 'labeledURI',
-				"Text" => _("The user's web site (e.g. http://www.company.com).") . ' ' . _('Multiple values are separated by semicolon.')
+				"Text" => _("The user's web site (e.g. https://www.company.com).") . ' ' . _('Multiple values are separated by semicolon.')
 			],
 			'cn' => [
 				"Headline" => _("Common name"), 'attr' => 'cn',
