@@ -106,7 +106,7 @@ printJsIncludes('../..');
 <div id="lam-topnav" class="lam-header">
     <div class="lam-header-left lam-menu-stay">
         <a href="https://www.ldap-account-manager.org/" target="new_window">
-            <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
+            <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo.svg">
             <span class="hide-on-mobile">
                         <?php
 						echo getLAMVersionText();

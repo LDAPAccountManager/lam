@@ -4,7 +4,7 @@ namespace LAM\HEADER;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2024  Roland Gruber
+  Copyright (C) 2018 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ function printHeader(string $headerPrefix): void {
         <div class="lam-header-left lam-menu-stay">
             <a href="https://www.ldap-account-manager.org/" target="new_window">
                 <img class="align-middle" width="24" height="24" alt="help"
-                     src="<?php echo $headerPrefix; ?>/graphics/logo24.png">
+                     src="<?php echo $headerPrefix; ?>/graphics/logo.svg">
                 <span class="hide-on-tablet">&nbsp;&nbsp;<?php echo $userName ?></span>
                 <span class="hide-on-mobile-and-tablet">
                         <?php

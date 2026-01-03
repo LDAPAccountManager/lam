@@ -18,7 +18,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -184,7 +184,7 @@ printHeaderContents(_("Profile management"), '../..');
     <div id="lam-topnav" class="lam-header">
         <div class="lam-header-left lam-menu-stay">
             <a href="https://www.ldap-account-manager.org/" target="new_window">
-                <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
+                <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo.svg">
                 <span class="hide-on-mobile">
                         <?php
                         echo getLAMVersionText();

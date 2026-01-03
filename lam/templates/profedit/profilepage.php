@@ -193,7 +193,7 @@ $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_("Profile editor")));
 
 // general options
-$container->add(new htmlSubTitle(_("General settings"), '../../graphics/logo32.png', null, true));
+$container->add(new htmlSubTitle(_("General settings"), '../../graphics/logo.svg', null, true));
 $profileNameField = new htmlResponsiveInputField(_("Profile name"), 'profname', $profName, '360', true);
 $profileNameField->setTransient(true);
 $container->add($profileNameField);

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2025  Roland Gruber
+  Copyright (C) 2025 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -255,14 +255,14 @@ class WhitePagesProfile {
 	/** describing text for user login */
 	public string $loginCaption = '<p><strong>Welcome to LAM white pages. Please enter your user name and password.</strong></p>';
 	/** header HTML for login */
-	public string $loginHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px"> <span style="color: rgb(255, 255, 255);">LDAP Account Manager </span></a></p><p>&nbsp;<br></p>';
+	public string $loginHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo.svg" style="height:24px; width:24px"> <span style="color: rgb(255, 255, 255);">LDAP Account Manager </span></a></p><p>&nbsp;<br></p>';
 	/** describing text for user login */
 	public string $loginFooter = '<p style="text-align: left;"><span style="color: rgb(255, 255, 255);">Powered by LDAP Account Manager</span></p>';
 
 	/**
 	 * @var string header HTML
 	 */
-	public string $header = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px"> <span style="color: rgb(255, 255, 255);">LDAP Account Manager </span></a></p><p>&nbsp;<br></p>';
+	public string $header = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo.svg" style="height:24px; width:24px"> <span style="color: rgb(255, 255, 255);">LDAP Account Manager </span></a></p><p>&nbsp;<br></p>';
 	/**
 	 * @var string footer HTML
 	 */

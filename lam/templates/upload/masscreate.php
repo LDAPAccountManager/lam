@@ -331,7 +331,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$row->add(new htmlTitle(_("Columns")), 12);
 
 	// DN options
-	$dnTitle = new htmlSubTitle(_("DN settings"), '../../graphics/logo32.png');
+	$dnTitle = new htmlSubTitle(_("DN settings"), '../../graphics/logo.svg');
 	$row->add($dnTitle, 12);
 	$titles = [_('Name'), _("Identifier"), _("Example value"), _("Default value"), _("Possible values")];
 	$data = [];

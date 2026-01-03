@@ -8,7 +8,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2025  Roland Gruber
+  Copyright (C) 2006 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -691,7 +691,7 @@ class selfServiceProfile {
 	public ?string $loginHandler = SelfServiceUserPasswordLoginHandler::ID;
 
 	/** header for self service pages */
-	public $pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
+	public $pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo.svg" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 
 	/** base color */
 	public $baseColor = '#fffde2';
