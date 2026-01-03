@@ -90,9 +90,18 @@ RUN apt-get install --no-install-recommends -y \
         php-phpseclib3 \
         libphp-phpmailer \
         cron \
+        libcap2-bin \
     && \
     rm /etc/apache2/sites-enabled/*default* && \
     rm -rf /var/cache/apt /var/lib/apt/lists/*
+
+RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/apache2 \
+    && chown www-data:www-data /var/log/apache2 \
+    && chown www-data:www-data /etc/cron.d \
+    && chown www-data:www-data /var/run \
+    && chown www-data:www-data /var/run/apache2 \
+    && chmod gu+s /usr/sbin/cron \
+    && chown www-data:www-data /etc/php/8.4/apache2
 
 # install letsencrypt certificates
 RUN wget --max-redirect=0 https://letsencrypt.org/certs/isrgrootx1.pem \
@@ -121,6 +130,8 @@ RUN wget https://github.com/LDAPAccountManager/lam/releases/download/${LAM_RELEA
     dpkg -i /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
     rm -f /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb
 
+RUN chown www-data:www-data /etc/ldap-account-manager
+
 # remove link to manual as contents are removed on Docker instances
 RUN rm /usr/share/ldap-account-manager/docs
 
@@ -138,6 +149,8 @@ RUN echo "<VirtualHost *:80>" >> /etc/apache2/sites-available/lam.conf \
  && echo "RewriteRule   ^/$  /lam/ [R,L]" >> /etc/apache2/sites-available/lam.conf \
  && echo "</VirtualHost>" >> /etc/apache2/sites-available/lam.conf
 RUN ln -s /etc/apache2/sites-available/lam.conf /etc/apache2/sites-enabled/
+
+USER www-data
 
 COPY start.sh /usr/local/bin/start.sh
 
