@@ -943,8 +943,6 @@ class WhitePagesPersistenceStrategyPdo implements WhitePagesPersistenceStrategy 
  */
 interface WhitePagesLoginHandler {
 
-	public const USER_NAME_ANONYMOUS = 'anonymous';
-
 	/**
 	 * Adds the necessary fields to the login dialog (e.g. user + password).
 	 *
@@ -1315,6 +1313,8 @@ class WhitePagesLdapConnection {
 
 	private WhitePagesProfile $profile;
 
+	private bool $bindDone = false;
+
 	/**
 	 * Constructor
 	 *
@@ -1364,7 +1364,11 @@ class WhitePagesLdapConnection {
 			$userDn = $this->profile->ldapConnectionUser;
 			$password = deobfuscateText($this->profile->ldapConnectionPassword);
 		}
-		return @ldap_bind($this->getServer(), $userDn, $password);
+		$result = @ldap_bind($this->getServer(), $userDn, $password);
+		if ($result) {
+			$this->bindDone = true;
+		}
+		return $result;
 	}
 
 	/**
@@ -1377,6 +1381,15 @@ class WhitePagesLdapConnection {
 		}
 		// define which attributes to save
 		return ['profile'];
+	}
+
+	/**
+	 * Returns if a bind was already done.
+	 *
+	 * @return bool bind was done
+	 */
+	public function isBinded(): bool {
+		return $this->bindDone;
 	}
 
 }
