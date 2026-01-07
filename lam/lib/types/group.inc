@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2025  Roland Gruber
+  Copyright (C) 2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -199,16 +199,16 @@ class group extends baseType {
  */
 class lamGroupList extends lamList {
 
-	/** Primary group members hash */
-	private $primary_hash = [];
+	/** @var array<string, string[]> $primary_hash primary group members hash */
+	private array $primary_hash = [];
 	/** Controls if primary group members needs refresh */
-	private $refresh_primary = false;
+	private bool $refresh_primary = false;
 	/** ID for config option */
 	private const TRANS_PRIMARY_OPTION_NAME = "LG_TP";
 	/** specifies if primary group members are visible */
-	private $include_primary = false;
-	/** LDAP suffix of membership types */
-	private $suffixList = [];
+	private bool $include_primary = false;
+	/** @var array<string, string> $suffixList LDAP suffix of membership types */
+	private array $suffixList = [];
 
 	/**
 	 * Constructor
@@ -250,9 +250,9 @@ class lamGroupList extends lamList {
 	}
 
 	/**
-	 * Sets some internal parameters.
+	 * {@inheritDoc}
 	 */
-	function listGetParams() {
+	protected function listGetParams(): void {
 		parent::listGetParams();
 		// generate list primary group members
 		// after parent::listGetParams is $this->refresh set to correct value
@@ -276,7 +276,7 @@ class lamGroupList extends lamList {
 					$gid = $entry['gidnumber'][0];
 				}
 				$use_primary = (($gid >= 0) && (count($this->primary_hash) > 0)
-					&& isset($this->primary_hash[$gid]) && is_array($this->primary_hash[$gid])
+					&& isset($this->primary_hash[$gid])
 					&& ($this->primary_hash[$gid] !== []));
 			}
 			if (!$use_primary) {
@@ -293,7 +293,7 @@ class lamGroupList extends lamList {
 				// merge primary members into secondary ones
 				$primaryvals = array_flip(array_values($primary_hash));
 				// test if group has some secondary members
-				$attr = isset($entry[$attribute]) ? array_merge($primary_hash, $entry[$attribute]) : $primary_hash;
+				$attr = (isset($entry[$attribute]) && is_array($entry[$attribute])) ? array_merge($primary_hash, $entry[$attribute]) : $primary_hash;
 				// sort array
 				sort($attr);
 
@@ -332,9 +332,9 @@ class lamGroupList extends lamList {
 	}
 
 	/**
-	 * Rereads the entries from LDAP.
+	 * {@inheritDoc}
 	 */
-	function listRefreshData() {
+	protected function listRefreshData(): void {
 		parent::listRefreshData();
 		if ($this->include_primary) {
 			$this->groupRefreshPrimary();
@@ -344,7 +344,7 @@ class lamGroupList extends lamList {
 	/**
 	 * Refreshes the primary group members list.
 	 */
-	function groupRefreshPrimary() {
+	private function groupRefreshPrimary(): void {
 		$this->refresh_primary = false;
 		// return unless some entries
 		if (count($this->ldapEntries) <= 0) {
@@ -369,20 +369,18 @@ class lamGroupList extends lamList {
 	}
 
 	/**
-	 * Returns a list of possible configuration options.
-	 *
-	 * @return array list of lamListOption objects
+	 * {@inheritDoc}
 	 */
-	protected function listGetAllConfigOptions() {
+	protected function listGetAllConfigOptions(): array {
 		$options = parent::listGetAllConfigOptions();
 		$options[] = new lamBooleanListOption(_('Show primary group members as normal group members'), self::TRANS_PRIMARY_OPTION_NAME);
 		return $options;
 	}
 
 	/**
-	 * Called when the configuration options changed.
+	 * {@inheritDoc}
 	 */
-	protected function listConfigurationChanged() {
+	protected function listConfigurationChanged(): void {
 		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$use_primary = $this->include_primary;

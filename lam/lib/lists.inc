@@ -7,7 +7,7 @@ use function LAM\PDF\createModulePDF;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -733,7 +733,7 @@ class lamList {
 	/**
 	 * Returns the content of a cell in the account list for a given LDAP entry and attribute.
 	 *
-	 * @param array $entry LDAP attributes
+	 * @param array<string, string[]|string> $entry LDAP attributes
 	 * @param string $attribute attribute name
 	 * @return htmlElement|null content
 	 */
@@ -1048,7 +1048,7 @@ class lamList {
 	 * @param htmlGroup $left left part
 	 * @param htmlResponsiveRow $right right part
 	 */
-	protected function addExtraInputElementsToTopArea(&$left, &$right) {
+	protected function addExtraInputElementsToTopArea(&$left, &$right): void {
 		// only used by subclasses
 	}
 
@@ -1113,7 +1113,7 @@ class lamList {
 	/**
 	 * Sets some internal parameters.
 	 */
-	protected function listGetParams() {
+	protected function listGetParams(): void {
 		if (isset($_GET['accountEditBack'])) {
 			$this->refresh = true;
 			return;
@@ -1184,7 +1184,7 @@ class lamList {
 	/**
 	 * Rereads the entries from LDAP.
 	 */
-	protected function listRefreshData() {
+	protected function listRefreshData(): void {
 		// check suffix
 		if (!$this->suffix) {
 			$this->suffix = $this->type->getSuffix();  // default suffix
@@ -1379,16 +1379,16 @@ class lamList {
 	 *
 	 * @return lamListTool[] tools
 	 */
-	protected function getAdditionalTools() {
+	protected function getAdditionalTools(): array {
 		return [];
 	}
 
 	/**
 	 * Returns a list of possible configuration options.
 	 *
-	 * @return array list of lamListOption objects
+	 * @return lamListOption[] list of lamListOption objects
 	 */
-	protected function listGetAllConfigOptions() {
+	protected function listGetAllConfigOptions(): array {
 		$options = [];
 		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), [10, 20, 30, 50, 75, 100, 500, 1000], self::LIST_SIZE_OPTION_NAME);
 		$listSizeOption->setHelpID('208');
@@ -1437,7 +1437,7 @@ class lamList {
 	/**
 	 * Called when the configuration options changed.
 	 */
-	protected function listConfigurationChanged() {
+	protected function listConfigurationChanged(): void {
 		$sizeOption = $this->listGetConfigOptionByID(self::LIST_SIZE_OPTION_NAME);
 		if ($sizeOption->getValue() != null) {
 			$this->maxPageEntries = $sizeOption->getValue();

@@ -3,7 +3,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2025  Roland Gruber
+  Copyright (C) 2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -204,10 +204,12 @@ class user extends baseType {
 class lamUserList extends lamList {
 
 	/** Controls if GID number is translated to group name */
-	private $trans_primary = false;
+	private bool $trans_primary = false;
 
-	/** translates GID to group name */
-	private $trans_primary_hash = [];
+	/**
+	 * @var array<string, string> $trans_primary_hash translates GID to group name
+	 */
+	private array $trans_primary_hash = [];
 
 	/** ID for config option to translate primary group GIDs to group names */
 	private const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
@@ -227,9 +229,9 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Sets some internal parameters.
+	 * {@inheritDoc}
 	 */
-	protected function listGetParams() {
+	protected function listGetParams(): void {
 		parent::listGetParams();
 		// generate hash table for group translation
 		if ($this->trans_primary == "on" && !$this->refresh && (count($this->trans_primary_hash) === 0)) {
@@ -238,9 +240,9 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Rereads the entries from LDAP.
+	 * {@inheritDoc}
 	 */
-	protected function listRefreshData() {
+	protected function listRefreshData(): void {
 		parent::listRefreshData();
 		// show group names
 		if ($this->trans_primary == "on") {
@@ -251,7 +253,7 @@ class lamUserList extends lamList {
 	/**
 	 * Refreshes the GID to group name cache.
 	 */
-	protected function refreshPrimaryGroupTranslation() {
+	protected function refreshPrimaryGroupTranslation(): void {
 		$this->trans_primary_hash = [];
 		$attrs = ["cn", "gidNumber"];
 		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, ['group']);
@@ -286,20 +288,18 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Returns a list of possible configuration options.
-	 *
-	 * @return array list of lamListOption objects
+	 * {@inheritDoc}
 	 */
-	protected function listGetAllConfigOptions() {
+	protected function listGetAllConfigOptions(): array {
 		$options = parent::listGetAllConfigOptions();
 		$options[] = new lamBooleanListOption(_('Translate GID number to group name'), self::TRANS_PRIMARY_OPTION_NAME);
 		return $options;
 	}
 
 	/**
-	 * Called when the configuration options changed.
+	 * {@inheritDoc}
 	 */
-	protected function listConfigurationChanged() {
+	protected function listConfigurationChanged(): void {
 		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$this->trans_primary = $tpOption->isSelected();

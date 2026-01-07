@@ -4,7 +4,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pozdnyak Pavel
-                2010 - 2025  Roland Gruber
+                2010 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -136,24 +136,18 @@ class lamAsteriskExtList extends lamList {
 	}
 
 	/**
-	 * Forces the list view to show only specific attributes.
-	 *
-	 * @see lamList::listGetParams()
+	 * {@inheritDoc}
 	 */
-	protected function listGetParams() {
-		// check if only PDF should be shown
+	protected function listGetParams(): void {
 		parent::listGetParams();
 		$this->attrArray = ["astextension", "astcontext", "member"];
 		$this->descArray = [_("Extension name"), _("Account context"), _("Owner")];
 	}
 
 	/**
-	 * Groups the extensions.
-	 *
-	 * (non-PHPdoc)
-	 * @see lamList::listRefreshData()
+	 * {@inheritDoc}
 	 */
-	protected function listRefreshData() {
+	protected function listRefreshData(): void {
 		// configure search filter
 		$module_filter = get_ldap_filter($this->type->getId());  // basic filter is provided by modules
 		$filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
