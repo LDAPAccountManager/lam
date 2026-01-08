@@ -11,8 +11,8 @@ msgstr ""
 "POT-Creation-Date: 2023-01-08 10:46+0100\n"
 "PO-Revision-Date: 2026-01-08 05:21+0800\n"
 "Last-Translator: Yangfl <mmyangfl@gmail.com>\n"
-"Language-Team: 汉语 <debian-l10n-chinese@lists.debian.org>\n"
-"Language: zh_CN\n"
+"Language-Team: 漢語 <debian-l10n-chinese@lists.debian.org>\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +22,7 @@ msgstr ""
 #. Description
 #: ../templates:1001
 msgid "Web server configuration:"
-msgstr "网页服务器配置："
+msgstr "網頁伺服器設定："
 
 #. Type: multiselect
 #. Description
@@ -32,15 +32,15 @@ msgid ""
 "automatic configuration process only supports Apache2. If you choose to "
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"LDAP 账户管理器支持任何支持 PHP 的网页服务器，但此自动配置程序仅支持 "
-"Apache2。如果您选择配置 Apache2，则可以通过 http(s)://localhost/lam 访问 "
+"LDAP 帳戶管理器支援任何支援 PHP 的網頁伺服器，但此自動設定程序僅支援 "
+"Apache2。如果您選擇設定 Apache2，則可以透過 http(s)://localhost/lam 存取 "
 "LAM。"
 
 #. Type: string
 #. Description
 #: ../templates:2001
 msgid "Alias name:"
-msgstr "别名："
+msgstr "別名："
 
 #. Type: string
 #. Description
@@ -49,17 +49,17 @@ msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"LAM 会在 httpd.conf 文件中添加一个别名，使您可以通过 http(s)://localhost/"
-"lam 访问 LAM。您亦可以选择“lam”外的其他别名。"
+"LAM 會在 httpd.conf 檔案中加入一個別名，使您可以透過 http(s)://localhost/"
+"lam 存取 LAM。您亦可以選擇「lam」外的其他別名。"
 
 #. Type: boolean
 #. Description
 #: ../templates:3001
 msgid "Would you like to restart your webserver(s) now?"
-msgstr "重新启动网页服务器？"
+msgstr "重新啟動網頁伺服器？"
 
 #. Type: boolean
 #. Description
 #: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "为了使更改生效，您的网页服务器需要重启。"
+msgstr "為了使變更生效，您的網頁伺服器需要重新啟動。"
