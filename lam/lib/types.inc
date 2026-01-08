@@ -4,7 +4,7 @@ namespace LAM\TYPES;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2025  Roland Gruber
+  Copyright (C) 2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -97,17 +97,18 @@ class ConfiguredType {
 
 	private string $id;
 
-	private $suffix;
+	private ?string $suffix = null;
 
-	private $attributes;
+	/** @var ListAttribute[] $attributes list attributes */
+	private ?array $attributes = null;
 
-	private $alias;
+	private ?string $alias = null;
 
-	private $additionalLdapFilter;
+	private ?string $additionalLdapFilter = null;
 
-	private $hidden;
+	private ?bool $hidden = null;
 
-	private $baseType;
+	private ?baseType $baseType = null;
 
 	private ?TypeManager $typeManager;
 
@@ -246,7 +247,7 @@ class ConfiguredType {
 	/**
 	 * Returns a list of LDAP suffixes for this type.
 	 *
-	 * @return array sorted list of possible suffixes for this type.
+	 * @return string[] sorted list of possible suffixes for this type.
 	 */
 	public function getSuffixList(): array {
 		$ret = [];
@@ -313,7 +314,7 @@ class ConfiguredType {
  */
 class ListAttribute {
 
-	private $attributeSpec;
+	private string $attributeSpec;
 
 	/**
 	 * Constructor.
@@ -340,7 +341,7 @@ class ListAttribute {
 	/**
 	 * Returns the display value.
 	 *
-	 * @param array $predefinedDescriptions predefined descriptions (lower attribute name => label)
+	 * @param array<string, string> $predefinedDescriptions predefined descriptions (lower attribute name => label)
 	 * @return string display value
 	 */
 	public function getAlias(array $predefinedDescriptions): string {
@@ -371,7 +372,7 @@ class ListAttribute {
  */
 class TypeManager {
 
-	private $config;
+	private ?LAMConfig $config;
 
 	/**
 	 * Constructor
@@ -450,7 +451,7 @@ class TypeManager {
 	/**
 	 * Returns a list of configured types for these scopes.
 	 *
-	 * @param array $scopes scopes (e.g. user)
+	 * @param string[] $scopes scopes (e.g. user)
 	 * @return ConfiguredType[] list of ConfiguredType
 	 */
 	public function getConfiguredTypesForScopes(array $scopes): array {

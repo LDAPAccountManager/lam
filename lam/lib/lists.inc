@@ -1067,7 +1067,7 @@ class lamList {
 	/**
 	 * Prints any extra HTML for the header part.
 	 */
-	protected function printHeaderContent() {
+	protected function printHeaderContent(): void {
 		// implemented by child classes if needed
 	}
 
@@ -1456,7 +1456,7 @@ class lamList {
 	/**
 	 * Prints messages when another page (e.g. delete/upload) redirects to the list view.
 	 */
-	protected function listPrintRedirectMessages() {
+	protected function listPrintRedirectMessages():void {
 		if (isset($_GET['deleteAllOk'])) {
 			StatusMessage('INFO', _('Deletion was successful.'));
 		}

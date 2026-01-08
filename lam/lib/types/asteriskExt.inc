@@ -171,9 +171,10 @@ class lamAsteriskExtList extends lamList {
 	/**
 	 * Groups the extensions.
 	 *
-	 * @param array $entries extension entries
+	 * @param array<string, string[]|string>[] $entries extension entries
+	 * @return array<string, string[]|string>[] filtered extensions
 	 */
-	private function normalizeLdapOutput($entries) {
+	private function normalizeLdapOutput($entries): array {
 		$filteredEntries = [];
 		foreach ($entries as $entry) {
 			if ($entry["astpriority"][0] == '1') {

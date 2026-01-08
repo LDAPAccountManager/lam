@@ -36,7 +36,7 @@ use function LAM\SCHEMA\get_schema_objectclasses;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2025  Roland Gruber
+  Copyright (C) 2021 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,12 +73,12 @@ class TreeView {
 	const AD_DELETED_DELIMITER = '\0ADEL:';
 
 	/**
-	 * @var array schema attributes
+	 * @var AttributeType[] schema attributes
 	 */
 	private $schemaAttributes;
 
 	/**
-	 * @var array schema object classes
+	 * @var ObjectClass[] schema object classes
 	 */
 	private $schemaObjectClasses;
 
@@ -150,6 +150,8 @@ class TreeView {
 
 	/**
 	 * Returns the JSON for the possible new attributes select.
+	 *
+	 * @return string JSON
 	 */
 	private function getPossibleNewAttributeNameOptionsJson() {
 		$objectClasses = json_decode($_POST['objectClasses'], true);
@@ -201,12 +203,12 @@ class TreeView {
 	/**
 	 * Creates the node data for the tree view.
 	 *
-	 * @param array $attributes LDAP data
+	 * @param array<string, string[]|string> $attributes LDAP data
 	 * @param bool $open open node
 	 * @param bool $noShortenFirst do not shorten DN
-	 * @param array $children child LDAP data
+	 * @param array<string, string[]|string>[] $children child LDAP data
 	 * @param bool $hasChildren indicates that the entry has children
-	 * @return array nodes
+	 * @return array<string, string|true|array<array<string, string>|bool>> node data
 	 */
 	private function createNodeData(array $attributes, bool $open = false, bool $noShortenFirst = false, array $children = [], bool $hasChildren = true): array {
 		$text = ($noShortenFirst) ? $attributes['dn'] : extractRDN($attributes['dn']);
@@ -238,7 +240,7 @@ class TreeView {
 	/**
 	 * Returns the node's icon.
 	 *
-	 * @param array $attributes LDAP data
+	 * @param array<string, string[]|string> $attributes LDAP data
 	 * @return string icon
 	 */
 	private function getNodeIcon(array $attributes): string {
@@ -315,7 +317,7 @@ class TreeView {
 	/**
 	 * Sorts the given node array by DN.
 	 *
-	 * @param array $nodes nodes
+	 * @param array<string, string>[] $nodes nodes
 	 */
 	private function sortNodes(array &$nodes): void {
 		usort($nodes, compareNodeByIdAsDn(...));
@@ -324,9 +326,9 @@ class TreeView {
 	/**
 	 * Returns the options for the drop-down to add a new attribute.
 	 *
-	 * @param array $objectClasses object classes
+	 * @param string[] $objectClasses object classes
 	 * @param bool $includeMustAttributes include required attributes
-	 * @return array list of options
+	 * @return array<string, string> list of options
 	 */
 	private function getPossibleNewAttributeNameOptions(array $objectClasses, bool $includeMustAttributes = false): array {
 		$schemaObjectClasses = $this->getSchemaObjectClasses();
@@ -479,7 +481,7 @@ class TreeView {
 	 *
 	 * @param htmlResponsiveRow $row container
 	 * @param string $dn entry DN
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 */
 	private function addActionBar(htmlResponsiveRow $row, string $dn, array $attributes): void {
 		$buttonGroup = new htmlGroup();
@@ -598,11 +600,11 @@ class TreeView {
 	 *
 	 * @param htmlResponsiveRow $row container where to add content
 	 * @param string $attributeName attribute name
-	 * @param array $values values
+	 * @param string[] $values values
 	 * @param AttributeType|null $schemaAttribute schema attribute
 	 * @param string[] $objectClasses object classes
 	 * @param string|null $dn DN
-	 * @param array $highlighted list of highlighted attribute names
+	 * @param string[] $highlighted list of highlighted attribute names
 	 */
 	private function addAttributeContent(htmlResponsiveRow $row, string $attributeName, array $values,
 										 ?AttributeType    $schemaAttribute, array $objectClasses, ?string $dn,
@@ -631,7 +633,7 @@ class TreeView {
 	/**
 	 * Returns if the given attribute is a multi-value one.
 	 *
-	 * @param array|null $values attribute values
+	 * @param string[]|null $values attribute values
 	 * @param AttributeType|null $schemaAttribute schema attribute
 	 * @return bool is multi-value
 	 */
@@ -643,7 +645,7 @@ class TreeView {
 	 * Returns the input fields for the attribute.
 	 *
 	 * @param string $attributeName attribute name
-	 * @param array $values values
+	 * @param string[] $values values
 	 * @param bool $required is required
 	 * @param bool $isMultiValue multi-value attribute
 	 * @param bool $isMultiLine textarea attribute
@@ -726,7 +728,7 @@ class TreeView {
 	/**
 	 * Returns if the attribute has ordered values.
 	 *
-	 * @param array $values values
+	 * @param string[] $values values
 	 * @return bool is ordered
 	 */
 	private function isOrderedAttribute(array $values): bool {
@@ -935,7 +937,7 @@ class TreeView {
 	 *
 	 * @param ObjectClass[] $schemaObjectClasses object class definitions
 	 * @param AttributeType $schemaAttribute schema attribute
-	 * @param array $objectClasses list of object classes
+	 * @param string[] $objectClasses list of object classes
 	 * @return bool is required
 	 */
 	private function isAttributeRequired(array $schemaObjectClasses, AttributeType $schemaAttribute, array $objectClasses): bool {
@@ -1092,9 +1094,9 @@ class TreeView {
 	 * Handles attributes that require specific operations.
 	 *
 	 * @param string $dn DN
-	 * @param array $ldapChanges changes
-	 * @param array $attributes original attributes
-	 * @param array $schemaAttributes schema definition for attributes
+	 * @param array<string, string[]|string> $ldapChanges changes
+	 * @param array<string, string[]|string> $attributes original attributes
+	 * @param array<string, AttributeType> $schemaAttributes schema definition for attributes
 	 */
 	private function handleSpecialAttributes(string $dn, array &$ldapChanges, array $attributes, array $schemaAttributes): void {
 		// olcModuleLoad is add-only
@@ -1147,9 +1149,9 @@ class TreeView {
 	/**
 	 * Applies password hashing on the provided values.
 	 *
-	 * @param array $values values
-	 * @param array $hash hash types
-	 * @return array hashed values
+	 * @param string[] $values values
+	 * @param string[] $hash hash types
+	 * @return string[] hashed values
 	 */
 	private function applyPasswordHash(array $values, array $hash): array {
 		$result = [];
@@ -1240,7 +1242,7 @@ class TreeView {
 	 * @param string $dn DN
 	 * @param string|null $errorMessage error if any
 	 * @param string|null $rdnAttribute RDN attribute name
-	 * @param array|null $attributes attribute values
+	 * @param array<string, string[]|string>|null $attributes attribute values
 	 * @return string JSON data
 	 */
 	private function createNewNodeCheckObjectClassesStep(string $dn, ?string $errorMessage = null, ?string $rdnAttribute = null, ?array $attributes = null): string {
@@ -1358,7 +1360,7 @@ class TreeView {
 	 *
 	 * @param ObjectClass[] $objectClasses schema object classes
 	 * @param string $objectClass object class
-	 * @return array attribute names
+	 * @return string[] attribute names
 	 */
 	private function getMustAttributeNamesRecursive(array $objectClasses, string $objectClass): array {
 		$objectClassLower = strtolower($objectClass);
@@ -1376,7 +1378,7 @@ class TreeView {
 	 *
 	 * @param ObjectClass[] $objectClasses schema object classes
 	 * @param string $objectClass object class
-	 * @return array attribute names
+	 * @return string[] attribute names
 	 */
 	private function getMayAttributeNamesRecursive(array $objectClasses, string $objectClass): array {
 		$objectClassLower = strtolower($objectClass);
@@ -1650,8 +1652,8 @@ class TreeView {
 	/**
 	 * Returns the search results as list.
 	 *
-	 * @param array $results results
-	 * @param array $attributes attribute list to show
+	 * @param array<string, string[]|string>[] $results results
+	 * @param string[] $attributes attribute list to show
 	 * @param htmlResponsiveRow $row content
 	 * @return string JSON
 	 */
@@ -1680,8 +1682,8 @@ class TreeView {
 	/**
 	 * Returns the search results as table.
 	 *
-	 * @param array $results results
-	 * @param array $attributes attribute list to show
+	 * @param array<string, string[]|string>[] $results results
+	 * @param string[] $attributes attribute list to show
 	 * @param htmlResponsiveRow $row content
 	 * @return string JSON
 	 */
@@ -1820,7 +1822,7 @@ class TreeView {
 	 * Adds a comparison area.
 	 *
 	 * @param htmlResponsiveRow $row row
-	 * @param array $attributeData dn => attributes
+	 * @param array<string, array<string, string[]|string>> $attributeData dn => attributes
 	 * @param string $title table title
 	 * @param bool $showActions show action icons
 	 */
@@ -1916,8 +1918,8 @@ class TreeView {
 /**
  * Compares two nodes by interpreting their ID as DN.
  *
- * @param $a first node
- * @param $b second node
+ * @param array<string, string> $a first node
+ * @param array<string, string> $b second node
  * @return int result
  */
 function compareNodeByIdAsDn($a, $b): int {
@@ -1927,8 +1929,8 @@ function compareNodeByIdAsDn($a, $b): int {
 /**
  * Compares two arrays with LDAP attributes by global $lamOrderByAttribute.
  *
- * @param $a first node
- * @param $b second node
+ * @param array<string, string[]|string> $a first node
+ * @param array<string, string[]|string> $b second node
  * @return int result
  */
 function compareByAttributes($a, $b): int {

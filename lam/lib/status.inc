@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2025  Roland Gruber
+                2011 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
  * <br> It may be formatted with special color/link/bold tags.
  * @param string $MessageText The text of the status message.
  * <br> It may be formatted with special color/link/bold tags. This parameter is optional.
- * @param array|string|null $MessageVariables The variables that are used to replace the spacers (%s) in the
+ * @param string[]|string|null $MessageVariables The variables that are used to replace the spacers (%s) in the
  * submitted text. This parameter is optional.
  * @param bool $returnOutput if set to true this function will return the generated HTML code instead of printing it directly (default: false)
  * @return string HTML code if $returnOutput is set to true, otherwise null

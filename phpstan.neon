@@ -1,5 +1,5 @@
 parameters:
-	level: 5
+	level: 6
 	scanDirectories:
 		- lam/lib
 		- lam/templates
@@ -63,4 +63,4 @@ parameters:
 		- '#Call to an undefined method baseModule::setExpirationDate\(\).#'
 		- '#.*accountContainer::getAccountModule\(\) expects class-string\<baseModule\>, string given.*#'
 		- '#.*array_values is already a list.*#'
-#		- '#Unable to resolve the template type T in call to method accountContainer::getAccountModule\(\)#'
+		- '#Unable to resolve the template type T in call to method accountContainer::getAccountModule\(\)#'
