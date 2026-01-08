@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2024  Roland Gruber
+  Copyright (C) 2009 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 /**
  * Returns the tools which are available for LAM.
  *
- * @return array list of LAMTool objects
+ * @return LAMTool[] list of LAMTool objects
  */
 function getTools(): array {
 	$toolsDirName = __DIR__ . '/tools';
@@ -73,42 +73,42 @@ abstract class LAMTool {
 	 *
 	 * @return string name
 	 */
-	public abstract function getName(): string;
+	abstract public function getName(): string;
 
 	/**
 	 * returns a description text for the tool.
 	 *
 	 * @return string description
 	 */
-	public abstract function getDescription(): string;
+	abstract public function getDescription(): string;
 
 	/**
 	 * Returns a link to the tool page (relative to templates/).
 	 *
 	 * @return string link
 	 */
-	public abstract function getLink(): string;
+	abstract public function getLink(): string;
 
 	/**
 	 * Returns if the tool requires write access to LDAP.
 	 *
 	 * @return bool true if write access is needed
 	 */
-	public abstract function getRequiresWriteAccess(): bool;
+	abstract public function getRequiresWriteAccess(): bool;
 
 	/**
 	 * Returns if the tool requires password change rights.
 	 *
 	 * @return bool true if password change rights are needed
 	 */
-	public abstract function getRequiresPasswordChangeRights(): bool;
+	abstract public function getRequiresPasswordChangeRights(): bool;
 
 	/**
 	 * Returns the link to the tool image (relative to graphics/)
 	 *
 	 * @return string image URL
 	 */
-	public abstract function getImageLink(): string;
+	abstract public function getImageLink(): string;
 
 	/**
 	 * Returns the preferred position of this tool on the tools page.
@@ -116,14 +116,14 @@ abstract class LAMTool {
 	 *
 	 * @return int preferred position
 	 */
-	public abstract function getPosition(): int;
+	abstract public function getPosition(): int;
 
 	/**
 	 * Returns if the tool is visible in the menu.
 	 *
 	 * @return bool visible
 	 */
-	public abstract function isVisible(): bool;
+	abstract public function isVisible(): bool;
 
 	/**
 	 * Returns if a tool may be hidden by configuration in the LAM server profile.
@@ -137,7 +137,7 @@ abstract class LAMTool {
 	/**
 	 * Returns the configuration options for this tool.
 	 *
-	 * @param array $settings current tool settings
+	 * @param array<string, string> $settings current tool settings
 	 * @return htmlElement|null configuration options
 	 */
 	public function getConfigOptions(array $settings): ?htmlElement {
@@ -147,8 +147,8 @@ abstract class LAMTool {
 	/**
 	 * Checks the configuration options.
 	 *
-	 * @param array $settings hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	 * @return array list of error messages
+	 * @param array<string, string> $settings hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @return string[][] list of error messages
 	 */
 	public function checkConfigurationOptions(array $settings): array {
 		return [];
@@ -164,13 +164,13 @@ abstract class LAMTool {
  */
 class LAMSubTool {
 
-	/** visible tool name */
-	public $name;
-	/** tool description */
-	public $description;
-	/** tool link (relative to templates/) */
-	public $link;
-	/** image URL (relative to graphics/) */
-	public $image;
+	/** @var string $name visible tool name */
+	public string $name = '';
+	/** @var string $description tool description */
+	public string $description = '';
+	/** @var string $link tool link (relative to templates/) */
+	public string $link = '';
+	/** @var string $image image URL (relative to graphics/) */
+	public string $image = '';
 
 }

@@ -2042,7 +2042,7 @@ abstract class baseModule {
 	 * <br>
 	 * <b>Format:</b> array(<field identifier> => <field description>)
 	 *
-	 * @return array fields
+	 * @return array<string, string> fields
 	 *
 	 * @see baseModule::get_metaData()
 	 */
@@ -2157,16 +2157,16 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Checks if the self service settings are valid.
+	 * Checks if the self-service settings are valid.
 	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
-	 * If the input data is invalid the return value is an array that contains arrays
+	 * If the input data is invalid, the return value is an array that contains arrays
 	 * to build StatusMessages (message type, message head, message text). If no errors
-	 * occurred the function returns an empty array.
+	 * occurred, the function returns an empty array.
 	 *
-	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	 * @param selfServiceProfile $profile self service profile
+	 * @param array<string, string[]> $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @param selfServiceProfile $profile self-service profile
 	 * @return array error messages
 	 */
 	public function checkSelfServiceSettings(&$options, &$profile) {

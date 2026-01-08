@@ -28,8 +28,8 @@ use function LAM\PERSISTENCE\dbTableExists;
 */
 
 /**
- * Interface between modules and self service pages.
- * This file also includes the self service profile class and helper functions.
+ * Interface between modules and self-service pages.
+ * This file also includes the self-service profile class and helper functions.
  *
  * @package selfService
  * @author Roland Gruber
@@ -53,10 +53,10 @@ function isLAMProVersion() {
 }
 
 /**
- * Returns a list of possible search attributes for the self service.
+ * Returns a list of possible search attributes for the self-service.
  *
  * @param string $scope account type
- * @return array attributes
+ * @return string[] attributes
  */
 function getSelfServiceSearchAttributes($scope) {
 	$return = [];
@@ -71,10 +71,10 @@ function getSelfServiceSearchAttributes($scope) {
 }
 
 /**
- * Returns the field settings for the self service.
+ * Returns the field settings for the self-service.
  *
  * @param string $scope account type
- * @return array settings
+ * @return array<string, array<string, string>> settings
  */
 function getSelfServiceFieldSettings($scope) {
 	$return = [];
@@ -90,14 +90,14 @@ function getSelfServiceFieldSettings($scope) {
 }
 
 /**
- * Returns meta HTML code for each self service field.
+ * Returns meta HTML code for each self-service field.
  *
  * @param string $scope account type
- * @param array $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
- * @param array $attributes LDAP attributes (attribute names in lower case)
+ * @param array<string, string[]> $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
+ * @param array<string, string[]|string> $attributes LDAP attributes (attribute names in lower case)
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
- * @param array $readOnlyFields list of read-only fields
- * @return array meta HTML code (array(<moduleName> => htmlResponsiveRow))
+ * @param string[] $readOnlyFields list of read-only fields
+ * @return array<string, array<string, htmlResponsiveRow>> meta HTML code (array(<moduleName> => array(<optionName> => htmlResponsiveRow)))
  */
 function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 	$return = [];
@@ -126,11 +126,11 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
  * Checks if all input values are correct and returns the LDAP commands which should be executed.
  *
  * @param string $scope account type
- * @param array $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
- * @param array $attributes LDAP attributes
+ * @param array<string, string[]> $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
+ * @param array<string, string[]|string> $attributes LDAP attributes
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
- * @param array $readOnlyFields list of read-only fields
- * @return array messages and LDAP commands (array('messages' => [], 'add' => [], 'del' => [], 'mod' => []))
+ * @param string[] $readOnlyFields list of read-only fields
+ * @return array<string, string[]|array<string, string[]|string>> messages and LDAP commands (array('messages' => [], 'add' => [], 'del' => [], 'mod' => []))
  */
 function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 	$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
@@ -172,7 +172,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
  *
  * @param string $scope account type
  * @param selfServiceProfile $profile currently edited profile
- * @return array configuration options
+ * @return array<string, htmlElement> configuration options
  */
 function getSelfServiceSettings($scope, $profile) {
 	$return = [];
@@ -185,12 +185,12 @@ function getSelfServiceSettings($scope, $profile) {
 }
 
 /**
- * Checks if the self service settings are valid
+ * Checks if the self-service settings are valid
  *
  * @param string $scope account type
- * @param array $options hash array containing all options (name => array(...))
+ * @param array<string, string[]> $options hash array containing all options (name => array(...))
  * @param selfServiceProfile $profile profile
- * @return array list of error messages
+ * @return string[][] list of error messages
  */
 function checkSelfServiceSettings($scope, &$options, &$profile) {
 	$return = [];
@@ -204,9 +204,9 @@ function checkSelfServiceSettings($scope, &$options, &$profile) {
 }
 
 /**
- * Returns if script runs inside self service.
+ * Returns if script runs inside self-service.
  *
- * @return boolean is self service
+ * @return boolean is self-service
  */
 function isSelfService() {
 	return session_name() == 'SELFSERVICE';
@@ -276,9 +276,9 @@ class SelfServicePersistence {
 	}
 
 	/**
-	 * Returns a list of available self service profiles.
+	 * Returns a list of available self-service profiles.
 	 *
-	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
+	 * @return array<string, string[]> profile names (array('account type' => array('profile1', 'profile2')))
 	 */
 	public function getProfiles(): array {
 		$profiles = $this->strategy->getProfiles();
@@ -343,7 +343,7 @@ class SelfServicePersistence {
 	}
 
 	/**
-	 * Renames a self service profile.
+	 * Renames a self-service profile.
 	 *
 	 * @param string $oldName existing profile name
 	 * @param string $newName new profile name
@@ -364,19 +364,19 @@ class SelfServicePersistence {
 }
 
 /**
- * Interface for self service profile persistence.
+ * Interface for self-service profile persistence.
  */
 interface SelfServicePersistenceStrategy {
 
 	/**
-	 * Returns a list of available self service profiles.
+	 * Returns a list of available self-service profiles.
 	 *
-	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
+	 * @return array<string, string[]> profile names (array('account type' => array('profile1', 'profile2')))
 	 */
 	public function getProfiles(): array;
 
 	/**
-	 * Returns if the profile with given name can be written.
+	 * Returns if the profile with the given name can be written.
 	 *
 	 * @param string $name profile name
 	 * @param string $scope user/group/host
@@ -385,7 +385,7 @@ interface SelfServicePersistenceStrategy {
 	public function canWrite(string $name, string $scope): bool;
 
 	/**
-	 * Loads the given self service profile.
+	 * Loads the given self-service profile.
 	 *
 	 * @param string $name profile name
 	 * @param string $scope user/group/host
@@ -405,7 +405,7 @@ interface SelfServicePersistenceStrategy {
 	public function save(string $name, string $scope, selfServiceProfile $profile): void;
 
 	/**
-	 * Deletes a self service profile.
+	 * Deletes a self-service profile.
 	 *
 	 * @param string $name profile name
 	 * @param string $scope account type
@@ -414,7 +414,7 @@ interface SelfServicePersistenceStrategy {
 	public function delete(string $name, string $scope): void;
 
 	/**
-	 * Renames a self service profile.
+	 * Renames a self-service profile.
 	 *
 	 * @param string $oldName existing profile name
 	 * @param string $newName new profile name
@@ -665,25 +665,25 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 class selfServiceProfile {
 
 	/** server address */
-	public $serverURL = "localhost";
+	public string $serverURL = "localhost";
 
 	/** use TLS */
-	public $useTLS = false;
+	public bool $useTLS = false;
 
 	/** LDAP suffix */
-	public $LDAPSuffix = "dc=my-domain,dc=com";
+	public string $LDAPSuffix = "dc=my-domain,dc=com";
 
 	/** LDAP user DN*/
-	public $LDAPUser = "";
+	public string $LDAPUser = "";
 
 	/** LDAP password */
-	public $LDAPPassword = "";
+	public string $LDAPPassword = "";
 
 	/** use bind user also for read/modify operations */
-	public $useForAllOperations = false;
+	public bool $useForAllOperations = false;
 
 	/** LDAP search attribute */
-	public $searchAttribute = "uid";
+	public string $searchAttribute = "uid";
 
 	/**
 	 * @var string|null login handler ID
@@ -691,89 +691,89 @@ class selfServiceProfile {
 	public ?string $loginHandler = SelfServiceUserPasswordLoginHandler::ID;
 
 	/** header for self service pages */
-	public $pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo.svg" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
+	public string $pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo.svg" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 
 	/** base color */
-	public $baseColor = '#fffde2';
+	public string $baseColor = '#fffde2';
 
 	/** list of additional CSS links (separated by \n) */
-	public $additionalCSS = '';
+	public string $additionalCSS = '';
 
 	/** describing text for user login */
-	public $loginCaption;
+	public string $loginCaption = '';
 
 	/** describing text for user login */
-	public $loginFooter;
+	public string $loginFooter = '';
 
 	/** label for password input */
-	public $passwordLabel = '';
+	public string $passwordLabel = '';
 
 	/** describing text for search attribute */
-	public $loginAttributeText;
+	public string $loginAttributeText = '';
 
 	/** additional LDAP filter for accounts */
-	public $additionalLDAPFilter = '';
+	public string $additionalLDAPFilter = '';
 
 	/** describing text for self service main page */
-	public $mainPageText;
+	public string $mainPageText;
 
 	/** describing text for self service main page */
-	public $mainPageFooter;
+	public string $mainPageFooter = '';
 
-	/** input fields
+	/**
+	 * @var array<string, string|string[]>[] $inputFields input fields
 	 * Format: array(
 	 * <br> array(array('name' => <group name 1>, 'fields' => array(<field1>, <field2>))),
 	 * <br> array(array('name' => <group name 2>, 'fields' => array(<field3>, <field4>)))
 	 * <br> )
-	 *
 	 */
-	public $inputFields;
+	public array $inputFields = [];
 
 	/**
-	 * List of fields that are set in read-only mode.
+	 * @var string[] $readOnlyFields list of fields that are set in read-only mode.
 	 */
-	public $readOnlyFields = [];
+	public array $readOnlyFields = [];
 
-	/** List of override values for field labels: array(<field ID> => label) */
-	public $relabelFields = [];
+	/** @var array<string, string> $relabelFields list of override values for field labels: array(<field ID> => label) */
+	public array $relabelFields = [];
 
-	/** configuration settings of modules */
-	public $moduleSettings = [];
+	/** @var array<string, string> $moduleSettings configuration settings of modules */
+	public array $moduleSettings = [];
 
-	/** language for self service */
-	public $language = 'en_GB.utf8';
+	/** language for self-service */
+	public string $language = 'en_GB.utf8';
 	/** disallow user to change language */
-	public $enforceLanguage = false;
+	public bool $enforceLanguage = false;
 
-	public $followReferrals = 0;
+	public int $followReferrals = 0;
 
-	public $timeZone = 'Europe/London';
+	public string $timeZone = 'Europe/London';
 
-	public $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
-	public $twoFactorAuthenticationURL = 'https://localhost';
-	public $twoFactorAuthenticationInsecure = false;
-	public $twoFactorAuthenticationLabel;
-	public $twoFactorAuthenticationOptional = false;
-	public $twoFactorAuthenticationCaption = '';
-	public $twoFactorAuthenticationClientId = '';
-	public $twoFactorAuthenticationSecretKey = '';
-	public $twoFactorAuthenticationAttribute = 'uid';
-	public $twoFactorAuthenticationDomain = '';
-	public $twoFactorAllowToRememberDevice = 'false';
-	public $twoFactorRememberDeviceDuration = '28800';
-	public $twoFactorRememberDevicePassword = '';
+	public string $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
+	public string $twoFactorAuthenticationURL = 'https://localhost';
+	public bool $twoFactorAuthenticationInsecure = false;
+	public string $twoFactorAuthenticationLabel = '';
+	public bool $twoFactorAuthenticationOptional = false;
+	public string $twoFactorAuthenticationCaption = '';
+	public string $twoFactorAuthenticationClientId = '';
+	public string $twoFactorAuthenticationSecretKey = '';
+	public string $twoFactorAuthenticationAttribute = 'uid';
+	public string $twoFactorAuthenticationDomain = '';
+	public string $twoFactorAllowToRememberDevice = 'false';
+	public string $twoFactorRememberDeviceDuration = '28800';
+	public string $twoFactorRememberDevicePassword = '';
 
 	/** provider for captcha (-/google/hCaptcha/friendlyCaptcha) */
-	public $captchaProvider = '-';
+	public string $captchaProvider = '-';
 	/** Google reCAPTCHA site key */
-	public $reCaptchaSiteKey = '';
+	public string $reCaptchaSiteKey = '';
 	/** Google reCAPTCHA secret key */
-	public $reCaptchaSecretKey = '';
+	public string $reCaptchaSecretKey = '';
 	/** enable captcha on self service login */
-	public $captchaOnLogin = false;
+	public bool $captchaOnLogin = false;
 
 	/** base URL for the website (e.g. https://example.com) for link generation */
-	public $baseUrl = '';
+	public string $baseUrl = '';
 
 	/**
 	 * Path to external lamdaemon script on server where it is executed
@@ -781,12 +781,12 @@ class selfServiceProfile {
 	 * This is used for managing quota and home directories.
 	 * optional setting, may not be defined
 	 */
-	public $scriptPath;
+	public string $scriptPath = '';
 
 	/**
 	 * The rights for the home directory
 	 */
-	public $scriptRights = '750';
+	public string $scriptRights = '750';
 
 	/**
 	 * Servers where lamdaemon script is executed
@@ -794,22 +794,22 @@ class selfServiceProfile {
 	 * This is used for managing quota and home directories.
 	 * optional setting, may not be defined
 	 */
-	public $scriptServer;
+	public string $scriptServer = '';
 
 	/**
 	 * user name for lamdaemon
 	 */
-	public $scriptUserName;
+	public string $scriptUserName = '';
 
 	/**
 	 * File name of SSH key for lamdaemon.
 	 */
-	public $scriptSSHKey;
+	public string $scriptSSHKey = '';
 
 	/**
 	 * Password for lamdaemon SSH key.
 	 */
-	public $scriptSSHKeyPassword;
+	public string $scriptSSHKeyPassword = '';
 
 	/**
 	 * Constructor
@@ -831,10 +831,10 @@ class selfServiceProfile {
 	/**
 	 * Converts the export data back to a self service profile.
 	 *
-	 * @param array $data export data
+	 * @param array<string, string|int> $data export data
 	 * @return selfServiceProfile profile
 	 */
-	public static function import($data) {
+	public static function import($data): selfServiceProfile {
 		$profile = new selfServiceProfile();
 		$vars = get_class_vars(selfServiceProfile::class);
 		foreach ($data as $key => $value) {
@@ -846,9 +846,9 @@ class selfServiceProfile {
 	}
 
 	/**
-	 * Returns a representation of the self service profile.
+	 * Returns a representation of the self-service profile.
 	 *
-	 * @return array self service profile data
+	 * @return array<string, string|int> self-service profile data
 	 */
 	public function export() {
 		return json_decode(json_encode($this), true);
@@ -876,7 +876,7 @@ class selfServiceProfile {
 	 *
 	 * @param string $url URL
 	 */
-	public function setBaseUrl($url) {
+	public function setBaseUrl($url): void {
 		$this->baseUrl = $url;
 		if (!empty($url) && (str_ends_with($url, '/'))) {
 			$this->baseUrl = substr($url, 0, -1);
@@ -903,9 +903,9 @@ class selfServiceProfile {
  */
 class SelfServiceLdapConnection {
 
-	private $server;
+	private Connection|null $server = null;
 
-	private $profile;
+	private selfServiceProfile $profile;
 
 	/**
 	 * Constructor
@@ -919,9 +919,9 @@ class SelfServiceLdapConnection {
 	/**
 	 * Returns the LDAP handle.
 	 *
-	 * @return mixed LDAP handle
+	 * @return Connection|null LDAP handle
 	 */
-	public function getServer() {
+	public function getServer(): ?Connection {
 		if ($this->server !== null) {
 			return $this->server;
 		}
