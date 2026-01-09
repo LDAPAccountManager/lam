@@ -5,7 +5,7 @@ namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2025  Roland Gruber
+  Copyright (C) 2020 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ class ExtraInvalidCredentials {
 	/**
 	 * Includes all plugin files.
 	 */
-	protected function includeFiles() {
+	protected function includeFiles(): void {
 		$pluginDir = dir(__DIR__);
 		while ($entry = $pluginDir->read()) {
 			if ((str_starts_with($entry, '.')) || ($entry === basename(__FILE__))) {
@@ -85,8 +85,9 @@ class ExtraInvalidCredentials {
 	 * Returns the attribute names for the LDAP search.
 	 *
 	 * @param ExtraInvalidCredentialsProvider[] $providers
+	 * @return string[] attribute names
 	 */
-	protected function getAttributeNames(array $providers) {
+	protected function getAttributeNames(array $providers): array {
 		$attributeNames = [];
 		foreach ($providers as $provider) {
 			$attributeNames = array_merge($attributeNames, $provider->getAttributeNamesToRead());
@@ -100,9 +101,9 @@ class ExtraInvalidCredentials {
 	 * Reads the LDAP data.
 	 *
 	 * @param string $userDn user DN
-	 * @param array $attributes attribute names
+	 * @param string[] $attributes attribute names
 	 * @param Connection $ldap LDAP handle
-	 * @return array|null attribute values
+	 * @return array<string, string[]|string>|null attribute values
 	 */
 	protected function getLdapData(string $userDn, array $attributes, $ldap) {
 		$data = ldapGetDN($userDn, $attributes, $ldap);
@@ -117,7 +118,7 @@ class ExtraInvalidCredentials {
 	 * Returns the message from the providers.
 	 *
 	 * @param ExtraInvalidCredentialsProvider[] $providers providers
-	 * @param array $userData LDAP data
+	 * @param array<string, string[]|string> $userData LDAP data
 	 * @param Connection $ldap LDAP handle
 	 * @return null|string extra message
 	 */
@@ -150,7 +151,7 @@ interface ExtraInvalidCredentialsProvider {
 	/**
 	 * Returns an extra message if any.
 	 *
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 * @param Connection $ldap LDAP handle
 	 * @return null|string message
 	 */

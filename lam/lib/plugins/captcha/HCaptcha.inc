@@ -8,7 +8,7 @@ use htmlScript;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2022 - 2024  Roland Gruber
+  Copyright (C) 2022 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -97,26 +97,19 @@ class HCaptcha implements CaptchaProvider {
 class htmlHCaptcha extends htmlElement {
 
 	/** site key */
-	private $key;
+	private string $key;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $key site key
+	 * @param string $key site key
 	 */
-	function __construct($key) {
+	public function __construct(string $key) {
 		$this->key = htmlspecialchars($key);
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
 	function generateHTML($module, $input, $values, $restricted, $scope) {
 		$script = new htmlScript('https://js.hcaptcha.com/1/api.js');

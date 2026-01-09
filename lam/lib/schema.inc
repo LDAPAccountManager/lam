@@ -732,7 +732,7 @@ class AttributeType extends SchemaItem {
 	/**
 	 * Gets this attribute's parent attribute (if any). If this attribute does not
 	 * inherit from another attribute, null is returned.
-	 * @return string|null
+	 * @return string|null parent attribute name
 	 */
 	function getSupAttribute(): ?string {
 		return $this->sup_attribute;

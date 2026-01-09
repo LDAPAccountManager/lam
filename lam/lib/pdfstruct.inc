@@ -17,7 +17,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2025  Roland Gruber
+                2011 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ class PdfStructurePersistenceManager {
 	/**
 	 * Returns the names of existing PDF structure templates.
 	 *
-	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @return array<string, string[]> scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
 	public function getPdfStructureTemplateNames(): array {
@@ -379,7 +379,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $confName server profile name
 	 * @throws LAMException error during installation
 	 */
-	public function installPDFTemplates(string $confName) {
+	public function installPDFTemplates(string $confName): void {
 		if (!LAMConfig::isValidName($confName)) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
@@ -422,11 +422,11 @@ class PdfStructurePersistenceManager {
  */
 class PdfLogo {
 
-	private $name;
+	private string $name;
 
-	private $height;
+	private int $height;
 
-	private $width;
+	private int $width;
 
 	/**
 	 * Constructor
@@ -480,7 +480,7 @@ interface PdfStructurePersistenceStrategy {
 	/**
 	 * Returns the names of existing PDF structure templates.
 	 *
-	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @return array<string, string[]> scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
 	public function getPdfStructureTemplateNames(): array;
@@ -1303,20 +1303,22 @@ class PDFStructureReader {
 	private function readSection(XMLReader $xml): PDFEntrySection {
 		$section = new PDFEntrySection($xml->getAttribute('name'));
 		$entries = [];
-		while ($xml->read()) {
-			if (($xml->name === 'section') && ($xml->nodeType == XMLReader::END_ELEMENT)) {
-				break;
-			}
-			elseif (($xml->nodeType === XMLReader::END_ELEMENT)
-				|| ($xml->nodeType === XMLReader::SIGNIFICANT_WHITESPACE)) {
-				continue;
-			}
-			elseif ($xml->name === 'entry') {
-				$entries[] = new PDFSectionEntry($xml->getAttribute('name'));
-			}
-			else {
-				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
-				throw new LAMException(_('Unable to read PDF structure.'));
+		if (!$xml->isEmptyElement) {
+			while ($xml->read()) {
+				if (($xml->name === 'section') && ($xml->nodeType == XMLReader::END_ELEMENT)) {
+					break;
+				}
+				elseif (($xml->nodeType === XMLReader::END_ELEMENT)
+					|| ($xml->nodeType === XMLReader::SIGNIFICANT_WHITESPACE)) {
+					continue;
+				}
+				elseif ($xml->name === 'entry') {
+					$entries[] = new PDFSectionEntry($xml->getAttribute('name'));
+				}
+				else {
+					logNewMessage(LOG_ERR, 'Unexpected tag name inside section: ' . $xml->name);
+					throw new LAMException(_('Unable to read PDF structure.'));
+				}
 			}
 		}
 		$section->setEntries($entries);
@@ -1390,20 +1392,21 @@ class PDFStructure {
 	/** standard folding marks */
 	public const FOLDING_STANDARD = 'standard';
 
-	private $logo;
+	private ?string $logo = null;
 
-	private $title = 'LDAP Account Manager';
+	private string $title = 'LDAP Account Manager';
 
-	private $foldingMarks = 'no';
+	private string $foldingMarks = 'no';
 
-	private $sections = [];
+	/** @var PDFTextSection[]|PDFEntrySection[] $sections sections */
+	private array $sections = [];
 
 	/**
 	 * Returns an array representation of the structure.
 	 *
-	 * @return array export data
+	 * @return array<string, string|string[]|array<string, string|string[]>[]> export data
 	 */
-	public function export() {
+	public function export(): array {
 		$data = [];
 		$data['title'] = $this->title;
 		$data['foldingMarks'] = $this->foldingMarks;
@@ -1423,9 +1426,9 @@ class PDFStructure {
 	/**
 	 * Imports an array representation of the structure.
 	 *
-	 * @param array $data import data
+	 * @param array<string, string|string[]|array<string, string|string[]>[]> $data import data
 	 */
-	public function import($data) {
+	public function import(array $data): void {
 		if (isset($data['title'])) {
 			$this->title = $data['title'];
 		}
@@ -1461,9 +1464,9 @@ class PDFStructure {
 	/**
 	 * Sets the logo file path.
 	 *
-	 * @param string $logo logo
+	 * @param string|null $logo logo
 	 */
-	public function setLogo($logo) {
+	public function setLogo(?string $logo): void {
 		$this->logo = $logo;
 	}
 
@@ -1472,7 +1475,7 @@ class PDFStructure {
 	 *
 	 * @return string title
 	 */
-	public function getTitle() {
+	public function getTitle(): string {
 		return $this->title;
 	}
 
@@ -1481,7 +1484,7 @@ class PDFStructure {
 	 *
 	 * @param string $title title
 	 */
-	public function setTitle($title) {
+	public function setTitle(string $title): void {
 		$this->title = $title;
 	}
 
@@ -1499,7 +1502,7 @@ class PDFStructure {
 	 *
 	 * @param string $foldingMarks print folding marks
 	 */
-	public function setFoldingMarks($foldingMarks) {
+	public function setFoldingMarks(string $foldingMarks): void {
 		$this->foldingMarks = $foldingMarks;
 	}
 
@@ -1508,16 +1511,16 @@ class PDFStructure {
 	 *
 	 * @return PDFTextSection[]|PDFEntrySection[] $sections
 	 */
-	public function getSections() {
+	public function getSections(): array {
 		return $this->sections;
 	}
 
 	/**
 	 * Sets the sections.
 	 *
-	 * @param PDFTextSection[]|PDFEntrySection[] $sections sections
+	 * @param PDFEntrySection[]|PDFTextSection[] $sections sections
 	 */
-	public function setSections($sections) {
+	public function setSections(array $sections): void {
 		$this->sections = $sections;
 	}
 
@@ -1530,14 +1533,14 @@ class PDFStructure {
  */
 class PDFTextSection {
 
-	private $text = '';
+	private string $text;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $text text
 	 */
-	public function __construct($text) {
+	public function __construct(string $text) {
 		$this->text = $text;
 	}
 
@@ -1546,7 +1549,7 @@ class PDFTextSection {
 	 *
 	 * @return string text
 	 */
-	public function export() {
+	public function export(): string {
 		return $this->getText();
 	}
 
@@ -1555,7 +1558,7 @@ class PDFTextSection {
 	 *
 	 * @return string text
 	 */
-	public function getText() {
+	public function getText(): string {
 		return $this->text;
 	}
 
@@ -1568,24 +1571,25 @@ class PDFTextSection {
  */
 class PDFEntrySection {
 
-	private $title;
-	private $entries = [];
+	private string $title;
+	/** @var PDFSectionEntry[] $entries entries */
+	private array $entries = [];
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $title title
 	 */
-	public function __construct($title) {
+	public function __construct(string $title) {
 		$this->title = $title;
 	}
 
 	/**
 	 * Exports the section.
 	 *
-	 * @return array export data
+	 * @return array<string, string|string[]> export data
 	 */
-	public function export() {
+	public function export(): array {
 		$data = [];
 		$data['title'] = $this->title;
 		$data['entries'] = [];
@@ -1598,9 +1602,9 @@ class PDFEntrySection {
 	/**
 	 * Imports the section.
 	 *
-	 * @param array $data import data
+	 * @param array<string, string|string[]> $data import data
 	 */
-	public function import($data) {
+	public function import(array $data): void {
 		if (isset($data['title'])) {
 			$this->title = $data['title'];
 		}
@@ -1614,9 +1618,9 @@ class PDFEntrySection {
 	/**
 	 * Returns if the title is an attribute value.
 	 *
-	 * @return boolean is attribute
+	 * @return bool is attribute
 	 */
-	public function isAttributeTitle() {
+	public function isAttributeTitle(): bool {
 		return (bool) preg_match('/^_([a-zA-Z0-9_-])+$/', $this->title);
 	}
 
@@ -1625,7 +1629,7 @@ class PDFEntrySection {
 	 *
 	 * @return string PDF key name
 	 */
-	public function getPdfKey() {
+	public function getPdfKey(): string {
 		return substr($this->title, 1);
 	}
 
@@ -1634,7 +1638,7 @@ class PDFEntrySection {
 	 *
 	 * @return string title
 	 */
-	public function getTitle() {
+	public function getTitle(): string {
 		return $this->title;
 	}
 
@@ -1643,7 +1647,7 @@ class PDFEntrySection {
 	 *
 	 * @param string $title title
 	 */
-	public function setTitle($title) {
+	public function setTitle(string $title): void {
 		$this->title = $title;
 	}
 
@@ -1652,7 +1656,7 @@ class PDFEntrySection {
 	 *
 	 * @return PDFSectionEntry[] entries
 	 */
-	public function getEntries() {
+	public function getEntries(): array {
 		return $this->entries;
 	}
 
@@ -1661,7 +1665,7 @@ class PDFEntrySection {
 	 *
 	 * @param PDFSectionEntry[] $entries entries
 	 */
-	public function setEntries($entries) {
+	public function setEntries(array $entries): void {
 		$this->entries = $entries;
 	}
 
@@ -1674,14 +1678,14 @@ class PDFEntrySection {
  */
 class PDFSectionEntry {
 
-	private $key;
+	private string $key;
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $key key
 	 */
-	public function __construct($key) {
+	public function __construct(string $key) {
 		$this->key = $key;
 	}
 
@@ -1690,7 +1694,7 @@ class PDFSectionEntry {
 	 *
 	 * @return string $key key
 	 */
-	public function getKey() {
+	public function getKey(): string {
 		return $this->key;
 	}
 
@@ -1699,9 +1703,9 @@ class PDFSectionEntry {
 /**
  * Returns a list of possible fonts.
  *
- * @return array list of fonts (description => font name)
+ * @return array<string, string> list of fonts (description => font name)
  */
-function getPdfFonts() {
+function getPdfFonts(): array {
 	return [
 		'DejaVu' => 'DejaVuSerif',
 		_('Chinese Traditional') => 'cid0ct',

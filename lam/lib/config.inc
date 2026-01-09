@@ -1634,8 +1634,8 @@ class LAMConfig {
 			}
 			$serverSettings = explode(':', $serverChunk);
 			$serverName = $serverSettings[0];
-			$serverLabel = $serverSettings[1] ?? null;
-			$serverHomedirPrefix = $serverSettings[2] ?? null;
+			$serverLabel = $serverSettings[1] ?? '';
+			$serverHomedirPrefix = $serverSettings[2] ?? '';
 			$servers[] = new RemoteServerConfiguration($serverName, $serverLabel, $serverHomedirPrefix, $scriptPath, $userName, $sshKey, $sshKeyPassword);
 		}
 		return $servers;

@@ -85,11 +85,11 @@ abstract class htmlElement {
 	 * Prints the HTML code for this element.
 	 *
 	 * @param string|null $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param htmlElement[] $input List of meta-HTML elements
+	 * @param array<string, string> $values List of values which override the defaults in $input (name => value)
+	 * @param bool $restricted If true then no buttons will be displayed
 	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * @return array<string, string> List of input field names and their type (name => type)
 	 */
 	abstract function generateHTML($module, $input, $values, $restricted, $scope);
 

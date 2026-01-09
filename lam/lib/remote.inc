@@ -11,7 +11,7 @@ use \phpseclib3\Exception\NoKeyLoadedException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2025  Roland Gruber
+  Copyright (C) 2017 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ class Remote {
 	/**
 	 * Closes the connection.
 	 */
-	public function disconnect() {
+	public function disconnect(): void {
 		if ($this->server == null) {
 			return;
 		}
@@ -109,7 +109,7 @@ class Remote {
 	 * @throws Exception login failed
 	 * @throws LAMException error on login
 	 */
-	private function loginSSH($handle) {
+	private function loginSSH($handle): void {
 		$username = $this->serverConfig->getUserName();
 		if (empty($username)) {
 			// get user name from current LAM user
@@ -178,13 +178,13 @@ class Remote {
  */
 class RemoteServerConfiguration {
 
-	private $server;
-	private $label;
-	private $homeDirPrefix;
-	private $scriptPath;
-	private $userName;
-	private $sshKey;
-	private $sshKeyPassword;
+	private string $server;
+	private string $label;
+	private string $homeDirPrefix;
+	private string $scriptPath;
+	private string $userName;
+	private string $sshKey;
+	private string $sshKeyPassword;
 
 	/**
 	 * Constructor
@@ -197,16 +197,13 @@ class RemoteServerConfiguration {
 	 * @param string $sshKey SSH key path
 	 * @param string $sshKeyPassword SSH key password
 	 */
-	public function __construct($server, $label, $homeDirPrefix, $scriptPath, $userName, $sshKey, $sshKeyPassword) {
+	public function __construct(string $server, string $label, string $homeDirPrefix, string $scriptPath, string $userName, string $sshKey, string $sshKeyPassword) {
 		$this->server = $server;
 		$this->label = $label;
 		if (empty($label)) {
 			$this->label = $server;
 		}
 		$this->homeDirPrefix = $homeDirPrefix;
-		if (empty($homeDirPrefix)) {
-			$this->homeDirPrefix = '';
-		}
 		$this->scriptPath = $scriptPath;
 		$this->userName = $userName;
 		$this->sshKey = $sshKey;
@@ -218,7 +215,7 @@ class RemoteServerConfiguration {
 	 *
 	 * @return string server name
 	 */
-	public function getServer() {
+	public function getServer(): string {
 		return $this->server;
 	}
 
@@ -227,7 +224,7 @@ class RemoteServerConfiguration {
 	 *
 	 * @return string label
 	 */
-	public function getLabel() {
+	public function getLabel(): string {
 		return $this->label;
 	}
 
@@ -236,7 +233,7 @@ class RemoteServerConfiguration {
 	 *
 	 * @return string prefix for user home directories
 	 */
-	public function getHomeDirPrefix() {
+	public function getHomeDirPrefix(): string {
 		return $this->homeDirPrefix;
 	}
 
@@ -245,16 +242,16 @@ class RemoteServerConfiguration {
 	 *
 	 * @return string script path
 	 */
-	public function getScriptPath() {
+	public function getScriptPath(): string {
 		return $this->scriptPath;
 	}
 
 	/**
-	 * Returns the user name to connect.
+	 * Returns the username to connect.
 	 *
 	 * @return string user name
 	 */
-	public function getUserName() {
+	public function getUserName(): string {
 		return $this->userName;
 	}
 
@@ -263,7 +260,7 @@ class RemoteServerConfiguration {
 	 *
 	 * @return string path
 	 */
-	public function getSshKey() {
+	public function getSshKey(): string {
 		return $this->sshKey;
 	}
 
@@ -272,7 +269,7 @@ class RemoteServerConfiguration {
 	 *
 	 * @return string password
 	 */
-	public function getSshKeyPassword() {
+	public function getSshKeyPassword(): string {
 		return $this->sshKeyPassword;
 	}
 

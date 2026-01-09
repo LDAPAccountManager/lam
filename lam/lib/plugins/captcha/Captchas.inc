@@ -7,7 +7,7 @@ use htmlElement;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2022 - 2024  Roland Gruber
+  Copyright (C) 2022 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class Captchas {
 	/**
 	 * Includes all plugin files.
 	 */
-	protected function includeFiles() {
+	protected function includeFiles(): void {
 		$pluginDir = dir(__DIR__);
 		while ($entry = $pluginDir->read()) {
 			if ((str_starts_with($entry, '.')) || ($entry === basename(__FILE__))) {

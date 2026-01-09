@@ -14,7 +14,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ class AccountProfilePersistenceManager {
 	/**
 	 * Returns the names of existing account profile templates.
 	 *
-	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @return array<string, string[]> scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
 	public function getAccountProfileTemplateNames(): array {
@@ -94,7 +94,7 @@ class AccountProfilePersistenceManager {
 	 *
 	 * @param string $scope account type
 	 * @param string $name template name
-	 * @return array template data
+	 * @return array<string, string[]> template data
 	 * @throws LAMException error reading template
 	 */
 	public function loadAccountProfileTemplate(string $scope, string $name): array {
@@ -110,7 +110,7 @@ class AccountProfilePersistenceManager {
 	 *
 	 * @param string $scope account type
 	 * @param string $name template name
-	 * @param array $data profile data
+	 * @param array<string, string[]> $data profile data
 	 * @throws LAMException error writing template
 	 */
 	public function writeAccountProfileTemplate(string $scope, string $name, array $data): void {
@@ -127,7 +127,7 @@ class AccountProfilePersistenceManager {
 	 * @param string $confName server profile name
 	 * @throws LAMException
 	 */
-	public function installAccountProfileTemplates(string $confName) {
+	public function installAccountProfileTemplates(string $confName): void {
 		if (!LAMConfig::isValidName($confName)) {
 			logNewMessage(LOG_NOTICE, "Invalid server profile name: $confName");
 			throw new LAMException(_("Unable to write account profile template."));
@@ -155,7 +155,7 @@ class AccountProfilePersistenceManager {
 	 *
 	 * @param string $typeId type ID
 	 * @param string $confName server profile name
-	 * @return array names
+	 * @return string[] names
 	 * @throws LAMException error reading profiles
 	 */
 	public function getAccountProfileNames(string $typeId, string $confName): array {
@@ -172,7 +172,7 @@ class AccountProfilePersistenceManager {
 	 * @param $typeId $scope
 	 * @param string $name account profile name
 	 * @param string $confName server profile name
-	 * @param array $data profile data
+	 * @param array<string, string[]> $data profile data
 	 * @throws LAMException error writing template
 	 */
 	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data): void {
@@ -220,7 +220,7 @@ class AccountProfilePersistenceManager {
 	 * @param string $typeId user/group/host
 	 * @param string $name account profile name
 	 * @param string $confName server profile name
-	 * @return array profile data
+	 * @return array<string, string[]> profile data
 	 * @throws LAMException error writing template
 	 */
 	public function loadAccountProfile(string $typeId, string $name, string $confName): array {
@@ -263,7 +263,7 @@ interface AccountProfilePersistenceStrategy {
 	/**
 	 * Returns the names of existing account profile templates.
 	 *
-	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @return array<string, string[]> scope => names (e.g. array('user' => array('default')))
 	 * @throws LAMException error reading templates
 	 */
 	public function getAccountProfileTemplateNames(): array;
@@ -282,7 +282,7 @@ interface AccountProfilePersistenceStrategy {
 	 *
 	 * @param string $scope account type
 	 * @param string $name template name
-	 * @return array template data
+	 * @return array<string, string[]> template data
 	 * @throws LAMException error reading template
 	 */
 	public function loadAccountProfileTemplate(string $scope, string $name): array;
@@ -292,7 +292,7 @@ interface AccountProfilePersistenceStrategy {
 	 *
 	 * @param string $scope account type
 	 * @param string $name template name
-	 * @param array $data profile data
+	 * @param array<string, string[]> $data profile data
 	 * @throws LAMException error writing template
 	 */
 	public function writeAccountProfileTemplate(string $scope, string $name, array $data): void;
@@ -314,7 +314,7 @@ interface AccountProfilePersistenceStrategy {
 	 *
 	 * @param string $typeId type ID
 	 * @param string $confName server profile name
-	 * @return array names
+	 * @return string[] names
 	 * @throws LAMException error reading profiles
 	 */
 	public function getAccountProfileNames(string $typeId, string $confName): array;
@@ -325,7 +325,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @param $typeId account type ID
 	 * @param string $name profile name
 	 * @param string $confName server profile name
-	 * @param array $data profile data
+	 * @param array<string, string[]> $data profile data
 	 * @throws LAMException error writing template
 	 */
 	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data): void;
@@ -336,7 +336,7 @@ interface AccountProfilePersistenceStrategy {
 	 * @param string $typeId user/group/host
 	 * @param string $name account profile name
 	 * @param string $confName server profile name
-	 * @return array profile data
+	 * @return array<string, string[]> profile data
 	 * @throws LAMException error writing template
 	 */
 	public function loadAccountProfile(string $typeId, string $name, string $confName): array;
@@ -427,7 +427,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 	 * Reads an account profile from the given file name.
 	 *
 	 * @param string $fileName file name
-	 * @return array hash array (attribute => value)
+	 * @return array<string, string[]> hash array (attribute => value)
 	 * @throws LAMException error reading file
 	 */
 	private function readAccountProfileFile(string $fileName): array {
@@ -469,7 +469,7 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 	 * Writes the profile data to the given file.
 	 *
 	 * @param string $fileName file name
-	 * @param array $data profile data
+	 * @param array<string, string[]> $data profile data
 	 * @throws LAMException error writing file
 	 */
 	private function writeAccountProfileDataToFile(string $fileName, array $data): void {
