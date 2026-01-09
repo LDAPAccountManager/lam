@@ -2103,9 +2103,9 @@ class accountContainer {
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @param string[] $pdfKeys list of PDF keys that are included in document
 	 * @param string $typeId type id (user, group, host)
-	 * @return PDFEntry[] list of key => PDFEntry
+	 * @return array<string, PDFEntry[]> list of key => PDFEntry
 	 */
 	function get_pdfEntries($pdfKeys, $typeId): array {
 		$return = [];

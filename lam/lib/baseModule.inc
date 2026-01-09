@@ -860,9 +860,9 @@ abstract class baseModule {
 	/**
 	 * Returns the PDF entries for this module.
 	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @param string[] $pdfKeys list of PDF keys that are included in document
 	 * @param string $typeId type id (user, group, host)
-	 * @return PDFEntry[] list of key => PDFEntry
+	 * @return array<string, PDFEntry[]> list of key => PDFEntry
 	 */
 	public function get_pdfEntries($pdfKeys, $typeId) {
 		return [];

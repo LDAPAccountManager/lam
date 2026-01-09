@@ -5,7 +5,7 @@ namespace LAM\TOOLS\MULTI_EDIT;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2023 - 2024  Roland Gruber
+  Copyright (C) 2023 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace LAM\TOOLS\MULTI_EDIT;
  * Extracts any wildcards from the value field.
  *
  * @param string $value value field
- * @return array wildcard attributes
+ * @return string[] wildcard attributes
  */
 function extractWildcards(string $value): array {
 	$value = strtolower($value);
@@ -102,7 +102,7 @@ function extractWildcards(string $value): array {
  * Replaces wildcards in the user entered value.
  *
  * @param string $value user entered value
- * @param array $entry LDAP entry
+ * @param array<string, string[]|string> $entry LDAP entry
  * @return string result
  */
 function replaceWildcards(string $value, array $entry): string {

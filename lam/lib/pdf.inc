@@ -2,6 +2,7 @@
 
 namespace LAM\PDF;
 
+use accountContainer;
 use LAM\ImageUtils\ImageManipulationFactory;
 use LAM\TYPES\ConfiguredType;
 use LAMException;
@@ -10,7 +11,7 @@ use LamTemporaryFilesManager;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2025  Roland Gruber
+                2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -54,17 +55,17 @@ include_once(__DIR__ . '/pdfstruct.inc');
 /**
  * This function creates the PDF output of one or more accounts.
  *
- * @param array $accounts A numbered array containing all accounts the PDF page should
+ * @param accountContainer[] $accounts A numbered array containing all accounts the PDF page should
  * be created for. The entries of the array must be AccountContainer objects.
  * @param string $pdf_structure The filename of the structure definition that should be used
  * to create the PDF page. If not submitted the 'default.user' structure definition
  * for the appropriate account type.
  * @param string $font font to use (e.g. DejaVu)
- * @param $returnAsString returns the PDF output as String value instead of writing it to a file
- * @return String PDF file name
+ * @param bool $returnAsString returns the PDF output as String value instead of writing it to a file
+ * @return string PDF file name
  * @throws LAMException error creating PDF
  */
-function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = false) {
+function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = false): string {
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
 	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
@@ -91,15 +92,15 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
  * This function creates the PDF output of one or more accounts using TCPDF.
  *
  * @param PDFStructure $structure PDF structure
- * @param array $accounts A numbered array containing all accounts the PDF page should
+ * @param accountContainer[] $accounts A numbered array containing all accounts the PDF page should
  * be created for. The entries of the array must be AccountContainer objects.
- * @param array $pdfKeys list of elements in PDF
+ * @param string[] $pdfKeys list of elements in PDF
  * @param ConfiguredType $account_type account type
  * @param string $font font to use
  * @param boolean $returnAsString returns the PDF output as String value instead of writing it to a file
- * @return String PDF file name
+ * @return string PDF file name
  */
-function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString) {
+function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString): string {
 	/** PDF generator class */
 	include_once(__DIR__ . "/lamtcpdf.inc");
 	$pdf = new LAMTCPDF($structure, $font);
@@ -145,19 +146,16 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 					if (isset($entries[$entry->getKey()])) {
 						// Get current entry
 						$valueEntries = $entries[$entry->getKey()];
-						// Print entry only when module sumitted values for it
-						if (is_array($valueEntries)) {
-							// Loop over all rows of this entry (most of the time this will be just one)
-							foreach ($valueEntries as $valueEntry) {
-								if ($valueEntry instanceof PDFLabelValue) {
-									printLabelValue($pdf, $valueEntry, $font);
-								}
-								elseif ($valueEntry instanceof PDFTable) {
-									printTable($pdf, $valueEntry, $font);
-								}
-								elseif ($valueEntry instanceof PDFImage) {
-									printImage($pdf, $valueEntry);
-								}
+						// Loop over all rows of this entry (most of the time this will be just one)
+						foreach ($valueEntries as $valueEntry) {
+							if ($valueEntry instanceof PDFLabelValue) {
+								printLabelValue($pdf, $valueEntry, $font);
+							}
+							elseif ($valueEntry instanceof PDFTable) {
+								printTable($pdf, $valueEntry, $font);
+							}
+							elseif ($valueEntry instanceof PDFImage) {
+								printImage($pdf, $valueEntry);
 							}
 						}
 					}
@@ -202,7 +200,7 @@ function getSectionHeadline($entry) {
  * @param PDFLabelValue $valueEntry entry
  * @param string $fontName font name
  */
-function printLabelValue(&$pdf, $valueEntry, $fontName) {
+function printLabelValue(&$pdf, $valueEntry, $fontName): void {
 	$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
 	$pdf->MultiCell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($valueEntry->getLabel()) . ':',
 		0, 'R', false, 0);
@@ -220,7 +218,7 @@ function printLabelValue(&$pdf, $valueEntry, $fontName) {
  * @param PDFTable $table entry
  * @param string $fontName font name
  */
-function printTable(&$pdf, $table, $fontName) {
+function printTable(&$pdf, $table, $fontName): void {
 	$headline = $table->getHeadline();
 	if (!empty($headline)) {
 		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
@@ -255,7 +253,7 @@ function printTable(&$pdf, $table, $fontName) {
  * @param LAMTCPDF $pdf PDF
  * @param PDFImage $imageEntry entry
  */
-function printImage(&$pdf, $imageEntry) {
+function printImage(&$pdf, $imageEntry): void {
 	include_once __DIR__ . '/imageutils.inc';
 	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
 	$height = $imageManipulator->getHeight() / 2.9;
@@ -297,7 +295,7 @@ interface PDFEntry {
 	 *
 	 * @return string label
 	 */
-	public function getHeadline();
+	public function getHeadline(): string;
 
 }
 
@@ -310,16 +308,16 @@ interface PDFEntry {
 class PDFTable implements PDFEntry {
 
 	/** optional label of table */
-	private $label = '';
-	/** list of PDFTableRow elements */
-	public $rows = [];
+	private ?string $label;
+	/** @var PDFTableRow[] $rows list of PDFTableRow elements */
+	public array $rows = [];
 
 	/**
 	 * Constructor
 	 *
-	 * @param String $label label
+	 * @param string|null $label label
 	 */
-	public function __construct($label = null) {
+	public function __construct(?string $label = null) {
 		$this->label = $label;
 	}
 
@@ -327,7 +325,7 @@ class PDFTable implements PDFEntry {
 	 * {@inheritDoc}
 	 * @see PDFEntry::getHeadline()
 	 */
-	public function getHeadline() {
+	public function getHeadline(): string {
 		return $this->label;
 	}
 
@@ -341,8 +339,8 @@ class PDFTable implements PDFEntry {
  */
 class PDFTableRow {
 
-	/** list of PDFTableCell */
-	public $cells = [];
+	/** @var PDFTableCell[] $cells list of PDFTableCell */
+	public array $cells = [];
 
 }
 
@@ -359,23 +357,23 @@ class PDFTableCell {
 	public const ALIGN_CENTER = 'C';
 
 	/** content text of cell */
-	public $content = '';
+	public string $content = '';
 	/** text alignment */
-	public $align = self::ALIGN_LEFT;
+	public string $align = self::ALIGN_LEFT;
 	/** cell width (e.g. "20%") */
-	public $width;
+	public ?string $width;
 	/** bold text */
-	public $bold = false;
+	public bool $bold = false;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $content cell content
-	 * @param String $width width (e.g. "20%")
-	 * @param String $align cell alignment (default: left)
+	 * @param string|null $content cell content
+	 * @param string|null $width width (e.g. "20%")
+	 * @param string|null $align cell alignment (default: left)
 	 * @param boolean $bold print in bold
 	 */
-	public function __construct($content, $width = null, $align = null, $bold = false) {
+	public function __construct(?string $content, ?string $width = null, ?string $align = null, bool $bold = false) {
 		$this->content = empty($content) ? ' ' : $content;
 		$this->align = ($align == null) ? self::ALIGN_LEFT : $align;
 		$this->width = $width;
@@ -392,9 +390,9 @@ class PDFTableCell {
  */
 class PDFLabelValue implements PDFEntry {
 
-	private $label = '';
+	private string $label;
 
-	private $value = '';
+	private string $value;
 
 	/**
 	 * Constructor
@@ -402,7 +400,7 @@ class PDFLabelValue implements PDFEntry {
 	 * @param string $label label
 	 * @param string $value value
 	 */
-	public function __construct($label, $value) {
+	public function __construct(string $label, string $value) {
 		$this->label = $label;
 		$this->value = $value;
 	}
@@ -412,7 +410,7 @@ class PDFLabelValue implements PDFEntry {
 	 *
 	 * @return string $label label
 	 */
-	public function getLabel() {
+	public function getLabel(): string {
 		return $this->label;
 	}
 
@@ -421,7 +419,7 @@ class PDFLabelValue implements PDFEntry {
 	 *
 	 * @return string $value value
 	 */
-	public function getValue() {
+	public function getValue(): string {
 		return $this->value;
 	}
 
@@ -429,7 +427,7 @@ class PDFLabelValue implements PDFEntry {
 	 * {@inheritDoc}
 	 * @see PDFEntry::getHeadline()
 	 */
-	public function getHeadline() {
+	public function getHeadline(): string {
 		return $this->value;
 	}
 
@@ -443,14 +441,14 @@ class PDFLabelValue implements PDFEntry {
  */
 class PDFImage implements PDFEntry {
 
-	private $binaryData;
+	private string $binaryData;
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $binaryData image data
 	 */
-	public function __construct($binaryData) {
+	public function __construct(string $binaryData) {
 		$this->binaryData = $binaryData;
 	}
 
@@ -458,7 +456,7 @@ class PDFImage implements PDFEntry {
 	 * {@inheritDoc}
 	 * @see \LAM\PDF\PDFEntry::getHeadline()
 	 */
-	public function getHeadline() {
+	public function getHeadline(): string {
 		return '';
 	}
 
@@ -467,7 +465,7 @@ class PDFImage implements PDFEntry {
 	 *
 	 * @return string image data
 	 */
-	public function getImageData() {
+	public function getImageData(): string {
 		return $this->binaryData;
 	}
 
