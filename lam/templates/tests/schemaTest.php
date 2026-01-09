@@ -12,7 +12,7 @@ use function \LAM\SCHEMA\get_cached_schema;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2025  Roland Gruber
+  Copyright (C) 2007 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
 	$schemaAttrs = [];
 	// check if object classes are supported
 	foreach ($classes as $objectClass) {
-		if (!isset($schemaClasses[strtolower($objectClass)])) {
+		if (!isset($schemaClasses[strtolower($objectClass)]) || !($schemaClasses[strtolower($objectClass)] instanceof ObjectClass)) {
 			return sprintf(_("The object class %s is not supported by your LDAP server."), $objectClass);
 		}
 		// get attribute names
@@ -149,7 +149,7 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
  * Returns the names of all attributes which are managed by the given object class and its parents.
  *
  * @param ObjectClass $oClass object class
- * @return array<mixed> list of attribute names
+ * @return string[] list of attribute names
  */
 function getRecursiveAttributesFromObjectClass($oClass): array {
 	$attrs = [];
@@ -159,7 +159,9 @@ function getRecursiveAttributesFromObjectClass($oClass): array {
 	foreach ($subClassNames as $subClassName) {
 		$schemaClasses = get_cached_schema('objectclasses');
 		$subClass = $schemaClasses[strtolower($subClassName)];
-		$attrs = array_merge($attrs, getRecursiveAttributesFromObjectClass($subClass));
+		if ($subClass instanceof ObjectClass) {
+			$attrs = array_merge($attrs, getRecursiveAttributesFromObjectClass($subClass));
+		}
 	}
 	return $attrs;
 }
