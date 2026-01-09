@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2024  Roland Gruber
+  Copyright (C) 2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -272,7 +272,7 @@ class sambaDomain extends baseModule {
 			$return->addField($domainSidGroup);
 		}
 
-		$return->add(new htmlSubTitle(_("Password policy")), 12);
+		$return->add(new htmlSubTitle(_("Password policy")));
 
 		/* group policies */
 
@@ -282,14 +282,14 @@ class sambaDomain extends baseModule {
 			$sambaMinPwdLength = $this->attributes['sambaMinPwdLength'][0];
 		}
 		$return->add(new htmlResponsiveSelect('minPwdLength', ['-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-			[$sambaMinPwdLength], _('Minimal password length'), 'minPwdLength'), 12);
+			[$sambaMinPwdLength], _('Minimal password length'), 'minPwdLength'));
 		// password history length
 		$sambaPwdHistoryLength = '-';
 		if (isset($this->attributes['sambaPwdHistoryLength'][0])) {
 			$sambaPwdHistoryLength = $this->attributes['sambaPwdHistoryLength'][0];
 		}
 		$return->add(new htmlResponsiveSelect('pwdHistLength', ['-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-			[$sambaPwdHistoryLength], _('Password history length'), 'pwdHistLength'), 12);
+			[$sambaPwdHistoryLength], _('Password history length'), 'pwdHistLength'));
 		// logon to change password
 		$sambaLogonToChgPwd = '-';
 		if (isset($this->attributes['sambaLogonToChgPwd'][0])) {
@@ -369,7 +369,7 @@ class sambaDomain extends baseModule {
 		}
 		$nextRIDInput = new htmlResponsiveInputField(_('Next RID'), 'nextRID', $nextRID, 'nextRID');
 		$nextRIDInput->setMinimumAndMaximumNumber();
-		$return->add($nextRIDInput, 12);
+		$return->add($nextRIDInput);
 		// next user RID
 		$nextUserRID = '';
 		if (isset($this->attributes['sambaNextUserRid'][0])) {
@@ -377,7 +377,7 @@ class sambaDomain extends baseModule {
 		}
 		$nextUserRIDInput = new htmlResponsiveInputField(_('Next user RID'), 'nextUserRID', $nextUserRID, 'nextUserRID');
 		$nextUserRIDInput->setMinimumAndMaximumNumber();
-		$return->add($nextUserRIDInput, 12);
+		$return->add($nextUserRIDInput);
 		// next group RID
 		$nextGroupRID = '';
 		if (isset($this->attributes['sambaNextGroupRid'][0])) {
@@ -385,7 +385,7 @@ class sambaDomain extends baseModule {
 		}
 		$nextGroupRIDInput = new htmlResponsiveInputField(_('Next group RID'), 'nextGroupRID', $nextGroupRID, 'nextGroupRID');
 		$nextGroupRIDInput->setMinimumAndMaximumNumber();
-		$return->add($nextGroupRIDInput, 12);
+		$return->add($nextGroupRIDInput);
 		// RID base
 		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) {
 			$this->attributes['sambaAlgorithmicRidBase'][0] = 1000;
@@ -394,7 +394,7 @@ class sambaDomain extends baseModule {
 			$ridBaseInput = new htmlResponsiveInputField(_('RID base'), 'RIDbase', $this->attributes['sambaAlgorithmicRidBase'][0], 'RIDbase');
 			$ridBaseInput->setRequired(true);
 			$ridBaseInput->setMinimumAndMaximumNumber();
-			$return->add($ridBaseInput, 12);
+			$return->add($ridBaseInput);
 		}
 		else {
 			$return->addLabel(new htmlOutputText(_('RID base')));

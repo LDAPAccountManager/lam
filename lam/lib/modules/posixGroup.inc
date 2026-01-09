@@ -1,6 +1,6 @@
 <?php
 
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
 use LAM\TYPES\ConfiguredType;
 
@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2025  Roland Gruber
+              2007 - 2026  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -229,7 +229,7 @@ class posixGroup extends baseModule implements passwordService {
 				$return->addField($pwdContainer);
 			}
 			if (isset($this->orig['gidNumber'][0]) && $this->attributes['gidNumber'][0] != $this->orig['gidNumber'][0]) {
-				$return->add(new htmlResponsiveInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), 12);
+				$return->add(new htmlResponsiveInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'));
 			}
 			// group members
 			if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid')) {
@@ -264,7 +264,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		else {
 			// add button
-			$return->add(new htmlButton('addObjectClass', _('Add Unix extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add Unix extension')));
 		}
 		return $return;
 	}
@@ -298,7 +298,7 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		natcasesort($users);
-		$return->add(new htmlSubTitle(_("Group members")), 12);
+		$return->add(new htmlSubTitle(_("Group members")));
 
 		$remUsers = $this->attributes['memberUid'];
 		natcasesort($remUsers);
@@ -328,7 +328,7 @@ class posixGroup extends baseModule implements passwordService {
 			$syncButton = new htmlButton('syncGON', sprintf(_('Sync from %s'), $gon->get_alias()));
 			$return->add($syncButton, 12, 12, 12, 'text-center');
 			$return->addVerticalSpacer('1rem');
-			$return->add(new htmlResponsiveInputCheckbox('syncGON_delete', true, _('Delete non-matching entries'), null, false), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncGON_delete', true, _('Delete non-matching entries'), null, false));
 		}
 		$windows = $this->getAccountContainer()->getAccountModule('windowsGroup');
 		if ($windows != null) {
@@ -336,12 +336,12 @@ class posixGroup extends baseModule implements passwordService {
 			$syncButton = new htmlButton('syncWindows', sprintf(_('Sync from %s'), $windows->get_alias()));
 			$return->add($syncButton, 12, 12, 12, 'text-center');
 			$return->addVerticalSpacer('1rem');
-			$return->add(new htmlResponsiveInputCheckbox('syncWindows_delete', true, _('Delete non-matching entries'), null, false), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncWindows_delete', true, _('Delete non-matching entries'), null, false));
 		}
 
 		// back button
 		$return->addVerticalSpacer('2rem');
-		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')), 12);
+		$return->add(new htmlAccountPageButton(static::class, 'attributes', 'back', _('Back')));
 
 		return $return;
 	}
@@ -385,7 +385,7 @@ class posixGroup extends baseModule implements passwordService {
 		// profile options
 		if (!$this->autoAddObjectClasses) {
 			$profileContainer = new htmlResponsiveRow();
-			$profileContainer->add(new htmlResponsiveInputCheckbox('posixGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+			$profileContainer->add(new htmlResponsiveInputCheckbox('posixGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 			$return['profile_options'] = $profileContainer;
 		}
 		// available PDF fields
@@ -501,7 +501,7 @@ class posixGroup extends baseModule implements passwordService {
 		$typeManager = new TypeManager($_SESSION['conf_config']);
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
-		$configContainer->add(new htmlSubTitle(_("Groups")), 12);
+		$configContainer->add(new htmlSubTitle(_("Groups")));
 		foreach ($allScopes[static::class] as $typeId) {
 			if (count($allScopes[static::class]) > 1) {
 				$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
@@ -524,14 +524,14 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		if ($gonFound || !isset($allScopes['posixAccount'])) {
-			$configContainer->add(new htmlSubTitle(_("Options")), 12);
+			$configContainer->add(new htmlSubTitle(_("Options")));
 		}
 		if ($gonFound) {
-			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
+			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'));
 		}
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) {
-			$configContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), ['CRYPT-SHA512'], _("Password hash type"), 'pwdHash'), 12);
+			$configContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), ['CRYPT-SHA512'], _("Password hash type"), 'pwdHash'));
 		}
 		return $configContainer;
 	}
@@ -563,24 +563,24 @@ class posixGroup extends baseModule implements passwordService {
 			'windowsDomain' => ['posixGroup_' . $typeId . '_windowsIDPoolDN'],
 			'magicNumber' => ['posixGroup_' . $typeId . '_magicNumber']
 		]);
-		$configContainer->add($gidGeneratorSelect, 12);
+		$configContainer->add($gidGeneratorSelect);
 		$minGidInput = new htmlResponsiveInputField(_('Minimum GID number'), 'posixGroup_' . $typeId . '_minGID', null, 'minMaxGID');
 		$minGidInput->setRequired(true);
-		$configContainer->add($minGidInput, 12);
+		$configContainer->add($minGidInput);
 		$maxGidInput = new htmlResponsiveInputField(_('Maximum GID number'), 'posixGroup_' . $typeId . '_maxGID', null, 'minMaxGID');
 		$maxGidInput->setRequired(true);
-		$configContainer->add($maxGidInput, 12);
+		$configContainer->add($maxGidInput);
 		$gidGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixGroup_' . $typeId . '_sambaIDPoolDN', null, 'sambaIDPoolDN');
 		$gidGeneratorDN->setRequired(true);
-		$configContainer->add($gidGeneratorDN, 12);
+		$configContainer->add($gidGeneratorDN);
 		$winGeneratorDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixGroup_' . $typeId . '_windowsIDPoolDN', null, 'windowsIDPoolDN');
 		$winGeneratorDN->setRequired(true);
-		$configContainer->add($winGeneratorDN, 12);
+		$configContainer->add($winGeneratorDN);
 		$magicNumber = new htmlResponsiveInputField(_('Magic number'), 'posixGroup_' . $typeId . '_magicNumber', null, 'magicNumber');
 		$magicNumber->setRequired(true);
-		$configContainer->add($magicNumber, 12);
-		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_' . $typeId . '_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
-		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
+		$configContainer->add($magicNumber);
+		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_' . $typeId . '_gidCheckSuffix', '', 'gidCheckSuffix'));
+		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_hidememberUid', false, _('Disable membership management'), 'hidememberUid'));
 	}
 
 	/**

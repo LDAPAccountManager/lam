@@ -1,14 +1,14 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 use LAM\TYPES\ConfiguredType;
 
 /*
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2024  Roland Gruber
+  Copyright (C) 2012 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -172,16 +172,16 @@ class puppetClient extends baseModule {
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputCheckbox('puppetClient_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileContainer->add(new htmlResponsiveInputCheckbox('puppetClient_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 		$profileEnvironment = new htmlResponsiveInputField(_('Environment'), 'puppetClient_environment', null, 'environment');
 		$autocompleteEnvironment = [];
 		if (isset($this->moduleSettings['puppetClient_environments'])) {
 			$autocompleteEnvironment = $this->moduleSettings['puppetClient_environments'];
 		}
 		$profileEnvironment->enableAutocompletion($autocompleteEnvironment);
-		$profileContainer->add($profileEnvironment, 12);
-		$profileContainer->add(new htmlResponsiveInputTextarea('puppetClient_puppetclass', '', 60, 5, _('Classes'), 'puppetclass'), 12);
-		$profileContainer->add(new htmlResponsiveInputTextarea('puppetClient_puppetvar', '', 60, 5, _('Variables'), 'puppetvar'), 12);
+		$profileContainer->add($profileEnvironment);
+		$profileContainer->add(new htmlResponsiveInputTextarea('puppetClient_puppetclass', '', 60, 5, _('Classes'), 'puppetclass'));
+		$profileContainer->add(new htmlResponsiveInputTextarea('puppetClient_puppetvar', '', 60, 5, _('Variables'), 'puppetvar'));
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['puppetClient_environment'] = ['type' => 'ext_preg', 'regex' => 'ascii', 'error_message' => $this->messages['environment'][0]];
@@ -237,7 +237,7 @@ class puppetClient extends baseModule {
 		}
 		$return = new htmlResponsiveRow();
 		if (!in_array('puppetClient', $this->attributes['objectClass'])) {
-			$return->add(new htmlAccountPageButton('puppetClient', 'attributes', 'addObjectClass', _('Add Puppet extension')), 12);
+			$return->add(new htmlAccountPageButton('puppetClient', 'attributes', 'addObjectClass', _('Add Puppet extension')));
 			return $return;
 		}
 		$this->initCache();
@@ -276,7 +276,7 @@ class puppetClient extends baseModule {
 		if (isset($this->attributes['parentnode'][0])) {
 			$parentnode = $this->attributes['parentnode'][0];
 		}
-		$return->add(new htmlResponsiveSelect('parentnode', $possibleParentNodes, [$parentnode], _('Parent node'), 'parentnode'), 12);
+		$return->add(new htmlResponsiveSelect('parentnode', $possibleParentNodes, [$parentnode], _('Parent node'), 'parentnode'));
 		// classes
 		if (empty($this->moduleSettings['puppetClient_enforceClasses'][0])) {
 			$this->addMultiValueInputTextField($return, 'puppetclass', _('Classes'), false, null, false, $this->classCache);
@@ -522,8 +522,8 @@ class puppetClient extends baseModule {
 	public function get_configOptions($scopes, $allScopes) {
 		$return = new htmlResponsiveRow();
 		// config options
-		$return->add(new htmlResponsiveInputTextarea('puppetClient_environments', "production\r\ntesting", 30, 5, _('Predefined environments'), 'predefinedEnvironments'), 12);
-		$return->add(new htmlResponsiveInputTextarea('puppetClient_enforceClasses', '', 30, 5, _('Enforce classes'), 'enforceClasses'), 12);
+		$return->add(new htmlResponsiveInputTextarea('puppetClient_environments', "production\r\ntesting", 30, 5, _('Predefined environments'), 'predefinedEnvironments'));
+		$return->add(new htmlResponsiveInputTextarea('puppetClient_enforceClasses', '', 30, 5, _('Enforce classes'), 'enforceClasses'));
 		return $return;
 	}
 

@@ -1,12 +1,12 @@
 <?php
 
 use LAM\TYPES\ConfiguredType;
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2024  Roland Gruber
+  Copyright (C) 2013 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -137,9 +137,9 @@ class pykotaGroup extends baseModule {
 		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaGroup_pykotaLimitBy', $this->limitOptions, [], _('Limit type'), 'pykotaLimitBy');
 		$pykotaLimitByProfileOption->setHasDescriptiveElements(true);
 		$pykotaLimitByProfileOption->setSortElements(false);
-		$profileContainer->add($pykotaLimitByProfileOption, 12);
+		$profileContainer->add($pykotaLimitByProfileOption);
 		if (!$this->isStructural()) {
-			$profileContainer->add(new htmlResponsiveInputCheckbox('pykotaGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+			$profileContainer->add(new htmlResponsiveInputCheckbox('pykotaGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 		}
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaGroup_pykotaLimitBy'] = 'pykotaLimitBy';
@@ -215,7 +215,7 @@ class pykotaGroup extends baseModule {
 			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, [$limitOption], _('Limit type'), 'pykotaLimitBy');
 			$limitSelect->setHasDescriptiveElements(true);
 			$limitSelect->setSortElements(false);
-			$container->add($limitSelect, 12);
+			$container->add($limitSelect);
 			// description
 			if ($this->isUnixOrGonInactive($modules)) {
 				$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
@@ -230,7 +230,7 @@ class pykotaGroup extends baseModule {
 		}
 		else {
 			// add button
-			$container->add(new htmlButton('addObjectClass', _('Add PyKota extension')), 12);
+			$container->add(new htmlButton('addObjectClass', _('Add PyKota extension')));
 		}
 		return $container;
 	}

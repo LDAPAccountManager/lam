@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2025  Roland Gruber
+                2010 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -129,9 +129,9 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Options'), 'asteriskVoicemail_AstVoicemailOptions', null, 'AstVoicemailOptions'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Voicemail context'), 'asteriskVoicemail_AstVoicemailContext', null, 'AstVoicemailContext'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'asteriskVoicemail_AstContext', null, 'AstContext'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Options'), 'asteriskVoicemail_AstVoicemailOptions', null, 'AstVoicemailOptions'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Voicemail context'), 'asteriskVoicemail_AstVoicemailContext', null, 'AstVoicemailContext'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'asteriskVoicemail_AstContext', null, 'AstContext'));
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = [
@@ -253,7 +253,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		if (in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
 			if (!isset($this->attributes['AstVoicemailPassword'])) {
 				$message = new htmlStatusMessage($this->messages['AstVoicemailPassword'][0][0], $this->messages['AstVoicemailPassword'][0][1]);
-				$return->add($message, 12);
+				$return->add($message);
 			}
 			// mailbox
 			$this->addSimpleInputTextField($return, 'AstVoicemailMailbox', _("Mailbox"), true);
@@ -280,7 +280,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		}
 		else {
 			// add button
-			$return->add(new htmlButton('addVoicemailObjectClass', _('Add Asterisk voicemail extension')), 12);
+			$return->add(new htmlButton('addVoicemailObjectClass', _('Add Asterisk voicemail extension')));
 		}
 		return $return;
 	}

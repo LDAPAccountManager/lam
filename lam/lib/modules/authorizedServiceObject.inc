@@ -3,7 +3,7 @@
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011         J de Jong
-  				2012 - 2024  Roland Gruber
+  				2012 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -111,8 +111,8 @@ class authorizedServiceObject extends baseModule {
 		];
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Authorized Services'), 'authorizedServiceObject_services', null, 'authorizedservices'), 12);
-		$profileContainer->add(new htmlResponsiveInputCheckbox('authorizedServiceObject_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Authorized Services'), 'authorizedServiceObject_services', null, 'authorizedservices'));
+		$profileContainer->add(new htmlResponsiveInputCheckbox('authorizedServiceObject_addExt', false, _('Automatically add this extension'), 'autoAdd'));
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['authorizedServiceObject_services'] = ['type' => 'ext_preg', 'regex' => 'ascii',
@@ -170,7 +170,7 @@ class authorizedServiceObject extends baseModule {
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'addObjectClass', _('Add Authorized Service extension')), 12);
+			$return->add(new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'addObjectClass', _('Add Authorized Service extension')));
 		}
 
 
@@ -260,7 +260,7 @@ class authorizedServiceObject extends baseModule {
 	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
-		$configContainer->add(new htmlResponsiveInputTextarea('authorizedServiceObject_services', "sshd\r\nimap", 30, 5, _('Predefined services'), 'predefinedServices'), 12);
+		$configContainer->add(new htmlResponsiveInputTextarea('authorizedServiceObject_services', "sshd\r\nimap", 30, 5, _('Predefined services'), 'predefinedServices'));
 		return $configContainer;
 	}
 

@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdnyak
-                2009 - 2025  Roland Gruber
+                2009 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -253,13 +253,13 @@ class asteriskAccount extends baseModule implements passwordService {
 		];
 		// self service options
 		$selfServiceContainer = new htmlResponsiveRow();
-		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, ['AsteriskRealm', static::class]), 12);
+		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, ['AsteriskRealm', static::class]));
 		$return['selfServiceSettings'] = $selfServiceContainer;
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Host'), 'asteriskAccount_AstAccountHost', null, 'AstAccountHost'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'asteriskAccount_AstAccountContext', null, 'AstAccountContext'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Account type'), 'asteriskAccount_AstAccountType', null, 'AstAccountType'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Host'), 'asteriskAccount_AstAccountHost', null, 'AstAccountHost'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'asteriskAccount_AstAccountContext', null, 'AstAccountContext'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Account type'), 'asteriskAccount_AstAccountType', null, 'AstAccountType'));
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = [
@@ -622,7 +622,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					}
 				}
 				$AstAccountAMAFlagsInput = new htmlResponsiveSelect('AstAccountAMAFlags', $AstAccountAMAFlagsOptions, $AstAccountAMAFlags, _("AMA flags"), 'AstAccountAMAFlags');
-				$return->add($AstAccountAMAFlagsInput, 12);
+				$return->add($AstAccountAMAFlagsInput);
 			}
 			// call groups
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCallGroup')) {
@@ -639,7 +639,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					}
 				}
 				$AstAccountDTMFModeInput = new htmlResponsiveSelect('AstAccountDTMFMode', $AstAccountDTMFModeOptions, $AstAccountDTMFMode, _("DTFM flags"), 'AstAccountDTMFMode');
-				$return->add($AstAccountDTMFModeInput, 12);
+				$return->add($AstAccountDTMFModeInput);
 			}
 			// from user
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromUser')) {
@@ -664,7 +664,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					}
 				}
 				$AstAccountInsecureInput = new htmlResponsiveSelect('AstAccountInsecure', $AstAccountInsecureOptions, $AstAccountInsecure, _("Insecure"), 'AstAccountInsecure');
-				$return->add($AstAccountInsecureInput, 12);
+				$return->add($AstAccountInsecureInput);
 			}
 			// mailbox
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMailbox')) {
@@ -681,7 +681,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					}
 				}
 				$AstAccountNATInput = new htmlResponsiveSelect('AstAccountNAT', $AstAccountNATOptions, $AstAccountNAT, _("NAT"), 'AstAccountNAT');
-				$return->add($AstAccountNATInput, 12);
+				$return->add($AstAccountNATInput);
 			}
 			// deny
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDeny')) {
@@ -753,7 +753,7 @@ class asteriskAccount extends baseModule implements passwordService {
 					}
 				}
 				$AstAccountCanCallForwardInput = new htmlResponsiveSelect('AstAccountCanCallForward', $AstAccountCanCallForwardOptions, $AstAccountCanCallForward, _("Can call forward"), 'AstAccountCanCallForward');
-				$return->add($AstAccountCanCallForwardInput, 12);
+				$return->add($AstAccountCanCallForwardInput);
 			}
 			// IP address
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountIPAddress')) {
@@ -773,7 +773,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add Asterisk account')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add Asterisk account')));
 		}
 		return $return;
 	}
@@ -1217,12 +1217,12 @@ class asteriskAccount extends baseModule implements passwordService {
 	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$configContainer = new htmlResponsiveRow();
-		$configContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'), 12);
+		$configContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, 'AsteriskRealm'));
 		$configContainer->addVerticalSpacer('1rem');
 		$configHiddenHead = new htmlGroup();
 		$configHiddenHead->addElement(new htmlOutputText(_('Hidden options')));
 		$configHiddenHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->add($configHiddenHead, 12);
+		$configContainer->add($configHiddenHead);
 		$configContainer->add(new htmlResponsiveInputCheckbox('asteriskAccount_hideAstAccountUserAgent', false, _('User agent'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('asteriskAccount_hideAstAccountAMAFlags', false, _('AMA flags'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('asteriskAccount_hideAstAccountCallGroup', false, _('Call groups'), null, true), 12, 4);

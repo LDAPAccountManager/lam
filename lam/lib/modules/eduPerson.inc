@@ -223,7 +223,7 @@ class eduPerson extends baseModule {
 				'name' => 'eduPerson_assurance',
 				'description' => _('Assurance profiles'),
 				'help' => 'eduPersonAssuranceUpload',
-				'example' => 'urn:mace:incommon:IAQ:sample, http://idm.example.org/LOA#sample'
+				'example' => 'urn:mace:incommon:IAQ:sample, https://idm.example.org/LOA#sample'
 			],
 		];
 		// available PDF fields

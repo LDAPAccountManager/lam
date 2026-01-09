@@ -2,7 +2,7 @@
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 - 2025 Roland Gruber
+ *               2017 - 2026 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,11 +152,11 @@ class courierMailAlias extends baseModule {
 		$this->addMultiValueInputTextField($return, 'maildrop', _('Recipient address'), true);
 		$return->addVerticalSpacer('0.5rem');
 		$selectedSource = (empty($this->attributes['mailsource'][0])) ? "-" : $this->attributes['mailsource'][0];
-		$return->add(new htmlResponsiveSelect('mailsource', ['-', 'esmtp', 'local'], [$selectedSource], _('Mail source'), 'mailsource'), 12);
+		$return->add(new htmlResponsiveSelect('mailsource', ['-', 'esmtp', 'local'], [$selectedSource], _('Mail source'), 'mailsource'));
 		$description = (empty($this->attributes['description'][0])) ? '' : $this->attributes['description'][0];
 		$boxInput = new htmlResponsiveInputField(_('Description'), 'description', $description, 'description');
 		$boxInput->setFieldMaxLength(100);
-		$return->add($boxInput, 12);
+		$return->add($boxInput);
 		return $return;
 	}
 

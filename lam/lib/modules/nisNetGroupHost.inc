@@ -1,13 +1,13 @@
 <?php
 
-use \LAM\PDF\PDFTable;
-use \LAM\PDF\PDFTableCell;
-use \LAM\PDF\PDFTableRow;
+use LAM\PDF\PDFTable;
+use LAM\PDF\PDFTableCell;
+use LAM\PDF\PDFTableRow;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2025  Roland Gruber
+  Copyright (C) 2016 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -222,7 +222,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 			$data[$i][] = new htmlInputField('nisNetGroupUser_user' . $i);
 			$data[$i][] = new htmlInputField('nisNetGroupUser_domain' . $i);
 		}
-		$return->add(new htmlResponsiveTable($labels, $data), 12);
+		$return->add(new htmlResponsiveTable($labels, $data));
 		return $return;
 	}
 

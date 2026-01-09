@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2025  Roland Gruber
+  Copyright (C) 2006 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,13 +42,18 @@ setLAMHeaders();
 /**
  * Starts a session and sets the cookie options.
  */
-function lam_start_session() {
+function lam_start_session(): void {
 	$cookieOptions = lamDefaultCookieOptions();
 	$cookieOptions['lifetime'] = 0;
 	session_set_cookie_params($cookieOptions);
 	session_start();
 }
 
+/**
+ * Returns the default cookie options.
+ *
+ * @return array<string, string|bool> cookie options
+ */
 function lamDefaultCookieOptions(): array {
 	$secureFlag = false;
 	if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') {
@@ -151,7 +156,7 @@ function isFileBasedSession(): bool {
  * Checks if the client's IP address is on the list of allowed IPs.
  * The script is stopped if the host is not valid.
  */
-function checkClientIP() {
+function checkClientIP(): void {
 	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	$allowedHosts = $cfg->allowedHosts;
 	$url = getCallingURL();
@@ -406,8 +411,8 @@ function checkIfDeleteEntriesIsAllowed($scope) {
  * Checks if the password fulfills the password policies.
  *
  * @param string $password password
- * @param string|array|null $userNames user name(s)
- * @param array $otherUserAttrs user's first/last name
+ * @param string|string[]|null $userNames user name(s)
+ * @param string[] $otherUserAttrs user's first/last name
  * @return true|string true if ok, string with error message if not valid
  */
 function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
@@ -591,7 +596,7 @@ function checkPwdWithExternalPasswordService($cfg, $password) {
  *
  * @param String $tool tool class name (e.g. toolFileUpload)
  */
-function checkIfToolIsActive($tool) {
+function checkIfToolIsActive($tool): void {
 	// check if hidden by config
 	if (!$_SESSION['config']->isToolActive($tool)) {
 		logNewMessage(LOG_ERR, 'Unauthorized access to tool ' . $tool . ' denied.');
@@ -654,7 +659,7 @@ function addSecurityTokenToSession($overwrite = true): void {
 /**
  * Checks if the security token from SESSION matches POST data.
  */
-function validateSecurityToken() {
+function validateSecurityToken(): void {
 	if (empty($_POST)) {
 		return;
 	}
@@ -670,7 +675,7 @@ function validateSecurityToken() {
  *
  * @param htmlTable|htmlGroup|htmlResponsiveRow $container table
  */
-function addSecurityTokenToMetaHTML($container) {
+function addSecurityTokenToMetaHTML($container): void {
 	$token = new htmlHiddenInput(getSecurityTokenName(), $_SESSION[getSecurityTokenName()]);
 	if ($container instanceof htmlResponsiveRow) {
 		$container->add($token);
@@ -700,7 +705,7 @@ function getSecurityTokenValue() {
 /**
  * Sets the X-Frame-Options and Content-Security-Policy header to prevent clickjacking.
  */
-function setLAMHeaders() {
+function setLAMHeaders(): void {
 	if (!headers_sent()) {
 		header('X-Frame-Options: sameorigin');
 		header('Content-Security-Policy: frame-ancestors \'self\'; form-action \'self\'; base-uri \'none\'; object-src \'none\'; frame-src \'self\' https://www.google.com/recaptcha/ https://hcaptcha.com https://*.hcaptcha.com https://api.friendlycaptcha.com; worker-src \'self\' blob:');
@@ -770,7 +775,7 @@ function lamEncryptionAlgo() {
  * @param string $message log message
  * @param LAMCfgMain $cfgMain main configuration
  */
-function lamLogRemoteMessage($level, $message, $cfgMain) {
+function lamLogRemoteMessage($level, $message, $cfgMain): void {
 	include_once __DIR__ . '/3rdParty/composer/autoload.php';
 	$remoteParts = explode(':', $cfgMain->logDestination);
 	$server = $remoteParts[1];
