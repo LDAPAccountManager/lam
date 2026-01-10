@@ -201,8 +201,8 @@ abstract class baseModule {
 	/**
 	 * Loads the LDAP data from an account to copy.
 	 *
-	 * @param array $ldapAttributes LDAP attributes of copy
-	 * @param array $attributesToIgnore list of attributes to ignore during load (defaults to self::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT)
+	 * @param array<string, string[]|string> $ldapAttributes LDAP attributes of copy
+	 * @param string[] $attributesToIgnore list of attributes to ignore during load (defaults to self::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT)
 	 */
 	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
 		if (empty($attributesToIgnore)) {
@@ -413,9 +413,9 @@ abstract class baseModule {
 	 * </ul>
 	 * <b>Example:</b> return array("is_base" => true);
 	 *
-	 * @return array meta data
+	 * @return array<string, bool|string|array<string|int, string|null|string[]|array<string, string|null>>> meta data
 	 */
-	public function get_metaData() {
+	public function get_metaData(): array {
 		return [];
 	}
 

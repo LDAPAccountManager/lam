@@ -356,11 +356,9 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns meta data that is interpreted by parent class
-	 *
-	 * @return array array with meta data
+	 * {@inheritDoc}
 	 */
-	function get_metaData() {
+	public function get_metaData(): array {
 		$return = [];
 		// icon
 		$return['icon'] = 'tux.svg';

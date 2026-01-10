@@ -51,13 +51,9 @@ class windowsPosixGroup extends posixGroup {
 	}
 
 	/**
-	 * Returns meta data that is interpreted by parent class
-	 *
-	 * @return array array with meta data
-	 *
-	 * @see baseModule::get_metaData()
+	 * {@inheritDoc}
 	 */
-	function get_metaData() {
+	public function get_metaData(): array {
 		$return = parent::get_metaData();
 		// module dependencies
 		$return['dependencies'] = ['depends' => [], 'conflicts' => ['posixGroup']];

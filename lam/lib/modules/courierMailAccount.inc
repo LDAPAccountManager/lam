@@ -70,7 +70,7 @@ class courierMailAccount extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function get_metaData() {
+	public function get_metaData(): array {
 		$return = [];
 		// icon
 		$return['icon'] = 'mail.svg';

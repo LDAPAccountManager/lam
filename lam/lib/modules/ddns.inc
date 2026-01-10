@@ -51,11 +51,9 @@ class ddns extends baseModule {
 	}
 
 	/**
-	 * Returns meta data that is interpreted by parent class.
-	 *
-	 * @return array array with meta data
+	 * {@inheritDoc}
 	 */
-	public function get_metaData() {
+	public function get_metaData(): array {
 		$return = [];
 		// alias name
 		$return["alias"] = _("DDNS");

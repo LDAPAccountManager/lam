@@ -52,13 +52,9 @@ class altSecurityIdentities extends ldapPublicKey {
 	}
 
 	/**
-	 * Returns meta data that is interpreted by parent class
-	 *
-	 * @return array array with meta data
-	 *
-	 * @see baseModule::get_metaData()
+	 * {@inheritDoc}
 	 */
-	function get_metaData() {
+	public function get_metaData(): array {
 		$ret = parent::get_metaData();
 		$ret["alias"] = _("SSH public key (AD)");
 		return $ret;
