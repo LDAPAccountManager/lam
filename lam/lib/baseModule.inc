@@ -1312,13 +1312,13 @@ abstract class baseModule {
 	}
 
 	/**
-	 * This function processes user input.
+	 * This function processes user input of the primary module page.
 	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
 	 * It checks the user input and saves changes in the module's data structures.<br>
 	 * <br>
-	 * <b>Example:</b> return array(array('ERROR', 'Invalid input!', 'This is not allowed here.'));
+	 * <b>Example:</b> return [[('ERROR', 'Invalid input!', 'This is not allowed here.']];
 	 *
 	 * @return string[][] Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
