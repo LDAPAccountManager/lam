@@ -70,9 +70,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	const SESS_PHOTO = 'inetOrgPerson_jpegPhoto';
 
 	/**
-	 * This function fills the message array.
-	 **/
-	function load_Messages() {
+	 * {@inheritDoc}
+	 */
+	protected function load_Messages(): void {
 		$this->messages['givenName'][0] = ['ERROR', _('First name'), _('First name contains invalid characters!')];
 		$this->messages['givenName'][1] = ['ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('First name contains invalid characters!')];
 		$this->messages['lastname'][0] = ['ERROR', _('Last name'), _('Last name contains invalid characters or is empty!')];

@@ -205,9 +205,9 @@ class pykotaPrinter extends baseModule {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['cn'][0] = ['ERROR', _('Printer name'), _('Printer name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' pykotaPrinter_cn', _('Printer name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['cn'][2] = ['ERROR', _('Printer name'), _('Printer name already exists!')];

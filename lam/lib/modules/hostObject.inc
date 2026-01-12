@@ -107,9 +107,9 @@ class hostObject extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['host'][0] = ['ERROR', 'Please enter a valid host name.'];  // third array value is set dynamically
 		$this->messages['host'][1] = ['ERROR', _('Account %s:') . ' hostObject_hosts', _('Please enter a valid list of host names.')];
 	}

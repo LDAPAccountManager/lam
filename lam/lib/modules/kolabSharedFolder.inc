@@ -205,9 +205,9 @@ class kolabSharedFolder extends baseModule {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['kolabAllowSMTPRecipient'][0] = ['ERROR', _('Allowed recipients'), _('Please enter a valid recipient expression.')];
 		$this->messages['kolabAllowSMTPRecipient'][1] = ['ERROR', _('Account %s:') . ' kolabSharedFolder_kolabAllowSMTPRecipient', _('Please enter a valid recipient expression.')];
 		$this->messages['kolabAllowSMTPSender'][0] = ['ERROR', _('Allowed senders'), _('Please enter a valid sender expression.')];

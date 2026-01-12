@@ -147,9 +147,9 @@ class inetLocalMailRecipient extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['mailRoutingAddress'][0] = ['ERROR', 'Routing address is invalid!'];  // third array value is set dynamically
 		$this->messages['mailRoutingAddress'][1] = ['ERROR', _('Account %s:') . ' inetLocalMailRecipient_routingAdr', 'Routing address is invalid!'];
 		$this->messages['mailLocalAddress'][0] = ['ERROR', 'Local address is invalid!'];  // third array value is set dynamically

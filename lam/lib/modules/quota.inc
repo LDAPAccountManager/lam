@@ -50,9 +50,10 @@ class quota extends baseModule {
 	/** prefix for lamdaemon results */
 	private static $QUOTA_PREFIX = 'QUOTA_ENTRY ';
 
-	/** this function fills the error message array with messages
-	 **/
-	function load_Messages() {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function load_Messages(): void {
 		// error messages for input checks
 		$this->messages['softblock'][0] = ['ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.')];
 		$this->messages['softblock'][1] = ['ERROR', _('Account %s:') . ' %s', _('Block soft quota contains invalid characters. Only natural numbers are allowed.')];

@@ -69,9 +69,9 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		parent::load_Messages();
 		$this->messages['user'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 	}

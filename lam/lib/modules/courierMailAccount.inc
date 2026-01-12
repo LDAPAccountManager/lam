@@ -209,9 +209,9 @@ class courierMailAccount extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['mailhost'][0] = ['ERROR', _('The mail host is not valid.')]; // third array value is set dynamically
 		$this->messages['mailhost'][1] = ['ERROR', _('Account %s:') . ' courierMailAccount_mailhost', _('The mail host is not valid.')];
 		$this->messages['quota'][0] = ['ERROR', _('The quota must be entered as a floating point number.')]; // third array value is set dynamically

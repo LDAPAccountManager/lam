@@ -576,9 +576,10 @@ class sambaGroupMapping extends baseModule {
 		}
 	}
 
-	/** this function fills the error message array with messages
-	 **/
-	function load_Messages() {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function load_Messages(): void {
 		$this->messages['sambaSID'][0] = ['ERROR', _('There can be only one group of this type.')];  // third parameter must be set dynamically
 		$this->messages['sambaSID'][1] = ['ERROR', _("Account %s:") . " (sambaGroupMapping_domain): " . _("LAM was unable to find a Samba 3 domain with this name!")];  // third parameter must be set dynamically
 		$this->messages['groupType'][0] = ['ERROR', _("Account %s:") . " (sambaGroupMapping_type): " . _("This is not a valid Samba 3 group type!"), _("Possible values") . ": %s"];

@@ -136,7 +136,7 @@ class takUser extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['takcallsign'][0] = ['ERROR', _('Callsign'), _('Callsign contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_.')];
 		$this->messages['takcallsign'][1] = ['ERROR', _('A TAK login with this callsign already exists. Please choose a different callsign.')];
 		$this->messages['takcallsign'][2] = ['ERROR', _('Callsign'), _('This field is required.')];

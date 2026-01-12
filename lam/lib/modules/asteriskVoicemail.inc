@@ -207,9 +207,9 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		//messages for voicemail
 		$this->messages['AstVoicemailMailbox'][0] = ['ERROR', _('Please enter a mailbox.')];
 		$this->messages['AstVoicemailMailbox'][1] = ['ERROR', _('The mailbox format is invalid.')];

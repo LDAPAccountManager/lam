@@ -205,9 +205,9 @@ class sambaDomain extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['domainName'][0] = ['ERROR', _('Domain name is invalid!')];
 		$this->messages['domainName'][1] = ['ERROR', _('Account %s:') . ' sambaDomain_domainName', _('Domain name is invalid!')];
 		$this->messages['domainSID'][0] = ['ERROR', _('Samba 3 domain SID is invalid!')];

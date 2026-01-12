@@ -91,9 +91,9 @@ class ieee802device extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['macAddress'][0] = ['ERROR', 'MAC address is invalid!'];  // third array value is set dynamically
 		$this->messages['macAddress'][1] = ['ERROR', _('Account %s:') . ' ieee802Device_mac', 'MAC address is invalid!'];
 	}

@@ -147,9 +147,9 @@ class kolabGroup extends baseModule {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['mail'][0] = ['ERROR', _('Email address'), _('Please enter a valid email address!')];
 		$this->messages['mail'][1] = ['ERROR', _('Account %s:') . ' kolabGroup_mail', _('Please enter a valid email address!')];
 		$this->messages['mail'][2] = ['ERROR', _('Email address'), _('Email address already exists.')];

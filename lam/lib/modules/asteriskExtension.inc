@@ -184,9 +184,9 @@ class asteriskExtension extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['cn'][0] = ['ERROR', _('Please enter a common name.')];
 		$this->messages['AstApplication'][0] = ['ERROR', _('Please enter the application.')];
 		$this->messages['AstApplicationData'][0] = ['ERROR', _('Please enter the application data.')];

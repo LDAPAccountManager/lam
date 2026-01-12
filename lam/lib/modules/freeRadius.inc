@@ -314,9 +314,9 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['radiusFramedIPAddress'][0] = ['ERROR', _('The IP address is invalid.')];
 		$this->messages['radiusFramedIPAddress'][1] = ['ERROR', _('Account %s:') . ' freeRadius_radiusFramedIPAddress', _('The IP address is invalid.')];
 		$this->messages['radiusFramedIPNetmask'][0] = ['ERROR', _('The net mask is invalid.')];

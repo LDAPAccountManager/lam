@@ -125,9 +125,9 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	 * This function fills the message array.
-	 **/
-	protected function load_Messages() {
+	 * {@inheritDoc}
+	 */
+	protected function load_Messages(): void {
 		$this->messages['yubiKeyId'][0] = ['ERROR', _('Please enter a valid key id.')];
 		$this->messages['yubiKeyId'][1] = ['ERROR', _('Account %s:') . ' yubiKeyUser_yubiKeyId', _('Please enter a valid key id.')];
 	}

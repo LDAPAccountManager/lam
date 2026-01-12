@@ -116,9 +116,9 @@ class nisMailAlias extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['alias'][0] = ['ERROR', _('Alias is empty or invalid!')];  // third array value is set dynamically
 		$this->messages['alias'][1] = ['ERROR', _('Account %s:') . ' nisMailAlias_alias', _('Alias is empty or invalid!')];
 		$this->messages['recipient'][0] = ['ERROR', _('Recipient is invalid!')];  // third array value is set dynamically

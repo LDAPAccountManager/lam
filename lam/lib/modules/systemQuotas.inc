@@ -91,9 +91,9 @@ class systemQuotas extends baseModule {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['path'][0] = ['ERROR', _('Mountpoint'), _('Mountpoint contains invalid characters.')];
 		$this->messages['path'][1] = ['ERROR', _('Account %s:'), _('Mountpoint contains invalid characters.')];
 		$this->messages['softblock'][0] = ['ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.')];

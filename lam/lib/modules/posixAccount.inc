@@ -100,9 +100,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	];
 
 	/**
-	 *  This function fills the error message array with messages.
-	 **/
-	function load_Messages() {
+	 * {@inheritDoc}
+	 */
+	protected function load_Messages(): void {
 		// error messages for input checks
 		$this->messages['minUID'][0] = ['ERROR', _('Users') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!")];
 		$this->messages['maxUID'][0] = ['ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!")];

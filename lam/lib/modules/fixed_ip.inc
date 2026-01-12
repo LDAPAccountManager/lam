@@ -124,9 +124,9 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
-	 *  This function fills the error message array with messages.
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['errors'][0] = ['ERROR', _('One or more errors occurred. The invalid fields are marked.'), ''];
 	}
 

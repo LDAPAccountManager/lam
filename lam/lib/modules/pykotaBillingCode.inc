@@ -123,9 +123,9 @@ class pykotaBillingCode extends baseModule {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['pykotaBillingCode'][0] = ['ERROR', _('Billing code'), _('Billing code contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['pykotaBillingCode'][1] = ['ERROR', _('Account %s:') . ' pykotaBillingCode_cn', _('Billing code contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['pykotaBillingCode'][2] = ['ERROR', _('Billing code'), _('Billing code already exists!')];

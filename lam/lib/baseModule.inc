@@ -127,7 +127,7 @@ abstract class baseModule {
 	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 */
-	protected function load_Messages() {
+	protected function load_Messages(): void {
 	}
 
 	/**

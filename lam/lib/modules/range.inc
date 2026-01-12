@@ -117,9 +117,9 @@ class range extends baseModule {
 	}
 
 	/**
-	 *  This function fills the error message array with messages.
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['range_errors'][0] = ['ERROR', _('One or more errors occurred. The invalid fields are marked.'), ''];
 		$this->messages['add_range'][0] = ['ERROR', _('New range'), _('Adding the range failed because errors occurred.')];
 		$this->messages['drop_range'][0] = ['ERROR', _('Delete range'), _('It is not possible to delete all ranges.')];

@@ -691,9 +691,9 @@ class posixGroup extends baseModule implements passwordService {
 
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['userPassword'][1] = ['ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
 		$this->messages['gidNumber'][0] = ['INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.')];
 		$this->messages['gidNumber'][2] = ['WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.')];

@@ -148,9 +148,9 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['config'][0] = ['ERROR', _('Please enter a valid server name where the mailboxes reside.')];
 		$this->messages['config'][1] = ['ERROR', _('Please enter a correct list of valid mail domains.')];
 		$this->messages['config'][2] = ['ERROR', _('The IMAP admin password is empty.')];

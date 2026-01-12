@@ -133,9 +133,9 @@ class courierMailAlias extends baseModule {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['maildrop'][0] = ['ERROR', _('Recipient address'), _('Please enter a valid email address!')];
 		$this->messages['maildrop'][1] = ['ERROR', _('Account %s:') . ' courierMailAlias_maildrop', _('Please enter a valid email address!')];
 		$this->messages['mailsource'][0] = ['ERROR', _('Account %s:') . ' courierMailAlias_maildrop', _('Please enter a valid mail source.')];

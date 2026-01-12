@@ -239,9 +239,9 @@ class eduPerson extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['eduPersonPrincipalName'][0] = ['ERROR', _('Principal name is invalid!')];
 		$this->messages['eduPersonPrincipalName'][1] = ['ERROR', _('Account %s:') . ' eduPerson_principalName', _('Principal name is invalid!')];
 		$this->messages['eduPersonOrgDN'][0] = ['ERROR', _('Please enter a valid DN in the field:') . ' ' . _("Organisation")];

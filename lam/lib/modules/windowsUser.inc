@@ -1246,9 +1246,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['userPrincipalName'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['userPrincipalName'][1] = ['ERROR', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['userPrincipalName'][2] = ['ERROR', _('User name already exists!')];

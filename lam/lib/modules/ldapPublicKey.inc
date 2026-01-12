@@ -153,9 +153,9 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	 * This function fills the message array.
-	 **/
-	function load_Messages() {
+	 * {@inheritDoc}
+	 */
+	protected function load_Messages(): void {
 		$this->messages['file'][0] = ['ERROR', _('No file selected.')];
 		$this->messages['file'][1] = ['ERROR', _('The uploaded file seems to be no valid public key.')];
 	}

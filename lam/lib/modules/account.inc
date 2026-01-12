@@ -121,9 +121,9 @@ class account extends baseModule {
 	}
 
 	/**
-	 * This function fills the message array.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['uid'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['uid'][1] = ['ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['uid'][2] = ['WARN', _('User name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.')];

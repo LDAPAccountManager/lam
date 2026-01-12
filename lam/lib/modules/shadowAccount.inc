@@ -69,9 +69,9 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * This function builds up the message array.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		// error messages for input checks
 		$this->messages['shadowmin'][0] = ['ERROR', _('Minimum password age'), _('Password minimum age must be are natural number.')];
 		$this->messages['shadowmin'][1] = ['ERROR', _('Account %s:') . ' shadowAccount_minAge', _('Password minimum age must be are natural number.')];

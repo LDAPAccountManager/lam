@@ -553,9 +553,9 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['AstAccountCallerID'][0] = ['ERROR', _('Please enter a caller ID.')];
 		$this->messages['AstAccountCallerID'][1] = ['ERROR', _('The caller ID format is invalid.')];
 		$this->messages['AstAccountCallerID'][2] = ['ERROR', _('There is already another user with this caller ID.')];

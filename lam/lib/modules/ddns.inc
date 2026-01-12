@@ -139,9 +139,9 @@ class ddns extends baseModule {
 	}
 
 	/**
-	 * This function fills the message array.
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['key_path'][0] = ['ERROR', 'Please enter the path to the key.', ''];
 		$this->messages['key_path'][1] = ['ERROR', 'The key path contains invalid characters.', ''];
 		$this->messages['ip'][0] = ['ERROR', 'The IP address of the DNS server is invalid.'];

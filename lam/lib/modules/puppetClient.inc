@@ -191,9 +191,9 @@ class puppetClient extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['environment'][0] = ['ERROR', _('The environment name may only contain ASCII characters.')];
 		$this->messages['environment'][1] = ['ERROR', _('Account %s:') . ' puppetClient_environment', _('The environment name may only contain ASCII characters.')];
 		$this->messages['puppetclass'][0] = ['ERROR', _('The class names may only contain ASCII characters.')];

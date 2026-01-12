@@ -353,9 +353,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	}
 
 	/**
-	 * This function fills the message array.
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['cn'][0] = ['ERROR', _('No subnet entered.')];
 		$this->messages['cn'][1] = ['ERROR', _('The subnet is already in use.')];
 		$this->messages['cn'][2] = ['ERROR', _('The subnet is invalid.')];

@@ -273,9 +273,9 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['uid'][0] = ['ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['uid'][1] = ['ERROR', _('Account %s:') . ' pykotaUser_uid', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['uid'][2] = ['ERROR', _('User name'), _('User name already exists!')];

@@ -148,9 +148,9 @@ class windowsHost extends baseModule {
 	}
 
 	/**
-	 * This function fills the $messages variable with output messages from this module.
+	 * {@inheritDoc}
 	 */
-	public function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['cn'][0] = ['ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 		$this->messages['cn'][1] = ['ERROR', _('Account %s:') . ' windowsHost_cn', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !')];
 	}

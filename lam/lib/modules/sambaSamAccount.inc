@@ -108,9 +108,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		$this->autoAddObjectClasses = false;
 	}
 
-	/** this function fills the error message array with messages
-	 **/
-	function load_Messages() {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function load_Messages(): void {
 		// error messages for input checks
 		$this->messages['homePath'][0] = ['ERROR', _('Home path'), _('Home path is invalid.')];
 		$this->messages['homePath'][1] = ['INFO', _('Home path'), _('Inserted user or group name in home path.')];

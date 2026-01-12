@@ -204,9 +204,9 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	 * This function fills the error message array with messages
+	 * {@inheritDoc}
 	 */
-	function load_Messages() {
+	protected function load_Messages(): void {
 		$this->messages['invPol'][0] = ['ERROR', _('Target of invitation policy is invalid!')];  // third array value is set dynamically
 		$this->messages['invPol'][1] = ['ERROR', _('Account %s:') . ' kolabUser_invPol', _('Policy list has invalid format!')];
 		$this->messages['alias'][0] = ['ERROR', _('Email alias is invalid!')];  // third array value is set dynamically
