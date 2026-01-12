@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2025  Roland Gruber
+                2010 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
  * @author Roland Gruber
  */
 
+use LAM\TYPES\ConfiguredType;
 use Webklex\PHPIMAP\Client;
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Connection\Protocols\ImapProtocol;
@@ -795,9 +796,8 @@ class imapAccess extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::build_uploadAccounts()
 	 */
-	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
 		$errors = [];
 		if (!isset($ids['imapAccess_createMailbox'])) {
 			return $errors;

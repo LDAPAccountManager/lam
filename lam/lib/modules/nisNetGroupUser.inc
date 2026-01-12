@@ -3,12 +3,13 @@
 use LAM\PDF\PDFTable;
 use LAM\PDF\PDFTableCell;
 use LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
 use LAM\TYPES\TypeManager;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2015 - 2025  Roland Gruber
+  Copyright (C) 2015 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -481,9 +482,8 @@ class nisNetGroupUser extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::build_uploadAccounts()
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
 		$errors = [];
 		// get list of existing group of names
 		$groups = $this->findGroups();

@@ -194,9 +194,9 @@ class courierMailAlias extends baseModule {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
 		$messages = [];
 		$possibleSources = ['esmtp', 'local'];
 		for ($i = 0; $i < count($rawAccounts); $i++) {

@@ -2331,9 +2331,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::build_uploadAccounts()
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
 		$errors = [];
 		// get list of existing users
 		$existingUsers = searchLDAPByAttribute('uid', '*', 'inetOrgPerson', ['uid'], ['user']);

@@ -987,31 +987,31 @@ abstract class baseModule {
 	 * <br>
 	 * Returns an array which contains subarrays to generate StatusMessages if any errors occurred.
 	 *
-	 * @param array $rawAccounts the user input data, contains one subarray for each account.
-	 * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	 * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	 * @param array $selectedModules list of selected account modules
+	 * @param array<int, string>[] $rawAccounts the user input data, contains one subarray for each account.
+	 * @param array<string, int> $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	 * @param array<string, string[]|string>[] $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	 * @param string[] $selectedModules list of selected account modules
 	 * @param ConfiguredType $type account type
-	 * @return array list of error messages if any
+	 * @return string[][] list of error messages if any
 	 */
-	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
-		// must be implemented in sub modules
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
+		// must be implemented in submodules
 		return [];
 	}
 
 	/**
 	 * Maps simple upload fields directly to LDAP attribute values.
 	 *
-	 * @param array $rawAccounts the user input data, contains one subarray for each account.
-	 * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	 * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	 * @param array<int, string>[] $rawAccounts the user input data, contains one subarray for each account.
+	 * @param array<string, int> $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	 * @param array<string, string[]|string>[] $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	 * @param int $position current position in CSV
-	 * @param String $colName column name
-	 * @param String $attrName LDAP attribute name
-	 * @param String|String[] $regex for get_preg() (e.g. 'ascii')
-	 * @param array $message error message to add if regex does not match
-	 * @param array $errors list of error messages if any
-	 * @param String $regexSplit multiple values are separated and can be split with this preg_split expression (e.g. "/;[ ]?/")
+	 * @param string $colName column name
+	 * @param string $attrName LDAP attribute name
+	 * @param string|string[] $regex for get_preg() (e.g. 'ascii')
+	 * @param string[] $message error message to add if regex does not match
+	 * @param string[][] $errors list of error messages if any
+	 * @param string $regexSplit multiple values are separated and can be split with this preg_split expression (e.g. "/;[ ]?/")
 	 */
 	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, $message = [], &$errors = [], $regexSplit = null) {
 		if (!isset($ids[$colName])) {
@@ -1046,9 +1046,9 @@ abstract class baseModule {
 	 *
 	 * @param string[] $regexIDs regular expression IDs for get_preg()
 	 * @param string $value value to check
-	 * @param array $message error message array if not matching
+	 * @param string[] $message error message array if not matching
 	 * @param int $position upload position
-	 * @param array $errors error messages
+	 * @param string[][] $errors error messages
 	 * @return bool value is ok
 	 * @see get_preg()
 	 */

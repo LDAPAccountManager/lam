@@ -1,5 +1,6 @@
 <?php
 
+use LAM\TYPES\ConfiguredType;
 use LAM\TYPES\TypeManager;
 
 /*
@@ -282,9 +283,8 @@ class kolabGroup extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::build_uploadAccounts()
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
 		$messages = [];
 		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// check if extension should be added

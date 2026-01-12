@@ -94,9 +94,8 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::build_uploadAccounts()
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
 		$error_messages = [];
 		$needAutoGID = [];
 		$typeId = $type->getId();

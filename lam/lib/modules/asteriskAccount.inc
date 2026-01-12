@@ -1022,9 +1022,8 @@ class asteriskAccount extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::build_uploadAccounts()
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+	public function build_uploadAccounts(array $rawAccounts, array $ids, array &$partialAccounts, array $selectedModules, ConfiguredType &$type): array {
 		$messages = [];
 		for ($i = 0; $i < count($rawAccounts); $i++) {
 			// add object class
