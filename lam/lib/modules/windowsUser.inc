@@ -1342,11 +1342,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$this->groupList = $this->groupList_orig;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
-	public function save_attributes() {
+	public function save_attributes(): array {
 		// do not add securityPrincipal on existing accounts if it was not set before
 		if (!$this->getAccountContainer()->isNewAccount
 			&& in_array_ignore_case('user', $this->orig['objectClass'])

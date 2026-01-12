@@ -196,7 +196,7 @@ class ddns extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function save_attributes() {
+	public function save_attributes(): array {
 		// done by dhcp_server object
 		return [];
 	}

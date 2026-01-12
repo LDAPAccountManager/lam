@@ -261,18 +261,9 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	 * Returns a list of modifications which have to be made to the LDAP account.
-	 *
-	 * @return array list of modifications
-	 * <br>This function returns an array with 3 entries:
-	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	 * <br>"add" are attributes which have to be added to LDAP entry
-	 * <br>"remove" are attributes which have to be removed from LDAP entry
-	 * <br>"modify" are attributes which have to been modified in LDAP entry
-	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 * {@inheritDoc}
 	 */
-	function save_attributes() {
+	public function save_attributes(): array {
 		if ($this->hasObjectClass()
 			&& !in_array($this->getObjectClass(), $this->attributes['objectClass'])
 			&& !in_array($this->getObjectClass(), $this->orig['objectClass'])) {

@@ -158,7 +158,7 @@ class account extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	function save_attributes() {
+	public function save_attributes(): array {
 		// skip saving if account is based on another structural object class
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('account', $this->getAccountContainer()->attributes_orig['objectClass'])) {
 			return [];

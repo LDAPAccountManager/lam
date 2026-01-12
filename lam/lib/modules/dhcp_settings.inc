@@ -384,18 +384,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	}
 
 	/**
-	 * Returns a list of modifications which have to be made to the LDAP account.
-	 *
-	 * @return array list of modifications
-	 * <br>This function returns an array with 3 entries:
-	 * <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	 * <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	 * <br>"add" are attributes which have to be added to LDAP entry
-	 * <br>"remove" are attributes which have to be removed from LDAP entry
-	 * <br>"modify" are attributes which have to been modified in LDAP entry
-	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	 * {@inheritDoc}
 	 */
-	public function save_attributes() {
+	public function save_attributes(): array {
 		// remove dhcpSubnet object class if only the DHCP settings were changed
 		if ($this->isRootNode()
 			&& !in_array_ignore_case("dhcpSubnet", $this->orig['objectClass'])

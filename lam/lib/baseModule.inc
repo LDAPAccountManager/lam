@@ -1217,9 +1217,9 @@ abstract class baseModule {
 	 * <br>
 	 * <br>This builds the required commands from $this-attributes and $this->orig.
 	 *
-	 * @return array list of modifications
+	 * @return array<string, array<string, string[]>> list of modifications
 	 */
-	public function save_attributes() {
+	public function save_attributes(): array {
 		$this->getAccountContainer()->replaceWildcardsInArray($this->getWildcardTargetAttributeNames(), $this->attributes);
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
