@@ -777,9 +777,9 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Write variables into object and do some regex checks
+	 * {@inheritDoc}
 	 */
-	function process_attributes() {
+	public function process_attributes(): array {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'AsteriskSIPUser';
 			return [];

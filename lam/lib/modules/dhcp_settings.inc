@@ -406,12 +406,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	}
 
 	/**
-	 * Processes user input of the primary module page.
-	 * It checks if all input values are correct and updates the associated LDAP attributes.
-	 *
-	 * @return array list of info/error messages
+	 * {@inheritDoc}
 	 */
-	public function process_attributes() {
+	public function process_attributes(): array {
 		// check if DHCP main settings and valid DHCP entry
 		if ($this->isRootNode()
 			&& !in_array_ignore_case('dhcpService', $this->attributes['objectClass'])

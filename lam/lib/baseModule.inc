@@ -1320,9 +1320,9 @@ abstract class baseModule {
 	 * <br>
 	 * <b>Example:</b> return array(array('ERROR', 'Invalid input!', 'This is not allowed here.'));
 	 *
-	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @return string[][] Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	abstract public function process_attributes();
+	abstract public function process_attributes(): array;
 
 	/**
 	 * This function creates meta HTML code to display the module page.

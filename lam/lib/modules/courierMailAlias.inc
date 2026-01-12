@@ -161,9 +161,9 @@ class courierMailAlias extends baseModule {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	function process_attributes() {
+	public function process_attributes(): array {
 		$errors = [];
 		$this->attributes['mail'][0] = $_POST['mail'];
 		if (empty($this->attributes['mail'][0]) || !get_preg($this->attributes['mail'][0], 'email')) {

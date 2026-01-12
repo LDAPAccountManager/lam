@@ -302,12 +302,9 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Processes user input of the primary module page.
-	 * It checks if all input values are correct and updates the associated LDAP attributes.
-	 *
-	 * @return array list of info/error messages
+	 * {@inheritDoc}
 	 */
-	function process_attributes() {
+	public function process_attributes(): array {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['shadowAccount'], $this->attributes['objectClass']);
 			if (isset($this->attributes['shadowmin'])) {

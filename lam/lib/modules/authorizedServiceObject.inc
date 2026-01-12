@@ -176,12 +176,9 @@ class authorizedServiceObject extends baseModule {
 	}
 
 	/**
-	 * Processes user input of the primary module page.
-	 * It checks if all input values are correct and updates the associated LDAP attributes.
-	 *
-	 * @return array list of info/error messages
+	 * {@inheritDoc}
 	 */
-	function process_attributes() {
+	public function process_attributes(): array {
 		if (isset($_POST['form_subpage_authorizedServiceObject_attributes_remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['authorizedServiceObject'], $this->attributes['objectClass']);
 			if (isset($this->attributes['authorizedService'])) {

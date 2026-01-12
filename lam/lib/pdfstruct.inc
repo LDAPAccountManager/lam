@@ -1396,7 +1396,7 @@ class PDFStructure {
 
 	private string $title = 'LDAP Account Manager';
 
-	private string $foldingMarks = 'no';
+	private ?string $foldingMarks = 'no';
 
 	/** @var PDFTextSection[]|PDFEntrySection[] $sections sections */
 	private array $sections = [];
@@ -1500,9 +1500,9 @@ class PDFStructure {
 	/**
 	 * Sets if to print folding marks.
 	 *
-	 * @param string $foldingMarks print folding marks
+	 * @param string|null $foldingMarks print folding marks
 	 */
-	public function setFoldingMarks(string $foldingMarks): void {
+	public function setFoldingMarks(?string $foldingMarks): void {
 		$this->foldingMarks = $foldingMarks;
 	}
 

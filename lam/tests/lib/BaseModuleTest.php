@@ -318,9 +318,8 @@ class baseModuleDummy extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::process_attributes()
 	 */
-	public function process_attributes() {
+	public function process_attributes(): array {
 	}
 
 

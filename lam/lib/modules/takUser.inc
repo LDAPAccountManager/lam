@@ -164,7 +164,7 @@ class takUser extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function process_attributes() {
+	public function process_attributes(): array {
 		$return = [];
 		$this->attributes['takcallsign'][0] = $_POST['takcallsign'];
 		$this->attributes['takrole'][0] = $_POST['takrole'];

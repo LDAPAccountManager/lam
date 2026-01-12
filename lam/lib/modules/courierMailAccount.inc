@@ -316,9 +316,9 @@ class courierMailAccount extends baseModule {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	public function process_attributes() {
+	public function process_attributes(): array {
 		// add extension
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'courierMailAccount';

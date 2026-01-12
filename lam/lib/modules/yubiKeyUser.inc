@@ -171,12 +171,9 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	 * Processes user input of the primary module page.
-	 * It checks if all input values are correct and updates the associated LDAP attributes.
-	 *
-	 * @return array list of info/error messages
+	 * {@inheritDoc}
 	 */
-	public function process_attributes() {
+	public function process_attributes(): array {
 		$messages = [];
 		$objectClass = $this->getObjectClassName();
 		$attributeName = $this->getAttributeName();

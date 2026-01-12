@@ -518,11 +518,9 @@ class asteriskExtension extends baseModule {
 	}
 
 	/**
-	 * Writes variables into object and does some regex checks.
-	 *
-	 * @return array error messages
+	 * {@inheritDoc}
 	 */
-	function process_attributes() {
+	public function process_attributes(): array {
 		$errors = [];
 		$extensionName = [];
 

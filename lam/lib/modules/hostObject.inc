@@ -158,12 +158,9 @@ class hostObject extends baseModule {
 	}
 
 	/**
-	 * Processes user input of the primary module page.
-	 * It checks if all input values are correct and updates the associated LDAP attributes.
-	 *
-	 * @return array list of info/error messages
+	 * {@inheritDoc}
 	 */
-	function process_attributes() {
+	public function process_attributes(): array {
 		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['hostObject'], $this->attributes['objectClass']);
 			if (isset($this->attributes['host'])) {
