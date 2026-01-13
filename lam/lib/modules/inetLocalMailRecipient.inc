@@ -313,7 +313,7 @@ class inetLocalMailRecipient extends baseModule {
 		return $return;
 	}
 
-	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function getSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		if ($passwordChangeOnly) {
 			return []; // no processing as long no LDAP content can be read
 		}

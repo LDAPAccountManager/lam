@@ -914,17 +914,9 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	 * Returns the meta HTML code for each input field.
-	 * format: array(<field1> => array(<META HTML>), ...)
-	 * It is not possible to display help links.
-	 *
-	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
+	 * {@inheritDoc}
 	 */
-	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function getSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		if ($passwordChangeOnly) {
 			return []; // no Kolab fields as long no LDAP content can be read
 		}

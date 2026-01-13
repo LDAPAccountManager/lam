@@ -493,7 +493,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	/**
 	 * {@inheritDoc}
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function checkSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskVoiceMail', $attributes['objectClass'])) {
 			return $return;

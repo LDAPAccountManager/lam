@@ -2054,13 +2054,13 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Returns if a given self service field can be set in read-only mode.
+	 * Returns if a given self-service field can be set in read-only mode.
 	 *
-	 * @param String $fieldID field identifier
+	 * @param string $fieldID field identifier
 	 * @param selfServiceProfile $profile currently edited profile
-	 * @return boolean may be set read-only
+	 * @return bool may be set read-only
 	 */
-	public function canSelfServiceFieldBeReadOnly($fieldID, $profile) {
+	public function canSelfServiceFieldBeReadOnly(string $fieldID, selfServiceProfile $profile): bool {
 		if (isset($this->meta['selfServiceReadOnlyFields']) && is_array($this->meta['selfServiceReadOnlyFields'])) {
 			return in_array($fieldID, $this->meta['selfServiceReadOnlyFields']);
 		}
@@ -2068,13 +2068,13 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Returns if a self service field can be relabeled.
+	 * Returns if a self-service field can be relabeled.
 	 *
-	 * @param String $fieldID field ID
+	 * @param string $fieldID field ID
 	 * @param selfServiceProfile $profile currently edited profile
-	 * @return boolean may be relabeled
+	 * @return bool may be relabeled
 	 */
-	public function canSelfServiceFieldBeRelabeled($fieldID, $profile) {
+	public function canSelfServiceFieldBeRelabeled(string $fieldID, selfServiceProfile $profile): bool {
 		if (isset($this->meta['selfServiceNoRelabelFields']) && is_array($this->meta['selfServiceNoRelabelFields'])) {
 			return !in_array($fieldID, $this->meta['selfServiceNoRelabelFields']);
 		}
@@ -2084,11 +2084,11 @@ abstract class baseModule {
 	/**
 	 * Returns the field label. This can be either the given default label or an override value from profile.
 	 *
-	 * @param String $fieldID field ID
-	 * @param String $defaultLabel default label text
-	 * @return String label
+	 * @param string $fieldID field ID
+	 * @param string $defaultLabel default label text
+	 * @return string label
 	 */
-	protected function getSelfServiceLabel($fieldID, $defaultLabel) {
+	protected function getSelfServiceLabel(string $fieldID, string $defaultLabel): string {
 		if (!$this->canSelfServiceFieldBeRelabeled($fieldID, $this->selfServiceSettings)) {
 			return $defaultLabel;
 		}
@@ -2103,15 +2103,15 @@ abstract class baseModule {
 	 * <br>
 	 * It is not possible to display help links.
 	 *
-	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
+	 * @param string[] $fields list of active fields
+	 * @param array<string, string[]|string> $attributes attributes of LDAP account
+	 * @param bool $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param string[] $readOnlyFields list of read-only fields
+	 * @return array<string, htmlResponsiveRow> list of meta HTML elements (field name => htmlResponsiveRow)
 	 *
 	 * @see htmlElement
 	 */
-	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function getSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		// this function must be overwritten by subclasses.
 		return [];
 	}
@@ -2127,13 +2127,13 @@ abstract class baseModule {
 	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
-	 * @param array $fields input fields
-	 * @param array $attributes LDAP attributes
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
+	 * @param string[] $fields input fields
+	 * @param array<string, string[]|string> $attributes LDAP attributes
+	 * @param bool $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
+	 * @param string[] $readOnlyFields list of read-only fields
+	 * @return array<string, array<string, string[]>|string[]> messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
 	 */
-	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function checkSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		return ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 	}
 

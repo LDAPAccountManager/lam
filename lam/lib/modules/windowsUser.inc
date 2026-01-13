@@ -3776,17 +3776,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Returns the meta HTML code for each input field.
-	 * format: array(<field1> => array(<META HTML>), ...)
-	 * It is not possible to display help links.
-	 *
-	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
+	 * {@inheritDoc}
 	 */
-	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function getSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = [];
 		if (in_array('unicodePwd', $fields)) {
 			$row = new htmlResponsiveRow();
@@ -3863,7 +3855,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * {@inheritDoc}
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function checkSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (in_array('unicodePwd', $fields)
 			&& isset($_POST['windowsUser_unicodePwd'])

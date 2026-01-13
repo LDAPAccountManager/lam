@@ -1168,7 +1168,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	/**
 	 * {@inheritDoc}
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function checkSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('AsteriskSIPUser', $attributes['objectClass'])) {
 			return $return;

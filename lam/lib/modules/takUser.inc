@@ -243,9 +243,9 @@ class takUser extends baseModule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function getSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // only password fields as long no LDAP content can be read
@@ -298,7 +298,7 @@ class takUser extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function checkSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done

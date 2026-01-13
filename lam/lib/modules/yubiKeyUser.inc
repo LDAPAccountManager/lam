@@ -250,17 +250,9 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	 * Returns the meta HTML code for each input field.
-	 * format: array(<field1> => array(<META HTML>), ...)
-	 * It is not possible to display help links.
-	 *
-	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
+	 * {@inheritDoc}
 	 */
-	public function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function getSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
@@ -400,7 +392,7 @@ class yubiKeyUser extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function checkSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
@@ -463,7 +455,7 @@ class yubiKeyUser extends baseModule {
 	 * Manages AJAX requests.
 	 * This function may be called with or without an account container.
 	 */
-	public function handleAjaxRequest() {
+	public function handleAjaxRequest(): void {
 		$jsonInput = json_decode($_POST['jsonInput'], true);
 		$jsonReturn = self::invalidAjaxRequest();
 		if (isset($jsonInput['action'])) {
@@ -491,9 +483,10 @@ class yubiKeyUser extends baseModule {
 	/**
 	 * Manages the deletion of a key.
 	 *
-	 * @param array $data JSON data
+	 * @param array<string, string> $data JSON data
+	 * @return array<string, string> result data
 	 */
-	private function ajaxDeleteSelfServiceKey($data) {
+	private function ajaxDeleteSelfServiceKey(array $data): array {
 		if (!isset($data['id'])) {
 			return self::invalidAjaxRequest();
 		}
@@ -518,12 +511,10 @@ class yubiKeyUser extends baseModule {
 	/**
 	 * Invalid AJAX request received.
 	 *
-	 * @param String $message error message
+	 * @return array<string, string> error data
 	 */
-	public static function invalidAjaxRequest($message = null) {
-		if ($message == null) {
-			$message = _('Invalid request');
-		}
+	public static function invalidAjaxRequest(): array {
+		$message = _('Invalid request');
 		return ['errorsOccurred' => 'true', 'errormessage' => $message];
 	}
 

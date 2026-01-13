@@ -2279,17 +2279,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	}
 
 	/**
-	 * Returns the meta HTML code for each input field.
-	 * format: array(<field1> => array(<META HTML>), ...)
-	 * It is not possible to display help links.
-	 *
-	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
+	 * {@inheritDoc}
 	 */
-	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function getSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = [];
 		if ($passwordChangeOnly) {
 			return $return; // no input fields as long no LDAP content can be read
@@ -2326,23 +2318,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	}
 
 	/**
-	 * Checks if all input values are correct and returns the LDAP attributes which should be changed.
-	 * <br>Return values:
-	 * <br>messages: array of parameters to create status messages
-	 * <br>add: array of attributes to add
-	 * <br>del: array of attributes to remove
-	 * <br>mod: array of attributes to modify
-	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @param array $fields input fields
-	 * @param array $attributes LDAP attributes
-	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
-	 * @param array $readOnlyFields list of read-only fields
-	 * @return array messages and attributes (array('messages' => [], 'add' => array('mail' => array('test@test.com')), 'del' => [], 'mod' => [], 'info' => []))
+	 * {@inheritDoc}
 	 */
-	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+	public function checkSelfServiceOptions(array $fields, array $attributes, bool $passwordChangeOnly, array $readOnlyFields): array {
 		$return = ['messages' => [], 'add' => [], 'del' => [], 'mod' => [], 'info' => []];
 		if (!isset($attributes['objectClass']) || !in_array_ignore_case('sambaSamAccount', $attributes['objectClass'])) {
 			return $return;

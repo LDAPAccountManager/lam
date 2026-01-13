@@ -64,3 +64,4 @@ parameters:
 		- '#.*accountContainer::getAccountModule\(\) expects class-string\<baseModule\>, string given.*#'
 		- '#.*array_values is already a list.*#'
 		- '#Unable to resolve the template type T in call to method accountContainer::getAccountModule\(\)#'
+		- '#Unable to resolve the template type T in call to function array_values#'

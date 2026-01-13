@@ -680,7 +680,7 @@ class selfServiceProfile {
 	public string $LDAPPassword = "";
 
 	/** use bind user also for read/modify operations */
-	public bool $useForAllOperations = false;
+	public ?bool $useForAllOperations = false;
 
 	/** LDAP search attribute */
 	public string $searchAttribute = "uid";
@@ -703,22 +703,22 @@ class selfServiceProfile {
 	public string $loginCaption = '';
 
 	/** describing text for user login */
-	public string $loginFooter = '';
+	public ?string $loginFooter = '';
 
 	/** label for password input */
-	public string $passwordLabel = '';
+	public ?string $passwordLabel = '';
 
 	/** describing text for search attribute */
 	public string $loginAttributeText = '';
 
 	/** additional LDAP filter for accounts */
-	public string $additionalLDAPFilter = '';
+	public ?string $additionalLDAPFilter = '';
 
 	/** describing text for self service main page */
 	public string $mainPageText;
 
 	/** describing text for self service main page */
-	public string $mainPageFooter = '';
+	public ?string $mainPageFooter = '';
 
 	/**
 	 * @var array<string, string|string[]>[] $inputFields input fields
@@ -734,8 +734,8 @@ class selfServiceProfile {
 	 */
 	public array $readOnlyFields = [];
 
-	/** @var array<string, string> $relabelFields list of override values for field labels: array(<field ID> => label) */
-	public array $relabelFields = [];
+	/** @var array<string, string>|null $relabelFields list of override values for field labels: array(<field ID> => label) */
+	public ?array $relabelFields = [];
 
 	/** @var array<string, string> $moduleSettings configuration settings of modules */
 	public array $moduleSettings = [];
@@ -752,7 +752,7 @@ class selfServiceProfile {
 	public string $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
 	public string $twoFactorAuthenticationURL = 'https://localhost';
 	public bool $twoFactorAuthenticationInsecure = false;
-	public string $twoFactorAuthenticationLabel = '';
+	public ?string $twoFactorAuthenticationLabel = '';
 	public bool $twoFactorAuthenticationOptional = false;
 	public string $twoFactorAuthenticationCaption = '';
 	public string $twoFactorAuthenticationClientId = '';
@@ -781,7 +781,7 @@ class selfServiceProfile {
 	 * This is used for managing quota and home directories.
 	 * optional setting, may not be defined
 	 */
-	public string $scriptPath = '';
+	public ?string $scriptPath = '';
 
 	/**
 	 * The rights for the home directory
@@ -794,22 +794,22 @@ class selfServiceProfile {
 	 * This is used for managing quota and home directories.
 	 * optional setting, may not be defined
 	 */
-	public string $scriptServer = '';
+	public ?string $scriptServer = '';
 
 	/**
 	 * user name for lamdaemon
 	 */
-	public string $scriptUserName = '';
+	public ?string $scriptUserName = '';
 
 	/**
 	 * File name of SSH key for lamdaemon.
 	 */
-	public string $scriptSSHKey = '';
+	public ?string $scriptSSHKey = '';
 
 	/**
 	 * Password for lamdaemon SSH key.
 	 */
-	public string $scriptSSHKeyPassword = '';
+	public ?string $scriptSSHKeyPassword = '';
 
 	/**
 	 * Constructor
