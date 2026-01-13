@@ -3953,22 +3953,16 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * This method specifies if a module manages password attributes. The module alias will
-	 * then appear as option in the GUI.
-	 * <br>If the module only wants to get notified about password changes then return false.
-	 *
-	 * @return boolean true if this module manages password attributes
+	 * {@inheritDoc}
 	 */
-	public function managesPasswordAttributes() {
+	public function managesPasswordAttributes(): bool {
 		return true;
 	}
 
 	/**
-	 * Specifies if this module supports to force that a user must change his password on next login.
-	 *
-	 * @return boolean force password change supported
+	 * {@inheritDoc}
 	 */
-	public function supportsForcePasswordChange() {
+	public function supportsForcePasswordChange(): bool {
 		return true;
 	}
 

@@ -453,21 +453,16 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This method specifies if a module manages password attributes.
-	 * @return boolean true if this module manages password attributes
-	 * @see passwordService::managesPasswordAttributes
-	 *
+	 * {@inheritDoc}
 	 */
-	public function managesPasswordAttributes() {
+	public function managesPasswordAttributes(): bool {
 		return in_array('AsteriskVoiceMail', $this->attributes['objectClass']);
 	}
 
 	/**
-	 * Specifies if this module supports to force that a user must change his password on next login.
-	 *
-	 * @return boolean force password change supported
+	 * {@inheritDoc}
 	 */
-	public function supportsForcePasswordChange() {
+	public function supportsForcePasswordChange(): bool {
 		return false;
 	}
 

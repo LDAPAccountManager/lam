@@ -2369,16 +2369,16 @@ interface passwordService {
 	 * then appear as option in the GUI.
 	 * <br>If the module only wants to get notified about password changes then return false.
 	 *
-	 * @return boolean true if this module manages password attributes
+	 * @return bool true if this module manages password attributes
 	 */
-	public function managesPasswordAttributes();
+	public function managesPasswordAttributes(): bool;
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
 	 *
-	 * @return boolean force password change supported
+	 * @return bool force password change supported
 	 */
-	public function supportsForcePasswordChange();
+	public function supportsForcePasswordChange(): bool;
 
 	/**
 	 * This function is called whenever the password should be changed. Account modules
@@ -2387,7 +2387,7 @@ interface passwordService {
 	 * @param string $password new password
 	 * @param string[] $modules list of modules for which the password should be changed
 	 * @param bool $forcePasswordChange force the user to change his password at next login
-	 * @return array list of error messages if any as parameter array for StatusMessage
+	 * @return string[][] list of error messages if any as parameter array for StatusMessage
 	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 */
 	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array;
@@ -2418,13 +2418,13 @@ interface passwordService {
 	 * Returns a list of LDAP attribute changes to perform.
 	 *
 	 * @param string $password new password
-	 * @return array LDAP attribute values (attr_name => array(attr_value))
+	 * @return array<string, string[]|string> LDAP attribute values (attr_name => array(attr_value))
 	 * @throws LAMException error getting changes
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array;
 
 	/**
-	 * Returns the user name if known to be validated for password strength.
+	 * Returns the username if known to be validated for password strength.
 	 *
 	 * @return string|null user name
 	 */
@@ -2433,7 +2433,7 @@ interface passwordService {
 	/**
 	 * Returns additional attribute values to check when password strength is validated.
 	 *
-	 * @return array attribute values
+	 * @return string[] attribute values
 	 */
 	public function getPasswordQuickChangePasswordStrengthAttributes(): array;
 
@@ -2452,14 +2452,15 @@ interface passwordService {
  */
 class PasswordQuickChangeOption {
 
-	public $label;
+	public string $label;
 
-	public $id;
+	public string $id;
 
-	public $preSelected;
+	public bool $preSelected;
 
 	/**
 	 * PasswordQuickChangeOption constructor.
+	 *
 	 * @param string $id unique id for this option
 	 * @param string $label descriptive label
 	 * @param bool $preSelected is preselected
@@ -2490,7 +2491,7 @@ interface AccountStatusProvider {
 	 * Returns the list of LDAP attributes that must be read to get the account status.
 	 *
 	 * @param ConfiguredType $type type
-	 * @return array attribute names
+	 * @return string[] attribute names
 	 */
 	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array;
 
@@ -2508,7 +2509,7 @@ interface AccountStatusProvider {
 	 *
 	 * @param ConfiguredType $type type
 	 * @param array<string, string[]|string>|null $attributes LDAP attributes
-	 * @param array $lockIds IDs from AccountStatusDetails
+	 * @param string[] $lockIds IDs from AccountStatusDetails
 	 * @throws LAMException error during locking
 	 */
 	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
@@ -2518,7 +2519,7 @@ interface AccountStatusProvider {
 	 *
 	 * @param ConfiguredType $type type
 	 * @param array<string, string[]|string>|null $attributes LDAP attributes
-	 * @param array $lockIds IDs from AccountStatusDetails
+	 * @param string[] $lockIds IDs from AccountStatusDetails
 	 */
 	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
 
@@ -2530,7 +2531,7 @@ interface AccountStatusProvider {
 class AccountStatus {
 
 	/** @var AccountStatusDetails[] list of details */
-	private $details;
+	private array $details;
 
 	/**
 	 * Constructor.

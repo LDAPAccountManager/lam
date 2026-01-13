@@ -2367,7 +2367,7 @@ abstract class baseModule {
 	 * Returns a list of attribute descriptions for the account list.
 	 *
 	 * @param ConfiguredType $type type
-	 * @return array attribute name => description label
+	 * @return array<string, string> attribute name => description label
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return [];
