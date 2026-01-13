@@ -12,6 +12,8 @@ updates:
     ignore:
       - dependency-name: "paragonie/random_compat"
         versions: [ "9.99.99", "9.99.100" ]
+      - dependency-name: "phpunit/phpunit"
+        versions: [ ">=12" ]
 
   - package-ecosystem: github-actions
     directory: /

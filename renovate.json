@@ -13,6 +13,10 @@
     {
       "matchPackageNames": ["/paragonie/"],
       "allowedVersions": "<9"
+    },
+    {
+      "matchPackageNames": ["/phpunit/"],
+      "allowedVersions": "<12"
     }
   ],
   "ignorePaths": ["**/3rdParty/**"]
