@@ -980,9 +980,8 @@ class asteriskAccount extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		$this->addSimplePDFField($return, 'AstAccountCallerID', _('Caller ID'));
 		$this->addSimplePDFField($return, 'AstAccountContext', _('Account context'));

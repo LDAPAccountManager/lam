@@ -309,9 +309,8 @@ class ldapPublicKey extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		if (!empty($this->attributes[$this->getAttributeName()])) {
 			$pdfTable = new PDFTable(_('SSH public keys'));

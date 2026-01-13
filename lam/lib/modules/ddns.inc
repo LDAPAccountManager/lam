@@ -379,9 +379,8 @@ class ddns extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	public function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		// attributes are taken from DHCP server object
 		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;

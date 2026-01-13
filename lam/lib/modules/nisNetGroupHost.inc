@@ -242,9 +242,8 @@ class nisNetGroupHost extends nisNetGroupUser {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		$pdfTable = new PDFTable();
 		$pdfRow = new PDFTableRow();

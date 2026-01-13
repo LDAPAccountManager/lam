@@ -3561,9 +3561,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	public function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		$this->addSimplePDFField($return, 'userPrincipalName', _('User name'));
 		$this->addSimplePDFField($return, 'cn', _('Common name'));

@@ -233,9 +233,8 @@ class yubiKeyUser extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	public function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		$attributeName = $this->getAttributeName();
 		if (!empty($this->attributes[$attributeName])) {

@@ -1972,9 +1972,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfFields()
 	 */
-	public function get_pdfFields($typeId) {
+	public function get_pdfFields(string $typeId): array {
 		$fields = parent::get_pdfFields($typeId);
 		$typeManager = new TypeManager();
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
@@ -1994,9 +1993,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
 			$this->addSimplePDFField($return, 'description', _('Description'));

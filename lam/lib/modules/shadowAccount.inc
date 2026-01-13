@@ -569,9 +569,8 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$timeZone = getTimeZone();
 		$shadowLastChange = '';
 		if (!empty($this->attributes['shadowlastchange'][0])) {

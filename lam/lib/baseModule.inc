@@ -809,7 +809,7 @@ abstract class baseModule {
 	/**
 	 * Returns a list of config options for LAM's main configuration.
 	 *
-	 * @param array $currentSettings current settings
+	 * @param array<string, string> $currentSettings current settings
 	 * @return htmlElement[] config options
 	 */
 	public function getGlobalConfigOptions(array $currentSettings): array {
@@ -819,9 +819,9 @@ abstract class baseModule {
 	/**
 	 * Checks the global config options.
 	 *
+	 * @param array<string, string> $options config options
 	 * @param string[] $messages info messages can be added here
 	 * @param string[] $errors error messages can be added here
-	 * @param array $options config options
 	 */
 	public function checkGlobalConfigOptions(array &$options, array &$messages, array &$errors): void {
 		// to be implemented by modules if needed
@@ -849,11 +849,11 @@ abstract class baseModule {
 	 * Returns a hashtable with all entries that may be printed out in the PDF.
 	 *
 	 * @param string $typeId type id (user, group, host)
-	 * @return array PDF entries as key => label
+	 * @return array<string, string> PDF entries as key => label
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function get_pdfFields($typeId) {
+	public function get_pdfFields(string $typeId): array {
 		return $this->meta['PDF_fields'] ?? [];
 	}
 
@@ -864,7 +864,7 @@ abstract class baseModule {
 	 * @param string $typeId type id (user, group, host)
 	 * @return array<string, PDFEntry[]> list of key => PDFEntry
 	 */
-	public function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		return [];
 	}
 

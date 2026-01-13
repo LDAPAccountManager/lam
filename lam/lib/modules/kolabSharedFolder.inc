@@ -389,9 +389,8 @@ class kolabSharedFolder extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		$this->addSimplePDFField($return, 'cn', _('Name'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));

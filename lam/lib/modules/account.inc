@@ -209,9 +209,8 @@ class account extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfFields()
 	 */
-	public function get_pdfFields($typeId) {
+	public function get_pdfFields(string $typeId): array {
 		$fields = parent::get_pdfFields($typeId);
 		if (!$this->isUnixActive()) {
 			$fields['uid'] = _('User name');
@@ -221,9 +220,8 @@ class account extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
 		$this->addSimplePDFField($return, 'description', _('Description'));
 		$this->addSimplePDFField($return, 'uid', _('User name'));

@@ -2275,9 +2275,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfFields()
 	 */
-	public function get_pdfFields($typeId) {
+	public function get_pdfFields(string $typeId): array {
 		$fields = parent::get_pdfFields($typeId);
 		$typeManager = new TypeManager();
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
@@ -2292,9 +2291,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys, $typeId) {
+	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$uidLabel = _('User name');
 		if ($this->get_scope() == 'host') {
 			$uidLabel = _('Host name');
