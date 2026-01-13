@@ -500,15 +500,9 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	 * Returns a list of configuration options.
-	 *
-	 * @param array $scopes account types (user, group, host)
-	 * @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	 * @return mixed htmlElement or array of htmlElement
-	 *
-	 * @see htmlElement
+	 * {@inheritDoc}
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		// configuration settings
 		$configContainer = new htmlResponsiveRow();
 		$configServer = new htmlResponsiveInputField(_('Server address'), 'ImapAccess_ImapServerAddress', '', 'ImapServerAddress');
@@ -548,9 +542,8 @@ class imapAccess extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::check_configOptions()
 	 */
-	public function check_configOptions($typeIds, &$options) {
+	public function check_configOptions(array $typeIds, array &$options): array {
 		$errors = parent::check_configOptions($typeIds, $options);
 		if (($options['ImapAccess_ImapAdminPasswordSelect'][0] == 'config')
 			&& empty($options['ImapAccess_ImapAdminPassword'][0])) {

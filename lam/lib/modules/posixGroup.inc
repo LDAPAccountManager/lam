@@ -492,9 +492,8 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_configOptions()
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		$typeManager = new TypeManager($_SESSION['conf_config']);
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
@@ -582,9 +581,8 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::check_configOptions()
 	 */
-	public function check_configOptions($typeIds, &$options) {
+	public function check_configOptions(array $typeIds, array &$options): array {
 		foreach ($typeIds as $typeId) {
 			if ($options['posixGroup_' . $typeId . '_gidGenerator'][0] == 'range') {
 				$this->meta['config_checks']['group']['posixGroup_' . $typeId . '_minGID'] = [

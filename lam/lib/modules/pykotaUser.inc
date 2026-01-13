@@ -1155,9 +1155,8 @@ class pykotaUser extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_configOptions()
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', '', 'jobSuffix'));
 		return $configContainer;

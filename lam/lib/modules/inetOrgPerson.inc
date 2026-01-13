@@ -3659,9 +3659,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_configOptions()
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		$configContainer = new htmlResponsiveRow();
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive

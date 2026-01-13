@@ -666,14 +666,14 @@ abstract class baseModule {
 	 * The field names are used as keywords to load and save settings.
 	 * We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	 *
-	 * @param array $scopes account types (user, group, host)
-	 * @param array $allScopes list of all active account modules and their account type id (module => array(type id))
-	 * @return mixed htmlElement or array of htmlElement
+	 * @param string[] $scopes account types (user, group, host)
+	 * @param array<string, string[]> $allScopes list of all active account modules and their account type id (module => array(type id))
+	 * @return htmlElement[]|htmlElement htmlElement or array of htmlElement
 	 *
 	 * @see baseModule::get_metaData()
 	 * @see htmlElement
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		$return = [];
 		for ($i = 0; $i < count($scopes); $i++) {
 			if (isset($this->meta['config_options'][$scopes[$i]])) {
@@ -710,13 +710,13 @@ abstract class baseModule {
 	 * If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
 	 * <br>If no errors occurred the function returns an empty array.
 	 *
-	 * @param array $typeIds list of account type ids which are used
-	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	 * @return array list of error messages
+	 * @param string[] $typeIds list of account type ids which are used
+	 * @param array<string, string[]> $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @return string[][] list of error messages
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function check_configOptions($typeIds, &$options) {
+	public function check_configOptions(array $typeIds, array &$options): array {
 		$messages = [];
 		// add checks that are independent of scope
 		$scopes = ['all'];

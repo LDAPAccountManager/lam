@@ -241,9 +241,8 @@ class authorizedServiceObject extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_configOptions()
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlResponsiveInputTextarea('authorizedServiceObject_services', "sshd\r\nimap", 30, 5, _('Predefined services'), 'predefinedServices'));
 		return $configContainer;

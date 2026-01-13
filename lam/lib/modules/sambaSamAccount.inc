@@ -1881,21 +1881,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	}
 
 	/**
-	 * Returns a list of configuration options.
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	 * <br>
-	 * The field names are used as keywords to load and save settings.
-	 * We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	 *
-	 * @param array $scopes account types (user, group, host)
-	 * @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	 * @return mixed htmlElement or array of htmlElement
-	 *
-	 * @see baseModule::get_metaData()
-	 * @see htmlElement
+	 * {@inheritDoc}
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		$return = parent::get_configOptions($scopes, $allScopes);
 		if (!in_array('user', $scopes)) {
 			return $return;

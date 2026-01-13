@@ -2341,9 +2341,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_configOptions()
 	 */
-	public function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions(array $scopes, array $allScopes): htmlElement|array {
 		$typeManager = new TypeManager($_SESSION['conf_config']);
 		$isWindows = array_key_exists('windowsUser', $allScopes);
 		$return = [];
@@ -2511,9 +2510,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::check_configOptions()
 	 */
-	public function check_configOptions($typeIds, &$options) {
+	public function check_configOptions(array $typeIds, array &$options): array {
 		$return = [];
 		$ranges = [];
 		foreach ($typeIds as $typeId) {
