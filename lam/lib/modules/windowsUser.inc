@@ -1234,11 +1234,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Initializes the module after it became part of an accountContainer
-	 *
-	 * @param string $base the name of the accountContainer object ($_SESSION[$base])
+	 * {@inheritDoc}
 	 */
-	function init($base) {
+	public function init(string $base): void {
 		// call parent init
 		parent::init($base);
 		$this->groupList = [];
@@ -1330,7 +1328,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * {@inheritDoc}
 	 */
-	public function load_attributes($attributes) {
+	public function load_attributes(array $attributes): void {
 		parent::load_attributes($attributes);
 		// get group memberships
 		$groupList = searchLDAPByAttribute('member', $this->getAccountContainer()->dn_orig, 'group', ['dn'], ['group']);

@@ -674,11 +674,9 @@ class posixGroup extends baseModule implements passwordService {
 
 
 	/**
-	 * This function will be called when the module will be loaded
-	 *
-	 * @param String $base the name of the {@link accountContainer} object ($_SESSION[$base])
+	 * {@inheritDoc}
 	 */
-	function init($base) {
+	public function init(string $base): void {
 		// call parent init
 		parent::init($base);
 		$this->changegids = false;

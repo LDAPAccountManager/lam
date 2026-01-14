@@ -137,7 +137,7 @@ abstract class baseModule {
 	 *
 	 * @param string $base the name of the {@link accountContainer} object ($_SESSION[$base])
 	 */
-	public function init($base) {
+	public function init(string $base): void {
 		$this->base = $base;
 		$this->attributes = [];
 		$this->orig = [];
@@ -163,9 +163,9 @@ abstract class baseModule {
 	 * By default this method loads the object classes and accounts which are specified in {@link getManagedObjectClasses()}
 	 * and {@link getManagedAttributes()}.
 	 *
-	 * @param array $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
+	 * @param array<string, string[]|string> $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
 	 */
-	public function load_attributes($attributes) {
+	public function load_attributes(array $attributes): void {
 		$this->attributes = [];
 		// load object classes
 		if (isset($attributes['objectClass'])) {
@@ -2338,7 +2338,7 @@ abstract class baseModule {
 	/**
 	 * Returns a list of attribute names that may contain wildcards.
 	 *
-	 * @return array list of attribute names
+	 * @return string[] list of attribute names
 	 */
 	public function getWildcardTargetAttributeNames(): array {
 		return [];

@@ -601,16 +601,9 @@ class ddns extends baseModule {
 	}
 
 	/**
-	 * This function loads the LDAP attributes when an account should be loaded.
-	 *
-	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	 * <br>
-	 * By default this method loads the object classes and accounts which are specified in {@link getManagedObjectClasses()}
-	 * and {@link getManagedAttributes()}.
-	 *
-	 * @param array $attributes array like the array returned by get_ldap_attributes(dn of account) but without count indices
+	 * {@inheritDoc}
 	 */
-	public function load_attributes($attributes) {
+	public function load_attributes(array $attributes): void {
 		// load nothing, attributes are saved in "dhcp_settings" module
 	}
 

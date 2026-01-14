@@ -579,11 +579,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	}
 
 	/**
-	 * Initializes the module after it became part of an accountContainer
-	 *
-	 * @param string $base the name of the accountContainer object ($_SESSION[$base])
+	 * {@inheritDoc}
 	 */
-	function init($base) {
+	public function init(string $base): void {
 		// call parent init
 		parent::init($base);
 		$this->noexpire = true;
@@ -623,12 +621,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 
 
 	/**
-	 * This function loads the LDAP attributes for this module.
-	 *
-	 * @param array $attr attribute list
+	 * {@inheritDoc}
 	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
+	public function load_attributes(array $attributes): void {
+		parent::load_attributes($attributes);
 		if (isset($this->attributes['sambaacctflags'][0])) {
 			$this->nopwd = str_contains($this->attributes['sambaacctflags'][0], "N");
 			$this->noexpire = str_contains($this->attributes['sambaacctflags'][0], "X");

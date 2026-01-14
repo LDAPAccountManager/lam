@@ -98,11 +98,9 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
-	 * Initializes the module after it became part of an accountContainer
-	 *
-	 * @param string $base the name of the accountContainer object ($_SESSION[$base])
+	 * {@inheritDoc}
 	 */
-	function init($base) {
+	public function init(string $base): void {
 		// call parent init
 		parent::init($base);
 		$this->groups = [];
@@ -110,16 +108,14 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attr list of attributes
+	 * {@inheritDoc}
 	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
-		if (empty($attr['uid'][0])) {
+	public function load_attributes(array $attributes): void {
+		parent::load_attributes($attributes);
+		if (empty($attributes['uid'][0])) {
 			return;
 		}
-		$this->uidOrig = $attr['uid'][0];
+		$this->uidOrig = $attributes['uid'][0];
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypesForScope('netgroup');
 		$groupList = [];

@@ -218,11 +218,9 @@ class range extends baseModule {
 	}
 
 	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attributes list of attributes
+	 * {@inheritDoc}
 	 */
-	function load_attributes($attributes) {
+	public function load_attributes(array $attributes): void {
 		parent::load_attributes($attributes);
 		// Load DHCP Options:
 		if (!$this->isRootNode()) {

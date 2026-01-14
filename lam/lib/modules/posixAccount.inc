@@ -496,7 +496,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * {@inheritDoc}
 	 */
-	function init($base) {
+	public function init(string $base): void {
 		// make optional if needed
 		$modules = $_SESSION[$base]->get_type()->getModules();
 		$this->autoAddObjectClasses = !$this->isOptional($modules) && !$this->skipObjectClass();
@@ -553,7 +553,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * {@inheritDoc}
 	 */
-	function load_attributes($attributes) {
+	public function load_attributes(array $attributes): void {
 		parent::load_attributes($attributes);
 		// get additional group memberships
 		if (!isset($attributes['uid'][0])) {

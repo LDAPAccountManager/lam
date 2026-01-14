@@ -218,11 +218,9 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attributes list of attributes
+	 * {@inheritDoc}
 	 */
-	function load_attributes($attributes) {
+	public function load_attributes(array $attributes): void {
 		if (!$this->isRootNode()) {
 			$searchAttributes = ['cn', 'dhcphwaddress', 'dhcpstatements', 'dhcpcomments'];
 			$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', $searchAttributes);
