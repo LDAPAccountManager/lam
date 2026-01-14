@@ -274,11 +274,9 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	 * Loads the values of an account profile into internal variables.
-	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * {@inheritDoc}
 	 */
-	function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension

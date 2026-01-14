@@ -467,15 +467,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This function is called whenever the password should be changed. Account modules
-	 * must change their password attributes only if the modules list contains their module name.
-	 *
-	 * @param String $password new password
-	 * @param $modules array of modules for which the password should be changed
-	 * @param boolean $forcePasswordChange force the user to change his password at next login
-	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *               e.g. return array(array('ERROR', 'Password change failed.'))
-	 * @see passwordService::passwordChangeRequested
+	 * {@inheritDoc}
 	 */
 	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array {
 		if (!in_array(static::class, $modules)) {

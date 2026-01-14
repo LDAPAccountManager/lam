@@ -643,11 +643,11 @@ abstract class baseModule {
 	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * @param array<string, string[]> $profile hash array with profile values (identifier => value)
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		if (isset($this->meta['profile_mappings'])) {
 			$identifiers = array_keys($this->meta['profile_mappings']);
 			for ($i = 0; $i < count($identifiers); $i++) {
@@ -2328,9 +2328,9 @@ abstract class baseModule {
 	 * Returns a list of wildcards that can be replaced in input fields.
 	 * E.g. "$firstname" is replaced with "givenName" attribute value.
 	 *
-	 * @return array replacements as wildcard => value
+	 * @return array<string, string> replacements as wildcard => value
 	 */
-	public function getWildCardReplacements() {
+	public function getWildCardReplacements(): array {
 		return [];
 	}
 

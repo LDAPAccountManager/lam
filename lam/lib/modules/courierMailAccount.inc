@@ -574,9 +574,9 @@ class courierMailAccount extends baseModule {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	public function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension

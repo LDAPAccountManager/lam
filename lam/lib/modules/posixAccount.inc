@@ -2212,11 +2212,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * Loads the values of an account profile into internal variables.
-	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * {@inheritDoc}
 	 */
-	function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
@@ -3543,15 +3541,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * This function is called whenever the password should be changed. Account modules
-	 * must change their password attributes only if the modules list contains their module name.
-	 *
-	 * @param string $password new password
-	 * @param string[] $modules list of modules for which the password should be changed
-	 * @param bool $forcePasswordChange force the user to change his password at next login
-	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *               e.g. return array(array('ERROR', 'Password change failed.'))
-	 * @see passwordService::passwordChangeRequested
+	 * {@inheritDoc}
 	 */
 	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array {
 		if (!in_array(static::class, $modules)) {
@@ -4114,7 +4104,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getWildCardReplacements() {
+	public function getWildCardReplacements(): array {
 		$replacements = [];
 		// user name
 		if (!empty($_POST['uid'])) {

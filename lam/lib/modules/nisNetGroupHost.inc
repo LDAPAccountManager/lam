@@ -220,11 +220,9 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	 * Loads the values of an account profile into internal variables.
-	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * {@inheritDoc}
 	 */
-	function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		for ($i = 0; $i < 5; $i++) {
 			if (!empty($profile['nisNetGroupUser_group' . $i][0])) {
 				$parts = explode('#+#', $profile['nisNetGroupUser_group' . $i][0]);

@@ -684,11 +684,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	}
 
 	/**
-	 * Loads the values of an account profile into internal variables.
-	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * {@inheritDoc}
 	 */
-	function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		$this->attributes['cn'][0] = $profile['cn'][0];

@@ -487,11 +487,9 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	 * Loads the values of an account profile into internal variables.
-	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * {@inheritDoc}
 	 */
-	function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		if (isset($profile['ImapAccess_QuotaLimit'][0]) && $profile['ImapAccess_QuotaLimit'][0] != '') {

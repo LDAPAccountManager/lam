@@ -557,11 +557,9 @@ class sambaGroupMapping extends baseModule {
 
 
 	/**
-	 * Loads the values of an account profile into internal variables.
-	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * {@inheritDoc}
 	 */
-	function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		if (isset($profile['sambaGroupMapping_sambaDomainName'][0])) {
 			// get list of domains
 			$sambaDomains = $this->getDomains();

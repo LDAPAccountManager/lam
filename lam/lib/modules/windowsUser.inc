@@ -3693,11 +3693,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * Loads the values of an account profile into internal variables.
-	 *
-	 * @param array $profile hash array with profile values (identifier => value)
+	 * {@inheritDoc}
 	 */
-	function load_profile($profile) {
+	public function load_profile(array $profile): void {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// load domain
@@ -3967,14 +3965,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	}
 
 	/**
-	 * This function is called whenever the password should be changed. Account modules
-	 * must change their password attributes only if the modules list contains their module name.
-	 *
-	 * @param String $password new password
-	 * @param array $modules list of modules for which the password should be changed
-	 * @param boolean $forcePasswordChange force the user to change his password at next login
-	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *               e.g. return array(array('ERROR', 'Password change failed.'))
+	 * {@inheritDoc}
 	 */
 	public function passwordChangeRequested(string $password, array $modules, bool $forcePasswordChange): array {
 		if (!in_array(static::class, $modules)) {
@@ -4619,7 +4610,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getWildCardReplacements() {
+	public function getWildCardReplacements(): array {
 		$replacements = [];
 		// personal title
 		if (!empty($_POST['personaltitle'])) {
