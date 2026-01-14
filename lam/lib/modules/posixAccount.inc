@@ -783,15 +783,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * Runs the postmodify actions.
-	 *
-	 * @param boolean $newAccount
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
-	 * @see baseModule::postModifyActions()
-	 *
+	 * {@inheritDoc}
 	 */
-	public function postModifyActions($newAccount, $attributes) {
+	public function postModifyActions(bool $newAccount, array $attributes): array {
 		$messages = [];
 		$accountContainer = $this->getAccountContainer();
 		if (($accountContainer == null) || empty($accountContainer->finalDN)) {
@@ -2949,9 +2943,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::doUploadPostActions()
 	 */
-	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
+	public function doUploadPostActions(array &$data, array $ids, array $failed, array &$temp, array &$accounts,
+										array $selectedModules, ConfiguredType $type): array {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}

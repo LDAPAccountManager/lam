@@ -602,15 +602,9 @@ class range extends baseModule {
 	}
 
 	/**
-	 * Allows the module to run commands after the LDAP entry is changed or created.
-	 *
-	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
-	 *
-	 * @param boolean $newAccount new account
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * {@inheritDoc}
 	 */
-	public function postModifyActions($newAccount, $attributes) {
+	public function postModifyActions(bool $newAccount, array $attributes): array {
 		$errors = [];
 		// update pool data
 		// add new pools

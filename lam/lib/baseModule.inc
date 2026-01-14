@@ -989,7 +989,7 @@ abstract class baseModule {
 	 *
 	 * @param array<int, string>[] $rawAccounts the user input data, contains one subarray for each account.
 	 * @param array<string, int> $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	 * @param array<string, string[]|string>[] $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	 * @param array<string, string[]|string|mixed>[] $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	 * @param string[] $selectedModules list of selected account modules
 	 * @param ConfiguredType $type account type
 	 * @return string[][] list of error messages if any
@@ -1177,21 +1177,22 @@ abstract class baseModule {
 	 * because the time limit is exceeded. You should not make more than one LDAP operation in
 	 * each call.
 	 *
-	 * @param array $data array containing one account in each element
-	 * @param array $ids maps the column names to keys for the sub arrays (array(<column_name> => <column number>))
-	 * @param array $failed list of account numbers which could not be successfully uploaded to LDAP
-	 * @param array $temp variable to store temporary data between two post actions
-	 * @param array $accounts list of LDAP entries
+	 * @param array<string, string>[] $data array containing one account in each element
+	 * @param array<string, string> $ids maps the column names to keys for the sub arrays (array(<column_name> => <column number>))
+	 * @param int[] $failed list of account numbers which could not be successfully uploaded to LDAP
+	 * @param array<string, int|string|string[]|string[][]|array<string, string[]>|mixed> $temp variable to store temporary data between two post actions
+	 * @param array<string, string[]|string>[] $accounts list of LDAP entries
 	 * @param string[] $selectedModules selected account modules
 	 * @param ConfiguredType $type account type
-	 * @return array current status
+	 * @return array<string, string|int|string[][]> current status
 	 * <br> array (
 	 * <br>  'status' => 'finished' | 'inProgress' // defines if all operations are complete
 	 * <br>  'progress' => 0..100 // the progress of the operations in percent
 	 * <br>  'errors' => array // list of arrays which are used to generate StatusMessages
 	 * <br> )
 	 */
-	public function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
+	public function doUploadPostActions(array &$data, array $ids, array $failed, array &$temp, array &$accounts,
+										array $selectedModules, ConfiguredType $type): array {
 		return [
 			'status' => 'finished',
 			'progress' => 100,
@@ -1244,11 +1245,11 @@ abstract class baseModule {
 	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 *
-	 * @param boolean $newAccount new account
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @param bool $newAccount new account
+	 * @param array<string, string[]|string> $attributes LDAP attributes of this entry
+	 * @return string[][] array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	public function postModifyActions($newAccount, $attributes) {
+	public function postModifyActions(bool $newAccount, array $attributes): array {
 		return [];
 	}
 

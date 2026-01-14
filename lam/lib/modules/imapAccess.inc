@@ -815,9 +815,9 @@ class imapAccess extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::doUploadPostActions()
 	 */
-	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
+	public function doUploadPostActions(array &$data, array $ids, array $failed, array &$temp, array &$accounts,
+										array $selectedModules, ConfiguredType $type): array {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}

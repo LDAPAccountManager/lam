@@ -636,15 +636,9 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
-	 * This function is overwritten because the fixed IPs are set after the ldap_add command.
-	 *
-	 * @param boolean $newAccount
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
-	 * @see baseModule::postModifyActions()
-	 *
+	 * {@inheritDoc}
 	 */
-	public function postModifyActions($newAccount, $attributes) {
+	public function postModifyActions(bool $newAccount, array $attributes): array {
 		if (!$this->isRootNode()) {
 			$ldapSuffix = ',cn=' . $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] . ',' . $this->getAccountContainer()->get_type()->getSuffix();
 			$add = [];

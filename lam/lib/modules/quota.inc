@@ -5,6 +5,7 @@ use LAM\PDF\PDFTableCell;
 use LAM\PDF\PDFTableRow;
 use LAM\REMOTE\Remote;
 use LAM\REMOTE\RemoteServerConfiguration;
+use LAM\TYPES\ConfiguredType;
 
 /*
 
@@ -381,15 +382,9 @@ class quota extends baseModule {
 	}
 
 	/**
-	 * Quotas are set in postmodify.
-	 *
-	 * @param boolean $newAccount is new account
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
-	 * @see baseModule::postModifyActions()
-	 *
+	 * {@inheritDoc}
 	 */
-	public function postModifyActions($newAccount, $attributes) {
+	public function postModifyActions(bool $newAccount, array $attributes): array {
 		$messages = [];
 		if (!is_array($this->quota)
 			|| ($this->getAccountContainer() === null)
@@ -939,9 +934,9 @@ class quota extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::doUploadPostActions()
 	 */
-	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
+	public function doUploadPostActions(array &$data, array $ids, array $failed, array &$temp, array &$accounts,
+										array $selectedModules, ConfiguredType $type): array {
 		$errors = [];
 		// first call, get list of user names and quota values
 		if (!isset($temp['counter'])) {
