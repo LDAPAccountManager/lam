@@ -55,8 +55,8 @@ const SAMBA_MUNGEDDIAL_FILEHEADER_OLD = "6d000800200020002000200020002000" .
  * @package modules
  */
 class sambaMungedDial {
-	/* Terminal server variables (samba3) */
-	public $ctx = [
+	/** @var array<string, string> $ctx Terminal server variables (samba3) */
+	public array $ctx = [
 		'CtxCfgPresent' => '551e0bb0',
 		'CtxCfgFlags1' => '00e00010',
 		'CtxCallback' => '',
@@ -74,26 +74,21 @@ class sambaMungedDial {
 		'CtxInitialProgram' => '',
 		'CtxCallbackNumber' => ''];
 
-	/* attribute list for save action */
-	public $ctxattributes = ["CtxCfgPresent", "CtxCfgFlags1", "CtxCallback",
-		"CtxShadow", "CtxMaxConnectionTime", "CtxMaxDisconnectionTime",
-		"CtxMaxIdleTime", "CtxKeyboardLayout", "CtxMinEncryptionLevel",
-		"CtxWorkDirectory", "CtxNWLogonServer", "CtxWFHomeDir",
-		"CtxWFHomeDirDrive", "CtxWFProfilePath", "CtxInitialProgram",
-		"CtxCallbackNumber"];
-
-	/* These parameters are treated as strings and get a trailing zero */
-	private $stringParams = ["CtxWorkDirectory", "CtxNWLogonServer",
+	/** @var string[] $stringParams These parameters are treated as strings and get a trailing zero */
+	private array $stringParams = ["CtxWorkDirectory", "CtxNWLogonServer",
 		"CtxWFHomeDir", "CtxWFHomeDirDrive",
 		"CtxWFProfilePath", "CtxInitialProgram", "CtxCallbackNumber"];
 
-	/* These parameters are treated as time values and get converted */
-	private $timeParams = ["CtxMaxConnectionTime", "CtxMaxDisconnectionTime", "CtxMaxIdleTime"];
+	/** @var string[] $timeParams These parameters are treated as time values and get converted */
+	private array $timeParams = ["CtxMaxConnectionTime", "CtxMaxDisconnectionTime", "CtxMaxIdleTime"];
 
-	private $old_behavior = false;
+	private bool $old_behavior = false;
 
-	/** strhex */
-	function strhex($string) {
+	/** strhex
+	 * @param string $string string
+	 * @return string hex
+	 */
+	public function strhex($string): string {
 		$hex = "";
 
 		for ($i = 0; $i < strlen($string); $i++) {
@@ -103,8 +98,11 @@ class sambaMungedDial {
 		return ($hex);
 	}
 
-	/** hexstr */
-	function hexstr($hex) {
+	/** hexstr
+	 * @param string $hex hex value
+	 * @return string value
+	 */
+	public function hexstr($hex): string {
 		$string = "";
 
 		for ($i = 0; $i < strlen($hex) - 1; $i += 2) {
@@ -114,13 +112,19 @@ class sambaMungedDial {
 		return ($string);
 	}
 
-	/** endian */
-	function endian($src) {
+	/** endian
+	 * @param string $src source
+	 * @return string endian changed
+	 */
+	public function endian($src): string {
 		return (substr($src, 2, 2) . substr($src, 0, 2));
 	}
 
-	/** genTime */
-	function genTime($minutes) {
+	/** genTime
+	 * @param string $minutes minutes
+	 * @return string time
+	 */
+	public function genTime($minutes): string {
 		if ($minutes === '') {
 			$minutes = 0;
 		}
@@ -129,8 +133,11 @@ class sambaMungedDial {
 		return (sambaMungedDial::endian(substr($src, 0, 4)) . sambaMungedDial::endian(substr($src, 4, 4)));
 	}
 
-	/** readTime */
-	function readTime($time) {
+	/** readTime
+	 * @param string $time time
+	 * @return int time
+	 */
+	public function readTime($time): int {
 		$lo = substr($time, 0, 4);
 		$hi = substr($time, 4, 4);
 
@@ -140,8 +147,11 @@ class sambaMungedDial {
 		return ((int) ($usecs / (60 * 1000)));
 	}
 
-	/** to8bit */
-	function to8bit($string) {
+	/** to8bit
+	 * @param string $string string
+	 * @return string 8bit string
+	 */
+	public function to8bit($string): string {
 		$result = "";
 
 		/* Strip zeros */
@@ -154,21 +164,11 @@ class sambaMungedDial {
 		return ($result);
 	}
 
-	/** Checks if this is a valid Samba path. */
-	function is_samba_path($path) {
-		if ($path == "") {
-			return (TRUE);
-		}
-
-		if (!preg_match('/^[a-z0-9%\\\\_.:+-\\\\$]+$/i', $path)) {
-			return (FALSE);
-		}
-
-		return preg_match("/\\\\.+$/", $path);
-	}
-
-	/** Encode full MungedDial-String */
-	function encode_munged($params) {
+	/** Encode full MungedDial-String
+	 * @param array<string, string> $params parameters
+	 * @return string result
+	 */
+	public function encode_munged($params): string {
 		/* Walk through the parameters and convert them */
 		$result = sambaMungedDial::hexstr(SAMBA_MUNGEDDIAL_FILEHEADER);
 
@@ -203,8 +203,13 @@ class sambaMungedDial {
 		return ($result);
 	}
 
-	/** Setup parameter given by paramName to MungedDial-Format */
-	function munge($paramName, $paramValue, $isString) {
+	/** Setup parameter given by paramName to MungedDial-Format
+	 * @param string $paramName param name
+	 * @param string $paramValue value
+	 * @param bool $isString is string
+	 * @return string value
+	 */
+	public function munge($paramName, $paramValue, $isString): string {
 		$result = "";
 
 		/* Encode paramName to UTF-16 */
@@ -241,8 +246,11 @@ class sambaMungedDial {
 		return ($result);
 	}
 
-	/** Takes a base64-encoded MungedDial-String and returns an array of included parameters and values */
-	function decode_munged($munge) {
+	/** Takes a base64-encoded MungedDial-String and returns an array of included parameters and values
+	 * @param string $munge munge
+	 * @return array<string, string> values
+	 */
+	public function decode_munged($munge): array {
 		$result = [];
 
 		/*
@@ -295,13 +303,17 @@ class sambaMungedDial {
 		return ($result);
 	}
 
-	/** function takes a base64-encoded sambaMungedDial */
-	function load($mungedDial) {
+	/** function takes a base64-encoded sambaMungedDial
+	 * @param string $mungedDial munged
+	 */
+	public function load($mungedDial): void {
 		$this->ctx = $this->decode_munged($mungedDial);
 	}
 
-	/** Returns ready-to-run mungedDialString to be filled into ldap */
-	function getMunged() {
+	/** Returns ready-to-run mungedDialString to be filled into ldap
+	 * @return string value
+	 */
+	public function getMunged(): string {
 		// Do extra check for valid timeParams (they must be set to 0 if disabled)
 		foreach ($this->timeParams as $value) {
 			if (!isset($this->ctx[$value])) {
@@ -311,8 +323,10 @@ class sambaMungedDial {
 		return base64_encode($this->encode_munged($this->ctx));
 	}
 
-	/** Returns array of flags, which can be set on-demand with activated java-script */
-	function getOnDemandFlags() {
+	/** Returns array of flags, which can be set on-demand with activated java-script
+	 * @return array<string, string> values
+	 */
+	public function getOnDemandFlags(): array {
 		$result = [];
 		foreach ($this->timeParams as $value) {
 			$result[$value . "Mode"] = "";
@@ -321,14 +335,18 @@ class sambaMungedDial {
 		return $result;
 	}
 
-	/** Gets Terminal-Server-Login value: enabled/disabled */
-	function getTsLogin() {
+	/** Gets Terminal-Server-Login value: enabled/disabled
+	 * @return bool enabled
+	 */
+	public function getTsLogin(): bool {
 		$flags = ord(substr($this->ctx['CtxCfgFlags1'], 5, 1));
 		return ($flags & 1) === 0;
 	}
 
-	/** Sets Terminal-Server-Login value: enabled/disabled */
-	function setTsLogin($checked) {
+	/** Sets Terminal-Server-Login value: enabled/disabled
+	 * @param bool $checked checked
+	 */
+	function setTsLogin($checked): void {
 		$flag = (int) substr($this->ctx['CtxCfgFlags1'], 5, 1);
 
 		if ($checked) {
@@ -341,14 +359,18 @@ class sambaMungedDial {
 		$this->ctx['CtxCfgFlags1'][5] = sprintf('%1x', $flag);
 	}
 
-	/** gets Broken-Connection value: disconnect/reset */
-	function getBrokenConn() {
+	/** gets Broken-Connection value: disconnect/reset
+	 * @return string value
+	 */
+	public function getBrokenConn(): string {
 		$flags = ord(substr($this->ctx['CtxCfgFlags1'], 5, 1));
 		return (($flags & 4) !== 0) ? "1" : "0";
 	}
 
-	/** sets Broken-Connection value: disconnect/reset */
-	function setBrokenConn($checked) {
+	/** sets Broken-Connection value: disconnect/reset
+	 * @param bool $checked checked
+	 */
+	public function setBrokenConn($checked): void {
 		$flag = (int) substr($this->ctx['CtxCfgFlags1'], 5, 1);
 
 		if ($checked) {
@@ -361,14 +383,18 @@ class sambaMungedDial {
 		$this->ctx['CtxCfgFlags1'][5] = sprintf('%1x', $flag);
 	}
 
-	/** gets Reconnection value: from any client/from previous client only */
-	function getReConn() {
+	/** gets Reconnection value: from any client/from previous client only
+	 * @return string value
+	 */
+	public function getReConn(): string {
 		$flags = ord(substr($this->ctx['CtxCfgFlags1'], 5, 1));
 		return (($flags & 2) !== 0) ? "1" : "0";
 	}
 
-	/** sets Reconnection value: from any client/from previous client only */
-	function setReConn($checked) {
+	/** sets Reconnection value: from any client/from previous client only
+	 * @param bool $checked checked
+	 */
+	public function setReConn($checked): void {
 		$flag = (int) substr($this->ctx['CtxCfgFlags1'], 5, 1);
 
 		if ($checked) {
@@ -381,13 +407,17 @@ class sambaMungedDial {
 		$this->ctx['CtxCfgFlags1'][5] = sprintf('%1x', $flag);
 	}
 
-	/** gets Inherit-config-from-client value: enabled/disabled */
-	function getInheritMode() {
+	/** gets Inherit-config-from-client value: enabled/disabled
+	 * @return bool enabled
+	 */
+	public function getInheritMode(): bool {
 		return substr($this->ctx['CtxCfgFlags1'], 6, 1) === "1";
 	}
 
-	/** sets Inherit-config-from-client value: enabled/disabled */
-	function setInheritMode($checked) {
+	/** sets Inherit-config-from-client value: enabled/disabled
+	 * @param bool $checked checked
+	 */
+	public function setInheritMode($checked): void {
 		$this->ctx['CtxCfgFlags1'][6] = $checked ? "1" : "0";
 	}
 
@@ -397,13 +427,17 @@ class sambaMungedDial {
 	 * 2: input on, notify off
 	 * 3: input off, notify on
 	 * 4: input off, notify off
+	 * @return string value
 	 */
-	function getShadow() {
+	public function getShadow(): string {
 		return $this->old_behavior ? substr($this->ctx['CtxCfgFlags1'], 1, 1) : substr($this->ctx['CtxShadow'], 1, 1);
 	}
 
-	/** sets shadow value */
-	function setShadow($checked, $value) {
+	/** sets shadow value
+	 * @param bool $checked checked
+	 * @param string $value value
+	 */
+	public function setShadow($checked, $value): void {
 		if ($checked) {
 			if ($this->old_behavior) {
 				// We need to reset the old setting
@@ -413,15 +447,19 @@ class sambaMungedDial {
 		}
 	}
 
-	/** gets connect-client-drive-at-logon value: enabled/disabled */
-	function getConnectClientDrives() {
+	/** gets connect-client-drive-at-logon value: enabled/disabled
+	 * @return int enabled
+	 */
+	public function getConnectClientDrives(): int {
 		$connections = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
 
 		return $connections & 8;
 	}
 
-	/** sets connect-client-drive-at-logon value: enabled/disabled */
-	function setConnectClientDrives($checked) {
+	/** sets connect-client-drive-at-logon value: enabled/disabled
+	 * @param bool $checked checked
+	 */
+	public function setConnectClientDrives($checked): void {
 		$flag = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
 		if ($checked) {
 			$flag |= 8;
@@ -433,15 +471,19 @@ class sambaMungedDial {
 		$this->ctx['CtxCfgFlags1'][2] = sprintf('%1x', $flag);
 	}
 
-	/** gets connect-client-printers-at-logon value: enabled/disabled */
-	function getConnectClientPrinters() {
+	/** gets connect-client-printers-at-logon value: enabled/disabled
+	 * @return int enabled
+	 */
+	public function getConnectClientPrinters(): int {
 		$connections = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
 
 		return $connections & 4;
 	}
 
-	/** sets connect-client-printers-at-logon value: enabled/disabled */
-	function setConnectClientPrinters($checked) {
+	/** sets connect-client-printers-at-logon value: enabled/disabled
+	 * @param bool $checked checked
+	 */
+	public function setConnectClientPrinters($checked): void {
 		$flag = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
 
 		if ($checked) {
@@ -454,15 +496,19 @@ class sambaMungedDial {
 		$this->ctx['CtxCfgFlags1'][2] = sprintf('%1x', $flag);
 	}
 
-	/** gets set-client-printer-to-default value: enabled/disabled */
-	function getDefaultPrinter() {
+	/** gets set-client-printer-to-default value: enabled/disabled
+	 * @return int enabled
+	 */
+	public function getDefaultPrinter(): int {
 		$connections = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
 
 		return $connections & 2;
 	}
 
-	/** sets set-client-printer-to-default value: enabled/disabled */
-	function setDefaultPrinter($checked) {
+	/** sets set-client-printer-to-default value: enabled/disabled
+	 * @param bool $checked checked
+	 */
+	public function setDefaultPrinter($checked): void {
 		$flag = hexdec(substr($this->ctx['CtxCfgFlags1'], 2, 1));
 
 		if ($checked) {
@@ -476,39 +522,49 @@ class sambaMungedDial {
 	}
 
 	/** SMARTY: gets the checkbox state of "Connection" */
-	function getCtxMaxConnectionTimeF() {
+	public function getCtxMaxConnectionTimeF(): bool {
 		// Connection Time is 0 if disabled
 		return isset($this->ctx['CtxMaxConnectionTime']) && ($this->ctx['CtxMaxConnectionTime'] != 0);
 	}
 
-	/** SMARTY: sets the checkbox "Connection" to unchecked */
-	function setCtxMaxConnectionTimeF($checked) {
+	/** SMARTY: sets the checkbox "Connection" to unchecked
+	 * @param bool $checked checked
+	 */
+	public function setCtxMaxConnectionTimeF($checked): void {
 		if ($checked) {
 			unset ($this->ctx['CtxMaxConnectionTime']);
 		}
 	}
 
-	/** SMARTY: gets the checkbox state of "Disconnection" */
-	function getCtxMaxDisconnectionTimeF() {
+	/** SMARTY: gets the checkbox state of "Disconnection"
+	 * @return bool disconnection time set
+	 */
+	public function getCtxMaxDisconnectionTimeF(): bool {
 		// Connection Time is 0 if disabled
 		return isset($this->ctx['CtxMaxDisconnectionTime']) && ($this->ctx['CtxMaxDisconnectionTime'] != 0);
 	}
 
-	/** SMARTY: sets the checkbox "Disconnection" to unchecked */
-	function setCtxMaxDisconnectionTimeF($checked) {
+	/** SMARTY: sets the checkbox "Disconnection" to unchecked
+	 * @param bool $checked checked
+	 */
+	public function setCtxMaxDisconnectionTimeF($checked): void {
 		if ($checked) {
 			unset ($this->ctx['CtxMaxDisconnectionTime']);
 		}
 	}
 
-	/** SMARTY: gets the checkbox state of "Idle" */
-	function getCtxMaxIdleTimeF() {
+	/** SMARTY: gets the checkbox state of "Idle"
+	 * @return bool is idle time set
+	 */
+	public function getCtxMaxIdleTimeF(): bool {
 		// Connection Time is 0 if disabled
 		return isset($this->ctx['CtxMaxIdleTime']) && ($this->ctx['CtxMaxIdleTime'] != 0);
 	}
 
-	/** SMARTY: sets the checkbox "Idle" to unchecked */
-	function setCtxMaxIdleTimeF($checked) {
+	/** SMARTY: sets the checkbox "Idle" to unchecked
+	 * @param bool $checked checked
+	 */
+	public function setCtxMaxIdleTimeF($checked): void {
 		if ($checked) {
 			unset ($this->ctx['CtxMaxIdleTime']);
 		}
