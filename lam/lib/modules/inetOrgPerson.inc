@@ -2640,17 +2640,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Checks if the self service settings are valid.
-	 *
-	 * If the input data is invalid the return value is an array that contains arrays
-	 * to build StatusMessages (message type, message head, message text). If no errors
-	 * occurred the function returns an empty array.
-	 *
-	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	 * @param selfServiceProfile $profile self service profile
-	 * @return array error messages
+	 * {@inheritDoc}
 	 */
-	public function checkSelfServiceSettings(&$options, &$profile) {
+	public function checkSelfServiceSettings(array &$options, selfServiceProfile &$profile): array {
 		$errors = [];
 		if (!empty($options['inetOrgPerson_jpegPhoto_maxWidth'][0]) && !is_numeric($options['inetOrgPerson_jpegPhoto_maxWidth'][0])) {
 			$errors[] = ['ERROR', _('Please enter a number.'), _('Maximum width (px)')];

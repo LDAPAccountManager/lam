@@ -737,7 +737,7 @@ class selfServiceProfile {
 	/** @var array<string, string>|null $relabelFields list of override values for field labels: array(<field ID> => label) */
 	public ?array $relabelFields = [];
 
-	/** @var array<string, string> $moduleSettings configuration settings of modules */
+	/** @var array<string, string[]> $moduleSettings configuration settings of modules */
 	public array $moduleSettings = [];
 
 	/** language for self-service */

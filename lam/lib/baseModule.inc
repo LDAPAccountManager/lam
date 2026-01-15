@@ -2168,9 +2168,9 @@ abstract class baseModule {
 	 *
 	 * @param array<string, string[]> $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	 * @param selfServiceProfile $profile self-service profile
-	 * @return array error messages
+	 * @return string[][] error messages
 	 */
-	public function checkSelfServiceSettings(&$options, &$profile) {
+	public function checkSelfServiceSettings(array &$options, selfServiceProfile &$profile): array {
 		// needs to be implemented by the subclasses, if needed
 		return [];
 	}
@@ -2205,10 +2205,10 @@ abstract class baseModule {
 	 * The link is shown on the login page of the self-service. You
 	 * can use this to provide e.g. a page to reset passwords.
 	 *
-	 * @param array $settings self-service settings
+	 * @param array<string, string[]> $settings self-service settings
 	 * @return string|null link text (null if no special page used)
 	 */
-	public function getLinkToSpecialSelfServicePage($settings) {
+	public function getLinkToSpecialSelfServicePage(array $settings): ?string {
 		return null;
 	}
 
