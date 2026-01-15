@@ -45,12 +45,12 @@ class windowsGroup extends baseModule {
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sAMAccountName', 'msSFU30Name', 'msSFU30NisDomain'];
 
-	/** possible group types (e.g. distribution) */
-	private $groupTypes;
-	/** possible group scopes (e.g. universal) */
-	private $groupScopes;
-	/** group cache */
-	private $groupCache;
+	/** @var array<string, string> $groupTypes possible group types (e.g. distribution) */
+	private array $groupTypes;
+	/** @var array<string, string> $groupScopes possible group scopes (e.g. universal) */
+	private array $groupScopes;
+	/** @var string[]|null $groupCache group cache */
+	private ?array $groupCache = null;
 
 	/** security group */
 	const TYPE_SECURITY = 'security';
@@ -506,7 +506,7 @@ class windowsGroup extends baseModule {
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_memberof() {
+	public function display_html_memberof(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$return->add(new htmlSubTitle(_("Groups")));
 		$groups = $this->findGroups();
@@ -545,9 +545,9 @@ class windowsGroup extends baseModule {
 	 * Processes user input of the memberof selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_memberof() {
+	public function process_memberof(): array {
 		if (isset($_POST['memberof_2']) && isset($_POST['memberof_left'])) { // Add groups to list
 			// add new group
 			$this->attributes['memberOf'] = @array_merge($this->attributes['memberOf'], $_POST['memberof_2']);
@@ -563,7 +563,7 @@ class windowsGroup extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_managedBy() {
+	public function display_html_managedBy(): htmlElement {
 		$return = new htmlResponsiveRow();
 		// show possible managers
 		$options = [];
@@ -611,9 +611,9 @@ class windowsGroup extends baseModule {
 	 * Processes user input of the members page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_managedBy() {
+	public function process_managedBy(): array {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_set'])) {
 			$this->attributes['managedBy'][0] = $_POST['managedBy'];
@@ -626,7 +626,7 @@ class windowsGroup extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_user() {
+	public function display_html_user(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		// show list of possible new members
@@ -725,9 +725,9 @@ class windowsGroup extends baseModule {
 	 * Processes user input of the members page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_user() {
+	public function process_user(): array {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_user_remove']) && isset($_POST['members'])) {
 			$members = array_flip($this->attributes['member']);
@@ -752,7 +752,7 @@ class windowsGroup extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_effectiveMembers() {
+	public function display_html_effectiveMembers(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$effectiveMembers = $this->getEffectiveMembers();
 		$entryTable = new htmlTable();
@@ -773,9 +773,9 @@ class windowsGroup extends baseModule {
 	/**
 	 * Processes user input of the effective members page.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_effectiveMembers() {
+	public function process_effectiveMembers(): array {
 		// no processing, page is read-only
 		return [];
 	}
@@ -944,9 +944,9 @@ class windowsGroup extends baseModule {
 	/**
 	 * Finds all existing groups.
 	 *
-	 * @return array group DNs
+	 * @return string[] group DNs
 	 */
-	private function findGroups() {
+	private function findGroups(): array {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
@@ -1021,9 +1021,9 @@ class windowsGroup extends baseModule {
 	/**
 	 * Recursively gets the members of this group and its subgroups.
 	 *
-	 * @return list of DNs
+	 * @return string[] list of DNs
 	 */
-	private function getEffectiveMembers() {
+	private function getEffectiveMembers(): array {
 		$membersToCheck = $this->attributes['member'];
 		$effectiveMembers = $membersToCheck;
 		while (!empty($membersToCheck)) {

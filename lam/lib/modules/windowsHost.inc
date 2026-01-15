@@ -252,7 +252,7 @@ class windowsHost extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_managedBy() {
+	public function display_html_managedBy(): htmlElement {
 		$return = new htmlResponsiveRow();
 		// show possible managers
 		$options = [];
@@ -299,9 +299,9 @@ class windowsHost extends baseModule {
 	 * Processes user input of the members page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_managedBy() {
+	public function process_managedBy(): array {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_set'])) {
 			$this->attributes['managedBy'][0] = $_POST['managedBy'];

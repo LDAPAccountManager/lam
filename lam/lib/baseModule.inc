@@ -413,7 +413,7 @@ abstract class baseModule {
 	 * </ul>
 	 * <b>Example:</b> return array("is_base" => true);
 	 *
-	 * @return array<string, bool|string|array<string|int, string|null|string[]|array<string, string|null>>> meta data
+	 * @return array<string, mixed> meta data
 	 */
 	public function get_metaData(): array {
 		return [];
