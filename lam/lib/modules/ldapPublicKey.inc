@@ -557,10 +557,9 @@ class ldapPublicKey extends baseModule {
 	}
 
 	/**
-	 * Manages AJAX requests.
-	 * This function may be called with or without an account container.
+	 * {@inheritDoc}
 	 */
-	public function handleAjaxRequest() {
+	public function handleAjaxRequest(): void {
 		// AJAX uploads are non-JSON
 		if (isset($_POST['action']) && ($_POST['action'] == 'ajaxKeyUpload')) {
 			$this->ajaxUpload();

@@ -242,9 +242,9 @@ class systemQuotas extends baseModule {
 	 * @param string $softInode soft inode limit
 	 * @param string $hardInode hard inode limit
 	 * @param int $uploadIndex position in upload table
-	 * @return array array where error messages are returned
+	 * @return string[][] array where error messages are returned
 	 */
-	private function checkQuota($path, $softBlock, $hardBlock, $softInode, $hardInode, $uploadIndex = null) {
+	private function checkQuota($path, $softBlock, $hardBlock, $softInode, $hardInode, $uploadIndex = null): array {
 		$return = [];
 		if (!get_preg($path, 'filePath')) {
 			if ($uploadIndex == null) {
@@ -322,7 +322,7 @@ class systemQuotas extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	function check_profileOptions($options, $typeId) {
+	public function check_profileOptions(array $options, string $typeId): array {
 		$messages = parent::check_profileOptions($options, $typeId);
 		$quotas = explode(';', $options['systemQuotas_quota'][0]);
 		for ($q = 0; $q < count($quotas); $q++) {

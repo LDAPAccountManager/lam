@@ -3486,9 +3486,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::postModifySelfService()
 	 */
-	public function postModifySelfService($newAccount, $attributes) {
+	public function postModifySelfService(bool $newAccount, array $attributes): bool {
 		if (isset($attributes['INFO.userPasswordModify'][0])
 			&& ($attributes['INFO.userPasswordModify'][0] === 'exop')) {
 			$password = $attributes['INFO.userPasswordClearText'][0];

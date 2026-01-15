@@ -565,13 +565,13 @@ abstract class baseModule {
 	 * to build StatusMessages (message type, message head, message text). If no errors occurred
 	 * the function returns an empty array.
 	 *
-	 * @param array $options a hash array (name => value) containing the user input
+	 * @param array<string, string> $options a hash array (name => value) containing the user input
 	 * @param string $typeId type id (user, group, host)
-	 * @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
+	 * @return string[][] list of error messages (array(type, title, text)) to generate StatusMessages, if any
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function check_profileOptions($options, $typeId) {
+	public function check_profileOptions(array $options, string $typeId): array {
 		$errors = [];
 		if (isset($this->meta['profile_checks'])) {
 			foreach ($this->meta['profile_checks'] as $identifier => $check) {
@@ -2191,11 +2191,11 @@ abstract class baseModule {
 	/**
 	 * Allows the module to run commands after the LDAP entry is changed or created.
 	 *
-	 * @param boolean $newAccount is new account or existing one
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return boolean true, if no problems occurred
+	 * @param bool $newAccount is new account or existing one
+	 * @param array<string, string[]|string> $attributes LDAP attributes of this entry
+	 * @return bool true, if no problems occurred
 	 */
-	public function postModifySelfService($newAccount, $attributes) {
+	public function postModifySelfService(bool $newAccount, array $attributes): bool {
 		return true;
 	}
 
@@ -2279,7 +2279,7 @@ abstract class baseModule {
 	 * Manages AJAX requests.
 	 * This function may be called with or without an account container.
 	 */
-	public function handleAjaxRequest() {
+	public function handleAjaxRequest(): void {
 		// modules that use AJAX need to implement this function
 	}
 

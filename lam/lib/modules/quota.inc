@@ -722,7 +722,7 @@ class quota extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	function check_profileOptions($options, $typeId) {
+	public function check_profileOptions(array $options, string $typeId): array {
 		$return = [];
 		// get list of lamdaemon servers
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();

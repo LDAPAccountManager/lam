@@ -656,7 +656,7 @@ class freeRadius extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	function check_profileOptions($options, $typeId) {
+	public function check_profileOptions(array $options, string $typeId): array {
 		$messages = parent::check_profileOptions($options, $typeId);
 		// group names
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')

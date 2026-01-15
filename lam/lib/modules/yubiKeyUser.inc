@@ -452,8 +452,7 @@ class yubiKeyUser extends baseModule {
 	}
 
 	/**
-	 * Manages AJAX requests.
-	 * This function may be called with or without an account container.
+	 * {@inheritDoc}
 	 */
 	public function handleAjaxRequest(): void {
 		$jsonInput = json_decode($_POST['jsonInput'], true);

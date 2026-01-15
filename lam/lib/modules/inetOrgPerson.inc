@@ -2245,7 +2245,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * {@inheritDoc}
 	 */
-	function check_profileOptions($options, $typeId) {
+	public function check_profileOptions(array $options, string $typeId): array {
 		$messages = parent::check_profileOptions($options, $typeId);
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$telephoneNumberList = preg_split('/;[ ]*/', $options['inetOrgPerson_telephoneNumber'][0]);
@@ -3322,10 +3322,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Manages AJAX requests.
-	 * This function may be called with or without an account container.
+	 * {@inheritDoc}
 	 */
-	public function handleAjaxRequest() {
+	public function handleAjaxRequest(): void {
 		// AJAX uploads are non-JSON
 		if (isset($_POST['action']) && ($_POST['action'] == 'ajaxCertUpload')) {
 			$this->ajaxUploadCert();
