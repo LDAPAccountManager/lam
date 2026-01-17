@@ -2270,9 +2270,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		// cn and uid for upload (only if posixAccount is not selected)
 		if (!$this->isUnixActive($selectedModules)) {

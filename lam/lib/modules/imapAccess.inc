@@ -760,9 +760,8 @@ class imapAccess extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_uploadColumns()
 	 */
-	public function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$pwd = $this->getAdminPassword();
 		if (empty($pwd)) {
 			return [];

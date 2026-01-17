@@ -374,9 +374,8 @@ class pykotaGroup extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->isUnixOrGonInactive($selectedModules)) {
 			$return[] = [

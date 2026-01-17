@@ -955,13 +955,13 @@ abstract class baseModule {
 	 * <br>  boolean: unique // true if all values of this column must be different values (optional, default: "false")
 	 * <br> )
 	 *
-	 * @param array $selectedModules list of selected account modules
+	 * @param string[] $selectedModules list of selected account modules
 	 * @param ConfiguredType $type account type
-	 * @return array column list
+	 * @return array<string, string|bool> column list
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		return $this->meta['upload_columns'] ?? [];
 	}
 
@@ -972,11 +972,11 @@ abstract class baseModule {
 	 * <br>
 	 * The named modules may not be active, LAM will check this automatically.
 	 *
-	 * @return array list of module names
+	 * @return string[] list of module names
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function get_uploadPreDepends() {
+	public function get_uploadPreDepends(): array {
 		return $this->meta['upload_preDepends'] ?? [];
 	}
 

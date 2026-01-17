@@ -2584,9 +2584,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$typeId = $type->getId();
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->isPasswordManaged($typeId)) {

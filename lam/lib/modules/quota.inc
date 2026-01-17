@@ -877,9 +877,8 @@ class quota extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_uploadColumns()
 	 */
-	function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		try {
 			$this->initQuotas();
 		}

@@ -48,14 +48,14 @@ class sambaGroupMapping extends baseModule {
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['sambaSID', 'gidNumber', 'displayName'];
 
 	// Variables
-	/** Array of well known RIDs */
-	private $rids;
-	/** Array of sambaGroupTypes */
-	private $sambaGroupTypes;
-	/** cache for domain list */
-	private $cachedDomainList;
-	/** cache for existing Samba entries (array(dn => cn)) */
-	private $sidCache;
+	/** @var array<string, int> $rids Array of well known RIDs */
+	private array $rids;
+	/** @var array<string, int> $sambaGroupTypes array of sambaGroupTypes */
+	private array $sambaGroupTypes;
+	/** @var samba3domain[] $cachedDomainList cache for domain list */
+	private ?array $cachedDomainList = null;
+	/** @var array<string, string>|null $sidCache cache for existing Samba entries (array(dn => cn)) */
+	private ?array $sidCache = null;
 
 	/**
 	 * Creates a new module for Samba 3 groups.
@@ -225,9 +225,8 @@ class sambaGroupMapping extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_uploadColumns()
 	 */
-	public function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		$domains = $this->getDomains();
 		$domainNames = [];
@@ -434,7 +433,7 @@ class sambaGroupMapping extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_members() {
+	public function display_html_members(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		// show list of possible new members
@@ -503,9 +502,9 @@ class sambaGroupMapping extends baseModule {
 	 * Processes user input of the members page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_members() {
+	public function process_members(): array {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_addMembers']) && isset($_POST['members'])) {
 			for ($i = 0; $i < count($_POST['members']); $i++) {
@@ -701,10 +700,10 @@ class sambaGroupMapping extends baseModule {
 	/**
 	 * Returns a list of existing Samba 3 domains.
 	 *
-	 * @return array list of samba3domain objects
+	 * @return samba3domain[] list of samba3domain objects
 	 */
-	private function getDomains() {
-		if ($this->cachedDomainList != null) {
+	private function getDomains(): array {
+		if ($this->cachedDomainList !== null) {
 			return $this->cachedDomainList;
 		}
 		$this->cachedDomainList = search_domains();
@@ -714,8 +713,8 @@ class sambaGroupMapping extends baseModule {
 	/**
 	 * Loads the list of Samba accounts into the cache.
 	 */
-	private function loadSIDCache() {
-		if ($this->sidCache != null) {
+	private function loadSIDCache(): void {
+		if ($this->sidCache !== null) {
 			return;
 		}
 		$results = searchLDAPByFilter('(|(objectClass=sambaSamAccount)(objectClass=sambaGroupMapping))', ['cn', 'uid', 'sambaSID'], ['user', 'group', 'host']);

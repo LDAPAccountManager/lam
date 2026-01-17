@@ -230,9 +230,8 @@ class account extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_uploadColumns()
 	 */
-	function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if (!in_array('posixAccount', $selectedModules)) {
 			$return[] = [

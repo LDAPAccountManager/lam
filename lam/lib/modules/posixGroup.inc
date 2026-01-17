@@ -56,9 +56,8 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	function get_uploadColumns($selectedModules, &$type) {
+	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		$typeId = $type->getId();
 		if ($this->manageCnAndDescription($selectedModules)) {
