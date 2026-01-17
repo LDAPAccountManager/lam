@@ -989,7 +989,7 @@ abstract class baseModule {
 	 *
 	 * @param array<int, string>[] $rawAccounts the user input data, contains one subarray for each account.
 	 * @param array<string, int> $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	 * @param array<string, string[]|string|mixed>[] $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	 * @param array<string, string[]|string>[] $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	 * @param string[] $selectedModules list of selected account modules
 	 * @param ConfiguredType $type account type
 	 * @return string[][] list of error messages if any

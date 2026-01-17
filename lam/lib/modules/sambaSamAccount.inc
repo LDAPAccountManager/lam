@@ -66,27 +66,27 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 
 	// Variables
 	/** use no password? */
-	private $nopwd;
+	private bool $nopwd = false;
 	/** password does not expire? */
-	private $noexpire;
-	/** array of well known group rids */
-	private $groupRids;
-	/** array of well known user rids */
-	private $userRids;
-	/** HEX to binary conversion table */
-	private $hex2bitstring = ['0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
+	private bool $noexpire = true;
+	/** @var array<string, int> $groupRids array of well known group rids */
+	private array $groupRids;
+	/** @var array<string, int> $userRids array of well known user rids */
+	private array $userRids;
+	/** @var array<string|int, string> $hex2bitstring HEX to binary conversion table */
+	private array $hex2bitstring = ['0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
 		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
 		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111'];
 	/** specifies if the password should be expired */
-	private $expirePassword = false;
-	/** host cache to reduce LDAP queries */
-	private $cachedHostList;
-	/** group cache to reduce LDAP queries */
-	private $cachedGroupSIDList;
-	/** cache for domain list */
-	private $cachedDomainList;
+	private bool $expirePassword = false;
+	/** @var string[]|null host cache to reduce LDAP queries */
+	private $cachedHostList = null;
+	/** @var array<string, string>|null $cachedGroupSIDList group cache to reduce LDAP queries */
+	private ?array $cachedGroupSIDList = null;
+	/** @var samba3domain[]|null $cachedDomainList cache for domain list */
+	private ?array $cachedDomainList = null;
 	/** delimiter for remote commands */
-	private static $SPLIT_DELIMITER = "###x##y##x###";
+	private static string $SPLIT_DELIMITER = "###x##y##x###";
 
 
 	/**
@@ -579,16 +579,6 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public function init(string $base): void {
-		// call parent init
-		parent::init($base);
-		$this->noexpire = true;
-		$this->nopwd = false;
-	}
-
-	/**
 	 * This function is used to check if this module page can be displayed.
 	 * It returns false if a module depends on data from other modules which was not yet entered.
 	 *
@@ -838,9 +828,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * Processes user input of the primary module page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_sambaUserWorkstations() {
+	public function process_sambaUserWorkstations(): array {
 		// Load attributes
 		if ($this->get_scope() == 'user') {
 			if (isset($_POST['workstations_2']) && isset($_POST['workstations_left'])) { // Add workstations to list
@@ -898,9 +888,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * Processes user input of the logon hours page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_logonHours() {
+	public function process_logonHours(): array {
 		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
 			return [];
 		}
@@ -926,9 +916,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Processes user input of the time selection page.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_time() {
+	public function process_time(): array {
 		$return = [];
 		// find button name
 		$buttonName = '';
@@ -999,9 +989,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * Processes user input of the terminal server page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_terminalServer() {
+	public function process_terminalServer(): array {
 		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
 			return [];
 		}
@@ -1502,11 +1492,11 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		$tsIdleLimit->setType('number');
 		$return->add($tsIdleLimit);
 		// connect client drives
-		$return->add(new htmlResponsiveInputCheckbox('tsConnectDrives', $mDial->getConnectClientDrives(), _('Connect client drives'), 'tsConnectDrives'));
+		$return->add(new htmlResponsiveInputCheckbox('tsConnectDrives', (bool) $mDial->getConnectClientDrives(), _('Connect client drives'), 'tsConnectDrives'));
 		// connect client printers
-		$return->add(new htmlResponsiveInputCheckbox('tsConnectPrinters', $mDial->getConnectClientPrinters(), _('Connect client printers'), 'tsConnectPrinters'));
+		$return->add(new htmlResponsiveInputCheckbox('tsConnectPrinters', (bool) $mDial->getConnectClientPrinters(), _('Connect client printers'), 'tsConnectPrinters'));
 		// client printer is default
-		$return->add(new htmlResponsiveInputCheckbox('tsClientPrinterDefault', $mDial->getDefaultPrinter(), _('Client printer is default'), 'tsClientPrinterDefault'));
+		$return->add(new htmlResponsiveInputCheckbox('tsClientPrinterDefault', (bool) $mDial->getDefaultPrinter(), _('Client printer is default'), 'tsClientPrinterDefault'));
 		// shadowing
 		$shadowOptions = [
 			_("disabled") => "0",
@@ -1546,7 +1536,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_profilePath() {
+	public function display_html_profilePath(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$return->addLabel(new htmlOutputText(_('Profile path')));
 		$return->addField(new htmlOutputText($this->attributes['sambaProfilePath'][0]));
@@ -1617,9 +1607,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * Processes user input of the profile path check page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_profilePath() {
+	public function process_profilePath(): array {
 		$return = [];
 		$unixAttrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		$uidNumber = $unixAttrs['uidNumber'][0];
@@ -2380,10 +2370,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Checks password history and password minimum age and updates history.
 	 *
-	 * @param array $attributes LDAP attributes of current account
-	 * @param array $return return object of checkSelfServiceOptions()
+	 * @param array<string, string[]|string> $attributes LDAP attributes of current account
+	 * @param array<string, mixed> $return return object of checkSelfServiceOptions()
 	 */
-	private function doSelfServicePasswordHistoryAndMinAge($attributes, &$return) {
+	private function doSelfServicePasswordHistoryAndMinAge($attributes, &$return): void {
 		if (!empty($this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0])) {
 			$sambaDomain = $this->getUserDomain($attributes, $_SESSION['ldapHandle']->getServer(), $this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0]);
 			if ($sambaDomain == null) {
@@ -2501,11 +2491,14 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns if an old password is used.
 	 *
-	 * @param String $password new password
+	 * @param string $password new password
+	 * @param array<string, string[]|string> $attributes LDAP attributes
+	 * @param samba3domain|null $sambaDomain domain
+	 * @return bool old password used
 	 */
-	public static function oldPasswordUsed($password, $attributes, $sambaDomain) {
+	public static function oldPasswordUsed($password, $attributes, $sambaDomain): bool {
 		$attributes = array_change_key_case($attributes);
-		if (empty($attributes['sambapasswordhistory'][0]) || ($sambaDomain == null)
+		if (empty($attributes['sambapasswordhistory'][0]) || ($sambaDomain === null)
 			|| !is_numeric($sambaDomain->pwdHistoryLength) || ($sambaDomain->pwdHistoryLength < 1)) {
 			return false;
 		}
@@ -2520,12 +2513,12 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns the domain object of the user's domain.
 	 *
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 * @param Connection|null $server LDAP connection (leave empty for admin interface)
-	 * @param String $suffix LDAP search suffix (leave empty for admin interface)
+	 * @param string $suffix LDAP search suffix (leave empty for admin interface)
 	 * @return samba3domain|null domain
 	 */
-	public function getUserDomain($attributes, $server = null, $suffix = null) {
+	public function getUserDomain($attributes, $server = null, $suffix = null): ?samba3domain {
 		$attributes = array_change_key_case($attributes);
 		$sambaDomains = $this->getDomains($server, $suffix);
 		if (count($sambaDomains) > 0) {
@@ -2566,10 +2559,11 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns the time when the user needs to change his password.
 	 *
-	 * @param array $domains list of domain objects
+	 * @param samba3domain[] $domains list of domain objects
 	 * @param string|null $selectedDomain selected domain name
+	 * @return string formatted time
 	 */
-	private function getPasswordMustChangeTime($domains, $selectedDomain) {
+	private function getPasswordMustChangeTime($domains, $selectedDomain): string {
 		$return = '-';
 		// check if password expires at all
 		if ($this->noexpire) {
@@ -2597,10 +2591,11 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns the time when the user can change his password.
 	 *
-	 * @param array $domains list of domain objects
+	 * @param samba3domain[] $domains list of domain objects
 	 * @param string $selectedDomain selected domain name
+	 * @return string formatted time
 	 */
-	private function getPasswordCanChangeTime($domains, $selectedDomain) {
+	private function getPasswordCanChangeTime($domains, $selectedDomain): string {
 		$return = '-';
 		// check if there is a time set for the last password change
 		if (!isset($this->attributes['sambaPwdLastSet'][0])) {
@@ -2624,10 +2619,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns a list of existing hosts.
 	 *
-	 * @return array host names
+	 * @return string[] host names
 	 */
-	private function getHostList() {
-		if ($this->cachedHostList != null) {
+	private function getHostList(): array {
+		if ($this->cachedHostList !== null) {
 			return $this->cachedHostList;
 		}
 		$this->cachedHostList = searchLDAPByAttribute('uid', '*', 'sambaSamAccount', ['uid'], ['host']);
@@ -2640,10 +2635,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns a list of existing hosts.
 	 *
-	 * @return array host names
+	 * @return array<string, string> GID => sambaSID
 	 */
-	private function getGroupSIDList() {
-		if ($this->cachedGroupSIDList != null) {
+	private function getGroupSIDList(): array {
+		if ($this->cachedGroupSIDList !== null) {
 			return $this->cachedGroupSIDList;
 		}
 		$this->cachedGroupSIDList = [];
@@ -2661,10 +2656,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @param Connection|null $server LDAP connection (leave empty for admin interface)
 	 * @param String $suffix LDAP search suffix (leave empty for admin interface)
-	 * @return array list of samba3domain objects
+	 * @return samba3domain[] list of samba3domain objects
 	 */
-	private function getDomains($server = null, $suffix = null) {
-		if ($this->cachedDomainList != null) {
+	private function getDomains($server = null, $suffix = null): array {
+		if ($this->cachedDomainList !== null) {
 			return $this->cachedDomainList;
 		}
 		$this->cachedDomainList = search_domains($server, $suffix);
@@ -2679,7 +2674,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @param int|null $month month (e.g. 8)
 	 * @param int|null $day day (e.g. 27)
 	 */
-	public function setExpirationDate($year, $month, $day) {
+	public function setExpirationDate($year, $month, $day): void {
 		if (($year == null) && ($month == null) && ($day == null)) {
 			unset($this->attributes['sambaKickoffTime']);
 			return;
@@ -2691,19 +2686,19 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns if the Samba extension is enabled.
 	 *
-	 * @return boolean Samba extension is active
+	 * @return bool Samba extension is active
 	 */
-	public function isExtensionEnabled() {
+	public function isExtensionEnabled(): bool {
 		return in_array('sambaSamAccount', $this->attributes['objectClass']);
 	}
 
 	/**
 	 * Returns if the Samba part of the current account is locked.
 	 *
-	 * @param ?array $attributes LDAP attributes
-	 * @return boolean account is locked
+	 * @param array<string, string[]|string>|null $attributes LDAP attributes
+	 * @return bool account is locked
 	 */
-	public function isLocked(?array $attributes = null) {
+	public function isLocked(?array $attributes = null): bool {
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
@@ -2716,10 +2711,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns if the Samba part of the current account is deactivated.
 	 *
-	 * @param ?array $attributes LDAP attributes
-	 * @return boolean account is deactivated
+	 * @param array<string, string[]|string>|null $attributes LDAP attributes
+	 * @return bool account is deactivated
 	 */
-	public function isDeactivated(?array $attributes = null) {
+	public function isDeactivated(?array $attributes = null): bool {
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
@@ -2734,7 +2729,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 */
-	public function deactivate(array &$attributes) {
+	public function deactivate(array &$attributes): void {
 		if (!isset($attributes['sambaacctflags'][0])) {
 			$attributes['sambaacctflags'][0] = ($this->get_scope() === 'host') ? '[W          ]' : '[ XU        ]';
 		}
@@ -2750,7 +2745,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 */
-	public function activate(array &$attributes) {
+	public function activate(array &$attributes): void {
 		if (!isset($attributes['sambaacctflags'][0])) {
 			$attributes['sambaacctflags'][0] = ($this->get_scope() === 'host') ? '[W          ]' : '[ XU        ]';
 		}
@@ -2762,7 +2757,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 */
-	public function unlock(array &$attributes) {
+	public function unlock(array &$attributes): void {
 		$attributes['sambaacctflags'][0] = str_replace('L', ' ', $attributes['sambaacctflags'][0]);
 	}
 
@@ -2804,9 +2799,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns if password history is enabled.
 	 *
-	 * @param array $settings server profile or self service settings
+	 * @param array<string, string[]> $settings server profile or self service settings
+	 * @return bool enabled
 	 */
-	public static function isPasswordHistoryEnabled($settings) {
+	public static function isPasswordHistoryEnabled($settings): bool {
 		return empty($settings['sambaSamAccount_history']) || ($settings['sambaSamAccount_history'][0] != 'no');
 	}
 

@@ -65,3 +65,5 @@ parameters:
 		- '#.*array_values is already a list.*#'
 		- '#Unable to resolve the template type T in call to method accountContainer::getAccountModule\(\)#'
 		- '#Unable to resolve the template type T in call to function array_values#'
+		- '#.*build_uploadAccounts\(\) expects array.*#'
+		- '#.*mapSimpleUploadField\(\) expects array.*#'
