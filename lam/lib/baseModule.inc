@@ -809,7 +809,7 @@ abstract class baseModule {
 	/**
 	 * Returns a list of config options for LAM's main configuration.
 	 *
-	 * @param array<string, string> $currentSettings current settings
+	 * @param array<string, array<string, string>> $currentSettings current settings
 	 * @return htmlElement[] config options
 	 */
 	public function getGlobalConfigOptions(array $currentSettings): array {
@@ -819,7 +819,7 @@ abstract class baseModule {
 	/**
 	 * Checks the global config options.
 	 *
-	 * @param array<string, string> $options config options
+	 * @param array<string, array<string, string>> $options config options
 	 * @param string[] $messages info messages can be added here
 	 * @param string[] $errors error messages can be added here
 	 */
