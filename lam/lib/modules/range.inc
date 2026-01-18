@@ -44,22 +44,19 @@ use LAM\TYPES\ConfiguredType;
  */
 class range extends baseModule {
 
-	/** subnet */
-	public $subnet;
-
-	/** ranges */
-	public $ranges;
+	/** @var array<int, array<string, string>> $ranges ranges */
+	public array $ranges = [];
 
 	/** Range -> Function attribute_processed already running? */
-	public $processed;
+	public bool $processed = false;
 
-	/** For check, if IPs overlapped. */
-	private $overlapped;
+	/** @var int[] $overlapped For check, if IPs overlapped. */
+	private array $overlapped = [];
 
-	/** list of pools that currently exist in LDAP */
-	private $poolsOrig = [];
-	/** list of pools that need to be updated in LDAP */
-	private $poolsNew = [];
+	/** @var array<int, array<string, string[]|string>> $poolsOrig list of pools that currently exist in LDAP */
+	private array $poolsOrig = [];
+	/** @var array<int, array<string, string[]|string>> $poolsNew list of pools that need to be updated in LDAP */
+	private array $poolsNew = [];
 
 	/**
 	 * Returns true if this module can manage accounts of the current type, otherwise false.
@@ -130,10 +127,11 @@ class range extends baseModule {
 	/**
 	 * Calculates the subnet for a given IP and netmask.
 	 *
-	 * @param String $ip IP address
-	 * @param String $mask network mask
+	 * @param string $ip IP address
+	 * @param string $mask network mask
+	 * @return string long IP
 	 */
-	private static function calculateSubnet($ip, $mask) {
+	private static function calculateSubnet(string $ip, string $mask): string {
 		return long2ip(ip2long($ip) & ip2long($mask));
 	}
 
@@ -172,19 +170,15 @@ class range extends baseModule {
 	 *
 	 * Checks if ranges are not overlapped.
 	 *
-	 * @param $ip first ip
-	 * @param $ipB second ip
+	 * @param string $ip first ip
+	 * @param string $ipB second ip
 	 *
 	 * @return bool not overlapped
 	 *
 	 **/
-	private function isNotOverlappedRange($ip, $ipB): bool {
+	private function isNotOverlappedRange(string $ip, string $ipB): bool {
 		$ex = explode(".", $ip);
 		$exB = explode(".", $ipB);
-
-		if (!is_array($this->overlapped)) {
-			$this->overlapped = [];
-		}
 		for ($n = $ex[3]; $n <= $exB[3]; $n++) {
 			if (in_array($n, $this->overlapped)) {
 				return false;
@@ -201,7 +195,7 @@ class range extends baseModule {
 	 * Reset the overlapped_range() function
 	 *
 	 **/
-	private function reset_overlapped_range() {
+	private function reset_overlapped_range(): void {
 		$this->overlapped = [];
 	}
 
@@ -251,35 +245,33 @@ class range extends baseModule {
 	public function reload_ranges() {
 		$range_edit = false;        // Range were edited?
 		// Only run it, when ranges already exists:
-		if (is_array($this->ranges)) {
-			$ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
-			$dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
-			$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
-			foreach ($this->ranges as $id => $range) {
-				if (!empty($range['range_start']) && !range::check_subnet_range($range['range_start'], $dhcpAttrs['cn'][0], $mask)) {
-					// adapt range
-					$ex = explode(".", $range['range_start']);
-					$tmp = $range['range_start'];
-					$this->ranges[$id]['range_start'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
-					if ($tmp != $this->ranges[$id]['range_start']) {
-						$range_edit = true;
-					}
-				}
-				if (!empty($range['range_end']) && !range::check_subnet_range($range['range_end'], $dhcpAttrs['cn'][0], $mask)) {
-					// adapt range
-					$ex = explode(".", $range['range_end']);
-					$tmp = $range['range_end'];
-					$this->ranges[$id]['range_end'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
-					if ($tmp != $this->ranges[$id]['range_end']) {
-						$range_edit = true;
-					}
+		$ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
+		$dhcpAttrs = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getAttributes();
+		$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
+		foreach ($this->ranges as $id => $range) {
+			if (!empty($range['range_start']) && !range::check_subnet_range($range['range_start'], $dhcpAttrs['cn'][0], $mask)) {
+				// adapt range
+				$ex = explode(".", $range['range_start']);
+				$tmp = $range['range_start'];
+				$this->ranges[$id]['range_start'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
+				if ($tmp != $this->ranges[$id]['range_start']) {
+					$range_edit = true;
 				}
 			}
-			if ($range_edit) {
-				// sort the range new, id it was edit.
-				foreach ($this->ranges as $id => $range) {
-					$this->attributes['dhcpRange'][$id] = $range['range_start'] . " " . $range['range_end'];
+			if (!empty($range['range_end']) && !range::check_subnet_range($range['range_end'], $dhcpAttrs['cn'][0], $mask)) {
+				// adapt range
+				$ex = explode(".", $range['range_end']);
+				$tmp = $range['range_end'];
+				$this->ranges[$id]['range_end'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
+				if ($tmp != $this->ranges[$id]['range_end']) {
+					$range_edit = true;
 				}
+			}
+		}
+		if ($range_edit) {
+			// sort the range new, id it was edit.
+			foreach ($this->ranges as $id => $range) {
+				$this->attributes['dhcpRange'][$id] = $range['range_start'] . " " . $range['range_end'];
 			}
 		}
 		return $range_edit;
@@ -459,11 +451,6 @@ class range extends baseModule {
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] == "") {
 			$return->add(new htmlStatusMessage('INFO', _("Please fill out the DHCP settings first.")));
 			return $return;
-		}
-
-		// If $ranges is not a array, then create it
-		if (!is_array($this->ranges)) {
-			$this->ranges = [];
 		}
 		$this->reset_overlapped_range();
 		$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
@@ -716,7 +703,7 @@ class range extends baseModule {
 	 */
 	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
-		if (is_array($this->ranges) && ($this->ranges !== [])) {
+		if ($this->ranges !== []) {
 			$pdfTable = new PDFTable(_('Ranges'));
 			for ($i = 0; $i < count($this->ranges); $i++) {
 				$start = $this->ranges[$i]['range_start'];
@@ -760,7 +747,7 @@ class range extends baseModule {
 	/**
 	 * Loads the list of pools from LDAP.
 	 */
-	private function loadPools() {
+	private function loadPools(): void {
 		$dn = $this->getAccountContainer()->dn_orig;
 		$this->poolsOrig = searchLDAP($dn, '(objectclass=dhcpPool)', ['*']);
 		foreach ($this->poolsOrig as &$pool) {
