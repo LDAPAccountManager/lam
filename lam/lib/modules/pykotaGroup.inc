@@ -42,12 +42,12 @@ class pykotaGroup extends baseModule {
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaGroupName'];
 
-	/** cache for cn attribute */
-	private $cnCache;
-	/** cache for pykotaGroupName attribute */
-	private $pykotaGroupNameCache;
-	/** list of limit options label => value */
-	private $limitOptions;
+	/** @var string[]|null $cnCache cache for cn attribute */
+	private ?array $cnCache = null;
+	/** @var string[]|null $pykotaGroupNameCache cache for pykotaGroupName attribute */
+	private ?array $pykotaGroupNameCache = null;
+	/** @var array<string, string> $limitOptions list of limit options label => value */
+	private array $limitOptions;
 
 	/**
 	 * Returns if this module also manages the structural object class pykotaObject.
@@ -325,9 +325,8 @@ class pykotaGroup extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	public function getManagedAttributes($typeId) {
+	public function getManagedAttributes(string $typeId): array {
 		$attrs = parent::getManagedAttributes($typeId);
 		$typeManager = new TypeManager();
 		if ($this->isUnixOrGonInactive($typeManager->getConfiguredType($typeId)->getModules())) {
@@ -510,7 +509,7 @@ class pykotaGroup extends baseModule {
 	 * @return boolean cn exists
 	 */
 	private function cnExists($cn) {
-		if ($this->cnCache == null) {
+		if ($this->cnCache === null) {
 			$this->loadGroupNameCache();
 		}
 		return in_array($cn, $this->cnCache);
@@ -523,7 +522,7 @@ class pykotaGroup extends baseModule {
 	 * @return boolean pykotaGroupName exists
 	 */
 	private function pykotaGroupNameExists($pykotaGroupName) {
-		if ($this->pykotaGroupNameCache == null) {
+		if ($this->pykotaGroupNameCache === null) {
 			$this->loadGroupNameCache();
 		}
 		return in_array($pykotaGroupName, $this->pykotaGroupNameCache);
@@ -532,7 +531,7 @@ class pykotaGroup extends baseModule {
 	/**
 	 * Loads the list of group names into the cache.
 	 */
-	private function loadGroupNameCache() {
+	private function loadGroupNameCache(): void {
 		$results = searchLDAPByFilter('(objectClass=pykotaGroup)', ['cn', 'pykotaGroupName'], [$this->get_scope()]);
 		$this->cnCache = [];
 		$this->pykotaGroupNameCache = [];

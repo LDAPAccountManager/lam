@@ -40,8 +40,8 @@ class pykotaBillingCode extends baseModule {
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaBalance', 'pykotaPageCounter', 'pykotaBillingCode'];
 
-	/** cache for existing codes (array(dn1 => pykotaBillingCode1, dn2 => pykotaBillingCode2)) */
-	private $codeCache;
+	/** @var array<string, string>|null $codeCache cache for existing codes (array(dn1 => pykotaBillingCode1, dn2 => pykotaBillingCode2)) */
+	private ?array $codeCache = null;
 
 	/**
 	 * Returns true if this module can manage accounts of the current type, otherwise false.
@@ -273,9 +273,9 @@ class pykotaBillingCode extends baseModule {
 	 * Returns if the given billing code already exists.
 	 *
 	 * @param String $code pykotaBillingCode attribute value
-	 * @return boolean pykotaBillingCode exists
+	 * @return bool pykotaBillingCode exists
 	 */
-	private function codeExists($code) {
+	private function codeExists($code): bool {
 		if ($this->codeCache == null) {
 			$this->loadCodeCache();
 		}
@@ -290,8 +290,8 @@ class pykotaBillingCode extends baseModule {
 	/**
 	 * Loads the list of billing code names into the cache.
 	 */
-	private function loadCodeCache() {
-		if ($this->codeCache != null) {
+	private function loadCodeCache(): void {
+		if ($this->codeCache !== null) {
 			return;
 		}
 		$results = searchLDAPByFilter('(objectClass=pykotaBilling)', ['pykotaBillingCode', 'dn'], [$this->get_scope()]);

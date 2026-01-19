@@ -67,3 +67,4 @@ parameters:
 		- '#Unable to resolve the template type T in call to function array_values#'
 		- '#.*build_uploadAccounts\(\) expects array.*#'
 		- '#.*mapSimpleUploadField\(\) expects array.*#'
+		- '#.*get_uploadColumns\(\) should return .* but returns list<array<string, mixed>>.*#'

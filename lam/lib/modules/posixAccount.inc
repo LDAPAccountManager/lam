@@ -516,9 +516,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	public function getManagedAttributes($typeId) {
+	public function getManagedAttributes(string $typeId): array {
 		$attrs = parent::getManagedAttributes($typeId);
 		$typeManager = new TypeManager();
 		if (!$typeManager->hasConfig()) {
@@ -1042,11 +1041,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * Allows the module to run commands before the LDAP entry is deleted.
-	 *
-	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
+	 * {@inheritDoc}
 	 */
-	function preDeleteActions() {
+	public function preDeleteActions(): array {
 		$return = [];
 		// delete home directory
 		if (isset($_POST['deletehomedir']) && ($_POST['deletehomedir'] == 'on')) {

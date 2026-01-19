@@ -46,12 +46,12 @@ class pykotaUser extends baseModule {
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
 		'pykotaPayments'];
 
-	/** cache for uid attribute */
-	private $uidCache;
-	/** cache for pykotaUserName attribute */
-	private $pykotaUserNameCache;
-	/** list of limit options label => value */
-	private $limitOptions;
+	/** @var string[]|null $uidCache cache for uid attribute */
+	private ?array $uidCache = null;
+	/** @var string[]|null $pykotaUserNameCache cache for pykotaUserName attribute */
+	private ?array $pykotaUserNameCache = null;
+	/** @var array<string, string> $limitOptions list of limit options label => value */
+	private array $limitOptions;
 
 	/**
 	 * Returns if this module also manages the structural object class pykotaObject.
@@ -546,7 +546,7 @@ class pykotaUser extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_payments() {
+	public function display_html_payments(): htmlElement {
 		$container = new htmlResponsiveRow();
 		// total paid
 		$total = '';
@@ -591,9 +591,9 @@ class pykotaUser extends baseModule {
 	 * Processes user input of the payments module page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_payments() {
+	public function process_payments(): array {
 		return [];
 	}
 
@@ -602,7 +602,7 @@ class pykotaUser extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_jobs() {
+	public function display_html_jobs(): htmlElement {
 		$container = new htmlResponsiveRow();
 		// jobs
 		$jobs = $this->getJobs($this->getCurrentUserName(), $this->moduleSettings['pykotaUser_jobSuffix'][0]);
@@ -633,9 +633,9 @@ class pykotaUser extends baseModule {
 	 * Processes user input of the jobs module page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_jobs() {
+	public function process_jobs(): array {
 		return [];
 	}
 
@@ -1046,7 +1046,7 @@ class pykotaUser extends baseModule {
 	 * @return boolean uid exists
 	 */
 	private function uidExists($uid) {
-		if ($this->uidCache == null) {
+		if ($this->uidCache === null) {
 			$this->loadUserNameCache();
 		}
 		return in_array($uid, $this->uidCache);
@@ -1059,7 +1059,7 @@ class pykotaUser extends baseModule {
 	 * @return boolean pykotaUserName exists
 	 */
 	private function pykotaUserNameExists($pykotaUserName) {
-		if ($this->pykotaUserNameCache == null) {
+		if ($this->pykotaUserNameCache === null) {
 			$this->loadUserNameCache();
 		}
 		return in_array($pykotaUserName, $this->pykotaUserNameCache);
@@ -1068,7 +1068,7 @@ class pykotaUser extends baseModule {
 	/**
 	 * Loads the list of user names into the cache.
 	 */
-	private function loadUserNameCache() {
+	private function loadUserNameCache(): void {
 		$results = searchLDAPByFilter('(|(uid=*)(pykotaUserName=*))', ['uid', 'pykotaUserName'], [$this->get_scope()]);
 		$this->uidCache = [];
 		$this->pykotaUserNameCache = [];
@@ -1112,10 +1112,11 @@ class pykotaUser extends baseModule {
 	 * Returns a list of jobs for the given user reverse-sorted by date.
 	 * The number of jobs is limited to 100.
 	 *
-	 * @param String $user user name
-	 * @param String $suffix LDAP suffix for job objects
+	 * @param string $user user name
+	 * @param string $suffix LDAP suffix for job objects
+	 * @return array<string, string[]|string>[] jobs
 	 */
-	private function getJobs($user, $suffix) {
+	private function getJobs($user, $suffix): array {
 		$attrs = ['createTimestamp', 'pykotaTitle', 'pykotaPrinterName', 'pykotaJobPrice', 'pykotaJobSize'];
 		$filter = '(&(objectClass=pykotaJob)(pykotaUserName=' . $user . '))';
 		$jobList = searchLDAP($suffix, $filter, $attrs);

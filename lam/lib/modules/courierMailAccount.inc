@@ -231,9 +231,8 @@ class courierMailAccount extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	public function getManagedAttributes($typeId) {
+	public function getManagedAttributes(string $typeId): array {
 		$attrs = parent::getManagedAttributes($typeId);
 		$typeManager = new TypeManager();
 		$type = $typeManager->getConfiguredType($typeId);

@@ -40,12 +40,12 @@ class pykotaPrinter extends baseModule {
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['pykotaPrinterName'];
 
-	/** cache for existing printers (array(dn => array(cn => ..., description => ...))) */
-	private $printerCache;
-	/** printer group cache */
-	private $groupCache;
-	/** list of pass through options: label => value */
-	private $passThroughOptions;
+	/** @var array<string, array<string, string>>|null $printerCache cache for existing printers (array(dn => array(cn => ..., description => ...))) */
+	private ?array $printerCache = null;
+	/** @var string[]|null $groupCache printer group cache */
+	private ?array $groupCache = null;
+	/** @var array<string, string> $passThroughOptions list of pass through options: label => value */
+	private array $passThroughOptions;
 
 	/**
 	 * Creates a new pykotaPrinter object.
@@ -385,7 +385,7 @@ class pykotaPrinter extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_members() {
+	public function display_html_members(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$options = [];
 		$this->loadPrinterNameCache();
@@ -431,9 +431,9 @@ class pykotaPrinter extends baseModule {
 	 * Processes user input of the members page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_members() {
+	public function process_members(): array {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_addMembers']) && isset($_POST['members'])) {
 			for ($i = 0; $i < count($_POST['members']); $i++) {
@@ -605,9 +605,9 @@ class pykotaPrinter extends baseModule {
 	 * Returns if the given cn already exists.
 	 *
 	 * @param String $cn cn attribute value
-	 * @return boolean cn exists
+	 * @return bool cn exists
 	 */
-	private function cnExists($cn) {
+	private function cnExists($cn): bool {
 		if ($this->printerCache == null) {
 			$this->loadPrinterNameCache();
 		}
@@ -622,7 +622,7 @@ class pykotaPrinter extends baseModule {
 	/**
 	 * Loads the list of printer names into the cache.
 	 */
-	private function loadPrinterNameCache() {
+	private function loadPrinterNameCache(): void {
 		if ($this->printerCache != null) {
 			return;
 		}
@@ -641,10 +641,10 @@ class pykotaPrinter extends baseModule {
 	/**
 	 * Returns the printer group memberships.
 	 *
-	 * @return array DNs of parent groups
+	 * @return string[] DNs of parent groups
 	 */
 	private function getPrinterGroups() {
-		if ($this->groupCache != null) {
+		if ($this->groupCache !== null) {
 			return $this->groupCache;
 		}
 		$results = searchLDAPByFilter('(&(objectClass=pykotaPrinter)(uniqueMember=' . $this->getAccountContainer()->dn_orig . '))', ['dn'], [$this->get_scope()]);

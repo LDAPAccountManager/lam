@@ -371,9 +371,8 @@ class kolabGroup extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	public function getManagedAttributes($typeId) {
+	public function getManagedAttributes(string $typeId): array {
 		$attrs = parent::getManagedAttributes($typeId);
 		$typeManager = new TypeManager();
 		if ($this->manageMail($typeManager->getConfiguredType($typeId)->getModules())) {

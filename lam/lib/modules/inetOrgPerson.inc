@@ -822,9 +822,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getManagedAttributes()
 	 */
-	public function getManagedAttributes($typeId) {
+	public function getManagedAttributes(string $typeId): array {
 		$attrs = parent::getManagedAttributes($typeId);
 		if (!$this->isUnixActive()) {
 			$attrs[] = 'cn';

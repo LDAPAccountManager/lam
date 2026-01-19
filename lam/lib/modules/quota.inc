@@ -47,9 +47,9 @@ use LAM\TYPES\ConfiguredType;
 class quota extends baseModule {
 
 	/** delimiter for lamdaemon commands */
-	private static $SPLIT_DELIMITER = "###x##y##x###";
+	private static string $SPLIT_DELIMITER = "###x##y##x###";
 	/** prefix for lamdaemon results */
-	private static $QUOTA_PREFIX = 'QUOTA_ENTRY ';
+	private static string $QUOTA_PREFIX = 'QUOTA_ENTRY ';
 
 	/**
 	 * {@inheritDoc}
@@ -161,8 +161,8 @@ class quota extends baseModule {
 		return $return;
 	}
 
-	/** Saves the quota settings */
-	private $quota;
+	/** @var array<string, array<int, int|string>[]> Saves the quota settings */
+	private ?array $quota = null;
 
 	/**
 	 * Initializes the quota values.
@@ -170,7 +170,7 @@ class quota extends baseModule {
 	 * @param string $userName user/group name
 	 * @param RemoteServerConfiguration[] $lamdaemonServers server configurations
 	 */
-	function initQuotas($userName = null, $lamdaemonServers = null) {
+	function initQuotas($userName = null, $lamdaemonServers = null): void {
 		if ($this->quota !== null) {
 			return;
 		}
@@ -467,11 +467,9 @@ class quota extends baseModule {
 	}
 
 	/**
-	 * Allows the module to run commands before the LDAP entry is deleted.
-	 *
-	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
+	 * {@inheritDoc}
 	 */
-	function preDeleteActions() {
+	public function preDeleteActions(): array {
 		try {
 			$this->initQuotas();
 		}

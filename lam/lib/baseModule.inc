@@ -1258,9 +1258,9 @@ abstract class baseModule {
 	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	 *
-	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @return string[][] array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	public function preDeleteActions() {
+	public function preDeleteActions(): array {
 		return [];
 	}
 
@@ -1994,11 +1994,11 @@ abstract class baseModule {
 	 * All attribute names will be renamed to match the given spelling.
 	 *
 	 * @param string $typeId type id (user, group, host)
-	 * @return array list of attributes
+	 * @return string[] list of attributes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getManagedAttributes($typeId) {
+	public function getManagedAttributes(string $typeId): array {
 		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) {
 			return $this->meta['attributes'];
 		}
