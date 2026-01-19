@@ -41,10 +41,10 @@ use LAM\TYPES\ConfiguredType;
  */
 class puppetClient extends baseModule {
 
-	/** cache for classes */
-	private $classCache;
-	/** cache for variables */
-	private $variablesCache;
+	/** @var string[]|null $classCache cache for classes */
+	private ?array $classCache = null;
+	/** @var string[]|null $variablesCache cache for variables */
+	private ?array $variablesCache = null;
 
 	/**
 	 * Creates a new authorizedServiceObject object.
@@ -452,9 +452,9 @@ class puppetClient extends baseModule {
 	/**
 	 * Returns a list of valid parent nodes for this node.
 	 *
-	 * @return array parent nodes (e.g. array('node1', 'node2'))
+	 * @return string[] parent nodes (e.g. array('node1', 'node2'))
 	 */
-	private function getPossibleParentNodes() {
+	private function getPossibleParentNodes(): array {
 		$searchResult = searchLDAPByAttribute('cn', '*', 'puppetClient', ['cn'], ['host']);
 		$possibleParentNodes = [];
 		for ($i = 0; $i < count($searchResult); $i++) {
@@ -473,8 +473,8 @@ class puppetClient extends baseModule {
 	/**
 	 * Loads cached data from LDAP such as classes etc.
 	 */
-	private function initCache() {
-		if ($this->classCache != null) {
+	private function initCache(): void {
+		if ($this->classCache !== null) {
 			return;
 		}
 		$attrs = ['puppetclass', 'puppetvar'];
