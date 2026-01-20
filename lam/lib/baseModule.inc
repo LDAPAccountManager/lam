@@ -95,8 +95,8 @@ abstract class baseModule {
 	/** @var array<string, string[]|string>|null contains all ldap attributes which are loaded from LDAP */
 	protected $orig;
 
-	/** contains all error messages of a module */
-	protected $messages;
+	/** @var array<string, array<int, array<string|string[]>>>|null $messages contains all error messages of a module */
+	protected ?array $messages = null;
 
 	/** if true, managed object classes are added when an account is created or loaded (default: true) */
 	protected $autoAddObjectClasses = true;
@@ -1402,10 +1402,10 @@ abstract class baseModule {
 	 * Validates a text field.
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
 	 *
-	 * @param String $attrName attribute name
-	 * @param array $errors errors array where to put validation errors
+	 * @param string $attrName attribute name
+	 * @param array<string|string[]>[] $errors errors array where to put validation errors
 	 * @param bool $required value required
-	 * @param String $validationID validation ID for function get_preg() (default: null, null means no validation)
+	 * @param string $validationID validation ID for function get_preg() (default: null, null means no validation)
 	 */
 	protected function processSimpleTextInput($attrName, &$errors, $required = false, $validationID = null) {
 		if ((!isset($_POST[$attrName]) || ($_POST[$attrName] === '')) && isset($this->attributes[$attrName][0])) {
@@ -1533,8 +1533,8 @@ abstract class baseModule {
 	 * The input fields must be created with function addMultiValueInputTextField().
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
 	 *
-	 * @param String $attrName attribute name
-	 * @param array $errors errors array where to put validation errors
+	 * @param string $attrName attribute name
+	 * @param array<string|string[]>[] $errors errors array where to put validation errors
 	 * @param string|null $validationID validation ID for function get_preg() (default: null, null means no validation)
 	 * @param bool $required the field is required (default: false)
 	 */
