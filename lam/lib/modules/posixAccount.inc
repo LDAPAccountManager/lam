@@ -1011,9 +1011,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::delete_attributes()
 	 */
-	function delete_attributes(): array {
+	public function delete_attributes(): array {
 		$return = [];
 		// remove memberUids if set
 		$groups = searchLDAPByAttribute('memberUid', $this->attributes['uid'][0], 'posixGroup', ['dn'], ['group']);

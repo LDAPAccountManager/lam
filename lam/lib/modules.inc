@@ -745,8 +745,8 @@ class accountContainer {
 	/** DN suffix of the account */
 	public $dnSuffix;
 
-	/** DN of account when it was loaded */
-	public $dn_orig;
+	/** @var string|null DN of account when it was loaded */
+	public ?string $dn_orig = null;
 
 	/** RDN attribute of this account */
 	public $rdn;

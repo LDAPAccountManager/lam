@@ -369,9 +369,8 @@ class nisNetGroupUser extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::delete_attributes()
 	 */
-	function delete_attributes(): array {
+	public function delete_attributes(): array {
 		$uid = $this->getUid();
 		if (empty($uid)) {
 			return [];

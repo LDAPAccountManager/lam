@@ -44,15 +44,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 class posixGroup extends baseModule implements passwordService {
 
 	/** change GIDs of users and hosts? */
-	protected $changegids;
+	protected bool $changegids = false;
 	/** password attribute */
-	protected $passwordAttrName = 'userPassword';
-	/** cache for existing GID numbers */
-	private $cachedGIDList;
-	/** cache for existing users and their GIDs */
-	private $cachedUserToGIDList;
-	/** cache for existing groups */
-	private $cachedGroupNameList;
+	protected string $passwordAttrName = 'userPassword';
+	/** @var string[]|null $cachedGIDList cache for existing GID numbers */
+	private ?array $cachedGIDList = null;
+	/** @var array<string, array<string, string>>|null $cachedUserToGIDList cache for existing users and their GIDs */
+	private ?array $cachedUserToGIDList = null;
+	/** @var string[]|null $cachedGroupNameList cache for existing groups */
+	private ?array $cachedGroupNameList = null;
 
 	/**
 	 * {@inheritDoc}
@@ -168,9 +168,8 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::delete_attributes()
 	 */
-	function delete_attributes(): array {
+	public function delete_attributes(): array {
 		$return = [];
 		$result = searchLDAPByFilter('(&(objectClass=posixAccount)(gidNumber=' . $this->attributes['gidNumber'][0] . '))', ['dn'], ['user', 'host']);
 		if (count($result) > 0) {
@@ -537,7 +536,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @param htmlResponsiveRow $configContainer container
 	 * @param string $typeId type ID
 	 */
-	protected function addAccountSpecificConfigOptions(&$configContainer, $typeId) {
+	protected function addAccountSpecificConfigOptions($configContainer, $typeId): void {
 		$genOptions = [
 			_('Fixed range') => 'range',
 			_('Samba ID pool') => 'sambaPool',
@@ -670,17 +669,6 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function init(string $base): void {
-		// call parent init
-		parent::init($base);
-		$this->changegids = false;
-	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -923,9 +911,9 @@ class posixGroup extends baseModule implements passwordService {
 	 * Processes user input of the user selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return string[][] list of info/error messages
 	 */
-	function process_user() {
+	public function process_user(): array {
 		$return = [];
 		if (!isset($this->attributes['memberUid'])) {
 			$this->attributes['memberUid'] = [];
@@ -952,9 +940,9 @@ class posixGroup extends baseModule implements passwordService {
 	 * Syncs with group of names members.
 	 *
 	 * @param bool $forceDelete force deletion of members
-	 * @return array list of status messages
+	 * @return string[][] list of status messages
 	 */
-	protected function syncGon($forceDelete = false) {
+	protected function syncGon($forceDelete = false): array {
 		$delete = $forceDelete || (isset($_POST['syncGON_delete']) && ($_POST['syncGON_delete'] == 'on'));
 		$return = [];
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
@@ -1000,9 +988,9 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Syncs with Windows.
 	 *
-	 * @return array list of status messages
+	 * @return string[][] list of status messages
 	 */
-	protected function syncWindows() {
+	protected function syncWindows(): array {
 		$delete = isset($_POST['syncWindows_delete']) && ($_POST['syncWindows_delete'] == 'on');
 		$return = [];
 		$windows = $this->getAccountContainer()->getAccountModule('windowsGroup');
@@ -1087,11 +1075,11 @@ class posixGroup extends baseModule implements passwordService {
 	 * Returns one or more free GID numbers.
 	 *
 	 * @param integer $count Number of needed free GIDs.
-	 * @param array $errors list of error messages where errors can be added
+	 * @param array<string|string[]>[] $errors list of error messages where errors can be added
 	 * @param ConfiguredType $type account type
-	 * @return mixed Null if no GIDs are free else an array of free GIDs.
+	 * @return int[]|null Null if no GIDs are free else an array of free GIDs.
 	 */
-	function getNextGIDs($count, &$errors, $type) {
+	public function getNextGIDs($count, &$errors, $type): ?array {
 		$typeId = $type->getId();
 		// check if UIDs should be taken from Samba pool entry
 		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'sambaPool')) {
@@ -1116,7 +1104,7 @@ class posixGroup extends baseModule implements passwordService {
 		$gids = [];
 		foreach ($gidList as $gid) {
 			if (($gid <= $maxID) && ($gid >= $minID)) {
-				$gids[] = $gid;  // ignore GIDs > maxID and GIDs < minID
+				$gids[] = intval($gid);  // ignore GIDs > maxID and GIDs < minID
 			}
 		}
 		for ($i = 0; $i < $count; $i++) {
@@ -1246,10 +1234,10 @@ class posixGroup extends baseModule implements passwordService {
 	 * Returns a list of existing GID numbers.
 	 *
 	 * @param ConfiguredType $type account type
-	 * @return array list of GID numbers
+	 * @return string[] list of GID numbers
 	 */
 	private function getGIDs(ConfiguredType $type): array {
-		if ($this->cachedGIDList != null) {
+		if ($this->cachedGIDList !== null) {
 			return $this->cachedGIDList;
 		}
 		$this->cachedGIDList = [];
@@ -1271,10 +1259,10 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Returns a list of existing users and their GID numbers and cn.
 	 *
-	 * @return array list in format array(uid => array('gid' => 123, 'cn' => 'Some user'))
+	 * @return array<string, array<string, string>> list in format array(uid => array('gid' => 123, 'cn' => 'Some user'))
 	 */
-	protected function getUsers() {
-		if ($this->cachedUserToGIDList != null) {
+	protected function getUsers(): array {
+		if ($this->cachedUserToGIDList !== null) {
 			return $this->cachedUserToGIDList;
 		}
 		$this->cachedUserToGIDList = [];
@@ -1307,10 +1295,10 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Returns a list of all group names in LDAP.
 	 *
-	 * @return array group names
+	 * @return string[] group names
 	 */
-	private function getGroupNames() {
-		if ($this->cachedGroupNameList != null) {
+	private function getGroupNames(): array {
+		if ($this->cachedGroupNameList !== null) {
 			return $this->cachedGroupNameList;
 		}
 		$this->cachedGroupNameList = [];
