@@ -47,7 +47,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 
 	// Variables
 	/** delimiter for lamdaemon commands */
-	private static $SPLIT_DELIMITER = "###x##y##x###";
+	private static string $SPLIT_DELIMITER = "###x##y##x###";
 
 	/**
 	 * ID for locked password status.
@@ -70,31 +70,31 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	private const CREATE_GROUP_WITH_SAME_NAME = '*create_group_with_same_name*';
 
 	/* These two variables keep an array of groups the user is also member of. */
-	/** current group list */
-	private $groups;
-	/** original group list */
-	private $groups_orig;
+	/** @var string[] $groups current group list */
+	private array $groups = [];
+	/** @var string[] $groups_orig original group list */
+	private array $groups_orig = [];
 
 	/* list of group of names that the user is member of */
-	/** current group of names list */
-	private $gonList = [];
-	/** original group of names list */
-	private $gonList_orig = [];
-	/** lamdaemon servers */
-	private $lamdaemonServers = [];
-	/** cache for group objects */
-	private $groupCache;
-	/** cache for group of names objects */
-	private $gonCache;
+	/** @var string[] $gonList current group of names list */
+	private array $gonList = [];
+	/** @var string[] $gonList_orig original group of names list */
+	private array $gonList_orig = [];
+	/** @var string[] $lamdaemonServers lamdaemon servers */
+	private array $lamdaemonServers = [];
+	/** @var string[][]|null $groupCache cache for group objects */
+	private ?array $groupCache = null;
+	/** @var array<string, array<string, string[]|string>>|null $gonCache cache for group of names objects */
+	private ?array $gonCache = null;
 	/** clear text password */
-	private $clearTextPassword;
-	/** caches the list of known UIDs */
-	private $cachedUIDList;
-	/** caches the list of known user names */
-	private $cachedUserNameList;
+	private ?string $clearTextPassword = null;
+	/** @var string[]|null $cachedUIDList caches the list of known UIDs */
+	private ?array $cachedUIDList = null;
+	/** @var array<string, string>|null $cachedUserNameList caches the list of known user names */
+	private ?array $cachedUserNameList = null;
 
-	/** replacements for common umlauts */
-	private $umlautReplacements = [
+	/** @var array<string, string> $umlautReplacements replacements for common umlauts */
+	private array $umlautReplacements = [
 		'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'oe', 'Ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
 		'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o', 'ç' => 'c'
 	];
@@ -995,10 +995,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Sets the password via ldap_exop if configured.
 	 *
-	 * @param array $settings settings
-	 * @return array error message parameters if any
+	 * @param array<string, string[]> $settings settings
+	 * @return array<string|string[]>[] error message parameters if any
 	 */
-	private function setExopPassword($settings) {
+	private function setExopPassword($settings): array {
 		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
 			&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
 			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, '', $this->clearTextPassword);
@@ -1384,8 +1384,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @param string $attribute attribute value
 	 * @return string attribute value with replaced non-ASCII characters
 	 */
-	function checkASCII($attribute) {
-		if ($attribute == null) {
+	private function checkASCII(string $attribute): string {
+		if ($attribute === '') {
 			return '';
 		}
 		// replace special characters
@@ -1404,9 +1404,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Processes user input of the group selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_group() {
+	public function process_group(): array {
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// Unix groups
 		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
@@ -1451,7 +1451,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @param string $typeId type ID
 	 */
-	private function manualSyncUnixToGon($typeId) {
+	private function manualSyncUnixToGon($typeId): void {
 		$allGons = $this->findGroupOfNames();
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'])) {
@@ -1499,7 +1499,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @param ConfiguredType $type type
 	 */
-	private function manualSyncGonToUnix($type) {
+	private function manualSyncGonToUnix($type): void {
 		$allGons = $this->findGroupOfNames();
 		$modules = $type->getModules();
 		$allGroups = $this->findGroups($modules);
@@ -1549,7 +1549,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @param ConfiguredType $type type
 	 */
-	private function manualSyncWindowsToUnix($type) {
+	private function manualSyncWindowsToUnix($type): void {
 		$windowsGroups = $this->getAccountContainer()->getAccountModule('windowsUser')->getGroupList();
 		$allWindowsGroups = searchLDAPByAttribute('gidNumber', '*', null, ['cn'], ['group']);
 		$allGroups = $this->findGroups($modules);
@@ -1598,10 +1598,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns the cn of the given group of names.
 	 *
 	 * @param string $dn DN of group of names
-	 * @param $allGons list of all group of names
-	 * @return string cn value
+	 * @param array<string, string[]|string>[] $allGons list of all group of names
+	 * @return string|null cn value
 	 */
-	public function getGonName($dn, &$allGons) {
+	public function getGonName($dn, &$allGons): ?string {
 		if (!empty($allGons[$dn]['cn'][0])) {
 			return $allGons[$dn]['cn'][0];
 		}
@@ -1611,10 +1611,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Returns the Windows group name.
 	 *
-	 * @param array $allWindowsGroups LDAP data of all Windows groups
+	 * @param array<string, string[]|string>[] $allWindowsGroups LDAP data of all Windows groups
 	 * @param string $dn DN
+	 * @return string|null group name
 	 */
-	private function getWindowsGroupName(&$allWindowsGroups, $dn) {
+	private function getWindowsGroupName(&$allWindowsGroups, $dn): ?string {
 		foreach ($allWindowsGroups as $data) {
 			if ($data['dn'] == $dn) {
 				return $data['cn'][0];
@@ -1627,9 +1628,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Processes user input of the homedir check page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_homedir() {
+	public function process_homedir(): array {
 		$return = [];
 		// get list of lamdaemon servers
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
@@ -1903,7 +1904,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @param htmlResponsiveRow $content content area
 	 */
-	private function checkForInvalidConfiguration(htmlResponsiveRow $content) {
+	private function checkForInvalidConfiguration(htmlResponsiveRow $content): void {
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if ($this->get_scope() == 'user') {
 			$generatorOption = 'posixAccount_' . $typeId . '_uidGeneratorUsers';
@@ -1940,7 +1941,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_group() {
+	public function display_html_group(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
@@ -3177,11 +3178,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns one or more free UID numbers.
 	 *
 	 * @param integer $count Number of needed free UIDs.
-	 * @param array $errors list of error messages where errors can be added
+	 * @param array<string|string[]>[] $errors list of error messages where errors can be added
 	 * @param string $typeId type id (e.g. user)
-	 * @return mixed Null if no UIDs are free else an array of free UIDs.
+	 * @return string[]|null null if no UIDs are free else an array of free UIDs.
 	 */
-	function getNextUIDs($count, &$errors, $typeId) {
+	function getNextUIDs($count, &$errors, $typeId): ?array {
 		// check if UIDs should be taken from Samba pool entry
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool')) {
 			return $this->getNextSambaPoolUIDs($count, $typeId);
@@ -3601,10 +3602,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Finds all existing LDAP groups.
 	 *
-	 * @return array groups array(array(gidnumber, cn), array(gidnumber, cn), ...)
+	 * @param string[] $modules account modules
+	 * @return string[][] groups array(array(gidnumber, cn), array(gidnumber, cn), ...)
 	 */
 	private function findGroups(&$modules) {
-		if ($this->groupCache != null) {
+		if ($this->groupCache !== null) {
 			return $this->groupCache;
 		}
 		$this->groupCache = [];
@@ -3634,10 +3636,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Finds all existing LDAP group of names.
 	 *
-	 * @return array groups array(dn => array('cn' => array('groupName'), 'objectclass' => array('top', 'groupOfNames')))
+	 * @return array<string, array<string, string[]|string>> groups array(dn => array('cn' => array('groupName'), 'objectclass' => array('top', 'groupOfNames')))
 	 */
-	public function findGroupOfNames() {
-		if ($this->gonCache != null) {
+	public function findGroupOfNames(): array {
+		if ($this->gonCache !== null) {
 			return $this->gonCache;
 		}
 		$return = [];
@@ -3663,10 +3665,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns a list of existing UID numbers.
 	 *
 	 * @param string $typeId type id (e.g. user)
-	 * @return array list of UID numbers
+	 * @return string[] list of UID numbers
 	 */
-	private function getUIDs($typeId) {
-		if ($this->cachedUIDList != null) {
+	private function getUIDs($typeId): array {
+		if ($this->cachedUIDList !== null) {
 			return $this->cachedUIDList;
 		}
 		$this->cachedUIDList = [];
@@ -3726,10 +3728,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns a list of all user names in LDAP.
 	 *
 	 * @param string $typeId type id (e.g. user)
-	 * @return array user names
+	 * @return array<string, string> user name => DN
 	 */
-	private function getUserNames($typeId) {
-		if ($this->cachedUserNameList != null) {
+	private function getUserNames($typeId): array {
+		if ($this->cachedUserNameList !== null) {
 			return $this->cachedUserNameList;
 		}
 		$this->cachedUserNameList = [];
@@ -3775,9 +3777,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Returns if LAM manages group of names entries.
 	 *
-	 * @return boolean group of names are active
+	 * @return bool group of names are active
 	 */
-	public static function areGroupOfNamesActive() {
+	public static function areGroupOfNamesActive(): bool {
 		if (!isset($_SESSION['config'])) {
 			return false;
 		}
@@ -3798,11 +3800,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns a suggestion for the user name.
 	 * By default this will be the first character of the first name plus the last name.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @param string $typeId type id (e.g. user)
-	 * @return String user name
+	 * @return string user name
 	 */
-	protected function getUserNameSuggestion($attrs, $typeId) {
+	protected function getUserNameSuggestion($attrs, $typeId): string {
 		$attributes = array_change_key_case($attrs);
 		$format = '@givenname@%sn%';
 		if (isset($this->moduleSettings['posixAccount_' . $typeId . '_userNameSuggestion'][0])) {
@@ -3841,7 +3843,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @param string $part injected part
 	 * @return string cleaned by removing umlauts, spaces, dashes and underscores
 	 */
-	private function cleanSuggestionPart($part) {
+	private function cleanSuggestionPart($part): string {
 		$result = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($part));
 		return str_replace([' ', '_', '-'], ['', '', ''], $result);
 	}
@@ -3851,9 +3853,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * This is the case if a hashed password is set ("{" at the beginning).
 	 *
 	 * @param string[] $modules account modules
-	 * @return boolean lockable
+	 * @return bool lockable
 	 */
-	public function isLockable(&$modules) {
+	public function isLockable(&$modules): bool {
 		return isset($this->attributes[$this->getPasswordAttrName($modules)][0])
 			&& pwd_is_lockable($this->attributes[$this->getPasswordAttrName($modules)][0]);
 	}
@@ -3862,10 +3864,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * Returns if the Unix part of the current account is locked.
 	 *
 	 * @param string[] $modules account modules
-	 * @param ?array $attributes LDAP attribute data
-	 * @return boolean password is locked
+	 * @param array<string, string[]|string>|null $attributes LDAP attribute data
+	 * @return bool password is locked
 	 */
-	public function isLocked($modules, ?array $attributes = null) {
+	public function isLocked($modules, ?array $attributes = null): bool {
 		if ($attributes === null) {
 			$attributes = array_change_key_case($this->attributes);
 		}
@@ -3879,7 +3881,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @param string[] $modules account modules
 	 */
-	public function lock(&$modules) {
+	public function lock(&$modules): void {
 		$pwdAttrName = $this->getPasswordAttrName($modules);
 		if (isset($this->attributes[$pwdAttrName][0])) {
 			$this->attributes[$pwdAttrName][0] = pwd_disable($this->attributes[$pwdAttrName][0]);
@@ -3891,7 +3893,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @param string[] $modules account modules
 	 */
-	public function unlock(&$modules) {
+	public function unlock(&$modules): void {
 		$pwdAttrName = $this->getPasswordAttrName($modules);
 		if (isset($this->attributes[$pwdAttrName][0])) {
 			$this->attributes[$pwdAttrName][0] = pwd_enable($this->attributes[$pwdAttrName][0]);
@@ -3901,14 +3903,14 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Removes all Unix group memberships from this user.
 	 */
-	public function removeFromUnixGroups() {
+	public function removeFromUnixGroups(): void {
 		$this->groups = [];
 	}
 
 	/**
 	 * Removes all group of names memberships from this user.
 	 */
-	public function removeFromGONGroups() {
+	public function removeFromGONGroups(): void {
 		$this->gonList = [];
 	}
 
@@ -4304,7 +4306,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Clears the group of names memberships of the user.
 	 *
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 * @throws LAMException error during group modify
 	 */
 	private function clearGroupOfNamesMemberships(array $attributes): void {
@@ -4328,7 +4330,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * Clears the posix group memberships of the user.
 	 *
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 * @throws LAMException error during group modify
 	 */
 	private function clearPosixGroupMemberships(array $attributes): void {
