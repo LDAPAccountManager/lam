@@ -77,14 +77,9 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	 * Checks if the netgroup matches this entry.
-	 *
-	 * @param String $user netgroup user name
-	 * @param String $host netgroup host name
-	 * @param String $domain netgroup domain name
-	 * @param String $uid user name of this entry
+	 * {@inheritDoc}
 	 */
-	protected function isMatchingNetGroup($user, $host, $domain, $uid) {
+	protected function isMatchingNetGroup($user, $host, $domain, $uid): bool {
 		return $host == $uid;
 	}
 
@@ -192,7 +187,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function createNetGroupValue($group, $uid) {
+	protected function createNetGroupValue(array $group, string $uid): string {
 		return '(' . $uid . ',' . $group['user'] . ',' . $group['domain'] . ')';
 	}
 
@@ -261,13 +256,9 @@ class nisNetGroupHost extends nisNetGroupUser {
 	}
 
 	/**
-	 * Creates a netgroup triple from the input value of file upload.
-	 *
-	 * @param array $value upload value (e.g. array(group1, host, domain))
-	 * @param String $uid own uid
-	 * @return String netgroup triple
+	 * {@inheritDoc}
 	 */
-	protected function buildNetGroupTripleFromUploadValue($value, $uid) {
+	protected function buildNetGroupTripleFromUploadValue($value, $uid): string {
 		$user = empty($value[1]) ? '' : $value[1];
 		$domain = empty($value[2]) ? '' : $value[2];
 		return '(' . $uid . ',' . $user . ',' . $domain . ')';

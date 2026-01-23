@@ -41,12 +41,12 @@ use LAM\TYPES\ConfiguredType;
 class nisnetgroup extends baseModule {
 
 	/* caches to reduce LDAP queries */
-	/** user cache */
-	private $cachedUserList;
-	/** host cache */
-	private $cachedHostList;
-	/** group cache */
-	private $cachedGroupList;
+	/** @var string[]|null user cache */
+	private ?array $cachedUserList = null;
+	/** @var string[]|null $cachedHostList host cache */
+	private ?array $cachedHostList = null;
+	/** @var string[]|null group cache */
+	private ?array $cachedGroupList = null;
 
 	/**
 	 * Returns true if this module can manage accounts of the current type, otherwise false.
@@ -354,7 +354,7 @@ class nisnetgroup extends baseModule {
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_group() {
+	public function display_html_group(): htmlElement {
 		// load list with all groups
 		$allGroups = $this->getGroupList();
 		// remove own entry
@@ -390,9 +390,9 @@ class nisnetgroup extends baseModule {
 	 * Processes user input of the group selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_group() {
+	public function process_group(): array {
 		if (isset($_POST['subgroup_2']) && isset($_POST['subgroup_left'])) { // Add groups to list
 			if (!is_array($this->attributes['memberNisNetgroup'])) {
 				$this->attributes['memberNisNetgroup'] = [];
@@ -411,7 +411,7 @@ class nisnetgroup extends baseModule {
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_select() {
+	public function display_html_select(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$selectHost = true;
 		$postKeys = array_keys($_POST);
@@ -471,9 +471,9 @@ class nisnetgroup extends baseModule {
 	 * Processes user input of the host/user selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_select() {
+	public function process_select(): array {
 		if (isset($_POST['form_subpage_nisnetgroup_attributes_back'])) {
 			return [];
 		}
@@ -561,15 +561,16 @@ class nisnetgroup extends baseModule {
 	/**
 	 * Returns a list of existing NIS net groups.
 	 *
-	 * @return array group names
+	 * @return string[] group names
 	 */
-	private function getGroupList() {
-		if ($this->cachedGroupList != null) {
+	private function getGroupList(): array {
+		if ($this->cachedGroupList !== null) {
 			return $this->cachedGroupList;
 		}
-		$this->cachedGroupList = searchLDAPByAttribute('cn', '*', 'nisNetgroup', ['cn'], ['netgroup']);
-		for ($i = 0; $i < count($this->cachedGroupList); $i++) {
-			$this->cachedGroupList[$i] = $this->cachedGroupList[$i]['cn'][0];
+		$this->cachedGroupList = [];
+		$entries = searchLDAPByAttribute('cn', '*', 'nisNetgroup', ['cn'], ['netgroup']);
+		foreach ($entries as $entry) {
+			$this->cachedGroupList[] = $entry['cn'][0];
 		}
 		return $this->cachedGroupList;
 	}
@@ -577,15 +578,16 @@ class nisnetgroup extends baseModule {
 	/**
 	 * Returns a list of existing users.
 	 *
-	 * @return array user names
+	 * @return string[] user names
 	 */
-	private function getUserList() {
-		if ($this->cachedUserList != null) {
+	private function getUserList(): array {
+		if ($this->cachedUserList !== null) {
 			return $this->cachedUserList;
 		}
-		$this->cachedUserList = searchLDAPByAttribute('uid', '*', 'posixAccount', ['uid'], ['user']);
-		for ($i = 0; $i < count($this->cachedUserList); $i++) {
-			$this->cachedUserList[$i] = $this->cachedUserList[$i]['uid'][0];
+		$this->cachedUserList = [];
+		$entries = searchLDAPByAttribute('uid', '*', 'posixAccount', ['uid'], ['user']);
+		foreach ($entries as $entry) {
+			$this->cachedUserList[] = $entry['uid'][0];
 		}
 		return $this->cachedUserList;
 	}
@@ -593,10 +595,10 @@ class nisnetgroup extends baseModule {
 	/**
 	 * Returns a list of existing hosts.
 	 *
-	 * @return array host names
+	 * @return string[] host names
 	 */
-	private function getHostList() {
-		if ($this->cachedHostList != null) {
+	private function getHostList(): array {
+		if ($this->cachedHostList !== null) {
 			return $this->cachedHostList;
 		}
 		$this->cachedHostList = [];

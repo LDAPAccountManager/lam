@@ -778,9 +778,9 @@ function connectToLDAP($serverURL, $startTLS) {
  * @param string|null $objectClass object class
  * @param array $attributes list of attributes to return
  * @param array $scopes account types
- * @return array list of found entries
+ * @return array<string, string[]|string>[] list of found entries
  */
-function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes) {
+function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes): array {
 	$return = [];
 	// build filter
 	$filter = '';

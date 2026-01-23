@@ -36,17 +36,17 @@ use LAM\TYPES\TypeManager;
  */
 class nisMailAliasUser extends baseModule {
 
-	/** alias cache */
-	private $cachedAliasList;
+	/** @var array<int, array<string, string[]|string>>|null $cachedAliasList alias cache */
+	private ?array $cachedAliasList = null;
 
-	/** recipient entries to delete (list of arrays: dn => attributes) */
-	private $recipientsToDelete = [];
-	/** complete alias entries to delete */
-	private $aliasesToDelete = [];
-	/** new alias entries (list of arrays: dn => attributes) */
-	private $aliasesToAdd = [];
-	/** alias entries to extend with new recipients (list of arrays: dn => recipients) */
-	private $recipientsToAdd = [];
+	/** @var array<string, string>[] $recipientsToDelete recipient entries to delete (list of arrays: dn => attributes) */
+	private array $recipientsToDelete = [];
+	/** @var string[] $aliasesToDelete complete alias entries to delete */
+	private array $aliasesToDelete = [];
+	/** @var array<string, array<string, string[]|string>> new alias entries (list of arrays: dn => attributes) */
+	private array $aliasesToAdd = [];
+	/** @var array<string, string[]> $recipientsToAdd alias entries to extend with new recipients (list of arrays: dn => recipients) */
+	private array $recipientsToAdd = [];
 
 	/**
 	 * Returns true if this module can manage accounts of the current type, otherwise false.
@@ -226,10 +226,10 @@ class nisMailAliasUser extends baseModule {
 	/**
 	 * Removes a recipient from the given DN.
 	 *
-	 * @param String $recipient recipient as user name or email
-	 * @param String $dn alias DN
+	 * @param string $recipient recipient as user name or email
+	 * @param string $dn alias DN
 	 */
-	private function removeRecipient($recipient, $dn) {
+	private function removeRecipient($recipient, $dn): void {
 		if (!isset($this->aliasesToAdd[$dn])) {
 			// no new entry update existing
 			if (isset($this->recipientsToAdd[$dn]) && in_array($recipient, $this->recipientsToAdd[$dn])) {
@@ -276,9 +276,9 @@ class nisMailAliasUser extends baseModule {
 	/**
 	 * Removes an alias with the given DN.
 	 *
-	 * @param String $dn alias DN
+	 * @param string $dn alias DN
 	 */
-	private function deleteAlias($dn) {
+	private function deleteAlias($dn): void {
 		if (!isset($this->aliasesToAdd[$dn])) {
 			// no new entry, delete existing entry
 			$this->aliasesToDelete[] = $dn;
@@ -305,7 +305,7 @@ class nisMailAliasUser extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_add() {
+	public function display_html_add(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$aliases = $this->getMailAliasList();
 		$userName = $this->getUserName();
@@ -378,9 +378,9 @@ class nisMailAliasUser extends baseModule {
 	 * Processes user input of the primary module page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_add() {
+	public function process_add(): array {
 		$errors = [];
 		// create new alias entry
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_create'])) {
@@ -531,10 +531,10 @@ class nisMailAliasUser extends baseModule {
 	/**
 	 * Returns a list of existing email aliases.
 	 *
-	 * @return array email aliases
+	 * @return array<string, string[]|string>[] email aliases
 	 */
-	private function getMailAliasList() {
-		if ($this->cachedAliasList != null) {
+	private function getMailAliasList(): array {
+		if ($this->cachedAliasList !== null) {
 			return $this->cachedAliasList;
 		}
 		$this->cachedAliasList = searchLDAPByAttribute('cn', '*', 'nisMailAlias', ['dn', 'cn', 'rfc822MailMember'], ['mailAlias']);

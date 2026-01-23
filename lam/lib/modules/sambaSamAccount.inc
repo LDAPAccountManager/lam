@@ -2625,9 +2625,10 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		if ($this->cachedHostList !== null) {
 			return $this->cachedHostList;
 		}
-		$this->cachedHostList = searchLDAPByAttribute('uid', '*', 'sambaSamAccount', ['uid'], ['host']);
-		for ($i = 0; $i < count($this->cachedHostList); $i++) {
-			$this->cachedHostList[$i] = $this->cachedHostList[$i]['uid'][0];
+		$this->cachedHostList = [];
+		$entries = searchLDAPByAttribute('uid', '*', 'sambaSamAccount', ['uid'], ['host']);
+		foreach ($entries as $entry) {
+			$this->cachedHostList[] = $entry['uid'][0];
 		}
 		return $this->cachedHostList;
 	}

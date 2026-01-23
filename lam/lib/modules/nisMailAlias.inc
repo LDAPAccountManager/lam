@@ -35,12 +35,12 @@ use LAM\TYPES\ConfiguredType;
  */
 class nisMailAlias extends baseModule {
 
-	/** mail cache */
-	private $cachedMailList;
-	/** user cache */
-	private $cachedUserList;
+	/** @var string[]|null mail cache */
+	private ?array $cachedMailList = null;
+	/** @var string[]|null $cachedUserList user cache */
+	private ?array $cachedUserList = null;
 	/** display limit */
-	const DISPLAY_LIMIT = 50;
+	private const DISPLAY_LIMIT = 50;
 
 	/**
 	 * Returns true if this module can manage accounts of the current type, otherwise false.
@@ -288,7 +288,7 @@ class nisMailAlias extends baseModule {
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_selectMail() {
+	public function display_html_selectMail(): htmlElement {
 		return $this->display_html_select(true);
 	}
 
@@ -296,9 +296,9 @@ class nisMailAlias extends baseModule {
 	 * Processes user input of the host/user selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_selectMail() {
+	public function process_selectMail(): array {
 		return $this->process_select();
 	}
 
@@ -307,7 +307,7 @@ class nisMailAlias extends baseModule {
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_selectUser() {
+	public function display_html_selectUser(): htmlElement {
 		return $this->display_html_select(false);
 	}
 
@@ -315,9 +315,9 @@ class nisMailAlias extends baseModule {
 	 * Processes user input of the host/user selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_selectUser() {
+	public function process_selectUser(): array {
 		return $this->process_select();
 	}
 
@@ -327,7 +327,7 @@ class nisMailAlias extends baseModule {
 	 * @param boolean $isMail mail selection (user selection if false)
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_select($isMail) {
+	public function display_html_select($isMail): htmlElement {
 		if ($isMail) {
 			$regex = 'email';
 			$options = $this->getMailList();
@@ -381,9 +381,9 @@ class nisMailAlias extends baseModule {
 	 * Processes user input of the host/user selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_select() {
+	public function process_select(): array {
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_select'])) {
 			if (!isset($this->attributes['rfc822MailMember'])) {
 				$this->attributes['rfc822MailMember'] = [];
@@ -461,27 +461,28 @@ class nisMailAlias extends baseModule {
 	/**
 	 * Returns a list of existing email addresses.
 	 *
-	 * @return array email addresses
+	 * @return string[] email addresses
 	 */
-	private function getMailList() {
-		if ($this->cachedMailList != null) {
+	private function getMailList(): array {
+		if ($this->cachedMailList !== null) {
 			return $this->cachedMailList;
 		}
-		$this->cachedMailList = searchLDAPByAttribute('mail', '*', null, ['mail'], ['user']);
-		for ($i = 0; $i < count($this->cachedMailList); $i++) {
-			$this->cachedMailList[$i] = $this->cachedMailList[$i]['mail'][0];
+		$this->cachedMailList = [];
+		$entries = searchLDAPByAttribute('mail', '*', null, ['mail'], ['user']);
+		foreach ($entries as $entry) {
+			$this->cachedMailList[] = $entry['mail'][0];
 		}
 		$this->cachedMailList = array_values(array_unique($this->cachedMailList));
 		return $this->cachedMailList;
 	}
 
 	/**
-	 * Returns a list of existing user names.
+	 * Returns a list of existing usernames.
 	 *
-	 * @return array user names
+	 * @return string[] usernames
 	 */
-	private function getUserList() {
-		if ($this->cachedUserList != null) {
+	private function getUserList(): array {
+		if ($this->cachedUserList !== null) {
 			return $this->cachedUserList;
 		}
 		$this->cachedUserList = searchLDAPByFilter('(|(objectClass=posixAccount)(objectClass=inetOrgPerson))', ['uid'], ['user']);
