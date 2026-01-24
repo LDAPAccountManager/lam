@@ -597,7 +597,7 @@ class ldapPublicKey extends baseModule {
 	/**
 	 * Handles an AJAX file upload and prints the JSON result.
 	 */
-	private function ajaxUpload() {
+	private function ajaxUpload(): void {
 		$result = ['success' => true];
 		if (!isset($_POST['file']) || (strlen($_POST['file']) < 10)) {
 			$result = ['error' => _('No file received.')];
@@ -652,9 +652,10 @@ class ldapPublicKey extends baseModule {
 	/**
 	 * Manages the deletion of a key.
 	 *
-	 * @param array $data JSON data
+	 * @param array<string, string> $data JSON data
+	 * @return array<string, string> error response
 	 */
-	private function ajaxDeleteSelfServiceKey($data) {
+	private function ajaxDeleteSelfServiceKey(array $data): array {
 		if (!isset($data['id'])) {
 			return self::invalidAjaxRequest();
 		}
@@ -684,10 +685,11 @@ class ldapPublicKey extends baseModule {
 	/**
 	 * Invalid AJAX request received.
 	 *
-	 * @param String $message error message
+	 * @param string $message error message
+	 * @return array<string, string> error response
 	 */
-	public static function invalidAjaxRequest($message = null) {
-		if ($message == null) {
+	public static function invalidAjaxRequest($message = null): array {
+		if ($message === null) {
 			$message = _('Invalid request');
 		}
 		return ['errorsOccurred' => 'true', 'errormessage' => $message];
