@@ -40,8 +40,8 @@ class eduPerson extends baseModule {
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['eduPersonNickname', 'eduPersonPrincipalName'];
 
-	/** possible affiliation types */
-	private $affiliationTypes = ['faculty', 'student', 'staff', 'alum',
+	/** @var string[] $affiliationTypes possible affiliation types */
+	private array $affiliationTypes = ['faculty', 'student', 'staff', 'alum',
 		'member', 'affiliate', 'employee', 'library-walk-in'];
 
 	/**
