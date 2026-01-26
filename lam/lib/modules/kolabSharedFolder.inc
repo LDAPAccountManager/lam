@@ -35,8 +35,8 @@ use LAM\TYPES\ConfiguredType;
  */
 class kolabSharedFolder extends baseModule {
 
-	/** list of folder types (label => id) */
-	private $folderTypes = [];
+	/** @var array<string, string> $folderTypes list of folder types (label => id) */
+	private array $folderTypes;
 
 	/**
 	 * Creates a new kolabSharedFolder object.

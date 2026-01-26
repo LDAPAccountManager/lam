@@ -37,15 +37,15 @@ use LAM\TYPES\TypeManager;
  */
 class kolabGroup extends baseModule {
 
-	/** cache for mail attribute */
-	private $mailCache;
+	/** @var string[]|null $mailCache cache for mail attribute */
+	private ?array $mailCache = null;
 
 	/**
 	 * Creates a new kolabGroup object.
 	 *
 	 * @param string $scope account type (user, group, host)
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
@@ -356,8 +356,8 @@ class kolabGroup extends baseModule {
 	/**
 	 * Loads the list of email addresses into the cache.
 	 */
-	private function loadMailCache() {
-		if ($this->mailCache != null) {
+	private function loadMailCache(): void {
+		if ($this->mailCache !== null) {
 			return;
 		}
 		$results = searchLDAPByFilter('(mail=*)', ['mail'], [$this->get_scope()]);

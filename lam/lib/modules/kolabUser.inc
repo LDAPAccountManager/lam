@@ -39,8 +39,8 @@ use LAM\TYPES\ConfiguredType;
  */
 class kolabUser extends baseModule {
 
-	/** list of invitation policies */
-	private $invitationPolicies;
+	/** @var array<string, string> $invitationPolicies list of invitation policies */
+	private array $invitationPolicies;
 
 	/**
 	 * Creates a new kolabUser object.
@@ -471,7 +471,7 @@ class kolabUser extends baseModule {
 		parent::load_profile($profile);
 		// mailbox quota
 		if (!empty($profile['kolab_mailQuota'][0])) {
-			$this->attributes['mailQuota'][0] = $profile['kolab_mailQuota'][0] * 1024;
+			$this->attributes['mailQuota'][0] = intval($profile['kolab_mailQuota'][0]) * 1024;
 		}
 	}
 
@@ -497,7 +497,7 @@ class kolabUser extends baseModule {
 			// mailbox quota
 			if (!empty($rawAccounts[$i][$ids['kolabUser_mailQuota']])) {
 				if (get_preg($rawAccounts[$i][$ids['kolabUser_mailQuota']], 'digit')) {
-					$partialAccounts[$i]['mailQuota'] = $rawAccounts[$i][$ids['kolabUser_mailQuota']] * 1024;
+					$partialAccounts[$i]['mailQuota'] = intval($rawAccounts[$i][$ids['kolabUser_mailQuota']]) * 1024;
 				}
 				else {
 					$errMsg = $this->messages['mailQuota'][1];
