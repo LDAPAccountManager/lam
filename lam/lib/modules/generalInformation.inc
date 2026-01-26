@@ -37,11 +37,9 @@ use LAM\TYPES\TypeManager;
 class generalInformation extends baseModule {
 
 	/**
-	 * Returns true if this module can manage accounts of the current type, otherwise false.
-	 *
-	 * @return boolean true if module fits
+	 * {@inheritDoc}
 	 */
-	public function can_manage() {
+	public function can_manage(): bool {
 		return in_array($this->get_scope(), LAM\TYPES\getTypes());
 	}
 

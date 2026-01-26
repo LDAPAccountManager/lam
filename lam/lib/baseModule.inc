@@ -433,11 +433,11 @@ abstract class baseModule {
 	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
-	 * @return boolean true if module fits
+	 * @return bool true if module fits
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	abstract public function can_manage();
+	abstract public function can_manage(): bool;
 
 	/**
 	 * Returns true if your module is a base module and otherwise false.
@@ -957,7 +957,7 @@ abstract class baseModule {
 	 *
 	 * @param string[] $selectedModules list of selected account modules
 	 * @param ConfiguredType $type account type
-	 * @return array<string, string|bool> column list
+	 * @return array<string, string|bool>[] column list
 	 *
 	 * @see baseModule::get_metaData()
 	 */
@@ -1184,7 +1184,7 @@ abstract class baseModule {
 	 * @param array<string, string[]|string>[] $accounts list of LDAP entries
 	 * @param string[] $selectedModules selected account modules
 	 * @param ConfiguredType $type account type
-	 * @return array<string, string|int|string[][]> current status
+	 * @return array<string, string|int|string[][]|htmlStatusMessage[]> current status
 	 * <br> array (
 	 * <br>  'status' => 'finished' | 'inProgress' // defines if all operations are complete
 	 * <br>  'progress' => 0..100 // the progress of the operations in percent

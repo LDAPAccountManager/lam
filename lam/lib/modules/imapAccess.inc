@@ -45,20 +45,18 @@ class imapAccess extends baseModule {
 	private const QUOTA_USAGE = 'usage';
 	private const QUOTA_LIMIT = 'limit';
 
-	/** quota limit from profile */
-	private $profileQuotaLimit;
+	/** @var string|null $profileQuotaLimit quota limit from profile */
+	private ?string $profileQuotaLimit = null;
 
 	/** user name */
-	private $user;
+	private string $user = '';
 	/** email address */
-	private $email;
+	private string $email = '';
 
 	/**
-	 * Returns true if this module can manage accounts of the current type, otherwise false.
-	 *
-	 * @return boolean true if module fits
+	 * {@inheritDoc}
 	 */
-	public function can_manage() {
+	public function can_manage(): bool {
 		return $this->get_scope() === 'user';
 	}
 
@@ -172,7 +170,7 @@ class imapAccess extends baseModule {
 	/**
 	 * Extracts user name and email address from inetOrgPerson/posixAccount/windowsUser modules.
 	 *
-	 * @param array $attrs LDAP attributes (retrieved from other account modules if empty)
+	 * @param array<string, string[]|string> $attrs LDAP attributes (retrieved from other account modules if empty)
 	 * @return ?htmlStatusMessage message if any
 	 */
 	private function extractUserAndEmail($attrs = null): ?htmlStatusMessage {
@@ -308,7 +306,7 @@ class imapAccess extends baseModule {
 	 * @return htmlResponsiveRow table with added information about user quotas or controls to add quota
 	 */
 	function renderQuotasForMailbox($container, $client, $username) {
-		if (($this->profileQuotaLimit != null) && ($this->profileQuotaLimit != '')) {
+		if (($this->profileQuotaLimit !== null) && ($this->profileQuotaLimit !== '')) {
 			try {
 				$this->runSetQuotaCommand($client, $username, $this->profileQuotaLimit);
 			}
@@ -408,9 +406,9 @@ class imapAccess extends baseModule {
 	 * @param Client $client IMAP client
 	 * @param string $userName user name
 	 * @param string $email_domain email domain
-	 * @return array error messages
+	 * @return array<string|string[]>[] error messages
 	 */
-	private function createMailbox($client, $userName, $email_domain) {
+	private function createMailbox($client, $userName, $email_domain): array {
 		$errors = [];
 		$prefix = $this->getMailboxPrefix();
 		if ($this->isWrongDomain($email_domain)) {
@@ -450,7 +448,7 @@ class imapAccess extends baseModule {
 	 * @param string $userName user name
 	 * @param string $email_domain email domain
 	 * @param string $quota mailbox quota
-	 * @return array error messages
+	 * @return array<string|string[]>[] error messages
 	 */
 	private function setQuota($client, $userName, $email_domain, $quota) {
 		$prefix = $this->getMailboxPrefix();
@@ -620,9 +618,9 @@ class imapAccess extends baseModule {
 	/**
 	 * Checks the password given by user and save it as session parameter.
 	 *
-	 * @return array list of error messages
+	 * @return array<string|string[]>[] list of error messages
 	 */
-	function doLogin() {
+	function doLogin(): array {
 		$errors = [];
 		$adminUser = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && $_POST['ImapAdminPassword'] != "") {
@@ -644,7 +642,7 @@ class imapAccess extends baseModule {
 	/**
 	 * Closes the IMAP connection.
 	 *
-	 * @param $client client
+	 * @param Client $client client
 	 */
 	private function doLogout($client): void {
 		$client->disconnect();
@@ -743,9 +741,9 @@ class imapAccess extends baseModule {
 	/**
 	 * Returns the list of initial folders to create for a new mailbox.
 	 *
-	 * @return array list of folders
+	 * @return string[] list of folders
 	 */
-	private function getInitialFolders() {
+	private function getInitialFolders(): array {
 		$list = [];
 		if (!empty($this->moduleSettings['ImapAccess_initialFolders'])) {
 			foreach ($this->moduleSettings['ImapAccess_initialFolders'] as $folder) {
@@ -924,7 +922,7 @@ class imapAccess extends baseModule {
 	 *
 	 * @param Client $client IMAP client
 	 * @param string $user user name
-	 * @return array array with keys QUOTA_USAGE and QUOTA_LIMIT
+	 * @return array<string, string> array with keys QUOTA_USAGE and QUOTA_LIMIT
 	 */
 	private function getQuota($client, string $user): array {
 		$connection = $client->getConnection();

@@ -67,7 +67,6 @@ parameters:
 		- '#Unable to resolve the template type T in call to function array_values#'
 		- '#.*build_uploadAccounts\(\) expects array.*#'
 		- '#.*mapSimpleUploadField\(\) expects array.*#'
-		- '#.*get_uploadColumns\(\) should return .* but returns list<array<string, mixed>>.*#'
 		- '#Unable to resolve the template type T in call to function array_delete#'
 		- '#.*of function sort contains unresolvable type.*#'
 		- '#.*of function natcasesort expects an array of values castable to string.*#'

@@ -310,9 +310,9 @@ class baseModuleDummy extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::can_manage()
 	 */
-	public function can_manage() {
+	public function can_manage(): bool {
+		return true;
 	}
 
 
@@ -320,6 +320,7 @@ class baseModuleDummy extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function process_attributes(): array {
+		return [];
 	}
 
 

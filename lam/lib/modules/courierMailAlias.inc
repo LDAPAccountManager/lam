@@ -41,9 +41,9 @@ use LAM\TYPES\ConfiguredType;
 class courierMailAlias extends baseModule {
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	public function can_manage() {
+	public function can_manage(): bool {
 		return $this->get_scope() === 'mailAlias';
 	}
 

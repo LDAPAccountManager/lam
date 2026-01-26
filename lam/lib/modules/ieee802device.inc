@@ -41,11 +41,9 @@ class ieee802device extends baseModule {
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['macAddress'];
 
 	/**
-	 * Returns true if this module can manage accounts of the current type, otherwise false.
-	 *
-	 * @return boolean true if module fits
+	 * {@inheritDoc}
 	 */
-	public function can_manage() {
+	public function can_manage(): bool {
 		return $this->get_scope() === 'host';
 	}
 

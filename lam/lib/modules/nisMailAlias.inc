@@ -43,11 +43,9 @@ class nisMailAlias extends baseModule {
 	private const DISPLAY_LIMIT = 50;
 
 	/**
-	 * Returns true if this module can manage accounts of the current type, otherwise false.
-	 *
-	 * @return boolean true if module fits
+	 * {@inheritDoc}
 	 */
-	public function can_manage() {
+	public function can_manage(): bool {
 		return $this->get_scope() === 'mailAlias';
 	}
 

@@ -46,23 +46,23 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 */
 	private const STATUS_PASSWORD_LOCKED = "INETORG_PERSON_PASSWORD_LOCKED";
 
-	/** clear text password */
-	private $clearTextPassword;
-	/** cache for departments */
-	private $departmentCache;
-	/** organization cache */
-	private $oCache;
-	/** organizational unit cache */
-	private $ouCache;
-	/** title cache */
-	private $titleCache;
-	/** employee type cache */
-	private $employeeTypeCache;
-	/** business category cache */
-	private $businessCategoryCache;
+	/** @var string|null $clearTextPassword clear text password */
+	private ?string $clearTextPassword = null;
+	/** @var string[]|null $departmentCache cache for departments */
+	private ?array $departmentCache = null;
+	/** @var string[]|null $oCache organization cache */
+	private ?array $oCache = null;
+	/** @var string[]|null $ouCache organizational unit cache */
+	private ?array $ouCache = null;
+	/** @var string[]|null $titleCache title cache */
+	private ?array $titleCache = null;
+	/** @var string[]|null $employeeTypeCache employee type cache */
+	private ?array $employeeTypeCache = null;
+	/** @var string[]|null $businessCategoryCache business category cache */
+	private ?array $businessCategoryCache = null;
 
-	/** email cache */
-	private $emailCheckCache;
+	/** @var array<string, bool> $emailCheckCache email cache */
+	private array $emailCheckCache = [];
 
 	/** session variable for existing user certificates in self service */
 	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
@@ -120,11 +120,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Returns true if this module can manage accounts of the current type, otherwise false.
-	 *
-	 * @return boolean true if module fits
+	 * {@inheritDoc}
 	 */
-	public function can_manage() {
+	public function can_manage(): bool {
 		return $this->get_scope() === 'user';
 	}
 
@@ -932,10 +930,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Sets the password via ldap_exop if configured.
 	 *
-	 * @param array $settings settings
-	 * @return array error message parameters if any
+	 * @param array<string, string[]> $settings settings
+	 * @return array<string|string[]>[] error message parameters if any
 	 */
-	private function setExopPassword($settings) {
+	private function setExopPassword($settings): array {
 		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
 			&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
 			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, '', $this->clearTextPassword);
@@ -1605,9 +1603,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Sets a new photo.
 	 *
-	 * @return array list of error messages if any
+	 * @return array<string|string[]>[] list of error messages if any
 	 */
-	public function process_photo() {
+	public function process_photo(): array {
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_back'])) {
 			return [];
 		}
@@ -1638,9 +1636,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Uploads the photo file.
 	 *
-	 * @return array error messages if any
+	 * @return array<string|string[]>[] error messages if any
 	 */
-	private function uploadPhoto() {
+	private function uploadPhoto(): array {
 		$messages = [];
 		if ((empty($_FILES['photoFile']) || ($_FILES['photoFile']['size'] <= 0)) && empty($_POST['webcamData'])) {
 			$messages[] = $this->messages['file'][0];
@@ -1693,7 +1691,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	public function display_html_photo() {
+	public function display_html_photo(): htmlElement {
 		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['jpegPhoto'][0])) {
 			$container->add(new htmlSubTitle(_('Upload image')));
@@ -1756,7 +1754,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_manager() {
+	public function display_html_manager(): htmlElement {
 		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['manager'])) {
 			$this->attributes['manager'] = [];
@@ -1838,9 +1836,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * Processes user input of the manager page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_manager() {
+	public function process_manager(): array {
 		$return = [];
 		if ($this->isAdminReadOnly('manager')) {
 			return $return;
@@ -1868,7 +1866,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_userCertificate() {
+	public function display_html_userCertificate(): htmlElement {
 		$container = new htmlResponsiveRow();
 		if (isset($this->attributes['userCertificate;binary'])) {
 			$table = new htmlTable();
@@ -1918,9 +1916,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Sets a new certificate or deletes old ones.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_userCertificate() {
+	public function process_userCertificate(): array {
 		$messages = [];
 		if ($this->isAdminReadOnly('userCertificate')) {
 			return $messages;
@@ -3291,10 +3289,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * Resizes the given image data to the settings provided.
 	 *
 	 * @param string $data binary image data
-	 * @param array $settings settings
+	 * @param array<string, string[]> $settings settings
 	 * @return string binary image data
 	 */
-	private function resizeAndConvertImage($data, $settings) {
+	private function resizeAndConvertImage($data, $settings): string {
 		include_once __DIR__ . '/../imageutils.inc';
 		$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 		// resize if maximum values specified
@@ -3337,7 +3335,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Handles an AJAX certificate file upload and prints the JSON result.
 	 */
-	private function ajaxUploadCert() {
+	private function ajaxUploadCert(): void {
 		$result = ['success' => true];
 		if (!isset($_POST['file']) || (strlen($_POST['file']) < 100)) {
 			$result = ['error' => _('No file received.')];
@@ -3372,7 +3370,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Handles an AJAX photo file upload and prints the JSON result.
 	 */
-	private function ajaxUploadPhoto() {
+	private function ajaxUploadPhoto(): void {
 		$result = ['success' => true];
 		if ((!isset($_POST['file']) || (strlen($_POST['file']) < 100)) && empty($_POST['webcamData'])) {
 			$result = ['error' => _('No file received.')];
@@ -3412,8 +3410,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * Manages the deletion of a photo.
+	 *
+	 * @return array<string, string> response
 	 */
-	private function ajaxDeleteSelfServicePhoto() {
+	private function ajaxDeleteSelfServicePhoto(): array {
 		$_SESSION[self::SESS_PHOTO] = null;
 		ob_start();
 		$contentElement = $this->getSelfServicePhoto(false, false);
@@ -3431,9 +3431,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Manages the deletion of a certificate.
 	 *
-	 * @param array $data JSON data
+	 * @param array<string, string> $data JSON data
+	 * @return array<string, string> response
 	 */
-	private function ajaxDeleteSelfServiceUserCertificate($data) {
+	private function ajaxDeleteSelfServiceUserCertificate($data): array {
 		if (!isset($data['id'])) {
 			return self::invalidAjaxRequest();
 		}
@@ -3458,9 +3459,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Invalid AJAX request received.
 	 *
-	 * @param String $message error message
+	 * @param string|null $message error message
+	 * @return array<string, string|null> response
 	 */
-	public static function invalidAjaxRequest($message = null) {
+	public static function invalidAjaxRequest($message = null): array {
 		if ($message == null) {
 			$message = _('Invalid request');
 		}
@@ -3525,8 +3527,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Loads cached data from LDAP such as departmets etc.
 	 */
-	private function initCache() {
-		if ($this->departmentCache != null) {
+	private function initCache(): void {
+		if ($this->departmentCache !== null) {
 			return;
 		}
 		$attrs = [];
@@ -3831,7 +3833,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Returns if the password of the current account is locked.
 	 *
-	 * @param ?array $attributes LDAP attribute data
+	 * @param array<string, string[]|string>|null $attributes LDAP attribute data
 	 * @return bool password is locked
 	 */
 	public function isLocked(?array $attributes = null): bool {
