@@ -710,11 +710,9 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This functions is used to check if all settings for this module have been made.
-	 *
-	 * @return boolean true, if settings are complete
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
 			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];
@@ -731,11 +729,9 @@ class posixGroup extends baseModule implements passwordService {
 
 
 	/**
-	 * Controls if the module button the account page is visible and activated.
-	 *
-	 * @return string status ("enabled", "disabled", "hidden")
+	 * {@inheritDoc}
 	 */
-	function getButtonStatus() {
+	public function getButtonStatus(): string {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
 			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];

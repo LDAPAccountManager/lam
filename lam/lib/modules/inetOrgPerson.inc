@@ -835,11 +835,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * This functions return true if all needed settings are done.
-	 *
-	 * @return boolean true, if all is ok
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
 			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];
@@ -856,11 +854,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Controls if the module button the account page is visible and activated.
-	 *
-	 * @return string status ("enabled", "disabled", "hidden")
+	 * {@inheritDoc}
 	 */
-	function getButtonStatus() {
+	public function getButtonStatus(): string {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
 			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];

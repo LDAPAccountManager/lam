@@ -154,11 +154,9 @@ class ddns extends baseModule {
 	}
 
 	/**
-	 * This functions returns true if all needed settings are done.
-	 *
-	 * @return boolean true if LDAP operation can be done
+	 * {@inheritDoc}
 	 */
-	public function module_complete() {
+	public function module_complete(): bool {
 		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 		if ($this->isRootNode()) {

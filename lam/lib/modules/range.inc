@@ -202,7 +202,7 @@ class range extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getButtonStatus() {
+	public function getButtonStatus(): string {
 		if (!$this->isRootNode()) {
 			return "enabled";
 		}

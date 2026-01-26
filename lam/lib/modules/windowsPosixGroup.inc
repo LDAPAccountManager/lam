@@ -65,20 +65,16 @@ class windowsPosixGroup extends posixGroup {
 	}
 
 	/**
-	 * Controls if the module button the account page is visible and activated.
-	 *
-	 * @return string status ("enabled", "disabled", "hidden")
+	 * {@inheritDoc}
 	 */
-	function getButtonStatus() {
+	public function getButtonStatus(): string {
 		return "enabled";
 	}
 
 	/**
-	 * This functions is used to check if all settings for this module have been made.
-	 *
-	 * @return boolean true, if settings are complete
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		return true;
 	}
 

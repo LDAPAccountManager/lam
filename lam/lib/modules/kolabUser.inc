@@ -429,9 +429,9 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		if (isset($this->attributes['objectClass']) && in_array('kolabInetOrgPerson', $this->attributes['objectClass'])) {
 			$attrsI = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 			if (!$attrsI['mail'][0]) {

@@ -432,11 +432,9 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	}
 
 	/**
-	 * This functions returns true if all needed settings are done.
-	 *
-	 * @return boolean true if LDAP operation can be done
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		return (!in_array('AsteriskVoiceMail', $this->attributes['objectClass'])
 			|| !empty($this->attributes['AstVoicemailPassword'][0]));
 	}

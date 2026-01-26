@@ -521,11 +521,9 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	 * This functions is used to check if all settings for this module have been made.
-	 *
-	 * @return boolean true, if settings are complete
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		return (isset($this->attributes['cn']) && (count($this->attributes['cn']) > 0));
 	}
 

@@ -535,7 +535,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		if (!$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
 			// no checks if object class is not set
 			return true;

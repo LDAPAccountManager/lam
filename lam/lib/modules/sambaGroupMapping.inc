@@ -590,13 +590,9 @@ class sambaGroupMapping extends baseModule {
 	}
 
 	/**
-	 * This function is used to check if all settings for this module have been made.
-	 *
-	 * @return boolean true, if settings are complete
-	 * @see baseModule::module_complete
-	 *
+	 * {@inheritDoc}
 	 */
-	public function module_complete() {
+	public function module_complete(): bool {
 		if (!in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
 			return true;
 		}

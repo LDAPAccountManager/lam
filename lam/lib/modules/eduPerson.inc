@@ -264,11 +264,9 @@ class eduPerson extends baseModule {
 	}
 
 	/**
-	 * This functions return true if all needed settings are done.
-	 *
-	 * @return boolean true, if all is ok
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		return ($this->getAccountContainer()->rdn !== 'eduPersonPrincipalName') || isset($this->attributes['eduPersonPrincipalName'][0]);
 	}
 

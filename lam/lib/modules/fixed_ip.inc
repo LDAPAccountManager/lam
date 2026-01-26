@@ -131,11 +131,9 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
-	 * Controls if the module button the account page is visible and activated.
-	 *
-	 * @return string status ("enabled", "disabled", "hidden")
+	 * {@inheritDoc}
 	 */
-	public function getButtonStatus() {
+	public function getButtonStatus(): string {
 		if ($this->isRootNode()) {
 			return "hidden";
 		}

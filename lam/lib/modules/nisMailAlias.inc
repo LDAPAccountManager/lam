@@ -401,11 +401,9 @@ class nisMailAlias extends baseModule {
 	}
 
 	/**
-	 * Controls if the module button the account page is visible and activated.
-	 *
-	 * @return string status ("enabled", "disabled", "hidden")
+	 * {@inheritDoc}
 	 */
-	function getButtonStatus() {
+	public function getButtonStatus(): string {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
 			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];

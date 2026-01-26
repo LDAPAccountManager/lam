@@ -651,18 +651,9 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
-	 * This function is used to check if all settings for this module have been made.
-	 *
-	 * Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
-	 * <br>
-	 * This function tells LAM if it can create/modify the LDAP account. If your module needs any
-	 * additional input then set this to false. The user will be notified that your module needs
-	 * more input.<br>
-	 * This method's return value defaults to true.
-	 *
-	 * @return boolean true, if settings are complete
+	 * {@inheritDoc}
 	 */
-	public function module_complete() {
+	public function module_complete(): bool {
 		if (in_array('pykotaAccount', $this->attributes['objectClass'])) {
 			// require uid
 			$uid = $this->getCurrentUserName();

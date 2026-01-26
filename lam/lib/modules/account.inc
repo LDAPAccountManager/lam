@@ -131,20 +131,16 @@ class account extends baseModule {
 	}
 
 	/**
-	 * This functions returns true if all needed settings are done.
-	 *
-	 * @return boolean true if LDAP operation can be done
+	 * {@inheritDoc}
 	 */
-	function module_complete() {
+	public function module_complete(): bool {
 		return $this->isUnixActive() || !empty($this->attributes['uid'][0]);
 	}
 
 	/**
-	 * Controls if the module button the account page is visible and activated.
-	 *
-	 * @return string status ("enabled", "disabled", "hidden")
+	 * {@inheritDoc}
 	 */
-	function getButtonStatus() {
+	public function getButtonStatus(): string {
 		if (!$this->getAccountContainer()->isNewAccount) {
 			// check if account is based on our object class
 			$objectClasses = $this->getAccountContainer()->attributes_orig['objectClass'];

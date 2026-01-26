@@ -1132,9 +1132,9 @@ abstract class baseModule {
 	 * more input.<br>
 	 * This method's return value defaults to true.
 	 *
-	 * @return boolean true, if settings are complete
+	 * @return bool true, if settings are complete
 	 */
-	public function module_complete() {
+	public function module_complete(): bool {
 		return true;
 	}
 
@@ -1152,7 +1152,7 @@ abstract class baseModule {
 	 *
 	 * @return string status ("enabled", "disabled", "hidden")
 	 */
-	public function getButtonStatus() {
+	public function getButtonStatus(): string {
 		return "enabled";
 	}
 
