@@ -896,13 +896,13 @@ abstract class baseModule {
 	/**
 	 * Adds a simple PDF entry with the given key and value.
 	 *
-	 * @param array $result result array (entry will be added here)
-	 * @param String $name ID
-	 * @param String $label label name
-	 * @param string|array $value value as String or array
-	 * @param String $delimiter delimiter if value is array (default: ", ")
+	 * @param array<string, PDFEntry[]> $result result array (entry will be added here)
+	 * @param string $name ID
+	 * @param string $label label name
+	 * @param string|string[] $value value as string or array
+	 * @param string $delimiter delimiter if value is array (default: ", ")
 	 */
-	public function addPDFKeyValue(&$result, $name, $label, $value, $delimiter = ', ') {
+	public function addPDFKeyValue(&$result, $name, $label, $value, $delimiter = ', '): void {
 		if (is_array($value)) {
 			natcasesort($value);
 			$value = implode($delimiter, $value);
