@@ -917,13 +917,9 @@ class asteriskExtension extends baseModule {
 	}
 
 	/**
-	 * Runs ufter main deltete procedure was done and do postmorten for other parts of extension
-	 * wtith priority > 1.
-	 *
-	 * @return array error messages
+	 * {@inheritDoc}
 	 */
-	function postDeleteActions() {
-
+	public function postDeleteActions(): array {
 		$extension = $this->attributes['AstExtension'][0];
 		$searchClass = "AsteriskExtension";
 		$searchScope = 'asteriskExt';

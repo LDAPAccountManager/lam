@@ -40,10 +40,6 @@ use LAM\TYPES\ConfiguredType;
  */
 class ddns extends baseModule {
 
-	/** standard DDNS settings */
-	public $ddns = [];
-
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -187,7 +183,7 @@ class ddns extends baseModule {
 	 *
 	 * @return bool is root
 	 */
-	private function isRootNode() {
+	private function isRootNode(): bool {
 		$rootSuffix = $this->getAccountContainer()->get_type()->getSuffix();
 		return $this->getAccountContainer()->dn_orig == $rootSuffix;
 	}
@@ -201,9 +197,11 @@ class ddns extends baseModule {
 	}
 
 	/**
-	 * This function check if ddns is enable.
+	 * This function check if ddns is enabled.
+	 *
+	 * @return bool is enabled
 	 */
-	private function check_if_ddns_is_enable() {
+	private function check_if_ddns_is_enable(): bool {
 		if ($this->getAccountContainer() == null) {
 			return false;
 		}
@@ -238,8 +236,10 @@ class ddns extends baseModule {
 
 	/**
 	 * Process for mainsettings
+	 *
+	 * @return array<string|string[]>[] messages
 	 */
-	public function process_attributes_mainSettings() {
+	public function process_attributes_mainSettings(): array {
 		if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 			return [];
 		}
@@ -273,8 +273,10 @@ class ddns extends baseModule {
 
 	/**
 	 * Process for account
+	 *
+	 * @return array<string|string[]>[] messages
 	 */
-	public function process_attributes_account() {
+	public function process_attributes_account(): array {
 		$errors = [];
 
 		$ip = trim($_POST['ip']);
@@ -327,7 +329,7 @@ class ddns extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement {
 		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 		$return = new htmlResponsiveRow();
@@ -421,9 +423,9 @@ class ddns extends baseModule {
 	/**
 	 * Returns the zone names.
 	 *
-	 * @return array zone names array(zone, reverse zone)
+	 * @return string[] zone names array(zone, reverse zone)
 	 */
-	private function getZoneNames() {
+	private function getZoneNames(): array {
 		$return = [];
 		$zone = '';
 		$revZone = '';
@@ -449,9 +451,9 @@ class ddns extends baseModule {
 	/**
 	 * Returns if DDNS is activated.
 	 *
-	 * @return boolean activated
+	 * @return bool activated
 	 */
-	private function isDynDNSActivated() {
+	private function isDynDNSActivated(): bool {
 		$return = false;
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
@@ -467,9 +469,9 @@ class ddns extends baseModule {
 	/**
 	 * Sets if DDNS is activated.
 	 *
-	 * @param boolean $activated activated
+	 * @param bool $activated activated
 	 */
-	private function setDynDNSActivated($activated) {
+	private function setDynDNSActivated($activated): void {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'ddns-update-style ')) {
@@ -484,9 +486,9 @@ class ddns extends baseModule {
 	/**
 	 * Returns if fixed IPs are added to DDNS.
 	 *
-	 * @return boolean add fixed IPs
+	 * @return bool add fixed IPs
 	 */
-	private function addFixIPs() {
+	private function addFixIPs(): bool {
 		$return = false;
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
@@ -502,9 +504,9 @@ class ddns extends baseModule {
 	/**
 	 * Sets if client updates are ignored.
 	 *
-	 * @param boolean $add add fixed IPs
+	 * @param bool $add add fixed IPs
 	 */
-	private function setFixIPs($add) {
+	private function setFixIPs($add): void {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (str_starts_with($this->attributes['dhcpStatements'][$i], 'update-static-leases ')) {
@@ -521,9 +523,9 @@ class ddns extends baseModule {
 	/**
 	 * Returns if client updates are ignored.
 	 *
-	 * @return boolean ignore client updates
+	 * @return bool ignore client updates
 	 */
-	private function isIgnoreClientUpdates() {
+	private function isIgnoreClientUpdates(): bool {
 		$return = false;
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
@@ -541,7 +543,7 @@ class ddns extends baseModule {
 	 *
 	 * @param boolean $ignore ignore client updates
 	 */
-	private function setIgnoreClientUpdates($ignore) {
+	private function setIgnoreClientUpdates($ignore): void {
 		if (is_array($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 				if (preg_replace('/[ ]+/', ' ', $this->attributes['dhcpStatements'][$i]) == 'ignore client-updates') {

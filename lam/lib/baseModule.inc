@@ -1090,11 +1090,11 @@ abstract class baseModule {
 	 * array('Headline' => 'This is the head line', 'Text' => 'Help content', 'SeeAlso' => array('text' => 'LAM homepage', 'link' => 'http://www.ldap-account-manager.org/'))
 	 *
 	 * @param string $id The id string for the help entry needed.
-	 * @return array|null The desired help entry.
+	 * @return array<string, string>|null The desired help entry.
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function get_help($id) {
+	public function get_help(string $id): ?array {
 		if (isset($this->meta['help'][$id])) {
 			return $this->meta['help'][$id];
 		}
@@ -1233,10 +1233,10 @@ abstract class baseModule {
 	 * The modification is aborted if an error message is returned.
 	 *
 	 * @param boolean $newAccount new account
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @param array<string, string[]|string> $attributes LDAP attributes of this entry
+	 * @return array<string|string[]>[] array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	public function preModifyActions($newAccount, &$attributes) {
+	public function preModifyActions(bool $newAccount, array $attributes): array {
 		return [];
 	}
 
@@ -1269,9 +1269,9 @@ abstract class baseModule {
 	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 *
-	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @return array<string|string[]>[] array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	public function postDeleteActions() {
+	public function postDeleteActions(): array {
 		return [];
 	}
 
@@ -2181,10 +2181,10 @@ abstract class baseModule {
 	 * An error message should be printed if the function returns false.
 	 *
 	 * @param boolean $newAccount is new account or existing one
-	 * @param array $attributes LDAP attributes of this entry
-	 * @return boolean true, if no problems occurred
+	 * @param array<string, string[]|string> $attributes LDAP attributes of this entry
+	 * @return bool true, if no problems occurred
 	 */
-	public function preModifySelfService($newAccount, $attributes) {
+	public function preModifySelfService(bool $newAccount, array $attributes): bool {
 		return true;
 	}
 
