@@ -44,26 +44,26 @@ use LAM\TYPES\ConfiguredType;
  */
 class fixed_ip extends baseModule {
 
-	/** fixed ips */
-	public $fixed_ip = [];
+	/** @var array<int, array<string, string[]|string|bool>> $fixed_ip fixed ips */
+	public array $fixed_ip = [];
 
 	/** already processed? */
-	public $processed = false;
+	public bool $processed = false;
 
-	/** for check if IPs overlap */
-	public $overlapd;
+	/** @var string[] $overlapd for check if IPs overlap */
+	public array $overlapd = [];
 
-	/** original IPs */
-	public $orig_ips = [];
+	/** @var array<string, string>[] $orig_ips original IPs */
+	public array $orig_ips = [];
 
 	/** LDAP attributes */
 	public $attributes;
 
-	/** cached host entries (list of array('cn' => ..., 'iphostnumber' => ..., 'macaddress' => ...)) */
-	private $hostCache;
+	/** @var array<string, string[]|string>[]|null $hostCache cached host entries (list of array('cn' => ..., 'iphostnumber' => ..., 'macaddress' => ...)) */
+	private ?array $hostCache = null;
 
-	/** cache for existing host entries */
-	private $existingDhcpHostsCache;
+	/** @var array<string, string>[]|null $existingDhcpHostsCache cache for existing host entries */
+	private ?array $existingDhcpHostsCache = null;
 
 	/**
 	 * {@inheritDoc}
@@ -158,15 +158,14 @@ class fixed_ip extends baseModule {
 	/**
 	 * Reset the overlapped_range() function
 	 **/
-	private function reset_overlapped_ip() {
+	private function reset_overlapped_ip(): void {
 		$this->overlapd = [];
 	}
 
 	/**
-	 *
 	 * Check, if a mac address is invalid
-	 * @param $mac string mac address
 	 *
+	 * @param string $mac mac address
 	 * @return bool true, if mac is invalid
 	 **/
 	public function check_mac($mac): bool {
@@ -191,22 +190,19 @@ class fixed_ip extends baseModule {
 	 * @return bool true, if ip were edited.
 	 *
 	 **/
-	public function reload_ips() {
+	public function reload_ips(): bool {
 		$ip_edit = false;        // IPs were edited?
-		// Only run it, when ranges already exists:
-		if (is_array($this->fixed_ip)) {
-			$ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
-			foreach ($this->fixed_ip as $id => $value) {
-				if (!empty($value['ip']) && !range::check_subnet_range($value['ip'],
-						$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
-						$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
-					// Range anpassen:
-					$ex = explode(".", $value['ip']);
-					$tmp = $value['ip'];
-					$this->fixed_ip[$id]['ip'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
-					if ($tmp != $this->fixed_ip[$id]['ip']) {
-						$ip_edit = true;
-					}
+		$ex_subnet = explode(".", $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]);
+		foreach ($this->fixed_ip as $id => $value) {
+			if (!empty($value['ip']) && !range::check_subnet_range($value['ip'],
+					$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
+					$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
+				// Range anpassen:
+				$ex = explode(".", $value['ip']);
+				$tmp = $value['ip'];
+				$this->fixed_ip[$id]['ip'] = $ex_subnet[0] . "." . $ex_subnet[1] . "." . $ex_subnet[2] . "." . $ex[3];
+				if ($tmp != $this->fixed_ip[$id]['ip']) {
+					$ip_edit = true;
 				}
 			}
 		}
@@ -252,7 +248,7 @@ class fixed_ip extends baseModule {
 	/**
 	 * Orders the host entries by IP address.
 	 */
-	private function orderByIP() {
+	private function orderByIP(): void {
 		// sort by IP
 		$order = [];
 		foreach ($this->fixed_ip as $key => $value) {
@@ -411,9 +407,6 @@ class fixed_ip extends baseModule {
 		$this->reset_overlapped_ip();
 
 		// If $ranges is not a array, then create one:
-		if (!is_array($this->fixed_ip)) {
-			$this->fixed_ip = [];
-		}
 		$pcs = [];
 		$messages = [];
 		foreach ($this->fixed_ip as $id => $value) {
@@ -514,7 +507,7 @@ class fixed_ip extends baseModule {
 	 * Checks if the given host name already exists.
 	 *
 	 * @param string $name host name
-	 * @return boolean|array false if not exists, DN + new name suggestion if exists
+	 * @return boolean|string[] false if not exists, DN + new name suggestion if exists
 	 */
 	private function hostNameExists($name) {
 		$this->fillExistingDhcpHosts();
@@ -564,7 +557,7 @@ class fixed_ip extends baseModule {
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	public function display_html_addHost() {
+	public function display_html_addHost(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$this->initCache();
 		$hostNames = [];
@@ -600,9 +593,9 @@ class fixed_ip extends baseModule {
 	 * Processes user input of the add host page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	public function process_addHost() {
+	public function process_addHost(): array {
 		$errors = [];
 		if (isset($_POST['form_subpage_fixed_ip_attributes_addHost'])) {
 			$val = explode('####', $_POST['host']);
@@ -642,7 +635,7 @@ class fixed_ip extends baseModule {
 			foreach ($this->orig_ips as $id => $arr) {
 				// Exist cn still?
 				$in_arr = false;
-				foreach ($this->fixed_ip as $idB => $arr) {
+				foreach ($this->fixed_ip as $idB => $arr2) {
 					if ($this->orig_ips[$id]['cn'] == $this->fixed_ip[$idB]['cn']) {
 						$in_arr = true;
 						// check if IP changed
@@ -671,13 +664,10 @@ class fixed_ip extends baseModule {
 				}
 			}
 
-			if (!is_array($this->fixed_ip)) {
-				$this->fixed_ip = [];
-			}
 			// Which entries are new:
 			foreach ($this->fixed_ip as $id => $arr) {
 				$in_arr = false;
-				foreach ($this->orig_ips as $idB => $arr) {
+				foreach ($this->orig_ips as $idB => $arr2) {
 					if ($this->orig_ips[$idB]['cn'] == $this->fixed_ip[$id]['cn']) {
 						$in_arr = true;
 					}
@@ -724,7 +714,7 @@ class fixed_ip extends baseModule {
 	 */
 	public function get_pdfEntries(array $pdfKeys, string $typeId): array {
 		$return = [];
-		if (is_array($this->fixed_ip) && ($this->fixed_ip !== [])) {
+		if ($this->fixed_ip !== []) {
 			$pdfTable = new PDFTable();
 			$pdfRow = new PDFTableRow();
 			$pdfRow->cells[] = new PDFTableCell(_('PC name'), '20%', null, true);
@@ -758,9 +748,10 @@ class fixed_ip extends baseModule {
 	/**
 	 * Extracts the IP from a list of DHCP statements.
 	 *
-	 * @param array|null $dhcpStatements values of dhcpStatements attribute
+	 * @param string[]|null $dhcpStatements values of dhcpStatements attribute
+	 * @return string|null IP
 	 */
-	public static function extractIP($dhcpStatements) {
+	public static function extractIP($dhcpStatements): ?string {
 		$return = null;
 		if (is_array($dhcpStatements)) {
 			for ($i = 0; $i < count($dhcpStatements); $i++) {
@@ -776,10 +767,10 @@ class fixed_ip extends baseModule {
 	/**
 	 * Sets the IP in a list of DHCP statements.
 	 *
-	 * @param array $dhcpStatements values of dhcpStatements attribute
-	 * @param String $ip new IP
+	 * @param string[] $dhcpStatements values of dhcpStatements attribute
+	 * @param string $ip new IP
 	 */
-	private function setIP(&$dhcpStatements, $ip) {
+	private function setIP(&$dhcpStatements, $ip): void {
 		for ($i = 0; $i < count($dhcpStatements); $i++) {
 			if (str_starts_with($dhcpStatements[$i], 'fixed-address ')) {
 				unset($dhcpStatements[$i]);
@@ -794,7 +785,7 @@ class fixed_ip extends baseModule {
 	/**
 	 * Returns if this host is active.
 	 *
-	 * @param array $dhcpStatements values of dhcpStatements attribute
+	 * @param string[] $dhcpStatements values of dhcpStatements attribute
 	 * @return bool is active
 	 */
 	public static function isActive(array $dhcpStatements): bool {
@@ -813,10 +804,10 @@ class fixed_ip extends baseModule {
 	/**
 	 * Sets if this host is active.
 	 *
-	 * @param array $dhcpStatements values of dhcpStatements attribute
+	 * @param string[] $dhcpStatements values of dhcpStatements attribute
 	 * @param boolean $active is active
 	 */
-	private function setActive(&$dhcpStatements, $active) {
+	private function setActive(&$dhcpStatements, $active): void {
 		for ($i = 0; $i < count($dhcpStatements); $i++) {
 			if (str_contains($dhcpStatements[$i], ' booting')) {
 				unset($dhcpStatements[$i]);
@@ -829,8 +820,8 @@ class fixed_ip extends baseModule {
 	/**
 	 * Loads cached host data from LDAP.
 	 */
-	private function initCache() {
-		if ($this->hostCache != null) {
+	private function initCache(): void {
+		if ($this->hostCache !== null) {
 			return;
 		}
 		$attrs = ['cn', 'iphostnumber', 'macaddress'];
@@ -846,7 +837,7 @@ class fixed_ip extends baseModule {
 	 *
 	 * @return bool is root
 	 */
-	private function isRootNode() {
+	private function isRootNode(): bool {
 		$rootSuffix = $this->getAccountContainer()->get_type()->getSuffix();
 		return $this->getAccountContainer()->dn_orig == $rootSuffix;
 	}
@@ -854,8 +845,8 @@ class fixed_ip extends baseModule {
 	/**
 	 * Fills the list of existing DHCP hosts.
 	 */
-	private function fillExistingDhcpHosts() {
-		if ($this->existingDhcpHostsCache != null) {
+	private function fillExistingDhcpHosts(): void {
+		if ($this->existingDhcpHostsCache !== null) {
 			return;
 		}
 		$entries = searchLDAPByAttribute('cn', '*', 'dhcpHost', ['cn'], ['dhcp']);

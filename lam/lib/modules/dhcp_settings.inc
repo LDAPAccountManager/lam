@@ -37,10 +37,11 @@ if (!function_exists('check_ip')) {
 	/**
 	 * Checks if the given IP is valid.
 	 *
-	 * @param String $ip IP address
+	 * @param string $ip IP address
 	 * @param boolean $subnet IP must be a subnet
+	 * @return bool IP matches subnet
 	 */
-	function check_ip($ip, $subnet = false) {
+	function check_ip($ip, $subnet = false): bool {
 		$part = explode(".", $ip);
 		// IP must contain 4 segments
 		if (count($part) !== 4) {
@@ -83,10 +84,10 @@ class dhcp_settings extends baseModule {
 	private const NETBIOS_NODE_TYPE = 'netbios-node-type';
 	private const SUBNET_MASK = 'subnet-mask';
 
-	/** all netbios node types */
-	private $all_netbios_node_types;
-	/** unknown-client options */
-	private $allowDenyOptions;
+	/** @var array<string|int, string> $all_netbios_node_types all netbios node types */
+	private array $all_netbios_node_types;
+	/** @var array<string, string> $allowDenyOptions unknown-client options */
+	private array $allowDenyOptions;
 	/** LDAP attributes */
 	public $attributes;
 
@@ -95,7 +96,7 @@ class dhcp_settings extends baseModule {
 	 *
 	 * @param string $scope account type
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		// list of node types
 		$this->all_netbios_node_types = [
 			"1" => _("B-Node (0x01)"),
@@ -778,7 +779,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @param string $name option name
 	 * @param string|null $value option value
 	 */
-	private function setDHCPOption($name, $value) {
+	private function setDHCPOption($name, $value): void {
 		if (empty($this->attributes['dhcpOption'])) {
 			$this->attributes['dhcpOption'] = [];
 		}
@@ -816,7 +817,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 *
 	 * @param string|null $time time
 	 */
-	private function setDefaultLeaseTime($time) {
+	private function setDefaultLeaseTime($time): void {
 		if (empty($this->attributes['dhcpStatements'])) {
 			$this->attributes['dhcpStatements'] = [];
 		}
@@ -834,7 +835,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Returns the unknown clients option.
 	 *
-	 * @return String unknown clients value
+	 * @return string unknown clients value
 	 */
 	private function getUnknownClients() {
 		$return = null;
@@ -853,9 +854,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets the unknown clients option.
 	 *
-	 * @param String $option allow/deny
+	 * @param string $option allow/deny
 	 */
-	private function setUnknownClients($option) {
+	private function setUnknownClients($option): void {
 		if (!isset($this->attributes['dhcpStatements'])) {
 			$this->attributes['dhcpStatements'] = [];
 		}
@@ -894,7 +895,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 *
 	 * @param string|null $time time
 	 */
-	private function setMaxLeaseTime($time) {
+	private function setMaxLeaseTime($time): void {
 		if (!is_array($this->attributes['dhcpStatements'])) {
 			$this->attributes['dhcpStatements'] = [];
 		}
@@ -949,7 +950,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Returns a list of extra DHCP statements.
 	 *
-	 * @return array statements
+	 * @return string[] statements
 	 */
 	private function getExtraStatements(): array {
 		$extraStatements = [];
@@ -969,7 +970,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets extra DHCP statements.
 	 *
-	 * @param array $statements statements
+	 * @param string[] $statements statements
 	 */
 	private function setExtraStatements(array $statements): void {
 		if (!is_array($this->attributes['dhcpStatements'])) {
@@ -991,7 +992,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Returns a list of extra DHCP options.
 	 *
-	 * @return array options
+	 * @return string[] options
 	 */
 	private function getExtraOptions(): array {
 		$extraOptions = [];
@@ -1015,7 +1016,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	/**
 	 * Sets extra DHCP options.
 	 *
-	 * @param array $options options
+	 * @param string[] $options options
 	 */
 	private function setExtraOptions(array $options): void {
 		if (!is_array($this->attributes['dhcpOption'])) {

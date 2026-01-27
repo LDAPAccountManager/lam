@@ -504,11 +504,11 @@ abstract class baseModule {
 	 * <b>Example:</b> return array('uid' => 'normal', 'cn' => 'low')
 	 *
 	 * @param string $typeId account type
-	 * @return array list of attributes
+	 * @return array<string, string> list of attributes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function get_RDNAttributes($typeId) {
+	public function get_RDNAttributes($typeId): array {
 		return $this->meta['RDN'] ?? [];
 	}
 
@@ -1959,11 +1959,11 @@ abstract class baseModule {
 	 * <b>Example:</b> return array('posixAccount')
 	 *
 	 * @param string $typeId type id (user, group, host)
-	 * @return array list of object classes
+	 * @return string[] list of object classes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getManagedObjectClasses($typeId) {
+	public function getManagedObjectClasses(string $typeId): array {
 		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) {
 			return $this->meta['objectClasses'];
 		}
@@ -2009,11 +2009,11 @@ abstract class baseModule {
 	 * Returns a list of operational LDAP attributes which are managed by this module and need to be explicitly set for LDAP search.
 	 *
 	 * @param string $typeId account type id
-	 * @return array list of hidden attributes
+	 * @return string[] list of hidden attributes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getManagedHiddenAttributes($typeId) {
+	public function getManagedHiddenAttributes(string $typeId): array {
 		if (isset($this->meta['hiddenAttributes']) && is_array($this->meta['hiddenAttributes'])) {
 			return $this->meta['hiddenAttributes'];
 		}
