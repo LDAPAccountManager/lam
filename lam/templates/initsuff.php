@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@
 */
 
 /** security functions */
-include_once(__DIR__ . "/../lib/security.inc");
+include_once __DIR__ . "/../lib/security.inc";
 /** access to configuration settings */
-include_once(__DIR__ . "/../lib/config.inc");
+include_once __DIR__ . "/../lib/config.inc";
 /** LDAP access */
-include_once(__DIR__ . "/../lib/ldap.inc");
+include_once __DIR__ . "/../lib/ldap.inc";
 /** status messages */
-include_once(__DIR__ . "/../lib/status.inc");
+include_once __DIR__ . "/../lib/status.inc";
 
 // start session
 startSecureSession();
@@ -49,15 +49,12 @@ setlanguage();
 if (!empty($_POST)) {
 	validateSecurityToken();
 }
+$newSuffixes = $_SESSION['missingSuffixes'] ?? [];
 
 // check if user already pressed button
 $failedDNs = [];
 if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	if (isset($_POST['add_suff'])) {
-		$newSuffixes = $_POST['new_suff'];
-		$newSuffixes = str_replace("\\", "", $newSuffixes);
-		$newSuffixes = str_replace("'", "", $newSuffixes);
-		$newSuffixes = explode(";", $newSuffixes);
 		// add entries
 		foreach ($newSuffixes as $newSuffix) {
 			// check if entry is already present
@@ -82,7 +79,6 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 				$dn = $suff;
 				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
 					$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
-					continue;
 				}
 			}
 			else {  // add organizational unit
@@ -100,11 +96,8 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						$dnPartsCount = count($dnParts);
 						for ($k = 0; $k < $dnPartsCount; $k++) {
 							$part = explode("=", $dnParts[$k]);
-							if ($part[0] === "ou") {
-								$subsuffs[] = implode(",", array_slice($dnParts, $k));
-							}
-							else {
-								$subsuffs[] = implode(",", array_slice($dnParts, $k));
+							$subsuffs[] = implode(",", array_slice($dnParts, $k));
+							if ($part[0] !== "ou") {
 								break;
 							}
 						}
@@ -120,29 +113,23 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 							if (!$res) {
 								$suffarray = explode(",", $subsuffs[$k]);
 								$headarray = explode("=", $suffarray[0]);
+								$attr = [];
 								if ($headarray[0] === "ou") {  // add ou entry
-									$attr = [];
 									$attr['objectClass'] = 'organizationalunit';
 									$attr['ou'] = $headarray[1];
-									$dn = $subsuffs[$k];
-									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-										$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
-										break;
-									}
 								}
 								else {  // add root entry
-									$attr = [];
 									$attr['objectClass'][] = 'organization';
 									$attr[$headarray[0]] = $headarray[1];
 									if ($headarray[0] === "dc") {
 										$attr['o'] = $headarray[1];
 										$attr['objectClass'][] = 'dcObject';
 									}
-									$dn = $subsuffs[$k];
-									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-										$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
-										break;
-									}
+								}
+								$dn = $subsuffs[$k];
+								if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+									$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
+									break;
 								}
 							}
 						}
@@ -162,46 +149,39 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			foreach ($failedDNs as $suffix => $error) {
 				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error), htmlspecialchars($suffix));
 			}
-			include __DIR__ . '/../lib/adminFooter.inc';
 		}
 		else {
 			// print success message
 			StatusMessage("INFO", "", _("All changes were successful."));
-			include __DIR__ . '/../lib/adminFooter.inc';
+			unset($_SESSION['missingSuffixes']);
 		}
 	}
 	else {
 		// no suffixes were created
 		StatusMessage("INFO", "", _("No changes were made."));
-		include __DIR__ . '/../lib/adminFooter.inc';
 	}
+	include __DIR__ . '/../lib/adminFooter.inc';
 	exit;
 }
 
 // first show of page
-$newSuffixes = $_GET['suffs'];
-$newSuffixes = str_replace("\\", "", $newSuffixes);
-$newSuffixes = str_replace("'", "", $newSuffixes);
-$newSuffixes = explode(";", $newSuffixes);
-
 include __DIR__ . '/../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlOutputText(_("The following suffixes are missing in LDAP. LAM can create them for you.")), 12);
-	$container->add(new htmlOutputText(_("You can setup the LDAP suffixes for all account types in your LAM server profile on tab \"Account types\".")), 12);
+	$container->add(new htmlOutputText(_("The following suffixes are missing in LDAP. LAM can create them for you.")));
+	$container->add(new htmlOutputText(_("You can setup the LDAP suffixes for all account types in your LAM server profile on tab \"Account types\".")));
 	$container->addVerticalSpacer('1rem');
 	// print missing suffixes
 	foreach ($newSuffixes as $newSuffix) {
-		$container->add(new htmlOutputText($newSuffix), 12);
+		$container->add(new htmlOutputText($newSuffix));
 	}
 	$container->addVerticalSpacer('2rem');
 
 	$buttonContainer = new htmlGroup();
 	$buttonContainer->addElement(new htmlButton('add_suff', _("Create")));
 	$buttonContainer->addElement(new htmlButton('cancel', _("Cancel")));
-	$buttonContainer->addElement(new htmlHiddenInput('new_suff', implode(";", $newSuffixes)));
-	$container->add($buttonContainer, 12);
+	$container->add($buttonContainer);
 	addSecurityTokenToMetaHTML($container);
 
 	parseHtml(null, $container, [], false, 'user');

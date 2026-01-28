@@ -81,13 +81,13 @@ foreach ($types as $type) {
 	$info = @ldap_read($_SESSION['ldap']->server(), $type->getSuffix(), "(objectClass=*)", ['objectClass'], 0, 0, 0, LDAP_DEREF_NEVER);
 	if (($info === false) && !in_array($type->getSuffix(), $new_suffs)) {
 		$new_suffs[] = $type->getSuffix();
-		continue;
 	}
 }
 
 // display page to add suffixes, if needed
 if (($new_suffs !== []) && checkIfWriteAccessIsAllowed()) {
-	metaRefresh("initsuff.php?suffs='" . implode(";", $new_suffs));
+	$_SESSION['missingSuffixes'] = $new_suffs;
+	metaRefresh("initsuff.php");
 	exit();
 }
 
