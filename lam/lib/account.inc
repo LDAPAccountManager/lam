@@ -35,6 +35,23 @@ use LAM\PLUGINS\SMS\SmsService;
 use LAM\TYPES\TypeManager;
 use LDAP\Connection;
 
+/**
+ * Adapted version of preg_split that returns an empty array instead of false on error.
+ * @see preg_split()
+ *
+ * @param string $pattern search pattern
+ * @param string $input input string
+ * @param int $limit result limit
+ * @param int $flags flags
+ * @return string[] result
+ */
+function lam_preg_split(string $pattern, string $input, int $limit = -1, int $flags = 0): array {
+	$result = preg_split($pattern, $input, $limit, $flags);
+	if ($result === false) {
+		return [];
+	}
+	return $result;
+}
 
 /**
  * This function will return all values from $array without values of $values.
