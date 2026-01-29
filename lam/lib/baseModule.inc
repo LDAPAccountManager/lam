@@ -565,7 +565,7 @@ abstract class baseModule {
 	 * to build StatusMessages (message type, message head, message text). If no errors occurred
 	 * the function returns an empty array.
 	 *
-	 * @param array<string, string> $options a hash array (name => value) containing the user input
+	 * @param array<string, string[]> $options a hash array (name => value) containing the user input
 	 * @param string $typeId type id (user, group, host)
 	 * @return string[][] list of error messages (array(type, title, text)) to generate StatusMessages, if any
 	 *
@@ -2025,11 +2025,11 @@ abstract class baseModule {
 	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
-	 * @return array attributes
+	 * @return string[] attributes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getSelfServiceSearchAttributes() {
+	public function getSelfServiceSearchAttributes(): array {
 		if (isset($this->meta['selfServiceSearchAttributes']) && is_array($this->meta['selfServiceSearchAttributes'])) {
 			return $this->meta['selfServiceSearchAttributes'];
 		}
@@ -2047,7 +2047,7 @@ abstract class baseModule {
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getSelfServiceFields() {
+	public function getSelfServiceFields(): array {
 		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) {
 			return $this->meta['selfServiceFieldSettings'];
 		}

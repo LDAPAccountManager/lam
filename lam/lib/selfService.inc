@@ -58,7 +58,7 @@ function isLAMProVersion() {
  * @param string $scope account type
  * @return string[] attributes
  */
-function getSelfServiceSearchAttributes($scope) {
+function getSelfServiceSearchAttributes($scope): array {
 	$return = [];
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < count($modules); $i++) {
