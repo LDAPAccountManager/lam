@@ -311,7 +311,7 @@ class nisNetGroupUser extends baseModule {
 					&& ($group_orig['domain'] == $group['domain'])
 					&& ($group_orig['user'] == $group['user'])
 					&& ($group_orig['host'] == $group['host'])) {
-					if (empty($this->uidOrig) || ($this->uidOrig == $uid)) {
+					if (empty($this->uidOrig) || ($this->uidOrig === $uid)) {
 						// do not touch existing memberships
 						unset($toRem[$i]);
 						unset($toAdd[$k]);

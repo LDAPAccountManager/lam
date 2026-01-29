@@ -293,9 +293,9 @@ interface PDFEntry {
 	/**
 	 * Returns the head line of the entry.
 	 *
-	 * @return string label
+	 * @return string|null label
 	 */
-	public function getHeadline(): string;
+	public function getHeadline(): ?string;
 
 }
 
@@ -325,7 +325,7 @@ class PDFTable implements PDFEntry {
 	 * {@inheritDoc}
 	 * @see PDFEntry::getHeadline()
 	 */
-	public function getHeadline(): string {
+	public function getHeadline(): ?string {
 		return $this->label;
 	}
 
@@ -427,7 +427,7 @@ class PDFLabelValue implements PDFEntry {
 	 * {@inheritDoc}
 	 * @see PDFEntry::getHeadline()
 	 */
-	public function getHeadline(): string {
+	public function getHeadline(): ?string {
 		return $this->value;
 	}
 
@@ -456,7 +456,7 @@ class PDFImage implements PDFEntry {
 	 * {@inheritDoc}
 	 * @see \LAM\PDF\PDFEntry::getHeadline()
 	 */
-	public function getHeadline(): string {
+	public function getHeadline(): ?string {
 		return '';
 	}
 

@@ -80,7 +80,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/** specifies if the password should be expired */
 	private bool $expirePassword = false;
 	/** @var string[]|null host cache to reduce LDAP queries */
-	private $cachedHostList = null;
+	private ?array $cachedHostList = null;
 	/** @var array<string, string>|null $cachedGroupSIDList group cache to reduce LDAP queries */
 	private ?array $cachedGroupSIDList = null;
 	/** @var samba3domain[]|null $cachedDomainList cache for domain list */
@@ -627,7 +627,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			return [];
 		}
 		if ($this->isExtensionEnabled()) {
-			if ($this->expirePassword === true) {
+			if ($this->expirePassword) {
 				$this->attributes['sambaPwdLastSet'][0] = '0';
 			}
 			elseif ((isset($this->attributes['sambaPwdLastSet'][0])) && ($this->attributes['sambaPwdLastSet'][0] == '0')) {

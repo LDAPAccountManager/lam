@@ -289,7 +289,7 @@ class range extends baseModule {
 		$this->reset_overlapped_range();
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] != "") {
 
-			foreach ($this->ranges as $id => $arr) {
+			foreach (array_keys($this->ranges) as $id) {
 				// Check if range is to drop
 				if (isset($_POST['drop_range_' . $id])) {
 					// drop Range:
@@ -361,7 +361,7 @@ class range extends baseModule {
 		}
 
 		// update pool data
-		foreach ($this->poolsNew as $index => $pool) {
+		foreach (array_keys($this->poolsNew) as $index) {
 			// delete pool
 			if (isset($_POST['del_pool_' . $index])) {
 				unset($this->poolsNew[$index]);
@@ -387,7 +387,7 @@ class range extends baseModule {
 				$this->poolsNew[$index]['dhcpstatements'][] = 'failover peer "' . $peer . '"';
 			}
 			if (!empty($this->poolsNew[$index]['dhcprange'])) {
-				foreach ($this->poolsNew[$index]['dhcprange'] as $rIndex => $range) {
+				foreach (array_keys($this->poolsNew[$index]['dhcprange']) as $rIndex) {
 					// delete pool range
 					if (isset($_POST['drop_poolrange_' . $index . '_' . $rIndex])) {
 						unset($this->poolsNew[$index]['dhcprange'][$rIndex]);
@@ -710,33 +710,27 @@ class range extends baseModule {
 				$pdfRow->cells[] = new PDFTableCell($start . " - " . $end);
 				$pdfTable->rows[] = $pdfRow;
 			}
-
-
-			if (!empty($this->poolsNew)) {
-				foreach ($this->poolsNew as $poolAttrs) {
-					$cn = empty($poolAttrs['cn'][0]) ? '' : $poolAttrs['cn'][0];
-					$peer = '';
-					if (!empty($poolAttrs['dhcpstatements'])) {
-						foreach ($poolAttrs['dhcpstatements'] as $statement) {
-							if (str_starts_with($statement, 'failover peer "')) {
-								$peer = ' (' . substr($statement, strlen('failover peer "'), -1) . ')';
-							}
-						}
-					}
-					if (!empty($poolAttrs['dhcprange'])) {
-						foreach ($poolAttrs['dhcprange'] as $range) {
-							$range = explode(' ', $range);
-							$from = empty($range[0]) ? '' : $range[0];
-							$to = empty($range[1]) ? '' : $range[1];
-							$pdfRow = new PDFTableRow();
-							$pdfRow->cells[] = new PDFTableCell($cn . $peer . ': ' . $from . " - " . $to);
-							$pdfTable->rows[] = $pdfRow;
+			foreach ($this->poolsNew as $poolAttrs) {
+				$cn = empty($poolAttrs['cn'][0]) ? '' : $poolAttrs['cn'][0];
+				$peer = '';
+				if (!empty($poolAttrs['dhcpstatements'])) {
+					foreach ($poolAttrs['dhcpstatements'] as $statement) {
+						if (str_starts_with($statement, 'failover peer "')) {
+							$peer = ' (' . substr($statement, strlen('failover peer "'), -1) . ')';
 						}
 					}
 				}
+				if (!empty($poolAttrs['dhcprange'])) {
+					foreach ($poolAttrs['dhcprange'] as $range) {
+						$range = explode(' ', $range);
+						$from = empty($range[0]) ? '' : $range[0];
+						$to = empty($range[1]) ? '' : $range[1];
+						$pdfRow = new PDFTableRow();
+						$pdfRow->cells[] = new PDFTableCell($cn . $peer . ': ' . $from . " - " . $to);
+						$pdfTable->rows[] = $pdfRow;
+					}
+				}
 			}
-
-
 			$this->addPDFTable($return, 'ranges', $pdfTable);
 		}
 		return $return;

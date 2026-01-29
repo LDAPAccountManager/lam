@@ -281,8 +281,7 @@ class fixed_ip extends baseModule {
 
 			$error = false;     // errors by process_attributes()?
 			$pcs = [];
-			foreach ($this->fixed_ip as $id => $arr) {
-
+			foreach (array_keys($this->fixed_ip) as $id) {
 				// Check if ip is to drop
 				if (isset($_POST['drop_ip_' . $id])) {
 					// Drop ip:
@@ -315,11 +314,8 @@ class fixed_ip extends baseModule {
 				if ((!empty($_POST['ip_' . $id]) && !(check_ip($_POST['ip_' . $id])))
 					|| (!empty($_POST['ip_' . $id]) && !$this->isNotOverlappedIp($_POST['ip_' . $id]))) {
 					$error = true;
-					$this->fixed_ip[$id]['ip'] = $_POST['ip_' . $id];
 				}
-				else {
-					$this->fixed_ip[$id]['ip'] = $_POST['ip_' . $id];
-				}
+				$this->fixed_ip[$id]['ip'] = $_POST['ip_' . $id];
 
 				// Is ip correct with subnet:
 				if (!empty($_POST['ip_' . $id]) && check_ip($_POST['ip_' . $id]) && !range::check_subnet_range($_POST['ip_' . $id],
@@ -632,10 +628,10 @@ class fixed_ip extends baseModule {
 			$mod = []; // DN => array(attr => values)
 			$delete = [];
 			// Which dns are to delete and to add
-			foreach ($this->orig_ips as $id => $arr) {
+			foreach (array_keys($this->orig_ips) as $id) {
 				// Exist cn still?
 				$in_arr = false;
-				foreach ($this->fixed_ip as $idB => $arr2) {
+				foreach (array_keys($this->fixed_ip) as $idB) {
 					if ($this->orig_ips[$id]['cn'] == $this->fixed_ip[$idB]['cn']) {
 						$in_arr = true;
 						// check if IP changed
@@ -665,9 +661,9 @@ class fixed_ip extends baseModule {
 			}
 
 			// Which entries are new:
-			foreach ($this->fixed_ip as $id => $arr) {
+			foreach (array_keys($this->fixed_ip) as $id) {
 				$in_arr = false;
-				foreach ($this->orig_ips as $idB => $arr2) {
+				foreach (array_keys($this->orig_ips) as $idB) {
 					if ($this->orig_ips[$idB]['cn'] == $this->fixed_ip[$id]['cn']) {
 						$in_arr = true;
 					}

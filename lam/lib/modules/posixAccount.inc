@@ -2000,7 +2000,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 			uksort($selectedGons, compareDN(...));
 			$availableGons = [];
-			foreach ($gons as $dn => $attr) {
+			foreach (array_keys($gons) as $dn) {
 				if (!in_array($dn, $this->gonList)) {
 					$availableGons[getAbstractDN($dn)] = $dn;
 				}
