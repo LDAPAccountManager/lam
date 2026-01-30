@@ -42,7 +42,7 @@ final class ECSignature
         }
 
         $pointR = self::preparePositiveInteger(substr($signature, 0, $length));
-        $pointS = self::preparePositiveInteger(substr($signature, $length, null));
+        $pointS = self::preparePositiveInteger(substr($signature, $length));
 
         $lengthR = self::octetLength($pointR);
         $lengthS = self::octetLength($pointS);
@@ -93,7 +93,7 @@ final class ECSignature
             str_starts_with($data, self::ASN1_NEGATIVE_INTEGER)
             && substr($data, 2, self::BYTE_SIZE) <= self::ASN1_BIG_INTEGER_LIMIT
         ) {
-            $data = substr($data, 2, null);
+            $data = substr($data, 2);
         }
 
         return $data;
@@ -124,7 +124,7 @@ final class ECSignature
             str_starts_with($data, self::ASN1_NEGATIVE_INTEGER)
             && substr($data, 2, self::BYTE_SIZE) > self::ASN1_BIG_INTEGER_LIMIT
         ) {
-            $data = substr($data, 2, null);
+            $data = substr($data, 2);
         }
 
         return $data;

@@ -173,7 +173,7 @@ abstract class PSSRSA implements Signature
         if (ord($db[$temp]) !== 1) {
             throw new InvalidArgumentException();
         }
-        $salt = substr($db, $temp + 1, null); // should be $sLen long
+        $salt = substr($db, $temp + 1); // should be $sLen long
         $m2 = "\0\0\0\0\0\0\0\0" . $mHash . $salt;
         $h2 = $hash->hash($m2);
 

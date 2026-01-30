@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Facile\JoseVerifier;
 
+use Facile\JoseVerifier\Internal\InternalClock;
 use Facile\JoseVerifier\Decrypter\NullTokenDecrypter;
 use Facile\JoseVerifier\Decrypter\TokenDecrypterInterface;
 use Facile\JoseVerifier\Exception\InvalidTokenException;
@@ -25,6 +26,7 @@ use Jose\Component\Core\JWKSet;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use RuntimeException;
+use Psr\Clock\ClockInterface;
 
 use function is_array;
 use function str_replace;
@@ -60,6 +62,8 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
 
     protected ?int $maxAge = null;
 
+    protected ClockInterface $clock;
+
     /**
      * @internal Use the builder
      *
@@ -75,7 +79,8 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
         ?string $expectedAzp = null,
         ?string $expectedAlg = null,
         ?JwksProviderInterface $jwksProvider = null,
-        ?TokenDecrypterInterface $decrypter = null
+        ?TokenDecrypterInterface $decrypter = null,
+        ?ClockInterface $clock = null,
     ) {
         $this->issuer = $issuer;
         $this->clientId = $clientId;
@@ -87,6 +92,7 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
         $this->expectedAlg = $expectedAlg;
         $this->jwksProvider = $jwksProvider ?? new MemoryJwksProvider();
         $this->decrypter = $decrypter ?? new NullTokenDecrypter();
+        $this->clock = $clock ?? new InternalClock();
     }
 
     public function withNonce(?string $nonce): static
@@ -127,10 +133,10 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
         $validator = Validate::withToken($jwt)
             ->withJWKSet($this->buildJwks($jwt))
             ->withClaim(new IssuerChecker([$expectedIssuer], true))
-            ->withClaim(new IssuedAtChecker($this->clockTolerance, true))
+            ->withClaim(new IssuedAtChecker($this->clockTolerance, true, $this->clock))
             ->withClaim(new AudienceChecker($this->clientId, true))
-            ->withClaim(new ExpirationTimeChecker($this->clockTolerance))
-            ->withClaim(new NotBeforeChecker($this->clockTolerance, true));
+            ->withClaim(new ExpirationTimeChecker($this->clockTolerance, false, $this->clock))
+            ->withClaim(new NotBeforeChecker($this->clockTolerance, true, $this->clock));
 
         if (null !== $this->expectedAzp) {
             $validator = $validator->withClaim(new AzpChecker($this->expectedAzp));
@@ -145,7 +151,7 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
         }
 
         if (null !== $this->maxAge) {
-            $validator = $validator->withClaim(new AuthTimeChecker($this->maxAge, $this->clockTolerance));
+            $validator = $validator->withClaim(new AuthTimeChecker($this->maxAge, $this->clockTolerance, $this->clock));
         }
 
         if ($this->authTimeRequired || (int) $this->maxAge > 0 || null !== $this->maxAge) {

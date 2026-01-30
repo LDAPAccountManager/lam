@@ -19,11 +19,11 @@
             "homepage": "https://github.com/kylekatarnls"
         }
     ],
-    "homepage": "https://carbon.nesbot.com",
+    "homepage": "https://carbonphp.github.io/carbon/",
     "support": {
         "issues": "https://github.com/CarbonPHP/carbon/issues",
         "source": "https://github.com/CarbonPHP/carbon",
-        "docs": "https://carbon.nesbot.com/docs"
+        "docs": "https://carbonphp.github.io/carbon/guide/getting-started/introduction.html"
     },
     "funding": [
         {
@@ -57,7 +57,7 @@
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.1.22",
         "phpunit/phpunit": "^10.5.53",
-        "squizlabs/php_codesniffer": "^3.13.4"
+        "squizlabs/php_codesniffer": "^3.13.4 || ^4.0.0"
     },
     "provide": {
         "psr/clock-implementation": "1.0"
