@@ -50,16 +50,16 @@ class asteriskExtension extends baseModule {
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['AstExtension'];
 
 	/** if true then only Asterisk accounts are shown as possible owners */
-	private $filterOwnerForAsteriskAccounts = true;
+	private bool $filterOwnerForAsteriskAccounts = true;
 
-	/** Contains all attributes information for set of accounts */
-	private $extensionRows = [];
-	/** Contains all original attributes information for set of accounts */
-	private $extensionRowsOrig = [];
-	/** extension owners */
-	private $extensionOwners = [];
+	/** @var array<int, array<string, array<int, string>|string>> $extensionRows Contains all attributes information for set of accounts */
+	private array $extensionRows = [];
+	/** @var array<int, array<string, array<int, string>|string>> $extensionRowsOrig Contains all original attributes information for set of accounts */
+	private array $extensionRowsOrig = [];
+	/** @var array<int, string> $extensionOwners extension owners */
+	private array $extensionOwners = [];
 	/** flag if new rule should be added */
-	private $addRuleFlag = false;
+	private bool $addRuleFlag = false;
 
 	/**
 	 * {@inheritDoc}
@@ -239,19 +239,17 @@ class asteriskExtension extends baseModule {
 	 *
 	 * @param htmlResponsiveRow $renderContainer
 	 */
-	function render_exten_owners_set_controls($renderContainer) {
+	private function render_exten_owners_set_controls($renderContainer): void {
 		$renderContainer->addVerticalSpacer('1rem');
 		$title = new htmlSubTitle(_("Extension owners"));
 		$title->setHelpId('member');
 		$renderContainer->add($title);
 		$ownerList = new htmlTable();
-		if (($this->extensionOwners === null || count($this->extensionOwners) === 0) && isset($this->extensionRows[0]['member'])) {
+		if ((count($this->extensionOwners) === 0) && isset($this->extensionRows[0]['member'])) {
 			$this->extensionOwners = $this->extensionRows[0]['member'];
 		}
-		if ($this->extensionOwners !== null) {
-			for ($i = 0; $i < count($this->extensionOwners); $i++) {
-				$ownerList->addElement(new htmlOutputText(getAbstractDN($this->extensionOwners[$i])), true);
-			}
+		for ($i = 0; $i < count($this->extensionOwners); $i++) {
+			$ownerList->addElement(new htmlOutputText(getAbstractDN($this->extensionOwners[$i])), true);
 		}
 		$renderContainer->add($ownerList);
 		$renderContainer->addVerticalSpacer('1rem');
@@ -261,9 +259,10 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Loads all related extension entries.
 	 *
-	 * @param String $extension extension name
+	 * @param string $extension extension name
+	 * @return array<int, array<string, string[]|string>> extensions
 	 */
-	function load_extension_parts($extension) {
+	private function load_extension_parts($extension): array {
 		if (!isset($this->extensionRows[0]['astcontext'][0])) {
 			$entries = searchLDAP($this->getAccountContainer()->dnSuffix, '(&(objectClass=AsteriskExtension)(AstExtension=' . $extension . '))', ['cn', 'AstContext', 'AstPriority',
 				'AstApplication', 'AstApplicationData', 'AstExtension', 'member', 'ObjectClass']);
@@ -287,7 +286,7 @@ class asteriskExtension extends baseModule {
 	 * @param string $extension extension name
 	 * @param htmlResponsiveRow $renderContainer container
 	 */
-	function render_extensions_by_priority(string $extension, $renderContainer) {
+	private function render_extensions_by_priority(string $extension, $renderContainer): void {
 		$entries = $this->load_extension_parts($extension);
 
 		if ($this->getAccountContainer()->isNewAccount) {
@@ -359,11 +358,11 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Generates the meta HTML for a single rule.
 	 *
-	 * @param array $extensLine attributes of rule
+	 * @param array<string, string[]|string> $extensLine attributes of rule
 	 * @param int $placeInList rule position
 	 * @param htmlResponsiveRow $renderContainer container
 	 */
-	function render_extension($extensLine, $placeInList, $renderContainer) {
+	private function render_extension($extensLine, $placeInList, $renderContainer): void {
 		// application
 		$application = '';
 		if (isset($extensLine['astapplication'][0])) {
@@ -385,11 +384,12 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Sorts an array of arrays by the given key.
 	 *
-	 * @param array $array array
-	 * @param String $on key
-	 * @param String $order order (SORT_ASC or SORT_DESC)
+	 * @param array<int, array<string, string[]|string>|string> $array array
+	 * @param string $on key
+	 * @param string $order order (SORT_ASC or SORT_DESC)
+	 * @return array<int, array<string, string[]|string>|string> result
 	 */
-	private function array_sort($array, $on, $order = 'SORT_ASC') {
+	private function array_sort($array, $on, $order = 'SORT_ASC'): array {
 		$new_array = [];
 		$sortable_array = [];
 
@@ -424,7 +424,7 @@ class asteriskExtension extends baseModule {
 	 *
 	 * @return htmlResponsiveRow HTML meta data
 	 */
-	function display_html_user() {
+	public function display_html_user(): htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
 		// load list with all potential owners
 		$searchScope = 'user';
@@ -436,12 +436,12 @@ class asteriskExtension extends baseModule {
 		$users_dn = [];
 		for ($i = 0; $i < count($entries); $i++) {
 			$dn = $entries[$i]['dn'];
-			if (isset($dn) && ($this->extensionOwners === null || !in_array($dn, $this->extensionOwners))) {
+			if (!in_array($dn, $this->extensionOwners)) {
 				$users_dn[getAbstractDN($dn)] = $dn;
 			}
 		}
 		uasort($users_dn, compareDN(...));
-		$memberList = $this->extensionOwners ?? [];
+		$memberList = $this->extensionOwners;
 		usort($memberList, compareDN(...));
 		$members = [];
 		for ($i = 0; $i < count($memberList); $i++) {
@@ -467,9 +467,9 @@ class asteriskExtension extends baseModule {
 	 * Processes user input of the user selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_user() {
+	public function process_user(): array {
 		if (isset($_POST['changeFilter'])) {
 			// update filter value
 			if (isset($_POST['filterAsteriskUsers'])) {
@@ -478,9 +478,6 @@ class asteriskExtension extends baseModule {
 			else {
 				$this->filterOwnerForAsteriskAccounts = false;
 			}
-		}
-		if ($this->extensionOwners === null) {
-			$this->extensionOwners = [];
 		}
 		if (isset($_POST['owners_2']) && isset($_POST['owners_left'])) {
 			// Add new user
@@ -497,9 +494,9 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Returns if the extension was moved to another OU.
 	 *
-	 * @return boolean true if moved
+	 * @return bool true if moved
 	 */
-	function isMoveToNewSuffix() {
+	private function isMoveToNewSuffix(): bool {
 		$orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
 		return strcmp($orig_suffix, $this->getAccountContainer()->dnSuffix) !== 0
 			&& !$this->getAccountContainer()->isNewAccount;
@@ -509,9 +506,9 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Returns true if at least one owner is set and false otherwise
 	 *
-	 * @return boolean true if one or more owners
+	 * @return bool true if one or more owners
 	 */
-	function isExtensionOwnerSet() {
+	private function isExtensionOwnerSet(): bool {
 		return (count($this->extensionOwners) > 0);
 	}
 
@@ -571,9 +568,9 @@ class asteriskExtension extends baseModule {
 	 *
 	 * @param string[] $extensionName extension name
 	 * @param string[] $extensionContext extension context
-	 * @return array error messages
+	 * @return array<string|string[]>[] error messages
 	 */
-	function processExtensionRows($extensionName, $extensionContext): array {
+	private function processExtensionRows($extensionName, $extensionContext): array {
 		$errors = [];
 		if (isset($_POST['extension_rows']) && get_preg($_POST['extension_rows'], 'digit')) {
 
@@ -612,7 +609,7 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Set extension owner as current logged in user.
 	 */
-	function setDefaultExtensionOwner() {
+	private function setDefaultExtensionOwner(): void {
 		$login = $this->getDefaultExtensionOwner();
 		$this->extensionOwners[0] = $login;
 		$this->attributes['member'] = [$login];
@@ -623,7 +620,7 @@ class asteriskExtension extends baseModule {
 	 *
 	 * @return String owner
 	 */
-	function getDefaultExtensionOwner() {
+	private function getDefaultExtensionOwner() {
 		return $_SESSION['ldap']->getUserName();
 	}
 
@@ -632,13 +629,14 @@ class asteriskExtension extends baseModule {
 	 * In Asterisk it would only be an extension name,a priority,an application, but LDAP specific
 	 * add to processing context field.
 	 *
-	 * @param array $extRow - hash array to store single extension properties;
+	 * @param array<string, array<int, string>|string> $extRow - hash array to store single extension properties;
 	 * @param string[] $extensionName extension name
 	 * @param string[] $extensionContext extension context
 	 * @param int $entryCounter - counter to distinguish single extensuion properties from $_POST
 	 * @param int $extensionPriorityCntr - it is the variable where actual number of extension rules wuld be aggregated
+	 * @return array<string|string[]>[] errors
 	 */
-	function processSingleExtension(&$extRow, $extensionName, $extensionContext, $entryCounter, $extensionPriorityCntr) {
+	private function processSingleExtension(&$extRow, $extensionName, $extensionContext, $entryCounter, $extensionPriorityCntr): array {
 		$errors = [];
 		if (isset($extensionContext[0])) {
 			$extRow['astcontext'][0] = $extensionContext[0];
@@ -651,23 +649,23 @@ class asteriskExtension extends baseModule {
 		$extRow["objectclass"][1] = "groupOfNames";
 		$extRow["objectclass"][2] = "AsteriskExtension";
 
-		$extRow['astapplication'][0] = $_POST['AstApplication_' . $entryCounter];
+		$extRow['astapplication'][0] = (string) $_POST['AstApplication_' . $entryCounter];
 		if ((!isset($_POST['AstApplication_' . $entryCounter]) || $_POST['AstApplication_' . $entryCounter] == '')
 			&& ($entryCounter < ($_POST['extension_rows'] - 1))) {
 			$errors[] = $this->messages['AstApplication'][0];
 		}
 
-		$extRow['astpriority'][0] = $extensionPriorityCntr;
+		$extRow['astpriority'][0] = strval($extensionPriorityCntr);
 
 		$extRow['cn'][0] = $extRow['astextension'][0] . "-" . $extRow['astpriority'][0];
 
 		if (isset($_POST['AstApplicationData_' . $entryCounter]) && $_POST['AstApplicationData_' . $entryCounter] != "") {
-			$extRow['astapplicationdata'][0] = $_POST['AstApplicationData_' . $entryCounter];
+			$extRow['astapplicationdata'][0] = (string) $_POST['AstApplicationData_' . $entryCounter];
 		}
 
 		//Fill the member filed
 		$extRow['member'] = $this->extensionOwners;
-		if ((!isset($extRow['member']) || count($extRow['member']) === 0)
+		if ((count($extRow['member']) === 0)
 			&& !isset($_POST['form_subpage_' . static::class . '_user_open'])) {
 			$errors[] = $this->messages['member'][0];
 		}
@@ -677,7 +675,7 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Reorders the rules if the user clicked on a move button.
 	 */
-	function processPriorityChange() {
+	function processPriorityChange(): void {
 		for ($entryCounter = 0; $entryCounter < count($this->extensionRows); $entryCounter++) {
 			if (isset($_POST["rule_up_button_" . $entryCounter])) {
 				$this->extensionRows[$entryCounter]['astpriority'][0]--;
@@ -840,10 +838,10 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Get list of all applications for given extension and move it into new suffix.
 	 *
-	 * @param array $row attributes of original extension
-	 * @return array list of error messages
+	 * @param array<string, string[]|string> $row attributes of original extension
+	 * @return array<string|string[]>[] list of error messages
 	 */
-	function moveExtentionToNewSuffix($row) {
+	function moveExtentionToNewSuffix($row): array {
 		$errors = [];
 		if ($this->isMoveToNewSuffix()) {
 			$oldDN = "cn=" . $row["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
