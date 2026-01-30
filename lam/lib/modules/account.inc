@@ -249,7 +249,7 @@ class account extends baseModule {
 				$partialAccounts[$i]['objectClass'][] = "account";
 			}
 			// description
-			if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) {
+			if (isset($rawAccounts[$i][$ids['account_description']]) && ($rawAccounts[$i][$ids['account_description']] !== '')) {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_description']];
 			}
 			elseif (isset($ids['account_uid']) && isset($rawAccounts[$i][$ids['account_uid']])) {

@@ -1127,12 +1127,12 @@ class asteriskAccount extends baseModule implements passwordService {
 	/**
 	 * Builds the password string for the password attribute.
 	 *
-	 * @param array $attributes LDAP attributes
-	 * @param array $moduleSettings module configuration settings
-	 * @param String $password password
-	 * @return String value for password attribute
+	 * @param array<string, string[]|string> $attributes LDAP attributes
+	 * @param array<string, string[]> $moduleSettings module configuration settings
+	 * @param string $password password
+	 * @return string value for password attribute
 	 */
-	public static function buildPasswordString(&$attributes, &$moduleSettings, $password) {
+	public static function buildPasswordString(&$attributes, &$moduleSettings, $password): string {
 		$astRealm = self::ASTERISK_DEFAULT_REALM;
 		if (!empty($moduleSettings['asteriskAccount_AsteriskRealm'][0])) {
 			$astRealm = $moduleSettings['asteriskAccount_AsteriskRealm'][0];
@@ -1143,10 +1143,10 @@ class asteriskAccount extends baseModule implements passwordService {
 	/**
 	 * Hashes a password value to Asterisk format.
 	 *
-	 * @param String $password password
-	 * @return String hash
+	 * @param string $password password
+	 * @return string hash
 	 */
-	private static function hashPassword($password) {
+	private static function hashPassword(string $password): string {
 		return "{MD5}" . md5($password);
 	}
 
