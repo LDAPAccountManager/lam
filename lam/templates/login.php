@@ -549,7 +549,7 @@ if (isset($_POST['checklogin'])) {
 		$searchLDAP = new Ldap($_SESSION['config']);
 		try {
 			$searchLDAP->connect($searchDN, $searchPassword, true);
-			$searchResult = ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
+			$searchResult = @ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, ['dn'], 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($searchResult) {
 				$searchInfo = ldap_get_entries($searchLDAP->server(), $searchResult);
 				if ($searchInfo !== false) {
