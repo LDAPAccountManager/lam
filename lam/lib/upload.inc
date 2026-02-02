@@ -55,7 +55,7 @@ class Uploader {
 	 */
 	private array $accounts;
 	/**
-	 * @var array<string, string>[] $data data
+	 * @var array<int, string>[] $data data
 	 */
 	private array $data;
 	private ConfiguredType $type;

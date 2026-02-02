@@ -426,9 +426,9 @@ function getHelp($module, $helpID, $scope) {
  * Returns a list of available PDF entries.
  *
  * @param string $typeId account type (user, group, host)
- * @return array PDF entries (field ID => field label)
+ * @return array<string, array<string, string>> PDF entries (field ID => field label)
  */
-function getAvailablePDFFields($typeId) {
+function getAvailablePDFFields(string $typeId): array {
 	$typeManager = new TypeManager();
 	$_SESSION['pdfContainer'] = new accountContainer($typeManager->getConfiguredType($typeId), 'pdfContainer');
 	$_SESSION['pdfContainer']->initModules();
@@ -439,13 +439,7 @@ function getAvailablePDFFields($typeId) {
 		$moduleName = $module::class;
 		$return[$moduleName] = [];
 		foreach ($fields as $fieldID => $fieldLabel) {
-			if (is_int($fieldID)) {
-				// support old PDF field list which did not contain a label
-				$return[$moduleName][$fieldLabel] = $fieldLabel;
-			}
-			else {
-				$return[$moduleName][$fieldID] = $fieldLabel;
-			}
+			$return[$moduleName][$fieldID] = $fieldLabel;
 		}
 	}
 	$return['main'] = ['dn' => _('DN')];
@@ -466,10 +460,10 @@ function getAvailablePDFFields($typeId) {
  * <br> )
  *
  * @param ConfiguredType $type account type
- * @param array $selectedModules selected account modules
- * @return array column list
+ * @param string[] $selectedModules selected account modules
+ * @return array<string, array<string, string|bool>[]> column list
  */
-function getUploadColumns(&$type, $selectedModules) {
+function getUploadColumns(&$type, $selectedModules): array {
 	$return = [];
 	for ($i = 0; $i < count($selectedModules); $i++) {
 		$module = moduleCache::getModule($selectedModules[$i], $type->getScope());
@@ -484,9 +478,9 @@ function getUploadColumns(&$type, $selectedModules) {
  * If there are problems status messages will be printed automatically.
  *
  * @param ConfiguredType $type account type
- * @param array $data array containing one account in each element
- * @param array $ids array(<column_name> => <column number>)
- * @param array $selectedModules selected account modules
+ * @param array<int, string>[] $data array containing one account in each element
+ * @param array<string, int> $ids array(<column_name> => <column number>)
+ * @param string[] $selectedModules selected account modules
  * @param htmlResponsiveRow $container HTML container
  * @return mixed array including accounts or false if there were errors
  */
@@ -587,9 +581,9 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
  * Runs any actions that need to be done before an LDAP entry is created.
  *
  * @param ConfiguredType $type account type
- * @param array $selectedModules list of selected account modules
- * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
- * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+ * @param string[] $selectedModules list of selected account modules
+ * @param array<string, string[]|string> $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
+ * @return array<string|string[]>[] array which contains status messages. Each entry is an array containing the status message parameters.
  */
 function doUploadPreActions($type, $selectedModules, $attributes) {
 	$messages = [];
@@ -605,11 +599,11 @@ function doUploadPreActions($type, $selectedModules, $attributes) {
  * This function executes one post upload action.
  *
  * @param ConfiguredType $type account type
- * @param array $data array containing one account in each element
- * @param array $ids array(<column_name> => <column number>)
- * @param array $failed list of accounts which were not created successfully
- * @param array $selectedModules list of selected account modules
- * @param array $accounts list of LDAP entries
+ * @param array<int, string>[] $data array containing one account in each element
+ * @param array<string, int> $ids array(<column_name> => <column number>)
+ * @param int[] $failed list of accounts which were not created successfully
+ * @param string[] $selectedModules list of selected account modules
+ * @param array<string, string[]|string>[] $accounts list of LDAP entries
  * @return array<string, string|int|string[]> current status
  * <br>array (
  * <br> 'status' => 'finished' | 'inProgress'
@@ -652,10 +646,10 @@ function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$a
  *
  * @param string|null $module Name of account module
  * @param htmlElement|htmlElement[]|null $input htmlElement or array of htmlElement elements
- * @param array $values List of values which override the defaults in $input (name => value)
- * @param boolean $restricted If true then no buttons will be displayed
+ * @param array<string, string[]> $values List of values which override the defaults in $input (name => value)
+ * @param bool $restricted If true then no buttons will be displayed
  * @param string|null $scope Account type
- * @return array List of input field names and their type (name => type)
+ * @return array<string, string> list of input field names and their type (name => type)
  */
 function parseHtml($module, $input, $values, $restricted, $scope) {
 	if ($input === null) {
@@ -677,13 +671,13 @@ function parseHtml($module, $input, $values, $restricted, $scope) {
 /**
  * Prints a LAM help link.
  *
- * @param array $entry help entry
- * @param String $number help number
- * @param String $module module name
- * @param String $scope account scope
- * @param array $classes CSS classes
+ * @param array<string, string> $entry help entry
+ * @param string $number help number
+ * @param string $module module name
+ * @param string $scope account scope
+ * @param string[] $classes CSS classes
  */
-function printHelpLink($entry, $number, $module = '', $scope = '', $classes = []) {
+function printHelpLink($entry, $number, $module = '', $scope = '', $classes = []): void {
 	$helpPath = "../";
 	if (is_file("./help.php")) {
 		$helpPath = "";
@@ -726,75 +720,75 @@ class accountContainer {
 	}
 
 	/**
-	 * Array of all used attributes
-	 * Syntax is attribute => array ( objectClass => MUST or MAY, ...)
+	 * @var array<string, string[]|string>|string|null $attributes Array of all used attributes
+	 *  Syntax is attribute => array ( objectClass => MUST or MAY, ...)
 	 */
-	public $attributes;
+	public array|string|null $attributes = null;
 
 	/**
 	 * This variable stores the account type.
 	 */
-	private $type;
+	private ConfiguredType $type;
 
 	/** This is an array with all module objects
 	 *
 	 * @var baseModule[]|string modules
 	 */
-	private $module;
+	private string|array $module;
 
 	/** DN suffix of the account */
-	public $dnSuffix;
+	public ?string $dnSuffix = null;
 
 	/** @var string|null DN of account when it was loaded */
 	public ?string $dn_orig = null;
 
 	/** RDN attribute of this account */
-	public $rdn;
+	public ?string $rdn = null;
 
 	/** DN of saved account */
-	public $finalDN;
+	public ?string $finalDN = null;
 
-	/** original LDAP attributes when account was loaded from LDAP */
-	public $attributes_orig;
+	/** @var array<string, string[]|string>|string|null $attributes_orig original LDAP attributes when account was loaded from LDAP */
+	public array|string|null $attributes_orig = null;
 
-	/** Module order */
-	private $order;
+	/** @var string[]|null $order module order */
+	private ?array $order = null;
 
 	/** Name of accountContainer variable in session */
-	private $base;
+	private string $base;
 
 	/** This variable stores the page number of the currently displayed page */
-	private $current_page = 0;
+	private int $current_page = 0;
 
 	/** This variable is set to the pagename of a subpage if it should be displayed */
-	private $subpage = 'attributes';
+	private string $subpage = 'attributes';
 
 	/** True if this is a newly created account */
-	public $isNewAccount = false;
+	public bool $isNewAccount = false;
 
 	/** name of last loaded account profile */
-	private $lastLoadedProfile = '';
+	private string $lastLoadedProfile = '';
 
 	/** @var string[]|null cache for existing OUs */
 	private ?array $cachedOUs = null;
 
 	/** icon in title bar */
-	private $titleBarIcon;
+	private ?htmlElement $titleBarIcon = null;
 	/** main title in title bar */
-	private $titleBarTitle;
+	private ?string $titleBarTitle = null;
 	/** subtitle in title bar */
-	private $titleBarSubtitle;
+	private string $titleBarSubtitle = '';
 	/** password to send via mail */
-	private $sendPasswordViaMail;
+	private ?string $sendPasswordViaMail = null;
 	/** password to send via SMS */
-	private $sendPasswordViaSms;
+	private ?string $sendPasswordViaSms = null;
 	/** send password via mail to this alternate address */
-	private $sendPasswordViaMailAlternateAddress;
+	private ?string $sendPasswordViaMailAlternateAddress = null;
 
 	/**
-	 * @var array additional attributes for pre/post actions
+	 * @var array<string, string> additional attributes for pre/post actions
 	 */
-	private $extraInfoAttributes = [];
+	private array $extraInfoAttributes = [];
 
 	/**
 	 * @var bool errors occurred after saving LDAP data (postModify scripts)
@@ -844,7 +838,7 @@ class accountContainer {
 	 * This function is called when the user clicks on any button on the account pages.
 	 * It prints the HTML code of each account page.
 	 */
-	public function continue_main() {
+	public function continue_main(): void {
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
 		$result = [];

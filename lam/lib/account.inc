@@ -1500,10 +1500,10 @@ function testSmtpConnection(string $server, string $user, string $password, stri
 /**
  * Sends the password mail.
  *
- * @param String $pwd new password
+ * @param string $pwd new password
  * @param array $user LDAP attributes of user
- * @param String $recipient recipient address (optional, $user['mail'][0] used by default)
- * @return array list of arrays that can be used to create status messages
+ * @param string|null $recipient recipient address (optional, $user['mail'][0] used by default)
+ * @return array<string|string[]>[] list of arrays that can be used to create status messages
  */
 function sendPasswordMail($pwd, $user, $recipient = null) {
 	$user = array_change_key_case($user);

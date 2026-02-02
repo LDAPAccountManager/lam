@@ -1177,8 +1177,8 @@ abstract class baseModule {
 	 * because the time limit is exceeded. You should not make more than one LDAP operation in
 	 * each call.
 	 *
-	 * @param array<string, string>[] $data array containing one account in each element
-	 * @param array<string, string> $ids maps the column names to keys for the sub arrays (array(<column_name> => <column number>))
+	 * @param array<int, array<int, string>> $data array containing one account in each element
+	 * @param array<string, int> $ids maps the column names to keys for the sub arrays (array(<column_name> => <column number>))
 	 * @param int[] $failed list of account numbers which could not be successfully uploaded to LDAP
 	 * @param array<string, int|string|string[]|string[][]|array<string, string[]>|mixed> $temp variable to store temporary data between two post actions
 	 * @param array<string, string[]|string>[] $accounts list of LDAP entries

@@ -179,7 +179,7 @@ foreach ($availablePDFFields as $module => $fields) {
 natcasesort($sortedModules);
 foreach ($sortedModules as $module => $title) {
 	$values = $availablePDFFields[$module];
-	if (!is_array($values) || (count($values) < 1)) {
+	if (count($values) < 1) {
 		continue;
 	}
 	$modules[] = $module;
@@ -210,7 +210,7 @@ if ($saveErrors !== []) {
 $newFieldFieldElements = [];
 foreach ($sortedModules as $module => $title) {
 	$fields = $availablePDFFields[$module];
-	if (isset($fields) && is_array($fields) && ($fields !== [])) {
+	if ($fields !== []) {
 		$moduleFields = [];
 		foreach ($fields as $field => $fieldLabel) {
 			$moduleFields[$fieldLabel] = $module . "_" . $field;
