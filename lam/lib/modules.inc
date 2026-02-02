@@ -775,8 +775,8 @@ class accountContainer {
 	/** name of last loaded account profile */
 	private $lastLoadedProfile = '';
 
-	/** cache for existing OUs */
-	private $cachedOUs;
+	/** @var string[]|null cache for existing OUs */
+	private ?array $cachedOUs = null;
 
 	/** icon in title bar */
 	private $titleBarIcon;
@@ -2107,7 +2107,7 @@ class accountContainer {
 	 * @param string $typeId type id (user, group, host)
 	 * @return array<string, PDFEntry[]> list of key => PDFEntry
 	 */
-	function get_pdfEntries($pdfKeys, $typeId): array {
+	public function get_pdfEntries($pdfKeys, $typeId): array {
 		$return = [];
 		while (($current = current($this->module)) != null) {
 			$return = array_merge($return, $current->get_pdfEntries($pdfKeys, $typeId));
@@ -2123,7 +2123,7 @@ class accountContainer {
 	/**
 	 * Sorts the module buttons for the account page.
 	 */
-	function sortModules() {
+	private function sortModules(): void {
 		$order = [];
 		$modules = array_keys($this->module);
 		$depModules = [];
@@ -2232,7 +2232,7 @@ class accountContainer {
 	 * @param string|null $dn DN
 	 * @return string DN
 	 */
-	function getParentDN(?string $dn): string {
+	private function getParentDN(?string $dn): string {
 		if (($dn === "") || ($dn === null)) {
 			return "";
 		}
@@ -2242,9 +2242,9 @@ class accountContainer {
 	/**
 	 * Returns a list of OUs that exist for this account type.
 	 *
-	 * @return array OU list
+	 * @return string[] OU list
 	 */
-	public function getOUs() {
+	public function getOUs(): array {
 		if ($this->cachedOUs !== null) {
 			return $this->cachedOUs;
 		}
@@ -2255,19 +2255,19 @@ class accountContainer {
 	/**
 	 * Replaces POST data with wildcard values from modules.
 	 *
-	 * @param array $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
+	 * @param string[] $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
 	 */
-	public function replaceWildcardsInPOST($keyPrefixes) {
+	public function replaceWildcardsInPOST($keyPrefixes): void {
 		$this->replaceWildcardsInArray($keyPrefixes, $_POST);
 	}
 
 	/**
 	 * Replaces data with wildcard values from modules.
 	 *
-	 * @param array $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
-	 * @param array $data list of values that need replacement
+	 * @param string[] $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
+	 * @param array<string, array<int, string>|string> $data list of values that need replacement
 	 */
-	public function replaceWildcardsInArray($keyPrefixes, &$data) {
+	public function replaceWildcardsInArray($keyPrefixes, &$data): void {
 		$replacements = [];
 		foreach ($this->module as $module) {
 			$replacements = array_merge($replacements, $module->getWildCardReplacements());
@@ -2282,12 +2282,12 @@ class accountContainer {
 	/**
 	 * Replaces wildcards in an array.
 	 *
-	 * @param array $replacements replacements (key => value)
-	 * @param array $keyPrefixes prefixes of $data array keys that should be replaced
-	 * @param array $data data array
-	 * @return boolean replacement done
+	 * @param array<string, string> $replacements replacements (key => value)
+	 * @param string[] $keyPrefixes prefixes of $data array keys that should be replaced
+	 * @param array<string, array<int, string>|string> $data data array
+	 * @return bool replacement done
 	 */
-	private function replaceWildcards($replacements, $keyPrefixes, &$data) {
+	private function replaceWildcards($replacements, $keyPrefixes, &$data): bool {
 		$found = false;
 		foreach ($data as $key => $value) {
 			foreach ($keyPrefixes as $keyPrefix) {
@@ -2309,11 +2309,11 @@ class accountContainer {
 	/**
 	 * Replaces wildcards in a value.
 	 *
-	 * @param array $replacements replacements (key => value)
-	 * @param String $value value to perform replacements
-	 * @return boolean replacement done
+	 * @param array<string, string> $replacements replacements (key => value)
+	 * @param string $value value to perform replacements
+	 * @return bool replacement done
 	 */
-	private function doReplace($replacements, &$value) {
+	private function doReplace($replacements, &$value): bool {
 		$found = false;
 		foreach ($replacements as $replKey => $replValue) {
 			$searchString = '$' . $replKey;
@@ -2546,7 +2546,7 @@ class AccountStatus {
 	 * Creates the account status from the given type and LDAP attributes.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 * @return AccountStatus status
 	 */
 	public static function fromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
@@ -2566,7 +2566,7 @@ class AccountStatus {
 	 * Creates the lockable account status from the given type and LDAP attributes.
 	 *
 	 * @param ConfiguredType $type type
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 * @return AccountStatus lockable status
 	 */
 	public static function lockableFromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
@@ -2651,13 +2651,13 @@ class AccountStatus {
 
 class AccountStatusDetails {
 
-	private $details;
-	private $id;
-	private $expired = false;
-	private $partiallyExpired = false;
-	private $locked = false;
-	private $partiallyLocked = false;
-	private $icon;
+	private string $details;
+	private string $id;
+	private bool $expired = false;
+	private bool $partiallyExpired = false;
+	private bool $locked = false;
+	private bool $partiallyLocked = false;
+	private string $icon;
 
 	/**
 	 * Constructor.
@@ -2810,9 +2810,11 @@ class AccountStatusDetails {
  */
 class ScopeAndModuleValidation {
 
-	private static $cachedModuleNames;
+	/** @var string[]|null $cachedModuleNames names */
+	private static ?array $cachedModuleNames = null;
 
-	private static $cachedScopeNames;
+	/** @var string[]|null $cachedScopeNames names */
+	private static ?array $cachedScopeNames = null;
 
 	private const REGEX_SCOPE = "/^[a-z0-9_-]+$/i";
 	private const REGEX_MODULE = "/^[a-z0-9_-]+$/i";
