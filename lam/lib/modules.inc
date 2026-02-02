@@ -1009,7 +1009,7 @@ class accountContainer {
 	/**
 	 * Prints the content part provided by the current module.
 	 *
-	 * @param array $result list of messages
+	 * @param array<string|string[]>[] $result list of messages
 	 */
 	private function printModuleContent(array $result): void {
 		$this->printPageHeader();
@@ -1094,7 +1094,7 @@ class accountContainer {
 	/**
 	 * Prints the input fields of the central password service.
 	 */
-	private function printPasswordPromt() {
+	private function printPasswordPromt(): void {
 		echo "<div id=\"passwordDialogOuter\" class=\"modal modal-pwd-options\">\n";
 		echo "<div id=\"passwordDialog\" class=\"modal-content\">\n";
 		$printContainer = false;
@@ -1199,9 +1199,10 @@ class accountContainer {
 	/**
 	 * Sets the new password in all selected account modules.
 	 *
-	 * @param array $input input parameters
+	 * @param array<string, string|string[]> $input input parameters
+	 * @return array<string, bool|string> result
 	 */
-	public function setNewPassword($input) {
+	public function setNewPassword($input): array {
 		$password1 = $input['password1'];
 		$password2 = $input['password2'];
 		$random = $input['random'] === 'true';
@@ -1376,9 +1377,9 @@ class accountContainer {
 	/**
 	 * Returns if the page should show a button to set the password.
 	 *
-	 * @return boolean show or hide button
+	 * @return bool show or hide button
 	 */
-	private function showSetPasswordButton() {
+	private function showSetPasswordButton(): bool {
 		foreach ($this->module as $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
 				return true;
@@ -1390,7 +1391,7 @@ class accountContainer {
 	/**
 	 * Prints the header of the account pages.
 	 */
-	private function printPageHeader() {
+	private function printPageHeader(): void {
 		if (!empty($_POST)) {
 			validateSecurityToken();
 		}
@@ -1402,7 +1403,7 @@ class accountContainer {
 	/**
 	 * Prints the footer of the account pages.
 	 */
-	private function printPageFooter() {
+	private function printPageFooter(): void {
 		echo "</form>\n";
 		include __DIR__ . '/adminFooter.inc';
 	}
@@ -1410,9 +1411,9 @@ class accountContainer {
 	/**
 	 * Prints the HTML code to notify the user about the successful saving.
 	 *
-	 * @param array $messages array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @param array<string|string[]>[] $messages array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	private function printSuccessPage($messages) {
+	private function printSuccessPage($messages): void {
 		$this->printPageHeader();
 		// Show success message
 		$text = ($this->dn_orig == '') ? _("Account was created successfully.") : _("Account was modified successfully.");
@@ -1469,9 +1470,9 @@ class accountContainer {
 	/**
 	 * Checks if the user requested to load a profile.
 	 *
-	 * @return boolean true, if profile was loaded
+	 * @return bool true, if profile was loaded
 	 */
-	private function loadProfileIfRequested() {
+	private function loadProfileIfRequested(): bool {
 		if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
 			$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 			$profile = $accountProfilePersistenceManager->loadAccountProfile($this->type->getId(), $_POST['accountContainerSelectLoadProfile'], $_SESSION['config']->getName());
@@ -1496,7 +1497,7 @@ class accountContainer {
 	/**
 	 * Prints the HTML code of the module tabs.
 	 */
-	private function printModuleTabs() {
+	private function printModuleTabs(): void {
 		echo '<ul class="lam-vertical-tabs-navigation">';
 		// Loop for each module
 		for ($i = 0; $i < count($this->order); $i++) {
@@ -1536,11 +1537,11 @@ class accountContainer {
 	/**
 	 * This function checks which LDAP attributes have changed while the account was edited.
 	 *
-	 * @param array $attributes list of current LDAP attributes
-	 * @param array $orig list of old attributes when account was loaded
-	 * @return array an array which can be passed to $this->saveAccount()
+	 * @param array<string, string[]|string> $attributes list of current LDAP attributes
+	 * @param array<string, string[]|string> $orig list of old attributes when account was loaded
+	 * @return array<string, array<string, array<string, string[]>>> an array which can be passed to $this->saveAccount()
 	 */
-	function save_module_attributes($attributes, $orig) {
+	public function save_module_attributes($attributes, $orig): array {
 		$return = [];
 		$toModify = [];
 		$notChanged = [];
@@ -1593,11 +1594,11 @@ class accountContainer {
 	 * Loads an LDAP account with the given DN.
 	 *
 	 * @param string $dn the DN of the account
-	 * @param array $infoAttributes list of additional informational attributes that are added to the LDAP attributes
+	 * @param array<string, string> $infoAttributes list of additional informational attributes that are added to the LDAP attributes
 	 * E.g. this is used to inject the clear text password in the file upload. Informational attribute names must start with "INFO.".
-	 * @return array error messages
+	 * @return array<string|string[]>[] error messages
 	 */
-	function load_account($dn, $infoAttributes = []) {
+	public function load_account($dn, $infoAttributes = []): array {
 		if (!str_ends_with(strtolower($dn), strtolower($this->type->getSuffix()))) {
 			logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $this->type->getId() . ' outside suffix ' . $this->type->getSuffix());
 			die();
@@ -1668,10 +1669,10 @@ class accountContainer {
 	 * Fixes spelling errors in the attribute names.
 	 *
 	 * @param array<string, string[]|string>|null $attributes LDAP attributes
-	 * @param array $modules list of active modules
-	 * @return array fixed attributes
+	 * @param string[] $modules list of active modules
+	 * @return array<string, string[]|string> fixed attributes
 	 */
-	function fixLDAPAttributes($attributes, $modules) {
+	public function fixLDAPAttributes($attributes, $modules): array {
 		if (!is_array($attributes)) {
 			return [];
 		}
@@ -1744,7 +1745,7 @@ class accountContainer {
 	/**
 	 * This function will prepare the object for a new account.
 	 */
-	public function new_account() {
+	public function new_account(): void {
 		logNewMessage(LOG_DEBUG, "New account with type " . $this->type->getId());
 		$this->isNewAccount = true;
 		$this->lastLoadedProfile = 'default';
@@ -1785,7 +1786,6 @@ class accountContainer {
 		$this->titleBarIcon = $typeObject->buildAccountStatusIcon($this);
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
-		return 0;
 	}
 
 	/**
@@ -1805,7 +1805,7 @@ class accountContainer {
 	/**
 	 * Creates the account modules and initializes them.
 	 */
-	public function initModules() {
+	public function initModules(): void {
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 		foreach ($modules as $module) {
 			$this->module[$module] = new $module($this->type->getScope());
@@ -1816,9 +1816,9 @@ class accountContainer {
 	/**
 	 * This function will save an account to the LDAP database.
 	 *
-	 * @return array list of status messages
+	 * @return array<string|string[]>[] list of status messages
 	 */
-	private function save_account() {
+	private function save_account(): array {
 		if (!checkIfWriteAccessIsAllowed($this->type->getId())) {
 			die();
 		}
