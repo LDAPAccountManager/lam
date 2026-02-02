@@ -148,8 +148,8 @@ function get_ldap_filter($typeId) {
  * The list is already sorted by the priority given by the modules.
  *
  * @param string $typeId account type (user, group, host)
- * @param array $selectedModules return only RDN attributes of these modules
- * @return array list of LDAP attributes
+ * @param string[] $selectedModules return only RDN attributes of these modules
+ * @return string[] list of LDAP attributes
  */
 function getRDNAttributes($typeId, $selectedModules = null) {
 	$mods = $_SESSION['config']->get_AccountModules($typeId);
@@ -203,7 +203,7 @@ function getRDNAttributes($typeId, $selectedModules = null) {
  * <br>The elements of conflicts are module names.
  *
  * @param string $scope the account type (user, group, host)
- * @return array dependencies
+ * @return array<string, array<string, array<string|string[]>>> dependencies
  */
 function getModulesDependencies($scope) {
 	$return = [];
@@ -219,9 +219,9 @@ function getModulesDependencies($scope) {
 /**
  * Checks if there are missing dependencies between modules.
  *
- * @param array $selected selected module names
- * @param array $deps module dependencies
- * @return mixed false if no missing dependency was found,
+ * @param string[] $selected selected module names
+ * @param array<string, array<string, array<string|string[]>>> $deps module dependencies
+ * @return false|string[][] false if no missing dependency was found,
  * otherwise an array of array(selected module, depending module) if missing dependencies were found
  */
 function check_module_depends($selected, $deps) {
@@ -260,8 +260,8 @@ function check_module_depends($selected, $deps) {
 /**
  * Checks if there are conflicts between modules
  *
- * @param array $selected selected module names
- * @param array $deps module dependencies
+ * @param string[] $selected selected module names
+ * @param array<string, array<string, array<string|string[]>>> $deps module dependencies
  * @return false|array<int, string[]> false if no conflict was found,
  * otherwise an array of array(selected module, conflicting module) if conflicts were found
  */
@@ -333,9 +333,9 @@ function getAllModules(): array {
  * Returns the elements for the profile page.
  *
  * @param string $typeId account type (user, group, host)
- * @return array profile elements
+ * @return array<string, htmlResponsiveRow> profile elements
  */
-function getProfileOptions($typeId) {
+function getProfileOptions(string $typeId): array {
 	$typeManager = new TypeManager();
 	$type = $typeManager->getConfiguredType($typeId);
 	$mods = $type->getModules();
@@ -354,8 +354,8 @@ function getProfileOptions($typeId) {
  * Checks if the profile options are valid
  *
  * @param string $typeId account type (user, group, host)
- * @param array $options hash array containing all options (name => array(...))
- * @return array list of error messages
+ * @param array<string, string[]> $options hash array containing all options (name => array(...))
+ * @return array<string|string[]>[] list of error messages
  */
 function checkProfileOptions($typeId, $options) {
 	$typeManager = new TypeManager();
@@ -373,7 +373,7 @@ function checkProfileOptions($typeId, $options) {
 /**
  * Returns a hash array (module name => elements) of all module options for the configuration page.
  *
- * @param array $moduleToScopes hash array (module name => array(account types))
+ * @param array<string, string[]> $moduleToScopes hash array (module name => array(account types))
  * @return array<class-string<baseModule>, htmlElement|htmlElement[]> configuration options
  */
 function getConfigOptions(array $moduleToScopes): array {
@@ -388,9 +388,9 @@ function getConfigOptions(array $moduleToScopes): array {
 /**
  * Checks if the configuration options are valid
  *
- * @param array $moduleToTypeIds hash array (module name => array(account type ids))
- * @param array $options hash array containing all options (name => array(...))
- * @return array list of error messages
+ * @param array<string, string[]> $moduleToTypeIds hash array (module name => array(account type ids))
+ * @param array<string, string[]> $options hash array containing all options (name => array(...))
+ * @return array<string|string[]>[] list of error messages
  */
 function checkConfigOptions($moduleToTypeIds, &$options) {
 	$return = [];
@@ -408,9 +408,9 @@ function checkConfigOptions($moduleToTypeIds, &$options) {
  * @param string|null $module module name
  * @param string $helpID help identifier
  * @param string $scope account type
- * @return array help entry
+ * @return array<string, string>|null help entry
  */
-function getHelp($module, $helpID, $scope) {
+function getHelp($module, $helpID, $scope): ?array {
 	global $helpArray;
 	if (in_array($module, [null, '', 'main'], true)) {
 		if (!isset($helpArray)) {
