@@ -845,7 +845,7 @@ class accountContainer {
 		$errorsOccurred = false;
 		$typeObject = $this->type->getBaseType();
 		$profileLoaded = $this->loadProfileIfRequested();
-		if ($this->subpage == '') {
+		if ($this->subpage === '') {
 			$this->subpage = 'attributes';
 		}
 		if (isset($_POST['accountContainerReset'])) {
@@ -990,7 +990,7 @@ class accountContainer {
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		// prints a module content page
 		$this->printModuleContent($result);
-		if (!$errorsOccurred && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
+		if (!$errorsOccurred && ($oldPage === $this->current_page) && ($oldSubpage === $this->subpage)
 			&& isset($_POST['scrollPositionTop']) && get_preg($_POST['scrollPositionTop'], 'digit')
 			&& isset($_POST['scrollPositionLeft']) && get_preg($_POST['scrollPositionLeft'], 'digit')) {
 			// scroll to last position
