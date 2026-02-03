@@ -1291,6 +1291,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$this->messages['scriptPath'][1] = ['ERROR', _('Account %s:') . ' windowsUser_scriptPath', _('Logon script is invalid!')];
 		$this->messages['unicodePwd'][0] = ['ERROR', _('Password'), _('Please enter the same password in both password fields.')];
 		$this->messages['unicodePwd'][1] = ['ERROR', _('Password'), _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
+		$this->messages['unicodePwd'][2] = ['ERROR', _('Account %s:') . ' windowsUser_password', _('Password contains invalid characters. Valid characters are:') . ' a-z, A-Z, 0-9 and #*,.;:_-+!%&/|?{[()]}=@$ §°!'];
 		$this->messages['homeDrive'][0] = ['ERROR', _('Account %s:') . ' windowsUser_homeDrive', _('Please enter a valid drive letter.')];
 		$this->messages['homeDirectory'][0] = ['ERROR', _('Home directory'), _('Homedirectory contains invalid characters.')];
 		$this->messages['homeDirectory'][1] = ['ERROR', _('Account %s:') . ' windowsUser_homeDirectory', _('Homedirectory contains invalid characters.')];
@@ -3129,15 +3130,21 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$partialAccounts[$i]['sAMAccountName'] = $parts[0];
 			}
 			// password
-			if (($rawAccounts[$i][$ids['windowsUser_password']] != "") && (get_preg($rawAccounts[$i][$ids['windowsUser_password']], 'password'))) {
-				$partialAccounts[$i]['unicodePwd'] = self::pwdAttributeValue($rawAccounts[$i][$ids['windowsUser_password']]);
-				$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['windowsUser_password']]; // for custom scripts etc.
-			}
-			elseif ($rawAccounts[$i][$ids['windowsUser_password']] != "") {
-				$errMsg = $this->messages['userPassword'][4];
-				$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-				$errMsg[] = [$i];
-				$errors[] = $errMsg;
+			if ($rawAccounts[$i][$ids['windowsUser_password']] != "") {
+				$strengthResult = checkPasswordStrength($rawAccounts[$i][$ids['windowsUser_password']], [$rawAccounts[$i][$ids['windowsUser_userPrincipalName']]], []);
+				if ($strengthResult !== true) {
+					$errors[] = ['ERROR', _('Account %s:') . ' windowsUser_password', $strengthResult, [$i]];
+				}
+				elseif (!get_preg($rawAccounts[$i][$ids['windowsUser_password']], 'password')) {
+					$errMsg = $this->messages['unicodePwd'][2];
+					$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+					$errMsg[] = [$i];
+					$errors[] = $errMsg;
+				}
+				else {
+					$partialAccounts[$i]['unicodePwd'] = self::pwdAttributeValue($rawAccounts[$i][$ids['windowsUser_password']]);
+					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['windowsUser_password']]; // for custom scripts etc.
+				}
 			}
 			// display name
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {

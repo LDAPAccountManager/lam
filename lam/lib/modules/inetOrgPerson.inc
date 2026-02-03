@@ -2527,7 +2527,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					}
 					$strengthResult = checkPasswordStrength($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $userNames, []);
 					if ($strengthResult !== true) {
-						$errors[] = ['ERROR', _('Account %s:') . ' posixAccount_password', $strengthResult, [$i]];
+						$errors[] = ['ERROR', _('Account %s:') . ' inetOrgPerson_userPassword', $strengthResult, [$i]];
 					}
 					elseif (!get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password')) {
 						$errMsg = $this->messages['userPassword'][0];
