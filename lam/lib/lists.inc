@@ -1563,21 +1563,20 @@ class lamList {
 class lamListTool {
 
 	/** tool name */
-	private $name;
+	private string $name;
 	/** tool image */
-	private $image;
+	private string $image;
 	/** link target */
-	private $target;
+	private string $target;
 
 	/**
 	 * Constructor
 	 *
-	 * @param String $name tool name
-	 * @param String $image image file
-	 * @param String $target target page
-	 * @return lamListTool tool object
+	 * @param string $name tool name
+	 * @param string $image image file
+	 * @param string $target target page
 	 */
-	public function __construct($name, $image, $target) {
+	public function __construct(string $name, string $image, string $target) {
 		$this->name = $name;
 		$this->image = $image;
 		$this->target = $target;
@@ -1587,9 +1586,9 @@ class lamListTool {
 	 * Returns the name of the tool image.
 	 * The image is returned without path (e.g. mytool.png). All images must reside in the graphics folder.
 	 *
-	 * @return String image name
+	 * @return string image name
 	 */
-	public function getImage() {
+	public function getImage(): string {
 		return $this->image;
 	}
 
@@ -1597,9 +1596,9 @@ class lamListTool {
 	 * Returns the tool name.
 	 * This is used for the tool tip.
 	 *
-	 * @return String name
+	 * @return string name
 	 */
-	public function getName() {
+	public function getName(): string {
 		return $this->name;
 	}
 
@@ -1607,9 +1606,9 @@ class lamListTool {
 	 * Returns the PHP file (relative to 'templates/lists') which will be the target for this tool.
 	 * The target page will be opened with two GET parameters: DN and type (e.g. user)
 	 *
-	 * @return String page file (e.g. 'mytool.php')
+	 * @return string page file (e.g. 'mytool.php')
 	 */
-	public function getLinkTarget() {
+	public function getLinkTarget(): string {
 		return $this->target;
 	}
 
@@ -1624,25 +1623,25 @@ class lamListTool {
 abstract class lamListOption {
 
 	/** unique ID */
-	private $ID;
+	private string $ID;
 	/** option value */
-	private $value;
+	private ?string $value = null;
 
 	/**
 	 * Creates a new config option.
 	 *
-	 * @param String $ID unique ID
+	 * @param string $ID unique ID
 	 */
-	public function __construct($ID) {
+	public function __construct(string $ID) {
 		$this->ID = $ID;
 	}
 
 	/**
 	 * Returns the option ID.
 	 *
-	 * @return String ID
+	 * @return string ID
 	 */
-	public function getID() {
+	public function getID(): string {
 		return $this->ID;
 	}
 
@@ -1654,9 +1653,9 @@ abstract class lamListOption {
 	/**
 	 * Returns the option value. The value must not contain "=" and ";".
 	 *
-	 * @return string value
+	 * @return string|null value
 	 */
-	public function getValue() {
+	public function getValue(): ?string {
 		return $this->value;
 	}
 
@@ -1665,7 +1664,7 @@ abstract class lamListOption {
 	 *
 	 * @param string $value
 	 */
-	public function setValue($value) {
+	public function setValue(string $value): void {
 		if ((strpos($value, '=') > -1) || (strpos($value, ';') > -1)) {
 			user_error("Invalid value for list option: " . $value, E_ERROR);
 		}
@@ -1677,7 +1676,7 @@ abstract class lamListOption {
 	 *
 	 * @return htmlResponsiveRow meta HTML
 	 */
-	public abstract function getMetaHTML();
+	abstract public function getMetaHTML(): htmlResponsiveRow;
 
 }
 
@@ -1690,15 +1689,15 @@ abstract class lamListOption {
 class lamBooleanListOption extends lamListOption {
 
 	/** option name */
-	private $name;
+	private string $name;
 
 	/**
 	 * Creates a new boolean option.
 	 *
-	 * @param String $name name to show on config page
-	 * @param String $ID unique ID
+	 * @param string $name name to show on config page
+	 * @param string $ID unique ID
 	 */
-	public function __construct($name, $ID) {
+	public function __construct(string $name, string $ID) {
 		parent::__construct($ID);
 		$this->name = $name;
 	}
@@ -1706,9 +1705,9 @@ class lamBooleanListOption extends lamListOption {
 	/**
 	 * Returns if this option is selected.
 	 *
-	 * @return boolean true, if selected
+	 * @return bool true, if selected
 	 */
-	public function isSelected() {
+	public function isSelected(): bool {
 		return ($this->getValue() === "1");
 	}
 
@@ -1728,7 +1727,7 @@ class lamBooleanListOption extends lamListOption {
 	 * {@inheritDoc}
 	 * @see lamListOption::getMetaHTML()
 	 */
-	public function getMetaHTML() {
+	public function getMetaHTML(): htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
 		$return->add(new htmlResponsiveInputCheckbox($this->getID(), $this->isSelected(), $this->name), 12);
 		return $return;
@@ -1745,20 +1744,20 @@ class lamBooleanListOption extends lamListOption {
 class lamSelectListOption extends lamListOption {
 
 	/** option name */
-	private $name;
-	/** possible select options */
-	private $options;
+	private string $name;
+	/** @var string[] possible select options */
+	private array $options;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID = null;
 
 	/**
 	 * Creates a new selection list option.
 	 *
-	 * @param String $name name to show on config page
-	 * @param array $options list of possible values
-	 * @param String $ID unique ID
+	 * @param string $name name to show on config page
+	 * @param string[] $options list of possible values
+	 * @param string $ID unique ID
 	 */
-	public function __construct($name, $options, $ID) {
+	public function __construct(string $name, array $options, string $ID) {
 		parent::__construct($ID);
 		$this->name = $name;
 		$this->options = $options;
@@ -1769,7 +1768,7 @@ class lamSelectListOption extends lamListOption {
 	 *
 	 * @param string $id help ID
 	 */
-	public function setHelpID($id) {
+	public function setHelpID($id): void {
 		$this->helpID = $id;
 	}
 
@@ -1789,7 +1788,7 @@ class lamSelectListOption extends lamListOption {
 	 * {@inheritDoc}
 	 * @see lamListOption::getMetaHTML()
 	 */
-	public function getMetaHTML() {
+	public function getMetaHTML(): htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
 		$return->add(new htmlResponsiveSelect($this->getID(), $this->options, [$this->getValue()], $this->name, $this->helpID), 12);
 		return $return;
