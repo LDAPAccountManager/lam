@@ -2851,16 +2851,22 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
 						$partialAccounts[$i][$pwdAttrName] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 					}
-					elseif (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
-						$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
-						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']];
-						// for custom scripts etc.
-					}
 					elseif ($rawAccount[$ids['posixAccount_password']] != "") {
-						$errMsg = $this->messages['userPassword'][4];
-						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-						$errMsg[] = [$i];
-						$errors[] = $errMsg;
+						$strengthResult = checkPasswordStrength($rawAccount[$ids['posixAccount_password']], [$rawAccount[$ids['posixAccount_userName']]], []);
+						if ($strengthResult !== true) {
+							$errors[] = ['ERROR', _('Account %s:') . 'posixAccount_password', $strengthResult, [$i]];
+						}
+						elseif (!get_preg($rawAccount[$ids['posixAccount_password']], 'password')) {
+							$errMsg = $this->messages['userPassword'][4];
+							$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+							$errMsg[] = [$i];
+							$errors[] = $errMsg;
+						}
+						else {
+							$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+							// for custom scripts etc.
+							$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']];
+						}
 					}
 				}
 				// cn
