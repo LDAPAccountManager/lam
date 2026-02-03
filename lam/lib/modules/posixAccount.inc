@@ -2854,7 +2854,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					elseif ($rawAccount[$ids['posixAccount_password']] != "") {
 						$strengthResult = checkPasswordStrength($rawAccount[$ids['posixAccount_password']], [$rawAccount[$ids['posixAccount_userName']]], []);
 						if ($strengthResult !== true) {
-							$errors[] = ['ERROR', _('Account %s:') . 'posixAccount_password', $strengthResult, [$i]];
+							$errors[] = ['ERROR', _('Account %s:') . ' posixAccount_password', $strengthResult, [$i]];
 						}
 						elseif (!get_preg($rawAccount[$ids['posixAccount_password']], 'password')) {
 							$errMsg = $this->messages['userPassword'][4];

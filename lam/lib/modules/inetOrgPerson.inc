@@ -2520,16 +2520,26 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
 					$partialAccounts[$i]['userpassword'] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
-				elseif (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
-					$partialAccounts[$i]['userpassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
-					$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']];
-					// for custom scripts etc.
-				}
 				elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
-					$errMsg = $this->messages['userPassword'][0];
-					$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
-					$errMsg[] = [$i];
-					$errors[] = $errMsg;
+					$userNames = [];
+					if (isset($ids['inetOrgPerson_userName']) && !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
+						$userNames[] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
+					}
+					$strengthResult = checkPasswordStrength($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $userNames, []);
+					if ($strengthResult !== true) {
+						$errors[] = ['ERROR', _('Account %s:') . ' posixAccount_password', $strengthResult, [$i]];
+					}
+					elseif (!get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password')) {
+						$errMsg = $this->messages['userPassword'][0];
+						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+						$errMsg[] = [$i];
+						$errors[] = $errMsg;
+					}
+					else {
+						$partialAccounts[$i]['userpassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+						// for custom scripts etc.
+						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']];
+					}
 				}
 			}
 		}
