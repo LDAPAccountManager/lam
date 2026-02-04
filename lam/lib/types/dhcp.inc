@@ -232,7 +232,7 @@ class lamDHCPList extends lamList {
 	/**
 	 * {@inheritDoc}
 	 */
-	function listDoPost() {
+	protected function listDoPost(): ?htmlElement {
 		$fragment = parent::listDoPost();
 		if (isset($_POST['dhcpDefaults'])) {
 			metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&DN='" . $this->type->getSuffix() . "'");

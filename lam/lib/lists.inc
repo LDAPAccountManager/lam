@@ -413,9 +413,9 @@ class lamList {
 	/**
 	 * Prints the entry list
 	 *
-	 * @param array $info entries
+	 * @param array<string, string[]|string>[] $info entries
 	 */
-	private function printAccountTable(&$info) {
+	private function printAccountTable(&$info): void {
 		$scope = $this->type->getScope();
 		$titles = $this->descArray;
 		array_unshift($titles, _('Actions'));
@@ -570,12 +570,12 @@ class lamList {
 	/**
 	 * Adds the LDAP data elements to the given array.
 	 *
-	 * @param array $data data for responsible table
-	 * @param array $info entries
-	 * @param array $onClickEvents row number => code
-	 * @param array $onDoubleClickEvents row number => code
+	 * @param mixed[][] $data data for responsible table
+	 * @param array<string, string[]|string>[] $info entries
+	 * @param array<int, string> $onClickEvents row number => code
+	 * @param array<int, string> $onDoubleClickEvents row number => code
 	 */
-	private function addDataElements(&$data, &$info, &$onClickEvents, &$onDoubleClickEvents) {
+	private function addDataElements(&$data, &$info, &$onClickEvents, &$onDoubleClickEvents): void {
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
 		$table_end = ($this->page * $this->maxPageEntries) > count($info) ? count($info) : $this->page * $this->maxPageEntries;
@@ -633,11 +633,11 @@ class lamList {
 	/**
 	 * Adds the tool image links (e.g. edit and delete) for each account.
 	 *
-	 * @param array $account LDAP attributes
-	 * @param String $id account ID
+	 * @param array<string, string[]|string> $account LDAP attributes
+	 * @param string $id account ID
 	 * @param htmlGroup $element location where to add tools
 	 */
-	private function addToolLinks($account, $id, &$element) {
+	private function addToolLinks($account, $id, &$element): void {
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.svg');
 		$editLink->setTitle(_("Edit"));
@@ -747,14 +747,9 @@ class lamList {
 		}
 		// print all attribute entries separated by "; "
 		if (isset($entry[$attribute]) && count($entry[$attribute]) > 0) {
-			if (is_array($entry[$attribute])) {
-				// sort array
-				sort($entry[$attribute]);
-				return new htmlOutputText(implode("; ", $entry[$attribute]));
-			}
-			else {
-				return new htmlOutputText($entry[$attribute]);
-			}
+            // sort array
+            natcasesort($entry[$attribute]);
+            return new htmlOutputText(implode("; ", $entry[$attribute]));
 		}
 		return null;
 	}
@@ -764,7 +759,7 @@ class lamList {
 	 *
 	 * @return htmlElement|null HTML fragment to insert into beginning of account list
 	 */
-	protected function listDoPost() {
+	protected function listDoPost(): htmlElement|null {
 		if (!empty($_POST)) {
 			validateSecurityToken();
 		}
@@ -893,7 +888,7 @@ class lamList {
 	 *
 	 * @param string|null $id account ID
 	 */
-	private function showPDFPage($id) {
+	private function showPDFPage($id): void {
 		$sessionObject = null;
 		$PDFSessionID = null;
 		if (($id == null) && isset($_GET['PDFSessionID'])) {
@@ -996,7 +991,7 @@ class lamList {
 	 *
 	 * @param boolean $createOnly true if only the create button should be displayed
 	 */
-	protected function listPrintButtons($createOnly) {
+	protected function listPrintButtons($createOnly): void {
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(['maxrow lam-list-buttons']);
 		$left = new htmlGroup();
@@ -1055,7 +1050,7 @@ class lamList {
 	/**
 	 * Prints the header part of the page.
 	 */
-	private function printHeader() {
+	private function printHeader(): void {
 		include __DIR__ . '/adminHeader.inc';
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(['maxrow']);
@@ -1074,7 +1069,7 @@ class lamList {
 	/**
 	 * Prints the footer area of the page.
 	 */
-	private function printFooter() {
+	private function printFooter(): void {
 		$this->printFooterContent();
 		include __DIR__ . '/adminFooter.inc';
 	}
@@ -1082,7 +1077,7 @@ class lamList {
 	/**
 	 * Prints any extra HTML for the footer part.
 	 */
-	protected function printFooterContent() {
+	protected function printFooterContent(): void {
 		?>
         <input type="hidden" name="<?php echo getSecurityTokenName(); ?>"
                value="<?php echo getSecurityTokenValue(); ?>">
@@ -1094,9 +1089,9 @@ class lamList {
 	 * Returns an hash array containing with all attributes to be shown and their descriptions.
 	 * Format: array(attribute => description)
 	 *
-	 * @return array attribute list
+	 * @return array<string, string> attribute list
 	 */
-	protected function listGetAttributeDescriptionList() {
+	protected function listGetAttributeDescriptionList(): array {
 		$attrs = $this->type->getAttributes();
 		$ret = [];
 		$predefinedDescriptions = $this->type->getBaseType()->getListAttributeDescriptions();
@@ -1273,7 +1268,7 @@ class lamList {
 	/**
 	 * Applies any local filters for attributes that cannot be filtered server side.
 	 */
-	protected function applyLocalFilters() {
+	protected function applyLocalFilters(): void {
 		$this->entries = [];
 		foreach ($this->ldapEntries as $index => &$data) {
 			$this->entries[$index] = &$data;
@@ -1346,7 +1341,7 @@ class lamList {
 	 * Forces a refresh of the LDAP data.
 	 * Function must be called before $this->refresh option is checked to load new LDAP data (e.g. in listGetParams).
 	 */
-	protected function forceRefresh() {
+	protected function forceRefresh(): void {
 		$this->refresh = true;
 		if (isset($_GET['norefresh'])) {
 			unset($_GET['norefresh']);
@@ -1390,7 +1385,8 @@ class lamList {
 	 */
 	protected function listGetAllConfigOptions(): array {
 		$options = [];
-		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), [10, 20, 30, 50, 75, 100, 500, 1000], self::LIST_SIZE_OPTION_NAME);
+		$listSizeOption = new lamSelectListOption(_("Maximum list entries"),
+            ['10', '20', '30', '50', '75', '100', '500', '1000'], self::LIST_SIZE_OPTION_NAME);
 		$listSizeOption->setHelpID('208');
 		$listSizeOption->setValue($this->maxPageEntries);
 		$options[] = $listSizeOption;
@@ -1403,7 +1399,7 @@ class lamList {
 	/**
 	 * Prints the list configuration page.
 	 */
-	protected function listPrintConfigurationPage() {
+	protected function listPrintConfigurationPage(): void {
 		echo "<div id=\"settingsDialog\" class=\"hidden dialog-content\">\n";
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
 
@@ -1423,9 +1419,10 @@ class lamList {
 	/**
 	 * Returns the configuration option with the given ID.
 	 *
-	 * @param String $ID ID
+	 * @param string $ID ID
+     * @return ?lamListOption option
 	 */
-	protected function listGetConfigOptionByID($ID) {
+	protected function listGetConfigOptionByID(string $ID): ?lamListOption {
 		for ($i = 0; $i < count($this->configOptions); $i++) {
 			if ($this->configOptions[$i]->getID() === $ID) {
 				return $this->configOptions[$i];
@@ -1446,7 +1443,7 @@ class lamList {
 		if ($this->isSupportingAccountStatus()) {
 			$asOption = $this->listGetConfigOptionByID(self::ACCOUNT_STATUS_OPTION_NAME);
 			$asOptionOldValue = $this->showAccountStatus;
-			$this->showAccountStatus = $asOption->isSelected();
+			$this->showAccountStatus = ($asOption instanceof lamBooleanListOption) && $asOption->isSelected();
 			if ($this->showAccountStatus && !$asOptionOldValue) {
 				$this->forceRefresh();
 			}
@@ -1487,7 +1484,7 @@ class lamList {
 	/**
 	 * Injects values for the virtual account status attribute to make it sortable.
 	 */
-	private function injectAccountStatusAttribute() {
+	private function injectAccountStatusAttribute(): void {
 		$entryCount = count($this->ldapEntries);
 		for ($i = 0; $i < $entryCount; $i++) {
 			$accountStatus = AccountStatus::fromAttributes($this->type, $this->ldapEntries[$i]);
@@ -1509,10 +1506,10 @@ class lamList {
 	/**
 	 * Returns the account status.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return htmlElement content
 	 */
-	private function getAccountStatus(&$attrs) {
+	private function getAccountStatus(&$attrs): htmlElement {
 		$statusContent = new htmlGroup();
 		$accountStatus = AccountStatus::fromAttributes($this->type, $attrs);
 		$mainIcon = 'unlocked.svg';

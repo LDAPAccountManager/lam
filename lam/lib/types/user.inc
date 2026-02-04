@@ -302,7 +302,7 @@ class lamUserList extends lamList {
 	protected function listConfigurationChanged(): void {
 		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
-		$this->trans_primary = $tpOption->isSelected();
+		$this->trans_primary = ($tpOption instanceof lamBooleanListOption) && $tpOption->isSelected();
 	}
 
 	/**

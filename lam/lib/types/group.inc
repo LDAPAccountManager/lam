@@ -384,7 +384,7 @@ class lamGroupList extends lamList {
 		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$use_primary = $this->include_primary;
-		$this->include_primary = $tpOption->isSelected();
+		$this->include_primary = ($tpOption instanceof lamBooleanListOption) && $tpOption->isSelected();
 		if (!$use_primary && $this->include_primary) {
 			$this->refresh_primary = true;
 		}
