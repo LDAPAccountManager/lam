@@ -303,7 +303,7 @@ class lamList {
 		}
 		natcasesort($toSort);
 		$sortResult = [];
-		if ($this->sortDirection == 1) {
+		if ($this->sortDirection === 1) {
 			foreach (array_keys($toSort) as $orig) {
 				$sortResult[] = $orig;
 			}
@@ -331,7 +331,7 @@ class lamList {
 		$row->add($countLabel, 12, 6, 6);
 		$navGroup = new htmlGroup();
 		if ($count > $this->maxPageEntries) {
-			if ($this->page != 1) {
+			if ($this->page !== 1) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=1" .
 					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-first.svg');
@@ -355,7 +355,7 @@ class lamList {
                 elseif ($i < 0) {
 					continue;
 				}
-				if ($i == $this->page - 1) {
+				if ($i === $this->page - 1) {
 					$url = "list.php?type=" . $this->type->getId() . "&norefresh=true" .
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 					$navInput = new htmlInputField('listNavPage', (string) ($i + 1));
@@ -1271,7 +1271,7 @@ class lamList {
 		$modules = $this->type->getModules();
 		foreach ($modules as $module) {
 			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
-			foreach ($this->filters as $filterAttribute => $filterValue) {
+			foreach (array_keys($this->filters) as $filterAttribute) {
 				$attributeName = strtolower($filterAttribute);
 				$filterFunction = $moduleObj->getListFilterFunction($attributeName);
 				if ($filterFunction !== null) {
@@ -1652,7 +1652,7 @@ abstract class lamListOption {
 	/**
 	 * Sets the config option value. The value must not contain "=" and ";".
 	 *
-	 * @param string $value
+	 * @param string $value value
 	 */
 	public function setValue(string $value): void {
 		if ((strpos($value, '=') > -1) || (strpos($value, ';') > -1)) {

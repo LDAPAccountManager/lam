@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,20 +41,20 @@ include_once(__DIR__ . "/config.inc");
 class Ldap {
 
 	/** Object of Config to access preferences */
-	private $conf;
+	private ?LAMConfig $conf = null;
 
 	/** Server handle */
-	private $server;
+	private ?Connection $server = null;
 
 	/** LDAP connection established */
-	private $is_connected = false;
+	private bool $is_connected = false;
 
 	/** LDAP username used for bind */
-	private $username;
+	private ?string $username = null;
 	/** LDAP password used for bind */
-	private $password;
+	private ?string $password = null;
 	/** is Active Directory */
-	private $isActiveDirectory;
+	private ?bool $isActiveDirectory = null;
 
 	/**
 	 * Creates a new LDAP object.
@@ -75,7 +75,7 @@ class Ldap {
 	 * @param boolean $allowAnonymous specifies if anonymous binds are allowed
 	 * @throws LAMException unable to connect
 	 */
-	public function connect($user, $passwd, $allowAnonymous = false) {
+	public function connect($user, $passwd, $allowAnonymous = false): void {
 		// close any prior connection
 		@$this->close();
 		// do not allow anonymous bind
@@ -136,7 +136,7 @@ class Ldap {
 	}
 
 	/** Closes connection to server */
-	public function close() {
+	public function close(): void {
 		if ($this->server != null) {
 			$this->is_connected = false;
 			@ldap_close($this->server);
@@ -210,7 +210,7 @@ class Ldap {
 	 * @param string $username LDAP user name
 	 * @param string $password LDAP password
 	 */
-	public function encrypt_login($username, $password) {
+	public function encrypt_login($username, $password): void {
 		// encrypt username and password
 		$this->username = base64_encode(lamEncrypt($username));
 		$this->password = base64_encode(lamEncrypt($password));
@@ -241,7 +241,7 @@ class Ldap {
 	}
 
 	/** Closes connection to LDAP server and deletes encrypted username/password */
-	public function destroy() {
+	public function destroy(): void {
 		$this->close();
 		$this->username = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 		$this->password = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";

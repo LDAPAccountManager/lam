@@ -7,7 +7,7 @@ use TCPDF;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2025  Roland Gruber
+  Copyright (C) 2017 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ class LAMTCPDF extends TCPDF {
 	 * {@inheritDoc}
 	 * @see TCPDF::Header()
 	 */
-	public function Header() {
+	public function Header(): void {
 		$logoFile = $this->structure->getLogo();
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		if (!empty($logoFile) && ($logoFile !== 'none')) {
@@ -106,7 +106,7 @@ class LAMTCPDF extends TCPDF {
 	 * {@inheritDoc}
 	 * @see TCPDF::Footer()
 	 */
-	public function Footer() {
+	public function Footer(): void {
 		$this->SetY(-15);
 		$this->SetFont($this->fontName, '', LAMPDF_FONT_SIZE);
 		$footerText = _("This document was automatically created by LDAP Account Manager") . ' (' . getFormattedTime('Y-m-d H:i:s T') . ')';

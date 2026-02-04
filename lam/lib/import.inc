@@ -8,7 +8,7 @@ use LAMException;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2025  Roland Gruber
+ Copyright (C) 2018 - 2026  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ class Importer {
 	 * @return array<string[]> array of string[]
 	 * @throws LAMException invalid format
 	 */
-	private function extractImportChunks($lines): array {
+	private function extractImportChunks(array $lines): array {
 		$entries = [];
 		$currentEntry = [];
 		foreach ($lines as $line) {
@@ -111,15 +111,17 @@ class Importer {
 	 * @return ImporterTask[] tasks
 	 * @throws LAMException if invalid format was found
 	 */
-	public function getTasks($lines) {
+	public function getTasks(array $lines): array {
 		$chunks = $this->extractImportChunks($lines);
 		return $this->convertToTasks($chunks);
 	}
 
 	/**
 	 * Processes the import data stored in session.
+	 *
+	 * @return string result
 	 */
-	public function doImport() {
+	public function doImport(): string {
 		$data = '';
 		$tasks = &$_SESSION[Importer::SESSION_KEY_TASKS];
 		$stopOnError = $_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR];
@@ -194,9 +196,9 @@ class Importer {
 	/**
 	 * Returns the time when processing should end.
 	 *
-	 * @return number end time as Unix timestamp
+	 * @return int end time as Unix timestamp
 	 */
-	private function getEndTime() {
+	private function getEndTime(): int {
 		$startTime = time();
 		$maxTime = get_cfg_var('max_execution_time') - 10;
 		if ($maxTime > self::TIME_LIMIT) {
@@ -211,10 +213,10 @@ class Importer {
 	/**
 	 * Continues the import with processing of a single entry.
 	 *
-	 * @param array[] $entries import entries
+	 * @param string[][] $entries import entries
 	 * @return ImporterTask[] tasks
 	 */
-	private function convertToTasks($entries) {
+	private function convertToTasks(array $entries): array {
 		$tasks = [];
 		$count = count($entries);
 		for ($i = 0; $i < $count; $i++) {
@@ -243,7 +245,7 @@ class Importer {
 	 * @param string[] $entry entry
 	 * @throws LAMException if version is invalid
 	 */
-	private function processVersion($entry) {
+	private function processVersion($entry): void {
 		$keyValue = $this->getLineKeyValue($entry[0]);
 		if (($keyValue[Importer::VALUE] != '1') || (count($entry) > 1)) {
 			$escapedLines = array_map(htmlspecialchars(...), $entry);
@@ -424,9 +426,10 @@ interface ImporterTask {
 	/**
 	 * Runs the task.
 	 *
+	 * @throws LAMException error during import
 	 * @return string HTML output or LAMException if error occurred
 	 */
-	public function run();
+	public function run(): string;
 
 }
 
@@ -437,8 +440,9 @@ interface ImporterTask {
  */
 class AddEntryTask implements ImporterTask {
 
-	private $dn = '';
-	private $attributes = [];
+	private string $dn;
+	/** @var array<string, string[]> $attributes attributes */
+	private array $attributes;
 
 	/**
 	 * Constructor
@@ -446,7 +450,7 @@ class AddEntryTask implements ImporterTask {
 	 * @param string $dn DN
 	 * @param array<string, string[]> $attributes list of attributes
 	 */
-	public function __construct($dn, $attributes) {
+	public function __construct(string $dn, array $attributes) {
 		$this->dn = $dn;
 		$this->attributes = $attributes;
 	}
@@ -455,7 +459,7 @@ class AddEntryTask implements ImporterTask {
 	 * {@inheritDoc}
 	 * @see ImporterTask::run
 	 */
-	public function run() {
+	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		$success = @ldap_add($ldap, $this->dn, $this->attributes);
 		if ($success) {
@@ -473,9 +477,9 @@ class AddEntryTask implements ImporterTask {
  */
 class RenameEntryTask implements ImporterTask {
 
-	private $dn = '';
-	private $newRdn = '';
-	private $deleteOldRdn = true;
+	private string $dn;
+	private string $newRdn;
+	private bool $deleteOldRdn;
 
 	/**
 	 * Constructor
@@ -484,7 +488,7 @@ class RenameEntryTask implements ImporterTask {
 	 * @param string $newRdn new RDN value
 	 * @param bool $deleteOldRdn delete old RDN value
 	 */
-	public function __construct($dn, $newRdn, $deleteOldRdn) {
+	public function __construct(string $dn, string $newRdn, bool $deleteOldRdn) {
 		$this->dn = $dn;
 		$this->newRdn = $newRdn;
 		$this->deleteOldRdn = $deleteOldRdn;
@@ -494,7 +498,7 @@ class RenameEntryTask implements ImporterTask {
 	 * {@inheritDoc}
 	 * @see ImporterTask::run
 	 */
-	public function run() {
+	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		$success = @ldap_rename($ldap, $this->dn, $this->newRdn, '', $this->deleteOldRdn);
 		if ($success) {
@@ -512,14 +516,14 @@ class RenameEntryTask implements ImporterTask {
  */
 class DeleteEntryTask implements ImporterTask {
 
-	private $dn = '';
+	private string $dn;
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $dn DN
 	 */
-	public function __construct($dn) {
+	public function __construct(string $dn) {
 		$this->dn = $dn;
 	}
 
@@ -527,7 +531,7 @@ class DeleteEntryTask implements ImporterTask {
 	 * {@inheritDoc}
 	 * @see ImporterTask::run
 	 */
-	public function run() {
+	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		$success = @ldap_delete($ldap, $this->dn);
 		if ($success) {
@@ -548,19 +552,20 @@ class MultiTask implements ImporterTask {
 	/**
 	 * @var ImporterTask[] tasks
 	 */
-	private $tasks = [];
+	private array $tasks;
 
 	/**
 	 * @var string DN
 	 */
-	private $dn;
+	private string $dn;
 
 	/**
 	 * Constructor
 	 *
 	 * @param ImporterTask[] $tasks tasks
+	 * @param string $dn DN
 	 */
-	public function __construct($tasks, $dn) {
+	public function __construct(array $tasks, string $dn) {
 		$this->tasks = $tasks;
 		$this->dn = $dn;
 	}
@@ -569,7 +574,7 @@ class MultiTask implements ImporterTask {
 	 * {@inheritDoc}
 	 * @see ImporterTask::run
 	 */
-	public function run() {
+	public function run(): string {
 		foreach ($this->tasks as $task) {
 			$task->run();
 		}
@@ -581,7 +586,7 @@ class MultiTask implements ImporterTask {
 	 *
 	 * @return ImporterTask[]
 	 */
-	public function getTasks() {
+	public function getTasks(): array {
 		return $this->tasks;
 	}
 
@@ -594,8 +599,9 @@ class MultiTask implements ImporterTask {
  */
 class AddAttributesTask implements ImporterTask {
 
-	private $dn = '';
-	private $attributes = [];
+	private string $dn;
+	/** @var array<string, string[]> $attributes attributes */
+	private array $attributes;
 
 	/**
 	 * Constructor
@@ -603,7 +609,7 @@ class AddAttributesTask implements ImporterTask {
 	 * @param string $dn DN
 	 * @param array<string, string[]> $attributes list of attributes
 	 */
-	public function __construct($dn, $attributes) {
+	public function __construct(string $dn, array $attributes) {
 		$this->dn = $dn;
 		$this->attributes = $attributes;
 	}
@@ -612,7 +618,7 @@ class AddAttributesTask implements ImporterTask {
 	 * {@inheritDoc}
 	 * @see ImporterTask::run
 	 */
-	public function run() {
+	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		$success = @ldap_mod_add($ldap, $this->dn, $this->attributes);
 		if ($success) {
@@ -626,16 +632,16 @@ class AddAttributesTask implements ImporterTask {
 	 *
 	 * @return string DN
 	 */
-	public function getDn() {
+	public function getDn(): string {
 		return $this->dn;
 	}
 
 	/**
 	 * Returns the attributes to add.
 	 *
-	 * @return string[] attributes (array('attr' => array('val1', 'val2')))
+	 * @return array<string, string[]> attributes (array('attr' => array('val1', 'val2')))
 	 */
-	public function getAttributes() {
+	public function getAttributes(): array {
 		return $this->attributes;
 	}
 
@@ -648,9 +654,10 @@ class AddAttributesTask implements ImporterTask {
  */
 class DeleteAttributesTask implements ImporterTask {
 
-	private $dn = '';
-	private $attributes = [];
-	private $attributeName;
+	private string $dn;
+	/** @var array<string, string[]> $attributes attributes */
+	private array $attributes;
+	private string $attributeName;
 
 	/**
 	 * Constructor
@@ -659,7 +666,7 @@ class DeleteAttributesTask implements ImporterTask {
 	 * @param string $attributeName attribute name
 	 * @param array<string, string[]> $attributes list of attributes
 	 */
-	public function __construct($dn, $attributeName, $attributes) {
+	public function __construct(string $dn, string $attributeName, array $attributes) {
 		$this->dn = $dn;
 		$this->attributeName = $attributeName;
 		$this->attributes = $attributes;
@@ -669,7 +676,7 @@ class DeleteAttributesTask implements ImporterTask {
 	 * {@inheritDoc}
 	 * @see ImporterTask::run
 	 */
-	public function run() {
+	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		if (!empty($this->attributes)) {
 			$success = @ldap_mod_del($ldap, $this->dn, $this->attributes);
@@ -688,16 +695,16 @@ class DeleteAttributesTask implements ImporterTask {
 	 *
 	 * @return string DN
 	 */
-	public function getDn() {
+	public function getDn(): string {
 		return $this->dn;
 	}
 
 	/**
 	 * Returns the attributes to add.
 	 *
-	 * @return string[] attributes (array('attr' => array('val1', 'val2')))
+	 * @return array<string, string[]> attributes (array('attr' => array('val1', 'val2')))
 	 */
-	public function getAttributes() {
+	public function getAttributes(): array {
 		return $this->attributes;
 	}
 
@@ -706,7 +713,7 @@ class DeleteAttributesTask implements ImporterTask {
 	 *
 	 * @return string name
 	 */
-	public function getAttributeName() {
+	public function getAttributeName(): string {
 		return $this->attributeName;
 	}
 
@@ -719,8 +726,9 @@ class DeleteAttributesTask implements ImporterTask {
  */
 class ReplaceAttributesTask implements ImporterTask {
 
-	private $dn = '';
-	private $attributes = [];
+	private string $dn;
+	/** @var array<string, string[]> $attributes attributes */
+	private array $attributes;
 
 	/**
 	 * Constructor
@@ -728,7 +736,7 @@ class ReplaceAttributesTask implements ImporterTask {
 	 * @param string $dn DN
 	 * @param array<string, string[]> $attributes list of attributes
 	 */
-	public function __construct($dn, $attributes) {
+	public function __construct(string $dn, array $attributes) {
 		$this->dn = $dn;
 		$this->attributes = $attributes;
 	}
@@ -737,7 +745,7 @@ class ReplaceAttributesTask implements ImporterTask {
 	 * {@inheritDoc}
 	 * @see ImporterTask::run
 	 */
-	public function run() {
+	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		$success = @ldap_modify($ldap, $this->dn, $this->attributes);
 		if ($success) {
@@ -758,7 +766,7 @@ class ReplaceAttributesTask implements ImporterTask {
 	/**
 	 * Returns the attributes to add. Used for unit test.
 	 *
-	 * @return array[] attributes (array('attr' => array('val1', 'val2')))
+	 * @return array<string, string[]> attributes (array('attr' => array('val1', 'val2')))
 	 */
 	public function getAttributes(): array {
 		return $this->attributes;

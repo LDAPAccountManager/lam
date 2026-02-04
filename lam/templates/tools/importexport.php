@@ -1,29 +1,29 @@
 <?php
 namespace LAM\TOOLS\IMPORT_EXPORT;
 use htmlProgressbar;
-use \htmlTitle;
-use \htmlResponsiveRadio;
-use \htmlResponsiveRow;
-use \htmlResponsiveInputFileUpload;
-use \htmlResponsiveInputTextarea;
-use \htmlButton;
-use \htmlStatusMessage;
-use \htmlDiv;
-use \htmlOutputText;
-use \htmlJavaScript;
+use htmlTitle;
+use htmlResponsiveRadio;
+use htmlResponsiveRow;
+use htmlResponsiveInputFileUpload;
+use htmlResponsiveInputTextarea;
+use htmlButton;
+use htmlStatusMessage;
+use htmlDiv;
+use htmlOutputText;
+use htmlJavaScript;
 use LAM\TOOLS\TREEVIEW\TreeViewTool;
-use \LAMException;
-use \htmlLink;
-use \htmlResponsiveInputCheckbox;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputField;
-use \htmlHiddenInput;
+use LAMException;
+use htmlLink;
+use htmlResponsiveInputCheckbox;
+use htmlResponsiveSelect;
+use htmlResponsiveInputField;
+use htmlHiddenInput;
 use LAM\TYPES\TypeManager;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2023  Roland Gruber
+  Copyright (C) 2018 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 function printImportTabContent(): void {
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlTitle(_("Import")), 12);
+	$container->add(new htmlTitle(_("Import")));
 	$sources = [
 		_('Text input') => 'text',
 		_('File') => 'file',
@@ -157,11 +157,12 @@ function printImportTabContent(): void {
 			'file' => ['file']
 		]
 	);
-	$container->add($sourceRadio, 12);
+	$container->add($sourceRadio);
 	$container->addVerticalSpacer('1rem');
-	$container->add(new htmlResponsiveInputFileUpload('file', _('File'), '750'), 12);
-	$container->add(new htmlResponsiveInputTextarea('text', '', 60, 20, _('LDIF data'), '750'), 12);
-	$container->add(new htmlResponsiveInputCheckbox('noStop', false, _('Don\'t stop on errors')), 12);
+	$container->add(new htmlResponsiveInputFileUpload('file', _('File'), '750'));
+    $ldifValue = $_POST['text'] ?? '';
+	$container->add(new htmlResponsiveInputTextarea('text', $ldifValue, 60, 20, _('LDIF data'), '750'));
+	$container->add(new htmlResponsiveInputCheckbox('noStop', false, _('Don\'t stop on errors')));
 
 	$container->addVerticalSpacer('3rem');
 	$button = new htmlButton('submitImport', _('Submit'));
@@ -182,18 +183,18 @@ function printImportTabProcessing(): void {
 	}
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
-		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 		parseHtml(null, $container, [], false, 'user');
 		printImportTabContent();
 		return;
 	}
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlTitle(_("Import")), 12);
+	$container->add(new htmlTitle(_("Import")));
 
-	$container->add(new htmlDiv('statusImportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))), 12);
-	$container->add(new htmlDiv('statusImportDone', new htmlOutputText(_('Status') . ': ' . _('done')), ['hidden']), 12);
-	$container->add(new htmlDiv('statusImportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), ['hidden']), 12);
+	$container->add(new htmlDiv('statusImportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))));
+	$container->add(new htmlDiv('statusImportDone', new htmlOutputText(_('Status') . ': ' . _('done')), ['hidden']));
+	$container->add(new htmlDiv('statusImportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), ['hidden']));
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlProgressbar('progressbarImport'));
 	$container->addVerticalSpacer('3rem');
@@ -205,10 +206,10 @@ function printImportTabProcessing(): void {
 
 	$container->addVerticalSpacer('3rem');
 
-	$container->add(new htmlDiv('importResults', new htmlOutputText('')), 12);
+	$container->add(new htmlDiv('importResults', new htmlOutputText('')));
 	$container->add(new htmlJavaScript(
 			'window.lam.importexport.startImport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
-		), 12);
+		));
 
 	addSecurityTokenToMetaHTML($container);
 
@@ -257,7 +258,7 @@ function checkImportData(): void {
 function printExportTabContent(): void {
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php?tab=export\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlTitle(_("Export")), 12);
+	$container->add(new htmlTitle(_("Export")));
 
 	$baseDn = getDefaultBaseDn();
 	if (!empty($_GET['dn'])) {
@@ -268,7 +269,7 @@ function printExportTabContent(): void {
     }
 	$baseDnField = new htmlResponsiveInputField(_('Base DN'), 'baseDn', $baseDn, '751', true);
 	$baseDnField->showDnSelection();
-	$container->add($baseDnField, 12);
+	$container->add($baseDnField);
 
 	$searchScopes = [
 		_('Base (base dn only)') => 'base',
@@ -278,11 +279,11 @@ function printExportTabContent(): void {
 	$searchScopeSelect = new htmlResponsiveSelect('searchScope', $searchScopes, ['sub'], _('Search scope'));
 	$searchScopeSelect->setHasDescriptiveElements(true);
 	$searchScopeSelect->setSortElements(false);
-	$container->add($searchScopeSelect, 12);
-	$container->add(new htmlResponsiveInputField(_('Search filter'), 'filter', '(objectClass=*)', '752'), 12);
-	$container->add(new htmlResponsiveInputField(_('Attributes'), 'attributes', '*', '753'), 12);
-	$container->add(new htmlResponsiveInputCheckbox('includeSystem', false, _('Include system attributes'), '754'), 12);
-	$container->add(new htmlResponsiveInputCheckbox('saveAsFile', false, _('Save as file')), 12);
+	$container->add($searchScopeSelect);
+	$container->add(new htmlResponsiveInputField(_('Search filter'), 'filter', '(objectClass=*)', '752'));
+	$container->add(new htmlResponsiveInputField(_('Attributes'), 'attributes', '*', '753'));
+	$container->add(new htmlResponsiveInputCheckbox('includeSystem', false, _('Include system attributes'), '754'));
+	$container->add(new htmlResponsiveInputCheckbox('saveAsFile', false, _('Save as file')));
 
 	$formats = [
 		'CSV' => 'csv',
@@ -291,7 +292,7 @@ function printExportTabContent(): void {
 	$formatSelect = new htmlResponsiveSelect('format', $formats, ['ldif'], _('Export format'));
 	$formatSelect->setHasDescriptiveElements(true);
 	$formatSelect->setSortElements(false);
-	$container->add($formatSelect, 12);
+	$container->add($formatSelect);
 
 	$endings = [
 		'Windows' => 'windows',
@@ -300,7 +301,7 @@ function printExportTabContent(): void {
 	$endingsSelect = new htmlResponsiveSelect('ending', $endings, ['unix'], _('End of line'));
 	$endingsSelect->setHasDescriptiveElements(true);
 	$endingsSelect->setSortElements(false);
-	$container->add($endingsSelect, 12);
+	$container->add($endingsSelect);
 
 	$container->addVerticalSpacer('3rem');
 	$button = new htmlButton('submitExport', _('Submit'));
@@ -346,7 +347,7 @@ function isValidExportDn(string $dn): bool {
 	$typeManager = new TypeManager();
 	foreach ($typeManager->getConfiguredTypes() as $type) {
 		$suffix = strtolower($type->getSuffix());
-		if (substr($dn, -1 * strlen($suffix)) === $suffix) {
+		if (str_ends_with($dn, $suffix)) {
 			return true;
 		}
 	}
@@ -354,7 +355,7 @@ function isValidExportDn(string $dn): bool {
 	    $treeSuffixes = TreeViewTool::getRootDns();
 	    foreach ($treeSuffixes as $treeSuffix) {
 	        $treeSuffix = strtolower($treeSuffix);
-		    if (substr($dn, -1 * strlen($treeSuffix)) === $treeSuffix) {
+		    if (str_ends_with($dn, $treeSuffix)) {
 			    return true;
 		    }
         }
@@ -371,27 +372,27 @@ function printExportTabProcessing(): void {
 	}
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
-		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 		parseHtml(null, $container, [], false, 'user');
 		printExportTabContent();
 		return;
 	}
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php?tab=export\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlTitle(_("Export")), 12);
+	$container->add(new htmlTitle(_("Export")));
 
-	$container->add(new htmlHiddenInput('baseDn', $_POST['baseDn']), 12);
-	$container->add(new htmlHiddenInput('searchScope', $_POST['searchScope']), 12);
-	$container->add(new htmlHiddenInput('filter', $_POST['filter']), 12);
-	$container->add(new htmlHiddenInput('attributes', $_POST['attributes']), 12);
-	$container->add(new htmlHiddenInput('format', $_POST['format']), 12);
-	$container->add(new htmlHiddenInput('ending', $_POST['ending']), 12);
-	$container->add(new htmlHiddenInput('includeSystem', isset($_POST['includeSystem']) && ($_POST['includeSystem'] === 'on') ? 'true' : 'false'), 12);
-	$container->add(new htmlHiddenInput('saveAsFile', isset($_POST['saveAsFile']) && ($_POST['saveAsFile'] === 'on') ? 'true' : 'false'), 12);
+	$container->add(new htmlHiddenInput('baseDn', $_POST['baseDn']));
+	$container->add(new htmlHiddenInput('searchScope', $_POST['searchScope']));
+	$container->add(new htmlHiddenInput('filter', $_POST['filter']));
+	$container->add(new htmlHiddenInput('attributes', $_POST['attributes']));
+	$container->add(new htmlHiddenInput('format', $_POST['format']));
+	$container->add(new htmlHiddenInput('ending', $_POST['ending']));
+	$container->add(new htmlHiddenInput('includeSystem', isset($_POST['includeSystem']) && ($_POST['includeSystem'] === 'on') ? 'true' : 'false'));
+	$container->add(new htmlHiddenInput('saveAsFile', isset($_POST['saveAsFile']) && ($_POST['saveAsFile'] === 'on') ? 'true' : 'false'));
 
-	$container->add(new htmlDiv('statusExportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))), 12);
-	$container->add(new htmlDiv('statusExportDone', new htmlOutputText(_('Status') . ': ' . _('done')), ['hidden']), 12);
-	$container->add(new htmlDiv('statusExportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), ['hidden']), 12);
+	$container->add(new htmlDiv('statusExportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))));
+	$container->add(new htmlDiv('statusExportDone', new htmlOutputText(_('Status') . ': ' . _('done')), ['hidden']));
+	$container->add(new htmlDiv('statusExportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), ['hidden']));
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlProgressbar('progressbarExport'));
 	$container->addVerticalSpacer('3rem');
@@ -404,11 +405,11 @@ function printExportTabProcessing(): void {
 	$container->addVerticalSpacer('3rem');
 
 	$exportText = new htmlOutputText('');
-	$exportText->setPreformatted(true);
+	$exportText->setPreformatted();
 	$container->add(new htmlDiv('exportResults', $exportText));
 	$container->add(new htmlJavaScript(
 			'window.lam.importexport.startExport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
-		), 12);
+		));
 
 	addSecurityTokenToMetaHTML($container);
 
