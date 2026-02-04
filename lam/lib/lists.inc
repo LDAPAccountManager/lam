@@ -72,73 +72,70 @@ class lamList {
 	private const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
 
 	/** Controls if the account status is shown */
-	protected $showAccountStatus = false;
-
-	/** filter value for account status */
-	protected $accountStatusFilter;
+	protected bool $showAccountStatus = false;
 
 	/** Account type */
-	protected $type;
+	protected ConfiguredType $type;
 
 	/** current page number */
-	protected $page = 1;
+	protected int $page = 1;
 
-	/** list of LDAP attributes */
-	protected $attrArray = [];
+	/** @var string[] $attrArray list of LDAP attributes */
+	protected array $attrArray = [];
 
-	/** list of attribute descriptions */
-	protected $descArray = [];
+	/** @var string[] $descArray list of attribute descriptions */
+	protected array $descArray = [];
 
 	/** maximum count of entries per page */
-	protected $maxPageEntries = 30;
+	protected int $maxPageEntries = 30;
 
 	/** sort column name */
-	protected $sortColumn;
+	protected ?string $sortColumn = null;
 
 	/** sort direction: 1 for ascending, -1 for descending */
-	protected $sortDirection = 1;
+	protected int $sortDirection = 1;
 
 	/** LDAP suffix */
-	protected $suffix;
+	protected ?string $suffix = null;
 
 	/** refresh page switch */
-	protected $refresh = true;
+	protected bool $refresh = true;
 
-	/** entries to show */
-	protected $entries;
+	/** @var array<int, array<string, string[]|string>>|null $entries entries to show */
+	protected ?array $entries = null;
 
-	/** entries from LDAP */
-	protected $ldapEntries;
+	/** @var array<int, array<string, string[]|string>> $ldapEntries entries from LDAP */
+	protected array $ldapEntries = [];
 
-	/** sort mapping for entries array(original index => sorted index) */
-	protected $sortMapping;
+	/** @var array<int, int> $sortMapping sort mapping for entries array(original index => sorted index) */
+	protected array $sortMapping = [];
 
-	/** list of filters (attribute name => filter input) */
-	protected $filters = [];
+	/** @var array<string, string> $filters list of filters (attribute name => filter input) */
+	protected array $filters = [];
 
-	/** list of possible LDAP suffixes(organizational units) */
-	protected $possibleSuffixes;
+	/** @var string[] $possibleSuffixes list of possible LDAP suffixes(organizational units) */
+	protected array $possibleSuffixes = [];
 
-	/** list of account specific labels */
-	protected $labels;
+	/** @var array<string, string> $labels list of account specific labels */
+	protected array $labels;
 
-	/** configuration options */
-	private $configOptions;
+	/** @var lamListOption[] $configOptions configuration options */
+	private array $configOptions;
 
 	/** defines if the server side filter changed */
-	protected $serverSideFilterChanged;
+	protected bool $serverSideFilterChanged = false;
 
 	/**
-	 * @var bool
+	 * @var bool supports the quick change
 	 */
-	private $supportsPasswordQuickChange;
+	private bool $supportsPasswordQuickChange;
 
 	/**
 	 * List of attributes to filter on server side.
 	 *
 	 * @var string[]
 	 */
-	protected $serverSideFilterAttributes = [
+	protected array $serverSideFilterAttributes = [
 		'cn', 'commonname', 'uid', 'description',
 		'sn', 'surname', 'gn', 'givenname', 'company', 'mail'
 	];
@@ -147,9 +144,8 @@ class lamList {
 	 * Constructor
 	 *
 	 * @param LAM\TYPES\ConfiguredType $type account type
-	 * @return lamList list object
 	 */
-	public function __construct($type) {
+	public function __construct(ConfiguredType $type) {
 		$this->type = $type;
 		$this->labels = [
 			'nav' => _("Object count: %s"),
@@ -164,7 +160,7 @@ class lamList {
 	/**
 	 * Reads the list options from the cookie value.
 	 */
-	private function listReadOptionsFromCookie() {
+	private function listReadOptionsFromCookie(): void {
 		if ((count($this->configOptions) > 0)
 			&& isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
 			$cookieValue = $_COOKIE["ListOptions_" . $this->type->getId()];
@@ -189,7 +185,7 @@ class lamList {
 	/**
 	 * Prints the HTML code to display the list view.
 	 */
-	public function showPage() {
+	public function showPage(): void {
 		// do POST actions
 		$postFragment = $this->listDoPost();
 		// update filter
@@ -241,7 +237,7 @@ class lamList {
 	/**
 	 * Builds the regular expressions from the filter values.
 	 */
-	protected function listBuildFilter() {
+	protected function listBuildFilter(): void {
 		if (isset($_GET['accountEditBack'])) {
 			return;
 		}
@@ -285,10 +281,10 @@ class lamList {
 	 * Determines the sort mapping and stores it in $this->sortMapping.
 	 * The sort mapping is used to display the right rows when the account table is created.
 	 *
-	 * @param array $info the account list
+	 * @param array<string, string[]|string>[] $info the account list
 	 */
-	protected function listCreateSortMapping(&$info) {
-		if (!is_array($this->attrArray) || !is_string($this->sortColumn)) {
+	protected function listCreateSortMapping(array &$info): void {
+		if (!is_string($this->sortColumn)) {
 			return;
 		}
 		$toSort = [];
@@ -325,9 +321,9 @@ class lamList {
 	/**
 	 * Draws a navigation bar to switch between pages
 	 *
-	 * @param integer $count number of account entries
+	 * @param int $count number of account entries
 	 */
-	protected function listDrawNavigationBar($count) {
+	protected function listDrawNavigationBar($count): void {
 		$filter = $this->getFilterAsTextForURL();
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(['maxrow']);
@@ -400,9 +396,9 @@ class lamList {
 	/**
 	 * Returns the filter as text to be used as URL parameter.
 	 *
-	 * @return String filter text
+	 * @return string filter text
 	 */
-	protected function getFilterAsTextForURL() {
+	protected function getFilterAsTextForURL(): string {
 		$text = '';
 		foreach ($this->filters as $attr => $filter) {
 			$text .= "&filter" . strtolower($attr) . '=' . $filter;
@@ -691,11 +687,11 @@ class lamList {
 	private function isSupportingPasswordQuickChange(): bool {
 		$modules = $this->type->getModules();
 		foreach ($modules as $module) {
-			if (!in_array('passwordService', class_implements($module))) {
+			if (!in_array(passwordService::class, class_implements($module))) {
 				continue;
 			}
 			$moduleObj = new $module($this->type->getScope());
-			if ($moduleObj->supportsPasswordQuickChangePage()) {
+			if (($moduleObj instanceof passwordService) && $moduleObj->supportsPasswordQuickChangePage()) {
 				return true;
 			}
 		}
@@ -1140,7 +1136,7 @@ class lamList {
 		}
 		// get sort order
 		if (isset($_GET['sortdirection'])) {
-			$this->sortDirection = htmlspecialchars($_GET['sortdirection']);
+			$this->sortDirection = ($_GET['sortdirection'] === '1') ? 1 : -1;
 		}
 		// check search suffix
 		if (isset($_POST['suffix'])) {
@@ -1151,7 +1147,7 @@ class lamList {
 			// new suffix selected via combobox
 			$this->suffix = $_GET['suffix'];
 		}
-        elseif (!$this->suffix) {
+        elseif (empty($this->suffix)) {
 			// default suffix
 			$this->suffix = $this->type->getSuffix();
 		}
@@ -1181,7 +1177,7 @@ class lamList {
 	 */
 	protected function listRefreshData(): void {
 		// check suffix
-		if (!$this->suffix) {
+		if (empty($this->suffix)) {
 			$this->suffix = $this->type->getSuffix();  // default suffix
 		}
 		// configure search filter
@@ -1227,9 +1223,6 @@ class lamList {
 	protected function buildLDAPAttributeFilter() {
 		$text = '';
 		foreach ($this->filters as $attr => $filter) {
-			if ($attr == self::ATTR_ACCOUNT_STATUS) {
-				$this->accountStatusFilter = $filter;
-			}
 			if (!$this->isAttributeFilteredByServer($attr)) {
 				continue;
 			}
@@ -1388,7 +1381,7 @@ class lamList {
 		$listSizeOption = new lamSelectListOption(_("Maximum list entries"),
             ['10', '20', '30', '50', '75', '100', '500', '1000'], self::LIST_SIZE_OPTION_NAME);
 		$listSizeOption->setHelpID('208');
-		$listSizeOption->setValue($this->maxPageEntries);
+		$listSizeOption->setValue((string) $this->maxPageEntries);
 		$options[] = $listSizeOption;
 		if ($this->isSupportingAccountStatus()) {
 			$options[] = new lamBooleanListOption(_('Show account status'), self::ACCOUNT_STATUS_OPTION_NAME);
@@ -1437,7 +1430,7 @@ class lamList {
 	protected function listConfigurationChanged(): void {
 		$sizeOption = $this->listGetConfigOptionByID(self::LIST_SIZE_OPTION_NAME);
 		if ($sizeOption->getValue() != null) {
-			$this->maxPageEntries = $sizeOption->getValue();
+			$this->maxPageEntries = intval($sizeOption->getValue());
 		}
 		// if account status was activated, reload LDAP data
 		if ($this->isSupportingAccountStatus()) {

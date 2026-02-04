@@ -151,7 +151,7 @@ class lamNetgroupList extends lamList {
 	 *
 	 * @param ConfiguredType $type account type
 	 */
-	public function __construct($type) {
+	public function __construct(ConfiguredType $type) {
 		parent::__construct($type);
 		$this->labels = [
 			'nav' => _("Group count: %s"),
