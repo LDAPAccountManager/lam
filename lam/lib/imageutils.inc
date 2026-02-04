@@ -9,7 +9,7 @@ use LAMException;
 /*
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-Copyright (C) 2018 - 2025  Roland Gruber
+Copyright (C) 2018 - 2026  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -79,14 +79,14 @@ interface ImageManipulator {
 	 *
 	 * @return int height
 	 */
-	public function getHeight();
+	public function getHeight(): int;
 
 	/**
 	 * Returns the width of the image.
 	 *
 	 * @return int width
 	 */
-	public function getWidth();
+	public function getWidth(): int;
 
 	/**
 	 * Resizes the image to the given maximum dimensions.
@@ -94,12 +94,12 @@ interface ImageManipulator {
 	 * @param int $width width
 	 * @param int $height height
 	 */
-	public function thumbnail($width, $height);
+	public function thumbnail(int $width, int $height): void;
 
 	/**
 	 * Converts the image to JPEG format.
 	 */
-	public function convertToJpeg();
+	public function convertToJpeg(): void;
 
 	/**
 	 * Crops the image.
@@ -109,14 +109,14 @@ interface ImageManipulator {
 	 * @param int $width width of target size
 	 * @param int $height height of target size
 	 */
-	public function crop($x, $y, $width, $height);
+	public function crop(int $x, int $y, int $width, int $height): void;
 
 	/**
 	 * Returns the image as binary string.
 	 *
 	 * @return string image data
 	 */
-	public function getImageData();
+	public function getImageData(): string;
 
 }
 
@@ -148,7 +148,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getHeight()
 	 */
-	public function getHeight() {
+	public function getHeight(): int {
 		return $this->image->getimageheight();
 	}
 
@@ -156,7 +156,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getWidth()
 	 */
-	public function getWidth() {
+	public function getWidth(): int {
 		return $this->image->getimagewidth();
 	}
 
@@ -164,7 +164,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getAsJpeg()
 	 */
-	public function convertToJpeg() {
+	public function convertToJpeg(): void {
 		$this->image->setImageCompression(Imagick::COMPRESSION_JPEG);
 		$this->image->setImageFormat('jpeg');
 	}
@@ -173,7 +173,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::crop()
 	 */
-	public function crop($x, $y, $width, $height) {
+	public function crop(int $x, int $y, int $width, int $height): void {
 		$this->image->cropimage((int) round($width), (int) round($height), (int) round($x), (int) round($y));
 	}
 
@@ -181,7 +181,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::resize()
 	 */
-	public function thumbnail($width, $height) {
+	public function thumbnail(int $width, int $height): void {
 		if (($this->getWidth() <= $width) && ($this->getHeight() <= $height)) {
 			// skip if smaller than target size
 			return;
@@ -193,7 +193,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getImageData()
 	 */
-	public function getImageData() {
+	public function getImageData(): string {
 		return $this->image->getimageblob();
 	}
 
@@ -248,7 +248,7 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getHeight()
 	 */
-	public function getHeight() {
+	public function getHeight(): int {
 		return imagesy($this->image);
 	}
 
@@ -256,7 +256,7 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getWidth()
 	 */
-	public function getWidth() {
+	public function getWidth(): int {
 		return imagesx($this->image);
 	}
 
@@ -264,7 +264,7 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getAsJpeg()
 	 */
-	public function convertToJpeg() {
+	public function convertToJpeg(): void {
 		$this->type = IMAGETYPE_JPEG;
 	}
 
@@ -272,7 +272,7 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::crop()
 	 */
-	public function crop($x, $y, $width, $height) {
+	public function crop(int $x, int $y, int $width, int $height): void {
 		$this->image = imagecrop($this->image, [
 			'x' => $x,
 			'y' => $y,
@@ -285,7 +285,7 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::resize()
 	 */
-	public function thumbnail($width, $height) {
+	public function thumbnail(int $width, int $height): void {
 		if (($this->getWidth() <= $width) && ($this->getHeight() <= $height)) {
 			// skip if smaller than target size
 			return;
@@ -319,7 +319,7 @@ class ImageManipulatorGd implements ImageManipulator {
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::getImageData()
 	 */
-	public function getImageData() {
+	public function getImageData(): string {
 		ob_start();
 		if ($this->type == IMAGETYPE_JPEG) {
 			imagejpeg($this->image);
