@@ -760,8 +760,10 @@ function convertCommaEscaping($dn) {
  * Connects to an LDAP server using the given URL.
  *
  * @param string $serverURL URL
+ * @return ?Connection LDAP connection
  */
-function connectToLDAP($serverURL, $startTLS) {
+function connectToLDAP($serverURL, $startTLS): ?Connection {
+	logNewMessage(LOG_DEBUG, 'Connecting to LDAP server ' . $serverURL);
 	$server = ldap_connect($serverURL);
 	if ($server === false) {
 		return null;
