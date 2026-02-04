@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2025  Roland Gruber
+  Copyright (C) 2010 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -72,12 +72,12 @@ abstract class htmlElement {
 	public $colspan;
 	/** rowspan if inside a table */
 	public $rowspan;
-	/** CSS classes */
-	protected $cssClasses = [];
-	/** table cell CSS classes */
-	protected $tableCellCssClasses = [];
-	/** data attributes */
-	private $dataAttributes = [];
+	/** @var string[] $cssClasses CSS classes */
+	protected ?array $cssClasses = [];
+	/** @var string[] $tableCellCssClasses table cell CSS classes */
+	protected ?array $tableCellCssClasses = [];
+	/** @var array<string, string> $dataAttributes data attributes */
+	private array $dataAttributes = [];
 	/** accessibility label */
 	private ?string $accessibilityLabel = null;
 
@@ -96,9 +96,9 @@ abstract class htmlElement {
 	/**
 	 * Returns the HTML attributes for the alignment.
 	 *
-	 * @return String alignment HTML attributes (e.g. align="right" valign="top")
+	 * @return string alignment HTML attributes (e.g. align="right" valign="top")
 	 */
-	public function getAlignmentString() {
+	public function getAlignmentString(): string {
 		$align = '';
 		if ($this->alignment !== null) {
 			switch ($this->alignment) {
@@ -125,10 +125,10 @@ abstract class htmlElement {
 	/**
 	 * Returns the HTML attribute for the colspan.
 	 *
-	 * @return String colspan HTML attribute (e.g. colspan=3)
+	 * @return string colspan HTML attribute (e.g. colspan=3)
 	 */
-	public function getColspanString() {
-		if ($this->colspan == null) {
+	public function getColspanString(): string {
+		if ($this->colspan === null) {
 			return '';
 		}
 		else {
@@ -139,10 +139,10 @@ abstract class htmlElement {
 	/**
 	 * Returns the HTML attribute for the rowspan.
 	 *
-	 * @return String rowspan HTML attribute (e.g. rowspan=3)
+	 * @return string rowspan HTML attribute (e.g. rowspan=3)
 	 */
-	public function getRowspanString() {
-		if ($this->rowspan == null) {
+	public function getRowspanString(): string {
+		if ($this->rowspan === null) {
 			return '';
 		}
 		else {
@@ -153,36 +153,36 @@ abstract class htmlElement {
 	/**
 	 * Returns the CSS classes of this element.
 	 *
-	 * @return array $classes CSS class names
+	 * @return string[]|null $classes CSS class names
 	 */
-	public function getCSSClasses() {
+	public function getCSSClasses(): ?array {
 		return $this->cssClasses;
 	}
 
 	/**
 	 * Adds CSS classes to this element.
 	 *
-	 * @param array $classes CSS class names
+	 * @param string[]|null $classes CSS class names
 	 */
-	public function setCSSClasses($classes) {
+	public function setCSSClasses(?array $classes): void {
 		$this->cssClasses = $classes;
 	}
 
 	/**
 	 * Adds CSS classes to the surrounding table cell for this element.
 	 *
-	 * @param array $classes CSS class names
+	 * @param string[]|null $classes CSS class names
 	 */
-	public function setTableCellCSSClasses($classes) {
+	public function setTableCellCSSClasses(?array $classes): void {
 		$this->tableCellCssClasses = $classes;
 	}
 
 	/**
 	 * Returns the CSS classes of the surrounding table cell for this element.
 	 *
-	 * @return array CSS classes
+	 * @return string[]|null CSS classes
 	 */
-	public function getTableCellCSSClasses() {
+	public function getTableCellCSSClasses(): ?array {
 		return $this->tableCellCssClasses;
 	}
 
@@ -192,7 +192,7 @@ abstract class htmlElement {
 	 * @param string $key attribute name (without "data-")
 	 * @param string $value attribute value
 	 */
-	public function addDataAttribute($key, $value) {
+	public function addDataAttribute(string $key, string $value): void {
 		$this->dataAttributes[$key] = $value;
 	}
 
@@ -201,7 +201,7 @@ abstract class htmlElement {
 	 *
 	 * @return string data attributes
 	 */
-	protected function getDataAttributesAsString() {
+	protected function getDataAttributesAsString(): string {
 		$result = '';
 		foreach ($this->dataAttributes as $key => $value) {
 			$result .= ' data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
