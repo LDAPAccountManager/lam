@@ -3283,9 +3283,9 @@ class htmlHorizontalLine extends htmlElement {
 class htmlDiv extends htmlElement {
 
 	/** unique ID */
-	private $id;
+	private ?string $id = null;
 	/** htmlElement that generates inner content */
-	private $content;
+	private htmlElement $content;
 
 	/**
 	 * Constructor.
@@ -3294,7 +3294,7 @@ class htmlDiv extends htmlElement {
 	 * @param htmlElement $content inner content
 	 * @param string[]|null $cssClasses CSS classes
 	 */
-	function __construct(?string $id, htmlElement $content, ?array $cssClasses = null) {
+	public function __construct(?string $id, htmlElement $content, ?array $cssClasses = null) {
 		if ($id !== null) {
 			$this->id = htmlspecialchars($id);
 		}
@@ -3306,19 +3306,16 @@ class htmlDiv extends htmlElement {
 	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope): array {
-		$return = [];
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
 		}
 		$classesValue = '';
-		if (($this->cssClasses != null) && (count($this->cssClasses) > 0)) {
+		if (($this->cssClasses !== null) && (count($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<div' . $idValue . $classesValue . $this->getDataAttributesAsString() . '>';
-		if ($this->content != null) {
-			$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
-		}
+		$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
 		echo '</div>';
 		return $return;
 	}
@@ -3332,11 +3329,11 @@ class htmlDiv extends htmlElement {
 class htmlSpan extends htmlElement {
 
 	/** htmlElement that generates inner content */
-	private $content;
+	private htmlElement $content;
 	/** onclick handler */
-	private $onclick;
+	private ?string $onclick = null;
 	/** title */
-	private $title;
+	private ?string $title = null;
 
 	/**
 	 * Constructor.
@@ -3344,7 +3341,7 @@ class htmlSpan extends htmlElement {
 	 * @param htmlElement $content inner content
 	 * @param string[]|null $cssClasses CSS classes
 	 */
-	function __construct($content, $cssClasses = null) {
+	public function __construct(htmlElement $content, ?array $cssClasses = null) {
 		$this->content = $content;
 		$this->cssClasses = $cssClasses;
 	}
@@ -3353,9 +3350,8 @@ class htmlSpan extends htmlElement {
 	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope): array {
-		$return = [];
 		$classesValue = '';
-		if (($this->cssClasses != null) && (count($this->cssClasses) > 0)) {
+		if (($this->cssClasses !== null) && (count($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		$onclickHandler = '';
@@ -3367,9 +3363,7 @@ class htmlSpan extends htmlElement {
 			$titleCode = ' title="' . $this->title . '"';
 		}
 		echo '<span' . $classesValue . $titleCode . $onclickHandler . '>';
-		if ($this->content != null) {
-			$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
-		}
+		$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
 		echo '</span>';
 		return $return;
 	}
@@ -3379,16 +3373,16 @@ class htmlSpan extends htmlElement {
 	 *
 	 * @param string $event event handler code
 	 */
-	public function setOnclick($event) {
+	public function setOnclick(string $event): void {
 		$this->onclick = $event;
 	}
 
 	/**
 	 * Sets the title.
 	 *
-	 * @param string|null $title title
+	 * @param string $title title
 	 */
-	public function setTitle(?string $title): void {
+	public function setTitle(string $title): void {
 		$this->title = htmlspecialchars($title);
 	}
 
@@ -3402,14 +3396,14 @@ class htmlSpan extends htmlElement {
 class htmlJavaScript extends htmlElement {
 
 	/** htmlElement that generates inner content */
-	private $content;
+	private string $content;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $content script
+	 * @param string $content script
 	 */
-	function __construct($content) {
+	public function __construct(string $content) {
 		$this->content = $content;
 	}
 
@@ -3434,14 +3428,14 @@ class htmlJavaScript extends htmlElement {
 class htmlIframe extends htmlElement {
 
 	/** HTML id */
-	private $id;
+	private ?string $id;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string|null $id HTML id
 	 */
-	public function __construct($id = null) {
+	public function __construct(?string $id = null) {
 		$this->id = $id;
 	}
 
@@ -3469,20 +3463,20 @@ class htmlIframe extends htmlElement {
 class htmlScript extends htmlElement {
 
 	/** src value */
-	private $src;
+	private string $src;
 	/** is async */
-	private $async = false;
+	private bool $async;
 	/** execute after page is parsed */
-	private $defer = false;
+	private bool $defer;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $src script path
+	 * @param string $src script path
 	 * @param boolean $isAsync script will be executed while the page continues the parsing (default true)
 	 * @param boolean $isDeferred script is executed when the page has finished parsing (default true)
 	 */
-	function __construct($src, $isAsync = true, $isDeferred = true) {
+	public function __construct(string $src, bool $isAsync = true, bool $isDeferred = true) {
 		$this->src = $src;
 		$this->async = $isAsync;
 		$this->defer = $isDeferred;
@@ -3510,14 +3504,14 @@ class htmlScript extends htmlElement {
 class htmlLinkCss extends htmlElement {
 
 	/** src value */
-	private $src;
+	private string $src;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $src script path
+	 * @param string $src script path
 	 */
-	function __construct($src) {
+	public function __construct(string $src) {
 		$this->src = $src;
 	}
 
@@ -3539,12 +3533,12 @@ class htmlLinkCss extends htmlElement {
  */
 class htmlSortableList extends htmlElement {
 
-	/** list of elements */
-	private $elements;
+	/** @var string[]|htmlElement[] $elements list of elements */
+	private array $elements;
 	/** HTML ID */
-	private $id;
+	private string $id;
 	/** on update event */
-	private $onUpdate;
+	private ?string $onUpdate = null;
 
 	/**
 	 * Constructor.
@@ -3552,7 +3546,7 @@ class htmlSortableList extends htmlElement {
 	 * @param string[]|htmlElement[] $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
 	 * @param string $id HTML ID
 	 */
-	function __construct(array $elements, string $id) {
+	public function __construct(array $elements, string $id) {
 		$this->elements = $elements;
 		$this->id = htmlspecialchars($id);
 	}
@@ -3584,7 +3578,7 @@ class htmlSortableList extends htmlElement {
 		}
 		echo '</ul>';
 		$onUpdate = '';
-		if ($this->onUpdate != null) {
+		if ($this->onUpdate !== null) {
 			$onUpdate = 'onUpdate: ' . $this->onUpdate;
 		}
 		$scriptContent = '
@@ -3602,9 +3596,9 @@ class htmlSortableList extends htmlElement {
 	/**
 	 * Sets the JS code that is executed when the element order was changed.
 	 *
-	 * @param String $onUpdate JS code
+	 * @param string $onUpdate JS code
 	 */
-	public function setOnUpdate($onUpdate) {
+	public function setOnUpdate(string $onUpdate): void {
 		$this->onUpdate = $onUpdate;
 	}
 
@@ -3616,20 +3610,22 @@ class htmlSortableList extends htmlElement {
  */
 class htmlAccordion extends htmlElement {
 
-	private $id;
-	private $elements;
-	private $openInitial;
-	private $saveState;
+	private string $id;
+	/** @var array<string, htmlElement> $elements elements */
+	private array $elements;
+	/** @var int|false $openInitial initially opened tab */
+	private mixed $openInitial;
+	private bool $saveState = false;
 	private bool $allowResorting = false;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $id HTML ID
-	 * @param array $elements list of content elements array('title' => htmlElement)
-	 * @param mixed $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
+	 * @param string $id HTML ID
+	 * @param array<string, htmlElement> $elements list of content elements array('title' => htmlElement)
+	 * @param int|false $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
 	 */
-	function __construct($id, $elements, mixed $openInitial = 0) {
+	public function __construct(string $id, array $elements, mixed $openInitial = 0) {
 		$this->id = $id;
 		$this->elements = $elements;
 		$this->openInitial = $openInitial;
@@ -3641,7 +3637,7 @@ class htmlAccordion extends htmlElement {
 	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$result = [];
 		if ($this->openInitial !== false) {
-			$this->addDataAttribute('openinitial', $this->openInitial);
+			$this->addDataAttribute('openinitial', (string) $this->openInitial);
 		}
 		$cssClasses = $this->getCSSClasses();
 		$cssClasses[] = 'lam-accordion-container';
@@ -3707,10 +3703,10 @@ class htmlAccordion extends htmlElement {
  */
 class htmlResponsiveRow extends htmlElement {
 
-	/** @var htmlResponsiveCell[] cells */
-	private $cells = [];
+	/** @var htmlResponsiveCell[] $cells cells */
+	private array $cells = [];
 	/** HTML ID */
-	private $id;
+	private ?string $id = null;
 	private ?string $onClick = null;
 
 	/**
@@ -3731,9 +3727,9 @@ class htmlResponsiveRow extends htmlElement {
 	/**
 	 * Sets the HTML id.
 	 *
-	 * @param string $id ID
+	 * @param string|null $id ID
 	 */
-	public function setId($id) {
+	public function setId(?string $id): void {
 		$this->id = $id;
 	}
 
@@ -3742,7 +3738,7 @@ class htmlResponsiveRow extends htmlElement {
 	 *
 	 * @param htmlResponsiveCell $cell cell
 	 */
-	public function addCell(htmlResponsiveCell $cell) {
+	public function addCell(htmlResponsiveCell $cell): void {
 		$this->cells[] = $cell;
 	}
 
@@ -3751,7 +3747,7 @@ class htmlResponsiveRow extends htmlElement {
 	 *
 	 * @param htmlResponsiveCell $cell cell
 	 */
-	public function addCellAtTheBeginning(htmlResponsiveCell $cell) {
+	public function addCellAtTheBeginning(htmlResponsiveCell $cell): void {
 		array_unshift($this->cells, $cell);
 	}
 
@@ -3760,11 +3756,11 @@ class htmlResponsiveRow extends htmlElement {
 	 *
 	 * @param htmlElement $content content inside cell
 	 * @param int $numMobile number of columns for mobile view
-	 * @param int $numTablet number of columns for tablet view (set to mobile if null)
-	 * @param int $numDesktop number of columns for desktop view (set to tablet if null)
-	 * @param String $classes CSS classes separated by space
+	 * @param int|null $numTablet number of columns for tablet view (set to mobile if null)
+	 * @param int|null $numDesktop number of columns for desktop view (set to tablet if null)
+	 * @param string $classes CSS classes separated by space
 	 */
-	public function add($content, $numMobile = 12, $numTablet = null, $numDesktop = null, $classes = '') {
+	public function add(htmlElement $content, int $numMobile = 12, ?int $numTablet = null, ?int $numDesktop = null, string $classes = ''): void {
 		$tabletCols = $numTablet ?? $numMobile;
 		$desktopCols = $numDesktop ?? $tabletCols;
 		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
@@ -3775,11 +3771,11 @@ class htmlResponsiveRow extends htmlElement {
 	 *
 	 * @param htmlElement $content content inside cell
 	 * @param int $numMobile number of columns for mobile view
-	 * @param int $numTablet number of columns for tablet view (set to mobile if null)
-	 * @param int $numDesktop number of columns for desktop view (set to tablet if null)
-	 * @param String $classes CSS classes separated by space
+	 * @param int|null $numTablet number of columns for tablet view (set to mobile if null)
+	 * @param int|null $numDesktop number of columns for desktop view (set to tablet if null)
+	 * @param string $classes CSS classes separated by space
 	 */
-	public function addAtTheBeginning($content, $numMobile = 12, $numTablet = null, $numDesktop = null, $classes = '') {
+	public function addAtTheBeginning(htmlElement $content, int $numMobile = 12, ?int $numTablet = null, ?int $numDesktop = null, string $classes = ''): void {
 		$tabletCols = $numTablet ?? $numMobile;
 		$desktopCols = $numDesktop ?? $tabletCols;
 		$this->addCellAtTheBeginning(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
@@ -3791,7 +3787,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param htmlElement $content label
 	 * @param string $cssClasses additional CSS classes
 	 */
-	public function addLabel($content, $cssClasses = '') {
+	public function addLabel(htmlElement $content, string $cssClasses = ''): void {
 		$this->add($content, 12, 6, 6, 'responsiveLabel nowrap ' . $cssClasses);
 	}
 
@@ -3801,7 +3797,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param htmlElement $content field
 	 * @param string $cssClasses CSS class names separated by space
 	 */
-	public function addField($content, $cssClasses = '') {
+	public function addField(htmlElement $content, string $cssClasses = ''): void {
 		$this->add($content, 12, 6, 6, 'responsiveField ' . $cssClasses);
 	}
 
@@ -3832,7 +3828,7 @@ class htmlResponsiveRow extends htmlElement {
 	 *
 	 * @param string $space space in px or rem
 	 */
-	public function addVerticalSpacer($space) {
+	public function addVerticalSpacer(string $space): void {
 		$this->add(new htmlSpacer(null, $space));
 	}
 
@@ -3856,22 +3852,22 @@ class htmlResponsiveRow extends htmlElement {
  */
 class htmlResponsiveCell extends htmlElement {
 
-	private $content;
-	private $mobile;
-	private $tablet;
-	private $desktop;
-	private $classes = '';
+	private htmlElement $content;
+	private int $mobile;
+	private ?int $tablet;
+	private ?int $desktop;
+	private string $classes;
 
 	/**
 	 * Constructs a cell inside a responsive row with 12 columns.
 	 *
 	 * @param htmlElement $content content inside cell
 	 * @param int $numMobile number of columns for mobile view
-	 * @param int $numTablet number of columns for tablet view
-	 * @param int $numDesktop number of columns for desktop view
-	 * @param String $classes CSS classes separated by space
+	 * @param int|null $numTablet number of columns for tablet view
+	 * @param int|null $numDesktop number of columns for desktop view
+	 * @param string $classes CSS classes separated by space
 	 */
-	public function __construct($content, $numMobile, $numTablet, $numDesktop, $classes = '') {
+	public function __construct(htmlElement $content, int $numMobile, ?int $numTablet, ?int $numDesktop, string $classes = '') {
 		$this->content = $content;
 		$this->mobile = $numMobile;
 		$this->tablet = $numTablet;
