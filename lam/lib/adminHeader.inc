@@ -22,14 +22,9 @@ namespace LAM\HEADER;
 
 */
 
-use htmlContentLink;
 use htmlDiv;
 use htmlGroup;
-use htmlImage;
 use htmlLink;
-use htmlOutputText;
-use htmlResponsiveRow;
-use htmlSpan;
 use LAM\TYPES\TypeManager;
 use LAMException;
 use ServerProfilePersistenceManager;

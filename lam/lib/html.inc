@@ -3028,21 +3028,21 @@ class htmlHiddenInput extends htmlElement {
 class htmlLink extends htmlElement {
 
 	/** link text */
-	private $text;
+	private ?string $text = null;
 	/** link target */
-	protected $target;
+	protected ?string $target = null;
 	/** optional image */
-	private $image;
+	private ?string $image = null;
 	/** title */
-	private $title;
+	private ?string $title = null;
 	/** target window */
-	private $targetWindow;
+	private ?string $targetWindow = null;
 	/** onClick event */
-	private $onClick;
+	private ?string $onClick = null;
 	/** onMouseOver event */
-	private $onMouseOver;
+	private ?string $onMouseOver = null;
 	/** link id */
-	private $id;
+	private ?string $id = null;
 
 	/**
 	 * Constructor.
@@ -3051,7 +3051,7 @@ class htmlLink extends htmlElement {
 	 * @param string|null $target target URL
 	 * @param string|null $image URL of optional image
 	 */
-	public function __construct($text, $target, $image = null) {
+	public function __construct(?string $text, ?string $target, ?string $image = null) {
 		if ($text !== null) {
 			$this->text = htmlspecialchars($text);
 		}
@@ -3106,9 +3106,9 @@ class htmlLink extends htmlElement {
 	/**
 	 * Returns the value for the alt attribute.
 	 *
-	 * @return string alt value
+	 * @return string|null alt value
 	 */
-	protected function getAlt() {
+	protected function getAlt(): ?string {
 		if (!empty($this->text)) {
 			return $this->text;
 		}
@@ -3118,45 +3118,45 @@ class htmlLink extends htmlElement {
 	/**
 	 * Returns the value for the link content.
 	 *
-	 * @return string content
+	 * @return string|null content
 	 */
-	protected function getContent() {
+	protected function getContent(): ?string {
 		return $this->text;
 	}
 
 	/**
 	 * Sets the link title.
 	 *
-	 * @param String $title title
+	 * @param string $title title
 	 */
-	public function setTitle($title) {
+	public function setTitle(string $title): void {
 		$this->title = htmlspecialchars($title);
 	}
 
 	/**
 	 * Sets the target window (e.g. _blank).
 	 *
-	 * @param String $window target window (e.g. _blank)
+	 * @param string $window target window (e.g. _blank)
 	 */
-	public function setTargetWindow($window) {
+	public function setTargetWindow(string $window): void {
 		$this->targetWindow = htmlspecialchars($window);
 	}
 
 	/**
 	 * Sets the onClick event.
 	 *
-	 * @param String $event JavaScript code
+	 * @param string $event JavaScript code
 	 */
-	public function setOnClick($event) {
+	public function setOnClick(string $event): void {
 		$this->onClick = htmlspecialchars($event);
 	}
 
 	/**
 	 * Sets the onMouseOver event.
 	 *
-	 * @param String $event JavaScript code
+	 * @param string $event JavaScript code
 	 */
-	public function setOnMouseOver($event) {
+	public function setOnMouseOver(string $event): void {
 		$this->onMouseOver = htmlspecialchars($event);
 	}
 
@@ -3165,7 +3165,7 @@ class htmlLink extends htmlElement {
 	 *
 	 * @param string $id unique id
 	 */
-	public function setId($id) {
+	public function setId(string $id): void {
 		$this->id = $id;
 	}
 
@@ -3178,16 +3178,16 @@ class htmlLink extends htmlElement {
  */
 class htmlContentLink extends htmlLink {
 
-	private $content;
-	private $contentText = '';
+	private htmlElement $content;
+	private string $contentText = '';
 
 	/**
 	 * Constructor
 	 *
 	 * @param htmlElement $content content to link
-	 * @param String $target link target
+	 * @param string $target link target
 	 */
-	function __construct($content, $target) {
+	public function __construct(htmlElement $content, string $target) {
 		$this->content = $content;
 		$this->target = htmlspecialchars($target);
 	}
@@ -3208,7 +3208,7 @@ class htmlContentLink extends htmlLink {
 	 *
 	 * @return string alt value
 	 */
-	protected function getAlt() {
+	protected function getAlt(): string {
 		return '';
 	}
 
@@ -3217,7 +3217,7 @@ class htmlContentLink extends htmlLink {
 	 *
 	 * @return string content
 	 */
-	protected function getContent() {
+	protected function getContent(): string {
 		return $this->contentText;
 	}
 
@@ -3232,8 +3232,8 @@ class htmlContentLink extends htmlLink {
  */
 class htmlGroup extends htmlElement {
 
-	/** link text */
-	private $subelements = [];
+	/** @var htmlElement[] $subelements elements */
+	private array $subelements = [];
 
 	/**
 	 * {@inheritDoc}
@@ -3251,7 +3251,7 @@ class htmlGroup extends htmlElement {
 	 *
 	 * @param htmlElement $sub subelement
 	 */
-	public function addElement($sub) {
+	public function addElement(htmlElement $sub): void {
 		$this->subelements[] = $sub;
 	}
 
