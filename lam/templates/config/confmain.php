@@ -217,14 +217,14 @@ $tlsSelect->setHasDescriptiveElements(true);
 $row->add($tlsSelect);
 // LDAP search limit
 $searchLimitOptions = [
-	'-' => 0,
-	100 => 100,
-	500 => 500,
-	1000 => 1000,
-	5000 => 5000,
-	10000 => 10000,
-	50000 => 50000,
-	100000 => 100000
+	'-' => '0',
+	'100' => '100',
+	'500' => '500',
+	'1000' => '1000',
+	'5000' => '5000',
+	'10000' => '10000',
+	'50000' => '50000',
+	'100000' => '100000'
 ];
 $limitSelect = new htmlResponsiveSelect('searchLimit', $searchLimitOptions, [$conf->get_searchLimit()], _("LDAP search limit"), '222');
 $limitSelect->setHasDescriptiveElements(true);

@@ -275,14 +275,14 @@ class sambaDomain extends baseModule {
 		if (isset($this->attributes['sambaMinPwdLength'][0])) {
 			$sambaMinPwdLength = $this->attributes['sambaMinPwdLength'][0];
 		}
-		$return->add(new htmlResponsiveSelect('minPwdLength', ['-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+		$return->add(new htmlResponsiveSelect('minPwdLength', ['-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
 			[$sambaMinPwdLength], _('Minimal password length'), 'minPwdLength'));
 		// password history length
 		$sambaPwdHistoryLength = '-';
 		if (isset($this->attributes['sambaPwdHistoryLength'][0])) {
 			$sambaPwdHistoryLength = $this->attributes['sambaPwdHistoryLength'][0];
 		}
-		$return->add(new htmlResponsiveSelect('pwdHistLength', ['-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+		$return->add(new htmlResponsiveSelect('pwdHistLength', ['-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
 			[$sambaPwdHistoryLength], _('Password history length'), 'pwdHistLength'));
 		// logon to change password
 		$sambaLogonToChgPwd = '-';

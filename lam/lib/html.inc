@@ -1335,12 +1335,12 @@ class htmlSelect extends htmlElement {
 	 * <br>$select->setHasDescriptiveElements(true);
 	 * <br>$select->setContainsOptgroups(true);
 	 *
-	 * @param String $name element name
-	 * @param array $elements list of elements array(label => value) or array(value1, value2) or array('optgroup' => array(...))
-	 * @param array $selectedElements list of selected elements (optional, default none)
+	 * @param string $name element name
+	 * @param string[]|array<string, string>|array<string, string[]|array<string, string>> $elements list of elements array(label => value) or array(value1, value2) or array('optgroup' => array(...))
+	 * @param string[] $selectedElements list of selected elements (optional, default none)
 	 * @param int $size size (optional, default = 1)
 	 */
-	function __construct($name, $elements, $selectedElements = [], $size = 1) {
+	public function __construct($name, $elements, $selectedElements = [], $size = 1) {
 		$this->name = htmlspecialchars($name);
 		$this->elements = $elements;
 		if ($selectedElements != null) {
@@ -1659,7 +1659,7 @@ class htmlSelect extends htmlElement {
 	 *
 	 * @return string selector
 	 */
-	protected function getShowHideSelector() {
+	protected function getShowHideSelector(): string {
 		return 'tr';
 	}
 
@@ -1805,7 +1805,7 @@ class htmlRadio extends htmlElement {
 	 *
 	 * @return string selector
 	 */
-	protected function getShowHideSelector() {
+	protected function getShowHideSelector(): string {
 		return 'tr';
 	}
 
@@ -2254,7 +2254,7 @@ class htmlInputCheckbox extends htmlElement {
 	/**
 	 * Returns the CSS selector to use to find show/hide elements.
 	 */
-	protected function getShowHideSelector() {
+	protected function getShowHideSelector(): string {
 		return 'tr';
 	}
 
@@ -4153,27 +4153,27 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 class htmlResponsiveSelect extends htmlSelect {
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID = null;
 	/** help module name */
-	private $helpModule;
+	private ?string $helpModule = null;
 	/** render HTML of parent class */
-	private $renderParentHtml = false;
+	private bool $renderParentHtml = false;
 	/** short label */
-	private $shortLabel = false;
+	private bool $shortLabel = false;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name element name
-	 * @param array $elements list of elements
-	 * @param array $selectedElements list of selected elements
-	 * @param String $label descriptive label
-	 * @param String|array $helpID help ID or array of help ID + module name (optional)
+	 * @param string $name element name
+	 * @param string[]|array<string, string>|array<string, string[]|array<string, string>> $elements list of elements
+	 * @param string[] $selectedElements list of selected elements
+	 * @param string $label descriptive label
+	 * @param string|string[] $helpID help ID or array of help ID + module name (optional)
 	 * @param int $size size (optional, default = 1)
 	 */
-	function __construct($name, $elements, $selectedElements, $label, $helpID = null, $size = 1) {
+	public function __construct($name, $elements, $selectedElements, string $label, $helpID = null, $size = 1) {
 		parent::__construct($name, $elements, $selectedElements, $size);
 		$this->label = $label;
 		if (is_string($helpID)) {
@@ -4222,14 +4222,14 @@ class htmlResponsiveSelect extends htmlSelect {
 	 * {@inheritDoc}
 	 * @see htmlSelect::getShowHideSelector()
 	 */
-	protected function getShowHideSelector() {
+	protected function getShowHideSelector(): string {
 		return '.row';
 	}
 
 	/**
 	 * Use a short label (4 columns instead of 6) for tablet/desktop.
 	 */
-	public function setShortLabel() {
+	public function setShortLabel(): void {
 		$this->shortLabel = true;
 	}
 
@@ -4243,22 +4243,22 @@ class htmlResponsiveSelect extends htmlSelect {
 class htmlResponsiveRadio extends htmlRadio {
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID;
 	/** render HTML of parent class */
-	private $renderParentHtml = false;
+	private bool $renderParentHtml = false;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $label descriptive label
 	 * @param string $name element name
-	 * @param array $elements list of elements
+	 * @param array<string, string> $elements list of elements
 	 * @param string|null $selectedElement list of selected elements
 	 * @param string|null $helpID help ID (optional, default none)
 	 */
-	function __construct($label, $name, $elements, $selectedElement = null, $helpID = null) {
+	public function __construct(string $label, $name, $elements, ?string $selectedElement = null, ?string $helpID = null) {
 		parent::__construct($name, $elements, $selectedElement);
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
@@ -4300,7 +4300,7 @@ class htmlResponsiveRadio extends htmlRadio {
 	 *
 	 * @return string selector
 	 */
-	protected function getShowHideSelector() {
+	protected function getShowHideSelector(): string {
 		return '.row';
 	}
 
@@ -4314,30 +4314,30 @@ class htmlResponsiveRadio extends htmlRadio {
 class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID = null;
 	/** help module name */
-	private $helpModule;
+	private ?string $helpModule = null;
 	/** render HTML of parent class */
-	private $renderParentHtml = false;
+	private bool $renderParentHtml = false;
 	/** long label */
-	private $longLabel = false;
+	private bool $longLabel;
 	/** label after checkbox */
-	private $labelAfterCheckbox = false;
+	private bool $labelAfterCheckbox = false;
 	/** short label */
-	private $shortLabel = false;
+	private bool $shortLabel = false;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name unique name
-	 * @param boolean $checked checked
-	 * @param String $label descriptive label
-	 * @param String|array $helpID help ID or array of help ID + module name (optional)
+	 * @param string $name unique name
+	 * @param bool $checked checked
+	 * @param string $label descriptive label
+	 * @param string|string[] $helpID help ID or array of help ID + module name (optional)
 	 * @param bool $longLabel more space for label (default: false)
 	 */
-	function __construct($name, $checked, $label, $helpID = null, $longLabel = false) {
+	public function __construct($name, $checked, string $label, $helpID = null, $longLabel = false) {
 		parent::__construct($name, $checked);
 		$this->label = $label;
 		if (is_string($helpID)) {
@@ -4398,7 +4398,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	 * {@inheritDoc}
 	 * @see htmlInputCheckbox::getShowHideSelector()
 	 */
-	protected function getShowHideSelector() {
+	protected function getShowHideSelector(): string {
 		return '.row';
 	}
 
@@ -4407,14 +4407,14 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	 *
 	 * @param bool $labelAfterCheckbox show label after box
 	 */
-	public function setLabelAfterCheckbox($labelAfterCheckbox = true) {
+	public function setLabelAfterCheckbox(bool $labelAfterCheckbox = true): void {
 		$this->labelAfterCheckbox = $labelAfterCheckbox;
 	}
 
 	/**
 	 * Use a short label (4 columns instead of 6) for tablet/desktop.
 	 */
-	public function setShortLabel() {
+	public function setShortLabel(): void {
 		$this->shortLabel = true;
 	}
 
@@ -4427,25 +4427,21 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
  */
 class htmlResponsiveTable extends htmlElement {
 
-	/** @var string[] row titles */
-	private $titles;
+	/** @var string[] $titles row titles */
+	private array $titles;
 
-	/** htmlElement[][] data rows */
-	private $data;
+	/** @var htmlElement[][] $data data rows */
+	private array $data;
 
-	/** widths of the columns */
-	private $widths = [];
+	/** @var string[] $widths widths of the columns */
+	private array $widths = [];
 
-	/** highlighted rows */
-	private $highlighted = [];
-	/** CSS class for odd row numbers */
-	private $cssOddRow;
-	/** CSS class for even row numbers */
-	private $cssEvenRow;
-	/** onclick code (row number => code) */
-	private $onClick = [];
-	/** ondoubleclick code (row number => code) */
-	private $onDoubleClick = [];
+	/** @var int[] $highlighted highlighted rows */
+	private array $highlighted = [];
+	/** @var array<int, string> $onClick onclick code (row number => code) */
+	private array $onClick = [];
+	/** @var array<int, string> $onDoubleClick ondoubleclick code (row number => code) */
+	private array $onDoubleClick = [];
 
 	/**
 	 * Creates the table.
@@ -4454,7 +4450,7 @@ class htmlResponsiveTable extends htmlElement {
 	 * @param htmlElement[][] $data data rows
 	 * @param int[]|null $highlighted list of row numbers that should be highlighted (starting at 0)
 	 */
-	public function __construct($titles, $data, $highlighted = null) {
+	public function __construct(array $titles, array $data, ?array $highlighted = null) {
 		$this->titles = $titles;
 		$this->data = $data;
 		if (!empty($highlighted)) {
@@ -4493,12 +4489,6 @@ class htmlResponsiveTable extends htmlElement {
 			if (in_array($counter, $this->highlighted)) {
 				$cssClasses[] = 'highlighted';
 			}
-			if (!empty($this->cssEvenRow) && ($counter % 2 === 0)) {
-				$cssClasses[] = $this->cssEvenRow;
-			}
-			if (!empty($this->cssOddRow) && ($counter % 2 === 1)) {
-				$cssClasses[] = $this->cssOddRow;
-			}
 			if (!empty($cssClasses)) {
 				$cssClass = ' class="' . implode(' ', $cssClasses) . '"';
 			}
@@ -4530,37 +4520,25 @@ class htmlResponsiveTable extends htmlElement {
 	 *
 	 * @param string[] $widths widths
 	 */
-	public function setWidths($widths) {
+	public function setWidths(array $widths): void {
 		$this->widths = $widths;
-	}
-
-	/**
-	 * Sets the CSS classes for odd and even rows.
-	 * The title row counts as row number -1.
-	 *
-	 * @param string $oddClass class for odd rows
-	 * @param string $evenClass class for even rows
-	 */
-	public function setRowClasses($oddClass, $evenClass) {
-		$this->cssOddRow = $oddClass;
-		$this->cssEvenRow = $evenClass;
 	}
 
 	/**
 	 * Sets the onclick code for the rows.
 	 *
-	 * @param array $calls row number => code
+	 * @param array<int, string> $calls row number => code
 	 */
-	public function setOnClickEvents($calls) {
+	public function setOnClickEvents(array $calls): void {
 		$this->onClick = $calls;
 	}
 
 	/**
 	 * Sets the ondoubleclick code for the rows.
 	 *
-	 * @param array $calls row number => code
+	 * @param array<int, string> $calls row number => code
 	 */
-	public function setOnDoubleClickEvents($calls) {
+	public function setOnDoubleClickEvents(array $calls): void {
 		$this->onDoubleClick = $calls;
 	}
 
@@ -4573,14 +4551,14 @@ class htmlResponsiveTable extends htmlElement {
  */
 class htmlCanvas extends htmlElement {
 
-	private $id;
+	private string $id;
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $id html id
 	 */
-	public function __construct($id) {
+	public function __construct(string $id) {
 		$this->id = $id;
 	}
 
@@ -4605,14 +4583,14 @@ class htmlCanvas extends htmlElement {
  */
 class htmlVideo extends htmlElement {
 
-	private $id;
+	private string $id;
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $id html id
 	 */
-	public function __construct($id) {
+	public function __construct(string $id) {
 		$this->id = $id;
 	}
 
@@ -4638,11 +4616,11 @@ class htmlVideo extends htmlElement {
 class htmlForm extends htmlElement {
 
 	/** form name */
-	private $name;
+	private string $name;
 	/** submit target */
-	private $action;
+	private string $action;
 	/** inner content */
-	private $content;
+	private htmlElement $content;
 
 	/**
 	 * Constructor.
@@ -4650,7 +4628,7 @@ class htmlForm extends htmlElement {
 	 * @param string $name name
 	 * @param string $action target URL
 	 */
-	function __construct(string $name, string $action, htmlElement $content) {
+	public function __construct(string $name, string $action, htmlElement $content) {
 		$this->name = $name;
 		$this->action = $action;
 		$this->content = $content;

@@ -547,7 +547,7 @@ if (isset($_POST['submitFormData'])) {
 
 	// security settings
 	$row->add(new htmlSubTitle(_("Security settings")));
-	$options = [5, 10, 20, 30, 60, 90, 120, 240];
+	$options = ['5', '10', '20', '30', '60', '90', '120', '240'];
 	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, [$cfg->sessionTimeout], _("Session timeout"), '238'));
 	$hideLoginErrorDetails = ($cfg->hideLoginErrorDetails === 'true');
 	$row->add(new htmlResponsiveInputCheckbox('hideLoginErrorDetails', $hideLoginErrorDetails, _('Hide LDAP details on failed login'), '257'));
@@ -624,9 +624,9 @@ if (isset($_POST['submitFormData'])) {
 	$row->add(new htmlSubTitle(_("Password policy")));
 	$optionsPwdLength = [];
 	for ($i = 0; $i <= 50; $i++) {
-		$optionsPwdLength[] = $i;
+		$optionsPwdLength[] = (string) $i;
 	}
-	$options4 = [0, 1, 2, 3, 4];
+	$options4 = ['0', '1', '2', '3', '4'];
 	$row->add(new htmlResponsiveSelect('passwordMinLength', $optionsPwdLength, [$cfg->passwordMinLength], _('Minimum password length'), '242'));
 	$row->addVerticalSpacer('1rem');
 	$row->add(new htmlResponsiveSelect('passwordMinLower', $optionsPwdLength, [$cfg->passwordMinLower], _('Minimum lowercase characters'), '242'));
@@ -651,10 +651,10 @@ if (isset($_POST['submitFormData'])) {
 	// logging
 	$row->add(new htmlSubTitle(_("Logging")));
 	$levelOptions = [
-		_("Debug") => LOG_DEBUG,
-		_("Notice") => LOG_NOTICE,
-		_("Warning") => LOG_WARNING,
-		_("Error") => LOG_ERR
+		_("Debug") => (string) LOG_DEBUG,
+		_("Notice") => (string) LOG_NOTICE,
+		_("Warning") => (string) LOG_WARNING,
+		_("Error") => (string) LOG_ERR
 	];
 	$levelSelect = new htmlResponsiveSelect('logLevel', $levelOptions, [$cfg->logLevel], _("Log level"), '239');
 	$levelSelect->setHasDescriptiveElements(true);

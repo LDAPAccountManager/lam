@@ -1394,13 +1394,13 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 		}
 		$date = new DateTime('@' . $time, new DateTimeZone('UTC'));
 		for ($i = 1; $i <= 31; $i++) {
-			$mday[] = $i;
+			$mday[] = (string) $i;
 		}
 		for ($i = 1; $i <= 12; $i++) {
-			$mon[] = $i;
+			$mon[] = (string) $i;
 		}
 		for ($i = 2003; $i <= 2050; $i++) {
-			$year[] = $i;
+			$year[] = (string) $i;
 		}
 		$return->addLabel(new htmlOutputText($text));
 		$dateGroup = new htmlGroup();
@@ -1689,13 +1689,13 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			$mon = [];
 			$year = [];
 			for ($i = 1; $i <= 31; $i++) {
-				$day[] = $i;
+				$day[] = (string) $i;
 			}
 			for ($i = 1; $i <= 12; $i++) {
-				$mon[] = $i;
+				$mon[] = (string) $i;
 			}
 			for ($i = 2003; $i <= 2030; $i++) {
-				$year[] = $i;
+				$year[] = (string) $i;
 			}
 			// display name
 			$return->add(new htmlResponsiveInputField(_('Display name'), 'sambaSamAccount_displayName', '', 'displayName'));
