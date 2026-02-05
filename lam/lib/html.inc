@@ -2874,14 +2874,14 @@ class htmlStatusMessage extends htmlElement {
 class htmlTitle extends htmlElement {
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $label label
+	 * @param string $label label
 	 */
-	function __construct($label) {
+	public function __construct(string $label) {
 		$this->label = htmlspecialchars($label);
 		// the title should not end at a table cell
 		$this->colspan = 100;
@@ -2913,27 +2913,28 @@ class htmlSubTitle extends htmlElement {
 	public const H5 = 'h5';
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 	/** optional image */
-	private $image;
+	private ?string $image = null;
 	/** optional ID for this element (e.g. to use for JavaScript) */
-	private $id;
+	private ?string $id = null;
 	/** show large icon */
-	private $largeIcon = false;
-	/** help ID */
-	private $helpId;
+	private bool $largeIcon;
+	/** @var string|string[]|null $helpId help ID */
+	private string|array|null $helpId = null;
 	/** headline type (e.g. h3) */
 	private string $type;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $label label
-	 * @param String $image optional image
-	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
+	 * @param string $label label
+	 * @param string|null $image optional image
+	 * @param string|null $id optional ID for this element (e.g. to use for JavaScript)
 	 * @param bool $largeIcon show large (32x32px) icon instead of small one (16x16px)
+	 * @param string $type headline type
 	 */
-	public function __construct($label, $image = null, $id = null, $largeIcon = false, $type = self::H3) {
+	public function __construct(string $label, ?string $image = null, ?string $id = null, bool $largeIcon = false, string $type = self::H3) {
 		$this->label = htmlspecialchars($label);
 		if ($image !== null) {
 			$this->image = htmlspecialchars($image);
@@ -2976,9 +2977,9 @@ class htmlSubTitle extends htmlElement {
 	/**
 	 * Sets an additional help id.
 	 *
-	 * @param string|array $helpId
+	 * @param string|string[] $helpId
 	 */
-	public function setHelpId($helpId) {
+	public function setHelpId(array|string $helpId): void {
 		$this->helpId = $helpId;
 	}
 
@@ -2992,9 +2993,9 @@ class htmlSubTitle extends htmlElement {
 class htmlHiddenInput extends htmlElement {
 
 	/** field name */
-	private $name;
+	private string $name;
 	/** field value */
-	private $value;
+	private string $value = '';
 
 	/**
 	 * Constructor.
@@ -3002,7 +3003,7 @@ class htmlHiddenInput extends htmlElement {
 	 * @param string $name input name
 	 * @param string|null $value input value
 	 */
-	public function __construct($name, $value = '') {
+	public function __construct(string $name, ?string $value = '') {
 		$this->name = htmlspecialchars($name);
 		if ($value !== null) {
 			$this->value = htmlspecialchars($value);
