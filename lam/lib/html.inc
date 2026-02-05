@@ -2745,18 +2745,18 @@ class htmlImage extends htmlElement {
 class htmlSpacer extends htmlElement {
 
 	/** width of spacer in px */
-	private $width;
+	private ?string $width = null;
 	/** height of spacer in px */
-	private $height;
+	private ?string $height = null;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string|null $width width (e.g. 10px)
 	 * @param string|null $height height (e.g. 10px)
-	 * @param array|null $cssClasses CSS classes
+	 * @param string[]|null $cssClasses CSS classes
 	 */
-	function __construct($width, $height = null, ?array $cssClasses = []) {
+	public function __construct(?string $width, ?string $height = null, ?array $cssClasses = []) {
 		if ($width !== null) {
 			$this->width = htmlspecialchars($width);
 		}
@@ -2798,23 +2798,23 @@ class htmlSpacer extends htmlElement {
 class htmlStatusMessage extends htmlElement {
 
 	/** message type (e.g. ERROR) */
-	private $type;
+	private string $type;
 	/** message title */
-	private $title;
+	private ?string $title;
 	/** message text */
-	private $text;
-	/** message parameters */
-	private $params;
+	private ?string $text;
+	/** @var array<string|string[]>|null $params message parameters */
+	private ?array $params;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $type message type (e.g. ERROR)
-	 * @param string $title message title
-	 * @param string $text message (optional)
-	 * @param array $params additional message parameters
+	 * @param string|null $title message title
+	 * @param string|null $text message (optional)
+	 * @param array<string|string[]>|null $params additional message parameters
 	 */
-	public function __construct($type, $title, $text = null, $params = null) {
+	public function __construct(string $type, ?string $title, ?string $text = null, ?array $params = null) {
 		$this->type = $type;
 		$this->title = $title;
 		$this->text = $text;
@@ -2824,10 +2824,10 @@ class htmlStatusMessage extends htmlElement {
 	/**
 	 * Constructor with parameter array.
 	 *
-	 * @param array $params parameters in same order as normal constructor
-	 * @return htmlStatusMessage
+	 * @param array<string|string[]> $params parameters in same order as normal constructor
+	 * @return htmlStatusMessage message
 	 */
-	public static function fromParamArray($params) {
+	public static function fromParamArray(array $params): htmlStatusMessage {
 		if (count($params) < 2) {
 			throw new BadMethodCallException("Invalid parameter count");
 		}
@@ -2858,9 +2858,9 @@ class htmlStatusMessage extends htmlElement {
 	/**
 	 * Returns the message type.
 	 *
-	 * @return String type
+	 * @return string type
 	 */
-	public function getType() {
+	public function getType(): string {
 		return $this->type;
 	}
 
