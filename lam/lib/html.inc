@@ -91,7 +91,7 @@ abstract class htmlElement {
 	 * @param string $scope Account type
 	 * @return array<string, string> List of input field names and their type (name => type)
 	 */
-	abstract function generateHTML($module, $input, $values, $restricted, $scope);
+	abstract public function generateHTML($module, $input, $values, $restricted, $scope): array;
 
 	/**
 	 * Returns the HTML attributes for the alignment.
@@ -323,16 +323,9 @@ class htmlTable extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		$width = '';
 		if ($this->width != null) {
@@ -429,9 +422,9 @@ class htmlDataTable extends htmlElement {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		echo '<link href="../../style/tabulator/tabulator.css" rel="stylesheet">';
 		echo '<script type="text/javascript" src="../../templates/lib/extra/tabulator/tabulator.js"></script>';
 		echo '<div id="' . $this->id . '" class="lam-data-table" ' . $this->getDataAttributesAsString() . '></div>';
@@ -673,16 +666,9 @@ class htmlInputField extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->isAutoTrim()) {
 			$this->cssClasses[] = 'lam-autotrim';
 		}
@@ -1102,16 +1088,9 @@ class htmlHelpLink extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->helpID === null) {
 			return [];
 		}
@@ -1171,16 +1150,9 @@ class htmlButton extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($restricted) {
 			// no buttons in restricted mode
 			logNewMessage(LOG_ERR, 'Meta HTML: Requested button in restricted mode.');
@@ -1378,16 +1350,9 @@ class htmlSelect extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if (isset($values[$this->name])) {
 			$this->selectedElements = $values[$this->name];
 		}
@@ -1776,16 +1741,9 @@ class htmlRadio extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if (isset($values[$this->name][0])) {
 			$this->selectedElement = $values[$this->name][0];
 		}
@@ -1976,16 +1934,9 @@ class htmlOutputText extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$cssClasses = empty($this->cssClasses) ? '' : 'class="' . implode(' ', $this->cssClasses) . '"';
 		if (!empty($this->title)) {
 			echo '<span title="' . $this->title . '">';
@@ -2117,16 +2068,9 @@ class htmlInputCheckbox extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if (isset($values[$this->name])) {
 			$this->checked = ($values[$this->name][0] == 'true');
 		}
@@ -2369,16 +2313,9 @@ class htmlInputFileUpload extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -2467,16 +2404,9 @@ class htmlInputTextarea extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if (isset($values[$this->name])) {
 			$this->value = htmlspecialchars(implode("\r\n", $values[$this->name]));
 		}
@@ -2559,9 +2489,8 @@ class htmlInputColorPicker extends htmlElement {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlElement::generateHTML()
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -2619,9 +2548,8 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlInputColorPicker::generateHTML()
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $scope);
 		}
@@ -2700,16 +2628,9 @@ class htmlImage extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
@@ -2848,16 +2769,9 @@ class htmlSpacer extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$width = '';
 		if ($this->width !== null) {
 			$width = 'width: ' . $this->width . ';';
@@ -2930,7 +2844,7 @@ class htmlStatusMessage extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if (!empty($this->cssClasses)) {
 			echo '<div class="' . implode(' ', $this->cssClasses) . '">';
 		}
@@ -2974,16 +2888,9 @@ class htmlTitle extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		echo "<div class=\"title\">\n";
 		echo "<h2 class=\"titleText\">\n";
 		echo $this->label;
@@ -3041,16 +2948,9 @@ class htmlSubTitle extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
@@ -3110,16 +3010,9 @@ class htmlHiddenInput extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		echo '<input type="hidden" name="' . $this->name . '" id="' . $this->name . '" value="' . $this->value . '">';
 		return [$this->name => 'hidden'];
 	}
@@ -3171,16 +3064,9 @@ class htmlLink extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$text = $this->getContent();
 		$image = '';
 		if ($this->image != null) {
@@ -3307,16 +3193,9 @@ class htmlContentLink extends htmlLink {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		ob_start();
 		parseHtml($module, $this->content, $values, $restricted, $scope);
 		$this->contentText = ob_get_contents();
@@ -3357,16 +3236,9 @@ class htmlGroup extends htmlElement {
 	private $subelements = [];
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		for ($i = 0; $i < count($this->subelements); $i++) {
 			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted, $scope));
@@ -3393,16 +3265,9 @@ class htmlGroup extends htmlElement {
 class htmlHorizontalLine extends htmlElement {
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		echo "<hr>";
 		return $return;
@@ -3438,16 +3303,9 @@ class htmlDiv extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		$idValue = '';
 		if ($this->id != null) {
@@ -3492,16 +3350,9 @@ class htmlSpan extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		$classesValue = '';
 		if (($this->cssClasses != null) && (count($this->cssClasses) > 0)) {
@@ -3563,16 +3414,9 @@ class htmlJavaScript extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		echo '<script type="text/javascript">';
 		echo $this->content;
@@ -3603,9 +3447,8 @@ class htmlIframe extends htmlElement {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlElement::generateHTML()
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		$idAttr = '';
 		if (!empty($this->id)) {
@@ -3646,16 +3489,9 @@ class htmlScript extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		$async = $this->async ? ' async' : '';
 		$defer = $this->defer ? ' defer="defer"' : '';
@@ -3686,16 +3522,9 @@ class htmlLinkCss extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		echo '<link href="' . $this->src . '" type="text/css" rel="stylesheet"/>';
 		return $return;
@@ -3729,16 +3558,9 @@ class htmlSortableList extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if (count($this->elements) === 0) {
 			return [];
 		}
@@ -3814,16 +3636,9 @@ class htmlAccordion extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$result = [];
 		if ($this->openInitial !== false) {
 			$this->addDataAttribute('openinitial', $this->openInitial);
@@ -3991,16 +3806,9 @@ class htmlResponsiveRow extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string|null $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string|null $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		$cssClasses = implode(' ', $this->cssClasses);
 		$idParam = '';
@@ -4072,16 +3880,9 @@ class htmlResponsiveCell extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$clMobile = ($this->mobile > 0) ? 'small-' . $this->mobile : 'hide-for-small-only';
 		$clTablet = ($this->tablet > 0) ? 'medium-' . $this->tablet : 'hide-for-medium-only';
 		$clDesktop = ($this->desktop > 0) ? 'large-' . $this->desktop : 'hide-for-large-only';
@@ -4137,9 +3938,8 @@ class htmlResponsiveInputField extends htmlInputField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlInputField::generateHTML()
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $scope);
 		}
@@ -4220,16 +4020,9 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $scope);
 		}
@@ -4305,9 +4098,8 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlInputField::generateHTML()
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $scope);
 		}
@@ -4395,9 +4187,8 @@ class htmlResponsiveSelect extends htmlSelect {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlInputField::generateHTML()
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $scope);
 		}
@@ -4475,9 +4266,8 @@ class htmlResponsiveRadio extends htmlRadio {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlInputField::generateHTML()
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $scope);
 		}
@@ -4562,9 +4352,8 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlInputField::generateHTML()
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $scope);
 		}
@@ -4675,9 +4464,8 @@ class htmlResponsiveTable extends htmlElement {
 
 	/**
 	 * {@inheritDoc}
-	 * @see htmlElement::generateHTML()
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		$classes = $this->cssClasses;
 		$classes[] = 'responsive-table';
@@ -4797,9 +4585,9 @@ class htmlCanvas extends htmlElement {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$classesValue = '';
 		if (!empty($this->cssClasses)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -4829,9 +4617,9 @@ class htmlVideo extends htmlElement {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$classesValue = '';
 		if (!empty($this->cssClasses)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -4869,16 +4657,9 @@ class htmlForm extends htmlElement {
 	}
 
 	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
+	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$return = [];
 		echo '<form name="' . $this->name . '" action="' . $this->action . '" method="post" enctype="multipart/form-data">';
 		if ($this->content != null) {
@@ -4895,11 +4676,12 @@ class htmlForm extends htmlElement {
  */
 class htmlList extends htmlElement {
 
-	private array $elements = [];
+	/** @var htmlElement[] $elements list elements */
+	private array $elements;
 
-	private bool $isOrdered = false;
+	private bool $isOrdered;
 
-	private ?string $id = '';
+	private ?string $id;
 
 	/**
 	 * Constructor.
@@ -4917,7 +4699,7 @@ class htmlList extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$parentTag = $this->isOrdered ? 'ol' : 'ul';
 		$idValue = empty($this->id) ? '' : ' id="' . $this->id . '"';
 		$classesValue = '';
@@ -4942,9 +4724,9 @@ class htmlList extends htmlElement {
  */
 class htmlLabel extends htmlElement {
 
-	private $for;
+	private string $for;
 
-	private $text;
+	private string $text;
 
 	/** mark as required */
 	private bool $markAsRequired = false;
@@ -4955,7 +4737,7 @@ class htmlLabel extends htmlElement {
 	 * @param string $for target element
 	 * @param string $text label text
 	 */
-	function __construct(string $for, string $text) {
+	public function __construct(string $for, string $text) {
 		$this->for = htmlspecialchars($for);
 		$this->text = htmlspecialchars($text);
 	}
@@ -4963,7 +4745,7 @@ class htmlLabel extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$classesValue = '';
 		if (!empty($this->cssClasses)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -4993,8 +4775,8 @@ class htmlLabel extends htmlElement {
  */
 class htmlProgressbar extends htmlElement {
 
-	private $id;
-	private $progress;
+	private ?string $id = null;
+	private int $progress;
 
 	/**
 	 * Constructor.
@@ -5002,15 +4784,17 @@ class htmlProgressbar extends htmlElement {
 	 * @param ?string $id HTML id
 	 * @param int $progress initial progress
 	 */
-	function __construct(?string $id = null, int $progress = 0) {
-		$this->id = htmlspecialchars($id);
-		$this->progress = htmlspecialchars((string) $progress);
+	public function __construct(?string $id = null, int $progress = 0) {
+		if ($id !== null) {
+			$this->id = htmlspecialchars($id);
+		}
+		$this->progress = $progress;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$extraClasses = '';
 		if (!empty($this->cssClasses)) {
 			$extraClasses = implode(' ', $this->cssClasses);
@@ -5040,7 +4824,13 @@ class htmlTabContainer extends htmlElement {
 
 	private int $activeTabIndex = 1;
 
-	public function addTab(htmlTab $tab, $isActive = false) {
+	/**
+	 * Adds a new tab.
+	 *
+	 * @param htmlTab $tab tab
+	 * @param bool $isActive is active tab
+	 */
+	public function addTab(htmlTab $tab, bool $isActive = false): void {
 		$this->tabs[] = $tab;
 		if ($isActive) {
 			$this->activeTabIndex = count($this->tabs);
@@ -5048,7 +4838,7 @@ class htmlTabContainer extends htmlElement {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		echo '<div id="tabs" class="lam-tab-container">

@@ -111,7 +111,7 @@ class htmlHCaptcha extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	function generateHTML($module, $input, $values, $restricted, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, $scope): array {
 		$script = new htmlScript('https://js.hcaptcha.com/1/api.js');
 		$script->generateHTML($module, $input, $values, $restricted, $scope);
 		echo '<div class="h-captcha" data-sitekey="' . $this->key . '"></div>';

@@ -31,18 +31,6 @@ self.addEventListener("install", function (event) {
 });
 
 self.addEventListener("fetch", function (event) {
-	if (event.request.method !== "GET") {
-		return;
-	}
-	event.respondWith(
-		fetch(event.request).catch(function (error) {
-			if (event.request.destination !== "document" ||
-					event.request.mode !== "navigate") {
-				return;
-				}
-			console.error("Network request failed: " + error);
-			return;
-		})
-	);
+	// no action
 });
 
