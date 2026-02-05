@@ -3903,26 +3903,26 @@ class htmlResponsiveCell extends htmlElement {
 class htmlResponsiveInputField extends htmlInputField {
 
 	/** Descriptive label */
-	private $label;
+	private string $label;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID = null;
 	/** help module name */
-	private $helpModule;
+	private ?string $helpModule = null;
 	/** render HTML of parent class */
-	private $renderParentHtml = false;
+	private bool $renderParentHtml = false;
 	/** short label */
-	private $shortLabel = false;
+	private bool $shortLabel = false;
 
 	/**
 	 * Constructor
 	 *
-	 * @param String $label descriptive label
-	 * @param String $fieldName unique field name
-	 * @param String $fieldValue value of input field (optional)
-	 * @param String|array $helpID help ID or array of help ID + module name (optional)
+	 * @param string $label descriptive label
+	 * @param string $fieldName unique field name
+	 * @param string $fieldValue value of input field (optional)
+	 * @param string|string[]|null $helpID help ID or array of help ID + module name (optional)
 	 * @param bool $required field is required
 	 */
-	function __construct($label, $fieldName, $fieldValue = null, $helpID = null, $required = false) {
+	public function __construct($label, $fieldName, $fieldValue = null, $helpID = null, $required = false) {
 		parent::__construct($fieldName, $fieldValue);
 		$this->label = $label;
 		if (is_string($helpID)) {
@@ -3976,7 +3976,7 @@ class htmlResponsiveInputField extends htmlInputField {
 	/**
 	 * Use a short label (4 columns instead of 6) for tablet/desktop.
 	 */
-	public function setShortLabel() {
+	public function setShortLabel(): void {
 		$this->shortLabel = true;
 	}
 
@@ -3990,23 +3990,23 @@ class htmlResponsiveInputField extends htmlInputField {
 class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID = null;
 	/** help module */
-	private $helpModule;
+	private ?string $helpModule = null;
 	/** render HTML of parent class */
-	private $renderParentHtml = false;
+	private bool $renderParentHtml = false;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $name unique name
 	 * @param string $label descriptive label
-	 * @param string|array|null $helpID help ID
+	 * @param string|string[]|null $helpID help ID
 	 * @param bool $required required field
 	 */
-	function __construct($name, $label, $helpID = null, $required = false) {
+	public function __construct($name, string $label, $helpID = null, $required = false) {
 		parent::__construct($name);
 		$this->label = htmlspecialchars($label);
 		if (is_string($helpID)) {
@@ -4063,27 +4063,27 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 class htmlResponsiveInputTextarea extends htmlInputTextarea {
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID = null;
 	/** help module */
-	private $helpModule;
+	private ?string $helpModule = null;
 	/** render HTML of parent class */
-	private $renderParentHtml = false;
+	private bool $renderParentHtml = false;
 	/** short label */
-	private $shortLabel = false;
+	private bool $shortLabel = false;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name unique name
-	 * @param String $value value
+	 * @param string $name unique name
+	 * @param string $value value
 	 * @param int $colCount number of characters per line
 	 * @param int $rowCount number of rows
-	 * @param String $label descriptive label
-	 * @param String|array $helpID help ID
+	 * @param string $label descriptive label
+	 * @param string|string[] $helpID help ID
 	 */
-	function __construct($name, $value, $colCount, $rowCount, $label, $helpID = null) {
+	public function __construct($name, $value, $colCount, $rowCount, string $label, $helpID = null) {
 		parent::__construct($name, $value, $colCount, $rowCount);
 		$this->label = htmlspecialchars($label);
 		if (is_string($helpID)) {
@@ -4139,7 +4139,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	/**
 	 * Use a short label (4 columns instead of 6) for tablet/desktop.
 	 */
-	public function setShortLabel() {
+	public function setShortLabel(): void {
 		$this->shortLabel = true;
 	}
 
