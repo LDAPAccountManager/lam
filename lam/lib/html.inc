@@ -565,7 +565,7 @@ class htmlDataTableColumn {
 	/**
 	 * Returns the Tabulator formatter options.
 	 *
-	 * @return array options
+	 * @return array<string, string> options
 	 */
 	public function getFormatterOptions(): array {
 		return match ($this->formattingType) {
@@ -585,74 +585,74 @@ class htmlDataTableColumn {
 class htmlInputField extends htmlElement {
 
 	/** unique field name */
-	protected $fieldName;
+	protected string $fieldName;
 	/** field value */
-	protected $fieldValue = '';
+	protected ?string $fieldValue = '';
 	/** field size (default 30) */
-	protected $fieldSize = 30;
+	protected ?int $fieldSize = 30;
 	/** field max length (default 1000) */
-	protected $fieldMaxLength = 1000;
+	protected ?int $fieldMaxLength = 1000;
 	/** on keypress event */
-	protected $onKeyPress;
+	protected ?string $onKeyPress = null;
 	/** on keyupp event */
-	protected $onKeyUp;
+	protected ?string $onKeyUp = null;
 	/** oninput event */
-	protected $onInput;
+	protected ?string $onInput = null;
 	/** password field */
-	protected $isPassword = false;
+	protected bool $isPassword = false;
 	/** check password strength */
-	protected $checkPasswordStrength = false;
+	protected bool $checkPasswordStrength = false;
 	/** disables browser autofilling of password fields */
-	protected $disableAutoFill = false;
+	protected bool $disableAutoFill = false;
 	/** enabled or disabled */
-	protected $isEnabled = true;
+	protected bool $isEnabled = true;
 	/** indicates that the value should be saved in obfuscated form */
-	protected $obfuscate = false;
+	protected bool $obfuscate = false;
 	/** indicates that this field should not automatically be saved in the self service or server profile */
-	protected $transient = false;
+	protected bool $transient = false;
 	/** required field */
-	protected $required = false;
+	protected bool $required = false;
 	/** enable autocomplete */
-	protected $autocomplete = false;
-	/** autocompletion suggestions */
-	protected $autocompleteValues = [];
+	protected bool $autocomplete = false;
+	/** @var string[] $autocompleteValues autocompletion suggestions */
+	protected array $autocompleteValues = [];
 	/** show calendar */
-	protected $showCalendar = false;
+	protected bool $showCalendar = false;
 	/** show DN selection */
-	protected $showDnSelection = false;
+	protected bool $showDnSelection = false;
 	/** calendar format */
-	protected $calendarFormat = '';
+	protected string $calendarFormat = '';
 	/** calendar with time */
-	protected $calendarFormatWithTime = false;
+	protected bool $calendarFormatWithTime = false;
 	/** calendar with seconds */
-	protected $calendarFormatWithSeconds = false;
+	protected bool $calendarFormatWithSeconds = false;
 	/** title attribute */
-	protected $title;
+	protected ?string $title = null;
 	/** field ID that needs to have same value (e.g. password field) */
-	protected $sameValueFieldID;
+	protected ?string $sameValueFieldID = null;
 	/** marks the input field as auto trimmed (remove spaces at start/end) */
-	protected $autoTrim = true;
+	protected bool $autoTrim = true;
 	/** minimum value */
-	protected $minValue;
+	protected ?int $minValue = null;
 	/** maximum value */
-	protected $maxValue;
+	protected ?int $maxValue = null;
 	/** step for numeric values */
-	protected $stepValue;
+	protected ?int $stepValue = null;
 	/** id */
-	protected $id;
+	protected ?string $id = null;
 	/** input type */
-	protected $type = 'text';
+	protected string $type = 'text';
 	/** validation pattern */
-	protected $validationPattern;
+	protected ?string $validationPattern = null;
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $fieldName unique field name
-	 * @param string $fieldValue value of input field (optional)
+	 * @param string|null $fieldValue value of input field (optional)
 	 * @param int|null $fieldSize input field length (default 30)
 	 */
-	function __construct($fieldName, $fieldValue = null, $fieldSize = null) {
+	public function __construct(string $fieldName, ?string $fieldValue = null, ?int $fieldSize = null) {
 		if (isObfuscatedText($fieldValue)) {
 			$fieldValue = deobfuscateText($fieldValue);
 		}
@@ -842,9 +842,9 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Sets the maximum field length.
 	 *
-	 * @param int $fieldMaxLength length
+	 * @param int|null $fieldMaxLength length
 	 */
-	public function setFieldMaxLength($fieldMaxLength) {
+	public function setFieldMaxLength(?int $fieldMaxLength): void {
 		$this->fieldMaxLength = $fieldMaxLength;
 	}
 
@@ -853,18 +853,18 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param int|null $fieldSize size
 	 */
-	public function setFieldSize($fieldSize) {
+	public function setFieldSize(?int $fieldSize): void {
 		$this->fieldSize = $fieldSize;
 	}
 
 	/**
 	 * Specifies if this is a password field.
 	 *
-	 * @param boolean $isPassword password field
-	 * @param boolean $checkStrength check if matches password policy (default: false)
-	 * @param boolean $disableAutoFill prevent autofilling by browser
+	 * @param bool $isPassword password field
+	 * @param bool $checkStrength check if matches password policy (default: false)
+	 * @param bool $disableAutoFill prevent autofilling by browser
 	 */
-	public function setIsPassword($isPassword, $checkStrength = false, $disableAutoFill = false) {
+	public function setIsPassword(bool $isPassword, bool $checkStrength = false, bool $disableAutoFill = false): void {
 		$this->isPassword = $isPassword;
 		$this->checkPasswordStrength = $checkStrength;
 		$this->disableAutoFill = $disableAutoFill;
@@ -873,47 +873,47 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
 	/**
 	 * Specifies if the value should be saved in obfuscated form (e.g. self service profile).
 	 *
-	 * @param boolean $obfuscate obfuscate value
+	 * @param bool $obfuscate obfuscate value
 	 */
-	public function setObfuscate($obfuscate) {
+	public function setObfuscate(bool $obfuscate): void {
 		$this->obfuscate = $obfuscate;
 	}
 
 	/**
 	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
 	 *
-	 * @param boolean $transient transient field
+	 * @param bool $transient transient field
 	 */
-	public function setTransient($transient) {
+	public function setTransient(bool $transient): void {
 		$this->transient = $transient;
 	}
 
 	/**
 	 * Specifies if the input field is required.
 	 *
-	 * @param boolean $required required
+	 * @param bool $required required
 	 */
-	public function setRequired($required) {
+	public function setRequired(bool $required): void {
 		$this->required = $required;
 	}
 
 	/**
 	 * Sets the field as number field with minimum and maximum values.
 	 *
-	 * @param integer $minimum minimum
-	 * @param integer $maximum maximum
+	 * @param int $minimum minimum
+	 * @param int|null $maximum maximum
 	 * @param int $step step value
 	 */
-	public function setMinimumAndMaximumNumber($minimum = 0, $maximum = null, int $step = 1) {
+	public function setMinimumAndMaximumNumber(int $minimum = 0, ?int $maximum = null, int $step = 1): void {
 		$this->minValue = $minimum;
 		$this->maxValue = $maximum;
 		$this->stepValue = $step;
@@ -922,9 +922,9 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Enables autocompletion for this input field.
 	 *
-	 * @param array $values list of values to suggest
+	 * @param string[] $values list of values to suggest
 	 */
-	public function enableAutocompletion($values) {
+	public function enableAutocompletion(array $values): void {
 		$this->autocomplete = true;
 		$this->autocompleteValues = $values;
 	}
@@ -932,18 +932,18 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Sets the JavaScript for the onKeyPress event.
 	 *
-	 * @param String $onKeyPress JavaScript code
+	 * @param string $onKeyPress JavaScript code
 	 */
-	public function setOnKeyPress($onKeyPress) {
+	public function setOnKeyPress(string $onKeyPress): void {
 		$this->onKeyPress = $onKeyPress;
 	}
 
 	/**
 	 * Sets the JavaScript for the onKeyUp event.
 	 *
-	 * @param String $onKeyUp JavaScript code
+	 * @param string $onKeyUp JavaScript code
 	 */
-	public function setOnKeyUp($onKeyUp) {
+	public function setOnKeyUp(string $onKeyUp): void {
 		$this->onKeyUp = $onKeyUp;
 	}
 
@@ -959,11 +959,11 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Shows a calendar when the field is selected.
 	 *
-	 * @param String $format calendar format (e.g. "Y-m-d" or "Y-m-d H:i:S")
+	 * @param string $format calendar format (e.g. "Y-m-d" or "Y-m-d H:i:S")
 	 * @param bool $withTime activate time selection (default: false)
 	 * @param bool $withSeconds show seconds (default: false)
 	 */
-	public function showCalendar($format, $withTime = false, $withSeconds = false) {
+	public function showCalendar(string $format, bool $withTime = false, bool $withSeconds = false): void {
 		$this->showCalendar = true;
 		$this->calendarFormatWithTime = $withTime;
 		$this->calendarFormatWithSeconds = $withSeconds;
@@ -976,16 +976,16 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Shows a DN selection next to input field.
 	 */
-	public function showDnSelection() {
+	public function showDnSelection(): void {
 		$this->showDnSelection = true;
 	}
 
 	/**
 	 * Sets the title for the input field.
 	 *
-	 * @param String $title title value
+	 * @param string $title title value
 	 */
-	public function setTitle($title) {
+	public function setTitle(string $title): void {
 		$this->title = htmlspecialchars($title);
 	}
 
@@ -993,9 +993,9 @@ class htmlInputField extends htmlElement {
 	 * Specifies the ID of a second field that must have the same value as this field.
 	 * This field is marked red if different or green if equal.
 	 *
-	 * @param String $sameValueFieldID ID of reference field
+	 * @param string $sameValueFieldID ID of reference field
 	 */
-	public function setSameValueFieldID($sameValueFieldID) {
+	public function setSameValueFieldID(string $sameValueFieldID): void {
 		$this->sameValueFieldID = $sameValueFieldID;
 	}
 
@@ -1003,22 +1003,22 @@ class htmlInputField extends htmlElement {
 	 * Turns this field into a live filter for a select box.
 	 * Cannot be used together with setOnKeyUp().
 	 *
-	 * @param String $name select box name
+	 * @param string $name select box name
 	 */
-	public function filterSelectBox($name) {
+	public function filterSelectBox(string $name): void {
 		$this->setOnKeyUp('window.lam.filterSelect.activate(\'' . $this->fieldName . '\', \'' . $name . '\', event);');
 	}
 
 	/**
 	 * Returns if the field content should be auto-trimmed (remove spaces at start/end).
 	 *
-	 * @return boolean auto-trim input
+	 * @return bool auto-trim input
 	 */
-	protected function isAutoTrim() {
+	protected function isAutoTrim(): bool {
 		return $this->autoTrim && !$this->isPassword;
 	}
 
-	public function disableAutoTrim() {
+	public function disableAutoTrim(): void {
 		$this->autoTrim = false;
 	}
 
@@ -1027,7 +1027,7 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param string $id id
 	 */
-	public function setId(string $id) {
+	public function setId(string $id): void {
 		$this->id = $id;
 	}
 
@@ -1068,20 +1068,20 @@ class htmlInputField extends htmlElement {
 class htmlHelpLink extends htmlElement {
 
 	/** help ID */
-	private $helpID;
+	private string $helpID;
 	/** module name if it should be forced */
-	private $module;
+	private ?string $module;
 	/** account type if it should be forced */
-	private $scope;
+	private ?string $scope;
 
 	/**
 	 * Constructor
 	 *
-	 * @param String $helpID help ID
-	 * @param String $module module name (optional, only if value from generateHTML() should be overwritten)
-	 * @param String $scope account type (e.g. user) (optional, only if value from generateHTML() should be overwritten)
+	 * @param string $helpID help ID
+	 * @param string|null $module module name (optional, only if value from generateHTML() should be overwritten)
+	 * @param string|null $scope account type (e.g. user) (optional, only if value from generateHTML() should be overwritten)
 	 */
-	function __construct($helpID, $module = null, $scope = null) {
+	public function __construct(string $helpID, ?string $module = null, ?string $scope = null) {
 		$this->helpID = $helpID;
 		$this->module = $module;
 		$this->scope = $scope;
@@ -1091,9 +1091,6 @@ class htmlHelpLink extends htmlElement {
 	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope): array {
-		if ($this->helpID === null) {
-			return [];
-		}
 		// overwrite module and scope if needed
 		if ($this->module != null) {
 			$module = $this->module;
@@ -1120,21 +1117,21 @@ class htmlHelpLink extends htmlElement {
 class htmlButton extends htmlElement {
 
 	/** button name */
-	protected $name;
+	protected string $name;
 	/** button text or image */
-	protected $value;
+	protected string $value;
 	/** image button or text button */
-	protected $isImageButton;
+	protected bool $isImageButton;
 	/** title */
-	private $title;
+	private ?string $title = null;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	private bool $isEnabled = true;
 	/** onclick event */
-	private $onClick;
+	private ?string $onClick = null;
 	/** button type (default: "submit" if no onClick and "button" with onClick) */
-	private $type;
+	private ?string $type = null;
 	/** disable form validation */
-	private $noFormValidation = false;
+	private bool $noFormValidation = false;
 
 	/**
 	 * Constructor.
@@ -1143,7 +1140,7 @@ class htmlButton extends htmlElement {
 	 * @param string $value button text or image (16x16px, relative to graphics folder)
 	 * @param bool $isImageButton image or text button (default text)
 	 */
-	function __construct($name, $value, $isImageButton = false) {
+	public function __construct(string $name, string $value, bool $isImageButton = false) {
 		$this->name = htmlspecialchars($name);
 		$this->value = htmlspecialchars($value);
 		$this->isImageButton = $isImageButton;
@@ -1185,10 +1182,10 @@ class htmlButton extends htmlElement {
 		if ($this->noFormValidation) {
 			$noFormValidation = ' formnovalidate="formnovalidate"';
 		}
-		$type = $this->type == null ? ' type="submit"' : ' type="' . $this->type . '"';
+		$type = $this->type === null ? ' type="submit"' : ' type="' . $this->type . '"';
 		$onClick = '';
-		if ($this->onClick != null) {
-			if ($this->type == null) {
+		if ($this->onClick !== null) {
+			if ($this->type === null) {
 				$type = ' type="button"';
 			}
 			$onClick = ' onclick="' . $this->onClick . '"';
@@ -1210,7 +1207,7 @@ class htmlButton extends htmlElement {
 	 *
 	 * @param string|null $title title
 	 */
-	public function setTitle($title) {
+	public function setTitle(?string $title): void {
 		if ($title !== null) {
 			$this->title = htmlspecialchars($title);
 		}
@@ -1219,9 +1216,9 @@ class htmlButton extends htmlElement {
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
@@ -1229,16 +1226,18 @@ class htmlButton extends htmlElement {
 	 * Sets the onclick event code.
 	 * This makes this button a simple button that does not submit a form.
 	 *
-	 * @param String $onClick JS code
+	 * @param string $onClick JS code
 	 */
-	public function setOnClick($onClick) {
+	public function setOnClick(string $onClick): void {
 		$this->onClick = $onClick;
 	}
 
 	/**
 	 * Allows to override the default button type ("submit" if no onClick and "button" with onClick).
+	 *
+	 * @param string $type type (e.g. button)
 	 */
-	public function setType($type) {
+	public function setType(string $type): void {
 		$this->type = $type;
 	}
 
