@@ -1364,7 +1364,6 @@ class htmlSelect extends htmlElement {
 			$name = ' name="' . $this->name . '[]" id="' . $this->name . '"';
 		}
 		$size = ' size="' . $this->size . '"';
-		$class = '';
 		$classList = $this->cssClasses;
 		if ($this->rightToLeftTextDirection) {
 			$classList[] = 'rightToLeftText';
@@ -1375,7 +1374,7 @@ class htmlSelect extends htmlElement {
 			$disabled = ' disabled';
 		}
 		$style = '';
-		if ($this->width != '') {
+		if ($this->width !== '') {
 			$style = ' style="width: ' . $this->width . '"';
 		}
 		$onchange = '';
@@ -1385,7 +1384,7 @@ class htmlSelect extends htmlElement {
 		if (($this->tableRowsToHide != null) || ($this->tableRowsToShow != null)) {
 			$this->printCodeForShowHideTableRows($onchange);
 		}
-		if ($onchange != '') {
+		if ($onchange !== '') {
 			$onchange = ' onchange="' . $onchange . '"';
 		}
 		// hide select boxes that contain less than 2 elements

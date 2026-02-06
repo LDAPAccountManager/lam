@@ -20,6 +20,8 @@ namespace LAM\CONFIG;
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+use LAMConfig;
+
 
 /**
  * Common functions for configuration pages.
@@ -52,9 +54,9 @@ class ConfigurationPageTab {
 /**
  * Prints the header bar.
  *
- * @param \LAMConfig $conf configuration object
+ * @param LAMConfig $conf configuration object
  */
-function printConfigurationPageHeaderBar($conf) {
+function printConfigurationPageHeaderBar(LAMConfig $conf): void {
 	?>
     <div id="lam-topnav" class="lam-header">
         <div class="lam-header-left lam-menu-stay">
@@ -97,7 +99,7 @@ function printConfigurationPageHeaderBar($conf) {
  *
  * @param string $active active tab
  */
-function printConfigurationPageTabs($active) {
+function printConfigurationPageTabs(string $active): void {
 	$tabs = [
 		ConfigurationPageTab::GENERAL => [
 			'id' => 'generalSettingsButton',

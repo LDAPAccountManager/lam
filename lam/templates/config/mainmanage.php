@@ -222,7 +222,7 @@ if (isset($_POST['submitFormData'])) {
 		}
 	}
 	// set session timeout
-	$cfg->sessionTimeout = $_POST['sessionTimeout'];
+	$cfg->sessionTimeout = intval($_POST['sessionTimeout']);
 	// set hide login error details
 	$cfg->hideLoginErrorDetails = (isset($_POST['hideLoginErrorDetails']) && ($_POST['hideLoginErrorDetails'] === 'on')) ? 'true' : 'false';
 	// set allowed hosts
@@ -278,7 +278,7 @@ if (isset($_POST['submitFormData'])) {
 		$cfg->allowedHostsSelfService = $allowedHostsSelfService;
 	}
 	// set log level
-	$cfg->logLevel = $_POST['logLevel'];
+	$cfg->logLevel = intval($_POST['logLevel']);
 	// set log destination
 	if ($_POST['logDestination'] == "none") {
 		$cfg->logDestination = "NONE";
@@ -315,13 +315,13 @@ if (isset($_POST['submitFormData'])) {
 		}
 	}
 	// password policies
-	$cfg->passwordMinLength = $_POST['passwordMinLength'];
-	$cfg->passwordMinLower = $_POST['passwordMinLower'];
-	$cfg->passwordMinUpper = $_POST['passwordMinUpper'];
-	$cfg->passwordMinNumeric = $_POST['passwordMinNumeric'];
-	$cfg->passwordMinSymbol = $_POST['passwordMinSymbol'];
-	$cfg->passwordMinClasses = $_POST['passwordMinClasses'];
-	$cfg->checkedRulesCount = $_POST['passwordRulesCount'];
+	$cfg->passwordMinLength = intval($_POST['passwordMinLength']);
+	$cfg->passwordMinLower = intval($_POST['passwordMinLower']);
+	$cfg->passwordMinUpper = intval($_POST['passwordMinUpper']);
+	$cfg->passwordMinNumeric = intval($_POST['passwordMinNumeric']);
+	$cfg->passwordMinSymbol = intval($_POST['passwordMinSymbol']);
+	$cfg->passwordMinClasses = intval($_POST['passwordMinClasses']);
+	$cfg->checkedRulesCount = intval($_POST['passwordRulesCount']);
 	$cfg->passwordMustNotContain3Chars = isset($_POST['passwordMustNotContain3Chars']) && ($_POST['passwordMustNotContain3Chars'] == 'on') ? 'true' : 'false';
 	$cfg->passwordMustNotContainUser = isset($_POST['passwordMustNotContainUser']) && ($_POST['passwordMustNotContainUser'] == 'on') ? 'true' : 'false';
 	if (function_exists('curl_init')) {
@@ -548,7 +548,7 @@ if (isset($_POST['submitFormData'])) {
 	// security settings
 	$row->add(new htmlSubTitle(_("Security settings")));
 	$options = ['5', '10', '20', '30', '60', '90', '120', '240'];
-	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, [$cfg->sessionTimeout], _("Session timeout"), '238'));
+	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, [(string) $cfg->sessionTimeout], _("Session timeout"), '238'));
 	$hideLoginErrorDetails = ($cfg->hideLoginErrorDetails === 'true');
 	$row->add(new htmlResponsiveInputCheckbox('hideLoginErrorDetails', $hideLoginErrorDetails, _('Hide LDAP details on failed login'), '257'));
 	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), 30, 7, _("Allowed hosts"), '241'));
@@ -627,16 +627,16 @@ if (isset($_POST['submitFormData'])) {
 		$optionsPwdLength[] = (string) $i;
 	}
 	$options4 = ['0', '1', '2', '3', '4'];
-	$row->add(new htmlResponsiveSelect('passwordMinLength', $optionsPwdLength, [$cfg->passwordMinLength], _('Minimum password length'), '242'));
+	$row->add(new htmlResponsiveSelect('passwordMinLength', $optionsPwdLength, [(string) $cfg->passwordMinLength], _('Minimum password length'), '242'));
 	$row->addVerticalSpacer('1rem');
-	$row->add(new htmlResponsiveSelect('passwordMinLower', $optionsPwdLength, [$cfg->passwordMinLower], _('Minimum lowercase characters'), '242'));
-	$row->add(new htmlResponsiveSelect('passwordMinUpper', $optionsPwdLength, [$cfg->passwordMinUpper], _('Minimum uppercase characters'), '242'));
-	$row->add(new htmlResponsiveSelect('passwordMinNumeric', $optionsPwdLength, [$cfg->passwordMinNumeric], _('Minimum numeric characters'), '242'));
-	$row->add(new htmlResponsiveSelect('passwordMinSymbol', $optionsPwdLength, [$cfg->passwordMinSymbol], _('Minimum symbolic characters'), '242'));
-	$row->add(new htmlResponsiveSelect('passwordMinClasses', $options4, [$cfg->passwordMinClasses], _('Minimum character classes'), '242'));
+	$row->add(new htmlResponsiveSelect('passwordMinLower', $optionsPwdLength, [(string) $cfg->passwordMinLower], _('Minimum lowercase characters'), '242'));
+	$row->add(new htmlResponsiveSelect('passwordMinUpper', $optionsPwdLength, [(string) $cfg->passwordMinUpper], _('Minimum uppercase characters'), '242'));
+	$row->add(new htmlResponsiveSelect('passwordMinNumeric', $optionsPwdLength, [(string) $cfg->passwordMinNumeric], _('Minimum numeric characters'), '242'));
+	$row->add(new htmlResponsiveSelect('passwordMinSymbol', $optionsPwdLength, [(string) $cfg->passwordMinSymbol], _('Minimum symbolic characters'), '242'));
+	$row->add(new htmlResponsiveSelect('passwordMinClasses', $options4, [(string) $cfg->passwordMinClasses], _('Minimum character classes'), '242'));
 	$row->addVerticalSpacer('1rem');
 	$rulesCountOptions = [_('all') => '-1', '3' => '3', '4' => '4'];
-	$rulesCountSelect = new htmlResponsiveSelect('passwordRulesCount', $rulesCountOptions, [$cfg->checkedRulesCount], _('Number of rules that must match'), '246');
+	$rulesCountSelect = new htmlResponsiveSelect('passwordRulesCount', $rulesCountOptions, [(string) $cfg->checkedRulesCount], _('Number of rules that must match'), '246');
 	$rulesCountSelect->setHasDescriptiveElements(true);
 	$row->add($rulesCountSelect);
 	$passwordMustNotContainUser = ($cfg->passwordMustNotContainUser === 'true');
@@ -656,7 +656,7 @@ if (isset($_POST['submitFormData'])) {
 		_("Warning") => (string) LOG_WARNING,
 		_("Error") => (string) LOG_ERR
 	];
-	$levelSelect = new htmlResponsiveSelect('logLevel', $levelOptions, [$cfg->logLevel], _("Log level"), '239');
+	$levelSelect = new htmlResponsiveSelect('logLevel', $levelOptions, [(string) $cfg->logLevel], _("Log level"), '239');
 	$levelSelect->setHasDescriptiveElements(true);
 	$row->add($levelSelect);
 	$destinationOptions = [

@@ -9,7 +9,7 @@ use LamTemporaryFilesManager;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2025  Roland Gruber
+ Copyright (C) 2018 - 2026  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -50,14 +50,14 @@ class Exporter {
 	private const FILE = 'file';
 	private const OUTPUT = 'output';
 
-	private $baseDn;
-	private $searchScope;
-	private $filter;
-	private $attributes;
-	private $includeSystem = false;
-	private $saveAsFile = false;
-	private $format;
-	private $ending;
+	private string $baseDn;
+	private string $searchScope;
+	private string $filter;
+	private string $attributes;
+	private bool $includeSystem;
+	private bool $saveAsFile;
+	private string $format;
+	private string $ending;
 
 	/**
 	 * Constructor.
@@ -71,7 +71,7 @@ class Exporter {
 	 * @param string $format output format (LDIF, CSV)
 	 * @param string $ending line endings (windows, unix)
 	 */
-	public function __construct($baseDn, $searchScope, $filter, $attributes, $includeSystem, $saveAsFile, $format, $ending) {
+	public function __construct(string $baseDn, string $searchScope, string $filter, string $attributes, bool $includeSystem, bool $saveAsFile, string $format, string $ending) {
 		$this->baseDn = $baseDn;
 		$this->searchScope = $searchScope;
 		$this->filter = $filter;
@@ -87,7 +87,7 @@ class Exporter {
 	 *
 	 * @return string JSON result
 	 */
-	public function doExport() {
+	public function doExport(): string {
 		try {
 			$this->checkParameters();
 			$results = $this->getLDAPData();
@@ -107,11 +107,11 @@ class Exporter {
 	 * Returns the HTML for an error message.
 	 *
 	 * @param string $type message type (e.g. INFO)
-	 * @param string $title title
-	 * @param string $message message
+	 * @param string|null $title title
+	 * @param string|null $message message
 	 * @return string HTML
 	 */
-	public static function formatMessage($type, $title, $message) {
+	public static function formatMessage(string $type, ?string $title, ?string $message): string {
 		$msg = new htmlStatusMessage($type, $title, $message);
 		ob_start();
 		$msg->generateHTML(null, [$msg], [], true, 'user');
@@ -125,7 +125,7 @@ class Exporter {
 	 *
 	 * @throws LAMException in case of errors
 	 */
-	private function checkParameters() {
+	private function checkParameters(): void {
 		if (!get_preg($this->baseDn, 'dn')) {
 			throw new LAMException(_('Please enter a valid DN in the field:'), _('Base DN'));
 		}
@@ -134,10 +134,10 @@ class Exporter {
 	/**
 	 * Returns the LDAP entries
 	 *
-	 * @return array[] LDAP entries
+	 * @return array<string, string[]|string>[] LDAP entries
 	 * @throws LAMException error reading data
 	 */
-	private function getLDAPData() {
+	private function getLDAPData(): array {
 		$attributes = preg_split('/,[ ]*/', $this->attributes);
 		if ($this->includeSystem) {
 			$attributes = array_merge($attributes, ['+', 'passwordRetryCount', 'accountUnlockTime', 'nsAccountLock',
@@ -163,10 +163,11 @@ class Exporter {
 	/**
 	 * Writes the entries to file/response and prints JSON.
 	 *
-	 * @param array $entries LDAP entries
+	 * @param array<string, string[]|string>[] $entries LDAP entries
+	 * @return string JSON
 	 * @throws LAMException error writing PDF
 	 */
-	private function writeDataAndReturnJson(&$entries) {
+	private function writeDataAndReturnJson(array &$entries): string {
 		$lineEnding = ($this->ending === 'windows') ? "\r\n" : "\n";
 		if ($this->format === 'csv') {
 			$output = $this->getCsvOutput($entries, $lineEnding);
@@ -197,10 +198,11 @@ class Exporter {
 	/**
 	 * Converts the given LDAP entries to CSV format.
 	 *
-	 * @param array $entries entries
+	 * @param array<string, string[]|string>[] $entries entries
 	 * @param string $lineEnding line ending
+	 * @return string CSV
 	 */
-	private function getCsvOutput(&$entries, $lineEnding) {
+	private function getCsvOutput(array &$entries, string $lineEnding): string {
 		$attributeNames = [];
 		foreach ($entries as $entry) {
 			$entryAttributeNames = array_keys($entry);
@@ -243,17 +245,18 @@ class Exporter {
 	 * @param string $value CSV value
 	 * @return string escaped and quoted value
 	 */
-	private function escapeCsvAndAddQuotes($value) {
+	private function escapeCsvAndAddQuotes(string $value): string {
 		return '"' . str_replace('"', '""', $value) . '"';
 	}
 
 	/**
 	 * Converts the given LDAP entries to LDIF format.
 	 *
-	 * @param array $entries entries
+	 * @param array<string, string[]|string>[] $entries entries
 	 * @param string $lineEnding line ending
+	 * @return string LDIF
 	 */
-	private function getLdifOutput(&$entries, $lineEnding) {
+	private function getLdifOutput(array &$entries, string $lineEnding): string {
 		$output = '#' . $lineEnding;
 		$output .= '# ' . _('Base DN') . ': ' . $this->baseDn . $lineEnding;
 		$output .= '# ' . _('Search scope') . ': ' . $this->searchScope . $lineEnding;
@@ -291,8 +294,9 @@ class Exporter {
 	 *
 	 * @param string $content line content
 	 * @param string $lineEnding line ending
+	 * @return string wrapped string
 	 */
-	private function wrapLdif($content, $lineEnding) {
+	private function wrapLdif(string $content, string $lineEnding): string {
 		$line_length = 76;
 		if (strlen($content) <= $line_length) {
 			return $content;

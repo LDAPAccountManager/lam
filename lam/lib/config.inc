@@ -2841,32 +2841,32 @@ class LAMConfig {
 class LAMCfgMain {
 
 	/** PHP error reporting setting as E_ALL & ~E_NOTICE */
-	const ERROR_REPORTING_DEFAULT = 'default';
+	public const ERROR_REPORTING_DEFAULT = 'default';
 	/** PHP error reporting setting from php.ini */
-	const ERROR_REPORTING_SYSTEM = 'system';
+	public const ERROR_REPORTING_SYSTEM = 'system';
 	/** PHP error reporting setting as E_ALL */
-	const ERROR_REPORTING_ALL = 'all';
+	public const ERROR_REPORTING_ALL = 'all';
 
 	/** send license warnings via email */
-	const LICENSE_WARNING_EMAIL = 'email';
+	public const LICENSE_WARNING_EMAIL = 'email';
 	/** display license warnings on screen */
-	const LICENSE_WARNING_SCREEN = 'screen';
+	public const LICENSE_WARNING_SCREEN = 'screen';
 	/** send license warnings via email + display on screen */
-	const LICENSE_WARNING_ALL = 'all';
+	public const LICENSE_WARNING_ALL = 'all';
 	/** no license warning */
-	const LICENSE_WARNING_NONE = 'none';
+	public const LICENSE_WARNING_NONE = 'none';
 
 	/** SSL encryption for mail sending */
-	const SMTP_SSL = 'SSL';
+	public const SMTP_SSL = 'SSL';
 	/** TLS encryption for mail sending */
-	const SMTP_TLS = 'TLS';
+	public const SMTP_TLS = 'TLS';
 	/** No encryption for mail sending */
-	const SMTP_NONE = 'NONE';
+	public const SMTP_NONE = 'NONE';
 
 	/** store configuration on local file system */
-	const DATABASE_FILE_SYSTEM = 'files';
+	public const DATABASE_FILE_SYSTEM = 'files';
 	/** store configuration in MySQL database */
-	const DATABASE_MYSQL = 'mysql';
+	public const DATABASE_MYSQL = 'mysql';
 
 	public const MAIL_ATTRIBUTE_DEFAULT = 'mail';
 	public const MAIL_BACKUP_ATTRIBUTE_DEFAULT = 'passwordselfresetbackupmail';
@@ -2874,99 +2874,99 @@ class LAMCfgMain {
 	public const SMS_ATTRIBUTES_DEFAULT = 'mobileTelephoneNumber;mobile';
 
 	/** Default profile */
-	public $default;
+	public ?string $default = null;
 
 	/** Password to change config.cfg */
-	private $password;
+	private ?string $password = null;
 
 	/** Time of inactivity before session times out (minutes) */
-	public $sessionTimeout = 30;
+	public int $sessionTimeout = 30;
 
 	/** @var string hides detail messages for login errors */
 	public string $hideLoginErrorDetails = 'false';
 
 	/** log level */
-	public $logLevel = LOG_NOTICE;
+	public int $logLevel = LOG_NOTICE;
 
 	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none, "REMOTE":server:port) */
-	public $logDestination = "SYSLOG";
+	public string $logDestination = "SYSLOG";
 
 	/** list of hosts which may access LAM */
-	public $allowedHosts = "";
+	public string $allowedHosts = "";
 
 	/** list of hosts which may access LAM Pro self service */
-	public $allowedHostsSelfService = '';
+	public string $allowedHostsSelfService = '';
 
 	/** minimum length for passwords */
-	public $passwordMinLength = 0;
+	public int $passwordMinLength = 0;
 
 	/** minimum uppercase characters */
-	public $passwordMinUpper = 0;
+	public int $passwordMinUpper = 0;
 
 	/** minimum lowercase characters */
-	public $passwordMinLower = 0;
+	public int $passwordMinLower = 0;
 
 	/** minimum numeric characters */
-	public $passwordMinNumeric = 0;
+	public int $passwordMinNumeric = 0;
 
 	/** minimum symbol characters */
-	public $passwordMinSymbol = 0;
+	public int $passwordMinSymbol = 0;
 
 	/** minimum character classes (upper, lower, numeric, symbols) */
-	public $passwordMinClasses = 0;
+	public int $passwordMinClasses = 0;
 
 	/** number of password rules that must match (-1 = all) */
-	public $checkedRulesCount = -1;
+	public int $checkedRulesCount = -1;
 
 	/** password may contain the user name */
-	public $passwordMustNotContainUser = 'false';
+	public string $passwordMustNotContainUser = 'false';
 
 	/** password may contain more than 2 characters of user/first/last name */
-	public $passwordMustNotContain3Chars = 'false';
+	public string $passwordMustNotContain3Chars = 'false';
 
 	/** external URL for password checking (e.g. https://domain.com/url/{SHA1}) */
-	public $externalPwdCheckUrl;
+	public ?string $externalPwdCheckUrl = null;
 
 	/** path to config file */
-	private $conffile;
+	private string $conffile;
 
 	/** uploaded SSL certificate that is stored to disk on save() */
-	private $uploadedSSLCaCert;
+	private ?string $uploadedSSLCaCert = null;
 
 	/** SSL certificate should be deleted on save() */
-	private $delSSLCaCert = false;
+	private bool $delSSLCaCert = false;
 
 	/** error reporting */
-	public $errorReporting = self::ERROR_REPORTING_DEFAULT;
+	public string $errorReporting = self::ERROR_REPORTING_DEFAULT;
 
 	/** license data */
-	private $license = '';
+	private string $license = '';
 
 	/** license warning email from address */
-	public $licenseEmailFrom = '';
+	public string $licenseEmailFrom = '';
 
 	/** license warning email TO address(es) separated by ";" */
-	public $licenseEmailTo = '';
+	public string $licenseEmailTo = '';
 
 	/** license warning email was last sent for this expiration date */
-	public $licenseEmailDateSent = '';
+	public string $licenseEmailDateSent = '';
 
 	/** type of license warning (email/screen/both/none) */
-	public $licenseWarningType = '';
+	public string $licenseWarningType = '';
 
 	/** mail server (server:port) */
-	public $mailServer = '';
+	public string $mailServer = '';
 
 	/** mail server user */
-	public $mailUser = '';
+	public string $mailUser = '';
 
 	/** mail server password */
-	public $mailPassword = '';
+	public string $mailPassword = '';
 
 	/**
 	 * @var string encryption type for SMTP connection
 	 */
-	public $mailEncryption = '';
+	public string $mailEncryption = '';
 
 	/**
 	 * @var string attribute to use for user mail address
@@ -3003,31 +3003,31 @@ class LAMCfgMain {
 	public string $smsDefaultCountryPrefix = '';
 
 	/** database type */
-	public $configDatabaseType = self::DATABASE_FILE_SYSTEM;
+	public string $configDatabaseType = self::DATABASE_FILE_SYSTEM;
 
 	/** database server name */
-	public $configDatabaseServer = '';
+	public string $configDatabaseServer = '';
 
 	/** database port */
-	public $configDatabasePort = '';
+	public string $configDatabasePort = '';
 
 	/** database name */
-	public $configDatabaseName = '';
+	public string $configDatabaseName = '';
 
 	/** database user */
-	public $configDatabaseUser = '';
+	public string $configDatabaseUser = '';
 
 	/** database password */
-	public $configDatabasePassword = '';
+	public string $configDatabasePassword = '';
 
 	/** database options */
-	public $configDatabaseSSLCA = '';
+	public string $configDatabaseSSLCA = '';
 
 	/** database password */
-	private $moduleSettings = '';
+	private string $moduleSettings = '';
 
-	/** list of data fields to save in config file */
-	private $settings = ["password", "default", "sessionTimeout", "hideLoginErrorDetails",
+	/** @var string[] $settings list of data fields to save in config file */
+	private array $settings = ["password", "default", "sessionTimeout", "hideLoginErrorDetails",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
@@ -3043,8 +3043,8 @@ class LAMCfgMain {
 		'smsProvider', 'smsApiKey', 'smsToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsAttributes', 'smsDefaultCountryPrefix'
 	];
 
-	/** persistence settings are always stored on local file system */
-	private $persistenceSettings = [
+	/** @var string[] $persistenceSettings persistence settings are always stored on local file system */
+	private array $persistenceSettings = [
 		'configDatabaseType', 'configDatabaseServer',
 		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
 		'configDatabasePassword', 'configDatabaseSSLCA', 'license'
@@ -3053,9 +3053,9 @@ class LAMCfgMain {
 	/**
 	 * Loads preferences from config file
 	 *
-	 * @param string $fileName file path for config file
+	 * @param string|null $fileName file path for config file
 	 */
-	function __construct($fileName = null) {
+	public function __construct(?string $fileName = null) {
 		$this->conffile = $fileName ?? __DIR__ . "/../config/config.cfg";
 		try {
 			$this->reload();
@@ -3069,9 +3069,9 @@ class LAMCfgMain {
 	 * Exports the configuration data.
 	 *
 	 * @param bool $skipPersistenceSettings do not include persistence settings
-	 * @return array config data
+	 * @return array<string, string|string[]|int|bool|null> config data
 	 */
-	public function exportData($skipPersistenceSettings = false): array {
+	public function exportData(bool $skipPersistenceSettings = false): array {
 		$data = [];
 		foreach ($this->settings as $setting) {
 			if ($skipPersistenceSettings && in_array($setting, $this->persistenceSettings)) {
@@ -3085,7 +3085,7 @@ class LAMCfgMain {
 	/**
 	 * Exports the configuration data, persistence settings only.
 	 *
-	 * @return array config data
+	 * @return array<string, string|string[]|int|bool|null> config data
 	 */
 	private function exportPersistenceData(): array {
 		$data = [];
@@ -3101,10 +3101,10 @@ class LAMCfgMain {
 	/**
 	 * Imports configuration data.
 	 *
-	 * @param array $data config data
+	 * @param array<string, string|string[]|int|bool|null|object> $data config data
 	 * @throws LAMException import error
 	 */
-	public function importData($data) {
+	public function importData(array $data): void {
 		foreach ($data as $dataKey => $dataValue) {
 			if (!in_array($dataKey, $this->settings)) {
 				continue;
@@ -3121,7 +3121,7 @@ class LAMCfgMain {
 	 *
 	 * @return null|string certificates
 	 */
-	public function exportCertificates() {
+	public function exportCertificates(): ?string {
 		$fileName = $this->getSSLCaCertPath();
 		if ($fileName === null) {
 			return null;
@@ -3141,7 +3141,7 @@ class LAMCfgMain {
 	 * @param null|string $certsContent certificates
 	 * @throws LAMException write to file failed
 	 */
-	public function importCertificates($certsContent) {
+	public function importCertificates(?string $certsContent): void {
 		$fileName = $this->getSSLCaCertPath();
 		if (empty($certsContent)) {
 			unlink($fileName);
@@ -3236,7 +3236,7 @@ class LAMCfgMain {
 			$this->saveLocal(false);
 		}
 		// store SSL certificate
-		if ($this->uploadedSSLCaCert != null) {
+		if ($this->uploadedSSLCaCert !== null) {
 			$sslPath = $this->getInternalSSLCaCertFileName();
 			$file = @fopen($sslPath, "w");
 			if ($file) {
@@ -3309,19 +3309,19 @@ class LAMCfgMain {
 	/**
 	 * Sets a new config password.
 	 *
-	 * @param String $password new password
+	 * @param string $password new password
 	 */
-	public function setPassword($password) {
+	public function setPassword(string $password): void {
 		$this->password = $this->hashPassword($password, generateSalt(16));
 	}
 
 	/**
 	 * Checks if the given password matches.
 	 *
-	 * @param String $password password
-	 * @return boolean true, if password matches
+	 * @param string $password password
+	 * @return bool true, if password matches
 	 */
-	public function checkPassword($password) {
+	public function checkPassword(string $password): bool {
 		if (str_starts_with($this->password, "{SSHA}")) {
 			$value = substr($this->password, strlen("{SSHA}"));
 			$parts = explode(" ", $value);
@@ -3344,11 +3344,11 @@ class LAMCfgMain {
 	/**
 	 * Returns the hashed password.
 	 *
-	 * @param String $password password
-	 * @param String $salt salt
-	 * @return String hash value
+	 * @param string $password password
+	 * @param string $salt salt
+	 * @return string hash value
 	 */
-	private function hashPassword($password, $salt) {
+	private function hashPassword(string $password, string $salt): string {
 		return "{CRYPT-SHA512}" . crypt($password, '$6$' . $salt) . " " . base64_encode($salt);
 	}
 
@@ -3364,18 +3364,18 @@ class LAMCfgMain {
 	/**
 	 * Returns if the configuration file is existing.
 	 *
-	 * @return boolean exists
+	 * @return bool exists
 	 */
-	public function isConfigFileExisting() {
+	public function isConfigFileExisting(): bool {
 		return file_exists($this->conffile);
 	}
 
 	/**
 	 * Tries to copy the config file from sample config.
 	 *
-	 * @return boolean copied
+	 * @return bool copied
 	 */
-	public function installSampleConfig() {
+	public function installSampleConfig(): bool {
 		$samplePath = __DIR__ . '/../config/config.cfg.sample';
 		return file_exists($samplePath) && copy($samplePath, $this->conffile);
 	}
@@ -3470,9 +3470,9 @@ class LAMCfgMain {
 	 * Marks a single or all SSL CA certificate files for deletion.
 	 * The changes take effect on save().
 	 *
-	 * @param int $index certificate index, null deletes all certificates (default: null)
+	 * @param int|null $index certificate index, null deletes all certificates (default: null)
 	 */
-	public function deleteSSLCaCert($index = null) {
+	public function deleteSSLCaCert(?int $index = null): void {
 		if ($index == null) {
 			// delete all
 			$this->delSSLCaCert = true;
@@ -3493,9 +3493,9 @@ class LAMCfgMain {
 	/**
 	 * Returns a list of all CA certificates.
 	 *
-	 * @return array list of certificates as output of openssl_x509_parse()
+	 * @return array<int, array<string, string[][]>> list of certificates as output of openssl_x509_parse()
 	 */
-	public function getSSLCaCertificates() {
+	public function getSSLCaCertificates(): array {
 		if ($this->delSSLCaCert) {
 			return [];
 		}
@@ -3537,10 +3537,10 @@ class LAMCfgMain {
 	/**
 	 * Splits the certificate content into single PEM data chunks.
 	 *
-	 * @param String $content PEM file content
-	 * @return array one element for each certificate chunk
+	 * @param string $content PEM file content
+	 * @return array<int, string> one element for each certificate chunk
 	 */
-	private function splitSSLCaCertificateContent($content) {
+	private function splitSSLCaCertificateContent(string $content): array {
 		if (empty($content)) {
 			return [];
 		}
@@ -3568,7 +3568,7 @@ class LAMCfgMain {
 	 *
 	 * @return string[] license
 	 */
-	public function getLicenseLines() {
+	public function getLicenseLines(): array {
 		return explode(LAMConfig::LINE_SEPARATOR, $this->license);
 	}
 
@@ -3577,7 +3577,7 @@ class LAMCfgMain {
 	 *
 	 * @param string[] $licenseLines license lines
 	 */
-	public function setLicenseLines($licenseLines) {
+	public function setLicenseLines(array $licenseLines): void {
 		$this->license = implode(LAMConfig::LINE_SEPARATOR, $licenseLines);
 	}
 
@@ -3586,7 +3586,7 @@ class LAMCfgMain {
 	 *
 	 * @return string warning type
 	 */
-	public function getLicenseWarningType() {
+	public function getLicenseWarningType(): string {
 		if (empty($this->licenseWarningType)) {
 			return self::LICENSE_WARNING_SCREEN;
 		}
@@ -3598,7 +3598,7 @@ class LAMCfgMain {
 	 *
 	 * @return bool show on screen
 	 */
-	public function showLicenseWarningOnScreen() {
+	public function showLicenseWarningOnScreen(): bool {
 		$type = $this->getLicenseWarningType();
 		return ($type === self::LICENSE_WARNING_ALL) || ($type === self::LICENSE_WARNING_SCREEN);
 	}
@@ -3608,7 +3608,7 @@ class LAMCfgMain {
 	 *
 	 * @return bool send via email
 	 */
-	public function sendLicenseWarningByEmail() {
+	public function sendLicenseWarningByEmail(): bool {
 		$type = $this->getLicenseWarningType();
 		return ($type === self::LICENSE_WARNING_ALL) || ($type === self::LICENSE_WARNING_EMAIL);
 	}
@@ -3618,7 +3618,7 @@ class LAMCfgMain {
 	 *
 	 * @param int $timeStamp time stamp
 	 */
-	public function wasLicenseWarningSent($timeStamp) {
+	public function wasLicenseWarningSent(int $timeStamp): bool {
 		if (empty($this->licenseEmailDateSent)) {
 			return false;
 		}
@@ -3673,7 +3673,7 @@ class LAMCfgMain {
 	/**
 	 * Returns a list of module settings.
 	 *
-	 * @return array module settings
+	 * @return array<string, array<string, string>> module settings
 	 */
 	public function getModuleSettings(): array {
 		if (empty($this->moduleSettings)) {
@@ -3685,7 +3685,7 @@ class LAMCfgMain {
 	/**
 	 * Sets the module settings.
 	 *
-	 * @param array $settings module settings
+	 * @param array<string, array<string, string>> $settings module settings
 	 */
 	public function setModuleSettings(array $settings): void {
 		$this->moduleSettings = base64_encode(json_encode($settings));
