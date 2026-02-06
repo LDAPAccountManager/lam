@@ -51,6 +51,9 @@ $row->add(new htmlSubTitle('Subtitle image large', '../../graphics/tux.svg', nul
 $row->add(new htmlSubTitle('Subtitle h4', null, null, false, htmlSubTitle::H4));
 $row->add(new htmlSubTitle('Subtitle h5', null, null, false, htmlSubTitle::H5));
 
+$row->addLabel(new htmlOutputText('Required text'));
+$row->addField(new htmlOutputText('Required', true, true));
+
 $row->add(new htmlSubTitle('Buttons'));
 
 $row->addLabel(new htmlOutputText('Default'));

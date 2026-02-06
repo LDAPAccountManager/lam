@@ -1285,41 +1285,41 @@ class htmlAccountPageButton extends htmlButton {
 class htmlSelect extends htmlElement {
 
 	/** name of select field */
-	protected $name;
+	protected string $name;
 	/** size */
-	private $size;
+	private string $size;
 	/** allows multi-selection */
-	private $multiSelect = false;
-	/** elements */
-	private $elements;
-	/** selected elements */
-	private $selectedElements = [];
+	private bool $multiSelect = false;
+	/** @var string[]|array<string, string>|array<string, string[]|array<string, string>> $elements elements */
+	private array $elements;
+	/** @var string[] $selectedElements selected elements */
+	private array $selectedElements = [];
 	/** descriptive elements */
-	private $hasDescriptiveElements = false;
+	private bool $hasDescriptiveElements = false;
 	/** contains optgroups */
-	private $containsOptgroups = false;
+	private bool $containsOptgroups = false;
 	/** sorting enabled */
-	private $sortElements = true;
+	private bool $sortElements = true;
 	/** right to left text direction */
-	private $rightToLeftTextDirection = false;
+	private bool $rightToLeftTextDirection = false;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	private bool $isEnabled = true;
 	/** width of input element */
-	private $width = '';
+	private string $width = '';
 	/** transform select boxes with one element to text */
-	private $transformSingleSelect = true;
+	private bool $transformSingleSelect = true;
 	/** onchange event */
-	private $onchangeEvent;
+	private ?string $onchangeEvent = null;
 	/** indicates that this field should not automatically be saved in the self service or server profile */
-	private $transient = false;
-	/** list of enclosing table rows to hide when checked */
-	protected $tableRowsToHide = [];
-	/** list of enclosing table rows to show when checked */
-	protected $tableRowsToShow = [];
+	private bool $transient = false;
+	/** @var array<string, string[]> $tableRowsToHide list of enclosing table rows to hide when checked */
+	protected array $tableRowsToHide = [];
+	/** @var array<string, string[]> $tableRowsToShow list of enclosing table rows to show when checked */
+	protected array $tableRowsToShow = [];
 	/** dynamic scrolling */
-	private $dynamicScrolling = false;
-	/** CSS classes for values */
-	private $optionCssClasses = [];
+	private bool $dynamicScrolling = false;
+	/** @var array<string, string> $optionCssClasses CSS classes for values */
+	private array $optionCssClasses = [];
 
 	/**
 	 * Constructor.
@@ -1340,7 +1340,7 @@ class htmlSelect extends htmlElement {
 	 * @param string[] $selectedElements list of selected elements (optional, default none)
 	 * @param int $size size (optional, default = 1)
 	 */
-	public function __construct($name, $elements, $selectedElements = [], $size = 1) {
+	public function __construct(string $name, array $elements, array $selectedElements = [], int $size = 1) {
 		$this->name = htmlspecialchars($name);
 		$this->elements = $elements;
 		if ($selectedElements != null) {
@@ -1435,9 +1435,9 @@ class htmlSelect extends htmlElement {
 	/**
 	 * Prints the HTML code of the option tags.
 	 *
-	 * @param array $elements list of options
+	 * @param array<string, string> $elements list of options
 	 */
-	private function printOptionsHTML($elements) {
+	private function printOptionsHTML(array $elements): void {
 		if ($this->dynamicScrolling) {
 			echo "<option value=\"#\">#</option>\n";
 			return;
@@ -1478,9 +1478,9 @@ class htmlSelect extends htmlElement {
 	/**
 	 * Specifies if the elements are just a simple list or an associative array (default: simple list).
 	 *
-	 * @param boolean $hasDescriptiveElements activates descriptive elements
+	 * @param bool $hasDescriptiveElements activates descriptive elements
 	 */
-	public function setHasDescriptiveElements($hasDescriptiveElements) {
+	public function setHasDescriptiveElements(bool $hasDescriptiveElements): void {
 		$this->hasDescriptiveElements = $hasDescriptiveElements;
 	}
 
@@ -1488,81 +1488,81 @@ class htmlSelect extends htmlElement {
 	 * Specifies if the elements are divided into optgroups.
 	 * In this case the provided options are an array where the key is the optgroup label and the value is an array containing the options for the optgroup.
 	 *
-	 * @param boolean $containsOptgroups activates optgroups
+	 * @param bool $containsOptgroups activates optgroups
 	 */
-	public function setContainsOptgroups($containsOptgroups) {
+	public function setContainsOptgroups(bool $containsOptgroups): void {
 		$this->containsOptgroups = $containsOptgroups;
 	}
 
 	/**
 	 * Specifies if multi-selection is enabled (default: disabled).
 	 *
-	 * @param boolean $multiSelect allows multi-selection
+	 * @param bool $multiSelect allows multi-selection
 	 */
-	public function setMultiSelect($multiSelect) {
+	public function setMultiSelect(bool $multiSelect): void {
 		$this->multiSelect = $multiSelect;
 	}
 
 	/**
 	 * Specifies if the elements should be sorted (default: sort).
 	 *
-	 * @param boolean $sortElements sort elements
+	 * @param bool $sortElements sort elements
 	 */
-	public function setSortElements($sortElements) {
+	public function setSortElements(bool $sortElements): void {
 		$this->sortElements = $sortElements;
 	}
 
 	/**
 	 * Specifies if the text direction should be set to right to left.
 	 *
-	 * @param boolean $rightToLeftTextDirection if true use right to left direction
+	 * @param bool $rightToLeftTextDirection if true use right to left direction
 	 */
-	public function setRightToLeftTextDirection($rightToLeftTextDirection) {
+	public function setRightToLeftTextDirection(bool $rightToLeftTextDirection): void {
 		$this->rightToLeftTextDirection = $rightToLeftTextDirection;
 	}
 
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
 	/**
 	 * Specifies the width of this selection box.
 	 *
-	 * @param String $width width (e.g. 20em)
+	 * @param string $width width (e.g. 20em)
 	 */
-	public function setWidth($width) {
+	public function setWidth(string $width): void {
 		$this->width = htmlspecialchars($width);
 	}
 
 	/**
 	 * Specifies if select boxes that contain only a single element should be transformed to a simple text field.
 	 *
-	 * @param boolean $transformSingleSelect transform single options to text
+	 * @param bool $transformSingleSelect transform single options to text
 	 */
-	public function setTransformSingleSelect($transformSingleSelect) {
+	public function setTransformSingleSelect(bool $transformSingleSelect): void {
 		$this->transformSingleSelect = $transformSingleSelect;
 	}
 
 	/**
 	 * Sets the JavaScript code for the onchange event.
 	 *
-	 * @param String $onchangeEvent onchange event code (e.g. myfunction();)
+	 * @param string $onchangeEvent onchange event code (e.g. myfunction();)
 	 */
-	public function setOnchangeEvent($onchangeEvent) {
+	public function setOnchangeEvent(string $onchangeEvent): void {
 		$this->onchangeEvent = htmlspecialchars($onchangeEvent);
 	}
 
 	/**
 	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
 	 *
-	 * @param boolean $transient transient field
+	 * @param bool $transient transient field
 	 */
-	public function setTransient($transient) {
+	public function setTransient(bool $transient): void {
 		$this->transient = $transient;
 	}
 
@@ -1578,9 +1578,9 @@ class htmlSelect extends htmlElement {
 	 * <br> Example for $tableRowsToHide:
 	 * <br> array('yes' => array('option1', 'option2'), 'no' => array('option3'))
 	 *
-	 * @param array $tableRowsToHide array of select value => array of IDs of child elements to hide
+	 * @param array<string, string[]> $tableRowsToHide array of select value => array of IDs of child elements to hide
 	 */
-	public function setTableRowsToHide($tableRowsToHide) {
+	public function setTableRowsToHide(array $tableRowsToHide): void {
 		$this->tableRowsToHide = $tableRowsToHide;
 	}
 
@@ -1596,18 +1596,18 @@ class htmlSelect extends htmlElement {
 	 * <br> Example for $tableRowsToShow:
 	 * <br> array('yes' => array('option1', 'option2'), 'no' => array('option3'))
 	 *
-	 * @param array $tableRowsToShow array of select value => array of IDs of child elements to show
+	 * @param array<string, string[]> $tableRowsToShow array of select value => array of IDs of child elements to show
 	 */
-	public function setTableRowsToShow($tableRowsToShow) {
+	public function setTableRowsToShow(array $tableRowsToShow): void {
 		$this->tableRowsToShow = $tableRowsToShow;
 	}
 
 	/**
 	 * Creates the JavaScript code to hide/show table rows based on the select value.
 	 *
-	 * @param String $onChange onChange code
+	 * @param string $onChange onChange code
 	 */
-	private function printCodeForShowHideTableRows(&$onChange) {
+	private function printCodeForShowHideTableRows(string &$onChange): void {
 		if ((count($this->tableRowsToHide) === 0) && (count($this->tableRowsToShow) === 0)) {
 			return;
 		}
@@ -1667,7 +1667,7 @@ class htmlSelect extends htmlElement {
 	 * Enable dynamic scrolling. This limits the number of select options to 10000 by dynamically adding/removing options.
 	 * This will not be enabled when optgroups are used or the option size is less than 10000.
 	 */
-	public function enableDynamicScrolling() {
+	public function enableDynamicScrolling(): void {
 		// not possible for optgroups and smaller option lists
 		if ((count($this->elements) < 10000) || $this->containsOptgroups) {
 			return;
@@ -1690,7 +1690,7 @@ class htmlSelect extends htmlElement {
 	/**
 	 * Sets CSS classes for option values.
 	 *
-	 * @param array $optionCssClasses array('option value' => 'CSS class(es)')
+	 * @param array<string, string> $optionCssClasses array('option value' => 'CSS class(es)')
 	 */
 	public function setOptionCssClasses(array $optionCssClasses): void {
 		$this->optionCssClasses = $optionCssClasses;
@@ -1707,19 +1707,19 @@ class htmlSelect extends htmlElement {
 class htmlRadio extends htmlElement {
 
 	/** name of select field */
-	private $name;
-	/** elements */
-	private $elements;
+	private string $name;
+	/** @var array<string, string> $elements elements */
+	private array $elements;
 	/** selected element */
-	private $selectedElement;
+	private ?string $selectedElement = null;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	private bool $isEnabled = true;
 	/** on change code */
-	private $onchangeEvent;
-	/** list of enclosing table rows to hide when checked */
-	protected $tableRowsToHide = [];
-	/** list of enclosing table rows to show when checked */
-	protected $tableRowsToShow = [];
+	private ?string $onchangeEvent = null;
+	/** @var array<string, string[]> $tableRowsToHide list of enclosing table rows to hide when checked */
+	protected array $tableRowsToHide = [];
+	/** @var array<string, string[]> $tableRowsToShow list of enclosing table rows to show when checked */
+	protected array $tableRowsToShow = [];
 
 	/**
 	 * Constructor.
@@ -1728,11 +1728,11 @@ class htmlRadio extends htmlElement {
 	 * <br>
 	 * <br>$radio = new htmlRadio('myName', array('label1' => 'value1', 'label2' => 'value2'), array('value1'));
 	 *
-	 * @param String $name element name
-	 * @param array $elements list of elements array(label => value)
-	 * @param String $selectedElement value of selected element (optional, default none)
+	 * @param string $name element name
+	 * @param array<string, string> $elements list of elements array(label => value)
+	 * @param string|null $selectedElement value of selected element (optional, default none)
 	 */
-	function __construct($name, $elements, $selectedElement = null) {
+	public function __construct(string $name, array $elements, ?string $selectedElement = null) {
 		$this->name = htmlspecialchars($name);
 		$this->elements = $elements;
 		if ($selectedElement != null) {
@@ -1785,18 +1785,18 @@ class htmlRadio extends htmlElement {
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
 	/**
 	 * Sets the JavaScript code for the onchange event.
 	 *
-	 * @param String $onchangeEvent onchange event code (e.g. myfunction();)
+	 * @param string $onchangeEvent onchange event code (e.g. myfunction();)
 	 */
-	public function setOnchangeEvent($onchangeEvent) {
+	public function setOnchangeEvent(string $onchangeEvent): void {
 		$this->onchangeEvent = htmlspecialchars($onchangeEvent);
 	}
 
@@ -1815,7 +1815,7 @@ class htmlRadio extends htmlElement {
 	 * @param int $counter index
 	 * @return string onChange code
 	 */
-	private function getOnchangeCodeForShowHideTableRows($counter): string {
+	private function getOnchangeCodeForShowHideTableRows(int $counter): string {
 		$onChange = '';
 		if ((count($this->tableRowsToHide) === 0) && (count($this->tableRowsToShow) === 0)) {
 			return $onChange;
@@ -1848,7 +1848,7 @@ class htmlRadio extends htmlElement {
 		return $onChange;
 	}
 
-	private function printInitialState() {
+	private function printInitialState(): void {
 		$selector = $this->getShowHideSelector();
 		// build script to set initial state
 		$script = '<script type="text/javascript">window.lam.utility.documentReady(function() {' . "\n";
@@ -1875,9 +1875,9 @@ class htmlRadio extends htmlElement {
 	 * <br> Example for $tableRowsToHide:
 	 * <br> array('val1' => array('option1', 'option2'), 'val2' => array('option3'))
 	 *
-	 * @param array $tableRowsToHide array of select value => array of IDs of child elements to hide
+	 * @param array<string, string[]> $tableRowsToHide array of select value => array of IDs of child elements to hide
 	 */
-	public function setTableRowsToHide($tableRowsToHide) {
+	public function setTableRowsToHide(array $tableRowsToHide): void {
 		$this->tableRowsToHide = $tableRowsToHide;
 	}
 
@@ -1890,9 +1890,9 @@ class htmlRadio extends htmlElement {
 	 * <br> Example for $tableRowsToShow:
 	 * <br> array('val1' => array('option1', 'option2'), 'val2' => array('option3'))
 	 *
-	 * @param array $tableRowsToShow array of select value => array of IDs of child elements to show
+	 * @param array<string, string[]> $tableRowsToShow array of select value => array of IDs of child elements to show
 	 */
-	public function setTableRowsToShow($tableRowsToShow) {
+	public function setTableRowsToShow(array $tableRowsToShow): void {
 		$this->tableRowsToShow = $tableRowsToShow;
 	}
 
@@ -1906,28 +1906,28 @@ class htmlRadio extends htmlElement {
 class htmlOutputText extends htmlElement {
 
 	/** the text to print */
-	private $string;
+	private string $string;
 	/** specifies if HTML code should be escaped */
-	private $escapeHTML;
+	private bool $escapeHTML;
 	/** bold text */
-	private $isBold = false;
+	private bool $isBold = false;
 	/** mark as required */
-	private $markAsRequired = false;
+	private bool $markAsRequired;
 	/** no wrap */
-	private $noWrap = false;
+	private bool $noWrap = false;
 	/** preformatted */
-	private $isPreformatted = false;
+	private bool $isPreformatted = false;
 	/** title */
-	private $title;
+	private ?string $title = null;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $string output text
-	 * @param boolean $escapeHTML escape HTML code (default yes)
-	 * @param boolean $markAsRequired mark text like a required field
+	 * @param string $string output text
+	 * @param bool $escapeHTML escape HTML code (default yes)
+	 * @param bool $markAsRequired mark text like a required field
 	 */
-	function __construct($string, $escapeHTML = true, $markAsRequired = false) {
+	public function __construct(string $string, bool $escapeHTML = true, bool $markAsRequired = false) {
 		$this->string = $string;
 		$this->escapeHTML = $escapeHTML;
 		$this->markAsRequired = $markAsRequired;
@@ -1983,36 +1983,36 @@ class htmlOutputText extends htmlElement {
 	/**
 	 * Specifies if the whole text should be printed in bold.
 	 *
-	 * @param boolean $isBold bold text
+	 * @param bool $isBold bold text
 	 */
-	public function setIsBold($isBold) {
+	public function setIsBold(bool $isBold): void {
 		$this->isBold = $isBold;
 	}
 
 	/**
 	 * Adds a marker that indicates a required field.
 	 *
-	 * @param boolean $markAsRequired add marker
+	 * @param bool $markAsRequired add marker
 	 */
-	public function setMarkAsRequired($markAsRequired) {
+	public function setMarkAsRequired(bool $markAsRequired): void {
 		$this->markAsRequired = $markAsRequired;
 	}
 
 	/**
 	 * Specifies if word wrap is allowed for this text.
 	 *
-	 * @param boolean $noWrap no wrapping if set to true (default false)
+	 * @param bool $noWrap no wrapping if set to true (default false)
 	 */
-	public function setNoWrap($noWrap) {
+	public function setNoWrap(bool $noWrap): void {
 		$this->noWrap = $noWrap;
 	}
 
 	/**
 	 * Sets if the text is preformatted.
 	 *
-	 * @param boolean $preformatted is preformatted (default true)
+	 * @param bool $preformatted is preformatted (default true)
 	 */
-	public function setPreformatted($preformatted = true) {
+	public function setPreformatted(bool $preformatted = true): void {
 		$this->isPreformatted = $preformatted;
 	}
 
@@ -2035,23 +2035,23 @@ class htmlOutputText extends htmlElement {
 class htmlInputCheckbox extends htmlElement {
 
 	/** unique name of input element */
-	protected $name;
+	protected string $name;
 	/** value */
-	protected $checked;
+	protected bool $checked;
 	/** enabled or disabled */
-	protected $isEnabled = true;
-	/** list of enclosing table rows to hide when checked */
-	protected $tableRowsToHide = [];
-	/** list of enclosing table rows to show when checked */
-	protected $tableRowsToShow = [];
+	protected bool $isEnabled = true;
+	/** @var string[] $tableRowsToHide list of enclosing table rows to hide when checked */
+	protected array $tableRowsToHide = [];
+	/** @var string[] $tableRowsToShow list of enclosing table rows to show when checked */
+	protected array $tableRowsToShow = [];
 	/** indicates that this field should not automatically be saved in the self service or server profile */
-	private $transient = false;
-	/** list of input elements to enable when checked */
-	protected $elementsToEnable = [];
-	/** list of input elements to disable when checked */
-	protected $elementsToDisable = [];
+	private bool $transient = false;
+	/** @var string[] $elementsToEnable list of input elements to enable when checked */
+	protected array $elementsToEnable = [];
+	/** @var string[] $elementsToDisable list of input elements to disable when checked */
+	protected array $elementsToDisable = [];
 	/** onclick event code */
-	private $onClick;
+	private ?string $onClick = null;
 	/** title */
 	private ?string $title = null;
 
@@ -2062,7 +2062,7 @@ class htmlInputCheckbox extends htmlElement {
 	 * @param string $name unique name
 	 * @param bool $checked checked
 	 */
-	function __construct(string $name, bool $checked) {
+	public function __construct(string $name, bool $checked) {
 		$this->name = htmlspecialchars($name);
 		$this->checked = $checked;
 	}
@@ -2186,9 +2186,9 @@ class htmlInputCheckbox extends htmlElement {
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
@@ -2201,9 +2201,9 @@ class htmlInputCheckbox extends htmlElement {
 	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
 	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
 	 *
-	 * @param array $tableRowsToHide IDs of child elements to hide
+	 * @param string[] $tableRowsToHide IDs of child elements to hide
 	 */
-	public function setTableRowsToHide($tableRowsToHide) {
+	public function setTableRowsToHide(array $tableRowsToHide): void {
 		$this->tableRowsToHide = $tableRowsToHide;
 	}
 
@@ -2216,18 +2216,18 @@ class htmlInputCheckbox extends htmlElement {
 	 * <br>Example: <tr><td><input type="checkbox" id="mycheckbox"></td></tr>
 	 * <br> Using "mycheckbox" will use this "tr" to hide/show.
 	 *
-	 * @param array $tableRowsToShow IDs of child elements to show
+	 * @param string[] $tableRowsToShow IDs of child elements to show
 	 */
-	public function setTableRowsToShow($tableRowsToShow) {
+	public function setTableRowsToShow(array $tableRowsToShow): void {
 		$this->tableRowsToShow = $tableRowsToShow;
 	}
 
 	/**
 	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
 	 *
-	 * @param boolean $transient transient field
+	 * @param bool $transient transient field
 	 */
-	public function setTransient($transient) {
+	public function setTransient(bool $transient): void {
 		$this->transient = $transient;
 	}
 
@@ -2235,9 +2235,9 @@ class htmlInputCheckbox extends htmlElement {
 	 * This will disable the given input elements when the checkbox is checked.
 	 * The given IDs can be of any input element (e.g. select, checkbox, ...).
 	 *
-	 * @param array $elements IDs of elements to disable
+	 * @param string[] $elements IDs of elements to disable
 	 */
-	public function setElementsToDisable($elements) {
+	public function setElementsToDisable(array $elements): void {
 		$this->elementsToDisable = $elements;
 	}
 
@@ -2245,9 +2245,9 @@ class htmlInputCheckbox extends htmlElement {
 	 * This will enable the given input elements when the checkbox is checked.
 	 * The given IDs can be of any input element (e.g. select, checkbox, ...).
 	 *
-	 * @param array $elements IDs of elements to enable
+	 * @param string[] $elements IDs of elements to enable
 	 */
-	public function setElementsToEnable($elements) {
+	public function setElementsToEnable(array $elements): void {
 		$this->elementsToEnable = $elements;
 	}
 
@@ -2263,7 +2263,7 @@ class htmlInputCheckbox extends htmlElement {
 	 *
 	 * @param string $code JS code
 	 */
-	public function setOnClick($code) {
+	public function setOnClick(string $code): void {
 		$this->onClick = $code;
 	}
 
@@ -2295,20 +2295,20 @@ class htmlInputCheckbox extends htmlElement {
 class htmlInputFileUpload extends htmlElement {
 
 	/** unique name of input element */
-	private $name;
+	private string $name;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	private bool $isEnabled = true;
 	/** required */
-	protected $required = false;
+	protected bool $required = false;
 	/** onchange event */
-	protected $onChange = '';
+	protected string $onChange = '';
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name unique name
+	 * @param string $name unique name
 	 */
-	function __construct($name) {
+	public function __construct(string $name) {
 		$this->name = htmlspecialchars($name);
 	}
 
@@ -2340,9 +2340,9 @@ class htmlInputFileUpload extends htmlElement {
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
@@ -2351,7 +2351,7 @@ class htmlInputFileUpload extends htmlElement {
 	 *
 	 * @param bool $required field is required (default: true)
 	 */
-	public function setRequired($required = true): void {
+	public function setRequired(bool $required = true): void {
 		$this->required = $required;
 	}
 
@@ -2374,29 +2374,29 @@ class htmlInputFileUpload extends htmlElement {
 class htmlInputTextarea extends htmlElement {
 
 	/** unique name of input element */
-	protected $name;
+	protected string $name;
 	/** value */
-	private $value;
+	private string $value;
 	/** column count */
-	private $colCount;
+	private string $colCount;
 	/** row count */
-	private $rowCount;
+	private string $rowCount;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	private bool $isEnabled = true;
 	/** specifies if LAM should display this field with a WYSIWYG editor */
-	protected $richEdit = false;
+	protected bool $richEdit = false;
 	/** required field */
-	protected $required = false;
+	protected bool $required = false;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name unique name
-	 * @param String $value value
+	 * @param string $name unique name
+	 * @param string $value value
 	 * @param int $colCount number of characters per line
 	 * @param int $rowCount number of rows
 	 */
-	function __construct($name, $value, $colCount, $rowCount) {
+	public function __construct(string $name, string $value, int $colCount, int $rowCount) {
 		$this->name = htmlspecialchars($name);
 		$this->value = htmlspecialchars($value);
 		$this->colCount = htmlspecialchars((string) $colCount);
@@ -2434,9 +2434,9 @@ class htmlInputTextarea extends htmlElement {
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
@@ -2445,18 +2445,18 @@ class htmlInputTextarea extends htmlElement {
 	 * <br>This requires that the page which displays the textarea also includes the JS for the rich editing.
 	 * <br>Rich editing is disabled by default.
 	 *
-	 * @param boolean $richEdit rich edit or standard
+	 * @param bool $richEdit rich edit or standard
 	 */
-	public function setIsRichEdit($richEdit) {
+	public function setIsRichEdit(bool $richEdit): void {
 		$this->richEdit = $richEdit;
 	}
 
 	/**
 	 * Specifies if the input field is required.
 	 *
-	 * @param boolean $required required
+	 * @param bool $required required
 	 */
-	public function setRequired($required) {
+	public function setRequired(bool $required): void {
 		$this->required = $required;
 	}
 
@@ -2470,11 +2470,11 @@ class htmlInputTextarea extends htmlElement {
 class htmlInputColorPicker extends htmlElement {
 
 	/** unique name of input element */
-	private $name;
+	private string $name;
 	/** color value */
-	private $color;
+	private string $color;
 	/** enabled or disabled */
-	private $isEnabled = true;
+	private bool $isEnabled = true;
 
 	/**
 	 * Constructor.
@@ -2482,7 +2482,7 @@ class htmlInputColorPicker extends htmlElement {
 	 * @param string $name unique name
 	 * @param string $colorValue color value (e.g. #000000)
 	 */
-	public function __construct($name, $colorValue = '#000000') {
+	public function __construct(string $name, string $colorValue = '#000000') {
 		$this->name = htmlspecialchars($name);
 		$this->color = htmlspecialchars($colorValue);
 	}
@@ -2502,9 +2502,9 @@ class htmlInputColorPicker extends htmlElement {
 	/**
 	 * Specifies if this component is enabled and accepts user modification.
 	 *
-	 * @param boolean $isEnabled enabled if true
+	 * @param bool $isEnabled enabled if true
 	 */
-	public function setIsEnabled($isEnabled) {
+	public function setIsEnabled(bool $isEnabled): void {
 		$this->isEnabled = $isEnabled;
 	}
 
@@ -2518,13 +2518,13 @@ class htmlInputColorPicker extends htmlElement {
 class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 
 	/** descriptive label */
-	private $label;
+	private string $label;
 	/** help ID */
-	private $helpID;
+	private ?string $helpID = null;
 	/** help module */
-	private $helpModule;
+	private ?string $helpModule = null;
 	/** render HTML of parent class */
-	private $renderParentHtml = false;
+	private bool $renderParentHtml = false;
 
 	/**
 	 * Constructor.
@@ -2532,9 +2532,9 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 	 * @param string $name unique name
 	 * @param string $colorValue color value (e.g. #000000)
 	 * @param string $label descriptive label
-	 * @param string|array|null $helpID help ID
+	 * @param string[]|string|null $helpID help ID
 	 */
-	public function __construct($name, $colorValue, $label, $helpID = null) {
+	public function __construct($name, $colorValue, string $label, array|string|null $helpID = null) {
 		parent::__construct($name, $colorValue);
 		$this->label = htmlspecialchars($label);
 		if (is_string($helpID)) {
@@ -2589,36 +2589,37 @@ class htmlImage extends htmlElement {
 	/** ID value */
 	private ?string $id = null;
 	/** path to image */
-	private $path;
+	private string $path;
 	/** width */
-	private $width;
+	private ?string $width;
 	/** height */
-	private $height;
+	private ?string $height;
 	/** alt text */
-	private $alt;
+	private string $alt;
 	/** title */
-	private $title;
+	private ?string $title;
 	/** onClick event */
-	private $onClick;
+	private ?string $onClick;
 	/** enable cropping */
-	private $crop = false;
+	private bool $crop = false;
 	/** enable lightbox */
-	private $lightbox = false;
-	/** @var string help popup title */
-	private $helpTitle;
-	/** @var htmlElement help popup content */
-	private $helpContent;
+	private bool $lightbox = false;
+	/** help popup title */
+	private ?string $helpTitle = null;
+	/** help popup content */
+	private ?htmlElement $helpContent = null;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $path image location
-	 * @param string $width image width (optional, default original size)
-	 * @param string $height image height (optional, default original size)
+	 * @param string|null $width image width (optional, default original size)
+	 * @param string|null $height image height (optional, default original size)
 	 * @param string $alt alt text (optional)
-	 * @param string $onClick onClick code (optional)
+	 * @param string|null $title title text (optional)
+	 * @param string|null $onClick onClick code (optional)
 	 */
-	public function __construct($path, $width = null, $height = null, $alt = ' ', $title = null, $onClick = null) {
+	public function __construct(string $path, ?string $width = null, ?string $height = null, string $alt = ' ', ?string $title = null, ?string $onClick = null) {
 		$this->path = htmlspecialchars($path);
 		$this->width = $width;
 		$this->height = $height;
@@ -2695,14 +2696,14 @@ class htmlImage extends htmlElement {
 	 * This will display a cropping box on the image. The cropping data
 	 * can be found in POST data (croppingDataX, croppingDataY, croppingDataWidth, croppingDataHeight).
 	 */
-	public function enableCropping() {
+	public function enableCropping(): void {
 		$this->crop = true;
 	}
 
 	/**
 	 * Enables lightbox feature.
 	 */
-	public function enableLightbox() {
+	public function enableLightbox(): void {
 		$this->lightbox = true;
 	}
 
@@ -2712,7 +2713,7 @@ class htmlImage extends htmlElement {
 	 * @param string $title title
 	 * @param htmlElement $content help content
 	 */
-	public function setHelpData(string $title, htmlElement $content) {
+	public function setHelpData(string $title, htmlElement $content): void {
 		$this->helpTitle = htmlspecialchars($title);
 		$this->helpContent = $content;
 	}
