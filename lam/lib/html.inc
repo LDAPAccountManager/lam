@@ -67,11 +67,11 @@ abstract class htmlElement {
 	public const ALIGN_CENTER = 4;
 
 	/** alignment when inside a table */
-	public $alignment;
+	public ?int $alignment = null;
 	/** colspan if inside a table */
-	public $colspan;
+	public ?int $colspan = null;
 	/** rowspan if inside a table */
-	public $rowspan;
+	public ?int $rowspan = null;
 	/** @var string[] $cssClasses CSS classes */
 	protected ?array $cssClasses = [];
 	/** @var string[] $tableCellCssClasses table cell CSS classes */
@@ -244,22 +244,23 @@ class htmlTable extends htmlElement {
 	/** new line */
 	private const NEWLINE = "</tr><tr>\n";
 
-	/** list of subelements */
-	private $elements = [];
+	/** @var array<string|htmlElement> $elements list of subelements */
+	private array $elements = [];
 	/** specifies if currently a row is open */
-	private $rowOpen = false;
+	private bool $rowOpen = false;
 	/** table width */
-	private $width;
+	private ?string $width;
 	/** HTML ID */
-	private $id;
+	private ?string $id;
 
 	/**
 	 * Constructor
 	 *
-	 * @param String $width table width (e.g. 100%)
+	 * @param string|null $width table width (e.g. 100%)
+	 * @param string|null $id id
 	 * @see htmlElement
 	 */
-	function __construct($width = null, $id = null) {
+	public function __construct(?string $width = null, ?string $id = null) {
 		$this->width = $width;
 		$this->id = $id;
 	}
@@ -300,25 +301,25 @@ class htmlTable extends htmlElement {
 	/**
 	 * Adds another line to the table.
 	 */
-	public function addNewLine() {
+	public function addNewLine(): void {
 		$this->elements[] = $this->rowOpen ? self::NEWLINE : "<tr>\n";
 	}
 
 	/**
 	 * Adds an htmlSpacer with the given width.
 	 *
-	 * @param String $width width (e.g. 10px)
+	 * @param string $width width (e.g. 10px)
 	 */
-	public function addSpace($width) {
+	public function addSpace(string $width): void {
 		$this->addElement(new htmlSpacer($width, null));
 	}
 
 	/**
 	 * Adds an htmlSpacer with the given height and ends the row.
 	 *
-	 * @param String $height height (e.g. 10px)
+	 * @param string $height height (e.g. 10px)
 	 */
-	public function addVerticalSpace($height) {
+	public function addVerticalSpace(string $height): void {
 		$this->addElement(new htmlSpacer(null, $height), true);
 	}
 
@@ -363,7 +364,7 @@ class htmlTable extends htmlElement {
 	 *
 	 * @param htmlTable $table table to get elements
 	 */
-	public function mergeTableElements(htmlTable $table) {
+	public function mergeTableElements(htmlTable $table): void {
 		// remove obsolete new lines at the end
 		if ($table->elements[count($table->elements) - 1] == self::NEWLINE) {
 			unset($table->elements[count($table->elements) - 1]);
@@ -402,6 +403,7 @@ class htmlDataTable extends htmlElement {
 
 	private string $id;
 	private mixed $height;
+	/** @var htmlDataTableColumn[] $columns columns */
 	private array $columns;
 	private string $searchFieldId = '';
 	private string $onRowClick = '';
