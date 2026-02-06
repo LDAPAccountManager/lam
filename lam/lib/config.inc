@@ -3249,7 +3249,7 @@ class LAMCfgMain {
 			}
 		}
 		// delete SSL certificate
-		if ($this->delSSLCaCert === true) {
+		if ($this->delSSLCaCert) {
 			$sslPath = $this->getInternalSSLCaCertFileName();
 			$result = @unlink($sslPath);
 			if (!$result) {
