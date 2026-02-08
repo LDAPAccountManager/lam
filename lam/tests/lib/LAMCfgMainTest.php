@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020 - 2025  Roland Gruber
+ Copyright (C) 2020 - 2026  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ class LAMCfgMainTest extends TestCase {
 		$importData['sessionTimeout'] = 240;
 		$importData['logLevel'] = LOG_ERR;
 		$importData['mailServer'] = 'mailserver';
-		$importData['allowedHosts'] = null;
+		$importData['allowedHosts'] = '';
 		$importData['IGNORE_ME'] = 'ignore';
 
 		$this->conf->importData($importData);
@@ -195,7 +195,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals(240, $this->conf->sessionTimeout);
 		$this->assertEquals(LOG_ERR, $this->conf->logLevel);
 		$this->assertEquals('mailserver', $this->conf->mailServer);
-		$this->assertNull($this->conf->allowedHosts);
+		$this->assertEquals('', $this->conf->allowedHosts);
 	}
 
 	/**
