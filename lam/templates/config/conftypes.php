@@ -253,9 +253,7 @@ if (count($activeTypes) > 0) {
 		// type options
 		$typeConfigOptions = $activeType->getBaseType()->get_configOptions();
 		if (!empty($typeConfigOptions)) {
-			foreach ($typeConfigOptions as $typeConfigOption) {
-				$container->add($typeConfigOption);
-			}
+			$container->add($typeConfigOptions);
 			// save option types to session
 			ob_start();
 			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, [], true, 'user');

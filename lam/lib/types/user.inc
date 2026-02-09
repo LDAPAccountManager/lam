@@ -92,12 +92,9 @@ class user extends baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarTitle($container) {
+	public function getTitleBarTitle(accountContainer $container): ?string {
 		$title = '';
 		// get attributes
 		$personalAttributes = [];
@@ -164,7 +161,7 @@ class user extends baseType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container): string {
+	public function getTitleBarSubtitle(accountContainer $container): string {
 		$personalAttributes = null;
 		if ($container->getAccountModule('inetOrgPerson') != null) {
 			$personalAttributes = $container->getAccountModule('inetOrgPerson')->getAttributes();

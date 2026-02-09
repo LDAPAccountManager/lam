@@ -93,12 +93,9 @@ class dhcp extends baseType {
 	}
 
 	/**
-	 * Returns the the title text for the title bar on the new/edit page.
-	 *
-	 * @param accountContainer $container account container
-	 * @return String title text
+	 * {@inheritDoc}
 	 */
-	public function getTitleBarTitle($container) {
+	public function getTitleBarTitle(accountContainer $container): ?string {
 		// get attributes
 		$attributes = null;
 		if ($container->getAccountModule('dhcp_settings') != null) {
@@ -119,7 +116,7 @@ class dhcp extends baseType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getTitleBarSubtitle($container): string {
+	public function getTitleBarSubtitle(accountContainer $container): string {
 		// get attributes
 		$attributes = null;
 		if ($container->getAccountModule('dhcp_settings') != null) {

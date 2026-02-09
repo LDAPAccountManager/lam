@@ -12,7 +12,7 @@ use function LAM\TYPES\getScopeFromTypeId;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ function isValidConfigurationPassword(string $password): bool {
 /**
  * Sets the environment variables for custom SSL CA certificates.
  */
-function setSSLCaCert() {
+function setSSLCaCert(): void {
 	$config = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	// set SSL certificate if set
 	$sslCaPath = $config->getSSLCaCertPath();
@@ -91,7 +91,7 @@ function setSSLCaCert() {
 /**
  * Sets language settings for automatic translation
  */
-function setlanguage() {
+function setlanguage(): void {
 	$code = 'en_GB.utf8';
 	$fallbackCode = 'en_GB.UTF-8';
 	$encoding = 'UTF-8';
@@ -134,7 +134,7 @@ function setlanguage() {
  *
  * @return bool true, if the chmod $right for $target were set
  */
-function checkChmod($right, $target, $chmod): bool {
+function checkChmod(string $right, string $target, string $chmod): bool {
 	$right_arr = ["read", "write", "execute"];
 	$target_arr = ["owner", "group", "other"];
 
@@ -177,7 +177,7 @@ function checkChmod($right, $target, $chmod): bool {
  *
  * @return string version number
  */
-function LAMVersion() {
+function LAMVersion(): string {
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/VERSION";
 	if (is_readable($file)) {
 		$handle = fopen($file, "r");
@@ -192,10 +192,10 @@ function LAMVersion() {
 /**
  * Extracts config options from HTTP POST data.
  *
- * @param array $confTypes array (option name => type (e.g. multiselect))
- * @return array list of config options (name =>[values])
+ * @param array<string, string> $confTypes array (option name => type (e.g. multiselect))
+ * @return array<string, string[]> list of config options (name =>[values])
  */
-function extractConfigOptionsFromPOST($confTypes) {
+function extractConfigOptionsFromPOST(array $confTypes): array {
 	$options = [];
 	foreach ($confTypes as $element => $type) {
 		// text fields
@@ -236,7 +236,7 @@ function extractConfigOptionsFromPOST($confTypes) {
  *
  * @param string $page the URL of the target page
  */
-function metaRefresh($page) {
+function metaRefresh(string $page): void {
 	if (!headers_sent()) {
 		header('Location: ' . $page);
 		return;
@@ -263,12 +263,12 @@ function metaRefresh($page) {
 /**
  * Checks if the given account type is hidden.
  *
- * @param String $type account type (e.g. user)
- * @return boolean is hidden
+ * @param string $typeId account type (e.g. user)
+ * @return bool is hidden
  */
-function isAccountTypeHidden($type) {
+function isAccountTypeHidden(string $typeId): bool {
 	$typeSettings = $_SESSION['config']->get_typeSettings();
-	return isset($typeSettings['hidden_' . $type]) && ($typeSettings['hidden_' . $type]);
+	return isset($typeSettings['hidden_' . $typeId]) && ($typeSettings['hidden_' . $typeId]);
 }
 
 /**
@@ -276,7 +276,7 @@ function isAccountTypeHidden($type) {
  *
  * @return LAMLanguage[] languages
  */
-function getLanguages() {
+function getLanguages(): array {
 	$languages = [];
 	// loading available languages from language.conf file
 	$languagefile = __DIR__ . "/../config/language";
@@ -302,20 +302,20 @@ function getLanguages() {
  */
 class LAMLanguage {
 	/** language code (e.g. en_GB.utf8) */
-	public $code;
+	public string $code;
 	/** character encoding (e.g. UTF-8) */
-	public $encoding;
+	public string $encoding;
 	/** description for GUI */
-	public $description;
+	public string $description;
 
 	/**
 	 * Constructor
 	 *
-	 * @param String $code language code (e.g. en_GB.utf8)
-	 * @param String $encoding character encoding (e.g. UTF-8)
-	 * @param String $description description for GUI
+	 * @param string $code language code (e.g. en_GB.utf8)
+	 * @param string $encoding character encoding (e.g. UTF-8)
+	 * @param string $description description for GUI
 	 */
-	public function __construct($code, $encoding, $description) {
+	public function __construct(string $code, string $encoding, string $description) {
 		$this->code = $code;
 		$this->encoding = $encoding;
 		$this->description = $description;
@@ -331,7 +331,7 @@ class ServerProfilePersistenceManager {
 	/**
 	 * @var ServerProfilePersistenceStrategy
 	 */
-	private $strategy;
+	private ServerProfilePersistenceStrategy $strategy;
 
 	public function __construct() {
 		$configDb = new ConfigurationDatabase(new LAMCfgMain());
@@ -373,16 +373,16 @@ class ServerProfilePersistenceManager {
 	 * @param string $name profile name
 	 * @throws LAMException error saving profile
 	 */
-	public function saveProfile(LAMConfig $profile, $name): void {
+	public function saveProfile(LAMConfig $profile, string $name): void {
 		$this->strategy->saveProfile($profile, $name);
 	}
 
 	/**
 	 * Returns an array of string with all available configuration templates (without .sample.conf)
 	 *
-	 * @return array template names
+	 * @return array<int, string> template names
 	 */
-	function getConfigTemplates(): array {
+	public function getConfigTemplates(): array {
 		$dir = dir(__DIR__ . "/../config");
 		$ret = [];
 		$pos = 0;
@@ -711,12 +711,12 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
  */
 class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStrategy {
 
-	const TABLE_NAME = 'server_profiles';
+	public const TABLE_NAME = 'server_profiles';
 
 	/**
-	 * @var PDO
+	 * @var PDO $pdo PDO
 	 */
-	private $pdo;
+	private PDO $pdo;
 
 	/**
 	 * Constructor
@@ -854,48 +854,48 @@ class LAMConfig {
 	public const PWDRESET_DEFAULT_ALL = '3';
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
-	private $ServerURL;
+	private string $ServerURL = '';
 
 	/** Display name of LDAP server */
-	private $serverDisplayName;
+	private string $serverDisplayName = '';
 
 	/** enables/disables TLS encryption */
-	private $useTLS;
+	private string $useTLS = 'no';
 
 	/** automatically follow referrals */
-	private $followReferrals = 'false';
+	private string $followReferrals = 'false';
 
 	/** use paged results */
-	private $pagedResults = 'false';
+	private string $pagedResults = 'false';
 
 	/** Active Directory: show deleted entries */
-	private $adShowDeleted = 'false';
+	private string $adShowDeleted = 'false';
 
 	/** overlay for referential integrity is activated */
-	private $referentialIntegrityOverlay = 'false';
+	private string $referentialIntegrityOverlay = 'false';
 
 	/** hide password prompt for expired passwords */
-	private $hidePasswordPromptForExpiredPasswords = 'false';
+	private string $hidePasswordPromptForExpiredPasswords = 'false';
 
 	/** list of users with admin rights, separated by semicolon */
-	private $Admins;
+	private string $Admins = '';
 
 	/** Password to edit preferences */
-	private $Passwd;
+	private ?string $Passwd = null;
 
 	/** Default language */
-	private $defaultLanguage;
+	private string $defaultLanguage = '';
 	/** time zone */
-	private $timeZone = 'Europe/London';
+	private string $timeZone = 'Europe/London';
 
-	/** module settings */
-	private $moduleSettings = [];
+	/** @var array<string, string[]> $moduleSettings module settings */
+	private array $moduleSettings = [];
 
-	/** type settings */
-	private $typeSettings = [];
+	/** @var array<string, string> $typeSettings type settings */
+	private array $typeSettings = [];
 
-	/** tool settings */
-	private $toolSettings = [];
+	/** @var array<string, string> $toolSettings tool settings */
+	private array $toolSettings = [];
 
 	/**
 	 * Path to external lamdaemon script on server where it is executed
@@ -903,12 +903,12 @@ class LAMConfig {
 	 * This is used for managing quota and home directories.
 	 * optional setting, may not be defined
 	 */
-	private $scriptPath;
+	private string $scriptPath = '';
 
 	/**
 	 * The rights for the home directory
 	 */
-	private $scriptRights = '750';
+	private string $scriptRights = '750';
 
 	/**
 	 * Servers where lamdaemon script is executed
@@ -916,121 +916,121 @@ class LAMConfig {
 	 * This is used for managing quota and home directories.
 	 * optional setting, may not be defined
 	 */
-	private $scriptServer;
+	private string $scriptServer = '';
 
 	/**
 	 * user name for lamdaemon
 	 */
-	private $scriptUserName;
+	private string $scriptUserName = '';
 
 	/**
 	 * File name of SSH key for lamdaemon.
 	 */
-	private $scriptSSHKey;
+	private string $scriptSSHKey = '';
 
 	/**
 	 * Password for lamdaemon SSH key.
 	 */
-	private $scriptSSHKeyPassword;
+	private string $scriptSSHKeyPassword = '';
 
 	/** LDAP search limit */
-	private $searchLimit = 0;
+	private int $searchLimit = 0;
 
 	/** Active account types */
-	private $activeTypes = "";
+	private string $activeTypes = "";
 
 	/** Name of configuration file */
-	private $name;
+	private string $name;
 
 	/** access level */
-	private $accessLevel = LAMConfig::ACCESS_ALL;
+	private string $accessLevel = LAMConfig::ACCESS_ALL;
 
 	/** login method */
-	private $loginMethod = LAMConfig::LOGIN_LIST;
+	private string $loginMethod = LAMConfig::LOGIN_LIST;
 
 	/** search suffix for login */
-	private $loginSearchSuffix = 'dc=yourdomain,dc=org';
+	private string $loginSearchSuffix = 'dc=yourdomain,dc=org';
 
 	/** search filter for login */
-	private $loginSearchFilter = 'uid=%USER%';
+	private string $loginSearchFilter = 'uid=%USER%';
 
 	/** bind user for login search */
-	private $loginSearchDN = '';
+	private string $loginSearchDN = '';
 
 	/** bind password for login search */
-	private $loginSearchPassword = '';
+	private string $loginSearchPassword = '';
 
 	/** specifies if HTTP authentication should be used */
-	private $httpAuthentication = 'false';
+	private string $httpAuthentication = 'false';
 
 	/** email address for sender of password reset mails */
-	private $lamProMailFrom = '';
+	private string $lamProMailFrom = '';
 	/** reply-to email address for password reset mails */
-	private $lamProMailReplyTo = '';
+	private string $lamProMailReplyTo = '';
 	/** subject for password reset mails */
-	private $lamProMailSubject = '';
+	private string $lamProMailSubject = '';
 	/** treat password reset mail body as HTML */
-	private $lamProMailIsHTML = 'false';
+	private string $lamProMailIsHTML = 'false';
 	/** allow sending mails to an alternative address */
-	private $lamProMailAllowAlternateAddress = 'true';
+	private string $lamProMailAllowAlternateAddress = 'true';
 	/** mail body for password reset mails */
-	private $lamProMailText = '';
+	private string $lamProMailText = '';
 
 	/** password reset page: allow to set a specific password */
-	private $pwdResetAllowSpecificPassword = 'true';
+	private string $pwdResetAllowSpecificPassword = 'true';
 	/** password reset page: allow to show password on screen */
-	private $pwdResetAllowScreenPassword = 'true';
+	private string $pwdResetAllowScreenPassword = 'true';
 	/** password reset page: force password change by default */
-	private $pwdResetForcePasswordChange = 'true';
+	private string $pwdResetForcePasswordChange = 'true';
 	/** password reset page: default selection for password output
 	 * PWDRESET_DEFAULT_SCREEN, PWDRESET_DEFAULT_MAIL, PWDRESET_DEFAULT_BOTH */
-	private $pwdResetDefaultPasswordOutput = LAMConfig::PWDRESET_DEFAULT_MAIL;
+	private string $pwdResetDefaultPasswordOutput = LAMConfig::PWDRESET_DEFAULT_MAIL;
 
 	/** LDAP user for jobs */
-	private $jobsBindUser;
+	private ?string $jobsBindUser = '';
 	/** LDAP password for jobs */
-	private $jobsBindPassword;
+	private ?string $jobsBindPassword = '';
 	/** database type for jobs */
-	private $jobsDatabase;
+	private ?string $jobsDatabase = '';
 	/** host of job database */
-	private $jobsDBHost;
+	private ?string $jobsDBHost = '';
 	/** port of job database */
-	private $jobsDBPort;
+	private ?string $jobsDBPort = '';
 	/** CA path of job database */
-	private $jobsDBCaPath;
+	private ?string $jobsDBCaPath = '';
 	/** user of job database */
-	private $jobsDBUser;
+	private ?string $jobsDBUser = '';
 	/** password of job database */
-	private $jobsDBPassword;
+	private ?string $jobsDBPassword = '';
 	/** name of job database */
-	private $jobsDBName;
-	/** job configuration */
-	private $jobSettings = [];
+	private ?string $jobsDBName = '';
+	/** @var array<string, string[]> $jobSettings job configuration */
+	private array $jobSettings = [];
 
-	private $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
-	private $twoFactorAuthenticationURL = 'https://localhost';
-	private $twoFactorAuthenticationClientId;
-	private $twoFactorAuthenticationSecretKey;
-	private $twoFactorAuthenticationDomain;
-	private $twoFactorAuthenticationInsecure = false;
-	private $twoFactorAuthenticationLabel;
-	private $twoFactorAuthenticationOptional = false;
-	private $twoFactorAuthenticationCaption = '';
-	private $twoFactorAuthenticationAttribute = '';
+	private string $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
+	private string $twoFactorAuthenticationURL = 'https://localhost';
+	private string $twoFactorAuthenticationClientId = '';
+	private string $twoFactorAuthenticationSecretKey = '';
+	private string $twoFactorAuthenticationDomain = '';
+	private bool $twoFactorAuthenticationInsecure = false;
+	private string $twoFactorAuthenticationLabel = '';
+	private bool $twoFactorAuthenticationOptional = false;
+	private string $twoFactorAuthenticationCaption = '';
+	private string $twoFactorAuthenticationAttribute = '';
 	private string $twoFactorAllowToRememberDevice = 'false';
 	private string $twoFactorRememberDeviceDuration = '28800';
 	private string $twoFactorRememberDevicePassword = '';
 
-	private $hideDnPart = '';
+	private string $hideDnPart = '';
 
-	private $pwdPolicyMinLength = '';
-	private $pwdPolicyMinLowercase = '';
-	private $pwdPolicyMinUppercase = '';
-	private $pwdPolicyMinNumeric = '';
-	private $pwdPolicyMinSymbolic = '';
+	private string $pwdPolicyMinLength = '';
+	private string $pwdPolicyMinLowercase = '';
+	private string $pwdPolicyMinUppercase = '';
+	private string $pwdPolicyMinNumeric = '';
+	private string $pwdPolicyMinSymbolic = '';
 
-	/** List of all settings in config file */
-	private $settings = ["ServerURL", "useTLS", "followReferrals", 'pagedResults', 'adShowDeleted', "Passwd", "Admins",
+	/** @var string[] $settings List of all settings in config file */
+	private array $settings = ["ServerURL", "useTLS", "followReferrals", 'pagedResults', 'adShowDeleted', "Passwd", "Admins",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", 'serverDisplayName',
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
@@ -1050,9 +1050,9 @@ class LAMConfig {
 	/**
 	 * Returns the server profile data.
 	 *
-	 * @return array data
+	 * @return array<string, string|int|bool|null|object|array<string, string|string[]>> data
 	 */
-	public function exportData() {
+	public function exportData(): array {
 		$data = [];
 		$settingsToIgnore = ['modules', 'types', 'tools', 'jobs'];
 		foreach ($this->settings as $setting) {
@@ -1071,10 +1071,10 @@ class LAMConfig {
 	/**
 	 * Imports server profile data.
 	 *
-	 * @param array $data config data
+	 * @param array<string, string|int|bool|null|object|array<string, string|string[]>> $data config data
 	 * @throws LAMException import error
 	 */
-	public function importData($data) {
+	public function importData(array $data): void {
 		$settingsToIgnore = ['modules', 'types', 'tools', 'jobs', 'typeSettings',
 			'moduleSettings', 'toolSettings', 'jobSettings'];
 		foreach ($data as $dataKey => $dataValue) {
@@ -1103,7 +1103,7 @@ class LAMConfig {
 	/**
 	 * Removes any non-existing types from the configuration.
 	 */
-	public function removeInvalidTypes() {
+	public function removeInvalidTypes(): void {
 		$allTypes = LAM\TYPES\getTypes();
 		$activeTypes = $this->get_ActiveTypes();
 		for ($i = 0; $i < count($activeTypes); $i++) {
@@ -1118,7 +1118,7 @@ class LAMConfig {
 	/**
 	 * Removes any non-existing modules from the configuration.
 	 */
-	public function removeInvalidModules() {
+	public function removeInvalidModules(): void {
 		$types = $this->get_ActiveTypes();
 		$availableByScope = [];
 		foreach ($types as $type) {
@@ -1177,7 +1177,7 @@ class LAMConfig {
 	 *
 	 * @return string server address
 	 */
-	public function get_ServerURL() {
+	public function get_ServerURL(): string {
 		return $this->ServerURL;
 	}
 
@@ -1185,9 +1185,9 @@ class LAMConfig {
 	 * Sets the server address
 	 *
 	 * @param string|null $value new server address
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function set_ServerURL($value) {
+	public function set_ServerURL(?string $value): bool {
 		if (is_string($value)) {
 			$this->ServerURL = $value;
 			return true;
@@ -1200,7 +1200,7 @@ class LAMConfig {
 	 *
 	 * @return string server display name
 	 */
-	public function getServerDisplayNameGUI() {
+	public function getServerDisplayNameGUI(): string {
 		if (empty($this->serverDisplayName)) {
 			return $this->ServerURL;
 		}
@@ -1212,7 +1212,7 @@ class LAMConfig {
 	 *
 	 * @return string server display name
 	 */
-	public function getServerDisplayName() {
+	public function getServerDisplayName(): string {
 		return $this->serverDisplayName;
 	}
 
@@ -1220,9 +1220,9 @@ class LAMConfig {
 	 * Sets the server display name
 	 *
 	 * @param string|null $value new server display name
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function setServerDisplayName($value) {
+	public function setServerDisplayName(?string $value): bool {
 		if (is_string($value)) {
 			$this->serverDisplayName = $value;
 			return true;
@@ -1233,20 +1233,20 @@ class LAMConfig {
 	/**
 	 * Returns if TLS is activated.
 	 *
-	 * @return String yes or no
+	 * @return string yes or no
 	 */
-	public function getUseTLS() {
+	public function getUseTLS(): string {
 		return $this->useTLS;
 	}
 
 	/**
 	 * Sets if TLS is activated.
 	 *
-	 * @param String $useTLS yes or no
-	 * @return boolean true if $useTLS has correct format
+	 * @param string $useTLS yes or no
+	 * @return bool true if $useTLS has correct format
 	 */
-	public function setUseTLS($useTLS) {
-		if (($useTLS == "yes") || ($useTLS == "no")) {
+	public function setUseTLS(string $useTLS): bool {
+		if (($useTLS === "yes") || ($useTLS === "no")) {
 			$this->useTLS = $useTLS;
 			return true;
 		}
@@ -1256,36 +1256,36 @@ class LAMConfig {
 	/**
 	 * Returns if referrals should be followed.
 	 *
-	 * @return String true or false
+	 * @return string true or false
 	 */
-	public function getFollowReferrals() {
+	public function getFollowReferrals(): string {
 		return $this->followReferrals;
 	}
 
 	/**
 	 * Sets if referrals should be followed.
 	 *
-	 * @param String $followReferrals true or false
+	 * @param string $followReferrals true or false
 	 */
-	public function setFollowReferrals($followReferrals) {
+	public function setFollowReferrals(string $followReferrals): void {
 		$this->followReferrals = $followReferrals;
 	}
 
 	/**
 	 * Returns if paged results should be used.
 	 *
-	 * @return String true or false
+	 * @return string true or false
 	 */
-	public function getPagedResults() {
+	public function getPagedResults(): string {
 		return $this->pagedResults;
 	}
 
 	/**
 	 * Sets if paged results should be used.
 	 *
-	 * @param String $pagedResults true or false
+	 * @param string $pagedResults true or false
 	 */
-	public function setPagedResults($pagedResults) {
+	public function setPagedResults(string $pagedResults): void {
 		$this->pagedResults = $pagedResults;
 	}
 
@@ -1303,25 +1303,25 @@ class LAMConfig {
 	 *
 	 * @param string $adShowDeleted true or false
 	 */
-	public function setAdShowDeleted(string $adShowDeleted) {
+	public function setAdShowDeleted(string $adShowDeleted): void {
 		$this->adShowDeleted = $adShowDeleted;
 	}
 
 	/**
 	 * Returns if referential integrity overlay is in place.
 	 *
-	 * @return String true or false
+	 * @return string true or false
 	 */
-	public function getReferentialIntegrityOverlay() {
+	public function getReferentialIntegrityOverlay(): string {
 		return $this->referentialIntegrityOverlay;
 	}
 
 	/**
 	 * Sets if referential integrity overlay is in place.
 	 *
-	 * @param String $referentialIntegrityOverlay true or false
+	 * @param string $referentialIntegrityOverlay true or false
 	 */
-	public function setReferentialIntegrityOverlay($referentialIntegrityOverlay) {
+	public function setReferentialIntegrityOverlay(string $referentialIntegrityOverlay): void {
 		$this->referentialIntegrityOverlay = $referentialIntegrityOverlay;
 	}
 
@@ -1330,25 +1330,25 @@ class LAMConfig {
 	 *
 	 * @return bool overlay in place
 	 */
-	public function isReferentialIntegrityOverlayActive() {
+	public function isReferentialIntegrityOverlayActive(): bool {
 		return $this->referentialIntegrityOverlay === 'true';
 	}
 
 	/**
 	 * Hide password prompt for expired passwords.
 	 *
-	 * @return String true or false
+	 * @return string true or false
 	 */
-	public function getHidePasswordPromptForExpiredPasswords() {
+	public function getHidePasswordPromptForExpiredPasswords(): string {
 		return $this->hidePasswordPromptForExpiredPasswords;
 	}
 
 	/**
 	 * Sets if password prompt for expired passwords is hidden.
 	 *
-	 * @param String $hidePasswordPromptForExpiredPasswords true or false
+	 * @param string $hidePasswordPromptForExpiredPasswords true or false
 	 */
-	public function setHidePasswordPromptForExpiredPasswords($hidePasswordPromptForExpiredPasswords) {
+	public function setHidePasswordPromptForExpiredPasswords(string $hidePasswordPromptForExpiredPasswords): void {
 		$this->hidePasswordPromptForExpiredPasswords = $hidePasswordPromptForExpiredPasswords;
 	}
 
@@ -1357,7 +1357,7 @@ class LAMConfig {
 	 *
 	 * @return bool is hidden
 	 */
-	public function isHidePasswordPromptForExpiredPasswords() {
+	public function isHidePasswordPromptForExpiredPasswords(): bool {
 		return $this->hidePasswordPromptForExpiredPasswords === 'true';
 	}
 
@@ -1375,7 +1375,7 @@ class LAMConfig {
 	 *
 	 * @return string the admin string
 	 */
-	public function get_Adminstring() {
+	public function get_Adminstring(): string {
 		return $this->Admins;
 	}
 
@@ -1383,9 +1383,9 @@ class LAMConfig {
 	 * Sets the admin string
 	 *
 	 * @param string|null $value new admin string that contains all admin users separated by semicolons
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function set_Adminstring($value) {
+	public function set_Adminstring(?string $value): bool {
 		if (is_string($value) &&
 			preg_match("/^[^;]+(;[^;]+)*$/", $value)) {
 			$this->Admins = $value;
@@ -1397,10 +1397,10 @@ class LAMConfig {
 	/**
 	 * Checks if the given password matches.
 	 *
-	 * @param String $password
-	 * @return boolean true, if matches
+	 * @param string $password
+	 * @return bool true, if matches
 	 */
-	public function check_Passwd($password) {
+	public function check_Passwd(string $password): bool {
 		if (str_starts_with($this->Passwd, "{SSHA}")) {
 			$value = substr($this->Passwd, strlen("{SSHA}"));
 			$parts = explode(" ", $value);
@@ -1424,9 +1424,9 @@ class LAMConfig {
 	 * Sets the preferences wizard password
 	 *
 	 * @param string|null $value new password
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function set_Passwd($value) {
+	public function set_Passwd(?string $value): bool {
 		if (is_string($value)) {
 			$this->Passwd = $this->hashPassword($value, generateSalt(16));
 			return true;
@@ -1441,18 +1441,18 @@ class LAMConfig {
 	 *
 	 * @return string password hash
 	 */
-	public function getPasswd() {
+	public function getPasswd(): string {
 		return $this->Passwd;
 	}
 
 	/**
 	 * Returns the hashed password.
 	 *
-	 * @param String $password password
-	 * @param String $salt salt
-	 * @return String hash value
+	 * @param string $password password
+	 * @param string $salt salt
+	 * @return string hash value
 	 */
-	private function hashPassword($password, $salt) {
+	private function hashPassword(string $password, string $salt): string {
 		return "{CRYPT-SHA512}" . crypt($password, '$6$' . $salt) . " " . base64_encode($salt);
 	}
 
@@ -1471,45 +1471,45 @@ class LAMConfig {
 	 * @param string $typeId account type
 	 * @return string the LDAP suffix
 	 */
-	public function get_Suffix($typeId) {
-		return $this->typeSettings['suffix_' . $typeId];
+	public function get_Suffix(string $typeId): string {
+		return $this->typeSettings['suffix_' . $typeId] ?? '';
 	}
 
 	/**
 	 * Sets the LDAP suffix where accounts are saved
 	 *
-	 * @param string $scope account type
+	 * @param string $typeId account type ID
 	 * @param string|null $value new LDAP suffix
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function set_Suffix($scope, $value) {
+	public function set_Suffix(string $typeId, ?string $value): bool {
 		if ($value === null) {
 			$value = "";
 		}
-		$this->typeSettings['suffix_' . $scope] = $value;
+		$this->typeSettings['suffix_' . $typeId] = $value;
 		return true;
 	}
 
 	/**
-	 * Returns the list of attributes to show in user list
+	 * Returns the list of attributes to show in given list.
 	 *
-	 * @param string $scope account type
+	 * @param string $typeId account type ID
 	 * @return string the attribute list
 	 */
-	public function get_listAttributes($scope) {
-		return $this->typeSettings['attr_' . $scope];
+	public function get_listAttributes(string $typeId): string {
+		return $this->typeSettings['attr_' . $typeId] ?? '';
 	}
 
 	/**
 	 * Sets the list of attributes to show in user list
 	 *
 	 * @param string|null $value new attribute string
-	 * @param string $scope account type
-	 * @return boolean true if $value has correct format
+	 * @param string $typeId account type ID
+	 * @return bool true if $value has correct format
 	 */
-	public function set_listAttributes($value, $scope) {
+	public function set_listAttributes(?string $value, string $typeId): bool {
 		if (is_string($value) && preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $value)) {
-			$this->typeSettings['attr_' . $scope] = $value;
+			$this->typeSettings['attr_' . $typeId] = $value;
 			return true;
 		}
 		else {
@@ -1522,7 +1522,7 @@ class LAMConfig {
 	 *
 	 * @return string default language
 	 */
-	public function get_defaultLanguage() {
+	public function get_defaultLanguage(): string {
 		return $this->defaultLanguage;
 	}
 
@@ -1530,9 +1530,9 @@ class LAMConfig {
 	 * Sets the default language string
 	 *
 	 * @param string|null $value new default language
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function set_defaultLanguage($value) {
+	public function set_defaultLanguage(?string $value): bool {
 		if (is_string($value)) {
 			$this->defaultLanguage = $value;
 		}
@@ -1557,7 +1557,7 @@ class LAMConfig {
 	 * @param string|null $value new time zone
 	 * @return bool true if $value has correct format
 	 */
-	public function setTimeZone($value) {
+	public function setTimeZone(?string $value): bool {
 		if (is_string($value)) {
 			$this->timeZone = $value;
 			return true;
@@ -1570,7 +1570,7 @@ class LAMConfig {
 	 *
 	 * @return string script path
 	 */
-	public function get_scriptPath() {
+	public function get_scriptPath(): string {
 		return $this->scriptPath;
 	}
 
@@ -1578,10 +1578,10 @@ class LAMConfig {
 	 * Sets the path to the external script
 	 *
 	 * @param string|null $value new script path
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function set_scriptPath($value) {
-		if (($value === null) || ($value === '')) {
+	public function set_scriptPath(?string $value): bool {
+		if (empty($value)) {
 			$this->scriptPath = ""; // optional parameter
 		}
 		elseif (preg_match("/^\\/([a-z0-9_-])+(\\/([a-z0-9_\\.-])+)+$/i", $value)) {
@@ -1598,7 +1598,7 @@ class LAMConfig {
 	 *
 	 * @return string script servers
 	 */
-	public function get_scriptServers() {
+	public function get_scriptServers(): string {
 		return $this->scriptServer;
 	}
 
@@ -1607,7 +1607,7 @@ class LAMConfig {
 	 *
 	 * @return RemoteServerConfiguration[] servers
 	 */
-	public function getConfiguredScriptServers() {
+	public function getConfiguredScriptServers(): array {
 		return LAMConfig::parseConfiguredScriptServers($this->scriptServer, $this->get_scriptPath(),
 			$this->getScriptUserName(), $this->getScriptSSHKey(), $this->getScriptSSHKeyPassword());
 	}
@@ -1622,7 +1622,7 @@ class LAMConfig {
 	 * @param string $sshKeyPassword SSH key password
 	 * @return RemoteServerConfiguration[] configurations
 	 */
-	public static function parseConfiguredScriptServers($value, $scriptPath, $userName, $sshKey, $sshKeyPassword): array {
+	public static function parseConfiguredScriptServers(string $value, string $scriptPath, string $userName, string $sshKey, string $sshKeyPassword): array {
 		$servers = [];
 		if (empty($value)) {
 			return $servers;
@@ -1647,7 +1647,7 @@ class LAMConfig {
 	 * @param string $serverName server name
 	 * @return RemoteServerConfiguration|null server
 	 */
-	public function getScriptServerByName($serverName) {
+	public function getScriptServerByName(string $serverName): ?RemoteServerConfiguration {
 		$serverList = $this->getConfiguredScriptServers();
 		foreach ($serverList as $server) {
 			if ($serverName === $server->getServer()) {
@@ -1661,9 +1661,9 @@ class LAMConfig {
 	 * Sets the servers of the external script
 	 *
 	 * @param string $value new script servers
-	 * @return boolean true if $value has correct format
+	 * @return bool true if $value has correct format
 	 */
-	public function set_scriptServers($value) {
+	public function set_scriptServers(string $value): bool {
 		$parsedValue = LAMConfig::parseScriptServerValue($value);
 		if ($parsedValue === false) {
 			return false;
@@ -1678,7 +1678,7 @@ class LAMConfig {
 	 * @param string $value input field value
 	 * @return string|false value to store in configuration
 	 */
-	public static function parseScriptServerValue($value) {
+	public static function parseScriptServerValue(string $value): false|string {
 		if (empty($value)) {
 			return ""; // optional parameter
 		}
@@ -1731,8 +1731,8 @@ class LAMConfig {
 	 * @return string rights
 	 */
 	public function get_scriptRights() {
-		if ($this->scriptRights === null) {
-			return '755';
+		if (empty($this->scriptRights)) {
+			return '750';
 		}
 		return $this->scriptRights;
 	}
@@ -1741,9 +1741,9 @@ class LAMConfig {
 	 * Sets the rights for the home directory.
 	 *
 	 * @param string $chmod the rights
-	 * @return boolean true if values has correct format
+	 * @return bool true if values has correct format
 	 */
-	public function set_scriptRights($chmod) {
+	public function set_scriptRights(string $chmod): bool {
 		// check if the chmod is correct:
 		if ($chmod > 0 && $chmod <= 777) {
 			$this->scriptRights = $chmod;
@@ -1759,7 +1759,7 @@ class LAMConfig {
 	 *
 	 * @return string key path
 	 */
-	public function getScriptSSHKey() {
+	public function getScriptSSHKey(): string {
 		return $this->scriptSSHKey;
 	}
 
@@ -1768,7 +1768,7 @@ class LAMConfig {
 	 *
 	 * @param string $value key path
 	 */
-	public function setScriptSSHKey($value) {
+	public function setScriptSSHKey(string $value): void {
 		$this->scriptSSHKey = $value;
 	}
 
@@ -1777,7 +1777,7 @@ class LAMConfig {
 	 *
 	 * @return string password
 	 */
-	public function getScriptSSHKeyPassword() {
+	public function getScriptSSHKeyPassword(): string {
 		return deobfuscateText($this->scriptSSHKeyPassword);
 	}
 
@@ -1786,7 +1786,7 @@ class LAMConfig {
 	 *
 	 * @param string $value password
 	 */
-	public function setScriptSSHKeyPassword($value) {
+	public function setScriptSSHKeyPassword(string $value): void {
 		$this->scriptSSHKeyPassword = obfuscateText($value);
 	}
 
@@ -1795,7 +1795,7 @@ class LAMConfig {
 	 *
 	 * @return string user name
 	 */
-	public function getScriptUserName() {
+	public function getScriptUserName(): string {
 		return $this->scriptUserName;
 	}
 
@@ -1804,16 +1804,16 @@ class LAMConfig {
 	 *
 	 * @param string $value user name
 	 */
-	public function setScriptUserName($value) {
+	public function setScriptUserName(string $value): void {
 		$this->scriptUserName = $value;
 	}
 
 	/**
 	 * Returns the LDAP search limit.
 	 *
-	 * @return integer search limit
+	 * @return int search limit
 	 */
-	public function get_searchLimit() {
+	public function get_searchLimit(): int {
 		return $this->searchLimit;
 	}
 
@@ -1856,7 +1856,7 @@ class LAMConfig {
 	/**
 	 * Sets the settings for the account modules.
 	 *
-	 * @param array $settings list of module setting [name => value]
+	 * @param array<string, string[]> $settings list of module setting [name => value]
 	 */
 	public function set_moduleSettings(array $settings): void {
 		$this->moduleSettings = $settings;
@@ -1865,7 +1865,7 @@ class LAMConfig {
 	/**
 	 * Returns a list of saved module settings
 	 *
-	 * @return array list of settings: [name => value]
+	 * @return array<string, string[]> list of settings: [name => value]
 	 */
 	public function get_moduleSettings(): array {
 		return $this->moduleSettings ?? [];
@@ -1876,8 +1876,8 @@ class LAMConfig {
 	 *
 	 * @return string[] list of types
 	 */
-	public function get_ActiveTypes() {
-		if (($this->activeTypes === '') || ($this->activeTypes === null)) {
+	public function get_ActiveTypes(): array {
+		if (empty($this->activeTypes)) {
 			return [];
 		}
 		else {
@@ -1890,7 +1890,7 @@ class LAMConfig {
 	 *
 	 * @return string list of types
 	 */
-	public function getActiveTypesString() {
+	public function getActiveTypesString(): string {
 		return $this->activeTypes;
 	}
 
@@ -1899,14 +1899,14 @@ class LAMConfig {
 	 *
 	 * @param string[] $types list of types
 	 */
-	public function set_ActiveTypes($types) {
+	public function set_ActiveTypes(array $types): void {
 		$this->activeTypes = implode(",", $types);
 	}
 
 	/**
 	 * Sets the settings for the account types.
 	 *
-	 * @param array $settings list of type setting [name => value]
+	 * @param array<string, string> $settings list of type setting [name => value]
 	 */
 	public function set_typeSettings(array $settings): void {
 		$this->typeSettings = $settings;
@@ -1915,7 +1915,7 @@ class LAMConfig {
 	/**
 	 * Returns a list of saved type settings
 	 *
-	 * @return array list of settings: [name => value]
+	 * @return array<string, string> list of settings: [name => value]
 	 */
 	public function get_typeSettings(): array {
 		return $this->typeSettings ?? [];
@@ -1924,16 +1924,16 @@ class LAMConfig {
 	/**
 	 * Returns the tool settings.
 	 *
-	 * @return array $toolSettings tool settings
+	 * @return array<string, string> $toolSettings tool settings
 	 */
-	public function getToolSettings() {
+	public function getToolSettings(): array {
 		return $this->toolSettings;
 	}
 
 	/**
 	 * Sets the tool settings.
 	 *
-	 * @param array $toolSettings tool settings
+	 * @param array<string,string> $toolSettings tool settings
 	 */
 	public function setToolSettings(array $toolSettings): void {
 		$this->toolSettings = $toolSettings;
@@ -1952,84 +1952,84 @@ class LAMConfig {
 	/**
 	 * Returns the access level for this profile.
 	 *
-	 * @return int level
+	 * @return string level
 	 */
-	public function getAccessLevel() {
+	public function getAccessLevel(): string {
 		return $this->accessLevel;
 	}
 
 	/**
 	 * Sets the access level for this profile.
 	 *
-	 * @param int $level level
+	 * @param string $level level
 	 */
-	public function setAccessLevel($level) {
+	public function setAccessLevel(string $level): void {
 		$this->accessLevel = $level;
 	}
 
 	/**
 	 * Returns the login method.
 	 *
-	 * @return String login method
+	 * @return string login method
 	 * @see LAMconfig::LOGIN_LIST
 	 * @see LAMconfig::LOGIN_SEARCH
 	 */
-	public function getLoginMethod() {
+	public function getLoginMethod(): string {
 		return $this->loginMethod;
 	}
 
 	/**
 	 * Sets the login method.
 	 *
-	 * @param String $loginMethod
+	 * @param string $loginMethod
 	 */
-	public function setLoginMethod($loginMethod) {
+	public function setLoginMethod(string $loginMethod): void {
 		$this->loginMethod = $loginMethod;
 	}
 
 	/**
 	 * Returns the login search filter.
 	 *
-	 * @return String search filter
+	 * @return string search filter
 	 */
-	public function getLoginSearchFilter() {
+	public function getLoginSearchFilter(): string {
 		return $this->loginSearchFilter;
 	}
 
 	/**
 	 * Sets the login search filter.
 	 *
-	 * @param String $loginSearchFilter search filter
+	 * @param string $loginSearchFilter search filter
 	 */
-	public function setLoginSearchFilter($loginSearchFilter) {
+	public function setLoginSearchFilter(string $loginSearchFilter): void {
 		$this->loginSearchFilter = $loginSearchFilter;
 	}
 
 	/**
 	 * Returns the login search suffix.
 	 *
-	 * @return String suffix
+	 * @return string suffix
 	 */
-	public function getLoginSearchSuffix() {
+	public function getLoginSearchSuffix(): string {
 		return $this->loginSearchSuffix;
 	}
 
 	/**
 	 * Sets the login search suffix.
 	 *
-	 * @param String $loginSearchSuffix suffix
+	 * @param string $loginSearchSuffix suffix
 	 */
-	public function setLoginSearchSuffix($loginSearchSuffix) {
+	public function setLoginSearchSuffix(string $loginSearchSuffix): void {
 		$this->loginSearchSuffix = $loginSearchSuffix;
 	}
 
 	/**
 	 * Sets the DN for the login search bind user.
 	 *
-	 * @param String $loginSearchDN DN
-	 * @return boolean true if DN is valid
+	 * @param string $loginSearchDN DN
+	 * @return bool true if DN is valid
 	 */
-	public function setLoginSearchDN($loginSearchDN) {
+	public function setLoginSearchDN(string $loginSearchDN): bool {
 		$this->loginSearchDN = $loginSearchDN;
 		return ($loginSearchDN == '') || get_preg($loginSearchDN, 'dn');
 	}
@@ -2037,54 +2037,54 @@ class LAMConfig {
 	/**
 	 * Returns the DN for the login search bind user.
 	 *
-	 * @return String DN
+	 * @return string DN
 	 */
-	public function getLoginSearchDN() {
+	public function getLoginSearchDN(): string {
 		return $this->loginSearchDN;
 	}
 
 	/**
 	 * Sets the password for the login search bind user.
 	 *
-	 * @param String $loginSearchPassword password
+	 * @param string $loginSearchPassword password
 	 */
-	public function setLoginSearchPassword($loginSearchPassword) {
+	public function setLoginSearchPassword(string $loginSearchPassword): void {
 		$this->loginSearchPassword = obfuscateText($loginSearchPassword);
 	}
 
 	/**
 	 * Returns the password for the login search bind user.
 	 *
-	 * @return String password
+	 * @return string password
 	 */
-	public function getLoginSearchPassword() {
+	public function getLoginSearchPassword(): string {
 		return deobfuscateText($this->loginSearchPassword);
 	}
 
 	/**
 	 * Returns if HTTP authentication should be used.
 	 *
-	 * @return String $httpAuthentication use HTTP authentication ('true' or 'false')
+	 * @return string $httpAuthentication use HTTP authentication ('true' or 'false')
 	 */
-	public function getHttpAuthentication() {
+	public function getHttpAuthentication(): string {
 		return $this->httpAuthentication;
 	}
 
 	/**
 	 * Specifies if HTTP authentication should be used.
 	 *
-	 * @param String $httpAuthentication use HTTP authentication ('true' or 'false')
+	 * @param string $httpAuthentication use HTTP authentication ('true' or 'false')
 	 */
-	public function setHttpAuthentication($httpAuthentication) {
+	public function setHttpAuthentication(string $httpAuthentication): void {
 		$this->httpAuthentication = $httpAuthentication;
 	}
 
 	/**
 	 * Returns the sender address for password reset mails.
 	 *
-	 * @return String mail address
+	 * @return string mail address
 	 */
-	public function getLamProMailFrom() {
+	public function getLamProMailFrom(): string {
 		if (empty($this->lamProMailFrom)) {
 			return 'noreply@example.com';
 		}
@@ -2094,10 +2094,10 @@ class LAMConfig {
 	/**
 	 * Sets the sender address for password reset mails.
 	 *
-	 * @param String $lamProMailFrom mail address
-	 * @return boolean true if address is valid
+	 * @param string $lamProMailFrom mail address
+	 * @return bool true if address is valid
 	 */
-	public function setLamProMailFrom($lamProMailFrom) {
+	public function setLamProMailFrom(string $lamProMailFrom): bool {
 		$this->lamProMailFrom = $lamProMailFrom;
 		if (($lamProMailFrom != '') && !get_preg($lamProMailFrom, 'email') && !get_preg($lamProMailFrom, 'emailWithName')) {
 			return false;
@@ -2108,19 +2108,19 @@ class LAMConfig {
 	/**
 	 * Returns the reply-to address for password reset mails.
 	 *
-	 * @return String mail address
+	 * @return string mail address
 	 */
-	public function getLamProMailReplyTo() {
+	public function getLamProMailReplyTo(): string {
 		return $this->lamProMailReplyTo;
 	}
 
 	/**
 	 * Sets the reply-to address for password reset mails.
 	 *
-	 * @param String $lamProMailReplyTo mail address
-	 * @return boolean true if address is valid
+	 * @param string $lamProMailReplyTo mail address
+	 * @return bool true if address is valid
 	 */
-	public function setLamProMailReplyTo($lamProMailReplyTo) {
+	public function setLamProMailReplyTo(string $lamProMailReplyTo): bool {
 		$this->lamProMailReplyTo = $lamProMailReplyTo;
 		if (($lamProMailReplyTo != '') && !get_preg($lamProMailReplyTo, 'email') && !get_preg($lamProMailReplyTo, 'emailWithName')) {
 			return false;
@@ -2131,126 +2131,126 @@ class LAMConfig {
 	/**
 	 * Returns the subject for password reset mails.
 	 *
-	 * @return String subject
+	 * @return string subject
 	 */
-	public function getLamProMailSubject() {
+	public function getLamProMailSubject(): string {
 		return $this->lamProMailSubject;
 	}
 
 	/**
 	 * Sets the subject for password reset mails.
 	 *
-	 * @param String $lamProMailSubject subject
+	 * @param string $lamProMailSubject subject
 	 */
-	public function setLamProMailSubject($lamProMailSubject) {
+	public function setLamProMailSubject(string $lamProMailSubject): void {
 		$this->lamProMailSubject = $lamProMailSubject;
 	}
 
 	/**
 	 * Returns if the password reset mail content should be treated as HTML.
 	 *
-	 * @return boolean HTML or text
+	 * @return string HTML or text
 	 */
-	public function getLamProMailIsHTML() {
+	public function getLamProMailIsHTML(): string {
 		return $this->lamProMailIsHTML;
 	}
 
 	/**
 	 * Sets if the password reset mail content should be treated as HTML.
 	 *
-	 * @param boolean $lamProMailIsHTML true if HTML
+	 * @param string $lamProMailIsHTML true if HTML
 	 */
-	public function setLamProMailIsHTML($lamProMailIsHTML) {
+	public function setLamProMailIsHTML(string $lamProMailIsHTML): void {
 		$this->lamProMailIsHTML = $lamProMailIsHTML;
 	}
 
 	/**
 	 * Returns if sending to an alternate address is allowed.
 	 *
-	 * @return boolean alternate address allowed
+	 * @return string alternate address allowed
 	 */
-	public function getLamProMailAllowAlternateAddress() {
+	public function getLamProMailAllowAlternateAddress(): string {
 		return $this->lamProMailAllowAlternateAddress;
 	}
 
 	/**
 	 * Sets if sending to an alternate address is allowed.
 	 *
-	 * @param boolean $lamProMailAllowAlternateAddress alternate address allowed
+	 * @param string $lamProMailAllowAlternateAddress alternate address allowed
 	 */
-	public function setLamProMailAllowAlternateAddress($lamProMailAllowAlternateAddress) {
+	public function setLamProMailAllowAlternateAddress(string $lamProMailAllowAlternateAddress): void {
 		$this->lamProMailAllowAlternateAddress = $lamProMailAllowAlternateAddress;
 	}
 
 	/**
 	 * Returns the mail body for password reset mails.
 	 *
-	 * @return String body
+	 * @return string body
 	 */
-	public function getLamProMailText() {
+	public function getLamProMailText(): string {
 		return implode("\r\n", explode(LAMConfig::LINE_SEPARATOR, $this->lamProMailText));
 	}
 
 	/**
 	 * Returns the mail body for password reset mails without formatting.
 	 *
-	 * @return String body
+	 * @return string body
 	 */
-	public function getLamProMailTextRaw() {
+	public function getLamProMailTextRaw(): string {
 		return $this->lamProMailText;
 	}
 
 	/**
 	 * Sets the mail body for password reset mails.
 	 *
-	 * @param String $lamProMailText body
+	 * @param string $lamProMailText body
 	 */
-	public function setLamProMailText($lamProMailText) {
+	public function setLamProMailText(string $lamProMailText): void {
 		$this->lamProMailText = implode(LAMConfig::LINE_SEPARATOR, explode("\r\n", $lamProMailText));
 	}
 
 	/**
 	 * Returns the bind user for jobs.
 	 *
-	 * @return String $jobsBindUser bind user
+	 * @return string $jobsBindUser bind user
 	 */
-	public function getJobsBindUser() {
-		return $this->jobsBindUser;
+	public function getJobsBindUser(): string {
+		return $this->jobsBindUser ?? '';
 	}
 
 	/**
 	 * Sets the bind user for jobs.
 	 *
-	 * @param String $jobsBindUser bind user
+	 * @param string $jobsBindUser bind user
 	 */
-	public function setJobsBindUser($jobsBindUser) {
+	public function setJobsBindUser(string $jobsBindUser): void {
 		$this->jobsBindUser = $jobsBindUser;
 	}
 
 	/**
 	 * Returns the bind password for jobs.
 	 *
-	 * @return String $jobsBindPassword password
+	 * @return string $jobsBindPassword password
 	 */
-	public function getJobsBindPassword() {
-		return $this->jobsBindPassword;
+	public function getJobsBindPassword(): string {
+		return $this->jobsBindPassword ?? '';
 	}
 
 	/**
 	 * Sets the bind password for jobs.
 	 *
-	 * @param String $jobsBindPassword password
+	 * @param string $jobsBindPassword password
 	 */
-	public function setJobsBindPassword($jobsBindPassword) {
+	public function setJobsBindPassword(string $jobsBindPassword): void {
 		$this->jobsBindPassword = $jobsBindPassword;
 	}
 
 	/**
 	 * Returns the database type for jobs.
 	 *
-	 * @return String $jobsDatabase database type
+	 * @return string $jobsDatabase database type
 	 */
-	public function getJobsDatabase() {
+	public function getJobsDatabase(): string {
 		if (empty($this->jobsDatabase)) {
 			return 'SQLite';
 		}
@@ -2260,45 +2260,45 @@ class LAMConfig {
 	/**
 	 * Sets the database type for jobs.
 	 *
-	 * @param String $jobsDatabase database type
+	 * @param string $jobsDatabase database type
 	 */
-	public function setJobsDatabase($jobsDatabase) {
+	public function setJobsDatabase(string $jobsDatabase): void {
 		$this->jobsDatabase = $jobsDatabase;
 	}
 
 	/**
 	 * Returns the host.
 	 *
-	 * @return String host
+	 * @return string host
 	 */
-	public function getJobsDBHost() {
-		return $this->jobsDBHost;
+	public function getJobsDBHost(): string {
+		return $this->jobsDBHost ?? '';
 	}
 
 	/**
 	 * Sets the host.
 	 *
-	 * @param String $jobsDBHost host
+	 * @param string $jobsDBHost host
 	 */
-	public function setJobsDBHost($jobsDBHost) {
+	public function setJobsDBHost(string $jobsDBHost): void {
 		$this->jobsDBHost = $jobsDBHost;
 	}
 
 	/**
 	 * Returns the port.
 	 *
-	 * @return int|null port
+	 * @return string port
 	 */
-	public function getJobsDBPort() {
-		return $this->jobsDBPort;
+	public function getJobsDBPort(): string {
+		return $this->jobsDBPort ?? '';
 	}
 
 	/**
 	 * Sets the port.
 	 *
-	 * @param int|null $jobsDBPort port
+	 * @param string $jobsDBPort port
 	 */
-	public function setJobsDBPort($jobsDBPort) {
+	public function setJobsDBPort(string $jobsDBPort): void {
 		$this->jobsDBPort = $jobsDBPort;
 	}
 
@@ -2307,8 +2307,8 @@ class LAMConfig {
 	 *
 	 * @return string path
 	 */
-	public function getJobsDBCaPath() {
-		return $this->jobsDBCaPath;
+	public function getJobsDBCaPath(): string {
+		return $this->jobsDBCaPath ?? '';
 	}
 
 	/**
@@ -2316,68 +2316,68 @@ class LAMConfig {
 	 *
 	 * @param string $jobsDBCaPath path
 	 */
-	public function setJobsDBCaPath($jobsDBCaPath) {
+	public function setJobsDBCaPath(string $jobsDBCaPath): void {
 		$this->jobsDBCaPath = $jobsDBCaPath;
 	}
 
 	/**
 	 * Returns the DB user.
 	 *
-	 * @return String user name
+	 * @return string user name
 	 */
-	public function getJobsDBUser() {
-		return $this->jobsDBUser;
+	public function getJobsDBUser(): string {
+		return $this->jobsDBUser ?? '';
 	}
 
 	/**
 	 * Sets the DB user.
 	 *
-	 * @param String $jobsDBUser user name
+	 * @param string $jobsDBUser user name
 	 */
-	public function setJobsDBUser($jobsDBUser) {
+	public function setJobsDBUser(string $jobsDBUser): void {
 		$this->jobsDBUser = $jobsDBUser;
 	}
 
 	/**
 	 * Returns the DB password.
 	 *
-	 * @return String password
+	 * @return string password
 	 */
-	public function getJobsDBPassword() {
-		return $this->jobsDBPassword;
+	public function getJobsDBPassword(): string {
+		return $this->jobsDBPassword ?? '';
 	}
 
 	/**
 	 * Sets the DB password.
 	 *
-	 * @param String $jobsDBPassword password
+	 * @param string $jobsDBPassword password
 	 */
-	public function setJobsDBPassword($jobsDBPassword) {
+	public function setJobsDBPassword(string $jobsDBPassword): void {
 		$this->jobsDBPassword = $jobsDBPassword;
 	}
 
 	/**
 	 * Returns the database name.
 	 *
-	 * @return String DB name
+	 * @return string DB name
 	 */
-	public function getJobsDBName() {
-		return $this->jobsDBName;
+	public function getJobsDBName(): string {
+		return $this->jobsDBName ?? '';
 	}
 
 	/**
 	 * Sets the database name
 	 *
-	 * @param String $jobsDBName DB name
+	 * @param string $jobsDBName DB name
 	 */
-	public function setJobsDBName($jobsDBName) {
+	public function setJobsDBName(string $jobsDBName): void {
 		$this->jobsDBName = $jobsDBName;
 	}
 
 	/**
 	 * Sets the settings for the jobs.
 	 *
-	 * @param array $settings list of job settings [name => value]
+	 * @param array<string, string[]> $settings list of job settings [name => value]
 	 */
 	public function setJobSettings(array $settings): void {
 		$this->jobSettings = $settings;
@@ -2386,81 +2386,81 @@ class LAMConfig {
 	/**
 	 * Returns a list of saved job settings.
 	 *
-	 * @return array list of settings: [name => value]
+	 * @return array<string, string[]> list of settings: [name => value]
 	 */
-	public function getJobSettings() {
+	public function getJobSettings(): array {
 		return $this->jobSettings;
 	}
 
 	/**
 	 * Returns if setting a specific password is allowed on password reset page.
 	 *
-	 * @return String 'true' or 'false'
+	 * @return string 'true' or 'false'
 	 */
-	public function getPwdResetAllowSpecificPassword() {
+	public function getPwdResetAllowSpecificPassword(): string {
 		return $this->pwdResetAllowSpecificPassword;
 	}
 
 	/**
 	 * Sets if setting a specific password is allowed on password reset page.
 	 *
-	 * @param String $pwdResetAllowSpecificPassword 'true' or 'false'
+	 * @param string $pwdResetAllowSpecificPassword 'true' or 'false'
 	 */
-	public function setPwdResetAllowSpecificPassword($pwdResetAllowSpecificPassword) {
+	public function setPwdResetAllowSpecificPassword(string $pwdResetAllowSpecificPassword): void {
 		$this->pwdResetAllowSpecificPassword = $pwdResetAllowSpecificPassword;
 	}
 
 	/**
 	 * Returns if displaying password on screen is allowed on password reset page.
 	 *
-	 * @return String 'true' or 'false'
+	 * @return string 'true' or 'false'
 	 */
-	public function getPwdResetAllowScreenPassword() {
+	public function getPwdResetAllowScreenPassword(): string {
 		return $this->pwdResetAllowScreenPassword;
 	}
 
 	/**
 	 * Sets if displaying password on screen is allowed on password reset page.
 	 *
-	 * @param String $pwdResetAllowScreenPassword 'true' or 'false'
+	 * @param string $pwdResetAllowScreenPassword 'true' or 'false'
 	 */
-	public function setPwdResetAllowScreenPassword($pwdResetAllowScreenPassword) {
+	public function setPwdResetAllowScreenPassword(string $pwdResetAllowScreenPassword): void {
 		$this->pwdResetAllowScreenPassword = $pwdResetAllowScreenPassword;
 	}
 
 	/**
 	 * Returns if force password change is set by default on password reset page.
 	 *
-	 * @return String 'true' or 'false'
+	 * @return string 'true' or 'false'
 	 */
-	public function getPwdResetForcePasswordChange() {
+	public function getPwdResetForcePasswordChange(): string {
 		return $this->pwdResetForcePasswordChange;
 	}
 
 	/**
 	 * Sets if force password change is set by default on password reset page.
 	 *
-	 * @param String $pwdResetForcePasswordChange 'true' or 'false'
+	 * @param string $pwdResetForcePasswordChange 'true' or 'false'
 	 */
-	public function setPwdResetForcePasswordChange($pwdResetForcePasswordChange) {
+	public function setPwdResetForcePasswordChange(string $pwdResetForcePasswordChange): void {
 		$this->pwdResetForcePasswordChange = $pwdResetForcePasswordChange;
 	}
 
 	/**
 	 * Returns default password output method on password reset page.
 	 *
-	 * @return integer LAMConfig::PWDRESET_DEFAULT_SCREEN/PWDRESET_DEFAULT_MAIL/PWDRESET_DEFAULT_BOTH
+	 * @return string LAMConfig::PWDRESET_DEFAULT_SCREEN/PWDRESET_DEFAULT_MAIL/PWDRESET_DEFAULT_BOTH
 	 */
-	public function getPwdResetDefaultPasswordOutput() {
+	public function getPwdResetDefaultPasswordOutput(): string {
 		return $this->pwdResetDefaultPasswordOutput;
 	}
 
 	/**
 	 * Sets default password output method on password reset page.
 	 *
-	 * @param integer $pwdResetDefaultPasswordOutput LAMConfig::PWDRESET_DEFAULT_SCREEN/PWDRESET_DEFAULT_MAIL/PWDRESET_DEFAULT_BOTH
+	 * @param string $pwdResetDefaultPasswordOutput LAMConfig::PWDRESET_DEFAULT_SCREEN/PWDRESET_DEFAULT_MAIL/PWDRESET_DEFAULT_BOTH
 	 */
-	public function setPwdResetDefaultPasswordOutput($pwdResetDefaultPasswordOutput) {
+	public function setPwdResetDefaultPasswordOutput(string $pwdResetDefaultPasswordOutput): void {
 		$this->pwdResetDefaultPasswordOutput = $pwdResetDefaultPasswordOutput;
 	}
 
@@ -2469,7 +2469,7 @@ class LAMConfig {
 	 *
 	 * @return string $twoFactorAuthentication authentication type
 	 */
-	public function getTwoFactorAuthentication() {
+	public function getTwoFactorAuthentication(): string {
 		if (empty($this->twoFactorAuthentication)) {
 			return TwoFactorProviderService::TWO_FACTOR_NONE;
 		}
@@ -2481,7 +2481,7 @@ class LAMConfig {
 	 *
 	 * @param string $twoFactorAuthentication authentication type
 	 */
-	public function setTwoFactorAuthentication($twoFactorAuthentication) {
+	public function setTwoFactorAuthentication(string $twoFactorAuthentication): void {
 		$this->twoFactorAuthentication = $twoFactorAuthentication;
 	}
 
@@ -2490,7 +2490,7 @@ class LAMConfig {
 	 *
 	 * @return string authentication URL
 	 */
-	public function getTwoFactorAuthenticationURL() {
+	public function getTwoFactorAuthenticationURL(): string {
 		return implode("\r\n", explode(LAMConfig::LINE_SEPARATOR, $this->twoFactorAuthenticationURL));
 	}
 
@@ -2499,7 +2499,7 @@ class LAMConfig {
 	 *
 	 * @return string authentication URL
 	 */
-	public function getTwoFactorAuthenticationURLRaw() {
+	public function getTwoFactorAuthenticationURLRaw(): string {
 		return $this->twoFactorAuthenticationURL;
 	}
 
@@ -2508,7 +2508,7 @@ class LAMConfig {
 	 *
 	 * @param string $twoFactorAuthenticationURL authentication URL
 	 */
-	public function setTwoFactorAuthenticationURL($twoFactorAuthenticationURL) {
+	public function setTwoFactorAuthenticationURL(string $twoFactorAuthenticationURL): void {
 		$this->twoFactorAuthenticationURL = implode(LAMConfig::LINE_SEPARATOR, explode("\r\n", $twoFactorAuthenticationURL));
 	}
 
@@ -2517,7 +2517,7 @@ class LAMConfig {
 	 *
 	 * @param string $clientId client id
 	 */
-	public function setTwoFactorAuthenticationClientId($clientId) {
+	public function setTwoFactorAuthenticationClientId(string $clientId): void {
 		$this->twoFactorAuthenticationClientId = $clientId;
 	}
 
@@ -2526,7 +2526,7 @@ class LAMConfig {
 	 *
 	 * @return string client id
 	 */
-	public function getTwoFactorAuthenticationClientId() {
+	public function getTwoFactorAuthenticationClientId(): string {
 		return $this->twoFactorAuthenticationClientId;
 	}
 
@@ -2535,7 +2535,7 @@ class LAMConfig {
 	 *
 	 * @param string $secretKey secret key
 	 */
-	public function setTwoFactorAuthenticationSecretKey($secretKey) {
+	public function setTwoFactorAuthenticationSecretKey(string $secretKey): void {
 		$this->twoFactorAuthenticationSecretKey = $secretKey;
 	}
 
@@ -2544,7 +2544,7 @@ class LAMConfig {
 	 *
 	 * @return string secret key
 	 */
-	public function getTwoFactorAuthenticationSecretKey() {
+	public function getTwoFactorAuthenticationSecretKey(): string {
 		return $this->twoFactorAuthenticationSecretKey;
 	}
 
@@ -2553,7 +2553,7 @@ class LAMConfig {
 	 *
 	 * @param string $domain domain
 	 */
-	public function setTwoFactorAuthenticationDomain($domain) {
+	public function setTwoFactorAuthenticationDomain(string $domain): void {
 		$this->twoFactorAuthenticationDomain = $domain;
 	}
 
@@ -2562,7 +2562,7 @@ class LAMConfig {
 	 *
 	 * @return string domain
 	 */
-	public function getTwoFactorAuthenticationDomain() {
+	public function getTwoFactorAuthenticationDomain(): string {
 		return $this->twoFactorAuthenticationDomain;
 	}
 
@@ -2571,16 +2571,16 @@ class LAMConfig {
 	 *
 	 * @return bool SSL certificate verification is turned off
 	 */
-	public function getTwoFactorAuthenticationInsecure() {
+	public function getTwoFactorAuthenticationInsecure(): bool {
 		return $this->twoFactorAuthenticationInsecure;
 	}
 
 	/**
 	 * Sets if SSL certificate verification is turned off.
 	 *
-	 * @param boolean $twoFactorAuthenticationInsecure SSL certificate verification is turned off
+	 * @param bool $twoFactorAuthenticationInsecure SSL certificate verification is turned off
 	 */
-	public function setTwoFactorAuthenticationInsecure($twoFactorAuthenticationInsecure) {
+	public function setTwoFactorAuthenticationInsecure(bool $twoFactorAuthenticationInsecure): void {
 		$this->twoFactorAuthenticationInsecure = $twoFactorAuthenticationInsecure;
 	}
 
@@ -2589,7 +2589,7 @@ class LAMConfig {
 	 *
 	 * @return string authentication label
 	 */
-	public function getTwoFactorAuthenticationLabel() {
+	public function getTwoFactorAuthenticationLabel(): string {
 		return $this->twoFactorAuthenticationLabel;
 	}
 
@@ -2598,7 +2598,7 @@ class LAMConfig {
 	 *
 	 * @param string $twoFactorAuthenticationLabel authentication label
 	 */
-	public function setTwoFactorAuthenticationLabel($twoFactorAuthenticationLabel) {
+	public function setTwoFactorAuthenticationLabel(string $twoFactorAuthenticationLabel): void {
 		$this->twoFactorAuthenticationLabel = $twoFactorAuthenticationLabel;
 	}
 
@@ -2607,16 +2607,16 @@ class LAMConfig {
 	 *
 	 * @return bool 2nd factor is optional
 	 */
-	public function getTwoFactorAuthenticationOptional() {
-		return boolval($this->twoFactorAuthenticationOptional);
+	public function getTwoFactorAuthenticationOptional(): bool {
+		return $this->twoFactorAuthenticationOptional;
 	}
 
 	/**
 	 * Sets if 2nd factor is optional.
 	 *
-	 * @param boolean $twoFactorAuthenticationOptional 2nd factor is optional
+	 * @param bool $twoFactorAuthenticationOptional 2nd factor is optional
 	 */
-	public function setTwoFactorAuthenticationOptional($twoFactorAuthenticationOptional) {
+	public function setTwoFactorAuthenticationOptional(bool $twoFactorAuthenticationOptional): void {
 		$this->twoFactorAuthenticationOptional = $twoFactorAuthenticationOptional;
 	}
 
@@ -2625,7 +2625,7 @@ class LAMConfig {
 	 *
 	 * @return string caption HTML
 	 */
-	public function getTwoFactorAuthenticationCaption() {
+	public function getTwoFactorAuthenticationCaption(): string {
 		return $this->twoFactorAuthenticationCaption;
 	}
 
@@ -2634,7 +2634,7 @@ class LAMConfig {
 	 *
 	 * @param string $twoFactorAuthenticationCaption caption HTML
 	 */
-	public function setTwoFactorAuthenticationCaption($twoFactorAuthenticationCaption) {
+	public function setTwoFactorAuthenticationCaption(string $twoFactorAuthenticationCaption): void {
 		$this->twoFactorAuthenticationCaption = $twoFactorAuthenticationCaption;
 	}
 
@@ -2643,7 +2643,7 @@ class LAMConfig {
 	 *
 	 * @return string user attribute
 	 */
-	public function getTwoFactorAuthenticationAttribute() {
+	public function getTwoFactorAuthenticationAttribute(): string {
 		if (empty($this->twoFactorAuthenticationAttribute)) {
 			return 'uid';
 		}
@@ -2655,7 +2655,7 @@ class LAMConfig {
 	 *
 	 * @param string $twoFactorAuthenticationAttribute user attribute
 	 */
-	public function setTwoFactorAuthenticationAttribute($twoFactorAuthenticationAttribute) {
+	public function setTwoFactorAuthenticationAttribute(string $twoFactorAuthenticationAttribute): void {
 		$this->twoFactorAuthenticationAttribute = $twoFactorAuthenticationAttribute;
 	}
 
@@ -2727,7 +2727,7 @@ class LAMConfig {
 	 *
 	 * @return string DN part
 	 */
-	public function getHideDnPart() {
+	public function getHideDnPart(): string {
 		return $this->hideDnPart;
 	}
 
@@ -2736,7 +2736,7 @@ class LAMConfig {
 	 *
 	 * @param string $hideDnPart DN part
 	 */
-	public function setHideDnPart($hideDnPart) {
+	public function setHideDnPart(string $hideDnPart): void {
 		$this->hideDnPart = $hideDnPart;
 	}
 
@@ -2745,7 +2745,7 @@ class LAMConfig {
 	 *
 	 * @return string minimum length
 	 */
-	public function getPwdPolicyMinLength() {
+	public function getPwdPolicyMinLength(): string {
 		return $this->pwdPolicyMinLength;
 	}
 
@@ -2754,7 +2754,7 @@ class LAMConfig {
 	 *
 	 * @param string $pwdPolicyMinLength minimum length
 	 */
-	public function setPwdPolicyMinLength($pwdPolicyMinLength) {
+	public function setPwdPolicyMinLength(string $pwdPolicyMinLength): void {
 		$this->pwdPolicyMinLength = $pwdPolicyMinLength;
 	}
 
@@ -2763,7 +2763,7 @@ class LAMConfig {
 	 *
 	 * @return string minimum
 	 */
-	public function getpwdPolicyMinLowercase() {
+	public function getpwdPolicyMinLowercase(): string {
 		return $this->pwdPolicyMinLowercase;
 	}
 
@@ -2772,7 +2772,7 @@ class LAMConfig {
 	 *
 	 * @param string $pwdPolicyMinLowercase minimum
 	 */
-	public function setPwdPolicyMinLowercase($pwdPolicyMinLowercase) {
+	public function setPwdPolicyMinLowercase(string $pwdPolicyMinLowercase): void {
 		$this->pwdPolicyMinLowercase = $pwdPolicyMinLowercase;
 	}
 
@@ -2781,7 +2781,7 @@ class LAMConfig {
 	 *
 	 * @return string minimum
 	 */
-	public function getPwdPolicyMinUppercase() {
+	public function getPwdPolicyMinUppercase(): string {
 		return $this->pwdPolicyMinUppercase;
 	}
 
@@ -2790,7 +2790,7 @@ class LAMConfig {
 	 *
 	 * @param string $pwdPolicyMinUppercase minimum
 	 */
-	public function setPwdPolicyMinUppercase($pwdPolicyMinUppercase) {
+	public function setPwdPolicyMinUppercase(string $pwdPolicyMinUppercase): void {
 		$this->pwdPolicyMinUppercase = $pwdPolicyMinUppercase;
 	}
 
@@ -2799,7 +2799,7 @@ class LAMConfig {
 	 *
 	 * @return string minimum
 	 */
-	public function getPwdPolicyMinNumeric() {
+	public function getPwdPolicyMinNumeric(): string {
 		return $this->pwdPolicyMinNumeric;
 	}
 
@@ -2808,7 +2808,7 @@ class LAMConfig {
 	 *
 	 * @param string $pwdPolicyMinNumeric minimum
 	 */
-	public function setPwdPolicyMinNumeric($pwdPolicyMinNumeric) {
+	public function setPwdPolicyMinNumeric(string $pwdPolicyMinNumeric): void {
 		$this->pwdPolicyMinNumeric = $pwdPolicyMinNumeric;
 	}
 
@@ -2817,7 +2817,7 @@ class LAMConfig {
 	 *
 	 * @return string minimum
 	 */
-	public function getPwdPolicyMinSymbolic() {
+	public function getPwdPolicyMinSymbolic(): string {
 		return $this->pwdPolicyMinSymbolic;
 	}
 
@@ -2826,7 +2826,7 @@ class LAMConfig {
 	 *
 	 * @param string $pwdPolicyMinSymbolic minimum
 	 */
-	public function setPwdPolicyMinSymbolic($pwdPolicyMinSymbolic) {
+	public function setPwdPolicyMinSymbolic(string $pwdPolicyMinSymbolic): void {
 		$this->pwdPolicyMinSymbolic = $pwdPolicyMinSymbolic;
 	}
 

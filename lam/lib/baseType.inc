@@ -5,7 +5,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2025  Roland Gruber
+  Copyright (C) 2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class baseType {
 	public $LABEL_BACK_TO_ACCOUNT_LIST;
 
 	/** type configuration */
-	private $type;
+	private ?ConfiguredType $type;
 
 	/**
 	 * Creates a new type object.
@@ -99,9 +99,9 @@ class baseType {
 	 * Returns a list of attributes which have a translated description.
 	 * This is used for the head row in the list view.
 	 *
-	 * @return array list of descriptions
+	 * @return array<string, string> list of descriptions
 	 */
-	public function getListAttributeDescriptions() {
+	public function getListAttributeDescriptions(): array {
 		$descriptions = [];
 		foreach ($this->getType()->getModules() as $moduleName) {
 			$module = moduleCache::getModule($moduleName, $this->getScope());
@@ -116,9 +116,9 @@ class baseType {
 	/**
 	 * Returns if entries of this type may be created via file upload.
 	 *
-	 * @return boolean true, if file upload is supported
+	 * @return bool true, if file upload is supported
 	 */
-	public function supportsFileUpload() {
+	public function supportsFileUpload(): bool {
 		return true;
 	}
 
@@ -128,7 +128,7 @@ class baseType {
 	 * @param accountContainer $container account container
 	 * @return string|null title text
 	 */
-	public function getTitleBarTitle($container) {
+	public function getTitleBarTitle(accountContainer $container): ?string {
 		if ($container->dn_orig == null) {
 			return null;
 		}
@@ -141,7 +141,7 @@ class baseType {
 	 * @param accountContainer $container account container
 	 * @return string title text
 	 */
-	public function getTitleBarSubtitle($container): string {
+	public function getTitleBarSubtitle(accountContainer $container): string {
 		return '';
 	}
 
@@ -331,7 +331,7 @@ class baseType {
 	 *
 	 * @return string LDAP filter
 	 */
-	public function getSuffixFilter() {
+	public function getSuffixFilter(): string {
 		return "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container)(dc=*))";
 	}
 
@@ -385,11 +385,11 @@ class baseType {
 	 * The field names are used as keywords to load and save settings.
 	 * We recommend to use the type name as prefix for them (e.g. user_someSetting) to avoid naming conflicts.
 	 *
-	 * @return mixed htmlElement or array of htmlElement
+	 * @return htmlElement|null output
 	 *
 	 * @see htmlElement
 	 */
-	public function get_configOptions() {
+	public function get_configOptions(): ?htmlElement {
 		return null;
 	}
 
@@ -399,19 +399,19 @@ class baseType {
 	 * If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
 	 * <br>If no errors occurred the function returns an empty array.
 	 *
-	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	 * @return array list of error messages
+	 * @param array<string, string> $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @return array<string|string[]>[] list of error messages
 	 */
-	public function check_configOptions(&$options) {
+	public function check_configOptions(array &$options): array {
 		return [];
 	}
 
 	/**
 	 * Returns if this account type supports multiple configurations.
 	 *
-	 * @return boolean multiple configs supported
+	 * @return bool multiple configs supported
 	 */
-	public function supportsMultipleConfigs() {
+	public function supportsMultipleConfigs(): bool {
 		return true;
 	}
 
