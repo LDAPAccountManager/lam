@@ -31,7 +31,7 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2025  Roland Gruber
+  Copyright (C) 2017 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -91,15 +91,16 @@ interface TwoFactorProvider {
 	 *
 	 * @param htmlResponsiveRow $row row where to add the input fields
 	 * @param string $userDn user DN
+	 * @throws LAMException error building custom input
 	 */
-	public function addCustomInput(&$row, $userDn);
+	public function addCustomInput(htmlResponsiveRow $row, string $userDn): void;
 
 	/**
 	 * Returns if the submit button should be shown.
 	 *
 	 * @return bool show submit button
 	 */
-	public function isShowSubmitButton();
+	public function isShowSubmitButton(): bool;
 
 	/**
 	 * Returns if the provider supports to remember the device.
@@ -116,7 +117,7 @@ interface TwoFactorProvider {
  */
 abstract class BaseProvider implements TwoFactorProvider {
 
-	protected $config;
+	protected TwoFactorConfiguration $config;
 
 	/**
 	 * {@inheritDoc}
@@ -128,9 +129,8 @@ abstract class BaseProvider implements TwoFactorProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see TwoFactorProvider::addCustomInput
 	 */
-	public function addCustomInput(&$row, $userDn) {
+	public function addCustomInput(htmlResponsiveRow $row, string $userDn): void {
 		// must be filled by subclass if used
 	}
 
@@ -158,7 +158,7 @@ abstract class BaseProvider implements TwoFactorProvider {
 	 * {@inheritDoc}
 	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
-	public function isShowSubmitButton() {
+	public function isShowSubmitButton(): bool {
 		return true;
 	}
 
@@ -243,7 +243,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 	/**
 	 * Returns the curl object.
 	 *
-	 * @return object curl handle
+	 * @return \CurlHandle curl handle
 	 * @throws Exception error during curl creation
 	 */
 	private function getCurl() {
@@ -264,7 +264,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 	 * @return string[] serials
 	 * @throws Exception error during serial reading
 	 */
-	private function getSerialsForUser($user, $token) {
+	private function getSerialsForUser($user, $token): array {
 		$curl = $this->getCurl();
 		$url = $this->config->twoFactorAuthenticationURL . "/token/?user=" . $user;
 		curl_setopt($curl, CURLOPT_URL, $url);
@@ -301,8 +301,9 @@ class PrivacyIDEAProvider extends BaseProvider {
 	 * @param string $token login token
 	 * @param string $serial serial number
 	 * @param string $twoFactorInput 2factor pin + password
+	 * @return bool is verified
 	 */
-	private function verify($token, $serial, $twoFactorInput) {
+	private function verify($token, $serial, $twoFactorInput): bool {
 		$curl = $this->getCurl();
 		$url = $this->config->twoFactorAuthenticationURL . "/validate/check";
 		curl_setopt($curl, CURLOPT_URL, $url);
@@ -450,7 +451,7 @@ class DuoProvider extends BaseProvider {
 	 * {@inheritDoc}
 	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
-	public function isShowSubmitButton() {
+	public function isShowSubmitButton(): bool {
 		return false;
 	}
 
@@ -464,9 +465,8 @@ class DuoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see BaseProvider::addCustomInput
 	 */
-	public function addCustomInput(&$row, $userDn) {
+	public function addCustomInput(htmlResponsiveRow $row, string $userDn): void {
 		$pathPrefix = in_array($this->config->interface, [LAM_INTERFACE::SELF_SERVICE, LAM_INTERFACE::WHITE_PAGES]) ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/duo.png'));
 		if (!empty($_GET['duo_code'])) {
@@ -564,7 +564,7 @@ class DuoProvider extends BaseProvider {
  */
 class OktaProvider extends BaseProvider {
 
-	private $verificationFailed = false;
+	private bool $verificationFailed = false;
 
 	/**
 	 * Constructor.
@@ -590,7 +590,7 @@ class OktaProvider extends BaseProvider {
 	 * {@inheritDoc}
 	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
-	public function isShowSubmitButton() {
+	public function isShowSubmitButton(): bool {
 		return false;
 	}
 
@@ -604,10 +604,8 @@ class OktaProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @throws LAMException error building custom input
-	 * @see BaseProvider::addCustomInput
 	 */
-	public function addCustomInput(&$row, $userDn) {
+	public function addCustomInput(htmlResponsiveRow $row, string $userDn): void {
 		if (($this->config->loginHandler === null) || !$this->config->loginHandler->managesAuthentication()) {
 			$loginAttribute = $this->getLoginAttributeValue($userDn);
 			if (empty($loginAttribute)) {
@@ -748,7 +746,7 @@ class OktaProvider extends BaseProvider {
  */
 class OpenIdProvider extends BaseProvider {
 
-	private $verificationFailed = false;
+	private bool $verificationFailed = false;
 
 	/**
 	 * Constructor.
@@ -774,7 +772,7 @@ class OpenIdProvider extends BaseProvider {
 	 * {@inheritDoc}
 	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
-	public function isShowSubmitButton() {
+	public function isShowSubmitButton(): bool {
 		return false;
 	}
 
@@ -788,10 +786,8 @@ class OpenIdProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @throws LAMException error building custom input
-	 * @see BaseProvider::addCustomInput
 	 */
-	public function addCustomInput(&$row, $userDn) {
+	public function addCustomInput(htmlResponsiveRow $row, string $userDn): void {
 		$loginAttribute = '';
 		if (($this->config->loginHandler === null) || !$this->config->loginHandler->managesAuthentication()) {
 			$loginAttribute = $this->getLoginAttributeValue($userDn);
@@ -946,7 +942,7 @@ class WebauthnProvider extends BaseProvider {
 	 * {@inheritDoc}
 	 * @see TwoFactorProvider::isShowSubmitButton
 	 */
-	public function isShowSubmitButton() {
+	public function isShowSubmitButton(): bool {
 		return false;
 	}
 
@@ -960,9 +956,8 @@ class WebauthnProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
-	 * @see BaseProvider::addCustomInput
 	 */
-	public function addCustomInput(&$row, $userDn) {
+	public function addCustomInput(htmlResponsiveRow $row, string $userDn): void {
 		if (!extension_loaded('PDO')) {
 			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the PDO extension for PHP.'));
 			return;
@@ -1187,7 +1182,7 @@ class TwoFactorProviderService {
 	 *
 	 * @param string $name cookie name
 	 * @param string $value cookie value
-	 * @param array $options cookie options
+	 * @param array<string, string|bool|int> $options cookie options
 	 */
 	protected function setCookie(string $name, string $value, array $options): void {
 		setcookie($name, $value, $options);
@@ -1403,12 +1398,12 @@ class TwoFactorConfiguration {
 	public LAM_INTERFACE $interface = LAM_INTERFACE::ADMIN;
 
 	/**
-	 * @var ?string provider id
+	 * @var string|null provider id
 	 */
 	public ?string $twoFactorAuthentication = null;
 
 	/**
-	 * @var string|array service URL(s)
+	 * @var string|string[] service URL(s)
 	 */
 	public $twoFactorAuthenticationURL;
 
