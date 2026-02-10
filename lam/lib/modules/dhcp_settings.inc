@@ -89,7 +89,7 @@ class dhcp_settings extends baseModule {
 	/** @var array<string, string> $allowDenyOptions unknown-client options */
 	private array $allowDenyOptions;
 	/** LDAP attributes */
-	public $attributes;
+	public ?array $attributes = null;
 
 	/**
 	 * Creates a new dhcp_settings object.

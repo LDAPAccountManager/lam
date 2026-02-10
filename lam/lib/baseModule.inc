@@ -11,7 +11,7 @@ use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -90,10 +90,10 @@ abstract class baseModule {
 	private $base;
 
 	/** @var array<string, string[]|string>|null contains all ldap attributes which should be written */
-	protected $attributes;
+	protected ?array $attributes = null;
 
 	/** @var array<string, string[]|string>|null contains all ldap attributes which are loaded from LDAP */
-	protected $orig;
+	protected ?array $orig = null;
 
 	/** @var array<string, array<int, array<string|string[]>>>|null $messages contains all error messages of a module */
 	protected ?array $messages = null;
@@ -1010,7 +1010,7 @@ abstract class baseModule {
 	 * @param string $attrName LDAP attribute name
 	 * @param string|string[] $regex for get_preg() (e.g. 'ascii')
 	 * @param string[] $message error message to add if regex does not match
-	 * @param string[][] $errors list of error messages if any
+	 * @param array<string|string[]>[] $errors list of error messages if any
 	 * @param string $regexSplit multiple values are separated and can be split with this preg_split expression (e.g. "/;[ ]?/")
 	 */
 	protected function mapSimpleUploadField(&$rawAccounts, &$ids, &$partialAccounts, $position, $colName, $attrName, $regex = null, $message = [], &$errors = [], $regexSplit = null): void {
@@ -1048,7 +1048,7 @@ abstract class baseModule {
 	 * @param string $value value to check
 	 * @param string[] $message error message array if not matching
 	 * @param int $position upload position
-	 * @param string[][] $errors error messages
+	 * @param array<string|string[]>[] $errors error messages
 	 * @return bool value is ok
 	 * @see get_preg()
 	 */
@@ -1062,7 +1062,7 @@ abstract class baseModule {
 		}
 		if (!$matched) {
 			$errMsg = $message;
-			$errMsg[] = [$position];
+			$errMsg[] = [(string) $position];
 			$errors[] = $errMsg;
 			return false;
 		}
@@ -1159,9 +1159,9 @@ abstract class baseModule {
 	/**
 	 * Runs any actions that need to be done before an LDAP entry is created.
 	 *
-	 * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
+	 * @param array<string, string[]|string> $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
 	 * @param ConfiguredType $type account type
-	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
+	 * @return array<string|string[]>[] array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function doUploadPreActions($attributes, $type) {
 		return [];
@@ -1342,13 +1342,13 @@ abstract class baseModule {
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
 	 * @param htmlResponsiveRow $container parent container
-	 * @param String $attrName attribute name
-	 * @param String $label label name
-	 * @param boolean $required this is a required field (default false)
-	 * @param integer $length field length
-	 * @param boolean $isTextArea show as text area (default false)
-	 * @param array $autoCompleteValues values for auto-completion
-	 * @return mixed reference to htmlResponsiveInputField/htmlResponsiveInputTextarea
+	 * @param string $attrName attribute name
+	 * @param string $label label name
+	 * @param bool $required this is a required field (default false)
+	 * @param int $length field length
+	 * @param bool $isTextArea show as text area (default false)
+	 * @param string[]|null $autoCompleteValues values for auto-completion
+	 * @return htmlResponsiveInputField|htmlResponsiveInputTextarea reference to htmlResponsiveInputField/htmlResponsiveInputTextarea
 	 */
 	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null) {
 		$value = '';
@@ -1380,10 +1380,10 @@ abstract class baseModule {
 	 * Adds a simple read-only field to the given container.
 	 *
 	 * @param htmlResponsiveRow $container parent container
-	 * @param String $attrName attribute name
-	 * @param String $label field label
+	 * @param string $attrName attribute name
+	 * @param string $label field label
 	 */
-	protected function addSimpleReadOnlyField(&$container, $attrName, $label) {
+	protected function addSimpleReadOnlyField(&$container, $attrName, $label): void {
 		$val = '&nbsp;';
 		if (!empty($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
@@ -1407,7 +1407,7 @@ abstract class baseModule {
 	 * @param bool $required value required
 	 * @param string $validationID validation ID for function get_preg() (default: null, null means no validation)
 	 */
-	protected function processSimpleTextInput($attrName, &$errors, $required = false, $validationID = null) {
+	protected function processSimpleTextInput($attrName, &$errors, $required = false, $validationID = null): void {
 		if ((!isset($_POST[$attrName]) || ($_POST[$attrName] === '')) && isset($this->attributes[$attrName][0])) {
 			unset($this->attributes[$attrName][0]);
 			if ($required) {
@@ -1436,16 +1436,16 @@ abstract class baseModule {
 	 * @param htmlResponsiveRow $container parent container
 	 * @param string $attrName attribute name
 	 * @param string|null $label label name
-	 * @param boolean $required this is a required field (default false)
+	 * @param bool $required this is a required field (default false)
 	 * @param int|null $length field length
-	 * @param boolean $isTextArea show as text area (default false)
-	 * @param array $autoCompleteValues values for auto-completion
+	 * @param bool $isTextArea show as text area (default false)
+	 * @param string[]|null $autoCompleteValues values for auto-completion
 	 * @param integer $fieldSize field size
-	 * @param array $htmlIDs reference to array where to add the generated HTML IDs of the input fields
+	 * @param string[] $htmlIDs reference to array where to add the generated HTML IDs of the input fields
 	 * @param string $cssClasses additional CSS classes of input fields
 	 */
 	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false,
-												   $autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null, $cssClasses = '') {
+												   $autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null, $cssClasses = ''): void {
 		$values = [];
 		if (isset($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
@@ -1538,7 +1538,7 @@ abstract class baseModule {
 	 * @param string|null $validationID validation ID for function get_preg() (default: null, null means no validation)
 	 * @param bool $required the field is required (default: false)
 	 */
-	protected function processMultiValueInputTextField($attrName, &$errors, $validationID = null, $required = false) {
+	protected function processMultiValueInputTextField($attrName, &$errors, $validationID = null, $required = false): void {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
 			$this->attributes[$attrName][$counter] = trim($_POST[$attrName . '_' . $counter]);
@@ -1578,14 +1578,14 @@ abstract class baseModule {
 	 * @param htmlResponsiveRow $container parent container
 	 * @param string $attrName attribute name
 	 * @param string|null $label label name
-	 * @param array $options options for the selects
-	 * @param boolean $hasDescriptiveOptions has descriptive options
-	 * @param boolean $required this is a required field (default false)
+	 * @param string[]|array<string, string>|array<string, string[]|array<string, string>> $options options for the selects
+	 * @param bool $hasDescriptiveOptions has descriptive options
+	 * @param bool $required this is a required field (default false)
 	 * @param integer $fieldSize field size
-	 * @param array $htmlIDs reference to array where to add the generated HTML IDs of the input fields
+	 * @param string[] $htmlIDs reference to array where to add the generated HTML IDs of the input fields
 	 */
 	protected function addMultiValueSelectField(&$container, $attrName, $label, $options, $hasDescriptiveOptions = false,
-												$required = false, $fieldSize = 1, &$htmlIDs = null) {
+												$required = false, $fieldSize = 1, &$htmlIDs = null): void {
 		$values = [];
 		if (isset($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
@@ -1625,9 +1625,9 @@ abstract class baseModule {
 	 * Validates a multi-value select field.
 	 * The select fields must be created with function addMultiValueSelectField().
 	 *
-	 * @param String $attrName attribute name
+	 * @param string $attrName attribute name
 	 */
-	protected function processMultiValueSelectField($attrName) {
+	protected function processMultiValueSelectField(string $attrName): void {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
 			$this->attributes[$attrName][$counter] = trim($_POST[$attrName . '_' . $counter]);
@@ -1665,7 +1665,7 @@ abstract class baseModule {
 	 * @param bool $showFilter displays a live filter
 	 */
 	protected function addDoubleSelectionArea(&$container, $labelFirst, $labelSecond, $optionsFirst, $selectedFirst,
-											  $optionsSecond, $selectedSecond, $namePrefix, $rightToLeftText = false, $showFilter = false) {
+											  $optionsSecond, $selectedSecond, $namePrefix, $rightToLeftText = false, $showFilter = false): void {
 		$forceTablet = false;
 		foreach ($optionsFirst as $label => $value) {
 			if (mb_strlen($label) > 75) {
@@ -1739,17 +1739,17 @@ abstract class baseModule {
 	 * Adds a simple text input field for the self service.
 	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 *
-	 * @param array $container array that is used as return value for getSelfServiceOptions()
-	 * @param String $name attribute name (== field name)
-	 * @param String $label label to display in front of input field
-	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account
-	 * @param array $readOnlyFields list of read-only fields
-	 * @param boolean $required field is required
-	 * @param boolean $isTextArea display as text area
-	 * @param string $attributeName attribute name (defaults to $name)
+	 * @param array<string, htmlResponsiveRow> $container array that is used as return value for getSelfServiceOptions()
+	 * @param string $name attribute name (== field name)
+	 * @param string $label label to display in front of input field
+	 * @param string[] $fields list of active fields
+	 * @param array<string, string[]|string> $attributes attributes of LDAP account
+	 * @param string[] $readOnlyFields list of read-only fields
+	 * @param bool $required field is required
+	 * @param bool $isTextArea display as text area
+	 * @param string|null $attributeName attribute name (defaults to $name)
 	 */
-	protected function addSimpleSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false, $attributeName = null) {
+	protected function addSimpleSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false, $attributeName = null): void {
 		if (!in_array($name, $fields)) {
 			return;
 		}
@@ -1787,30 +1787,30 @@ abstract class baseModule {
 	 * The field name must be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
 	 *
-	 * @param array $container return value of checkSelfServiceOptions()
-	 * @param String $name attribute name
-	 * @param array $attributes LDAP attributes
-	 * @param array $fields input fields
-	 * @param array $readOnlyFields list of read-only fields
-	 * @param String $validationID validation ID for get_preg()
-	 * @param array $validationMessage validation message data (defaults to $this->messages[$name][0])
-	 * @param array $requiredMessage message data when no value is set by user (no check if null)
+	 * @param array<string, array<string|string[]>[]|array<string, string[]|string>> $container return value of checkSelfServiceOptions()
+	 * @param string $name attribute name
+	 * @param array<string, string[]|string> $attributes LDAP attributes
+	 * @param string[] $fields input fields
+	 * @param string[] $readOnlyFields list of read-only fields
+	 * @param string $validationID validation ID for get_preg()
+	 * @param array<string|string[]> $validationMessage validation message data (defaults to $this->messages[$name][0])
+	 * @param array<string|string[]> $requiredMessage message data when no value is set by user (no check if null)
 	 * @param string $attributeName attribute name (defaults to $name)
 	 */
 	protected function checkSimpleSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields,
-													   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
+													   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null): void {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
 			$fieldName = static::class . '_' . $name;
 			$ldapAttrName = $attributeName ?? $name;
 			if (!empty($_POST[$fieldName])) {
-				if (($validationID != null) && !get_preg($_POST[$fieldName], $validationID)) {
+				if (($validationID !== null) && !get_preg($_POST[$fieldName], $validationID)) {
 					$container['messages'][] = $validationMessage ?? $this->messages[$name][0];
 				}
 				elseif (isset($attributes[$ldapAttrName]) && ($attributes[$ldapAttrName][0] != $_POST[$fieldName])) {
-					$container['mod'][$ldapAttrName] = [$_POST[$fieldName]];
+					$container['mod'][$ldapAttrName] = [(string) $_POST[$fieldName]];
 				}
 				elseif (!isset($attributes[$ldapAttrName])) {
-					$container['add'][$ldapAttrName] = [$_POST[$fieldName]];
+					$container['add'][$ldapAttrName] = [(string) $_POST[$fieldName]];
 				}
 			}
 			elseif ($requiredMessage !== null) {
@@ -1826,18 +1826,18 @@ abstract class baseModule {
 	 * Adds a simple text input field for the self service.
 	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 *
-	 * @param array $container array that is used as return value for getSelfServiceOptions()
-	 * @param String $name attribute name (== field name)
-	 * @param String $label label to display in front of input field
-	 * @param array $fields list of active fields
-	 * @param array $attributes attributes of LDAP account
-	 * @param array $readOnlyFields list of read-only fields
-	 * @param boolean $required field is required
-	 * @param boolean $isTextArea display as text area
+	 * @param array<string, htmlResponsiveRow> $container array that is used as return value for getSelfServiceOptions()
+	 * @param string $name attribute name (== field name)
+	 * @param string $label label to display in front of input field
+	 * @param string[] $fields list of active fields
+	 * @param array<string, string[]|string> $attributes attributes of LDAP account
+	 * @param string[] $readOnlyFields list of read-only fields
+	 * @param bool $required field is required
+	 * @param bool $isTextArea display as text area
 	 * @param string $attributeName attribute name (defaults to $name)
 	 */
 	protected function addMultiValueSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes,
-														 &$readOnlyFields, $required = false, $isTextArea = false, $attributeName = null) {
+														 &$readOnlyFields, $required = false, $isTextArea = false, $attributeName = null): void {
 		if (!in_array($name, $fields)) {
 			return;
 		}
@@ -1910,18 +1910,18 @@ abstract class baseModule {
 	 * The field name must be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
 	 *
-	 * @param array $container return value of checkSelfServiceOptions()
-	 * @param String $name attribute name
-	 * @param array $attributes LDAP attributes
+	 * @param array<string, array<string|string[]>[]|array<string, string[]|string>> $container return value of checkSelfServiceOptions()
+	 * @param string $name attribute name
+	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 * @param string[] $fields input fields
-	 * @param array $readOnlyFields list of read-only fields
-	 * @param String $validationID validation ID for get_preg()
-	 * @param array $validationMessage validation message data (defaults to $this->messages[$name][0])
-	 * @param array $requiredMessage message data when no value is set by user (no check if null)
+	 * @param string[] $readOnlyFields list of read-only fields
+	 * @param string $validationID validation ID for get_preg()
+	 * @param array<string|string[]> $validationMessage validation message data (defaults to $this->messages[$name][0])
+	 * @param array<string|string[]> $requiredMessage message data when no value is set by user (no check if null)
 	 * @param string $attributeName attribute name (defaults to $name)
 	 */
 	protected function checkMultiValueSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields,
-														   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
+														   $validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null): void {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
 			$fieldName = static::class . '_' . $name;
 			$ldapAttrName = $attributeName ?? $name;
@@ -1937,7 +1937,7 @@ abstract class baseModule {
 					$container['messages'][] = $validationMessage ?? $this->messages[$name][0];
 					return;
 				}
-				$valuesNew[] = $postValue;
+				$valuesNew[] = (string) $postValue;
 			}
 			if (empty($valuesNew) && ($requiredMessage !== null)) {
 				$container['messages'][] = $requiredMessage;
@@ -1978,11 +1978,11 @@ abstract class baseModule {
 	 * All alias attributes will be renamed to the given attribute names.
 	 *
 	 * @param string $typeId type id (user, group, host)
-	 * @return array list of aliases like array("alias name" => "attribute name")
+	 * @return array<string, string> list of aliases like array("alias name" => "attribute name")
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getLDAPAliases($typeId) {
+	public function getLDAPAliases(string $typeId): array {
 		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) {
 			return $this->meta['LDAPaliases'];
 		}
@@ -2244,18 +2244,18 @@ abstract class baseModule {
 	/**
 	 * Returns the LDAP attributes which are managed in this module.
 	 *
-	 * @return array attributes
+	 * @return array<string, string[]|string>|null attributes
 	 */
-	public function getAttributes() {
+	public function getAttributes(): ?array {
 		return $this->attributes;
 	}
 
 	/**
 	 * Returns the LDAP attributes which are managed in this module (with unchanged values).
 	 *
-	 * @return array attributes
+	 * @return array<string, string[]|string>|null attributes
 	 */
-	public function getOriginalAttributes() {
+	public function getOriginalAttributes(): ?array {
 		return $this->orig;
 	}
 

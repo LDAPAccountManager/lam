@@ -806,13 +806,13 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				if (!isset($this->attributes['sambaSID'][0])
 					|| in_array($rid, $this->userRids)
 					|| (!str_contains($this->attributes['sambaSID'][0], $SID))) {
-					$this->attributes['sambaSID'][0] = $SID . "-" . (($unixAttributes['uidNumber'][0] * 2) + $RIDbase);
+					$this->attributes['sambaSID'][0] = $SID . "-" . ((intval($unixAttributes['uidNumber'][0]) * 2) + $RIDbase);
 				}
 			}
 		}
 		elseif (!isset($this->attributes['sambaSID'][0])) {
 			// host
-			$this->attributes['sambaSID'][0] = $SID . "-" . (($unixAttributes['uidNumber'][0] * 2) + $RIDbase);
+			$this->attributes['sambaSID'][0] = $SID . "-" . ((intval($unixAttributes['uidNumber'][0]) * 2) + $RIDbase);
 		}
 		$this->expirePassword = isset($_POST['forcePasswordChangeOption']);
 		return $errors;

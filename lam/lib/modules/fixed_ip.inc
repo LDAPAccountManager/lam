@@ -57,7 +57,7 @@ class fixed_ip extends baseModule {
 	public array $orig_ips = [];
 
 	/** LDAP attributes */
-	public $attributes;
+	public ?array $attributes = null;
 
 	/** @var array<string, string[]|string>[]|null $hostCache cached host entries (list of array('cn' => ..., 'iphostnumber' => ..., 'macaddress' => ...)) */
 	private ?array $hostCache = null;
