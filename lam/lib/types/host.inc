@@ -48,20 +48,16 @@ class host extends baseType {
 	}
 
 	/**
-	 * Returns the alias name of this account type.
-	 *
-	 * @return string alias name
+	 * {@inheritDoc}
 	 */
-	function getAlias() {
+	public function getAlias(): string {
 		return _("Hosts");
 	}
 
 	/**
-	 * Returns the description of this account type.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("Host accounts (e.g. Samba)");
 	}
 
@@ -73,20 +69,16 @@ class host extends baseType {
 	}
 
 	/**
-	 * Returns the class name for the list object.
-	 *
-	 * @return string class name
+	 * {@inheritDoc}
 	 */
-	function getListClassName() {
-		return "lamHostList";
+	public function getListClassName(): string {
+		return lamHostList::class;
 	}
 
 	/**
-	 * Returns the default attribute list for this account type.
-	 *
-	 * @return string attribute list
+	 * {@inheritDoc}
 	 */
-	function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "#cn;#description;#uidNumber;#gidNumber";
 	}
 

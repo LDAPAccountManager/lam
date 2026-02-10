@@ -51,38 +51,30 @@ class asteriskExt extends baseType {
 	}
 
 	/**
-	 * Returns the alias name of this account type.
-	 *
-	 * @return string alias name
+	 * {@inheritDoc}
 	 */
-	function getAlias() {
+	public function getAlias(): string {
 		return _("Asterisk extensions");
 	}
 
 	/**
-	 * Returns the description of this account type.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("Asterisk extensions entries");
 	}
 
 	/**
-	 * Returns the class name for the list object.
-	 *
-	 * @return string class name
+	 * {@inheritDoc}
 	 */
-	function getListClassName() {
-		return "lamAsteriskExtList";
+	public function getListClassName(): string {
+		return lamAsteriskExtList::class;
 	}
 
 	/**
-	 * Returns the default attribute list for this account type.
-	 *
-	 * @return string attribute list
+	 * {@inheritDoc}
 	 */
-	function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "#AstExtension;#AstContext;#member";
 	}
 

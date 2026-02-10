@@ -48,38 +48,30 @@ class kolabSharedFolderType extends baseType {
 	}
 
 	/**
-	 * Returns the alias name of this account type.
-	 *
-	 * @return string alias name
+	 * {@inheritDoc}
 	 */
-	function getAlias() {
+	public function getAlias(): string {
 		return _("Kolab shared folders");
 	}
 
 	/**
-	 * Returns the description of this account type.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("Kolab shared folders (e.g. mail folders)");
 	}
 
 	/**
-	 * Returns the class name for the list object.
-	 *
-	 * @return string class name
+	 * {@inheritDoc}
 	 */
-	function getListClassName() {
-		return "kolabSharedFolderTypeList";
+	public function getListClassName(): string {
+		return kolabSharedFolderTypeList::class;
 	}
 
 	/**
-	 * Returns the default attribute list for this account type.
-	 *
-	 * @return string attribute list
+	 * {@inheritDoc}
 	 */
-	function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "#cn;#kolabDelegate;#alias";
 	}
 

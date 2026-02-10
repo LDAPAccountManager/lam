@@ -48,20 +48,16 @@ class mailAlias extends baseType {
 	}
 
 	/**
-	 * Returns the alias name of this account type.
-	 *
-	 * @return string alias name
+	 * {@inheritDoc}
 	 */
-	function getAlias() {
+	public function getAlias(): string {
 		return _("Mail aliases");
 	}
 
 	/**
-	 * Returns the description of this account type.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("Mailing aliases (e.g. NIS mail aliases)");
 	}
 
@@ -73,20 +69,16 @@ class mailAlias extends baseType {
 	}
 
 	/**
-	 * Returns the class name for the list object.
-	 *
-	 * @return string class name
+	 * {@inheritDoc}
 	 */
-	function getListClassName() {
-		return "lamMailAliasList";
+	public function getListClassName(): string {
+		return lamMailAliasList::class;
 	}
 
 	/**
-	 * Returns the default attribute list for this account type.
-	 *
-	 * @return string attribute list
+	 * {@inheritDoc}
 	 */
-	function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "#cn;#rfc822MailMember";
 	}
 

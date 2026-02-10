@@ -50,20 +50,16 @@ class dhcp extends baseType {
 	}
 
 	/**
-	 * Returns the alias name of this account type.
-	 *
-	 * @return string alias name
+	 * {@inheritDoc}
 	 */
-	public function getAlias() {
+	public function getAlias(): string {
 		return _("DHCP");
 	}
 
 	/**
-	 * Returns the description of this account type.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return _("DHCP administration");
 	}
 
@@ -75,20 +71,16 @@ class dhcp extends baseType {
 	}
 
 	/**
-	 * Returns the class name for the list object.
-	 *
-	 * @return string class name
+	 * {@inheritDoc}
 	 */
-	public function getListClassName() {
-		return "lamDHCPList";
+	public function getListClassName(): string {
+		return lamDHCPList::class;
 	}
 
 	/**
-	 * Returns the default attribute list for this account type.
-	 *
-	 * @return string attribute list
+	 * {@inheritDoc}
 	 */
-	public function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "#cn;#dhcpRange;#fixed_ips";
 	}
 

@@ -48,38 +48,30 @@ class pykotaBillingCodeType extends baseType {
 	}
 
 	/**
-	 * Returns the alias name of this account type.
-	 *
-	 * @return string alias name
+	 * {@inheritDoc}
 	 */
-	function getAlias() {
+	public function getAlias(): string {
 		return _("Billing codes");
 	}
 
 	/**
-	 * Returns the description of this account type.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("PyKota billing codes");
 	}
 
 	/**
-	 * Returns the class name for the list object.
-	 *
-	 * @return string class name
+	 * {@inheritDoc}
 	 */
-	function getListClassName() {
-		return "lamPykotaBillingCodeTypeList";
+	public function getListClassName(): string {
+		return lamPykotaBillingCodeTypeList::class;
 	}
 
 	/**
-	 * Returns the default attribute list for this account type.
-	 *
-	 * @return string attribute list
+	 * {@inheritDoc}
 	 */
-	function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "#cn;#description;#pykotaBalance;#pykotaPageCounter";
 	}
 

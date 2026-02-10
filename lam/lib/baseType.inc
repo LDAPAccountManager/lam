@@ -38,9 +38,9 @@ use LAM\TYPES\ConfiguredType;
 class baseType {
 
 	/** label to create another account */
-	public $LABEL_CREATE_ANOTHER_ACCOUNT;
+	public string $LABEL_CREATE_ANOTHER_ACCOUNT;
 	/** label to return to account list */
-	public $LABEL_BACK_TO_ACCOUNT_LIST;
+	public string $LABEL_BACK_TO_ACCOUNT_LIST;
 
 	/** type configuration */
 	private ?ConfiguredType $type;
@@ -62,7 +62,7 @@ class baseType {
 	 *
 	 * @return string alias name
 	 */
-	public function getAlias() {
+	public function getAlias(): string {
 		return "baseType";
 	}
 
@@ -72,17 +72,17 @@ class baseType {
 	 *
 	 * @return string description
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return "base type";
 	}
 
 	/**
 	 * Returns the class name for the list object.
 	 *
-	 * @return string class name
+	 * @return class-string class name
 	 */
-	public function getListClassName() {
-		return "lamList";
+	public function getListClassName(): string {
+		return lamList::class;
 	}
 
 	/**
@@ -91,7 +91,7 @@ class baseType {
 	 *
 	 * @return string attribute list
 	 */
-	public function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "dn:DN,objectClass:Object classes";
 	}
 

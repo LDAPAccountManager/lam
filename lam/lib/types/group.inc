@@ -58,11 +58,9 @@ class group extends baseType {
 	}
 
 	/**
-	 * Returns the alias name of this account type.
-	 *
-	 * @return string alias name
+	 * {@inheritDoc}
 	 */
-	function getAlias() {
+	public function getAlias(): string {
 		if ($this->getType() != null) {
 			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
@@ -73,11 +71,9 @@ class group extends baseType {
 	}
 
 	/**
-	 * Returns the description of this account type.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("Group accounts (e.g. Unix and Samba)");
 	}
 
@@ -89,20 +85,16 @@ class group extends baseType {
 	}
 
 	/**
-	 * Returns the class name for the list object.
-	 *
-	 * @return string class name
+	 * {@inheritDoc}
 	 */
-	function getListClassName() {
-		return "lamGroupList";
+	public function getListClassName(): string {
+		return lamGroupList::class;
 	}
 
 	/**
-	 * Returns the default attribute list for this account type.
-	 *
-	 * @return string attribute list
+	 * {@inheritDoc}
 	 */
-	function getDefaultListAttributes() {
+	public function getDefaultListAttributes(): string {
 		return "#cn;#gidNumber;#memberUID;#description";
 	}
 
