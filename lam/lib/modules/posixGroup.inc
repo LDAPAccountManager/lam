@@ -1087,7 +1087,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'magicNumber')) {
 			$return = [];
 			for ($i = 0; $i < $count; $i++) {
-				$return[] = $this->moduleSettings['posixGroup_' . $typeId . '_magicNumber'][0];
+				$return[] = intval($this->moduleSettings['posixGroup_' . $typeId . '_magicNumber'][0]);
 			}
 			return $return;
 		}

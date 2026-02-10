@@ -72,22 +72,22 @@ abstract class baseModule {
 		'employeeNumber', 'userCertificate;binary', 'userCertificate',
 		'homeDirectory', 'unixHomeDirectory', 'jpegPhoto'];
 
-	/** includes all meta data provided by the sub class */
-	protected $meta;
+	/** @var array<string, mixed>|null $meta includes all meta data provided by the sub class */
+	protected ?array $meta = null;
 
 	/** the account type of this module (user, group, host) */
-	private $scope;
+	private ?string $scope;
 
-	/** configuration settings of all modules */
-	protected $moduleSettings;
+	/** @var array<string, string[]>|null $moduleSettings configuration settings of all modules */
+	protected ?array $moduleSettings = null;
 
 	/**
 	 * @var selfServiceProfile|null self-service profile with settings of all modules
 	 */
-	protected $selfServiceSettings;
+	protected ?selfServiceProfile $selfServiceSettings = null;
 
 	/** name of parent accountContainer ($_SESSION[$base]) */
-	private $base;
+	private ?string $base = null;
 
 	/** @var array<string, string[]|string>|null contains all ldap attributes which should be written */
 	protected ?array $attributes = null;
@@ -99,14 +99,14 @@ abstract class baseModule {
 	protected ?array $messages = null;
 
 	/** if true, managed object classes are added when an account is created or loaded (default: true) */
-	protected $autoAddObjectClasses = true;
+	protected bool $autoAddObjectClasses = true;
 
 	/**
 	 * Creates a new base module class
 	 *
 	 * @param string|null $scope the account type (user, group, host)
 	 */
-	public function __construct($scope) {
+	public function __construct(?string $scope) {
 		$this->scope = $scope;
 		// load configuration
 		if ($this->can_manage() || ($scope === null)) {
@@ -526,11 +526,11 @@ abstract class baseModule {
 	 * <br>
 	 * <b>Example:</b> return array("depends" => array("posixAccount", array("qmail", "sendmail")), "conflicts" => array("exim"))
 	 *
-	 * @return array list of dependencies and conflicts
+	 * @return array<string, array<string|string[]>> list of dependencies and conflicts
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function get_dependencies() {
+	public function get_dependencies(): array {
 		return $this->meta['dependencies'] ?? ['depends' => [], 'conflicts' => []];
 	}
 
@@ -871,13 +871,13 @@ abstract class baseModule {
 	/**
 	 * Adds a simple PDF entry to the given array.
 	 *
-	 * @param array $result result array (entry will be added here)
-	 * @param String $name ID
-	 * @param String $label label name
-	 * @param String $attrName attribute name (default: =$name)
-	 * @param String $delimiter delimiter if multiple attribute values exist (default: ", ")
+	 * @param array<string, PDFEntry[]> $result result array (entry will be added here)
+	 * @param string $name ID
+	 * @param string $label label name
+	 * @param string|null $attrName attribute name (default: =$name)
+	 * @param string $delimiter delimiter if multiple attribute values exist (default: ", ")
 	 */
-	protected function addSimplePDFField(&$result, $name, $label, $attrName = null, $delimiter = ', ') {
+	protected function addSimplePDFField(array &$result, string $name, string $label, ?string $attrName = null, string $delimiter = ', '): void {
 		if ($attrName == null) {
 			$attrName = $name;
 		}
@@ -913,11 +913,11 @@ abstract class baseModule {
 	/**
 	 * Adds a table entry to the PDF.
 	 *
-	 * @param array $result result array (entry will be added here)
-	 * @param String $name ID
+	 * @param array<string, PDFEntry[]> $result result array (entry will be added here)
+	 * @param string $name ID
 	 * @param PDFTable $table table
 	 */
-	public function addPDFTable(&$result, $name, $table) {
+	public function addPDFTable(array &$result, string $name, PDFTable $table): void {
 		if (empty($table->rows)) {
 			return;
 		}
@@ -927,10 +927,10 @@ abstract class baseModule {
 	/**
 	 * Adds an image to the PDF.
 	 *
-	 * @param array $result result array (entry will be added here)
+	 * @param array<string, PDFEntry[]> $result result array (entry will be added here)
 	 * @param string $attrName attribute name
 	 */
-	public function addPDFImage(&$result, $attrName) {
+	public function addPDFImage(array &$result, string $attrName): void {
 		if (isset($this->attributes[$attrName]) && (count($this->attributes[$attrName]) > 0)) {
 			$result[static::class . '_' . $attrName][] = new PDFImage($this->attributes[$attrName][0]);
 		}
@@ -2319,7 +2319,7 @@ abstract class baseModule {
 	 */
 	protected function isBooleanConfigOptionSet($optionName, $default = false) {
 		// abort if configuration is not available
-		if ($this->moduleSettings === null || !is_array($this->moduleSettings) || !isset($this->moduleSettings[$optionName][0])) {
+		if (!is_array($this->moduleSettings) || !isset($this->moduleSettings[$optionName][0])) {
 			return $default;
 		}
 		return ($this->moduleSettings[$optionName][0] == 'true');

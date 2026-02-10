@@ -2146,7 +2146,7 @@ class accountContainer {
 			}
 			// check next module
 			$dependencies = $this->module[$modules[$i]]->get_dependencies();
-			if (is_array($dependencies['depends'])) {
+			if (isset($dependencies['depends'])) {
 				$everything_found = true;
 				$dependencies = $dependencies['depends'];
 				for ($d = 0; $d < count($dependencies); $d++) {
