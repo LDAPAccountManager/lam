@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2023  Roland Gruber
+ Copyright (C) 2016 - 2026  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -256,7 +256,7 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->get_defaultLanguage() and LAMConfig->set_defaultLanguage()
 	 */
 	public function testdefaultLanguage() {
-		$this->assertFalse($this->lAMConfig->set_defaultLanguage(true));
+		$this->assertFalse($this->lAMConfig->set_defaultLanguage(null));
 		$val = 'en_GB';
 		$this->lAMConfig->set_defaultLanguage($val);
 		$this->assertEquals($val, $this->lAMConfig->get_defaultLanguage());
@@ -268,7 +268,7 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->getTimeZone() and LAMConfig->setTimeZone()
 	 */
 	public function testTimeZone() {
-		$this->assertFalse($this->lAMConfig->setTimeZone(true));
+		$this->assertFalse($this->lAMConfig->setTimeZone(null));
 		$val = 'Europe/Berlin';
 		$this->lAMConfig->setTimeZone($val);
 		$this->assertEquals($val, $this->lAMConfig->getTimeZone());
