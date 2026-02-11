@@ -328,9 +328,6 @@ class LAMLanguage {
  */
 class ServerProfilePersistenceManager {
 
-	/**
-	 * @var ServerProfilePersistenceStrategy
-	 */
 	private ServerProfilePersistenceStrategy $strategy;
 
 	public function __construct() {
@@ -1397,7 +1394,7 @@ class LAMConfig {
 	/**
 	 * Checks if the given password matches.
 	 *
-	 * @param string $password
+	 * @param string $password password
 	 * @return bool true, if matches
 	 */
 	public function check_Passwd(string $password): bool {
@@ -1981,7 +1978,7 @@ class LAMConfig {
 	/**
 	 * Sets the login method.
 	 *
-	 * @param string $loginMethod
+	 * @param string $loginMethod login method
 	 */
 	public function setLoginMethod(string $loginMethod): void {
 		$this->loginMethod = $loginMethod;
@@ -2031,7 +2028,7 @@ class LAMConfig {
 	 */
 	public function setLoginSearchDN(string $loginSearchDN): bool {
 		$this->loginSearchDN = $loginSearchDN;
-		return ($loginSearchDN == '') || get_preg($loginSearchDN, 'dn');
+		return ($loginSearchDN === '') || get_preg($loginSearchDN, 'dn');
 	}
 
 	/**
@@ -2099,7 +2096,7 @@ class LAMConfig {
 	 */
 	public function setLamProMailFrom(string $lamProMailFrom): bool {
 		$this->lamProMailFrom = $lamProMailFrom;
-		if (($lamProMailFrom != '') && !get_preg($lamProMailFrom, 'email') && !get_preg($lamProMailFrom, 'emailWithName')) {
+		if (($lamProMailFrom !== '') && !get_preg($lamProMailFrom, 'email') && !get_preg($lamProMailFrom, 'emailWithName')) {
 			return false;
 		}
 		return true;
@@ -2122,7 +2119,7 @@ class LAMConfig {
 	 */
 	public function setLamProMailReplyTo(string $lamProMailReplyTo): bool {
 		$this->lamProMailReplyTo = $lamProMailReplyTo;
-		if (($lamProMailReplyTo != '') && !get_preg($lamProMailReplyTo, 'email') && !get_preg($lamProMailReplyTo, 'emailWithName')) {
+		if (($lamProMailReplyTo !== '') && !get_preg($lamProMailReplyTo, 'email') && !get_preg($lamProMailReplyTo, 'emailWithName')) {
 			return false;
 		}
 		return true;

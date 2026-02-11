@@ -1148,13 +1148,13 @@ class posixGroup extends baseModule implements passwordService {
 	 *
 	 * @param integer $count number of needed free GIDs.
 	 * @param string $typeId account type id
-	 * @return mixed null if no GIDs are free else an array of free GIDs
+	 * @return int[]|null null if no GIDs are free else an array of free GIDs
 	 */
 	private function getNextSambaPoolGIDs($count, $typeId) {
 		$dn = $this->moduleSettings['posixGroup_' . $typeId . '_sambaIDPoolDN'][0];
 		$attrs = ldapGetDN($dn, ['gidNumber']);
 		if (isset($attrs['gidnumber'][0]) && ($attrs['gidnumber'][0] != '')) {
-			$newValue = $attrs['gidnumber'][0] + $count;
+			$newValue = intval($attrs['gidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
 			ldap_modify($ldapHandle, $dn, ['gidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
@@ -1164,7 +1164,7 @@ class posixGroup extends baseModule implements passwordService {
 			}
 			$result = [];
 			for ($i = 0; $i < $count; $i++) {
-				$result[] = $attrs['gidnumber'][0] + $i;
+				$result[] = intval($attrs['gidnumber'][0]) + $i;
 			}
 			return $result;
 		}
@@ -1176,13 +1176,13 @@ class posixGroup extends baseModule implements passwordService {
 	 *
 	 * @param integer $count number of needed free GIDs.
 	 * @param string $typeId account type id
-	 * @return mixed null if no GIDs are free else an array of free GIDs
+	 * @return int[]|null null if no GIDs are free else an array of free GIDs
 	 */
 	private function getNextDomainInfoGIDs($count, $typeId) {
 		$dn = $this->moduleSettings['posixGroup_' . $typeId . '_windowsIDPoolDN'][0];
 		$attrs = ldapGetDN($dn, ['msSFU30MaxGidNumber']);
 		if (isset($attrs['mssfu30maxgidnumber'][0]) && ($attrs['mssfu30maxgidnumber'][0] != '')) {
-			$newValue = $attrs['mssfu30maxgidnumber'][0] + $count;
+			$newValue = intval($attrs['mssfu30maxgidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
 			ldap_modify($ldapHandle, $dn, ['mssfu30maxgidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
@@ -1192,7 +1192,7 @@ class posixGroup extends baseModule implements passwordService {
 			}
 			$result = [];
 			for ($i = 0; $i < $count; $i++) {
-				$result[] = $attrs['mssfu30maxgidnumber'][0] + $i;
+				$result[] = intval($attrs['mssfu30maxgidnumber'][0]) + $i;
 			}
 			return $result;
 		}

@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2025  Roland Gruber
+                2009 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -79,8 +79,8 @@ function array_delete($values, $array) {
  * Flattens the values of a multidimensional array.
  * Only unique values are returned.
  *
- * @param array $array multidimensional array
- * @return array flat array
+ * @param mixed[] $array multidimensional array
+ * @return mixed[] flat array
  */
 function flattenArray(array $array): array {
 	$result = [];
@@ -99,9 +99,10 @@ function flattenArray(array $array): array {
  * Checks if a string exists in an array, ignoring case.
  *
  * @param string|null $needle search string
- * @param array|null $haystack array
+ * @param string[]|null $haystack array
+ * @return bool needle contained in haystack
  */
-function in_array_ignore_case($needle, $haystack) {
+function in_array_ignore_case(?string $needle, ?array $haystack): bool {
 	if (!is_array($haystack)) {
 		return false;
 	}
@@ -109,7 +110,7 @@ function in_array_ignore_case($needle, $haystack) {
 		return false;
 	}
 	foreach ($haystack as $element) {
-		if (is_string($element) && 0 === strcasecmp($needle, $element)) {
+		if (0 === strcasecmp($needle, $element)) {
 			return true;
 		}
 	}
@@ -119,8 +120,9 @@ function in_array_ignore_case($needle, $haystack) {
 /**
  * Checks if two arrays have the same content.
  *
- * @param array $array1 array 1
- * @param array $array2 array 2
+ * @template T
+ * @param T[] $array1 array 1
+ * @param T[] $array2 array 2
  * @return bool same content
  */
 function areArrayContentsEqual(array $array1, array $array2): bool {
@@ -131,8 +133,9 @@ function areArrayContentsEqual(array $array1, array $array2): bool {
 /**
  * Sorts an array in natural order by its keys.
  *
- * @param array $toSort array to sort
- * @return array sorted array
+ * @template T
+ * @param T[] $toSort array to sort
+ * @return T[] sorted array
  */
 function natCaseKeySort(array $toSort): array {
 	$keys = array_keys($toSort);
@@ -150,7 +153,7 @@ function natCaseKeySort(array $toSort): array {
  * @param string $password password original password
  * @return string password hash
  */
-function ntPassword($password) {
+function ntPassword(string $password): string {
 	return strtoupper(hash('md4', convertUtf8ToUtf16Le($password)));
 }
 
@@ -164,7 +167,7 @@ function ntPassword($password) {
  *
  * @see getSupportedHashTypes()
  */
-function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
+function pwd_hash(?string $password, bool $enabled = true, string $hashType = 'SSHA'): string {
 	// check for empty password
 	if (($password === null) || ($password === "")) {
 		return "";
@@ -243,9 +246,9 @@ function getHashType(?string $hash): string {
 /**
  * Returns the list of supported hash types (e.g. SSHA).
  *
- * @return array hash types
+ * @return string[] hash types
  */
-function getSupportedHashTypes() {
+function getSupportedHashTypes(): array {
 	return ['CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP', 'ARGON2ID', 'PBKDF2-SHA512'];
 }
 
@@ -253,10 +256,10 @@ function getSupportedHashTypes() {
  * Calculates a password salt of the given length.
  *
  * @param int $len salt length
- * @return String the salt string
+ * @return string the salt string
  *
  */
-function generateSalt($len) {
+function generateSalt($len): string {
 	$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890./';
 	$salt = '';
 	for ($i = 0; $i < $len; $i++) {
@@ -485,10 +488,10 @@ function getNumberOfCharacterClasses($password): int {
  * Returns an array with all Samba 3 domain entries under the given suffix
  *
  * @param Connection|null $server LDAP handle (if null then $_SESSION['ldap']->server() is used)
- * @param String $suffix LDAP suffix to search (if null then $_SESSION['config']->get_Suffix('smbDomain') is used)
- * @return array list of samba3domain objects
+ * @param string|null $suffix LDAP suffix to search (if null then $_SESSION['config']->get_Suffix('smbDomain') is used)
+ * @return samba3domain[] list of samba3domain objects
  */
-function search_domains($server = null, $suffix = null) {
+function search_domains(?Connection $server = null, ?string $suffix = null): array {
 	if ($suffix == null) {
 		$suffix = $_SESSION['config']->get_Suffix('smbDomain');
 	}
@@ -497,7 +500,7 @@ function search_domains($server = null, $suffix = null) {
 		"sambaNextUserRid", "sambaAlgorithmicRidBase", 'sambaMinPwdAge', 'sambaMaxPwdAge',
 		'sambaPwdHistoryLength'
 	];
-	if ($server == null) {
+	if ($server === null) {
 		$server = $_SESSION['ldap']->server();
 	}
 	$filter = '(objectclass=sambaDomain)';
@@ -509,25 +512,25 @@ function search_domains($server = null, $suffix = null) {
 		$ret[$i]->name = $units[$i]['sambadomainname'][0];
 		$ret[$i]->SID = $units[$i]['sambasid'][0];
 		if (isset($units[$i]['sambanextrid'][0])) {
-			$ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
+			$ret[$i]->nextRID = intval($units[$i]['sambanextrid'][0]);
 		}
 		if (isset($units[$i]['sambanextgrouprid'][0])) {
-			$ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
+			$ret[$i]->nextGroupRID = intval($units[$i]['sambanextgrouprid'][0]);
 		}
 		if (isset($units[$i]['sambanextuserrid'][0])) {
-			$ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
+			$ret[$i]->nextUserRID = intval($units[$i]['sambanextuserrid'][0]);
 		}
 		if (isset($units[$i]['sambaalgorithmicridbase'][0])) {
-			$ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
+			$ret[$i]->RIDbase = intval($units[$i]['sambaalgorithmicridbase'][0]);
 		}
 		if (isset($units[$i]['sambaminpwdage'][0])) {
-			$ret[$i]->minPwdAge = $units[$i]['sambaminpwdage'][0];
+			$ret[$i]->minPwdAge = intval($units[$i]['sambaminpwdage'][0]);
 		}
 		if (isset($units[$i]['sambamaxpwdage'][0])) {
-			$ret[$i]->maxPwdAge = $units[$i]['sambamaxpwdage'][0];
+			$ret[$i]->maxPwdAge = intval($units[$i]['sambamaxpwdage'][0]);
 		}
 		if (isset($units[$i]['sambapwdhistorylength'][0])) {
-			$ret[$i]->pwdHistoryLength = $units[$i]['sambapwdhistorylength'][0];
+			$ret[$i]->pwdHistoryLength = intval($units[$i]['sambapwdhistorylength'][0]);
 		}
 	}
 	return $ret;
@@ -541,34 +544,34 @@ function search_domains($server = null, $suffix = null) {
 class samba3domain {
 
 	/** DN */
-	public $dn;
+	public ?string $dn = null;
 
 	/** Domain name */
-	public $name;
+	public ?string $name = null;
 
 	/** Domain SID */
-	public $SID;
+	public ?string $SID = null;
 
 	/** Next RID */
-	public $nextRID;
+	public ?int $nextRID = null;
 
 	/** Next user RID */
-	public $nextUserRID;
+	public ?int $nextUserRID = null;
 
 	/** Next group RID */
-	public $nextGroupRID;
+	public ?int $nextGroupRID = null;
 
 	/** RID base to calculate RIDs, default 1000 */
-	public $RIDbase = 1000;
+	public int $RIDbase = 1000;
 
 	/** seconds after the password can be changed */
-	public $minPwdAge;
+	public ?int $minPwdAge = null;
 
 	/** seconds after the password must be changed */
-	public $maxPwdAge;
+	public ?int $maxPwdAge = null;
 
 	/** password history length */
-	public $pwdHistoryLength;
+	public ?int $pwdHistoryLength = null;
 }
 
 /**
@@ -749,7 +752,7 @@ function get_preg($argument, $regexp) {
  * @param string $dn DN
  * @return string DN
  */
-function convertCommaEscaping($dn) {
+function convertCommaEscaping(string $dn): string {
 	return str_replace(
 		['\\,'],
 		['\\2C'],
@@ -760,9 +763,10 @@ function convertCommaEscaping($dn) {
  * Connects to an LDAP server using the given URL.
  *
  * @param string $serverURL URL
- * @return ?Connection LDAP connection
+ * @param bool $startTLS start TLS
+ * @return Connection|null LDAP connection
  */
-function connectToLDAP($serverURL, $startTLS): ?Connection {
+function connectToLDAP(string $serverURL, bool $startTLS): ?Connection {
 	logNewMessage(LOG_DEBUG, 'Connecting to LDAP server ' . $serverURL);
 	$server = ldap_connect($serverURL);
 	if ($server === false) {
@@ -795,11 +799,11 @@ function connectToLDAP($serverURL, $startTLS): ?Connection {
  * @param string|null $name attribute name
  * @param string|null $value attribute value (may be null if $name is null)
  * @param string|null $objectClass object class
- * @param array $attributes list of attributes to return
- * @param array $scopes account types
+ * @param string[] $attributes list of attributes to return
+ * @param string[] $scopes account types
  * @return array<string, string[]|string>[] list of found entries
  */
-function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes): array {
+function searchLDAPByAttribute(?string $name, ?string $value, ?string $objectClass, array $attributes, array $scopes): array {
 	$return = [];
 	// build filter
 	$filter = '';
@@ -836,13 +840,13 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 /**
  * This will search the given LDAP suffix for all entries which match the given filter.
  *
- * @param String $filter
- * @param array $attributes list of attributes to return
- * @param array $scopes account types
- * @param boolean $attrsOnly get only attributes but no values (default: false)
- * @return array list of found entries
+ * @param string $filter
+ * @param string[] $attributes list of attributes to return
+ * @param string[] $scopes account types
+ * @param bool $attrsOnly get only attributes but no values (default: false)
+ * @return array<string, string[]|string>[] list of found entries
  */
-function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
+function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false): array {
 	$return = [];
 	$readAttributesOnly = 0;
 	if ($attrsOnly) {
@@ -875,9 +879,9 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 /**
  * Runs an LDAP search.
  *
- * @param String $suffix LDAP suffix
- * @param String $filter filter
- * @param array $attributes list of attributes to return
+ * @param string $suffix LDAP suffix
+ * @param string $filter filter
+ * @param string[] $attributes list of attributes to return
  * @param int $limit result limit
  * @return array<string, string[]|string>[] list of found entries
  */
@@ -913,9 +917,9 @@ function getLDAPServerHandle() {
  * Runs an LDAP search and uses paging if configured.
  *
  * @param Connection $server LDAP connection handle
- * @param String $dn DN
- * @param String $filter filter
- * @param array $attributes attribute list
+ * @param string $dn DN
+ * @param string $filter filter
+ * @param string[] $attributes attribute list
  * @param int $attrsOnly return only attribute names (1) or also the values (0)
  * @param int $limit size limit
  * @return array<string, string[]|string>[] results
@@ -977,10 +981,10 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 /**
  * Returns the given DN.
  *
- * @param String $dn DN
- * @param array $attributes list of attributes to fetch
+ * @param string $dn DN
+ * @param string[] $attributes list of attributes to fetch
  * @param Connection $handle LDAP handle (optional for admin interface pages)
- * @return ?array attributes or null if not found
+ * @return array<string, string[]|string>|null attributes or null if not found
  */
 function ldapGetDN($dn, $attributes = ['dn'], $handle = null): ?array {
 	if ($handle == null) {
@@ -1002,12 +1006,12 @@ function ldapGetDN($dn, $attributes = ['dn'], $handle = null): ?array {
 /**
  * Returns the DN and children of a given DN.
  *
- * @param String $dn DN
- * @param String $filter LDAP filter
- * @param array $attributes list of attributes to fetch
+ * @param string $dn DN
+ * @param string $filter LDAP filter
+ * @param string[] $attributes list of attributes to fetch
  * @param Connection|null $handle LDAP handle (optional for admin interface pages)
  * @param int $limit result limit
- * @return array attributes or null if not found
+ * @return array<string, string[]|string>|null attributes or null if not found
  */
 function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = ['dn'], $handle = null, $limit = -1) {
 	if ($limit === -1) {
@@ -1075,7 +1079,7 @@ function deleteDN($dn, $recursive): array {
 /**
  * Returns a list of LDAP controls for all LDAP calls.
  *
- * @return array|null controls
+ * @return array<string, string>[]|null controls
  */
 function getCommonLdapControls(): ?array {
 	if (isset($_SESSION['config']) && ($_SESSION['config']->getAdShowDeleted() === 'true')) {
@@ -1139,9 +1143,9 @@ function moveDn(string $oldDn, string $targetDn): void {
 /**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
- * @return array|null parameters for StatusMessage or null if all was ok
+ * @return array<string|string[]>|null parameters for StatusMessage or null if all was ok
  */
-function getLastLDAPError() {
+function getLastLDAPError(): ?array {
 	$errorNumber = ldap_errno($_SESSION["ldap"]->server());
 	switch ($errorNumber) {
 		// all ok
@@ -1165,9 +1169,9 @@ function getLastLDAPError() {
  * Cleans the result of an LDAP search.
  * This will remove all 'count' entries and also all numeric array keys.
  *
- * @param array $entries LDAP entries in format $entries[entry number][attribute name][attribute values]
+ * @param array<string|int, mixed> $entries LDAP entries in format $entries[entry number][attribute name][attribute values]
  */
-function cleanLDAPResult(&$entries) {
+function cleanLDAPResult(array &$entries): void {
 	if (isset($entries['count'])) {
 		unset($entries['count']);
 	}
@@ -1231,7 +1235,7 @@ function unescapeLdapSpecialCharacters(string $dn): string {
 /**
  * Callback function for unescaping DN.
  *
- * @param array $matches HEX value that was found
+ * @param array<int,string> $matches HEX value that was found
  * @return string unescaped string
  */
 function unescapeLdapSpecialCharactersCallback(array $matches): string {
@@ -1278,9 +1282,9 @@ function compareDN($a, $b): int {
 /**
  * Helper function to sort LDAP entries by DN.
  *
- * @param array $a first argument to compare
- * @param array $b second argument to compare
- * @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
+ * @param array<string, string[]|string> $a first argument to compare
+ * @param array<string, string[]|string> $b second argument to compare
+ * @return int 0 if equal, 1 if $a is greater, -1 if $b is greater
  */
 function compareLDAPEntriesByDn(array $a, array $b): int {
 	if (!isset($a['dn']) || !isset($b['dn'])) {
@@ -1503,7 +1507,7 @@ function testSmtpConnection(string $server, string $user, string $password, stri
  * Sends the password mail.
  *
  * @param string $pwd new password
- * @param array $user LDAP attributes of user
+ * @param array<string, string[]|string> $user LDAP attributes of user
  * @param string|null $recipient recipient address (optional, $user['mail'][0] used by default)
  * @return array<string|string[]>[] list of arrays that can be used to create status messages
  */
@@ -1561,16 +1565,17 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 /**
  * Sends out an email.
  *
- * @param String|array $to TO address
- * @param String $subject email subject
- * @param String $text mail body (with \r\n EOL)
- * @param String $from FROM address
+ * @param string|string[] $to TO address(es)
+ * @param string $subject email subject
+ * @param string $text mail body (with \r\n EOL)
+ * @param string $from FROM address
  * @param bool $isHTML HTML format
- * @param String $replyTo REPLY-TO address (optional)
- * @param String $cc CC address (optional)
- * @param String $bcc BCC address (optional)
+ * @param string $replyTo REPLY-TO address (optional)
+ * @param string $cc CC address (optional)
+ * @param string $bcc BCC address (optional)
+ * @return bool successful
  */
-function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = null, $bcc = null) {
+function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = null, $bcc = null): bool {
 	include_once __DIR__ . '/3rdParty/composer/autoload.php';
 	$returnPath = empty($replyTo) ? $from : $replyTo;
 	$returnPathParsed = parseEmailAddress($returnPath);
@@ -1683,10 +1688,10 @@ function parseEmailAddress(string $addressText): array {
 /**
  * Checks if an email address is safe for use on commandline
  *
- * @param $address email address
+ * @param string $address email address
  * @return bool is safe
  */
-function isCommandlineSafeEmailAddress($address) {
+function isCommandlineSafeEmailAddress(string $address): bool {
 	$cmdEscaped = escapeshellcmd($address);
 	$argEscaped = escapeshellarg($address);
 	if (($address !== $cmdEscaped) || ("'$address'" !== $argEscaped)) {
@@ -1707,8 +1712,8 @@ function isCommandlineSafeEmailAddress($address) {
  * Sends the password SMS.
  *
  * @param string $pwd new password
- * @param array $user LDAP attributes of user
- * @return array list of arrays that can be used to create status messages
+ * @param array<string, string[]|string> $user LDAP attributes of user
+ * @return array<string|string[]>[] list of arrays that can be used to create status messages
  */
 function sendPasswordSms(string $pwd, array $user): array {
 	$errors = [];
@@ -1752,7 +1757,7 @@ function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiTok
 /**
  * Returns the SMS phone number of a user.
  *
- * @param array $attributes LDAP attributes
+ * @param array<string, string[]|string> $attributes LDAP attributes
  * @return string|null phone number if found
  */
 function getSmsPhoneNumber(array $attributes): ?string {
@@ -1777,8 +1782,8 @@ function getSmsPhoneNumber(array $attributes): ?string {
  */
 class moduleCache {
 
-	/** module cache ("name:scope" => module) */
-	private static $cache = [];
+	/** @var array<string, object> module cache ("name:scope" => module) */
+	private static array $cache = [];
 
 	/**
 	 * Returns a new/cached module with the given name and scope.
@@ -1943,7 +1948,7 @@ function getExtraInvalidCredentialsMessage($ldap, $userDn) {
  * Returns the URL under which the page was loaded.
  * This includes any GET parameters set.
  *
- * @param $baseUrl string base URL (e.g. http://www.example.com)
+ * @param string $baseUrl base URL (e.g. http://www.example.com)
  * @return string|null URL
  */
 function getCallingURL($baseUrl = ''): ?string {
@@ -1979,7 +1984,7 @@ function getTimeZoneOffsetHours() {
  *
  * @return DateTimeZone time zone
  */
-function getTimeZone() {
+function getTimeZone(): DateTimeZone {
 	$timeZoneName = 'UTC';
 	if (!empty($_SESSION['config'])) {
 		$timeZoneName = $_SESSION['config']->getTimeZone();
@@ -1994,8 +1999,9 @@ function getTimeZone() {
  * Returns the current time in formatted form.
  *
  * @param string $format format to use (e.g. 'Y-m-d H:i:s')
+ * @return string formatted value
  */
-function getFormattedTime($format) {
+function getFormattedTime(string $format): string {
 	$time = new DateTime('now', getTimeZone());
 	return $time->format($format);
 }
@@ -2075,9 +2081,9 @@ function unformatShortFormatToSeconds($text) {
 /**
  * Checks if the user is logged in. Stops script execution if not.
  *
- * @param boolean $check2ndFactor check if the 2nd factor was provided if required
+ * @param bool $check2ndFactor check if the 2nd factor was provided if required
  */
-function enforceUserIsLoggedIn($check2ndFactor = true) {
+function enforceUserIsLoggedIn($check2ndFactor = true): void {
 	if ((!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) && empty($_SESSION['selfService_clientPassword']) && empty($_SESSION['whitePages_clientPassword'])) {
 		logNewMessage(LOG_WARNING, 'Detected unauthorized access to page that requires login: ' . $_SERVER["SCRIPT_FILENAME"]);
 		die();
@@ -2094,7 +2100,7 @@ function enforceUserIsLoggedIn($check2ndFactor = true) {
  * @param string $title page title
  * @param string $prefix prefix to LAM main folder (e.g. "..")
  */
-function printHeaderContents($title, $prefix) {
+function printHeaderContents($title, $prefix): void {
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 	echo '<title>';
 	echo $title;
@@ -2123,7 +2129,7 @@ function printHeaderContents($title, $prefix) {
  *
  * @param string $prefix prefix to LAM main folder (e.g. "..")
  */
-function printJsIncludes($prefix) {
+function printJsIncludes(string $prefix): void {
 	$jsDirName = __DIR__ . '/../templates/lib';
 	$jsDir = dir($jsDirName);
 	$jsFiles = [];
@@ -2144,8 +2150,9 @@ function printJsIncludes($prefix) {
  * Converts a UTF-8 string to UTF16LE.
  *
  * @param string|null $input UTF-8 value
+ * @return string|null converted value
  */
-function convertUtf8ToUtf16Le($input) {
+function convertUtf8ToUtf16Le(?string $input): ?string {
 	if (($input === null) || ($input === '')) {
 		return $input;
 	}
@@ -2188,7 +2195,7 @@ class LAMException extends Exception {
 
 	private ?string $title;
 
-	private $ldapErrorCode;
+	private ?int $ldapErrorCode;
 
 	/**
 	 * Constructor.
@@ -2198,7 +2205,7 @@ class LAMException extends Exception {
 	 * @param Exception|null $cause (optional)
 	 * @param int|null $ldapErrorCode original LDAP error code
 	 */
-	public function __construct($title, $message = '', $cause = null, $ldapErrorCode = null) {
+	public function __construct($title, $message = '', $cause = null, ?int $ldapErrorCode = null) {
 		parent::__construct($message, 0, $cause);
 		$this->title = $title;
 		$this->ldapErrorCode = $ldapErrorCode;

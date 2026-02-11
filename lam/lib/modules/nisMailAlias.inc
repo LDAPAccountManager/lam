@@ -481,14 +481,15 @@ class nisMailAlias extends baseModule {
 		if ($this->cachedUserList !== null) {
 			return $this->cachedUserList;
 		}
-		$this->cachedUserList = searchLDAPByFilter('(|(objectClass=posixAccount)(objectClass=inetOrgPerson))', ['uid'], ['user']);
-		$count = count($this->cachedUserList);
+		$this->cachedUserList = [];
+		$result = searchLDAPByFilter('(|(objectClass=posixAccount)(objectClass=inetOrgPerson))', ['uid'], ['user']);
+		$count = count($result);
 		for ($i = 0; $i < $count; $i++) {
-			if (empty($this->cachedUserList[$i]['uid'][0])) {
-				unset($this->cachedUserList[$i]);
+			if (empty($result[$i]['uid'][0])) {
+				unset($result[$i]);
 				continue;
 			}
-			$this->cachedUserList[$i] = $this->cachedUserList[$i]['uid'][0];
+			$this->cachedUserList[] = $result[$i]['uid'][0];
 		}
 		$this->cachedUserList = array_values(array_unique($this->cachedUserList));
 		return $this->cachedUserList;

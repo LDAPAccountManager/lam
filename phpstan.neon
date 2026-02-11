@@ -65,7 +65,6 @@ parameters:
 		- '#.*array_values is already a list.*#'
 		- '#Unable to resolve the template type T in call to method accountContainer::getAccountModule\(\)#'
 		- '#Unable to resolve the template type T in call to function array_values#'
-		- '#Unable to resolve the template type T in call to function array_delete#'
 		- '#.*of function sort contains unresolvable type.*#'
 		- '#.*of function natcasesort expects an array of values castable to string.*#'
 		- '#.*function array_unique expects an array of values castable to string.*#'

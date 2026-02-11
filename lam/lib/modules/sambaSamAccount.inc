@@ -2146,7 +2146,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 						}
 						else {
 							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' .
-								($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['gid'] * 2 +
+								(intval($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['gid']) * 2 +
 									$domains[$domIndex]->RIDbase + 1);
 						}
 					}
@@ -2374,7 +2374,6 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				return;
 			}
 			if (!empty($sambaDomain->pwdHistoryLength)
-				&& is_numeric($sambaDomain->pwdHistoryLength)
 				&& ($sambaDomain->pwdHistoryLength > 0)) {
 				if (sambaSamAccount::oldPasswordUsed($return['info']['sambaUserPasswordClearText'][0], $attributes, $sambaDomain)) {
 					$return['messages'][] = ['ERROR', _('You are reusing an old password. Please choose a different password.')];
@@ -2407,7 +2406,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			}
 			// check min age
 			if (!empty($sambaDomain->minPwdAge) && ($sambaDomain->minPwdAge > 0) && !empty($attributes['sambaPwdLastSet'][0])) {
-				$timeVal = $attributes['sambaPwdLastSet'][0] + $sambaDomain->minPwdAge;
+				$timeVal = intval($attributes['sambaPwdLastSet'][0]) + $sambaDomain->minPwdAge;
 				$time = new DateTime('@' . $timeVal, new DateTimeZone('UTC'));
 				$time->setTimezone(getTimeZone());
 				$now = new DateTime('now', getTimeZone());
@@ -2455,7 +2454,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			}
 			// set new history entry
 			$historyLength = $sambaDomain->pwdHistoryLength;
-			if (sambaSamAccount::isPasswordHistoryEnabled($this->moduleSettings) && !$oldPasswordUsed && !empty($historyLength) && is_numeric($historyLength) && ($historyLength > 0)) {
+			if (sambaSamAccount::isPasswordHistoryEnabled($this->moduleSettings) && !$oldPasswordUsed && !empty($historyLength) && ($historyLength > 0)) {
 				if (!empty($this->orig['sambaPasswordHistory'][0])) {
 					$this->attributes['sambaPasswordHistory'] = $this->orig['sambaPasswordHistory'];
 				}
@@ -2573,7 +2572,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				if (!isset($domains[$i]->maxPwdAge) || ($domains[$i]->maxPwdAge < 0)) {
 					return $return;
 				}
-				$timeVal = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->maxPwdAge;
+				$timeVal = intval($this->attributes['sambaPwdLastSet'][0]) + $domains[$i]->maxPwdAge;
 				$time = new DateTime('@' . $timeVal, new DateTimeZone('UTC'));
 				$time->setTimezone(getTimeZone());
 				return $time->format('d.m.Y H:i');
@@ -2601,7 +2600,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 				if (!isset($domains[$i]->minPwdAge) || ($domains[$i]->minPwdAge < 0)) {
 					return $return;
 				}
-				$timeVal = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->minPwdAge;
+				$timeVal = intval($this->attributes['sambaPwdLastSet'][0]) + $domains[$i]->minPwdAge;
 				$time = new DateTime('@' . $timeVal, new DateTimeZone('UTC'));
 				$time->setTimezone(getTimeZone());
 				return $time->format('d.m.Y H:i');
@@ -2906,7 +2905,6 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			return false;
 		}
 		if (!empty($sambaDomain->pwdHistoryLength)
-			&& is_numeric($sambaDomain->pwdHistoryLength)
 			&& ($sambaDomain->pwdHistoryLength > 0)) {
 			return sambaSamAccount::oldPasswordUsed($password, $this->attributes, $sambaDomain);
 		}

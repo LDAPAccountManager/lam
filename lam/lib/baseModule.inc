@@ -144,7 +144,7 @@ abstract class baseModule {
 		// add object classes if needed
 		$this->attributes['objectClass'] = [];
 		$this->orig['objectClass'] = [];
-		if ($this->autoAddObjectClasses === true) {
+		if ($this->autoAddObjectClasses) {
 			$objectClasses = $this->getManagedObjectClasses($this->getAccountContainer()->get_type()->getId());
 			for ($i = 0; $i < count($objectClasses); $i++) {
 				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
@@ -178,7 +178,7 @@ abstract class baseModule {
 		}
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// add object classes if needed
-		if ($this->autoAddObjectClasses === true) {
+		if ($this->autoAddObjectClasses) {
 			$objectClasses = $this->getManagedObjectClasses($typeId);
 			for ($i = 0; $i < count($objectClasses); $i++) {
 				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
