@@ -2946,7 +2946,7 @@ class LAMCfgMain {
 	public string $licenseEmailTo = '';
 
 	/** license warning email was last sent for this expiration date */
-	public string $licenseEmailDateSent = '';
+	public int $licenseEmailDateSent = 0;
 
 	/** type of license warning (email/screen/both/none) */
 	public string $licenseWarningType = '';
@@ -3619,7 +3619,7 @@ class LAMCfgMain {
 		if (empty($this->licenseEmailDateSent)) {
 			return false;
 		}
-		return $timeStamp == $this->licenseEmailDateSent;
+		return $timeStamp === $this->licenseEmailDateSent;
 	}
 
 	/**
