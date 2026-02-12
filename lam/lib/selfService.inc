@@ -174,12 +174,16 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
  * @param selfServiceProfile $profile currently edited profile
  * @return array<string, htmlElement> configuration options
  */
-function getSelfServiceSettings($scope, $profile) {
+function getSelfServiceSettings(string $scope, selfServiceProfile $profile): array {
 	$return = [];
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < count($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
-		$return[$modules[$i]] = $m->getSelfServiceSettings($profile);
+		$modSettings = $m->getSelfServiceSettings($profile);
+		if ($modSettings === null) {
+			continue;
+		}
+		$return[$modules[$i]] = $modSettings;
 	}
 	return $return;
 }
