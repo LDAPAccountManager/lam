@@ -2628,12 +2628,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 
 	/**
-	 * Returns a list of self service configuration settings.
-	 *
-	 * @param selfServiceProfile $profile currently edited profile
-	 * @return htmlElement meta HTML object
+	 * {@inheritDoc}
 	 */
-	public function getSelfServiceSettings($profile) {
+	public function getSelfServiceSettings(selfServiceProfile $profile): ?htmlElement {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlSubTitle(_('Photo')));
 		$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, ['crop', static::class]));

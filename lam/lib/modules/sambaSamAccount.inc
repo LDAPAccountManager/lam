@@ -2237,9 +2237,8 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getSelfServiceSettings()
 	 */
-	public function getSelfServiceSettings($profile) {
+	public function getSelfServiceSettings(selfServiceProfile $profile): ?htmlElement {
 		$selfServiceContainer = new htmlResponsiveRow();
 		// domain suffix
 		$selfServiceDomainSuffix = new htmlResponsiveInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix', null, ['domainSuffix', static::class]);

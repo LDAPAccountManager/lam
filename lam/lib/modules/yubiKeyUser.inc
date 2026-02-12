@@ -557,9 +557,8 @@ class yubiKeyUser extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::getSelfServiceSettings()
 	 */
-	public function getSelfServiceSettings($profile) {
+	public function getSelfServiceSettings(selfServiceProfile $profile): ?htmlElement {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlResponsiveInputField(_('Object class'), 'yubiKeyUser_objectClass', null, ['objectClass', 'yubiKeyUser']));
 		$container->add(new htmlResponsiveInputField(_('Attribute name'), 'yubiKeyUser_attributeName', 'yubiKeyId', ['attributeName', 'yubiKeyUser']));

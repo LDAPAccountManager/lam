@@ -2148,12 +2148,12 @@ abstract class baseModule {
 	 * (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	 *
 	 * @param selfServiceProfile $profile currently edited profile
-	 * @return htmlElement meta HTML object
+	 * @return htmlElement|null meta HTML object
 	 *
 	 * @see baseModule::get_metaData()
 	 * @see htmlElement
 	 */
-	public function getSelfServiceSettings($profile) {
+	public function getSelfServiceSettings(selfServiceProfile $profile): ?htmlElement {
 		return $this->meta['selfServiceSettings'] ?? null;
 	}
 
