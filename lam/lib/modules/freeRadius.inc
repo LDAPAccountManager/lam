@@ -782,13 +782,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Searches for users in LDAP.
-		 *
-		 * @param String $jobID unique job identifier
-		 * @param array $options config options (name => value)
-		 * @return array list of user attributes
+		 * {@inheritDoc}
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$attrs = ['radiusExpiration'];
 			return searchLDAPByFilter('(radiusExpiration=*)', $attrs, ['user']);
@@ -797,7 +793,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun) {
 			$expireTime = DateTime::createFromFormat('d M Y H:i', $user['radiusexpiration'][0], new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
 			$delay = 0;
@@ -840,9 +836,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::findUsers()
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$sysattrs = ['radiusExpiration', $_SESSION['cfgMain']->getMailAttribute()];
 			$attrs = $this->getAttrWildcards($jobID, $options);
@@ -852,9 +847,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::checkSingleUser()
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$dn = $user['dn'];
 			// get time when account expires
 			$expirationTime = DateTime::createFromFormat('d M Y H:i', $user['radiusexpiration'][0], new DateTimeZone('UTC'));

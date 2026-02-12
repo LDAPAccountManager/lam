@@ -4971,13 +4971,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Searches for users in LDAP.
-		 *
-		 * @param String $jobID unique job identifier
-		 * @param array $options config options (name => value)
-		 * @return array list of user attributes
+		 * {@inheritDoc}
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'accountexpires', 'useraccountcontrol', 'msds-userpasswordexpirytimecomputed'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
@@ -4988,7 +4984,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$dn = $user['dn'];
 			// skip if the password does not expire at all
 			if (windowsUser::isNeverExpiring($user)) {
@@ -5156,18 +5152,14 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * @inheritDoc
 		 */
-		protected function getPolicyOptions() {
+		protected function getPolicyOptions(): array {
 			return [];
 		}
 
 		/**
-		 * Searches for users in LDAP.
-		 *
-		 * @param String $jobID unique job identifier
-		 * @param array $options config options (name => value)
-		 * @return array list of user attributes
+		 * {@inheritDoc}
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$sysAttrs = ['managedObjects', $_SESSION['cfgMain']->getMailAttribute()];
 			$attrs = $this->getAttrWildcards($jobID, $options);
@@ -5302,9 +5294,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * @inheritDoc
+		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			// not used
 		}
 
@@ -5365,9 +5357,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see PasswordExpirationJob::findUsers
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'accountexpires', 'useraccountcontrol'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
@@ -5377,9 +5368,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see PasswordExpirationJob::checkSingleUser
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$dn = $user['dn'];
 			// skip if account is deactivated
 			if (windowsUser::isDeactivated($user)) {
@@ -5452,13 +5442,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Searches for users in LDAP.
-		 *
-		 * @param String $jobID unique job identifier
-		 * @param array $options config options (name => value)
-		 * @return array list of user attributes
+		 * {@inheritDoc}
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$attrs = ['accountexpires'];
 			return searchLDAPByFilter('(accountexpires=*)', $attrs, ['user']);
@@ -5467,7 +5453,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun) {
 			$seconds = substr($user['accountexpires'][0], 0, -7);
 			$expireTime = new DateTime('1601-01-01', new DateTimeZone('UTC'));
 			$expireTime->add(new DateInterval('PT' . $seconds . 'S'));

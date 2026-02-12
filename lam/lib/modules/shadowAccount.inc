@@ -1046,13 +1046,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Searches for users in LDAP.
-		 *
-		 * @param String $jobID unique job identifier
-		 * @param array $options config options (name => value)
-		 * @return array list of user attributes
+		 * {@inheritDoc}
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'shadowlastchange', 'shadowwarning', 'shadowmax', 'userPassword'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
@@ -1063,7 +1059,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			// skip if user is locked
 			if (!empty($user['userpassword'][0]) && !pwd_is_enabled($user['userpassword'][0])) {
 				$this->jobResultLog->logDebug($user['dn'] . ' is locked.');
@@ -1145,13 +1141,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Searches for users in LDAP.
-		 *
-		 * @param String $jobID unique job identifier
-		 * @param array $options config options (name => value)
-		 * @return array list of user attributes
+		 * {@inheritDoc}
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$sysattrs = [$_SESSION['cfgMain']->getMailAttribute(), 'shadowexpire'];
 			$attrs = $this->getAttrWildcards($jobID, $options);
@@ -1162,7 +1154,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$dn = $user['dn'];
 			$expireTimeUnix = $user['shadowexpire'][0] * 3600 * 24;
 			$expireTime = new DateTime('@' . $expireTimeUnix, new DateTimeZone('UTC'));
@@ -1228,13 +1220,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Searches for users in LDAP.
-		 *
-		 * @param String $jobID unique job identifier
-		 * @param array $options config options (name => value)
-		 * @return array list of user attributes
+		 * {@inheritDoc}
 		 */
-		protected function findUsers($jobID, $options) {
+		protected function findUsers(string $jobID, array $options): array {
 			// read users
 			$attrs = ['shadowexpire'];
 			return searchLDAPByFilter('(shadowexpire=*)', $attrs, ['user']);
@@ -1243,7 +1231,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun) {
 			$expireTimeUnix = $user['shadowexpire'][0] * 3600 * 24;
 			$expireTime = new DateTime('@' . $expireTimeUnix, new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
