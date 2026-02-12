@@ -132,7 +132,7 @@ class ConfigDataExporter {
 	 * Returns the content of the account profiles.
 	 *
 	 * @param array<string, LAMConfig> $serverProfiles list of server profiles (name => object)
-	 * @return array<string, array<string, array<string, string[]>>> $data export data
+	 * @return array<string, array<string, array<string, array<string, string[]>>>> $data export data
 	 * @throws LAMException error reading profiles
 	 */
 	public function _getAccountProfiles(array $serverProfiles): array {
@@ -173,7 +173,7 @@ class ConfigDataExporter {
 	 * Returns the content of the PDF profiles.
 	 *
 	 * @param array<string, LAMConfig> $serverProfiles list of server profiles (name => object)
-	 * @return array $data
+	 * @return array<string, mixed> $data
 	 * @throws LAMException error reading logo
 	 */
 	public function _getPdfProfiles(array $serverProfiles): array {
@@ -830,8 +830,10 @@ class ImporterStep {
 
 	private string $label;
 	private string $key;
+	/** @var mixed[] $value value */
 	private array $value;
 	private bool $active = false;
+	/** @var ImporterStep[] $subSteps substeps */
 	private array $subSteps = [];
 
 	/**

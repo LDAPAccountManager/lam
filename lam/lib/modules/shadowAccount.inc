@@ -1030,19 +1030,16 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	class ShadowAccountPasswordNotifyJob extends PasswordExpirationJob {
 
 		/**
-		 * Returns the alias name of the job.
-		 *
-		 * @return String name
+		 * {@inheritDoc}
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('Shadow') . ': ' . _('Notify users about password expiration');
 		}
 
 		/**
 		 * {@inheritDoc}
-		 * @see PasswordExpirationJob::getConfigOptions
 		 */
-		public function getConfigOptions($jobID) {
+		public function getConfigOptions(string $jobID): htmlElement {
 			$container = parent::getConfigOptions($jobID);
 			$container->add(new htmlResponsiveInputCheckbox($this->getConfigPrefix() . '_addWarningPeriod' . $jobID, true, _('Add expiration warning time'), ['cronAddWarningPeriod', 'shadowAccount']));
 			return $container;
@@ -1134,19 +1131,16 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	class ShadowAccountExpirationNotifyJob extends PasswordExpirationJob {
 
 		/**
-		 * Returns the alias name of the job.
-		 *
-		 * @return String name
+		 * {@inheritDoc}
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('Shadow') . ': ' . _('Notify users about account expiration');
 		}
 
 		/**
 		 * {@inheritDoc}
-		 * @see PasswordExpirationJob::getDescription
 		 */
-		public function getDescription() {
+		public function getDescription(): string {
 			return _('This job sends out emails to inform your users that their account will expire soon.');
 		}
 
@@ -1220,20 +1214,16 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	class ShadowAccountExpirationCleanupJob extends AccountExpirationCleanupJob {
 
 		/**
-		 * Returns the alias name of the job.
-		 *
-		 * @return String name
+		 * {@inheritDoc}
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('Shadow') . ': ' . _('Cleanup expired user accounts');
 		}
 
 		/**
-		 * Returns the description of the job.
-		 *
-		 * @return String description
+		 * {@inheritDoc}
 		 */
-		public function getDescription() {
+		public function getDescription(): string {
 			return _('This job deletes or moves user accounts when they expire.');
 		}
 

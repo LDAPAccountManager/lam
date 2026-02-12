@@ -4964,11 +4964,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	class WindowsPasswordNotifyJob extends PasswordExpirationJob {
 
 		/**
-		 * Returns the alias name of the job.
-		 *
-		 * @return String name
+		 * {@inheritDoc}
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('Windows') . ': ' . _('Notify users about password expiration');
 		}
 
@@ -5076,25 +5074,23 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		private const PERIOD_YEARLY = 'YEARLY';
 
 		/**
-		 * Returns the alias name of the job.
-		 *
-		 * @return String name
+		 * {@inheritDoc}
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('Windows') . ': ' . _('Notify users about their managed groups');
 		}
 
 		/**
-		 * @inheritDoc
+		 * {@inheritDoc}
 		 */
-		public function getDescription() {
+		public function getDescription(): string {
 			return _('This will send each user a summary of the managed groups and their members.');
 		}
 
 		/**
-		 * @inheritDoc
+		 * {@inheritDoc}
 		 */
-		public function getConfigOptions($jobID) {
+		public function getConfigOptions(string $jobID): htmlElement {
 			$prefix = $this->getConfigPrefix();
 			$container = new htmlResponsiveRow();
 			$container->add(new htmlResponsiveInputField(_('From address'), $prefix . '_mailFrom' . $jobID, null, '800', true));
@@ -5118,9 +5114,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * @inheritDoc
+		 * {@inheritDoc}
 		 */
-		public function checkConfigOptions($jobID, $options) {
+		public function checkConfigOptions(string $jobID, array $options): array {
 			$prefix = $this->getConfigPrefix();
 			$errors = [];
 			// from address
@@ -5197,9 +5193,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * @inheritDoc
+		 * {@inheritDoc}
 		 */
-		public function execute($jobID, $options, &$pdo, $isDryRun, &$resultLog) {
+		public function execute(string $jobID, array $options, PDO $pdo, bool $isDryRun, JobResultLog $resultLog): void {
 			$this->jobResultLog = &$resultLog;
 			$this->jobResultLog->logDebug("Configuration options:");
 			foreach ($options as $key => $value) {
@@ -5355,17 +5351,15 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\Job::getAlias()
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('Windows') . ': ' . _('Notify users about account expiration');
 		}
 
 		/**
 		 * {@inheritDoc}
-		 * @see PasswordExpirationJob::getDescription
 		 */
-		public function getDescription() {
+		public function getDescription(): string {
 			return _('This job sends out emails to inform your users that their account will expire soon.');
 		}
 
@@ -5444,20 +5438,16 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	class WindowsAccountExpirationCleanupJob extends AccountExpirationCleanupJob {
 
 		/**
-		 * Returns the alias name of the job.
-		 *
-		 * @return String name
+		 * {@inheritDoc}
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('Windows') . ': ' . _('Cleanup expired user accounts');
 		}
 
 		/**
-		 * Returns the description of the job.
-		 *
-		 * @return String description
+		 * {@inheritDoc}
 		 */
-		public function getDescription() {
+		public function getDescription(): string {
 			return _('This job deletes or moves user accounts when they expire.');
 		}
 

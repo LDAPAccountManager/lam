@@ -768,20 +768,16 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	class FreeRadiusAccountExpirationCleanupJob extends \LAM\JOB\AccountExpirationCleanupJob {
 
 		/**
-		 * Returns the alias name of the job.
-		 *
-		 * @return String name
+		 * {@inheritDoc}
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('FreeRadius') . ': ' . _('Cleanup expired user accounts');
 		}
 
 		/**
-		 * Returns the description of the job.
-		 *
-		 * @return String description
+		 * {@inheritDoc}
 		 */
-		public function getDescription() {
+		public function getDescription(): string {
 			return _('This job deletes or moves user accounts when they expire.');
 		}
 
@@ -830,17 +826,15 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\Job::getAlias()
 		 */
-		public function getAlias() {
+		public function getAlias(): string {
 			return _('FreeRadius') . ': ' . _('Notify users about account expiration');
 		}
 
 		/**
 		 * {@inheritDoc}
-		 * @see \LAM\JOB\PasswordExpirationJob::getDescription()
 		 */
-		public function getDescription() {
+		public function getDescription(): string {
 			return _('This job sends out emails to inform your users that their account will expire soon.');
 		}
 
