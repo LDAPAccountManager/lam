@@ -1,7 +1,7 @@
 <?php
 
 use LAM\TYPES\ConfiguredType;
-use \LAM\TYPES\TypeManager;
+use LAM\TYPES\TypeManager;
 
 /*
 
