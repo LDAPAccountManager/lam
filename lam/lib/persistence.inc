@@ -21,7 +21,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2025  Roland Gruber
+  Copyright (C) 2020 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,9 +57,11 @@ class ConfigDataExporter {
 
 	/**
 	 * Exports LAM's configuration data in JSON format.
+	 *
+	 * @return string JSON
 	 * @throws LAMException error during export
 	 */
-	public function exportAsJson() {
+	public function exportAsJson(): string {
 		$mainCfg = $this->_getMainConfiguration();
 		$jsonData = [];
 		$jsonData['mainConfig'] = $this->_getMainConfigData($mainCfg);
@@ -88,7 +90,7 @@ class ConfigDataExporter {
 	 *
 	 * @return LAMCfgMain main config
 	 */
-	public function _getMainConfiguration() {
+	public function _getMainConfiguration(): LAMCfgMain {
 		return new LAMCfgMain();
 	}
 
@@ -96,9 +98,9 @@ class ConfigDataExporter {
 	 * Internal function to read master configuration.
 	 *
 	 * @param LAMCfgMain $mainCfg main config
-	 * @return array data
+	 * @return array<string, string|string[]|int|bool|null> data
 	 */
-	public function _getMainConfigData($mainCfg) {
+	public function _getMainConfigData(LAMCfgMain $mainCfg): array {
 		return $mainCfg->exportData(true);
 	}
 
@@ -115,10 +117,10 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the server profiles.
 	 *
-	 * @param array $serverProfiles list of server profiles (name => object)
-	 * @return array $data
+	 * @param array<string, LAMConfig> $serverProfiles list of server profiles (name => object)
+	 * @return array<string, array<string, string|int|bool|null|object|array<string, string|string[]>>> data
 	 */
-	public function _getServerProfiles($serverProfiles) {
+	public function _getServerProfiles(array $serverProfiles): array {
 		$data = [];
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			$data[$profileName] = $serverProfile->exportData();
@@ -129,11 +131,11 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the account profiles.
 	 *
-	 * @param array $serverProfiles list of server profiles (name => object)
-	 * @return array $data export data
+	 * @param array<string, LAMConfig> $serverProfiles list of server profiles (name => object)
+	 * @return array<string, array<string, array<string, string[]>>> $data export data
 	 * @throws LAMException error reading profiles
 	 */
-	public function _getAccountProfiles($serverProfiles) {
+	public function _getAccountProfiles(array $serverProfiles): array {
 		$data = [];
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
@@ -151,10 +153,10 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the account profile templates.
 	 *
-	 * @return array $data export data
+	 * @return array<string, array<string, array<string, string[]>>> $data export data
 	 * @throws LAMException error reading template
 	 */
-	public function _getAccountProfileTemplates() {
+	public function _getAccountProfileTemplates(): array {
 		$data = [];
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		$accountProfileTemplateNames = $accountProfilePersistenceManager->getAccountProfileTemplateNames();
@@ -170,11 +172,11 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the PDF profiles.
 	 *
-	 * @param array $serverProfiles list of server profiles (name => object)
+	 * @param array<string, LAMConfig> $serverProfiles list of server profiles (name => object)
 	 * @return array $data
 	 * @throws LAMException error reading logo
 	 */
-	public function _getPdfProfiles($serverProfiles): array {
+	public function _getPdfProfiles(array $serverProfiles): array {
 		$data = [];
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
@@ -198,10 +200,10 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the account profile templates.
 	 *
-	 * @return array $data
+	 * @return array<string, mixed> $data
 	 * @throws LAMException error reading template
 	 */
-	public function _getPdfProfileTemplates() {
+	public function _getPdfProfileTemplates(): array {
 		$data = [];
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$pdfTemplateNames = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
@@ -221,9 +223,9 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the self service profiles.
 	 *
-	 * @return array data
+	 * @return array<string, array<string, array<string, string|int>>> data
 	 */
-	public function _getSelfServiceProfiles() {
+	public function _getSelfServiceProfiles(): array {
 		$data = [];
 		$selfServicePersistence = new SelfServicePersistence();
 		$profileTypes = $selfServicePersistence->getProfiles();
@@ -245,7 +247,7 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the white pages profiles.
 	 *
-	 * @return array data
+	 * @return array<string, array<string, int|string|array<string, string|string[]|array<string, string>[]>[]>> data
 	 */
 	public function _getWhitePagesProfiles(): array {
 		$data = [];
@@ -267,9 +269,9 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the webauthn database.
 	 *
-	 * @return array data
+	 * @return array<array<string, mixed>> data
 	 */
-	public function _getWebauthn() {
+	public function _getWebauthn(): array {
 		$data = [];
 		if (extension_loaded('PDO')
 			&& in_array('sqlite', PDO::getAvailableDrivers())) {
@@ -284,8 +286,8 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the cron jobs.
 	 *
-	 * @param array $serverProfiles list of server profiles (name => object)
-	 * @return array data
+	 * @param array<string, LAMConfig> $serverProfiles list of server profiles (name => object)
+	 * @return mixed[] data
 	 * @throws LAMException error reading cron jobs
 	 */
 	public function _getCronJobData(array $serverProfiles): array {
@@ -329,7 +331,7 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content for request access requests.
 	 *
-	 * @return array data
+	 * @return array<string, array<string, string>[]> data
 	 * @throws LAMException error reading data
 	 */
 	public function _getRequestAccessData(): array {
@@ -355,7 +357,7 @@ class ConfigDataImporter {
 	 * @return ImporterStep[] steps
 	 * @throws LAMException if invalid format
 	 */
-	public function getPossibleImportSteps($json) {
+	public function getPossibleImportSteps(string $json): array {
 		$data = json_decode($json, true);
 		if ($data === null) {
 			throw new LAMException(_('Unable to read import file.'));
@@ -458,7 +460,7 @@ class ConfigDataImporter {
 	 * @param ImporterStep[] $steps import steps
 	 * @throws LAMException if an error occurred
 	 */
-	public function runImport($steps) {
+	public function runImport(array $steps): void {
 		foreach ($steps as $step) {
 			if (!$step->isActive()) {
 				continue;
@@ -485,10 +487,10 @@ class ConfigDataImporter {
 	/**
 	 * Imports the main configuration.
 	 *
-	 * @param array $data main config data
+	 * @param array<string, string|string[]|int|bool|null|object> $data main config data
 	 * @throws LAMException error during import
 	 */
-	private function importMainConfig($data): void {
+	private function importMainConfig(array $data): void {
 		$cfgMain = new LAMCfgMain();
 		$cfgMain->importData($data);
 		$cfgMain->save();
@@ -497,10 +499,10 @@ class ConfigDataImporter {
 	/**
 	 * Imports the SSL certificates.
 	 *
-	 * @param null|string $data file content
+	 * @param string|null $data file content
 	 * @throws LAMException error during import
 	 */
-	private function importCertificates($data): void {
+	private function importCertificates(?string $data): void {
 		$cfgMain = new LAMCfgMain();
 		$cfgMain->importCertificates($data);
 	}
@@ -826,20 +828,20 @@ class ConfigDataImporter {
  */
 class ImporterStep {
 
-	private $label;
-	private $key;
-	private $value;
-	private $active = false;
-	private $subSteps = [];
+	private string $label;
+	private string $key;
+	private array $value;
+	private bool $active = false;
+	private array $subSteps = [];
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $label label
 	 * @param string $key key
-	 * @param array $value value
+	 * @param mixed[] $value value
 	 */
-	public function __construct($label, $key, $value) {
+	public function __construct(string $label, string $key, array $value) {
 		$this->label = $label;
 		$this->key = $key;
 		$this->value = $value;
@@ -850,7 +852,7 @@ class ImporterStep {
 	 *
 	 * @return string label
 	 */
-	public function getLabel() {
+	public function getLabel(): string {
 		return $this->label;
 	}
 
@@ -859,7 +861,7 @@ class ImporterStep {
 	 *
 	 * @return string key
 	 */
-	public function getKey() {
+	public function getKey(): string {
 		return $this->key;
 	}
 
@@ -877,16 +879,16 @@ class ImporterStep {
 	 *
 	 * @param bool $active active
 	 */
-	public function setActive(bool $active) {
+	public function setActive(bool $active): void {
 		$this->active = $active;
 	}
 
 	/**
 	 * Returns the value.
 	 *
-	 * @return array value
+	 * @return mixed[] value
 	 */
-	public function getValue() {
+	public function getValue(): array {
 		return $this->value;
 	}
 
@@ -895,7 +897,7 @@ class ImporterStep {
 	 *
 	 * @param ImporterStep $subStep sub-step
 	 */
-	public function addSubStep($subStep) {
+	public function addSubStep(ImporterStep $subStep): void {
 		$this->subSteps[] = $subStep;
 	}
 
@@ -904,7 +906,7 @@ class ImporterStep {
 	 *
 	 * @return ImporterStep[] sub-steps
 	 */
-	public function getSubSteps() {
+	public function getSubSteps(): array {
 		return $this->subSteps;
 	}
 
@@ -926,12 +928,12 @@ class ConfigurationDatabase {
 	/** row name for main config schema version */
 	private const ROW_VERSION_MAIN_CONFIG = 'main_configuration';
 
-	private $cfgMain;
+	private LAMCfgMain $cfgMain;
 
 	/**
-	 * @var PDO PDO
+	 * @var PDO|null PDO
 	 */
-	private $pdo;
+	private ?PDO $pdo = null;
 
 	/**
 	 * Constructor
@@ -956,7 +958,7 @@ class ConfigurationDatabase {
 	 *
 	 * @throws PDOException error opening connection to database
 	 */
-	public function checkConnection() {
+	public function checkConnection(): void {
 		if (!$this->useRemoteDb()) {
 			return;
 		}
@@ -998,7 +1000,7 @@ class ConfigurationDatabase {
 	 *
 	 * @param PDO $pdo PDO
 	 */
-	private function updateSchema(PDO $pdo) {
+	private function updateSchema(PDO $pdo): void {
 		// initial system schema
 		if (!dbTableExists($pdo, self::TABLE_SCHEMA_VERSIONS)) {
 			$this->createInitialSchema($pdo);
