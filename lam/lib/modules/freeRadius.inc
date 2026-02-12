@@ -793,7 +793,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$expireTime = DateTime::createFromFormat('d M Y H:i', $user['radiusexpiration'][0], new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
 			$delay = 0;

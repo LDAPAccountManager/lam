@@ -5453,7 +5453,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$seconds = substr($user['accountexpires'][0], 0, -7);
 			$expireTime = new DateTime('1601-01-01', new DateTimeZone('UTC'));
 			$expireTime->add(new DateInterval('PT' . $seconds . 'S'));

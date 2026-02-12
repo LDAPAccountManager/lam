@@ -1231,7 +1231,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun) {
+		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$expireTimeUnix = $user['shadowexpire'][0] * 3600 * 24;
 			$expireTime = new DateTime('@' . $expireTimeUnix, new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
