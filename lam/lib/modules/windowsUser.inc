@@ -5092,7 +5092,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		public function getConfigOptions(string $jobID): htmlElement {
+		public function getConfigOptions(string $jobID): htmlResponsiveRow {
 			$prefix = $this->getConfigPrefix();
 			$container = new htmlResponsiveRow();
 			$container->add(new htmlResponsiveInputField(_('From address'), $prefix . '_mailFrom' . $jobID, null, '800', true));

@@ -769,7 +769,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		if (in_array('shadowExpire', $fields)) {
 			$shadowExpire = '';
 			if (isset($attributes['shadowexpire'][0])) {
-				$date = new DateTime('@' . $attributes['shadowexpire'][0] * 3600 * 24, new DateTimeZone('UTC'));
+				$date = new DateTime('@' . (intval($attributes['shadowexpire'][0]) * 3600 * 24), new DateTimeZone('UTC'));
 				$shadowExpire = $date->format('d.m.Y');
 			}
 			$row = new htmlResponsiveRow();
@@ -794,10 +794,10 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Returns if the given account is expired.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return bool expired
 	 */
-	public static function isAccountExpired($attrs) {
+	public static function isAccountExpired(array $attrs): bool {
 		if (empty($attrs['shadowexpire'][0])) {
 			return false;
 		}
@@ -809,10 +809,10 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * Returns if the given password is expired.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return bool expired
 	 */
-	public static function isPasswordExpired($attrs) {
+	public static function isPasswordExpired(array $attrs): bool {
 		if (empty($attrs['shadowlastchange'][0]) || empty($attrs['shadowmax'][0])) {
 			return false;
 		}
@@ -1039,7 +1039,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * {@inheritDoc}
 		 */
-		public function getConfigOptions(string $jobID): htmlElement {
+		public function getConfigOptions(string $jobID): htmlResponsiveRow {
 			$container = parent::getConfigOptions($jobID);
 			$container->add(new htmlResponsiveInputCheckbox($this->getConfigPrefix() . '_addWarningPeriod' . $jobID, true, _('Add expiration warning time'), ['cronAddWarningPeriod', 'shadowAccount']));
 			return $container;
@@ -1070,14 +1070,14 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				return;
 			}
 			// calculate time when password expires
-			$lastPwdTimeUnix = $user['shadowlastchange'][0] * 3600 * 24;
+			$lastPwdTimeUnix = intval($user['shadowlastchange'][0]) * 3600 * 24;
 			$lastPwdTime = new DateTime('@' . $lastPwdTimeUnix, new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Last password change on " . $lastPwdTime->format('Y-m-d'));
 			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
 			$addPasswordWarningTime = !isset($options[$this->getConfigPrefix() . '_addWarningPeriod' . $jobID][0])
 				|| ($options[$this->getConfigPrefix() . '_addWarningPeriod' . $jobID][0] === 'true');
 			if ($addPasswordWarningTime && !empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
-				$numDaysToWarn += $user['shadowwarning'][0];
+				$numDaysToWarn += intval($user['shadowwarning'][0]);
 			}
 			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
 			$numDaysToExpire = $user['shadowmax'][0];
@@ -1156,7 +1156,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
 			$dn = $user['dn'];
-			$expireTimeUnix = $user['shadowexpire'][0] * 3600 * 24;
+			$expireTimeUnix = intval($user['shadowexpire'][0]) * 3600 * 24;
 			$expireTime = new DateTime('@' . $expireTimeUnix, new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
 			if ($expireTime <= $now) {
@@ -1232,7 +1232,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * {@inheritDoc}
 		 */
 		protected function checkSingleUser(string $jobID, array $options, PDO $pdo, DateTime $now, array $policyOptions, array $user, bool $isDryRun): void {
-			$expireTimeUnix = $user['shadowexpire'][0] * 3600 * 24;
+			$expireTimeUnix = intval($user['shadowexpire'][0]) * 3600 * 24;
 			$expireTime = new DateTime('@' . $expireTimeUnix, new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
 			$delay = 0;
