@@ -4343,7 +4343,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @return string formatted value
 	 */
 	private function formatFileTime(string $value): string {
-		if (empty($value) || ($value == '-1')) {
+		if (empty($value) || ($value === '-1')) {
 			return '';
 		}
 		$seconds = substr($value, 0, -7);
