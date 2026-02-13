@@ -88,14 +88,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	private array $groupList = [];
 	/** @var string[] $groupList_orig original group list */
 	private array $groupList_orig = [];
-	/** cache for groups */
-	private $groupCache;
-	/** host cache to reduce LDAP queries */
-	private $cachedHostList;
-	/** option for forcing password change, used in postModifyActions */
-	private $pwdLastSet;
-	/** clear text password */
-	private $clearTextPassword;
+	/** @var string[]|null $groupCache cache for groups */
+	private ?array $groupCache = null;
+	/** @var string[]|null $cachedHostList host cache to reduce LDAP queries */
+	private ?array $cachedHostList = null;
+	/** @var string|null $pwdLastSet option for forcing password change, used in postModifyActions */
+	private ?string $pwdLastSet = null;
+	/** @var string|null $clearTextPassword clear text password */
+	private ?string $clearTextPassword = null;
 	/** @var string[]|null $departmentCache cache for departments */
 	private ?array $departmentCache = null;
 	/** @var string[]|null $departmentNumberCache cache for department numbers */
@@ -1751,8 +1751,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @param string $dn DN
 	 * @return string formatted name
 	 */
-	private function formatGroupName($cn, $dn) {
-		$mode = empty($this->moduleSettings['windowsUser_displayGroups'][0]) ? 'dn' : $this->moduleSettings['windowsUser_displayGroups'][0];
+	private function formatGroupName(string $cn, string $dn): string {
+		$mode = empty($this->moduleSettings['windowsUser_displayGroups'][0]) ? 'DN' : $this->moduleSettings['windowsUser_displayGroups'][0];
 		return match ($mode) {
 			self::DISPLAY_GROUPS_CN => $cn,
 			default => getAbstractDN($dn),
@@ -1764,17 +1764,17 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return bool contains DN.
 	 */
-	private function groupDisplayContainsDn() {
-		$mode = empty($this->moduleSettings['windowsUser_displayGroups'][0]) ? 'dn' : $this->moduleSettings['windowsUser_displayGroups'][0];
+	private function groupDisplayContainsDn(): bool {
+		$mode = empty($this->moduleSettings['windowsUser_displayGroups'][0]) ? 'DN' : $this->moduleSettings['windowsUser_displayGroups'][0];
 		return ($mode == self::DISPLAY_GROUPS_DN);
 	}
 
 	/**
 	 * Returns if any of the work details attributes should be managed.
 	 *
-	 * @return boolean has any work attributes to manage
+	 * @return bool has any work attributes to manage
 	 */
-	private function manageWorkDetails() {
+	private function manageWorkDetails(): bool {
 		$allHidden = $this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)
 			&& $this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)
 			&& $this->isBooleanConfigOptionSet('windowsUser_hideroomnumber', true)
@@ -2122,7 +2122,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_accountexpires() {
+	function display_html_accountexpires(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$attr = 'accountexpires';
 		$datetime = new DateTime('now', getTimeZone());
@@ -2162,9 +2162,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Processes user input of the account expiration page.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_accountexpires() {
+	function process_accountexpires(): array {
 		$return = [];
 		// find button name
 		$buttonName = '';
@@ -2238,7 +2238,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	public function display_html_group() {
+	public function display_html_group(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$return->add(new htmlSubTitle(_("Groups")));
 		$groups = $this->findGroups();
@@ -2327,9 +2327,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Processes user input of the group selection page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	public function process_group() {
+	public function process_group(): array {
 		if (isset($_POST['groups_2']) && isset($_POST['groups_left'])) { // Add groups to list
 			// add new group
 			$this->groupList = @array_merge($this->groupList, $_POST['groups_2']);
@@ -2351,7 +2351,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Syncs the Unix groups to Windows.
 	 */
-	private function manualSyncUnixToWindows() {
+	private function manualSyncUnixToWindows(): void {
 		$windowsGroups = $this->getGroupList();
 		$unixGroups = $this->getAccountContainer()->getAccountModule('posixAccount')->getGroups();
 		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', ['cn'], ['group']);
@@ -2399,7 +2399,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Syncs the group of names to Windows.
 	 */
-	private function manualSyncGonToWindows() {
+	private function manualSyncGonToWindows(): void {
 		$windowsGroups = $this->getGroupList();
 		$gonGroupDns = $this->getAccountContainer()->getAccountModule('posixAccount')->getGroupOfNames();
 		$allGons = $this->getAccountContainer()->getAccountModule('posixAccount')->findGroupOfNames();
@@ -2454,7 +2454,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	public function display_html_photo() {
+	public function display_html_photo(): htmlElement {
 		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['jpegPhoto'][0])) {
 			$container->add(new htmlSubTitle(_('Upload image')));
@@ -2508,8 +2508,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 	/**
 	 * Sets a new photo.
+	 *
+	 * @return array<string|string[]>[] error messages
 	 */
-	public function process_photo() {
+	public function process_photo(): array {
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_back'])) {
 			return [];
 		}
@@ -2545,7 +2547,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	public function display_html_thumbnailphoto() {
+	public function display_html_thumbnailphoto(): htmlElement {
 		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['thumbnailphoto'][0])) {
 			$container->add(new htmlSubTitle(_('Upload image')));
@@ -2599,8 +2601,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 	/**
 	 * Sets a new photo.
+	 *
+	 * @return array<string|string[]>[] error messages
 	 */
-	public function process_thumbnailphoto() {
+	public function process_thumbnailphoto(): array {
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_back'])) {
 			return [];
 		}
@@ -2636,9 +2640,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @param string $attributeName attribute name
 	 * @param int $maxSize maximum file size
-	 * @return array error messages if any
+	 * @return array<string|string[]>[] error messages if any
 	 */
-	private function uploadPhoto(string $attributeName, int $maxSize) {
+	private function uploadPhoto(string $attributeName, int $maxSize): array {
 		$messages = [];
 		if ((empty($_FILES['photoFile']) || ($_FILES['photoFile']['size'] <= 0)) && empty($_POST['webcamData'])) {
 			$messages[] = $this->messages['file'][0];
@@ -2685,7 +2689,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement HTML meta data
 	 */
-	function display_html_manager() {
+	public function display_html_manager(): htmlElement {
 		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['manager'])) {
 			$this->attributes['manager'] = [];
@@ -2735,9 +2739,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Processes user input of the manager page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_manager() {
+	public function process_manager(): array {
 		$return = [];
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_removeManager'])) {
 			if (!empty($this->attributes['manager'])) {
@@ -2755,7 +2759,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_userWorkstations() {
+	public function display_html_userWorkstations(): htmlElement {
 		$return = new htmlResponsiveRow();
 		if ($this->get_scope() == 'user') {
 			// Get list of all hosts.
@@ -2797,9 +2801,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Processes user input of the workstation page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_userWorkstations() {
+	public function process_userWorkstations(): array {
 		// Load attributes
 		if (isset($_POST['workstations_2']) && isset($_POST['workstations_left'])) { // Add workstations to list
 			$workstations = [];
@@ -2856,14 +2860,14 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_logonHours() {
+	public function display_html_logonHours(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$timeZone = getTimeZoneOffsetHours();
 		$titles = [_('Time'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'),
 			_('Friday'), _('Saturday'), _('Sunday')];
 		$data = [];
 		if (!isset($this->attributes['logonhours'][0]) || ($this->attributes['logonhours'][0] === '')) {
-			$this->attributes['logonhours'][0] = pack( 'H*', 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+			$this->attributes['logonhours'][0] = pack('H*', 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
 		}
 		// convert the existing logonHours string to a bit array
 		$logonHoursHex = unpack('H*', $this->attributes['logonhours'][0])[1];
@@ -2916,9 +2920,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Processes user input of the logon hours page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_logonHours() {
+	public function process_logonHours(): array {
 		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
 			return [];
 		}
@@ -2944,15 +2948,16 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns a list of existing hosts.
 	 *
-	 * @return array host names
+	 * @return string[] host names
 	 */
-	private function getHostList() {
-		if ($this->cachedHostList != null) {
+	private function getHostList(): array {
+		if ($this->cachedHostList !== null) {
 			return $this->cachedHostList;
 		}
-		$this->cachedHostList = searchLDAPByAttribute('cn', '*', 'computer', ['cn'], ['host']);
-		for ($i = 0; $i < count($this->cachedHostList); $i++) {
-			$this->cachedHostList[$i] = $this->cachedHostList[$i]['cn'][0];
+		$this->cachedHostList = [];
+		$results = searchLDAPByAttribute('cn', '*', 'computer', ['cn'], ['host']);
+		foreach ($results as $result) {
+			$this->cachedHostList[] = $result['cn'][0];
 		}
 		return $this->cachedHostList;
 	}
@@ -3247,7 +3252,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					'url', null, [], $errors, '/;[ ]*/');
 			}
 			// user account control
-			$userAccountControlAttr['useraccountcontrol'][0] = self::DEFAULT_ACCOUNT_CONTROL;
+			$userAccountControlAttr['useraccountcontrol'][0] = (string) self::DEFAULT_ACCOUNT_CONTROL;
 			// deactivated
 			if ($rawAccounts[$i][$ids['windowsUser_deactivated']] != "") {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]])) {
@@ -4134,10 +4139,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) === 'useraccountcontrol') {
 				if ($requireCard) {
-					$attrs[$key][0] = intval($value[0]) | self::AC_SMARTCARD_REQUIRED;
+					$attrs[$key][0] = (string) (intval($value[0]) | self::AC_SMARTCARD_REQUIRED);
 				}
 				elseif ((intval($value[0]) & self::AC_SMARTCARD_REQUIRED) !== 0) {
-					$attrs[$key][0] = intval($value[0]) - self::AC_SMARTCARD_REQUIRED;
+					$attrs[$key][0] = (string) (intval($value[0]) - self::AC_SMARTCARD_REQUIRED);
 				}
 			}
 		}
@@ -4312,8 +4317,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if ($attributes === null) {
 			$attributes = &$this->attributes;
 		}
-		if (empty($attributes['accountexpires'][0]) || ($attributes['accountexpires'][0] == '0')
-			|| ($attributes['accountexpires'][0] == self::ACCOUNT_DOES_NOT_EXPIRE)) {
+		if (empty($attributes['accountexpires'][0])
+			|| ($attributes['accountexpires'][0] === self::ACCOUNT_DOES_NOT_EXPIRE)) {
 			return ' - ';
 		}
 		return $this->formatFileTime($attributes['accountexpires'][0]);
@@ -4329,8 +4334,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if ($attributes === null) {
 			$attributes = &$this->attributes;
 		}
-		if (empty($attributes['msds-userpasswordexpirytimecomputed'][0]) || ($attributes['msds-userpasswordexpirytimecomputed'][0] == '0')
-			|| ($attributes['msds-userpasswordexpirytimecomputed'][0] == self::ACCOUNT_DOES_NOT_EXPIRE)) {
+		if (empty($attributes['msds-userpasswordexpirytimecomputed'][0])
+			|| ($attributes['msds-userpasswordexpirytimecomputed'][0] === self::ACCOUNT_DOES_NOT_EXPIRE)) {
 			return ' - ';
 		}
 		return $this->formatFileTime($attributes['msds-userpasswordexpirytimecomputed'][0]);
