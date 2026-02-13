@@ -96,25 +96,25 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	private $pwdLastSet;
 	/** clear text password */
 	private $clearTextPassword;
-	/** cache for departments */
-	private $departmentCache;
-	/** cache for department numbers */
-	private $departmentNumberCache;
-	/** organization cache */
-	private $oCache;
-	/** organizational unit cache */
-	private $ouCache;
-	/** title cache */
-	private $titleCache;
-	/** employee type cache */
-	private $employeeTypeCache;
-	/** business category cache */
-	private $businessCategoryCache;
+	/** @var string[]|null $departmentCache cache for departments */
+	private ?array $departmentCache = null;
+	/** @var string[]|null $departmentNumberCache cache for department numbers */
+	private ?array $departmentNumberCache = null;
+	/** @var string[]|null $oCache organization cache */
+	private ?array $oCache = null;
+	/** @var string[]|null $ouCache organizational unit cache */
+	private ?array $ouCache = null;
+	/** @var string[]|null $titleCache title cache */
+	private ?array $titleCache = null;
+	/** @var string[]|null $employeeTypeCache employee type cache */
+	private ?array $employeeTypeCache = null;
+	/** @var string[]|null $businessCategoryCache business category cache */
+	private ?array $businessCategoryCache = null;
 
-	/** cache for username */
-	private $cachedUserNameList;
-	/** cache for cn */
-	private $cachedCnList;
+	/** @var array<string, string> $cachedUserNameList cache for username */
+	private ?array $cachedUserNameList = null;
+	/** @var array<string, string> $cachedCnList cache for cn */
+	private ?array $cachedCnList = null;
 
 
 	/**
@@ -3906,10 +3906,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Sets the user password in self-service.
 	 * Since the change requires the old password we need to run ldapmodify for this task.
 	 *
-	 * Enter description here ...
-	 * @param array $return return value for checkSelfServiceOptions() (used to add message if any)
+	 * @param array<string, array<string, string[]>|string[]> $return return value for checkSelfServiceOptions() (used to add message if any)
 	 */
-	private function setSelfServicePassword(&$return) {
+	private function setSelfServicePassword(array &$return): void {
 		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
 		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
 		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
@@ -3996,19 +3995,19 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Creates the LDAP password value.
 	 *
-	 * @param String $password password
+	 * @param string $password password
 	 */
-	public static function pwdAttributeValue($password) {
+	public static function pwdAttributeValue(string $password): string {
 		return convertUtf8ToUtf16Le('"' . $password . '"');
 	}
 
 	/**
 	 * Returns if the account is currently deactivated.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return bool is deactivated
 	 */
-	public static function isDeactivated($attrs): bool {
+	public static function isDeactivated(array $attrs): bool {
 		$myAttrs = array_change_key_case($attrs);
 		if (!isset($myAttrs['useraccountcontrol'][0])) {
 			return false;
@@ -4019,10 +4018,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns if the account is currently deactivated.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return DateTime|false false or locked till
 	 */
-	public static function getPasswordLocked($attrs) {
+	public static function getPasswordLocked(array $attrs): DateTime|false {
 		if (empty($attrs['lockouttime'][0])) {
 			return false;
 		}
@@ -4044,8 +4043,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 
 	/**
 	 * Returns the domain lockout duration for this DN.
+	 *
+	 * @return string|null lockout duration
 	 */
-	private static function getDomainLockoutDuration() {
+	private static function getDomainLockoutDuration(): ?string {
 		if (!isset($_SESSION['windowsUser_cacheDomainLockoutDuration'])) {
 			$lockoutValue = self::getDomainPolicyAttribute('lockoutduration');
 			$lockoutValue = $lockoutValue[0] ?? null;
@@ -4058,7 +4059,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * Returns the value of a domain policy attribute.
 	 *
 	 * @param string $attributeName attribute name
-	 * @return array value
+	 * @return string[] value
 	 */
 	public static function getDomainPolicyAttribute(string $attributeName): array {
 		$attributeName = strtolower($attributeName);
@@ -4091,11 +4092,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Sets if the account is currently deactivated.
 	 *
-	 * @param boolean $deactivated is deactivated
+	 * @param bool $deactivated is deactivated
 	 * @param array<string, array<string>|string>|null $attrs LDAP attributes to modify (default $this->attributes)
 	 */
-	public function setIsDeactivated($deactivated, &$attrs = null) {
-		if ($attrs == null) {
+	public function setIsDeactivated(bool $deactivated, ?array &$attrs = null): void {
+		if ($attrs === null) {
 			$attrs = &$this->attributes;
 		}
 		foreach ($attrs as $key => $value) {
@@ -4113,10 +4114,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns if the account requires a smartcard to login.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return bool requires a smartcard
 	 */
-	public static function isSmartCardRequired($attrs): bool {
+	public static function isSmartCardRequired(array $attrs): bool {
 		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
@@ -4126,10 +4127,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Sets if the account requires a smartcard to login.
 	 *
-	 * @param array $attrs LDAP attributes to modify
-	 * @param boolean $requireCard requires a smartcard
+	 * @param array<string, string[]|string> $attrs LDAP attributes to modify
+	 * @param bool $requireCard requires a smartcard
 	 */
-	public static function setIsSmartCardRequired(&$attrs, $requireCard) {
+	public static function setIsSmartCardRequired(array &$attrs, bool $requireCard): void {
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) === 'useraccountcontrol') {
 				if ($requireCard) {
@@ -4145,10 +4146,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns if the account never expires.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return bool never expires
 	 */
-	public static function isNeverExpiring($attrs): bool {
+	public static function isNeverExpiring(array $attrs): bool {
 		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
@@ -4158,10 +4159,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Sets if the account never expires.
 	 *
-	 * @param array $attrs LDAP attributes to modify
-	 * @param boolean $neverExpires never expires
+	 * @param array<string, string[]|string> $attrs LDAP attributes to modify
+	 * @param bool $neverExpires never expires
 	 */
-	public static function setIsNeverExpiring(&$attrs, $neverExpires) {
+	public static function setIsNeverExpiring(array &$attrs, bool $neverExpires): void {
 		foreach ($attrs as $key => $value) {
 			if (strtolower($key) === 'useraccountcontrol') {
 				if ($neverExpires) {
@@ -4177,9 +4178,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Finds all existing groups.
 	 *
-	 * @return array group DNs
+	 * @return string[] group DNs
 	 */
-	private function findGroups() {
+	private function findGroups(): array {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
@@ -4199,9 +4200,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Gets the list of possible domains from the config setting.
 	 *
-	 * @return array domain list
+	 * @return string[] domain list
 	 */
-	private function getDomains() {
+	private function getDomains(): array {
 		$domains = [];
 		if (!empty($this->moduleSettings['windowsUser_domains'])) {
 			foreach ($this->moduleSettings['windowsUser_domains'] as $domain) {
@@ -4217,10 +4218,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns a list of all usernames in LDAP.
 	 *
-	 * @return array user names
+	 * @return array<string, string> user names
 	 */
-	private function getUserNames() {
-		if ($this->cachedUserNameList != null) {
+	private function getUserNames(): array {
+		if ($this->cachedUserNameList !== null) {
 			return $this->cachedUserNameList;
 		}
 		$this->cachedUserNameList = [];
@@ -4245,9 +4246,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns a list of all CNs in LDAP.
 	 *
-	 * @return array CN list
+	 * @return array<string, string> CN list
 	 */
-	private function getCns() {
+	private function getCns(): array {
 		if ($this->cachedCnList != null) {
 			return $this->cachedCnList;
 		}
@@ -4273,10 +4274,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns the formatted value for last password change.
 	 *
-	 * @param array $attributes user attributes ($this->attributes if null)
-	 * @return String last password change or " - "
+	 * @param array<string, string[]|string>|null $attributes user attributes ($this->attributes if null)
+	 * @return string last password change or " - "
 	 */
-	private function formatPwdLastSet($attributes = null) {
+	private function formatPwdLastSet(?array $attributes = null): string {
 		if ($attributes == null) {
 			$attributes = &$this->attributes;
 		}
@@ -4292,9 +4293,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns the formatted value for last login.
 	 *
-	 * @return String last login or " - "
+	 * @return string last login or " - "
 	 */
-	private function formatLastLogonTimestamp() {
+	private function formatLastLogonTimestamp(): string {
 		if (empty($this->attributes['lastLogonTimestamp'][0])) {
 			return ' - ';
 		}
@@ -4304,11 +4305,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns the formatted value for the account expiration date.
 	 *
-	 * @param array $attributes user attributes ($this->attributes if null)
-	 * @return String date or -
+	 * @param array<string, string[]|string>|null $attributes user attributes ($this->attributes if null)
+	 * @return string date or -
 	 */
-	private function formatAccountExpires($attributes = null) {
-		if ($attributes == null) {
+	private function formatAccountExpires(?array $attributes = null): string {
+		if ($attributes === null) {
 			$attributes = &$this->attributes;
 		}
 		if (empty($attributes['accountexpires'][0]) || ($attributes['accountexpires'][0] == '0')
@@ -4321,11 +4322,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns the formatted value for the password expiration date.
 	 *
-	 * @param array $attributes user attributes ($this->attributes if null)
+	 * @param array<string, string[]|string>|null $attributes user attributes ($this->attributes if null)
 	 * @return string date or -
 	 */
-	private function formatPasswordExpires($attributes = null) {
-		if ($attributes == null) {
+	private function formatPasswordExpires(?array $attributes = null): string {
+		if ($attributes === null) {
 			$attributes = &$this->attributes;
 		}
 		if (empty($attributes['msds-userpasswordexpirytimecomputed'][0]) || ($attributes['msds-userpasswordexpirytimecomputed'][0] == '0')
@@ -4341,7 +4342,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @param string $value time value
 	 * @return string formatted value
 	 */
-	private function formatFileTime($value) {
+	private function formatFileTime(string $value): string {
 		if (empty($value) || ($value == '-1')) {
 			return '';
 		}
@@ -4377,8 +4378,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @param int|null $month month (e.g. 8)
 	 * @param int|null $day day (e.g. 27)
 	 */
-	public function setExpirationDate($year, $month, $day) {
-		if (($year == null) && ($month == null) && ($day == null)) {
+	public function setExpirationDate(?int $year, ?int $month, ?int $day): void {
+		if (($year === null) && ($month === null) && ($day === null)) {
 			unset($this->attributes['accountexpires']);
 			return;
 		}
@@ -4391,8 +4392,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @param int $year year
 	 * @param int $month month
 	 * @param int $day day
+	 * @return string date value
 	 */
-	private function buildExpirationDate($year, $month, $day) {
+	private function buildExpirationDate(int $year, int $month, int $day): string {
 		$timeBase = new DateTime('1601-01-01', getTimeZone());
 		$time = new DateTime("$year-$month-$day", getTimeZone());
 		$timeDiff = $time->diff($timeBase);
@@ -4510,7 +4512,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Loads cached data from LDAP such as departmets etc.
 	 */
-	private function initCache() {
+	private function initCache(): void {
 		if ($this->departmentCache != null) {
 			return;
 		}
