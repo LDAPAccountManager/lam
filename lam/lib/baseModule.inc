@@ -2301,7 +2301,7 @@ abstract class baseModule {
 	 * @param LAMConfig $config configuration
 	 * @return Job[] jobs
 	 */
-	public function getSupportedJobs(&$config) {
+	public function getSupportedJobs(LAMConfig $config): array {
 		return [];
 	}
 

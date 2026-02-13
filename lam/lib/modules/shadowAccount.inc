@@ -783,7 +783,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSupportedJobs(&$config) {
+	public function getSupportedJobs(LAMConfig $config): array {
 		return [
 			new ShadowAccountPasswordNotifyJob(),
 			new ShadowAccountExpirationCleanupJob(),

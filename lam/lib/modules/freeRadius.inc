@@ -731,7 +731,7 @@ class freeRadius extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSupportedJobs(&$config) {
+	public function getSupportedJobs(LAMConfig $config): array {
 		return [
 			new FreeRadiusAccountExpirationCleanupJob(),
 			new FreeRadiusAccountExpirationNotifyJob()

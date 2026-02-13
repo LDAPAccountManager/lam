@@ -84,10 +84,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	private const DISPLAY_GROUPS_CN = 'CN';
 	public const ACCOUNT_DOES_NOT_EXPIRE = '9223372036854775807';
 
-	/** current group list */
-	private $groupList = [];
-	/** original group list */
-	private $groupList_orig = [];
+	/** @var string[] $groupList current group list */
+	private array $groupList = [];
+	/** @var string[] $groupList_orig original group list */
+	private array $groupList_orig = [];
 	/** cache for groups */
 	private $groupCache;
 	/** host cache to reduce LDAP queries */
@@ -4595,7 +4595,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSupportedJobs(&$config) {
+	public function getSupportedJobs(LAMConfig $config): array {
 		return [
 			new WindowsPasswordNotifyJob(),
 			new WindowsAccountExpirationCleanupJob(),
@@ -4660,10 +4660,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns if the given account is expired.
 	 *
-	 * @param array $attrs LDAP attributes
+	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return bool expired
 	 */
-	public static function isAccountExpired($attrs) {
+	public static function isAccountExpired(array $attrs): bool {
 		$attrs = array_change_key_case($attrs);
 		if (empty($attrs['accountexpires'][0])) {
 			return false;
@@ -4682,9 +4682,9 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * Returns the list of groups.
 	 *
-	 * @return array DNs of Windows groups
+	 * @return string[] DNs of Windows groups
 	 */
-	public function getGroupList() {
+	public function getGroupList(): array {
 		return $this->groupList;
 	}
 
@@ -4993,8 +4993,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			}
 			// skip if the password does not expire
 			if (empty($user['msds-userpasswordexpirytimecomputed'][0])
-				|| ($user['msds-userpasswordexpirytimecomputed'][0] == windowsUser::ACCOUNT_DOES_NOT_EXPIRE)
-				|| ($user['msds-userpasswordexpirytimecomputed'][0] == '0')) {
+				|| ($user['msds-userpasswordexpirytimecomputed'][0] === windowsUser::ACCOUNT_DOES_NOT_EXPIRE)) {
 				$this->jobResultLog->logDebug($dn . ': password does not expire.');
 				return;
 			}
@@ -5234,7 +5233,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @param int $monthInterval month interval
 		 * @return bool should run
 		 */
-		private function shouldRun(&$pdo, $jobId, $baseDate, $monthInterval) {
+		private function shouldRun(PDO $pdo, string $jobId, DateTime $baseDate, int $monthInterval): bool {
 			$dbLastChange = $this->getDBLastPwdChangeTime($jobId, $pdo, $jobId);
 			if (empty($dbLastChange)) {
 				return true;
@@ -5249,11 +5248,11 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * Returns the month interval.
 		 *
-		 * @param array $options config options
-		 * @param $jobId job id
+		 * @param array<string, string[]> $options config options
+		 * @param string $jobId job id
 		 * @return int interval
 		 */
-		private function getMonthInterval($options, $jobId): int {
+		private function getMonthInterval(array $options, string $jobId): int {
 			return match ($options[$this->getConfigPrefix() . '_period' . $jobId][0]) {
 				self::PERIOD_HALF_YEARLY => 6,
 				self::PERIOD_QUARTERLY => 3,
@@ -5268,7 +5267,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @param DateTime $currentDate current date
 		 * @return DateTime base date
 		 */
-		private function getBaseDate($currentDate) {
+		private function getBaseDate(DateTime $currentDate): DateTime {
 			$baseDateText = $currentDate->format('Y-m-') . '1';
 			return DateTime::createFromFormat('Y-m-d', $baseDateText, getTimeZone());
 		}
@@ -5279,8 +5278,9 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @param DateTime $baseDate base date
 		 * @param int $monthInterval number of months in interval
 		 * @param JobResultLog $resultLog result log
+		 * @return DateTime date
 		 */
-		public static function getLastEffectiveExecutionDate($baseDate, $monthInterval, $resultLog) {
+		public static function getLastEffectiveExecutionDate(DateTime $baseDate, int $monthInterval, JobResultLog $resultLog): DateTime {
 			$month = $baseDate->format('m');
 			$monthIndex = $month - 1;
 			while (($monthIndex % $monthInterval) !== 0) {
@@ -5303,11 +5303,11 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * Formats the managed groups.
 		 *
-		 * @param $managedGroups managed groups
+		 * @param array<string, string[]|string>[] $managedGroups managed groups
 		 * @param bool $isHTML HTML email
 		 * @return string formatted text
 		 */
-		private function formatGroups($managedGroups, bool $isHTML) {
+		private function formatGroups(array $managedGroups, bool $isHTML): string {
 			$text = '';
 			foreach ($managedGroups as $managedGroup) {
 				if ($isHTML) {
