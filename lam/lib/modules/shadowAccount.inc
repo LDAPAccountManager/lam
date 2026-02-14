@@ -414,9 +414,9 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * Processes user input of the expiration page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_expire() {
+	public function process_expire(): array {
 		$errors = [];
 		// set expiration date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_change']) && !empty($_POST['shadowexpire'])) {
@@ -478,7 +478,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 *
 	 * @return htmlResponsiveRow meta HTML code
 	 */
-	function display_html_expire() {
+	public function display_html_expire(): htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
 		$shAccExpirationDate = time() / (3600 * 24) + 365;
 		if (isset($this->attributes['shadowexpire'][0])) {
@@ -520,9 +520,9 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * Processes user input of the last password change page.
 	 * It checks if all input values are correct and updates the associated LDAP attributes.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_pwdChange() {
+	public function process_pwdChange(): array {
 		$errors = [];
 		// set last change date
 		if (isset($_POST['form_subpage_shadowAccount_attributes_changePwdChange']) && !empty($_POST['shadowlastchange'])) {
@@ -542,7 +542,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 *
 	 * @return htmlResponsiveRow meta HTML code
 	 */
-	function display_html_pwdChange() {
+	public function display_html_pwdChange(): htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
 		$shLastChange = time() / (3600 * 24);
 		if (isset($this->attributes['shadowlastchange'][0])) {
@@ -721,7 +721,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * @param int|null $month month (e.g. 8)
 	 * @param int|null $day day (e.g. 27)
 	 */
-	public function setExpirationDate($year, $month, $day) {
+	public function setExpirationDate($year, $month, $day): void {
 		if (($year == null) && ($month == null) && ($day == null)) {
 			unset($this->attributes['shadowexpire']);
 			return;
@@ -734,12 +734,12 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * Sets the last password change date of this account.
 	 * If all parameters are null the password change date will be removed.
 	 *
-	 * @param String $year year (e.g. 2040)
-	 * @param String $month month (e.g. 8)
-	 * @param String $day day (e.g. 27)
+	 * @param string|null $year year (e.g. 2040)
+	 * @param string|null $month month (e.g. 8)
+	 * @param string|null $day day (e.g. 27)
 	 */
-	public function setLastChangeDate($year, $month, $day) {
-		if (($year == null) && ($month == null) && ($day == null)) {
+	public function setLastChangeDate(?string $year, ?string $month, ?string $day) {
+		if (($year === null) && ($month === null) && ($day === null)) {
 			unset($this->attributes['shadowlastchange']);
 			return;
 		}
@@ -758,7 +758,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		if (in_array('shadowLastChange', $fields)) {
 			$shadowLastChange = '';
 			if (isset($attributes['shadowlastchange'][0])) {
-				$date = new DateTime('@' . $attributes['shadowlastchange'][0] * 3600 * 24, new DateTimeZone('UTC'));
+				$date = new DateTime('@' . (intval($attributes['shadowlastchange'][0]) * 3600 * 24), new DateTimeZone('UTC'));
 				$shadowLastChange = $date->format('d.m.Y');
 			}
 			$row = new htmlResponsiveRow();
@@ -801,7 +801,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		if (empty($attrs['shadowexpire'][0])) {
 			return false;
 		}
-		$time = new DateTime('@' . $attrs['shadowexpire'][0] * 24 * 3600, new DateTimeZone('UTC'));
+		$time = new DateTime('@' . (intval($attrs['shadowexpire'][0]) * 24 * 3600), new DateTimeZone('UTC'));
 		$now = new DateTime('now', getTimeZone());
 		return ($time < $now);
 	}
@@ -819,7 +819,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 		if (($attrs['shadowlastchange'][0] < 1) || ($attrs['shadowmax'][0] < 1)) {
 			return false;
 		}
-		$time = new DateTime('@' . $attrs['shadowlastchange'][0] * 24 * 3600, new DateTimeZone('UTC'));
+		$time = new DateTime('@' . (intval($attrs['shadowlastchange'][0]) * 24 * 3600), new DateTimeZone('UTC'));
 		$time = $time->add(new DateInterval('P' . $attrs['shadowmax'][0] . 'D'));
 		if (!empty($attrs['shadowinactive'][0]) && ($attrs['shadowinactive'][0] > 0)) {
 			$time = $time->add(new DateInterval('P' . $attrs['shadowinactive'][0] . 'D'));
@@ -1073,7 +1073,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$lastPwdTimeUnix = intval($user['shadowlastchange'][0]) * 3600 * 24;
 			$lastPwdTime = new DateTime('@' . $lastPwdTimeUnix, new DateTimeZone('UTC'));
 			$this->jobResultLog->logDebug("Last password change on " . $lastPwdTime->format('Y-m-d'));
-			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
+			$numDaysToWarn = intval($options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0]);
 			$addPasswordWarningTime = !isset($options[$this->getConfigPrefix() . '_addWarningPeriod' . $jobID][0])
 				|| ($options[$this->getConfigPrefix() . '_addWarningPeriod' . $jobID][0] === 'true');
 			if ($addPasswordWarningTime && !empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
