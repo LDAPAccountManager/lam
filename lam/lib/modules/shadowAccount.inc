@@ -738,7 +738,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * @param string|null $month month (e.g. 8)
 	 * @param string|null $day day (e.g. 27)
 	 */
-	public function setLastChangeDate(?string $year, ?string $month, ?string $day) {
+	public function setLastChangeDate(?string $year, ?string $month, ?string $day): void {
 		if (($year === null) && ($month === null) && ($day === null)) {
 			unset($this->attributes['shadowlastchange']);
 			return;
