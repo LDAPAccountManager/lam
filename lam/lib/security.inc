@@ -266,9 +266,9 @@ function logoffAndBackToLoginPage(): void {
 /**
  * Returns if debug messages are to be logged.
  *
- * @return boolean debug enabled
+ * @return bool debug enabled
  */
-function isDebugLoggingEnabled() {
+function isDebugLoggingEnabled(): bool {
 	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	return $cfg->logLevel >= LOG_DEBUG;
 }
