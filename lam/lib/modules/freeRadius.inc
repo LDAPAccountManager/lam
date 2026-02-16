@@ -40,8 +40,8 @@ class freeRadius extends baseModule {
 	 */
 	private const ATTRIBUTES_TO_IGNORE_ON_COPY = ['radiusFramedIPAddress'];
 
-	/** cache for profile DNs */
-	private $profileCache;
+	/** @var string[]|null $profileCache cache for profile DNs */
+	private ?array $profileCache = null;
 
 
 	/**
@@ -497,7 +497,7 @@ class freeRadius extends baseModule {
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_expiration() {
+	public function display_html_expiration(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$attr = 'radiusExpiration';
 		$date = new DateTime('@' . (time() + 3600 * 24 * 365), getTimeZone());
@@ -525,9 +525,9 @@ class freeRadius extends baseModule {
 	/**
 	 * Processes user input of the time selection page.
 	 *
-	 * @return array list of info/error messages
+	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_expiration() {
+	public function process_expiration(): array {
 		$return = [];
 		// find button name
 		$buttonName = '';
@@ -694,9 +694,10 @@ class freeRadius extends baseModule {
 	/**
 	 * Formats the expiration date attribute.
 	 *
-	 * @param String $date date value
+	 * @param string $date date value
+	 * @return string formatted date
 	 */
-	private function formatExpirationDate($date) {
+	private function formatExpirationDate($date): string {
 		if (empty($date)) {
 			return $date;
 		}
@@ -708,15 +709,16 @@ class freeRadius extends baseModule {
 	/**
 	 * Returns a list of possible profile DNs.
 	 *
-	 * @return array list of profile DNs
+	 * @return string[] list of profile DNs
 	 */
-	private function getProfiles() {
-		if ($this->profileCache != null) {
+	private function getProfiles(): array {
+		if ($this->profileCache !== null) {
 			return $this->profileCache;
 		}
 		if (empty($this->moduleSettings['freeRadius_profileDN'][0])) {
 			return [];
 		}
+		$this->profileCache = [];
 		$list = searchLDAP($this->moduleSettings['freeRadius_profileDN'][0], '(objectClass=radiusProfile)', ['dn']);
 		if (empty($list)) {
 			return [];
