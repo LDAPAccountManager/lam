@@ -675,15 +675,15 @@ class asteriskExtension extends baseModule {
 	/**
 	 * Reorders the rules if the user clicked on a move button.
 	 */
-	function processPriorityChange(): void {
+	private function processPriorityChange(): void {
 		for ($entryCounter = 0; $entryCounter < count($this->extensionRows); $entryCounter++) {
 			if (isset($_POST["rule_up_button_" . $entryCounter])) {
-				$this->extensionRows[$entryCounter]['astpriority'][0]--;
-				$this->extensionRows[$entryCounter - 1]['astpriority'][0]++;
+				$this->extensionRows[$entryCounter]['astpriority'][0] = (string) (intval($this->extensionRows[$entryCounter]['astpriority'][0]) - 1);
+				$this->extensionRows[$entryCounter - 1]['astpriority'][0] = (string) (intval($this->extensionRows[$entryCounter - 1]['astpriority'][0]) + 1);
 			}
 			elseif (isset($_POST["rule_down_button_" . $entryCounter])) {
-				$this->extensionRows[$entryCounter]['astpriority'][0]++;
-				$this->extensionRows[$entryCounter + 1]['astpriority'][0]--;
+				$this->extensionRows[$entryCounter]['astpriority'][0] = (string) (intval($this->extensionRows[$entryCounter]['astpriority'][0]) + 1);
+				$this->extensionRows[$entryCounter + 1]['astpriority'][0] = (string) (intval($this->extensionRows[$entryCounter + 1]['astpriority'][0]) - 1);
 			}
 		}
 	}
