@@ -38,12 +38,9 @@ include_once(__DIR__ . "/pykotaUser.inc");
 class pykotaUserStructural extends pykotaUser {
 
 	/**
-	 * Returns if this module also manages the structural object class pykotaObject.
-	 * This is overridden by a submodule that must provide the structural object class.
-	 *
-	 * @return boolean structural usage
+	 * {@inheritDoc}
 	 */
-	public function isStructural() {
+	public function isStructural(): bool {
 		return true;
 	}
 

@@ -53,9 +53,9 @@ class pykotaGroup extends baseModule {
 	 * Returns if this module also manages the structural object class pykotaObject.
 	 * This is overridden by a submodule that must provide the structural object class.
 	 *
-	 * @return boolean structural usage
+	 * @return bool structural usage
 	 */
-	public function isStructural() {
+	public function isStructural(): bool {
 		return false;
 	}
 
