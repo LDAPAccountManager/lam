@@ -438,6 +438,7 @@ class htmlDataTable extends htmlElement {
 				field: "' . $column->name . '",
 				headerTooltip: "' . $column->label . '",
 				formatter: "' . $column->getFormatter() . '",
+				visible: ' . ($column->visible ? 'true' : 'false') . ',
 				formatterParams: ' . json_encode((object) $column->getFormatterOptions()) . '
 				' . $headerFilter . '
 			}';
@@ -537,17 +538,21 @@ class htmlDataTableColumn {
 	public string $name;
 	public bool $filterable;
 	public string $formattingType;
+	public bool $visible;
 
 	/**
 	 * @param string $label column label text
 	 * @param string $name column ID
 	 * @param bool $filterable can be filtered
+	 * @param string $formattingType formatting type
+	 * @param bool $visible column is visible
 	 */
-	public function __construct(string $label, string $name, bool $filterable = true, string $formattingType = self::TYPE_TEXT) {
+	public function __construct(string $label, string $name, bool $filterable = true, string $formattingType = self::TYPE_TEXT, bool $visible = true) {
 		$this->label = htmlspecialchars($label);
 		$this->name = htmlspecialchars($name);
 		$this->filterable = $filterable;
 		$this->formattingType = $formattingType;
+		$this->visible = $visible;
 	}
 
 	/**

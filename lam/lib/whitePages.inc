@@ -375,6 +375,11 @@ class WhitePagesTab {
 	public array $searchableAttributes = ['cn', 'sn', 'givenName', 'mail', 'telephoneNumber'];
 
 	/**
+	 * @var string value to use for initial sorting
+	 */
+	public string $initialSorting = '';
+
+	/**
 	 * @var WhitePagesDisplayItem[] list items
 	 */
 	public array $listItems = [];

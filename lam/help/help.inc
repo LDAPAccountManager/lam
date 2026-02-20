@@ -719,6 +719,9 @@ $helpArray = [
 	"914" => ["Headline" => _("Type"),
 		"Text" => _('Please select how the data should be rendered.')
 	],
+	"915" => ["Headline" => _("Initial sorting"),
+		"Text" => _('Defines the attributes to use for the initial sorting of the list/gallery view. This field supports wildcards (e.g. "$gn$ $sn$"). If empty, the first text column or title will be used for the sorting.')
+	],
 ];
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

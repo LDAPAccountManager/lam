@@ -433,6 +433,15 @@
               additional filters that are independent from this
               setting.</entry>
             </row>
+
+            <row>
+              <entry>Initial sorting</entry>
+
+              <entry>Defines the attributes to use for the initial sorting of
+              the list/gallery view. This field supports wildcards (e.g. "$gn$
+              $sn$"). If empty, the first text column (list view) or title
+              (gallery view) will be used for the sorting.</entry>
+            </row>
           </tbody>
         </tgroup>
       </table>
