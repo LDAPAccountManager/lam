@@ -6,13 +6,15 @@ use htmlOutputText;
 use htmlButton;
 use htmlHiddenInput;
 use htmlResponsiveRow;
+use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\TYPES\TypeManager;
 use LamTemporaryFilesManager;
+use function LAM\PDF\getPdfFonts;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2025  Roland Gruber
+  Copyright (C) 2004 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -275,8 +277,21 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					unset($_SESSION['mass_pdf']);
 				}
 				if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
-					$_SESSION['mass_pdf']['structure'] = $_POST['pdfStructure'];
-					$_SESSION['mass_pdf']['font'] = $_POST['pdf_font'];
+					$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+					$pdfStructures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $type->getId());
+					$pdfStructureName = (string) $_POST['pdfStructure'];
+					if (!in_array($pdfStructureName, $pdfStructures)) {
+						logNewMessage(LOG_ERR, 'Invalid PDF structure: ' . $pdfStructureName);
+						die();
+					}
+					$_SESSION['mass_pdf']['structure'] = $pdfStructureName;
+					$fontName = (string) $_POST['pdf_font'];
+					$fonts = getPdfFonts();
+					if (!in_array($fontName, $fonts)) {
+						logNewMessage(LOG_ERR, 'Invalid font name: ' . $fontName);
+						die();
+					}
+					$_SESSION['mass_pdf']['font'] = $fontName;
 					$_SESSION['mass_pdf']['counter'] = 0;
 					$tempFilesManager = new LamTemporaryFilesManager();
 					$_SESSION['mass_pdf']['file'] = $tempFilesManager->registerTemporaryFile('.zip');

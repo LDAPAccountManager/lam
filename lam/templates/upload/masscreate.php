@@ -4,29 +4,33 @@ namespace LAM\UPLOAD;
 
 use htmlInputCheckbox;
 use htmlLabel;
-use \htmlResponsiveTable;
-use \htmlOutputText;
-use \htmlGroup;
-use \htmlImage;
-use \htmlResponsiveInputCheckbox;
-use \htmlDiv;
-use \htmlHiddenInput;
-use \htmlButton;
-use \htmlTitle;
-use \htmlResponsiveInputFileUpload;
-use \htmlLink;
-use \htmlSubTitle;
-use \htmlHelpLink;
-use \htmlResponsiveRow;
-use \htmlResponsiveSelect;
-use \htmlSpacer;
+use htmlResponsiveTable;
+use htmlOutputText;
+use htmlGroup;
+use htmlImage;
+use htmlResponsiveInputCheckbox;
+use htmlDiv;
+use htmlHiddenInput;
+use htmlButton;
+use htmlTitle;
+use htmlResponsiveInputFileUpload;
+use htmlLink;
+use htmlSubTitle;
+use htmlHelpLink;
+use htmlResponsiveRow;
+use htmlResponsiveSelect;
+use htmlSpacer;
 use LAM\PDF\PdfStructurePersistenceManager;
-use \moduleCache;
+use LAM\TYPES\ConfiguredType;
+use LAM\TYPES\TypeManager;
+use moduleCache;
+use function LAM\PDF\getPdfFonts;
+use function LAM\TYPES\getScopeFromTypeId;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2025  Roland Gruber
+  Copyright (C) 2004 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -105,7 +109,7 @@ Uploader::cleanSession();
 include __DIR__ . '/../../lib/adminHeader.inc';
 
 // get possible types and remove those which do not support file upload
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 $types = $typeManager->getConfiguredTypes();
 $count = count($types);
 for ($i = 0; $i < $count; $i++) {
@@ -152,14 +156,14 @@ if (isset($_POST['type'])) {
 // show start page
 $divClass = 'user';
 if (isset($_REQUEST['type'])) {
-	$divClass = htmlspecialchars(\LAM\TYPES\getScopeFromTypeId($_REQUEST['type']));
+	$divClass = htmlspecialchars(getScopeFromTypeId($_REQUEST['type']));
 }
 echo '<div class="smallPaddingContent">';
 echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 
 $row = new htmlResponsiveRow();
-$row->add(new htmlTitle(_("Account creation via file upload")), 12);
-$row->add(new htmlOutputText(_("Here you can create multiple accounts by providing a CSV file.")), 12);
+$row->add(new htmlTitle(_("Account creation via file upload")));
+$row->add(new htmlOutputText(_("Here you can create multiple accounts by providing a CSV file.")));
 $row->addVerticalSpacer('4rem');
 
 // account type
@@ -177,10 +181,10 @@ elseif (!empty($types)) {
 $typeSelect = new htmlResponsiveSelect('type', $typeList, [$selectedType], _("Account type"));
 $typeSelect->setHasDescriptiveElements(true);
 $typeSelect->setOnchangeEvent('window.lam.upload.changeVisibleModules(this);');
-$row->add($typeSelect, 12);
+$row->add($typeSelect);
 $row->addVerticalSpacer('1rem');
 
-$row->add(new htmlSubTitle(_('Selected modules')), 12);
+$row->add(new htmlSubTitle(_('Selected modules')));
 
 // module selection
 foreach ($types as $type) {
@@ -238,7 +242,7 @@ foreach ($types as $type) {
 	}
 	$typeDiv = new htmlDiv($type->getId(), $innerRow);
 	$typeDiv->setCSSClasses($divClasses);
-	$row->add($typeDiv, 12);
+	$row->add($typeDiv);
 }
 
 // ok button
@@ -260,10 +264,10 @@ include __DIR__ . '/../../lib/adminFooter.inc';
 /**
  * Displays the account type specific main page of the upload.
  *
- * @param \LAM\TYPES\ConfiguredType $type account type
+ * @param ConfiguredType $type account type
  * @param string[] $selectedModules list of selected account modules
  */
-function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): void {
+function showMainPage(ConfiguredType $type, array $selectedModules): void {
 	$scope = $type->getScope();
 	echo '<div class="smallPaddingContent">';
 	// get input fields from modules
@@ -275,13 +279,13 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$row->setCSSClasses(['maxrow']);
 
 	// title
-	$row->add(new htmlTitle(_("File upload")), 12);
+	$row->add(new htmlTitle(_("File upload")));
 
 	// instructions
-	$row->add(new htmlOutputText(_("Please provide a CSV formatted file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.")), 12);
-	$row->add(new htmlOutputText(_("Check your input carefully. LAM will only do some basic checks on the upload data.")), 12);
+	$row->add(new htmlOutputText(_("Please provide a CSV formatted file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.")));
+	$row->add(new htmlOutputText(_("Check your input carefully. LAM will only do some basic checks on the upload data.")));
 	$row->addVerticalSpacer('1rem');
-	$row->add(new htmlOutputText(_("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.")), 12);
+	$row->add(new htmlOutputText(_("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.")));
 	$row->addVerticalSpacer('1rem');
 
 	// upload elements
@@ -291,7 +295,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$row->addField($saveLink);
 	$row->addVerticalSpacer('3rem');
 	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file"), null, true));
-	$row->add(new htmlHiddenInput('typeId', $type->getId()), 12);
+	$row->add(new htmlHiddenInput('typeId', $type->getId()));
 	$row->add(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)));
 
 	// PDF
@@ -313,12 +317,12 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 			$pdfSelected = ['default'];
 		}
 		$row->add(new htmlResponsiveSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')));
-		$fonts = \LAM\PDF\getPdfFonts();
+		$fonts = getPdfFonts();
 		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, [], _('Font'), '411');
 		$fontSelection->setCSSClasses(['lam-save-selection']);
 		$fontSelection->setHasDescriptiveElements(true);
 		$fontSelection->setSortElements(false);
-		$row->add($fontSelection, 12);
+		$row->add($fontSelection);
 	}
 	$row->addVerticalSpacer('1rem');
 
@@ -328,11 +332,11 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$row->addField(new htmlOutputText('&nbsp;', false));
 	$row->addVerticalSpacer('2rem');
 
-	$row->add(new htmlTitle(_("Columns")), 12);
+	$row->add(new htmlTitle(_("Columns")));
 
 	// DN options
 	$dnTitle = new htmlSubTitle(_("DN settings"), '../../graphics/logo.svg');
-	$row->add($dnTitle, 12);
+	$row->add($dnTitle);
 	$titles = [_('Name'), _("Identifier"), _("Example value"), _("Default value"), _("Possible values")];
 	$data = [];
 	// DN suffix
@@ -393,7 +397,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 
 	$table = new htmlResponsiveTable($titles, $data);
 	$table->setCSSClasses(['alternating-color']);
-	$row->add($table, 12);
+	$row->add($table);
 
 	// module options
 	foreach ($modules as $moduleName) {
@@ -413,7 +417,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 		}
 		$moduleTitle = new htmlSubTitle($module->get_alias(), $icon);
 		$moduleTitle->colspan = 20;
-		$row->add($moduleTitle, 12);
+		$row->add($moduleTitle);
 		foreach ($columns[$moduleName] as $column) {
 			$required = false;
 			if (isset($column['required']) && ($column['required'] === true)) {
@@ -444,7 +448,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 		}
 		$table = new htmlResponsiveTable($titles, $data);
 		$table->setCSSClasses(['alternating-color']);
-		$row->add($table, 12);
+		$row->add($table);
 	}
 
 	addSecurityTokenToMetaHTML($row);
