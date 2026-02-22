@@ -30,7 +30,7 @@ use ServerProfilePersistenceManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2025  Roland Gruber
+                2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -240,7 +240,7 @@ if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FIL
 			throw new LAMException(_('Unable to create temporary file.'));
 		}
         fclose($handle);
-        $filename = (string) $_FILES['logoUpload']['name'];
+        $filename = trim((string) $_FILES['logoUpload']['name']);
 		$pdfStructurePersistenceManager->savePdfLogo($_SESSION['config']->getName(), $filename, $data);
 		$container->add(new htmlStatusMessage('INFO', _('Uploaded logo file.'), $filename));
     }
