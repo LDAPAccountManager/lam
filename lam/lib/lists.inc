@@ -3,6 +3,7 @@
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\TYPES\ConfiguredType;
 use function LAM\PDF\createModulePDF;
+use function LAM\PDF\getPdfFonts;
 
 /*
 
@@ -442,38 +443,32 @@ class lamList {
 			$link = "list.php?type=" . $this->type->getId() . "&" .
 				"sort=" . strtolower($attributeName) . $filter . "&norefresh=y";
 			$buttons = new htmlGroup();
+			$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
 			if (strtolower($attributeName) == $this->sortColumn) {
 				if ($this->sortDirection < 0) {
-					$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
 					$down->setCSSClasses(['icon noMarginSides']);
 					$down->setTitle(_('Sort ascending'));
 					$buttons->addElement($down);
 					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
 					$up->setCSSClasses(['icon icon-active noMarginSides']);
-					$up->setTitle(_('Sort descending'));
-					$buttons->addElement($up);
 				}
 				else {
-					$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
 					$down->setCSSClasses(['icon icon-active noMarginSides']);
 					$down->setTitle(_('Sort ascending'));
 					$buttons->addElement($down);
 					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
 					$up->setCSSClasses(['icon noMarginSides']);
-					$up->setTitle(_('Sort descending'));
-					$buttons->addElement($up);
 				}
 			}
 			else {
-				$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
 				$down->setCSSClasses(['icon noMarginSides']);
 				$down->setTitle(_('Sort ascending'));
 				$buttons->addElement($down);
 				$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
 				$up->setCSSClasses(['icon noMarginSides']);
-				$up->setTitle(_('Sort descending'));
-				$buttons->addElement($up);
 			}
+			$up->setTitle(_('Sort descending'));
+			$buttons->addElement($up);
 			$sortElements[] = $buttons;
 		}
 		return $sortElements;
@@ -805,8 +800,19 @@ class lamList {
 		// PDF creation Ok
 		if (isset($_POST['createPDFok'])) {
 			try {
-				$pdfStruct = $_POST['pdf_structure'];
-				$pdfFont = $_POST['pdf_font'];
+				$pdfStruct = (string) $_POST['pdf_structure'];
+				$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+				$pdfStructures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $this->type->getId());
+				if (!in_array($pdfStruct, $pdfStructures)) {
+					logNewMessage(LOG_ERR, 'Invalid PDF structure: ' . $pdfStruct);
+					die();
+				}
+				$pdfFont = (string) $_POST['pdf_font'];
+				$fonts = getPdfFonts();
+				if (!in_array($pdfFont, $fonts)) {
+					logNewMessage(LOG_ERR, 'Invalid font name: ' . $pdfFont);
+					die();
+				}
 				$option = $_POST['createFor'];
 				$fileName = '';
 				// create for clicked account
@@ -913,15 +919,15 @@ class lamList {
 		echo "<form action=\"list.php?type=" . $this->type->getId() . $refreshParam . "\" method=\"post\">\n";
 
 		$container = new htmlResponsiveRow();
-		$container->add(new htmlSubTitle(_('Create PDF file')), 12);
+		$container->add(new htmlSubTitle(_('Create PDF file')));
 
-		$container->add(new htmlResponsiveSelect('pdf_structure', $pdf_structures, ['default'], _('PDF structure'), '405'), 12);
-		$fonts = \LAM\PDF\getPdfFonts();
+		$container->add(new htmlResponsiveSelect('pdf_structure', $pdf_structures, ['default'], _('PDF structure'), '405'));
+		$fonts = getPdfFonts();
 		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, [], _('Font'), '411');
 		$fontSelection->setCSSClasses(['lam-save-selection']);
 		$fontSelection->setHasDescriptiveElements(true);
 		$fontSelection->setSortElements(false);
-		$container->add($fontSelection, 12);
+		$container->add($fontSelection);
 
 		$container->addVerticalSpacer('1rem');
 		$container->addLabel(new htmlOutputText(_('Create for')));
@@ -1091,7 +1097,7 @@ class lamList {
 		$attrs = $this->type->getAttributes();
 		$ret = [];
 		$predefinedDescriptions = $this->type->getBaseType()->getListAttributeDescriptions();
-		$predefinedDescriptions = array_change_key_case($predefinedDescriptions, CASE_LOWER);
+		$predefinedDescriptions = array_change_key_case($predefinedDescriptions);
 		foreach ($attrs as $attr) {
 			$ret[$attr->getAttributeName()] = $attr->getAlias($predefinedDescriptions);
 		}
@@ -1398,9 +1404,9 @@ class lamList {
 
 		$configContainer = new htmlResponsiveRow();
 		for ($i = 0; $i < count($this->configOptions); $i++) {
-			$configContainer->add($this->configOptions[$i]->getMetaHTML(), 12);
+			$configContainer->add($this->configOptions[$i]->getMetaHTML());
 		}
-		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'), 12);
+		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'));
 		addSecurityTokenToMetaHTML($configContainer);
 
 		parseHtml('', $configContainer, [], false, $this->type->getScope());
@@ -1719,7 +1725,7 @@ class lamBooleanListOption extends lamListOption {
 	 */
 	public function getMetaHTML(): htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
-		$return->add(new htmlResponsiveInputCheckbox($this->getID(), $this->isSelected(), $this->name), 12);
+		$return->add(new htmlResponsiveInputCheckbox($this->getID(), $this->isSelected(), $this->name));
 		return $return;
 	}
 
@@ -1780,7 +1786,7 @@ class lamSelectListOption extends lamListOption {
 	 */
 	public function getMetaHTML(): htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
-		$return->add(new htmlResponsiveSelect($this->getID(), $this->options, [$this->getValue()], $this->name, $this->helpID), 12);
+		$return->add(new htmlResponsiveSelect($this->getID(), $this->options, [$this->getValue()], $this->name, $this->helpID));
 		return $return;
 	}
 

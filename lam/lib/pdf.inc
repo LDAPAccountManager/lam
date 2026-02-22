@@ -101,6 +101,9 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
  * @return string PDF file name
  */
 function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString): string {
+	if (!in_array($font, getPdfFonts())) {
+		logNewMessage(LOG_ERR, 'Invalid font specified: ' . $font);
+	}
 	/** PDF generator class */
 	include_once(__DIR__ . "/lamtcpdf.inc");
 	$pdf = new LAMTCPDF($structure, $font);
