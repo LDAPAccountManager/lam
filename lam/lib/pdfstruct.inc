@@ -1340,9 +1340,7 @@ class PDFStructureWriter {
 			$writer->writeAttribute('filename', $structure->getLogo());
 		}
 		$writer->writeAttribute('headline', $structure->getTitle());
-		if ($structure->getFoldingMarks() !== null) {
-			$writer->writeAttribute('foldingmarks', $structure->getFoldingMarks());
-		}
+		$writer->writeAttribute('foldingmarks', $structure->getFoldingMarks());
 		foreach ($structure->getSections() as $section) {
 			if ($section instanceof PDFTextSection) {
 				$writer->startElement('text');
@@ -1489,9 +1487,9 @@ class PDFStructure {
 	/**
 	 * Returns if to print folding marks.
 	 *
-	 * @return ?string print folding marks
+	 * @return string print folding marks
 	 */
-	public function getFoldingMarks(): ?string {
+	public function getFoldingMarks(): string {
 		return $this->foldingMarks;
 	}
 
