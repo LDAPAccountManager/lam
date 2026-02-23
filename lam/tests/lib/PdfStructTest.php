@@ -157,7 +157,7 @@ class PdfStructTest extends TestCase {
 		$expected = [
 			'title' => 'mytitle',
 			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
-			'logo' => 'somelogo',
+			'logo' => 'somelogo.png',
 			'sections' => [
 				[
 					'type' => 'text',
@@ -223,7 +223,7 @@ class PdfStructTest extends TestCase {
 
 		$this->assertEquals('mytitle', $structure->getTitle());
 		$this->assertEquals(PDFStructure::FOLDING_STANDARD, $structure->getFoldingMarks());
-		$this->assertEquals('logo', $structure->getLogo());
+		$this->assertEquals('logo.png', $structure->getLogo());
 		$sections = $structure->getSections();
 		$this->assertEquals(2, count($sections));
 		$this->assertTrue($sections[0] instanceof PDFTextSection);
