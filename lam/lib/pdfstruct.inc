@@ -149,7 +149,7 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error reading file
 	 */
 	public function getPdfTemplateLogoBinary(string $name): string {
-		if (!$this->isValidLogoFileName($name)) {
+		if (!PDFStructure::isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to read logo file.'));
 		}
 		return $this->strategy->getPdfTemplateLogoBinary($name);
@@ -162,7 +162,7 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error during deletion
 	 */
 	public function deletePdfTemplateLogo(string $name): void {
-		if (!$this->isValidLogoFileName($name)) {
+		if (!PDFStructure::isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to delete logo file.'));
 		}
 		$this->strategy->deletePdfTemplateLogo($name);
@@ -176,7 +176,7 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error during save
 	 */
 	public function savePdfTemplateLogo(string $name, string $data): void {
-		if (!$this->isValidLogoFileName($name)) {
+		if (!PDFStructure::isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to upload logo file.'));
 		}
 		$this->strategy->savePdfTemplateLogo($name, $data);
@@ -223,7 +223,7 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error reading logo
 	 */
 	public function getPdfLogoBinary(string $confName, string $name): string {
-		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
+		if (!LAMConfig::isValidName($confName) || !PDFStructure::isValidLogoFileName($name)) {
 			logNewMessage(LOG_ERR, "Unable to read PDF logo " . $name);
 			throw new LAMException(_('Unable to read logo file.'));
 		}
@@ -238,7 +238,7 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error deleting logo
 	 */
 	public function deletePdfLogo(string $confName, string $name): void {
-		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
+		if (!LAMConfig::isValidName($confName) || !PDFStructure::isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to delete logo file.'));
 		}
 		// check if existing
@@ -281,7 +281,7 @@ class PdfStructurePersistenceManager {
 		if (!LAMConfig::isValidName($confName)) {
 			throw new LAMException(_('Unable to upload logo file.'));
 		}
-		if (!$this->isValidLogoFileName($name)) {
+		if (!PDFStructure::isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 		}
 		$this->strategy->savePdfLogo($confName, $name, $data);
@@ -361,16 +361,6 @@ class PdfStructurePersistenceManager {
 	 */
 	private function isValidPDFStructureName(string $name): bool {
 		return preg_match('/^[a-z0-9_-]+$/i', $name) === 1;
-	}
-
-	/**
-	 * Returns if the given logo file name is valid.
-	 *
-	 * @param string $fileName file name
-	 * @return bool valid
-	 */
-	private function isValidLogoFileName(string $fileName): bool {
-		return preg_match('/^[a-z0-9_-]+\\.(png|jpg)$/i', $fileName) === 1;
 	}
 
 	/**
@@ -1391,12 +1381,13 @@ class PDFStructure {
 	public const FOLDING_NONE = 'no';
 	/** standard folding marks */
 	public const FOLDING_STANDARD = 'standard';
+	public const NO_LOGO = 'none';
 
 	private ?string $logo = null;
 
 	private string $title = 'LDAP Account Manager';
 
-	private ?string $foldingMarks = 'no';
+	private string $foldingMarks = 'no';
 
 	/** @var PDFTextSection[]|PDFEntrySection[] $sections sections */
 	private array $sections = [];
@@ -1430,13 +1421,13 @@ class PDFStructure {
 	 */
 	public function import(array $data): void {
 		if (isset($data['title'])) {
-			$this->title = $data['title'];
+			$this->setTitle($data['title']);
 		}
 		if (isset($data['foldingMarks'])) {
-			$this->foldingMarks = $data['foldingMarks'];
+			$this->setFoldingMarks($data['foldingMarks']);
 		}
 		if (isset($data['logo'])) {
-			$this->logo = $data['logo'];
+			$this->setLogo($data['logo']);
 		}
 		if (isset($data['sections'])) {
 			foreach ($data['sections'] as $section) {
@@ -1465,8 +1456,15 @@ class PDFStructure {
 	 * Sets the logo file path.
 	 *
 	 * @param string|null $logo logo
+	 * @throws LAMException invalid logo
 	 */
 	public function setLogo(?string $logo): void {
+		if (empty($logo)) {
+			$logo = self::NO_LOGO;
+		}
+		if (!self::isValidLogoFileName($logo)) {
+			throw new LAMException('Invalid logo name: ' . $logo);
+		}
 		$this->logo = $logo;
 	}
 
@@ -1501,8 +1499,15 @@ class PDFStructure {
 	 * Sets if to print folding marks.
 	 *
 	 * @param string|null $foldingMarks print folding marks
+	 * @throws LAMException invalid folding marks
 	 */
 	public function setFoldingMarks(?string $foldingMarks): void {
+		if (empty($foldingMarks)) {
+			$foldingMarks = self::FOLDING_NONE;
+		}
+		if (!in_array($foldingMarks, [self::FOLDING_NONE, self::FOLDING_STANDARD], true)) {
+			throw new LAMException('Invalid folding marks specified');
+		}
 		$this->foldingMarks = $foldingMarks;
 	}
 
@@ -1522,6 +1527,16 @@ class PDFStructure {
 	 */
 	public function setSections(array $sections): void {
 		$this->sections = $sections;
+	}
+
+	/**
+	 * Returns if the given logo file name is valid.
+	 *
+	 * @param string $fileName file name
+	 * @return bool valid
+	 */
+	public static function isValidLogoFileName(string $fileName): bool {
+		return ($fileName === self::NO_LOGO) || preg_match('/^[a-z0-9_-]+\\.(png|jpg)$/i', $fileName) === 1;
 	}
 
 }

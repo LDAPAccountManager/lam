@@ -529,7 +529,7 @@ function updateBasicSettings(PDFStructure &$structure, array $logoFiles): void {
 	// set logo
 	if (isset($_POST['logoFile'])) {
 		$fileName = $_POST['logoFile'];
-		if ($fileName !== 'none') {
+		if ($fileName !== PDFStructure::NO_LOGO) {
 			$found = false;
 			foreach ($logoFiles as $logoFile) {
 				if ($logoFile->getName() === $fileName) {

@@ -55,7 +55,7 @@ class LAMTCPDF extends TCPDF {
 	 * @param string $fontName font name
 	 */
 	public function __construct($structure, $fontName) {
-		TCPDF::__construct('P', 'mm', 'A4', true, 'UTF-8', false);
+		parent::__construct();
 		$this->structure = $structure;
 		$this->fontName = $fontName;
 		$this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
@@ -75,7 +75,7 @@ class LAMTCPDF extends TCPDF {
 	public function Header(): void {
 		$logoFile = $this->structure->getLogo();
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
-		if (!empty($logoFile) && ($logoFile !== 'none')) {
+		if (!empty($logoFile) && ($logoFile !== PDFStructure::NO_LOGO)) {
 			$logoBinary = $pdfStructurePersistenceManager->getPdfLogoBinary($_SESSION['config']->getName(), $logoFile);
 			if (!empty($logoBinary)) {
 				$imageConverter = ImageManipulationFactory::getImageManipulator($logoBinary);

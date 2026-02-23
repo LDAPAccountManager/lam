@@ -121,11 +121,7 @@ class ConfigDataExporter {
 	 * @return array<string, array<string, string|int|bool|null|object|array<string, string|string[]>>> data
 	 */
 	public function _getServerProfiles(array $serverProfiles): array {
-		$data = [];
-		foreach ($serverProfiles as $profileName => $serverProfile) {
-			$data[$profileName] = $serverProfile->exportData();
-		}
-		return $data;
+		return array_map(fn($serverProfile) => $serverProfile->exportData(), $serverProfiles);
 	}
 
 	/**
@@ -618,7 +614,7 @@ class ConfigDataImporter {
 			if (isset($data['logos'])) {
 				foreach ($data['logos'] as $logoFileName => $logoData) {
 					$logoBinary = base64_decode($logoData);
-					$pdfStructurePersistenceManager->savePdfLogo($serverProfileName, $logoFileName, $logoBinary);
+					$pdfStructurePersistenceManager->savePdfLogo($serverProfileName, trim($logoFileName), $logoBinary);
 				}
 			}
 		}
