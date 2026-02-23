@@ -143,7 +143,7 @@ class PdfStructTest extends TestCase {
 	public function testExportPDFStructure() {
 		$structure = new PDFStructure();
 		$structure->setFoldingMarks(PDFStructure::FOLDING_STANDARD);
-		$structure->setLogo('somelogo');
+		$structure->setLogo('somelogo.png');
 		$structure->setTitle('mytitle');
 		$entrySection = new PDFEntrySection('sometitle');
 		$entrySection->setEntries([new PDFSectionEntry('key1')]);
@@ -202,7 +202,7 @@ class PdfStructTest extends TestCase {
 		$data = [
 			'title' => 'mytitle',
 			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
-			'logo' => 'logo',
+			'logo' => 'logo.png',
 			'sections' => [
 				[
 					'type' => 'text',

@@ -1336,9 +1336,7 @@ class PDFStructureWriter {
 		$writer->setIndent(true);
 		$writer->setIndentString("\t");
 		$writer->startElement('pdf');
-		if ($structure->getLogo() !== null) {
-			$writer->writeAttribute('filename', $structure->getLogo());
-		}
+		$writer->writeAttribute('filename', $structure->getLogo());
 		$writer->writeAttribute('headline', $structure->getTitle());
 		$writer->writeAttribute('foldingmarks', $structure->getFoldingMarks());
 		foreach ($structure->getSections() as $section) {
@@ -1381,7 +1379,7 @@ class PDFStructure {
 	public const FOLDING_STANDARD = 'standard';
 	public const NO_LOGO = 'none';
 
-	private ?string $logo = null;
+	private string $logo = self::NO_LOGO;
 
 	private string $title = 'LDAP Account Manager';
 
@@ -1444,9 +1442,9 @@ class PDFStructure {
 	/**
 	 * Returns the logo file path.
 	 *
-	 * @return ?string logo
+	 * @return string logo
 	 */
-	public function getLogo(): ?string {
+	public function getLogo(): string {
 		return $this->logo;
 	}
 
