@@ -365,6 +365,11 @@
           gateways require that the email comes from a specific email
           address.</para>
         </listitem>
+
+        <listitem>
+          <para>Subject text: here you can enter the email subject text if
+          this is needed for your provider</para>
+        </listitem>
       </itemizedlist>
 
       <para><emphasis role="bold"><ulink

@@ -5,7 +5,7 @@ namespace LAM\PLUGINS\SMS;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2025  Roland Gruber
+  Copyright (C) 2025 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,12 +56,12 @@ class Email2SmsProvider implements SmsProvider {
 	 * @inheritDoc
 	 */
 	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = '',
-							?string $accountId = '', ?string $region = '', ?string $from = ''): void {
+							?string $accountId = '', ?string $region = '', ?string $from = '', ?string $subject = ''): void {
 		if (str_starts_with($number, '+')) {
 			$number = '00' . substr($number, 1);
 		}
 		$to = str_replace('$number', $number, $accountId);
-		$success = sendEMail($to, '', $message, $from, false);
+		$success = sendEMail($to, $subject ?? '', $message, $from, false);
 		if ($success) {
 			logNewMessage(LOG_DEBUG, 'Email2Sms sent to ' . $to);
 		}
@@ -104,6 +104,13 @@ class Email2SmsProvider implements SmsProvider {
 	 */
 	public function usesRegion(): bool {
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function usesSubject(): bool {
+		return true;
 	}
 
 }

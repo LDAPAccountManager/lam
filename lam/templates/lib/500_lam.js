@@ -3748,6 +3748,7 @@ window.lam.sms.test = function(event, tokenName, tokenValue, okText, cancelText,
 		data.append('accountId', document.getElementById('smsAccountId').value);
 		data.append('region', document.getElementById('smsRegion').value);
 		data.append('from', document.getElementById('smsFrom').value);
+		data.append('subject', document.getElementById('smsSubject').value);
 		data.append('number', formData.number);
 		const url = '../misc/ajax.php?function=testSms';
 		fetch(url, {

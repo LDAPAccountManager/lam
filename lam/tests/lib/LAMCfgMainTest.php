@@ -95,6 +95,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->conf->smsAccountId = 'id';
 		$this->conf->smsRegion = 'eu';
 		$this->conf->smsFrom = '+491234567890';
+		$this->conf->smsSubject = '#12345:Test';
 		$this->conf->smsDefaultCountryPrefix = '+49';
 
 		$this->conf->save();
@@ -106,6 +107,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals('id', $this->conf->smsAccountId);
 		$this->assertEquals('eu', $this->conf->smsRegion);
 		$this->assertEquals('+491234567890', $this->conf->smsFrom);
+		$this->assertEquals('#12345:Test', $this->conf->smsSubject);
 		$this->assertEquals('+49', $this->conf->smsDefaultCountryPrefix);
 		$this->assertEquals(['mobile', 'pager'], $this->conf->getSmsAttributes());
 	}

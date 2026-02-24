@@ -1739,15 +1739,16 @@ function sendPasswordSms(string $pwd, array $user): array {
  * @param string|null $accountId account ID
  * @param string|null $region region
  * @param string|null $from from
+ * @param string|null $subject subject text
  * @param string $number mobile phone number
  * @throws LAMException error during SMS connection
  */
 function sendSmsTestMessage(string $providerId, ?string $apiKey, ?string $apiToken, ?string $accountId,
-							?string $region, ?string $from, string $number): void {
+							?string $region, ?string $from, ?string $subject, string $number): void {
 	include_once __DIR__ . '/plugins/sms/SmsService.inc';
 	$smsService = new SmsService();
 	try {
-		$smsService->sendSms(_('LAM test message'), $number, $providerId, $apiKey, $apiToken, $accountId, $region, $from);
+		$smsService->sendSms(_('LAM test message'), $number, $providerId, $apiKey, $apiToken, $accountId, $region, $from, $subject);
 	}
 	catch (Exception $e) {
 		throw new LAMException(null, $e->getMessage(), $e);

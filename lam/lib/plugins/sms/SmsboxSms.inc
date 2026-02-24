@@ -5,7 +5,7 @@ namespace LAM\PLUGINS\SMS;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2025  Roland Gruber
+  Copyright (C) 2025 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ class SmsboxSms implements SmsProvider {
 	 * @inheritDoc
 	 */
 	public function sendSms(string $message, string $number, ?string $apiKey = '', ?string $apiToken = '',
-							?string $accountId = '', ?string $region = '', ?string $from = ''): void {
+							?string $accountId = '', ?string $region = '', ?string $from = '', ?string $subject = ''): void {
 		$curl = curl_init();
 		$postData = [
 			"dest" => $number,
@@ -117,6 +117,13 @@ class SmsboxSms implements SmsProvider {
 	 * @inheritDoc
 	 */
 	public function usesRegion(): bool {
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function usesSubject(): bool {
 		return false;
 	}
 

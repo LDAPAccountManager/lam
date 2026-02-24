@@ -379,6 +379,9 @@ $helpArray = [
 	"299c" => ["Headline" => _("Region"),
 		"Text" => _("Please enter the region ID for the SMS service.")
 	],
+	"299d" => ["Headline" => _("Subject text"),
+		"Text" => _("Please enter the text for the email subject.")
+	],
 	// 300 - 399
 	// profile/PDF editor, file upload
 	"301" => ["Headline" => _("RDN identifier"),

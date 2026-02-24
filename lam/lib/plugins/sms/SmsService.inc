@@ -84,11 +84,12 @@ class SmsService {
 	 * @param string|null $accountId account ID
 	 * @param string|null $region region
 	 * @param string|null $from from
+	 * @param string|null $subject subject text
 	 * @throws LAMException error sending SMS
 	 */
 	public function sendSms(string $message, string $number, ?string $providerId = null, ?string $apiKey = null,
 							?string $apiToken = null, ?string $accountId = null, ?string $region = null,
-							?string $from = null): void {
+							?string $from = null, ?string $subject = null): void {
 		if ($providerId === null) {
 			$providerId = $_SESSION['cfgMain']->smsProvider;
 			$apiKey = $_SESSION['cfgMain']->smsApiKey;
@@ -96,6 +97,7 @@ class SmsService {
 			$accountId = $_SESSION['cfgMain']->smsAccountId;
 			$region = $_SESSION['cfgMain']->smsRegion;
 			$from = $_SESSION['cfgMain']->smsFrom;
+			$subject = $_SESSION['cfgMain']->smsSubject;
 		}
 		$providers = $this->findProviders();
 		if (!isset($providers[$providerId])) {
@@ -106,7 +108,7 @@ class SmsService {
 		$number = $this->cleanNumber($number);
 		$number = $this->addCountryPrefixIfMissing($number);
 		logNewMessage(LOG_DEBUG, 'SMS message for: ' . $number);
-		$provider->sendSms($message, $number, $apiKey, $apiToken, $accountId, $region, $from);
+		$provider->sendSms($message, $number, $apiKey, $apiToken, $accountId, $region, $from, $subject);
 	}
 
 	/**
@@ -195,6 +197,13 @@ interface SmsProvider {
 	public function usesRegion(): bool;
 
 	/**
+	 * Service uses a subject field.
+	 *
+	 * @return bool use subject
+	 */
+	public function usesSubject(): bool;
+
+	/**
 	 * Sends out an SMS.
 	 *
 	 * @param string $message message text
@@ -203,11 +212,12 @@ interface SmsProvider {
 	 * @param string|null $apiToken API token
 	 * @param string|null $accountId account ID
 	 * @param string|null $from from
+	 * @param string|null $subject subject text
 	 * @throws LAMException error sending SMS
 	 */
 	public function sendSms(string $message, string $number, ?string $apiKey = '',
 							?string $apiToken = '', ?string $accountId = '',
-							?string $region = '', ?string $from = ''): void;
+							?string $region = '', ?string $from = '', ?string $subject = ''): void;
 
 }
 

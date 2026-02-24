@@ -628,6 +628,7 @@ class Ajax {
 		$accountId = $_POST['accountId'];
 		$region = $_POST['region'];
 		$from = $_POST['from'];
+		$subject = $_POST['subject'];
 		$number = $_POST['number'];
 		if (empty($provider)) {
 			$result = ['error' => _('Unable to send SMS.')];
@@ -635,7 +636,7 @@ class Ajax {
 			return;
 		}
 		try {
-			sendSmsTestMessage($provider, $apiKey, $apiToken, $accountId, $region, $from, $number);
+			sendSmsTestMessage($provider, $apiKey, $apiToken, $accountId, $region, $from, $subject, $number);
 			$result = ['info' => _('The test SMS was sent successfully.')];
 			echo json_encode($result, JSON_THROW_ON_ERROR);
 		}

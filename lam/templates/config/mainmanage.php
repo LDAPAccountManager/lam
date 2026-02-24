@@ -427,6 +427,7 @@ if (isset($_POST['submitFormData'])) {
         $cfg->smsAccountId = $_POST['smsAccountId'];
         $cfg->smsRegion = $_POST['smsRegion'];
         $cfg->smsFrom = $_POST['smsFrom'];
+        $cfg->smsSubject = $_POST['smsSubject'];
         $cfg->smsDefaultCountryPrefix = $_POST['smsDefaultCountryPrefix'];
     }
 	$cfg->errorReporting = $_POST['errorReporting'];
@@ -753,7 +754,7 @@ if (isset($_POST['submitFormData'])) {
 			'-' => '',
 		];
         $smsOptionsToHide = [
-            '' => ['smsApiKey', 'smsApiToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsAttributes',
+            '' => ['smsApiKey', 'smsApiToken', 'smsAccountId', 'smsRegion', 'smsFrom', 'smsSubject', 'smsAttributes',
                 'smsDefaultCountryPrefix', 'btn_testSms']
         ];
 		$smsOptionsToShow = [];
@@ -791,6 +792,12 @@ if (isset($_POST['submitFormData'])) {
 			else {
 				$smsOptionsToHide[$provider->getId()][] = 'smsFrom';
 			}
+			if ($provider->usesSubject()) {
+				$smsOptionsToShow[$provider->getId()][] = 'smsSubject';
+			}
+			else {
+				$smsOptionsToHide[$provider->getId()][] = 'smsSubject';
+			}
         }
 		$selectedSmsProvider = empty($cfg->smsProvider) ? '' : $cfg->smsProvider;
 		$smsProviderSelect = new htmlResponsiveSelect('smsProvider', $smsProviderOptions, [$selectedSmsProvider], _('SMS provider'), '296');
@@ -803,6 +810,7 @@ if (isset($_POST['submitFormData'])) {
 		$row->add(new htmlResponsiveInputField(_('API key'), 'smsApiKey', $cfg->smsApiKey, '297'));
 		$row->add(new htmlResponsiveInputField(_('Token'), 'smsApiToken', $cfg->smsToken, '298'));
 		$row->add(new htmlResponsiveInputField(_('From'), 'smsFrom', $cfg->smsFrom, '299b'));
+		$row->add(new htmlResponsiveInputField(_('Subject text'), 'smsSubject', $cfg->smsSubject, '299d'));
 		$row->add(new htmlResponsiveInputField(_('Default country prefix'), 'smsDefaultCountryPrefix', $cfg->smsDefaultCountryPrefix, '299a'));
 		$row->add(new htmlResponsiveInputField(_("Mobile phone attributes"), 'smsAttributes', implode(';', $cfg->getSmsAttributes()), '299'));
         $smsTestButtonRow = new htmlResponsiveRow();

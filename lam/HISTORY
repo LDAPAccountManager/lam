@@ -7,6 +7,7 @@ March 2026 9.5
   -> Removed deprecated cron.sh and cronGlobal.sh (please use runCronJobs.sh) (519)
   -> White pages: removed login button for profiles that allow anonymous access (556)
   -> White pages: use first text column or title for default sorting, allow to specify custom sort field (557)
+  -> email2SMS: allow to specify subject text (465)
 
 
 13.12.2025 9.4
