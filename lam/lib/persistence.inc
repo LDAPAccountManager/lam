@@ -217,7 +217,7 @@ class ConfigDataExporter {
 	}
 
 	/**
-	 * Returns the content of the self service profiles.
+	 * Returns the content of the self-service profiles.
 	 *
 	 * @return array<string, array<string, array<string, string|int>>> data
 	 */
@@ -395,7 +395,7 @@ class ConfigDataImporter {
 					$steps[] = new ImporterStep(_('PDF structures') . ' - ' . _('Global templates'), 'pdfProfileTemplates', $value);
 					break;
 				case 'selfServiceProfiles':
-					$mainStep = new ImporterStep(_('Self service profiles'), 'selfServiceProfiles', $value);
+					$mainStep = new ImporterStep(_('Self-service profiles'), 'selfServiceProfiles', $value);
 					foreach ($value as $scope => $profiles) {
 						foreach ($profiles as $profileName => $profileData) {
 							$mainStep->addSubStep(new ImporterStep($profileName, 'selfServiceProfile_' . $scope . '__' . $profileName, $profileData));
@@ -670,7 +670,7 @@ class ConfigDataImporter {
 	}
 
 	/**
-	 * Imports the self service profiles.
+	 * Imports the self-service profiles.
 	 *
 	 * @param ImporterStep $step importer step
 	 * @throws LAMException error saving profiles
@@ -697,7 +697,7 @@ class ConfigDataImporter {
 			}
 		}
 		if (!empty($failedProfiles)) {
-			throw new LAMException(_('Unable to save self service profile.'), implode(', ', $failedProfiles));
+			throw new LAMException(_('Unable to save self-service profile.'), implode(', ', $failedProfiles));
 		}
 	}
 

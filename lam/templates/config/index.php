@@ -91,7 +91,7 @@ $content = new htmlResponsiveRow();
         $cfgLink->setCSSClasses(['lam-margin-large display-as-block']);
         $topContent->add($cfgLink);
         if (isLAMProVersion()) {
-        	$selfServiceLink = new htmlLink(_("Edit self service"), '../selfService/adminLogin.php', '../../graphics/people.svg');
+        	$selfServiceLink = new htmlLink(_("Edit self-service"), '../selfService/adminLogin.php', '../../graphics/people.svg');
         	$selfServiceLink->setCSSClasses(['lam-margin-large display-as-block']);
 	        $topContent->add($selfServiceLink);
         }

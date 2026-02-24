@@ -39,7 +39,7 @@ use function LAM\TYPES\getScopeFromTypeId;
  * @author Roland Gruber
  */
 
-/** self service functions */
+/** self-service functions */
 include_once(__DIR__ . "/selfService.inc");
 if (isLAMProVersion()) {
 	/** job interface */

@@ -2891,7 +2891,7 @@ class LAMCfgMain {
 	/** list of hosts which may access LAM */
 	public string $allowedHosts = "";
 
-	/** list of hosts which may access LAM Pro self service */
+	/** list of hosts which may access LAM Pro self-service */
 	public string $allowedHostsSelfService = '';
 
 	/** minimum length for passwords */

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>Module HowTo - Self service</title>
+<html><head><title>Module HowTo - Self-service</title>
 
 
 
@@ -7,23 +7,23 @@
   <link rel="stylesheet" type="text/css" href="style/layout.css">
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"></head><body>
 <div style="text-align: center;">
-<h1>Module HowTo - Self service<br>
+<h1>Module HowTo - Self-service<br>
 </h1>
 <div style="text-align: left;"><br>
-Self service is a LAM Pro feature. It allows your users to manage their own data (e.g. telephone numbers).<br>
+Self-service is a LAM Pro feature. It allows your users to manage their own data (e.g. telephone numbers).<br>
 <br>
 </div>
 <div style="text-align: left;">First you need to implement the function <span style="font-weight: bold;">getSelfServiceFields()</span> or use <span style="font-weight: bold;">meta['selfServiceFieldSettings']</span>. Each field
 has an ID and a descriptive name that will be displayed on the self
 service page.<br>
-Your input fields may also be defined as read-only in the self service
+Your input fields may also be defined as read-only in the self-service
 profile editor. If your fields supports read-only then use
 canSelfServiceFieldBeReadOnly() or <span style="font-weight: bold;">meta['selfServiceReadOnlyFields']</span>.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">inetOrgPerson</span> module
-provides lots of possible input fields for the self service.<br>
+provides lots of possible input fields for the self-service.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -61,7 +61,7 @@ _('Office name'), 'businessCategory' =&gt; _('Business category'),<br>
 _('Initials'), 'title' =&gt; _('Job title'), 'labeledURI' =&gt; _('Web
 site'),<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'userCertificate' =&gt; _('User certificates'));<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // possible self service read-only fields<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // possible self-service read-only fields<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
 &nbsp;$return['selfServiceReadOnlyFields'] = array('firstName',
 'lastName', 'mail', 'telephoneNumber', 'mobile', 'faxNumber', 'street',<br>
@@ -78,7 +78,7 @@ site'),<br>
 </table>
 <br>
 <br>
-In very rare cases you need to specify self service search attributes.
+In very rare cases you need to specify self-service search attributes.
 These are used to identify the user inside LDAP. Common examples are
 "uid" or "mail".<br>
 <br>
@@ -102,7 +102,7 @@ class<br>
 &nbsp;&nbsp;&nbsp; */<br>
 &nbsp;&nbsp;&nbsp;<span style="font-weight: bold;"> function</span>
 get_metaData() {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // self service search attributes<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // self-service search attributes<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
 &nbsp;$return['selfServiceSearchAttributes'] = array('uid', 'mail',
 'cn', 'surname', 'givenName', 'employeeNumber');<br>
@@ -257,9 +257,9 @@ $_POST['inetOrgPerson_firstName'];<br>
 </table>
 <br>
 <br>
-The self service also supports configuration settings for each module. See <span style="font-weight: bold;">getSelfServiceSettings() </span>or <span style="font-weight: bold;">meta['selfServiceSettings'] </span>to specify the options.<br>
+The self-service also supports configuration settings for each module. See <span style="font-weight: bold;">getSelfServiceSettings() </span>or <span style="font-weight: bold;">meta['selfServiceSettings'] </span>to specify the options.<br>
 You can validate the input with <span style="font-weight: bold;">checkSelfServiceSettings()</span>.<br>
-Self service configuration settings are displayed on a separate tab in the self service profile editor.<br>
+Self-service configuration settings are displayed on a separate tab in the self-service profile editor.<br>
 <br>
 <span style="font-weight: bold;"></span>
 <h2><span style="font-weight: bold;"></span></h2>

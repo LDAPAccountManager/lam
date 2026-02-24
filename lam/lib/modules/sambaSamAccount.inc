@@ -265,7 +265,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			'password' => _('Password'),
 			'sambaPwdLastSet' => _('Last password change (read-only)'),
 		];
-		// self service: fields that cannot be relabeled
+		// self-service: fields that cannot be relabeled
 		$return['selfServiceNoRelabelFields'] = ['syncNTPassword', 'syncSambaPwdLastSet'];
 		// help Entries
 		$return['help'] = [
@@ -2792,7 +2792,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * Returns if password history is enabled.
 	 *
-	 * @param array<string, string[]> $settings server profile or self service settings
+	 * @param array<string, string[]> $settings server profile or self-service settings
 	 * @return bool enabled
 	 */
 	public static function isPasswordHistoryEnabled($settings): bool {

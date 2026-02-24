@@ -64,9 +64,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/** @var array<string, bool> $emailCheckCache email cache */
 	private array $emailCheckCache = [];
 
-	/** session variable for existing user certificates in self service */
+	/** session variable for existing user certificates in self-service */
 	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
-	/** session variable for existing user certificates in self service */
+	/** session variable for existing user certificates in self-service */
 	const SESS_PHOTO = 'inetOrgPerson_jpegPhoto';
 
 	/**
@@ -155,9 +155,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			'sn', 'userpassword', 'description', 'homePhone', 'pager', 'roomNumber', 'businessCategory', 'l', 'st',
 			'physicalDeliveryOfficeName', 'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials',
 			'registeredAddress', 'labeledURI', 'ou', 'userCertificate;binary', 'INFO.userPasswordClearText'];
-		// self service search attributes
+		// self-service search attributes
 		$return['selfServiceSearchAttributes'] = ['uid', 'mail', 'cn', 'surname', 'givenName', 'employeeNumber'];
-		// self service field settings
+		// self-service field settings
 		$return['selfServiceFieldSettings'] = ['firstName' => _('First name'), 'lastName' => _('Last name'),
 			'mail' => _('Email address'), 'telephoneNumber' => _('Telephone number'), 'mobile' => _('Mobile number'),
 			'faxNumber' => _('Fax number'), 'street' => _('Street'), 'postalAddress' => _('Postal address'), 'registeredAddress' => _('Registered address'),
@@ -167,7 +167,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			'departmentNumber' => _('Department'), 'initials' => _('Initials'), 'title' => _('Job title'), 'labeledURI' => _('Web site'),
 			'userCertificate' => _('User certificates'), 'o' => _('Organisation'), 'ou' => _('Organisational unit'), 'description' => _('Description'),
 			'uid' => _('User name'), 'displayName' => _('Display name')];
-		// possible self service read-only fields
+		// possible self-service read-only fields
 		$return['selfServiceReadOnlyFields'] = ['firstName', 'lastName', 'mail', 'telephoneNumber', 'mobile', 'faxNumber', 'pager', 'street',
 			'postalAddress', 'registeredAddress', 'postalCode', 'postOfficeBox', 'jpegPhoto', 'homePhone', 'roomNumber', 'carLicense',
 			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI', 'userCertificate',
@@ -2839,7 +2839,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	}
 
 	/**
-	 * Renders the photo area for self service.
+	 * Renders the photo area for self-service.
 	 *
 	 * @param boolean $readOnly content is read-only
 	 * @param boolean $crop enable cropping

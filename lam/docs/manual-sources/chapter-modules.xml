@@ -1017,12 +1017,12 @@
 
       <para>LAM Pro allows your users to reset their passwords by answering a
       security question. The reset link is displayed on the <link
-      linkend="PasswordSelfReset">self service page</link>. Additionally, you
+      linkend="PasswordSelfReset">self-service page</link>. Additionally, you
       can set question + answer in the admin interface.</para>
 
-      <para>Please note that self service and LAM admin interface are
+      <para>Please note that self-service and LAM admin interface are
       separated functionalities. You need to specify the list of possible
-      security questions in both self service profile(s) and server
+      security questions in both self-service profile(s) and server
       profile(s).</para>
 
       <para><emphasis role="bold">Schema installation</emphasis></para>
@@ -1669,7 +1669,7 @@
       you can setup the printing options and add payments for this
       user.</para>
 
-      <para>For LAM Pro there are also self service fields to allow users e.g.
+      <para>For LAM Pro there are also self-service fields to allow users e.g.
       to view their current balance and job history.</para>
 
       <screenshot>
@@ -2261,12 +2261,12 @@ AuthorizedKeysCommandUser root</literallayout>
         <graphic fileref="images/mod_yubikey3.png"/>
       </screenshot>
 
-      <para><emphasis role="bold">Self Service (LAM Pro)</emphasis></para>
+      <para><emphasis role="bold">Self-service (LAM Pro)</emphasis></para>
 
       <para>This will allow your users to update their own keys.</para>
 
       <para>You need to configure the object class and attribute name first.
-      This is done on tab "Module settings" in self service profile.</para>
+      This is done on tab "Module settings" in self-service profile.</para>
 
       <para><emphasis role="bold">Attention: </emphasis>Please note that both
       fields are mandatory here. Even if you reused an attribute from some
@@ -2277,7 +2277,7 @@ AuthorizedKeysCommandUser root</literallayout>
         <graphic fileref="images/mod_yubikey5.png"/>
       </screenshot>
 
-      <para>Then add the YubiKey ids field to your self service profile on tab
+      <para>Then add the YubiKey ids field to your self-service profile on tab
       "Page layout".</para>
 
       <screenshot>
@@ -6053,7 +6053,7 @@ OK (10 msec)</programlisting>
     value.</para>
 
     <para>You can specify a mapping of LDAP attribute values and their display
-    (label) on the Self Service page. To add more mapping fields please press
+    (label) on the Self-service page. To add more mapping fields please press
     "Add more mapping fields".</para>
 
     <screenshot>
@@ -6179,7 +6179,7 @@ OK (10 msec)</programlisting>
     (1.3.6.1.4.1.1466.115.121.1.24).</para>
 
     <para>LAM can convert the displayed value to the configured time zone of
-    your server/self service profile. In this case, please activate "Display
+    your server/self-service profile. In this case, please activate "Display
     in local time".</para>
 
     <para><screenshot>
@@ -6518,7 +6518,7 @@ OK (10 msec)</programlisting>
 
       <listitem>
         <para><emphasis role="bold">$INFO.lamProfileName$:</emphasis> the
-        current server or self service profile name</para>
+        current server or self-service profile name</para>
       </listitem>
 
       <listitem>

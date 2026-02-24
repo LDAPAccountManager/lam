@@ -36,7 +36,7 @@ include_once(__DIR__ . "/../../lib/security.inc");
 
 // start session
 if (isset($_GET['selfservice'])) {
-	// self service uses a different session name
+	// self-service uses a different session name
 	session_name('SELFSERVICE');
 }
 

@@ -404,7 +404,7 @@ abstract class baseModule {
 	 * <li><b>{@link getSelfServiceFields()}</b><br>
 	 * <br>
 	 * <b>Key:</b> selfServiceFieldSettings<br>
-	 * <b>Value:</b> array of self service fields<br>
+	 * <b>Value:</b> array of self-service fields<br>
 	 * <br>
 	 * <b>Example:</b> "selfServiceFieldSettings" => array('pwd' => 'Password')
 	 * <br><br>
@@ -1736,7 +1736,7 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Adds a simple text input field for the self service.
+	 * Adds a simple text input field for the self-service.
 	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 *
 	 * @param array<string, htmlResponsiveRow> $container array that is used as return value for getSelfServiceOptions()
@@ -1783,7 +1783,7 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Checks the input value of a self service text field.
+	 * Checks the input value of a self-service text field.
 	 * The field name must be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
 	 *
@@ -1823,7 +1823,7 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Adds a simple text input field for the self service.
+	 * Adds a simple text input field for the self-service.
 	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 *
 	 * @param array<string, htmlResponsiveRow> $container array that is used as return value for getSelfServiceOptions()
@@ -1906,7 +1906,7 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Checks the input value of a self service multi-value text field.
+	 * Checks the input value of a self-service multi-value text field.
 	 * The field name must be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
 	 *
@@ -2139,7 +2139,7 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Returns a list of self service configuration settings.
+	 * Returns a list of self-service configuration settings.
 	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	 * <br>
@@ -2286,7 +2286,7 @@ abstract class baseModule {
 	/**
 	 * Specifies if this module supports the LAM admin interface.
 	 * The LAM admin interface are the pages that allow to manage e.g. users and groups.
-	 * In contrast there is also the LAM self service interface. Most modules support
+	 * In contrast there is also the LAM self-service interface. Most modules support
 	 * the admin interface.
 	 *
 	 * @return boolean support admin interface

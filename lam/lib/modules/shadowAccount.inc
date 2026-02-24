@@ -263,7 +263,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 				'example' => '17-07-2011'
 			]
 		];
-		// self service fields
+		// self-service fields
 		$return['selfServiceFieldSettings'] = [
 			'shadowLastChange' => _('Last password change (read-only)'),
 			'shadowExpire' => _('Account expiration date (read-only)')

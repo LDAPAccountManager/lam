@@ -2,7 +2,7 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <chapter id="a_selfService">
-  <title>Self service (LAM Pro)</title>
+  <title>Self-service (LAM Pro)</title>
 
   <section>
     <title>Preparations</title>
@@ -63,13 +63,13 @@
   </section>
 
   <section>
-    <title>Creating a self service profile</title>
+    <title>Creating a self-service profile</title>
 
-    <para>A self service profile defines what input fields your users see and
+    <para>A self-service profile defines what input fields your users see and
     some other general settings like the login caption.</para>
 
     <para>When you go to the LAM configuration page you will see the self
-    service link at the bottom. This will lead you to the self service
+    service link at the bottom. This will lead you to the self-service
     configuration pages</para>
 
     <screenshot>
@@ -80,8 +80,8 @@
       </mediaobject>
     </screenshot>
 
-    <para>Now we need to create a new self service profile. Click on the link
-    to manage the self service profiles.</para>
+    <para>Now we need to create a new self-service profile. Click on the link
+    to manage the self-service profiles.</para>
 
     <screenshot>
       <mediaobject>
@@ -179,7 +179,7 @@
               <entry>Use for all operations</entry>
 
               <entry>By default LAM will use the credentials of the user that
-              logged in to self service for read/modify operations. If you
+              logged in to self-service for read/modify operations. If you
               select this box then the connection user specified before will
               be used instead. Please note that this can be a security risk
               because the user requires write access to all users. You need to
@@ -191,7 +191,7 @@
 
               <entry>Use this to enter an additional LDAP filter (e.g.
               "(objectClass=passwordSelfReset)") to reduce the number of
-              accounts who may use self service.</entry>
+              accounts who may use self-service.</entry>
             </row>
 
             <row>
@@ -268,21 +268,21 @@
             <row>
               <entry>Main page caption</entry>
 
-              <entry>This text is displayed on the self service main page
+              <entry>This text is displayed on the self-service main page
               where your users change their data.</entry>
             </row>
 
             <row>
               <entry>Main page footer</entry>
 
-              <entry>This text is displayed as footer on the self service main
+              <entry>This text is displayed as footer on the self-service main
               page where your users change their data.</entry>
             </row>
 
             <row>
               <entry>Page header</entry>
 
-              <entry>This HTML code will be placed on top of all self service
+              <entry>This HTML code will be placed on top of all self-service
               pages. E.g. you can use this to place your custom logo. Any HTML
               code is permitted.</entry>
             </row>
@@ -298,7 +298,7 @@
               <entry>Additional CSS links</entry>
 
               <entry>Here you can specify additional CSS links to change the
-              layout of the self service pages. This is useful to adapt them
+              layout of the self-service pages. This is useful to adapt them
               to your corporate design. Please enter one link per
               line.</entry>
             </row>
@@ -425,7 +425,7 @@
 
         <para>You need to provide a fixed user name.</para>
 
-        <para>Self service requires a SSH connection with SSH key. Please
+        <para>Self-service requires a SSH connection with SSH key. Please
         generate a SSH key pair and provide the location to the <emphasis
         role="bold">private</emphasis> key file. If the key is protected by a
         password you can also specify it here.</para>
@@ -452,7 +452,7 @@
 
       <para>You may also set some fields as read-only for your users. This can
       be done by clicking on the lock symbol. Read-only fields can be used to
-      show your users additional data on the self service page that must not
+      show your users additional data on the self-service page that must not
       be changed by themselves (e.g. first/last name).</para>
 
       <para>Sometimes, you may want to set a custom label for an input field.
@@ -470,11 +470,11 @@
       <para id="selfservice_fields"><emphasis role="bold">Possible input
       fields</emphasis></para>
 
-      <para>This is a list of input fields you may add to the self service
+      <para>This is a list of input fields you may add to the self-service
       page.</para>
 
       <table>
-        <title>Self service fields</title>
+        <title>Self-service fields</title>
 
         <tgroup cols="3">
           <tbody>
@@ -1133,8 +1133,8 @@
         </listitem>
 
         <listitem>
-          <para>Self service login attribute: same as configured on first tab
-          of self service profile</para>
+          <para>Self-service login attribute: same as configured on first tab
+          of self-service profile</para>
         </listitem>
 
         <listitem>
@@ -1152,9 +1152,9 @@
 
       <para>You can now configure the minimum answer length for password reset
       answers. This is checked when you allow you users to specify their
-      answers via the self service. Additionally, you can specify the text of
+      answers via the self-service. Additionally, you can specify the text of
       the password reset link (default: "Forgot password?"). The link is
-      displayed below the password field on the self service login
+      displayed below the password field on the self-service login
       page.</para>
 
       <para>Next, please enter the DN and password of an LDAP entry that is
@@ -1168,9 +1168,9 @@
       <para>Please also specify the list of password reset questions that the
       user can choose.</para>
 
-      <para>Please note that self service and LAM admin interface are
+      <para>Please note that self-service and LAM admin interface are
       separated functionalities. You need to specify the list of possible
-      security questions in both self service profile(s) and server
+      security questions in both self-service profile(s) and server
       profile(s).</para>
 
       <literallayout> </literallayout>
@@ -1244,7 +1244,7 @@
       reason is logged on notice level.</para>
 
       <para>2. You do not see security question and answer fields when logged
-      into self service.</para>
+      into self-service.</para>
 
       <para>Probably, the user does not have the object class
       "passwordSelfReset" set. You can do this in admin interface. If you have
@@ -1252,10 +1252,10 @@
       linkend="toolMultiEdit">Multi Edit Tool</link> to add the object
       class.</para>
 
-      <para><emphasis role="bold">New fields for self service
+      <para><emphasis role="bold">New fields for self-service
       page</emphasis></para>
 
-      <para>There are special fields that you may put on the self service page
+      <para>There are special fields that you may put on the self-service page
       for your users. These fields allow them to change the reset questions
       and its answers. It is also possible to set a backup email address to
       reset passwords with an external email address.</para>
@@ -1282,7 +1282,7 @@
       <para><emphasis role="bold">Password reset link</emphasis></para>
 
       <para>After activating the password self reset feature there will be a
-      new link on the self service login page. The text can be configured as
+      new link on the self-service login page. The text can be configured as
       described above (default: "Forgot password?").</para>
 
       <screenshot>
@@ -1359,12 +1359,12 @@
       <title>User self registration</title>
 
       <para>With LAM Pro your users can create their own accounts if you like.
-      LAM Pro will display an additional link on the self service login page
+      LAM Pro will display an additional link on the self-service login page
       that allows you users to create a new account including email validation
       (see <link linkend="mailSetup">here</link> for setting up your SMTP
       server).</para>
 
-      <para>You enable this feature in your self service profile. Just
+      <para>You enable this feature in your self-service profile. Just
       activate the checkbox "Enable self registration link".</para>
 
       <screenshot>
@@ -1383,7 +1383,7 @@
 
       <para><emphasis>Admin DN and password:</emphasis> Please enter the LDAP
       DN and its password that should be used to create new users. This DN
-      also needs to be able to do LDAP searches by uid in the self service
+      also needs to be able to do LDAP searches by uid in the self-service
       part of your LDAP tree.</para>
 
       <para><emphasis>Object classes:</emphasis> This is a list of object
@@ -1546,7 +1546,7 @@
 </literallayout>
 
       <para>Please note that only simple input boxes are supported for account
-      registration. The user may log in to self service when his account was
+      registration. The user may log in to self-service when his account was
       created to manage all his attributes.</para>
 
       <literallayout>
@@ -1596,7 +1596,7 @@
 
       <para><emphasis role="bold">User view:</emphasis></para>
 
-      <para>The user can register by clicking on a link on the self service
+      <para>The user can register by clicking on a link on the self-service
       login page:</para>
 
       <screenshot>
@@ -1607,7 +1607,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Here he can insert the data that you specified in the self service
+      <para>Here he can insert the data that you specified in the self-service
       profile:</para>
 
       <screenshot>
@@ -1620,7 +1620,7 @@
 
       <para>LAM will then send him an email with a validation link that is
       valid for 24 hours. When he clicks on this link then the account will be
-      created in the self service user suffix. The DN will look like this:
+      created in the self-service user suffix. The DN will look like this:
       <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
     </section>
 
@@ -1673,7 +1673,7 @@
 
       <para>Use the wildcard $$requested_type$$ in owner emails to get the
       request type (Member/Owner). The request type label is replaced in the
-      language of the requester's self service session.</para>
+      language of the requester's self-service session.</para>
 
       <para>The wildcard $$requester_notes$$ resolves to the requester's
       optional notes. This is available for the mails to the group
@@ -1705,7 +1705,7 @@
   Approve all: $$approveLink$$
   Deny all: $$rejectLink$$
 
-  Please check here (link to self service) for details.
+  Please check here (link to self-service) for details.
 
   Best regards,
   IT team
@@ -1725,7 +1725,7 @@
   Approve all: $$approveLink$$
   Deny all: $$rejectLink$$
 
-  Please check here (link to self service) for details.
+  Please check here (link to self-service) for details.
 
   Best regards,
   IT team
@@ -1848,7 +1848,7 @@
       <para><emphasis role="bold">Owner/approver view</emphasis></para>
 
       <para>Once the request is created, all owners of the respective groups
-      get an email notification. They can then enter self service and view
+      get an email notification. They can then enter self-service and view
       their open requests.</para>
 
       <para>If an approver group is configured then its members will get an
@@ -1916,7 +1916,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>To create custom fields for the Self Service please edit your Self
+      <para>To create custom fields for the Self-service please edit your Self
       Service profile and switch to tab "Module settings". Here you can add a
       new field. Simply fill the fields and press on "Add".</para>
 
@@ -1983,7 +1983,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation in Self-service:</para>
 
       <screenshot>
         <mediaobject>
@@ -2007,7 +2007,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation in Self-service:</para>
 
       <screenshot>
         <mediaobject>
@@ -2036,7 +2036,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation in Self-service:</para>
 
       <screenshot>
         <mediaobject>
@@ -2061,7 +2061,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation in Self-service:</para>
 
       <screenshot>
         <mediaobject>
@@ -2077,7 +2077,7 @@
       one value.</para>
 
       <para>You can specify a mapping of LDAP attribute values and their
-      display (label) on the Self Service page. To add more mapping fields
+      display (label) on the Self-service page. To add more mapping fields
       please press "Add more mapping fields".</para>
 
       <screenshot>
@@ -2088,7 +2088,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation in Self-service:</para>
 
       <screenshot>
         <mediaobject>
@@ -2114,7 +2114,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Presentation in Self Service:</para>
+      <para>Presentation in Self-service:</para>
 
       <screenshot>
         <mediaobject>
@@ -2203,7 +2203,7 @@
       (1.3.6.1.4.1.1466.115.121.1.24).</para>
 
       <para>LAM can convert the displayed value to the configured time zone of
-      your server/self service profile. In this case, please activate "Display
+      your server/self-service profile. In this case, please activate "Display
       in local time".</para>
 
       <para><screenshot>
@@ -2395,7 +2395,7 @@
 
       <para>On page layout tab you can then add the fields for serial number
       (optional) and the token. Users will then be able to manage their token
-      via self service.</para>
+      via self-service.</para>
 
       <screenshot>
         <graphic fileref="images/mod_openldapTotp4.png"/>
@@ -2411,10 +2411,10 @@
   </section>
 
   <section>
-    <title>Adapt the self service to your corporate design</title>
+    <title>Adapt the self-service to your corporate design</title>
 
     <para>LAM Pro allows you to integrate customs CSS style definitions and
-    design the header of all self service pages. This way you can integrate
+    design the header of all self-service pages. This way you can integrate
     you own logo and use your company's colors.</para>
 
     <section>

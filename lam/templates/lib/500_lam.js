@@ -2246,7 +2246,7 @@ window.lam.webauthn.removeDevice = function(event) {
  * Removes a user's own webauthn device.
  *
  * @param event click event
- * @param isSelfService run in self service or admin context
+ * @param isSelfService run in self-service or admin context
  */
 window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
 	event.preventDefault();
@@ -2277,7 +2277,7 @@ window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
  * @param element delete button
  * @param action action for request (delete|deleteOwn)
  * @param successCallback callback if all was fine (optional)
- * @param isSelfService run in self service or admin context
+ * @param isSelfService run in self-service or admin context
  */
 window.lam.webauthn.removeDeviceDialog = function(element, action, successCallback, isSelfService) {
 	const dialogTitle = element.dataset.dialogtitle;
@@ -2305,7 +2305,7 @@ window.lam.webauthn.removeDeviceDialog = function(element, action, successCallba
  * @param element button element
  * @param action action (delete|deleteOwn)
  * @param successCallback callback if all was fine (optional)
- * @param isSelfService run in self service or admin context
+ * @param isSelfService run in self-service or admin context
  */
 window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successCallback, isSelfService) {
 	const dn = element.dataset.dn;
@@ -2379,7 +2379,7 @@ window.lam.webauthn.updateOwnDeviceName = function(event) {
  * Registers a user's own webauthn device.
  *
  * @param event click event
- * @param isSelfService runs in self service context
+ * @param isSelfService runs in self-service context
  */
 window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 	event.preventDefault();

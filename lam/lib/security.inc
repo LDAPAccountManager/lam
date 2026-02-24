@@ -163,7 +163,7 @@ function checkClientIP(): void {
 	if (($url !== null) &&
 		((str_contains($url, '/selfService/selfService'))
 			|| ((str_contains($url, '/misc/ajax.php?')) && str_contains($url, 'selfservice=1')))) {
-		// self service pages have separate IP list
+		// self-service pages have separate IP list
 		$allowedHosts = $cfg->allowedHostsSelfService;
 	}
 	// skip test if no hosts are defined
@@ -206,7 +206,7 @@ function logoffAndBackToLoginPage(): void {
 		@$_SESSION["ldap"]->destroy();
 	}
 	elseif (isset($_SESSION['selfService_clientDN']) || (str_contains($_SERVER['REQUEST_URI'], '/selfService/'))) {
-		logNewMessage(LOG_WARNING, 'Self service session of DN ' . lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService') . ' expired.');
+		logNewMessage(LOG_WARNING, 'Self-service session of DN ' . lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService') . ' expired.');
 	}
 	// delete key and iv in cookie
 	$cookieOptions = lamDefaultCookieOptions();

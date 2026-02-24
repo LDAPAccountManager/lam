@@ -117,7 +117,7 @@
       access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
       or with the "*" wildcard (e.g. 123.123.123.*). Users which try to access
       LAM via an untrusted IP only get blank pages. There is a separate field
-      for LAM Pro self service.</para>
+      for LAM Pro self-service.</para>
 
       <screenshot>
         <mediaobject>
@@ -167,7 +167,7 @@
 
       <para>This allows you to specify a central password policy for LAM. The
       policy is valid for all password fields inside LAM admin (excluding tree
-      view) and LAM self service. Configuration passwords do not need to
+      view) and LAM self-service. Configuration passwords do not need to
       follow this policy.</para>
 
       <screenshot>
@@ -430,7 +430,7 @@
 
       <para>Note: You cannot add any device here. This can only be done by the
       user during login, <link linkend="tool_webauthn">webauthn tool</link> or
-      self service.</para>
+      self-service.</para>
 
       <para><screenshot>
           <mediaobject>

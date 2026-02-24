@@ -60,7 +60,7 @@ March 2026 9.5
   -> Unix users: support to create a group with same name for rfc2307bis (404)
  - Fixed bugs:
   -> Ambiguous tooltip on profile editor for Shadow users (394)
-  -> Self service photo file enhancements (396)
+  -> Self-service photo file enhancements (396)
   -> Tree view: delete does not work in French (406)
   -> Cron job mails: show all values for multi-value attribute wildcards (411)
 
@@ -90,7 +90,7 @@ March 2026 9.5
  - Windows user: support for room number and personal title (needs to be activated in module settings) (343, 344)
  - Usability improvements (354)
  - LAM Pro:
-  -> Custom scripts: added wildcard for server/self service profile name (325)
+  -> Custom scripts: added wildcard for server/self-service profile name (325)
   -> Self registration: added option to generate password
   -> Request access: allow to define an expiration time for memberships/ownerships (284)
   -> Request access: support additional group next to owners (300)
@@ -123,21 +123,21 @@ March 2026 9.5
   -> Cron job to deactivate inactive accounts based on lastBind overlay data (265)
   -> Request access: support Windows groups (266)
   -> Request access: usability improvements (278, 279)
-  -> Self service: passwordless SSO login supported for Okta and OpenID
+  -> Self-service: passwordless SSO login supported for Okta and OpenID
  - Fixed bugs:
   -> Security fix: Log file handling (GHSA-fm9w-7m7v-wxqv)
   -> User self registration creates accounts only with SSHA hash (287)
   -> PHP error when no FreeRadius profiles were found (302)
   -> PHP notices (303)
-  -> Self service reports "Password is too young to change" (305)
-  -> Self service password reset does not set "shadowLastChange" when not set before (306)
+  -> Self-service reports "Password is too young to change" (305)
+  -> Self-service password reset does not set "shadowLastChange" when not set before (306)
 
 
 18.12.2023 8.6
  - LAM requires PHP 8.0.2 or later
  - Docker: upgrade to Debian 12
  - LAM Pro:
-  -> Request access: new module to allow users to request group memberships via self service
+  -> Request access: new module to allow users to request group memberships via self-service
   -> Custom scripts: support to specify the subtype of an account
   -> Custom fields: Display groups in server profile as accordion (236)
   -> PPolicy and Shadow cron jobs for password expiration notification: added option to ignore expiration warning time
@@ -177,7 +177,7 @@ March 2026 9.5
   - Windows users: display name can be hidden in server profile
   - LDAP export: sort entries by DN
   - Security: you can hide login error details in LAM's main configuration
-  - 2 factor authentication: allow to remember device (must be activated in server/self service profile)
+  - 2 factor authentication: allow to remember device (must be activated in server/self-service profile)
   - RPM package cleanup
   - LAM Pro:
    -> Custom scripts: new wildcard INFO.lamLoginDn for current user
@@ -195,7 +195,7 @@ March 2026 9.5
   - DHCP: added "authoritative" option and extra DHCP options + statements
   - LAM Pro:
    -> Group of (unique) names/members, Apache Guacamole: support "seeAlso" attribute (hidden by default in server profile)
-   -> Windows: self service: users with expired passwords or forced password change can update their password (requires bind user to be used for all operations)
+   -> Windows: self-service: users with expired passwords or forced password change can update their password (requires bind user to be used for all operations)
 
 
 22.09.2022 8.1
@@ -207,10 +207,10 @@ March 2026 9.5
    -> Group of Names: save last selected account type for new members/owners (170)
   - Fixed bugs:
    -> PHP 8.1 does not show proper error message when login failed with LDAP search method
-   -> Self service issues on PHP 8.1 (181)
+   -> Self-service issues on PHP 8.1 (181)
    -> Custom Fields: switch to Custom Fields tab was required to save an entry (258)
    -> Group of unique names/members shared same configuration settings with group of names
-   -> Shadow last password change not updated during self service password change
+   -> Shadow last password change not updated during self-service password change
 
 
 29.06.2022 8.0.1
@@ -256,7 +256,7 @@ March 2026 9.5
    -> Support multiple TO addresses for license expiration email
    -> Custom scripts: $INFO.debug$ wildcard prints all possible wildcards and their values
    -> Custom scripts: extra INFO wildcards for password change options
-   -> Configuration import: allow to select self service profiles to import (168)
+   -> Configuration import: allow to select self-service profiles to import (168)
   - Fixed bugs:
    -> Tree view: check session expiration
 
@@ -322,8 +322,8 @@ March 2026 9.5
    -> Self registration: support custom mail attributes and mail from constant value (149)
    -> Self registration: evaluate autorange at account creation (154)
    -> MIT Kerberos: check Kerberos password policy on password change, better error handling
-   -> Self Service: new field to show user's quota values
-   -> Self Service: allow to create Unix home directory during registration
+   -> Self-service: new field to show user's quota values
+   -> Self-service: allow to create Unix home directory during registration
    -> Custom type: allow for user/group/host to be able to reuse existing modules
 
 
@@ -331,7 +331,7 @@ March 2026 9.5
   - Argond2id support for password hashes (requires PHP 7.3) (113)
   - 2-factor authentication:
    -> Support for Okta
-   -> WebAuthn devices can be named in Self Service and WebAuthn tool
+   -> WebAuthn devices can be named in Self-service and WebAuthn tool
   - LAM Pro:
    -> MIT Kerberos policies support
    -> User self registration: added admin approval option and info mail for user after creation
@@ -358,7 +358,7 @@ March 2026 9.5
    -> EMail sending can be done via SMTP without local mail server
    -> License expiration warning can be sent via email or disabled
   - Fixed bugs:
-   -> Captcha don't show anymore in Self Service login page (213)
+   -> Captcha don't show anymore in Self-service login page (213)
    -> Unix memberships cannot be changed. This issue can also affect other membership relations.
    -> Missing locales on Docker image
 
@@ -395,7 +395,7 @@ March 2026 9.5
    -> Duo support
    -> user name attribute for privacyIDEA can be specified
   - LAM Pro:
-   -> New self service settings for login and main page footer
+   -> New self-service settings for login and main page footer
    -> Custom fields: custom labels for LDAP search select list
   - Fixed bugs:
    -> Configuration issue with Unix user/host module (206)
@@ -408,7 +408,7 @@ March 2026 9.5
   - Unix: password management can be disabled in module settings
   - LAM Pro:
    -> Bind DLZ: entry table can show record data (use special attribute "#records" in server profile)
-   -> Self service: support legacy attribute "email" for password self reset and user self registration
+   -> Self-service: support legacy attribute "email" for password self reset and user self registration
   - Fixed bugs:
    -> Users: No drop-down filter box for account status (200)
    -> Custom fields: Account type "Groups" not saving/deleting fields (66)
@@ -420,12 +420,12 @@ March 2026 9.5
   - PHP 7.3 support
   - LAM Pro:
    -> Allow to mark text and text area fields as required
-   -> New self service fields:
+   -> New self-service fields:
     -> Mail routing
     -> Windows proxy addresses + mail alias
     -> Shadow account expiration date
     -> Unix and group of names memberships
-   -> Base URL for emails in self service can be configured in self service profile
+   -> Base URL for emails in self-service can be configured in self-service profile
    -> Bind DLZ: support DNAME+XFR records and descriptions in records (requires latest LDAP schema)
    -> Cron jobs: added Shadow account expiration notification job
   - Fixed bugs:
@@ -439,7 +439,7 @@ March 2026 9.5
     -> Manage "departmentNumber" (needs to be activated via LAM server profile)
     -> Sync group memberships from Unix and group of names
   - LAM Pro:
-    -> Easy setting of background color in self service profile
+    -> Easy setting of background color in self-service profile
     -> Cron jobs: added Windows/Qmail/FreeRadius account expiration notification jobs
     -> Bind DLZ: usability improvements and small fixes
 
@@ -481,7 +481,7 @@ March 2026 9.5
   - LAM Pro:
    -> Support custom structural object classes with new custom type
    -> Support dynamic lists
-   -> Self service login and password self reset can be secured with captcha
+   -> Self-service login and password self reset can be secured with captcha
 
 
 04.02.2018 6.2.1
@@ -531,7 +531,7 @@ March 2026 9.5
 
 
 15.03.2017 5.7
-  - 2-factor authentication for admin login and self service with privacyIDEA
+  - 2-factor authentication for admin login and self-service with privacyIDEA
   - PDF files use DejaVu serif font for better readability and more supported characters (e.g. Cyrillic)
   - Windows users: the department option now uses attribute "department" instead of "departmentNumber"
   - Updated Debian dependencies
@@ -569,7 +569,7 @@ March 2026 9.5
    -> New module for 389ds unlocking and account (de)activation
    -> Self registration: support for Google reCAPTCHA
    -> Password notification jobs support CC and BCC
-   -> Self Service: Samba 3 supports password history and minimum age check
+   -> Self-service: Samba 3 supports password history and minimum age check
 
 
 21.03.2016 5.3
@@ -600,7 +600,7 @@ March 2026 9.5
   - IMAP: allow to specify initial folders to create
   - LAM Pro:
    -> Users: allow to manage IP addresses with ipHost module
-   -> Self Service: added time zone setting in self service profile
+   -> Self-service: added time zone setting in self-service profile
    -> Shadow: added job to notify before Shadow password expires
    -> Windows: added job to notify before Windows password expires
 
@@ -609,7 +609,7 @@ March 2026 9.5
   - IMAP: support Windows users
   - SSH public key: check uploaded files if in right format
   - LAM Pro:
-   -> Self Service optimized also for mobile devices
+   -> Self-service optimized also for mobile devices
    -> MySQL support for cron jobs
    -> Self registration: support auto-numbering for attributes (e.g. to create Unix accounts)
 
@@ -639,12 +639,12 @@ March 2026 9.5
   - PDF export: added option to print primary group members
   - Use HTTP_X_REAL_IP/HTTP_X_FORWARDED_FOR to log IP addresses (RFE 120)
   - LAM Pro:
-   -> Personal: support image file size limit and cropping (requires php-imagick) in self service
+   -> Personal: support image file size limit and cropping (requires php-imagick) in self-service
    -> Password self reset: allow to enter custom security questions (RFE 115)
    -> Unix groups (rfc2307bis): allow to sync members from group of (unique) names (RFE 116)
-   -> Self Service: support password change with old password (requires PHP >= 5.4.26)
+   -> Self-service: support password change with old password (requires PHP >= 5.4.26)
   - Fixed bugs:
-   -> Self Service shows password reuse error after password change was required
+   -> Self-service shows password reuse error after password change was required
 
 
 16.12.2014 4.8
@@ -652,7 +652,7 @@ March 2026 9.5
   - FreeRadius: support dialupAccess and radiusProfileDn
   - Usability improvements
   - LAM Pro:
-   -> Self service: added option if referrals should be followed
+   -> Self-service: added option if referrals should be followed
   - fixed bugs:
    -> missing LDAP_DEREF_NEVER in some cases (169)
 
@@ -691,9 +691,9 @@ March 2026 9.5
   - LAM Pro:
    -> Allow to set single account types read-only
    -> Support for organizationalRole entries
-   -> Separate IP restriction list for self service
+   -> Separate IP restriction list for self-service
    -> Bind DLZ: support TXT/SRV records
-   -> Self Service: added language selection
+   -> Self-service: added language selection
    -> Password self reset: support backup email address
    -> Custom fields: support help texts
    -> Support for Oracle databases (orclNetService) (RFE 104)
@@ -714,10 +714,10 @@ March 2026 9.5
   - Added Turkish, Ukrainian and US English translation
   - LAM Pro:
    -> Bind DLZ support
-   -> Samba/Shadow: display password change date in self service
+   -> Samba/Shadow: display password change date in self-service
    -> Custom fields: support custom label and icon, auto-completion
    -> User self registration: support constant attribute values
-   -> Self service: allow to set custom field labels
+   -> Self-service: allow to set custom field labels
   - Fixed bugs:
    -> Format of photo in Personal tab (158)
 
@@ -727,7 +727,7 @@ March 2026 9.5
   - Unix user and group support for Samba 4
   - Samba 3 groups: support local members
   - Kolab: support group accounts and allowed senders/receivers for users
-  - SSH public key: support file upload and self service enhancements (RFE 101)
+  - SSH public key: support file upload and self-service enhancements (RFE 101)
   - DHCP: support more options (RFE 99)
   - LAM Pro:
    -> PPolicy: check password history for password reuse
@@ -790,7 +790,7 @@ March 2026 9.5
   - Puppet support
   - LAM Pro
    -> support RFC2307bis automount entries
-   -> read-only fields in self service
+   -> read-only fields in self-service
   - fixed bugs
    -> Hidden tools are still shown on the "Tools" page (3546092)
 
@@ -799,8 +799,8 @@ March 2026 9.5
   - quick (un)lock for users
   - allow to disable tools
   - LAM Pro:
-   -> Custom fields module allows to manage custom LDAP attributes in Self Service
-   -> Self service now supports user self registration
+   -> Custom fields module allows to manage custom LDAP attributes in Self-service
+   -> Self-service now supports user self registration
    -> Separate group of names module for users allows to manage memberships if Unix module is not used (RFE 3504429)
    -> Named object module for groups (used for rfc2307bis schema)
    -> Password change page allows account (un)locking
@@ -830,7 +830,7 @@ March 2026 9.5
    -> Profile loading not possible if required fields are not filled (3444948)
    -> Tree view: unable to add object class (3446037)
    -> Edit page: unable to move accounts to different OU
-   -> Self Service: support forced password changes (PPolicy) (3483907)
+   -> Self-service: support forced password changes (PPolicy) (3483907)
    -> XSS security patch (3496624)
 
 
@@ -839,7 +839,7 @@ March 2026 9.5
 
 
 22.11.2011 3.6
-  - support HTTP authentication for admin pages and self service
+  - support HTTP authentication for admin pages and self-service
   - new modules
    -> authorizedServiceObject
    -> FreeRadius
@@ -905,14 +905,14 @@ March 2026 9.5
    -> Zarafa support (user, group, server)
    -> Password policy: allow to force password change (RFE 3026940)
    -> Password reset page: mail subject, text and from address can be set in server profile
-   -> Self service: Asterisk (voicemail) password synchronisation
+   -> Self-service: Asterisk (voicemail) password synchronisation
   - Fixed bugs:
    -> Email check did not include "+" (3033605)
    -> Tab index on login page (3042622)
 
 
 04.07.2010 3.1.1
-  - LAM Pro: fix for user self service
+  - LAM Pro: fix for user self-service
 
 
 25.06.2010 3.1.0
@@ -954,7 +954,7 @@ March 2026 9.5
   - consolidated LAM documentation in new manual (docs/manual/index.html)
 	- DHCP: add host name to fixed IPs (RFE 2898948)
 	- LAM Pro:
-	 -> enabled custom scripts for self service
+	 -> enabled custom scripts for self-service
 	 -> support for nisObject object class
   - fixed bugs:
 	 -> unable to edit accounts with DNs that contain spaces next to a comma (2889473)
@@ -991,7 +991,7 @@ March 2026 9.5
   - added config option to search LAM login users in LDAP (RFE 2494249)
   - help messages are displayed as tooltips
   - LAM Pro:
-   -> add businessCategory to self service (RFE 2494246)
+   -> add businessCategory to self-service (RFE 2494246)
    -> allow to customize page headers and use custom CSS styles
 
 
@@ -1003,13 +1003,13 @@ March 2026 9.5
   - Kolab:
    -> account extension is now optional
    -> can be used without Unix module
-   -> self service uses no extra LDAP suffix but uses global setting
+   -> self-service uses no extra LDAP suffix but uses global setting
   - DHCP:
    -> several bugfixes
    -> added PDF support
    -> support multiple Netbios name servers (RFE 2180179)
   - Samba 3:
-   -> self service sets attribute "sambaPwdLastSet" on password change (LAM Pro)
+   -> self-service sets attribute "sambaPwdLastSet" on password change (LAM Pro)
    -> password timestamps can be updated on password reset page (LAM Pro)
    -> option to force password change on next login
    -> profile options for time when the user can/must change the password
@@ -1036,7 +1036,7 @@ March 2026 9.5
   - redesigned PDF editor
   - show mail addresses as link in account list
   - Unix: allow primary group members to be added as memberUid
-  - Kolab: support LAM Pro self service
+  - Kolab: support LAM Pro self-service
   - LAM Pro: new account type for groupOf(Unique)Names
   - fixed bugs:
    -> XHTML headers should be removed (1912736)

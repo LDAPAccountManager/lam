@@ -14,7 +14,7 @@
       <listitem>
         <para><emphasis role="bold">master configuration password:</emphasis>
         needed to change general settings, create/delete server profiles and
-        self service profiles</para>
+        self-service profiles</para>
       </listitem>
 
       <listitem>
@@ -326,9 +326,9 @@ semodule -i httpdlocal.pp</programlisting>
     </section>
 
     <section>
-      <title>Self Service behind proxy in DMZ (LAM Pro)</title>
+      <title>Self-service behind proxy in DMZ (LAM Pro)</title>
 
-      <para>In some cases you might want to make the self service accessible
+      <para>In some cases you might want to make the self-service accessible
       via the internet. Here is an Apache config to forward only the required
       URLs via a proxy server (lamproxy.company.com) in your DMZ to the
       internal LAM server (lam.company.com).</para>
@@ -340,7 +340,7 @@ semodule -i httpdlocal.pp</programlisting>
         </inlinemediaobject></para>
 
       <para>This configuration allows your users to open
-      https://lamproxy.company.com which will then proxy the self service on
+      https://lamproxy.company.com which will then proxy the self-service on
       the internal server.</para>
 
       <programlisting>&lt;VirtualHost lamproxy.company.com:443&gt;
@@ -358,7 +358,7 @@ semodule -i httpdlocal.pp</programlisting>
         ProxyRequests off
         loglevel info
 
-        # redirect front page to self service login page
+        # redirect front page to self-service login page
         RewriteEngine on
         RedirectMatch ^/$ /templates/selfService/selfServiceLogin.php?scope=user\&amp;name=lam
 
@@ -507,10 +507,10 @@ semodule -i httpdlocal.pp</programlisting>
     during login. Afterwards, users can manage their devices with the <link
     linkend="tool_webauthn">WebAuthn tool</link>.</para>
 
-    <para><emphasis role="bold">LAM Self Service</emphasis></para>
+    <para><emphasis role="bold">LAM Self-service</emphasis></para>
 
     <para>Please activate WebAuthn/FIDO2 in your <link
-    linkend="selfservice_2fa">LAM self service profile</link>. Then users will
+    linkend="selfservice_2fa">LAM self-service profile</link>. Then users will
     be asked to authenticate via WebAuthn/FIDO2 on each login.</para>
 
     <para>If no device is registered for a user then LAM will ask for this
@@ -693,7 +693,7 @@ semodule -i httpdlocal.pp</programlisting>
     "https://YOURDOMAIN/lam/templates/login2Factor.php" for admin interface
     and
     "https://YOURDOMAIN/lam/templates/selfService/selfService2Factor.php?scope=user&amp;name=YOUR_PROFILE"
-    for self service. You will get an error message during login with the URL
+    for self-service. You will get an error message during login with the URL
     to configure in case it was wrong.</para>
 
     <para>On "Sign On" tab you need to add a rule that prompts for the
@@ -775,7 +775,7 @@ semodule -i httpdlocal.pp</programlisting>
     <para>They are "https://YOURDOMAIN/lam/templates/login2Factor.php" for
     admin interface and
     "https://YOURDOMAIN/lam/templates/selfService/selfService2Factor.php" for
-    self service. You will get an error message during login in case it was
+    self-service. You will get an error message during login in case it was
     wrong. Then save the configuration.</para>
 
     <screenshot>

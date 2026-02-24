@@ -1254,7 +1254,7 @@ class TwoFactorProviderService {
 	}
 
 	/**
-	 * Returns the configuration from self service.
+	 * Returns the configuration from self-service.
 	 *
 	 * @param selfServiceProfile $profile profile
 	 * @return TwoFactorConfiguration configuration

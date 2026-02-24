@@ -305,7 +305,7 @@ class SelfServicePersistence {
 	}
 
 	/**
-	 * Loads the given self service profile.
+	 * Loads the given self-service profile.
 	 *
 	 * @param string $name profile name
 	 * @param string $scope user/group/host
@@ -329,7 +329,7 @@ class SelfServicePersistence {
 	}
 
 	/**
-	 * Deletes a self service profile.
+	 * Deletes a self-service profile.
 	 *
 	 * @param string $name profile name
 	 * @param string $scope user/group/host
@@ -430,7 +430,7 @@ interface SelfServicePersistenceStrategy {
 }
 
 /**
- * Uses local file system for storing self service profiles.
+ * Uses local file system for storing self-service profiles.
  */
 class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistenceStrategy {
 
@@ -442,7 +442,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 		$dir = dir(__DIR__ . "/../config/selfService");
 		$ret = [];
 		if ($dir === false) {
-			logNewMessage(LOG_ERR, 'Unable to read self service profiles');
+			logNewMessage(LOG_ERR, 'Unable to read self-service profiles');
 			return $ret;
 		}
 		while ($entry = $dir->read()) {
@@ -543,7 +543,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 }
 
 /**
- * Uses PDO for storing self service profiles.
+ * Uses PDO for storing self-service profiles.
  */
 class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrategy {
 
@@ -618,7 +618,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 		$statement->execute([$scope, $name]);
 		$results = $statement->fetchAll();
 		if (empty($results)) {
-			logNewMessage(LOG_ERR, 'Self service profile not found');
+			logNewMessage(LOG_ERR, 'Self-service profile not found');
 			throw new LAMException(_("Unable to load profile!"), $name);
 		}
 		$data = json_decode($results[0]['data'], true);
@@ -662,7 +662,7 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 }
 
 /**
- * Includes all settings of a self service profile.
+ * Includes all settings of a self-service profile.
  *
  * @package selfService
  */
@@ -694,7 +694,7 @@ class selfServiceProfile {
 	 */
 	public ?string $loginHandler = SelfServiceUserPasswordLoginHandler::ID;
 
-	/** header for self service pages */
+	/** header for self-service pages */
 	public string $pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo.svg" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 
 	/** base color */
@@ -718,10 +718,10 @@ class selfServiceProfile {
 	/** additional LDAP filter for accounts */
 	public ?string $additionalLDAPFilter = '';
 
-	/** describing text for self service main page */
+	/** describing text for self-service main page */
 	public string $mainPageText;
 
-	/** describing text for self service main page */
+	/** describing text for self-service main page */
 	public ?string $mainPageFooter = '';
 
 	/**
@@ -773,7 +773,7 @@ class selfServiceProfile {
 	public string $reCaptchaSiteKey = '';
 	/** Google reCAPTCHA secret key */
 	public string $reCaptchaSecretKey = '';
-	/** enable captcha on self service login */
+	/** enable captcha on self-service login */
 	public bool $captchaOnLogin = false;
 
 	/** base URL for the website (e.g. https://example.com) for link generation */
@@ -819,9 +819,9 @@ class selfServiceProfile {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->loginCaption = '<b>' . _("Welcome to LAM self service. Please enter your user name and password.") . '</b>';
+		$this->loginCaption = '<b>' . _("Welcome to LAM self-service. Please enter your user name and password.") . '</b>';
 		$this->loginAttributeText = _('User name');
-		$this->mainPageText = "<h1>LAM self service</h1>\n" . _("Here you can change your personal settings.");
+		$this->mainPageText = "<h1>LAM self-service</h1>\n" . _("Here you can change your personal settings.");
 		$this->inputFields = [
 			['name' => _('Personal data'),
 				'fields' => ['inetOrgPerson_firstName', 'inetOrgPerson_lastName', 'inetOrgPerson_mail',
@@ -833,7 +833,7 @@ class selfServiceProfile {
 	}
 
 	/**
-	 * Converts the export data back to a self service profile.
+	 * Converts the export data back to a self-service profile.
 	 *
 	 * @param array<string, string|int> $data export data
 	 * @return selfServiceProfile profile
@@ -903,7 +903,7 @@ class selfServiceProfile {
 }
 
 /**
- * LDAP connection for self service.
+ * LDAP connection for self-service.
  */
 class SelfServiceLdapConnection {
 
@@ -959,7 +959,7 @@ class SelfServiceLdapConnection {
 }
 
 /**
- * Login handler for self service
+ * Login handler for self-service
  */
 interface SelfServiceLoginHandler {
 

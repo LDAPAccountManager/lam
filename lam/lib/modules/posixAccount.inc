@@ -186,9 +186,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$return['attributes'] = ['uid', 'uidNumber', 'gidNumber',
 			'loginShell', 'gecos', 'INFO.userPasswordClearText'];
 		if ($this->get_scope() == "user") {
-			// self service search attributes
+			// self-service search attributes
 			$return['selfServiceSearchAttributes'] = ['uid'];
-			// self service field settings
+			// self-service field settings
 			$return['selfServiceFieldSettings'] = [
 				'password' => _('Password'),
 				'cn' => _('Common name'),
@@ -196,9 +196,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				'syncWindowsPassword' => _('Sync Unix password with Windows password'),
 				'unixgroups' => _('Groups (read-only)')
 			];
-			// possible self service read-only fields
+			// possible self-service read-only fields
 			$return['selfServiceReadOnlyFields'] = ['cn', 'loginShell'];
-			// self service configuration settings
+			// self-service configuration settings
 			$selfServiceContainer = new htmlResponsiveRow();
 			$selfServiceContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 				['CRYPT-SHA512'], _("Password hash type"), ['pwdHash', static::class]));
@@ -424,7 +424,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			],
 			'groupDn' => [
 				"Headline" => _('Group DN'),
-				"Text" => _('Enter the base DN of your groups here. This is only required if you want to display memberships on the self service page.')
+				"Text" => _('Enter the base DN of your groups here. This is only required if you want to display memberships on the self-service page.')
 			],
 			'user' => [
 				'uid' => [

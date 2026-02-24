@@ -462,10 +462,10 @@ $helpArray = [
 		"Text" => _("This text is displayed on top of the main page. You can also input HTML code here.")
 	],
 	"507" => ["Headline" => _("Add new group"),
-		"Text" => _("Adds a new group element to the list of self service options. Use this to structure the input fields.")
+		"Text" => _("Adds a new group element to the list of self-service options. Use this to structure the input fields.")
 	],
 	"508" => ["Headline" => _("Add input fields"),
-		"Text" => _("Adds a new self service option to the selected group element.")
+		"Text" => _("Adds a new self-service option to the selected group element.")
 	],
 	"509" => ["Headline" => _("Page header"),
 		"Text" => _("This HTML code will be placed on top of all pages. E.g. you can use this to place your custom logo. Any HTML code is permitted.")
@@ -477,10 +477,10 @@ $helpArray = [
 		"Text" => _('This text is placed as label for the password field on the login page. LAM will use "Password" if you do not enter any text.')
 	],
 	"512" => ["Headline" => _("Additional LDAP filter"),
-		"Text" => _('Use this to enter an additional LDAP filter (e.g. "(objectClass=passwordSelfReset)") to reduce the number of accounts who may use self service.')
+		"Text" => _('Use this to enter an additional LDAP filter (e.g. "(objectClass=passwordSelfReset)") to reduce the number of accounts who may use self-service.')
 	],
 	"513" => ["Headline" => _('Use for all operations'),
-		"Text" => _('By default, all modifications are done as the user that authenticated in self service. If active then LAM will use the connection user for all LDAP modifications and searches.')
+		"Text" => _('By default, all modifications are done as the user that authenticated in self-service. If active then LAM will use the connection user for all LDAP modifications and searches.')
 	],
 	"514" => ["Headline" => _('2-factor authentication'),
 		"Text" => _('You can enable 2-factor authentication here (e.g. via mobile device).')
@@ -510,10 +510,10 @@ $helpArray = [
 		"Text" => _('Please enter the site and secret/API key you got from your captcha provider.')
 	],
 	"522" => ["Headline" => _('Secure login'),
-		"Text" => _('Protect the self service login with a captcha.')
+		"Text" => _('Protect the self-service login with a captcha.')
 	],
 	"523" => ["Headline" => _('Base color'),
-		"Text" => _('Background color for self service pages.')
+		"Text" => _('Background color for self-service pages.')
 	],
 	"524" => ["Headline" => _('Client id'),
 		"Text" => _('Please enter your client id for the verification API.')
@@ -525,7 +525,7 @@ $helpArray = [
 		"Text" => _('This text is displayed as footer on the login page.')
 	],
 	"527" => ["Headline" => _('Main page footer'),
-		"Text" => _('This text is displayed as footer on the self service main page.')
+		"Text" => _('This text is displayed as footer on the self-service main page.')
 	],
 	"528" => ["Headline" => _('User name attribute'),
 		"Text" => _('The attribute (e.g. "uid") that contains the user name for the 2-factor service.')

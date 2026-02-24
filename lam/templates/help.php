@@ -41,7 +41,7 @@ include_once(__DIR__ . "/../lib/ldap.inc");
 /** configuration */
 include_once(__DIR__ . "/../lib/config.inc");
 
-/** self service functions */
+/** self-service functions */
 include_once(__DIR__ . "/../lib/selfService.inc");
 if (!empty($_GET['selfService']) && ($_GET['selfService'] === '1')) {
 	session_name('SELFSERVICE');

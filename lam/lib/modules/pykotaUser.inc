@@ -247,14 +247,14 @@ class pykotaUser extends baseModule {
 		if ($this->isStructural()) {
 			$return['PDF_fields']['cn'] = _('Common name');
 		}
-		// self service
+		// self-service
 		$return['selfServiceFieldSettings'] = [
 			'pykotaBalance' => _('Balance (read-only)'),
 			'pykotaLifeTimePaid' => _('Total paid (read-only)'),
 			'pykotaPayments' => _('Payment history'),
 			'pykotaJobHistory' => _('Job history'),
 		];
-		// self service settings
+		// self-service settings
 		if (static::class === 'pykotaUser') {
 			$selfServiceContainer = new htmlResponsiveRow();
 			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, ['jobSuffix', static::class]));

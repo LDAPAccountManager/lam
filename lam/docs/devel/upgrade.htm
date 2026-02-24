@@ -276,7 +276,7 @@ New functions in baseModule to reduce code:<br>
 <ul>
   <li>addSimpleInputTextField() to add text fields to the edit page</li>
   <li>addMultiValueInputTextField()/processMultiValueInputTextField() to add multi-value text fields to the edit page</li>
-  <li>addSimpleSelfServiceTextField()/checkSimpleSelfServiceTextField() adds and checks a text field in self service</li>
+  <li>addSimpleSelfServiceTextField()/checkSimpleSelfServiceTextField() adds and checks a text field in self-service</li>
   <li>addSimplePDFField() to create the PDF code for a simple text value<br>
   </li>
 </ul>
@@ -321,8 +321,8 @@ List interface:<br>
 Module interface:<br>
 
 <ul>
-<li>new function <span style="font-weight: bold;">supportsAdminInterface()</span>: Can be used to mark modules that only support the self service.</li>
-  <li>new function <span style="font-weight: bold;">canSelfServiceFieldBeReadOnly()</span>: Specifies if a certain self service field can be set in read-only mode.</li>
+<li>new function <span style="font-weight: bold;">supportsAdminInterface()</span>: Can be used to mark modules that only support the self-service.</li>
+  <li>new function <span style="font-weight: bold;">canSelfServiceFieldBeReadOnly()</span>: Specifies if a certain self-service field can be set in read-only mode.</li>
   <li><span style="font-weight: bold;">getSelfServiceOptions()</span>: new parameter <span style="font-style: italic;">$readOnlyFields</span> that contains read-only fields</li>
   <li><span style="font-weight: bold;">checkSelfServiceOptions()</span>: new parameter <span style="font-style: italic;">$readOnlyFields </span>that contains read-only fields</li>
 
@@ -354,7 +354,7 @@ passwordChangeRequested() to support password change at next login <br>
 </li>
   <li><span style="font-weight: bold;">getSelfServiceOptions()/checkSelfServiceOptions():</span> added parameter to specify if only password changes are allowed</li>
   <li><span style="font-weight: bold;">handleAjaxRequest():</span> This new function allows AJAX requests to be answered by modules</li>
-  <li><span style="font-weight: bold;">getSelfServiceSettings():</span> New parameter $profile that contains the full self service profile object<br>
+  <li><span style="font-weight: bold;">getSelfServiceSettings():</span> New parameter $profile that contains the full self-service profile object<br>
   </li>
 
 
@@ -502,7 +502,7 @@ The meta HTML code now supports image buttons.<br>
 
 <h2>2.4.0 -&gt; 2.5.0</h2>
 
-<h3>Self service</h3>
+<h3>Self-service</h3>
 
 <span style="font-weight: bold;">$selfServiceSettings</span> in class <span style="font-style: italic;">baseModule</span> is now an object of the
 class <span style="font-style: italic;">selfServiceProfile.</span>

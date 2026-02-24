@@ -94,11 +94,11 @@ class asteriskAccount extends baseModule implements passwordService {
 		];
 		// icon
 		$return['icon'] = 'asterisk.png';
-		// self service
+		// self-service
 		$return['selfServiceFieldSettings'] = [
 			'syncAsteriskPassword' => _('Sync Asterisk password with Unix password'),
 		];
-		// self service: fields that cannot be relabeled
+		// self-service: fields that cannot be relabeled
 		$return['selfServiceNoRelabelFields'] = ['syncAsteriskPassword'];
 		// help
 		$return['help'] = [
@@ -247,7 +247,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
 			],
 		];
-		// self service options
+		// self-service options
 		$selfServiceContainer = new htmlResponsiveRow();
 		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, ['AsteriskRealm', static::class]));
 		$return['selfServiceSettings'] = $selfServiceContainer;

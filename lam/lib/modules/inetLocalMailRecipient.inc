@@ -136,7 +136,7 @@ class inetLocalMailRecipient extends baseModule {
 			'mailLocalAddress' => _('Local address list'),
 			'host' => _('Mail server')
 		];
-		// self service
+		// self-service
 		$return['selfServiceFieldSettings'] = [
 			'mailLocalAddress' => _('Local address (read-only)'),
 			'mailRoutingAddress' => _('Routing address (read-only)'),

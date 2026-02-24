@@ -95,12 +95,12 @@ class kolabUser extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'digit',
 			'error_message' => $this->messages['mailQuota'][0]];
-		// self service field settings
+		// self-service field settings
 		$return['selfServiceFieldSettings'] = [
 			'kolabDelegate' => _('Delegates'),
 			'kolabInvitationPolicy' => _('Invitation policy')
 		];
-		// possible self service read-only fields
+		// possible self-service read-only fields
 		$return['selfServiceReadOnlyFields'] = ['kolabDelegate', 'kolabInvitationPolicy'];
 		// help Entries
 		$return['help'] = [

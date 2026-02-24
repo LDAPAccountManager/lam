@@ -615,7 +615,7 @@ class htmlInputField extends htmlElement {
 	protected bool $isEnabled = true;
 	/** indicates that the value should be saved in obfuscated form */
 	protected bool $obfuscate = false;
-	/** indicates that this field should not automatically be saved in the self service or server profile */
+	/** indicates that this field should not automatically be saved in the self-service or server profile */
 	protected bool $transient = false;
 	/** required field */
 	protected bool $required = false;
@@ -887,7 +887,7 @@ class htmlInputField extends htmlElement {
 	}
 
 	/**
-	 * Specifies if the value should be saved in obfuscated form (e.g. self service profile).
+	 * Specifies if the value should be saved in obfuscated form (e.g. self-service profile).
 	 *
 	 * @param bool $obfuscate obfuscate value
 	 */
@@ -896,7 +896,7 @@ class htmlInputField extends htmlElement {
 	}
 
 	/**
-	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
+	 * Specifies that the value should not be automatically saved when used in self-service or server profile (default: false).
 	 *
 	 * @param bool $transient transient field
 	 */
@@ -1316,7 +1316,7 @@ class htmlSelect extends htmlElement {
 	private bool $transformSingleSelect = true;
 	/** onchange event */
 	private ?string $onchangeEvent = null;
-	/** indicates that this field should not automatically be saved in the self service or server profile */
+	/** indicates that this field should not automatically be saved in the self-service or server profile */
 	private bool $transient = false;
 	/** @var array<string, string[]> $tableRowsToHide list of enclosing table rows to hide when checked */
 	protected array $tableRowsToHide = [];
@@ -1563,7 +1563,7 @@ class htmlSelect extends htmlElement {
 	}
 
 	/**
-	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
+	 * Specifies that the value should not be automatically saved when used in self-service or server profile (default: false).
 	 *
 	 * @param bool $transient transient field
 	 */
@@ -2049,7 +2049,7 @@ class htmlInputCheckbox extends htmlElement {
 	protected array $tableRowsToHide = [];
 	/** @var string[] $tableRowsToShow list of enclosing table rows to show when checked */
 	protected array $tableRowsToShow = [];
-	/** indicates that this field should not automatically be saved in the self service or server profile */
+	/** indicates that this field should not automatically be saved in the self-service or server profile */
 	private bool $transient = false;
 	/** @var string[] $elementsToEnable list of input elements to enable when checked */
 	protected array $elementsToEnable = [];
@@ -2228,7 +2228,7 @@ class htmlInputCheckbox extends htmlElement {
 	}
 
 	/**
-	 * Specifies that the value should not be automatically saved when used in self service or server profile (default: false).
+	 * Specifies that the value should not be automatically saved when used in self-service or server profile (default: false).
 	 *
 	 * @param bool $transient transient field
 	 */

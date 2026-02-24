@@ -154,7 +154,7 @@ class quota extends baseModule {
 				"Text" => _("Please enter the quota settings for this mount point. The syntax is: {soft block limit},{hard block limit},{soft inode limit},{hard inode limit}")
 			]
 		];
-		// self service field settings
+		// self-service field settings
 		$return['selfServiceFieldSettings'] = ['quota' => _('Quota (read-only)')];
 		return $return;
 	}

@@ -39,7 +39,7 @@ use LAM\TYPES\ConfiguredType;
  */
 class yubiKeyUser extends baseModule {
 
-	/** session variable for existing keys in self service */
+	/** session variable for existing keys in self-service */
 	const SESS_KEY_LIST = 'yubiKeyUser_keyList';
 
 	/**
@@ -115,7 +115,7 @@ class yubiKeyUser extends baseModule {
 		$return['PDF_fields'] = [
 			'yubiKeyId' => _('YubiKey ids')
 		];
-		// self service field settings
+		// self-service field settings
 		$return['selfServiceFieldSettings'] = [
 			'yubiKeyId' => _('YubiKey ids'),
 		];

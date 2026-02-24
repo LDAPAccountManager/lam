@@ -553,7 +553,7 @@ if (isset($_POST['submitFormData'])) {
 	$row->add(new htmlResponsiveInputCheckbox('hideLoginErrorDetails', $hideLoginErrorDetails, _('Hide LDAP details on failed login'), '257'));
 	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), 30, 7, _("Allowed hosts"), '241'));
 	if (isLAMProVersion()) {
-		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), 30, 7, _("Allowed hosts (self service)"), '241'));
+		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), 30, 7, _("Allowed hosts (self-service)"), '241'));
 	}
 	// SSL certificate
 	$row->addVerticalSpacer('1rem');

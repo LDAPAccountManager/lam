@@ -40,7 +40,7 @@ use LAM\TYPES\ConfiguredType;
  */
 class ldapPublicKey extends baseModule {
 
-	/** session variable for existing keys in self service */
+	/** session variable for existing keys in self-service */
 	private const SESS_KEY_LIST = 'ldapPublicKey_keyList';
 
 	/**
@@ -143,7 +143,7 @@ class ldapPublicKey extends baseModule {
 		$return['PDF_fields'] = [
 			'sshPublicKey' => _('SSH public keys')
 		];
-		// self service field settings
+		// self-service field settings
 		$return['selfServiceFieldSettings'] = [
 			'sshPublicKey' => _('SSH public keys'),
 		];
