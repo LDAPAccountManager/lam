@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2025  Roland Gruber
+ Copyright (C) 2016 - 2026  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 include_once __DIR__ . '/../../../lib/baseModule.inc';
 include_once __DIR__ . '/../../../lib/modules.inc';
 if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
+	include_once __DIR__ . '/../../utils/pdo.inc';
 	include_once __DIR__ . '/../../../lib/passwordExpirationJob.inc';
 }
 include_once __DIR__ . '/../../../lib/modules/shadowAccount.inc';
@@ -64,7 +65,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -79,7 +80,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -94,7 +95,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -112,7 +113,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -131,7 +132,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -150,7 +151,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->once())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -170,7 +171,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->once())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -191,7 +192,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->once())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -212,7 +213,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->once())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -231,7 +232,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -251,7 +252,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -271,7 +272,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
@@ -291,7 +292,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->once())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->once())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->options['test_mailNotificationPeriod' . ShadowAccountPasswordNotifyJobTest::JOB_ID][0] = '-10';
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
@@ -311,7 +312,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->options['test_mailNotificationPeriod' . ShadowAccountPasswordNotifyJobTest::JOB_ID][0] = '-10';
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
@@ -331,7 +332,7 @@ if (is_readable(__DIR__ . '/../../../lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('setDBLastPwdChangeTime');
 			$this->job->expects($this->never())->method('sendMail');
 
-			$pdo = [];
+			$pdo = getMockPdo();
 			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, true, $this->resultLog);
 			$this->assertFalse($this->resultLog->hasError());
 		}
