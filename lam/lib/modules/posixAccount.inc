@@ -2853,8 +2853,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					}
 					elseif ($rawAccount[$ids['posixAccount_password']] != "") {
 						$strengthResult = checkPasswordStrength($rawAccount[$ids['posixAccount_password']], [$rawAccount[$ids['posixAccount_userName']]], []);
-						if ($strengthResult !== true) {
-							$errors[] = ['ERROR', _('Account %s:') . ' posixAccount_password', $strengthResult, [$i]];
+						if (!$strengthResult->isValid()) {
+							$errors[] = ['ERROR', _('Account %s:') . ' posixAccount_password', $strengthResult->getTextMessage(), [$i]];
 						}
 						elseif (!get_preg($rawAccount[$ids['posixAccount_password']], 'password')) {
 							$errMsg = $this->messages['userPassword'][4];
@@ -3426,7 +3426,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$additionalAttrs[] = $attributes['givenName'][0];
 				}
 				$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password'], $userName, $additionalAttrs);
-				if ($pwdPolicyResult === true) {
+				if (!$pwdPolicyResult->isValid()) {
 					$passwordHash = $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0];
 					if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
 						// set SASL password
@@ -3454,7 +3454,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
 				}
 				else {
-					$return['messages'][] = ['ERROR', $pwdPolicyResult];
+					$return['messages'][] = ['ERROR', $pwdPolicyResult->getTextMessage()];
 				}
 			}
 		}
@@ -3554,8 +3554,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 		}
 		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
-		if ($checkResult !== true) {
-			return [['ERROR', $checkResult]];
+		if (!$checkResult->isValid()) {
+			return [['ERROR', $checkResult->getTextMessage()]];
 		}
 		// set new password
 		$this->clearTextPassword = $password;

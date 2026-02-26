@@ -242,7 +242,8 @@ class Ajax {
 	 */
 	private function checkPasswordStrength(array $input): void {
 		$password = $input['password'];
-		$result = checkPasswordStrength($password, [], []);
+		$check = checkPasswordStrength($password, [], []);
+		$result = $check->isValid() ? true : $check->getTextMessage();
 		echo json_encode(["result" => $result], JSON_THROW_ON_ERROR);
 	}
 

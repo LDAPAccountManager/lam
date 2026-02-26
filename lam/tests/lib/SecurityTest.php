@@ -172,10 +172,11 @@ class SecurityTest extends TestCase {
 			$otherUserAttrs = [];
 		}
 		foreach ($pwdsToAccept as $pwd) {
-			$this->assertTrue(checkPasswordStrength($pwd, $userName, $otherUserAttrs));
+			$this->assertTrue(checkPasswordStrength($pwd, $userName, $otherUserAttrs)->isValid());
 		}
 		foreach ($pwdsToReject as $pwd) {
-			$this->assertNotTrue(checkPasswordStrength($pwd, $userName, $otherUserAttrs));
+			$this->assertFalse(checkPasswordStrength($pwd, $userName, $otherUserAttrs)->isValid());
+			$this->assertNotEmpty(checkPasswordStrength($pwd, $userName, $otherUserAttrs)->getTextMessage());
 		}
 	}
 

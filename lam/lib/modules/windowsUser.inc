@@ -3137,8 +3137,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			// password
 			if ($rawAccounts[$i][$ids['windowsUser_password']] != "") {
 				$strengthResult = checkPasswordStrength($rawAccounts[$i][$ids['windowsUser_password']], [$rawAccounts[$i][$ids['windowsUser_userPrincipalName']]], []);
-				if ($strengthResult !== true) {
-					$errors[] = ['ERROR', _('Account %s:') . ' windowsUser_password', $strengthResult, [$i]];
+				if (!$strengthResult->isValid()) {
+					$errors[] = ['ERROR', _('Account %s:') . ' windowsUser_password', $strengthResult->getTextMessage(), [$i]];
 				}
 				elseif (!get_preg($rawAccounts[$i][$ids['windowsUser_password']], 'password')) {
 					$errMsg = $this->messages['unicodePwd'][2];
@@ -3876,12 +3876,12 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$additionalAttrs[] = $attributes['givenName'][0];
 				}
 				$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd'], $userName, $additionalAttrs);
-				if ($pwdPolicyResult === true) {
+				if (!$pwdPolicyResult->isValid()) {
 					$this->setSelfServicePassword($return);
 					$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
 				}
 				else {
-					$return['messages'][] = ['ERROR', $pwdPolicyResult];
+					$return['messages'][] = ['ERROR', $pwdPolicyResult->getTextMessage()];
 				}
 			}
 		}
@@ -3982,8 +3982,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$additionalAttrs[] = $this->attributes['givenName'][0];
 		}
 		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
-		if ($checkResult !== true) {
-			return [['ERROR', $checkResult]];
+		if (!$checkResult->isValid()) {
+			return [['ERROR', $checkResult->getTextMessage()]];
 		}
 		// set new password
 		$pwdBin = self::pwdAttributeValue($password);

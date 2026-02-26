@@ -11,7 +11,7 @@ use htmlStatusMessage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2025  Roland Gruber
+  Copyright (C) 2020 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -85,8 +85,8 @@ if (isset($_POST['changePassword'])) {
 		$userName = extractRDNValue($userDn);
 	}
 	$pwdPolicyResult = checkPasswordStrength($password1, $userName, []);
-	if ($pwdPolicyResult !== true) {
-		$message = new htmlStatusMessage('ERROR', $pwdPolicyResult);
+	if (!$pwdPolicyResult->isValid()) {
+		$message = new htmlStatusMessage('ERROR', $pwdPolicyResult->getTextMessage());
 		printContent($message);
 		exit();
 	}

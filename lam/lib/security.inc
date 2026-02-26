@@ -413,9 +413,9 @@ function checkIfDeleteEntriesIsAllowed($scope) {
  * @param string $password password
  * @param string|string[]|null $userNames user name(s)
  * @param string[] $otherUserAttrs user's first/last name
- * @return string|true result
+ * @return PasswordStrengthResult result
  */
-function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
+function checkPasswordStrength($password, $userNames, $otherUserAttrs): PasswordStrengthResult {
 	if (($userNames !== null) && !is_array($userNames)) {
 		$userNames = [$userNames];
 	}
@@ -576,10 +576,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (!checkPwdWithExternalPasswordService($cfg, $password)) {
 		$result->setExternalPasswordCheckFailed(true);
 	}
-	if ($result->isValid()) {
-		return true;
-	}
-	return $result->getTextMessage();
+	return $result;
 }
 
 /**

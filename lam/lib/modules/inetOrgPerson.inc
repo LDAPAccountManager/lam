@@ -2527,8 +2527,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 						$userNames[] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
 					}
 					$strengthResult = checkPasswordStrength($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], $userNames, []);
-					if ($strengthResult !== true) {
-						$errors[] = ['ERROR', _('Account %s:') . ' inetOrgPerson_userPassword', $strengthResult, [$i]];
+					if (!$strengthResult->isValid()) {
+						$errors[] = ['ERROR', _('Account %s:') . ' inetOrgPerson_userPassword', $strengthResult->getTextMessage(), [$i]];
 					}
 					elseif (!get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password')) {
 						$errMsg = $this->messages['userPassword'][0];
@@ -3511,8 +3511,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$additionalAttrs[] = $this->attributes['givenName'][0];
 		}
 		$checkResult = checkPasswordStrength($password, $user, $additionalAttrs);
-		if ($checkResult !== true) {
-			return [['ERROR', $checkResult]];
+		if (!$checkResult->isValid()) {
+			return [['ERROR', $checkResult->getTextMessage()]];
 		}
 		// set new password
 		$this->clearTextPassword = $password;

@@ -380,7 +380,7 @@ function generateRandomPassword($length = 14, bool $checkStrength = true): strin
 			$rand = abs(getRandomNumber() % 65);
 			$password .= $list[$rand];
 		}
-		if (!$checkStrength || checkPasswordStrength($password, null, []) === true) {
+		if (!$checkStrength || checkPasswordStrength($password, null, [])->isValid()) {
 			break;
 		}
 	}

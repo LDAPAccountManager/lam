@@ -1227,8 +1227,8 @@ class accountContainer {
 			}
 			// check password strength
 			$pwdPolicyResult = checkPasswordStrength($password1, null, []);
-			if ($pwdPolicyResult !== true) {
-				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', [], true);
+			if (!$pwdPolicyResult->isValid()) {
+				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult->getTextMessage(), '', [], true);
 				$return['errorsOccurred'] = 'true';
 			}
 		}
