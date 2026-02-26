@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -489,7 +489,7 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
 	else {
 		field.classList.add('markFail');
 		field.classList.remove('markOk');
-		field.title = data.result;
+		field.title = data.message;
 	}
 }
 
