@@ -413,7 +413,7 @@ function checkIfDeleteEntriesIsAllowed($scope) {
  * @param string $password password
  * @param string|string[]|null $userNames user name(s)
  * @param string[] $otherUserAttrs user's first/last name
- * @return true|string true if ok, string with error message if not valid
+ * @return string|true result
  */
 function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (($userNames !== null) && !is_array($userNames)) {
@@ -423,13 +423,18 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 		$password = "";
 	}
 	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
+	$result = new PasswordStrengthResult();
+	$result->setCharacterClassesRulesCount($cfg->checkedRulesCount);
 	// check length
 	$minLength = $cfg->passwordMinLength;
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinLength())) {
-		$minLength = $_SESSION['config']->getPwdPolicyMinLength();
+		$minLength = intval($_SESSION['config']->getPwdPolicyMinLength());
 	}
 	if (strlen($password) < $minLength) {
-		return sprintf(_('The password is too short. You have to enter at least %s characters.'), $minLength);
+		$result->setLengthOk(false, $minLength);
+	}
+	else {
+		$result->setLengthOk(true, $minLength);
 	}
 	// get number of characters per character class
 	$lower = 0;
@@ -454,12 +459,16 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	// check lower case
 	$minLower = $cfg->passwordMinLower;
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getpwdPolicyMinLowercase())) {
-		$minLower = $_SESSION['config']->getpwdPolicyMinLowercase();
+		$minLower = intval($_SESSION['config']->getpwdPolicyMinLowercase());
 	}
-	if (($cfg->checkedRulesCount == -1) && ($lower < $minLower)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s lower case characters.'), $minLower);
+	if ($lower < $minLower) {
+		$result->setLowerCaseCountOk(false, $minLower);
+		if ($cfg->checkedRulesCount == -1) {
+			$result->setCharacterClassesRulesCountOk(false);
+		}
 	}
-	if ($lower >= $minLower) {
+	else {
+		$result->setLowerCaseCountOk(true, $minLower);
 		$rulesMatched++;
 	}
 	// check upper case
@@ -467,10 +476,14 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinUppercase())) {
 		$minUpper = $_SESSION['config']->getPwdPolicyMinUppercase();
 	}
-	if (($cfg->checkedRulesCount == -1) && ($upper < $minUpper)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s upper case characters.'), $minUpper);
+	if ($upper < $minUpper) {
+		$result->setUpperCaseCountOk(false, $minUpper);
+		if ($cfg->checkedRulesCount == -1) {
+			$result->setCharacterClassesRulesCountOk(false);
+		}
 	}
-	if ($upper >= $minUpper) {
+	else {
+		$result->setUpperCaseCountOk(true, $minUpper);
 		$rulesMatched++;
 	}
 	// check numeric
@@ -478,10 +491,14 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinNumeric())) {
 		$minNumeric = $_SESSION['config']->getPwdPolicyMinNumeric();
 	}
-	if (($cfg->checkedRulesCount == -1) && ($numeric < $minNumeric)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s numeric characters.'), $minNumeric);
+	if ($numeric < $minNumeric) {
+		$result->setDigitCountOk(false, $minNumeric);
+		if ($cfg->checkedRulesCount == -1) {
+			$result->setCharacterClassesRulesCountOk(false);
+		}
 	}
-	if ($numeric >= $minNumeric) {
+	else {
+		$result->setDigitCountOk(true, $minNumeric);
 		$rulesMatched++;
 	}
 	// check symbols
@@ -489,23 +506,31 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinSymbolic())) {
 		$minSymbols = $_SESSION['config']->getPwdPolicyMinSymbolic();
 	}
-	if (($cfg->checkedRulesCount == -1) && ($symbols < $minSymbols)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s symbolic characters.'), $minSymbols);
+	if ($symbols < $minSymbols) {
+		$result->setSymbolCountOk(false, $minSymbols);
+		if ($cfg->checkedRulesCount == -1) {
+			$result->setCharacterClassesRulesCountOk(false);
+		}
 	}
-	if ($symbols >= $minSymbols) {
+	else {
+		$result->setSymbolCountOk(true, $minSymbols);
 		$rulesMatched++;
 	}
 	// check classes
 	$classes = getNumberOfCharacterClasses($password);
-	if (($cfg->checkedRulesCount == -1) && ($classes < $cfg->passwordMinClasses)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $cfg->passwordMinClasses);
+	if ($classes < $cfg->passwordMinClasses) {
+		$result->setCharacterClassesCountOk(false, $cfg->passwordMinClasses);
+		if ($cfg->checkedRulesCount == -1) {
+			$result->setCharacterClassesRulesCountOk(false);
+		}
 	}
-	if ($classes >= $cfg->passwordMinClasses) {
+	else {
+		$result->setCharacterClassesCountOk(true, $cfg->passwordMinClasses);
 		$rulesMatched++;
 	}
 	// check rules count
 	if (($cfg->checkedRulesCount != -1) && ($rulesMatched < $cfg->checkedRulesCount)) {
-		return sprintf(_('The password is too weak. It needs to match at least %s password complexity rules.'), $cfg->checkedRulesCount);
+		$result->setCharacterClassesRulesCountOk(false);
 	}
 	$pwdLow = strtolower($password);
 	// check user name
@@ -513,7 +538,8 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 		foreach ($userNames as $userName) {
 			$userLow = strtolower($userName);
 			if (str_contains($pwdLow, $userLow)) {
-				return _('The password is too weak. You may not use the user name as part of the password.');
+				$result->setPasswordContainsUsername(true);
+				break;
 			}
 		}
 	}
@@ -526,7 +552,8 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 				for ($i = 0; $i < strlen($userLow) - 3; $i++) {
 					$part = substr($userLow, 0, 3);
 					if (str_contains($pwdLow, $part)) {
-						return _('The password is too weak. You may not use parts of the user name for the password.');
+						$result->setPasswordContainsPartialUsername(true);
+						break;
 					}
 				}
 			}
@@ -539,16 +566,234 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 			for ($i = 0; $i < strlen($low) - 3; $i++) {
 				$part = substr($low, 0, 3);
 				if (str_contains($pwdLow, $part)) {
-					return _('The password is too weak. You may not use parts of user attributes for the password.');
+					$result->setPasswordContainsPartialAttributes(true);
+					break;
 				}
 			}
 		}
 	}
 	// check external password service
 	if (!checkPwdWithExternalPasswordService($cfg, $password)) {
-		return _('Your selected password is known to be insecure.');
+		$result->setExternalPasswordCheckFailed(true);
 	}
-	return true;
+	if ($result->isValid()) {
+		return true;
+	}
+	return $result->getTextMessage();
+}
+
+/**
+ * Result of the password strength check.
+ */
+class PasswordStrengthResult {
+
+	private bool $lengthOk = false;
+	private int $minLength = 0;
+	private bool $lowerCaseCountOk = false;
+	private int $lowerCaseMinimumCount = 0;
+	private bool $upperCaseCountOk = false;
+	private int $upperCaseMinimumCount = 0;
+	private bool $digitCountOk = false;
+	private int $digitMinimumCount = 0;
+	private bool $symbolCountOk = false;
+	private int $symbolMinimumCount = 0;
+	private bool $characterClassesCountOk = false;
+	private int $characterClassesMinimumCount = 0;
+	private bool $characterClassesRulesCountOk = true;
+	private int $characterClassesRulesCount = -1;
+	private bool $passwordContainsUsername = false;
+	private bool $passwordContainsPartialUsername = false;
+	private bool $passwordContainsPartialAttributes = false;
+	private bool $externalPasswordCheckFailed = false;
+
+	/**
+	 * Returns if the password is valid.
+	 *
+	 * @return bool is valid
+	 */
+	public function isValid(): bool {
+		if ($this->characterClassesRulesCount === -1) {
+			$characterRulesCheckOk = $this->lowerCaseCountOk
+				&& $this->upperCaseCountOk
+				&& $this->digitCountOk
+				&& $this->symbolCountOk
+				&& $this->characterClassesCountOk;
+		}
+		else {
+			$characterRulesCheckOk = $this->characterClassesRulesCountOk;
+		}
+		return $this->lengthOk
+			&& $characterRulesCheckOk
+			&& !$this->passwordContainsUsername
+			&& !$this->passwordContainsPartialUsername
+			&& !$this->passwordContainsPartialAttributes
+			&& !$this->externalPasswordCheckFailed;
+	}
+
+	/**
+	 * Returns the error message or null if valid.
+	 *
+	 * @return string|null message
+	 */
+	public function getTextMessage(): ?string {
+		if (!$this->lengthOk) {
+			return sprintf(_('The password is too short. You have to enter at least %s characters.'), $this->minLength);
+		}
+		if ($this->characterClassesRulesCount === -1) {
+			if (!$this->lowerCaseCountOk) {
+				return sprintf(_('The password is too weak. You have to enter at least %s lower case characters.'), $this->lowerCaseMinimumCount);
+			}
+			if (!$this->upperCaseCountOk) {
+				return sprintf(_('The password is too weak. You have to enter at least %s upper case characters.'), $this->upperCaseMinimumCount);
+			}
+			if (!$this->digitCountOk) {
+				return sprintf(_('The password is too weak. You have to enter at least %s numeric characters.'), $this->digitMinimumCount);
+			}
+			if (!$this->symbolCountOk) {
+				return sprintf(_('The password is too weak. You have to enter at least %s symbolic characters.'), $this->symbolMinimumCount);
+			}
+			if (!$this->characterClassesCountOk) {
+				return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $this->characterClassesMinimumCount);
+			}
+		}
+		if (!$this->characterClassesRulesCountOk) {
+			return sprintf(_('The password is too weak. It needs to match at least %s password complexity rules.'), $this->characterClassesRulesCount);
+		}
+		if ($this->passwordContainsUsername) {
+			return _('The password is too weak. You may not use the user name as part of the password.');
+		}
+		if ($this->passwordContainsPartialUsername) {
+			return _('The password is too weak. You may not use parts of the user name for the password.');
+		}
+		if ($this->passwordContainsPartialAttributes) {
+			return _('The password is too weak. You may not use parts of user attributes for the password.');
+		}
+		if ($this->externalPasswordCheckFailed) {
+			return _('Your selected password is known to be insecure.');
+		}
+		return null;
+	}
+
+	/**
+	 * Sets if the length check is ok.
+	 *
+	 * @param bool $isOk ok
+	 * @param int $minLength minimum length
+	 */
+	public function setLengthOk(bool $isOk, int $minLength): void {
+		$this->lengthOk = $isOk;
+		$this->minLength = $minLength;
+	}
+
+	/**
+	 * Sets the number of character class checks to fulfill.
+	 *
+	 * @param int $characterClassesRulesCount count
+	 */
+	public function setCharacterClassesRulesCount(int $characterClassesRulesCount): void {
+		$this->characterClassesRulesCount = $characterClassesRulesCount;
+	}
+
+	/**
+	 * Sets if the number of character class checks is fulfilled.
+	 *
+	 * @param bool $characterClassesRulesCountOk ok
+	 */
+	public function setCharacterClassesRulesCountOk(bool $characterClassesRulesCountOk): void {
+		$this->characterClassesRulesCountOk = $characterClassesRulesCountOk;
+	}
+
+	/**
+	 * The number of character classes is ok.
+	 *
+	 * @param bool $characterClassesCountOk ok
+	 * @param int $characterClassesMinimumCount count
+	 */
+	public function setCharacterClassesCountOk(bool $characterClassesCountOk, int $characterClassesMinimumCount): void {
+		$this->characterClassesCountOk = $characterClassesCountOk;
+		$this->characterClassesMinimumCount = $characterClassesMinimumCount;
+	}
+
+	/**
+	 * Sets if the number of digits is ok.
+	 *
+	 * @param bool $digitCountOk ok
+	 * @param int $digitMinimumCount count
+	 */
+	public function setDigitCountOk(bool $digitCountOk, int $digitMinimumCount): void {
+		$this->digitCountOk = $digitCountOk;
+		$this->digitMinimumCount = $digitMinimumCount;
+	}
+
+	/**
+	 * Sets if the number of lower-case characters is ok.
+	 *
+	 * @param bool $lowerCaseCountOk ok
+	 * @param int $lowerCaseMinimumCount count
+	 */
+	public function setLowerCaseCountOk(bool $lowerCaseCountOk, int $lowerCaseMinimumCount): void {
+		$this->lowerCaseCountOk = $lowerCaseCountOk;
+		$this->lowerCaseMinimumCount = $lowerCaseMinimumCount;
+	}
+
+	/**
+	 * Sets if the number of symbolic characters is ok.
+	 *
+	 * @param bool $symbolCountOk ok
+	 * @param int $symbolMinimumCount count
+	 */
+	public function setSymbolCountOk(bool $symbolCountOk, int $symbolMinimumCount): void {
+		$this->symbolCountOk = $symbolCountOk;
+		$this->symbolMinimumCount = $symbolMinimumCount;
+	}
+
+	/**
+	 * Sets if the number of upper-case characters is ok.
+	 *
+	 * @param bool $upperCaseCountOk ok
+	 * @param int $upperCaseMinimumCount count
+	 */
+	public function setUpperCaseCountOk(bool $upperCaseCountOk, int $upperCaseMinimumCount): void {
+		$this->upperCaseCountOk = $upperCaseCountOk;
+		$this->upperCaseMinimumCount = $upperCaseMinimumCount;
+	}
+
+	/**
+	 * Sets if the password contains the username.
+	 *
+	 * @param bool $passwordContainsUsername invalid value found
+	 */
+	public function setPasswordContainsUsername(bool $passwordContainsUsername): void {
+		$this->passwordContainsUsername = $passwordContainsUsername;
+	}
+
+	/**
+	 * Sets if the password contains a part of the username.
+	 *
+	 * @param bool $passwordContainsPartialUsername invalid value found
+	 */
+	public function setPasswordContainsPartialUsername(bool $passwordContainsPartialUsername): void {
+		$this->passwordContainsPartialUsername = $passwordContainsPartialUsername;
+	}
+
+	/**
+	 * Sets if the password contains a part of the user attributes.
+	 *
+	 * @param bool $passwordContainsPartialAttributes invalid value found
+	 */
+	public function setPasswordContainsPartialAttributes(bool $passwordContainsPartialAttributes): void {
+		$this->passwordContainsPartialAttributes = $passwordContainsPartialAttributes;
+	}
+
+	/**
+	 * Sets if the external password check failed.
+	 *
+	 * @param bool $externalPasswordCheckFailed failed
+	 */
+	public function setExternalPasswordCheckFailed(bool $externalPasswordCheckFailed): void {
+		$this->externalPasswordCheckFailed = $externalPasswordCheckFailed;
+	}
+
 }
 
 /**
