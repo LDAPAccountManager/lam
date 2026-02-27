@@ -34,6 +34,7 @@ use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
 use LAM\PLUGINS\SMS\SmsService;
 use LAM\TYPES\TypeManager;
 use LDAP\Connection;
+use Random\Randomizer;
 
 /**
  * Adapted version of preg_split that returns an empty array instead of false on error.
@@ -368,23 +369,66 @@ function pwd_is_enabled($hash) {
  * @return String password
  */
 function generateRandomPassword($length = 14, bool $checkStrength = true): string {
-	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
 	$minLength = $_SESSION['cfgMain']->passwordMinLength;
 	$length = max($length, $minLength);
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinLength())) {
 		$length = max($length, $_SESSION['config']->getPwdPolicyMinLength());
 	}
+	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
+	$listAll = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
+	$allLength = strlen($listAll);
+	$listLower = 'abcdefghijklmnopqrstuvwxyz';
+	$lowerLength = strlen($listLower);
+	$minLower = $cfg->passwordMinLower;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getpwdPolicyMinLowercase())) {
+		$minLower = intval($_SESSION['config']->getpwdPolicyMinLowercase());
+	}
+	$listUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$upperLength = strlen($listUpper);
+	$minUpper = $cfg->passwordMinUpper;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinUppercase())) {
+		$minUpper = $_SESSION['config']->getPwdPolicyMinUppercase();
+	}
+	$listNumeric = '0123456789';
+	$numericLength = strlen($listNumeric);
+	$minNumeric = $cfg->passwordMinNumeric;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinNumeric())) {
+		$minNumeric = $_SESSION['config']->getPwdPolicyMinNumeric();
+	}
+	$listSymbol = '.-_';
+	$symbolLength = strlen($listSymbol);
+	$minSymbols = $cfg->passwordMinSymbol;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinSymbolic())) {
+		$minSymbols = $_SESSION['config']->getPwdPolicyMinSymbolic();
+	}
 	for ($x = 0; $x < 10000; $x++) {
 		$password = '';
+		for ($i = 0; $i < $minLower; $i++) {
+			$rand = abs(getRandomNumber() % $lowerLength);
+			$password .= $listLower[$rand];
+		}
+		for ($i = 0; $i < $minUpper; $i++) {
+			$rand = abs(getRandomNumber() % $upperLength);
+			$password .= $listUpper[$rand];
+		}
+		for ($i = 0; $i < $minNumeric; $i++) {
+			$rand = abs(getRandomNumber() % $numericLength);
+			$password .= $listNumeric[$rand];
+		}
+		for ($i = 0; $i < $minSymbols; $i++) {
+			$rand = abs(getRandomNumber() % $symbolLength);
+			$password .= $listSymbol[$rand];
+		}
 		for ($i = 0; $i < $length; $i++) {
-			$rand = abs(getRandomNumber() % 65);
-			$password .= $list[$rand];
+			$rand = abs(getRandomNumber() % $allLength);
+			$password .= $listAll[$rand];
 		}
 		if (!$checkStrength || checkPasswordStrength($password, null, [])->isValid()) {
 			break;
 		}
 	}
-	return $password;
+	$randomizer = new Randomizer(new Random\Engine\Secure());
+	return $randomizer->shuffleBytes($password);
 }
 
 /**
