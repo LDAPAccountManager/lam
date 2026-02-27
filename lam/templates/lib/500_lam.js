@@ -482,7 +482,7 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
 		field.classList.add('markOk');
 		field.title = '';
 	}
-	else if (field.value == '') {
+	else if (field.value === '') {
 		field.classList.remove('markFail');
 		field.classList.remove('markOk');
 	}
@@ -491,6 +491,17 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
 		field.classList.remove('markOk');
 		field.title = data.message;
 	}
+    const issuesDiv = document.getElementById(fieldID + '-pwd-strength-issues');
+    issuesDiv.innerHTML = '';
+    if (field.value !== '') {
+        data.issues.forEach(issue => {
+            const line = document.createElement('p');
+            line.classList.add('password-strength');
+            line.classList.add('password-strength-fail');
+            line.innerText = issue;
+            issuesDiv.appendChild(line);
+        })
+    }
 }
 
 /**

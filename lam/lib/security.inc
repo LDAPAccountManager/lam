@@ -456,7 +456,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs): Password
 		}
 	}
 	$rulesMatched = 0;
-	// check lower case
+	// check lower-case
 	$minLower = $cfg->passwordMinLower;
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getpwdPolicyMinLowercase())) {
 		$minLower = intval($_SESSION['config']->getpwdPolicyMinLowercase());
@@ -471,7 +471,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs): Password
 		$result->setLowerCaseCountOk(true, $minLower);
 		$rulesMatched++;
 	}
-	// check upper case
+	// check upper-case
 	$minUpper = $cfg->passwordMinUpper;
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinUppercase())) {
 		$minUpper = $_SESSION['config']->getPwdPolicyMinUppercase();
@@ -628,6 +628,48 @@ class PasswordStrengthResult {
 	}
 
 	/**
+	 * Returns details about failed rules.
+	 *
+	 * @return string[] issues
+	 */
+	public function getIssues(): array {
+		$details = [];
+		if (!$this->lengthOk) {
+			$details[] = [sprintf(_('The password contains at least %s characters.'), $this->minLength)];
+		}
+		if (($this->characterClassesRulesCount === -1) || !$this->characterClassesRulesCountOk) {
+			if (!$this->lowerCaseCountOk) {
+				$details[] = [sprintf(_('The password contains at least %s lower-case characters.'), $this->lowerCaseMinimumCount)];
+			}
+			if (!$this->upperCaseCountOk) {
+				$details[] = [sprintf(_('The password contains at least %s upper-case characters.'), $this->upperCaseMinimumCount)];
+			}
+			if (!$this->digitCountOk) {
+				$details[] = [sprintf(_('The password contains at least %s numeric characters.'), $this->digitMinimumCount)];
+			}
+			if (!$this->symbolCountOk) {
+				$details[] = [sprintf(_('The password contains at least %s symbolic characters.'), $this->symbolMinimumCount)];
+			}
+			if (!$this->characterClassesCountOk) {
+				$details[] = [sprintf(_('The password contains at least %s different character classes.'), $this->characterClassesMinimumCount)];
+			}
+		}
+		if ($this->passwordContainsUsername) {
+			$details[] = [_('The password contains the username.')];
+		}
+		elseif ($this->passwordContainsPartialUsername) {
+			$details[] = [_('The password contains parts of the username.')];
+		}
+		if ($this->passwordContainsPartialAttributes) {
+			$details[] = [_('The password contains parts of the account\'s attributes.')];
+		}
+		if ($this->externalPasswordCheckFailed) {
+			$details[] = [_('The password is known to be insecure.')];
+		}
+		return $details;
+	}
+
+	/**
 	 * Returns the error message or null if valid.
 	 *
 	 * @return string|null message
@@ -638,10 +680,10 @@ class PasswordStrengthResult {
 		}
 		if ($this->characterClassesRulesCount === -1) {
 			if (!$this->lowerCaseCountOk) {
-				return sprintf(_('The password is too weak. You have to enter at least %s lower case characters.'), $this->lowerCaseMinimumCount);
+				return sprintf(_('The password is too weak. You have to enter at least %s lower-case characters.'), $this->lowerCaseMinimumCount);
 			}
 			if (!$this->upperCaseCountOk) {
-				return sprintf(_('The password is too weak. You have to enter at least %s upper case characters.'), $this->upperCaseMinimumCount);
+				return sprintf(_('The password is too weak. You have to enter at least %s upper-case characters.'), $this->upperCaseMinimumCount);
 			}
 			if (!$this->digitCountOk) {
 				return sprintf(_('The password is too weak. You have to enter at least %s numeric characters.'), $this->digitMinimumCount);
@@ -650,7 +692,7 @@ class PasswordStrengthResult {
 				return sprintf(_('The password is too weak. You have to enter at least %s symbolic characters.'), $this->symbolMinimumCount);
 			}
 			if (!$this->characterClassesCountOk) {
-				return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $this->characterClassesMinimumCount);
+				return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower-case, numbers and symbols).'), $this->characterClassesMinimumCount);
 			}
 		}
 		if (!$this->characterClassesRulesCountOk) {

@@ -770,6 +770,9 @@ class htmlInputField extends htmlElement {
 		if ($this->showDnSelection) {
 			echo '<span class="nowrap">';
 		}
+		if ($this->checkPasswordStrength) {
+			echo '<div id="' . $idValue . '-pwd-strength-issues" class="lam-password-strength"></div>';
+		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $required
 			. $min . $max . $step . $validationPattern . $size . $onKeyPress . $onKeyUp
 			. $onInput . $title . $disabled . $this->getAccessibilityMarkup()

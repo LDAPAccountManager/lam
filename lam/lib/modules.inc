@@ -1683,13 +1683,13 @@ class accountContainer {
 				$moduleObj->getManagedAttributes($this->type->getId()),
 				$moduleObj->getManagedHiddenAttributes($this->type->getId()));
 		}
-		// build lower case attribute names
+		// build lower-case attribute names
 		$ldapAttributes = [];
 		for ($i = 0; $i < count($ldapAttributesTemp); $i++) {
 			$ldapAttributes[strtolower($ldapAttributesTemp[$i])] = $ldapAttributesTemp[$i];
 		}
 		$ldapAttributesKeys = array_keys($ldapAttributes);
-		// convert alias names to lower case (for easier comparison)
+		// convert alias names to lower-case (for easier comparison)
 		$aliasKeys = array_keys($aliases);
 		for ($i = 0; $i < count($aliasKeys); $i++) {
 			if ($aliasKeys[$i] != strtolower($aliasKeys[$i])) {

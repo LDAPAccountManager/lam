@@ -94,7 +94,7 @@ function getSelfServiceFieldSettings($scope) {
  *
  * @param string $scope account type
  * @param array<string, string[]> $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
- * @param array<string, string[]|string> $attributes LDAP attributes (attribute names in lower case)
+ * @param array<string, string[]|string> $attributes LDAP attributes (attribute names in lower-case)
  * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
  * @param string[] $readOnlyFields list of read-only fields
  * @return array<string, array<string, htmlResponsiveRow>> meta HTML code (array(<moduleName> => array(<optionName> => htmlResponsiveRow)))

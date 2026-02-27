@@ -197,6 +197,13 @@ input.markPass {
 	background: white url('../graphics/pass.svg') right no-repeat;
 }
 
+p.password-strength {
+    margin-top: var(--lam-small-space);
+    margin-bottom: var(--lam-small-space);
+    white-space: normal;
+    color: var(--lam-text-color-error);
+}
+
 textarea {
 	border-width: 1px;
 	margin: var(--lam-small-space);

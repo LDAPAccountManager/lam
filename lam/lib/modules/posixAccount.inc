@@ -3349,7 +3349,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$row = new htmlResponsiveRow();
 			if (!empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) && ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] == 'true')) {
 				$pwd0 = new htmlResponsiveInputField(_('Old password'), 'posixAccount_passwordOld');
-				$pwd0->setIsPassword(true, true);
+				$pwd0->setIsPassword(true);
 				$row->add($pwd0);
 			}
 			$pwd1 = new htmlResponsiveInputField($this->getSelfServiceLabel('password', _('New password')), 'posixAccount_password');
