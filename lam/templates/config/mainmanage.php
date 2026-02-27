@@ -810,7 +810,7 @@ if (isset($_POST['submitFormData'])) {
 		$row->add(new htmlResponsiveInputField(_('API key'), 'smsApiKey', $cfg->smsApiKey, '297'));
 		$row->add(new htmlResponsiveInputField(_('Token'), 'smsApiToken', $cfg->smsToken, '298'));
 		$row->add(new htmlResponsiveInputField(_('From'), 'smsFrom', $cfg->smsFrom, '299b'));
-		$row->add(new htmlResponsiveInputField(_('Subject text'), 'smsSubject', $cfg->smsSubject, '299d'));
+		$row->add(new htmlResponsiveInputField(_('Subject'), 'smsSubject', $cfg->smsSubject, '299d'));
 		$row->add(new htmlResponsiveInputField(_('Default country prefix'), 'smsDefaultCountryPrefix', $cfg->smsDefaultCountryPrefix, '299a'));
 		$row->add(new htmlResponsiveInputField(_("Mobile phone attributes"), 'smsAttributes', implode(';', $cfg->getSmsAttributes()), '299'));
         $smsTestButtonRow = new htmlResponsiveRow();

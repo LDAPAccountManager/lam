@@ -379,7 +379,7 @@ $helpArray = [
 	"299c" => ["Headline" => _("Region"),
 		"Text" => _("Please enter the region ID for the SMS service.")
 	],
-	"299d" => ["Headline" => _("Subject text"),
+	"299d" => ["Headline" => _("Subject"),
 		"Text" => _("Please enter the text for the email subject.")
 	],
 	// 300 - 399

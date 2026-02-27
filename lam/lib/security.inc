@@ -635,36 +635,36 @@ class PasswordStrengthResult {
 	public function getIssues(): array {
 		$details = [];
 		if (!$this->lengthOk) {
-			$details[] = [sprintf(_('The password contains at least %s characters.'), $this->minLength)];
+			$details[] = [sprintf(_('The password must contain at least %s characters.'), $this->minLength)];
 		}
 		if (($this->characterClassesRulesCount === -1) || !$this->characterClassesRulesCountOk) {
 			if (!$this->lowerCaseCountOk) {
-				$details[] = [sprintf(_('The password contains at least %s lower-case characters.'), $this->lowerCaseMinimumCount)];
+				$details[] = [sprintf(_('The password must contain at least %s lower-case characters.'), $this->lowerCaseMinimumCount)];
 			}
 			if (!$this->upperCaseCountOk) {
-				$details[] = [sprintf(_('The password contains at least %s upper-case characters.'), $this->upperCaseMinimumCount)];
+				$details[] = [sprintf(_('The password must contain at least %s upper-case characters.'), $this->upperCaseMinimumCount)];
 			}
 			if (!$this->digitCountOk) {
-				$details[] = [sprintf(_('The password contains at least %s numeric characters.'), $this->digitMinimumCount)];
+				$details[] = [sprintf(_('The password must contain at least %s numeric characters.'), $this->digitMinimumCount)];
 			}
 			if (!$this->symbolCountOk) {
-				$details[] = [sprintf(_('The password contains at least %s symbolic characters.'), $this->symbolMinimumCount)];
+				$details[] = [sprintf(_('The password must contain at least %s symbolic characters.'), $this->symbolMinimumCount)];
 			}
 			if (!$this->characterClassesCountOk) {
-				$details[] = [sprintf(_('The password contains at least %s different character classes.'), $this->characterClassesMinimumCount)];
+				$details[] = [sprintf(_('The password must contain at least %s different character classes.'), $this->characterClassesMinimumCount)];
 			}
 		}
 		if ($this->passwordContainsUsername) {
-			$details[] = [_('The password contains the username.')];
+			$details[] = [_('The password must not contain the username.')];
 		}
 		elseif ($this->passwordContainsPartialUsername) {
-			$details[] = [_('The password contains parts of the username.')];
+			$details[] = [_('The password must not contain parts of the username.')];
 		}
 		if ($this->passwordContainsPartialAttributes) {
-			$details[] = [_('The password contains parts of the account\'s attributes.')];
+			$details[] = [_('The password must not contain parts of the account\'s attributes.')];
 		}
 		if ($this->externalPasswordCheckFailed) {
-			$details[] = [_('The password is known to be insecure.')];
+			$details[] = [_('The password must not be known to be insecure.')];
 		}
 		return $details;
 	}
