@@ -1,5 +1,6 @@
 March 2026 9.5
  - PHP 8.2 or higher required (421)
+ - Show failed password policy rules (526)
  - Docker: use Debian 13 as base image (460)
  - Docker: run as non-root (544)
  - LAM Pro:
