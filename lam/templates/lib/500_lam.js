@@ -500,7 +500,7 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
             line.classList.add('password-strength-fail');
             line.innerText = issue;
             issuesDiv.appendChild(line);
-        })
+        });
     }
 }
 
