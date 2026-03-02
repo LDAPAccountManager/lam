@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2026-02-27 19:19+0100\n"
+"PO-Revision-Date: 2026-03-02 07:37+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <>\n"
 "Language: de\n"
@@ -20471,8 +20471,8 @@ msgid "The password must not contain parts of the account's attributes."
 msgstr "Das Passwort darf keine Teile der Kontoattribute enthalten."
 
 #: ../lib/security.inc:667
-msgid "The password must not be known to be insecure."
-msgstr "Das Passwort darf nicht als unsicher bekannt sein."
+msgid "The password is known to be insecure."
+msgstr "Das Passwort ist als unsicher bekannt."
 
 #: ../lib/security.inc:683
 #, php-format

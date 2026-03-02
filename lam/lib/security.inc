@@ -664,7 +664,7 @@ class PasswordStrengthResult {
 			$details[] = [_('The password must not contain parts of the account\'s attributes.')];
 		}
 		if ($this->externalPasswordCheckFailed) {
-			$details[] = [_('The password must not be known to be insecure.')];
+			$details[] = [_('The password is known to be insecure.')];
 		}
 		return $details;
 	}
