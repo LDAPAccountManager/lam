@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:e0c36c7f-9276-425c-b236-8bef5f1ece1b",
+  "serialNumber" : "urn:uuid:9d228c69-b3b3-4bb6-b5b0-3cf2f55db606",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2025-11-20T06:58:42Z",
+    "timestamp" : "2026-03-02T19:18:52Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.4"
+      "version" : "9.5"
     }
   },
   "components" : [
@@ -86,7 +86,7 @@
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.7.9",
+      "version" : "4.9.14",
       "licenses" : [
         {
           "license" : {
@@ -94,14 +94,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.7.9"
+      "purl" : "pkg:npm/jodit@4.9.14"
     },
     {
       "type" : "library",
       "bom-ref" : "394fe3c8-0e03-407a-96e2-2d3608e97265",
       "group" : "cdx:npm:package:bundled",
       "name" : "sortablejs",
-      "version" : "1.15.6",
+      "version" : "1.15.7",
       "licenses" : [
         {
           "license" : {
@@ -109,14 +109,14 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sortablejs@1.15.6"
+      "purl" : "pkg:npm/sortablejs@1.15.7"
     },
     {
       "type" : "library",
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.26.3",
+      "version" : "11.26.21",
       "licenses" : [
         {
           "license" : {
@@ -124,7 +124,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.26.3"
+      "purl" : "pkg:npm/sweetalert2@11.26.21"
     },
     {
       "type" : "library",

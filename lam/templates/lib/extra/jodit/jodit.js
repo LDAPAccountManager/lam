@@ -1,7 +1,7 @@
 /*!
  * jodit - Jodit is an awesome and useful wysiwyg editor with filebrowser
  * Author: Chupurnov <chupurnov@gmail.com> (https://xdsoft.net/jodit/)
- * Version: v4.7.9
+ * Version: v4.9.14
  * Url: https://xdsoft.net/jodit/
  * License(s): MIT
  */
@@ -31,7 +31,7 @@ return /******/ (function() { // webpackBootstrap
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -62,7 +62,7 @@ const getClassName = (obj)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'Símbolo'
 };
@@ -78,7 +78,7 @@ const getClassName = (obj)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/inline-popup
  */ 
@@ -111,7 +111,7 @@ const getClassName = (obj)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -160,13 +160,13 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /* harmony export */ });
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31635);
-/* harmony import */ var jodit_core_decorators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(84839);
+/* harmony import */ var jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(49574);
 /* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23211);
 /* harmony import */ var jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(60216);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module dom
  */ 
@@ -216,9 +216,9 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
     }
     __workPerform() {
         if (this.workNodes) {
+            var _this_options_timeoutChunkSize;
             this.isWorked = true;
             let count = 0;
-            var _this_options_timeoutChunkSize;
             const chunkSize = (_this_options_timeoutChunkSize = this.options.timeoutChunkSize) !== null && _this_options_timeoutChunkSize !== void 0 ? _this_options_timeoutChunkSize : 50;
             while(!this.isFinished && count <= chunkSize){
                 const item = this.workNodes.next();
@@ -239,10 +239,10 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
         }
     }
     visitNode(nodeElm) {
+        var _this_emit;
         if (!nodeElm || this.options.whatToShow !== undefined && nodeElm.nodeType !== this.options.whatToShow) {
             return false;
         }
-        var _this_emit;
         return (_this_emit = this.emit('visit', nodeElm)) !== null && _this_emit !== void 0 ? _this_emit : false;
     }
     constructor(async, options = {}){
@@ -250,7 +250,7 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
     }
 }
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_2__.autobind
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_2__.autobind
 ], LazyWalker.prototype, "__workPerform", null);
 
 
@@ -270,7 +270,7 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/html
  */ 
@@ -351,7 +351,7 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ /**
@@ -376,7 +376,7 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ /**
@@ -418,7 +418,7 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module event-emitter
  */ 
@@ -452,7 +452,7 @@ class LazyWalker extends jodit_core_event_emitter_eventify__WEBPACK_IMPORTED_MOD
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module view
  */ 
@@ -501,8 +501,8 @@ class ViewWithToolbar extends jodit_core_view_view__WEBPACK_IMPORTED_MODULE_11__
     /**
 	 * Register button for a group
 	 */ registerButton(btn) {
-        this.registeredButtons.add(btn);
         var _btn_group;
+        this.registeredButtons.add(btn);
         const group = (_btn_group = btn.group) !== null && _btn_group !== void 0 ? _btn_group : 'other';
         if (!this.groupToButtons[group]) {
             this.groupToButtons[group] = [];
@@ -517,8 +517,8 @@ class ViewWithToolbar extends jodit_core_view_view__WEBPACK_IMPORTED_MODULE_11__
     /**
 	 * Remove button from a group
 	 */ unregisterButton(btn) {
-        this.registeredButtons.delete(btn);
         var _btn_group;
+        this.registeredButtons.delete(btn);
         const groupName = (_btn_group = btn.group) !== null && _btn_group !== void 0 ? _btn_group : 'other', group = this.groupToButtons[groupName];
         if (group) {
             const index = group.indexOf(btn.name);
@@ -590,7 +590,7 @@ class ViewWithToolbar extends jodit_core_view_view__WEBPACK_IMPORTED_MODULE_11__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -654,7 +654,7 @@ class ViewWithToolbar extends jodit_core_view_view__WEBPACK_IMPORTED_MODULE_11__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui
  */ 
@@ -703,7 +703,7 @@ class ViewWithToolbar extends jodit_core_view_view__WEBPACK_IMPORTED_MODULE_11__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -733,7 +733,7 @@ class ViewWithToolbar extends jodit_core_view_view__WEBPACK_IMPORTED_MODULE_11__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/select-cells/README.md]]
  * @packageDocumentation
@@ -1060,7 +1060,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('selectCells', s
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/tab
  */ 
@@ -1082,7 +1082,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('selectCells', s
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/hr/README.md]]
  * @packageDocumentation
@@ -1143,7 +1143,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_1__.pluginSystem.add('hr', hr);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugin
  */ 
@@ -1210,7 +1210,7 @@ const styles = new Set();
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -1235,7 +1235,7 @@ const styles = new Set();
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/mobile
  */ 
@@ -1391,7 +1391,7 @@ module.exports["default"] = ["Begin met typen..","Over Jodit","Jodit Editor","Jo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'symbol'
 };
@@ -1409,7 +1409,7 @@ module.exports["default"] = ["Begin met typen..","Over Jodit","Jodit Editor","Jo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ /**
@@ -1448,7 +1448,7 @@ module.exports["default"] = ["Begin met typen..","Over Jodit","Jodit Editor","Jo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ function isWindow(obj) {
@@ -1474,7 +1474,7 @@ module.exports["default"] = ["Begin met typen..","Over Jodit","Jodit Editor","Jo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/enter/README.md]]
  * @packageDocumentation
@@ -1575,7 +1575,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_4__.pluginSystem.add('enter', enter);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Kopírovat formát'
 };
@@ -1603,7 +1603,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 16 16\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -1662,7 +1662,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 16 16\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ 
@@ -1720,7 +1720,7 @@ function trimChars(value, chars) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/ui/README.md]]
  * @packageDocumentation
@@ -1745,16 +1745,13 @@ function trimChars(value, chars) {
 /* harmony export */   makeCollection: function() { return /* binding */ makeCollection; },
 /* harmony export */   makeSelect: function() { return /* binding */ makeSelect; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(65946);
-/* harmony import */ var _button_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(22533);
-/* harmony import */ var _button_content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5772);
-/* harmony import */ var _button_select_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(61764);
-/* harmony import */ var _collection_collection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(42573);
-/* harmony import */ var _collection_editor_collection__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6209);
+/* harmony import */ var jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(91672);
+/* harmony import */ var jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(91565);
+/* harmony import */ var jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(24497);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/toolbar/README.md]]
  * @packageDocumentation
@@ -1762,13 +1759,12 @@ function trimChars(value, chars) {
  */ 
 
 
-
-
-
 /**
  * Collection factory
  */ function makeCollection(jodit, parentElement) {
-    const collection = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__.isJoditObject)(jodit) ? new _collection_editor_collection__WEBPACK_IMPORTED_MODULE_5__.ToolbarEditorCollection(jodit) : new _collection_collection__WEBPACK_IMPORTED_MODULE_4__.ToolbarCollection(jodit);
+    const ToolbarCollection = (0,jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_0__.getComponentClass)('ToolbarCollection');
+    const ToolbarEditorCollection = (0,jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_0__.getComponentClass)('ToolbarEditorCollection');
+    const collection = (0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_2__.isJoditObject)(jodit) ? new ToolbarEditorCollection(jodit) : new ToolbarCollection(jodit);
     if (jodit.o.textIcons) {
         collection.container.classList.add('jodit_text_icons');
     }
@@ -1783,15 +1779,18 @@ function trimChars(value, chars) {
 /**
  * Button factory
  */ function makeButton(jodit, control, target = null) {
-    if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__.isFunction)(control.getContent)) {
-        return new _button_content__WEBPACK_IMPORTED_MODULE_2__.ToolbarContent(jodit, control, target);
+    if ((0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_1__.isFunction)(control.getContent)) {
+        const ToolbarContent = (0,jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_0__.getComponentClass)('ToolbarContent');
+        return new ToolbarContent(jodit, control, target);
     }
-    const button = new _button_button__WEBPACK_IMPORTED_MODULE_1__.ToolbarButton(jodit, control, target);
+    const ToolbarButton = (0,jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_0__.getComponentClass)('ToolbarButton');
+    const button = new ToolbarButton(jodit, control, target);
     button.state.tabIndex = jodit.o.allowTabNavigation ? 0 : -1;
     return button;
 }
 function makeSelect(view, control, target = null) {
-    return new _button_select_select__WEBPACK_IMPORTED_MODULE_3__.ToolbarSelect(view, control, target);
+    const ToolbarSelect = (0,jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_0__.getComponentClass)('ToolbarSelect');
+    return new ToolbarSelect(view, control, target);
 }
 
 
@@ -1812,7 +1811,7 @@ function makeSelect(view, control, target = null) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -1853,10 +1852,11 @@ UIBlock = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
 /* harmony export */ });
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(81937);
+
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * Editor options. These can be configured upon the creation of the editor.
  * ```javascript
@@ -1871,10 +1871,98 @@ UIBlock = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
  * @module config
  */ 
 
-
 let ConfigPrototype = {};
 /**
- * Default Editor's Configuration
+ * Default Editor's Configuration.
+ *
+ * This class holds all default option values for the Jodit editor.
+ * It uses a **private constructor** and a **lazy singleton** pattern — the single instance
+ * is created on the first access to {@link Config.defaultOptions} (also available as `Jodit.defaultOptions`).
+ *
+ * ## How options are resolved
+ *
+ * When you create an editor with `Jodit.make('#editor', userOptions)`, the library
+ * calls {@link ConfigProto}(userOptions, Config.defaultOptions). `ConfigProto` does
+ * **not** deep-clone the defaults. Instead it creates a new object whose JavaScript
+ * prototype is `Config.defaultOptions`:
+ *
+ * ```
+ * userOptions  ──[[Prototype]]──►  Config.defaultOptions
+ * ```
+ *
+ * Any key present in `userOptions` shadows the default;
+ * any key **not** present falls through to `Config.defaultOptions` via the prototype chain.
+ * Nested plain objects are recursively prototyped in the same way, so partial overrides
+ * of nested options work automatically:
+ *
+ * ```js
+ * // Only override `dialogWidth`; all other `image.*` defaults are still available
+ * Jodit.make('#editor', {
+ *   image: { dialogWidth: 500 }
+ * });
+ * ```
+ *
+ * ## How plugins extend the config
+ *
+ * Each plugin adds its own defaults by assigning to `Config.prototype` and augmenting
+ * the TypeScript type with `declare module`:
+ *
+ * ```ts
+ * // 1. Type augmentation (compile-time)
+ * declare module 'jodit/config' {
+ *   interface Config {
+ *     toolbarSticky: boolean;
+ *   }
+ * }
+ *
+ * // 2. Runtime default
+ * Config.prototype.toolbarSticky = true;
+ * ```
+ *
+ * Because the constructor runs `Object.assign(this, ConfigPrototype)` (where
+ * `ConfigPrototype` is captured as `Config.prototype` after the class definition),
+ * all prototype-level values — including those added by plugins — are materialized
+ * as own properties on the singleton. This means `Config.defaultOptions` always
+ * contains every registered option as an own, enumerable property.
+ *
+ * ## Changing global defaults
+ *
+ * You can modify `Jodit.defaultOptions` **before** creating editors to change
+ * defaults globally:
+ *
+ * ```js
+ * Jodit.defaultOptions.language = 'de';
+ * Jodit.defaultOptions.theme = 'dark';
+ *
+ * // Both editors inherit the new defaults
+ * Jodit.make('#editor1');
+ * Jodit.make('#editor2');
+ * ```
+ *
+ * ## `Jodit.atom` — preventing deep merge
+ *
+ * By default, `ConfigProto` deep-merges nested plain objects and arrays.
+ * Wrap a value with `Jodit.atom(value)` to make it **atomic** — it will completely
+ * replace the default instead of being merged:
+ *
+ * ```js
+ * Jodit.make('#editor', {
+ *   controls: {
+ *     fontsize: {
+ *       // Replace the entire list rather than merging with the default one
+ *       list: Jodit.atom([8, 9, 10])
+ *     }
+ *   }
+ * });
+ * ```
+ *
+ * `Jodit.atom` calls {@link markAsAtomic}, which sets a non-enumerable
+ * `isAtom` flag on the object. `ConfigProto` checks this flag and skips
+ * recursive merging when it is present. Note: top-level arrays (depth 0)
+ * are always treated as atomic — they replace rather than merge.
+ *
+ * @see {@link ConfigProto} for the full merge algorithm
+ * @see {@link markAsAtomic} / {@link isAtom} for the atom marker implementation
  */ class Config {
     static get defaultOptions() {
         if (!Config.__defaultOptions) {
@@ -1884,31 +1972,32 @@ let ConfigPrototype = {};
     }
     constructor(){
         /**
-	 * Use cache for heavy methods
+	 * When enabled, the editor caches the results of expensive computations (e.g. toolbar rebuilds)
+	 * to improve performance. Disable for debugging or when options change frequently at runtime.
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "cache", true);
         /**
 	 * Timeout of all asynchronous methods
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "defaultTimeout", 100);
-        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "namespace", '');
+        /**
+	 * Prefix used for CSS class names and local-storage keys to avoid collisions
+	 * when multiple editor instances or applications share the same page.
+	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "namespace", '');
         /**
 	 * Editor loads completely without plugins. Useful when debugging your own plugin.
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "safeMode", false);
         /**
 	 * Editor's width
 	 *
-	 * @example
 	 * ```javascript
 	 * Jodit.make('.editor', {
 	 *    width: '100%',
 	 * })
 	 * ```
-	 * @example
 	 * ```javascript
 	 * Jodit.make('.editor', {
 	 *    width: 600, // equivalent for '600px'
 	 * })
 	 * ```
-	 * @example
 	 * ```javascript
 	 * Jodit.make('.editor', {
 	 *    width: 'auto', // autosize
@@ -1918,19 +2007,16 @@ let ConfigPrototype = {};
         /**
 	 * Editor's height
 	 *
-	 * @example
 	 * ```javascript
 	 * Jodit.make('.editor', {
 	 *    height: '100%',
 	 * })
 	 * ```
-	 * @example
 	 * ```javascript
 	 * Jodit.make('.editor', {
 	 *    height: 600, // equivalent for '600px'
 	 * })
 	 * ```
-	 * @example
 	 * ```javascript
 	 * Jodit.make('.editor', {
 	 *    height: 'auto', // default - autosize
@@ -1968,7 +2054,32 @@ let ConfigPrototype = {};
 	 * });
 	 * ```
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "preset", 'custom');
-        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "presets", {
+        /**
+	 * Dictionary of named configuration presets. Each key is a preset name and the value
+	 * is a partial options object that will be merged into the editor config when
+	 * {@link Config.preset} matches the key.
+	 *
+	 * ```javascript
+	 * // Use a built-in preset
+	 * Jodit.make('#editor', {
+	 *     preset: 'inline'
+	 * });
+	 * ```
+	 *
+	 * ```javascript
+	 * // Define and use a custom preset
+	 * Jodit.defaultOptions.presets.myCompact = {
+	 *     toolbarButtonSize: 'small',
+	 *     showCharsCounter: false,
+	 *     showWordsCounter: false,
+	 *     showXPathInStatusbar: false
+	 * };
+	 *
+	 * Jodit.make('#editor', {
+	 *     preset: 'myCompact'
+	 * });
+	 * ```
+	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "presets", {
             inline: {
                 inline: true,
                 toolbar: false,
@@ -1980,7 +2091,10 @@ let ConfigPrototype = {};
                 showPlaceholder: false
             }
         });
-        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "ownerDocument", jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.globalDocument);
+        /**
+	 * The Document object the editor operates within. Defaults to the current `document`.
+	 * Override when the editor is created inside an iframe or a different browsing context.
+	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "ownerDocument", jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.globalDocument);
         /**
 	 * Allows you to specify the window in which the editor will be created. Default - window
 	 * This is necessary if you are creating the editor inside an iframe but the code is running in the parent window
@@ -2011,7 +2125,9 @@ let ConfigPrototype = {};
 	 * ```
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "shadowRoot", null);
         /**
-	 * z-index For editor
+	 * Base CSS `z-index` for the editor UI (toolbar, popups, dialogs).
+	 * Set to a higher value when other page elements overlap the editor.
+	 * `0` means no explicit z-index is applied.
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "zIndex", 0);
         /**
 	 * Change the read-only state of the editor
@@ -2047,7 +2163,6 @@ let ConfigPrototype = {};
         /**
 	 * Size of icons in the toolbar (can be "small", "middle", "large")
 	 *
-	 * @example
 	 * ```javascript
 	 * const editor = Jodit.make(".dark_editor", {
 	 *      toolbarButtonSize: "small"
@@ -2058,11 +2173,13 @@ let ConfigPrototype = {};
 	 * Allow navigation in the toolbar of the editor by Tab key
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "allowTabNavigation", false);
         /**
-	 * Inline editing mode
+	 * When enabled, the editor renders without its own container chrome (toolbar, borders, statusbar).
+	 * The editable area becomes the element itself. Typically combined with
+	 * `toolbarInline: true` so a floating toolbar appears on selection.
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "inline", false);
         /**
 	 * Theme (can be "dark")
-	 * @example
+	 *
 	 * ```javascript
 	 * const editor = Jodit.make(".dark_editor", {
 	 *      theme: "dark"
@@ -2075,10 +2192,9 @@ let ConfigPrototype = {};
         /**
 	 * Class name that can be appended to the editable area
 	 *
-	 * @see [[Config.iframeCSSLinks]]
-	 * @see [[Config.iframeStyle]]
+	 * @see {@link Config.iframeCSSLinks}
+	 * @see {@link Config.iframeStyle}
 	 *
-	 * @example
 	 * ```javascript
 	 * Jodit.make('#editor', {
 	 *    editorClassName: 'some_my_class'
@@ -2094,7 +2210,7 @@ let ConfigPrototype = {};
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "editorClassName", false);
         /**
 	 * Class name that can be appended to the main editor container
-	 * @example
+	 *
 	 * ```javascript
 	 * const jodit = Jodit.make('#editor', {
 	 *    className: 'some_my_class'
@@ -2114,7 +2230,7 @@ let ConfigPrototype = {};
         /**
 	 * The internal styles of the editable area. They are intended to change
 	 * not the appearance of the editor, but to change the appearance of the content.
-	 * @example
+	 *
 	 * ```javascript
 	 * Jodit.make('#editor', {
 	 * 		style: {
@@ -2125,13 +2241,14 @@ let ConfigPrototype = {};
 	 * ```
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "style", false);
         /**
+	 * Inline CSS styles applied to the outer editor container element.
+	 * Use this to style the editor wrapper (borders, background, etc.) without affecting content.
 	 *
-	 * @example
 	 * ```javascript
 	 * Jodit.make('#editor', {
-	 * 		editorStyle: {
-	 * 		 font: '12px Arial',
-	 * 		 color: '#0c0c0c'
+	 * 		containerStyle: {
+	 * 		 border: '1px solid #ccc',
+	 * 		 background: '#f9f9f9'
 	 * 		}
 	 * });
 	 * ```
@@ -2140,7 +2257,6 @@ let ConfigPrototype = {};
 	 * Dictionary of variable values in css, a complete list can be found here
 	 * https://github.com/xdan/jodit/blob/main/src/styles/variables.less#L25
 	 *
-	 * @example
 	 * ```js
 	 * const editor = Jodit.make('#editor', {
 	 *   styleValues: {
@@ -2152,9 +2268,9 @@ let ConfigPrototype = {};
 	 * ```
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "styleValues", {});
         /**
-	 * After all, changes in editors for textarea will call change trigger
+	 * When enabled, the editor dispatches a native `change` event on the original
+	 * `<textarea>` element whenever the content changes, so standard DOM listeners work.
 	 *
-	 * @example
 	 * ```javascript
 	 * const editor = Jodit.make('#editor');
 	 * document.getElementById('editor').addEventListener('change', function () {
@@ -2168,7 +2284,6 @@ let ConfigPrototype = {};
 	 * the page element direction. 'ltr' – Indicates a Left-To-Right text direction (like in English).
 	 * 'rtl' – Indicates a Right-To-Left text direction (like in Arabic).
 	 *
-	 * @example
 	 * ```javascript
 	 * Jodit.make('.editor', {
 	 *    direction: 'rtl'
@@ -2180,7 +2295,6 @@ let ConfigPrototype = {};
 	 * (navigator.language && navigator.language.substr(0, 2)) ||
 	 * (navigator.browserLanguage && navigator.browserLanguage.substr(0, 2)) || 'en'
 	 *
-	 * @example
 	 * ```html
 	 * <!-- include in you page lang file -->
 	 * <script src="jodit/lang/de.js"></script>
@@ -2194,7 +2308,6 @@ let ConfigPrototype = {};
         /**
 	 * if true all Lang.i18n(key) return `{key}`
 	 *
-	 * @example
 	 * ```html
 	 * <script>
 	 * var editor = Jodit.make('.editor', {
@@ -2208,7 +2321,6 @@ let ConfigPrototype = {};
         /**
 	 * Collection of language pack data `{en: {'Type something': 'Type something', ...}}`
 	 *
-	 * @example
 	 * ```javascript
 	 * const editor = Jodit.make('#editor', {
 	 *     language: 'ru',
@@ -2240,11 +2352,11 @@ let ConfigPrototype = {};
 	 * Delay before show tooltip
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "showTooltipDelay", 200);
         /**
-	 * Instead of create custop tooltip - use native title tooltips
+	 * Instead of creating a custom tooltip, use the browser's native title tooltips
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "useNativeTooltip", false);
         /**
-	 * Default insert method
-	 * @default insert_as_html
+	 * How pasted content is inserted into the editor by default.
+	 * Possible values: `insert_as_html`, `insert_as_text`, `insert_only_text`, `insert_clear_html`.
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "defaultActionOnPaste", jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.INSERT_AS_HTML);
         // TODO
         // autosave: false, // false or url
@@ -2257,7 +2369,6 @@ let ConfigPrototype = {};
         /**
 	 * When this option is enabled, the editor's content will be placed in an iframe and isolated from the rest of the page.
 	 *
-	 * @example
 	 * ```javascript
 	 * Jodit.make('#editor', {
 	 *    iframe: true,
@@ -2269,7 +2380,7 @@ let ConfigPrototype = {};
         /**
 	 * Allow editing the entire HTML document(html, head)
 	 * \> Works together with the iframe option.
-	 * @example
+	 *
 	 * ```js
 	 * const editor = Jodit.make('#editor', {
 	 *   iframe: true,
@@ -2288,7 +2399,7 @@ let ConfigPrototype = {};
         /**
 	 * Jodit.MODE_WYSIWYG The HTML editor allows you to write like MSWord,
 	 * Jodit.MODE_SOURCE syntax highlighting source editor
-	 * @example
+	 *
 	 * ```javascript
 	 * var editor = Jodit.make('#editor', {
 	 *     defaultMode: Jodit.MODE_SPLIT
@@ -2297,11 +2408,11 @@ let ConfigPrototype = {};
 	 * ```
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "defaultMode", jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.MODE_WYSIWYG);
         /**
-	 * Use split mode
+	 * When enabled, the editor displays both the WYSIWYG view and the source-code view side by side.
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "useSplitMode", false);
         /**
 	 * The colors in HEX representation to select a color for the background and for the text in colorpicker
-	 * @example
+	 *
 	 * ```javascript
 	 *  Jodit.make('#editor', {
 	 *     colors: ['#ff0000', '#00ff00', '#0000ff']
@@ -2397,7 +2508,7 @@ let ConfigPrototype = {};
         });
         /**
 	 * The default tab color picker
-	 * @example
+	 *
 	 * ```javascript
 	 * Jodit.make('#editor2', {
 	 *     colorPickerDefaultTab: 'color'
@@ -2405,11 +2516,11 @@ let ConfigPrototype = {};
 	 * ```
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "colorPickerDefaultTab", 'background');
         /**
-	 * Image size defaults to a larger image
+	 * Default width (in pixels) applied to images inserted into the editor
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "imageDefaultWidth", 300);
         /**
 	 * Do not display these buttons that are on the list
-	 * @example
+	 *
 	 * ```javascript
 	 * Jodit.make('#editor2', {
 	 *     removeButtons: ['hr', 'source']
@@ -2418,7 +2529,7 @@ let ConfigPrototype = {};
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "removeButtons", []);
         /**
 	 * Do not init these plugins
-	 * @example
+	 *
 	 * ```typescript
 	 * var editor = Jodit.make('.editor', {
 	 *    disablePlugins: 'table,iframe'
@@ -2431,7 +2542,7 @@ let ConfigPrototype = {};
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "disablePlugins", []);
         /**
 	 * Init and download extra plugins
-	 * @example
+	 *
 	 * ```typescript
 	 * var editor = Jodit.make('.editor', {
 	 *    extraPlugins: ['emoji']
@@ -2443,14 +2554,13 @@ let ConfigPrototype = {};
 	 * Base path for download extra plugins
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "basePath", void 0);
         /**
-	 * These buttons list will be added to the option. Buttons
+	 * Additional buttons appended to the {@link Config.buttons} list
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "extraButtons", []);
         /**
 	 * By default, you can only install an icon from the Jodit suite.
 	 * You can add your icon to the set using the `Jodit.modules.Icon.set (name, svg Code)` method.
 	 * But for a declarative declaration, you can use this option.
 	 *
-	 * @example
 	 * ```js
 	 * Jodit.modules.Icon.set('someIcon', '<svg><path.../></svg>');
 	 * const editor = Jodit.make({
@@ -2459,8 +2569,9 @@ let ConfigPrototype = {};
 	 *     icon: 'someIcon'
 	 *   }]
 	 * });
+	 * ```
 	 *
-	 * @example
+	 * ```js
 	 * const editor = Jodit.make({
 	 *   extraIcons: {
 	 *     someIcon: '<svg><path.../></svg>'
@@ -2471,7 +2582,7 @@ let ConfigPrototype = {};
 	 *   }]
 	 * });
 	 * ```
-	 * @example
+	 *
 	 * ```js
 	 * const editor = Jodit.make({
 	 *   extraButtons: [{
@@ -2483,7 +2594,7 @@ let ConfigPrototype = {};
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "extraIcons", {});
         /**
 	 * Default attributes for created inside editor elements
-	 * @example
+	 *
 	 * ```js
 	 * const editor2 = Jodit.make('#editor', {
 	 * 	createAttributes: {
@@ -2503,7 +2614,7 @@ let ConfigPrototype = {};
 	 * expect(ul.className).equals('ui-test');
 	 * ```
 	 * Or JSX in React
-	 * @example
+	 *
 	 * ```jsx
 	 * import React, {useState, useRef} from 'react';
 	 * import JoditEditor from "jodit-react";
@@ -2535,7 +2646,7 @@ let ConfigPrototype = {};
         /**
 	 * The list of buttons that appear in the editor's toolbar on large places (≥ options.sizeLG).
 	 * Note - this is not the width of the device, the width of the editor
-	 * @example
+	 *
 	 * ```javascript
 	 * Jodit.make('#editor', {
 	 *     buttons: ['bold', 'italic', 'source'],
@@ -2543,7 +2654,7 @@ let ConfigPrototype = {};
 	 *     buttonsXS: ['bold', 'fullsize'],
 	 * });
 	 * ```
-	 * @example
+	 *
 	 * ```javascript
 	 * Jodit.make('#editor2', {
 	 *     buttons: [{
@@ -2567,7 +2678,7 @@ let ConfigPrototype = {};
 	 *     }]
 	 * });
 	 * ```
-	 * @example
+	 *
 	 * ```javascript
 	 * Jodit.make('#editor2', {
 	 *     buttons: Jodit.defaultOptions.buttons.concat([{
@@ -2663,7 +2774,8 @@ let ConfigPrototype = {};
             }
         ]);
         /**
-	 * Behavior for buttons
+	 * Map of toolbar button names to their control definitions (icon, tooltip, exec handler, etc.).
+	 * Plugins extend this object with their own button definitions via `Config.prototype.controls`.
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "controls", void 0);
         /**
 	 * Some events are called when the editor is initialized, for example, the `afterInit` event.
@@ -2691,7 +2803,7 @@ let ConfigPrototype = {};
 	 * ```
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "events", {});
         /**
-	 * Buttons in toolbat without SVG - only texts
+	 * Buttons in toolbar without SVG - only texts
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "textIcons", false);
         /**
 	 * Element for dialog container
@@ -2722,7 +2834,7 @@ Config.prototype.controls = {};
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -2788,7 +2900,7 @@ Config.prototype.controls = {};
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -2809,7 +2921,7 @@ Config.prototype.controls = {};
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -2858,7 +2970,7 @@ Config.prototype.controls = {};
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/toolbar/button
  */ 
@@ -2913,7 +3025,7 @@ ToolbarContent = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__deco
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/toolbar/collection
  */ 
@@ -2980,6 +3092,7 @@ class ToolbarEditorCollection extends _collection__WEBPACK_IMPORTED_MODULE_6__.T
 	 * @see https://github.com/jodit/jodit-react/issues/138
 	 */ prependInvisibleInput(container) {
         const input = this.j.create.element('input', {
+            name: 'jodit-toolbar-focus-helper_' + this.j.id,
             tabIndex: -1,
             disabled: true,
             style: 'width: 0; height:0; position: absolute; visibility: hidden;'
@@ -3041,7 +3154,7 @@ ToolbarEditorCollection = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -3069,7 +3182,7 @@ ToolbarEditorCollection = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/html
  */ 
@@ -3095,7 +3208,7 @@ ToolbarEditorCollection = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/color
  */ 
@@ -3121,7 +3234,7 @@ ToolbarEditorCollection = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/font
  */ 
@@ -3190,20 +3303,20 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.fontsize = {
         return value.toString();
     },
     isChildActive: (editor, button)=>{
+        var _ref;
         var _button_control_data;
         const value = button.state.value;
-        var _button_control_data_normalize;
-        const normalize = (_button_control_data_normalize = (_button_control_data = button.control.data) === null || _button_control_data === void 0 ? void 0 : _button_control_data.normalize) !== null && _button_control_data_normalize !== void 0 ? _button_control_data_normalize : (v)=>v;
+        const normalize = (_ref = (_button_control_data = button.control.data) === null || _button_control_data === void 0 ? void 0 : _button_control_data.normalize) !== null && _ref !== void 0 ? _ref : (v)=>v;
         return Boolean(value && button.control.args && normalize(button.control.args[0].toString()) === normalize(value.toString()));
     },
     isActive: (editor, button)=>{
+        var _ref;
         var _button_control_data;
         const value = button.state.value;
         if (!value) {
             return false;
         }
-        var _button_control_data_normalize;
-        const normalize = (_button_control_data_normalize = (_button_control_data = button.control.data) === null || _button_control_data === void 0 ? void 0 : _button_control_data.normalize) !== null && _button_control_data_normalize !== void 0 ? _button_control_data_normalize : (v)=>v;
+        const normalize = (_ref = (_button_control_data = button.control.data) === null || _button_control_data === void 0 ? void 0 : _button_control_data.normalize) !== null && _ref !== void 0 ? _ref : (v)=>v;
         let keySet = button.control.data.cacheListSet;
         if (!keySet) {
             const keys = Object.keys(button.control.list).map(normalize);
@@ -3236,7 +3349,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.font = (0,_s
         let isAvailable = false;
         try {
             isAvailable = key.indexOf('dings') === -1 && document.fonts.check(`16px ${key}`, value);
-        } catch (e) {}
+        } catch (unused) {}
         return `<span data-style="${key}" style="${isAvailable ? `font-family: ${key}!important;` : ''}">${value}</span>`;
     },
     data: {
@@ -3262,7 +3375,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.font = (0,_s
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ 
@@ -3297,16 +3410,20 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.font = (0,_s
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   attr: function() { return /* binding */ attr; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(28686);
-/* harmony import */ var jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(74264);
-/* harmony import */ var _css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(80991);
+/* harmony import */ var jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(91565);
+/* harmony import */ var jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(62101);
+/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(85932);
+/* harmony import */ var jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(74264);
+/* harmony import */ var _css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(80991);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
+
+
 
 
 /**
@@ -3314,14 +3431,14 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.font = (0,_s
  * it will also check `data-{key}` attribute
  * if set `value` it is alias for setAttribute with the same logic
  */ function attr(elm, keyOrAttributes, value) {
-    if (!elm || !(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_0__.isFunction)(elm.getAttribute)) {
+    if (!elm || !(0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_0__.isFunction)(elm.getAttribute)) {
         return null;
     }
-    if (!(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_0__.isString)(keyOrAttributes)) {
+    if (!(0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_2__.isString)(keyOrAttributes)) {
         Object.keys(keyOrAttributes).forEach((key)=>{
             const value = keyOrAttributes[key];
-            if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(value) && key === 'style') {
-                (0,_css__WEBPACK_IMPORTED_MODULE_2__.css)(elm, value);
+            if ((0,jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_1__.isPlainObject)(value) && key === 'style') {
+                (0,_css__WEBPACK_IMPORTED_MODULE_4__.css)(elm, value);
             } else {
                 if (key === 'className') {
                     key = 'class';
@@ -3331,7 +3448,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.font = (0,_s
         });
         return null;
     }
-    let key = (0,jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_1__.CamelCaseToKebabCase)(keyOrAttributes);
+    let key = (0,jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_3__.CamelCaseToKebabCase)(keyOrAttributes);
     if (/^-/.test(key)) {
         const res = attr(elm, `data${key}`);
         if (res) {
@@ -3367,7 +3484,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.font = (0,_s
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/table/README.md]]
  * @packageDocumentation
@@ -3386,6 +3503,105 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('table', table);
 
 /***/ }),
 
+/***/ 8006:
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AsyncStorage: function() { return /* binding */ AsyncStorage; }
+/* harmony export */ });
+/* harmony import */ var _swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(49376);
+/* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(25045);
+/* harmony import */ var jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(57821);
+/* harmony import */ var _engines_indexed_db_provider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(91162);
+/* harmony import */ var _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(59807);
+/* harmony import */ var _engines_memory_storage_provider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9505);
+/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(24475);
+/*!
+ * Jodit Editor (https://xdsoft.net/jodit/)
+ * Released under MIT see LICENSE.txt in the project root for license information.
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
+ */ /**
+ * @module storage
+ */ 
+
+
+
+
+
+
+class AsyncStorage {
+    set(key, value) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            const provider = yield this.provider;
+            yield provider.set((0,jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_2__.camelCase)(this.prefix + key), value);
+            return this;
+        }).call(this);
+    }
+    delete(key) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            const provider = yield this.provider;
+            yield provider.delete((0,jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_2__.camelCase)(this.prefix + key));
+            return this;
+        }).call(this);
+    }
+    get(key) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            const provider = yield this.provider;
+            return provider.get((0,jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_2__.camelCase)(this.prefix + key));
+        }).call(this);
+    }
+    exists(key) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            const provider = yield this.provider;
+            return provider.exists((0,jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_2__.camelCase)(this.prefix + key));
+        }).call(this);
+    }
+    clear() {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            const provider = yield this.provider;
+            yield provider.clear();
+            return this;
+        }).call(this);
+    }
+    close() {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            const provider = yield this.provider;
+            if ('close' in provider && typeof provider.close === 'function') {
+                yield provider.close();
+            }
+        }).call(this);
+    }
+    static makeStorage(persistentOrStrategy = false, suffix) {
+        let provider = undefined;
+        let storage = null;
+        if (persistentOrStrategy === 'localStorage' || persistentOrStrategy === 'sessionStorage') {
+            if ((0,_engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_4__.canUsePersistentStorage)(persistentOrStrategy)) {
+                provider = new _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_4__.LocalStorageProvider(_storage__WEBPACK_IMPORTED_MODULE_6__.StorageKey + (suffix || ''), persistentOrStrategy);
+            }
+        } else if (persistentOrStrategy === 'indexedDB' || persistentOrStrategy === true) {
+            provider = (0,_engines_indexed_db_provider__WEBPACK_IMPORTED_MODULE_3__.canUseIndexedDB)().then((canUse)=>canUse ? new _engines_indexed_db_provider__WEBPACK_IMPORTED_MODULE_3__.IndexedDBProvider(_storage__WEBPACK_IMPORTED_MODULE_6__.StorageKey + (suffix || ''), 'keyValueStore') : new _engines_memory_storage_provider__WEBPACK_IMPORTED_MODULE_5__.MemoryStorageProvider());
+        }
+        if (!provider) {
+            provider = new _engines_memory_storage_provider__WEBPACK_IMPORTED_MODULE_5__.MemoryStorageProvider();
+        }
+        storage = new AsyncStorage(Promise.resolve(provider), suffix);
+        return storage;
+    }
+    constructor(provider, suffix){
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__._)(this, "provider", void 0);
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__._)(this, "prefix", void 0);
+        this.provider = provider;
+        this.prefix = _storage__WEBPACK_IMPORTED_MODULE_6__.StorageKey;
+        if (suffix) {
+            this.prefix += suffix;
+        }
+    }
+}
+
+
+/***/ }),
+
 /***/ 8071:
 /***/ (function(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
@@ -3400,7 +3616,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('table', table);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/color
  */ 
@@ -3570,7 +3786,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.brush = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/source
  */ 
@@ -3597,7 +3813,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -3628,7 +3844,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/tab
  */ 
@@ -3748,7 +3964,7 @@ function removeNestedList(jodit, list, li) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/history
  */ 
@@ -3785,7 +4001,7 @@ class Command {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/image-editor
  */ 
@@ -3878,7 +4094,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module storage
  */ 
@@ -3927,7 +4143,7 @@ class MemoryStorageProvider {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -4001,7 +4217,7 @@ if (jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.globalDocument) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/messages/README.md]]
  * @packageDocumentation
@@ -4122,7 +4338,7 @@ UIMessages = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'symbol'
 };
@@ -4142,7 +4358,7 @@ UIMessages = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -4195,7 +4411,7 @@ UIMessages = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -4234,7 +4450,7 @@ UIMessages = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/add-new-line
  */ 
@@ -4269,7 +4485,7 @@ jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_0__.Icon.set('enter', (_enter_svg__W
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -4315,7 +4531,7 @@ jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_0__.Icon.set('enter', (_enter_svg__W
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -4349,7 +4565,7 @@ jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_0__.Icon.set('enter', (_enter_svg__W
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/clean-html/README.md]]
  * @packageDocumentation
@@ -4468,7 +4684,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('cleanHtml', cle
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ class OptionsError extends TypeError {
@@ -4492,7 +4708,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('cleanHtml', cle
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -4539,7 +4755,7 @@ jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_0__.Icon.set('eraser', (_eraser_svg_
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/symbols/README.md]]
  * @packageDocumentation
@@ -4667,7 +4883,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_3__.pluginSystem.add('symbols', symbo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/indent
  */ 
@@ -4698,7 +4914,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_3__.pluginSystem.add('symbols', symbo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/uploader
  */ 
@@ -4727,7 +4943,7 @@ function hasItems(data) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -4846,7 +5062,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:styles/icons/README.md]]
  * @packageDocumentation
@@ -4901,7 +5117,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/source/README.md]]
  * @packageDocumentation
@@ -5146,13 +5362,13 @@ __webpack_require__.r(__webpack_exports__);
             }
         ]), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "sourceEditor", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "mirrorContainer", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__lock", false), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__oldMirrorValue", ''), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "tempMarkerStart", '{start-jodit-selection}'), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "tempMarkerStartReg", /{start-jodit-selection}/g), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "tempMarkerEnd", '{end-jodit-selection}'), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "tempMarkerEndReg", /{end-jodit-selection}/g), // override it for ace editors
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "getSelectionStart", ()=>{
+            var _ref;
             var _this_sourceEditor;
-            var _this_sourceEditor_getSelectionStart;
-            return (_this_sourceEditor_getSelectionStart = (_this_sourceEditor = this.sourceEditor) === null || _this_sourceEditor === void 0 ? void 0 : _this_sourceEditor.getSelectionStart()) !== null && _this_sourceEditor_getSelectionStart !== void 0 ? _this_sourceEditor_getSelectionStart : 0;
+            return (_ref = (_this_sourceEditor = this.sourceEditor) === null || _this_sourceEditor === void 0 ? void 0 : _this_sourceEditor.getSelectionStart()) !== null && _ref !== void 0 ? _ref : 0;
         }), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "getSelectionEnd", ()=>{
+            var _ref;
             var _this_sourceEditor;
-            var _this_sourceEditor_getSelectionEnd;
-            return (_this_sourceEditor_getSelectionEnd = (_this_sourceEditor = this.sourceEditor) === null || _this_sourceEditor === void 0 ? void 0 : _this_sourceEditor.getSelectionEnd()) !== null && _this_sourceEditor_getSelectionEnd !== void 0 ? _this_sourceEditor_getSelectionEnd : 0;
+            return (_ref = (_this_sourceEditor = this.sourceEditor) === null || _this_sourceEditor === void 0 ? void 0 : _this_sourceEditor.getSelectionEnd()) !== null && _ref !== void 0 ? _ref : 0;
         });
     }
 }
@@ -5211,7 +5427,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'Símbolo'
 };
@@ -5224,23 +5440,20 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   abort: function() { return /* binding */ abort; },
-/* harmony export */   isAbort: function() { return /* binding */ isAbort; }
+/* harmony export */   abort: function() { return /* binding */ abort; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_helpers_checker_is_abort_error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(72068);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
- */ 
-function abort(message = 'Aborted') {
+ */ /**
+ * `AbortError` is not a separate exception, but rather a {@link DOMException} with a special `name`.
+ * https://webidl.spec.whatwg.org/#aborterror
+ */ function abort(message = 'Aborted') {
     return new DOMException(message, 'AbortError');
 }
-/**
- * @deprecated use `isAbortError` instead
- */ const isAbort = jodit_core_helpers_checker_is_abort_error__WEBPACK_IMPORTED_MODULE_0__.isAbortError;
 
 
 /***/ }),
@@ -5262,7 +5475,7 @@ function abort(message = 'Aborted') {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/resize-cells/README.md]]
  * @packageDocumentation
@@ -5539,7 +5752,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/hotkeys
  */ 
@@ -5576,7 +5789,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.commandToHotkeys = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -5616,7 +5829,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.commandToHotkeys = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': '複製格式'
 };
@@ -5676,7 +5889,7 @@ function _object_spread_props(target, source) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/button
  */ 
@@ -5720,6 +5933,7 @@ class UIButtonGroup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_5
     constructor(jodit, options = {
         radio: true
     }){
+        var _options_value;
         var _options_options;
         super(jodit, (_options_options = options.options) === null || _options_options === void 0 ? void 0 : _options_options.map((opt)=>{
             const btn = new jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_4__.UIButton(jodit, {
@@ -5732,7 +5946,6 @@ class UIButtonGroup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_5
             });
             return btn;
         }), options), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "options", void 0), this.options = options;
-        var _options_value;
         this.select((_options_value = options.value) !== null && _options_value !== void 0 ? _options_value : 0);
     }
 }
@@ -5758,7 +5971,7 @@ UIButtonGroup = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/widget/README.md]]
  * @packageDocumentation
@@ -5784,7 +5997,7 @@ UIButtonGroup = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui
  */ 
@@ -5850,7 +6063,7 @@ UIButtonGroup = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -5934,7 +6147,7 @@ UIButtonGroup = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module component
  */ 
@@ -5965,7 +6178,7 @@ UIButtonGroup = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -6245,7 +6458,7 @@ UIImagePositionTab = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ /**
@@ -6279,7 +6492,7 @@ UIImagePositionTab = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/request/README.md]]
  * @packageDocumentation
@@ -6322,7 +6535,7 @@ class Ajax {
         try {
             this.__isFulfilled = true;
             this.xhr.abort();
-        } catch (e) {}
+        } catch (unused) {}
         return this;
     }
     send() {
@@ -6330,6 +6543,7 @@ class Ajax {
         const { xhr, o } = this;
         const request = this.prepareRequest();
         return this.__async.promise((resolve, reject)=>(0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+                var _o_withCredentials;
                 const onReject = ()=>{
                     this.__isFulfilled = true;
                     reject(jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_8__.connection('Connection error'));
@@ -6368,7 +6582,6 @@ class Ajax {
                         }
                     }
                 };
-                var _o_withCredentials;
                 xhr.withCredentials = (_o_withCredentials = o.withCredentials) !== null && _o_withCredentials !== void 0 ? _o_withCredentials : false;
                 const { url, data, method } = request;
                 xhr.open(method, url, true);
@@ -6458,7 +6671,7 @@ class Ajax {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -6526,7 +6739,7 @@ class Ajax {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -6566,7 +6779,7 @@ class Ajax {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/file-browser/README.md]]
  * @packageDocumentation
@@ -6588,17 +6801,29 @@ class Ajax {
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(25045);
 /* harmony import */ var _swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(41411);
 /* harmony import */ var _swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15366);
-/* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(81937);
-/* harmony import */ var jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(65946);
-/* harmony import */ var jodit_core_request__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(73714);
-/* harmony import */ var jodit_modules_file_browser_builders_item__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(58664);
+/* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(31635);
+/* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(81937);
+/* harmony import */ var jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(49574);
+/* harmony import */ var jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(91565);
+/* harmony import */ var jodit_core_helpers_normalize_normalize_relative_path__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(96340);
+/* harmony import */ var jodit_core_helpers_utils_config_proto__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(77483);
+/* harmony import */ var jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(33201);
+/* harmony import */ var jodit_core_helpers_utils_set__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(52144);
+/* harmony import */ var jodit_core_request_ajax__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(17338);
+/* harmony import */ var jodit_modules_file_browser_builders_item__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(58664);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
+
+
+
+
+
+
 
 
 
@@ -6635,13 +6860,13 @@ class DataProvider {
             ajax === null || ajax === void 0 ? void 0 : ajax.abort();
             instances.delete(name);
         }
-        const opts = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.ConfigProto)(this.options[name] !== undefined ? this.options[name] : {}, (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.ConfigProto)({
+        const opts = (0,jodit_core_helpers_utils_config_proto__WEBPACK_IMPORTED_MODULE_9__.ConfigProto)(this.options[name] !== undefined ? this.options[name] : {}, (0,jodit_core_helpers_utils_config_proto__WEBPACK_IMPORTED_MODULE_9__.ConfigProto)({
             onProgress: this.progressHandler
         }, this.o.ajax));
         if (opts.prepareData) {
             opts.data = opts.prepareData.call(this, opts.data);
         }
-        const ajax = new jodit_core_request__WEBPACK_IMPORTED_MODULE_6__.Ajax(opts);
+        const ajax = new jodit_core_request_ajax__WEBPACK_IMPORTED_MODULE_12__.Ajax(opts);
         instances.set(name, ajax);
         const promise = ajax.send();
         promise.finally(()=>{
@@ -6671,7 +6896,7 @@ class DataProvider {
             if (this.o.permissions.url) {
                 return this.get('permissions').then((resp)=>{
                     if (this.parent.isInDestruct) {
-                        throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.abort)();
+                        throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.abort)();
                     }
                     let process = this.o.permissions.process;
                     if (!process) {
@@ -6692,9 +6917,9 @@ class DataProvider {
     }
     canI(action) {
         const rule = 'allow' + action;
-        if (!jodit_core_constants__WEBPACK_IMPORTED_MODULE_4__.IS_PROD) {
+        if (!jodit_core_constants__WEBPACK_IMPORTED_MODULE_5__.IS_PROD) {
             if (!possibleRules.has(rule)) {
-                throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)('Wrong action ' + action);
+                throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)('Wrong action ' + action);
             }
         }
         const presetValue = this.o.permissionsPresets[rule];
@@ -6725,18 +6950,18 @@ class DataProvider {
     /**
 	 * Load items list by path and source
 	 */ items(path, source, mods = {}) {
-        return this.__items(path, source, mods, (resp)=>this.generateItemsList(resp.data.sources, mods));
+        return this.__items(path, source, mods, (resp)=>this.__generateItemsList(resp.data.sources, mods));
     }
     /**
 	 * Load items list by path and source
 	 */ itemsEx(path, source, mods = {}) {
         const calcTotal = (sources)=>sources.reduce((acc, source)=>acc + source.files.length, 0);
         return this.__items(path, source, mods, (resp)=>({
-                items: this.generateItemsList(resp.data.sources, mods),
+                items: this.__generateItemsList(resp.data.sources, mods),
                 loadedTotal: calcTotal(resp.data.sources)
             }));
     }
-    generateItemsList(sources, mods = {}) {
+    __generateItemsList(sources, mods = {}) {
         const elements = [];
         const canBeFile = (item)=>item.type === 'folder' || !mods.onlyImages || item.isImage === undefined || item.isImage;
         const inFilter = (item)=>{
@@ -6746,12 +6971,12 @@ class DataProvider {
         sources.forEach((source)=>{
             if (source.files && source.files.length) {
                 const { sort } = this.o;
-                if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.isFunction)(sort) && mods.sortBy) {
+                if ((0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_7__.isFunction)(sort) && mods.sortBy) {
                     source.files.sort((a, b)=>sort(a, b, mods.sortBy));
                 }
                 source.files.forEach((item)=>{
                     if (inFilter(item) && canBeFile(item)) {
-                        elements.push(jodit_modules_file_browser_builders_item__WEBPACK_IMPORTED_MODULE_7__.FileBrowserItem.create((0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_3__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_2__._)({}, item), {
+                        elements.push(jodit_modules_file_browser_builders_item__WEBPACK_IMPORTED_MODULE_13__.FileBrowserItem.create((0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_3__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_2__._)({}, item), {
                             sourceName: source.name,
                             source
                         })));
@@ -6763,7 +6988,7 @@ class DataProvider {
     }
     tree(path, source) {
         return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
-            path = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.normalizeRelativePath)(path);
+            path = (0,jodit_core_helpers_normalize_normalize_relative_path__WEBPACK_IMPORTED_MODULE_8__.normalizeRelativePath)(path);
             if (!this.o.folder) {
                 return Promise.reject(Error('Set Folder Api options'));
             }
@@ -6785,12 +7010,12 @@ class DataProvider {
     /**
 	 * Get path by url. You can use this method in another modules
 	 */ getPathByUrl(url) {
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.set)('options.getLocalFileByUrl.data.url', url, this);
+        (0,jodit_core_helpers_utils_set__WEBPACK_IMPORTED_MODULE_11__.set)('options.getLocalFileByUrl.data.url', url, this);
         return this.get('getLocalFileByUrl').then((resp)=>{
             if (this.isSuccess(resp)) {
                 return resp.data;
             }
-            throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)(this.getMessage(resp));
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)(this.getMessage(resp));
         });
     }
     /**
@@ -6802,7 +7027,7 @@ class DataProvider {
 	 */ createFolder(name, path, source) {
         const { create } = this.o;
         if (!create) {
-            throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)('Set Create api options');
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)('Set Create api options');
         }
         create.data.source = source;
         create.data.path = path;
@@ -6811,7 +7036,7 @@ class DataProvider {
             if (this.isSuccess(resp)) {
                 return true;
             }
-            throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)(this.getMessage(resp));
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)(this.getMessage(resp));
         });
     }
     /**
@@ -6823,7 +7048,7 @@ class DataProvider {
         const mode = isFile ? 'fileMove' : 'folderMove';
         const option = this.options[mode];
         if (!option) {
-            throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)('Set Move api options');
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)('Set Move api options');
         }
         option.data.from = filepath;
         option.data.path = path;
@@ -6832,7 +7057,7 @@ class DataProvider {
             if (this.isSuccess(resp)) {
                 return true;
             }
-            throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)(this.getMessage(resp));
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)(this.getMessage(resp));
         });
     }
     /**
@@ -6841,10 +7066,10 @@ class DataProvider {
 	 * @param path - Relative path
 	 * @param file - The filename
 	 * @param source - Source
-	 */ remove(action, path, file, source) {
+	 */ __remove(action, path, file, source) {
         const fr = this.o[action];
         if (!fr) {
-            throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)(`Set "${action}" api options`);
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)(`Set "${action}" api options`);
         }
         fr.data.path = path;
         fr.data.name = file;
@@ -6863,7 +7088,7 @@ class DataProvider {
 	 * @param file - The filename
 	 * @param source - Source
 	 */ fileRemove(path, file, source) {
-        return this.remove('fileRemove', path, file, source);
+        return this.__remove('fileRemove', path, file, source);
     }
     /**
 	 * Deleting a folder
@@ -6872,7 +7097,7 @@ class DataProvider {
 	 * @param file - The filename
 	 * @param source - Source
 	 */ folderRemove(path, file, source) {
-        return this.remove('folderRemove', path, file, source);
+        return this.__remove('folderRemove', path, file, source);
     }
     /**
 	 * Rename action
@@ -6881,10 +7106,10 @@ class DataProvider {
 	 * @param name - Old name
 	 * @param newname - New name
 	 * @param source - Source
-	 */ rename(action, path, name, newname, source) {
+	 */ __rename(action, path, name, newname, source) {
         const fr = this.o[action];
         if (!fr) {
-            throw (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.error)(`Set "${action}" api options`);
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_10__.error)(`Set "${action}" api options`);
         }
         fr.data.path = path;
         fr.data.name = name;
@@ -6900,14 +7125,14 @@ class DataProvider {
     /**
 	 * Rename folder
 	 */ folderRename(path, name, newname, source) {
-        return this.rename('folderRename', path, name, newname, source);
+        return this.__rename('folderRename', path, name, newname, source);
     }
     /**
 	 * Rename file
 	 */ fileRename(path, name, newname, source) {
-        return this.rename('fileRename', path, name, newname, source);
+        return this.__rename('fileRename', path, name, newname, source);
     }
-    changeImage(type, path, source, name, newname, box) {
+    __changeImage(type, path, source, name, newname, box) {
         if (!this.o[type]) {
             this.o[type] = {
                 data: {}
@@ -6933,12 +7158,12 @@ class DataProvider {
     /**
 	 * Send command to server to crop image
 	 */ crop(path, source, name, newname, box) {
-        return this.changeImage('crop', path, source, name, newname, box);
+        return this.__changeImage('crop', path, source, name, newname, box);
     }
     /**
 	 * Send command to server to resize image
 	 */ resize(path, source, name, newname, box) {
-        return this.changeImage('resize', path, source, name, newname, box);
+        return this.__changeImage('resize', path, source, name, newname, box);
     }
     getMessage(resp) {
         return this.options.getMessage(resp);
@@ -6964,6 +7189,60 @@ class DataProvider {
     }
 }
 
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "onProgress", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "permissions", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "canI", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "items", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "itemsEx", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "tree", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "getPathByUrl", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "createFolder", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "move", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "fileRemove", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "folderRemove", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "folderRename", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "fileRename", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "crop", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "resize", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "getMessage", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "isSuccess", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_6__.autobind
+], DataProvider.prototype, "destruct", null);
 
 
 /***/ }),
@@ -6977,7 +7256,7 @@ class DataProvider {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/inline-popup
  */ 
@@ -7094,7 +7373,7 @@ const cmd = (control)=>control.args && (0,jodit_core_helpers_checker__WEBPACK_IM
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/size
  */ 
@@ -7127,7 +7406,7 @@ function size(subject) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ 
@@ -7249,7 +7528,7 @@ function size(subject) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -7274,7 +7553,7 @@ function makeContextMenu(parent) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ /**
@@ -7298,7 +7577,7 @@ function makeContextMenu(parent) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ 
@@ -7331,7 +7610,7 @@ function makeContextMenu(parent) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -7385,7 +7664,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/widget/file-selector/README.md]]
  * @packageDocumentation
@@ -7513,7 +7792,7 @@ function val(elm, selector, value) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/plugin/README.md]]
  * @packageDocumentation
@@ -7610,7 +7889,7 @@ class Plugin extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.ViewCompo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module event-emitter
  */ 
@@ -7694,7 +7973,7 @@ class EventHandlersStore {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/source
  */ 
@@ -7753,7 +8032,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_2__.Config.prototype.controls.source = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/symbols
  */ 
@@ -8016,7 +8295,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_1__.Config.prototype.controls.symbols = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ 
@@ -8068,7 +8347,7 @@ function normalizeCssValue(key, value) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -8120,7 +8399,7 @@ module.exports = "<svg viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -8171,7 +8450,7 @@ module.exports["default"] = ["なにかタイプしてください","Joditにつ
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Format de copie'
 };
@@ -8189,7 +8468,7 @@ module.exports["default"] = ["なにかタイプしてください","Joditにつ
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ function isBoolean(elm) {
@@ -8205,7 +8484,7 @@ module.exports["default"] = ["なにかタイプしてください","Joditにつ
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Copiar formato'
 };
@@ -8225,19 +8504,31 @@ module.exports["default"] = ["なにかタイプしてください","Joditにつ
 /* harmony import */ var _swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15366);
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31635);
 /* harmony import */ var jodit_core_component_statuses__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(69364);
-/* harmony import */ var jodit_core_decorators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(84839);
-/* harmony import */ var jodit_core_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(27795);
-/* harmony import */ var jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(65946);
-/* harmony import */ var jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(59400);
-/* harmony import */ var jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(15982);
-/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(29434);
-/* harmony import */ var jodit_core_ui_popup_popup__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(51116);
-/* harmony import */ var jodit_modules_toolbar_collection_collection__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(42573);
-/* harmony import */ var jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(4274);
+/* harmony import */ var jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(49574);
+/* harmony import */ var jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(51676);
+/* harmony import */ var jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(91672);
+/* harmony import */ var jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(68616);
+/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(23211);
+/* harmony import */ var jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(17312);
+/* harmony import */ var jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(91565);
+/* harmony import */ var jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(24497);
+/* harmony import */ var jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(62101);
+/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(85932);
+/* harmony import */ var jodit_core_helpers_size__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(86878);
+/* harmony import */ var jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(57821);
+/* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(28712);
+/* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(71125);
+/* harmony import */ var jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(59400);
+/* harmony import */ var jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(15982);
+/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(29434);
+/* harmony import */ var jodit_core_ui_popup_popup__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(51116);
+/* harmony import */ var _factory__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(4274);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/toolbar/button/README.md]]
  * @packageDocumentation
@@ -8257,18 +8548,41 @@ module.exports["default"] = ["なにかタイプしてください","Joditにつ
 
 
 
-class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UIButton {
-    /** @override */ className() {
+
+
+
+
+
+
+
+
+
+
+
+class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_20__.UIButton {
+    className() {
         return 'ToolbarButton';
+    }
+    getRole() {
+        return 'listitem';
+    }
+    updateAriaLabel() {
+        super.updateAriaLabel();
+        if (this.trigger) {
+            const i8nTooltip = this.state.tooltip ? this.jodit.i18n(this.state.tooltip) : null;
+            (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.trigger, 'aria-label', i8nTooltip);
+        }
     }
     /**
 	 * Get parent toolbar
 	 */ get toolbar() {
-        return this.closest(jodit_modules_toolbar_collection_collection__WEBPACK_IMPORTED_MODULE_12__.ToolbarCollection);
+        const ToolbarCollection = (0,jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_7__.getComponentClass)('ToolbarCollection');
+        return this.closest(ToolbarCollection);
     }
-    /** @override **/ update() {
+    update() {
         var _control_value, _control_update;
-        const { control, state } = this, tc = this.closest(jodit_modules_toolbar_collection_collection__WEBPACK_IMPORTED_MODULE_12__.ToolbarCollection);
+        const { control, state } = this;
+        const tc = this.toolbar;
         if (!tc) {
             return;
         }
@@ -8284,7 +8598,7 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
 	 * Calculates whether the button is active
 	 */ __calculateActivatedStatus(tc) {
         var _this_control_isActive, _this_control;
-        if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isJoditObject)(this.j) && !this.j.editorIsActive) {
+        if ((0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_12__.isJoditObject)(this.j) && !this.j.editorIsActive) {
             return false;
         }
         if ((_this_control_isActive = (_this_control = this.control).isActive) === null || _this_control_isActive === void 0 ? void 0 : _this_control_isActive.call(_this_control, this.j, this)) {
@@ -8307,33 +8621,32 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
         }
         return Boolean(tc && tc.shouldBeDisabled(this));
     }
-    /** @override */ onChangeActivated() {
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.attr)(this.button, 'aria-pressed', this.state.activated);
+    onChangeActivated() {
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.button, 'aria-pressed', this.state.activated);
         super.onChangeActivated();
     }
-    /** @override */ onChangeText() {
-        if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isFunction)(this.control.template)) {
+    onChangeText() {
+        if ((0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_11__.isFunction)(this.control.template)) {
             this.text.innerHTML = this.control.template(this.j, this.control.name, this.j.i18n(this.state.text));
         } else {
             super.onChangeText();
         }
         this.setMod('text-icons', Boolean(this.text.innerText.trim().length));
     }
-    /** @override */ onChangeTabIndex() {
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.attr)(this.button, 'tabindex', this.state.tabIndex);
+    onChangeTabIndex() {
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.button, 'tabindex', this.state.tabIndex);
     }
     createContainer() {
         const cn = this.componentName;
         const container = this.j.c.span(cn);
         const button = super.createContainer();
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.attr)(container, 'role', 'listitem');
         button.classList.remove(cn);
         button.classList.add(cn + '__button');
         Object.defineProperty(button, 'component', {
             value: this
         });
         container.appendChild(button);
-        const trigger = this.j.c.fromHTML(`<span role="trigger" class="${cn}__trigger">${jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_10__.Icon.get('chevron')}</span>`);
+        const trigger = this.j.c.fromHTML(`<span role="button" aria-haspopup="true" aria-expanded="false" class="${cn}__trigger">${jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_22__.Icon.get('chevron')}</span>`);
         // For caching
         button.appendChild(trigger);
         return container;
@@ -8346,15 +8659,15 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
         if (this.state.hasTrigger) {
             this.container.appendChild(this.trigger);
         } else {
-            jodit_core_dom__WEBPACK_IMPORTED_MODULE_6__.Dom.safeRemove(this.trigger);
+            jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_9__.Dom.safeRemove(this.trigger);
         }
         this.setMod('with-trigger', this.state.hasTrigger || null);
     }
     /** @override */ onChangeDisabled() {
         const disabled = this.state.disabled ? 'disabled' : null;
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.attr)(this.trigger, 'disabled', disabled);
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.attr)(this.button, 'disabled', disabled);
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'disabled', disabled);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.trigger, 'disabled', disabled);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.button, 'disabled', disabled);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.container, 'disabled', disabled);
     }
     /**
 	 * Init constant data from control
@@ -8363,8 +8676,8 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
         this.updateSize();
         state.name = ctr.name;
         const { textIcons } = this.j.o;
-        if (textIcons === true || (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isFunction)(textIcons) && textIcons(ctr.name) || ctr.template) {
-            state.icon = (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UIButtonState)().icon;
+        if (textIcons === true || (0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_11__.isFunction)(textIcons) && textIcons(ctr.name) || ctr.template) {
+            state.icon = (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_20__.UIButtonState)().icon;
             state.text = ctr.text || ctr.name;
         } else {
             if (ctr.iconURL) {
@@ -8372,14 +8685,14 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
             } else {
                 var _this_j_o_extraIcons;
                 const name = ctr.icon || ctr.name;
-                state.icon.name = jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_10__.Icon.exists(name) || ((_this_j_o_extraIcons = this.j.o.extraIcons) === null || _this_j_o_extraIcons === void 0 ? void 0 : _this_j_o_extraIcons[name]) ? name : '';
+                state.icon.name = jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_22__.Icon.exists(name) || ((_this_j_o_extraIcons = this.j.o.extraIcons) === null || _this_j_o_extraIcons === void 0 ? void 0 : _this_j_o_extraIcons[name]) ? name : '';
             }
             if (!ctr.iconURL && !state.icon.name) {
                 state.text = ctr.text || ctr.name;
             }
         }
         if (ctr.tooltip) {
-            state.tooltip = this.j.i18n((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isFunction)(ctr.tooltip) ? ctr.tooltip(this.j, ctr, this) : ctr.tooltip);
+            state.tooltip = (0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_11__.isFunction)(ctr.tooltip) ? ctr.tooltip(this.j, ctr, this) : ctr.tooltip;
         }
         state.hasTrigger = Boolean(ctr.list || ctr.popup && ctr.exec);
     }
@@ -8391,23 +8704,24 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
             return;
         }
         const { control: ctr } = this;
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.trigger, 'aria-expanded', true);
         e.buffer = {
             actionTrigger: this
         };
         if (ctr.list) {
             return this.__openControlList(ctr);
         }
-        if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isFunction)(ctr.popup)) {
+        if ((0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_11__.isFunction)(ctr.popup)) {
             const popup = this.openPopup();
             popup.parentElement = this;
             try {
-                if (this.j.e.fire((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.camelCase)(`before-${ctr.name}-open-popup`), this.target, ctr, popup) !== false) {
+                if (this.j.e.fire((0,jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_16__.camelCase)(`before-${ctr.name}-open-popup`), this.target, ctr, popup) !== false) {
+                    var _ref, _ref1;
                     var _this_toolbar;
-                    var _this_toolbar_getTarget, _ref;
-                    const target = (_ref = (_this_toolbar_getTarget = (_this_toolbar = this.toolbar) === null || _this_toolbar === void 0 ? void 0 : _this_toolbar.getTarget(this)) !== null && _this_toolbar_getTarget !== void 0 ? _this_toolbar_getTarget : this.target) !== null && _ref !== void 0 ? _ref : null;
+                    const target = (_ref = (_ref1 = (_this_toolbar = this.toolbar) === null || _this_toolbar === void 0 ? void 0 : _this_toolbar.getTarget(this)) !== null && _ref1 !== void 0 ? _ref1 : this.target) !== null && _ref !== void 0 ? _ref : null;
                     const elm = ctr.popup(this.j, target, this.__closePopup, this);
                     if (elm) {
-                        popup.setContent((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isString)(elm) ? this.j.c.fromHTML(elm) : elm).open(()=>(0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.position)(this.container), false, this.j.o.allowTabNavigation ? this.container : undefined);
+                        popup.setContent((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_14__.isString)(elm) ? this.j.c.fromHTML(elm) : elm).open(()=>(0,jodit_core_helpers_size__WEBPACK_IMPORTED_MODULE_15__.position)(this.container), false, this.j.o.allowTabNavigation ? this.container : undefined);
                     } else {
                         this.__closePopup();
                     }
@@ -8420,26 +8734,28 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
 			 * Fired after the popup was opened for some control button
 			 */ /**
 			 * Close all opened popups
-			 */ this.j.e.fire((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.camelCase)(`after-${ctr.name}-open-popup`), popup.container);
+			 */ this.j.e.fire((0,jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_16__.camelCase)(`after-${ctr.name}-open-popup`), popup.container);
         }
     }
     /**
 	 * Create an open popup list
 	 */ __openControlList(control) {
         var _this_jodit_options_controls;
-        const controls = (_this_jodit_options_controls = this.jodit.options.controls) !== null && _this_jodit_options_controls !== void 0 ? _this_jodit_options_controls : {}, getControl = (key)=>(0,jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_9__.findControlType)(key, controls);
-        const list = control.list, menu = this.openPopup(), toolbar = (0,jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_13__.makeCollection)(this.j);
+        const controls = (_this_jodit_options_controls = this.jodit.options.controls) !== null && _this_jodit_options_controls !== void 0 ? _this_jodit_options_controls : {}, getControl = (key)=>(0,jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_21__.findControlType)(key, controls);
+        const list = control.list;
+        const menu = this.openPopup();
+        const toolbar = (0,_factory__WEBPACK_IMPORTED_MODULE_24__.makeCollection)(this.j);
         menu.parentElement = this;
         toolbar.parentElement = menu;
         toolbar.mode = 'vertical';
-        const isListItem = (key)=>(0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isPlainObject)(key) && 'title' in key && 'value' in key;
+        const isListItem = (key)=>(0,jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_13__.isPlainObject)(key) && 'title' in key && 'value' in key;
         const getButton = (key, value)=>{
-            if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isString)(value) && getControl(value)) {
+            if ((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_14__.isString)(value) && getControl(value)) {
                 return (0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_1__._)({
                     name: value.toString()
                 }, getControl(value));
             }
-            if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isString)(key) && getControl(key)) {
+            if ((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_14__.isString)(key) && getControl(key)) {
                 return (0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_1__._)({
                     name: key.toString()
                 }, getControl(key), typeof value === 'object' ? value : {});
@@ -8470,26 +8786,26 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
                     value
                 ]
             };
-            if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isString)(value)) {
+            if ((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_14__.isString)(value)) {
                 childControl.text = value;
             }
             return childControl;
         };
-        toolbar.build((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isArray)(list) ? list.map(getButton) : (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.keys)(list, false).map((key)=>getButton(key, list[key])), this.target);
-        menu.setContent(toolbar).open(()=>(0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.position)(this.container), false, this.j.o.allowTabNavigation ? this.container : undefined);
+        toolbar.build((0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_10__.isArray)(list) ? list.map(getButton) : (0,jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_19__.keys)(list, false).map((key)=>getButton(key, list[key])), this.target);
+        menu.setContent(toolbar).open(()=>(0,jodit_core_helpers_size__WEBPACK_IMPORTED_MODULE_15__.position)(this.container), false, this.j.o.allowTabNavigation ? this.container : undefined);
         this.state.activated = true;
     }
     onOutsideClick(e) {
         if (!this.openedPopup) {
             return;
         }
-        if (!e || !jodit_core_dom__WEBPACK_IMPORTED_MODULE_6__.Dom.isNode(e.target) || !jodit_core_dom__WEBPACK_IMPORTED_MODULE_6__.Dom.isOrContains(this.container, e.target) && !this.openedPopup.isOwnClick(e)) {
+        if (!e || !jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_9__.Dom.isNode(e.target) || !jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_9__.Dom.isOrContains(this.container, e.target) && !this.openedPopup.isOwnClick(e)) {
             this.__closePopup();
         }
     }
     openPopup() {
         this.__closePopup();
-        this.openedPopup = new jodit_core_ui_popup_popup__WEBPACK_IMPORTED_MODULE_11__.Popup(this.j, false);
+        this.openedPopup = new jodit_core_ui_popup_popup__WEBPACK_IMPORTED_MODULE_23__.Popup(this.j, false);
         this.j.e.on(this.ow, 'mousedown touchstart', this.onOutsideClick).on('escape closeAllPopups', this.onOutsideClick);
         return this.openedPopup;
     }
@@ -8500,16 +8816,19 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
             this.openedPopup.close();
             this.openedPopup.destruct();
             this.openedPopup = null;
+            if (this.trigger) {
+                (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_18__.attr)(this.trigger, 'aria-expanded', false);
+            }
         }
     }
     /**
 	 * Click handler
 	 */ onClick(originalEvent) {
         const { control: ctr } = this;
-        if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isFunction)(ctr.exec)) {
+        if ((0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_11__.isFunction)(ctr.exec)) {
+            var _ref, _ref1;
             var _this_toolbar;
-            var _this_toolbar_getTarget, _ref;
-            const target = (_ref = (_this_toolbar_getTarget = (_this_toolbar = this.toolbar) === null || _this_toolbar === void 0 ? void 0 : _this_toolbar.getTarget(this)) !== null && _this_toolbar_getTarget !== void 0 ? _this_toolbar_getTarget : this.target) !== null && _ref !== void 0 ? _ref : null;
+            const target = (_ref = (_ref1 = (_this_toolbar = this.toolbar) === null || _this_toolbar === void 0 ? void 0 : _this_toolbar.getTarget(this)) !== null && _ref1 !== void 0 ? _ref1 : this.target) !== null && _ref !== void 0 ? _ref : null;
             const result = ctr.exec(this.j, target, {
                 control: ctr,
                 originalEvent,
@@ -8533,11 +8852,11 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
         if (ctr.list) {
             return this.__openControlList(ctr);
         }
-        if ((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isFunction)(ctr.popup)) {
+        if ((0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_11__.isFunction)(ctr.popup)) {
             return this.onTriggerClick(originalEvent);
         }
         if (ctr.command || ctr.name) {
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.call)((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.isJoditObject)(this.j) ? this.j.execCommand.bind(this.j) : this.j.od.execCommand.bind(this.j.od), ctr.command || ctr.name, false, ctr.args && ctr.args[0]);
+            (0,jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_19__.call)((0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_12__.isJoditObject)(this.j) ? this.j.execCommand.bind(this.j) : this.j.od.execCommand.bind(this.j.od), ctr.command || ctr.name, false, ctr.args && ctr.args[0]);
             this.j.e.fire('closeAllPopups');
         }
     }
@@ -8546,20 +8865,20 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
         return super.destruct();
     }
     constructor(jodit, control, target = null){
-        super(jodit), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "control", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "target", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "state", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "trigger", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "openedPopup", void 0), this.control = control, this.target = target, this.state = (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_2__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_1__._)({}, (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UIButtonState)()), {
+        super(jodit), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "control", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "target", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "state", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "trigger", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "openedPopup", void 0), this.control = control, this.target = target, this.state = (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_2__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_1__._)({}, (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_20__.UIButtonState)()), {
             theme: 'toolbar',
             currentValue: '',
             hasTrigger: false
         }), this.openedPopup = null;
         const button = this.getElm('button');
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.assert)(button, 'Element button should exists');
+        (0,jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_17__.assert)(button, 'Element button should exists');
         this.button = button;
         Object.defineProperty(button, 'component', {
             value: this,
             configurable: true
         });
         const trigger = this.getElm('trigger');
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_7__.assert)(trigger, 'Element trigger should exists');
+        (0,jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_17__.assert)(trigger, 'Element trigger should exists');
         this.trigger = trigger;
         trigger.remove();
         // Prevent lost focus
@@ -8580,24 +8899,24 @@ class ToolbarButton extends jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_8__.UI
     }
 }
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_5__.cacheHTML
+    jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_6__.cacheHTML
 ], ToolbarButton.prototype, "createContainer", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_5__.watch)('state.hasTrigger', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_8__.watch)('state.hasTrigger', {
         immediately: false
     })
 ], ToolbarButton.prototype, "onChangeHasTrigger", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_5__.watch)('trigger:click')
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_8__.watch)('trigger:click')
 ], ToolbarButton.prototype, "onTriggerClick", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_5__.autobind
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_5__.autobind
 ], ToolbarButton.prototype, "onOutsideClick", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_5__.autobind
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_5__.autobind
 ], ToolbarButton.prototype, "__closePopup", null);
 ToolbarButton = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_5__.component
+    jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_7__.component
 ], ToolbarButton);
 
 
@@ -8617,7 +8936,7 @@ ToolbarButton = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/html
  */ 
@@ -8696,7 +9015,7 @@ function restoreTags(content) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Formátum másolás'
 };
@@ -8714,7 +9033,7 @@ function restoreTags(content) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/uploader
  */ /**
@@ -8745,20 +9064,19 @@ function restoreTags(content) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   isMarker: function() { return /* binding */ isMarker; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81937);
-/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(23211);
+/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(23211);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
-
 /**
  * Define element is selection helper
+ * @deprecated use Dom.isMarker instead
  */ function isMarker(elm) {
-    return jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.isNode(elm) && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.isTag(elm, 'span') && elm.hasAttribute('data-' + jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.MARKER_CLASS);
+    return jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isMarker(elm);
 }
 
 
@@ -8775,7 +9093,7 @@ function restoreTags(content) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module traits
  */ 
@@ -8804,18 +9122,39 @@ class Elms {
 /* harmony export */ });
 /* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81937);
 /* harmony import */ var jodit_core_helpers_array_to_array__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(88475);
-/* harmony import */ var jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(28686);
-/* harmony import */ var jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4040);
-/* harmony import */ var jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(93640);
+/* harmony import */ var jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17312);
+/* harmony import */ var jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(91565);
+/* harmony import */ var jodit_core_helpers_checker_is_html__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(46248);
+/* harmony import */ var jodit_core_helpers_checker_is_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3213);
+/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(85932);
+/* harmony import */ var jodit_core_helpers_checker_is_void__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(18303);
+/* harmony import */ var jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(4040);
+/* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(28712);
+/* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(80991);
+/* harmony import */ var jodit_core_helpers_utils_data_bind__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(36400);
+/* harmony import */ var jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(33201);
+/* harmony import */ var jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(71125);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/dom/README.md]]
  * @packageDocumentation
  * @module dom
  */ 
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8850,7 +9189,7 @@ class Elms {
         return Dom.__wrapElements(tag, editor, first, last);
     }
     static __wrapElements(tag, editor, first, last) {
-        const wrapper = (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isString)(tag) ? editor.createInside.element(tag) : tag;
+        const wrapper = (0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__.isString)(tag) ? editor.createInside.element(tag) : tag;
         if (first.parentNode) {
             first.parentNode.insertBefore(wrapper, first);
         }
@@ -8895,10 +9234,10 @@ class Elms {
     /**
 	 * Wrap node inside another node
 	 */ static wrap(current, tag, create) {
-        const wrapper = (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isString)(tag) ? create.element(tag) : tag;
+        const wrapper = (0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__.isString)(tag) ? create.element(tag) : tag;
         if (Dom.isNode(current)) {
             if (!current.parentNode) {
-                throw (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.error)('Element should be in DOM');
+                throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_13__.error)('Element should be in DOM');
             }
             current.parentNode.insertBefore(wrapper, current);
             wrapper.appendChild(current);
@@ -8939,13 +9278,13 @@ class Elms {
         }
     }
     static replace(elm, newTagName, create, withAttributes = false, notMoveContent = false) {
-        if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isHTML)(newTagName)) {
-            (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.assert)(create, 'Need create instance for new tag');
+        if ((0,jodit_core_helpers_checker_is_html__WEBPACK_IMPORTED_MODULE_4__.isHTML)(newTagName)) {
+            (0,jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__.assert)(create, 'Need create instance for new tag');
             newTagName = create.fromHTML(newTagName);
         }
         let tag;
-        if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isString)(newTagName)) {
-            (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.assert)(create, 'Need create instance for new tag');
+        if ((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__.isString)(newTagName)) {
+            (0,jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__.assert)(create, 'Need create instance for new tag');
             tag = create.element(newTagName);
         } else {
             tag = newTagName;
@@ -8986,12 +9325,12 @@ class Elms {
             return true;
         }
         let cond;
-        if (!(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isFunction)(condNoEmptyElement)) {
+        if (!(0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_3__.isFunction)(condNoEmptyElement)) {
             cond = (elm)=>condNoEmptyElement.has(elm.nodeName.toLowerCase());
         } else {
             cond = condNoEmptyElement;
         }
-        const emptyText = (node)=>node.nodeValue == null || (0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_3__.trim)(node.nodeValue).length === 0;
+        const emptyText = (node)=>node.nodeValue == null || (0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_8__.trim)(node.nodeValue).length === 0;
         if (Dom.isText(node)) {
             return emptyText(node);
         }
@@ -9005,7 +9344,7 @@ class Elms {
 	 * Returns true if it is a DOM node
 	 */ static isNode(object) {
         // Duck-typing
-        return Boolean(object && (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isString)(object.nodeName) && typeof object.nodeType === 'number' && object.childNodes && (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isFunction)(object.appendChild));
+        return Boolean(object && (0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__.isString)(object.nodeName) && typeof object.nodeType === 'number' && object.childNodes && (0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_3__.isFunction)(object.appendChild));
     }
     /**
 	 *  Check if element is table cell
@@ -9031,7 +9370,7 @@ class Elms {
 	 * Check the `node` is a block element
 	 * @param node - Object to check
 	 */ static isBlock(node) {
-        return !(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isVoid)(node) && typeof node === 'object' && Dom.isNode(node) && jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.IS_BLOCK.test(node.nodeName);
+        return !(0,jodit_core_helpers_checker_is_void__WEBPACK_IMPORTED_MODULE_7__.isVoid)(node) && typeof node === 'object' && Dom.isNode(node) && jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.IS_BLOCK.test(node.nodeName);
     }
     /**
 	 * Check if element is text node
@@ -9079,12 +9418,12 @@ class Elms {
         return Dom.isElement(node) && !/^(BR|HR)$/i.test(node.tagName) && [
             'inline',
             'inline-block'
-        ].indexOf((0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.css)(node, 'display').toString()) !== -1;
+        ].indexOf((0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_11__.css)(node, 'display').toString()) !== -1;
     }
     /**
 	 * It's block and it can be split
 	 */ static canSplitBlock(node) {
-        return !(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isVoid)(node) && Dom.isHTMLElement(node) && Dom.isBlock(node) && !/^(TD|TH|CAPTION|FORM)$/.test(node.nodeName) && node.style !== undefined && !/^(fixed|absolute)/i.test(node.style.position);
+        return !(0,jodit_core_helpers_checker_is_void__WEBPACK_IMPORTED_MODULE_7__.isVoid)(node) && Dom.isHTMLElement(node) && Dom.isBlock(node) && !/^(TD|TH|CAPTION|FORM)$/.test(node.nodeName) && node.style !== undefined && !/^(fixed|absolute)/i.test(node.style.position);
     }
     /**
 	 * Get last matched node inside root
@@ -9239,13 +9578,13 @@ class Elms {
 	 */ static findNotEmptySibling(node, left) {
         return Dom.findSibling(node, left, (n)=>{
             var _n_nodeValue;
-            return !Dom.isEmptyTextNode(n) && Boolean(!Dom.isText(n) || ((_n_nodeValue = n.nodeValue) === null || _n_nodeValue === void 0 ? void 0 : _n_nodeValue.length) && (0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_3__.trim)(n.nodeValue));
+            return !Dom.isEmptyTextNode(n) && Boolean(!Dom.isText(n) || ((_n_nodeValue = n.nodeValue) === null || _n_nodeValue === void 0 ? void 0 : _n_nodeValue.length) && (0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_8__.trim)(n.nodeValue));
         });
     }
     /**
 	 * Returns the nearest non-empty neighbor
 	 */ static findNotEmptyNeighbor(node, left, root) {
-        return (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.call)(left ? Dom.prev : Dom.next, node, (n)=>Boolean(n && (!(Dom.isText(n) || Dom.isComment(n)) || (0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_3__.trim)((n === null || n === void 0 ? void 0 : n.nodeValue) || '').length)), root);
+        return (0,jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_14__.call)(left ? Dom.prev : Dom.next, node, (n)=>Boolean(n && (!(Dom.isText(n) || Dom.isComment(n)) || (0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_8__.trim)((n === null || n === void 0 ? void 0 : n.nodeValue) || '').length)), root);
     }
     static sibling(node, left) {
         return left ? node.previousSibling : node.nextSibling;
@@ -9274,10 +9613,10 @@ class Elms {
     static closest(node, tagsOrCondition, root) {
         let condition;
         const lc = (s)=>s.toLowerCase();
-        if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isFunction)(tagsOrCondition)) {
+        if ((0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_3__.isFunction)(tagsOrCondition)) {
             condition = tagsOrCondition;
-        } else if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isArray)(tagsOrCondition) || (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isSet)(tagsOrCondition)) {
-            const set = (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isSet)(tagsOrCondition) ? tagsOrCondition : new Set(tagsOrCondition.map(lc));
+        } else if ((0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_2__.isArray)(tagsOrCondition) || (0,jodit_core_helpers_checker_is_set__WEBPACK_IMPORTED_MODULE_5__.isSet)(tagsOrCondition)) {
+            const set = (0,jodit_core_helpers_checker_is_set__WEBPACK_IMPORTED_MODULE_5__.isSet)(tagsOrCondition) ? tagsOrCondition : new Set(tagsOrCondition.map(lc));
             condition = (tag)=>Boolean(tag && set.has(lc(tag.nodeName)));
         } else {
             condition = (tag)=>Boolean(tag && lc(tagsOrCondition) === lc(tag.nodeName));
@@ -9336,7 +9675,7 @@ class Elms {
         root.insertBefore(newElement, root.firstChild);
     }
     static append(root, newElement) {
-        if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isArray)(newElement)) {
+        if ((0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_2__.isArray)(newElement)) {
             newElement.forEach((node)=>{
                 this.append(root, node);
             });
@@ -9400,7 +9739,7 @@ class Elms {
         if (!node) {
             return;
         }
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.dataBind)(node, '__old_display', node.style.display);
+        (0,jodit_core_helpers_utils_data_bind__WEBPACK_IMPORTED_MODULE_12__.dataBind)(node, '__old_display', node.style.display);
         node.style.display = 'none';
     }
     /**
@@ -9409,7 +9748,7 @@ class Elms {
         if (!node) {
             return;
         }
-        const display = (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.dataBind)(node, '__old_display');
+        const display = (0,jodit_core_helpers_utils_data_bind__WEBPACK_IMPORTED_MODULE_12__.dataBind)(node, '__old_display');
         if (node.style.display === 'none') {
             node.style.display = display || '';
         }
@@ -9435,8 +9774,8 @@ class Elms {
     /**
 	 * Marks an item as temporary
 	 */ static markTemporary(element, attributes) {
-        attributes && (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.attr)(element, attributes);
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.attr)(element, jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.TEMP_ATTR, true);
+        attributes && (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(element, attributes);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(element, jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.TEMP_ATTR, true);
         return element;
     }
     /**
@@ -9445,7 +9784,12 @@ class Elms {
         if (!Dom.isElement(element)) {
             return false;
         }
-        return (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isMarker)(element) || (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.attr)(element, jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.TEMP_ATTR) === 'true';
+        return Dom.isMarker(element) || (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(element, jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.TEMP_ATTR) === 'true';
+    }
+    /**
+	 * Define element is selection helper
+	 */ static isMarker(elm) {
+        return Dom.isNode(elm) && Dom.isTag(elm, 'span') && elm.hasAttribute('data-' + jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.MARKER_CLASS);
     }
     /**
 	 * Replace temporary elements from string
@@ -9454,8 +9798,9 @@ class Elms {
     }
     /**
 	 * Get temporary list
+	 * @deprecated Just do not use it, it is not needed anymore
 	 */ static temporaryList(root) {
-        return (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_4__.$$)(`[${jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.TEMP_ATTR}]`, root);
+        return (0,jodit_core_helpers_array_to_array__WEBPACK_IMPORTED_MODULE_1__.toArray)(root.querySelectorAll(`[${jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.TEMP_ATTR}]`));
     }
     constructor(){
         throw new Error('Dom is static module');
@@ -9475,7 +9820,7 @@ class Elms {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ /**
@@ -9505,7 +9850,7 @@ class Elms {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/paste/README.md]]
  * @packageDocumentation
@@ -9676,13 +10021,14 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('paste', paste);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/size
  */ 
 /**
  * Calculate screen element position
  */ function position(elm, jodit, recurse = false) {
+    var _elm_offsetWidth, _elm_offsetHeight;
     const rect = elm.getBoundingClientRect();
     let xPos = rect.left, yPos = rect.top;
     if ((0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_0__.isJoditObject)(jodit) && jodit.iframe && jodit.ed.body.contains(elm) && !recurse) {
@@ -9690,7 +10036,6 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('paste', paste);
         xPos += left;
         yPos += top;
     }
-    var _elm_offsetWidth, _elm_offsetHeight;
     return {
         left: Math.round(xPos),
         top: Math.round(yPos),
@@ -9707,9 +10052,9 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('paste', paste);
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Storage: function() { return /* binding */ Storage; }
+/* harmony export */   Storage: function() { return /* binding */ Storage; },
+/* harmony export */   StorageKey: function() { return /* binding */ StorageKey; }
 /* harmony export */ });
-/* unused harmony export StorageKey */
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(57821);
 /* harmony import */ var _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(59807);
@@ -9717,7 +10062,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('paste', paste);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/storage/README.md]]
  * @packageDocumentation
@@ -9746,10 +10091,16 @@ class Storage {
         this.provider.clear();
         return this;
     }
-    static makeStorage(persistent = false, suffix) {
+    static makeStorage(persistentOrStrategy = false, suffix) {
         let provider;
-        if (persistent && (0,_engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.canUsePersistentStorage)()) {
-            provider = new _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.LocalStorageProvider(StorageKey + suffix);
+        if (persistentOrStrategy === 'localStorage' || persistentOrStrategy === 'sessionStorage') {
+            if ((0,_engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.canUsePersistentStorage)(persistentOrStrategy)) {
+                provider = new _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.LocalStorageProvider(StorageKey + (suffix || ''), persistentOrStrategy);
+            }
+        } else if (persistentOrStrategy === true) {
+            if ((0,_engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.canUsePersistentStorage)('localStorage')) {
+                provider = new _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.LocalStorageProvider(StorageKey + (suffix || ''));
+            }
         }
         if (!provider) {
             provider = new _engines_memory_storage_provider__WEBPACK_IMPORTED_MODULE_3__.MemoryStorageProvider();
@@ -9781,7 +10132,7 @@ class Storage {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -9812,7 +10163,7 @@ class Storage {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -9906,7 +10257,7 @@ UICheckbox = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/async/README.md]]
  * @packageDocumentation
@@ -10219,28 +10570,26 @@ class Async {
         this.isDestructed = true;
     }
     constructor(){
+        var _ref, _ref1, _ref2;
         var _queueMicrotask, _window_requestIdleCallback, _window_cancelIdleCallback;
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "timers", new Map());
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__callbacks", new Map());
-        var _queueMicrotask_bind;
-        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__queueMicrotaskNative", (_queueMicrotask_bind = (_queueMicrotask = queueMicrotask) === null || _queueMicrotask === void 0 ? void 0 : _queueMicrotask.bind(window)) !== null && _queueMicrotask_bind !== void 0 ? _queueMicrotask_bind : Promise.resolve().then.bind(Promise.resolve()));
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__queueMicrotaskNative", (_ref = (_queueMicrotask = queueMicrotask) === null || _queueMicrotask === void 0 ? void 0 : _queueMicrotask.bind(window)) !== null && _ref !== void 0 ? _ref : Promise.resolve().then.bind(Promise.resolve()));
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "promisesRejections", new Set());
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__requestsIdle", new Set());
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__controllers", new Set());
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__requestsRaf", new Set());
-        var _window_requestIdleCallback_bind;
-        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__requestIdleCallbackNative", (_window_requestIdleCallback_bind = (_window_requestIdleCallback = window['requestIdleCallback']) === null || _window_requestIdleCallback === void 0 ? void 0 : _window_requestIdleCallback.bind(window)) !== null && _window_requestIdleCallback_bind !== void 0 ? _window_requestIdleCallback_bind : (callback, options)=>{
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__requestIdleCallbackNative", (_ref1 = (_window_requestIdleCallback = window['requestIdleCallback']) === null || _window_requestIdleCallback === void 0 ? void 0 : _window_requestIdleCallback.bind(window)) !== null && _ref1 !== void 0 ? _ref1 : (callback, options)=>{
+            var _ref;
             const start = Date.now();
-            var _options_timeout;
             return this.setTimeout(()=>{
                 callback({
                     didTimeout: false,
                     timeRemaining: ()=>Math.max(0, 50 - (Date.now() - start))
                 });
-            }, (_options_timeout = options === null || options === void 0 ? void 0 : options.timeout) !== null && _options_timeout !== void 0 ? _options_timeout : 1);
+            }, (_ref = options === null || options === void 0 ? void 0 : options.timeout) !== null && _ref !== void 0 ? _ref : 1);
         });
-        var _window_cancelIdleCallback_bind;
-        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__cancelIdleCallbackNative", (_window_cancelIdleCallback_bind = (_window_cancelIdleCallback = window['cancelIdleCallback']) === null || _window_cancelIdleCallback === void 0 ? void 0 : _window_cancelIdleCallback.bind(window)) !== null && _window_cancelIdleCallback_bind !== void 0 ? _window_cancelIdleCallback_bind : (request)=>{
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__cancelIdleCallbackNative", (_ref2 = (_window_cancelIdleCallback = window['cancelIdleCallback']) === null || _window_cancelIdleCallback === void 0 ? void 0 : _window_cancelIdleCallback.bind(window)) !== null && _ref2 !== void 0 ? _ref2 : (request)=>{
             this.clearTimeout(request);
         });
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "isDestructed", false);
@@ -10268,7 +10617,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 24 24\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/derive/README.md]]
  * @packageDocumentation
@@ -10343,17 +10692,30 @@ module.exports["default"] = ["输入一些内容","关于Jodit","Jodit Editor","
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Storage: function() { return /* reexport safe */ _storage__WEBPACK_IMPORTED_MODULE_1__.Storage; }
+/* harmony export */   AsyncStorage: function() { return /* reexport safe */ _async_storage__WEBPACK_IMPORTED_MODULE_0__.AsyncStorage; },
+/* harmony export */   IndexedDBProvider: function() { return /* reexport safe */ _engines_indexed_db_provider__WEBPACK_IMPORTED_MODULE_1__.IndexedDBProvider; },
+/* harmony export */   LocalStorageProvider: function() { return /* reexport safe */ _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.LocalStorageProvider; },
+/* harmony export */   MemoryStorageProvider: function() { return /* reexport safe */ _engines_memory_storage_provider__WEBPACK_IMPORTED_MODULE_3__.MemoryStorageProvider; },
+/* harmony export */   Storage: function() { return /* reexport safe */ _storage__WEBPACK_IMPORTED_MODULE_4__.Storage; },
+/* harmony export */   StorageKey: function() { return /* reexport safe */ _storage__WEBPACK_IMPORTED_MODULE_4__.StorageKey; },
+/* harmony export */   canUseIndexedDB: function() { return /* reexport safe */ _engines_indexed_db_provider__WEBPACK_IMPORTED_MODULE_1__.canUseIndexedDB; },
+/* harmony export */   canUsePersistentStorage: function() { return /* reexport safe */ _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__.canUsePersistentStorage; },
+/* harmony export */   clearUseIndexedDBCache: function() { return /* reexport safe */ _engines_indexed_db_provider__WEBPACK_IMPORTED_MODULE_1__.clearUseIndexedDBCache; }
 /* harmony export */ });
-/* harmony import */ var _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59807);
-/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24475);
+/* harmony import */ var _async_storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8006);
+/* harmony import */ var _engines_indexed_db_provider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(91162);
+/* harmony import */ var _engines_local_storage_provider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(59807);
+/* harmony import */ var _engines_memory_storage_provider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9505);
+/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(24475);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module storage
  */ 
+
+
 
 
 
@@ -10379,7 +10741,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugin
  */ 
@@ -10422,7 +10784,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -10490,7 +10852,7 @@ function moveContentAndRemoveEmpty(jodit, mainClosestBox, sibling, backspace) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ /**
@@ -10534,7 +10896,7 @@ function moveContentAndRemoveEmpty(jodit, mainClosestBox, sibling, backspace) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -10579,7 +10941,7 @@ function moveContentAndRemoveEmpty(jodit, mainClosestBox, sibling, backspace) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -10764,7 +11126,7 @@ UIImagePropertiesForm = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -10812,7 +11174,7 @@ UIImagePropertiesForm = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module dom
  */ 
@@ -10833,7 +11195,7 @@ UIImagePropertiesForm = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ 
@@ -10877,14 +11239,14 @@ UIImagePropertiesForm = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31635);
 /* harmony import */ var jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(91672);
 /* harmony import */ var jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(96007);
+
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/group
  */ 
-
 
 class UISpacer extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_2__.UIElement {
     className() {
@@ -10912,20 +11274,20 @@ UISpacer = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_0__.__decorate)(
 /* harmony export */   pluginSystem: function() { return /* binding */ pluginSystem; },
 /* harmony export */   uniqueUid: function() { return /* binding */ uniqueUid; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(65946);
-/* harmony import */ var jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24497);
-/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(85932);
-/* harmony import */ var jodit_core_helpers_checker_is_view_object__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31534);
-/* harmony import */ var jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(74264);
+/* harmony import */ var jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(24497);
+/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(85932);
+/* harmony import */ var jodit_core_helpers_checker_is_view_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(31534);
+/* harmony import */ var jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(74264);
+/* harmony import */ var jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(80991);
 /* harmony import */ var jodit_core_helpers_utils_get_class_name__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(421);
 /* harmony import */ var jodit_core_plugin_plugin_system__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(85305);
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(81937);
-/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(27795);
-/* harmony import */ var _event_emitter__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1496);
+/* harmony import */ var _event_emitter_global__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(42689);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(81937);
+/* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(27795);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module global
  */ 
@@ -10955,14 +11317,16 @@ const uuids = new Set();
     uuids.add(uid);
     return uid;
 }
-const pluginSystem = new jodit_core_plugin_plugin_system__WEBPACK_IMPORTED_MODULE_6__.PluginSystem();
+const pluginSystem = new jodit_core_plugin_plugin_system__WEBPACK_IMPORTED_MODULE_6__.PluginSystem({
+    getContainer
+});
 const modules = {};
 const extendLang = (langs)=>{
     Object.keys(langs).forEach((key)=>{
-        if (_constants__WEBPACK_IMPORTED_MODULE_7__.lang[key]) {
-            Object.assign(_constants__WEBPACK_IMPORTED_MODULE_7__.lang[key], langs[key]);
+        if (_constants__WEBPACK_IMPORTED_MODULE_8__.lang[key]) {
+            Object.assign(_constants__WEBPACK_IMPORTED_MODULE_8__.lang[key], langs[key]);
         } else {
-            _constants__WEBPACK_IMPORTED_MODULE_7__.lang[key] = langs[key];
+            _constants__WEBPACK_IMPORTED_MODULE_8__.lang[key] = langs[key];
         }
     });
 };
@@ -10970,27 +11334,27 @@ const boxes = new WeakMap();
 /**
  * Create unique box(HTMLCotainer) and remove it after destroy
  */ function getContainer(jodit, classFunc, tag = 'div', createInsideEditor = false) {
-    const name = (0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_2__.isString)(classFunc) ? classFunc : classFunc ? (0,jodit_core_helpers_utils_get_class_name__WEBPACK_IMPORTED_MODULE_5__.getClassName)(classFunc.prototype) : 'jodit-utils';
+    const name = (0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_1__.isString)(classFunc) ? classFunc : classFunc ? (0,jodit_core_helpers_utils_get_class_name__WEBPACK_IMPORTED_MODULE_5__.getClassName)(classFunc.prototype) : 'jodit-utils';
     const data = boxes.get(jodit) || {}, key = name + tag;
-    const view = (0,jodit_core_helpers_checker_is_view_object__WEBPACK_IMPORTED_MODULE_3__.isViewObject)(jodit) ? jodit : jodit.j;
+    const view = (0,jodit_core_helpers_checker_is_view_object__WEBPACK_IMPORTED_MODULE_2__.isViewObject)(jodit) ? jodit : jodit.j;
     let body = null;
     if (!data[key]) {
         let c = view.c;
         body = getPopupViewRoot(view.o, view.container, jodit.od.body);
-        if (createInsideEditor && (0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_1__.isJoditObject)(jodit) && jodit.od !== jodit.ed) {
+        if (createInsideEditor && (0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_0__.isJoditObject)(jodit) && jodit.od !== jodit.ed) {
             c = jodit.createInside;
             const place = tag === 'style' ? jodit.ed.head : jodit.ed.body;
-            body = (0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_1__.isJoditObject)(jodit) && jodit.o.shadowRoot ? jodit.o.shadowRoot : place;
+            body = (0,jodit_core_helpers_checker_is_jodit_object__WEBPACK_IMPORTED_MODULE_0__.isJoditObject)(jodit) && jodit.o.shadowRoot ? jodit.o.shadowRoot : place;
         }
         const box = c.element(tag, {
-            className: `jodit jodit-${(0,jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_4__.kebabCase)(name)}-container jodit-box`
+            className: `jodit jodit-${(0,jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_3__.kebabCase)(name)}-container jodit-box`
         });
         box.classList.add(`jodit_theme_${view.o.theme || 'default'}`);
         body.appendChild(box);
         data[key] = box;
         jodit.hookStatus('beforeDestruct', ()=>{
             view.events.off(box);
-            _dom__WEBPACK_IMPORTED_MODULE_8__.Dom.safeRemove(box);
+            _dom__WEBPACK_IMPORTED_MODULE_9__.Dom.safeRemove(box);
             delete data[key];
             if (Object.keys(data).length) {
                 boxes.delete(jodit);
@@ -11007,15 +11371,16 @@ const boxes = new WeakMap();
  * Get root element for view
  * @internal
  */ function getPopupViewRoot(o, container, defaultRoot) {
-    var _o_popupRoot, _ref, _ref1;
-    return (_ref1 = (_ref = (_o_popupRoot = o.popupRoot) !== null && _o_popupRoot !== void 0 ? _o_popupRoot : o.shadowRoot) !== null && _ref !== void 0 ? _ref : _dom__WEBPACK_IMPORTED_MODULE_8__.Dom.closest(container, (parentElement)=>_dom__WEBPACK_IMPORTED_MODULE_8__.Dom.isHTMLElement(parentElement) && (_dom__WEBPACK_IMPORTED_MODULE_8__.Dom.isTag(parentElement, 'dialog') || [
+    var _ref, _ref1, _o_popupRoot;
+    return (_ref = (_ref1 = (_o_popupRoot = o.popupRoot) !== null && _o_popupRoot !== void 0 ? _o_popupRoot : o.shadowRoot) !== null && _ref1 !== void 0 ? _ref1 : _dom__WEBPACK_IMPORTED_MODULE_9__.Dom.closest(container, (parentElement)=>_dom__WEBPACK_IMPORTED_MODULE_9__.Dom.isHTMLElement(parentElement) && (_dom__WEBPACK_IMPORTED_MODULE_9__.Dom.isTag(parentElement, 'dialog') || [
             'fixed',
             'absolute'
-        ].includes((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__.css)(parentElement, 'position'))), defaultRoot)) !== null && _ref1 !== void 0 ? _ref1 : defaultRoot;
+        ].includes((0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_4__.css)(parentElement, 'position'))), defaultRoot)) !== null && _ref !== void 0 ? _ref : defaultRoot;
 }
 /**
  * Global event emitter
- */ const eventEmitter = new _event_emitter__WEBPACK_IMPORTED_MODULE_9__.EventEmitter();
+ * @deprecated use `import { eventEmitter } from 'jodit/core/event-emitter/global';`
+ */ const eventEmitter = _event_emitter_global__WEBPACK_IMPORTED_MODULE_7__.eventEmitter;
 
 
 /***/ }),
@@ -11038,7 +11403,7 @@ const boxes = new WeakMap();
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/backspace/README.md]]
  * @packageDocumentation
@@ -11132,9 +11497,9 @@ class backspace extends jodit_core_plugin__WEBPACK_IMPORTED_MODULE_5__.Plugin {
         if (range.startContainer === fakeNode) {
             if (fakeNode.previousSibling) {
                 if (jodit_core_dom__WEBPACK_IMPORTED_MODULE_2__.Dom.isText(fakeNode.previousSibling)) {
+                    var _ref;
                     var _fakeNode_previousSibling_nodeValue;
-                    var _fakeNode_previousSibling_nodeValue_length;
-                    range.setStart(fakeNode.previousSibling, (_fakeNode_previousSibling_nodeValue_length = (_fakeNode_previousSibling_nodeValue = fakeNode.previousSibling.nodeValue) === null || _fakeNode_previousSibling_nodeValue === void 0 ? void 0 : _fakeNode_previousSibling_nodeValue.length) !== null && _fakeNode_previousSibling_nodeValue_length !== void 0 ? _fakeNode_previousSibling_nodeValue_length : 0);
+                    range.setStart(fakeNode.previousSibling, (_ref = (_fakeNode_previousSibling_nodeValue = fakeNode.previousSibling.nodeValue) === null || _fakeNode_previousSibling_nodeValue === void 0 ? void 0 : _fakeNode_previousSibling_nodeValue.length) !== null && _ref !== void 0 ? _ref : 0);
                 } else {
                     range.setStartAfter(fakeNode.previousSibling);
                 }
@@ -11222,7 +11587,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_3__.pluginSystem.add('backspace', bac
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -11278,14 +11643,16 @@ module.exports = {assert(){}};;
 /* harmony import */ var jodit_core_helpers_array_to_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(88475);
 /* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(85932);
 /* harmony import */ var jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(57821);
-/* harmony import */ var jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(93640);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(33201);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
+
 
 
 
@@ -11335,7 +11702,7 @@ const $$temp = ()=>{
         root = root.container;
     }
     return $$('[ref],[data-ref]', root).reduce((def, child)=>{
-        const key = (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_5__.attr)(child, '-ref');
+        const key = (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_5__.attr)(child, '-ref');
         if (key && (0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_3__.isString)(key)) {
             def[(0,jodit_core_helpers_string_camel_case__WEBPACK_IMPORTED_MODULE_4__.camelCase)(key)] = child;
             def[key] = child;
@@ -11379,13 +11746,13 @@ const $$temp = ()=>{
     if ((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_3__.isString)(element)) {
         try {
             resolved = od.querySelector(element);
-        } catch (e) {
-            throw (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_5__.error)('String "' + element + '" should be valid HTML selector');
+        } catch (unused) {
+            throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_6__.error)('String "' + element + '" should be valid HTML selector');
         }
     }
     // Duck checking
     if (!resolved || typeof resolved !== 'object' || !jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.isElement(resolved) || !resolved.cloneNode) {
-        throw (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_5__.error)('Element "' + element + '" should be string or HTMLElement instance');
+        throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_6__.error)('Element "' + element + '" should be string or HTMLElement instance');
     }
     return resolved;
 }
@@ -11406,7 +11773,7 @@ const $$temp = ()=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -11462,7 +11829,7 @@ const $$temp = ()=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/hook/README.md]]
  * @packageDocumentation
@@ -11509,7 +11876,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/status-bar/README.md]]
  * @packageDocumentation
@@ -11544,9 +11911,9 @@ class StatusBar extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.ViewCo
     /**
 	 * Height of statusbar
 	 */ getHeight() {
+        var _ref;
         var _this_container;
-        var _this_container_offsetHeight;
-        return (_this_container_offsetHeight = (_this_container = this.container) === null || _this_container === void 0 ? void 0 : _this_container.offsetHeight) !== null && _this_container_offsetHeight !== void 0 ? _this_container_offsetHeight : 0;
+        return (_ref = (_this_container = this.container) === null || _this_container === void 0 ? void 0 : _this_container.offsetHeight) !== null && _ref !== void 0 ? _ref : 0;
     }
     findEmpty(inTheRight = false) {
         const items = this.getElms(inTheRight ? 'item-right' : 'item');
@@ -11609,7 +11976,7 @@ StatusBar = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui
  */ 
@@ -11707,7 +12074,7 @@ class Icon {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -11902,8 +12269,7 @@ UIImageMainTab = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_2__.__deco
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ConnectionError: function() { return /* reexport safe */ _connection_error__WEBPACK_IMPORTED_MODULE_1__.ConnectionError; },
 /* harmony export */   OptionsError: function() { return /* reexport safe */ _options_error__WEBPACK_IMPORTED_MODULE_2__.OptionsError; },
-/* harmony export */   abort: function() { return /* reexport safe */ _abort_error__WEBPACK_IMPORTED_MODULE_0__.abort; },
-/* harmony export */   isAbort: function() { return /* reexport safe */ _abort_error__WEBPACK_IMPORTED_MODULE_0__.isAbort; }
+/* harmony export */   abort: function() { return /* reexport safe */ _abort_error__WEBPACK_IMPORTED_MODULE_0__.abort; }
 /* harmony export */ });
 /* harmony import */ var _abort_error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14228);
 /* harmony import */ var _connection_error__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(58250);
@@ -11911,7 +12277,7 @@ UIImageMainTab = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_2__.__deco
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -11937,7 +12303,7 @@ UIImageMainTab = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_2__.__deco
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/copy-format/README.md]]
  * @packageDocumentation
@@ -12060,7 +12426,7 @@ jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_3__.Icon.set('copyformat', (_copy_fo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/table-keyboard-navigation/README.md]]
  * @packageDocumentation
@@ -12179,7 +12545,7 @@ function findCell(editor, key) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/html
  */ 
@@ -12249,7 +12615,7 @@ function normalizeCSS(s) {
             });
             convertedString = iframeDoc.firstChild ? (0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_2__.trim)(iframeDoc.body.innerHTML) : '';
         }
-    } catch (e) {} finally{
+    } catch (unused) {} finally{
         jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.safeRemove(iframe);
     }
     if (convertedString) {
@@ -12271,7 +12637,7 @@ function normalizeCSS(s) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ const map = new WeakMap();
@@ -12310,7 +12676,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 32 32\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Kopyalama Biçimi'
 };
@@ -12329,7 +12695,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 32 32\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -12779,7 +13145,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/array
  */ /**
@@ -12807,7 +13173,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module request
  */ 
@@ -12854,7 +13220,6 @@ class Response {
 /* harmony export */   abort: function() { return /* reexport safe */ _errors___WEBPACK_IMPORTED_MODULE_1__.abort; },
 /* harmony export */   connection: function() { return /* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_0__.connection; },
 /* harmony export */   error: function() { return /* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_0__.error; },
-/* harmony export */   isAbort: function() { return /* reexport safe */ _errors___WEBPACK_IMPORTED_MODULE_1__.isAbort; },
 /* harmony export */   options: function() { return /* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_0__.options; }
 /* harmony export */ });
 /* harmony import */ var _error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38027);
@@ -12862,7 +13227,7 @@ class Response {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -12877,7 +13242,7 @@ class Response {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'symbol'
 };
@@ -12896,7 +13261,7 @@ class Response {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/history
  */ 
@@ -12973,7 +13338,7 @@ class Stack {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -13021,7 +13386,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.delete = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/size
  */ 
@@ -13059,7 +13424,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/video/README.md]]
  * @packageDocumentation
@@ -13082,19 +13447,18 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('video', video);
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   elementToItem: function() { return /* binding */ elementToItem; },
-/* harmony export */   getItem: function() { return /* binding */ getItem; },
 /* harmony export */   nativeListeners: function() { return /* binding */ nativeListeners; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(27795);
-/* harmony import */ var jodit_core_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(65946);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_helpers_utils_ctrl_key__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(77213);
 /* harmony import */ var jodit_modules_file_browser_builders_context_menu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(61334);
 /* harmony import */ var jodit_modules_file_browser_builders_elements_map__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31125);
-/* harmony import */ var jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(53202);
+/* harmony import */ var jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(66206);
+/* harmony import */ var jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(53202);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -13102,15 +13466,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('video', video);
 
 
 
-/**
- * @private
- */ const getItem = (node, root, tag = 'a')=>jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.closest(node, (elm)=>jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(elm, tag), root);
-/**
- * @private
- */ const elementToItem = (elm, elementsMap)=>{
-    const { key } = elm.dataset, { item } = elementsMap[key || ''];
-    return item;
-};
+
 /**
  * @private
  */ function nativeListeners() {
@@ -13118,7 +13474,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('video', video);
     const elmMap = (0,jodit_modules_file_browser_builders_elements_map__WEBPACK_IMPORTED_MODULE_3__.elementsMap)(this);
     const self = this;
     self.e.on(self.tree.container, 'dragstart', (e)=>{
-        const a = getItem(e.target, self.container);
+        const a = (0,jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_4__.getItem)(e.target, self.container);
         if (!a) {
             return;
         }
@@ -13127,39 +13483,39 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('video', video);
         }
     }).on(self.tree.container, 'drop', (e)=>{
         if ((self.o.moveFile || self.o.moveFolder) && dragElement) {
-            let path = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_1__.attr)(dragElement, '-path') || '';
+            let path = (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_0__.attr)(dragElement, '-path') || '';
             // move folder
             if (!self.o.moveFolder && dragElement.classList.contains(this.tree.getFullElName('item'))) {
                 return false;
             }
             // move file
             if (dragElement.classList.contains(this.files.getFullElName('item'))) {
-                path += (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_1__.attr)(dragElement, '-name');
+                path += (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_0__.attr)(dragElement, '-name');
                 if (!self.o.moveFile) {
                     return false;
                 }
             }
-            const a = getItem(e.target, self.container);
+            const a = (0,jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_4__.getItem)(e.target, self.container);
             if (!a) {
                 return;
             }
-            self.dataProvider.move(path, (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_1__.attr)(a, '-path') || '', (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_1__.attr)(a, '-source') || '', dragElement.classList.contains(this.files.getFullElName('item'))).then(()=>(0,jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_4__.loadTree)(this)).catch(self.status);
+            self.dataProvider.move(path, (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_0__.attr)(a, '-path') || '', (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_0__.attr)(a, '-source') || '', dragElement.classList.contains(this.files.getFullElName('item'))).then(()=>(0,jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_5__.loadTree)(this)).catch(self.status);
             dragElement = false;
         }
     }).on(self.files.container, 'contextmenu', (0,jodit_modules_file_browser_builders_context_menu__WEBPACK_IMPORTED_MODULE_2__["default"])(self)).on(self.files.container, 'click', (e)=>{
-        if (!(0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_1__.ctrlKey)(e)) {
+        if (!(0,jodit_core_helpers_utils_ctrl_key__WEBPACK_IMPORTED_MODULE_1__.ctrlKey)(e)) {
             this.state.activeElements = [];
         }
     }).on(self.files.container, 'click', (e)=>{
-        const a = getItem(e.target, self.container);
+        const a = (0,jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_4__.getItem)(e.target, self.container);
         if (!a) {
             return;
         }
-        const item = elementToItem(a, elmMap);
+        const item = (0,jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_4__.elementToItem)(a, elmMap);
         if (!item) {
             return;
         }
-        if (!(0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_1__.ctrlKey)(e)) {
+        if (!(0,jodit_core_helpers_utils_ctrl_key__WEBPACK_IMPORTED_MODULE_1__.ctrlKey)(e)) {
             self.state.activeElements = [
                 item
             ];
@@ -13173,7 +13529,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('video', video);
         return false;
     }).on(self.files.container, 'dragstart', (e)=>{
         if (self.o.moveFile) {
-            const a = getItem(e.target, self.container);
+            const a = (0,jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_4__.getItem)(e.target, self.container);
             if (!a) {
                 return;
             }
@@ -13198,7 +13554,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('video', video);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -13271,7 +13627,7 @@ function brBefore(start) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/ui/progress-bar/README.md]]
  * @packageDocumentation
@@ -13327,7 +13683,7 @@ class ProgressBar extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_1__.UIE
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -13392,7 +13748,7 @@ function unwrapList(mode, list, li, jodit, cs) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -13443,7 +13799,7 @@ function unwrapList(mode, list, li, jodit, cs) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -13491,20 +13847,22 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.image = {
 /* harmony import */ var jodit_core_event_emitter__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(1496);
 /* harmony import */ var jodit_core_global__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(28077);
 /* harmony import */ var jodit_core_helpers__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(65946);
-/* harmony import */ var jodit_core_storage_storage__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(24475);
-/* harmony import */ var jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(23183);
-/* harmony import */ var jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(81987);
-/* harmony import */ var jodit_core_ui_progress_bar_progress_bar__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(34396);
-/* harmony import */ var jodit_modules_messages_messages__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(10081);
+/* harmony import */ var jodit_core_storage_async_storage__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(8006);
+/* harmony import */ var jodit_core_storage_storage__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(24475);
+/* harmony import */ var jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(23183);
+/* harmony import */ var jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(81987);
+/* harmony import */ var jodit_core_ui_progress_bar_progress_bar__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(34396);
+/* harmony import */ var jodit_modules_messages_messages__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(10081);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/view/README.md]]
  * @packageDocumentation
  * @module view
  */ 
+
 
 
 
@@ -13550,18 +13908,24 @@ class View extends jodit_core_component_component__WEBPACK_IMPORTED_MODULE_3__.C
 	 * Some extra data inside editor
 	 * @see copyformat plugin
 	 */ get buffer() {
-        return jodit_core_storage_storage__WEBPACK_IMPORTED_MODULE_14__.Storage.makeStorage();
+        return jodit_core_storage_storage__WEBPACK_IMPORTED_MODULE_15__.Storage.makeStorage();
     }
     get message() {
         return this.getMessageModule(this.container);
     }
     getMessageModule(container) {
-        return new jodit_modules_messages_messages__WEBPACK_IMPORTED_MODULE_18__.UIMessages(this, container);
+        return new jodit_modules_messages_messages__WEBPACK_IMPORTED_MODULE_19__.UIMessages(this, container);
     }
     /**
 	 * Container for persistent set/get value
+	 * @deprecated Use asyncStorage instead
 	 */ get storage() {
-        return jodit_core_storage_storage__WEBPACK_IMPORTED_MODULE_14__.Storage.makeStorage(true, this.id);
+        return jodit_core_storage_storage__WEBPACK_IMPORTED_MODULE_15__.Storage.makeStorage(true, this.id);
+    }
+    /**
+	 * Container for persistent set/get value
+	 */ get asyncStorage() {
+        return jodit_core_storage_async_storage__WEBPACK_IMPORTED_MODULE_14__.AsyncStorage.makeStorage(true, this.id);
     }
     /**
 	 * Short alias for `create`
@@ -13582,7 +13946,7 @@ class View extends jodit_core_component_component__WEBPACK_IMPORTED_MODULE_3__.C
     /**
 	 * progress_bar Progress bar
 	 */ get progressbar() {
-        return new jodit_core_ui_progress_bar_progress_bar__WEBPACK_IMPORTED_MODULE_17__.ProgressBar(this);
+        return new jodit_core_ui_progress_bar_progress_bar__WEBPACK_IMPORTED_MODULE_18__.ProgressBar(this);
     }
     get options() {
         return this.__options;
@@ -13696,31 +14060,33 @@ class View extends jodit_core_component_component__WEBPACK_IMPORTED_MODULE_3__.C
         this.components.clear();
     }
     /** @override */ destruct() {
-        var _cached, _cached1, _cached2;
+        var _cached, _cached1, _cached2, _cached3;
         if (this.isDestructed) {
             return;
         }
         (_cached = (0,jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cached)(this, 'progressbar')) === null || _cached === void 0 ? void 0 : _cached.destruct();
         (_cached1 = (0,jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cached)(this, 'message')) === null || _cached1 === void 0 ? void 0 : _cached1.destruct();
+        (_cached2 = (0,jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cached)(this, 'asyncStorage')) === null || _cached2 === void 0 ? void 0 : _cached2.close();
         if (this.events) {
             this.events.destruct();
             // @ts-ignore
             this.events = undefined;
         }
-        (_cached2 = (0,jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cached)(this, 'buffer')) === null || _cached2 === void 0 ? void 0 : _cached2.clear();
+        (_cached3 = (0,jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cached)(this, 'buffer')) === null || _cached3 === void 0 ? void 0 : _cached3.clear();
         jodit_core_dom__WEBPACK_IMPORTED_MODULE_10__.Dom.safeRemove(this.container);
         super.destruct();
     }
     constructor(options, isJodit = false){
+        var _ref;
         super(), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "isJodit", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "isView", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "parent", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "mods", void 0), /**
 	 * ID attribute for a source element, id add `{id}_editor` it's editor's id
 	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "id", void 0), /**
 	 * All created ViewComponent inside this view
-	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "components", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "create", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__container", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "events", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "OPTIONS", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__options", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__isFullSize", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__whoLocked", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "isLockedNotBy", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__modulesInstances", void 0), this.isJodit = isJodit, this.isView = true, this.parent = null, this.mods = {}, this.components = new Set(), this.OPTIONS = View.defaultOptions, this.__isFullSize = false, this.__whoLocked = '', this.isLockedNotBy = (name)=>this.isLocked && this.__whoLocked !== name, this.__modulesInstances = new Map();
+	 */ (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "components", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "events", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "create", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__container", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "OPTIONS", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__options", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__isFullSize", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__whoLocked", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "isLockedNotBy", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__modulesInstances", void 0), this.isJodit = isJodit, this.isView = true, this.parent = null, this.mods = {}, this.components = new Set(), this.OPTIONS = View.defaultOptions, this.__isFullSize = false, this.__whoLocked = '', this.isLockedNotBy = (name)=>this.isLocked && this.__whoLocked !== name, this.__modulesInstances = new Map();
         this.id = new Date().getTime().toString();
         this.initOptions(options);
         this.initOwners();
-        this.events = new jodit_core_event_emitter__WEBPACK_IMPORTED_MODULE_11__.EventEmitter(this.od);
+        this.events = (_ref = options === null || options === void 0 ? void 0 : options.eventEmmiter) !== null && _ref !== void 0 ? _ref : new jodit_core_event_emitter__WEBPACK_IMPORTED_MODULE_11__.EventEmitter(this.od);
         this.create = new jodit_core_create_create__WEBPACK_IMPORTED_MODULE_6__.Create(this.od);
         this.__container = this.c.div(`jodit ${this.componentName}`);
     }
@@ -13742,6 +14108,9 @@ class View extends jodit_core_component_component__WEBPACK_IMPORTED_MODULE_3__.C
 ], View.prototype, "storage", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
     jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cache
+], View.prototype, "asyncStorage", null);
+(0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
+    jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cache
 ], View.prototype, "c", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
     jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_7__.cache
@@ -13753,7 +14122,7 @@ class View extends jodit_core_component_component__WEBPACK_IMPORTED_MODULE_3__.C
     (0,jodit_core_decorators_hook_hook__WEBPACK_IMPORTED_MODULE_9__.hook)(jodit_core_component_statuses__WEBPACK_IMPORTED_MODULE_4__.STATUSES.beforeDestruct)
 ], View.prototype, "beforeDestruct", null);
 View = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators_derive_derive__WEBPACK_IMPORTED_MODULE_8__.derive)(jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_16__.Mods, jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_15__.Elms)
+    (0,jodit_core_decorators_derive_derive__WEBPACK_IMPORTED_MODULE_8__.derive)(jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_17__.Mods, jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_16__.Elms)
 ], View);
 View.defaultOptions = {
     extraButtons: [],
@@ -13785,7 +14154,7 @@ View.defaultOptions = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -13822,7 +14191,7 @@ View.defaultOptions = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'format kopii'
 };
@@ -13840,14 +14209,14 @@ View.defaultOptions = {
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31635);
 /* harmony import */ var jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(91672);
 /* harmony import */ var jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(96007);
+
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/group
  */ 
-
 
 class UISeparator extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_2__.UIElement {
     className() {
@@ -13874,7 +14243,7 @@ UISeparator = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_0__.__decorat
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/idle/README.md]]
  * @packageDocumentation
@@ -13908,7 +14277,7 @@ function idle() {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ /**
@@ -13950,7 +14319,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -13998,7 +14367,7 @@ const dataBind = (elm, key, value)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -14113,7 +14482,7 @@ const dataBind = (elm, key, value)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -14143,7 +14512,7 @@ const dataBind = (elm, key, value)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module request
  */ 
@@ -14186,7 +14555,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.defaultAjaxOptions = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/dialog/README.md]]
  * @packageDocumentation
@@ -14209,7 +14578,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.defaultAjaxOptions = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ /**
@@ -14244,7 +14613,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.defaultAjaxOptions = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -14300,7 +14669,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.defaultAjaxOptions = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -14330,7 +14699,7 @@ function options(message) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/paste
  */ 
@@ -14486,7 +14855,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -14534,7 +14903,7 @@ module.exports = "<svg viewBox=\"0 0 18.151 18.151\" xmlns=\"http://www.w3.org/2
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/indent/README.md]]
  * @packageDocumentation
@@ -14631,7 +15000,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('indent', indent
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -14682,7 +15051,7 @@ module.exports["default"] = ["Escriba algo...","Acerca de Jodit","Jodit Editor",
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 /**
  * Check if FONT inside STYLE or SCRIPT element
@@ -14712,7 +15081,7 @@ module.exports["default"] = ["Escriba algo...","Acerca de Jodit","Jodit Editor",
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/toolbar/button
  */ 
@@ -14745,7 +15114,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/image-processor/README.md]]
  * @packageDocumentation
@@ -14888,7 +15257,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_4__.pluginSystem.add('imageProcessor'
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/uploader
  */ 
@@ -15002,7 +15371,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui
  */ 
@@ -15032,7 +15401,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/bold
  */ 
@@ -15122,7 +15491,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__41324__;
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/nonenumerable/README.md]]
  * @packageDocumentation
@@ -15181,7 +15550,7 @@ function _object_spread(target) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': '复制格式'
 };
@@ -15205,7 +15574,7 @@ function _object_spread(target) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ 
@@ -15279,7 +15648,7 @@ function findCorrectCurrentNode(node, range, rightMode, isCollapsed, checkChild,
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/indent
  */ 
@@ -15317,7 +15686,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_2__.Config.prototype.indentMargin = 10;
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'Szimbólum'
 };
@@ -15336,7 +15705,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_2__.Config.prototype.indentMargin = 10;
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/color/README.md]]
  * @packageDocumentation
@@ -15393,13 +15762,17 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('color', color);
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31635);
 /* harmony import */ var jodit_core_decorators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(84839);
-/* harmony import */ var jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(38027);
-/* harmony import */ var jodit_core_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4099);
-/* harmony import */ var jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4274);
+/* harmony import */ var jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(49574);
+/* harmony import */ var jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(91672);
+/* harmony import */ var jodit_core_decorators_hook_hook__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(29200);
+/* harmony import */ var jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(68616);
+/* harmony import */ var jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(38027);
+/* harmony import */ var jodit_core_ui_group_list__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(97959);
+/* harmony import */ var jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4274);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/toolbar/collection/README.md]]
  * @packageDocumentation
@@ -15411,9 +15784,16 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('color', color);
 
 
 
-class ToolbarCollection extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_4__.UIList {
-    /** @override */ className() {
+
+
+
+
+class ToolbarCollection extends jodit_core_ui_group_list__WEBPACK_IMPORTED_MODULE_8__.UIList {
+    className() {
         return 'ToolbarCollection';
+    }
+    getRole() {
+        return 'toolbar';
     }
     /**
 	 * First button in a list
@@ -15422,10 +15802,10 @@ class ToolbarCollection extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_4__.UILis
         return button || null;
     }
     makeButton(control, target = null) {
-        return (0,jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_5__.makeButton)(this.j, control, target);
+        return (0,jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_9__.makeButton)(this.j, control, target);
     }
     makeSelect(control, target = null) {
-        return (0,jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_5__.makeSelect)(this.j, control, target);
+        return (0,jodit_modules_toolbar_factory__WEBPACK_IMPORTED_MODULE_9__.makeSelect)(this.j, control, target);
     }
     /**
 	 * Button should be active
@@ -15468,7 +15848,7 @@ class ToolbarCollection extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_4__.UILis
         this.appendTo(this.j.toolbarContainer);
     }
     showInline(bound) {
-        throw (0,jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_3__.error)('The method is not implemented for this class.');
+        throw (0,jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_7__.error)('The method is not implemented for this class.');
     }
     /** @override **/ build(items, target = null) {
         const itemsWithGroupps = this.j.e.fire('beforeToolbarBuild', items);
@@ -15486,21 +15866,42 @@ class ToolbarCollection extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_4__.UILis
         super.destruct();
     }
     constructor(jodit){
-        super(jodit), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__listenEvents", 'updatePlugins updateToolbar changeStack mousedown mouseup keydown change afterInit readonly afterResize ' + 'selectionchange changeSelection focus afterSetMode touchstart focus blur');
+        super(jodit), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__listenEvents", 'updatePlugins updateToolbar changeStack mousedown mouseup keydown change readonly afterResize ' + 'selectionchange changeSelection focus afterSetMode touchstart focus blur');
     }
 }
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_2__.autobind
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_6__.watch)(':afterInit'),
+    jodit_core_decorators_autobind_autobind__WEBPACK_IMPORTED_MODULE_3__.autobind
 ], ToolbarCollection.prototype, "__immediateUpdate", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
     (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_2__.debounce)((ctx)=>ctx.j.defaultTimeout, true)
 ], ToolbarCollection.prototype, "update", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_2__.hook)('ready')
+    (0,jodit_core_decorators_hook_hook__WEBPACK_IMPORTED_MODULE_5__.hook)('ready')
 ], ToolbarCollection.prototype, "__initEvents", null);
 ToolbarCollection = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_2__.component
+    jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_4__.component
 ], ToolbarCollection);
+
+
+/***/ }),
+
+/***/ 42689:
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   eventEmitter: function() { return /* binding */ eventEmitter; }
+/* harmony export */ });
+/* harmony import */ var _event_emitter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(93747);
+/*!
+ * Jodit Editor (https://xdsoft.net/jodit/)
+ * Released under MIT see LICENSE.txt in the project root for license information.
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
+ */ /**
+ * @module event-emitter
+ */ 
+const eventEmitter = new _event_emitter__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
 
 
 /***/ }),
@@ -15520,7 +15921,7 @@ ToolbarCollection = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__d
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/add-new-line/README.md]]
  * @packageDocumentation
@@ -15718,7 +16119,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_3__.pluginSystem.add('addNewLine', ad
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -15767,20 +16168,30 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /* harmony import */ var jodit_core_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16964);
 /* harmony import */ var jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(84839);
 /* harmony import */ var jodit_core_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(27795);
-/* harmony import */ var jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(65946);
-/* harmony import */ var jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(59400);
-/* harmony import */ var jodit_config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5266);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(54500);
-/* harmony import */ var _templates_form__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8908);
+/* harmony import */ var jodit_core_helpers_array_to_array__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(88475);
+/* harmony import */ var jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4040);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(80991);
+/* harmony import */ var jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(28723);
+/* harmony import */ var jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(71125);
+/* harmony import */ var jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(59400);
+/* harmony import */ var jodit_config__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5266);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(54500);
+/* harmony import */ var _templates_form__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(8908);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/image-editor/README.md]]
  * @packageDocumentation
  * @module modules/image-editor
  */ 
+
+
+
+
+
 
 
 
@@ -15835,9 +16246,9 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
         return this.j.async.promise((resolve)=>{
             const timestamp = new Date().getTime();
             this.image = this.j.c.element('img');
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.$$)('img,.jodit-icon_loader', this.resize_box).forEach(jodit_core_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.safeRemove);
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.$$)('img,.jodit-icon_loader', this.crop_box).forEach(jodit_core_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.safeRemove);
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(this.cropHandler, 'background', 'transparent');
+            (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.$$)('img,.jodit-icon_loader', this.resize_box).forEach(jodit_core_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.safeRemove);
+            (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.$$)('img,.jodit-icon_loader', this.crop_box).forEach(jodit_core_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.safeRemove);
+            (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(this.cropHandler, 'background', 'transparent');
             this.onSave = save;
             this.resize_box.appendChild(this.j.c.element('i', {
                 class: 'jodit-icon_loader'
@@ -15852,7 +16263,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
             }
             this.image.setAttribute('src', url);
             this._dialog.open();
-            const { widthInput, heightInput } = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.refs)(this.editor);
+            const { widthInput, heightInput } = (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.refs)(this.editor);
             const onload = ()=>{
                 if (this.isDestructed) {
                     return;
@@ -15866,7 +16277,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 this.resize_box.appendChild(this.image);
                 this.cropImage = this.image.cloneNode(true);
                 this.crop_box.appendChild(this.cropImage);
-                jodit_core_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.safeRemove.apply(null, (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.$$)('.jodit-icon_loader', this.editor));
+                jodit_core_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.safeRemove.apply(null, (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.$$)('.jodit-icon_loader', this.editor));
                 if (this.activeTab === TABS.crop) {
                     this.showCrop();
                 }
@@ -15888,9 +16299,9 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
         if (!slide) {
             return;
         }
-        (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.$$)(`.${jie}__slider,.${jie}__area`, self.editor).forEach((elm)=>elm.classList.remove(`${jie}_active`));
+        (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.$$)(`.${jie}__slider,.${jie}__area`, self.editor).forEach((elm)=>elm.classList.remove(`${jie}_active`));
         slide.classList.add(`${jie}_active`);
-        this.activeTab = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.attr)(slide, '-area') || TABS.resize;
+        this.activeTab = (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_7__.attr)(slide, '-area') || TABS.resize;
         const tab = self.editor.querySelector(`.${jie}__area.${jie}__area_` + self.activeTab);
         if (tab) {
             tab.classList.add(`${jie}_active`);
@@ -15900,14 +16311,14 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
         }
     }
     onChangeSizeInput(e) {
-        const self = this, input = e.target, { widthInput, heightInput } = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.refs)(this.editor), isWidth = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.attr)(input, 'data-ref') === 'widthInput', x = parseInt(input.value, 10), minX = isWidth ? self.o.min_width : self.o.min_height, minY = !isWidth ? self.o.min_width : self.o.min_height;
+        const self = this, input = e.target, { widthInput, heightInput } = (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.refs)(this.editor), isWidth = (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_7__.attr)(input, 'data-ref') === 'widthInput', x = parseInt(input.value, 10), minX = isWidth ? self.o.min_width : self.o.min_height, minY = !isWidth ? self.o.min_width : self.o.min_height;
         let y;
         if (x > minX) {
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.image, isWidth ? 'width' : 'height', x);
+            (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.image, isWidth ? 'width' : 'height', x);
             if (self.resizeUseRatio) {
                 y = isWidth ? Math.round(x / self.ratio) : Math.round(x * self.ratio);
                 if (y > minY) {
-                    (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.image, !isWidth ? 'width' : 'height', y);
+                    (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.image, !isWidth ? 'width' : 'height', y);
                     if (isWidth) {
                         heightInput.value = y.toString();
                     } else {
@@ -15927,8 +16338,8 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
         self.start_x = e.clientX;
         self.start_y = e.clientY;
         if (self.activeTab === TABS.crop) {
-            self.top_x = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, 'left');
-            self.top_y = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, 'top');
+            self.top_x = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, 'left');
+            self.top_y = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, 'top');
             self.width = self.cropHandler.offsetWidth;
             self.height = self.cropHandler.offsetHeight;
         } else {
@@ -15949,7 +16360,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
         if (!self.clicked) {
             return;
         }
-        const { widthInput, heightInput } = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.refs)(this.editor);
+        const { widthInput, heightInput } = (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.refs)(this.editor);
         self.diff_x = e.clientX - self.start_x;
         self.diff_y = e.clientY - self.start_y;
         if (self.activeTab === TABS.resize && self.resizeUseRatio || self.activeTab === TABS.crop && self.cropUseRatio) {
@@ -15966,11 +16377,11 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
         }
         if (self.activeTab === TABS.resize) {
             if (self.new_w > self.o.resizeMinWidth) {
-                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.image, 'width', self.new_w + 'px');
+                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.image, 'width', self.new_w + 'px');
                 widthInput.value = self.new_w.toString();
             }
             if (self.new_h > self.o.resizeMinHeight) {
-                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.image, 'height', self.new_h + 'px');
+                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.image, 'height', self.new_h + 'px');
                 heightInput.value = self.new_h.toString();
             }
             this.j.e.fire(self.resizeHandler, 'updatesize');
@@ -15982,7 +16393,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 if (self.top_y + self.new_h > self.cropImage.offsetHeight) {
                     self.new_h = self.cropImage.offsetHeight - self.top_y;
                 }
-                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, {
+                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, {
                     width: self.new_w,
                     height: self.new_h
                 });
@@ -15990,11 +16401,11 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 if (self.top_x + self.diff_x + self.cropHandler.offsetWidth > self.cropImage.offsetWidth) {
                     self.diff_x = self.cropImage.offsetWidth - self.top_x - self.cropHandler.offsetWidth;
                 }
-                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, 'left', self.top_x + self.diff_x);
+                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, 'left', self.top_x + self.diff_x);
                 if (self.top_y + self.diff_y + self.cropHandler.offsetHeight > self.cropImage.offsetHeight) {
                     self.diff_y = self.cropImage.offsetHeight - self.top_y - self.cropHandler.offsetHeight;
                 }
-                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, 'top', self.top_y + self.diff_y);
+                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, 'top', self.top_y + self.diff_y);
             }
             this.j.e.fire(self.cropHandler, 'updatesize');
         }
@@ -16035,7 +16446,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 wn = nw * (h / nh);
                 hn = h;
             }
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(this.crop_box, {
+            (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(this.crop_box, {
                 width: wn,
                 height: hn
             });
@@ -16052,8 +16463,8 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
             } else {
                 this.new_h = ImageEditor.calcValueByPercent(h, this.o.cropDefaultHeight);
             }
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(this.cropHandler, {
-                backgroundImage: 'url(' + (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.attr)(this.cropImage, 'src') + ')',
+            (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(this.cropHandler, {
+                backgroundImage: 'url(' + (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_7__.attr)(this.cropImage, 'src') + ')',
                 width: this.new_w,
                 height: this.new_h,
                 left: w / 2 - this.new_w / 2,
@@ -16065,8 +16476,8 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 return;
             }
             const ratioX = this.cropImage.offsetWidth / this.naturalWidth, ratioY = this.cropImage.offsetHeight / this.naturalHeight;
-            this.cropBox.x = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(this.cropHandler, 'left') / ratioX;
-            this.cropBox.y = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(this.cropHandler, 'top') / ratioY;
+            this.cropBox.x = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(this.cropHandler, 'left') / ratioX;
+            this.cropBox.y = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(this.cropHandler, 'top') / ratioY;
             this.cropBox.w = this.cropHandler.offsetWidth / ratioX;
             this.cropBox.h = this.cropHandler.offsetHeight / ratioY;
             this.sizes.textContent = this.cropBox.w.toFixed(0) + 'x' + this.cropBox.h.toFixed(0);
@@ -16075,7 +16486,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
             this.resizeBox.h = this.image.offsetHeight || this.naturalHeight;
         }), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "setHandlers", ()=>{
             const self = this;
-            const { widthInput, heightInput } = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.refs)(this.editor);
+            const { widthInput, heightInput } = (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.refs)(this.editor);
             self.j.e.on([
                 self.editor.querySelector('.jodit_bottomright'),
                 self.cropHandler
@@ -16084,11 +16495,11 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 self.showCrop();
                 this.j.e.fire(self.cropHandler, 'updatesize');
             });
-            self.j.e.on((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.toArray)(this.editor.querySelectorAll(`.${jie}__slider-title`)), 'click', this.onTitleModeClick).on([
+            self.j.e.on((0,jodit_core_helpers_array_to_array__WEBPACK_IMPORTED_MODULE_5__.toArray)(this.editor.querySelectorAll(`.${jie}__slider-title`)), 'click', this.onTitleModeClick).on([
                 widthInput,
                 heightInput
             ], 'input', this.onChangeSizeInput);
-            const { keepAspectRatioResize, keepAspectRatioCrop } = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.refs)(this.editor);
+            const { keepAspectRatioResize, keepAspectRatioCrop } = (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.refs)(this.editor);
             if (keepAspectRatioResize) {
                 keepAspectRatioResize.addEventListener('change', ()=>{
                     this.resizeUseRatio = keepAspectRatioResize.checked;
@@ -16100,7 +16511,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 });
             }
             self.j.e.on(self.resizeHandler, 'updatesize', ()=>{
-                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.resizeHandler, {
+                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.resizeHandler, {
                     top: 0,
                     left: 0,
                     width: self.image.offsetWidth || self.naturalWidth,
@@ -16111,7 +16522,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 if (!self.cropImage) {
                     return;
                 }
-                let new_x = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, 'left'), new_y = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, 'top'), new_width = self.cropHandler.offsetWidth, new_height = self.cropHandler.offsetHeight;
+                let new_x = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, 'left'), new_y = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, 'top'), new_width = self.cropHandler.offsetWidth, new_height = self.cropHandler.offsetHeight;
                 if (new_x < 0) {
                     new_x = 0;
                 }
@@ -16130,7 +16541,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                         new_width = new_height * self.ratio;
                     }
                 }
-                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.cropHandler, {
+                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.cropHandler, {
                     width: new_width,
                     height: new_height,
                     left: new_x,
@@ -16149,7 +16560,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                     switch(button){
                         case self.buttons.saveas:
                             self.j.prompt('Enter new name', 'Save in new file', (name)=>{
-                                if (!(0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.trim)(name)) {
+                                if (!(0,jodit_core_helpers_string_trim__WEBPACK_IMPORTED_MODULE_6__.trim)(name)) {
                                     self.j.alert('The name should not be empty');
                                     return false;
                                 }
@@ -16165,7 +16576,7 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                             break;
                         case self.buttons.reset:
                             if (self.activeTab === TABS.resize) {
-                                (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.css)(self.image, {
+                                (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_8__.css)(self.image, {
                                     width: null,
                                     height: null
                                 });
@@ -16180,18 +16591,24 @@ class ImageEditor extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.View
                 });
             });
         });
-        this.options = editor && editor.o && editor.o.imageeditor ? editor.o.imageeditor : jodit_config__WEBPACK_IMPORTED_MODULE_7__.Config.defaultOptions.imageeditor;
+        this.options = editor && editor.o && editor.o.imageeditor ? editor.o.imageeditor : jodit_config__WEBPACK_IMPORTED_MODULE_12__.Config.defaultOptions.imageeditor;
         const o = this.options;
         this.resizeUseRatio = o.resizeUseRatio;
         this.cropUseRatio = o.cropUseRatio;
         this.buttons = {
-            reset: (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_6__.Button)(this.j, 'update', 'Reset'),
-            save: (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_6__.Button)(this.j, 'save', 'Save'),
-            saveas: (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_6__.Button)(this.j, 'save', 'Save as ...')
+            reset: (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_11__.Button)(this.j, 'update', 'Reset'),
+            save: (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_11__.Button)(this.j, 'save', 'Save'),
+            saveas: (0,jodit_core_ui_button__WEBPACK_IMPORTED_MODULE_11__.Button)(this.j, {
+                icon: {
+                    name: 'save'
+                },
+                name: 'save-as',
+                text: 'Save as ...'
+            })
         };
         this.activeTab = o.resize ? TABS.resize : TABS.crop;
-        this.editor = (0,_templates_form__WEBPACK_IMPORTED_MODULE_9__.form)(this.j, this.options);
-        const { resizeBox, cropBox } = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.refs)(this.editor);
+        this.editor = (0,_templates_form__WEBPACK_IMPORTED_MODULE_14__.form)(this.j, this.options);
+        const { resizeBox, cropBox } = (0,jodit_core_helpers_utils_selector__WEBPACK_IMPORTED_MODULE_9__.refs)(this.editor);
         this.resize_box = resizeBox;
         this.crop_box = cropBox;
         this.sizes = this.editor.querySelector(`.${jie}__area.${jie}__area_crop .jodit-image-editor__sizes`);
@@ -16255,7 +16672,7 @@ ImageEditor = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorat
 /**
  * Open Image Editor
  */ function openImageEditor(href, name, path, source, onSuccess, onFailed) {
-    return this.getInstance('ImageEditor', this.o).open(href, (newname, box, success, failed)=>(0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.call)(box.action === 'resize' ? this.dataProvider.resize : this.dataProvider.crop, path, source, name, newname, box.box).then((ok)=>{
+    return this.getInstance('ImageEditor', this.o).open(href, (newname, box, success, failed)=>(0,jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_10__.call)(box.action === 'resize' ? this.dataProvider.resize : this.dataProvider.crop, path, source, name, newname, box.box).then((ok)=>{
             if (ok) {
                 success();
                 if (onSuccess) {
@@ -16286,7 +16703,7 @@ ImageEditor = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorat
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -16301,6 +16718,7 @@ const map = {};
  * ```
  * You must use the function derived from the method immediately as its iframe is being removed
  */ function reset(key) {
+    var _map_key;
     if (!(key in map)) {
         const iframe = jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.globalDocument.createElement('iframe');
         try {
@@ -16322,7 +16740,6 @@ const map = {};
             (_iframe_parentNode = iframe.parentNode) === null || _iframe_parentNode === void 0 ? void 0 : _iframe_parentNode.removeChild(iframe);
         }
     }
-    var _map_key;
     return (_map_key = map[key]) !== null && _map_key !== void 0 ? _map_key : null;
 }
 
@@ -16354,7 +16771,7 @@ module.exports["default"] = ["輸入一些內容","關於Jodit","Jodit Editor","
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -16382,7 +16799,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -16442,7 +16859,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 10 10\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/array
  */ 
@@ -16471,7 +16888,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/link
  */ 
@@ -16565,7 +16982,7 @@ const formTemplate = (editor)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/source
  */ 
@@ -16654,7 +17071,7 @@ class TextAreaEditor extends jodit_plugins_source_editor_sourceEditor__WEBPACK_I
         super(...args), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "autosize", this.j.async.debounce(()=>{
             this.instance.style.height = 'auto';
             this.instance.style.height = this.instance.scrollHeight + 'px';
-        }, this.j.defaultTimeout));
+        }, this.j.defaultTimeout, true));
     }
 }
 
@@ -16672,7 +17089,7 @@ class TextAreaEditor extends jodit_plugins_source_editor_sourceEditor__WEBPACK_I
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -16696,7 +17113,7 @@ class TextAreaEditor extends jodit_plugins_source_editor_sourceEditor__WEBPACK_I
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -16746,7 +17163,7 @@ class TextAreaEditor extends jodit_plugins_source_editor_sourceEditor__WEBPACK_I
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/history
  */ 
@@ -16958,7 +17375,7 @@ class TextAreaEditor extends jodit_plugins_source_editor_sourceEditor__WEBPACK_I
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/uploader
  */ 
@@ -17077,7 +17494,7 @@ function readImagesWithReader(fileList, imagesExtensions, promises, uploader, ha
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/select
  */ 
@@ -17105,7 +17522,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.select = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -17163,7 +17580,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.select = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -17245,7 +17662,7 @@ function loadNextStyle(jodit, urls, i = 0) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -17284,7 +17701,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ const normalizeUrl = (...urls)=>{
@@ -17307,7 +17724,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/html
  */ 
@@ -17364,7 +17781,7 @@ function sanitizeHTMLElement(elm, { safeJavaScriptLink, removeOnError } = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/table
  */ 
@@ -17486,7 +17903,11 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.controls.table = {
                         range.collapse(false);
                         editor.s.selectRange(range);
                         const firstPart = editor.s.splitSelection(block, fake);
-                        jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.after(firstPart, table);
+                        if (firstPart) {
+                            jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.after(firstPart, table);
+                        } else {
+                            jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.after(block, table);
+                        }
                     }
                 } else {
                     editor.s.insertNode(table, false);
@@ -17533,7 +17954,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.controls.table = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -17597,7 +18018,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -17634,7 +18055,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/html
  */ /**
@@ -17668,7 +18089,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/video
  */ 
@@ -17728,9 +18149,9 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.controls.video = {
             content: formCode.container
         });
         formLink.onSubmit((data)=>{
+            var _ref;
             var _jodit_o_video, _jodit_o_video1, _jodit_o_video2;
-            var _jodit_o_video_parseUrlToVideoEmbed;
-            insertCode((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__.call)((_jodit_o_video_parseUrlToVideoEmbed = (_jodit_o_video = jodit.o.video) === null || _jodit_o_video === void 0 ? void 0 : _jodit_o_video.parseUrlToVideoEmbed) !== null && _jodit_o_video_parseUrlToVideoEmbed !== void 0 ? _jodit_o_video_parseUrlToVideoEmbed : jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__.convertMediaUrlToVideoEmbed, data.url, {
+            insertCode((0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__.call)((_ref = (_jodit_o_video = jodit.o.video) === null || _jodit_o_video === void 0 ? void 0 : _jodit_o_video.parseUrlToVideoEmbed) !== null && _ref !== void 0 ? _ref : jodit_core_helpers__WEBPACK_IMPORTED_MODULE_0__.convertMediaUrlToVideoEmbed, data.url, {
                 width: (_jodit_o_video1 = jodit.o.video) === null || _jodit_o_video1 === void 0 ? void 0 : _jodit_o_video1.defaultWidth,
                 height: (_jodit_o_video2 = jodit.o.video) === null || _jodit_o_video2 === void 0 ? void 0 : _jodit_o_video2.defaultHeight
             }));
@@ -17763,7 +18184,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.controls.video = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -17839,7 +18260,7 @@ function _async_to_generator(fn) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ /**
@@ -17872,7 +18293,7 @@ function _async_to_generator(fn) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -17907,13 +18328,13 @@ function _async_to_generator(fn) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
- */ 
-/**
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
+ */ /**
  * [[include:core/decorators/autobind/README.md]]
  * @packageDocumentation
  * @module decorators/autobind
- */ /**
+ */ 
+/**
  * Decorator that automatically binds a method to its class instance.
  * This is useful when passing methods as callbacks to preserve the correct `this` context.
  *
@@ -17965,7 +18386,7 @@ function _async_to_generator(fn) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ const normalizeLicense = (license, count = 8)=>{
@@ -18014,7 +18435,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -18092,7 +18513,7 @@ UISelect = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)(
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ /**
@@ -18118,7 +18539,7 @@ UISelect = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)(
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/font/README.md]]
  * @packageDocumentation
@@ -18181,7 +18602,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('font', font);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/hotkeys/README.md]]
  * @packageDocumentation
@@ -18342,7 +18763,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('hotkeys', hotke
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-processor
  */ 
@@ -18376,7 +18797,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.imageProcessor = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/ui/popup/README.md]]
  * @packageDocumentation
@@ -18687,12 +19108,10 @@ class Popup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_11__.UIGr
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   FiniteStateMachine: function() { return /* reexport safe */ _finite_state_machine__WEBPACK_IMPORTED_MODULE_1__.FiniteStateMachine; },
-/* harmony export */   elementsEqualAttributes: function() { return /* reexport safe */ _is_same_attributes__WEBPACK_IMPORTED_MODULE_7__.elementsEqualAttributes; },
 /* harmony export */   extractSelectedPart: function() { return /* reexport safe */ _extract__WEBPACK_IMPORTED_MODULE_0__.extractSelectedPart; },
 /* harmony export */   getSuitChild: function() { return /* reexport safe */ _get_suit_child__WEBPACK_IMPORTED_MODULE_2__.getSuitChild; },
 /* harmony export */   getSuitParent: function() { return /* reexport safe */ _get_suit_parent__WEBPACK_IMPORTED_MODULE_3__.getSuitParent; },
 /* harmony export */   isInsideInvisibleElement: function() { return /* reexport safe */ _is_inside_invisible_element__WEBPACK_IMPORTED_MODULE_5__.isInsideInvisibleElement; },
-/* harmony export */   isSameAttributes: function() { return /* reexport safe */ _is_same_attributes__WEBPACK_IMPORTED_MODULE_7__.isSameAttributes; },
 /* harmony export */   suitableClosest: function() { return /* reexport safe */ _is_suit_element__WEBPACK_IMPORTED_MODULE_8__.suitableClosest; },
 /* harmony export */   toggleAttributes: function() { return /* reexport safe */ _toggle_attributes__WEBPACK_IMPORTED_MODULE_11__.toggleAttributes; },
 /* harmony export */   toggleOrderedList: function() { return /* reexport safe */ _list_toggle_ordered_list__WEBPACK_IMPORTED_MODULE_9__.toggleOrderedList; },
@@ -18717,7 +19136,7 @@ class Popup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_11__.UIGr
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -18747,20 +19166,18 @@ class Popup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_11__.UIGr
 /* harmony export */   cached: function() { return /* binding */ cached; }
 /* harmony export */ });
 /* harmony import */ var jodit_core_component_statuses__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(69364);
-/* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(81937);
-/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(23211);
-/* harmony import */ var jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(28686);
-/* harmony import */ var jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(38027);
+/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(23211);
+/* harmony import */ var jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(28686);
+/* harmony import */ var jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(38027);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/cache/README.md]]
  * @packageDocumentation
  * @module decorators/cache
  */ 
-
 
 
 
@@ -18803,7 +19220,7 @@ class Popup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_11__.UIGr
  * - This function is non-destructive and does not alter the object's state.
  */ function cached(object, property) {
     const descriptor = Object.getOwnPropertyDescriptor(object, property);
-    if (!descriptor || (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_3__.isFunction)(descriptor.get)) {
+    if (!descriptor || (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isFunction)(descriptor.get)) {
         return null;
     }
     return descriptor.value;
@@ -18872,14 +19289,9 @@ class Popup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_11__.UIGr
  */ function cache(_, name, descriptor) {
     const getter = descriptor.get;
     if (!getter) {
-        throw (0,jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_4__.error)('Getter property descriptor expected');
+        throw (0,jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_3__.error)('Getter property descriptor expected');
     }
     descriptor.get = function() {
-        if (!jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.IS_PROD) {
-            if (this.isInDestruct) {
-                console.error('Trying to access property in destructed component');
-            }
-        }
         const value = getter.call(this);
         if (value && value.noCache === true) {
             return value;
@@ -18895,8 +19307,8 @@ class Popup extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_11__.UIGr
 }
 function cacheHTML(target, _, descriptor) {
     const fn = descriptor.value;
-    if (!(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_3__.isFunction)(fn)) {
-        throw (0,jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_4__.error)('Handler must be a Function');
+    if (!(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isFunction)(fn)) {
+        throw (0,jodit_core_helpers_utils_error_error__WEBPACK_IMPORTED_MODULE_3__.error)('Handler must be a Function');
     }
     let useCache = true;
     const cached = new WeakMap();
@@ -18906,13 +19318,13 @@ function cacheHTML(target, _, descriptor) {
             return (_cached_get = cached.get(this.constructor)) === null || _cached_get === void 0 ? void 0 : _cached_get.cloneNode(true);
         }
         const value = fn.apply(this, attrs);
-        if (useCache && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_2__.Dom.isElement(value)) {
+        if (useCache && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.isElement(value)) {
             cached.set(this.constructor, value);
         }
         return useCache ? value.cloneNode(true) : value;
     };
     target.hookStatus(jodit_core_component_statuses__WEBPACK_IMPORTED_MODULE_0__.STATUSES.ready, (component)=>{
-        const view = (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_3__.isViewObject)(component) ? component : component.jodit;
+        const view = (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isViewObject)(component) ? component : component.jodit;
         useCache = Boolean(view.options.cache);
     });
 }
@@ -18928,7 +19340,7 @@ function cacheHTML(target, _, descriptor) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/resize-cells
  */ 
@@ -18954,7 +19366,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 48 48\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ function isPromise(val) {
@@ -18978,7 +19390,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 48 48\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -19033,7 +19445,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 48 48\">
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -19076,7 +19488,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -19116,7 +19528,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -19165,7 +19577,7 @@ module.exports = "<svg viewBox=\"0 0 13 13\" xmlns=\"http://www.w3.org/2000/svg\
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/format-block/README.md]]
  * @packageDocumentation
@@ -19211,7 +19623,7 @@ module.exports["default"] = ["Type something","About Jodit","Jodit Editor","Jodi
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -19254,21 +19666,26 @@ module.exports["default"] = ["Type something","About Jodit","Jodit Editor","Jodi
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31635);
 /* harmony import */ var jodit_core_component_statuses__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(69364);
-/* harmony import */ var jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(84839);
-/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(23211);
-/* harmony import */ var jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(91565);
-/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(85932);
-/* harmony import */ var jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(93640);
-/* harmony import */ var jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(96007);
-/* harmony import */ var jodit_core_ui_group_list__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(97959);
-/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(29434);
+/* harmony import */ var jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(51676);
+/* harmony import */ var jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(91672);
+/* harmony import */ var jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(68616);
+/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(23211);
+/* harmony import */ var jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(91565);
+/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(85932);
+/* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(28712);
+/* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(96007);
+/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(29434);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/button
  */ 
+
+
 
 
 
@@ -19298,7 +19715,7 @@ const UIButtonState = ()=>({
         text: '',
         tabIndex: undefined
     });
-class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__.UIElement {
+class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_11__.UIElement {
     /** @override */ className() {
         return 'UIButton';
     }
@@ -19312,29 +19729,30 @@ class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__.UIElem
 	 * DOM container for text content
 	 */ get text() {
         const text = this.getElm('text');
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.assert)(text, 'Text element not found');
+        (0,jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__.assert)(text, 'Text element not found');
         return text;
     }
     /**
 	 * DOM container for icon
 	 */ get icon() {
         const icon = this.getElm('icon');
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.assert)(icon, 'Icon element not found');
+        (0,jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_9__.assert)(icon, 'Icon element not found');
         return icon;
     }
     onChangeSize() {
         this.setMod('size', this.state.size);
     }
     onChangeType() {
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'type', this.state.type);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'type', this.state.type);
     }
     onChangeRole() {
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'role', this.state.role);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'role', this.state.role);
     }
     /**
 	 * Set size from a parent list
 	 */ updateSize() {
-        const pe = this.closest(jodit_core_ui_group_list__WEBPACK_IMPORTED_MODULE_9__.UIList);
+        const UIList = (0,jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_4__.getComponentClass)('UIList');
+        const pe = this.closest(UIList);
         if (pe) {
             this.state.size = pe.buttonSize;
             return;
@@ -19345,38 +19763,47 @@ class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__.UIElem
     }
     onChangeText() {
         this.text.textContent = this.jodit.i18n(this.state.text);
+        this.updateAriaLabel();
     }
     onChangeTextSetMode() {
         this.setMod('text-icons', Boolean(this.state.text.trim().length));
     }
     onChangeDisabled() {
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'disabled', this.state.disabled || null);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'disabled', this.state.disabled || null);
     }
     onChangeActivated() {
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'aria-pressed', this.state.activated);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'aria-pressed', this.state.activated);
     }
     onChangeName() {
         this.container.classList.add(`${this.componentName}_${this.clearName(this.state.name)}`);
         this.name = this.state.name;
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'data-ref', this.state.name);
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'ref', this.state.name);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'data-ref', this.state.name);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'ref', this.state.name);
     }
     onChangeTooltip() {
+        const i8nTooltip = this.state.tooltip ? this.jodit.i18n(this.state.tooltip) : null;
         if (this.get('j.o.useNativeTooltip')) {
-            (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'title', this.state.tooltip);
+            (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'title', i8nTooltip);
         }
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'aria-label', this.state.tooltip);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'aria-label', i8nTooltip);
+        this.updateAriaLabel();
+    }
+    updateAriaLabel() {
+        const hasText = this.state.text.trim().length > 0;
+        const i8nTooltip = this.state.tooltip ? this.jodit.i18n(this.state.tooltip) : null;
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'aria-label', i8nTooltip);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.button, 'aria-label', !hasText ? i8nTooltip : null);
     }
     onChangeTabIndex() {
-        (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_7__.attr)(this.container, 'tabindex', this.state.tabIndex);
+        (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_10__.attr)(this.container, 'tabindex', this.state.tabIndex);
     }
     onChangeIcon() {
         const textIcons = this.get('j.o.textIcons');
-        if (textIcons === true || (0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_5__.isFunction)(textIcons) && textIcons(this.state.name)) {
+        if (textIcons === true || (0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_7__.isFunction)(textIcons) && textIcons(this.state.name)) {
             return;
         }
-        jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.detach(this.icon);
-        const iconElement = jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_10__.Icon.makeIcon(this.j, this.state.icon);
+        jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_6__.Dom.detach(this.icon);
+        const iconElement = jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_12__.Icon.makeIcon(this.j, this.state.icon);
         iconElement && this.icon.appendChild(iconElement);
     }
     /**
@@ -19388,7 +19815,7 @@ class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__.UIElem
 	 * Element has focus
 	 */ isFocused() {
         const { activeElement } = this.od;
-        return Boolean(activeElement && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.isOrContains(this.container, activeElement));
+        return Boolean(activeElement && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_6__.Dom.isOrContains(this.container, activeElement));
     }
     /** @override */ createContainer() {
         const cn = this.componentName;
@@ -19405,6 +19832,7 @@ class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__.UIElem
         return button;
     }
     destruct() {
+        this.j.e.off(this);
         this.j.e.off(this.container);
         return super.destruct();
     }
@@ -19421,6 +19849,7 @@ class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__.UIElem
             actionTrigger: this
         };
         this.actionHandlers.forEach((callback)=>callback.call(this, e));
+        this.j.e.fire(this, 'click', e);
     }
     constructor(jodit, state){
         super(jodit), /**
@@ -19440,83 +19869,83 @@ class UIButton extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_8__.UIElem
     }
 }
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cache
+    jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_3__.cache
 ], UIButton.prototype, "text", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cache
+    jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_3__.cache
 ], UIButton.prototype, "icon", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.size', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.size', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeSize", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.type', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.type', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeType", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.role', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.role', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeRole", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('parentElement')
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('parentElement')
 ], UIButton.prototype, "updateSize", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.variant', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.variant', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeStatus", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.text', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.text', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeText", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.text', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.text', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeTextSetMode", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.disabled')
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.disabled')
 ], UIButton.prototype, "onChangeDisabled", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.activated')
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.activated')
 ], UIButton.prototype, "onChangeActivated", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.name', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.name', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeName", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.tooltip', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.tooltip', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeTooltip", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.tabIndex', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.tabIndex', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeTabIndex", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('state.icon', {
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('state.icon', {
         immediately: false
     })
 ], UIButton.prototype, "onChangeIcon", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cacheHTML
+    jodit_core_decorators_cache_cache__WEBPACK_IMPORTED_MODULE_3__.cacheHTML
 ], UIButton.prototype, "createContainer", null);
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('button:click')
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('button:click')
 ], UIButton.prototype, "__onActionFire", null);
 UIButton = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.component
+    jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_4__.component
 ], UIButton);
 function Button(jodit, stateOrText, text, variant) {
     const button = new UIButton(jodit);
     button.state.tabIndex = jodit.o.allowTabNavigation ? 0 : -1;
-    if ((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__.isString)(stateOrText)) {
+    if ((0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_8__.isString)(stateOrText)) {
         button.state.icon.name = stateOrText;
         button.state.name = stateOrText;
         if (variant) {
@@ -19550,8 +19979,8 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /* harmony export */ });
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31635);
-/* harmony import */ var jodit_core_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16964);
-/* harmony import */ var jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(84839);
+/* harmony import */ var jodit_core_component_view_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(59609);
+/* harmony import */ var jodit_core_decorators_debounce_debounce__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(55184);
 /* harmony import */ var jodit_config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5266);
 /* harmony import */ var _command__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8838);
 /* harmony import */ var _snapshot__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(46363);
@@ -19559,7 +19988,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/history/README.md]]
  * @packageDocumentation
@@ -19579,7 +20008,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.history = {
 };
 /**
  * The module monitors the status of the editor and creates / deletes the required number of Undo / Redo shots .
- */ class History extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.ViewComponent {
+ */ class History extends jodit_core_component_view_component__WEBPACK_IMPORTED_MODULE_2__.ViewComponent {
     /** @override */ className() {
         return 'History';
     }
@@ -19701,7 +20130,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.history = {
     }
 }
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.debounce)()
+    (0,jodit_core_decorators_debounce_debounce__WEBPACK_IMPORTED_MODULE_3__.debounce)()
 ], History.prototype, "onChange", null);
 
 
@@ -19724,7 +20153,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.history = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -19741,7 +20170,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.history = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'caractère'
 };
@@ -19765,7 +20194,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.history = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/paste
  */ 
@@ -19876,7 +20305,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.history = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/size
  */ const getContentWidth = (element, win)=>{
@@ -19900,7 +20329,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_4__.Config.prototype.history = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/image-editor
  */ 
@@ -19947,7 +20376,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' x=\"0px\" y=\"0px\" vi
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -19985,7 +20414,7 @@ function fastClone(object) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/debounce/README.md]]
  * @packageDocumentation
@@ -20038,7 +20467,7 @@ function debounce(timeout, firstCallImmediately = false, method = 'debounce') {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 class FileBrowserTree extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_0__.UIGroup {
@@ -20058,24 +20487,22 @@ class FileBrowserTree extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_0__.UIGroup
 /* harmony export */   init: function() { return /* binding */ init; }
 /* harmony export */ });
 /* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81937);
-/* harmony import */ var jodit_core_global__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(28077);
-/* harmony import */ var jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(28686);
-/* harmony import */ var _load__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3050);
+/* harmony import */ var jodit_core_helpers_checker_is_imp_interface__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(52433);
+/* harmony import */ var _load__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3050);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugin
  */ 
 
 
-
 /**
  * Init plugin if it has no dependencies, in another case wait requires plugins will be init
  * @private
- */ function init(jodit, pluginName, plugin, instance, doneList, waitingList) {
-    if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_2__.isInitable)(instance)) {
+ */ function init(jodit, pluginName, plugin, instance, doneList, waitingList, getContainer) {
+    if ((0,jodit_core_helpers_checker_is_imp_interface__WEBPACK_IMPORTED_MODULE_1__.isInitable)(instance)) {
         try {
             instance.init(jodit);
         } catch (e) {
@@ -20088,12 +20515,12 @@ class FileBrowserTree extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_0__.UIGroup
     doneList.set(pluginName, instance);
     waitingList.delete(pluginName);
     if (instance.hasStyle) {
-        (0,_load__WEBPACK_IMPORTED_MODULE_3__.loadStyle)(jodit, pluginName).catch((e)=>{
+        (0,_load__WEBPACK_IMPORTED_MODULE_2__.loadStyle)(jodit, pluginName).catch((e)=>{
             !jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.IS_PROD && console.error(e);
         });
     }
     if (instance.styles) {
-        const style = (0,jodit_core_global__WEBPACK_IMPORTED_MODULE_1__.getContainer)(jodit, pluginName, 'style');
+        const style = getContainer(jodit, pluginName, 'style');
         style.innerHTML = instance.styles;
     }
 }
@@ -20119,7 +20546,7 @@ module.exports["default"] = ["Napiš něco","O Jodit","Editor Jodit","Jodit Uži
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/popup
  */ 
@@ -20142,7 +20569,7 @@ module.exports["default"] = ["Napiš něco","O Jodit","Editor Jodit","Jodit Uži
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -20277,11 +20704,11 @@ module.exports["default"] = ["Napiš něco","O Jodit","Editor Jodit","Jodit Uži
                     }
                     try {
                         box.appendChild(newNode);
-                    } catch (e) {}
+                    } catch (unused) {}
                 } else {
                     try {
                         box.appendChild(c.cloneNode(true));
-                    } catch (e) {}
+                    } catch (unused) {}
                 }
             }
         };
@@ -20313,20 +20740,24 @@ module.exports["default"] = ["Napiš něco","O Jodit","Editor Jodit","Jodit Uži
 /* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7909);
 /* harmony import */ var jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(80991);
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10808);
+
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
 
 
 
-
 /** @private */ function readSizes(image, values, state) {
     return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
-        yield image.decode();
+        try {
+            yield image.decode();
+        } catch (e) {
+            console.error(e);
+        }
         const width = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_3__.css)(image, 'width', true) || (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_2__.attr)(image, 'width') || false;
         const height = (0,jodit_core_helpers_utils_css__WEBPACK_IMPORTED_MODULE_3__.css)(image, 'height', true) || (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_2__.attr)(image, 'height') || false;
         values.imageWidth = width !== false ? (0,_utils_utils__WEBPACK_IMPORTED_MODULE_4__.normalSizeFromString)(width) : image.offsetWidth || image.naturalWidth;
@@ -20372,7 +20803,7 @@ module.exports["default"] = ["Напишіть щось","Про Jodit","Ред�
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ 
@@ -20421,7 +20852,7 @@ module.exports["default"] = ["Напишіть щось","Про Jodit","Ред�
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: '符號'
 };
@@ -20439,7 +20870,7 @@ module.exports["default"] = ["Напишіть щось","Про Jodit","Ред�
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ /**
@@ -20459,7 +20890,7 @@ module.exports["default"] = ["Напишіть щось","Про Jodit","Ред�
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'opmaak kopiëren'
 };
@@ -20477,7 +20908,7 @@ module.exports["default"] = ["Напишіть щось","Про Jodit","Ред�
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ class ConnectionError extends Error {
@@ -20503,7 +20934,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: '符号'
 };
@@ -20523,7 +20954,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -20599,7 +21030,7 @@ class FileBrowserItem {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -20755,7 +21186,7 @@ function checkRepeatRemoveCharAction(backspace, sibling, fakeNode, mode, removed
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/inline-popup
  */ /* harmony default export */ __webpack_exports__["default"] = ([
@@ -20806,7 +21237,7 @@ function checkRepeatRemoveCharAction(backspace, sibling, fakeNode, mode, removed
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/ui/button/README.md]]
  * @packageDocumentation
@@ -20824,7 +21255,7 @@ function checkRepeatRemoveCharAction(backspace, sibling, fakeNode, mode, removed
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'Symbol'
 };
@@ -20844,7 +21275,7 @@ function checkRepeatRemoveCharAction(backspace, sibling, fakeNode, mode, removed
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module component
  */ 
@@ -20901,7 +21332,7 @@ class ViewComponent extends _component__WEBPACK_IMPORTED_MODULE_1__.Component {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/redo-undo/README.md]]
  * @packageDocumentation
@@ -20983,68 +21414,73 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('redoUndo', redo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module storage
  */ 
 /**
  * Check if user disable local storages/cookie etc.
- */ const canUsePersistentStorage = (()=>{
-    const canUse = ()=>{
-        const tmpKey = '___Jodit___' + Math.random().toString();
-        try {
-            localStorage.setItem(tmpKey, '1');
-            const result = localStorage.getItem(tmpKey) === '1';
-            localStorage.removeItem(tmpKey);
-            return result;
-        } catch (e) {}
-        return false;
-    };
-    let result;
-    return ()=>{
-        if (result === undefined) {
-            result = canUse();
+ */ const canUsePersistentStorage = (strategy = 'localStorage')=>{
+    const cache = new Map();
+    return (()=>{
+        if (cache.has(strategy)) {
+            return cache.get(strategy);
         }
-        return result;
-    };
-})();
+        const tmpKey = '___Jodit___' + Math.random().toString();
+        const storage = strategy === 'sessionStorage' ? sessionStorage : localStorage;
+        try {
+            storage.setItem(tmpKey, '1');
+            const result = storage.getItem(tmpKey) === '1';
+            storage.removeItem(tmpKey);
+            cache.set(strategy, result);
+            return result;
+        } catch (unused) {}
+        cache.set(strategy, false);
+        return false;
+    })();
+};
 /**
- * Persistent storage in localStorage
+ * Persistent storage in localStorage or sessionStorage
  */ class LocalStorageProvider {
+    get storage() {
+        return this.strategy === 'sessionStorage' ? sessionStorage : localStorage;
+    }
     set(key, value) {
         try {
-            const buffer = localStorage.getItem(this.rootKey);
+            const buffer = this.storage.getItem(this.rootKey);
             const json = buffer ? JSON.parse(buffer) : {};
             json[key] = value;
-            localStorage.setItem(this.rootKey, JSON.stringify(json));
-        } catch (e) {}
+            this.storage.setItem(this.rootKey, JSON.stringify(json));
+        } catch (unused) {}
         return this;
     }
     delete(key) {
         try {
-            localStorage.removeItem(this.rootKey);
-        } catch (e) {}
+            this.storage.removeItem(this.rootKey);
+        } catch (unused) {}
         return this;
     }
     get(key) {
         try {
-            const buffer = localStorage.getItem(this.rootKey);
+            const buffer = this.storage.getItem(this.rootKey);
             const json = buffer ? JSON.parse(buffer) : {};
             return json[key] !== undefined ? json[key] : undefined;
-        } catch (e) {}
+        } catch (unused) {}
     }
     exists(key) {
         return this.get(key) != null;
     }
     clear() {
         try {
-            localStorage.removeItem(this.rootKey);
-        } catch (e) {}
+            this.storage.removeItem(this.rootKey);
+        } catch (unused) {}
         return this;
     }
-    constructor(rootKey){
+    constructor(rootKey, strategy = 'localStorage'){
         (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "rootKey", void 0);
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "strategy", void 0);
         this.rootKey = rootKey;
+        this.strategy = strategy;
     }
 }
 
@@ -21057,20 +21493,14 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('redoUndo', redo
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CommitStyle: function() { return /* reexport safe */ _style_commit_style__WEBPACK_IMPORTED_MODULE_1__.CommitStyle; },
-/* harmony export */   INITIAL: function() { return /* reexport safe */ _style_constants__WEBPACK_IMPORTED_MODULE_2__.INITIAL; },
-/* harmony export */   REPLACE: function() { return /* reexport safe */ _style_constants__WEBPACK_IMPORTED_MODULE_2__.REPLACE; },
-/* harmony export */   Selection: function() { return /* reexport safe */ _selection__WEBPACK_IMPORTED_MODULE_0__.Selection; },
-/* harmony export */   UNSET: function() { return /* reexport safe */ _style_constants__WEBPACK_IMPORTED_MODULE_2__.UNSET; },
-/* harmony export */   UNWRAP: function() { return /* reexport safe */ _style_constants__WEBPACK_IMPORTED_MODULE_2__.UNWRAP; },
-/* harmony export */   WRAP: function() { return /* reexport safe */ _style_constants__WEBPACK_IMPORTED_MODULE_2__.WRAP; }
+/* harmony export */   Selection: function() { return /* reexport safe */ _selection__WEBPACK_IMPORTED_MODULE_0__.Selection; }
 /* harmony export */ });
 /* harmony import */ var _selection__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(98595);
 /* harmony import */ var _style_commit_style__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(84578);
-/* harmony import */ var _style_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(98394);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ 
@@ -21094,7 +21524,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('redoUndo', redo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/ordered-list
  */ 
@@ -21103,8 +21533,8 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('redoUndo', redo
 
 
 const memoExec = (jodit, _, { control })=>{
-    const key = `button${control.command}`;
     var _ref;
+    const key = `button${control.command}`;
     const value = (_ref = control.args && control.args[0]) !== null && _ref !== void 0 ? _ref : (0,jodit_core_helpers_utils_data_bind__WEBPACK_IMPORTED_MODULE_0__.dataBind)(jodit, key);
     (0,jodit_core_helpers_utils_data_bind__WEBPACK_IMPORTED_MODULE_0__.dataBind)(jodit, key, value);
     jodit.execCommand(control.command, false, value === 'default' ? null : value);
@@ -21155,7 +21585,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_2__.Config.prototype.controls.ol = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module event-emitter
  */ 
@@ -21236,7 +21666,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -21286,6 +21716,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   Ajax: function() { return /* reexport safe */ jodit_core_request__WEBPACK_IMPORTED_MODULE_10__.Ajax; },
 /* harmony export */   Alert: function() { return /* reexport safe */ _dialog___WEBPACK_IMPORTED_MODULE_3__.Alert; },
 /* harmony export */   Async: function() { return /* reexport safe */ jodit_core_async__WEBPACK_IMPORTED_MODULE_5__.Async; },
+/* harmony export */   AsyncStorage: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.AsyncStorage; },
 /* harmony export */   Button: function() { return /* reexport safe */ jodit_core_ui__WEBPACK_IMPORTED_MODULE_11__.Button; },
 /* harmony export */   CommitStyle: function() { return /* reexport safe */ jodit_core_selection__WEBPACK_IMPORTED_MODULE_25__.CommitStyle; },
 /* harmony export */   Component: function() { return /* reexport safe */ jodit_core_component__WEBPACK_IMPORTED_MODULE_0__.Component; },
@@ -21302,7 +21733,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   History: function() { return /* reexport safe */ _history_history__WEBPACK_IMPORTED_MODULE_14__.History; },
 /* harmony export */   Icon: function() { return /* reexport safe */ jodit_core_ui__WEBPACK_IMPORTED_MODULE_11__.Icon; },
 /* harmony export */   ImageEditor: function() { return /* reexport safe */ _image_editor_image_editor__WEBPACK_IMPORTED_MODULE_16__.ImageEditor; },
+/* harmony export */   IndexedDBProvider: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.IndexedDBProvider; },
 /* harmony export */   LazyWalker: function() { return /* reexport safe */ jodit_core_dom__WEBPACK_IMPORTED_MODULE_7__.LazyWalker; },
+/* harmony export */   LocalStorageProvider: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.LocalStorageProvider; },
+/* harmony export */   MemoryStorageProvider: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.MemoryStorageProvider; },
 /* harmony export */   Plugin: function() { return /* reexport safe */ jodit_core_plugin__WEBPACK_IMPORTED_MODULE_9__.Plugin; },
 /* harmony export */   PluginSystem: function() { return /* reexport safe */ jodit_core_plugin_plugin_system__WEBPACK_IMPORTED_MODULE_24__.PluginSystem; },
 /* harmony export */   Popup: function() { return /* reexport safe */ jodit_core_ui__WEBPACK_IMPORTED_MODULE_11__.Popup; },
@@ -21313,6 +21747,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   Selection: function() { return /* reexport safe */ jodit_core_selection__WEBPACK_IMPORTED_MODULE_25__.Selection; },
 /* harmony export */   Snapshot: function() { return /* reexport safe */ _history_snapshot__WEBPACK_IMPORTED_MODULE_15__.Snapshot; },
 /* harmony export */   StatusBar: function() { return /* reexport safe */ _status_bar_status_bar__WEBPACK_IMPORTED_MODULE_18__.StatusBar; },
+/* harmony export */   Storage: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.Storage; },
+/* harmony export */   StorageKey: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.StorageKey; },
 /* harmony export */   Table: function() { return /* reexport safe */ _table_table__WEBPACK_IMPORTED_MODULE_19__.Table; },
 /* harmony export */   ToolbarButton: function() { return /* reexport safe */ _toolbar_button__WEBPACK_IMPORTED_MODULE_20__.ToolbarButton; },
 /* harmony export */   ToolbarCollection: function() { return /* reexport safe */ _toolbar_collection_collection__WEBPACK_IMPORTED_MODULE_21__.ToolbarCollection; },
@@ -21340,6 +21776,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   View: function() { return /* reexport safe */ jodit_core_view_view__WEBPACK_IMPORTED_MODULE_12__.View; },
 /* harmony export */   ViewComponent: function() { return /* reexport safe */ jodit_core_component__WEBPACK_IMPORTED_MODULE_0__.ViewComponent; },
 /* harmony export */   ViewWithToolbar: function() { return /* reexport safe */ jodit_core_view_view_with_toolbar__WEBPACK_IMPORTED_MODULE_13__.ViewWithToolbar; },
+/* harmony export */   canUseIndexedDB: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.canUseIndexedDB; },
+/* harmony export */   canUsePersistentStorage: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.canUsePersistentStorage; },
+/* harmony export */   clearUseIndexedDBCache: function() { return /* reexport safe */ jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__.clearUseIndexedDBCache; },
 /* harmony export */   defaultNameSpace: function() { return /* reexport safe */ jodit_core_event_emitter__WEBPACK_IMPORTED_MODULE_8__.defaultNameSpace; },
 /* harmony export */   observable: function() { return /* reexport safe */ jodit_core_event_emitter__WEBPACK_IMPORTED_MODULE_8__.observable; }
 /* harmony export */ });
@@ -21369,15 +21808,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _uploader_uploader__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(94925);
 /* harmony import */ var jodit_core_plugin_plugin_system__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(85305);
 /* harmony import */ var jodit_core_selection__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(59841);
+/* harmony import */ var jodit_core_storage__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(25222);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/README.md]]
  * @packageDocumentation
  * @module modules
  */ 
+
 
 
 
@@ -21421,7 +21862,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/async
  */ 
@@ -21435,18 +21876,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 /* harmony import */ var _swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(49376);
 /* harmony import */ var jodit_core_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(27795);
-/* harmony import */ var jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(93640);
-/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(29434);
-/* harmony import */ var jodit_modules_file_browser_builders_elements_map__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(31125);
-/* harmony import */ var jodit_modules_file_browser_factories__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(18272);
-/* harmony import */ var jodit_modules_file_browser_fetch_delete_file__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1305);
-/* harmony import */ var jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(53202);
-/* harmony import */ var jodit_modules_file_browser_listeners_native_listeners__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(34269);
-/* harmony import */ var jodit_modules_image_editor_image_editor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(43271);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(33201);
+/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(29434);
+/* harmony import */ var jodit_modules_file_browser_builders_elements_map__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(31125);
+/* harmony import */ var jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(66206);
+/* harmony import */ var jodit_modules_file_browser_factories__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(18272);
+/* harmony import */ var jodit_modules_file_browser_fetch_delete_file__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1305);
+/* harmony import */ var jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(53202);
+/* harmony import */ var jodit_modules_image_editor_image_editor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(43271);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -21459,21 +21901,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const CLASS_PREVIEW = 'jodit-file-browser-preview', preview_tpl_next = (next = 'next', right = 'right')=>`<div class="${CLASS_PREVIEW}__navigation ${CLASS_PREVIEW}__navigation_arrow_${next}">` + '' + jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_3__.Icon.get('angle-' + right) + '</a>';
+
+const CLASS_PREVIEW = 'jodit-file-browser-preview', preview_tpl_next = (next = 'next', right = 'right')=>`<div class="${CLASS_PREVIEW}__navigation ${CLASS_PREVIEW}__navigation_arrow_${next}">` + '' + jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_4__.Icon.get('angle-' + right) + '</a>';
 /* harmony default export */ __webpack_exports__["default"] = ((self)=>{
     if (!self.o.contextMenu) {
         return ()=>{};
     }
-    const contextmenu = (0,jodit_modules_file_browser_factories__WEBPACK_IMPORTED_MODULE_5__.makeContextMenu)(self);
+    const contextmenu = (0,jodit_modules_file_browser_factories__WEBPACK_IMPORTED_MODULE_7__.makeContextMenu)(self);
     return (e)=>{
-        const a = (0,jodit_modules_file_browser_listeners_native_listeners__WEBPACK_IMPORTED_MODULE_8__.getItem)(e.target, self.container);
+        const a = (0,jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_6__.getItem)(e.target, self.container);
         if (!a) {
             return;
         }
         let item = a;
-        const opt = self.options, ga = (key)=>(0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_2__.attr)(item, key) || '';
+        const opt = self.options, ga = (key)=>(0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_2__.attr)(item, key) || '';
         self.async.setTimeout(()=>{
-            const selectedItem = (0,jodit_modules_file_browser_listeners_native_listeners__WEBPACK_IMPORTED_MODULE_8__.elementToItem)(a, (0,jodit_modules_file_browser_builders_elements_map__WEBPACK_IMPORTED_MODULE_4__.elementsMap)(self));
+            const selectedItem = (0,jodit_modules_file_browser_builders_utils__WEBPACK_IMPORTED_MODULE_6__.elementToItem)(a, (0,jodit_modules_file_browser_builders_elements_map__WEBPACK_IMPORTED_MODULE_5__.elementsMap)(self));
             if (!selectedItem) {
                 return;
             }
@@ -21484,7 +21927,7 @@ const CLASS_PREVIEW = 'jodit-file-browser-preview', preview_tpl_next = (next = '
                 ga('data-is-file') !== '1' && opt.editImage && (self.dataProvider.canI('ImageResize') || self.dataProvider.canI('ImageCrop')) ? {
                     icon: 'pencil',
                     title: 'Edit',
-                    exec: ()=>jodit_modules_image_editor_image_editor__WEBPACK_IMPORTED_MODULE_9__.openImageEditor.call(self, ga('href'), ga('data-name'), ga('data-path'), ga('data-source'))
+                    exec: ()=>jodit_modules_image_editor_image_editor__WEBPACK_IMPORTED_MODULE_10__.openImageEditor.call(self, ga('href'), ga('data-name'), ga('data-path'), ga('data-source'))
                 } : false,
                 self.dataProvider.canI('FileRename') ? {
                     icon: 'italic',
@@ -21498,12 +21941,12 @@ const CLASS_PREVIEW = 'jodit-file-browser-preview', preview_tpl_next = (next = '
                     title: 'Delete',
                     exec: ()=>(0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
                             try {
-                                yield (0,jodit_modules_file_browser_fetch_delete_file__WEBPACK_IMPORTED_MODULE_6__.deleteFile)(self, ga('data-name'), ga('data-source'));
+                                yield (0,jodit_modules_file_browser_fetch_delete_file__WEBPACK_IMPORTED_MODULE_8__.deleteFile)(self, ga('data-name'), ga('data-source'));
                             } catch (e) {
                                 return self.status(e);
                             }
                             self.state.activeElements = [];
-                            return (0,jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_7__.loadTree)(self).catch(self.status);
+                            return (0,jodit_modules_file_browser_fetch_load_tree__WEBPACK_IMPORTED_MODULE_9__.loadTree)(self).catch(self.status);
                         })()
                 } : false,
                 opt.preview ? {
@@ -21553,7 +21996,7 @@ const CLASS_PREVIEW = 'jodit-file-browser-preview', preview_tpl_next = (next = '
                                 item = jodit_core_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.prevWithClass(item, self.files.getFullElName('item'));
                             }
                             if (!item) {
-                                throw (0,jodit_core_helpers_utils__WEBPACK_IMPORTED_MODULE_2__.error)('Need element');
+                                throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_3__.error)('Need element');
                             }
                             jodit_core_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.detach(temp_content);
                             jodit_core_dom__WEBPACK_IMPORTED_MODULE_1__.Dom.detach(preview_box);
@@ -21610,7 +22053,7 @@ const CLASS_PREVIEW = 'jodit-file-browser-preview', preview_tpl_next = (next = '
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/messages
  */ 
@@ -21649,7 +22092,7 @@ UIMessage = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_0__.__decorate)
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/toolbar/button
  */ 
@@ -21667,6 +22110,7 @@ class ToolbarSelect extends _button__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton {
         this.state.icon.name = '';
         const { list, data } = this.control;
         if (list) {
+            var _ref;
             var _this_control_textTemplate, _this_control;
             let key = this.state.value || (data && (0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_3__.isString)(data.currentValue) ? data.currentValue : undefined);
             if (!key) {
@@ -21674,8 +22118,7 @@ class ToolbarSelect extends _button__WEBPACK_IMPORTED_MODULE_4__.ToolbarButton {
                 key = keys[0];
             }
             const text = ((0,jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_2__.isPlainObject)(list) ? list[key.toString()] || key : key).toString();
-            var _this_control_textTemplate1;
-            this.state.text = (_this_control_textTemplate1 = (_this_control_textTemplate = (_this_control = this.control).textTemplate) === null || _this_control_textTemplate === void 0 ? void 0 : _this_control_textTemplate.call(_this_control, this.jodit, text)) !== null && _this_control_textTemplate1 !== void 0 ? _this_control_textTemplate1 : text;
+            this.state.text = (_ref = (_this_control_textTemplate = (_this_control = this.control).textTemplate) === null || _this_control_textTemplate === void 0 ? void 0 : _this_control_textTemplate.call(_this_control, this.jodit, text)) !== null && _ref !== void 0 ? _ref : text;
         }
     }
 }
@@ -21697,7 +22140,7 @@ ToolbarSelect = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_0__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -21744,7 +22187,7 @@ ToolbarSelect = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_0__.__decor
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -22092,7 +22535,7 @@ function isEqualButtonList(prevButtons, buttons) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -22118,7 +22561,7 @@ function isEqualButtonList(prevButtons, buttons) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/ui/group/README.md]]
  * @packageDocumentation
@@ -22134,6 +22577,10 @@ function isEqualButtonList(prevButtons, buttons) {
 class UIGroup extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_6__.UIElement {
     className() {
         return 'UIGroup';
+    }
+    getRole() {
+        var _this_options;
+        return ((_this_options = this.options) === null || _this_options === void 0 ? void 0 : _this_options.role) || 'list';
     }
     /**
 	 * All group children
@@ -22223,6 +22670,11 @@ class UIGroup extends jodit_core_ui_element__WEBPACK_IMPORTED_MODULE_6__.UIEleme
         this.elements.length = 0;
         return this;
     }
+    setParentView(view) {
+        var _this_elements;
+        (_this_elements = this.elements) === null || _this_elements === void 0 ? void 0 : _this_elements.forEach((elm)=>elm.setParentView(view));
+        return super.setParentView(view);
+    }
     /** @override */ destruct() {
         this.clear();
         return super.destruct();
@@ -22273,7 +22725,7 @@ module.exports["default"] = {"Type something":"Start writing...","pencil":"Edit"
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/justify/README.md]]
  * @packageDocumentation
@@ -22422,7 +22874,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/group
  */ 
@@ -22445,7 +22897,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -22480,7 +22932,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/link
  */ 
@@ -22555,7 +23007,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_2__.Config.prototype.controls.link = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -22784,7 +23236,7 @@ UIInput = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_2__.__decorate)([
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -22900,7 +23352,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/helpers/README.md]]
  * @packageDocumentation
@@ -22918,6 +23370,35 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ 66206:
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   elementToItem: function() { return /* binding */ elementToItem; },
+/* harmony export */   getItem: function() { return /* binding */ getItem; }
+/* harmony export */ });
+/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(23211);
+/*!
+ * Jodit Editor (https://xdsoft.net/jodit/)
+ * Released under MIT see LICENSE.txt in the project root for license information.
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
+ */ /**
+ * @module modules/file-browser
+ */ 
+/**
+ * @private
+ */ const getItem = (node, root, tag = 'a')=>jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.closest(node, (elm)=>jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(elm, tag), root);
+/**
+ * @private
+ */ const elementToItem = (elm, elementsMap)=>{
+    const { key } = elm.dataset, { item } = elementsMap[key || ''];
+    return item;
+};
+
+
+/***/ }),
+
 /***/ 66547:
 /***/ (function(module) {
 
@@ -22931,7 +23412,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Copia il formato'
 };
@@ -22950,7 +23431,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -22985,7 +23466,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/context-menu/README.md]]
  * @packageDocumentation
@@ -23060,7 +23541,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'Simbolo'
 };
@@ -23089,7 +23570,7 @@ module.exports["default"] = ["Bir şeyler yaz","Jodit Hakkında","Jodit Editor",
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -23438,7 +23919,6 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.filebrowser 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getPropertyDescriptor: function() { return /* binding */ getPropertyDescriptor; },
 /* harmony export */   watch: function() { return /* binding */ watch; }
 /* harmony export */ });
 /* harmony import */ var jodit_core_component_statuses__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(69364);
@@ -23448,10 +23928,11 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.filebrowser 
 /* harmony import */ var jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(62101);
 /* harmony import */ var jodit_core_helpers_checker_is_view_object__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(31534);
 /* harmony import */ var jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(33201);
+/* harmony import */ var jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(71125);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/watch/README.md]]
  * @packageDocumentation
@@ -23463,23 +23944,16 @@ jodit_config__WEBPACK_IMPORTED_MODULE_6__.Config.prototype.controls.filebrowser 
 
 
 
-function getPropertyDescriptor(obj, prop) {
-    let desc;
-    do {
-        desc = Object.getOwnPropertyDescriptor(obj, prop);
-        obj = Object.getPrototypeOf(obj);
-    }while (!desc && obj)
-    return desc;
-}
+
 /**
  * Watch decorator. Added observer for some change in field value
  */ function watch(observeFields, opts) {
     return (target, propertyKey)=>{
+        var _ref;
         if (!(0,jodit_core_helpers_checker_is_function__WEBPACK_IMPORTED_MODULE_3__.isFunction)(target[propertyKey])) {
             throw (0,jodit_core_helpers_utils_error__WEBPACK_IMPORTED_MODULE_6__.error)('Handler must be a Function');
         }
-        var _opts_immediately;
-        const immediately = (_opts_immediately = opts === null || opts === void 0 ? void 0 : opts.immediately) !== null && _opts_immediately !== void 0 ? _opts_immediately : true;
+        const immediately = (_ref = opts === null || opts === void 0 ? void 0 : opts.immediately) !== null && _ref !== void 0 ? _ref : true;
         const context = opts === null || opts === void 0 ? void 0 : opts.context;
         const process = (component)=>{
             const view = (0,jodit_core_helpers_checker_is_view_object__WEBPACK_IMPORTED_MODULE_5__.isViewObject)(component) ? component : component.jodit;
@@ -23517,7 +23991,7 @@ function getPropertyDescriptor(obj, prop) {
                     const observableValue = (0,jodit_core_event_emitter_observable__WEBPACK_IMPORTED_MODULE_1__.observable)(value);
                     observableValue.on(`change.${teil.join('.')}`, callback);
                 }
-                const descriptor = getPropertyDescriptor(target, key);
+                const descriptor = (0,jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_7__.getPropertyDescriptor)(target, key);
                 Object.defineProperty(component, key, {
                     configurable: true,
                     set (v) {
@@ -23571,7 +24045,7 @@ function getPropertyDescriptor(obj, prop) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/link/README.md]]
  * @packageDocumentation
@@ -23632,9 +24106,9 @@ function getPropertyDescriptor(obj, prop) {
         }
         jodit.e.stopPropagation('processPaste');
         if (jodit.o.link.processVideoLink) {
+            var _ref;
             var _jodit_o_video, _jodit_o_video1, _jodit_o_video2;
-            var _jodit_o_video_parseUrlToVideoEmbed;
-            const embed = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.call)((_jodit_o_video_parseUrlToVideoEmbed = (_jodit_o_video = jodit.o.video) === null || _jodit_o_video === void 0 ? void 0 : _jodit_o_video.parseUrlToVideoEmbed) !== null && _jodit_o_video_parseUrlToVideoEmbed !== void 0 ? _jodit_o_video_parseUrlToVideoEmbed : jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.convertMediaUrlToVideoEmbed, html, {
+            const embed = (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.call)((_ref = (_jodit_o_video = jodit.o.video) === null || _jodit_o_video === void 0 ? void 0 : _jodit_o_video.parseUrlToVideoEmbed) !== null && _ref !== void 0 ? _ref : jodit_core_helpers__WEBPACK_IMPORTED_MODULE_5__.convertMediaUrlToVideoEmbed, html, {
                 width: (_jodit_o_video1 = jodit.o.video) === null || _jodit_o_video1 === void 0 ? void 0 : _jodit_o_video1.defaultWidth,
                 height: (_jodit_o_video2 = jodit.o.video) === null || _jodit_o_video2 === void 0 ? void 0 : _jodit_o_video2.defaultHeight
             });
@@ -23907,7 +24381,7 @@ function writeImage(a, content_input, textWasChanged, url_input) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -23942,7 +24416,7 @@ function writeImage(a, content_input, textWasChanged, url_input) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/tab
  */ 
@@ -23961,7 +24435,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.tab = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/select-cells
  */ 
@@ -23980,7 +24454,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.tableAllowCellSelecti
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/size
  */ /**
@@ -24037,7 +24511,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.tableAllowCellSelecti
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module component
  */ const STATUSES = {
@@ -24062,7 +24536,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.tableAllowCellSelecti
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/fullsize/README.md]]
  * @packageDocumentation
@@ -24160,7 +24634,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('fullsize', full
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -24225,7 +24699,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('fullsize', full
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -24252,7 +24726,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('fullsize', full
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/inline-popup
  */ 
@@ -24287,14 +24761,14 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('fullsize', full
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   observable: function() { return /* binding */ observable; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(68616);
-/* harmony import */ var jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17312);
-/* harmony import */ var jodit_core_helpers_checker_is_equal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(94013);
-/* harmony import */ var jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(62101);
+/* harmony import */ var jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17312);
+/* harmony import */ var jodit_core_helpers_checker_is_equal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(94013);
+/* harmony import */ var jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(62101);
+/* harmony import */ var jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(71125);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module event-emitter
  */ 
@@ -24346,7 +24820,7 @@ function isObservableObject(obj) {
     const __lockEvent = {};
     const __onEvents = {};
     const on = (event, callback)=>{
-        if ((0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_1__.isArray)(event)) {
+        if ((0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_0__.isArray)(event)) {
             event.map((e)=>on(e, callback));
             return obj;
         }
@@ -24357,7 +24831,7 @@ function isObservableObject(obj) {
         return obj;
     };
     const fire = (event, ...attr)=>{
-        if ((0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_1__.isArray)(event)) {
+        if ((0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_0__.isArray)(event)) {
             event.map((e)=>fire(e, ...attr));
             return;
         }
@@ -24383,16 +24857,16 @@ function isObservableObject(obj) {
             const key = _key;
             const prefix = prefixes.concat(key).filter((a)=>a.length);
             store[key] = dict[key];
-            const descriptor = (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_0__.getPropertyDescriptor)(dict, key);
+            const descriptor = (0,jodit_core_helpers_utils_utils__WEBPACK_IMPORTED_MODULE_3__.getPropertyDescriptor)(dict, key);
             Object.defineProperty(dict, key, {
                 set: (value)=>{
                     const oldValue = store[key];
-                    if (!(0,jodit_core_helpers_checker_is_equal__WEBPACK_IMPORTED_MODULE_2__.isFastEqual)(store[key], value)) {
+                    if (!(0,jodit_core_helpers_checker_is_equal__WEBPACK_IMPORTED_MODULE_1__.isFastEqual)(store[key], value)) {
                         fire([
                             'beforeChange',
                             `beforeChange.${prefix.join('.')}`
                         ], key, value);
-                        if ((0,jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_3__.isPlainObject)(value)) {
+                        if ((0,jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_2__.isPlainObject)(value)) {
                             initAccessors(value, prefix);
                         }
                         if (descriptor && descriptor.set) {
@@ -24420,7 +24894,7 @@ function isObservableObject(obj) {
                 enumerable: true,
                 configurable: true
             });
-            if ((0,jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_3__.isPlainObject)(store[key])) {
+            if ((0,jodit_core_helpers_checker_is_plain_object__WEBPACK_IMPORTED_MODULE_2__.isPlainObject)(store[key])) {
                 initAccessors(store[key], prefix);
             }
         });
@@ -24441,7 +24915,7 @@ function isObservableObject(obj) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Copiar formato'
 };
@@ -24477,7 +24951,9 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   call: function() { return /* binding */ call; },
 /* harmony export */   callPromise: function() { return /* binding */ callPromise; },
+/* harmony export */   callThis: function() { return /* binding */ callThis; },
 /* harmony export */   getDataTransfer: function() { return /* binding */ getDataTransfer; },
+/* harmony export */   getPropertyDescriptor: function() { return /* binding */ getPropertyDescriptor; },
 /* harmony export */   keys: function() { return /* binding */ keys; },
 /* harmony export */   loadImage: function() { return /* binding */ loadImage; },
 /* harmony export */   markOwner: function() { return /* binding */ markOwner; },
@@ -24490,7 +24966,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -24507,6 +24983,17 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
  * ```
  */ function call(func, ...args) {
     return func(...args);
+}
+/**
+ * Call function with parameters
+ *
+ * @example
+ * ```js
+ * const f = Math.random();
+ * Jodit.modules.Helpers.call(f > 0.5 ? Math.ceil : Math.floor, f);
+ * ```
+ */ function callThis(func, thisArg, ...args) {
+    return func.apply(thisArg, args);
 }
 /**
  * Mark element for debugging
@@ -24551,8 +25038,8 @@ const keys = (obj, own = true)=>{
 /**
  * Memorize last user chose
  */ const memorizeExec = (editor, _, { control }, preProcessValue)=>{
-    const key = `button${control.command}`;
     var _ref;
+    const key = `button${control.command}`;
     let value = (_ref = control.args && control.args[0]) !== null && _ref !== void 0 ? _ref : (0,_data_bind__WEBPACK_IMPORTED_MODULE_3__.dataBind)(editor, key);
     if ((0,jodit_core_helpers_checker_is_void__WEBPACK_IMPORTED_MODULE_1__.isVoid)(value)) {
         return false;
@@ -24571,10 +25058,18 @@ const keys = (obj, own = true)=>{
     }
     try {
         return event.dataTransfer || new DataTransfer();
-    } catch (e) {
+    } catch (unused) {
         return null;
     }
 };
+function getPropertyDescriptor(obj, prop) {
+    let desc;
+    do {
+        desc = Object.getOwnPropertyDescriptor(obj, prop);
+        obj = Object.getPrototypeOf(obj);
+    }while (!desc && obj)
+    return desc;
+}
 
 
 /***/ }),
@@ -24594,7 +25089,7 @@ const keys = (obj, own = true)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -24671,7 +25166,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ function isAbortError(error) {
@@ -24696,7 +25191,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/widget/color-picker/README.md]]
  * @packageDocumentation
@@ -24789,7 +25284,7 @@ jodit_core_ui__WEBPACK_IMPORTED_MODULE_2__.Icon.set('palette', (_palette_svg__WE
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ /**
@@ -24816,7 +25311,7 @@ jodit_core_ui__WEBPACK_IMPORTED_MODULE_2__.Icon.set('palette', (_palette_svg__WE
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -24891,7 +25386,7 @@ jodit_core_ui__WEBPACK_IMPORTED_MODULE_2__.Icon.set('palette', (_palette_svg__WE
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -24952,7 +25447,7 @@ const WRAP_NODES = new Set([
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:README.md]]
  * @packageDocumentation
@@ -24971,6 +25466,9 @@ const WRAP_NODES = new Set([
 
 const __defaultStyleDisplayKey = 'data-jodit-default-style-display';
 const __defaultClassesKey = 'data-jodit-default-classes';
+const NOEDIT = {
+    contenteditable: false
+};
 class Jodit extends jodit_modules__WEBPACK_IMPORTED_MODULE_10__.ViewWithToolbar {
     /** @override */ className() {
         return 'Jodit';
@@ -25503,7 +26001,7 @@ class Jodit extends jodit_modules__WEBPACK_IMPORTED_MODULE_10__.ViewWithToolbar 
         if (super.lock(name)) {
             this.__selectionLocked = this.s.save();
             this.s.clear();
-            this.editor.classList.add('jodit_lock');
+            this.container.classList.add('jodit_lock');
             this.e.fire('lock', true);
             return true;
         }
@@ -25513,7 +26011,7 @@ class Jodit extends jodit_modules__WEBPACK_IMPORTED_MODULE_10__.ViewWithToolbar 
 	 * Enable selecting
 	 */ unlock() {
         if (super.unlock()) {
-            this.editor.classList.remove('jodit_lock');
+            this.container.classList.remove('jodit_lock');
             if (this.__selectionLocked) {
                 this.s.restore();
             }
@@ -25748,10 +26246,19 @@ class Jodit extends jodit_modules__WEBPACK_IMPORTED_MODULE_10__.ViewWithToolbar 
             }
             element.style.display = 'none';
         }
-        const workplace = this.c.div('jodit-workplace', {
-            contenteditable: false
-        });
-        container.appendChild(workplace);
+        const SLOT = 'workplace-slot';
+        const topSlot = this.c.div(this.getFullElName(SLOT, 'top'), NOEDIT);
+        container.appendChild(topSlot);
+        const centerSlot = this.c.div(this.getFullElName(SLOT, 'center'), NOEDIT);
+        const workplace = this.c.div('jodit-workplace', NOEDIT);
+        const leftSlot = this.c.div(this.getFullElName(SLOT, 'left'), NOEDIT);
+        const rightSlot = this.c.div(this.getFullElName(SLOT, 'right'), NOEDIT);
+        centerSlot.appendChild(leftSlot);
+        centerSlot.appendChild(workplace);
+        centerSlot.appendChild(rightSlot);
+        container.appendChild(centerSlot);
+        const bottomPanel = this.c.div(this.getFullElName(SLOT, 'bottom'), NOEDIT);
+        container.appendChild(bottomPanel);
         if (element.parentNode && element !== container) {
             element.parentNode.insertBefore(container, element);
         }
@@ -25771,6 +26278,13 @@ class Jodit extends jodit_modules__WEBPACK_IMPORTED_MODULE_10__.ViewWithToolbar 
             element,
             container,
             workplace,
+            slots: {
+                top: topSlot,
+                bottom: bottomPanel,
+                center: centerSlot,
+                left: leftSlot,
+                right: rightSlot
+            },
             statusbar: new jodit_modules__WEBPACK_IMPORTED_MODULE_10__.StatusBar(this, container),
             options: this.isReady ? (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_6__.ConfigProto)(options || {}, jodit_config__WEBPACK_IMPORTED_MODULE_9__.Config.defaultOptions) : this.options,
             history: new jodit_modules__WEBPACK_IMPORTED_MODULE_10__.History(this),
@@ -25845,7 +26359,7 @@ class Jodit extends jodit_modules__WEBPACK_IMPORTED_MODULE_10__.ViewWithToolbar 
             // if enter plugin isn't installed
             try {
                 this.ed.execCommand('defaultParagraphSeparator', false, this.o.enter.toLowerCase());
-            } catch (e) {}
+            } catch (unused) {}
         });
     }
     /**
@@ -26131,7 +26645,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module request
  */ 
@@ -26154,7 +26668,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/dialog
  */ 
@@ -26236,7 +26750,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/mobile/README.md]]
  * @packageDocumentation
@@ -26276,10 +26790,10 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
     });
     if (editor.o.toolbarAdaptive) {
         editor.e.on('resize afterInit recalcAdaptive changePlace afterAddPlace', ()=>{
+            var _editor_container_parentElement;
             if (!editor.o.toolbar) {
                 return;
             }
-            var _editor_container_parentElement;
             const width = ((_editor_container_parentElement = editor.container.parentElement) !== null && _editor_container_parentElement !== void 0 ? _editor_container_parentElement : editor.container).offsetWidth;
             const newStore = (()=>{
                 if (editor.isFullSize || width >= editor.o.sizeLG) {
@@ -26318,7 +26832,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_0__.pluginSystem.add('mobile', mobile
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ const kebabCase = (key)=>{
@@ -26348,7 +26862,7 @@ const CamelCaseToKebabCase = (key)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/resizer/README.md]]
  * @packageDocumentation
@@ -26766,7 +27280,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_5__.pluginSystem.add('resizer', resiz
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/file-browser
  */ 
@@ -26919,7 +27433,7 @@ const DEFAULT_SOURCE_NAME = 'default';
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -26990,7 +27504,7 @@ UIFileInput = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorat
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/inline-popup
  */ 
@@ -27092,7 +27606,7 @@ const align = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/create/README.md]]
  * @packageDocumentation
@@ -27262,7 +27776,7 @@ class Create {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/dialog
  */ 
@@ -27830,7 +28344,7 @@ Dialog = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/persistent/README.md]]
  * @packageDocumentation
@@ -27865,7 +28379,7 @@ function persistent(target, propertyKey) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ /**
@@ -27897,7 +28411,7 @@ function persistent(target, propertyKey) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ 
@@ -27952,7 +28466,7 @@ function persistent(target, propertyKey) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -28074,7 +28588,7 @@ function ConfigFlatten(obj) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/uploader
  */ 
@@ -28164,12 +28678,12 @@ function send(uploader, data) {
 /* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23211);
 /* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(28712);
 /* harmony import */ var jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(59841);
-/* harmony import */ var jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(51640);
+/* harmony import */ var jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(51640);
+/* harmony import */ var jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(98394);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ 
@@ -28196,19 +28710,19 @@ const transactions = {
     [states.START]: {
         exec (value) {
             const { element, jodit, style, mode, collapsed } = value;
-            if ((0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.isInsideInvisibleElement)(element, jodit.editor) || !collapsed && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.isEmptyContent(element)) {
+            if ((0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.isInsideInvisibleElement)(element, jodit.editor) || !collapsed && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.isEmptyContent(element)) {
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     next: states.END
                 });
             }
-            const elm = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.getSuitParent)(style, element, jodit.editor) || (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.getSuitChild)(style, element);
+            const elm = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.getSuitParent)(style, element, jodit.editor) || (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.getSuitChild)(style, element);
             if (elm) {
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     next: states.ELEMENT,
                     element: elm
                 });
             }
-            const suit = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.suitableClosest)(style, element, jodit.editor);
+            const suit = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.suitableClosest)(style, element, jodit.editor);
             if (style.elementIsList && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.isList(suit)) {
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     next: states.LIST
@@ -28220,14 +28734,14 @@ const transactions = {
                 });
             }
             return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
-                next: mode !== jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.UNWRAP ? states.UNWRAP_CHILDREN : states.END
+                next: mode !== jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.UNWRAP ? states.UNWRAP_CHILDREN : states.END
             });
         }
     },
     [states.LIST]: {
         exec (value) {
             const { element, jodit, mode } = value;
-            if (mode !== jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.INITIAL && mode !== jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.UNWRAP && mode !== jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.REPLACE) {
+            if (mode !== jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.INITIAL && mode !== jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.UNWRAP && mode !== jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.REPLACE) {
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     next: states.END
                 });
@@ -28253,7 +28767,7 @@ const transactions = {
     [states.TOGGLE_LIST]: {
         exec (value) {
             return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
-                mode: (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.toggleOrderedList)(value.style, value.element, value.jodit, value.mode),
+                mode: (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.toggleOrderedList)(value.style, value.element, value.jodit, value.mode),
                 next: states.END
             });
         }
@@ -28262,14 +28776,14 @@ const transactions = {
         exec (value) {
             var _style_options_attributes;
             const { element, jodit, style } = value;
-            const suit = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.suitableClosest)(style, element, jodit.editor);
+            const suit = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.suitableClosest)(style, element, jodit.editor);
             (0,jodit_core_helpers_utils_assert__WEBPACK_IMPORTED_MODULE_4__.assert)(suit, 'This place should have an element');
             // If we're applying inline styles to a block element, don't split the block
             const isApplyingInlineStyle = !style.elementIsBlock && ((_style_options_attributes = style.options.attributes) === null || _style_options_attributes === void 0 ? void 0 : _style_options_attributes.style);
             const shouldNotSplitBlock = isApplyingInlineStyle && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.isBlock(suit);
             if (!shouldNotSplitBlock) {
                 if (!style.elementIsBlock) {
-                    (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.extractSelectedPart)(suit, element, jodit);
+                    (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.extractSelectedPart)(suit, element, jodit);
                 }
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     element: suit,
@@ -28285,13 +28799,13 @@ const transactions = {
     [states.UNWRAP_CHILDREN]: {
         exec (value) {
             const { element, style } = value;
-            if (!(0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.unwrapChildren)(style, element)) {
+            if (!(0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.unwrapChildren)(style, element)) {
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     next: states.WRAP
                 });
             }
             return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
-                mode: jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.UNWRAP,
+                mode: jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.UNWRAP,
                 next: states.END
             });
         }
@@ -28299,10 +28813,10 @@ const transactions = {
     [states.WRAP]: {
         exec (value) {
             const { element, jodit, style } = value;
-            const wrapper = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.wrap)(style, element, jodit);
+            const wrapper = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.wrap)(style, element, jodit);
             return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                 next: style.elementIsList ? states.END : states.CHANGE,
-                mode: jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.WRAP,
+                mode: jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.WRAP,
                 element: wrapper
             });
         }
@@ -28310,7 +28824,7 @@ const transactions = {
     [states.ELEMENT]: {
         exec (value) {
             const { style, element, jodit } = value;
-            if ((0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.toggleAttributes)(style, element, jodit, jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.INITIAL, true) !== jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.INITIAL) {
+            if ((0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.toggleAttributes)(style, element, jodit, jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.INITIAL, true) !== jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.INITIAL) {
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     next: states.CHANGE
                 });
@@ -28329,8 +28843,8 @@ const transactions = {
     [states.CHANGE]: {
         exec (value) {
             const { style, element, jodit, mode } = value;
-            const newMode = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_6__.toggleAttributes)(style, element, jodit, value.mode);
-            if (mode !== jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.WRAP && newMode === jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.UNSET && !element.attributes.length && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.isTag(element, style.element)) {
+            const newMode = (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_5__.toggleAttributes)(style, element, jodit, value.mode);
+            if (mode !== jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.WRAP && newMode === jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.UNSET && !element.attributes.length && jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.isTag(element, style.element)) {
                 return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
                     next: states.UNWRAP
                 });
@@ -28350,7 +28864,7 @@ const transactions = {
             }
             jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.unwrap(value.element);
             return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
-                mode: jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.UNWRAP,
+                mode: jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.UNWRAP,
                 next: states.END
             });
         }
@@ -28359,7 +28873,7 @@ const transactions = {
         exec (value) {
             jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_3__.Dom.replace(value.element, value.style.defaultTag, value.jodit.createInside, true);
             return (0,_swc_helpers_object_spread_props__WEBPACK_IMPORTED_MODULE_1__._)((0,_swc_helpers_object_spread__WEBPACK_IMPORTED_MODULE_0__._)({}, value), {
-                mode: jodit_core_selection__WEBPACK_IMPORTED_MODULE_5__.REPLACE,
+                mode: jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_6__.REPLACE,
                 next: states.END
             });
         }
@@ -28385,7 +28899,7 @@ const transactions = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/array
  */ 
@@ -28415,7 +28929,7 @@ const transactions = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/image-properties
  */ 
@@ -28445,7 +28959,7 @@ const transactions = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module create
  */ 
@@ -28465,7 +28979,7 @@ const transactions = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/async
  */ 
@@ -28503,7 +29017,7 @@ const transactions = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/component/README.md]]
  * @packageDocumentation
@@ -28705,7 +29219,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 24 24\" 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module traits
  */ 
@@ -28784,7 +29298,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/fullsize
  */ 
@@ -28829,7 +29343,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_2__.Config.prototype.controls.fullsize = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/wait/README.md]]
  * @packageDocumentation
@@ -28878,7 +29392,7 @@ function wait(condition) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -28930,7 +29444,7 @@ function wait(condition) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -28968,7 +29482,9 @@ function wait(condition) {
         }
         return '';
     }
-    const key2 = (0,jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_4__.kebabCase)(key), doc = element.ownerDocument || document, win = doc ? doc.defaultView || doc.parentWindow : false;
+    const key2 = (0,jodit_core_helpers_string_kebab_case__WEBPACK_IMPORTED_MODULE_4__.kebabCase)(key);
+    const doc = element.ownerDocument || document;
+    const win = doc ? doc.defaultView || doc.parentWindow : false;
     const currentValue = element.style[key];
     let result = '';
     if (currentValue !== undefined && currentValue !== '') {
@@ -29017,7 +29533,7 @@ module.exports["default"] = ["Írjon be valamit","Joditról","Jodit Editor","Jod
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -29042,7 +29558,7 @@ module.exports["default"] = ["Írjon be valamit","Joditról","Jodit Editor","Jod
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/tab/README.md]]
  * @packageDocumentation
@@ -29169,7 +29685,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * You can use Jodit constants in your code
  * ```javascript
@@ -29179,7 +29695,7 @@ __webpack_require__.r(__webpack_exports__);
  * ```
  * @packageDocumentation
  * @module constants
- */ const APP_VERSION = "4.7.9";
+ */ const APP_VERSION = "4.9.14";
 // prettier-ignore
 const ES = "es2015";
 const IS_ES_MODERN = true;
@@ -29404,7 +29920,7 @@ const PASSIVE_EVENTS = new Set([
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module traits
  */ 
@@ -29450,7 +29966,7 @@ class Mods {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ /**
@@ -29474,7 +29990,7 @@ class Mods {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/source
  */ 
@@ -29526,7 +30042,7 @@ function createSourceEditor(type, editor, container, toWYSIWYG, fromWYSIWYG) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/html
  */ 
@@ -29560,7 +30076,7 @@ function createSourceEditor(type, editor, container, toWYSIWYG, fromWYSIWYG) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -29731,7 +30247,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/size
  */ const innerWidth = (element, win)=>{
@@ -29756,7 +30272,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 /**
@@ -29812,7 +30328,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/enter
  */ 
@@ -29860,7 +30376,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 /**
@@ -29879,7 +30395,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'copyformat'
 };
@@ -29893,7 +30409,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     'copy-format': 'Format kopierenт'
 };
@@ -29916,7 +30432,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ 
@@ -30004,7 +30520,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   component: function() { return /* reexport safe */ _component_component__WEBPACK_IMPORTED_MODULE_2__.component; },
 /* harmony export */   debounce: function() { return /* reexport safe */ _debounce_debounce__WEBPACK_IMPORTED_MODULE_3__.debounce; },
 /* harmony export */   derive: function() { return /* reexport safe */ _derive_derive__WEBPACK_IMPORTED_MODULE_4__.derive; },
-/* harmony export */   getPropertyDescriptor: function() { return /* reexport safe */ _watch_watch__WEBPACK_IMPORTED_MODULE_10__.getPropertyDescriptor; },
+/* harmony export */   getComponentClass: function() { return /* reexport safe */ _component_component__WEBPACK_IMPORTED_MODULE_2__.getComponentClass; },
 /* harmony export */   hook: function() { return /* reexport safe */ _hook_hook__WEBPACK_IMPORTED_MODULE_5__.hook; },
 /* harmony export */   idle: function() { return /* reexport safe */ _idle_idle__WEBPACK_IMPORTED_MODULE_6__.idle; },
 /* harmony export */   nonenumerable: function() { return /* reexport safe */ _nonenumerable_nonenumerable__WEBPACK_IMPORTED_MODULE_7__.nonenumerable; },
@@ -30027,7 +30543,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/README.md]]
  * @packageDocumentation
@@ -30056,20 +30572,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(81937);
-/* harmony import */ var jodit_core_global__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(28077);
-/* harmony import */ var jodit_core_helpers_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(45664);
-/* harmony import */ var jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(28686);
-/* harmony import */ var jodit_core_plugin_helpers_init_instance__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(55810);
-/* harmony import */ var jodit_core_plugin_helpers_load__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3050);
-/* harmony import */ var jodit_core_plugin_helpers_make_instance__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(25974);
-/* harmony import */ var jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(86189);
+/* harmony import */ var jodit_core_event_emitter_global__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(42689);
+/* harmony import */ var jodit_core_helpers_array_split_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(32328);
+/* harmony import */ var jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17312);
+/* harmony import */ var jodit_core_helpers_checker_is_imp_interface__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(52433);
+/* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(85932);
+/* harmony import */ var jodit_core_plugin_helpers_init_instance__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(55810);
+/* harmony import */ var jodit_core_plugin_helpers_load__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(3050);
+/* harmony import */ var jodit_core_plugin_helpers_make_instance__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(25974);
+/* harmony import */ var jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(86189);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugin
  */ 
+
+
 
 
 
@@ -30097,18 +30617,18 @@ __webpack_require__.r(__webpack_exports__);
     /**
 	 * Add plugin in store
 	 */ add(name, plugin) {
-        this.__items.set((0,jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.normalizeName)(name), plugin);
-        jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.eventEmitter.fire(`plugin:${name}:ready`);
+        this.__items.set((0,jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_10__.normalizeName)(name), plugin);
+        jodit_core_event_emitter_global__WEBPACK_IMPORTED_MODULE_2__.eventEmitter.fire(`plugin:${name}:ready`);
     }
     /**
 	 * Get plugin from store
 	 */ get(name) {
-        return this.__items.get((0,jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.normalizeName)(name));
+        return this.__items.get((0,jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_10__.normalizeName)(name));
     }
     /**
 	 * Remove plugin from store
 	 */ remove(name) {
-        this.__items.delete((0,jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.normalizeName)(name));
+        this.__items.delete((0,jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_10__.normalizeName)(name));
     }
     __getFullPluginsList(filter) {
         const results = [];
@@ -30140,7 +30660,7 @@ __webpack_require__.r(__webpack_exports__);
                     return;
                 }
                 const requires = plugin === null || plugin === void 0 ? void 0 : plugin.requires;
-                if (requires && (0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_4__.isArray)(requires) && requires.length) {
+                if (requires && (0,jodit_core_helpers_checker_is_array__WEBPACK_IMPORTED_MODULE_4__.isArray)(requires) && requires.length) {
                     if (requires.some((req)=>disableList.has(req))) {
                         return;
                     }
@@ -30150,13 +30670,13 @@ __webpack_require__.r(__webpack_exports__);
                     }
                 }
                 commit = true;
-                const instance = (0,jodit_core_plugin_helpers_make_instance__WEBPACK_IMPORTED_MODULE_7__.makeInstance)(jodit, plugin);
+                const instance = (0,jodit_core_plugin_helpers_make_instance__WEBPACK_IMPORTED_MODULE_9__.makeInstance)(jodit, plugin);
                 if (!instance) {
                     doneList.set(name, null);
                     waitingList.delete(name);
                     return;
                 }
-                (0,jodit_core_plugin_helpers_init_instance__WEBPACK_IMPORTED_MODULE_5__.init)(jodit, name, plugin, instance, doneList, waitingList);
+                (0,jodit_core_plugin_helpers_init_instance__WEBPACK_IMPORTED_MODULE_7__.init)(jodit, name, plugin, instance, doneList, waitingList, this.opts.getContainer);
                 pluginsMap[name] = instance;
             });
             if (commit) {
@@ -30165,7 +30685,7 @@ __webpack_require__.r(__webpack_exports__);
             }
         };
         if (extraList && extraList.length) {
-            (0,jodit_core_plugin_helpers_load__WEBPACK_IMPORTED_MODULE_6__.loadExtras)(this.__items, jodit, extraList, initPlugins);
+            (0,jodit_core_plugin_helpers_load__WEBPACK_IMPORTED_MODULE_8__.loadExtras)(this.__items, jodit, extraList, initPlugins);
         }
         initPlugins();
         bindOnBeforeDestruct(jodit, pluginsMap);
@@ -30182,13 +30702,16 @@ __webpack_require__.r(__webpack_exports__);
             }
             const onReady = ()=>{
                 resolve();
-                jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.eventEmitter.off(`plugin:${name}:ready`, onReady);
+                jodit_core_event_emitter_global__WEBPACK_IMPORTED_MODULE_2__.eventEmitter.off(`plugin:${name}:ready`, onReady);
             };
-            jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.eventEmitter.on(`plugin:${name}:ready`, onReady);
+            jodit_core_event_emitter_global__WEBPACK_IMPORTED_MODULE_2__.eventEmitter.on(`plugin:${name}:ready`, onReady);
         });
     }
-    constructor(){
-        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__items", new Map());
+    constructor(opts){
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "opts", void 0);
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__items", void 0);
+        this.opts = opts;
+        this.__items = new Map();
     }
 }
 /**
@@ -30197,7 +30720,7 @@ __webpack_require__.r(__webpack_exports__);
     jodit.e.on('beforeDestruct', ()=>{
         Object.keys(plugins).forEach((name)=>{
             const instance = plugins[name];
-            if ((0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_4__.isDestructable)(instance)) {
+            if ((0,jodit_core_helpers_checker_is_imp_interface__WEBPACK_IMPORTED_MODULE_5__.isDestructable)(instance)) {
                 instance.destruct(jodit);
             }
             delete plugins[name];
@@ -30206,10 +30729,10 @@ __webpack_require__.r(__webpack_exports__);
     });
 }
 function getSpecialLists(jodit) {
-    const extraList = jodit.o.extraPlugins.map((s)=>(0,jodit_core_helpers_checker__WEBPACK_IMPORTED_MODULE_4__.isString)(s) ? {
+    const extraList = jodit.o.extraPlugins.map((s)=>(0,jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_6__.isString)(s) ? {
             name: s
         } : s);
-    const disableList = new Set((0,jodit_core_helpers_array__WEBPACK_IMPORTED_MODULE_3__.splitArray)(jodit.o.disablePlugins).map(jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_8__.normalizeName));
+    const disableList = new Set((0,jodit_core_helpers_array_split_array__WEBPACK_IMPORTED_MODULE_3__.splitArray)(jodit.o.disablePlugins).map(jodit_core_plugin_helpers_utils__WEBPACK_IMPORTED_MODULE_10__.normalizeName));
     const filter = jodit.o.safeMode ? new Set(jodit.o.safePluginsList) : null;
     return {
         extraList,
@@ -30233,7 +30756,7 @@ function getSpecialLists(jodit) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -30262,7 +30785,7 @@ function getSpecialLists(jodit) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 class FileBrowserFiles extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_0__.UIGroup {
@@ -30285,7 +30808,7 @@ class FileBrowserFiles extends jodit_core_ui__WEBPACK_IMPORTED_MODULE_0__.UIGrou
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugin
  */ 
@@ -30311,7 +30834,7 @@ module.exports["default"] = ["Escreva algo...","Sobre o Jodit","Editor Jodit","G
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'Sembol'
 };
@@ -30347,7 +30870,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 128 128\
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/size
  */ 
@@ -30366,7 +30889,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 128 128\
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'symbool'
 };
@@ -30391,7 +30914,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 128 128\
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/form
  */ 
@@ -30452,7 +30975,7 @@ UITextArea = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/dialog
  */ 
@@ -30518,7 +31041,7 @@ UITextArea = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_3__.__decorate
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/array
  */ 
@@ -30566,7 +31089,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/inline-popup/README.md]]
  * @packageDocumentation
@@ -30807,7 +31330,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_4__.pluginSystem.add('inlinePopup', i
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -30882,7 +31405,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -30918,7 +31441,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
             }
             result = result[part];
         }
-    } catch (e) {
+    } catch (unused) {
         return null; // permission denied ore another access exception
     }
     if ((0,jodit_core_helpers_checker_is_void__WEBPACK_IMPORTED_MODULE_1__.isVoid)(result)) {
@@ -30956,7 +31479,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:langs/README.md]]
  * @packageDocumentation
@@ -31046,7 +31569,7 @@ Object.keys(exp).forEach((lang)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/uploader
  */ 
@@ -31090,7 +31613,7 @@ function buildData(uploader, data) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/widget/tabs/README.md]]
  * @packageDocumentation
@@ -31225,7 +31748,7 @@ function buildData(uploader, data) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ 
@@ -31260,7 +31783,7 @@ function buildData(uploader, data) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ /**
@@ -31314,7 +31837,7 @@ function buildData(uploader, data) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/inline-popup
  */ 
@@ -31386,7 +31909,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_1__.Config.prototype.popup = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/image/README.md]]
  * @packageDocumentation
@@ -31468,7 +31991,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('image', image);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/image-properties/README.md]]
  * @packageDocumentation
@@ -31632,7 +32155,11 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('image', image);
             }
             try {
                 this.__lock();
-                yield image.decode();
+                try {
+                    yield image.decode();
+                } catch (e) {
+                    console.error(e);
+                }
                 if (this.state.sizeIsLocked && (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_6__.isNumeric)(values.imageWidth)) {
                     const w = parseFloat(values.imageWidth.toString());
                     values.imageHeight = Math.round(w / this.state.ratio);
@@ -31646,11 +32173,11 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_2__.pluginSystem.add('image', image);
         }).call(this);
     }
     /** @override */ beforeDestruct(editor) {
-        var _cached, _cached1;
-        var _cached2;
-        Object.values((_cached2 = (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cached)(this, '__buttons')) !== null && _cached2 !== void 0 ? _cached2 : {}).forEach((b)=>b.destruct());
-        (_cached = (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cached)(this, 'dialog')) === null || _cached === void 0 ? void 0 : _cached.destruct();
-        (_cached1 = (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cached)(this, 'form')) === null || _cached1 === void 0 ? void 0 : _cached1.destruct();
+        var _cached;
+        var _cached1, _cached2;
+        Object.values((_cached = (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cached)(this, '__buttons')) !== null && _cached !== void 0 ? _cached : {}).forEach((b)=>b.destruct());
+        (_cached1 = (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cached)(this, 'dialog')) === null || _cached1 === void 0 ? void 0 : _cached1.destruct();
+        (_cached2 = (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.cached)(this, 'form')) === null || _cached2 === void 0 ? void 0 : _cached2.destruct();
         editor.e.off(editor.editor, '.imageproperties').off('.imageproperties');
     }
     constructor(...args){
@@ -31765,7 +32292,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -31793,6 +32320,236 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ 91162:
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   IndexedDBProvider: function() { return /* binding */ IndexedDBProvider; },
+/* harmony export */   canUseIndexedDB: function() { return /* binding */ canUseIndexedDB; },
+/* harmony export */   clearUseIndexedDBCache: function() { return /* binding */ clearUseIndexedDBCache; }
+/* harmony export */ });
+/* harmony import */ var _swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(49376);
+/* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(25045);
+/* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(81937);
+/*!
+ * Jodit Editor (https://xdsoft.net/jodit/)
+ * Released under MIT see LICENSE.txt in the project root for license information.
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
+ */ /**
+ * @module storage
+ */ 
+
+
+/**
+ * Persistent storage using IndexedDB
+ */ class IndexedDBProvider {
+    /**
+	 * Initialize or get the database connection
+	 */ getDB() {
+        if (this.dbPromise) {
+            return this.dbPromise;
+        }
+        this.dbPromise = new Promise((resolve, reject)=>{
+            const request = indexedDB.open(this.dbName, this.DB_VERSION);
+            request.onerror = ()=>{
+                reject(request.error);
+            };
+            request.onsuccess = ()=>{
+                resolve(request.result);
+            };
+            request.onupgradeneeded = (event)=>{
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(this.storeName)) {
+                    db.createObjectStore(this.storeName);
+                }
+            };
+        });
+        return this.dbPromise;
+    }
+    /**
+	 * Perform a transaction on the store
+	 */ performTransaction(mode, callback) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                const db = yield this.getDB();
+                const transaction = db.transaction([
+                    this.storeName
+                ], mode);
+                const store = transaction.objectStore(this.storeName);
+                const request = callback(store);
+                return new Promise((resolve, reject)=>{
+                    request.onsuccess = ()=>{
+                        resolve(request.result);
+                    };
+                    request.onerror = ()=>{
+                        reject(request.error);
+                    };
+                });
+            } catch (error) {
+                return Promise.reject(error);
+            }
+        }).call(this);
+    }
+    set(key, value) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                yield this.performTransaction('readwrite', (store)=>store.put(value, key));
+            } catch (e) {
+                if (!jodit_core_constants__WEBPACK_IMPORTED_MODULE_2__.IS_PROD) {
+                    console.error(e);
+                }
+            }
+            return this;
+        }).call(this);
+    }
+    delete(key) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                yield this.performTransaction('readwrite', (store)=>store.delete(key));
+            } catch (unused) {}
+            return this;
+        }).call(this);
+    }
+    get(key) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                return yield this.performTransaction('readonly', (store)=>store.get(key));
+            } catch (unused) {
+                return undefined;
+            }
+        }).call(this);
+    }
+    exists(key) {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                const result = yield this.performTransaction('readonly', (store)=>store.get(key));
+                return result !== undefined;
+            } catch (unused) {
+                return false;
+            }
+        }).call(this);
+    }
+    clear() {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                yield this.performTransaction('readwrite', (store)=>store.clear());
+            } catch (unused) {}
+            return this;
+        }).call(this);
+    }
+    /**
+	 * Close the database connection
+	 */ close() {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            if (this.dbPromise) {
+                try {
+                    const db = yield this.dbPromise;
+                    db.close();
+                } catch (unused) {}
+                this.dbPromise = null;
+            }
+        }).call(this);
+    }
+    /**
+	 * Get all keys in the store
+	 */ keys() {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                let result = yield this.performTransaction('readonly', (store)=>store.getAllKeys());
+                // Handle case where result might be a promise
+                if (result && typeof result === 'object' && 'then' in result) {
+                    result = yield result;
+                }
+                return result.map((k)=>String(k));
+            } catch (unused) {
+                return [];
+            }
+        }).call(this);
+    }
+    /**
+	 * Get all values in the store
+	 */ values() {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                let result = yield this.performTransaction('readonly', (store)=>store.getAll());
+                // Handle case where result might be a promise
+                if (result && typeof result === 'object' && 'then' in result) {
+                    result = yield result;
+                }
+                return result;
+            } catch (unused) {
+                return [];
+            }
+        }).call(this);
+    }
+    /**
+	 * Get all entries (key-value pairs) in the store
+	 */ entries() {
+        return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+            try {
+                const [keys, values] = yield Promise.all([
+                    this.keys(),
+                    this.values()
+                ]);
+                return keys.map((key, index)=>[
+                        key,
+                        values[index]
+                    ]);
+            } catch (unused) {
+                return [];
+            }
+        }).call(this);
+    }
+    constructor(dbName = 'JoditDB', storeName = 'keyValueStore'){
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__._)(this, "dbName", void 0);
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__._)(this, "dbPromise", void 0);
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__._)(this, "DB_VERSION", void 0);
+        (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_1__._)(this, "storeName", void 0);
+        this.dbName = dbName;
+        this.dbPromise = null;
+        this.DB_VERSION = 1;
+        this.storeName = storeName;
+    }
+}
+let cachedResult = null;
+function clearUseIndexedDBCache() {
+    cachedResult = null;
+}
+/**
+ * Check if IndexedDB is available
+ */ function canUseIndexedDB() {
+    return (0,_swc_helpers_async_to_generator__WEBPACK_IMPORTED_MODULE_0__._)(function*() {
+        if (cachedResult != null) {
+            return cachedResult;
+        }
+        try {
+            if (typeof indexedDB === 'undefined') {
+                cachedResult = false;
+                return false;
+            }
+            const tmpKey = '___Jodit___' + Math.random().toString();
+            const request = indexedDB.open(tmpKey);
+            cachedResult = yield new Promise((resolve)=>{
+                request.onerror = ()=>{
+                    resolve(false);
+                };
+                request.onsuccess = ()=>{
+                    indexedDB.deleteDatabase(tmpKey);
+                    resolve(true);
+                };
+            });
+            return cachedResult;
+        } catch (unused) {
+            cachedResult = false;
+            return false;
+        }
+    })();
+}
+
+
+/***/ }),
+
 /***/ 91206:
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -31805,7 +32562,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugin
  */ 
@@ -31825,7 +32582,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module async
  */ 
@@ -31844,7 +32601,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -31873,7 +32630,7 @@ const completeUrl = (url)=>{
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/dialog
  */ 
@@ -31945,7 +32702,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ /**
@@ -31971,7 +32728,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ /**
@@ -31988,17 +32745,23 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   component: function() { return /* binding */ component; }
+/* harmony export */   component: function() { return /* binding */ component; },
+/* harmony export */   getComponentClass: function() { return /* binding */ getComponentClass; }
 /* harmony export */ });
+/* harmony import */ var jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81937);
+/* harmony import */ var jodit_core_helpers_utils_get_class_name__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(421);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/decorators/component/README.md]]
  * @packageDocumentation
  * @module decorators/component
- */ /**
+ */ 
+
+const componentRegistry = new Map();
+/**
  * Decorate components and set status isReady after constructor
  * @param constructorFunction - Component constructor class
  */ function component(constructorFunction) {
@@ -32017,7 +32780,15 @@ __webpack_require__.r(__webpack_exports__);
             }
         }
     }
+    const name = (0,jodit_core_helpers_utils_get_class_name__WEBPACK_IMPORTED_MODULE_1__.getClassName)(constructorFunction.prototype);
+    if (componentRegistry.has(name) && !jodit_core_constants__WEBPACK_IMPORTED_MODULE_0__.IS_PROD) {
+        throw new Error(`Component with name "${name}" is already registered`);
+    }
+    componentRegistry.set(name, newConstructorFunction);
     return newConstructorFunction;
+}
+function getComponentClass(name) {
+    return componentRegistry.get(name);
 }
 
 
@@ -32049,7 +32820,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/bold/README.md]]
  * @packageDocumentation
@@ -32148,7 +32919,7 @@ jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_3__.Icon.set('bold', (_icons_bold_sv
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -32197,7 +32968,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/color
  */ /**
@@ -32279,7 +33050,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/README.md]]
  * @packageDocumentation
@@ -32374,6 +33145,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   buildQuery: function() { return /* reexport safe */ _build_query__WEBPACK_IMPORTED_MODULE_5__.buildQuery; },
 /* harmony export */   call: function() { return /* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_26__.call; },
 /* harmony export */   callPromise: function() { return /* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_26__.callPromise; },
+/* harmony export */   callThis: function() { return /* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_26__.callThis; },
 /* harmony export */   clearAlign: function() { return /* reexport safe */ _align__WEBPACK_IMPORTED_MODULE_0__.clearAlign; },
 /* harmony export */   clearCenterAlign: function() { return /* reexport safe */ _css__WEBPACK_IMPORTED_MODULE_9__.clearCenterAlign; },
 /* harmony export */   cns: function() { return /* reexport safe */ _mark_deprecated__WEBPACK_IMPORTED_MODULE_18__.cns; },
@@ -32390,11 +33162,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   get: function() { return /* reexport safe */ _get__WEBPACK_IMPORTED_MODULE_15__.get; },
 /* harmony export */   getClassName: function() { return /* reexport safe */ _get_class_name__WEBPACK_IMPORTED_MODULE_16__.getClassName; },
 /* harmony export */   getDataTransfer: function() { return /* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_26__.getDataTransfer; },
+/* harmony export */   getPropertyDescriptor: function() { return /* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_26__.getPropertyDescriptor; },
 /* harmony export */   getXPathByElement: function() { return /* reexport safe */ _selector__WEBPACK_IMPORTED_MODULE_23__.getXPathByElement; },
 /* harmony export */   hAlignElement: function() { return /* reexport safe */ _align__WEBPACK_IMPORTED_MODULE_0__.hAlignElement; },
 /* harmony export */   humanSizeToBytes: function() { return /* reexport safe */ _human_size_to_bytes__WEBPACK_IMPORTED_MODULE_17__.humanSizeToBytes; },
 /* harmony export */   inView: function() { return /* reexport safe */ _scroll_into_view__WEBPACK_IMPORTED_MODULE_22__.inView; },
-/* harmony export */   isAbort: function() { return /* reexport safe */ _error__WEBPACK_IMPORTED_MODULE_13__.isAbort; },
 /* harmony export */   isAtom: function() { return /* reexport safe */ _extend__WEBPACK_IMPORTED_MODULE_14__.isAtom; },
 /* harmony export */   keepNames: function() { return /* reexport safe */ _get_class_name__WEBPACK_IMPORTED_MODULE_16__.keepNames; },
 /* harmony export */   keys: function() { return /* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_26__.keys; },
@@ -32448,7 +33220,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -32500,7 +33272,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/event-emitter/README.md]]
  * @packageDocumentation
@@ -32672,11 +33444,11 @@ __webpack_require__.r(__webpack_exports__);
                 };
                 store.set(event, namespace, block, options === null || options === void 0 ? void 0 : options.top);
                 if (isDOMElement(subject)) {
-                    var _options_capture, _options_capture1;
+                    var _ref, _ref1;
                     const eOpts = jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.PASSIVE_EVENTS.has(event) ? {
                         passive: true,
-                        capture: (_options_capture = options === null || options === void 0 ? void 0 : options.capture) !== null && _options_capture !== void 0 ? _options_capture : false
-                    } : (_options_capture1 = options === null || options === void 0 ? void 0 : options.capture) !== null && _options_capture1 !== void 0 ? _options_capture1 : false;
+                        capture: (_ref = options === null || options === void 0 ? void 0 : options.capture) !== null && _ref !== void 0 ? _ref : false
+                    } : (_ref1 = options === null || options === void 0 ? void 0 : options.capture) !== null && _ref1 !== void 0 ? _ref1 : false;
                     syntheticCallback.options = eOpts;
                     subject.addEventListener(event, syntheticCallback, eOpts);
                     this.__memoryDOMSubjectToHandler(subject, syntheticCallback);
@@ -32971,7 +33743,7 @@ function isDOMElement(subject) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/backspace
  */ 
@@ -33021,7 +33793,7 @@ function isDOMElement(subject) {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -33055,7 +33827,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 312 312\
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/source
  */ 
@@ -33109,7 +33881,7 @@ class SourceEditor {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -33153,7 +33925,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/uploader/README.md]]
  * @packageDocumentation
@@ -33305,6 +34077,11 @@ class Uploader extends jodit_core_component___WEBPACK_IMPORTED_MODULE_1__.ViewCo
             handlerE.call(uploader, (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_3__.error)(o.getMessage.call(uploader, resp)));
         }).catch((e)=>handlerE.call(uploader, e));
     }
+    upload(files) {
+        return this.async.promise((resolve, reject)=>{
+            (0,jodit_modules_uploader_helpers__WEBPACK_IMPORTED_MODULE_5__.sendFiles)(this, files, resolve, reject);
+        });
+    }
     destruct() {
         this.setStatus(jodit_core_component___WEBPACK_IMPORTED_MODULE_1__.STATUSES.beforeDestruct);
         const instances = jodit_modules_uploader_helpers__WEBPACK_IMPORTED_MODULE_5__.ajaxInstances.get(this);
@@ -33312,7 +34089,7 @@ class Uploader extends jodit_core_component___WEBPACK_IMPORTED_MODULE_1__.ViewCo
             instances.forEach((ajax)=>{
                 try {
                     ajax.destruct();
-                } catch (e) {}
+                } catch (unused) {}
             });
             instances.clear();
         }
@@ -33341,7 +34118,7 @@ class Uploader extends jodit_core_component___WEBPACK_IMPORTED_MODULE_1__.ViewCo
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/source
  */ 
@@ -33446,21 +34223,18 @@ class AceEditor extends jodit_plugins_source_editor_sourceEditor__WEBPACK_IMPORT
             onResize();
             this.onReady();
         };
-        editor.e.on('afterSetMode', ()=>{
-            if (editor.getRealMode() !== jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.MODE_SOURCE && editor.getMode() !== jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.MODE_SPLIT) {
+        const initAceEditor = ()=>{
+            if (editor.isInDestruct || editor.getRealMode() !== jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.MODE_SOURCE && editor.getMode() !== jodit_core_constants__WEBPACK_IMPORTED_MODULE_1__.MODE_SPLIT) {
                 return;
             }
             this.fromWYSIWYG();
             tryInitAceEditor();
-        });
-        tryInitAceEditor();
+        };
+        editor.e.on('afterSetMode', initAceEditor);
+        initAceEditor();
         // global add ace editor in browser
         if (!this.aceExists()) {
-            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_2__.loadNext)(editor, editor.o.sourceEditorCDNUrlsJS).then(()=>{
-                if (!editor.isInDestruct) {
-                    tryInitAceEditor();
-                }
-            }).catch(()=>null);
+            (0,jodit_core_helpers__WEBPACK_IMPORTED_MODULE_2__.loadNext)(editor, editor.o.sourceEditorCDNUrlsJS).then(initAceEditor).catch(()=>null);
         }
     }
     destruct() {
@@ -33594,7 +34368,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/ui/button/tooltip/README.md]]
  * @packageDocumentation
@@ -33787,7 +34561,7 @@ UITooltip = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module modules/uploader
  */ 
@@ -33841,7 +34615,7 @@ module.exports["default"] = ["Bitte geben Sie einen Text ein","Über Jodit","Jod
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/clean-html
  */ 
@@ -33888,7 +34662,7 @@ module.exports["default"] = ["Bitte geben Sie einen Text ein","Über Jodit","Jod
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
 
 
@@ -33934,13 +34708,14 @@ function elementsEqualAttributes(elm1, elm2) {
 /* harmony import */ var jodit_core_decorators_derive_derive__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(24968);
 /* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(23211);
 /* harmony import */ var jodit_core_helpers_checker_is_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(85932);
-/* harmony import */ var jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(23183);
-/* harmony import */ var jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(81987);
-/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(29434);
+/* harmony import */ var jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7909);
+/* harmony import */ var jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(23183);
+/* harmony import */ var jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(81987);
+/* harmony import */ var jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(29434);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui
  */ 
@@ -33952,7 +34727,12 @@ function elementsEqualAttributes(elm1, elm2) {
 
 
 
+
 class UIElement extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.ViewComponent {
+    getRole() {
+        var _this_options;
+        return ((_this_options = this.options) === null || _this_options === void 0 ? void 0 : _this_options.role) || '';
+    }
     get parentElement() {
         return this.__parentElement;
     }
@@ -34041,16 +34821,19 @@ class UIElement extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.ViewCo
         return result;
     }
     parseTemplate(result) {
-        return this.j.c.fromHTML(result.replace(/\*([^*]+?)\*/g, (_, name)=>jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_8__.Icon.get(name) || '').replace(/&_/g, this.componentName + '_').replace(/~([^~]+?)~/g, (_, s)=>this.i18n(s)));
+        return this.j.c.fromHTML(result.replace(/\*([^*]+?)\*/g, (_, name)=>jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_9__.Icon.get(name) || '').replace(/&_/g, this.componentName + '_').replace(/~([^~]+?)~/g, (_, s)=>this.i18n(s)));
     }
     /** @override */ destruct() {
         jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_4__.Dom.safeRemove(this.container);
         this.parentElement = null;
         return super.destruct();
     }
-    /** @override */ constructor(jodit, options){
-        super(jodit), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "container", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "name", ''), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__parentElement", null), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "mods", {});
+    constructor(jodit, options){
+        super(jodit), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "container", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "name", ''), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "options", void 0), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "__parentElement", null), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "mods", {});
+        this.options = options;
         this.container = this.createContainer(options);
+        const role = this.getRole();
+        role && (0,jodit_core_helpers_utils_attr__WEBPACK_IMPORTED_MODULE_6__.attr)(this.container, 'role', role);
         Object.defineProperty(this.container, 'component', {
             value: this,
             configurable: true
@@ -34058,7 +34841,7 @@ class UIElement extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.ViewCo
     }
 }
 UIElement = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators_derive_derive__WEBPACK_IMPORTED_MODULE_3__.derive)(jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_7__.Mods, jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_6__.Elms)
+    (0,jodit_core_decorators_derive_derive__WEBPACK_IMPORTED_MODULE_3__.derive)(jodit_core_traits_mods__WEBPACK_IMPORTED_MODULE_8__.Mods, jodit_core_traits_elms__WEBPACK_IMPORTED_MODULE_7__.Elms)
 ], UIElement);
 
 
@@ -34077,7 +34860,7 @@ UIElement = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ 
@@ -34130,7 +34913,7 @@ UIElement = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ const normalizeRelativePath = (path)=>{
@@ -34171,7 +34954,7 @@ UIElement = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/resizer
  */ 
@@ -34208,7 +34991,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_0__.Config.prototype.resizer = {
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module plugins/format-block
  */ 
@@ -34220,11 +35003,11 @@ jodit_core_ui_icon__WEBPACK_IMPORTED_MODULE_2__.Icon.set('paragraph', (_paragrap
 jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.paragraph = {
     command: 'formatBlock',
     value (editor, button) {
+        var _ref;
         var _control_data;
         const control = button.control, current = editor.s.current();
         const currentBox = jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.closest(current, jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isBlock, editor.editor);
-        var _currentBox_nodeName_toLowerCase;
-        return (_currentBox_nodeName_toLowerCase = currentBox === null || currentBox === void 0 ? void 0 : currentBox.nodeName.toLowerCase()) !== null && _currentBox_nodeName_toLowerCase !== void 0 ? _currentBox_nodeName_toLowerCase : (_control_data = control.data) === null || _control_data === void 0 ? void 0 : _control_data.currentValue;
+        return (_ref = currentBox === null || currentBox === void 0 ? void 0 : currentBox.nodeName.toLowerCase()) !== null && _ref !== void 0 ? _ref : (_control_data = control.data) === null || _control_data === void 0 ? void 0 : _control_data.currentValue;
     },
     update (editor, button) {
         const control = button.control, current = editor.s.current();
@@ -34292,7 +35075,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.paragraph = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ 
@@ -34314,14 +35097,16 @@ jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.paragraph = 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   wrapList: function() { return /* binding */ wrapList; }
 /* harmony export */ });
-/* harmony import */ var jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(27795);
-/* harmony import */ var jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(51640);
-/* harmony import */ var jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(98394);
+/* harmony import */ var jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(23211);
+/* harmony import */ var jodit_core_selection_style_api_is_same_attributes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(95971);
+/* harmony import */ var jodit_core_selection_style_api_toggle_attributes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(82794);
+/* harmony import */ var jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(98394);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ 
+
 
 
 /**
@@ -34329,27 +35114,27 @@ jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.paragraph = 
  * adds a new item to the nearest old list
  * @private
  */ function wrapList(commitStyle, wrapper, jodit) {
-    const result = jodit.e.fire(`${jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_2__._PREFIX}BeforeWrapList`, jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_2__.REPLACE, wrapper, commitStyle);
-    const newWrapper = result !== null && result !== void 0 ? result : jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.replace(wrapper, 'li', jodit.createInside);
+    const result = jodit.e.fire(`${jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_3__._PREFIX}BeforeWrapList`, jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_3__.REPLACE, wrapper, commitStyle);
+    const newWrapper = result !== null && result !== void 0 ? result : jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.replace(wrapper, 'li', jodit.createInside);
     const prev = newWrapper.previousElementSibling;
     const next = newWrapper.nextElementSibling;
-    let list = jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(prev, commitStyle.element) ? prev : null;
-    list !== null && list !== void 0 ? list : list = jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(next, commitStyle.element) ? next : null;
-    if (!jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isList(list) || !(0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_1__.isSameAttributes)(list, commitStyle.options.attributes)) {
+    let list = jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(prev, commitStyle.element) ? prev : null;
+    list !== null && list !== void 0 ? list : list = jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(next, commitStyle.element) ? next : null;
+    if (!jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isList(list) || !(0,jodit_core_selection_style_api_is_same_attributes__WEBPACK_IMPORTED_MODULE_1__.isSameAttributes)(list, commitStyle.options.attributes)) {
         list = jodit.createInside.element(commitStyle.element);
-        (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_1__.toggleAttributes)(commitStyle, list, jodit, jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_2__.INITIAL);
-        jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.before(newWrapper, list);
+        (0,jodit_core_selection_style_api_toggle_attributes__WEBPACK_IMPORTED_MODULE_2__.toggleAttributes)(commitStyle, list, jodit, jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_3__.INITIAL);
+        jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.before(newWrapper, list);
     }
     if (prev === list) {
-        jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.append(list, newWrapper);
+        jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.append(list, newWrapper);
     } else {
-        jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.prepend(list, newWrapper);
+        jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.prepend(list, newWrapper);
     }
-    if (jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(list.nextElementSibling, commitStyle.element) && (0,jodit_core_selection_style_api__WEBPACK_IMPORTED_MODULE_1__.elementsEqualAttributes)(list, list.nextElementSibling)) {
-        jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.append(list, Array.from(list.nextElementSibling.childNodes));
-        jodit_core_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.safeRemove(list.nextElementSibling);
+    if (jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.isTag(list.nextElementSibling, commitStyle.element) && (0,jodit_core_selection_style_api_is_same_attributes__WEBPACK_IMPORTED_MODULE_1__.elementsEqualAttributes)(list, list.nextElementSibling)) {
+        jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.append(list, Array.from(list.nextElementSibling.childNodes));
+        jodit_core_dom_dom__WEBPACK_IMPORTED_MODULE_0__.Dom.safeRemove(list.nextElementSibling);
     }
-    jodit.e.fire(`${jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_2__._PREFIX}AfterWrapList`, jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_2__.WRAP, list, commitStyle);
+    jodit.e.fire(`${jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_3__._PREFIX}AfterWrapList`, jodit_core_selection_style_constants__WEBPACK_IMPORTED_MODULE_3__.WRAP, list, commitStyle);
     return list;
 }
 
@@ -34368,7 +35153,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.paragraph = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/utils
  */ 
@@ -34397,7 +35182,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.paragraph = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ module.exports = {
     symbols: 'символ'
 };
@@ -34432,7 +35217,7 @@ jodit_config__WEBPACK_IMPORTED_MODULE_3__.Config.prototype.controls.paragraph = 
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ 
@@ -34463,19 +35248,21 @@ module.exports["default"] = ["Napisz coś","O Jodit","Edytor Jodit","Instrukcja 
 /* harmony import */ var _swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25045);
 /* harmony import */ var _swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31635);
 /* harmony import */ var jodit_core_component_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(80251);
-/* harmony import */ var jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(84839);
-/* harmony import */ var jodit_core_helpers_array_split_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(32328);
-/* harmony import */ var jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(53681);
-/* harmony import */ var jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(63468);
-/* harmony import */ var jodit_core_ui_group_separator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(35676);
-/* harmony import */ var jodit_core_ui_group_spacer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(27987);
-/* harmony import */ var jodit_core_ui_helpers_buttons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(2496);
-/* harmony import */ var jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(15982);
-/* harmony import */ var jodit_core_ui_helpers_get_strong_control_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(40253);
+/* harmony import */ var jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(91672);
+/* harmony import */ var jodit_core_decorators_hook_hook__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(29200);
+/* harmony import */ var jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(68616);
+/* harmony import */ var jodit_core_helpers_array_split_array__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(32328);
+/* harmony import */ var jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(53681);
+/* harmony import */ var jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(63468);
+/* harmony import */ var jodit_core_ui_group_separator__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(35676);
+/* harmony import */ var jodit_core_ui_group_spacer__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(27987);
+/* harmony import */ var jodit_core_ui_helpers_buttons__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(2496);
+/* harmony import */ var jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(15982);
+/* harmony import */ var jodit_core_ui_helpers_get_strong_control_types__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(40253);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module ui/group
  */ 
@@ -34491,37 +35278,44 @@ module.exports["default"] = ["Napisz coś","O Jodit","Edytor Jodit","Instrukcja 
 
 
 
-class UIList extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_6__.UIGroup {
-    /** @override */ className() {
+
+
+class UIList extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_8__.UIGroup {
+    className() {
         return 'UIList';
+    }
+    getRole() {
+        return 'list';
     }
     __onChangeMode() {
         this.setMod('mode', this.mode);
     }
     /**
 	 * Make new group and append it in list of elements
-	 */ makeGroup() {
-        return new jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_6__.UIGroup(this.jodit);
+	 */ makeGroup(role) {
+        return new jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_8__.UIGroup(this.jodit, [], role ? {
+            role
+        } : undefined);
     }
     /**
 	 * All buttons from list
 	 */ get buttons() {
-        return this.allChildren.filter((elm)=>jodit_core_component_component__WEBPACK_IMPORTED_MODULE_2__.Component.isInstanceOf(elm, jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_5__.UIButton));
+        return this.allChildren.filter((elm)=>jodit_core_component_component__WEBPACK_IMPORTED_MODULE_2__.Component.isInstanceOf(elm, jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_7__.UIButton));
     }
     /**
 	 * Helper for getting full plain button list
 	 */ getButtonsNames() {
-        return this.buttons.map((a)=>a instanceof jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_5__.UIButton && a.state.name || '').filter((a)=>a !== '');
+        return this.buttons.map((a)=>a instanceof jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_7__.UIButton && a.state.name || '').filter((a)=>a !== '');
     }
     setRemoveButtons(removeButtons) {
         this.removeButtons = removeButtons || [];
         return this;
     }
     build(items, target = null) {
-        items = (0,jodit_core_helpers_array_split_array__WEBPACK_IMPORTED_MODULE_4__.splitArray)(items);
+        items = (0,jodit_core_helpers_array_split_array__WEBPACK_IMPORTED_MODULE_6__.splitArray)(items);
         this.clear();
         let lastBtnSeparator = false;
-        let line = this.makeGroup();
+        let line = this.makeGroup('group');
         this.append(line);
         line.setMod('line', true);
         let group;
@@ -34529,7 +35323,7 @@ class UIList extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_6__.UIGr
             let elm = null;
             switch(control.name){
                 case '\n':
-                    line = this.makeGroup();
+                    line = this.makeGroup('group');
                     line.setMod('line', true);
                     group = this.makeGroup();
                     line.append(group);
@@ -34538,13 +35332,13 @@ class UIList extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_6__.UIGr
                 case '|':
                     if (!lastBtnSeparator) {
                         lastBtnSeparator = true;
-                        elm = new jodit_core_ui_group_separator__WEBPACK_IMPORTED_MODULE_7__.UISeparator(this.j);
+                        elm = new jodit_core_ui_group_separator__WEBPACK_IMPORTED_MODULE_9__.UISeparator(this.j);
                     }
                     break;
                 case '---':
                     {
                         group.setMod('before-spacer', true);
-                        const space = new jodit_core_ui_group_spacer__WEBPACK_IMPORTED_MODULE_8__.UISpacer(this.j);
+                        const space = new jodit_core_ui_group_spacer__WEBPACK_IMPORTED_MODULE_10__.UISpacer(this.j);
                         line.append(space);
                         group = this.makeGroup();
                         line.append(group);
@@ -34575,20 +35369,20 @@ class UIList extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_6__.UIGr
             return !this.removeButtons.includes(b.name) && (!b.isVisible || ((_b_isVisible = b.isVisible) === null || _b_isVisible === void 0 ? void 0 : _b_isVisible.call(b, this.j, b)));
         };
         items.forEach((item)=>{
-            if ((0,jodit_core_ui_helpers_buttons__WEBPACK_IMPORTED_MODULE_9__.isButtonGroup)(item)) {
+            if ((0,jodit_core_ui_helpers_buttons__WEBPACK_IMPORTED_MODULE_11__.isButtonGroup)(item)) {
                 const buttons = item.buttons.filter((b)=>b);
                 if (buttons.length) {
                     group = this.makeGroup();
                     group.setMod('separated', true).setMod('group', item.group);
                     line.append(group);
-                    (0,jodit_core_ui_helpers_get_strong_control_types__WEBPACK_IMPORTED_MODULE_11__.getStrongControlTypes)(buttons, this.j.o.controls).filter(isNotRemoved).forEach(addButton);
+                    (0,jodit_core_ui_helpers_get_strong_control_types__WEBPACK_IMPORTED_MODULE_13__.getStrongControlTypes)(buttons, this.j.o.controls).filter(isNotRemoved).forEach(addButton);
                 }
             } else {
                 if (!group) {
                     group = this.makeGroup();
                     line.append(group);
                 }
-                const control = (0,jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_10__.getControlType)(item, this.j.o.controls);
+                const control = (0,jodit_core_ui_helpers_get_control_type__WEBPACK_IMPORTED_MODULE_12__.getControlType)(item, this.j.o.controls);
                 isNotRemoved(control) && addButton(control);
             }
         });
@@ -34601,20 +35395,20 @@ class UIList extends jodit_core_ui_group_group__WEBPACK_IMPORTED_MODULE_6__.UIGr
     /**
 	 * Create button instance
 	 */ makeButton(control, target) {
-        return new jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_5__.UIButton(this.j, {
+        return new jodit_core_ui_button_button_button__WEBPACK_IMPORTED_MODULE_7__.UIButton(this.j, {
             name: control.name
         });
     }
-    constructor(jodit){
-        super(jodit), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "mode", 'horizontal'), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "removeButtons", []);
+    constructor(...args){
+        super(...args), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "mode", 'horizontal'), (0,_swc_helpers_define_property__WEBPACK_IMPORTED_MODULE_0__._)(this, "removeButtons", []);
     }
 }
 (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.watch)('mode'),
-    (0,jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.hook)('ready')
+    (0,jodit_core_decorators_watch_watch__WEBPACK_IMPORTED_MODULE_5__.watch)('mode'),
+    (0,jodit_core_decorators_hook_hook__WEBPACK_IMPORTED_MODULE_4__.hook)('ready')
 ], UIList.prototype, "__onChangeMode", null);
 UIList = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
-    jodit_core_decorators__WEBPACK_IMPORTED_MODULE_3__.component
+    jodit_core_decorators_component_component__WEBPACK_IMPORTED_MODULE_3__.component
 ], UIList);
 
 
@@ -34636,7 +35430,7 @@ UIList = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module selection
  */ /** @internal */ const WRAP = 'wrap';
@@ -34672,7 +35466,7 @@ UIList = (0,_swc_helpers_ts_decorate__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/selection/README.md]]
  * @packageDocumentation
@@ -34805,7 +35599,7 @@ class Selection {
             rng.collapse(true);
             this.selectRange(rng);
             return true;
-        } catch (e) {}
+        } catch (unused) {}
         return false;
     }
     /**
@@ -34977,7 +35771,7 @@ class Selection {
                 }
                 try {
                     sel.addRange(ranges[i].cloneRange());
-                } catch (e) {}
+                } catch (unused) {}
             }
         }
         return info;
@@ -35372,9 +36166,9 @@ class Selection {
             if (inStart) {
                 range.setStart(node, 0);
             } else {
+                var _ref;
                 var _node_nodeValue;
-                var _node_nodeValue_length;
-                range.setEnd(node, (_node_nodeValue_length = (_node_nodeValue = node.nodeValue) === null || _node_nodeValue === void 0 ? void 0 : _node_nodeValue.length) !== null && _node_nodeValue_length !== void 0 ? _node_nodeValue_length : 0);
+                range.setEnd(node, (_ref = (_node_nodeValue = node.nodeValue) === null || _node_nodeValue === void 0 ? void 0 : _node_nodeValue.length) !== null && _ref !== void 0 ? _ref : 0);
             }
         }
         range.collapse(inStart);
@@ -35731,7 +36525,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -35767,7 +36561,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/ordered-list/README.md]]
  * @packageDocumentation
@@ -35836,7 +36630,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_3__.pluginSystem.add('orderedList', o
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:modules/table/README.md]]
  * @packageDocumentation
@@ -36427,8 +37221,8 @@ class Table extends jodit_core_component__WEBPACK_IMPORTED_MODULE_2__.ViewCompon
         return Table.__setColumnWidthByDelta(table, column, delta, noUnmark, marked);
     }
     static __mark(cell, key, value, marked) {
-        marked.push(cell);
         var _markedValue_get;
+        marked.push(cell);
         const dict = (_markedValue_get = markedValue.get(cell)) !== null && _markedValue_get !== void 0 ? _markedValue_get : {};
         dict[key] = value === undefined ? 1 : value;
         markedValue.set(cell, dict);
@@ -36489,7 +37283,7 @@ const instance = (j)=>j.getInstance('Table', j.o);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/normalize
  */ /**
@@ -36521,7 +37315,7 @@ const instance = (j)=>j.getInstance('Table', j.o);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:core/ui/form/README.md]]
  * @packageDocumentation
@@ -36616,7 +37410,7 @@ module.exports = "<svg xmlns='http://www.w3.org/2000/svg' viewBox=\"0 0 1792 179
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:plugins/select/README.md]]
  * @packageDocumentation
@@ -36764,7 +37558,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_4__.pluginSystem.add('select', select
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/string
  */ /**
@@ -36791,7 +37585,7 @@ jodit_core_global__WEBPACK_IMPORTED_MODULE_4__.pluginSystem.add('select', select
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * @module helpers/checker
  */ 
@@ -36995,7 +37789,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
  * Released under MIT see LICENSE.txt in the project root for license information.
- * Copyright (c) 2013-2025 Valeriy Chupurnov. All rights reserved. https://xdsoft.net
+ * Copyright (c) 2013-2026 Valerii Chupurnov. All rights reserved. https://xdsoft.net
  */ /**
  * [[include:README.md]]
  * @packageDocumentation
