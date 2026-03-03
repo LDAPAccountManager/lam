@@ -369,12 +369,12 @@ function pwd_is_enabled($hash) {
  * @return String password
  */
 function generateRandomPassword($length = 14, bool $checkStrength = true): string {
-	$minLength = $_SESSION['cfgMain']->passwordMinLength;
+	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
+	$minLength = $cfg->passwordMinLength;
 	$length = max($length, $minLength);
 	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinLength())) {
 		$length = max($length, $_SESSION['config']->getPwdPolicyMinLength());
 	}
-	$cfg = $_SESSION['cfgMain'] ?? new LAMCfgMain();
 	$listAll = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
 	$allLength = strlen($listAll);
 	$listLower = 'abcdefghijklmnopqrstuvwxyz';
