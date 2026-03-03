@@ -609,15 +609,21 @@
       intermediate release.</para>
 
       <section>
+        <title>9.4 -&gt; 9.5</title>
+
+        <para>Users who have an active session in LAM need to relogin to
+        LAM.</para>
+      </section>
+
+      <section>
         <title>9.3 -&gt; 9.4</title>
 
         <para><emphasis role="bold">New configuration format for main
-        configuration and server profiles is enforced.</emphasis> Please save your main
-        configuration and all server profiles with LAM 9.0 - 9.3 before
-        upgrading. You can also export your configuration and import all
-        server profiles and main configuration. This format change does not
-        apply if you use MySQL for configuration
-        storage.</para>
+        configuration and server profiles is enforced.</emphasis> Please save
+        your main configuration and all server profiles with LAM 9.0 - 9.3
+        before upgrading. You can also export your configuration and import
+        all server profiles and main configuration. This format change does
+        not apply if you use MySQL for configuration storage.</para>
       </section>
 
       <section>
