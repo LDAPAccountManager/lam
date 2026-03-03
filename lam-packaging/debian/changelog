@@ -4,7 +4,7 @@ ldap-account-manager (9.5.RC1-1) unstable; urgency=medium
   * Fix "[INTL:zh] Chinese debconf templates translations" by adding
       PO files (Closes: #1124964)
 
- -- Roland Gruber <post@rolandgruber.de>  Sat, 13 Dec 2025 19:15:22 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 03 Mar 2026 07:15:22 +0100
 
 ldap-account-manager (9.4-1) unstable; urgency=medium
 
