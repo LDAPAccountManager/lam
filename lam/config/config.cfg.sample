@@ -21,7 +21,7 @@
   "licenseEmailFrom": "",
   "licenseEmailTo": "",
   "licenseWarningType": "all",
-  "licenseEmailDateSent": "",
+  "licenseEmailDateSent": "0",
   "mailServer": "",
   "mailUser": "",
   "mailPassword": "",

@@ -435,7 +435,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 			StatusMessage('WARN', $licenseMessage);
 		}
 		if ($cfgMain->sendLicenseWarningByEmail() && !$cfgMain->wasLicenseWarningSent($expirationTimeStamp)) {
-			$cfgMain->licenseEmailDateSent = $expirationTimeStamp;
+			$cfgMain->licenseEmailDateSent = (string) $expirationTimeStamp;
 			$cfgMain->save();
 			$mailer = new LicenseWarningMailer($cfgMain);
 			$mailer->sendMail($expirationDate);
