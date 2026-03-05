@@ -1786,9 +1786,11 @@ window.lam.html.initCropping = function() {
         }
         const cropperImageRect = cropper.getCropperImage().getBoundingClientRect();
         const cropperCanvasRect = cropperCanvas.getBoundingClientRect();
+        const offsetLeft = cropperImageRect.left - cropperCanvasRect.left;
+        const offsetTop = cropperImageRect.top - cropperCanvasRect.top;
         const maxSelection = {
-            x: cropperImageRect.left - cropperCanvasRect.left,
-            y: cropperImageRect.top - cropperCanvasRect.top,
+            x: offsetLeft,
+            y: offsetTop,
             width: cropperImageRect.width,
             height: cropperImageRect.height,
         };
@@ -1797,11 +1799,12 @@ window.lam.html.initCropping = function() {
             event.preventDefault();
             return;
         }
-        // TODO
-        document.getElementById('croppingDataX').value = selection.x;
-        document.getElementById('croppingDataY').value = selection.y;
-        document.getElementById('croppingDataWidth').value = selection.width;
-        document.getElementById('croppingDataHeight').value = selection.height;
+        document.getElementById('croppingDataX').value = selection.x - offsetLeft;
+        document.getElementById('croppingDataY').value = selection.y - offsetTop;
+        document.getElementById('croppingDataSelectionWidth').value = selection.width;
+        document.getElementById('croppingDataSelectionHeight').value = selection.height;
+        document.getElementById('croppingDataWidth').value = cropperImageRect.width;
+        document.getElementById('croppingDataHeight').value = cropperImageRect.height;
     };
     cropper.getCropperImage().$ready(function() {
         const cropperImageRect = cropper.getCropperImage().getBoundingClientRect();
