@@ -2526,10 +2526,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
 				$scaleFactor = $imageManipulator->getWidth() / intval($_POST['croppingDataWidth']);
 				$imageManipulator->crop(
-					round(intval($_POST['croppingDataX']) * $scaleFactor),
-					round(intval($_POST['croppingDataY']) * $scaleFactor),
-					round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
-					round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
+					(int) round(intval($_POST['croppingDataX']) * $scaleFactor),
+					(int) round(intval($_POST['croppingDataY']) * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
 				);
 				// resize if maximum values specified
 				if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
@@ -2625,10 +2625,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['thumbnailphoto'][0]);
 				$scaleFactor = $imageManipulator->getWidth() / intval($_POST['croppingDataWidth']);
 				$imageManipulator->crop(
-					round(intval($_POST['croppingDataX']) * $scaleFactor),
-					round(intval($_POST['croppingDataY']) * $scaleFactor),
-					round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
-					round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
+					(int) round(intval($_POST['croppingDataX']) * $scaleFactor),
+					(int) round(intval($_POST['croppingDataY']) * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
 				);
 				// resize if maximum values specified
 				if (!empty($this->moduleSettings['windowsUser_thumbnailphoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_thumbnailphoto_maxHeight'][0])) {

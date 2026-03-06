@@ -1622,10 +1622,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
 				$scaleFactor = $imageManipulator->getWidth() / intval($_POST['croppingDataWidth']);
 				$imageManipulator->crop(
-					round(intval($_POST['croppingDataX']) * $scaleFactor),
-					round(intval($_POST['croppingDataY']) * $scaleFactor),
-					round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
-					round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
+					(int) round(intval($_POST['croppingDataX']) * $scaleFactor),
+					(int) round(intval($_POST['croppingDataY']) * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
 				);
 				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
 			}
@@ -3195,10 +3195,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 					$scaleFactor = $imageManipulator->getWidth() / intval($_POST['croppingDataWidth']);
 					$imageManipulator->crop(
-						round(intval($_POST['croppingDataX']) * $scaleFactor),
-						round(intval($_POST['croppingDataY']) * $scaleFactor),
-						round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
-						round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
+						(int) round(intval($_POST['croppingDataX']) * $scaleFactor),
+						(int) round(intval($_POST['croppingDataY']) * $scaleFactor),
+						(int) round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
+						(int) round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
 					);
 					$data = $imageManipulator->getImageData();
 					$data = $this->resizeAndConvertImage($data, $moduleSettings);
