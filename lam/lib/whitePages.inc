@@ -1369,6 +1369,7 @@ class WhitePagesLdapConnection {
 			$userDn = $this->profile->ldapConnectionUser;
 			$password = deobfuscateText($this->profile->ldapConnectionPassword);
 		}
+		logNewMessage(LOG_DEBUG, 'White pages, bind with ' . $userDn);
 		$result = @ldap_bind($this->getServer(), $userDn, $password);
 		if ($result) {
 			$this->bindDone = true;
