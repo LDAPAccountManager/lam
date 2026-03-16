@@ -146,6 +146,12 @@ class Ajax {
 			$this->testSmsConnection();
 			die();
 		}
+		if ($function === 'whitePages') {
+			include_once(__DIR__ . "/../../lib/whitePagesData.inc");
+			$wpHandler = new WhitePagesAjaxHandler();
+			$wpHandler->dispatchAjaxRequest();
+			die();
+		}
 		enforceUserIsLoggedIn();
 		if (($function === 'passwordChange') && isset($_POST['jsonInput'])) {
 			$this->managePasswordChange(json_decode((string) $_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
@@ -207,11 +213,6 @@ class Ajax {
 		}
 		elseif ($function === 'checkPassword') {
 			$this->checkPassword();
-		}
-		elseif ($function === 'whitePages') {
-			include_once(__DIR__ . "/../../lib/whitePagesData.inc");
-			$wpHandler = new WhitePagesAjaxHandler();
-			$wpHandler->dispatchAjaxRequest();
 		}
 	}
 
