@@ -67,6 +67,4 @@ parameters:
 		- '#Unable to resolve the template type T in call to method accountContainer::getAccountModule\(\)#'
 		- '#Unable to resolve the template type T in call to function array_values#'
 		- '#.*of function sort contains unresolvable type.*#'
-		- '#.*of function natcasesort expects an array of values castable to string.*#'
-		- '#.*function array_unique expects an array of values castable to string.*#'
 		- '#.*\$partialAccounts.*#'
