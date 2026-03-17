@@ -1,10 +1,12 @@
-ldap-account-manager (9.5.RC1-1) unstable; urgency=medium
+ldap-account-manager (9.5-1) unstable; urgency=medium
 
   * new upstream release
   * Fix "[INTL:zh] Chinese debconf templates translations" by adding
       PO files (Closes: #1124964)
+  * Fix CVE-2026-27894 by code refactoring
+  * Fix CVE-2026-27895 by code refactoring
 
- -- Roland Gruber <post@rolandgruber.de>  Tue, 03 Mar 2026 07:15:22 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 16 Mar 2026 07:15:22 +0100
 
 ldap-account-manager (9.4-1) unstable; urgency=medium
 

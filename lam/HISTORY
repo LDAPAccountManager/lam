@@ -1,8 +1,11 @@
-March 2026 9.5
+17.03.2026 9.5
  - PHP 8.2 or higher required (421)
  - Show failed password policy rules (526)
  - Docker: use Debian 13 as base image (460)
  - Docker: run as non-root (544)
+ - Fixed bugs:
+  -> Fix CVE-2026-27894: Authenticated Local File Inclusion (LFI) in PDF export (high, GHSA-w7xq-vjr3-p9cf)
+  -> Fix CVE-2026-27895: Incorrect regular expression in PDF export component allows to upload files of any type (moderate, GHSA-88hf-2cjm-m9g8)
  - LAM Pro:
   -> Old license key format is no longer supported. You are only affected if your license key section on our website contains a "Old format" entry. (295)
   -> Removed deprecated cron.sh and cronGlobal.sh (please use runCronJobs.sh) (519)
