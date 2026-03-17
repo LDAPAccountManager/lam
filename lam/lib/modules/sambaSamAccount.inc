@@ -2321,7 +2321,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 					$additionalAttrs[] = $attributes['givenName'][0];
 				}
 				$pwdPolicyResult = checkPasswordStrength($_POST['sambaSamAccount_password'], $userName, $additionalAttrs);
-				if (!$pwdPolicyResult->isValid()) {
+				if ($pwdPolicyResult->isValid()) {
 					$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['sambaSamAccount_password']);
 					$return['info']['sambaUserPasswordClearText'][0] = $_POST['sambaSamAccount_password'];
 					$this->doSelfServicePasswordHistoryAndMinAge($attributes, $return);

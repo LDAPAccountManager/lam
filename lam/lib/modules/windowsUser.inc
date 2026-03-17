@@ -3876,7 +3876,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$additionalAttrs[] = $attributes['givenName'][0];
 				}
 				$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd'], $userName, $additionalAttrs);
-				if (!$pwdPolicyResult->isValid()) {
+				if ($pwdPolicyResult->isValid()) {
 					$this->setSelfServicePassword($return);
 					$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
 				}

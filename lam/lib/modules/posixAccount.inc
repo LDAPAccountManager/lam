@@ -3426,7 +3426,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					$additionalAttrs[] = $attributes['givenName'][0];
 				}
 				$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password'], $userName, $additionalAttrs);
-				if (!$pwdPolicyResult->isValid()) {
+				if ($pwdPolicyResult->isValid()) {
 					$passwordHash = $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0];
 					if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
 						// set SASL password
