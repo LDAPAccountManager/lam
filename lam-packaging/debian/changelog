@@ -2,7 +2,7 @@ ldap-account-manager (9.5.1-1) unstable; urgency=medium
 
   * new upstream release
 
- -- Roland Gruber <post@rolandgruber.de>  Wed, 18 Mar 2026 97:16:27 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 18 Mar 2026 19:16:27 +0100
 
 ldap-account-manager (9.5-1) unstable; urgency=medium
 
