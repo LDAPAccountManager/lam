@@ -1085,7 +1085,12 @@ class LAMConfig {
 			if (!(($dataValue === null) || is_array($dataValue) || is_string($dataValue) || is_int($dataValue) || is_bool($dataValue))) {
 				throw new LAMException('Invalid import data type for ' . htmlspecialchars($dataKey) . ': ' . gettype($dataValue));
 			}
-			$this->$dataKey = $dataValue;
+			if ($dataValue !== null) {
+				$this->$dataKey = $dataValue;
+			}
+			else {
+				logNewMessage(LOG_DEBUG, 'Ignored null value for ' . $dataKey);
+			}
 		}
 		$typeSettingsData = !empty($data['typeSettings']) && is_array($data['typeSettings']) ? $data['typeSettings'] : [];
 		$this->typeSettings = $typeSettingsData;
