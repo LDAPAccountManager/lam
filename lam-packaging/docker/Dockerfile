@@ -101,6 +101,7 @@ RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/apache2 \
     && chown www-data:www-data /var/run \
     && chown www-data:www-data /var/run/apache2 \
     && chmod gu+s /usr/sbin/cron \
+    && chown www-data:www-data /etc/ldap/ldap.conf \
     && chown www-data:www-data /etc/php/8.4/apache2
 
 # install letsencrypt certificates
