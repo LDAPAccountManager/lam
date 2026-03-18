@@ -835,14 +835,14 @@ class selfServiceProfile {
 	/**
 	 * Converts the export data back to a self-service profile.
 	 *
-	 * @param array<string, string|int> $data export data
+	 * @param array<string, string|int|null> $data export data
 	 * @return selfServiceProfile profile
 	 */
 	public static function import($data): selfServiceProfile {
 		$profile = new selfServiceProfile();
 		$vars = get_class_vars(selfServiceProfile::class);
 		foreach ($data as $key => $value) {
-			if (array_key_exists($key, $vars)) {
+			if (array_key_exists($key, $vars) && ($value !== null)) {
 				$profile->$key = $value;
 			}
 		}
