@@ -29,7 +29,7 @@
 FROM debian:trixie-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=9.5
+ARG LAM_RELEASE=9.5.1
 EXPOSE 80
 
 ENV \
