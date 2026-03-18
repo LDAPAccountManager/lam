@@ -1,3 +1,10 @@
+18.03.2026 9.5.1
+ - Fixed bugs:
+  -> Docker Environment variable LAM_DISABLE_TLS_CHECK breaks container start (635)
+  -> Self-service: password change reports error message
+  -> Loading server profile and self-service profile with null values results in 500 error page
+
+
 17.03.2026 9.5
  - PHP 8.2 or higher required (421)
  - Show failed password policy rules (526)
