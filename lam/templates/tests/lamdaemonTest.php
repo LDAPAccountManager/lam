@@ -16,7 +16,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2023  Roland Gruber
+  Copyright (C) 2006 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -276,8 +276,8 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container): voi
 	if (!$stopTest) {
 		$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $remote, _("Lamdaemon: check NSS LDAP"), $container);
 		if (!$stopTest && $testQuota) {
-			$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $remote, _("Lamdaemon: Quota module installed"), $container);
-			$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $remote, _("Lamdaemon: read quotas"), $container);
+			testRemoteCommand("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $remote, _("Lamdaemon: Quota module installed"), $container);
+			testRemoteCommand("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $remote, _("Lamdaemon: read quotas"), $container);
 		}
 	}
 	$remote->disconnect();
