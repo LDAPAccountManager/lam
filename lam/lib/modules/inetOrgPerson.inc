@@ -1620,7 +1620,13 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			try {
 				include_once __DIR__ . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
-				$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
+				$scaleFactor = $imageManipulator->getWidth() / intval($_POST['croppingDataWidth']);
+				$imageManipulator->crop(
+					(int) round(intval($_POST['croppingDataX']) * $scaleFactor),
+					(int) round(intval($_POST['croppingDataY']) * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
+					(int) round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
+				);
 				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
@@ -3187,7 +3193,13 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				try {
 					include_once __DIR__ . '/../imageutils.inc';
 					$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
-					$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
+					$scaleFactor = $imageManipulator->getWidth() / intval($_POST['croppingDataWidth']);
+					$imageManipulator->crop(
+						(int) round(intval($_POST['croppingDataX']) * $scaleFactor),
+						(int) round(intval($_POST['croppingDataY']) * $scaleFactor),
+						(int) round($_POST['croppingDataSelectionWidth'] * $scaleFactor),
+						(int) round($_POST['croppingDataSelectionHeight'] * $scaleFactor)
+					);
 					$data = $imageManipulator->getImageData();
 					$data = $this->resizeAndConvertImage($data, $moduleSettings);
 					if (!empty($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && ($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0] < (strlen($data) / 1024))) {

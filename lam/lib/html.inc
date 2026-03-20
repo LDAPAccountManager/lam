@@ -2695,6 +2695,8 @@ class htmlImage extends htmlElement {
 			echo '<input id="croppingDataY" type="hidden" name="croppingDataY" value="0"/>';
 			echo '<input id="croppingDataWidth" type="hidden" name="croppingDataWidth" value="0"/>';
 			echo '<input id="croppingDataHeight" type="hidden" name="croppingDataHeight" value="0"/>';
+			echo '<input id="croppingDataSelectionWidth" type="hidden" name="croppingDataSelectionWidth" value="0"/>';
+			echo '<input id="croppingDataSelectionHeight" type="hidden" name="croppingDataSelectionHeight" value="0"/>';
 		}
 		return [];
 	}

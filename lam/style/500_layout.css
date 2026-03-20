@@ -1298,3 +1298,7 @@ div.whitepages-card-title {
     font-weight: bold;
     margin-bottom: 1rem;
 }
+
+cropper-canvas {
+    min-height: 300px;
+}
