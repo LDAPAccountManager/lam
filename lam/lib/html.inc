@@ -3988,6 +3988,24 @@ class htmlResponsiveInputField extends htmlInputField {
 		$this->shortLabel = true;
 	}
 
+	/**
+	 * Sets the help ID.
+	 *
+	 * @param string|null $helpID help ID
+	 */
+	public function setHelpId(?string $helpID): void {
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * Sets the help module.
+	 *
+	 * @param string|null $helpModule help module name
+	 */
+	public function setHelpModule(?string $helpModule): void {
+		$this->helpModule = $helpModule;
+	}
+
 }
 
 /**
@@ -4149,6 +4167,24 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	 */
 	public function setShortLabel(): void {
 		$this->shortLabel = true;
+	}
+
+	/**
+	 * Sets the help ID.
+	 *
+	 * @param string|null $helpID help ID
+	 */
+	public function setHelpId(?string $helpID): void {
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * Sets the help module.
+	 *
+	 * @param string|null $helpModule help module name
+	 */
+	public function setHelpModule(?string $helpModule): void {
+		$this->helpModule = $helpModule;
 	}
 
 }

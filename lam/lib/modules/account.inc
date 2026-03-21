@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2024  Roland Gruber
+                2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,32 +75,29 @@ class account extends baseModule {
 		];
 		// help Entries
 		$return['help'] = [
-			'host' => [
-				'uid' => [
-					"Headline" => _("Host name"), 'attr' => 'uid',
-					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
-				],
-				'description' => [
-					"Headline" => _("Description"), 'attr' => 'description',
-					"Text" => _("Host description. If left empty host name will be used.")
-				]
+			'uidHost' => [
+				"Headline" => _("Host name"), 'attr' => 'uid',
+				"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
 			],
-			'user' => [
-				'uid' => [
-					"Headline" => _("User name"), 'attr' => 'uid',
-					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
-				],
-				'description' => [
-					"Headline" => _("Description"), 'attr' => 'description',
-					"Text" => _("User description. If left empty user name will be used.")
-				]
+			'descriptionHost' => [
+				"Headline" => _("Description"), 'attr' => 'description',
+				"Text" => _("Host description. If left empty host name will be used.")
+			],
+			'uidUser' => [
+				"Headline" => _("User name"), 'attr' => 'uid',
+				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
+			],
+			'descriptionUser' => [
+				"Headline" => _("Description"), 'attr' => 'description',
+				"Text" => _("User description. If left empty user name will be used.")
 			]
 		];
 		// upload columns
+		$descriptionHelpId = ($this->get_scope() === 'user') ? 'descriptionUser' : 'descriptionHost';
 		$return['upload_columns'][] = [
 			'name' => 'account_description',
 			'description' => _('Description'),
-			'help' => 'description',
+			'help' => $descriptionHelpId,
 			'example' => ''
 		];
 		return $return;
@@ -195,9 +192,13 @@ class account extends baseModule {
 			}
 			$uidInput = $this->addSimpleInputTextField($container, 'uid', $title, true);
 			$uidInput->setFieldMaxLength(100);
+			$uidHelpId = ($this->get_scope() === 'user') ? 'uidUser' : 'uidHost';
+			$uidInput->setHelpId($uidHelpId);
 		}
 		// description
-		$this->addSimpleInputTextField($container, 'description', _('Description'));
+		$descriptionInput = $this->addSimpleInputTextField($container, 'description', _('Description'));
+		$descriptionHelpId = ($this->get_scope() === 'user') ? 'descriptionUser' : 'descriptionHost';
+		$descriptionInput->setHelpId($descriptionHelpId);
 		return $container;
 	}
 
@@ -228,10 +229,11 @@ class account extends baseModule {
 	public function get_uploadColumns(array $selectedModules, ConfiguredType $type): array {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if (!in_array('posixAccount', $selectedModules)) {
+			$uidHelpId = ($this->get_scope() === 'user') ? 'uidUser' : 'uidHost';
 			$return[] = [
 				'name' => 'account_uid',
 				'description' => _('User name'),
-				'help' => 'uid',
+				'help' => $uidHelpId,
 				'required' => true
 			];
 		}
