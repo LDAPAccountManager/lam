@@ -407,10 +407,9 @@ function checkConfigOptions($moduleToTypeIds, &$options) {
  *
  * @param string|null $module module name
  * @param string $helpID help identifier
- * @param string $scope account type
  * @return array<string, string>|null help entry
  */
-function getHelp($module, $helpID, $scope): ?array {
+function getHelp($module, $helpID): ?array {
 	global $helpArray;
 	if (in_array($module, [null, '', 'main'], true)) {
 		if (!isset($helpArray)) {
@@ -418,7 +417,7 @@ function getHelp($module, $helpID, $scope): ?array {
 		}
 		return $helpArray[$helpID];
 	}
-	$moduleObject = moduleCache::getModule($module, $scope);
+	$moduleObject = moduleCache::getModule($module, null);
 	return $moduleObject->get_help($helpID);
 }
 
@@ -674,10 +673,9 @@ function parseHtml($module, $input, $values, $restricted, $scope) {
  * @param array<string, string> $entry help entry
  * @param string $number help number
  * @param string $module module name
- * @param string $scope account scope
  * @param string[] $classes CSS classes
  */
-function printHelpLink($entry, $number, $module = '', $scope = '', $classes = []): void {
+function printHelpLink($entry, $number, $module = '', $classes = []): void {
 	$helpPath = "../";
 	if (is_file("./help.php")) {
 		$helpPath = "";
@@ -694,7 +692,7 @@ function printHelpLink($entry, $number, $module = '', $scope = '', $classes = []
 	if (isSelfService()) {
 		$selfServiceOption = '&amp;selfService=1';
 	}
-	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=" . $number . "&amp;scope=" . $scope . $selfServiceOption . "\" ";
+	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=" . $number . $selfServiceOption . "\" ";
 	echo "target=\"help\" tabindex=\"-1\">";
 	echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle help-icon\" src=\"../{$helpPath}graphics/help.svg\" alt=\"" . _('Help') . "\" width=\"16\" height=\"16\">";
 	echo "</a>";

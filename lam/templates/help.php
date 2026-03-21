@@ -5,7 +5,7 @@ namespace LAM\HELP;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2024  Roland Gruber
+                2008 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -124,12 +124,7 @@ if (isset($_GET['module']) && ($_GET['module'] != 'main') && ($_GET['module'] !=
 		logNewMessage(LOG_ERR, 'Invalid module name: ' . $moduleName);
 		die();
 	}
-	$scope = empty($_GET['scope']) ? 'user' : $_GET['scope'];
-	if (!ScopeAndModuleValidation::isValidScopeName($scope)) {
-		logNewMessage(LOG_ERR, 'Invalid scope name: ' . $scope);
-		die();
-	}
-	$helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
+	$helpEntry = getHelp($moduleName, $_GET['HelpNumber']);
 	if (!$helpEntry) {
 		$variables = [htmlspecialchars((string) $_GET['HelpNumber']), htmlspecialchars((string) $moduleName)];
 		$errorMessage = _("Sorry, the help id '%s' is not available for the module '%s'.");

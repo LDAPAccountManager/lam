@@ -1105,15 +1105,12 @@ class htmlHelpLink extends htmlElement {
 		if ($this->module != null) {
 			$module = $this->module;
 		}
-		if ($this->scope != null) {
-			$scope = $this->scope;
-		}
 		// print link
-		$helpEntry = getHelp($module, $this->helpID, $scope);
+		$helpEntry = getHelp($module, $this->helpID);
 		if (empty($helpEntry)) {
 			return [];
 		}
-		printHelpLink($helpEntry, $this->helpID, $module, $scope, $this->cssClasses);
+		printHelpLink($helpEntry, $this->helpID, $module, $this->cssClasses);
 		return [];
 	}
 
