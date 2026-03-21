@@ -227,7 +227,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				[
 					'name' => 'posixAccount_userName',
 					'description' => _('User name'),
-					'help' => 'uid',
+					'help' => 'uidUser',
 					'example' => _('smiller'),
 					'required' => true,
 					'unique' => true
@@ -291,7 +291,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				[
 					'name' => 'posixAccount_hostName',
 					'description' => _('Host name'),
-					'help' => 'uid',
+					'help' => 'uidHost',
 					'example' => _('pc01$'),
 					'required' => true,
 					'unique' => true
@@ -450,41 +450,37 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				"Headline" => _("Description"), 'attr' => 'description',
 				"Text" => _("Host description. If left empty host name will be used.")
 			],
-			'user' => [
-				'uid' => [
-					"Headline" => _("User name"), 'attr' => 'uid',
-					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_. If user name is already used user name will be expanded with a number. The next free number will be used.")
-				],
-				'gecos' => [
-					"Headline" => _("Gecos"), 'attr' => 'gecos',
-					"Text" => _("User description.")
-				],
-				'gidNumber' => [
-					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
-					"Text" => _("The primary group the user should be member of.")
-				],
-				'cn' => [
-					"Headline" => _("Common name"), 'attr' => 'cn',
-					"Text" => _("This is the natural name of the user. If empty, the first and last name or user name is used.")
-				],
+			'uidUser' => [
+				"Headline" => _("User name"), 'attr' => 'uid',
+				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_. If user name is already used user name will be expanded with a number. The next free number will be used.")
 			],
-			'host' => [
-				'uid' => [
-					"Headline" => _("Host name"), 'attr' => 'uid',
-					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
-				],
-				'gecos' => [
-					"Headline" => _("Gecos"), 'attr' => 'gecos',
-					"Text" => _("Host description.")
-				],
-				'gidNumber' => [
-					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
-					"Text" => _("The primary group the host should be member of.")
-				],
-				'cn' => [
-					"Headline" => _("Common name"), 'attr' => 'cn',
-					"Text" => _("This is the natural name of the host. If empty, the host name will be used.")
-				]
+			'gecosUser' => [
+				"Headline" => _("Gecos"), 'attr' => 'gecos',
+				"Text" => _("User description.")
+			],
+			'gidNumberUser' => [
+				"Headline" => _("Primary group"), 'attr' => 'gidNumber',
+				"Text" => _("The primary group the user should be member of.")
+			],
+			'cnUser' => [
+				"Headline" => _("Common name"), 'attr' => 'cn',
+				"Text" => _("This is the natural name of the user. If empty, the first and last name or user name is used.")
+			],
+			'uidHost' => [
+				"Headline" => _("Host name"), 'attr' => 'uid',
+				"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
+			],
+			'gecosHost' => [
+				"Headline" => _("Gecos"), 'attr' => 'gecos',
+				"Text" => _("Host description.")
+			],
+			'gidNumberHost' => [
+				"Headline" => _("Primary group"), 'attr' => 'gidNumber',
+				"Text" => _("The primary group the host should be member of.")
+			],
+			'cnHost' => [
+				"Headline" => _("Common name"), 'attr' => 'cn',
+				"Text" => _("This is the natural name of the host. If empty, the host name will be used.")
 			]
 		];
 
@@ -1780,20 +1776,20 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				}
 			}
 
-			$userName = '';
-			if (isset($this->attributes['uid'][0])) {
-				$userName = $this->attributes['uid'][0];
-			}
 			$uidLabel = _("User name");
 			if ($this->get_scope() == 'host') {
 				$uidLabel = _("Host name");
 			}
-			$uidInput = new htmlResponsiveInputField($uidLabel, 'uid', $userName, 'uid');
-			$uidInput->setRequired(true);
+			$uidInput = $this->addSimpleInputTextField($return, 'uid', $uidLabel, true);
 			$uidInput->setFieldMaxLength(100);
-			$return->add($uidInput);
+			$uidHelpId = ($this->get_scope() === 'user') ? 'uidUser' : 'uidHost';
+			$uidInput->setHelpId($uidHelpId);
+
 			if ($this->manageCn($modules)) {
-				$this->addMultiValueInputTextField($return, 'cn', _("Common name"));
+				$cnHelpId = ($this->get_scope() === 'user') ? 'cnUser' : 'cnHost';
+				$cnIds = [];
+				$this->addMultiValueInputTextField($return, 'cn', _("Common name"), false,
+					null, false, null, null, $cnIds, '', $cnHelpId);
 			}
 			$uidNumber = '';
 			if (isset($this->attributes['uidNumber'][0])) {
@@ -1808,13 +1804,15 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				if (isset($this->attributes['gecos'][0])) {
 					$gecos = $this->attributes['gecos'][0];
 				}
-				$return->add(new htmlResponsiveInputField(_('Gecos'), 'gecos', $gecos, 'gecos'));
+				$gecosHelpId = ($this->get_scope() === 'user') ? 'gecosUser' : 'gecosHost';
+				$return->add(new htmlResponsiveInputField(_('Gecos'), 'gecos', $gecos, $gecosHelpId));
 			}
 			$primaryGroup = [];
 			if (isset($this->attributes['gidNumber'][0])) {
 				$primaryGroup = [$this->attributes['gidNumber'][0]];
 			}
-			$gidNumberSelect = new htmlResponsiveSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), 'gidNumber');
+			$gidNumberHelpId = ($this->get_scope() === 'user') ? 'gidNumberUser' : 'gidNumberHost';
+			$gidNumberSelect = new htmlResponsiveSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), $gidNumberHelpId);
 			$gidNumberSelect->setHasDescriptiveElements(true);
 			$gidNumberSelect->setSortElements(false);
 			$return->add($gidNumberSelect);
@@ -2141,7 +2139,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			if ($allowToCreateGroupWithUserName) {
 				$primaryGroups = [_('Create group with same name') => self::CREATE_GROUP_WITH_SAME_NAME] + $primaryGroups;
 			}
-			$primaryGroupSelect = new htmlResponsiveSelect('posixAccount_primaryGroup', $primaryGroups, [], _('Primary group'), 'gidNumber');
+			$primaryGroupSelect = new htmlResponsiveSelect('posixAccount_primaryGroup', $primaryGroups, [], _('Primary group'), 'gidNumberUser');
 			$primaryGroupSelect->setHasDescriptiveElements(true);
 			$primaryGroupSelect->setSortElements(false);
 			$return->add($primaryGroupSelect);
@@ -2167,10 +2165,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 			// common name
 			if ($this->manageCn($modules)) {
-				$return->add(new htmlResponsiveInputField(_('Common name'), 'posixAccount_cn', '', 'cn'));
+				$return->add(new htmlResponsiveInputField(_('Common name'), 'posixAccount_cn', '', 'cnUser'));
 			}
 			// gecos
-			$return->add(new htmlResponsiveInputField(_('Gecos'), 'posixAccount_gecos', '$firstname $lastname', 'gecos'));
+			$return->add(new htmlResponsiveInputField(_('Gecos'), 'posixAccount_gecos', '$firstname $lastname', 'gecosUser'));
 			// home directory
 			$return->add(new htmlResponsiveInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'));
 			// login shell
@@ -2189,7 +2187,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		}
 		elseif ($this->get_scope() == 'host') {
 			// primary Unix group
-			$primaryGroupSelect = new htmlResponsiveSelect('posixAccount_primaryGroup', $groups, [], _('Primary group'), 'gidNumber');
+			$primaryGroupSelect = new htmlResponsiveSelect('posixAccount_primaryGroup', $groups, [], _('Primary group'), 'gidNumberHost');
 			$primaryGroupSelect->setHasDescriptiveElements(true);
 			$primaryGroupSelect->setSortElements(false);
 			$return->add($primaryGroupSelect);
@@ -2603,15 +2601,23 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			array_unshift($return, [
 				'name' => 'posixAccount_cn',
 				'description' => _('Common name'),
-				'help' => 'cn',
+				'help' => 'cnUser',
 				'example' => _('Steve Miller')
+			]);
+		}
+		if (($this->get_scope() == 'host') && $this->manageCn($selectedModules)) {
+			array_unshift($return, [
+				'name' => 'posixAccount_cn',
+				'description' => _('Common name'),
+				'help' => 'cnHost',
+				'example' => _('pc01$')
 			]);
 		}
 		if (($this->get_scope() == 'user') && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 			$return[] = [
 				'name' => 'posixAccount_gecos',
 				'description' => _('Gecos'),
-				'help' => 'gecos',
+				'help' => 'gecosUser',
 				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
 			];
 		}
@@ -2619,7 +2625,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$return[] = [
 				'name' => 'posixAccount_gecos',
 				'description' => _('Gecos'),
-				'help' => 'gecos',
+				'help' => 'gecosHost',
 				'example' => _('pc01,Room 2.34')
 			];
 		}

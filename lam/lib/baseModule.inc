@@ -1443,9 +1443,11 @@ abstract class baseModule {
 	 * @param integer $fieldSize field size
 	 * @param string[] $htmlIDs reference to array where to add the generated HTML IDs of the input fields
 	 * @param string $cssClasses additional CSS classes of input fields
+	 * @param string|null $helpId help ID (attribute name if null)
 	 */
 	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false,
-												   $autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null, $cssClasses = ''): void {
+												   $autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null, $cssClasses = '',
+													?string $helpId = null): void {
 		$values = [];
 		if (isset($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
@@ -1468,7 +1470,7 @@ abstract class baseModule {
 			$labelTextOut->alignment = htmlElement::ALIGN_TOP;
 			$container->addLabel($labelTextOut);
 		}
-		$help = new htmlHelpLink($attrName);
+		$help = new htmlHelpLink($helpId ?? $attrName);
 		$help->alignment = htmlElement::ALIGN_TOP;
 		$subContainer = new htmlTable();
 		$subContainer->setCSSClasses(['fullwidth']);
