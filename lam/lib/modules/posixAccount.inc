@@ -426,6 +426,30 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				"Headline" => _('Group DN'),
 				"Text" => _('Enter the base DN of your groups here. This is only required if you want to display memberships on the self-service page.')
 			],
+			'userPassword' => [
+				"Headline" => _("Password"), 'attr' => 'userPassword',
+				"Text" => _("Please enter the password which you want to set for this account.")
+			],
+			'userPassword_lock' => [
+				"Headline" => _("Lock password"),
+				"Text" => _("If checked then the password will be deactivated by putting a \"!\" before the encrypted password.")
+			],
+			'useOldPwd' => [
+				"Headline" => _('Password change with old password'),
+				"Text" => _('Sends the old password together with the new password when the user sets a new password.')
+			],
+			'loginShell' => [
+				"Headline" => _("Login shell"), 'attr' => 'loginShell',
+				"Text" => _("To disable login use /bin/false.")
+			],
+			'addgroup' => [
+				"Headline" => _("Additional groups"),
+				"Text" => _("Hold the CTRL-key to (de)select multiple groups.") . ' ' . _("Can be left empty.")
+			],
+			'description' => [
+				"Headline" => _("Description"), 'attr' => 'description',
+				"Text" => _("Host description. If left empty host name will be used.")
+			],
 			'user' => [
 				'uid' => [
 					"Headline" => _("User name"), 'attr' => 'uid',
@@ -439,30 +463,10 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
 					"Text" => _("The primary group the user should be member of.")
 				],
-				'userPassword' => [
-					"Headline" => _("Password"), 'attr' => 'userPassword',
-					"Text" => _("Please enter the password which you want to set for this account.")
-				],
-				'userPassword_lock' => [
-					"Headline" => _("Lock password"),
-					"Text" => _("If checked then the password will be deactivated by putting a \"!\" before the encrypted password.")
-				],
-				'loginShell' => [
-					"Headline" => _("Login shell"), 'attr' => 'loginShell',
-					"Text" => _("To disable login use /bin/false.")
-				],
-				'addgroup' => [
-					"Headline" => _("Additional groups"),
-					"Text" => _("Hold the CTRL-key to (de)select multiple groups.") . ' ' . _("Can be left empty.")
-				],
 				'cn' => [
 					"Headline" => _("Common name"), 'attr' => 'cn',
 					"Text" => _("This is the natural name of the user. If empty, the first and last name or user name is used.")
 				],
-				'useOldPwd' => [
-					"Headline" => _('Password change with old password'),
-					"Text" => _('Sends the old password together with the new password when the user sets a new password.')
-				]
 			],
 			'host' => [
 				'uid' => [
@@ -471,15 +475,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				],
 				'gecos' => [
 					"Headline" => _("Gecos"), 'attr' => 'gecos',
-					"Text" => _("Host description. If left empty host name will be used.")
+					"Text" => _("Host description.")
 				],
 				'gidNumber' => [
 					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
 					"Text" => _("The primary group the host should be member of.")
-				],
-				'description' => [
-					"Headline" => _("Description"), 'attr' => 'description',
-					"Text" => _("Host description. If left empty host name will be used.")
 				],
 				'cn' => [
 					"Headline" => _("Common name"), 'attr' => 'cn',
