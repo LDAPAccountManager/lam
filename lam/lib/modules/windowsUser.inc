@@ -3722,7 +3722,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$this->attributes['userPrincipalName'][0] = $user;
 		}
 		// load groups
-		if (isset($profile['windowsUser_groups'][0])) {
+		if (!empty($profile['windowsUser_groups'][0])) {
 			$this->groupList = $profile['windowsUser_groups'];
 		}
 		// other mailboxes
