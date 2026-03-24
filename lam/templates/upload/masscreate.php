@@ -427,12 +427,12 @@ function showMainPage(ConfiguredType $type, array $selectedModules): void {
 			$descriptionText = new htmlOutputText($column['description']);
 			$descriptionText->setMarkAsRequired($required);
 			$nameGroup = new htmlGroup();
-			$help = new htmlHelpLink($column['help'], $moduleName, $scope);
+			$help = new htmlHelpLink($column['help'], $moduleName);
 			$help->setCSSClasses(['hide-on-mobile']);
 			$nameGroup->addElement($help);
 			$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
 			$nameGroup->addElement($descriptionText);
-			$help = new htmlHelpLink($column['help'], $moduleName, $scope);
+			$help = new htmlHelpLink($column['help'], $moduleName);
 			$help->setCSSClasses(['hide-on-tablet']);
 			$nameGroup->addElement($help);
 			$rowCells[] = $nameGroup;

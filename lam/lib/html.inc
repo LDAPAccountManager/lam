@@ -1081,8 +1081,6 @@ class htmlHelpLink extends htmlElement {
 	private string $helpID;
 	/** module name if it should be forced */
 	private ?string $module;
-	/** account type if it should be forced */
-	private ?string $scope;
 
 	/**
 	 * Constructor
@@ -1091,17 +1089,16 @@ class htmlHelpLink extends htmlElement {
 	 * @param string|null $module module name (optional, only if value from generateHTML() should be overwritten)
 	 * @param string|null $scope account type (e.g. user) (optional, only if value from generateHTML() should be overwritten)
 	 */
-	public function __construct(string $helpID, ?string $module = null, ?string $scope = null) {
+	public function __construct(string $helpID, ?string $module = null) {
 		$this->helpID = $helpID;
 		$this->module = $module;
-		$this->scope = $scope;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted, $scope): array {
-		// overwrite module and scope if needed
+		// overwrite module if needed
 		if ($this->module != null) {
 			$module = $this->module;
 		}
