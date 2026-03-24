@@ -1087,7 +1087,6 @@ class htmlHelpLink extends htmlElement {
 	 *
 	 * @param string $helpID help ID
 	 * @param string|null $module module name (optional, only if value from generateHTML() should be overwritten)
-	 * @param string|null $scope account type (e.g. user) (optional, only if value from generateHTML() should be overwritten)
 	 */
 	public function __construct(string $helpID, ?string $module = null) {
 		$this->helpID = $helpID;
