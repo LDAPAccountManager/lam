@@ -1,3 +1,9 @@
+June 2026 9.6
+ - Fixed bugs:
+  -> Windows/Windows LDS users: unable to create account if default profile has no groups selected
+  -> Dynamic user filtering fails after first character (646)
+
+
 18.03.2026 9.5.1
  - Fixed bugs:
   -> Docker Environment variable LAM_DISABLE_TLS_CHECK breaks container start (635)

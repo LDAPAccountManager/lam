@@ -646,8 +646,7 @@ window.lam.filterSelect.filterDynamic = function(inputField, selectField) {
 	// save selection
 	const optionTags = Array.from(selectField.children);
 	optionTags.forEach((element) => {
-		const index = currentOptions[parseInt(element.dataset.index)].index;
-		optionsOrig[index].selected = element.selected;
+		optionsOrig[parseInt(element.dataset.index)].selected = element.selected;
 	});
 	selectField.dataset.dynamicOptionsOrig = JSON.stringify(optionsOrig);
 	selectField.innerHTML = '';
