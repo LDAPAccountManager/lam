@@ -443,7 +443,7 @@ if (isset($_POST['submitFormData'])) {
 		try {
 				$cfg->save();
 				$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
-				parseHtml(null, $scriptTag, [], false, null);
+				parseHtml(null, $scriptTag, [], false);
 				echo '</body></html>';
 				exit();
 			}
@@ -908,7 +908,7 @@ if (isset($_POST['submitFormData'])) {
 
 	$box = new htmlDiv(null, $row);
 	$box->setCSSClasses(['roundedShadowBox']);
-	parseHtml(null, $box, [], false, 'user');
+	parseHtml(null, $box, [], false);
 
 
 	/**

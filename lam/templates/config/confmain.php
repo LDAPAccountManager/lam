@@ -376,7 +376,7 @@ foreach ($tools as $tool) {
 	$toolConfigContent = $tool->getConfigOptions($toolSettings);
 	if ($toolConfigContent !== null) {
 		ob_start();
-		$optionTypes = parseHtml(null, $tool->getConfigOptions($toolSettings), [], true, 'user');
+		$optionTypes = parseHtml(null, $tool->getConfigOptions($toolSettings), [], true);
 		ob_end_clean();
 		$toolConfigOptionTypes = array_merge($toolConfigOptionTypes, $optionTypes);
 		$row->addVerticalSpacer('1rem');
@@ -603,7 +603,7 @@ $row->add($password2);
 
 $row->addVerticalSpacer('2rem');
 
-parseHtml(null, $row, [], false, 'user');
+parseHtml(null, $row, [], false);
 
 echo "</div></div>";
 
@@ -615,7 +615,7 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, [], false, 'user');
+parseHtml(null, $buttonContainer, [], false);
 
 ?>
     </form>

@@ -119,7 +119,7 @@ $content = new htmlResponsiveRow();
 		$content->add(new htmlLink(_("Back to login"), '../login.php'));
 		$content->addVerticalSpacer('2rem');
 
-		parseHtml(null, $content, [], true, null);
+		parseHtml(null, $content, [], true);
 
 		?>
 

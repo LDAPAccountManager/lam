@@ -181,7 +181,7 @@ printJsIncludes('../..');
 	$backLink = new htmlLink(_("Back to login"), '../login.php');
 	$row->add($backLink, 12, 12, 12, 'text-left');
 
-	parseHtml(null, new htmlDiv(null, $row, ['centeredTable']), [], false, 'user');
+	parseHtml(null, new htmlDiv(null, $row, ['centeredTable']), [], false);
 
 	?>
 </form>

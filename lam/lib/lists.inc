@@ -209,7 +209,7 @@ class lamList {
 		}
 		// insert HTML fragment from listDoPost
 		if ($postFragment !== null) {
-			parseHtml('', $postFragment, [], true, $this->type->getScope());
+			parseHtml('', $postFragment, [], true);
 		}
 		// config dialog
 		$this->listPrintConfigurationPage();
@@ -391,7 +391,7 @@ class lamList {
 			}
 		}
 		$row->add($navGroup, 12, 6, 6, 'responsiveLabel');
-		parseHtml(null, $row, [], false, $this->type->getScope());
+		parseHtml(null, $row, [], false);
 	}
 
 	/**
@@ -428,7 +428,7 @@ class lamList {
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
 
-		parseHtml(null, $table, [], false, $scope);
+		parseHtml(null, $table, [], false);
 	}
 
 	/**
@@ -960,7 +960,7 @@ class lamList {
 		$container->add(new htmlHiddenInput('clickedAccount', $id), 0);
 		addSecurityTokenToMetaHTML($container);
 
-		parseHtml(null, $container, [], false, $this->type->getScope());
+		parseHtml(null, $container, [], false);
 
 		$this->printFooter();
 	}
@@ -1036,7 +1036,7 @@ class lamList {
 		$this->addExtraInputElementsToTopArea($left, $right);
 		$row->add($left, 12, 6, 6, 'text-left');
 		$row->add($right, 12, 6, 6, 'text-right');
-		parseHtml(null, $row, [], false, $this->type->getScope());
+		parseHtml(null, $row, [], false);
 	}
 
 	/**
@@ -1057,7 +1057,7 @@ class lamList {
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(['maxrow']);
 		$row->add(new htmlTitle($this->type->getAlias()));
-		parseHtml(null, $row, [], true, null);
+		parseHtml(null, $row, [], true);
 		$this->printHeaderContent();
 	}
 
@@ -1409,7 +1409,7 @@ class lamList {
 		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'));
 		addSecurityTokenToMetaHTML($configContainer);
 
-		parseHtml('', $configContainer, [], false, $this->type->getScope());
+		parseHtml('', $configContainer, [], false);
 
 		echo '</form>';
 		echo "</div>\n";

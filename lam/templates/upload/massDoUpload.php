@@ -91,6 +91,6 @@ $container = new htmlResponsiveRow();
 $javaScript = new htmlJavaScript('window.lam.upload.continueUpload(\'../misc/ajax.php?function=upload&typeId=' . $type->getId() . '\', \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 $contentDiv = new htmlDiv('uploadContent', $javaScript, ['smallPaddingContent']);
 $container->add($contentDiv);
-parseHtml(null, $container, [], false, null);
+parseHtml(null, $container, [], false);
 
 include __DIR__ . '/../../lib/adminFooter.inc';

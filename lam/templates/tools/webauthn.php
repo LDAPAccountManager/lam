@@ -148,7 +148,7 @@ $container->add($confirmationDiv, 12);
 
 addSecurityTokenToMetaHTML($container);
 
-parseHtml(null, $container, [], false, 'user');
+parseHtml(null, $container, [], false);
 
 echo '</form>';
 echo '</div>';

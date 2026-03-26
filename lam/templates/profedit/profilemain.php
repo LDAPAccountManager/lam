@@ -290,7 +290,7 @@ foreach ($profileClasses as $profileClass) {
 $container->addVerticalSpacer('1rem');
 
 // generate content
-parseHtml(null, $container, [], false, 'user');
+parseHtml(null, $container, [], false);
 
 echo "</form>\n";
 
@@ -333,7 +333,7 @@ if (!empty($globalDeletableTemplates)) {
 	$container->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'));
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'profilemain.php', $container);
-	parseHtml(null, $globalTemplateDeleteForm, [], false, 'user');
+	parseHtml(null, $globalTemplateDeleteForm, [], false);
 }
 
 echo "</div>\n";
@@ -381,7 +381,7 @@ foreach ($profileClasses as $profileClass) {
 	$containerProfiles->add(new htmlHiddenInput('typeId', $typeId), 0);
 	addSecurityTokenToMetaHTML($containerProfiles);
 
-	parseHtml(null, $containerProfiles, [], false, 'user');
+	parseHtml(null, $containerProfiles, [], false);
 
 	echo '</form>';
 	echo "</div>\n";
@@ -428,7 +428,7 @@ foreach ($profileClasses as $profileClass) {
 	$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'), 0);
 	addSecurityTokenToMetaHTML($containerTarget);
 
-	parseHtml(null, $containerTarget, [], false, 'user');
+	parseHtml(null, $containerTarget, [], false);
 
 	echo '</form>';
 	echo "</div>\n";

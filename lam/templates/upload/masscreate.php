@@ -254,7 +254,7 @@ if (!empty($types)) {
 }
 
 addSecurityTokenToMetaHTML($row);
-parseHtml(null, $row, [], false, 'user');
+parseHtml(null, $row, [], false);
 
 echo "</form>\n";
 
@@ -452,7 +452,7 @@ function showMainPage(ConfiguredType $type, array $selectedModules): void {
 	}
 
 	addSecurityTokenToMetaHTML($row);
-	parseHtml(null, $row, [], false, $scope);
+	parseHtml(null, $row, [], false);
 
 	echo "</form>\n";
 

@@ -64,7 +64,7 @@ $container->addVerticalSpacer('2rem');
 $container->add(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/script.svg'), 12, 4);
 $container->add(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), 12, 8);
 
-parseHtml(null, $container, [], true, 'user');
+parseHtml(null, $container, [], true);
 
 echo "</div>\n";
 include __DIR__ . '/../../lib/adminFooter.inc';

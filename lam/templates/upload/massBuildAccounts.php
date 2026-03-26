@@ -329,7 +329,7 @@ else {
 	massPrintBackButton($type->getId(), $selectedModules, $container);
 }
 
-parseHtml(null, $container, [], false, $type->getScope());
+parseHtml(null, $container, [], false);
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

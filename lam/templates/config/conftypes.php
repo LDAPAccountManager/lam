@@ -181,7 +181,7 @@ if ($availableScopes !== []) {
 	}
 	$row->addVerticalSpacer('2rem');
 }
-parseHtml(null, $row, [], false, 'user');
+parseHtml(null, $row, [], false);
 
 $container = new htmlResponsiveRow();
 
@@ -256,7 +256,7 @@ if (count($activeTypes) > 0) {
 			$container->add($typeConfigOptions);
 			// save option types to session
 			ob_start();
-			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, [], true, 'user');
+			$typeConfigOptionTypes = parseHtml(null, $typeConfigOptions, [], true);
 			ob_end_clean();
 			$_SESSION['conftypes_optionTypes'] = array_merge($_SESSION['conftypes_optionTypes'], $typeConfigOptionTypes);
 		}
@@ -305,7 +305,7 @@ foreach ($_SESSION['conftypes_optionTypes'] as $key => $value) {
 		$dynamicTypeOptions[$key] = explode(LAMConfig::LINE_SEPARATOR, $typeSettings[$key]);
 	}
 }
-parseHtml(null, $container, $dynamicTypeOptions, false, 'user');
+parseHtml(null, $container, $dynamicTypeOptions, false);
 
 echo "</div></div>";
 
@@ -319,7 +319,7 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, [], false, 'user');
+parseHtml(null, $buttonContainer, [], false);
 
 echo "</form>\n";
 echo "</body>\n";

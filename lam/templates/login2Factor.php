@@ -75,7 +75,7 @@ catch (Exception $e) {
 	logNewMessage(LOG_ERR, 'Unable to get 2-factor serials for ' . $user . ' ' . $e->getMessage());
 	printHeader();
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication.") . '", "", "' . _('Ok') . '", "login.php")');
-	parseHtml(null, $scriptTag, [], false, null);
+	parseHtml(null, $scriptTag, [], false);
 	printFooter();
 	die();
 }
@@ -101,7 +101,7 @@ if (empty($serials) && $config->getTwoFactorAuthenticationOptional()) {
 if (empty($serials)) {
     printHeader();
 	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication because no tokens were found.") . '", "", "' . _('Ok') . '", "login.php")');
-	parseHtml(null, $scriptTag, [], false, null);
+	parseHtml(null, $scriptTag, [], false);
 	printFooter();
 	die();
 }
@@ -242,7 +242,7 @@ echo $config->getTwoFactorAuthenticationCaption();
 	$group->addElement($row);
 
 	addSecurityTokenToMetaHTML($group);
-	parseHtml(null, $group, [], false, 'user');
+	parseHtml(null, $group, [], false);
 
 ?>
 	</div>

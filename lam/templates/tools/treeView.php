@@ -176,5 +176,5 @@ function showTree(): void {
 	$row->add($pwdCheckDiv);
 
 	$form = new htmlForm('actionarea', 'treeView.php', $row);
-	parseHtml(null, $form, [], true, null);
+	parseHtml(null, $form, [], true);
 }

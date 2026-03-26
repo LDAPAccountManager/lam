@@ -228,7 +228,7 @@ $container->add($rdnSelect);
 
 $container->addVerticalSpacer('2rem');
 
-$_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $type->getScope());
+$_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false);
 
 // display module options
 foreach ($options as $moduleName => $moduleOptions) {
@@ -241,7 +241,7 @@ foreach ($options as $moduleName => $moduleOptions) {
 	$modContainer->add(new htmlSubTitle($module->get_alias(), $icon, null, true));
 	$modContainer->add($moduleOptions);
 	$modContainer->addVerticalSpacer('2rem');
-	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $modContainer, $old_options, false, $type->getScope()));
+	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $modContainer, $old_options, false));
 }
 
 // profile name and submit/abort buttons
@@ -255,7 +255,7 @@ $cancelButton->disableFormValidation();
 $buttonTable->addField($cancelButton);
 $buttonTable->add(new htmlHiddenInput('accounttype', $type->getId()), 0);
 
-$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $type->getScope()));
+$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false));
 
 ?>
 </form>

@@ -467,7 +467,7 @@ $row->add(new htmlSpacer(null, '20rem'));
 
 $form = new htmlForm('formname', 'designExamples.php', $row);
 
-parseHtml(null, $form, [], false, 'user');
+parseHtml(null, $form, [], false);
 
 ?>
 <script type="text/javascript" src="../../templates/lib/extra/jodit/jodit.js"></script>

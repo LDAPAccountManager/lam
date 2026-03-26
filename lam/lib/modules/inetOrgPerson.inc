@@ -3379,7 +3379,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$contentElement = $this->getSelfServiceUserCertificates();
 			ob_end_clean();
 			ob_start();
-			parseHtml(null, $contentElement, [], true, $this->get_scope());
+			parseHtml(null, $contentElement, [], true);
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -3420,7 +3420,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$contentElement = $this->getSelfServicePhoto(false, true);
 			ob_end_clean();
 			ob_start();
-			parseHtml(null, $contentElement, [], true, $this->get_scope());
+			parseHtml(null, $contentElement, [], true);
 			$content = ob_get_contents();
 			ob_end_clean();
 			$result['html'] = $content;
@@ -3439,7 +3439,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$contentElement = $this->getSelfServicePhoto(false, false);
 		ob_end_clean();
 		ob_start();
-		parseHtml(null, $contentElement, [], true, $this->get_scope());
+		parseHtml(null, $contentElement, [], true);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return [
@@ -3467,7 +3467,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		$contentElement = $this->getSelfServiceUserCertificates();
 		ob_end_clean();
 		ob_start();
-		parseHtml(null, $contentElement, [], true, $this->get_scope());
+		parseHtml(null, $contentElement, [], true);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return [

@@ -202,7 +202,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$container->add(new htmlHiddenInput('deleteOU', 'submit'), 12);
 				$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']), 12);
 				addSecurityTokenToMetaHTML($container);
-				parseHtml(null, $container, [], false, 'user');
+				parseHtml(null, $container, [], false);
 				echo "</form>";
 				echo '</div>';
 				include __DIR__ . '/../../lib/adminFooter.inc';
@@ -272,7 +272,7 @@ function display_main(?string $message, ?string $error, array $optionsToInsert, 
 	}
 
 	addSecurityTokenToMetaHTML($container);
-	parseHtml(null, $container, [], false, 'user');
+	parseHtml(null, $container, [], false);
 	echo "</form>\n";
 	echo '</div>';
 	include __DIR__ . '/../../lib/adminFooter.inc';

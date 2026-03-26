@@ -362,7 +362,7 @@ class Ajax {
 		}
 		$row->addVerticalSpacer('2rem');
 		ob_start();
-		$row->generateHTML(null, [], [], false, null);
+		$row->generateHTML(null, [], [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo json_encode(['content' => $content], JSON_THROW_ON_ERROR);
@@ -390,7 +390,7 @@ class Ajax {
 		$row->add($message, 12);
 		$row->addVerticalSpacer('2rem');
 		ob_start();
-		$row->generateHTML(null, [], [], true, null);
+		$row->generateHTML(null, [], [], true);
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo json_encode(['content' => $content], JSON_THROW_ON_ERROR);
@@ -528,7 +528,7 @@ class Ajax {
 			$mainRow->add($row, 12);
 		}
 		ob_start();
-		parseHtml(null, $mainRow, [], false, 'user');
+		parseHtml(null, $mainRow, [], false);
 		$out = ob_get_contents();
 		ob_end_clean();
 		if ($out === false) {
@@ -584,7 +584,7 @@ class Ajax {
 		}
 		$resultRow->add($text);
 		ob_start();
-		parseHtml(null, $resultRow, [], false, 'user');
+		parseHtml(null, $resultRow, [], false);
 		$out = ob_get_contents();
 		ob_end_clean();
 		$result = ['resultHtml' => $out];

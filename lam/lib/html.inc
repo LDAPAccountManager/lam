@@ -88,10 +88,9 @@ abstract class htmlElement {
 	 * @param htmlElement[] $input List of meta-HTML elements
 	 * @param array<string, string[]> $values List of values which override the defaults in $input (name => value)
 	 * @param bool $restricted If true then no buttons will be displayed
-	 * @param string|null $scope account type
 	 * @return array<string, string> List of input field names and their type (name => type)
 	 */
-	abstract public function generateHTML($module, $input, $values, $restricted, $scope): array;
+	abstract public function generateHTML($module, $input, $values, $restricted): array;
 
 	/**
 	 * Returns the HTML attributes for the alignment.
@@ -326,7 +325,7 @@ class htmlTable extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		$width = '';
 		if ($this->width != null) {
@@ -345,7 +344,7 @@ class htmlTable extends htmlElement {
 		for ($i = 0; $i < count($this->elements); $i++) {
 			// print htmlElement objects
 			if ($this->elements[$i] instanceof htmlElement) {
-				$fields = $this->elements[$i]->generateHTML($module, $input, $values, $restricted, $scope);
+				$fields = $this->elements[$i]->generateHTML($module, $input, $values, $restricted);
 				$return = array_merge($return, $fields);
 			}
 			elseif ($i !== count($this->elements) - 1 || ($this->elements[$i] != self::NEWLINE)) {
@@ -426,7 +425,7 @@ class htmlDataTable extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		echo '<link href="../../style/tabulator/tabulator.css" rel="stylesheet">';
 		echo '<script type="text/javascript" src="../../templates/lib/extra/tabulator/tabulator.js"></script>';
 		echo '<div id="' . $this->id . '" class="lam-data-table" ' . $this->getDataAttributesAsString() . '></div>';
@@ -675,7 +674,7 @@ class htmlInputField extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->isAutoTrim()) {
 			$this->cssClasses[] = 'lam-autotrim';
 		}
@@ -1096,7 +1095,7 @@ class htmlHelpLink extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		// overwrite module if needed
 		if ($this->module != null) {
 			$module = $this->module;
@@ -1152,7 +1151,7 @@ class htmlButton extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($restricted) {
 			// no buttons in restricted mode
 			logNewMessage(LOG_ERR, 'Meta HTML: Requested button in restricted mode.');
@@ -1354,7 +1353,7 @@ class htmlSelect extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if (isset($values[$this->name])) {
 			$this->selectedElements = $values[$this->name];
 		}
@@ -1744,7 +1743,7 @@ class htmlRadio extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if (isset($values[$this->name][0])) {
 			$this->selectedElement = $values[$this->name][0];
 		}
@@ -1937,7 +1936,7 @@ class htmlOutputText extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$cssClasses = empty($this->cssClasses) ? '' : 'class="' . implode(' ', $this->cssClasses) . '"';
 		if (!empty($this->title)) {
 			echo '<span title="' . $this->title . '">';
@@ -2071,7 +2070,7 @@ class htmlInputCheckbox extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if (isset($values[$this->name])) {
 			$this->checked = ($values[$this->name][0] == 'true');
 		}
@@ -2316,7 +2315,7 @@ class htmlInputFileUpload extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -2407,7 +2406,7 @@ class htmlInputTextarea extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if (isset($values[$this->name])) {
 			$this->value = htmlspecialchars(implode("\r\n", $values[$this->name]));
 		}
@@ -2491,7 +2490,7 @@ class htmlInputColorPicker extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -2550,9 +2549,9 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->renderParentHtml) {
-			return parent::generateHTML($module, $input, $values, $restricted, $scope);
+			return parent::generateHTML($module, $input, $values, $restricted);
 		}
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
@@ -2575,7 +2574,7 @@ class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
 			$fieldGroup->addElement($helpLinkField);
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
-		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+		return $row->generateHTML($module, $input, $values, $restricted);
 	}
 
 }
@@ -2632,7 +2631,7 @@ class htmlImage extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
@@ -2671,7 +2670,7 @@ class htmlImage extends htmlElement {
 		if ($this->helpTitle !== null) {
 			$helpTitleValue = ' helptitle="' . $this->helpTitle . '"';
 			ob_start();
-			$this->helpContent->generateHTML($module, $input, $values, $restricted, $scope);
+			$this->helpContent->generateHTML($module, $input, $values, $restricted);
 			$helpContentString = ob_get_contents();
 			ob_end_clean();
 			$helpContentValue = ' helpdata="' . htmlspecialchars($helpContentString) . '"';
@@ -2775,7 +2774,7 @@ class htmlSpacer extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$width = '';
 		if ($this->width !== null) {
 			$width = 'width: ' . $this->width . ';';
@@ -2848,7 +2847,7 @@ class htmlStatusMessage extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if (!empty($this->cssClasses)) {
 			echo '<div class="' . implode(' ', $this->cssClasses) . '">';
 		}
@@ -2894,7 +2893,7 @@ class htmlTitle extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		echo "<div class=\"title\">\n";
 		echo "<h2 class=\"titleText\">\n";
 		echo $this->label;
@@ -2955,7 +2954,7 @@ class htmlSubTitle extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
@@ -2969,9 +2968,9 @@ class htmlSubTitle extends htmlElement {
 		echo $this->label;
 		if ($this->helpId !== null) {
 			$spacer = new htmlSpacer('0.5rem', null);
-			$spacer->generateHTML($module, $input, $values, $restricted, $scope);
+			$spacer->generateHTML($module, $input, $values, $restricted);
 			$helpLink = new htmlHelpLink($this->helpId);
-			$helpLink->generateHTML($module, $input, $values, $restricted, $scope);
+			$helpLink->generateHTML($module, $input, $values, $restricted);
 		}
 		echo "</" . $this->type . ">\n";
 		echo "</div>\n";
@@ -3017,7 +3016,7 @@ class htmlHiddenInput extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		echo '<input type="hidden" name="' . $this->name . '" id="' . $this->name . '" value="' . $this->value . '">';
 		return [$this->name => 'hidden'];
 	}
@@ -3071,7 +3070,7 @@ class htmlLink extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$text = $this->getContent();
 		$image = '';
 		if ($this->image != null) {
@@ -3200,12 +3199,12 @@ class htmlContentLink extends htmlLink {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		ob_start();
-		parseHtml($module, $this->content, $values, $restricted, $scope);
+		parseHtml($module, $this->content, $values, $restricted);
 		$this->contentText = ob_get_contents();
 		ob_end_clean();
-		return parent::generateHTML($module, $input, $values, $restricted, $scope);
+		return parent::generateHTML($module, $input, $values, $restricted);
 	}
 
 	/**
@@ -3243,10 +3242,10 @@ class htmlGroup extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		for ($i = 0; $i < count($this->subelements); $i++) {
-			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted, $scope));
+			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted));
 		}
 		return $return;
 	}
@@ -3272,7 +3271,7 @@ class htmlHorizontalLine extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		echo "<hr>";
 		return $return;
@@ -3310,7 +3309,7 @@ class htmlDiv extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
@@ -3320,7 +3319,7 @@ class htmlDiv extends htmlElement {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<div' . $idValue . $classesValue . $this->getDataAttributesAsString() . '>';
-		$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
+		$return = $this->content->generateHTML($module, $input, $values, $restricted);
 		echo '</div>';
 		return $return;
 	}
@@ -3354,7 +3353,7 @@ class htmlSpan extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$classesValue = '';
 		if (($this->cssClasses !== null) && (count($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -3368,7 +3367,7 @@ class htmlSpan extends htmlElement {
 			$titleCode = ' title="' . $this->title . '"';
 		}
 		echo '<span' . $classesValue . $titleCode . $onclickHandler . '>';
-		$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
+		$return = $this->content->generateHTML($module, $input, $values, $restricted);
 		echo '</span>';
 		return $return;
 	}
@@ -3415,7 +3414,7 @@ class htmlJavaScript extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		echo '<script type="text/javascript">';
 		echo $this->content;
@@ -3447,7 +3446,7 @@ class htmlIframe extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		$idAttr = '';
 		if (!empty($this->id)) {
@@ -3490,7 +3489,7 @@ class htmlScript extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		$async = $this->async ? ' async' : '';
 		$defer = $this->defer ? ' defer="defer"' : '';
@@ -3523,7 +3522,7 @@ class htmlLinkCss extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		echo '<link href="' . $this->src . '" type="text/css" rel="stylesheet"/>';
 		return $return;
@@ -3559,7 +3558,7 @@ class htmlSortableList extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if (count($this->elements) === 0) {
 			return [];
 		}
@@ -3574,7 +3573,7 @@ class htmlSortableList extends htmlElement {
 			echo '<li data-position-orig="' . $i . '">';
 			echo '<span class="lam-sortable-list-icon"></span>';
 			if ($element instanceof htmlElement) {
-				parseHtml($module, $element, $values, $restricted, $scope);
+				parseHtml($module, $element, $values, $restricted);
 			}
 			else {
 				echo $element;
@@ -3594,7 +3593,7 @@ class htmlSortableList extends htmlElement {
 				}
 			);';
 		$script = new htmlJavaScript($scriptContent);
-		$script->generateHTML($module, $input, $values, $restricted, $scope);
+		$script->generateHTML($module, $input, $values, $restricted);
 		return $return;
 	}
 
@@ -3639,7 +3638,7 @@ class htmlAccordion extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$result = [];
 		if ($this->openInitial !== false) {
 			$this->addDataAttribute('openinitial', (string) $this->openInitial);
@@ -3657,7 +3656,7 @@ class htmlAccordion extends htmlElement {
 			echo '</button>';
 			echo '<div class="lam-accordion-content" data-index="' . $contentIndex . '">';
 			echo '<div class="lam-accordion-content-inner">';
-			$result = array_merge($result, $content->generateHTML($module, $input, $values, $restricted, $scope));
+			$result = array_merge($result, $content->generateHTML($module, $input, $values, $restricted));
 			echo '</div>';
 			echo '</div>';
 			$contentIndex++;
@@ -3680,7 +3679,7 @@ class htmlAccordion extends htmlElement {
 			$script = new htmlJavaScript($scriptContent);
 			$resortingGroup->addElement($script);
 			$resortingGroup->addElement(new htmlHiddenInput($this->id . '_sorting', ''));
-			$resortingGroup->generateHTML($module, $input, $values, $restricted, $scope);
+			$resortingGroup->generateHTML($module, $input, $values, $restricted);
 		}
 		return $result;
 	}
@@ -3809,7 +3808,7 @@ class htmlResponsiveRow extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		$cssClasses = implode(' ', $this->cssClasses);
 		$idParam = '';
@@ -3822,7 +3821,7 @@ class htmlResponsiveRow extends htmlElement {
 		}
 		echo '<div class="row ' . $cssClasses . '"' . $this->getDataAttributesAsString() . $idParam . $onClickCode . '>';
 		foreach ($this->cells as $cell) {
-			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $scope));
+			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted));
 		}
 		echo '</div>';
 		return $return;
@@ -3883,13 +3882,13 @@ class htmlResponsiveCell extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$clMobile = ($this->mobile > 0) ? 'small-' . $this->mobile : 'hide-for-small-only';
 		$clTablet = ($this->tablet > 0) ? 'medium-' . $this->tablet : 'hide-for-medium-only';
 		$clDesktop = ($this->desktop > 0) ? 'large-' . $this->desktop : 'hide-for-large-only';
 
 		echo '<div class="' . $clMobile . ' ' . $clTablet . ' ' . $clDesktop . ' columns ' . $this->classes . '">';
-		$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
+		$return = $this->content->generateHTML($module, $input, $values, $restricted);
 		echo '</div>';
 		return $return;
 	}
@@ -3940,9 +3939,9 @@ class htmlResponsiveInputField extends htmlInputField {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->renderParentHtml) {
-			return parent::generateHTML($module, $input, $values, $restricted, $scope);
+			return parent::generateHTML($module, $input, $values, $restricted);
 		}
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
@@ -3971,7 +3970,7 @@ class htmlResponsiveInputField extends htmlInputField {
 		}
 		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
 		$row->add($fieldGroup, 12, $tabletDesktopFieldColumns, $tabletDesktopFieldColumns, 'responsiveField nowrap');
-		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+		return $row->generateHTML($module, $input, $values, $restricted);
 	}
 
 	/**
@@ -4041,9 +4040,9 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->renderParentHtml) {
-			return parent::generateHTML($module, $input, $values, $restricted, $scope);
+			return parent::generateHTML($module, $input, $values, $restricted);
 		}
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
@@ -4069,7 +4068,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 			$fieldGroup->addElement($helpLinkField);
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
-		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+		return $row->generateHTML($module, $input, $values, $restricted);
 	}
 
 }
@@ -4118,9 +4117,9 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->renderParentHtml) {
-			return parent::generateHTML($module, $input, $values, $restricted, $scope);
+			return parent::generateHTML($module, $input, $values, $restricted);
 		}
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
@@ -4152,7 +4151,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		}
 		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
 		$row->add($fieldGroup, 12, $tabletDesktopFieldColumns, $tabletDesktopFieldColumns, 'responsiveField nowrap');
-		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+		return $row->generateHTML($module, $input, $values, $restricted);
 	}
 
 	/**
@@ -4225,9 +4224,9 @@ class htmlResponsiveSelect extends htmlSelect {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->renderParentHtml) {
-			return parent::generateHTML($module, $input, $values, $restricted, $scope);
+			return parent::generateHTML($module, $input, $values, $restricted);
 		}
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
@@ -4252,7 +4251,7 @@ class htmlResponsiveSelect extends htmlSelect {
 		}
 		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
 		$row->add($fieldGroup, 12, $tabletDesktopFieldColumns, $tabletDesktopFieldColumns, 'responsiveField nowrap');
-		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+		return $row->generateHTML($module, $input, $values, $restricted);
 	}
 
 	/**
@@ -4304,9 +4303,9 @@ class htmlResponsiveRadio extends htmlRadio {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->renderParentHtml) {
-			return parent::generateHTML($module, $input, $values, $restricted, $scope);
+			return parent::generateHTML($module, $input, $values, $restricted);
 		}
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
@@ -4329,7 +4328,7 @@ class htmlResponsiveRadio extends htmlRadio {
 			$fieldGroup->addElement(new htmlDiv(null, $helpLink));
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
-		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+		return $row->generateHTML($module, $input, $values, $restricted);
 	}
 
 	/**
@@ -4390,9 +4389,9 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		if ($this->renderParentHtml) {
-			return parent::generateHTML($module, $input, $values, $restricted, $scope);
+			return parent::generateHTML($module, $input, $values, $restricted);
 		}
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
@@ -4428,7 +4427,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 			$row->add($text, $mobileColumnsLabel, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel');
 			$row->add($fieldGroup, $mobileColumnsBox, $tabletColumnsBox, $tabletColumnsBox, 'responsiveField nowrap');
 		}
-		return $row->generateHTML($module, $input, $values, $restricted, $scope);
+		return $row->generateHTML($module, $input, $values, $restricted);
 	}
 
 	/**
@@ -4498,7 +4497,7 @@ class htmlResponsiveTable extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		$classes = $this->cssClasses;
 		$classes[] = 'responsive-table';
@@ -4540,7 +4539,7 @@ class htmlResponsiveTable extends htmlElement {
 			echo '<tr ' . $cssClass . $onClick . $onDoubleClick . '>';
 			for ($i = 0; $i < $titleCount; $i++) {
 				echo '<td data-label="' . $this->titles[$i] . '">';
-				$ids = parseHtml($module, $row[$i], $values, $restricted, $scope);
+				$ids = parseHtml($module, $row[$i], $values, $restricted);
 				$return = array_merge($return, $ids);
 				echo '</td>';
 			}
@@ -4602,7 +4601,7 @@ class htmlCanvas extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$classesValue = '';
 		if (!empty($this->cssClasses)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -4634,7 +4633,7 @@ class htmlVideo extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$classesValue = '';
 		if (!empty($this->cssClasses)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -4674,12 +4673,10 @@ class htmlForm extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
 		echo '<form name="' . $this->name . '" action="' . $this->action . '" method="post" enctype="multipart/form-data">';
-		if ($this->content != null) {
-			$return = $this->content->generateHTML($module, $input, $values, $restricted, $scope);
-		}
+		$return = $this->content->generateHTML($module, $input, $values, $restricted);
 		echo '</form>';
 		return $return;
 	}
@@ -4714,7 +4711,7 @@ class htmlList extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$parentTag = $this->isOrdered ? 'ol' : 'ul';
 		$idValue = empty($this->id) ? '' : ' id="' . $this->id . '"';
 		$classesValue = '';
@@ -4725,7 +4722,7 @@ class htmlList extends htmlElement {
 		$return = [];
 		foreach ($this->elements as $element) {
 			echo '<li>';
-			$return = array_merge($return, $element->generateHTML($module, $input, $values, $restricted, $scope));
+			$return = array_merge($return, $element->generateHTML($module, $input, $values, $restricted));
 			echo '</li>';
 		}
 		echo '</' . $parentTag . '>';
@@ -4760,7 +4757,7 @@ class htmlLabel extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$classesValue = '';
 		if (!empty($this->cssClasses)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
@@ -4809,7 +4806,7 @@ class htmlProgressbar extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$extraClasses = '';
 		if (!empty($this->cssClasses)) {
 			$extraClasses = implode(' ', $this->cssClasses);
@@ -4855,7 +4852,7 @@ class htmlTabContainer extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		echo '<div id="tabs" class="lam-tab-container">
 			<ul class="lam-tab-navigation">';
 		foreach ($this->tabs as $tabIndex => $tab) {
@@ -4876,7 +4873,7 @@ class htmlTabContainer extends htmlElement {
 			$tabNumber = $tabIndex + 1;
 			$tabActiveClass = ($this->activeTabIndex === $tabNumber) ? 'lam-tab-active' : '';
 			echo '<div id="tab' . $tabNumber . '" class="lam-tab-content ' . $tabActiveClass . '" data-tabid="' . $tabNumber . '">';
-			$data = parseHtml($module, $tab->content, $values, $restricted, $scope);
+			$data = parseHtml($module, $tab->content, $values, $restricted);
 			$return = array_merge($return, $data);
 			echo '</div>';
 		}

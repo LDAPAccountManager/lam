@@ -159,7 +159,7 @@ function printHeader(string $headerPrefix): void {
 				$accountTypesDiv = new htmlDiv('lam-navigation-types', $accountTypeEntriesDiv, ['lam-navigation-layer zeroHeight']);
 				$accountTypesGroup->addElement($accountTypesDiv);
 
-				parseHtml(null, $accountTypesGroup, [], false, null);
+				parseHtml(null, $accountTypesGroup, [], false);
 			}
 			if ($tools !== []) {
 				$toolGroup = new htmlGroup();
@@ -179,7 +179,7 @@ function printHeader(string $headerPrefix): void {
 				$toolDiv = new htmlDiv('lam-navigation-tools', $toolEntriesDiv, ['lam-navigation-layer zeroHeight']);
 				$toolGroup->addElement($toolDiv);
 
-				parseHtml(null, $toolGroup, [], false, null);
+				parseHtml(null, $toolGroup, [], false);
 			}
 			if (is_dir(__DIR__ . '/../docs/manual')) {
 				?>

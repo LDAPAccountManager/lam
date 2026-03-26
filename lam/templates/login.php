@@ -371,7 +371,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$loginButton->setCSSClasses(['lam-primary']);
 								$row->add($loginButton);
 
-								parseHtml(null, $row, [], false, 'user');
+								parseHtml(null, $row, [], false);
 								?>
                             </form>
                         </td>
@@ -392,7 +392,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$extraMessage = new htmlStatusMessage('INFO', $extraMessage);
 								$row->add($extraMessage);
 							}
-							parseHtml(null, $row, [], false, 'user');
+							parseHtml(null, $row, [], false);
 							?>
                             <hr class="margin20">
                         </td>
@@ -411,7 +411,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$profileSelect->setOnchangeEvent('loginProfileChanged(this)');
 								$row->add($profileSelect);
 
-								parseHtml(null, $row, [], true, 'user');
+								parseHtml(null, $row, [], true);
 								?>
                             </form>
                         </td>

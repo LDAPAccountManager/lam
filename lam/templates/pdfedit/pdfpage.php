@@ -482,7 +482,7 @@ if ((count($saveErrors) === 0) && isset($_POST['scrollPositionTop']) && get_preg
 	$container->add(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
 }
 
-parseHtml(null, $container, [], false, $type->getScope());
+parseHtml(null, $container, [], false);
 
 echo '</form></div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

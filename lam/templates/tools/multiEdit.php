@@ -217,7 +217,7 @@ function displayStartPage(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, [], false, 'user');
+	parseHtml(null, $container, [], false);
 	echo "</form>\n";
 	echo '</div>';
 	include __DIR__ . '/../../lib/adminFooter.inc';
@@ -467,7 +467,7 @@ function dryRun(): array {
 	// generate HTML
 	fclose ($out);
 	ob_start();
-	parseHtml(null, $container, [], true, 'user');
+	parseHtml(null, $container, [], true);
 	$content = ob_get_contents();
 	ob_end_clean();
 	return [
@@ -554,7 +554,7 @@ function doModify(): array {
  */
 function getMessageHTML(htmlStatusMessage $msg): string {
 	ob_start();
-	parseHtml(null, $msg, [], true, 'user');
+	parseHtml(null, $msg, [], true);
 	$content = ob_get_contents();
 	ob_end_clean();
 	if ($content === false) {

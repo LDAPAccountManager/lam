@@ -110,7 +110,7 @@ else {
 	$container->add(new htmlStatusMessage("ERROR", _('No lamdaemon server set, please update your LAM configuration settings.')), 12);
 }
 
-parseHtml(null, $container, [], false, 'user');
+parseHtml(null, $container, [], false);
 
 echo "</form>\n";
 echo "</div>\n";

@@ -170,7 +170,7 @@ function printImportTabContent(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, [], false, 'user');
+	parseHtml(null, $container, [], false);
 	echo "</form>\n";
 }
 
@@ -184,7 +184,7 @@ function printImportTabProcessing(): void {
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
-		parseHtml(null, $container, [], false, 'user');
+		parseHtml(null, $container, [], false);
 		printImportTabContent();
 		return;
 	}
@@ -213,7 +213,7 @@ function printImportTabProcessing(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, [], false, 'user');
+	parseHtml(null, $container, [], false);
 	echo "</form>\n";
 }
 
@@ -309,7 +309,7 @@ function printExportTabContent(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, [], false, 'user');
+	parseHtml(null, $container, [], false);
 	echo "</form>\n";
 }
 
@@ -373,7 +373,7 @@ function printExportTabProcessing(): void {
 	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
-		parseHtml(null, $container, [], false, 'user');
+		parseHtml(null, $container, [], false);
 		printExportTabContent();
 		return;
 	}
@@ -413,7 +413,7 @@ function printExportTabProcessing(): void {
 
 	addSecurityTokenToMetaHTML($container);
 
-	parseHtml(null, $container, [], false, 'user');
+	parseHtml(null, $container, [], false);
 	echo "</form>\n";
 }
 

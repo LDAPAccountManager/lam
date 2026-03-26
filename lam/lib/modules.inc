@@ -647,20 +647,19 @@ function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$a
  * @param htmlElement|htmlElement[]|null $input htmlElement or array of htmlElement elements
  * @param array<string, string[]> $values List of values which override the defaults in $input (name => value)
  * @param bool $restricted If true then no buttons will be displayed
- * @param string|null $scope Account type
  * @return array<string, string> list of input field names and their type (name => type)
  */
-function parseHtml($module, $input, $values, $restricted, $scope) {
+function parseHtml($module, $input, $values, $restricted) {
 	if ($input === null) {
 		return [];
 	}
 	if ($input instanceof htmlElement) {
-		return $input->generateHTML($module, [$input], $values, $restricted, $scope);
+		return $input->generateHTML($module, [$input], $values, $restricted);
 	}
 	if ($input !== []) {
 		$return = [];
 		for ($i = 0; $i < count($input); $i++) {
-			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted, $scope));
+			$return = array_merge($return, $input[$i]->generateHTML($module, $input, $values, $restricted));
 		}
 		return $return;
 	}
@@ -993,7 +992,7 @@ class accountContainer {
 			&& isset($_POST['scrollPositionLeft']) && get_preg($_POST['scrollPositionLeft'], 'digit')) {
 			// scroll to last position
 			$scrollJs = new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')');
-			parseHtml(null, $scrollJs, [], false, $this->type->getScope());
+			parseHtml(null, $scrollJs, [], false);
 		}
 		$this->printPageFooter();
 	}
@@ -1055,7 +1054,7 @@ class accountContainer {
 		$titleBarContainer->add($titleBarSuffixRdn);
 
 		$titleBarDiv = new htmlDiv(null, $titleBarContainer, ['titleBar']);
-		parseHtml(null, $titleBarDiv, [], false, $this->type->getScope());
+		parseHtml(null, $titleBarDiv, [], false);
 
 		echo '<div id="lamVerticalTabs" class="lam-vertical-tab-container">';
 		echo '<table class="lam-vertical-tabs fullwidth">';
@@ -1072,7 +1071,7 @@ class accountContainer {
 		catch (LAMException $e) {
 			$return = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 		}
-		parseHtml($this->order[$this->current_page], $return, [], false, $this->type->getScope());
+		parseHtml($this->order[$this->current_page], $return, [], false);
 		echo "</div>\n";
 		echo '</td>';
 		echo '</tr>';
@@ -1182,7 +1181,7 @@ class accountContainer {
 		$container->add($buttonGroup);
 		// generate HTML
 		if ($printContainer) {
-			parseHtml(null, $container, [], false, $this->type->getScope());
+			parseHtml(null, $container, [], false);
 		}
 		echo "</div>\n";
 		echo "</div>\n";
@@ -1363,7 +1362,7 @@ class accountContainer {
 		}
 		$row->add($rightGroup, 12, 3, 3, 'text-right');
 
-		parseHtml(null, $row, [], false, $this->type->getScope());
+		parseHtml(null, $row, [], false);
 	}
 
 	/**
@@ -1453,7 +1452,7 @@ class accountContainer {
 		$buttonGroup->addElement($backToEditButton);
 		$container->add($buttonGroup);
 
-		parseHtml(null, $container, [], false, $this->type->getScope());
+		parseHtml(null, $container, [], false);
 
 		echo "</div>\n";
 		$this->printPageFooter();

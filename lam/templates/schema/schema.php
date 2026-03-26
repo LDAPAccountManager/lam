@@ -91,7 +91,7 @@ elseif( $selectedView == 'objectClass' ) {
 	displayObjectClassList($row);
 }
 
-parseHtml(null, $row, [], false, 'user');
+parseHtml(null, $row, [], false);
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

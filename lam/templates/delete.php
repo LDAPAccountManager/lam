@@ -144,7 +144,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	addSecurityTokenToMetaHTML($container);
 	$container->add(new htmlHiddenInput('type', $type->getId()));
 	$container->addVerticalSpacer('1rem');
-	parseHtml(null, $container, [], false, $type->getScope());
+	parseHtml(null, $container, [], false);
 	// Print delete rows from modules
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
 	$values = [];
@@ -153,7 +153,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		if ($module === null) {
 			continue;
 		}
-		parseHtml($module::class, $module->display_html_delete(), $values, true, $type->getScope());
+		parseHtml($module::class, $module->display_html_delete(), $values, true);
 	}
 	$buttonContainer = new htmlResponsiveRow();
 	$buttonContainer->addVerticalSpacer('1rem');
@@ -166,7 +166,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$buttonGroup->addElement($cancelButton);
 	$buttonContainer->add($buttonGroup);
 	$buttonContainer->addVerticalSpacer('1rem');
-	parseHtml(null, $buttonContainer, [], false, $type->getScope());
+	parseHtml(null, $buttonContainer, [], false);
 	echo "</form>\n";
 	echo "</div>\n";
 	include __DIR__ . '/../lib/adminFooter.inc';
@@ -339,7 +339,7 @@ if (isset($_POST['delete'])) {
 		$_SESSION['listRedirectMessages'] = $allErrors;
         $container->add(new htmlJavaScript('document.getElementById("btn_cancelAllOk").click();'));
 	}
-	parseHtml(null, $container, [], false, $type->getScope());
+	parseHtml(null, $container, [], false);
 	echo "</div>\n";
 	echo "</form>\n";
 	include __DIR__ . '/../lib/adminFooter.inc';

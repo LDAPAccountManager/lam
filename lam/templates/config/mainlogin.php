@@ -166,7 +166,7 @@ if (!empty($_GET['invalidLicense']) && ($_GET['invalidLicense'] == '2')) {
 							$div = new htmlDiv(null, $group);
 							$div->setCSSClasses(['centeredTable']);
 
-							parseHtml(null, $div, [], false, 'user');
+							parseHtml(null, $div, [], false);
 							?>
                         </td>
                     </tr>

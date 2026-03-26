@@ -150,7 +150,7 @@ $legendContainer->addElement(new htmlHelpLink('237'));
 $container->add($legendContainer);
 $container->add(new htmlHiddenInput('postAvailable', 'yes'));
 
-parseHtml(null, $container, [], false, 'user');
+parseHtml(null, $container, [], false);
 
 echo "</div></div>";
 
@@ -169,7 +169,7 @@ if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && get_preg($_
 	$buttonContainer->addElement(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
 }
 
-parseHtml(null, $buttonContainer, [], false, 'user');
+parseHtml(null, $buttonContainer, [], false);
 
 echo "</form>\n";
 echo "</body>\n";

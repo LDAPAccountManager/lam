@@ -108,9 +108,9 @@ class htmlReCAPTCHA extends htmlElement {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function generateHTML($module, $input, $values, $restricted, $scope): array {
+	public function generateHTML($module, $input, $values, $restricted): array {
 		$script = new htmlScript('https://www.google.com/recaptcha/api.js');
-		$script->generateHTML($module, $input, $values, $restricted, $scope);
+		$script->generateHTML($module, $input, $values, $restricted);
 		echo '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
 		return [];
 	}

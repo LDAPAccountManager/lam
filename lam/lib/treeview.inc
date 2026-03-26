@@ -470,7 +470,7 @@ class TreeView {
 		$internalAttributesDiv = new htmlDiv('actionarea-internal-attributes', $internalAttributesContent);
 		$row->add($internalAttributesDiv);
 		ob_start();
-		parseHtml(null, $row, [], false, null);
+		parseHtml(null, $row, [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(['content' => $content]);
@@ -979,7 +979,7 @@ class TreeView {
 			$row->addVerticalSpacer('0.5rem');
 		}
 		ob_start();
-		parseHtml(null, $row, [], false, null);
+		parseHtml(null, $row, [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(['content' => $content]);
@@ -1083,7 +1083,7 @@ class TreeView {
 			}
 		}
 		ob_start();
-		parseHtml(null, $message, [], true, null);
+		parseHtml(null, $message, [], true);
 		$messageContent = ob_get_contents();
 		ob_end_clean();
 		$jsonData['result'] = $messageContent;
@@ -1230,7 +1230,7 @@ class TreeView {
 		$row->add(new htmlOutputText(_('Hint: You must choose exactly one structural object class (shown in bold above)')));
 		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)));
 		ob_start();
-		parseHtml(null, $row, [], false, '');
+		parseHtml(null, $row, [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(['content' => $content]);
@@ -1349,7 +1349,7 @@ class TreeView {
 		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
 		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)));
 		ob_start();
-		parseHtml(null, $row, [], false, '');
+		parseHtml(null, $row, [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(['content' => $content]);
@@ -1586,7 +1586,7 @@ class TreeView {
 		$nextButton->setOnClick('window.lam.treeview.searchResults(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		ob_start();
-		parseHtml(null, $row, [], false, '');
+		parseHtml(null, $row, [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(['content' => $content]);
@@ -1673,7 +1673,7 @@ class TreeView {
 			$row->addVerticalSpacer('1rem');
 		}
 		ob_start();
-		parseHtml(null, $row, [], false, '');
+		parseHtml(null, $row, [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(['content' => $content]);
@@ -1708,7 +1708,7 @@ class TreeView {
 		$table->setCSSClasses(['colored--table']);
 		$row->add($table);
 		ob_start();
-		parseHtml(null, $row, [], false, '');
+		parseHtml(null, $row, [], false);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(['content' => $content]);
@@ -1749,7 +1749,7 @@ class TreeView {
 						$row->add(new htmlStatusMessage($error[0], $error[1], $error[2] ?? null));
 					}
 					ob_start();
-					parseHtml(null, $row, [], false, '');
+					parseHtml(null, $row, [], false);
 					$content = ob_get_contents();
 					ob_end_clean();
 					return json_encode(['error' => $content]);
@@ -1759,7 +1759,7 @@ class TreeView {
 		catch (LAMException $e) {
 			$message = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			ob_start();
-			parseHtml(null, $message, [], false, '');
+			parseHtml(null, $message, [], false);
 			$content = ob_get_contents();
 			ob_end_clean();
 			return json_encode(['error' => $content]);
@@ -1802,7 +1802,7 @@ class TreeView {
 			}
 			$this->addCompareArea($row, $attributeData, _('Internal attributes'), false);
 			ob_start();
-			parseHtml(null, $row, [], false, '');
+			parseHtml(null, $row, [], false);
 			$content = ob_get_contents();
 			ob_end_clean();
 			return json_encode(['content' => $content]);
@@ -1811,7 +1811,7 @@ class TreeView {
 			logNewMessage(LOG_ERR, $e->getMessage());
 			$message = new htmlStatusMessage('ERROR', _('Comparison failed'));
 			ob_start();
-			parseHtml(null, $message, [], false, '');
+			parseHtml(null, $message, [], false);
 			$content = ob_get_contents();
 			ob_end_clean();
 			return json_encode(['content' => $content]);

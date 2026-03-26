@@ -99,7 +99,7 @@ else {
 	}
 }
 
-parseHtml(null, $container, [], true, 'user');
+parseHtml(null, $container, [], true);
 
 echo "</div>\n";
 include __DIR__ . '/../../lib/adminFooter.inc';

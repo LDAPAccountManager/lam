@@ -360,7 +360,7 @@ elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
 	}
 }
 
-parseHtml(null, $container, [], true, 'user');
+parseHtml(null, $container, [], true);
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';

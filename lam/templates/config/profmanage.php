@@ -338,7 +338,7 @@ $row->addVerticalSpacer('2rem');
 $backLink = new htmlLink(_("Back to profile login"), 'conflogin.php');
 $row->add($backLink, 12, 12, 12, 'text-left');
 
-parseHtml('', new htmlDiv(null, $row, ['centeredTable']), [], false, 'user');
+parseHtml('', new htmlDiv(null, $row, ['centeredTable']), [], false);
 
 ?>
 		</form>

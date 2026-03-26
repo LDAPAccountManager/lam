@@ -176,7 +176,7 @@ foreach ($moduleNames as $moduleName) {
 	else {
 		$row->add($options[$moduleName]);
 	}
-	$configTypes = parseHtml($moduleName, $row, $old_options, false, null);
+	$configTypes = parseHtml($moduleName, $row, $old_options, false);
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "<br>";
 }
@@ -200,7 +200,7 @@ if (empty($errorsToDisplay) && isset($_POST['scrollPositionTop']) && get_preg($_
 	$buttonContainer->addElement(new htmlJavaScript('window.lam.utility.restoreScrollPosition(' . $_POST['scrollPositionTop'] . ', ' . $_POST['scrollPositionLeft'] . ')'));
 }
 
-parseHtml(null, $buttonContainer, [], false, null);
+parseHtml(null, $buttonContainer, [], false);
 
 echo "</form>\n";
 echo "</body>\n";

@@ -174,15 +174,15 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		$pwdInput = new htmlResponsiveInputField(_("Master password"), 'password', '', '236');
 		$pwdInput->setIsPassword(true);
 		$pwdInput->setCSSClasses(['lam-initial-focus']);
-		$loginContent->add($pwdInput, 12);
+		$loginContent->add($pwdInput);
 		$loginContent->addLabel(new htmlOutputText('&nbsp;', false));
 		$loginButton = new htmlButton('submitLogin', _("Ok"));
 		$loginButton->setCSSClasses(['lam-primary']);
 		$loginContent->addField($loginButton);
 
-		$content->add($loginContent, 12);
+		$content->add($loginContent);
 
-		parseHtml(null, $content, [], false, null);
+		parseHtml(null, $content, [], false);
 		renderBackLink();
 	}
 
@@ -192,9 +192,9 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	function renderBackLink(): void {
 		$content = new htmlResponsiveRow();
         $content->addVerticalSpacer('2rem');
-        $content->add(new htmlLink(_('Back to login'), '../login.php'), 12);
+        $content->add(new htmlLink(_('Back to login'), '../login.php'));
 		$content->addVerticalSpacer('1rem');
-		parseHtml(null, $content, [], false, null);
+		parseHtml(null, $content, [], false);
     }
 
     /**
@@ -227,7 +227,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	    $content->add(new htmlSubTitle(_('Import')), 12);
 	    renderImportPart($content);
 
-	    parseHtml(null, $content, [], false, null);
+	    parseHtml(null, $content, [], false);
 	    renderBackLink();
     }
 

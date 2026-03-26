@@ -152,7 +152,7 @@ function printContent(?htmlStatusMessage $message = null, bool $showPasswordInpu
 		$container->add(new htmlJavaScript('checkFieldsHaveSameValues("password1", "password2");'));
 	}
 
-	parseHtml(null, $container, [], false, 'user');
+	parseHtml(null, $container, [], false);
 
 	echo '</form><br>
 	</div>
