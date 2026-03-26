@@ -413,7 +413,6 @@ class lamList {
 	 * @param array<string, string[]|string>[] $info entries
 	 */
 	private function printAccountTable(&$info): void {
-		$scope = $this->type->getScope();
 		$titles = $this->descArray;
 		array_unshift($titles, _('Actions'));
 		$data = [];

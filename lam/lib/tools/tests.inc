@@ -3,7 +3,6 @@
 namespace LAM\TOOLS\TESTS;
 
 use LAM\TYPES\TypeManager;
-use LAMSubTool;
 use LAMTool;
 
 /*

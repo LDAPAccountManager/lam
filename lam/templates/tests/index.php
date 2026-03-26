@@ -1,9 +1,9 @@
 <?php
 namespace LAM\TOOLS\TESTS;
-use \htmlResponsiveRow;
-use \htmlOutputText;
-use \htmlLink;
-use \htmlTitle;
+use htmlResponsiveRow;
+use htmlOutputText;
+use htmlLink;
+use htmlTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -54,7 +54,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 
 $container = new htmlResponsiveRow();
-$container->add(new htmlTitle(_("LAM tests")), 12);
+$container->add(new htmlTitle(_("LAM tests")));
 
 $container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/search-color.svg'), 12, 4);
 $container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);

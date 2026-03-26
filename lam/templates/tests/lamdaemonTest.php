@@ -1,16 +1,16 @@
 <?php
 namespace LAM\TOOLS\TESTS;
-use \LAM\REMOTE\Remote;
-use \htmlTitle;
-use \htmlOutputText;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputCheckbox;
-use \htmlButton;
-use \htmlStatusMessage;
-use \htmlImage;
-use \htmlSubTitle;
-use \Exception;
-use \htmlResponsiveRow;
+use LAM\REMOTE\Remote;
+use htmlTitle;
+use htmlOutputText;
+use htmlResponsiveSelect;
+use htmlResponsiveInputCheckbox;
+use htmlButton;
+use htmlStatusMessage;
+use htmlImage;
+use htmlSubTitle;
+use Exception;
+use htmlResponsiveRow;
 use LAMException;
 
 /*
@@ -65,10 +65,9 @@ echo "<div class=\"smallPaddingContent\">\n";
 echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
 
 $container = new htmlResponsiveRow();
-$container->add(new htmlTitle(_("Lamdaemon test")), 12);
+$container->add(new htmlTitle(_("Lamdaemon test")));
 
 $servers = $_SESSION['config']->getConfiguredScriptServers();
-$serverIDs = [];
 $serverTitles = [];
 foreach ($servers as $server) {
 	$serverName = $server->getServer();
@@ -76,7 +75,6 @@ foreach ($servers as $server) {
 	if ($label !== $serverName) {
 		$label = $label . " (" . $serverName . ")";
 	}
-	$serverIDs[] = $serverName;
 	$serverTitles[$serverName] = $label;
 }
 
@@ -95,9 +93,9 @@ elseif (!empty($servers)) {
 	}
 	$serverSelect = new htmlResponsiveSelect('server', $serverOptions, [], _("Server"));
 	$serverSelect->setHasDescriptiveElements(true);
-	$container->add($serverSelect, 12);
+	$container->add($serverSelect);
 
-	$container->add(new htmlResponsiveInputCheckbox('checkQuotas', false, _("Check quotas")), 12);
+	$container->add(new htmlResponsiveInputCheckbox('checkQuotas', false, _("Check quotas")));
 
 	$container->addVerticalSpacer('1rem');
 
@@ -107,7 +105,7 @@ elseif (!empty($servers)) {
 	$container->addField(new htmlOutputText('&nbsp;', false));
 }
 else {
-	$container->add(new htmlStatusMessage("ERROR", _('No lamdaemon server set, please update your LAM configuration settings.')), 12);
+	$container->add(new htmlStatusMessage("ERROR", _('No lamdaemon server set, please update your LAM configuration settings.')));
 }
 
 parseHtml(null, $container, [], false);
@@ -186,7 +184,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container): voi
 
 	$stopTest = false;
 
-	$container->add(new htmlSubTitle($serverTitle), 12);
+	$container->add(new htmlSubTitle($serverTitle));
 
 	// check script server and path
 	$container->add(new htmlOutputText(_("Lamdaemon server and path")), 10, 4);
@@ -285,5 +283,5 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container): voi
 	$container->addVerticalSpacer('1rem');
 	$endMessage = new htmlOutputText(_("Lamdaemon test finished."));
 	$endMessage->colspan = 5;
-	$container->add($endMessage, 12);
+	$container->add($endMessage);
 }

@@ -1,14 +1,14 @@
 <?php
 namespace LAM\TOOLS\TESTS;
-use \htmlResponsiveRow;
-use \htmlTitle;
-use \htmlStatusMessage;
-use \htmlSubTitle;
-use \htmlOutputText;
-use \htmlImage;
+use htmlResponsiveRow;
+use htmlTitle;
+use htmlStatusMessage;
+use htmlSubTitle;
+use htmlOutputText;
+use htmlImage;
 use LAM\SCHEMA\ObjectClass;
-use function \LAM\SCHEMA\get_schema_objectclasses;
-use function \LAM\SCHEMA\get_cached_schema;
+use function LAM\SCHEMA\get_schema_objectclasses;
+use function LAM\SCHEMA\get_cached_schema;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -64,13 +64,13 @@ echo "<div class=\"smallPaddingContent\">\n";
 
 $container = new htmlResponsiveRow();
 
-$container->add(new htmlTitle(_("Schema test")), 12);
+$container->add(new htmlTitle(_("Schema test")));
 
 get_schema_objectclasses();
 $classes = get_cached_schema('objectclasses');
 
 if (!is_array($classes)) {
-	$container->add(new htmlStatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.')), 12);
+	$container->add(new htmlStatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.')));
 }
 else {
 	// loop for active account types
@@ -78,7 +78,7 @@ else {
 	$types = $typeManager->getConfiguredTypes();
 	foreach ($types as $type) {
 		$moduleNames = $_SESSION['config']->get_AccountModules($type->getId());
-		$container->add(new htmlSubTitle($type->getAlias()), 12);
+		$container->add(new htmlSubTitle($type->getAlias()));
 		foreach ($moduleNames as $moduleName) {
 			$error = checkSchemaForModule($moduleName, $type->getScope(), $type->getId());
 			$message = _("No problems found.");
