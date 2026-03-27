@@ -717,10 +717,10 @@ class accountContainer {
 	}
 
 	/**
-	 * @var array<string, string[]|string>|string|null $attributes Array of all used attributes
+	 * @var array<string, string[]|string>|null $attributes Array of all used attributes
 	 *  Syntax is attribute => array ( objectClass => MUST or MAY, ...)
 	 */
-	public array|string|null $attributes = null;
+	public array|null $attributes = null;
 
 	/**
 	 * This variable stores the account type.
@@ -729,9 +729,9 @@ class accountContainer {
 
 	/** This is an array with all module objects
 	 *
-	 * @var baseModule[]|string modules
+	 * @var baseModule[] modules
 	 */
-	private string|array $module;
+	private array $module;
 
 	/** DN suffix of the account */
 	public ?string $dnSuffix = null;
@@ -745,8 +745,8 @@ class accountContainer {
 	/** DN of saved account */
 	public ?string $finalDN = null;
 
-	/** @var array<string, string[]|string>|string|null $attributes_orig original LDAP attributes when account was loaded from LDAP */
-	public array|string|null $attributes_orig = null;
+	/** @var array<string, string[]|string>|null $attributes_orig original LDAP attributes when account was loaded from LDAP */
+	public array|null $attributes_orig = null;
 
 	/** @var string[]|null $order module order */
 	private ?array $order = null;
@@ -2324,25 +2324,31 @@ class accountContainer {
 	/**
 	 * Encrypts sensitive data before storing in session.
 	 *
-	 * @return array list of attributes which are serialized
+	 * @return array<string, mixed> data
 	 */
-	public function __sleep() {
+	public function __serialize(): array {
+		$data = get_object_vars($this);
 		// encrypt data
-		$this->attributes = lamEncrypt(json_encode($this->attributes, JSON_INVALID_UTF8_IGNORE));
-		$this->attributes_orig = lamEncrypt(json_encode($this->attributes_orig, JSON_INVALID_UTF8_IGNORE));
-		$this->module = lamEncrypt(serialize($this->module));
+		$data['attributes'] = lamEncrypt(json_encode($data['attributes'], JSON_INVALID_UTF8_IGNORE));
+		$data['attributes_orig'] = lamEncrypt(json_encode($data['attributes_orig'], JSON_INVALID_UTF8_IGNORE));
+		$data['module'] = lamEncrypt(serialize($data['module']));
 		// save all attributes
-		return array_keys(get_object_vars($this));
+		return $data;
 	}
 
 	/**
 	 * Decrypts sensitive data after accountContainer was loaded from session.
+	 *
+	 * @param array<string, mixed> $data data
 	 */
-	public function __wakeup() {
+	public function __unserialize(array $data): void {
 		// decrypt data
-		$this->attributes = json_decode(lamDecrypt($this->attributes), true, 512, JSON_INVALID_UTF8_IGNORE);
-		$this->attributes_orig = json_decode(lamDecrypt($this->attributes_orig), true, 512, JSON_INVALID_UTF8_IGNORE);
-		$this->module = unserialize(lamDecrypt($this->module));
+		$data['attributes'] = json_decode(lamDecrypt($data['attributes']), true, 512, JSON_INVALID_UTF8_IGNORE);
+		$data['attributes_orig'] = json_decode(lamDecrypt($data['attributes_orig']), true, 512, JSON_INVALID_UTF8_IGNORE);
+		$data['module'] = unserialize(lamDecrypt($data['module']));
+		foreach ($data as $key => $value) {
+			$this->$key = $value;
+		}
 	}
 
 }
