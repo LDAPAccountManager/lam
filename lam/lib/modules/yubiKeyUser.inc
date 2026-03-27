@@ -537,12 +537,12 @@ class yubiKeyUser extends baseModule {
 	 */
 	private function getAttributeName(): ?string {
 		if (!empty($this->moduleSettings['yubiKeyUser_attributeName'][0])) {
-			return $this->moduleSettings['yubiKeyUser_attributeName'][0];
+			return strtolower($this->moduleSettings['yubiKeyUser_attributeName'][0]);
 		}
 		elseif (!empty($this->selfServiceSettings->moduleSettings['yubiKeyUser_attributeName'][0])) {
-			return $this->selfServiceSettings->moduleSettings['yubiKeyUser_attributeName'][0];
+			return strtolower($this->selfServiceSettings->moduleSettings['yubiKeyUser_attributeName'][0]);
 		}
-		return null;
+		return 'yubikeyid';
 	}
 
 	/**
