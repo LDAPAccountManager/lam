@@ -945,15 +945,26 @@ class SelfServiceLdapConnection {
 	}
 
 	/**
-	 * Closes connection to LDAP server before serialization
+	 * Closes connection to the LDAP server before serialization.
+	 *
+	 * @return array<string, selfServiceProfile> data
 	 */
-	public function __sleep(): array {
+	public function __serialize(): array {
 		if ($this->server !== null) {
 			@ldap_close($this->server);
 			$this->server = null;
 		}
 		// define which attributes to save
-		return ['profile'];
+		return ['profile' => $this->profile];
+	}
+
+	/**
+	 * Restores the profile.
+	 *
+	 * @param array<string, selfServiceProfile> $data data
+	 */
+	public function __unserialize(array $data): void {
+		$this->profile = $data['profile'];
 	}
 
 }
