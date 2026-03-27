@@ -162,16 +162,33 @@ class Ldap {
 		return $this->server;
 	}
 
-	/** Closes connection to LDAP server before serialization */
-	public function __sleep() {
+	/**
+	 * Closes the connection to LDAP server before serialization.
+	 *
+	 * @return array<string, string|LAMConfig|bool> data
+	 */
+	public function __serialize(): array {
 		$this->close();
 		// define which attributes to save
-		return ["conf", "username", "password", 'isActiveDirectory'];
+		return [
+			'conf' => $this->conf,
+			'username' => $this->username,
+			'password' => $this->password,
+			'isActiveDirectory' => $this->isActiveDirectory
+		];
 	}
 
-	/** Reconnects to LDAP server when deserialized */
-	public function __wakeup() {
+	/**
+	 * Reconnects to the LDAP server when deserialized.
+	 *
+	 * @param array<string, string|LAMConfig|bool> $data data
+	 */
+	public function __unserialize(array $data): void {
 		$this->is_connected = false;
+		$this->conf = $data['conf'];
+		$this->username = $data['username'];
+		$this->password = $data['password'];
+		$this->isActiveDirectory = $data['isActiveDirectory'];
 		// delete PDF files and images which are older than 15 min
 		$tmpDir = __DIR__ . '/../tmp/';
 		$time = time();
