@@ -533,9 +533,9 @@ class yubiKeyUser extends baseModule {
 	/**
 	 * Returns the attribute name used for YubiKey.
 	 *
-	 * @return string|null attribute name
+	 * @return string attribute name
 	 */
-	private function getAttributeName(): ?string {
+	private function getAttributeName(): string {
 		if (!empty($this->moduleSettings['yubiKeyUser_attributeName'][0])) {
 			return strtolower($this->moduleSettings['yubiKeyUser_attributeName'][0]);
 		}
