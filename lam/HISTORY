@@ -1,4 +1,5 @@
 June 2026 9.6
+ - PHP 8.5 compatibility
  - Fixed bugs:
   -> Windows/Windows LDS users: unable to create account if default profile has no groups selected
   -> Dynamic user filtering fails after first character (646)
