@@ -725,6 +725,9 @@ function get_preg($argument, $regexp) {
 		case 'DNSname':  // server.example.com
 			$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
 			break;
+		case 'DNSnameWithSpecials':  // server.example.com
+			$pregexpr = '/^[0-9a-zA-Z*_-]+(\\.[0-9a-zA-Z_-]+)*$/';
+			break;
 		case 'DNSnameAbsolute':  // server.example.com.
 			$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*\\.$/';
 			break;
