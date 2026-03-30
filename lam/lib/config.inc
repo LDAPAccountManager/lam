@@ -1870,7 +1870,7 @@ class LAMConfig {
 	 * @return array<string, string[]> list of settings: [name => value]
 	 */
 	public function get_moduleSettings(): array {
-		return $this->moduleSettings ?? [];
+		return $this->moduleSettings;
 	}
 
 	/**
@@ -1920,7 +1920,7 @@ class LAMConfig {
 	 * @return array<string, string> list of settings: [name => value]
 	 */
 	public function get_typeSettings(): array {
-		return $this->typeSettings ?? [];
+		return $this->typeSettings;
 	}
 
 	/**
