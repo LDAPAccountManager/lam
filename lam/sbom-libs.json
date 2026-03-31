@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:9d228c69-b3b3-4bb6-b5b0-3cf2f55db606",
+  "serialNumber" : "urn:uuid:c73d2081-6df3-4191-9e8d-09d493705c1d",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-03-02T19:18:52Z",
+    "timestamp" : "2026-03-31T18:18:15Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -23,10 +23,10 @@
   "components" : [
     {
       "type" : "library",
-      "bom-ref" : "73140e29-f689-49c1-9b10-28ff13117f68",
+      "bom-ref" : "64518863-4fde-4015-84a1-e26283a036ee",
       "group" : "cdx:npm:package:bundled",
-      "name" : "@popperjs/core",
-      "version" : "2.11.8",
+      "name" : "@floating-ui/core",
+      "version" : "1.7.5",
       "licenses" : [
         {
           "license" : {
@@ -34,14 +34,29 @@
           }
         }
       ],
-      "purl" : "pkg:npm/%40popperjs/core@2.11.8"
+      "purl" : "pkg:npm/%40floating-ui/core@1.7.5"
+    },
+    {
+      "type" : "library",
+      "bom-ref" : "73140e29-f689-49c1-9b10-28ff13117f68",
+      "group" : "cdx:npm:package:bundled",
+      "name" : "@floating-ui/dom",
+      "version" : "1.7.6",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT"
+          }
+        }
+      ],
+      "purl" : "pkg:npm/%40floating-ui/dom@1.7.6"
     },
     {
       "type" : "library",
       "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836",
       "group" : "cdx:npm:package:bundled",
       "name" : "cropperjs",
-      "version" : "1.6.2",
+      "version" : "2.1.0",
       "licenses" : [
         {
           "license" : {
@@ -49,7 +64,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/cropperjs@1.6.2"
+      "purl" : "pkg:npm/cropperjs@2.1.0"
     },
     {
       "type" : "library",
@@ -151,21 +166,6 @@
     },
     {
       "type" : "library",
-      "bom-ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
-      "group" : "cdx:npm:package:bundled",
-      "name" : "tippy.js",
-      "version" : "6.3.7",
-      "licenses" : [
-        {
-          "license" : {
-            "id" : "MIT"
-          }
-        }
-      ],
-      "purl" : "pkg:npm/tippy.js@6.3.7"
-    },
-    {
-      "type" : "library",
       "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "group" : "cdx:npm:package:bundled",
       "name" : "wunderbaum",
@@ -183,6 +183,10 @@
   "dependencies" : [
     {
       "ref" : "c2095505-c3af-4958-af68-6a61f216807d",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "64518863-4fde-4015-84a1-e26283a036ee",
       "dependsOn" : [ ]
     },
     {
@@ -219,10 +223,6 @@
     },
     {
       "ref" : "72240acd-7de4-4058-b56f-e64638babcbf",
-      "dependsOn" : [ ]
-    },
-    {
-      "ref" : "34edec4c-ebfc-48c9-92e0-917d8004e6b0",
       "dependsOn" : [ ]
     },
     {

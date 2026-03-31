@@ -679,22 +679,21 @@ function printHelpLink($entry, $number, $module = '', $classes = []): void {
 	if (is_file("./help.php")) {
 		$helpPath = "";
 	}
-	$title = $entry['Headline'];
+	$title = htmlspecialchars($entry['Headline']);
 	$message = $entry['Text'];
 	if (isset($entry['attr'])) {
-		$message .= '<br><br><hr class="dotted">' . _('Technical name') . ': <i>' . $entry['attr'] . '</i>';
+		$message .= '<br><br><hr class="dotted">' . _('Technical name') . ': <i>' . htmlspecialchars($entry['attr']) . '</i>';
 	}
 	// replace special characters
-	$message = htmlspecialchars($message);
-	$title = htmlspecialchars($title);
 	$selfServiceOption = '';
 	if (isSelfService()) {
 		$selfServiceOption = '&amp;selfService=1';
 	}
 	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=" . $number . $selfServiceOption . "\" ";
-	echo "target=\"help\" tabindex=\"-1\">";
-	echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle help-icon\" src=\"../{$helpPath}graphics/help.svg\" alt=\"" . _('Help') . "\" width=\"16\" height=\"16\">";
+	echo "target=\"help\" tabindex=\"-1\" onmouseenter='window.lam.tooltip.show(this);' onmouseleave='window.lam.tooltip.hide(this);'>";
+	echo "<img class=\"align-middle help-icon\" src=\"../{$helpPath}graphics/help.svg\" alt=\"" . _('Help') . "\" width=\"16\" height=\"16\">";
 	echo "</a>";
+	echo "<div class='lam-help hidden " . implode(" ", $classes) . "'><h4>$title</h4>$message</div>";
 }
 
 

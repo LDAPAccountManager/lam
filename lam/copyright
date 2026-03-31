@@ -1102,8 +1102,7 @@ lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Pu
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB                                      https://github.com/Yubico/php-yubico
 style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal            https://github.com/csstools/normalize.css
 style/050_grid.css                                                   B                                                       https://foundation.zurb.com/sites/docs/v/5.5.3/components/grid.html
-templates/lib/*popper*.js                                            B                                                       https://github.com/floating-ui/floating-ui
-templates/lib/*tippy*.js                                             B  2021  atomiks                                        https://github.com/atomiks/tippyjs
+templates/lib/*floating-ui*.js                                       B                                                       https://github.com/floating-ui/floating-ui
 templates/lib/*flatpickr*.js                                         B  2017  Gregory Petrosyan                              https://github.com/flatpickr/flatpickr
 style/600_flatpickr.css                                              B  2017  Gregory Petrosyan                              https://github.com/flatpickr/flatpickr
 templates/lib/*sweetalert2*.js                                       B                                                       https://github.com/sweetalert2/sweetalert2

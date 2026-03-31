@@ -642,7 +642,6 @@ window.lam.filterSelect.filterDynamic = function(inputField, selectField) {
 		optionsOrig = selectField.dataset.dynamicOptionsOrig;
 	}
 	optionsOrig = JSON.parse(optionsOrig);
-	const currentOptions = JSON.parse(selectField.dataset.dynamicOptions);
 	// save selection
 	const optionTags = Array.from(selectField.children);
 	optionTags.forEach((element) => {
@@ -3688,22 +3687,33 @@ window.lam.accordion.onClick = function(event, button) {
 window.lam.tooltip = window.lam.tooltip || {};
 
 /**
- * Creates the tooltips for help buttons.
+ * Shows the help popup.
+ *
+ * @param link help link
  */
-window.lam.tooltip.init = function() {
-	document.querySelectorAll('[helpdata]').forEach(item => {
-		let helpString = "<div class='lam-tooltip'><h4 class=\"lam-tooltip-title\">";
-		helpString += item.attributes.helptitle.value;
-		helpString += "</h4><div class=\"lam-tooltip-content\">";
-		helpString += item.attributes.helpdata.value;
-		helpString += "</div></h4></div>";
-		tippy(item, {
-			content: helpString,
-			allowHTML: true,
-			arrow: false,
-			delay: [100, 20]
-		});
-	});
+window.lam.tooltip.show = function(link) {
+    const tooltip =  link.nextElementSibling;
+    const { computePosition, flip, shift, offset } = FloatingUIDOM;
+    const options = {
+        placement: 'top',
+        middleware: [offset(6), flip(), shift()]
+    };
+    computePosition(link, tooltip, options).then(({x, y}) => {
+        Object.assign(tooltip.style, {
+            left: `${x}px`,
+            top: `${y}px`,
+        });
+    });
+    tooltip.classList.remove('hidden');
+}
+
+/**
+ * Hides the help popup.
+ *
+ * @param link help link
+ */
+window.lam.tooltip.hide = function(link) {
+    link.nextElementSibling.classList.add('hidden');
 }
 
 window.lam.smtp = window.lam.smtp || {};
@@ -4043,7 +4053,6 @@ window.lam.utility.documentReady(function() {
 	window.lam.webauthn.setupDeviceManagement();
 	window.lam.tabs.init();
 	window.lam.accordion.init();
-	window.lam.tooltip.init();
 	window.lam.richEdit.init();
 });
 

@@ -890,20 +890,32 @@ input.smallImageButton {
 }
 
 /* help tooltip */
-th.help {
-	text-align: left;
-	padding-bottom: 10px;
-	font-size: 85%;
-}
-td.help {
-	font-size: 85%;
-}
-
 img.help-icon {
 	width: 16px;
 	height: 16px;
 	min-width: 16px;
 	min-height: 16px;
+}
+
+div.lam-help {
+    box-shadow: 2px 2px 5px #a0a0a4;
+    background-color: var(--lam-background-color-default);
+    border: 1px solid var(--lam-border-color);
+    border-radius: 5px;
+    max-width: 40rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: wrap;
+    text-align: left;
+    z-index: 100;
+    padding: var(--lam-regular-space);
+    width: max-content;
+    font-size: 95%;
+}
+
+div.lam-help h4 {
+    margin-top: var(--lam-small-space);
 }
 
 img.fixed-size-16 {
