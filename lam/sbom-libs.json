@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:c73d2081-6df3-4191-9e8d-09d493705c1d",
+  "serialNumber" : "urn:uuid:1577ae2b-6715-4803-a332-ffd34447ef1f",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-03-31T18:18:15Z",
+    "timestamp" : "2026-04-01T13:36:08Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.5"
+      "version" : "9.5.2"
     }
   },
   "components" : [
