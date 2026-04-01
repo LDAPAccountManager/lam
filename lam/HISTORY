@@ -1,5 +1,8 @@
-01.04.2026 9.5.2
+June 2026 9.6
  - PHP 8.5 compatibility
+
+
+01.04.2026 9.5.2
  - LAM Pro:
   -> Support wildcard DNS records for PowerDNS, BindDynDb and Bind DLZ (647)
  - Fixed bugs:
