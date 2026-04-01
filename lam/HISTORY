@@ -1,9 +1,10 @@
-June 2026 9.6
+01.04.2026 9.5.2
  - PHP 8.5 compatibility
  - LAM Pro:
   -> Support wildcard DNS records for PowerDNS, BindDynDb and Bind DLZ (647)
  - Fixed bugs:
   -> Windows/Windows LDS users: unable to create account if default profile has no groups selected
+  -> Custom fields: fixed loading of server profile
   -> Dynamic user filtering fails after first character (646)
 
 
