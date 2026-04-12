@@ -977,7 +977,12 @@ class ConfigurationDatabase {
 		$url = $this->getPdoUrl();
 		$pdoAttr = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
 		if (!empty($this->cfgMain->configDatabaseSSLCA)) {
-			$pdoAttr[PDO::MYSQL_ATTR_SSL_CA] = $this->cfgMain->configDatabaseSSLCA;
+			if (version_compare(phpversion(), '8.5.0') < 0) {
+				$pdoAttr[PDO::MYSQL_ATTR_SSL_CA] = $this->cfgMain->configDatabaseSSLCA;
+			}
+			else {
+				$pdoAttr[PDO\Mysql::ATTR_SSL_CA] = $this->cfgMain->configDatabaseSSLCA;
+			}
 		}
 		$this->pdo = new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, $pdoAttr);
 		return $this->pdo;
