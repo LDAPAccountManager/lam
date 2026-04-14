@@ -17,6 +17,7 @@ use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 
 return RectorConfig::configure()
 	->withParallel(240, 4)
@@ -44,6 +45,7 @@ return RectorConfig::configure()
 		DisallowedEmptyRuleFixerRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		InlineArrayReturnAssignRector::class,
+		SafeDeclareStrictTypesRector::class,
 		// TODO unreliable, recheck with newer rector version
 		ExplicitReturnNullRector::class,
 		RemoveParentCallWithoutParentRector::class,
