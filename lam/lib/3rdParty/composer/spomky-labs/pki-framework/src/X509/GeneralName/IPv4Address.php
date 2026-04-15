@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\GeneralName;
 
-use UnexpectedValueException;
 use function array_slice;
 use function count;
+use UnexpectedValueException;
 
 final class IPv4Address extends IPAddress
 {
@@ -22,14 +22,15 @@ final class IPv4Address extends IPAddress
     {
         $mask = null;
         $bytes = unpack('C*', $octets);
+        /** @var array<int, int> $bytes */
         $bytes = $bytes === false ? [] : $bytes;
         switch (count($bytes)) {
             case 4:
-                $ip = implode('.', $bytes);
+                $ip = implode('.', array_map(static fn (int $v): string => (string) $v, $bytes));
                 break;
             case 8:
-                $ip = implode('.', array_slice($bytes, 0, 4));
-                $mask = implode('.', array_slice($bytes, 4, 4));
+                $ip = implode('.', array_map(static fn (int $v): string => (string) $v, array_slice($bytes, 0, 4)));
+                $mask = implode('.', array_map(static fn (int $v): string => (string) $v, array_slice($bytes, 4, 4)));
                 break;
             default:
                 throw new UnexpectedValueException('Invalid IPv4 octet length.');

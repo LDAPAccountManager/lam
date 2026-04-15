@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Cose\Key;
 
+use function array_key_exists;
+use function in_array;
 use InvalidArgumentException;
+use function is_int;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\ObjectIdentifier;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
 use SpomkyLabs\Pki\ASN1\Type\Tagged\ExplicitlyTaggedType;
-use function array_key_exists;
-use function in_array;
-use function is_int;
 use function sprintf;
 use function strlen;
 

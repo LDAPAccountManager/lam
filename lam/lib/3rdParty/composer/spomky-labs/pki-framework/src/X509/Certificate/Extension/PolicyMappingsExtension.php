@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate\Extension;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -14,7 +15,6 @@ use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation;
 use SpomkyLabs\Pki\X509\Certificate\Extension\PolicyMappings\PolicyMapping;
 use UnexpectedValueException;
-use function count;
 
 /**
  * Implements 'Policy Mappings' certificate extension.

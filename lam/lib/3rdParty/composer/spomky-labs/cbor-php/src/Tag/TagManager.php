@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace CBOR\Tag;
 
+use function array_key_exists;
 use CBOR\CBORObject;
 use CBOR\Utils;
 use InvalidArgumentException;
-use function array_key_exists;
 
 final class TagManager implements TagManagerInterface
 {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CBOR;
 
+use function assert;
 use Brick\Math\BigInteger;
 use InvalidArgumentException;
 use function is_string;
@@ -30,12 +31,17 @@ abstract class Utils
 
     public static function hexToBigInteger(string $value): BigInteger
     {
+        assert($value !== '', 'Value must not be empty');
+
         return BigInteger::fromBase($value, 16);
     }
 
     public static function hexToString(string $value): string
     {
-        return BigInteger::fromBase(bin2hex($value), 16)->toBase(10);
+        $hex = bin2hex($value);
+        assert($hex !== '', 'Value must not be empty');
+
+        return BigInteger::fromBase($hex, 16)->toBase(10);
     }
 
     public static function decode(string $data): string

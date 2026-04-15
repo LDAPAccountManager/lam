@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
+use function assert;
 use Brick\Math\BigInteger;
+use function chr;
+use function count;
+use function in_array;
+use const INF;
 use LogicException;
+use function mb_strlen;
+use function ord;
 use RangeException;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
@@ -15,15 +22,9 @@ use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
 use SpomkyLabs\Pki\ASN1\Util\BigInt;
+use function sprintf;
 use Stringable;
 use UnexpectedValueException;
-use function chr;
-use function count;
-use function in_array;
-use function mb_strlen;
-use function ord;
-use function sprintf;
-use const INF;
 
 /**
  * Implements *REAL* type.
@@ -512,9 +513,11 @@ final class Real extends Element implements Stringable
      */
     private static function parse754Double(string $octets): array
     {
+        assert($octets !== '');
         $n = BigInteger::fromBytes($octets, false);
         // sign bit
-        $neg = $n->testBit(63);
+        $neg = $n->shiftedRight(63)
+            ->isOdd();
         // 11 bits of biased exponent
         $exponentMask = BigInteger::fromBase('7ff0000000000000', 16);
         $exp = $n->and($exponentMask)
@@ -539,7 +542,7 @@ final class Real extends Element implements Stringable
 
         // find the last fraction bit that is set
         $last = 0;
-        while (! $man->testBit($last) && $last !== 52) {
+        while (! $man->shiftedRight($last)->isOdd() && $last !== 52) {
             $last++;
         }
 

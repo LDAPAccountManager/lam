@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace CBOR;
 
+use function array_key_exists;
 use ArrayAccess;
 use ArrayIterator;
 use InvalidArgumentException;
 use Iterator;
 use IteratorAggregate;
-use function array_key_exists;
 
 /**
  * @phpstan-implements ArrayAccess<int, CBORObject>

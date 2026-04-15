@@ -7,10 +7,10 @@ namespace CBOR\OtherObject;
 use Brick\Math\BigInteger;
 use CBOR\OtherObject as Base;
 use CBOR\Utils;
-use InvalidArgumentException;
-use function strlen;
 use const INF;
+use InvalidArgumentException;
 use const NAN;
+use function strlen;
 
 final class SinglePrecisionFloatObject extends Base
 {

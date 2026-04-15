@@ -36,8 +36,8 @@ use SpomkyLabs\Pki\ASN1\Type\Primitive\VideotexString;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\VisibleString;
 use SpomkyLabs\Pki\ASN1\Type\Tagged\ApplicationType;
 use SpomkyLabs\Pki\ASN1\Type\Tagged\PrivateType;
-use UnexpectedValueException;
 use function sprintf;
+use UnexpectedValueException;
 
 /**
  * Decorator class to wrap an element without already knowing the specific underlying type.

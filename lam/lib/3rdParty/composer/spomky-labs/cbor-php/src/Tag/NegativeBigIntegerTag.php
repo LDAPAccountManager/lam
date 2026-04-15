@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CBOR\Tag;
 
+use function assert;
 use Brick\Math\BigInteger;
 use CBOR\ByteStringObject;
 use CBOR\CBORObject;
@@ -44,7 +45,9 @@ final class NegativeBigIntegerTag extends Tag implements Normalizable
     {
         /** @var ByteStringObject|IndefiniteLengthByteStringObject $object */
         $object = $this->object;
-        $integer = BigInteger::fromBase(bin2hex($object->getValue()), 16);
+        $hex = bin2hex($object->getValue());
+        assert($hex !== '', 'Value must not be empty');
+        $integer = BigInteger::fromBase($hex, 16);
         $minusOne = BigInteger::of(-1);
 
         return $minusOne->minus($integer)

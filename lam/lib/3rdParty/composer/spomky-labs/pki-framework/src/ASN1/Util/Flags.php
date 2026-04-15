@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Util;
 
-use Brick\Math\BigInteger;
-use OutOfBoundsException;
-use RuntimeException;
-use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
 use function assert;
+use Brick\Math\BigInteger;
 use function count;
 use function is_array;
 use function ord;
+use OutOfBoundsException;
+use RuntimeException;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
 
 /**
  * Class to handle a bit string as a field of flags.
@@ -73,7 +73,7 @@ final class Flags
     {
         $num_bits = $bs->numBits();
         $data = $bs->string();
-        $num = $data === '' ? BigInteger::of(0) : BigInteger::fromBytes($bs->string(), false);
+        $num = $data === '' ? BigInteger::of(0) : BigInteger::fromBytes($data, false);
         $num = $num->shiftedRight($bs->unusedBits());
         if ($num_bits < $width) {
             $num = $num->shiftedLeft($width - $num_bits);
@@ -118,7 +118,7 @@ final class Flags
      */
     public function number(): string
     {
-        $num = BigInteger::fromBytes($this->_flags, false);
+        $num = $this->_flags === '' ? BigInteger::of(0) : BigInteger::fromBytes($this->_flags, false);
         $last_octet_bits = $this->_width % 8;
         $unused_bits = $last_octet_bits !== 0 ? 8 - $last_octet_bits : 0;
         $num = $num->shiftedRight($unused_bits);

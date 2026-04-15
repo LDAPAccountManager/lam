@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X501\ASN1;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Set;
@@ -12,7 +13,6 @@ use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue;
 use Stringable;
 use UnexpectedValueException;
-use function count;
 
 /**
  * Implements *RelativeDistinguishedName* ASN.1 type.

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1;
 
+use function array_key_exists;
+use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
@@ -43,10 +45,8 @@ use SpomkyLabs\Pki\ASN1\Type\Tagged\PrivateType;
 use SpomkyLabs\Pki\ASN1\Type\TaggedType;
 use SpomkyLabs\Pki\ASN1\Type\TimeType;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
-use UnexpectedValueException;
-use function array_key_exists;
-use function mb_strlen;
 use function sprintf;
+use UnexpectedValueException;
 
 /**
  * Base class for all ASN.1 type elements.

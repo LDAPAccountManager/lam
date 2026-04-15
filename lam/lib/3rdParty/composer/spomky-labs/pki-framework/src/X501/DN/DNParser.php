@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X501\DN;
 
+use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
-use UnexpectedValueException;
-use function mb_strlen;
 use function sprintf;
+use UnexpectedValueException;
 
 /**
  * Distinguished Name parsing conforming to RFC 2253 and RFC 1779.

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Cose\Algorithm\Signature\ECDSA;
 
-use InvalidArgumentException;
 use function bin2hex;
 use function dechex;
 use function hex2bin;
 use function hexdec;
+use InvalidArgumentException;
 use function str_pad;
+use const STR_PAD_LEFT;
 use function strlen;
 use function substr;
-use const STR_PAD_LEFT;
 
 /**
  * @internal
@@ -67,7 +67,6 @@ final class ECSignature
             throw new InvalidArgumentException('Invalid data. Should start with a sequence.');
         }
 
-        // @phpstan-ignore-next-line
         if (self::readAsn1Content($message, $position, self::BYTE_SIZE) === self::ASN1_LENGTH_2BYTES) {
             $position += self::BYTE_SIZE;
         }

@@ -33,8 +33,8 @@ use CBOR\Tag\TimestampTag;
 use CBOR\Tag\UnsignedBigIntegerTag;
 use CBOR\Tag\UriTag;
 use InvalidArgumentException;
-use RuntimeException;
 use function ord;
+use RuntimeException;
 use function sprintf;
 use const STR_PAD_LEFT;
 

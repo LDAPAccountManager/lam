@@ -6,6 +6,7 @@ namespace SpomkyLabs\Pki\X509\CertificationPath\PathValidation;
 
 use DateTimeImmutable;
 use LogicException;
+use Psr\Clock\ClockInterface;
 use SpomkyLabs\Pki\X509\Certificate\Certificate;
 use SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation;
 
@@ -71,9 +72,10 @@ final class PathValidationConfig
     /**
      * Get default configuration.
      */
-    public static function defaultConfig(): self
+    public static function defaultConfig(?ClockInterface $clock = null): self
     {
-        return self::create(new DateTimeImmutable(), 3);
+        $dateTime = $clock !== null ? $clock->now() : new DateTimeImmutable();
+        return self::create($dateTime, 3);
     }
 
     /**

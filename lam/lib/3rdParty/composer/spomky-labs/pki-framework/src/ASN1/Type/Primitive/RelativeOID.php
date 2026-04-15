@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use Brick\Math\BigInteger;
+use function chr;
+use function is_int;
+use function ord;
 use RuntimeException;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
@@ -13,12 +16,9 @@ use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
+use function sprintf;
 use Throwable;
 use UnexpectedValueException;
-use function chr;
-use function is_int;
-use function ord;
-use function sprintf;
 
 /**
  * Implements *RELATIVE-OID* type.

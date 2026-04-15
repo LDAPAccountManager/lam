@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Component;
 
+use function array_key_exists;
 use Brick\Math\BigInteger;
+use function mb_strlen;
+use function ord;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\Encodable;
 use SpomkyLabs\Pki\ASN1\Util\BigInt;
-use function array_key_exists;
-use function mb_strlen;
-use function ord;
 
 /**
  * Class to represent BER/DER identifier octets.

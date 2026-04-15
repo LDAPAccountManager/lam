@@ -9,10 +9,10 @@ use CBOR\IndefiniteLengthTextStringObject;
 use CBOR\Normalizable;
 use CBOR\Tag;
 use CBOR\TextStringObject;
+use const DATE_RFC3339;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
-use const DATE_RFC3339;
 
 /**
  * @see \CBOR\Test\Tag\DatetimeTagTest

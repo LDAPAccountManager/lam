@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace CBOR;
 
 use Brick\Math\BigInteger;
-use InvalidArgumentException;
 use function chr;
 use function count;
-use function strlen;
+use InvalidArgumentException;
 use const STR_PAD_LEFT;
+use function strlen;
 
 final class LengthCalculator
 {

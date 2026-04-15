@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Component;
 
 use Brick\Math\BigInteger;
+use function count;
 use DomainException;
 use LogicException;
+use function mb_strlen;
+use function ord;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\Encodable;
 use SpomkyLabs\Pki\ASN1\Util\BigInt;
-use function count;
-use function mb_strlen;
-use function ord;
 use function sprintf;
 
 /**

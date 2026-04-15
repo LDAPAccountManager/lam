@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use Brick\Math\BigInteger;
+use function chr;
+use function mb_strlen;
+use function ord;
 use OutOfBoundsException;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
@@ -13,9 +16,6 @@ use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\BaseString;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
-use function chr;
-use function mb_strlen;
-use function ord;
 
 /**
  * Implements *BIT STRING* type.

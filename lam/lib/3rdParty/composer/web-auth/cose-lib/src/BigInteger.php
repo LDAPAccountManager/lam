@@ -23,6 +23,7 @@ final class BigInteger
     public static function createFromBinaryString(string $value): self
     {
         $res = unpack('H*', $value);
+        /** @var non-empty-string $data */
         $data = current($res);
 
         return new self(BrickBigInteger::fromBase($data, 16));

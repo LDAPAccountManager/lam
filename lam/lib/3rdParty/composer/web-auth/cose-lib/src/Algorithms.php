@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Cose;
 
-use InvalidArgumentException;
 use function array_key_exists;
+use InvalidArgumentException;
 use const OPENSSL_ALGO_SHA1;
 use const OPENSSL_ALGO_SHA256;
 use const OPENSSL_ALGO_SHA384;
@@ -121,7 +121,7 @@ abstract class Algorithms
 
     final public const COSE_ALGORITHM_RSAES_OAEP_512 = -42;
 
-    final public const COSE_ALGORITHM_ES256K = -46;
+    final public const COSE_ALGORITHM_ES256K = -47;
 
     final public const COSE_ALGORITHM_RS256 = -257;
 

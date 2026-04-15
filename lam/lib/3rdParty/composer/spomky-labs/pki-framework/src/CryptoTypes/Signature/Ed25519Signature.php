@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\CryptoTypes\Signature;
 
 use InvalidArgumentException;
-use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
 use function mb_strlen;
+use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
 
 /**
  * Implements Ed25519 signature value.

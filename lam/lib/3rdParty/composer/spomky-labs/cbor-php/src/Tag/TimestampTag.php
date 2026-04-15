@@ -15,8 +15,8 @@ use CBOR\UnsignedIntegerObject;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
-use function strlen;
 use const STR_PAD_RIGHT;
+use function strlen;
 
 final class TimestampTag extends Tag implements Normalizable
 {
