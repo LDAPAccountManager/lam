@@ -289,16 +289,6 @@ class WebauthnManager {
 	}
 
 	/**
-	 * Returns the attestation object loader.
-	 *
-	 * @param AttestationStatementSupportManager $manager support manager
-	 * @return AttestationObjectLoader attestation object loader
-	 */
-	private function getAttestationObjectLoader($manager) {
-		return new AttestationObjectLoader($manager);
-	}
-
-	/**
 	 * Returns the extension output checker handler.
 	 * No extensions are checked at this time.
 	 *
