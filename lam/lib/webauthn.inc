@@ -16,10 +16,12 @@ use Http\Discovery\Psr17Factory;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAM_INTERFACE;
 use LAMCfgMain;
+use LAMException;
 use PDO;
 use PDOException;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
 use Webauthn\AttestationStatement\AttestationObjectLoader;
@@ -34,22 +36,22 @@ use Webauthn\AuthenticatorAssertionResponse;
 use Webauthn\AuthenticatorAssertionResponseValidator;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
+use Webauthn\AuthenticatorSelectionCriteria;
+use Webauthn\Denormalizer\WebauthnSerializerFactory;
+use Webauthn\PublicKeyCredential;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialDescriptor;
-use Webauthn\PublicKeyCredentialLoader;
+use Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialRpEntity;
-use Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
-use Webauthn\AuthenticatorSelectionCriteria;
-use LAMException;
 use function LAM\PERSISTENCE\dbTableExists;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2024  Roland Gruber
+  Copyright (C) 2019 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -140,7 +142,7 @@ class WebauthnManager {
 		$responseValidator = new AuthenticatorAttestationResponseValidator(
 			$attestationSupportManager, null, null, $extensionOutputCheckerHandler);
 		try {
-			$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
+			$publicKeyCredential = $publicKeyCredentialLoader->deserialize($clientResponse, PublicKeyCredential::class, 'json');
 			$authenticatorAttestationResponse = $publicKeyCredential->response;
 			if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
 				logNewMessage(LOG_ERR, 'Invalid webauthn response: ' . $clientResponse);
@@ -163,12 +165,12 @@ class WebauthnManager {
 	/**
 	 * Returns a public key credential loader.
 	 *
-	 * @return PublicKeyCredentialLoader public key credential loader
+	 * @return SerializerInterface public key credential loader
 	 */
 	public function createPublicKeyCredentialLoader() {
 		$attestationSupportManager = $this->getAttestationSupportManager();
-		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager);
-		return new PublicKeyCredentialLoader($attestationObjectLoader);
+		$factory = new WebauthnSerializerFactory($attestationSupportManager);
+		return $factory->create();
 	}
 
 	/**
@@ -390,7 +392,7 @@ class WebauthnManager {
 			$algorithmManager
 		);
 		$publicKeyCredentialLoader = $this->createPublicKeyCredentialLoader();
-		$publicKeyCredential = $publicKeyCredentialLoader->load($response);
+		$publicKeyCredential = $publicKeyCredentialLoader->deserialize($response, PublicKeyCredential::class, 'json');
 		$authenticatorAssertionResponse = $publicKeyCredential->response;
 		if (!$authenticatorAssertionResponse instanceof AuthenticatorAssertionResponse) {
 			logNewMessage(LOG_ERR, 'Invalid authenticator assertion response');

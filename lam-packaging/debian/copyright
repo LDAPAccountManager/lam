@@ -1087,8 +1087,10 @@ lib/3rdParty/composer/nesbot                                         B        Br
 lib/3rdParty/composer/nyholm                                         B  2016  Tobias Nyholm                                  https://github.com/Nyholm
 lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises                 https://github.com/paragonie
 lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team                                  https://github.com/php-http/discovery
+lib/3rdParty/composer/phpdocumentor                                  B        Mike van Riel                                  https://github.com/phpDocumentor
 lib/3rdParty/composer/phpmailer                                      G                                                       https://github.com/PHPMailer/PHPMailer
 lib/3rdParty/composer/phpseclib                                      B  2019  TerraFrost and other contributors              https://github.com/phpseclib/phpseclib
+lib/3rdParty/composer/phpstan                                        B        PHPStan s.r.o.                                 https://github.com/phpstan
 lib/3rdParty/composer/psr                                            B        PHP Framework Interoperability Group           https://github.com/php-fig
 lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar                                  https://github.com/ralouphie/getallheaders
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs                                    https://github.com/Spomky-Labs
@@ -1097,6 +1099,7 @@ lib/3rdParty/composer/voku                                           B  2019 Lar
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs                                    https://github.com/web-auth
 lib/3rdParty/composer/web-token                                      B        Florent Morselli                               https://github.com/web-token
 lib/3rdParty/composer/webklex                                        B  2016  Webklex                                        https://github.com/Webklex/php-imap
+lib/3rdParty/composer/webmozart                                      B        Bernhard Schussek                              https://github.com/webmozarts
 lib/3rdParty/tcpdf                                                   D  2022  Nicola Asuni - Tecnick.com LTD                 https://github.com/tecnickcom/TCPDF
 lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah   https://github.com/dejavu-fonts/dejavu-fonts
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB                                      https://github.com/Yubico/php-yubico
