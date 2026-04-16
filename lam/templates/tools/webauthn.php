@@ -18,7 +18,7 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2025  Roland Gruber
+  Copyright (C) 2020 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -165,7 +165,8 @@ function addNewDevice(htmlResponsiveRow $container, WebauthnManager $webauthnMan
 		return;
 	}
 	$registrationData = base64_decode($_POST['registrationData']);
-	$registrationObject = PublicKeyCredentialCreationOptions::createFromString((string) $_SESSION['webauthn_registration']);
+	$loader = $webauthnManager->createPublicKeyCredentialLoader();
+	$registrationObject = $loader->deserialize($_SESSION['webauthn_registration'], PublicKeyCredentialCreationOptions::class, 'json');
 	$success = $webauthnManager->storeNewRegistration($registrationObject, $registrationData);
 	if ($success) {
 		$container->add(new htmlStatusMessage('INFO', _('The device was registered.')), 12);

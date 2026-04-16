@@ -1044,7 +1044,8 @@ class WebauthnProvider extends BaseProvider {
 				return true;
 			}
 			$response = base64_decode($_POST['sig_response']);
-			$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
+			$loader = $webauthnManager->createPublicKeyCredentialLoader();
+			$registrationObject = $loader->deserialize($_SESSION['webauthn_registration'], PublicKeyCredentialCreationOptions::class, 'json');
 			if (!$webauthnManager->storeNewRegistration($registrationObject, $response)) {
 				return false;
 			}
