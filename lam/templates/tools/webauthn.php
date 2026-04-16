@@ -1,16 +1,15 @@
 <?php
 namespace LAM\TOOLS\WEBAUTHN;
-use \htmlButton;
-use \htmlDiv;
-use \htmlGroup;
+use htmlButton;
+use htmlDiv;
+use htmlGroup;
 use htmlHiddenInput;
 use htmlInputField;
-use \htmlOutputText;
-use \htmlResponsiveRow;
-use \htmlResponsiveTable;
-use \htmlSpacer;
-use \htmlStatusMessage;
-use \htmlTitle;
+use htmlOutputText;
+use htmlResponsiveRow;
+use htmlResponsiveTable;
+use htmlStatusMessage;
+use htmlTitle;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM_INTERFACE;
 use Webauthn\PublicKeyCredentialCreationOptions;
@@ -64,7 +63,7 @@ echo '<div class="smallPaddingContent">';
 echo "<form id='webauthnform' action=\"webauthn.php\" method=\"post\">\n";
 $container = new htmlResponsiveRow();
 
-$container->add(new htmlTitle(_("WebAuthn devices")), 12);
+$container->add(new htmlTitle(_("WebAuthn devices")));
 
 $webauthnManager = new WebauthnManager();
 
@@ -73,12 +72,12 @@ $database = $webauthnManager->getDatabase();
 showRemoveMessage($container);
 addNewDevice($container, $webauthnManager);
 $container->addVerticalSpacer('0.5rem');
-$container->add(new htmlHiddenInput('registrationData', ''), 12);
+$container->add(new htmlHiddenInput('registrationData', ''));
 $errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
 $errorMessageDiv->setCSSClasses(['hidden']);
 $errorMessageDiv->addDataAttribute('button', _('Ok'));
 $errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
-$container->add($errorMessageDiv, 12);
+$container->add($errorMessageDiv);
 $buttonGroup = new htmlGroup();
 $registerButton = new htmlButton('register', _('Register new device'));
 $registerButton->addDataAttribute('dn', $userDn);
@@ -91,11 +90,11 @@ $registerButton->addDataAttribute('publickey', $registrationJson);
 $registerButton->setCSSClasses(['lam-primary']);
 $registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event, false);');
 $buttonGroup->addElement($registerButton);
-$container->add($buttonGroup, 12);
+$container->add($buttonGroup);
 $container->addVerticalSpacer('2rem');
 $results = $database->searchDevices($userDn);
 if (empty($results)) {
-	$container->add(new htmlStatusMessage('INFO', _('No devices found.')), 12);
+	$container->add(new htmlStatusMessage('INFO', _('No devices found.')));
 }
 else {
 	$titles = [
@@ -139,12 +138,12 @@ else {
 	$table = new htmlResponsiveTable($titles, $data);
 	$tableDiv = new htmlDiv('webauthn_results', $table);
 	$tableDiv->addDataAttribute('sec_token_value', getSecurityTokenValue());
-	$container->add($tableDiv, 12);
+	$container->add($tableDiv);
 }
 $container->addVerticalSpacer('2rem');
 
 $confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), ['hidden']);
-$container->add($confirmationDiv, 12);
+$container->add($confirmationDiv);
 
 addSecurityTokenToMetaHTML($container);
 
@@ -169,10 +168,10 @@ function addNewDevice(htmlResponsiveRow $container, WebauthnManager $webauthnMan
 	$registrationObject = $loader->deserialize($_SESSION['webauthn_registration'], PublicKeyCredentialCreationOptions::class, 'json');
 	$success = $webauthnManager->storeNewRegistration($registrationObject, $registrationData);
 	if ($success) {
-		$container->add(new htmlStatusMessage('INFO', _('The device was registered.')), 12);
+		$container->add(new htmlStatusMessage('INFO', _('The device was registered.')));
 	}
 	else {
-		$container->add(new htmlStatusMessage('ERROR', _('The device failed to register.')), 12);
+		$container->add(new htmlStatusMessage('ERROR', _('The device failed to register.')));
 	}
 }
 
@@ -183,6 +182,6 @@ function addNewDevice(htmlResponsiveRow $container, WebauthnManager $webauthnMan
  */
 function showRemoveMessage(htmlResponsiveRow $container): void {
 	if (!empty($_POST['removed']) && ($_POST['removed'] === 'true')) {
-		$container->add(new htmlStatusMessage('INFO', _('The device was deleted.')), 12);
+		$container->add(new htmlStatusMessage('INFO', _('The device was deleted.')));
 	}
 }

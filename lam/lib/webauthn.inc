@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
-use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\FidoU2FAttestationStatementSupport;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
@@ -393,7 +392,8 @@ class WebauthnManager {
 			$psr17Factory = new Psr17Factory();
 			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 			$psr7Request = $psrFactory->createRequest($symfonyRequest);
-			$publicKeyCredentialRequestOptions = PublicKeyCredentialRequestOptions::createFromString((string) $_SESSION['webauthn_authentication']);
+			$loader = $this->createPublicKeyCredentialLoader();
+			$publicKeyCredentialRequestOptions = $loader->deserialize($_SESSION['webauthn_authentication'], PublicKeyCredentialRequestOptions::class, 'json');
 			$credential = $database->findOneByCredentialId($publicKeyCredential->rawId);
 			if ($credential === null) {
 				throw new LAMException('', 'Unable to find credential');
