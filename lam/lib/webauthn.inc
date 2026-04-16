@@ -447,11 +447,14 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 			$statement->execute([':credentialid' => base64_encode($publicKeyCredentialId)]);
 			$results = $statement->fetchAll();
 			if (!empty($results)) {
-				$jsonArray = json_decode($results[0]['credentialSource'], true);
+				$jsonString = $results[0]['credentialSource'];
+				$jsonArray = json_decode($jsonString, true);
 				if (!is_array($jsonArray)) {
 					return null;
 				}
-				return PublicKeyCredentialSource::createFromArray($jsonArray);
+				$manager = new WebauthnManager();
+				$factory = $manager->createPublicKeyCredentialLoader();
+				return $factory->deserialize($jsonString, PublicKeyCredentialSource::class, 'json');
 			}
 		}
 		catch (PDOException $e) {
@@ -473,12 +476,15 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userDN = :userDN');
 			$statement->execute([':userDN' => $userDn]);
 			$results = $statement->fetchAll();
+			$manager = new WebauthnManager();
+			$factory = $manager->createPublicKeyCredentialLoader();
 			foreach ($results as $result) {
-				$jsonArray = json_decode($result['credentialSource'], true);
+				$jsonString = $result['credentialSource'];
+				$jsonArray = json_decode($jsonString, true);
 				if (!is_array($jsonArray)) {
 					return $credentials;
 				}
-				$credentials[] = PublicKeyCredentialSource::createFromArray($jsonArray);
+				$credentials[] = $factory->deserialize($jsonString, PublicKeyCredentialSource::class, 'json');
 			}
 		}
 		catch (PDOException $e) {

@@ -1050,7 +1050,7 @@ class WebauthnProvider extends BaseProvider {
 			}
 			if (!empty($_POST['newName'])) {
 				$deviceList = $webauthnManager->getDatabase()->findAllForUserDn($userDn);
-				$webauthnManager->getDatabase()->updateDeviceName($userDn, base64_encode($deviceList[0]->getPublicKeyCredentialId()), $_POST['newName']);
+				$webauthnManager->getDatabase()->updateDeviceName($userDn, base64_encode($deviceList[0]->publicKeyCredentialId), $_POST['newName']);
 			}
 			return true;
 		}
