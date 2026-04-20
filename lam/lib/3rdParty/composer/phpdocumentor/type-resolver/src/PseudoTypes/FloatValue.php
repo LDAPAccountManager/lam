@@ -18,7 +18,7 @@ use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\Float_;
 
 /** @psalm-immutable */
-class FloatValue extends Float_ implements PseudoType
+class FloatValue implements PseudoType
 {
     /** @var float */
     private $value;

@@ -6,6 +6,7 @@ namespace Webauthn\MetadataService\Service;
 
 use ParagonIE\ConstantTime\Base64;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\Denormalizer\WebauthnSerializerFactory;
@@ -15,6 +16,7 @@ use Webauthn\Event\NullEventDispatcher;
 use Webauthn\Exception\MetadataStatementLoadingException;
 use Webauthn\Exception\MissingMetadataStatementException;
 use Webauthn\MetadataService\Statement\MetadataStatement;
+use function assert;
 use function file_get_contents;
 
 final class LocalResourceMetadataService implements MetadataService, CanDispatchEvents
@@ -23,7 +25,7 @@ final class LocalResourceMetadataService implements MetadataService, CanDispatch
 
     private EventDispatcherInterface $dispatcher;
 
-    private readonly ?SerializerInterface $serializer;
+    private readonly SerializerInterface $serializer;
 
     public function __construct(
         private readonly string $filename,
@@ -90,13 +92,10 @@ final class LocalResourceMetadataService implements MetadataService, CanDispatch
         }
 
         $content = file_get_contents($this->filename);
+        assert($content !== false, 'The file could not be read');
         if ($this->isBase64Encoded) {
             $content = Base64::decode($content, true);
         }
-        if ($this->serializer !== null) {
-            $this->statement = $this->serializer->deserialize($content, MetadataStatement::class, 'json');
-        } else {
-            $this->statement = MetadataStatement::createFromString($content);
-        }
+        $this->statement = $this->serializer->deserialize($content, MetadataStatement::class, JsonEncoder::FORMAT);
     }
 }

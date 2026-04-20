@@ -11,12 +11,7 @@
     }
   },
   "require": {
-    "web-auth/webauthn-lib": "^4",
-    "web-auth/cose-lib": "^v4",
-    "symfony/serializer": "^7",
-    "symfony/property-info": "^7",
-    "symfony/property-access": "^7",
-    "phpdocumentor/reflection-docblock": "^6",
+    "web-auth/webauthn-lib": "^5",
 
     "symfony/psr-http-message-bridge": "^6",
     "symfony/http-foundation": "^6.0",

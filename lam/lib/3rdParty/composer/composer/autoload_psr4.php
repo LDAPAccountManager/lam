@@ -52,7 +52,6 @@ return array(
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Nyholm\\Psr7\\' => array($vendorDir . '/nyholm/psr7/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
-    'Lcobucci\\Clock\\' => array($vendorDir . '/lcobucci/clock/src'),
     'Jose\\Component\\' => array($vendorDir . '/web-token/jwt-library'),
     'JmesPath\\' => array($vendorDir . '/mtdowling/jmespath.php/src'),
     'Illuminate\\Support\\' => array($vendorDir . '/illuminate/support', $vendorDir . '/illuminate/reflection', $vendorDir . '/illuminate/collections', $vendorDir . '/illuminate/macroable', $vendorDir . '/illuminate/conditionable'),

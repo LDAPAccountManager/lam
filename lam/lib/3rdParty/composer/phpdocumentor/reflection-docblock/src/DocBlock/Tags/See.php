@@ -31,7 +31,7 @@ use function preg_match;
 /**
  * Reflection class for an {@}see tag in a Docblock.
  */
-final class See extends BaseTag
+final class See extends BaseTag implements Factory\StaticMethod
 {
     protected string $name = 'see';
 

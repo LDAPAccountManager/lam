@@ -10,13 +10,13 @@ use Webauthn\Exception\AuthenticatorResponseVerificationException;
 use Webauthn\PublicKeyCredentialOptions;
 use function in_array;
 
-final class ClientDataCollectorManager
+final readonly class ClientDataCollectorManager
 {
     /**
      * @param ClientDataCollector[] $clientDataCollectors
      */
     public function __construct(
-        private readonly iterable $clientDataCollectors,
+        private iterable $clientDataCollectors,
     ) {
     }
 

@@ -14,14 +14,18 @@ use Webauthn\PublicKeyCredentialSource;
 use function in_array;
 use function is_array;
 use function is_string;
+use function strlen;
 
-final class CheckOrigin implements CeremonyStep
+/**
+ * @deprecated since 5.2.0 and will be removed in 6.0.0. Will be replaced by CheckAllowedOrigins
+ */
+final readonly class CheckOrigin implements CeremonyStep
 {
     /**
      * @param string[] $securedRelyingPartyId
      */
     public function __construct(
-        private readonly array $securedRelyingPartyId
+        private array $securedRelyingPartyId
     ) {
     }
 
@@ -48,9 +52,9 @@ final class CheckOrigin implements CeremonyStep
         }
         $clientDataRpId = $parsedRelyingPartyId['host'] ?? '';
         $clientDataRpId !== '' || throw AuthenticatorResponseVerificationException::create('Invalid origin rpId.');
-        $rpIdLength = mb_strlen($facetId);
+        $rpIdLength = strlen($facetId);
 
-        mb_substr(
+        substr(
             '.' . $clientDataRpId,
             -($rpIdLength + 1)
         ) === '.' . $facetId || throw AuthenticatorResponseVerificationException::create('rpId mismatch.');
@@ -58,15 +62,15 @@ final class CheckOrigin implements CeremonyStep
 
     private function getFacetId(
         string $rpId,
-        AuthenticationExtensions $authenticationExtensionsClientInputs,
+        AuthenticationExtensions $AuthenticationExtensions,
         null|AuthenticationExtensions $authenticationExtensionsClientOutputs
     ): string {
-        if ($authenticationExtensionsClientOutputs === null || ! $authenticationExtensionsClientInputs->has(
+        if ($authenticationExtensionsClientOutputs === null || ! $AuthenticationExtensions->has(
             'appid'
         ) || ! $authenticationExtensionsClientOutputs->has('appid')) {
             return $rpId;
         }
-        $appId = $authenticationExtensionsClientInputs->get('appid')
+        $appId = $AuthenticationExtensions->get('appid')
             ->value;
         $wasUsed = $authenticationExtensionsClientOutputs->get('appid')
             ->value;

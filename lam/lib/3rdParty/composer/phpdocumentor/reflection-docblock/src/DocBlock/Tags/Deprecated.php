@@ -23,7 +23,7 @@ use function preg_match;
 /**
  * Reflection class for a {@}deprecated tag in a Docblock.
  */
-final class Deprecated extends BaseTag
+final class Deprecated extends BaseTag implements Factory\StaticMethod
 {
     protected string $name = 'deprecated';
 

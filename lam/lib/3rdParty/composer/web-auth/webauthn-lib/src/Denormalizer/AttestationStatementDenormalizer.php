@@ -8,10 +8,10 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Webauthn\AttestationStatement\AttestationStatement;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 
-final class AttestationStatementDenormalizer implements DenormalizerInterface
+final readonly class AttestationStatementDenormalizer implements DenormalizerInterface
 {
     public function __construct(
-        private readonly AttestationStatementSupportManager $attestationStatementSupportManager
+        private AttestationStatementSupportManager $attestationStatementSupportManager
     ) {
     }
 

@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use function sprintf;
 
-final class WebauthnSerializerFactory
+final readonly class WebauthnSerializerFactory
 {
     private const PACKAGE_SYMFONY_PROPERTY_INFO = 'symfony/property-info';
 
@@ -26,7 +26,7 @@ final class WebauthnSerializerFactory
     private const PACKAGE_PHPDOCUMENTOR_REFLECTION_DOCBLOCK = 'phpdocumentor/reflection-docblock';
 
     public function __construct(
-        private readonly AttestationStatementSupportManager $attestationStatementSupportManager
+        private AttestationStatementSupportManager $attestationStatementSupportManager
     ) {
     }
 

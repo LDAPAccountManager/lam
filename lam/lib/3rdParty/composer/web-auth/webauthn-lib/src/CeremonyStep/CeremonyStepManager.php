@@ -10,13 +10,13 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialSource;
 
-final class CeremonyStepManager
+final readonly class CeremonyStepManager
 {
     /**
      * @param CeremonyStep[] $steps
      */
     public function __construct(
-        private readonly array $steps
+        private array $steps
     ) {
     }
 

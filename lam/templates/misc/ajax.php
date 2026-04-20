@@ -269,26 +269,27 @@ class Ajax {
 		}
 		$webauthnManager = new WebauthnManager();
 		$isRegistered = $webauthnManager->isRegistered($userDN);
+		$loader = $webauthnManager->createPublicKeyCredentialLoader();
 		if (!$isRegistered) {
 			$registrationObject = $webauthnManager->getRegistrationObject($userDN, $interface);
-			$_SESSION['webauthn_registration'] = json_encode($registrationObject, JSON_THROW_ON_ERROR);
-			echo json_encode(
+			$_SESSION['webauthn_registration'] = $loader->serialize($registrationObject, 'json');
+			echo $loader->serialize(
 				[
 					'action' => 'register',
 					'registration' => $registrationObject
 				],
-				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
+				'json'
 			);
 		}
 		else {
 			$authenticationObject = $webauthnManager->getAuthenticationObject($userDN, $interface);
-			$_SESSION['webauthn_authentication'] = json_encode($authenticationObject, JSON_THROW_ON_ERROR);
-			echo json_encode(
+			$_SESSION['webauthn_authentication'] = $loader->serialize($authenticationObject, 'json');
+			echo $loader->serialize(
 				[
 					'action' => 'authenticate',
 					'authentication' => $authenticationObject
 				],
-				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
+				'json'
 			);
 		}
 		die();

@@ -12,10 +12,10 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialSource;
 
-final class CheckAttestationFormatIsKnownAndValid implements CeremonyStep
+final readonly class CheckAttestationFormatIsKnownAndValid implements CeremonyStep
 {
     public function __construct(
-        private readonly AttestationStatementSupportManager $attestationStatementSupportManager,
+        private AttestationStatementSupportManager $attestationStatementSupportManager,
     ) {
     }
 

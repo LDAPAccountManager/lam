@@ -6,10 +6,7 @@ namespace Webauthn\Exception;
 
 use Throwable;
 
-/**
- * @final
- */
-class MissingMetadataStatementException extends MetadataStatementException
+final class MissingMetadataStatementException extends MetadataStatementException
 {
     public function __construct(
         public readonly string $aaguid,

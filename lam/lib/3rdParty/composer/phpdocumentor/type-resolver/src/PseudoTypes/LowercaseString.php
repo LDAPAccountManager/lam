@@ -18,7 +18,7 @@ use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\String_;
 
 /**
- * Value Object representing the type 'lowercase-string'.
+ * Value Object representing the type 'string'.
  *
  * @psalm-immutable
  */

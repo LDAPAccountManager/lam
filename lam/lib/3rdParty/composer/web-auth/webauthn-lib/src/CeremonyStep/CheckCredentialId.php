@@ -10,6 +10,7 @@ use Webauthn\Exception\AuthenticatorResponseVerificationException;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialSource;
+use function strlen;
 
 class CheckCredentialId implements CeremonyStep
 {
@@ -21,7 +22,7 @@ class CheckCredentialId implements CeremonyStep
         string $host
     ): void {
         $credentialId = $publicKeyCredentialSource->publicKeyCredentialId;
-        mb_strlen($credentialId) <= 1023 || throw new AuthenticatorResponseVerificationException(
+        strlen($credentialId) <= 1023 || throw new AuthenticatorResponseVerificationException(
             'Credential ID too long.'
         );
     }

@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use function count;
 use function is_int;
 
-final class SimpleFakeCredentialGenerator implements FakeCredentialGenerator
+final readonly class SimpleFakeCredentialGenerator implements FakeCredentialGenerator
 {
     public function __construct(
-        private readonly null|CacheItemPoolInterface $cache = null
+        private null|CacheItemPoolInterface $cache = null
     ) {
     }
 
