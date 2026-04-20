@@ -487,7 +487,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 * @param PublicKeyCredentialSource $publicKeyCredentialSource credential
 	 */
 	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
-		$json = json_encode($publicKeyCredentialSource);
+		$webauthnManager = new WebauthnManager();
+		$loader = $webauthnManager->createPublicKeyCredentialLoader();
+		$json = $loader->serialize($publicKeyCredentialSource, 'json');
 		$credentialId = base64_encode($publicKeyCredentialSource->publicKeyCredentialId);
 		$userId = $publicKeyCredentialSource->userHandle;
 		$currentTime = time();
