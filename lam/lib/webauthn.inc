@@ -282,16 +282,6 @@ class WebauthnManager {
 	}
 
 	/**
-	 * Returns the extension output checker handler.
-	 * No extensions are checked at this time.
-	 *
-	 * @return ExtensionOutputCheckerHandler handler
-	 */
-	private function getExtensionOutputChecker() {
-		return new ExtensionOutputCheckerHandler();
-	}
-
-	/**
 	 * Returns the webauthn database.
 	 *
 	 * @return PublicKeyCredentialSourceRepositoryBase database

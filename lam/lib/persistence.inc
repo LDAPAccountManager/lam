@@ -981,7 +981,7 @@ class ConfigurationDatabase {
 				$pdoAttr[PDO::MYSQL_ATTR_SSL_CA] = $this->cfgMain->configDatabaseSSLCA;
 			}
 			else {
-				$pdoAttr[PDO\Mysql::ATTR_SSL_CA] = $this->cfgMain->configDatabaseSSLCA;
+				$pdoAttr[Pdo\Mysql::ATTR_SSL_CA] = $this->cfgMain->configDatabaseSSLCA;
 			}
 		}
 		$this->pdo = new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, $pdoAttr);
