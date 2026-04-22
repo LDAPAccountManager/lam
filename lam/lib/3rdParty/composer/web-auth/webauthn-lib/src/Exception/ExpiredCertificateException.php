@@ -6,10 +6,7 @@ namespace Webauthn\Exception;
 
 use Throwable;
 
-/**
- * @final
- */
-class ExpiredCertificateException extends CertificateException
+final class ExpiredCertificateException extends CertificateException
 {
     public static function create(
         string $certificate,

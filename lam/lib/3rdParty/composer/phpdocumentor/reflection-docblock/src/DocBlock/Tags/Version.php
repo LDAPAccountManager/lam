@@ -23,7 +23,7 @@ use function preg_match;
 /**
  * Reflection class for a {@}version tag in a Docblock.
  */
-final class Version extends BaseTag
+final class Version extends BaseTag implements Factory\StaticMethod
 {
     protected string $name = 'version';
 

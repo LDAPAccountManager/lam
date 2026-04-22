@@ -35,6 +35,7 @@ use \Webauthn\TrustPath\CertificateTrustPath;
 
 require_once __DIR__ . '/../../lib/modules.inc';
 require_once __DIR__ . '/../../lib/webauthn.inc';
+include_once __DIR__ . '/../lib/LAMConfigTest.php';
 
 /**
  * Checks the webauthn functionality.
@@ -89,14 +90,14 @@ class WebauthnManagerTest extends TestCase {
 		$this->database->method('findAllForUserDn')->willReturn([]);
 
 		$authenticationObj = $this->manager->getAuthenticationObject('uid=test,o=test', LAM_INTERFACE::ADMIN);
-		$this->assertEquals(32, strlen($authenticationObj->getChallenge()));
-		$this->assertEquals('domain', $authenticationObj->getRpId());
+		$this->assertEquals(32, strlen($authenticationObj->challenge));
+		$this->assertEquals('domain', $authenticationObj->rpId);
 	}
 
 	public function test_getRegistrationObject() {
 		$registrationObject = $this->manager->getRegistrationObject('uid=test,o=test', LAM_INTERFACE::ADMIN);
-		$this->assertEquals(32, strlen($registrationObject->getChallenge()));
-		$this->assertEquals('domain', $registrationObject->getRp()->getId());
+		$this->assertEquals(32, strlen($registrationObject->challenge));
+		$this->assertEquals('domain', $registrationObject->rp->id);
 	}
 
 	public function test_isRegistered_notRegistered() {

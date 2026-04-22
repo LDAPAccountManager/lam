@@ -11,10 +11,10 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialSource;
 
-final class CheckExtensions implements CeremonyStep
+final readonly class CheckExtensions implements CeremonyStep
 {
     public function __construct(
-        private readonly ExtensionOutputCheckerHandler $extensionOutputCheckerHandler,
+        private ExtensionOutputCheckerHandler $extensionOutputCheckerHandler,
     ) {
     }
 

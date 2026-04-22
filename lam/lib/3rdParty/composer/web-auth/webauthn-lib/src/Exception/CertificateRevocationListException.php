@@ -6,10 +6,7 @@ namespace Webauthn\Exception;
 
 use Throwable;
 
-/**
- * @final
- */
-class CertificateRevocationListException extends MetadataServiceException
+final class CertificateRevocationListException extends MetadataServiceException
 {
     public function __construct(
         public readonly string $url,

@@ -4,21 +4,12 @@ declare(strict_types=1);
 
 namespace Webauthn\Denormalizer;
 
-use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
-use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Webauthn\MetadataService\Statement\ExtensionDescriptor;
 use function array_key_exists;
 
-/**
- * @final
- */
-class ExtensionDescriptorDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
+final class ExtensionDescriptorDenormalizer implements DenormalizerInterface
 {
-    use DenormalizerAwareTrait;
-
-    private const ALREADY_CALLED = 'EXTENSION_DESCRIPTOR_PREPROCESS_ALREADY_CALLED';
-
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         if (array_key_exists('fail_if_unknown', $data)) {
@@ -26,9 +17,7 @@ class ExtensionDescriptorDenormalizer implements DenormalizerInterface, Denormal
             unset($data['fail_if_unknown']);
         }
 
-        $context[self::ALREADY_CALLED] = true;
-
-        return $this->denormalizer->denormalize($data, $type, $format, $context);
+        return ExtensionDescriptor::create(...$data);
     }
 
     public function supportsDenormalization(
@@ -37,10 +26,6 @@ class ExtensionDescriptorDenormalizer implements DenormalizerInterface, Denormal
         ?string $format = null,
         array $context = []
     ): bool {
-        if ($context[self::ALREADY_CALLED] ?? false) {
-            return false;
-        }
-
         return $type === ExtensionDescriptor::class;
     }
 
@@ -50,7 +35,7 @@ class ExtensionDescriptorDenormalizer implements DenormalizerInterface, Denormal
     public function getSupportedTypes(?string $format): array
     {
         return [
-            ExtensionDescriptor::class => false,
+            ExtensionDescriptor::class => true,
         ];
     }
 }

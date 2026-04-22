@@ -21,12 +21,7 @@ final class PublicKeyCredentialUserEntityDenormalizer implements DenormalizerInt
         }
         $data['id'] = Base64::decode($data['id']);
 
-        return PublicKeyCredentialUserEntity::create(
-            $data['name'],
-            $data['id'],
-            $data['displayName'],
-            $data['icon'] ?? null
-        );
+        return PublicKeyCredentialUserEntity::create($data['name'], $data['id'], $data['displayName']);
     }
 
     public function supportsDenormalization(
@@ -51,17 +46,14 @@ final class PublicKeyCredentialUserEntityDenormalizer implements DenormalizerInt
     /**
      * @return array<string, mixed>
      */
-    public function normalize(mixed $data, ?string $format = null, array $context = []): array
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array
     {
-        assert($data instanceof PublicKeyCredentialUserEntity);
-        $normalized = [
-            'id' => Base64UrlSafe::encodeUnpadded($data->id),
-            'name' => $data->name,
-            'displayName' => $data->displayName,
-            'icon' => $data->icon,
+        assert($object instanceof PublicKeyCredentialUserEntity);
+        return [
+            'id' => Base64UrlSafe::encodeUnpadded($object->id),
+            'name' => $object->name,
+            'displayName' => $object->displayName,
         ];
-
-        return array_filter($normalized, fn ($value) => $value !== null);
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool

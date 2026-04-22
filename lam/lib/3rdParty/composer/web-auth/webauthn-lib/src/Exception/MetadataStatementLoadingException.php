@@ -6,10 +6,7 @@ namespace Webauthn\Exception;
 
 use Throwable;
 
-/**
- * @final
- */
-class MetadataStatementLoadingException extends MetadataStatementException
+final class MetadataStatementLoadingException extends MetadataStatementException
 {
     public static function create(
         string $message = 'Unable to load the metadata statement',

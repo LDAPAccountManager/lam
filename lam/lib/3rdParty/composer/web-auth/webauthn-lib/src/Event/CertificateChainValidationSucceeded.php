@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace Webauthn\Event;
 
-/**
- * @final
- */
-class CertificateChainValidationSucceeded implements WebauthnEvent
+final readonly class CertificateChainValidationSucceeded implements WebauthnEvent
 {
     /**
      * @param string[] $untrustedCertificates
      */
     public function __construct(
-        public readonly array $untrustedCertificates,
-        public readonly string $trustedCertificate
+        public array $untrustedCertificates,
+        public string $trustedCertificate
     ) {
     }
 

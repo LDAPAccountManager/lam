@@ -18,28 +18,15 @@ use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\String_;
 
 /**
- * Value Object representing the type `trait-string`.
+ * Value Object representing the type 'string'.
  *
  * @psalm-immutable
  */
 final class TraitString extends String_ implements PseudoType
 {
-    /** @var Type|null */
-    private $genericType;
-
-    public function __construct(?Type $genericType = null)
-    {
-        $this->genericType = $genericType;
-    }
-
     public function underlyingType(): Type
     {
         return new String_();
-    }
-
-    public function getGenericType(): ?Type
-    {
-        return $this->genericType;
     }
 
     /**
@@ -47,10 +34,6 @@ final class TraitString extends String_ implements PseudoType
      */
     public function __toString(): string
     {
-        if ($this->genericType === null) {
-            return 'trait-string';
-        }
-
-        return 'trait-string<' . (string) $this->genericType . '>';
+        return 'trait-string';
     }
 }

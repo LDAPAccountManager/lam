@@ -12,14 +12,14 @@ use CBOR\NegativeIntegerObject;
 use CBOR\TextStringObject;
 use CBOR\UnsignedIntegerObject;
 use Symfony\Component\Uid\Uuid;
-use Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientOutputsLoader;
+use Webauthn\AuthenticationExtensions\AuthenticationExtensionLoader;
 use Webauthn\Exception\InvalidDataException;
 use function chr;
 use function ord;
 
-final class AuthenticatorDataLoader
+final readonly class AuthenticatorDataLoader
 {
-    private readonly Decoder $decoder;
+    private Decoder $decoder;
 
     private function __construct()
     {
@@ -61,7 +61,7 @@ final class AuthenticatorDataLoader
         $extension = null;
         if (0 !== (ord($flags) & AuthenticatorData::FLAG_ED)) {
             $extension = $this->decoder->decode($authDataStream);
-            $extension = AuthenticationExtensionsClientOutputsLoader::load($extension);
+            $extension = AuthenticationExtensionLoader::load($extension);
         }
         $authDataStream->isEOF() || throw InvalidDataException::create(
             $authData,
@@ -83,13 +83,13 @@ final class AuthenticatorDataLoader
     {
         $needle = hex2bin('a301634f4b500327206745643235353139');
         $correct = hex2bin('a401634f4b500327206745643235353139');
-        $position = mb_strpos($data, $needle, 0, '8bit');
+        $position = strpos($data, (string) $needle);
         if ($position === false) {
             return $data;
         }
 
-        $begin = mb_substr($data, 0, $position, '8bit');
-        $end = mb_substr($data, $position, null, '8bit');
+        $begin = substr($data, 0, $position);
+        $end = substr($data, $position);
         $end = str_replace($needle, $correct, $end);
         $cbor = new StringStream($end);
         $badKey = $this->decoder->decode($cbor);

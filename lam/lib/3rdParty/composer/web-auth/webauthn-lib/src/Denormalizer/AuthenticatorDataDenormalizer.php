@@ -16,8 +16,8 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Uid\Uuid;
 use Webauthn\AttestedCredentialData;
+use Webauthn\AuthenticationExtensions\AuthenticationExtensionLoader;
 use Webauthn\AuthenticationExtensions\AuthenticationExtensions;
-use Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientOutputsLoader;
 use Webauthn\AuthenticatorData;
 use Webauthn\Exception\InvalidDataException;
 use Webauthn\StringStream;
@@ -64,7 +64,7 @@ final class AuthenticatorDataDenormalizer implements DenormalizerInterface, Deno
         $extension = null;
         if (0 !== (ord($flags) & AuthenticatorData::FLAG_ED)) {
             $extension = $this->decoder->decode($authDataStream);
-            $extension = AuthenticationExtensionsClientOutputsLoader::load($extension);
+            $extension = AuthenticationExtensionLoader::load($extension);
         }
         $authDataStream->isEOF() || throw InvalidDataException::create(
             $authData,
@@ -110,13 +110,13 @@ final class AuthenticatorDataDenormalizer implements DenormalizerInterface, Deno
     {
         $needle = hex2bin('a301634f4b500327206745643235353139');
         $correct = hex2bin('a401634f4b500327206745643235353139');
-        $position = mb_strpos($data, $needle, 0, '8bit');
+        $position = strpos($data, (string) $needle);
         if ($position === false) {
             return $data;
         }
 
-        $begin = mb_substr($data, 0, $position, '8bit');
-        $end = mb_substr($data, $position, null, '8bit');
+        $begin = substr($data, 0, $position);
+        $end = substr($data, $position);
         $end = str_replace($needle, $correct, $end);
         $cbor = new StringStream($end);
         $badKey = $this->decoder->decode($cbor);

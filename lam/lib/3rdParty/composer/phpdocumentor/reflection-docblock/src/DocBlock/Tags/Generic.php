@@ -25,7 +25,7 @@ use function preg_match;
 /**
  * Parses a tag definition for a DocBlock.
  */
-final class Generic extends BaseTag
+final class Generic extends BaseTag implements Factory\StaticMethod
 {
     /**
      * Parses a tag and populates the member variables.

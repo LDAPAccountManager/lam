@@ -6,10 +6,7 @@ namespace Webauthn\Exception;
 
 use Throwable;
 
-/**
- * @final
- */
-class InvalidCertificateException extends MetadataServiceException
+final class InvalidCertificateException extends MetadataServiceException
 {
     public function __construct(
         public readonly string $certificate,

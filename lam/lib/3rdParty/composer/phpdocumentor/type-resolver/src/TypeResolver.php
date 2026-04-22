@@ -15,24 +15,17 @@ namespace phpDocumentor\Reflection;
 
 use Doctrine\Deprecations\Deprecation;
 use InvalidArgumentException;
-use phpDocumentor\Reflection\PseudoTypes\ArrayKey;
 use phpDocumentor\Reflection\PseudoTypes\ArrayShape;
 use phpDocumentor\Reflection\PseudoTypes\ArrayShapeItem;
-use phpDocumentor\Reflection\PseudoTypes\CallableArray;
 use phpDocumentor\Reflection\PseudoTypes\CallableString;
-use phpDocumentor\Reflection\PseudoTypes\ClassString;
-use phpDocumentor\Reflection\PseudoTypes\ClosedResource;
 use phpDocumentor\Reflection\PseudoTypes\Conditional;
 use phpDocumentor\Reflection\PseudoTypes\ConditionalForParameter;
 use phpDocumentor\Reflection\PseudoTypes\ConstExpression;
-use phpDocumentor\Reflection\PseudoTypes\EnumString;
 use phpDocumentor\Reflection\PseudoTypes\False_;
 use phpDocumentor\Reflection\PseudoTypes\FloatValue;
-use phpDocumentor\Reflection\PseudoTypes\Generic;
 use phpDocumentor\Reflection\PseudoTypes\HtmlEscapedString;
 use phpDocumentor\Reflection\PseudoTypes\IntegerRange;
 use phpDocumentor\Reflection\PseudoTypes\IntegerValue;
-use phpDocumentor\Reflection\PseudoTypes\InterfaceString;
 use phpDocumentor\Reflection\PseudoTypes\IntMask;
 use phpDocumentor\Reflection\PseudoTypes\IntMaskOf;
 use phpDocumentor\Reflection\PseudoTypes\KeyOf;
@@ -42,44 +35,34 @@ use phpDocumentor\Reflection\PseudoTypes\ListShapeItem;
 use phpDocumentor\Reflection\PseudoTypes\LiteralString;
 use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 use phpDocumentor\Reflection\PseudoTypes\NegativeInteger;
-use phpDocumentor\Reflection\PseudoTypes\NeverReturn;
-use phpDocumentor\Reflection\PseudoTypes\NeverReturns;
 use phpDocumentor\Reflection\PseudoTypes\NonEmptyArray;
 use phpDocumentor\Reflection\PseudoTypes\NonEmptyList;
 use phpDocumentor\Reflection\PseudoTypes\NonEmptyLowercaseString;
 use phpDocumentor\Reflection\PseudoTypes\NonEmptyString;
-use phpDocumentor\Reflection\PseudoTypes\NonFalsyString;
-use phpDocumentor\Reflection\PseudoTypes\NonNegativeInteger;
-use phpDocumentor\Reflection\PseudoTypes\NonPositiveInteger;
-use phpDocumentor\Reflection\PseudoTypes\NonZeroInteger;
-use phpDocumentor\Reflection\PseudoTypes\NoReturn;
 use phpDocumentor\Reflection\PseudoTypes\Numeric_;
 use phpDocumentor\Reflection\PseudoTypes\NumericString;
 use phpDocumentor\Reflection\PseudoTypes\ObjectShape;
 use phpDocumentor\Reflection\PseudoTypes\ObjectShapeItem;
 use phpDocumentor\Reflection\PseudoTypes\OffsetAccess;
-use phpDocumentor\Reflection\PseudoTypes\OpenResource;
 use phpDocumentor\Reflection\PseudoTypes\PositiveInteger;
-use phpDocumentor\Reflection\PseudoTypes\PrivatePropertiesOf;
-use phpDocumentor\Reflection\PseudoTypes\PropertiesOf;
-use phpDocumentor\Reflection\PseudoTypes\ProtectedPropertiesOf;
-use phpDocumentor\Reflection\PseudoTypes\PublicPropertiesOf;
-use phpDocumentor\Reflection\PseudoTypes\Scalar;
 use phpDocumentor\Reflection\PseudoTypes\StringValue;
 use phpDocumentor\Reflection\PseudoTypes\TraitString;
 use phpDocumentor\Reflection\PseudoTypes\True_;
-use phpDocumentor\Reflection\PseudoTypes\TruthyString;
 use phpDocumentor\Reflection\PseudoTypes\ValueOf;
 use phpDocumentor\Reflection\Types\AggregatedType;
 use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\ArrayKey;
 use phpDocumentor\Reflection\Types\Boolean;
 use phpDocumentor\Reflection\Types\Callable_;
 use phpDocumentor\Reflection\Types\CallableParameter;
+use phpDocumentor\Reflection\Types\ClassString;
+use phpDocumentor\Reflection\Types\Collection;
 use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\Expression;
 use phpDocumentor\Reflection\Types\Float_;
 use phpDocumentor\Reflection\Types\Integer;
+use phpDocumentor\Reflection\Types\InterfaceString;
 use phpDocumentor\Reflection\Types\Intersection;
 use phpDocumentor\Reflection\Types\Iterable_;
 use phpDocumentor\Reflection\Types\Mixed_;
@@ -89,6 +72,7 @@ use phpDocumentor\Reflection\Types\Nullable;
 use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\Parent_;
 use phpDocumentor\Reflection\Types\Resource_;
+use phpDocumentor\Reflection\Types\Scalar;
 use phpDocumentor\Reflection\Types\Self_;
 use phpDocumentor\Reflection\Types\Static_;
 use phpDocumentor\Reflection\Types\String_;
@@ -124,6 +108,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 use RuntimeException;
 
+use function array_filter;
 use function array_key_exists;
 use function array_map;
 use function array_reverse;
@@ -157,7 +142,6 @@ final class TypeResolver
         'numeric-string' => NumericString::class,
         'numeric' => Numeric_::class,
         'trait-string' => TraitString::class,
-        'enum-string' => EnumString::class,
         'int' => Integer::class,
         'integer' => Integer::class,
         'positive-int' => PositiveInteger::class,
@@ -170,12 +154,9 @@ final class TypeResolver
         'object' => Object_::class,
         'mixed' => Mixed_::class,
         'array' => Array_::class,
-        'callable-array' => CallableArray::class,
         'array-key' => ArrayKey::class,
         'non-empty-array' => NonEmptyArray::class,
         'resource' => Resource_::class,
-        'open-resource' => OpenResource::class,
-        'closed-resource' => ClosedResource::class,
         'void' => Void_::class,
         'null' => Null_::class,
         'scalar' => Scalar::class,
@@ -191,16 +172,8 @@ final class TypeResolver
         'parent' => Parent_::class,
         'iterable' => Iterable_::class,
         'never' => Never_::class,
-        'never-return' => NeverReturn::class,
-        'never-returns' => NeverReturns::class,
-        'no-return' => NoReturn::class,
         'list' => List_::class,
         'non-empty-list' => NonEmptyList::class,
-        'non-falsy-string' => NonFalsyString::class,
-        'truthy-string' => TruthyString::class,
-        'non-positive-int' => NonPositiveInteger::class,
-        'non-negative-int' => NonNegativeInteger::class,
-        'non-zero-int' => NonZeroInteger::class,
     ];
 
     /**
@@ -225,8 +198,14 @@ final class TypeResolver
     public function __construct(?FqsenResolver $fqsenResolver = null)
     {
         $this->fqsenResolver = $fqsenResolver ?: new FqsenResolver();
-        $this->typeParser = new TypeParser(new ParserConfig([]), new ConstExprParser(new ParserConfig([])));
-        $this->lexer = new Lexer(new ParserConfig([]));
+
+        if (class_exists(ParserConfig::class)) {
+            $this->typeParser = new TypeParser(new ParserConfig([]), new ConstExprParser(new ParserConfig([])));
+            $this->lexer = new Lexer(new ParserConfig([]));
+        } else {
+            $this->typeParser = new TypeParser(new ConstExprParser());
+            $this->lexer = new Lexer();
+        }
     }
 
     /**
@@ -262,19 +241,7 @@ final class TypeResolver
         $ast = $this->parse($tokenIterator);
         $type = $this->createType($ast, $context);
 
-        if (
-            $tokenIterator->isCurrentTokenType(Lexer::TOKEN_UNION) ||
-            $tokenIterator->isCurrentTokenType(Lexer::TOKEN_INTERSECTION)
-        ) {
-            Deprecation::trigger(
-                'phpdocumentor/type-resolver',
-                'https://github.com/phpDocumentor/TypeResolver/issues/184',
-                'Legacy nullable type detected, please update your code as
-                you are using nullable types in a docblock. support is removed in v2.0.0'
-            );
-        }
-
-        return $type;
+        return $this->tryParseRemainingCompoundTypes($tokenIterator, $context, $type);
     }
 
     public function createType(?TypeNode $type, Context $context): Type
@@ -350,16 +317,18 @@ final class TypeResolver
 
             case IntersectionTypeNode::class:
                 return new Intersection(
-                    array_map(
-                        function (TypeNode $nestedType) use ($context): Type {
-                            $type = $this->createType($nestedType, $context);
-                            if ($type instanceof AggregatedType) {
-                                return new Expression($type);
-                            }
+                    array_filter(
+                        array_map(
+                            function (TypeNode $nestedType) use ($context): Type {
+                                $type = $this->createType($nestedType, $context);
+                                if ($type instanceof AggregatedType) {
+                                    return new Expression($type);
+                                }
 
-                            return $type;
-                        },
-                        $type->types
+                                return $type;
+                            },
+                            $type->types
+                        )
                     )
                 );
 
@@ -370,16 +339,18 @@ final class TypeResolver
 
             case UnionTypeNode::class:
                 return new Compound(
-                    array_map(
-                        function (TypeNode $nestedType) use ($context): Type {
-                            $type = $this->createType($nestedType, $context);
-                            if ($type instanceof AggregatedType) {
-                                return new Expression($type);
-                            }
+                    array_filter(
+                        array_map(
+                            function (TypeNode $nestedType) use ($context): Type {
+                                $type = $this->createType($nestedType, $context);
+                                if ($type instanceof AggregatedType) {
+                                    return new Expression($type);
+                                }
 
-                            return $type;
-                        },
-                        $type->types
+                                return $type;
+                            },
+                            $type->types
+                        )
                     )
                 );
 
@@ -419,26 +390,31 @@ final class TypeResolver
     {
         switch (strtolower($type->type->name)) {
             case 'array':
-                $genericTypes = array_reverse($this->createTypesByTypeNodes($type->genericTypes, $context));
-
-                return new Array_(...$genericTypes);
-
-            case 'non-empty-array':
-                $genericTypes = array_reverse($this->createTypesByTypeNodes($type->genericTypes, $context));
-
-                return new NonEmptyArray(...$genericTypes);
+                return $this->createArray($type->genericTypes, $context);
 
             case 'class-string':
-                return new ClassString($this->createType($type->genericTypes[0], $context));
+                $subType = $this->createType($type->genericTypes[0], $context);
+                if (!$subType instanceof Object_ || $subType->getFqsen() === null) {
+                    throw new RuntimeException(
+                        $subType . ' is not a class string'
+                    );
+                }
+
+                return new ClassString(
+                    $subType->getFqsen()
+                );
 
             case 'interface-string':
-                return new InterfaceString($this->createType($type->genericTypes[0], $context));
+                $subType = $this->createType($type->genericTypes[0], $context);
+                if (!$subType instanceof Object_ || $subType->getFqsen() === null) {
+                    throw new RuntimeException(
+                        $subType . ' is not a class string'
+                    );
+                }
 
-            case 'trait-string':
-                return new TraitString($this->createType($type->genericTypes[0], $context));
-
-            case 'enum-string':
-                return new EnumString($this->createType($type->genericTypes[0], $context));
+                return new InterfaceString(
+                    $subType->getFqsen()
+                );
 
             case 'list':
                 return new List_(
@@ -466,18 +442,6 @@ final class TypeResolver
             case 'value-of':
                 return new ValueOf($this->createType($type->genericTypes[0], $context));
 
-            case 'properties-of':
-                return new PropertiesOf($this->createType($type->genericTypes[0], $context));
-
-            case 'public-properties-of':
-                return new PublicPropertiesOf($this->createType($type->genericTypes[0], $context));
-
-            case 'protected-properties-of':
-                return new ProtectedPropertiesOf($this->createType($type->genericTypes[0], $context));
-
-            case 'private-properties-of':
-                return new PrivatePropertiesOf($this->createType($type->genericTypes[0], $context));
-
             case 'int-mask':
                 return new IntMask(...$this->createTypesByTypeNodes($type->genericTypes, $context));
 
@@ -491,35 +455,32 @@ final class TypeResolver
                 return new Self_(...$this->createTypesByTypeNodes($type->genericTypes, $context));
 
             default:
-                $mainType = $this->createType($type->type, $context);
-                if ($mainType instanceof Object_ === false) {
-                    throw new RuntimeException(sprintf('%s is an unsupported generic', (string) $mainType));
+                $collectionType = $this->createType($type->type, $context);
+                if ($collectionType instanceof Object_ === false) {
+                    throw new RuntimeException(sprintf('%s is not a collection', (string) $collectionType));
                 }
 
-                $types = $this->createTypesByTypeNodes($type->genericTypes, $context);
-
-                return new Generic($mainType->getFqsen(), $types);
+                return new Collection(
+                    $collectionType->getFqsen(),
+                    ...array_reverse($this->createTypesByTypeNodes($type->genericTypes, $context))
+                );
         }
     }
 
     private function createFromCallable(CallableTypeNode $type, Context $context): Callable_
     {
-        return new Callable_(
-            (string) $type->identifier,
-            array_map(
-                function (CallableTypeParameterNode $param) use ($context): CallableParameter {
-                    return new CallableParameter(
-                        $this->createType($param->type, $context),
-                        $param->parameterName !== '' ? trim($param->parameterName, '$') : null,
-                        $param->isReference,
-                        $param->isVariadic,
-                        $param->isOptional
-                    );
-                },
-                $type->parameters
-            ),
-            $this->createType($type->returnType, $context)
-        );
+        return new Callable_(array_map(
+            function (CallableTypeParameterNode $param) use ($context): CallableParameter {
+                return new CallableParameter(
+                    $this->createType($param->type, $context),
+                    $param->parameterName !== '' ? trim($param->parameterName, '$') : null,
+                    $param->isReference,
+                    $param->isVariadic,
+                    $param->isOptional
+                );
+            },
+            $type->parameters
+        ), $this->createType($type->returnType, $context));
     }
 
     private function createFromConst(ConstTypeNode $type, Context $context): Type
@@ -664,6 +625,33 @@ final class TypeResolver
         return new Object_($this->fqsenResolver->resolve($type, $context));
     }
 
+    /** @param TypeNode[] $typeNodes */
+    private function createArray(array $typeNodes, Context $context): Array_
+    {
+        $types = array_reverse($this->createTypesByTypeNodes($typeNodes, $context));
+
+        if (isset($types[1]) === false) {
+            return new Array_(...$types);
+        }
+
+        if ($this->validArrayKeyType($types[1]) || $types[1] instanceof ArrayKey) {
+            return new Array_(...$types);
+        }
+
+        if ($types[1] instanceof Compound && $types[1]->getIterator()->count() === 2) {
+            if ($this->validArrayKeyType($types[1]->get(0)) && $this->validArrayKeyType($types[1]->get(1))) {
+                return new Array_(...$types);
+            }
+        }
+
+        throw new RuntimeException('An array can have only integers or strings as keys');
+    }
+
+    private function validArrayKeyType(?Type $type): bool
+    {
+        return $type instanceof String_ || $type instanceof Integer;
+    }
+
     private function parse(TokenIterator $tokenIterator): TypeNode
     {
         try {
@@ -673,6 +661,47 @@ final class TypeResolver
         }
 
         return $ast;
+    }
+
+    /**
+     * Will try to parse unsupported type notations by phpstan
+     *
+     * The phpstan parser doesn't support the illegal nullable combinations like this library does.
+     * This method will warn the user about those notations but for bc purposes we will still have it here.
+     */
+    private function tryParseRemainingCompoundTypes(TokenIterator $tokenIterator, Context $context, Type $type): Type
+    {
+        if (
+            $tokenIterator->isCurrentTokenType(Lexer::TOKEN_UNION) ||
+            $tokenIterator->isCurrentTokenType(Lexer::TOKEN_INTERSECTION)
+        ) {
+            Deprecation::trigger(
+                'phpdocumentor/type-resolver',
+                'https://github.com/phpDocumentor/TypeResolver/issues/184',
+                'Legacy nullable type detected, please update your code as
+                you are using nullable types in a docblock. support will be removed in v2.0.0'
+            );
+        }
+
+        $continue = true;
+        while ($continue) {
+            $continue = false;
+            while ($tokenIterator->tryConsumeTokenType(Lexer::TOKEN_UNION)) {
+                $ast = $this->parse($tokenIterator);
+                $type2 = $this->createType($ast, $context);
+                $type = new Compound([$type, $type2]);
+                $continue = true;
+            }
+
+            while ($tokenIterator->tryConsumeTokenType(Lexer::TOKEN_INTERSECTION)) {
+                $ast = $this->typeParser->parse($tokenIterator);
+                $type2 = $this->createType($ast, $context);
+                $type = new Intersection([$type, $type2]);
+                $continue = true;
+            }
+        }
+
+        return $type;
     }
 
     /**

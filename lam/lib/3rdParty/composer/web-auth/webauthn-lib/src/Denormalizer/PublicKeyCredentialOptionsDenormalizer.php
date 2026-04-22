@@ -135,49 +135,49 @@ final class PublicKeyCredentialOptionsDenormalizer implements DenormalizerInterf
     /**
      * @return array<string, mixed>
      */
-    public function normalize(mixed $data, ?string $format = null, array $context = []): array
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array
     {
         assert(
-            $data instanceof PublicKeyCredentialCreationOptions || $data instanceof PublicKeyCredentialRequestOptions
+            $object instanceof PublicKeyCredentialCreationOptions || $object instanceof PublicKeyCredentialRequestOptions
         );
         $json = [
-            'challenge' => Base64UrlSafe::encodeUnpadded($data->challenge),
-            'timeout' => $data->timeout,
-            'extensions' => $data->extensions->count() === 0 ? null : $this->normalizer->normalize(
-                $data->extensions,
+            'challenge' => Base64UrlSafe::encodeUnpadded($object->challenge),
+            'timeout' => $object->timeout,
+            'extensions' => $object->extensions->count() === 0 ? null : $this->normalizer->normalize(
+                $object->extensions,
                 $format,
                 $context
             ),
         ];
 
-        if ($data instanceof PublicKeyCredentialCreationOptions) {
+        if ($object instanceof PublicKeyCredentialCreationOptions) {
             $json = [
                 ...$json,
-                'rp' => $this->normalizer->normalize($data->rp, $format, $context),
-                'user' => $this->normalizer->normalize($data->user, $format, $context),
+                'rp' => $this->normalizer->normalize($object->rp, $format, $context),
+                'user' => $this->normalizer->normalize($object->user, $format, $context),
                 'pubKeyCredParams' => $this->normalizer->normalize(
-                    $data->pubKeyCredParams,
+                    $object->pubKeyCredParams,
                     PublicKeyCredentialParameters::class . '[]',
                     $context
                 ),
-                'authenticatorSelection' => $data->authenticatorSelection === null ? null : $this->normalizer->normalize(
-                    $data->authenticatorSelection,
+                'authenticatorSelection' => $object->authenticatorSelection === null ? null : $this->normalizer->normalize(
+                    $object->authenticatorSelection,
                     $format,
                     $context
                 ),
-                'attestation' => $data->attestation,
-                'excludeCredentials' => $this->normalizer->normalize($data->excludeCredentials, $format, $context),
+                'attestation' => $object->attestation,
+                'excludeCredentials' => $this->normalizer->normalize($object->excludeCredentials, $format, $context),
             ];
         }
-        if ($data instanceof PublicKeyCredentialRequestOptions) {
+        if ($object instanceof PublicKeyCredentialRequestOptions) {
             $json = [
                 ...$json,
-                'rpId' => $data->rpId,
-                'allowCredentials' => $this->normalizer->normalize($data->allowCredentials, $format, $context),
-                'userVerification' => $data->userVerification,
+                'rpId' => $object->rpId,
+                'allowCredentials' => $this->normalizer->normalize($object->allowCredentials, $format, $context),
+                'userVerification' => $object->userVerification,
             ];
         }
 
-        return array_filter($json, static fn ($value) => $value !== null && $value !== []);
+        return array_filter($json, static fn ($value): bool => $value !== null);
     }
 }

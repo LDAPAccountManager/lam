@@ -6,13 +6,10 @@ namespace Webauthn\Event;
 
 use Webauthn\MetadataService\Statement\MetadataStatement;
 
-/**
- * @final
- */
-class MetadataStatementFound implements WebauthnEvent
+final readonly class MetadataStatementFound implements WebauthnEvent
 {
     public function __construct(
-        public readonly MetadataStatement $metadataStatement
+        public MetadataStatement $metadataStatement
     ) {
     }
 

@@ -6,12 +6,14 @@ namespace Webauthn;
 
 use CBOR\Stream;
 use Webauthn\Exception\InvalidDataException;
+use function assert;
 use function fclose;
 use function fopen;
 use function fread;
 use function fwrite;
 use function rewind;
 use function sprintf;
+use function strlen;
 
 final class StringStream implements Stream
 {
@@ -26,8 +28,9 @@ final class StringStream implements Stream
 
     public function __construct(string $data)
     {
-        $this->length = mb_strlen($data, '8bit');
+        $this->length = strlen($data);
         $resource = fopen('php://memory', 'rb+');
+        assert($resource !== false, 'The resource could not be opened.');
         fwrite($resource, $data);
         rewind($resource);
         $this->data = $resource;
@@ -39,8 +42,9 @@ final class StringStream implements Stream
             return '';
         }
         $read = fread($this->data, $length);
-        $bytesRead = mb_strlen($read, '8bit');
-        mb_strlen($read, '8bit') === $length || throw InvalidDataException::create(null, sprintf(
+        assert($read !== false, 'The data could not be read.');
+        $bytesRead = strlen($read);
+        strlen($read) === $length || throw InvalidDataException::create(null, sprintf(
             'Out of range. Expected: %d, read: %d.',
             $length,
             $bytesRead

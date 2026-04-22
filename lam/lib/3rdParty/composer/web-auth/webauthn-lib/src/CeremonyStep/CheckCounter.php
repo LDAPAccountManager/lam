@@ -11,10 +11,10 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialSource;
 
-final class CheckCounter implements CeremonyStep
+final readonly class CheckCounter implements CeremonyStep
 {
     public function __construct(
-        private readonly CounterChecker $counterChecker
+        private CounterChecker $counterChecker
     ) {
     }
 

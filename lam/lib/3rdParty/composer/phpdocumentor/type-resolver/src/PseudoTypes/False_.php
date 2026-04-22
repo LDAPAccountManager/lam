@@ -17,6 +17,8 @@ use phpDocumentor\Reflection\PseudoType;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\Boolean;
 
+use function class_alias;
+
 /**
  * Value Object representing the PseudoType 'False', which is a Boolean type.
  *
@@ -34,3 +36,5 @@ final class False_ extends Boolean implements PseudoType
         return 'false';
     }
 }
+
+class_alias(False_::class, 'phpDocumentor\Reflection\Types\False_', false);

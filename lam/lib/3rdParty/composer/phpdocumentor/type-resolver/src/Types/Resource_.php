@@ -20,7 +20,7 @@ use phpDocumentor\Reflection\Type;
  *
  * @psalm-immutable
  */
-class Resource_ implements Type
+final class Resource_ implements Type
 {
     /**
      * Returns a rendered output of the Type as it would be used in a DocBlock.

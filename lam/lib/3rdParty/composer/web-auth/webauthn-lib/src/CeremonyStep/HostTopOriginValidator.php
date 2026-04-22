@@ -6,10 +6,10 @@ namespace Webauthn\CeremonyStep;
 
 use Webauthn\Exception\AuthenticatorResponseVerificationException;
 
-final class HostTopOriginValidator implements TopOriginValidator
+final readonly class HostTopOriginValidator implements TopOriginValidator
 {
     public function __construct(
-        private readonly string $host
+        private string $host
     ) {
     }
 

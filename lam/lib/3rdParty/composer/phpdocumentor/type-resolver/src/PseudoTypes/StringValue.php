@@ -20,7 +20,7 @@ use phpDocumentor\Reflection\Types\String_;
 use function sprintf;
 
 /** @psalm-immutable */
-class StringValue extends String_ implements PseudoType
+class StringValue implements PseudoType
 {
     /** @var string */
     private $value;

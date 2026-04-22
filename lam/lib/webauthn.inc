@@ -12,15 +12,12 @@ use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use Cose\Algorithms;
-use Http\Discovery\Psr17Factory;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAM_INTERFACE;
 use LAMCfgMain;
 use LAMException;
 use PDO;
 use PDOException;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
@@ -36,6 +33,7 @@ use Webauthn\AuthenticatorAssertionResponseValidator;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
 use Webauthn\AuthenticatorSelectionCriteria;
+use Webauthn\CeremonyStep\CeremonyStepManagerFactory;
 use Webauthn\Denormalizer\WebauthnSerializerFactory;
 use Webauthn\PublicKeyCredential;
 use Webauthn\PublicKeyCredentialCreationOptions;
@@ -105,6 +103,7 @@ class WebauthnManager {
 	 */
 	public function getRegistrationObject($dn, LAM_INTERFACE $interface, $extraExcludedKeys = []) {
 		$rpEntity = $this->createRpEntry($interface);
+		$_SESSION['webauthn_rp_id'] = $rpEntity->id;
 		$userEntity = $this->getUserEntity($dn);
 		$challenge = $this->createChallenge();
 		$credentialParameters = $this->getCredentialParameters();
@@ -134,12 +133,11 @@ class WebauthnManager {
 	 * @return bool true if response is valid and registration succeeded
 	 */
 	public function storeNewRegistration($registration, $clientResponse) {
-		$attestationSupportManager = $this->getAttestationSupportManager();
 		$publicKeyCredentialLoader = $this->createPublicKeyCredentialLoader();
-		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$repository = $this->getDatabase();
-		$responseValidator = new AuthenticatorAttestationResponseValidator(
-			$attestationSupportManager, null, null, $extensionOutputCheckerHandler);
+		$csmFactory = new CeremonyStepManagerFactory();
+		$creationCSM = $csmFactory->creationCeremony();
+		$responseValidator = AuthenticatorAttestationResponseValidator::create($creationCSM);
 		try {
 			$publicKeyCredential = $publicKeyCredentialLoader->deserialize($clientResponse, PublicKeyCredential::class, 'json');
 			$authenticatorAttestationResponse = $publicKeyCredential->response;
@@ -147,11 +145,7 @@ class WebauthnManager {
 				logNewMessage(LOG_ERR, 'Invalid webauthn response: ' . $clientResponse);
 				return false;
 			}
-			$symfonyRequest = Request::createFromGlobals();
-			$psr17Factory = new Psr17Factory();
-			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
-			$psr7Request = $psrFactory->createRequest($symfonyRequest);
-			$publicKeyCredentialSource = $responseValidator->check($authenticatorAttestationResponse, $registration, $psr7Request);
+			$publicKeyCredentialSource = $responseValidator->check($authenticatorAttestationResponse, $registration, $_SESSION['webauthn_rp_id']);
 			$repository->saveCredentialSource($publicKeyCredentialSource);
 			return true;
 		}
@@ -288,16 +282,6 @@ class WebauthnManager {
 	}
 
 	/**
-	 * Returns the extension output checker handler.
-	 * No extensions are checked at this time.
-	 *
-	 * @return ExtensionOutputCheckerHandler handler
-	 */
-	private function getExtensionOutputChecker() {
-		return new ExtensionOutputCheckerHandler();
-	}
-
-	/**
 	 * Returns the webauthn database.
 	 *
 	 * @return PublicKeyCredentialSourceRepositoryBase database
@@ -349,6 +333,7 @@ class WebauthnManager {
 		$userVerification = PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
 		$extensions = new AuthenticationExtensions();
 		$relyingParty = $this->createRpEntry($interface);
+		$_SESSION['webauthn_rp_id'] = $relyingParty->id;
 		$allowCredentials = [];
 		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
 			$allowCredentials[] = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();
@@ -372,13 +357,10 @@ class WebauthnManager {
 	 */
 	public function isValidAuthentication(string $response, string $userDn) {
 		$database = $this->getDatabase();
-		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
-		$algorithmManager = $this->getAlgorithmManager();
-		$responseValidator = new AuthenticatorAssertionResponseValidator(
-			null,
-			null,
-			$extensionOutputCheckerHandler,
-			$algorithmManager
+		$csmFactory = new CeremonyStepManagerFactory();
+		$requestCSM = $csmFactory->requestCeremony();
+		$responseValidator = AuthenticatorAssertionResponseValidator::create(
+			$requestCSM
 		);
 		$publicKeyCredentialLoader = $this->createPublicKeyCredentialLoader();
 		$publicKeyCredential = $publicKeyCredentialLoader->deserialize($response, PublicKeyCredential::class, 'json');
@@ -388,10 +370,6 @@ class WebauthnManager {
 			return false;
 		}
 		try {
-			$symfonyRequest = Request::createFromGlobals();
-			$psr17Factory = new Psr17Factory();
-			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
-			$psr7Request = $psrFactory->createRequest($symfonyRequest);
 			$loader = $this->createPublicKeyCredentialLoader();
 			$publicKeyCredentialRequestOptions = $loader->deserialize($_SESSION['webauthn_authentication'], PublicKeyCredentialRequestOptions::class, 'json');
 			$credential = $database->findOneByCredentialId($publicKeyCredential->rawId);
@@ -405,7 +383,7 @@ class WebauthnManager {
 				$credential,
 				$authenticatorAssertionResponse,
 				$publicKeyCredentialRequestOptions,
-				$psr7Request,
+				$_SESSION['webauthn_rp_id'],
 				$userHandle
 			);
 			return true;
@@ -499,7 +477,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 * @param PublicKeyCredentialSource $publicKeyCredentialSource credential
 	 */
 	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
-		$json = json_encode($publicKeyCredentialSource);
+		$webauthnManager = new WebauthnManager();
+		$loader = $webauthnManager->createPublicKeyCredentialLoader();
+		$json = $loader->serialize($publicKeyCredentialSource, 'json');
 		$credentialId = base64_encode($publicKeyCredentialSource->publicKeyCredentialId);
 		$userId = $publicKeyCredentialSource->userHandle;
 		$currentTime = time();

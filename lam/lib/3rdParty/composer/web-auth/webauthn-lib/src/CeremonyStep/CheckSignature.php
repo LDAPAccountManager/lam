@@ -22,13 +22,12 @@ use Webauthn\U2FPublicKey;
 use Webauthn\Util\CoseSignatureFixer;
 use function is_array;
 
-final class CheckSignature implements CeremonyStep
+final readonly class CheckSignature implements CeremonyStep
 {
-    private readonly Manager $algorithmManager;
+    private Manager $algorithmManager;
 
-    public function __construct(
-        null|Manager $algorithmManager = null,
-    ) {
+    public function __construct(null|Manager $algorithmManager = null)
+    {
         $this->algorithmManager = $algorithmManager ?? Manager::create()->add(ES256::create(), RS256::create());
     }
 

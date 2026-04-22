@@ -9,7 +9,6 @@ use ArrayIterator;
 use Countable;
 use Iterator;
 use IteratorAggregate;
-use JsonSerializable;
 use Webauthn\Exception\AuthenticationExtensionException;
 use function array_key_exists;
 use function count;
@@ -19,9 +18,8 @@ use const COUNT_NORMAL;
 
 /**
  * @implements IteratorAggregate<AuthenticationExtension>
- * @final
  */
-class AuthenticationExtensions implements JsonSerializable, Countable, IteratorAggregate, ArrayAccess
+final class AuthenticationExtensions implements Countable, IteratorAggregate, ArrayAccess
 {
     /**
      * @var array<string, AuthenticationExtension>
@@ -58,38 +56,6 @@ class AuthenticationExtensions implements JsonSerializable, Countable, IteratorA
         return new static($extensions);
     }
 
-    /**
-     * @deprecated since 4.7.0. Please use the property directly.
-     * @infection-ignore-all
-     */
-    public function add(AuthenticationExtension ...$extensions): static
-    {
-        foreach ($extensions as $extension) {
-            $this->extensions[$extension->name] = $extension;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array<string, mixed> $json
-     * @deprecated since 4.8.0. Please use {Webauthn\Denormalizer\WebauthnSerializerFactory} for converting the object.
-     * @infection-ignore-all
-     */
-    public static function createFromArray(array $json): static
-    {
-        return static::create(
-            array_map(
-                static fn (string $key, mixed $value): AuthenticationExtension => AuthenticationExtension::create(
-                    $key,
-                    $value
-                ),
-                array_keys($json),
-                $json
-            )
-        );
-    }
-
     public function has(string $key): bool
     {
         return array_key_exists($key, $this->extensions);
@@ -103,20 +69,6 @@ class AuthenticationExtensions implements JsonSerializable, Countable, IteratorA
         ));
 
         return $this->extensions[$key];
-    }
-
-    /**
-     * @return array<string, AuthenticationExtension>
-     */
-    public function jsonSerialize(): array
-    {
-        trigger_deprecation(
-            'web-auth/webauthn-bundle',
-            '4.9.0',
-            'The "%s" method is deprecated and will be removed in 5.0. Please use the serializer instead.',
-            __METHOD__
-        );
-        return $this->extensions;
     }
 
     /**
