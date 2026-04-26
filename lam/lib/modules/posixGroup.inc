@@ -629,7 +629,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (!$this->manageCnAndDescription($typeManager->getConfiguredType($typeId)->getModules())) {
 			return $parentOptions;
 		}
-		$parentOptions = $parentOptions ?? new htmlResponsiveRow();
+		$parentOptions ??= new htmlResponsiveRow();
 		$parentOptions->add(new htmlResponsiveInputTextarea('posixGroup_description', '', 30, 4, _('Description'), 'description'));
 		return $parentOptions;
 	}
@@ -1092,10 +1092,8 @@ class posixGroup extends baseModule implements passwordService {
 			&& !in_array('posixGroup', $this->attributes['objectClass'])) {
 			$this->attributes['objectClass'][] = 'posixGroup';
 		}
-		if ($this->manageCnAndDescription($this->getAccountContainer()->get_type()->getModules())) {
-			if (!empty($profile['posixGroup_description'][0])) {
-				$this->attributes['description'] = $profile['posixGroup_description'];
-			}
+		if ($this->manageCnAndDescription($this->getAccountContainer()->get_type()->getModules()) && !empty($profile['posixGroup_description'][0])) {
+			$this->attributes['description'] = $profile['posixGroup_description'];
 		}
 	}
 
