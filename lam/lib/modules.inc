@@ -730,7 +730,7 @@ class accountContainer {
 	 *
 	 * @var baseModule[] modules
 	 */
-	private array $module;
+	private array $module = [];
 
 	/** DN suffix of the account */
 	public ?string $dnSuffix = null;

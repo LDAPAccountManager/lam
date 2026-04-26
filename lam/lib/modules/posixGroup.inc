@@ -105,6 +105,9 @@ class posixGroup extends baseModule implements passwordService {
 			if ($this->manageCnAndDescription($selectedModules)) {
 				// group name
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_cn', 'cn', 'groupname', $this->messages['cn'][3], $error_messages);
+				// description
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_description',
+					'description', null, [], $errors, '/;[ ]*/');
 			}
 			// GID
 			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
@@ -118,16 +121,6 @@ class posixGroup extends baseModule implements passwordService {
 				$errMsg = $this->messages['gidNumber'][8];
 				$errMsg[] = [$i];
 				$error_messages[] = $errMsg;
-			}
-			if ($this->manageCnAndDescription($selectedModules)) {
-				// description (UTF-8, no regex check needed)
-				if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
-					$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
-				}
-				else {
-					$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_description',
-						'description', null, [], $errors, '/;[ ]*/');
-				}
 			}
 			// group members
 			if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid') && ($rawAccounts[$i][$ids['posixGroup_members']] != "")) {
@@ -408,11 +401,11 @@ class posixGroup extends baseModule implements passwordService {
 			],
 			'description' => [
 				"Headline" => _("Description"), 'attr' => 'description',
-				"Text" => _("Group description. If left empty group name will be used.")
+				"Text" => _("Here you can enter a description for this group.")
 			],
 			'descriptionList' => [
 				"Headline" => _("Description"), 'attr' => 'description',
-				"Text" => _("Group description. If left empty group name will be used.") . ' ' . _("Multiple values are separated by semicolon.")
+				"Text" => _("Here you can enter a description for this group.") . ' ' . _("Multiple values are separated by semicolon.")
 			],
 			'members' => [
 				"Headline" => _("Group members"), 'attr' => 'memberUid',
@@ -630,6 +623,20 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * {@inheritDoc}
 	 */
+	function get_profileOptions($typeId) {
+		$parentOptions = parent::get_profileOptions($typeId);
+		$typeManager = new TypeManager();
+		if (!$this->manageCnAndDescription($typeManager->getConfiguredType($typeId)->getModules())) {
+			return $parentOptions;
+		}
+		$parentOptions = $parentOptions ?? new htmlResponsiveRow();
+		$parentOptions->add(new htmlResponsiveInputTextarea('posixGroup_description', '', 30, 4, _('Description'), 'description'));
+		return $parentOptions;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_pdfFields(string $typeId): array {
 		$fields = parent::get_pdfFields($typeId);
 		$typeManager = new TypeManager();
@@ -740,11 +747,33 @@ class posixGroup extends baseModule implements passwordService {
 		return "enabled";
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getWildCardReplacements(): array {
+		$replacements = [];
+		// group name
+		if (!empty($_POST['cn'])) {
+			$replacements['group'] = $_POST['cn'];
+		}
+		elseif (!empty($this->attributes['cn'][0])) {
+			$replacements['group'] = $this->attributes['cn'][0];
+		}
+		return $replacements;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getWildcardTargetAttributeNames(): array {
+		return ['description'];
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function process_attributes(): array {
+		$this->getAccountContainer()->replaceWildcardsInPOST($this->getWildcardTargetAttributeNames());
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
 			if (!isset($this->attributes['objectClass'])) {
@@ -1062,6 +1091,11 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($profile['posixGroup_addExt'][0]) && ($profile['posixGroup_addExt'][0] == "true")
 			&& !in_array('posixGroup', $this->attributes['objectClass'])) {
 			$this->attributes['objectClass'][] = 'posixGroup';
+		}
+		if ($this->manageCnAndDescription($this->getAccountContainer()->get_type()->getModules())) {
+			if (!empty($profile['posixGroup_description'][0])) {
+				$this->attributes['description'] = $profile['posixGroup_description'];
+			}
 		}
 	}
 

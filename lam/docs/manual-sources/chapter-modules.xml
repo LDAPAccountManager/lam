@@ -688,9 +688,9 @@
       </itemizedlist>
 
       <para>Use this when some of your data always follows the same schema.
-      E.g. using "$firstname $lastname" in common name field can be used like
-      this to get "First Last". You can set the wildcards in profile editor so
-      they are automatically applied for new users.</para>
+      E.g. setting "$firstname $lastname" for the common name field can be
+      used like this to get "First Last". You can set the wildcards in profile
+      editor so they are automatically applied for new users.</para>
 
       <screenshot>
         <mediaobject>
@@ -1369,9 +1369,9 @@
       </itemizedlist>
 
       <para>Use this when some of your data always follows the same schema.
-      E.g. using "$firstname $lastname" in common name field can be used like
-      this to get "First Last". You can set the wildcards in profile editor so
-      they are automatically applied for new users.</para>
+      E.g. setting "$firstname $lastname" for the common name field can be
+      used like this to get "First Last". You can set the wildcards in profile
+      editor so they are automatically applied for new users.</para>
 
       <screenshot>
         <mediaobject>
@@ -1510,9 +1510,9 @@
       </itemizedlist>
 
       <para>Use this when some of your data always follows the same schema.
-      E.g. using "$firstname $lastname" in common name field can be used like
-      this to get "Demo User". You can set the wildcards in profile editor so
-      they are automatically applied for new users.</para>
+      E.g. setting "$firstname $lastname" for the common name field can be
+      used like this to get "Demo User". You can set the wildcards in profile
+      editor so they are automatically applied for new users.</para>
 
       <screenshot>
         <mediaobject>
@@ -2669,6 +2669,32 @@ AuthorizedKeysCommandUser root</literallayout>
       </screenshot>
 
       <para>Group management:</para>
+
+      <para><emphasis role="bold">Wildcards</emphasis></para>
+
+      <para>This module provides the following wildcards (others may be
+      provided by other modules). Add a "_" after the "$" to get the value in
+      lower-case (e.g. "$_group").</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>$group: group name</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can use them in the following input fields on user edit
+      screen:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Description</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Use this when some of your data always follows the same schema.
+      E.g. setting "$group" in description field can be used like this. You
+      can set the wildcards in profile editor so they are automatically
+      applied for new groups.</para>
 
       <screenshot>
         <mediaobject>
