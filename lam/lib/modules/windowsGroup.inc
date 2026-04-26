@@ -248,12 +248,18 @@ class windowsGroup extends baseModule {
 			];
 		}
 		// profile options
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Description'),'windowsGroup_description', '', 'description'));
+		$return['profile_mappings']['windowsGroup_description'] = 'description';
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Email address'),'windowsGroup_mail', '', 'mail'));
+			$return['profile_mappings']['windowsGroup_mail'] = 'mail';
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
-			$profileContainer = new htmlResponsiveRow();
 			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsGroup_msSFU30NisDomain', null, 'msSFU30NisDomain'));
-			$return['profile_options'] = $profileContainer;
 			$return['profile_mappings']['windowsGroup_msSFU30NisDomain'] = 'msSFU30NisDomain';
 		}
+		$return['profile_options'] = $profileContainer;
 		// available PDF fields
 		$return['PDF_fields'] = [
 			'cn' => _('Group name'),
@@ -442,6 +448,7 @@ class windowsGroup extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function process_attributes(): array {
+		$this->getAccountContainer()->replaceWildcardsInPOST($this->getWildcardTargetAttributeNames());
 		$return = [];
 		// cn
 		$this->attributes['cn'][0] = $_POST['cn'];
@@ -776,6 +783,32 @@ class windowsGroup extends baseModule {
 	public function process_effectiveMembers(): array {
 		// no processing, page is read-only
 		return [];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getWildCardReplacements(): array {
+		$replacements = [];
+		// group name
+		if (!empty($_POST['cn'])) {
+			$replacements['group'] = $_POST['cn'];
+		}
+		elseif (!empty($this->attributes['cn'][0])) {
+			$replacements['group'] = $this->attributes['cn'][0];
+		}
+		return $replacements;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getWildcardTargetAttributeNames(): array {
+		$attrs = ['description'];
+		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
+			$attrs[] = 'mail';
+		}
+		return $attrs;
 	}
 
 	/**
