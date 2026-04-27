@@ -3,22 +3,25 @@
 set -e
 outFile=templates/lib/100_lam.${SOURCE_DATE_EPOCH}.min.js
 if [ ! -e $outFile ]; then
+  mkdir debian/build-min/
 	files=`ls templates/lib/*.js`
 	jsFiles=""
 	for file in $files; do
 		jsFiles="$jsFiles $file"
 	done
 	terser $jsFiles -o $outFile
-	rm $files
+  for file in $files; do
+    mv $file debian/build-min/
+  done
 	# add final new line to supress Debian warnings
 	echo "" >> $outFile
-fi
 
-files=`ls style/*.css`
-outFile=style/100_lam.${SOURCE_DATE_EPOCH}.min.css
-if [ ! -e $outFile ]; then
+  files=`ls style/*.css`
+  outFile=style/100_lam.${SOURCE_DATE_EPOCH}.min.css
 	cat $files | cleancss -o ${outFile}
-	rm $files
+  for file in $files; do
+    mv $file debian/build-min/
+  done
 	# add final new line to supress Debian warnings
 	echo "" >> $outFile
 fi

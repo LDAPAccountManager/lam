@@ -1,3 +1,11 @@
+ldap-account-manager (9.6-1) unstable; urgency=medium
+
+  * new upstream release
+  * Fix "Fails to build source after successful build" by reverting
+      minify before build (Closes: #1047401)
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 27 Apr 2026 15:33:27 +0200
+
 ldap-account-manager (9.5.2-1) unstable; urgency=medium
 
   * new upstream release

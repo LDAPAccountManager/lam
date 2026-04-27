@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+outFile=templates/lib/100_lam.${SOURCE_DATE_EPOCH}.min.js
+if [ -e $outFile ]; then
+  rm $outFile
+	files=`ls debian/build-min/*.js`
+	for file in $files; do
+    mv $file templates/lib/
+	done
+
+  outFile=style/100_lam.${SOURCE_DATE_EPOCH}.min.css
+  rm $outFile
+  files=`ls debian/build-min/*.css`
+	for file in $files; do
+    mv $file style/
+	done
+
+	rmdir debian/build-min
+fi
