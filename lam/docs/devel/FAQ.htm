@@ -10,10 +10,10 @@
 <h1>Developer FAQ<br>
 </h1>
 <br>
-<div style="text-align: left;"><big><span style="font-weight: bold;">Q:
-Where is the ldap/config object?</span></big><br>
+<div style="text-align: left;"><span style="font-weight: bold;">Q:
+Where is the ldap/config object?</span><br>
 <br>
-<big><span style="font-weight: bold;">A:</span></big> The ldap object
+<span style="font-weight: bold;">A:</span> The ldap object
 is in <span style="color: rgb(204, 0, 0); font-weight: bold;">$_SESSION['ldap']</span>
 and the config object in <span
  style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['config']</span>.<br>
@@ -22,10 +22,10 @@ and the config object in <span
 </div>
 <div style="text-align: left;"><br>
 </div>
-<div style="text-align: left;"><big><span style="font-weight: bold;">Q:
-How can I make LDAP operations, where is the user name and password?</span></big><br>
+<div style="text-align: left;"><span style="font-weight: bold;">Q:
+How can I make LDAP operations, where is the user name and password?</span><br>
 <br>
-<span style="font-weight: bold;"><big>A:</big> </span>LAM
+<span style="font-weight: bold;">A: </span>LAM
 automatically reconnects to the LDAP server on every page load. You can
 use <span style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['ldap']-&gt;server()</span>
 which is the LDAP server handle.<br>
@@ -38,10 +38,10 @@ modules).<br>
 <br>
 <br>
 <br>
-<big><span style="font-weight: bold;">Q: What is the LDAP suffix for
-the different account types?</span></big><br>
+<span style="font-weight: bold;">Q: What is the LDAP suffix for
+the different account types?</span><br>
 <br>
-<big><span style="font-weight: bold;">A:</span></big> Just call <span
+<span style="font-weight: bold;">A:</span> Just call <span
  style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['config']-&gt;get_Suffix($scope)</span>
 where $scope is the account type (user,group, ...).<br>
 Be sure to include ldap.inc before (automatically included for account
@@ -52,19 +52,19 @@ modules).<br>
 <br>
 <br>
 <br>
-<big><span style="font-weight: bold;">Q: How can I check if the user is
-really logged in and not calling the scripts by hand?</span></big><br>
+<span style="font-weight: bold;">Q: How can I check if the user is
+really logged in and not calling the scripts by hand?</span><br>
 <br>
-<big><span style="font-weight: bold;">A:</span></big> After the user
+<span style="font-weight: bold;">A:</span> After the user
 successfully logged in to LAM the variable <span
  style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['loggedIn']</span>
 is set to true.<br>
 <br>
-<big><span style="font-weight: bold;"><br>
+<span style="font-weight: bold;"><br>
 <br>
-Q: What is the command for these error/warning/info messages?</span></big><br>
+Q: What is the command for these error/warning/info messages?</span><br>
 <br>
-<big><span style="font-weight: bold;">A:</span></big> Your script must
+<span style="font-weight: bold;">A:</span> Your script must
 include status.inc (automatically included for account
 modules) to display these messages.<br>
 The command is <span style="font-weight: bold;">StatusMessage(&lt;type&gt;,
