@@ -894,10 +894,10 @@ class fixed_ip extends baseModule {
 						}
 						$dhcphwaddress = explode(" ", $entries[$i]['dhcphwaddress'][0]);
 						$ipAddress = fixed_ip::extractIP($dhcpstatements);
-						$ip = new htmlOutputText($ipAddress);
-						$ip->setCSSClasses($cssClasses);
-						$group->addElement($ip);
 						if (!empty($ipAddress)) {
+							$ip = new htmlOutputText($ipAddress);
+							$ip->setCSSClasses($cssClasses);
+							$group->addElement($ip);
 							$group->addElement(new htmlOutputText('<br>', false));
 						}
 						$macAddress = array_pop($dhcphwaddress);

@@ -102,8 +102,8 @@ class lamList {
 	/** refresh page switch */
 	protected bool $refresh = true;
 
-	/** @var array<int, array<string, string[]|string>>|null $entries entries to show */
-	protected ?array $entries = null;
+	/** @var int[] $entries entries to show */
+	protected array $entries = [];
 
 	/** @var array<int, array<string, string[]|string>> $ldapEntries entries from LDAP */
 	protected array $ldapEntries = [];
@@ -204,7 +204,7 @@ class lamList {
 		// local filtering
 		$this->applyLocalFilters();
 		// sort rows by sort column
-		if ($this->entries !== null) {
+		if (!empty($this->entries)) {
 			$this->listCreateSortMapping($this->entries);
 		}
 		// insert HTML fragment from listDoPost
@@ -216,7 +216,7 @@ class lamList {
 		// show form
 		echo "<form action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
 		// draw account list if accounts were found
-		if (count($this->entries) > 0) {
+		if (!empty($this->entries)) {
 			// buttons
 			$this->listPrintButtons(false);
 			// navigation bar
@@ -282,24 +282,22 @@ class lamList {
 	 * Determines the sort mapping and stores it in $this->sortMapping.
 	 * The sort mapping is used to display the right rows when the account table is created.
 	 *
-	 * @param array<string, string[]|string>[] $info the account list
+	 * @param int[] $indexes the account list indexes
 	 */
-	protected function listCreateSortMapping(array &$info): void {
+	protected function listCreateSortMapping(array $indexes): void {
 		if (!is_string($this->sortColumn)) {
 			return;
 		}
 		$toSort = [];
-		$col = $this->sortColumn;
-		$size = count($info);
 		if ($this->sortColumn !== 'dn') {
-			for ($i = 0; $i < $size; $i++) {
+			foreach ($indexes as $index) {
 				// sort by first attribute with name $sort
-				$toSort[] = &$info[$i][$col][0];
+				$toSort[] = $this->ldapEntries[$index][$this->sortColumn][0] ?? '';
 			}
 		}
 		else {
-			for ($i = 0; $i < $size; $i++) {
-				$toSort[] = &$info[$i][$col];
+			foreach ($indexes as $index) {
+				$toSort[] = $this->ldapEntries[$index][$this->sortColumn] ?? '';
 			}
 		}
 		natcasesort($toSort);
@@ -410,9 +408,9 @@ class lamList {
 	/**
 	 * Prints the entry list
 	 *
-	 * @param array<string, string[]|string>[] $info entries
+	 * @param int[] $indexes entry indexes
 	 */
-	private function printAccountTable(&$info): void {
+	private function printAccountTable($indexes): void {
 		$titles = $this->descArray;
 		array_unshift($titles, _('Actions'));
 		$data = [];
@@ -420,7 +418,7 @@ class lamList {
 		$data[] = $this->getFilterElements();
 		$onClickEvents = [];
 		$onDoubleClickEvents = [];
-		$this->addDataElements($data, $info, $onClickEvents, $onDoubleClickEvents);
+		$this->addDataElements($data, $indexes, $onClickEvents, $onDoubleClickEvents);
 
 		$table = new htmlResponsiveTable($titles, $data);
 		$table->setCSSClasses(['accountlist']);
@@ -561,20 +559,19 @@ class lamList {
 	 * Adds the LDAP data elements to the given array.
 	 *
 	 * @param mixed[][] $data data for responsible table
-	 * @param array<string, string[]|string>[] $info entries
+	 * @param int[] $entryIndexes entry indexes
 	 * @param array<int, string> $onClickEvents row number => code
 	 * @param array<int, string> $onDoubleClickEvents row number => code
 	 */
-	private function addDataElements(&$data, &$info, &$onClickEvents, &$onDoubleClickEvents): void {
+	private function addDataElements(&$data, $entryIndexes, &$onClickEvents, &$onDoubleClickEvents): void {
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
-		$table_end = ($this->page * $this->maxPageEntries) > count($info) ? count($info) : $this->page * $this->maxPageEntries;
+		$table_end = ($this->page * $this->maxPageEntries) > count($entryIndexes) ? count($entryIndexes) : $this->page * $this->maxPageEntries;
 		// get sort mapping
 		if (empty($this->sortMapping)) {
 			$this->sortMapping = [];
-			$infoSize = count($info);
-			for ($i = 0; $i < $infoSize; $i++) {
-				$this->sortMapping[$i] = $i;
+            foreach ($entryIndexes as $entryIndex) {
+				$this->sortMapping[$entryIndex] = $entryIndex;
 			}
 		}
 		// get custom render functions
@@ -594,7 +591,7 @@ class lamList {
 		for ($i = $table_begin; $i < $table_end; $i++) {
 			$row = [];
 			$index = $this->sortMapping[$i];
-			$rowID = base64_encode($info[$index]['dn']);
+			$rowID = base64_encode($this->ldapEntries[$entryIndexes[$index]]['dn']);
 			$actionElement = new htmlGroup();
 			$checkbox = new htmlInputCheckbox($rowID, false);
 			$checkbox->setOnClick("list_click('" . $rowID . "');");
@@ -604,16 +601,16 @@ class lamList {
 			$actionElement->addElement(new htmlSpacer('0.5rem', null));
 			$rowNumber = $i - $table_begin + 2;
 			$onClickEvents[$rowNumber] = "list_click('" . $rowID . "');";
-			$onDoubleClickEvents[$rowNumber] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
-			$this->addToolLinks($info[$index], $rowID, $actionElement);
+			$onDoubleClickEvents[$rowNumber] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($this->ldapEntries[$entryIndexes[$index]]['dn']) . "';";
+			$this->addToolLinks($this->ldapEntries[$entryIndexes[$index]], $rowID, $actionElement);
 			$row[] = new htmlDiv(null, $actionElement, ['lam-listtools']);
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
 				if (!empty($renderFunctions[$attributeName])) {
-					$row[] = $renderFunctions[$attributeName]($info[$index], $attributeName);
+					$row[] = $renderFunctions[$attributeName]($this->ldapEntries[$entryIndexes[$index]], $attributeName);
 				}
 				else {
-					$row[] = $this->getTableCellContent($info[$index], $attributeName);
+					$row[] = $this->getTableCellContent($this->ldapEntries[$entryIndexes[$index]], $attributeName);
 				}
 			}
 			$data[] = $row;
@@ -840,17 +837,16 @@ class lamList {
 				} // create for all accounts
                 elseif ($option == 'ALL') {
 					$list = [];
-					$entriesCount = count($this->entries);
-					for ($i = 0; $i < $entriesCount; $i++) {
-						$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-						$_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
-						$list[$i] = $_SESSION["accountPDF-$i"];
+					foreach ($this->entries as $entryPos) {
+						$_SESSION["accountPDF-$entryPos"] = new accountContainer($this->type, "accountPDF-$entryPos");
+						$_SESSION["accountPDF-$entryPos"]->load_account($this->ldapEntries[$entryPos]['dn']);
+						$list[$entryPos] = $_SESSION["accountPDF-$entryPos"];
 					}
 					if ($list !== []) {
 						$fileName = createModulePDF($list, $pdfStruct, $pdfFont);
-						for ($i = 0; $i < $entriesCount; $i++) {
+						foreach ($this->entries as $entryPos) {
 							// clean session
-							unset($_SESSION["accountPDF-$i"]);
+							unset($_SESSION["accountPDF-$entryPos"]);
 						}
 					}
 				}
@@ -1205,8 +1201,8 @@ class lamList {
 		}
 		$this->ldapEntries = searchLDAP($this->suffix, $filter, $attrs);
 		$this->entries = [];
-		foreach ($this->ldapEntries as $index => &$attrs) {
-			$this->entries[$index] = &$attrs;
+		foreach ($this->ldapEntries as $index) {
+			$this->entries[] = $index;
 		}
 		$lastError = getLastLDAPError();
 		if ($lastError != null) {
@@ -1268,8 +1264,8 @@ class lamList {
 	 */
 	protected function applyLocalFilters(): void {
 		$this->entries = [];
-		foreach ($this->ldapEntries as $index => &$data) {
-			$this->entries[$index] = &$data;
+		foreach (array_keys($this->ldapEntries) as $index) {
+			$this->entries[] = $index;
 		}
 		// get custom filter functions
 		$filterFunctions = [];
@@ -1289,25 +1285,28 @@ class lamList {
 			if ($this->isAttributeFilteredByServer($filterAttribute) || ($filterValue === '')) {
 				continue;
 			}
-			foreach ($this->entries as $index => &$data) {
+			foreach ($this->entries as $index) {
 				if (in_array($index, $toFilter)) {
 					continue;
 				}
 				$regex = str_replace(['*'], ['.*'], $filterValue);
 				$regex = '/' . $regex . '/i';
 				if (!empty($filterFunctions[$filterAttribute])) {
-					$value = $data[$filterAttribute] ?? null;
+					$value = $this->ldapEntries[$index][$filterAttribute] ?? null;
 					if (!$filterFunctions[$filterAttribute]($value, $filterValue)) {
 						$toFilter[] = $index;
 					}
 				}
-                elseif (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
+                elseif (!$this->isFilterMatching($this->ldapEntries[$index], $filterAttribute, $regex)) {
 					$toFilter[] = $index;
 				}
 			}
 		}
 		foreach ($toFilter as $index) {
-			unset($this->entries[$index]);
+            $pos = array_search($index, $this->entries);
+            if ($pos !== false) {
+				unset($this->entries[$pos]);
+			}
 		}
 		$this->entries = array_values($this->entries);
 	}

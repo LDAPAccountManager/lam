@@ -150,8 +150,8 @@ class lamAsteriskExtList extends lamList {
 
 		$this->ldapEntries = $this->normalizeLdapOutput($entries);
 		$this->entries = [];
-		foreach ($this->ldapEntries as $index => &$attrs) {
-			$this->entries[$index] = &$attrs;
+		foreach ($this->ldapEntries as $index) {
+			$this->entries[] = $index;
 		}
 		// generate list of possible suffixes
 		$this->possibleSuffixes = $this->type->getSuffixList();
