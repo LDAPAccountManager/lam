@@ -627,7 +627,7 @@ class lamList {
 	 * @param string $id account ID
 	 * @param htmlGroup $element location where to add tools
 	 */
-	private function addToolLinks($account, $id, &$element): void {
+	private function addToolLinks($account, $id, $element): void {
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.svg');
 		$editLink->setTitle(_("Edit"));
@@ -1507,7 +1507,7 @@ class lamList {
 	 * @param array<string, string[]|string> $attrs LDAP attributes
 	 * @return htmlElement content
 	 */
-	private function getAccountStatus(&$attrs): htmlElement {
+	private function getAccountStatus($attrs): htmlElement {
 		$statusContent = new htmlGroup();
 		$accountStatus = AccountStatus::fromAttributes($this->type, $attrs);
 		$mainIcon = 'unlocked.svg';
