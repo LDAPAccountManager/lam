@@ -6,6 +6,8 @@ Standards-Version: 4.7.2
 Build-Depends: debhelper (>= 12), debhelper-compat (= 12), po-debconf, cleancss (>= 5.2), terser (>= 5.0)
 Homepage: https://www.ldap-account-manager.org/
 Rules-Requires-Root: binary-targets
+Vcs-Browser: https://salsa.debian.org/ldap-account-manager-team/ldap-account-manager
+Vcs-Git: https://salsa.debian.org/ldap-account-manager-team/ldap-account-manager.git
 
 Package: ldap-account-manager
 Architecture: all
