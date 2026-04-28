@@ -1,4 +1,4 @@
-ldap-account-manager (9.6-1) unstable; urgency=medium
+ldap-account-manager (9.6.RC1-1) unstable; urgency=medium
 
   * new upstream release
   * Fix "Fails to build source after successful build" by reverting
