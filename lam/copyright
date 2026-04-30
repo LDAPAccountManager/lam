@@ -1078,7 +1078,6 @@ lib/3rdParty/composer/duosecurity                                    E        Ci
 lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu                                  https://github.com/facile-it
 lib/3rdParty/composer/firebase                                       E  2011  Neuman Vong                                    https://github.com/firebase/php-jwt
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling                                https://github.com/guzzle/psr7
-lib/3rdParty/composer/http-interop                                   B  2016  Woody Gilk                                     https://github.com/http-interop/http-factory-guzzle
 lib/3rdParty/composer/illuminate                                     B        Taylor Otwell                                  https://github.com/illuminate
 lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano                                 https://github.com/Seldaek/monolog
 lib/3rdParty/composer/mtdowling                                      B  2014  Michael Dowling                                https://github.com/jmespath/jmespath.php

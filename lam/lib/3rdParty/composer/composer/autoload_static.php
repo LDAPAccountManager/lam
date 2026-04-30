@@ -19,9 +19,9 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
-        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         '3109cb1a231dcd04bee1f9f620d46975' => __DIR__ . '/..' . '/paragonie/sodium_compat/autoload.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '19e6faa27d773988183e0f384143fcad' => __DIR__ . '/..' . '/illuminate/reflection/helpers.php',
         'f625ee536139dfb962a398b200bdb2bd' => __DIR__ . '/..' . '/illuminate/support/functions.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
@@ -84,7 +84,6 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Clock\\' => 24,
-            'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
             'SpomkyLabs\\Pki\\' => 15,
         ),
         'P' => 
@@ -124,7 +123,6 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         ),
         'H' => 
         array (
-            'Http\\Factory\\Guzzle\\' => 20,
             'Http\\Discovery\\' => 15,
         ),
         'G' => 
@@ -284,10 +282,6 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         array (
             0 => __DIR__ . '/..' . '/symfony/clock',
         ),
-        'Symfony\\Bridge\\PsrHttpMessage\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
-        ),
         'SpomkyLabs\\Pki\\' => 
         array (
             0 => __DIR__ . '/..' . '/spomky-labs/pki-framework/src',
@@ -377,10 +371,6 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Illuminate\\Contracts\\' => 
         array (
             0 => __DIR__ . '/..' . '/illuminate/contracts',
-        ),
-        'Http\\Factory\\Guzzle\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/http-interop/http-factory-guzzle/src',
         ),
         'Http\\Discovery\\' => 
         array (

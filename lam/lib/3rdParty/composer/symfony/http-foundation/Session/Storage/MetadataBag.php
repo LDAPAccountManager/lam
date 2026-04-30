@@ -26,39 +26,24 @@ class MetadataBag implements SessionBagInterface
     public const UPDATED = 'u';
     public const LIFETIME = 'l';
 
+    protected array $meta = [self::CREATED => 0, self::UPDATED => 0, self::LIFETIME => 0];
+
     private string $name = '__metadata';
-    private string $storageKey;
-
-    /**
-     * @var array
-     */
-    protected $meta = [self::CREATED => 0, self::UPDATED => 0, self::LIFETIME => 0];
-
-    /**
-     * Unix timestamp.
-     */
     private int $lastUsed;
-
-    private int $updateThreshold;
-
-    private ?int $cookieLifetime;
 
     /**
      * @param string   $storageKey      The key used to store bag in the session
      * @param int      $updateThreshold The time to wait between two UPDATED updates
      * @param int|null $cookieLifetime  The configured cookie lifetime; null to read from php.ini
      */
-    public function __construct(string $storageKey = '_sf2_meta', int $updateThreshold = 0, ?int $cookieLifetime = null)
-    {
-        $this->storageKey = $storageKey;
-        $this->updateThreshold = $updateThreshold;
-        $this->cookieLifetime = $cookieLifetime;
+    public function __construct(
+        private string $storageKey = '_sf2_meta',
+        private int $updateThreshold = 0,
+        private ?int $cookieLifetime = null,
+    ) {
     }
 
-    /**
-     * @return void
-     */
-    public function initialize(array &$array)
+    public function initialize(array &$array): void
     {
         $this->meta = &$array;
 
@@ -89,10 +74,8 @@ class MetadataBag implements SessionBagInterface
      *                           will leave the system settings unchanged, 0 sets the cookie
      *                           to expire with browser session. Time is in seconds, and is
      *                           not a Unix timestamp.
-     *
-     * @return void
      */
-    public function stampNew(?int $lifetime = null)
+    public function stampNew(?int $lifetime = null): void
     {
         $this->stampCreated($lifetime);
     }
@@ -135,10 +118,8 @@ class MetadataBag implements SessionBagInterface
 
     /**
      * Sets name.
-     *
-     * @return void
      */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }

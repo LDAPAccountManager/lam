@@ -23,16 +23,19 @@ use Symfony\Component\HttpClient\Exception\TransportException;
  *
  * @internal
  */
-class AmpListener implements EventListener
+class AmpListenerV4 implements EventListener
 {
     private array $info;
-    private array $pinSha256;
-    private \Closure $onProgress;
-    /** @var resource|null */
-    private $handle;
 
-    public function __construct(array &$info, array $pinSha256, \Closure $onProgress, &$handle)
-    {
+    /**
+     * @param resource|null $handle
+     */
+    public function __construct(
+        array &$info,
+        private array $pinSha256,
+        private \Closure $onProgress,
+        private &$handle,
+    ) {
         $info += [
             'connect_time' => 0.0,
             'pretransfer_time' => 0.0,
@@ -44,9 +47,6 @@ class AmpListener implements EventListener
         ];
 
         $this->info = &$info;
-        $this->pinSha256 = $pinSha256;
-        $this->onProgress = $onProgress;
-        $this->handle = &$handle;
     }
 
     public function startRequest(Request $request): Promise

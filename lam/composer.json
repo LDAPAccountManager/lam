@@ -13,11 +13,6 @@
   "require": {
     "web-auth/webauthn-lib": "^5",
 
-    "symfony/psr-http-message-bridge": "^6",
-    "symfony/http-foundation": "^6.0",
-    "symfony/http-client": "^6",
-    "http-interop/http-factory-guzzle": "^1.2",
-
     "webklex/php-imap": "^6",
 
     "phpmailer/phpmailer": "^7",
