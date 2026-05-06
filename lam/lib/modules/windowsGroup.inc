@@ -1100,7 +1100,9 @@ class windowsGroup extends baseModule {
 			'description' => _('Description'),
 			'info' => _('Notes'),
 			'member' => _('Members'),
+			'member_count' => _('Member count'),
 			'memberof' => _('Member of'),
+			'memberof_count' => _('Member of count'),
 			'managedby' => _('Managed by'),
 			'grouptype' => _('Group type'),
 			'groupscope' => _('Group scope'),
@@ -1147,6 +1149,17 @@ class windowsGroup extends baseModule {
 					return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), ['rightToLeftText']);
 				}
 				return new htmlGroup();
+			};
+		}
+		elseif ($attributeName === 'member_count') {
+			return function(array $entry, string $attribute): htmlElement {
+				$count = 0;
+				$realAttributeName = str_replace('_count', '', $attribute);
+				$values = &$entry[$realAttributeName];
+				if (!empty($values)) {
+					$count = count($values);
+				}
+				return new htmlOutputText((string) $count);
 			};
 		}
 		return null;
