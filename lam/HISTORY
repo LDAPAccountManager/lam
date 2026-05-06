@@ -1,6 +1,7 @@
 June 2026 9.6
  - PHP 8.5 compatibility
  - Wildcards for Unix groups and group of names (674)
+ - Usability improvements (684)
 
 
 01.04.2026 9.5.2

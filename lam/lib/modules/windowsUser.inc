@@ -4947,55 +4947,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				return new htmlOutputText($value);
 			};
 		}
-		elseif ($attributeName === 'manager') {
-			return function(array $entry, string $attribute): htmlElement {
-				if (!empty($entry[$attribute][0])) {
-					$value = $entry[$attribute][0];
-					$typeManager = new TypeManager();
-					$replaced = false;
-					foreach ($typeManager->getConfiguredTypes() as $type) {
-						if ((stripos($value, $type->getSuffix()) > 0) && !isAccountTypeHidden($type->getId())) {
-							$value = '<a href="../account/edit.php?type=' . $type->getId() . '&amp;DN=\'' . $value . '\'">' . getAbstractDN($value) . '</a>';
-							$replaced = true;
-							break;
-						}
-					}
-					if (!$replaced) {
-						$value = getAbstractDN($value);
-					}
-					return new htmlDiv(null, new htmlOutputText($value, false), ['rightToLeftText']);
-				}
-				return new htmlGroup();
-			};
+		elseif (in_array($attributeName, ['manager', 'memberof'])) {
+			return $this->listRenderDnList(...);
 		}
-		if ($attributeName === 'memberof') {
-			return function(array $entry, string $attribute): htmlElement {
-				if (!empty($entry[$attribute][0])) {
-					$typeManager = new TypeManager();
-					$values = $entry[$attribute];
-					if (!empty($values)) {
-						usort($values, compareDN(...));
-					}
-					$count = count($values);
-					for ($i = 0; $i < $count; $i++) {
-						$replaced = false;
-						foreach ($typeManager->getConfiguredTypes() as $type) {
-							if ((stripos($values[$i], $type->getSuffix()) > 0) && !isAccountTypeHidden($type->getId())) {
-								$values[$i] = '<a href="../account/edit.php?type=' . $type->getId() . '&amp;DN=\'' . $values[$i] . '\'">' . getAbstractDN($values[$i]) . '</a>';
-								$replaced = true;
-								break;
-							}
-						}
-						if (!$replaced) {
-							$values[$i] = getAbstractDN($values[$i]);
-						}
-					}
-					return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), ['rightToLeftText']);
-				}
-				return new htmlGroup();
-			};
-		}
-		if ($attributeName === 'memberof_count') {
+		elseif ($attributeName === 'memberof_count') {
 			return function(array $entry, string $attribute): htmlElement {
 				$count = 0;
 				$realAttributeName = str_replace('_count', '', $attribute);

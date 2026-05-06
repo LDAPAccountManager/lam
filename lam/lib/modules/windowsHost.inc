@@ -403,25 +403,7 @@ class windowsHost extends baseModule {
 			};
 		}
 		elseif ($attributeName === 'managedby') {
-			return function(array $entry, string $attribute): htmlElement {
-				if (!empty($entry[$attribute][0])) {
-					$value = $entry[$attribute][0];
-					$typeManager = new TypeManager();
-					$replaced = false;
-					foreach ($typeManager->getConfiguredTypes() as $type) {
-						if ((stripos($value, $type->getSuffix()) > 0) && !isAccountTypeHidden($type->getId())) {
-							$value = '<a href="../account/edit.php?type=' . $type->getId() . '&amp;DN=\'' . $value . '\'">' . getAbstractDN($value) . '</a>';
-							$replaced = true;
-							break;
-						}
-					}
-					if (!$replaced) {
-						$value = getAbstractDN($value);
-					}
-					return new htmlDiv(null, new htmlOutputText($value, false), ['rightToLeftText']);
-				}
-				return new htmlGroup();
-			};
+			return $this->listRenderDnList(...);
 		}
 		return null;
 	}

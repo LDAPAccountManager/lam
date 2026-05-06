@@ -1125,31 +1125,7 @@ class windowsGroup extends baseModule {
 			};
 		}
 		elseif (($attributeName === 'managedby') || ($attributeName === 'member')) {
-			return function(array $entry, string $attribute): htmlElement {
-				if (!empty($entry[$attribute][0])) {
-					$typeManager = new TypeManager();
-					$values = $entry[$attribute];
-					if (!empty($values)) {
-						usort($values, compareDN(...));
-					}
-					$count = count($values);
-					for ($i = 0; $i < $count; $i++) {
-						$replaced = false;
-						foreach ($typeManager->getConfiguredTypes() as $type) {
-							if ((stripos($values[$i], $type->getSuffix()) > 0) && !isAccountTypeHidden($type->getId())) {
-								$values[$i] = '<a href="../account/edit.php?type=' . $type->getId() . '&amp;DN=\'' . $values[$i] . '\'">' . getAbstractDN($values[$i]) . '</a>';
-								$replaced = true;
-								break;
-							}
-						}
-						if (!$replaced) {
-							$values[$i] = getAbstractDN($values[$i]);
-						}
-					}
-					return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), ['rightToLeftText']);
-				}
-				return new htmlGroup();
-			};
+			return $this->listRenderDnList(...);
 		}
 		elseif ($attributeName === 'member_count') {
 			return function(array $entry, string $attribute): htmlElement {
