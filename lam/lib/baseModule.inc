@@ -2385,9 +2385,7 @@ abstract class baseModule {
 		if (!empty($entry[$attribute][0])) {
 			$typeManager = new TypeManager();
 			$values = $entry[$attribute];
-			if (!empty($values)) {
-				usort($values, compareDN(...));
-			}
+			usort($values, compareDN(...));
 			$count = count($values);
 			$showMoreLess = ($count > htmlShowMore::DEFAULT_MAXIMUM_SIZE);
 			for ($i = 0; $i < $count; $i++) {
