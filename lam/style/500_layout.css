@@ -98,6 +98,10 @@ a.icon-active img {
 	filter: invert(58%) sepia(70%) saturate(467%) hue-rotate(162deg) brightness(92%) contrast(99%);
 }
 
+.show-pointer {
+    cursor: pointer;
+}
+
 fieldset {
   border:1px solid var(--lam-text-color-default);
   padding:10px;

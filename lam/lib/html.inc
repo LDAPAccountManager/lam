@@ -4934,11 +4934,14 @@ class htmlShowMore extends htmlElement {
 	/** default size when to use show more/less */
 	public const DEFAULT_MAXIMUM_SIZE = 10;
 
+	/** size when to use show more/less for larger readable lists */
+	public const MAXIMUM_SIZE_LARGE = 30;
+
 	/**
 	 * @inheritDoc
 	 */
 	public function generateHTML($module, $input, $values, $restricted): array {
-		echo '<a class="' . self::CLASS_SHOW_LESS . '" onclick="window.lam.showMore.showMore(this)" target="#">' . _('Show more...') . '</a>';
+		echo '<span class="show-pointer ' . self::CLASS_SHOW_LESS . '" onclick="window.lam.showMore.showMore(this)">' . _('Show more...') . '</span>';
 		return [];
 	}
 
@@ -4953,7 +4956,7 @@ class htmlShowLess extends htmlElement {
 	 * @inheritDoc
 	 */
 	public function generateHTML($module, $input, $values, $restricted): array {
-		echo '<a class="' . htmlShowMore::CLASS_SHOW_MORE . '" onclick="window.lam.showMore.showLess(this)" target="#">' . _('Show less...') . '</a>';
+		echo '<span class="show-pointer ' . htmlShowMore::CLASS_SHOW_MORE . '" onclick="window.lam.showMore.showLess(this)">' . _('Show less...') . '</span>';
 		return [];
 	}
 
