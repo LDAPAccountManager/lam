@@ -3236,16 +3236,27 @@ class htmlContentLink extends htmlLink {
  */
 class htmlGroup extends htmlElement {
 
-	/** @var htmlElement[] $subelements elements */
-	private array $subelements = [];
+	/** @var htmlElement[] $elements elements */
+	private array $elements = [];
+
+	/**
+	 * Constructor
+	 *
+	 * @param htmlElement[] $elements elements
+	 */
+	public function __construct(array $elements = []) {
+		foreach ($elements as $element) {
+			$this->addElement($element);
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted): array {
 		$return = [];
-		for ($i = 0; $i < count($this->subelements); $i++) {
-			$return = array_merge($return, $this->subelements[$i]->generateHTML($module, $input, $values, $restricted));
+		for ($i = 0; $i < count($this->elements); $i++) {
+			$return = array_merge($return, $this->elements[$i]->generateHTML($module, $input, $values, $restricted));
 		}
 		return $return;
 	}
@@ -3253,10 +3264,10 @@ class htmlGroup extends htmlElement {
 	/**
 	 * Adds a subelement.
 	 *
-	 * @param htmlElement $sub subelement
+	 * @param htmlElement $sub element
 	 */
 	public function addElement(htmlElement $sub): void {
-		$this->subelements[] = $sub;
+		$this->elements[] = $sub;
 	}
 
 }
@@ -4904,6 +4915,49 @@ class htmlTab {
 		$this->content = $content;
 		$this->image = $image;
 		$this->label = htmlspecialchars($label);
+	}
+
+}
+
+/**
+ * Show more link for initially hidden content.
+ */
+class htmlShowMore extends htmlElement {
+
+	/** root for show more/less */
+	public const CLASS_SHOW_MORE_ROOT = 'lam-showmore-root';
+	/** initially hidden content */
+	public const CLASS_SHOW_MORE = 'lam-showmore-more hidden';
+	/** content to be shown when show less link is clicked */
+	public const CLASS_SHOW_LESS = 'lam-showmore-less';
+
+	/** default size when to use show more/less */
+	public const DEFAULT_MAXIMUM_SIZE = 10;
+
+	/** size when to use show more/less for larger readable lists */
+	public const MAXIMUM_SIZE_LARGE = 30;
+
+	/**
+	 * @inheritDoc
+	 */
+	public function generateHTML($module, $input, $values, $restricted): array {
+		echo '<span class="show-pointer ' . self::CLASS_SHOW_LESS . '" onclick="window.lam.showMore.showMore(this)">' . _('Show more...') . '</span>';
+		return [];
+	}
+
+}
+
+/**
+ * Show less link for content displayed after show more.
+ */
+class htmlShowLess extends htmlElement {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function generateHTML($module, $input, $values, $restricted): array {
+		echo '<span class="show-pointer ' . htmlShowMore::CLASS_SHOW_MORE . '" onclick="window.lam.showMore.showLess(this)">' . _('Show less...') . '</span>';
+		return [];
 	}
 
 }

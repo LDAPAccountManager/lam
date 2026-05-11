@@ -1234,6 +1234,17 @@
       "#cn;#givenName;#sn;#mail" or select your own attributes to display in
       the account list.</para>
 
+      <para>The following virtual attributes can be shown in the user list.
+      These are no real LDAP attributes but extra data that can be shown by
+      LAM.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>memberof_count: number of entries in attribute
+          "memberOf"</para>
+        </listitem>
+      </itemizedlist>
+
       <screenshot>
         <mediaobject>
           <imageobject>
@@ -1411,6 +1422,17 @@
       LDS (blank lines in account table). Please use
       "#cn;#givenName;#sn;#mail" or select your own attributes to display in
       the account list.</para>
+
+      <para>The following virtual attributes can be shown in the user list.
+      These are no real LDAP attributes but extra data that can be shown by
+      LAM.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>memberof_count: number of entries in attribute
+          "memberOf"</para>
+        </listitem>
+      </itemizedlist>
 
       <screenshot>
         <mediaobject>
@@ -2858,6 +2880,21 @@ AuthorizedKeysCommandUser root</literallayout>
       "#cn;#member;#description" or select your own attributes to display in
       the account list.</para>
 
+      <para>The following virtual attributes can be shown in the group list.
+      These are no real LDAP attributes but extra data that can be shown by
+      LAM.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>member_count: number of entries in attribute "member"</para>
+        </listitem>
+
+        <listitem>
+          <para>memberof_count: number of entries in attribute
+          "memberOf"</para>
+        </listitem>
+      </itemizedlist>
+
       <screenshot>
         <mediaobject>
           <imageobject>
@@ -2975,6 +3012,21 @@ AuthorizedKeysCommandUser root</literallayout>
       LDS (blank lines in account table). Please use
       "#cn;#member;#description" or select your own attributes to display in
       the account list.</para>
+
+      <para>The following virtual attributes can be shown in the group list.
+      These are no real LDAP attributes but extra data that can be shown by
+      LAM.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>member_count: number of entries in attribute "member"</para>
+        </listitem>
+
+        <listitem>
+          <para>memberof_count: number of entries in attribute
+          "memberOf"</para>
+        </listitem>
+      </itemizedlist>
 
       <screenshot>
         <mediaobject>

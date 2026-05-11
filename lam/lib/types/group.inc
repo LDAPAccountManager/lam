@@ -288,31 +288,42 @@ class lamGroupList extends lamList {
 
 				// make a link for each member of the group
 				for ($d = 0; $d < count($attr); $d++) {
+					$separator = ($d < (count($attr) - 1)) ? ';' : '';
+					$cssClasses = ($d >= htmlShowMore::MAXIMUM_SIZE_LARGE) ? [htmlShowMore::CLASS_SHOW_MORE] : [];
 					$user = $attr[$d]; // user name
 					if (isAccountTypeHidden('user')) {
-						$linklist[$d] = $user;
+						$linklist[$d] = new htmlOutputText($user . $separator);
 					}
 					elseif (isset($primaryvals[$user])) {
-						$linklist[$d] = "<b><a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a></b>";
+						$linklist[$d] = new htmlLink($user . $separator, "userlink.php?user='" . $user . "'");
+						$cssClasses[] = 'bold';
 					}
 					else {
-						$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+						$linklist[$d] = new htmlLink($user . $separator, "userlink.php?user='" . $user . "'");
 					}
+					$linklist[$d]->setCSSClasses($cssClasses);
 				}
 			}
 			else {
 				// make a link for each member of the group
 				for ($d = 0; $d < count($entry[$attribute]); $d++) {
+					$separator = ($d < (count($entry[$attribute]) - 1)) ? ';' : '';
+					$cssClasses = ($d >= htmlShowMore::MAXIMUM_SIZE_LARGE) ? [htmlShowMore::CLASS_SHOW_MORE] : [];
 					$user = $entry[$attribute][$d]; // user name
 					if (!isAccountTypeHidden('user')) {
-						$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+						$linklist[$d] = new htmlLink($user . $separator, "userlink.php?user='" . $user . "'");
 					}
 					else {
-						$linklist[$d] = $user;
+						$linklist[$d] = new htmlOutputText($user . $separator);
 					}
+					$linklist[$d]->setCSSClasses($cssClasses);
 				}
 			}
-			return new htmlOutputText(implode("; ", $linklist), false);
+			if (count($linklist) > htmlShowMore::MAXIMUM_SIZE_LARGE) {
+				array_splice($linklist, htmlShowMore::MAXIMUM_SIZE_LARGE, 0, [new htmlShowMore()]);
+				$linklist[] = new htmlShowLess();
+			}
+			return new htmlDiv(null, new htmlGroup($linklist), [htmlShowMore::CLASS_SHOW_MORE_ROOT]);
 		}
 		// print all other attributes
 		else {

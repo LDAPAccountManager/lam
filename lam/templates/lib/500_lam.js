@@ -3982,6 +3982,44 @@ window.lam.loadingIndicator.stop = function() {
 	Swal.close();
 }
 
+
+window.lam.showMore = window.lam.showMore || {};
+
+/**
+ * Shows items hidden initially.
+ *
+ * @param element link element
+ */
+window.lam.showMore.showMore = function (element) {
+    const root = element.closest('.lam-showmore-root');
+    if (root) {
+        root.querySelectorAll('.lam-showmore-more').forEach(showMoreElement => {
+            showMoreElement.classList.remove('hidden');
+        });
+        root.querySelectorAll('.lam-showmore-less').forEach(showMoreElement => {
+            showMoreElement.classList.add('hidden');
+        });
+    }
+}
+
+/**
+ * Hides items shown by show more.
+ *
+ * @param element link element
+ */
+window.lam.showMore.showLess = function (element) {
+    const root = element.closest('.lam-showmore-root');
+    if (root) {
+        root.querySelectorAll('.lam-showmore-more').forEach(showMoreElement => {
+            showMoreElement.classList.add('hidden');
+        });
+        root.querySelectorAll('.lam-showmore-less').forEach(showMoreElement => {
+            showMoreElement.classList.remove('hidden');
+        });
+    }
+}
+
+
 window.lam.utility = window.lam.utility || {};
 
 /**

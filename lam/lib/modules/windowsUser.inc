@@ -4884,6 +4884,8 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'roomnumber' => _('Room number'),
 			'jpegphoto' => _('Photo'),
 			'thumbnailphoto' => _('Thumbnail'),
+			'memberof' => _('Member of'),
+			'memberof_count' => _('Member of count'),
 		];
 	}
 
@@ -4945,25 +4947,18 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				return new htmlOutputText($value);
 			};
 		}
-		elseif ($attributeName === 'manager') {
+		elseif (in_array($attributeName, ['manager', 'memberof'])) {
+			return $this->listRenderDnList(...);
+		}
+		elseif ($attributeName === 'memberof_count') {
 			return function(array $entry, string $attribute): htmlElement {
-				if (!empty($entry[$attribute][0])) {
-					$value = $entry[$attribute][0];
-					$typeManager = new TypeManager();
-					$replaced = false;
-					foreach ($typeManager->getConfiguredTypes() as $type) {
-						if ((stripos($value, $type->getSuffix()) > 0) && !isAccountTypeHidden($type->getId())) {
-							$value = '<a href="../account/edit.php?type=' . $type->getId() . '&amp;DN=\'' . $value . '\'">' . getAbstractDN($value) . '</a>';
-							$replaced = true;
-							break;
-						}
-					}
-					if (!$replaced) {
-						$value = getAbstractDN($value);
-					}
-					return new htmlDiv(null, new htmlOutputText($value, false), ['rightToLeftText']);
+				$count = 0;
+				$realAttributeName = str_replace('_count', '', $attribute);
+				$values = &$entry[$realAttributeName];
+				if (!empty($values)) {
+					$count = count($values);
 				}
-				return new htmlGroup();
+				return new htmlOutputText((string) $count);
 			};
 		}
 		return null;

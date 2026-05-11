@@ -5,6 +5,7 @@ use LAM\PDF\PDFEntry;
 use LAM\PDF\PDFLabelValue;
 use LAM\PDF\PDFTable;
 use LAM\TYPES\ConfiguredType;
+use LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
 use LAM\PDF\PDFImage;
 
@@ -2371,6 +2372,50 @@ abstract class baseModule {
 	 */
 	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return [];
+	}
+
+	/**
+	 * Renders a list of DNs with links to edit page.
+	 *
+	 * @param array<string, string[]|string> $entry LDAP entry
+	 * @param string $attribute attribute name
+	 * @return htmlElement content
+	 */
+	protected function listRenderDnList(array $entry, string $attribute): htmlElement {
+		if (!empty($entry[$attribute][0])) {
+			$typeManager = new TypeManager();
+			$values = $entry[$attribute];
+			usort($values, compareDN(...));
+			$count = count($values);
+			$showMoreLess = ($count > htmlShowMore::DEFAULT_MAXIMUM_SIZE);
+			for ($i = 0; $i < $count; $i++) {
+				$replaced = false;
+				$className = '';
+				if ($showMoreLess && $i >= htmlShowMore::DEFAULT_MAXIMUM_SIZE) {
+					$className = htmlShowMore::CLASS_SHOW_MORE;
+				}
+				foreach ($typeManager->getConfiguredTypes() as $type) {
+					if ((stripos($values[$i], $type->getSuffix()) > 0) && !isAccountTypeHidden($type->getId())) {
+						$values[$i] = new htmlLink(getAbstractDN($values[$i]), '../account/edit.php?type=' . $type->getId() . '&amp;DN=\'' . $values[$i] . '\'');
+						$replaced = true;
+						break;
+					}
+				}
+				if (!$replaced) {
+					$values[$i] = new htmlOutputText(getAbstractDN($values[$i]));
+				}
+				$valueGroup = new htmlGroup([$values[$i], new htmlOutputText('<br>', false)]);
+				if ($showMoreLess && ($i === (htmlShowMore::DEFAULT_MAXIMUM_SIZE - 1))) {
+					$valueGroup->addElement(new htmlShowMore());
+				}
+				$values[$i] = new htmlSpan($valueGroup, [$className]);
+			}
+			if ($showMoreLess) {
+				$values[] = new htmlShowLess();
+			}
+			return new htmlDiv(null, new htmlGroup($values), ['rightToLeftText', htmlShowMore::CLASS_SHOW_MORE_ROOT]);
+		}
+		return new htmlGroup();
 	}
 
 }
