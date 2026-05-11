@@ -1,6 +1,8 @@
 June 2026 9.6
  - PHP 8.5 compatibility
  - Wildcards for Unix groups and group of names (674)
+ - LAM Pro:
+  -> Custom fields: configuration is stored in new format on save of server/self-service profile (old format can still be read) (653)
 
 
 01.04.2026 9.5.2

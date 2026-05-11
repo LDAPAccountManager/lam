@@ -609,6 +609,16 @@
       intermediate release.</para>
 
       <section>
+        <title>9.5 -&gt; 9.6</title>
+
+        <para><emphasis role="bold">LAM Pro: Custom fields
+        configuration</emphasis> (server/self-service profiles) is stored in
+        new format when saved. Old format can still be read. As the old format
+        will be supported for a limited time, it is recommended to open LAM
+        and save all server+self-service profiles after the upgrade.</para>
+      </section>
+
+      <section>
         <title>9.4 -&gt; 9.5</title>
 
         <para>Users who have an active session in LAM need to relogin to
