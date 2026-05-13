@@ -1287,7 +1287,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$val = str_replace("\r\n", '<br>', htmlspecialchars($postalAddresses[$i]));
 					$addressContainer->addElement(new htmlOutputText($val, false));
 					if ($i < (count($postalAddresses) - 1)) {
-						$addressContainer->addElement(new htmlOutputText('<br>', false));
+						$addressContainer->addElement(new htmlLineBreak());
 					}
 				}
 				else {
@@ -1295,7 +1295,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$postalAddressTextarea->setAccessibilityLabel(_('Postal address'));
 					$addressContainer->addElement($postalAddressTextarea);
 					if ($i < (count($postalAddresses) - 1)) {
-						$addressContainer->addElement(new htmlOutputText('<br>', false));
+						$addressContainer->addElement(new htmlLineBreak());
 					}
 					else {
 						$addButton = new htmlButton('addPostalAddress', 'add.svg', true);
@@ -1328,7 +1328,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$val = str_replace("\r\n", '<br>', htmlspecialchars($registeredAddresses[$i]));
 					$registeredAddressContainer->addElement(new htmlOutputText($val, false));
 					if ($i < (count($registeredAddresses) - 1)) {
-						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
+						$registeredAddressContainer->addElement(new htmlLineBreak());
 					}
 				}
 				else {
@@ -1336,7 +1336,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 					$registeredAddressTextarea->setAccessibilityLabel(_('Registered address'));
 					$registeredAddressContainer->addElement($registeredAddressTextarea);
 					if ($i < (count($registeredAddresses) - 1)) {
-						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
+						$registeredAddressContainer->addElement(new htmlLineBreak());
 					}
 					else {
 						$addButton = new htmlButton('addRegisteredAddress', 'add.svg', true);

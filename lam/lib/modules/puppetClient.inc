@@ -248,7 +248,7 @@ class puppetClient extends baseModule {
 			$environmentField->enableAutocompletion($autocompleteEnvironment);
 			$environmentContainer->addElement($environmentField);
 			if ($i < (count($environments) - 1)) {
-				$environmentContainer->addElement(new htmlOutputText('<br>', false));
+				$environmentContainer->addElement(new htmlLineBreak());
 			}
 			else {
 				$environmentContainer->addElement(new htmlButton('addEnvironment', 'add.svg', true));

@@ -2404,7 +2404,7 @@ abstract class baseModule {
 				if (!$replaced) {
 					$values[$i] = new htmlOutputText(getAbstractDN($values[$i]));
 				}
-				$valueGroup = new htmlGroup([$values[$i], new htmlOutputText('<br>', false)]);
+				$valueGroup = new htmlGroup([$values[$i], new htmlLineBreak()]);
 				if ($showMoreLess && ($i === (htmlShowMore::DEFAULT_MAXIMUM_SIZE - 1))) {
 					$valueGroup->addElement(new htmlShowMore());
 				}

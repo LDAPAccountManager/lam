@@ -1731,7 +1731,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		foreach ($groupNames as $cn) {
 			$groupsList->addElement(new htmlOutputText($cn));
-			$groupsList->addElement(new htmlOutputText('<br>', false));
+			$groupsList->addElement(new htmlLineBreak());
 		}
 		$groupsListClass = $this->groupDisplayContainsDn() ? 'rightToLeftText' : '';
 		$groupsListDiv = new htmlDiv(null, $groupsList, [$groupsListClass]);

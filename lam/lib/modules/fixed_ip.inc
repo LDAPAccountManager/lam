@@ -898,21 +898,21 @@ class fixed_ip extends baseModule {
 							$ip = new htmlOutputText($ipAddress);
 							$ip->setCSSClasses($cssClasses);
 							$group->addElement($ip);
-							$group->addElement(new htmlOutputText('<br>', false));
+							$group->addElement(new htmlLineBreak());
 						}
 						$macAddress = array_pop($dhcphwaddress);
 						$mac = new htmlOutputText($macAddress);
 						$mac->setCSSClasses($cssClasses);
 						$group->addElement($mac);
 						if (!empty($macAddress)) {
-							$group->addElement(new htmlOutputText('<br>', false));
+							$group->addElement(new htmlLineBreak());
 						}
 						$name = new htmlOutputText($entries[$i]['cn'][0]);
 						$name->setCSSClasses($cssClasses);
 						$group->addElement($name);
-						$group->addElement(new htmlOutputText('<br>', false));
+						$group->addElement(new htmlLineBreak());
 						if ($i < (count($order) - 1)) {
-							$group->addElement(new htmlOutputText('<br>', false));
+							$group->addElement(new htmlLineBreak());
 						}
 					}
 					return $group;
