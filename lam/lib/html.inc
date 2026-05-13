@@ -4961,3 +4961,18 @@ class htmlShowLess extends htmlElement {
 	}
 
 }
+
+/**
+ * Simple line break.
+ */
+class htmlLineBreak extends htmlElement {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function generateHTML($module, $input, $values, $restricted): array {
+		echo '<br />';
+		return [];
+	}
+
+}
