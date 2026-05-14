@@ -1652,6 +1652,14 @@ class accountContainer {
 		$this->titleBarIcon = $typeObject->buildAccountStatusIcon($this);
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
+		// change the initial page if needed
+		if (!empty($_GET['initialTab']) && in_array($_GET['initialTab'], $this->order)) {
+			$this->current_page = array_search($_GET['initialTab'], $this->order);
+			if (!empty($_GET['initialSubpage'])
+				&& method_exists($this->module[$this->order[$this->current_page]], 'display_html_' . $_GET['initialSubpage'])) {
+				$this->subpage = $_GET['initialSubpage'];
+			}
+		}
 		return [];
 	}
 

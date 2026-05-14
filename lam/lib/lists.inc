@@ -581,7 +581,7 @@ class lamList {
 			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
-				$renderFunction = $moduleObj->getListRenderFunction($attributeName);
+				$renderFunction = $moduleObj->getListRenderFunction($attributeName, $this->type);
 				if ($renderFunction !== null) {
 					$renderFunctions[$attributeName] = $renderFunction;
 				}

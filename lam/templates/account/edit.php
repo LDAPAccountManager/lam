@@ -88,8 +88,8 @@ foreach ($_SESSION as $key => $value) {
 }
 
 $typeManager = new TypeManager();
-//load account
 
+//load account
 if (!empty($_GET['DN'])) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
 	$dn = cleanDn($_GET['DN']);

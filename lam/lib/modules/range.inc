@@ -772,7 +772,7 @@ class range extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListRenderFunction(string $attributeName): ?callable {
+	public function getListRenderFunction(string $attributeName, ConfiguredType $type): ?callable {
 		if ($attributeName === 'dhcprange') {
 			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {

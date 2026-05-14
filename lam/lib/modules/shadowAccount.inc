@@ -989,7 +989,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * @inheritDoc
 	 */
-	public function getListRenderFunction(string $attributeName): ?callable {
+	public function getListRenderFunction(string $attributeName, ConfiguredType $type): ?callable {
 		if (($attributeName === 'shadowexpire') || ($attributeName === 'shadowlastchange')) {
 			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {

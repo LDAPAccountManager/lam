@@ -867,7 +867,7 @@ class fixed_ip extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListRenderFunction(string $attributeName): ?callable {
+	public function getListRenderFunction(string $attributeName, ConfiguredType $type): ?callable {
 		if ($attributeName === 'fixed_ips') {
 			return function(array $entry, string $attribute): htmlElement {
 				// find all fixed addresses:

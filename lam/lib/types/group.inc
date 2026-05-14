@@ -396,7 +396,7 @@ class lamGroupList extends lamList {
 	 */
 	protected function getAdditionalLDAPAttributesToRead(): array {
 		$attrs = $this->type->getAttributes();
-		$ret = [];
+		$ret = ['objectclass'];
 		$countLen = strlen('_count');
 		foreach ($attrs as $attr) {
 			$attrName = $attr->getAttributeName();

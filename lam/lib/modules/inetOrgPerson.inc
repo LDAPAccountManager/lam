@@ -4085,7 +4085,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * @inheritDoc
 	 */
-	public function getListRenderFunction(string $attributeName): ?callable {
+	public function getListRenderFunction(string $attributeName, ConfiguredType $type): ?callable {
 		if (($attributeName === 'mail') || ($attributeName === 'rfc822mailbox')) {
 			return function(array $entry, string $attribute): htmlElement {
 				$group = new htmlGroup();

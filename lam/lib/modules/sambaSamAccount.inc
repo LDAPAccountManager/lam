@@ -3002,7 +3002,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * @inheritDoc
 	 */
-	public function getListRenderFunction(string $attributeName): ?callable {
+	public function getListRenderFunction(string $attributeName, ConfiguredType $type): ?callable {
 		if ($attributeName === 'sambakickofftime') {
 			return function(array $entry, string $attribute): htmlElement {
 				if (!empty($entry[$attribute][0])) {

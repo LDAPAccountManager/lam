@@ -2358,9 +2358,10 @@ abstract class baseModule {
 	 * Returns a callable if there should be a custom display for the given attribute name.
 	 *
 	 * @param string $attributeName attribute name
+	 * @param ConfiguredType $type type
 	 * @return callable|null custom function for rendering (array $entry, string $attribute)
 	 */
-	public function getListRenderFunction(string $attributeName): ?callable {
+	public function getListRenderFunction(string $attributeName, ConfiguredType $type): ?callable {
 		return null;
 	}
 
@@ -2396,7 +2397,7 @@ abstract class baseModule {
 				}
 				foreach ($typeManager->getConfiguredTypes() as $type) {
 					if ((stripos($values[$i], $type->getSuffix()) > 0) && !isAccountTypeHidden($type->getId())) {
-						$values[$i] = new htmlLink(getAbstractDN($values[$i]), '../account/edit.php?type=' . $type->getId() . '&amp;DN=\'' . $values[$i] . '\'');
+						$values[$i] = new htmlLink(getAbstractDN($values[$i]), '../account/edit.php?type=' . $type->getId() . '&DN=\'' . $values[$i] . '\'');
 						$replaced = true;
 						break;
 					}

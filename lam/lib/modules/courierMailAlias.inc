@@ -235,7 +235,7 @@ class courierMailAlias extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListRenderFunction(string $attributeName): ?callable {
+	public function getListRenderFunction(string $attributeName, ConfiguredType $type): ?callable {
 		if ($attributeName === 'mail') {
 			return function(array $entry, string $attribute): htmlElement {
 				$group = new htmlGroup();
