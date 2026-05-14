@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Setup PHP with PECL extension
-      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
+      uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
       with:
         php-version: '8.2'
         extensions: ldap, xdebug, gd, json, xml, curl, zip, mbstring, imagick, pdo_sqlite
