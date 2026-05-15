@@ -1693,11 +1693,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		$this->checkForInvalidConfiguration($return);
 		$modules = $this->getAccountContainer()->get_type()->getModules();

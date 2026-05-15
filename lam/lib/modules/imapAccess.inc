@@ -212,9 +212,9 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $return;

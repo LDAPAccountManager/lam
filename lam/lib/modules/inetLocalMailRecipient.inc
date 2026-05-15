@@ -186,11 +186,9 @@ class inetLocalMailRecipient extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		if (in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
 			$this->getAccountContainer()->replaceWildcardsInArray($this->getWildcardTargetAttributeNames(), $this->attributes);

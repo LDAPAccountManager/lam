@@ -352,7 +352,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	/**
 	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'shadowAccount';
 		}

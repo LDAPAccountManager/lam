@@ -325,11 +325,9 @@ class ddns extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	public function display_html_attributes(): htmlElement {
+	public function display_html_attributes(): htmlElement|array {
 		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 		$return = new htmlResponsiveRow();

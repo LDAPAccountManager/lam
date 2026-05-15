@@ -206,11 +206,9 @@ class asteriskExtension extends baseModule {
 	}
 
 	/**
-	 * This function will create the meta HTML code to show a page with all attributes.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 
 		$extName = '';

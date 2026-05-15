@@ -308,11 +308,9 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$container = new htmlResponsiveRow();
 		$this->addSimpleInputTextField($container, 'cn', _('Group name'), true);
 		$this->addSimpleInputTextField($container, 'description', _('Description'));

@@ -1152,7 +1152,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	/**
 	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$this->initCache();
 		$this->getAccountContainer()->replaceWildcardsInArray($this->getWildcardTargetAttributeNames(), $this->attributes);
 		$container = new htmlResponsiveRow();

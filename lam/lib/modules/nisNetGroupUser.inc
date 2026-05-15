@@ -169,11 +169,9 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
-	 * Displays the group selection.
-	 *
-	 * @return htmlElement meta HTML code
+	 * {@inheritDoc}
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlTable();
 		$return->addElement(new htmlOutputText(_('Group')));
 		$return->addElement(new htmlOutputText(_('Host name')));

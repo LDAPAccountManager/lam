@@ -376,11 +376,9 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] == "") {
 			$return->add(new htmlStatusMessage('ERROR', _("Please fill out the DHCP settings first.")));

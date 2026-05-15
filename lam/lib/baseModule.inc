@@ -1332,7 +1332,7 @@ abstract class baseModule {
 	 *
 	 * @see htmlElement
 	 */
-	abstract public function display_html_attributes();
+	abstract public function display_html_attributes(): htmlElement|array;
 
 	/**
 	 * Adds a simple text input field to the given htmlResponsiveRow.

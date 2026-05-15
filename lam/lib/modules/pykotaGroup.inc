@@ -187,11 +187,9 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$container = new htmlResponsiveRow();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if ($this->isStructural() || (isset($this->attributes['objectClass']) && in_array('pykotaGroup', $this->attributes['objectClass']))) {

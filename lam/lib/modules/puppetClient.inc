@@ -214,11 +214,9 @@ class puppetClient extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		if (isset($_POST['form_subpage_puppetClient_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'puppetClient';
 		}

@@ -326,9 +326,9 @@ class baseModuleDummy extends baseModule {
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::display_html_attributes()
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
+		return new htmlResponsiveRow();
 	}
 
 }

@@ -144,9 +144,9 @@ class courierMailAlias extends baseModule {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		$this->addSimpleInputTextField($return, 'mail', _('Email address'), true);
 		$this->addMultiValueInputTextField($return, 'maildrop', _('Recipient address'), true);

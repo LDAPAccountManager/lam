@@ -146,7 +146,7 @@ class takUser extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		// takCallsign
 		$this->addSimpleInputTextField($return, 'takcallsign', _('Callsign'), true);

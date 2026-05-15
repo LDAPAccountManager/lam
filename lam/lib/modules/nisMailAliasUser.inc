@@ -109,11 +109,9 @@ class nisMailAliasUser extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		if (!$this->isMailAliasTypeActive()) {
 			$return->add(new htmlStatusMessage('ERROR', _('Please activate the mail aliases type for this server profile.')));

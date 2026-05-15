@@ -587,11 +587,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return htmlElement HTML meta data
+	 * {@inheritDoc}
 	 */
-	public function display_html_attributes() {
+	public function display_html_attributes(): htmlElement|array {
 		$return = new htmlResponsiveRow();
 		// check if DHCP main settings and valid DHCP entry
 		if ($this->isRootNode()
