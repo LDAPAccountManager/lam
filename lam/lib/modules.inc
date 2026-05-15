@@ -855,7 +855,7 @@ class accountContainer {
 		elseif (!$profileLoaded) {
 			// change dn suffix
 			$possibleOUs = $this->getOUs();
-			if (!empty($_GET['suffix']) && in_array($_GET['suffix'], $possibleOUs)) {
+			if (($this->dnSuffix === null) && !empty($_GET['suffix']) && in_array($_GET['suffix'], $possibleOUs)) {
 				$this->dnSuffix = $_GET['suffix'];
 			}
 			if (!empty($_POST['accountContainerSuffix']) && in_array($_POST['accountContainerSuffix'], $possibleOUs)) {

@@ -4,6 +4,8 @@ June 2026 9.6
  - Usability improvements (684, 687)
  - LAM Pro:
   -> Custom fields: configuration is stored in new format on save of server/self-service profile (old format can still be read) (653)
+ - Fixed bugs:
+  -> LDAP suffix from default profile not applied to new objects (698)
 
 
 01.04.2026 9.5.2
