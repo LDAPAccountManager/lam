@@ -21,9 +21,9 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 set -e # non-zero return values exit the whole script
-[ "${DEBUG:-false}" = "true" ] && set -x
+[[ "${DEBUG:-false}" = "true" ]] && set -x
 
-if [ "${LAM_DISABLE_TLS_CHECK:-}" = "true" ]; then
+if [[ "${LAM_DISABLE_TLS_CHECK:-}" = "true" ]]; then
   if ! grep -e '^TLS_REQCERT never$' /etc/ldap/ldap.conf > /dev/null; then
     echo "TLS_REQCERT never" >> /etc/ldap/ldap.conf
   fi
@@ -38,7 +38,7 @@ EOF
 
 
 LAM_SKIP_PRECONFIGURE="${LAM_SKIP_PRECONFIGURE:-false}"
-if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
+if [[ "$LAM_SKIP_PRECONFIGURE" != "true" ]]; then
   echo "Configuring LAM"
 
   LAM_LANG="${LAM_LANG:-en_US}"
@@ -101,7 +101,7 @@ EOF
   ls -l /var/lib/ldap-account-manager/config/lam.conf
   cfgFilesExist=$?
   set -e
-  if [ $cfgFilesExist -ne 0 ]; then
+  if [[ $cfgFilesExist -ne 0 ]]; then
     cp /var/lib/ldap-account-manager/config/unix.sample.conf /var/lib/ldap-account-manager/config/lam.conf
 	  chown www-data /var/lib/ldap-account-manager/config/lam.conf
   fi
@@ -123,7 +123,7 @@ EOF
 fi
 
 LAM_CONFIGURE_CRON="${LAM_CONFIGURE_CRON:-false}"
-if [ "$LAM_CONFIGURE_CRON" = "true" ]; then
+if [[ "$LAM_CONFIGURE_CRON" = "true" ]]; then
   echo "Configuring Cron"
   echo "0 0 * * * www-data /usr/share/ldap-account-manager/lib/runCronJobs.sh all" > /etc/cron.d/ldap-account-manager
   /usr/sbin/cron
