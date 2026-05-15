@@ -49,7 +49,7 @@ class eduPerson extends baseModule {
 	 *
 	 * @param string $scope account type (user, group, host)
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;
 	}

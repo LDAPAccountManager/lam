@@ -40,7 +40,7 @@ class hostObject extends baseModule {
 	 *
 	 * @param string $scope account type (user, group, host)
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		// call parent constructor
 		parent::__construct($scope);
 		$this->autoAddObjectClasses = false;

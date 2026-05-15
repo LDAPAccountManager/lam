@@ -68,7 +68,7 @@ class pykotaUser extends baseModule {
 	 *
 	 * @param string $scope account type (user, group, host)
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		$this->limitOptions = [
 			_('Quota') => 'quota',
 			_('Balance') => 'balance',

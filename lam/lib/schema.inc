@@ -53,7 +53,7 @@ class SchemaItem {
 	}
 
 	/** Default constructor. */
-	function __construct() {
+	public function __construct() {
 		$this->initVars();
 	}
 
@@ -126,7 +126,7 @@ class ObjectClass extends SchemaItem {
 	 *
 	 * @param string $raw_ldap_schema_string schema string
 	 */
-	function __construct($raw_ldap_schema_string) {
+	public function __construct($raw_ldap_schema_string) {
 		$this->initVars();
 		$class = $raw_ldap_schema_string;
 		$class = preg_replace('/\\(([a-z])/i', '( $1', $class);
@@ -478,7 +478,7 @@ class ObjectClassAttribute {
 	 * @param string $source the name of the ObjectClass which
 	 *           specifies this attribute.
 	 */
-	function __construct($name, $source) {
+	public function __construct($name, $source) {
 		$this->name = $name;
 		$this->source = $source;
 	}
@@ -573,7 +573,7 @@ class AttributeType extends SchemaItem {
 	 * Creates a new AttributeType objcet from a raw LDAP AttributeType string.
 	 * @param string $raw_ldap_attr_string attribute string
 	 */
-	function __construct($raw_ldap_attr_string) {
+	public function __construct($raw_ldap_attr_string) {
 		$this->initVars();
 		$attr = $raw_ldap_attr_string;
 		$strings = preg_split("/[\s,]+/", $attr, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -1002,7 +1002,7 @@ class Syntax extends SchemaItem {
 	 *
 	 * @param string $raw_ldap_syntax_string syntax string
 	 */
-	function __construct($raw_ldap_syntax_string) {
+	public function __construct($raw_ldap_syntax_string) {
 		$this->initVars();
 		$class = $raw_ldap_syntax_string;
 		$strings = preg_split("/[\s,]+/", $class, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -1064,7 +1064,7 @@ class MatchingRule extends SchemaItem {
 	 *
 	 * @param string $raw_ldap_matching_rule_string rule string
 	 */
-	function __construct($raw_ldap_matching_rule_string) {
+	public function __construct($raw_ldap_matching_rule_string) {
 		$this->initVars();
 		$strings = preg_split("/[\s,]+/", $raw_ldap_matching_rule_string, -1, PREG_SPLIT_DELIM_CAPTURE);
 		for ($i = 0; $i < count($strings); $i++) {
@@ -1205,7 +1205,7 @@ class MatchingRuleUse extends SchemaItem {
 	/**
 	 * @param string $raw_matching_rule_use_string rule string
 	 */
-	function __construct($raw_matching_rule_use_string) {
+	public function __construct($raw_matching_rule_use_string) {
 		$this->initVars();
 		$strings = preg_split("/[\s,]+/", $raw_matching_rule_use_string, -1, PREG_SPLIT_DELIM_CAPTURE);
 		for ($i = 0; $i < count($strings); $i++) {

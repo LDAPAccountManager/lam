@@ -68,7 +68,7 @@ class windowsGroup extends baseModule {
 	 *
 	 * @param string $scope account type
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		$this->groupTypes = [
 			_('Security') => windowsGroup::TYPE_SECURITY,
 			_('Distribution') => windowsGroup::TYPE_DISTRIBUTION,

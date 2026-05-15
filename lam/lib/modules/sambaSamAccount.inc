@@ -94,7 +94,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @param string $scope account type (user, group, host)
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		// List of well known group rids
 		$this->groupRids = [
 			_('Domain admins') => 512, _('Domain users') => 513, _('Domain guests') => 514,

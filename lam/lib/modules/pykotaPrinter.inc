@@ -52,7 +52,7 @@ class pykotaPrinter extends baseModule {
 	 *
 	 * @param string $scope account type (user, group, host)
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		$this->passThroughOptions = [
 			_('Yes') => 't',
 			_('No') => 'f',

@@ -62,7 +62,7 @@ class sambaGroupMapping extends baseModule {
 	 *
 	 * @param string $scope account type
 	 */
-	function __construct($scope) {
+	public function __construct($scope) {
 		// load error messages
 		$this->rids = [
 			_('Domain admins') => 512,

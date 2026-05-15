@@ -1042,7 +1042,7 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 	 *
 	 * @param selfServiceProfile $profile profile
 	 */
-	function __construct(selfServiceProfile $profile) {
+	public function __construct(selfServiceProfile $profile) {
 		$this->profile = $profile;
 	}
 
@@ -1124,7 +1124,7 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 	 *
 	 * @param selfServiceProfile $profile profile
 	 */
-	function __construct(selfServiceProfile $profile) {
+	public function __construct(selfServiceProfile $profile) {
 		$this->profile = $profile;
 	}
 
@@ -1207,7 +1207,7 @@ class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
 	 *
 	 * @param selfServiceProfile $profile profile
 	 */
-	function __construct(selfServiceProfile $profile) {
+	public function __construct(selfServiceProfile $profile) {
 		$this->profile = $profile;
 	}
 
