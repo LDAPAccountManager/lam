@@ -551,7 +551,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 * @see htmlResponsiveRow
 	 */
-	public function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		return $this->meta['profile_options'] ?? null;
 	}
 

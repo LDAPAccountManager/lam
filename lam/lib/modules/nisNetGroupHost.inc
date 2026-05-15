@@ -190,7 +190,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 	/**
 	 * {@inheritDoc}
 	 */
-	function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		$groups = $this->findGroups();
 		$groupOptions = ['' => ''];
 		foreach ($groups as $group) {

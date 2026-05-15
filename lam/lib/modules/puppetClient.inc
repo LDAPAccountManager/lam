@@ -410,7 +410,7 @@ class puppetClient extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		$return = parent::get_profileOptions($typeId);
 		$possibleParentNodes = $this->getPossibleParentNodes();
 		array_unshift($possibleParentNodes, '-');

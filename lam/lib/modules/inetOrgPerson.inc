@@ -2091,9 +2091,8 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 
 	/**
 	 * {@inheritDoc}
-	 * @see baseModule::get_profileOptions()
 	 */
-	public function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		$typeManager = new TypeManager();
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
 		$profileElements = [];

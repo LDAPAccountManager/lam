@@ -2120,7 +2120,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	/**
 	 * {@inheritDoc}
 	 */
-	function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();

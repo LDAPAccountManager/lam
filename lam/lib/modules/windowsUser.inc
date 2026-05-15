@@ -3666,7 +3666,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	/**
 	 * {@inheritDoc}
 	 */
-	function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		$return = parent::get_profileOptions($typeId);
 		// domain
 		$domains = $this->getDomains();

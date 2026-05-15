@@ -623,7 +623,7 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * {@inheritDoc}
 	 */
-	function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		$parentOptions = parent::get_profileOptions($typeId);
 		$typeManager = new TypeManager();
 		if (!$this->manageCnAndDescription($typeManager->getConfiguredType($typeId)->getModules())) {

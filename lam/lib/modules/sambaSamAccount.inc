@@ -1679,7 +1679,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	/**
 	 * {@inheritDoc}
 	 */
-	function get_profileOptions($typeId) {
+	public function get_profileOptions(string $typeId): ?htmlResponsiveRow {
 		$return = parent::get_profileOptions($typeId);
 		if ($this->get_scope() == 'user') {
 			// lists for expiration date
