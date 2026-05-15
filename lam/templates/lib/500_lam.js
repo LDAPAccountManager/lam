@@ -645,7 +645,7 @@ window.lam.filterSelect.filterDynamic = function(inputField, selectField) {
 	// save selection
 	const optionTags = Array.from(selectField.children);
 	optionTags.forEach((element) => {
-		optionsOrig[parseInt(element.dataset.index)].selected = element.selected;
+		optionsOrig[Number.parseInt(element.dataset.index)].selected = element.selected;
 	});
 	selectField.dataset.dynamicOptionsOrig = JSON.stringify(optionsOrig);
 	selectField.innerHTML = '';
@@ -704,7 +704,7 @@ window.lam.dynamicSelect.formListener = function(form) {
 		const children = Array.from(select.children);
 		children.forEach((option) => {
 			// get selection state from currently displayed options
-			dynamicOptions[parseInt(option.dataset.index)].selected = option.selected;
+			dynamicOptions[Number.parseInt(option.dataset.index)].selected = option.selected;
 		});
 		select.innerHTML = '';
 		dynamicOptions.forEach((item) => {
@@ -776,9 +776,9 @@ window.lam.dynamicSelect.createOption = function(data, index) {
 window.lam.dynamicSelect.onScroll = function(selectField, maxOptions, numOfOptionBeforeToLoadNextSet, numberOfOptionsToLoad) {
 	const scrollTop = selectField.scrollTop;
 	const totalHeight = selectField.querySelectorAll("option").length * selectField.dataset.optionHeight;
-	const lastScrollTop = parseInt(selectField.dataset.selectLastScrollTop);
-	const selectBoxHeight = parseInt(selectField.dataset.selectHeight);
-	const singleOptionHeight = parseInt(selectField.dataset.optionHeight);
+	const lastScrollTop = Number.parseInt(selectField.dataset.selectLastScrollTop);
+	const selectBoxHeight = Number.parseInt(selectField.dataset.selectHeight);
+	const singleOptionHeight = Number.parseInt(selectField.dataset.optionHeight);
 	const currentScroll = scrollTop + selectBoxHeight;
 	selectField.dataset.selectCurrentScrollTop = scrollTop;
 	if ((scrollTop >= lastScrollTop)
@@ -803,11 +803,11 @@ window.lam.dynamicSelect.loadNextOptions = function(selectField, maxOptions, num
 	if (selectField.children.length === 0) {
 		return;
 	}
-	const selectBoxHeight = parseInt(selectField.dataset.selectHeight);
-	const singleOptionHeight = parseInt(selectField.dataset.optionHeight);
-	const currentScrollPosition = parseInt(selectField.dataset.selectCurrentScrollTop) + selectBoxHeight;
+	const selectBoxHeight = Number.parseInt(selectField.dataset.selectHeight);
+	const singleOptionHeight = Number.parseInt(selectField.dataset.optionHeight);
+	const currentScrollPosition = Number.parseInt(selectField.dataset.selectCurrentScrollTop) + selectBoxHeight;
 	const options = JSON.parse(selectField.dataset.dynamicOptions);
-	let lastIndex = parseInt(selectField.children[selectField.children.length - 1].dataset.index);
+	let lastIndex = Number.parseInt(selectField.children[selectField.children.length - 1].dataset.index);
 	for (let i = 0; i < options.length; i++) {
 		if (options[i].index === lastIndex) {
 			lastIndex = i;
@@ -826,7 +826,7 @@ window.lam.dynamicSelect.loadNextOptions = function(selectField, maxOptions, num
 	if (toRemove > 0) {
 		for (let i = toRemove; i >= 0; i--) {
 			const optionToRemove = selectField.children[i];
-			const indexToRemove = parseInt(optionToRemove.dataset.index);
+			const indexToRemove = Number.parseInt(optionToRemove.dataset.index);
 			for (const option of options) {
 				if (option.index === indexToRemove) {
 					option.selected = optionToRemove.selected;
@@ -853,10 +853,10 @@ window.lam.dynamicSelect.loadPreviousOptions = function(selectField, maxOptions,
 	if (selectField.children.length === 0) {
 		return;
 	}
-	const singleOptionHeight = parseInt(selectField.dataset.optionHeight);
-	const currentScrollPosition = parseInt(selectField.dataset.selectCurrentScrollTop);
+	const singleOptionHeight = Number.parseInt(selectField.dataset.optionHeight);
+	const currentScrollPosition = Number.parseInt(selectField.dataset.selectCurrentScrollTop);
 	const options = JSON.parse(selectField.dataset.dynamicOptions);
-	let lastIndex = parseInt(selectField.children[0].dataset.index);
+	let lastIndex = Number.parseInt(selectField.children[0].dataset.index);
 	for (let i = 0; i < options.length; i++) {
 		if (options[i].index === lastIndex) {
 			lastIndex = i;
@@ -877,7 +877,7 @@ window.lam.dynamicSelect.loadPreviousOptions = function(selectField, maxOptions,
 	if (toRemove > 0) {
 		for (let i = maxOptions; i < selectField.children.length; i++) {
 			const optionToRemove = selectField.children[i];
-			const indexToRemove = parseInt(optionToRemove.dataset.index);
+			const indexToRemove = Number.parseInt(optionToRemove.dataset.index);
 			for (const option of options) {
 				if (option.index === indexToRemove) {
 					option.selected = optionToRemove.selected;
@@ -1874,7 +1874,7 @@ window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
 	// get next field number
 	const lastFieldName = fields[fields.length - 1].name;
 	const lastFieldNameIndex = lastFieldName.substring(fieldNamePrefix.length);
-	const newFieldNameIndex = parseInt(lastFieldNameIndex) + 1;
+	const newFieldNameIndex = Number.parseInt(lastFieldNameIndex) + 1;
 	// copy row
 	let parent = addButton.parentElement;
 	while (!parent.classList.contains('row')) {
