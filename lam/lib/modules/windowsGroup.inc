@@ -1127,15 +1127,20 @@ class windowsGroup extends baseModule {
 		elseif (($attributeName === 'managedby') || ($attributeName === 'member')) {
 			return $this->listRenderDnList(...);
 		}
-		elseif ($attributeName === 'member_count') {
-			return function(array $entry, string $attribute): htmlElement {
+		elseif (($attributeName === 'member_count') || ($attributeName === 'memberof_count')) {
+			return function(array $entry, string $attribute) use ($type): htmlElement {
 				$count = 0;
 				$realAttributeName = str_replace('_count', '', $attribute);
 				$values = &$entry[$realAttributeName];
 				if (!empty($values)) {
 					$count = count($values);
 				}
-				return new htmlOutputText((string) $count);
+				$subpage = 'user';
+				if ($realAttributeName === 'memberof') {
+					$subpage = 'memberof';
+				}
+				return new htmlLink((string) $count, '../account/edit.php?type=' . $type->getId()
+					. '&DN=\'' . $entry['dn'] . '\'&initialTab=windowsGroup&initialSubpage=' . $subpage);
 			};
 		}
 		return null;
