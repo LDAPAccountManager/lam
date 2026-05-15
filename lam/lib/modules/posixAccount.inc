@@ -3822,7 +3822,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		}
 		// search for @key@ wildcards in format string and replace with first character of attribute
 		$wildcards = [];
-		if (preg_match_all('/@([^@]|[a-zA-Z_-])+@/', $format, $wildcards) > 0) {
+		if (preg_match_all('/@([a-zA-Z_-])+@/', $format, $wildcards) > 0) {
 			for ($i = 0; $i < count($wildcards[0]); $i++) {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
@@ -3834,7 +3834,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		}
 		// search for %key% wildcards in format string and replace with attribute
 		$wildcards = [];
-		if (preg_match_all('/%([^%]|[a-zA-Z_-])+%/', $format, $wildcards) > 0) {
+		if (preg_match_all('/%([a-zA-Z_-])+%/', $format, $wildcards) > 0) {
 			for ($i = 0; $i < count($wildcards[0]); $i++) {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
