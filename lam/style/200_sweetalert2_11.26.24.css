@@ -112,7 +112,7 @@ body.swal2-no-backdrop .swal2-container {
   pointer-events: none;
 }
 body.swal2-no-backdrop .swal2-container .swal2-popup {
-  pointer-events: all;
+  pointer-events: auto;
 }
 body.swal2-no-backdrop .swal2-container .swal2-modal {
   box-shadow: 0 0 10px var(--swal2-backdrop);
@@ -855,7 +855,7 @@ div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=long] {
   border: var(--swal2-toast-border);
   background: var(--swal2-background);
   box-shadow: var(--swal2-toast-box-shadow);
-  pointer-events: all;
+  pointer-events: auto;
 }
 .swal2-toast > * {
   grid-column: 2;

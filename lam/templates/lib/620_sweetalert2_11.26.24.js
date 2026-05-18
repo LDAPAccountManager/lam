@@ -1,5 +1,5 @@
 /*!
-* sweetalert2 v11.26.21
+* sweetalert2 v11.26.24
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -169,6 +169,11 @@
    * @returns {boolean}
    */
   const isPromise = arg => arg && Promise.resolve(arg) === arg;
+
+  /**
+   * @returns {boolean}
+   */
+  const isFirefox = () => navigator.userAgent.includes('Firefox');
 
   /**
    * Gets the popup container which contains the backdrop and the popup itself.
@@ -485,25 +490,16 @@
     if (!target || !classList) {
       return;
     }
-    if (typeof classList === 'string') {
-      classList = classList.split(/\s+/).filter(Boolean);
-    }
-    classList.forEach(className => {
-      if (Array.isArray(target)) {
-        target.forEach(elem => {
-          if (condition) {
-            elem.classList.add(className);
-          } else {
-            elem.classList.remove(className);
-          }
-        });
-      } else {
+    const classes = typeof classList === 'string' ? classList.split(/\s+/).filter(Boolean) : classList;
+    const targets = Array.isArray(target) ? target : [target];
+    targets.forEach(elem => {
+      classes.forEach(className => {
         if (condition) {
-          target.classList.add(className);
+          elem.classList.add(className);
         } else {
-          target.classList.remove(className);
+          elem.classList.remove(className);
         }
-      }
+      });
     });
   };
 
@@ -549,7 +545,7 @@
     if (value === `${parseInt(`${value}`)}`) {
       value = parseInt(value);
     }
-    if (value || parseInt(`${value}`) === 0) {
+    if (value || value === 0) {
       elem.style.setProperty(property, typeof value === 'number' ? `${value}px` : (/** @type {string} */value));
     } else {
       elem.style.removeProperty(property);
@@ -998,21 +994,15 @@
     }
     addClass([confirmButton, denyButton, cancelButton], swalClasses.styled);
 
-    // Apply custom background colors to action buttons
-    if (params.confirmButtonColor) {
-      confirmButton.style.setProperty('--swal2-confirm-button-background-color', params.confirmButtonColor);
-    }
-    if (params.denyButtonColor) {
-      denyButton.style.setProperty('--swal2-deny-button-background-color', params.denyButtonColor);
-    }
-    if (params.cancelButtonColor) {
-      cancelButton.style.setProperty('--swal2-cancel-button-background-color', params.cancelButtonColor);
-    }
-
-    // Apply the outline color to action buttons
-    applyOutlineColor(confirmButton);
-    applyOutlineColor(denyButton);
-    applyOutlineColor(cancelButton);
+    // Apply custom background colors and outline colors to action buttons
+    /** @type {[HTMLElement, string, string | undefined][]} */
+    const buttons = [[confirmButton, 'confirm', params.confirmButtonColor], [denyButton, 'deny', params.denyButtonColor], [cancelButton, 'cancel', params.cancelButtonColor]];
+    buttons.forEach(([button, type, color]) => {
+      if (color) {
+        button.style.setProperty(`--swal2-${type}-button-background-color`, color);
+      }
+      applyOutlineColor(button);
+    });
   }
 
   /**
@@ -1307,10 +1297,12 @@
    */
   renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = renderInputType.search = renderInputType.date = renderInputType['datetime-local'] = renderInputType.time = renderInputType.week = renderInputType.month = /** @type {(input: Input | HTMLElement, params: SweetAlertOptions) => Input} */
   (input, params) => {
+    // oxfmt-ignore
     const inputElement = /** @type {HTMLInputElement} */input;
     checkAndSetInputValue(inputElement, params.inputValue);
     setInputLabel(inputElement, inputElement, params);
     setInputPlaceholder(inputElement, params);
+    // oxfmt-ignore
     inputElement.type = /** @type {string} */params.input;
     return inputElement;
   };
@@ -1760,18 +1752,10 @@
    * @returns {{ clientX: number, clientY: number }}
    */
   const getClientXY = event => {
-    let clientX = 0,
-      clientY = 0;
-    if (event.type.startsWith('mouse')) {
-      clientX = /** @type {MouseEvent} */event.clientX;
-      clientY = /** @type {MouseEvent} */event.clientY;
-    } else if (event.type.startsWith('touch')) {
-      clientX = /** @type {TouchEvent} */event.touches[0].clientX;
-      clientY = /** @type {TouchEvent} */event.touches[0].clientY;
-    }
+    const source = event.type.startsWith('touch') ? /** @type {TouchEvent} */event.touches[0] : (/** @type {MouseEvent} */event);
     return {
-      clientX,
-      clientY
+      clientX: source.clientX,
+      clientY: source.clientY
     };
   };
 
@@ -2001,7 +1985,8 @@
    */
   const removeKeydownHandler = globalState => {
     if (globalState.keydownTarget && globalState.keydownHandlerAdded && globalState.keydownHandler) {
-      const handler = /** @type {EventListenerOrEventListenerObject} */ /** @type {unknown} */globalState.keydownHandler;
+      const handler = /** @type {EventListenerOrEventListenerObject} */
+      /** @type {unknown} */globalState.keydownHandler;
       globalState.keydownTarget.removeEventListener('keydown', handler, {
         capture: globalState.keydownListenerCapture
       });
@@ -2036,6 +2021,7 @@
   /**
    * @param {number} index
    * @param {number} increment
+   * @returns {boolean} shouldPreventDefault
    */
   const setFocus = (index, increment) => {
     var _dom$getPopup;
@@ -2058,10 +2044,17 @@
         index = focusableElements.length - 1;
       }
       focusableElements[index].focus();
-      return;
+
+      // don't prevent default for iframes (Firefox fix)
+      // https://github.com/sweetalert2/sweetalert2/issues/2931
+      if (isFirefox() && focusableElements[index] instanceof HTMLIFrameElement) {
+        return false;
+      }
+      return true;
     }
     // no visible focusable elements, focus the popup
     (_dom$getPopup = getPopup()) === null || _dom$getPopup === void 0 || _dom$getPopup.focus();
+    return true;
   };
   const arrowKeysNextButton = ['ArrowRight', 'ArrowDown'];
   const arrowKeysPreviousButton = ['ArrowLeft', 'ArrowUp'];
@@ -2145,17 +2138,23 @@
       }
     }
 
+    // don't prevent default for iframes (Firefox fix)
+    // https://github.com/sweetalert2/sweetalert2/issues/2931
+    let shouldPreventDefault = true;
+
     // Cycle to the next button
     if (!event.shiftKey) {
-      setFocus(btnIndex, 1);
+      shouldPreventDefault = setFocus(btnIndex, 1);
     }
 
     // Cycle to the prev button
     else {
-      setFocus(btnIndex, -1);
+      shouldPreventDefault = setFocus(btnIndex, -1);
     }
     event.stopPropagation();
-    event.preventDefault();
+    if (shouldPreventDefault) {
+      event.preventDefault();
+    }
   };
 
   /**
@@ -2252,6 +2251,9 @@
 
   // @ts-ignore
   const isSafariOrIOS = typeof window !== 'undefined' && Boolean(window.GestureEvent); // true for Safari desktop + all iOS browsers https://stackoverflow.com/a/70585394
+
+  // @ts-ignore
+  const isIOS = isSafariOrIOS && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
   /**
    * Fix iOS scrolling
@@ -2836,28 +2838,8 @@
    * @returns {InputOptionFlattened[]}
    */
   const formatInputOptions = inputOptions => {
-    /** @type {InputOptionFlattened[]} */
-    const result = [];
-    if (inputOptions instanceof Map) {
-      inputOptions.forEach((value, key) => {
-        let valueFormatted = value;
-        if (typeof valueFormatted === 'object') {
-          // case of <optgroup>
-          valueFormatted = formatInputOptions(valueFormatted);
-        }
-        result.push([key, valueFormatted]);
-      });
-    } else {
-      Object.keys(inputOptions).forEach(key => {
-        let valueFormatted = inputOptions[key];
-        if (typeof valueFormatted === 'object') {
-          // case of <optgroup>
-          valueFormatted = formatInputOptions(valueFormatted);
-        }
-        result.push([key, valueFormatted]);
-      });
-    }
-    return result;
+    const entries = inputOptions instanceof Map ? Array.from(inputOptions) : Object.entries(inputOptions);
+    return entries.map(([key, value]) => [key, typeof value === 'object' ? formatInputOptions(value) : value]); // case of <optgroup>
   };
 
   /**
@@ -4170,17 +4152,13 @@
       }
       result[`${type}ButtonText`] = button.innerHTML;
       result[`show${capitalizeFirstLetter(type)}Button`] = true;
-      if (button.hasAttribute('color')) {
-        const color = button.getAttribute('color');
-        if (color !== null) {
-          result[`${type}ButtonColor`] = color;
-        }
+      const color = button.getAttribute('color');
+      if (color !== null) {
+        result[`${type}ButtonColor`] = color;
       }
-      if (button.hasAttribute('aria-label')) {
-        const ariaLabel = button.getAttribute('aria-label');
-        if (ariaLabel !== null) {
-          result[`${type}ButtonAriaLabel`] = ariaLabel;
-        }
+      const ariaLabel = button.getAttribute('aria-label');
+      if (ariaLabel !== null) {
+        result[`${type}ButtonAriaLabel`] = ariaLabel;
       }
     });
     return result;
@@ -4196,18 +4174,15 @@
     const image = templateContent.querySelector('swal-image');
     if (image) {
       showWarningsForAttributes(image, ['src', 'width', 'height', 'alt']);
-      if (image.hasAttribute('src')) {
-        result.imageUrl = image.getAttribute('src') || undefined;
-      }
-      if (image.hasAttribute('width')) {
-        result.imageWidth = image.getAttribute('width') || undefined;
-      }
-      if (image.hasAttribute('height')) {
-        result.imageHeight = image.getAttribute('height') || undefined;
-      }
-      if (image.hasAttribute('alt')) {
-        result.imageAlt = image.getAttribute('alt') || undefined;
-      }
+      // getAttribute returns null if attribute is absent; `|| undefined` converts empty string to undefined
+      const src = image.getAttribute('src');
+      if (src !== null) result.imageUrl = src || undefined;
+      const width = image.getAttribute('width');
+      if (width !== null) result.imageWidth = width || undefined;
+      const height = image.getAttribute('height');
+      if (height !== null) result.imageHeight = height || undefined;
+      const alt = image.getAttribute('alt');
+      if (alt !== null) result.imageAlt = alt || undefined;
     }
     return result;
   };
@@ -4344,9 +4319,14 @@
       setScrollingVisibility(container, popup);
     }, SHOW_CLASS_TIMEOUT);
     if (isModal()) {
-      // Using ternary instead of ?? operator for Webpack 4 compatibility
       fixScrollContainer(container, params.scrollbarPadding !== undefined ? params.scrollbarPadding : false, initialBodyOverflow);
       setAriaHidden();
+    }
+
+    // https://github.com/sweetalert2/sweetalert2/issues/2923
+    if (isIOS && params.backdrop === false && popup.scrollHeight > container.clientHeight) {
+      // remove pointer-events: none from container, it breaks scrolling tall popups in iOS
+      container.style.pointerEvents = 'auto';
     }
     if (!isToast() && !globalState.previousActiveElement) {
       globalState.previousActiveElement = document.activeElement;
@@ -4588,6 +4568,7 @@
     /**
      * @param {any} onFulfilled
      */
+    // oxlint-disable-next-line unicorn/no-thenable
     then(onFulfilled) {
       return _classPrivateFieldGet2(_promise, this).then(onFulfilled);
     }
@@ -4820,7 +4801,7 @@
     };
   });
   SweetAlert.DismissReason = DismissReason;
-  SweetAlert.version = '11.26.21';
+  SweetAlert.version = '11.26.24';
 
   const Swal = SweetAlert;
   // @ts-ignore
