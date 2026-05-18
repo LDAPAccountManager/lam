@@ -7,7 +7,7 @@
     /*!
      * Wunderbaum - debounce.ts
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     /*
      * debounce & throttle, taken from https://github.com/lodash/lodash v4.17.21
@@ -299,7 +299,7 @@
     /*!
      * Wunderbaum - util
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     /** @module util */
     /** Readable names for `MouseEvent.button` */
@@ -449,7 +449,7 @@
         }
         return obj;
     }
-    /** Shortcut for `throw new Error(msg)`.*/
+    /** Shortcut for `throw new Error(msg)`. */
     function error(msg) {
         throw new Error(msg);
     }
@@ -964,6 +964,10 @@
         }
         throw new Error(`Expected a string like '123px': ${defaults}`);
     }
+    /** Cast any value to <T>. */
+    function unsafeCast(value) {
+        return value;
+    }
     /** Return the the boolean value of the first non-null element.
      * Example:
      * ```js
@@ -1037,7 +1041,7 @@
         const throttledFn = (...args) => {
             if (waiting) {
                 pendingArgs = args;
-                // console.log(`adaptiveThrottle() queing request #${waiting}...`, args);
+                // console.log(`adaptiveThrottle() queueing request #${waiting}...`, args);
                 waiting += 1;
             }
             else {
@@ -1092,6 +1096,60 @@
         };
         return throttledFn;
     }
+    /**
+     * MurmurHash3 implementation for strings.
+     * @param key The input string to hash.
+     * @param asString Optional convert result to zero-padded string of 8 characters.
+     * @param seed Optional seed value.
+     * @returns A 32-bit hash as a number or string.
+     */
+    function murmurHash3(key, asString = true, seed = 0) {
+        let h1 = seed;
+        const remainder = key.length & 3; // key.length % 4
+        const bytes = key.length - remainder;
+        const c1 = 0xcc9e2d51;
+        const c2 = 0x1b873593;
+        let i = 0;
+        while (i < bytes) {
+            let k1 = (key.charCodeAt(i) & 0xff) |
+                ((key.charCodeAt(++i) & 0xff) << 8) |
+                ((key.charCodeAt(++i) & 0xff) << 16) |
+                ((key.charCodeAt(++i) & 0xff) << 24);
+            ++i;
+            k1 = Math.imul(k1, c1);
+            k1 = (k1 << 15) | (k1 >>> 17);
+            k1 = Math.imul(k1, c2);
+            h1 ^= k1;
+            h1 = (h1 << 13) | (h1 >>> 19);
+            h1 = Math.imul(h1, 5) + 0xe6546b64;
+        }
+        let k1 = 0;
+        switch (remainder) {
+            case 3:
+                k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+            // fall through
+            case 2:
+                k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+            // fall through
+            case 1:
+                k1 ^= key.charCodeAt(i) & 0xff;
+                k1 = Math.imul(k1, c1);
+                k1 = (k1 << 15) | (k1 >>> 17);
+                k1 = Math.imul(k1, c2);
+                h1 ^= k1;
+        }
+        h1 ^= key.length;
+        h1 ^= h1 >>> 16;
+        h1 = Math.imul(h1, 0x85ebca6b);
+        h1 ^= h1 >>> 13;
+        h1 = Math.imul(h1, 0xc2b2ae35);
+        h1 ^= h1 >>> 16;
+        if (asString) {
+            // Convert to 8 digit hex string
+            return (h1 >>> 0).toString(16).padStart(8, "0");
+        }
+        return h1 >>> 0; // Convert to unsigned 32-bit integer
+    }
 
     var util = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -1122,6 +1180,7 @@
         isFunction: isFunction,
         isMac: isMac,
         isPlainObject: isPlainObject,
+        murmurHash3: murmurHash3,
         noop: noop,
         onEvent: onEvent,
         overrideMethod: overrideMethod,
@@ -1135,13 +1194,14 @@
         toPixel: toPixel,
         toSet: toSet,
         toggleCheckbox: toggleCheckbox,
-        type: type
+        type: type,
+        unsafeCast: unsafeCast
     });
 
     /*!
      * Wunderbaum - types
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Possible values for {@link WunderbaumNode.update} and {@link Wunderbaum.update}.
@@ -1209,7 +1269,7 @@
     /*!
      * Wunderbaum - wb_extension_base
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     class WunderbaumExtension {
         constructor(tree, id, defaults) {
@@ -1268,7 +1328,7 @@
     /*!
      * Wunderbaum - ext-filter
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     const START_MARKER = "\uFFF7";
     const END_MARKER = "\uFFF8";
@@ -1556,6 +1616,10 @@
          */
         filterBranches(filter, options) {
             assert(options.matchBranch === undefined, "filterBranches() is deprecated.");
+            this.tree.logDeprecate("filterBranches()", {
+                since: "0.9.0",
+                hint: "Use `filterNodes` instead and set `options.matchBranch: true`",
+            });
             options.matchBranch = true;
             return this._applyFilterNoUpdate(filter, options);
         }
@@ -1620,7 +1684,7 @@
         }
     }
     /**
-     * @description Marks the matching charecters of `text` either by `mark` or
+     * @description Marks the matching characters of `text` either by `mark` or
      * by exotic*Chars (if `escapeTitles` is `true`) based on `matches`
      * which is an array of matching groups.
      * @param {string} text
@@ -1659,7 +1723,7 @@
     /*!
      * Wunderbaum - ext-keynav
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     const QUICKSEARCH_DELAY = 500;
     class KeynavExtension extends WunderbaumExtension {
@@ -2023,7 +2087,7 @@
     /*!
      * Wunderbaum - ext-logger
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     class LoggerExtension extends WunderbaumExtension {
         constructor(tree) {
@@ -2065,7 +2129,7 @@
     /*!
      * Wunderbaum - ext-dnd
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     const nodeMimeType = "application/x-wunderbaum-node";
     class DndExtension extends WunderbaumExtension {
@@ -2301,7 +2365,6 @@
          */
         onDragEvent(e) {
             var _a;
-            // const tree = this.tree;
             const dndOpts = this.treeOpts.dnd;
             const srcNode = Wunderbaum.getNode(e);
             if (!srcNode) {
@@ -2327,7 +2390,7 @@
                     return false;
                 }
                 const nodeData = srcNode.toDict(true, (n) => {
-                    // We don't want to re-use the key on drop:
+                    // We don't want to reuse the key on drop:
                     n._orgKey = n.key;
                     delete n.key;
                 });
@@ -2389,6 +2452,7 @@
             };
             if (!targetNode) {
                 this._leaveNode();
+                e.preventDefault(); // Don't open file in browser when dropped in empty area
                 return;
             }
             if (["drop"].includes(e.type)) {
@@ -2494,19 +2558,20 @@
                 nodeData = nodeData ? JSON.parse(nodeData) : null;
                 const srcNode = this.srcNode;
                 const lastDropEffect = this.lastDropEffect;
-                setTimeout(() => {
-                    // Decouple this call, because drop actions may prevent the dragend event
-                    // from being fired on some browsers
-                    targetNode._callEvent("dnd.drop", {
-                        event: e,
-                        region: region,
-                        suggestedDropMode: region === "over" ? "appendChild" : region,
-                        suggestedDropEffect: lastDropEffect,
-                        // suggestedDropEffect: e.dataTransfer?.dropEffect,
-                        sourceNode: srcNode,
-                        sourceNodeData: nodeData,
-                    });
-                }, 10);
+                /* Before v0.14.0, we decoupled `_callEvent` like so:
+                     Decouple this call, because drop actions may prevent the dragend
+                     event from being fired on some browsers.
+                     setTimeout(() => {...}, 10);
+                  however this made e.dataTransfer.items inaccessible */
+                targetNode._callEvent("dnd.drop", {
+                    event: e,
+                    region: region,
+                    suggestedDropMode: region === "over" ? "appendChild" : region,
+                    suggestedDropEffect: lastDropEffect,
+                    sourceNode: srcNode,
+                    sourceNodeData: nodeData,
+                    dataTransfer: e.dataTransfer,
+                });
             }
             return false;
         }
@@ -2515,7 +2580,7 @@
     /*!
      * Wunderbaum - drag_observer
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Convert mouse- and touch events to 'dragstart', 'drag', and 'dragstop'.
@@ -2664,7 +2729,7 @@
     /*!
      * Wunderbaum - common
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     const DEFAULT_DEBUGLEVEL = 3; // Replaced by rollup script
     /**
@@ -2684,12 +2749,18 @@
     const RENDER_MAX_PREFETCH = 5;
     /** Minimum column width if not set otherwise. */
     const DEFAULT_MIN_COL_WIDTH = 4;
+    /**
+     * A value for `node.type` that by convention may be used to mark a node as directory.
+     * It may be used to sort 'directories' to the top.
+     */
+    const NODE_TYPE_FOLDER = "folder";
     /** Regular expression to detect if a string describes an image URL (in contrast
      * to a class name). Strings are considered image urls if they contain '.' or '/'.
+     * `<` is ignored, because it is probably an html tag.
      */
-    const TEST_IMG = new RegExp(/\.|\//);
-    // export const RECURSIVE_REQUEST_ERROR = "$recursive_request";
-    // export const INVALID_REQUEST_TARGET_ERROR = "$request_target_invalid";
+    const TEST_FILE_PATH = /^(?!.*<).*[/.]/;
+    /** Regular expression to detect if a string describes an HTML element. */
+    const TEST_HTML = /</;
     /**
      * Default node icons for icon libraries
      *
@@ -2697,7 +2768,7 @@
      *  - 'fontawesome6' {@link https://fontawesome.com/icons}
      *
      */
-    const iconMaps = {
+    const defaultIconMaps = {
         bootstrap: {
             error: "bi bi-exclamation-triangle",
             // loading: "bi bi-hourglass-split wb-busy",
@@ -2745,7 +2816,7 @@
             radioChecked: "fa-solid fa-circle",
             radioUnchecked: "fa-regular fa-circle",
             radioUnknown: "fa-regular fa-circle-question",
-            folder: "fa-solid fa-folder-closed",
+            folder: "fa-regular fa-folder-closed",
             folderOpen: "fa-regular fa-folder-open",
             folderLazy: "fa-solid fa-folder-plus",
             doc: "fa-regular fa-file",
@@ -2818,12 +2889,20 @@
             return reMatch.test(node.title);
         };
     }
-    /** Compare two nodes by title (case-insensitive). */
+    /** Compare two nodes by title (case-insensitive).
+     * @deprecated Use `key` option instead of `cmp` in sort methods.
+     */
     function nodeTitleSorter(a, b) {
         const x = a.title.toLowerCase();
         const y = b.title.toLowerCase();
         return x === y ? 0 : x > y ? 1 : -1;
     }
+    // /** Compare nodes by title (case-insensitive). */
+    // export function nodeTitleKeyGetter(
+    //   node: WunderbaumNode
+    // ): string | number | Array<any> {
+    //   return node.title.toLowerCase();
+    // }
     /**
      * Convert 'flat' to 'nested' format.
      *
@@ -3014,7 +3093,7 @@
     /*!
      * Wunderbaum - ext-grid
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     class GridExtension extends WunderbaumExtension {
         constructor(tree) {
@@ -3074,7 +3153,7 @@
             super.init();
         }
         /**
-         * Hanldes drag and sragstop events for column resizing.
+         * Handles drag and sragstop events for column resizing.
          */
         handleDrag(e) {
             const custom = e.customData;
@@ -3105,7 +3184,7 @@
     /*!
      * Wunderbaum - deferred
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     /**
      * Implement a ES6 Promise, that exposes a resolve() and reject() method.
@@ -3158,7 +3237,7 @@
     /*!
      * Wunderbaum - wunderbaum_node
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     /** WunderbaumNode properties that can be passed with source data.
      * (Any other source properties will be stored as `node.data.PROP`.)
@@ -3209,7 +3288,7 @@
      */
     class WunderbaumNode {
         constructor(tree, parent, data) {
-            var _a, _b;
+            var _a;
             /** Reference key. Unlike {@link key}, a `refKey` may occur multiple
              * times within a tree (in this case we have 'clone nodes').
              * @see Use {@link setKey} to modify.
@@ -3239,8 +3318,8 @@
             assert(!data.children, "'children' not allowed here");
             this.tree = tree;
             this.parent = parent;
-            this.key = "" + ((_a = data.key) !== null && _a !== void 0 ? _a : ++WunderbaumNode.sequence);
-            this.title = "" + ((_b = data.title) !== null && _b !== void 0 ? _b : "<" + this.key + ">");
+            this.key = tree._calculateKey(data, parent);
+            this.title = "" + ((_a = data.title) !== null && _a !== void 0 ? _a : "<" + this.key + ">");
             this.expanded = !!data.expanded;
             this.lazy = !!data.lazy;
             // We set the following node properties only if a matching data value is
@@ -3257,7 +3336,9 @@
                 : 0;
             data.colspan != null ? (this.colspan = !!data.colspan) : 0;
             // Selection
-            data.checkbox != null ? intToBool(data.checkbox) : 0;
+            data.checkbox != null
+                ? (this.checkbox = intToBool(data.checkbox))
+                : 0;
             data.radiogroup != null ? (this.radiogroup = !!data.radiogroup) : 0;
             data.selected != null ? (this.selected = !!data.selected) : 0;
             data.unselectable != null ? (this.unselectable = !!data.unselectable) : 0;
@@ -3361,8 +3442,14 @@
                 const forceExpand = applyMinExpanLevel && _level < tree.options.minExpandLevel;
                 for (const child of nodeData) {
                     const subChildren = child.children;
+                    // Remove children property from source data because it should not be
+                    // passed to the constructor of WunderbaumNode:
                     delete child.children;
                     const n = new WunderbaumNode(tree, this, child);
+                    // Set `children` property again, so it can be used in `reload()`
+                    if (subChildren != null) {
+                        child.children = subChildren;
+                    }
                     if (forceExpand && !n.isUnloaded()) {
                         n.expanded = true;
                     }
@@ -3778,15 +3865,12 @@
             }
             return l;
         }
-        /** Return a string representing the hierachical node path, e.g. "a/b/c".
+        /** Return a string representing the hierarchical node path, e.g. "a/b/c".
          * @param includeSelf
          * @param part property name or callback
          * @param separator
          */
         getPath(includeSelf = true, part = "title", separator = "/") {
-            // includeSelf = includeSelf !== false;
-            // part = part || "title";
-            // separator = separator || "/";
             let val;
             const path = [];
             const isFunc = typeof part === "function";
@@ -3801,7 +3885,7 @@
             }, includeSelf);
             return path.join(separator);
         }
-        /** Return the preceeding node (under the same parent) or null. */
+        /** Return the preceding node (under the same parent) or null. */
         getPrevSibling() {
             const ac = this.parent.children;
             const idx = ac.indexOf(this);
@@ -3830,7 +3914,7 @@
         hasClass(className) {
             return this.classes ? this.classes.has(className) : false;
         }
-        /** Return true if node ist the currently focused node. @since 0.9.0 */
+        /** Return true if node is the currently focused node. @since 0.9.0 */
         hasFocus() {
             return this.tree.focusNode === this;
         }
@@ -3885,7 +3969,7 @@
          * an expand operation is currently possible.
          */
         isExpandable(andCollapsed = false) {
-            // `false` is never expandable (unoffical)
+            // `false` is never expandable (unofficial)
             if ((andCollapsed && this.expanded) || this.children === false) {
                 return false;
             }
@@ -3948,11 +4032,11 @@
         isPartsel() {
             return !this.selected && !!this._partsel;
         }
-        /** Return true if this node has DOM representaion, i.e. is displayed in the viewport. */
+        /** Return true if this node has DOM representation, i.e. is displayed in the viewport. */
         isRadio() {
             return !!this.parent.radiogroup || this.getOption("checkbox") === "radio";
         }
-        /** Return true if this node has DOM representaion, i.e. is displayed in the viewport. */
+        /** Return true if this node has DOM representation, i.e. is displayed in the viewport. */
         isRendered() {
             return !!this._rowElem;
         }
@@ -4707,9 +4791,9 @@
             const typeInfo = this.type ? tree.types[this.type] : null;
             const rowDiv = this._rowElem;
             // Row markup already exists
-            const nodeElem = rowDiv.querySelector("span.wb-node");
-            const expanderSpan = nodeElem.querySelector("i.wb-expander");
-            const checkboxSpan = nodeElem.querySelector("i.wb-checkbox");
+            const nodeSpan = rowDiv.querySelector("span.wb-node");
+            const expanderElem = nodeSpan.querySelector("i.wb-expander");
+            const checkboxElem = nodeSpan.querySelector("i.wb-checkbox");
             const rowClasses = ["wb-row"];
             this.expanded ? rowClasses.push("wb-expanded") : 0;
             this.lazy ? rowClasses.push("wb-lazy") : 0;
@@ -4734,7 +4818,7 @@
             if (typeInfo && typeInfo.classes) {
                 rowDiv.classList.add(...typeInfo.classes);
             }
-            if (expanderSpan) {
+            if (expanderElem) {
                 let image = null;
                 if (this._isLoading) {
                     image = iconMap.loading;
@@ -4751,16 +4835,20 @@
                     image = iconMap.expanderLazy;
                 }
                 if (image == null) {
-                    expanderSpan.classList.add("wb-indent");
+                    expanderElem.className = "wb-expander";
+                    expanderElem.classList.add("wb-indent");
                 }
-                else if (TEST_IMG.test(image)) {
-                    expanderSpan.style.backgroundImage = `url('${image}')`;
+                else if (TEST_HTML.test(image)) {
+                    expanderElem.replaceWith(elemFromHtml(image));
+                }
+                else if (TEST_FILE_PATH.test(image)) {
+                    expanderElem.style.backgroundImage = `url('${image}')`;
                 }
                 else {
-                    expanderSpan.className = "wb-expander " + image;
+                    expanderElem.className = "wb-expander " + image;
                 }
             }
-            if (checkboxSpan) {
+            if (checkboxElem) {
                 let cbclass = "wb-checkbox ";
                 if (this.isRadio()) {
                     cbclass += "wb-radio ";
@@ -4784,7 +4872,7 @@
                         cbclass += iconMap.checkUnchecked;
                     }
                 }
-                checkboxSpan.className = cbclass;
+                checkboxElem.className = cbclass;
             }
             // Fix active cell in cell-nav mode
             if (!opts.isNew) {
@@ -4794,9 +4882,9 @@
                     colSpan.classList.remove("wb-error", "wb-invalid");
                 }
                 // Update icon (if not opts.isNew, which would rebuild markup anyway)
-                const iconSpan = nodeElem.querySelector("i.wb-icon");
+                const iconSpan = nodeSpan.querySelector("i.wb-icon");
                 if (iconSpan) {
-                    this._createIcon(nodeElem, iconSpan, !expanderSpan);
+                    this._createIcon(nodeSpan, iconSpan, !expanderElem);
                 }
             }
             // Adjust column width
@@ -5101,6 +5189,32 @@
         setKey(key, refKey) {
             throw new Error("Not yet implemented");
         }
+        // /**
+        //  * Calculate a *stable*, unique key for this node from its refKey (or title).
+        //  * We also add information from the parent, because a refKey may occur multiple
+        //  * times in a tree.
+        //  */
+        // calcUniqueKey() {
+        //   // Assuming that the parent's key was calculated the same way, we implicitly
+        //   // involve the whole refKey-path:
+        //   const s = this.key + (this.refKey || this.title);
+        //   // 32-bit has a high probability of collisions, so we pump up to 64-bit
+        //   // https://security.stackexchange.com/q/209882/207588
+        //   const h1 = util.murmurHash3(s, true);
+        //   return "id_" + h1 + util.murmurHash3(h1 + s, true);
+        //   // const l = [];
+        //   // // eslint-disable-next-line  @typescript-eslint/no-this-alias
+        //   // let node: WunderbaumNode = this;
+        //   // while (node.parent) {
+        //   //   l.unshift(node.refKey || node.key);
+        //   //   node = node.parent;
+        //   // }
+        //   // const path = l.join("/");
+        //   // 32-bit has a high probability of collisions, so we pump up to 64-bit
+        //   // https://security.stackexchange.com/q/209882/207588
+        //   // const h1 = util.murmurHash3(path, true);
+        //   // return "id_" + h1 + util.murmurHash3(h1 + path, true);
+        // }
         /**
          * Trigger a repaint, typically after a status or data change.
          *
@@ -5131,6 +5245,23 @@
                 }
             });
             return nodeList;
+        }
+        /**
+         * Return an array of refKey values.
+         *
+         * RefKeys are unique identifiers for a node data, and are used to identify
+         * clones.
+         * If more than one node has the same refKey, it is only returned once.
+         * @param selected if true, only return refKeys of selected nodes.
+         */
+        getRefKeys(selected = false) {
+            const refKeys = new Set();
+            this.visit((node) => {
+                if (node.refKey != null && (!selected || node.selected)) {
+                    refKeys.add(node.refKey);
+                }
+            });
+            return Array.from(refKeys);
         }
         /** Toggle the check/uncheck state. */
         toggleSelected(options) {
@@ -5311,9 +5442,11 @@
                     if (selectMode === "hier") {
                         this.fixSelection3AfterClick();
                     }
-                    else if (selectMode === "single") {
+                    else if (selectMode === "single" && flag) {
                         tree.visit((n) => {
-                            n.selected = false;
+                            if (n !== this) {
+                                n.selected = false;
+                            }
                         });
                     }
                 }
@@ -5415,30 +5548,16 @@
             this.tooltip = tooltip;
             this.update();
         }
-        _sortChildren(cmp, deep) {
-            const cl = this.children;
-            if (!cl) {
-                return;
-            }
-            cl.sort(cmp);
-            if (deep) {
-                for (let i = 0, l = cl.length; i < l; i++) {
-                    if (cl[i].children) {
-                        cl[i]._sortChildren(cmp, deep);
-                    }
-                }
-            }
-        }
         /**
          * Sort child list by title or custom criteria.
          * @param {function} cmp custom compare function(a, b) that returns -1, 0, or 1
          *    (defaults to sorting by title).
          * @param {boolean} deep pass true to sort all descendant nodes recursively
+         * @deprecated use {@link sort}
          */
         sortChildren(cmp = nodeTitleSorter, deep = false) {
-            this._sortChildren(cmp || nodeTitleSorter, deep);
-            this.tree.update(ChangeType.structure);
-            // this.triggerModify("sort"); // TODO
+            this.tree.logDeprecate("node.sortChildren()", { since: "0.14.0" });
+            return this.sort({ cmp: cmp ? cmp : undefined, deep: deep });
         }
         /**
          * Renumber nodes `_nativeIndex`. This is useful to allow to restore the
@@ -5460,74 +5579,142 @@
         /**
          * Convenience method to implement column sorting.
          * @since 0.11.0
+         * @deprecated use {@link sort}
          */
         sortByProperty(options) {
-            var _a, _b, _c;
-            const { caseInsensitive = true, deep = true, nativeOrderPropName = "_nativeIndex", updateColInfo = false, } = options;
-            let order;
-            let colDef;
+            this.tree.logDeprecate("node.sortByProperty()", { since: "0.14.0" });
+            return this.sort(options);
+        }
+        /**
+         * Implement column sorting.
+         * @since 0.14.0
+         */
+        sort(options) {
+            const tree = this.tree;
+            let { propName = undefined, deep = true, key = undefined, order = undefined, caseInsensitive = true, cmp = undefined, 
+            // Support click on column sort header:
+            updateColInfo = false, nativeOrderPropName = "_nativeIndex", colId = undefined, } = options;
+            propName !== null && propName !== void 0 ? propName : (propName = colId);
+            if (propName === "*") {
+                propName = "title";
+            }
+            const isFolder = tree.options.sortFoldersFirst === true
+                ? (node) => node.hasChildren() !== false || node.type === NODE_TYPE_FOLDER
+                : tree.options.sortFoldersFirst;
             if (updateColInfo) {
-                colDef = this.tree["_columnsById"][options.colId];
+                const colDef = this.tree["_columnsById"][options.colId];
                 assert(colDef, `Invalid colId specified: ${options.colId}`);
-                order =
-                    (_a = options.order) !== null && _a !== void 0 ? _a : rotate(colDef.sortOrder, ["asc", "desc", undefined]);
+                order !== null && order !== void 0 ? order : (order = rotate(colDef.sortOrder, ["asc", "desc", undefined]));
                 for (const col of this.tree.columns) {
                     col.sortOrder = col === colDef ? order : undefined;
+                }
+                if (order === undefined) {
+                    propName = nativeOrderPropName;
+                    order = "asc";
                 }
                 this.tree.update(ChangeType.colStructure);
             }
             else {
-                order = (_b = options.order) !== null && _b !== void 0 ? _b : "asc";
+                propName !== null && propName !== void 0 ? propName : (propName = "title");
+                order !== null && order !== void 0 ? order : (order = "asc");
             }
-            let propName = (_c = options.propName) !== null && _c !== void 0 ? _c : (options.colId || "");
-            if (propName === "*") {
-                propName = "title";
-            }
-            if (order == null) {
-                propName = nativeOrderPropName;
-                order = "asc";
-            }
-            this.logDebug(`sortByProperty(), propName=${propName}, ${order}`, options);
-            assert(propName, "No property name specified");
-            const cmp = (a, b) => {
-                let av, bv;
-                if (NODE_DICT_PROPS.has(propName)) {
-                    av = a[propName];
-                    bv = b[propName];
-                }
-                else {
-                    av = a.data[propName];
-                    bv = b.data[propName];
-                }
-                if (av == null && bv == null) {
-                    return 0;
-                }
-                if (av == null) {
-                    av = typeof bv === "string" ? "" : 0;
-                }
-                else if (typeof av === "boolean") {
-                    av = av ? 1 : 0;
-                }
-                if (bv == null) {
-                    bv = typeof av === "string" ? "" : 0;
-                }
-                else if (typeof bv === "boolean") {
-                    bv = bv ? 1 : 0;
-                }
-                if (caseInsensitive) {
-                    if (typeof av === "string") {
-                        av = av.toLowerCase();
+            this.logDebug(`sort(), propName=${propName}, ${order}`, options);
+            assert(propName || cmp || key, "No `propName` or `key` specified");
+            // Define a key callback from the parameters we have
+            if (key == null && cmp == null) {
+                key = (node) => {
+                    let val;
+                    if (NODE_DICT_PROPS.has(propName)) {
+                        val = node[propName];
                     }
-                    if (typeof bv === "string") {
-                        bv = bv.toLowerCase();
+                    else {
+                        val = node.data[propName];
+                    }
+                    if (caseInsensitive && typeof val === "string") {
+                        val = val.toLowerCase();
+                    }
+                    return val;
+                };
+            }
+            // Define a compare callback that uses the key callback
+            if (cmp) {
+                assert(!key, "`key` and `cmp` are mutually exclusive");
+                tree.logDeprecate("SortOptions.cmp", {
+                    since: "0.14.0",
+                    hint: "use the `key` callback instead",
+                });
+            }
+            else {
+                if (options.propName || options.caseInsensitive) {
+                    tree.logWarn("sort(): ignoring propName, caseInsensitive");
+                }
+                cmp = (a, b) => {
+                    if (isFolder) {
+                        const isFolderA = isFolder(a);
+                        if (isFolderA !== isFolder(b)) {
+                            return isFolderA ? -1 : 1;
+                        }
+                    }
+                    let x = key(a);
+                    let y = key(b);
+                    // Assure we have reasonable comparisons with null values:
+                    if (x == null) {
+                        x = typeof y === "string" ? "" : 0;
+                    }
+                    else if (typeof x === "boolean") {
+                        x = x ? 1 : 0;
+                    }
+                    if (y == null) {
+                        y = typeof x === "string" ? "" : 0;
+                    }
+                    else if (typeof y === "boolean") {
+                        y = y ? 1 : 0;
+                    }
+                    if (order === "desc") {
+                        return x === y ? 0 : x > y ? -1 : 1;
+                    }
+                    return x === y ? 0 : x > y ? 1 : -1;
+                };
+            }
+            function _sortChildren(cl) {
+                if (!cl) {
+                    return;
+                }
+                cl.sort(cmp);
+                if (deep) {
+                    for (let i = 0, l = cl.length; i < l; i++) {
+                        if (cl[i].children) {
+                            _sortChildren(cl[i].children);
+                        }
                     }
                 }
-                if (order === "desc") {
-                    return av === bv ? 0 : av > bv ? -1 : 1;
+            }
+            if (this.children) {
+                _sortChildren(this.children);
+            }
+            this.tree.update(ChangeType.structure);
+            // this.triggerModify("sort"); // TODO
+        }
+        /**
+         * Re-apply current sorting if any (use after lazy load).
+         * Example:
+         * ```js
+         * load: function (e) {
+         *   // Whe loading a lazy branch, apply current sort order if any
+         *   e.node.resort();
+         * },
+         * ```
+         * @since 0.14.0
+         */
+        resort(options = {}) {
+            for (const colDef of this.tree.columns) {
+                if (colDef.sortOrder) {
+                    options.colId = colDef.id;
+                    options.order = colDef.sortOrder;
+                    this.sort(options);
+                    break;
                 }
-                return av === bv ? 0 : av > bv ? 1 : -1;
-            };
-            return this.sortChildren(cmp, deep);
+            }
         }
         /**
          * Trigger `modifyChild` event on a parent to signal that a child was modified.
@@ -5564,7 +5751,8 @@
          * @param {function} callback the callback function.
          *     Return false to stop iteration, return "skip" to skip this node and
          *     its children only.
-         * @see {@link IterableIterator<WunderbaumNode>}, {@link Wunderbaum.visit}.
+         * @see `wb_node.WunderbaumNode.IterableIterator<WunderbaumNode>`
+         * @see {@link Wunderbaum.visit}.
          */
         visit(callback, includeSelf = false) {
             let res = true;
@@ -5637,7 +5825,7 @@
     /*!
      * Wunderbaum - ext-edit
      * Copyright (c) 2021-2025, Martin Wendt. Released under the MIT license.
-     * v0.13.0, Sat, 08 Mar 2025 14:16:31 GMT (https://github.com/mar10/wunderbaum)
+     * v0.14.1, Sun, 22 Mar 2026 05:52:05 GMT (https://github.com/mar10/wunderbaum)
      */
     // const START_MARKER = "\uFFF7";
     class EditExtension extends WunderbaumExtension {
@@ -5872,7 +6060,7 @@
                 newValue = newValue.trim();
             }
             if (!node) {
-                this.tree.logDebug("stopEditTitle: not in edit mode.");
+                // this.tree.logDebug("stopEditTitle: not in edit mode.");
                 return;
             }
             node.logDebug(`stopEditTitle(${apply})`, options, focusElem, newValue);
@@ -5972,8 +6160,8 @@
      * https://github.com/mar10/wunderbaum
      *
      * Released under the MIT license.
-     * @version v0.13.0
-     * @date Sat, 08 Mar 2025 14:16:31 GMT
+     * @version v0.14.1
+     * @date Sun, 22 Mar 2026 05:52:05 GMT
      */
     // import "./wunderbaum.scss";
     class WbSystemRoot extends WunderbaumNode {
@@ -6022,17 +6210,17 @@
             this._disableUpdateIgnoreCount = 0;
             this._activeNode = null;
             this._focusNode = null;
+            this._initialSource = null;
             /** Shared properties, referenced by `node.type`. */
             this.types = {};
             /** List of column definitions. */
-            this.columns = []; // any[] = [];
+            this.columns = [];
             this._columnsById = {};
             // Modification Status
             this.pendingChangeTypes = new Set();
             /** Expose some useful methods of the util.ts module as `tree._util`. */
             this._util = util;
             // --- SELECT ---
-            // /** @internal */
             // public selectRangeAnchor: WunderbaumNode | null = null;
             // --- BREADCRUMB ---
             /** Filter options (used as defaults for calls to {@link Wunderbaum.filterNodes} ) */
@@ -6051,37 +6239,44 @@
             this.lastQuicksearchTerm = "";
             // --- EDIT ---
             this.lastClickTime = 0;
-            const opts = (this.options = extend({
-                id: null,
-                source: null, // URL for GET/PUT, Ajax options, or callback
-                element: null, // <div class="wunderbaum">
+            // Set default options and merge with user options
+            const initOptions = Object.assign({
+                id: undefined,
+                source: [], // URL for GET/PUT, Ajax options, or callback
+                element: unsafeCast(null),
                 debugLevel: DEFAULT_DEBUGLEVEL, // 0:quiet, 1:errors, 2:warnings, 3:info, 4:verbose
                 header: null, // Show/hide header (pass bool or string)
-                // headerHeightPx: ROW_HEIGHT,
                 rowHeightPx: DEFAULT_ROW_HEIGHT,
                 iconMap: "bootstrap",
-                columns: null,
-                types: null,
-                // escapeTitles: true,
+                columns: [], //util.unsafeCast<ColumnDefinitionList>(null),
+                types: {},
                 enabled: true,
                 fixedCol: false,
                 showSpinner: false,
                 checkbox: false,
                 minExpandLevel: 0,
                 emptyChildListExpandable: false,
-                // updateThrottleWait: 200,
                 skeleton: false,
+                autoCollapse: false,
+                adjustHeight: true,
                 connectTopBreadcrumb: null,
+                columnsFilterable: false,
+                columnsMenu: false,
+                columnsResizable: false,
+                columnsSortable: false,
                 selectMode: "multi", // SelectModeType
+                scrollIntoViewOnExpandClick: true,
+                // --- Extensions (actually set by exensions on init)
+                dnd: unsafeCast(null),
+                edit: unsafeCast(null),
+                filter: unsafeCast(null),
                 // --- KeyNav ---
-                navigationModeOption: null, // NavModeEnum,
+                navigationModeOption: unsafeCast(null),
                 quicksearch: true,
                 // --- Events ---
-                iconBadge: null,
-                change: null,
-                // enhanceTitle: null,
-                error: null,
-                receive: null,
+                // iconBadge: null,
+                // change: null,
+                // ...
                 // --- Strings ---
                 strings: {
                     loadError: "Error",
@@ -6092,7 +6287,9 @@
                     noMatch: "No results",
                     matchIndex: "${match} of ${matches}",
                 },
-            }, options));
+            }, options);
+            const opts = initOptions;
+            this.options = opts;
             const readyDeferred = new Deferred();
             this.ready = readyDeferred.promise();
             let readyOk = false;
@@ -6119,7 +6316,8 @@
                     this._callEvent("init", { error: err });
                 }
             });
-            this.id = opts.id || "wb_" + ++Wunderbaum.sequence;
+            this.id = initOptions.id || "wb_" + ++Wunderbaum.sequence;
+            delete initOptions.id;
             this.root = new WbSystemRoot(this);
             this._registerExtension(new KeynavExtension(this));
             this._registerExtension(new EditExtension(this));
@@ -6129,19 +6327,20 @@
             this._registerExtension(new LoggerExtension(this));
             this._updateViewportThrottled = adaptiveThrottle(this._updateViewportImmediately.bind(this), {});
             // --- Evaluate options
-            this.columns = opts.columns;
-            delete opts.columns;
+            this.columns = initOptions.columns || [];
+            delete initOptions.columns;
             if (!this.columns || !this.columns.length) {
                 const title = typeof opts.header === "string" ? opts.header : this.id;
                 this.columns = [{ id: "*", title: title, width: "*" }];
             }
-            if (opts.types) {
-                this.setTypes(opts.types, true);
+            if (initOptions.types) {
+                this.setTypes(initOptions.types, true);
             }
-            delete opts.types;
+            delete initOptions.types;
             // --- Create Markup
-            this.element = elemFromSelector(opts.element);
-            assert(!!this.element, `Invalid 'element' option: ${opts.element}`);
+            this.element = elemFromSelector(initOptions.element);
+            assert(!!this.element, `Invalid 'element' option: ${initOptions.element}`);
+            delete initOptions.element;
             this.element.classList.add("wunderbaum");
             if (!this.element.getAttribute("tabindex")) {
                 this.element.tabIndex = 0;
@@ -6217,11 +6416,11 @@
                 }
             });
             // --- Load initial data
-            if (opts.source) {
+            if (initOptions.source) {
                 if (opts.showSpinner) {
                     this.nodeListElement.innerHTML = `<progress class='spinner'>${opts.strings.loading}</progress>`;
                 }
-                this.load(opts.source)
+                this.load(initOptions.source)
                     .then(() => {
                     // The source may have defined columns, so we may adjust the nav mode
                     if (opts.navigationModeOption == null) {
@@ -6254,15 +6453,18 @@
             // has a wrong value at start???
             this.update(ChangeType.any);
             // --- Bind listeners
-            this.element.addEventListener("scroll", (e) => {
-                // this.log(`scroll, scrollTop:${e.target.scrollTop}`, e);
-                this.update(ChangeType.scroll);
-            });
+            this._registerEventHandlers();
             this.resizeObserver = new ResizeObserver((entries) => {
                 // this.log("ResizeObserver: Size changed", entries);
                 this.update(ChangeType.resize);
             });
             this.resizeObserver.observe(this.element);
+        }
+        _registerEventHandlers() {
+            this.element.addEventListener("scroll", (e) => {
+                // this.log(`scroll, scrollTop:${e.target.scrollTop}`, e);
+                this.update(ChangeType.scroll);
+            });
             onEvent(this.element, "click", ".wb-button,.wb-col-icon", (e) => {
                 var _a, _b;
                 const info = Wunderbaum.getEventInfo(e);
@@ -6278,9 +6480,6 @@
                 const node = info.node;
                 const mouseEvent = e;
                 // this.log("click", info);
-                // if (this._selectRange(info) === false) {
-                //   return;
-                // }
                 if (this._callEvent("click", { event: e, node: node, info: info }) === false) {
                     this.lastClickTime = Date.now();
                     return false;
@@ -6299,19 +6498,21 @@
                         (!slowClickDelay || Date.now() - this.lastClickTime < slowClickDelay)) {
                         node.startEditTitle();
                     }
-                    if (info.colIdx >= 0) {
-                        node.setActive(true, { colIdx: info.colIdx, event: e });
-                    }
-                    else {
-                        node.setActive(true, { event: e });
-                    }
                     if (info.region === NodeRegion.expander) {
                         node.setExpanded(!node.isExpanded(), {
-                            scrollIntoView: options.scrollIntoViewOnExpandClick !== false,
+                            scrollIntoView: this.options.scrollIntoViewOnExpandClick !== false,
                         });
                     }
                     else if (info.region === NodeRegion.checkbox) {
                         node.toggleSelected();
+                    }
+                    else {
+                        if (info.colIdx >= 0) {
+                            node.setActive(true, { colIdx: info.colIdx, event: e });
+                        }
+                        else {
+                            node.setActive(true, { event: e });
+                        }
                     }
                 }
                 this.lastClickTime = Date.now();
@@ -6348,7 +6549,7 @@
                 const targetNode = Wunderbaum.getNode(e);
                 this._callEvent("focus", { flag: flag, event: e });
                 if (flag && this.isRowNav() && !this.isEditingTitle()) {
-                    if (opts.navigationModeOption === NavModeEnum.row) {
+                    if (this.options.navigationModeOption === NavModeEnum.row) {
                         targetNode === null || targetNode === void 0 ? void 0 : targetNode.setActive();
                     }
                     else {
@@ -6415,11 +6616,12 @@
         }
         /**
          * Return the icon-function -> icon-definition mapping.
+         * @deprecated Use {@link Wunderbaum.iconMaps}
          */
         get iconMap() {
             const map = this.options.iconMap;
             if (typeof map === "string") {
-                return iconMaps[map];
+                return defaultIconMaps[map];
             }
             return map;
         }
@@ -6472,7 +6674,38 @@
                 ext.init();
             }
         }
-        /** Add node to tree's bookkeeping data structures. */
+        /**
+         * Calculate a *stable*, unique key for a node from its refKey (or title).
+         * We also add information from the parent, because a refKey may occur multiple
+         * times in a tree (but not as child of the same parent).
+         * @internal
+         */
+        _calculateKey(data, parent) {
+            if (data.key) {
+                // Always use an explicitly passed key
+                return data.key;
+            }
+            // Auto-keys are optional, use a monotonic counter by default:
+            if (!this.options.autoKeys) {
+                return "" + ++WunderbaumNode.sequence;
+            }
+            // Add the parent's key to the hash. Assuming this was generated by the
+            // same algorithm, this should incorporate the whole path:
+            const s = (parent ? parent.key : "") + (data.refKey || data.title);
+            // 32-bit has a high probability of collisions, so we pump up to 64-bit
+            // https://security.stackexchange.com/q/209882/207588
+            const h1 = murmurHash3(s, true);
+            let key = "id_" + h1 + murmurHash3(h1 + s, true);
+            // Check for collisions
+            // (Most likely if the same title occurs multiple in the same parent).
+            const existingNode = this.keyMap.get(key);
+            if (existingNode) {
+                key += "." + ++Wunderbaum.sequence;
+                this.logWarn(`Node with existing key: '${existingNode}', using ${key}.`, data);
+            }
+            return key;
+        }
+        /** Add node to tree's bookkeeping data structures. @internal */
         _registerNode(node) {
             const key = node.key;
             assert(key != null, `Missing key: '${node}'.`);
@@ -6489,7 +6722,7 @@
                 }
             }
         }
-        /** Remove node from tree's bookkeeping data structures. */
+        /** Remove node from tree's bookkeeping data structures. @internal  */
         _unregisterNode(node) {
             // Remove refKey reference from map (if any)
             const rk = node.refKey;
@@ -6607,6 +6840,16 @@
             }
             bottomIdx = Math.min(bottomIdx, this.count(true) - 1);
             return this._getNodeByRowIdx(bottomIdx);
+        }
+        /** Return preceding visible node in the viewport. */
+        _getPrevNodeInView(node, ofs = 1) {
+            this.visitRows((n) => {
+                node = n;
+                if (ofs-- <= 0) {
+                    return false;
+                }
+            }, { reverse: true, start: node || this.getActiveNode() });
+            return node;
         }
         /** Return following visible node in the viewport. */
         _getNextNodeInView(node, options) {
@@ -6859,17 +7102,34 @@
         /** Run code, but defer rendering of viewport until done.
          *
          * ```js
-         * tree.runWithDeferredUpdate(() => {
-         *   return someFuncThatWouldUpdateManyNodes();
+         * const res = tree.runWithDeferredUpdate(() => {
+         *   return someFunctionThatWouldUpdateManyNodes();
          * });
          * ```
          */
-        runWithDeferredUpdate(func, hint = null) {
+        runWithDeferredUpdate(func) {
             try {
                 this.enableUpdate(false);
                 const res = func();
-                assert(!(res instanceof Promise), `Promise return not allowed: ${res}`);
+                assert(!(res instanceof Promise), `Promise return not allowed (see 'runWithDeferredUpdateAsync()'): ${res}`);
                 return res;
+            }
+            finally {
+                this.enableUpdate(true);
+            }
+        }
+        /** Run code, but defer rendering of viewport until done.
+         *
+         * ```js
+         * const res = await tree.runWithDeferredUpdate(async () => {
+         *   return someAsyncFunctionThatWouldUpdateManyNodes();
+         * });
+         * ```
+         */
+        async runWithDeferredUpdateAsync(func) {
+            try {
+                this.enableUpdate(false);
+                return await func();
             }
             finally {
                 this.enableUpdate(true);
@@ -6893,6 +7153,17 @@
          */
         getSelectedNodes(stopOnParents = false) {
             return this.root.getSelectedNodes(stopOnParents);
+        }
+        /**
+         * Return an array of refKey values.
+         *
+         * RefKeys are unique identifiers for a node data, and are used to identify
+         * clones.
+         * If more than one node has the same refKey, it is only returned once.
+         * @param selected if true, only return refKeys of selected nodes.
+         */
+        getRefKeys(selected = false) {
+            return this.root.getRefKeys(selected);
         }
         /*
          * Return an array of selected nodes.
@@ -7176,6 +7447,18 @@
             return this.root.format(name_cb, connectors);
         }
         /**
+         * Always returns null (so a tree instance behaves as `tree.root`).
+         */
+        get parent() {
+            return null;
+        }
+        /**
+         * Return a list of top-level nodes.
+         */
+        get children() {
+            return this.root.children || [];
+        }
+        /**
          * Return the active cell (`span.wb-col`) of the currently active node or null.
          */
         getActiveColElem() {
@@ -7293,7 +7576,7 @@
         }
         /** Return true if any node title or grid cell is currently beeing edited.
          *
-         * See also {@link Wunderbaum.isEditingTitle}.
+         * See also {@link isEditingTitle}.
          */
         isEditing() {
             const focusElem = this.nodeListElement.querySelector("input:focus,select:focus");
@@ -7301,7 +7584,7 @@
         }
         /** Return true if any node is currently in edit-title mode.
          *
-         * See also {@link WunderbaumNode.isEditingTitle} and {@link Wunderbaum.isEditing}.
+         * See also {@link WunderbaumNode.isEditingTitle} and {@link isEditing}.
          */
         isEditingTitle() {
             return this._callMethod("edit.isEditingTitle");
@@ -7321,7 +7604,7 @@
             return res;
         }
         /** Write to `console.log` with tree name as prefix if opts.debugLevel >= 4.
-         * @see {@link Wunderbaum.logDebug}
+         * @see {@link logDebug}
          */
         log(...args) {
             if (this.options.debugLevel >= 4) {
@@ -7330,7 +7613,7 @@
         }
         /** Write to `console.debug`  with tree name as prefix if opts.debugLevel >= 4.
          * and browser console level includes debug/verbose messages.
-         * @see {@link Wunderbaum.log}
+         * @see {@link log}
          */
         logDebug(...args) {
             if (this.options.debugLevel >= 4) {
@@ -7366,6 +7649,19 @@
         logWarn(...args) {
             if (this.options.debugLevel >= 2) {
                 console.warn(this.toString(), ...args); // eslint-disable-line no-console
+            }
+        }
+        /** Emit a warning for deprecated methods. @internal */
+        logDeprecate(method, options) {
+            if (this.options.debugLevel >= 2) {
+                let msg = `${this}: ${method} is deprecated`;
+                if (options === null || options === void 0 ? void 0 : options.since) {
+                    msg += ` since ${options.since}`;
+                }
+                if (options === null || options === void 0 ? void 0 : options.hint) {
+                    msg += ` (${options.since})`;
+                }
+                console.warn(msg + "."); // eslint-disable-line no-console
             }
         }
         /** Reset column widths to default. @since 0.10.0 */
@@ -7536,46 +7832,64 @@
             this._focusNode = node;
         }
         /** Return the current selection/expansion/activation status. @experimental */
-        getState(options) {
+        getState(options = {}) {
             var _a, _b;
-            let expandedKeys = undefined;
-            if (options.expandedKeys !== false) {
-                expandedKeys = [];
+            const { activeKey = true, expandedKeys = false, selectedKeys = false, } = options;
+            const expandSet = new Set();
+            if (expandedKeys) {
                 for (const node of this) {
-                    if (node.expanded) {
-                        expandedKeys.push(node.key);
+                    if (node.isExpanded() && node.hasChildren()) {
+                        expandSet.add(node.key);
                     }
                 }
             }
+            // Parents of active node are always expanded
+            if (activeKey && this.activeNode) {
+                this.activeNode.visitParents((n) => {
+                    if (n.parent) {
+                        expandSet.add(n.key);
+                    }
+                }, false);
+            }
             const state = {
+                expandedKeys: expandSet.size ? Array.from(expandSet) : undefined,
                 activeKey: (_b = (_a = this.activeNode) === null || _a === void 0 ? void 0 : _a.key) !== null && _b !== void 0 ? _b : null,
                 activeColIdx: this.activeColIdx,
-                selectedKeys: options.selectedKeys === false
-                    ? undefined
-                    : this.getSelectedNodes().flatMap((n) => n.key),
-                expandedKeys: expandedKeys,
+                selectedKeys: selectedKeys
+                    ? this.getSelectedNodes().flatMap((n) => n.key)
+                    : undefined,
             };
             return state;
         }
         /** Apply selection/expansion/activation status. @experimental */
-        setState(state, options) {
-            this.runWithDeferredUpdate(() => {
+        async setState(state, options = {}) {
+            const { expandLazy = true } = options;
+            return this.runWithDeferredUpdateAsync(async () => {
                 var _a, _b;
-                if (state.selectedKeys) {
-                    this.selectAll(false);
-                    for (const key of state.selectedKeys) {
-                        (_a = this.findKey(key)) === null || _a === void 0 ? void 0 : _a.setSelected(true);
+                if (state.expandedKeys && state.expandedKeys.length) {
+                    if (expandLazy) {
+                        // Expand all keys recursively, even if they are not in the tree yet
+                        await this._loadLazyNodes(state.expandedKeys, {
+                            expand: true,
+                            noEvents: true,
+                        });
                     }
-                }
-                if (state.expandedKeys) {
-                    for (const key of state.expandedKeys) {
-                        (_b = this.findKey(key)) === null || _b === void 0 ? void 0 : _b.setExpanded(true);
+                    else {
+                        for (const key of state.expandedKeys) {
+                            (_a = this.findKey(key)) === null || _a === void 0 ? void 0 : _a.setExpanded(true);
+                        }
                     }
                 }
                 if (state.activeKey) {
                     this.setActiveNode(state.activeKey);
                 }
-                if (state.activeColIdx != null) {
+                if (state.selectedKeys) {
+                    this.selectAll(false);
+                    for (const key of state.selectedKeys) {
+                        (_b = this.findKey(key)) === null || _b === void 0 ? void 0 : _b.setSelected(true);
+                    }
+                }
+                if (this.isCellNav() && state.activeColIdx != null) {
                     this.setColumn(state.activeColIdx);
                 }
             });
@@ -7736,17 +8050,32 @@
          * @param {function} cmp custom compare function(a, b) that returns -1, 0, or 1
          *    (defaults to sorting by title).
          * @param {boolean} deep pass true to sort all descendant nodes recursively
+         * @deprecated use {@link sort}
          */
         sortChildren(cmp = nodeTitleSorter, deep = false) {
-            this.root.sortChildren(cmp, deep);
+            this.logDeprecate("sortChildren()", { since: "0.14.0" });
+            return this.sort({
+                cmp: cmp ? cmp : undefined,
+                deep: deep,
+                propName: "title",
+            });
         }
         /**
          * Convenience method to implement column sorting.
          * @see {@link WunderbaumNode.sortByProperty}.
          * @since 0.11.0
+         * @deprecated use {@link sort}
          */
         sortByProperty(options) {
+            this.logDeprecate("sortByProperty()", { since: "0.14.0" });
             this.root.sortByProperty(options);
+        }
+        /**
+         * Sort nodes list by title or custom criteria.
+         * @since 0.14.0
+         */
+        sort(options) {
+            this.root.sort(options);
         }
         /** Convert tree to an array of plain objects.
          *
@@ -7999,12 +8328,10 @@
                 iconElem = document.createElement("i");
                 iconElem.className = "wb-icon";
             }
-            else if (icon.indexOf("<") >= 0) {
-                // HTML
+            else if (TEST_HTML.test(icon)) {
                 iconElem = elemFromHtml(icon);
             }
-            else if (TEST_IMG.test(icon)) {
-                // Image URL
+            else if (TEST_FILE_PATH.test(icon)) {
                 iconElem = elemFromHtml(`<i class="wb-icon" style="background-image: url('${icon}');">`);
             }
             else {
@@ -8242,7 +8569,8 @@
         }
         /**
          * Call `callback(node)` for all nodes in hierarchical order (depth-first, pre-order).
-         * @see {@link IterableIterator<WunderbaumNode>}, {@link WunderbaumNode.visit}.
+         * @see `wb_node.WunderbaumNode.IterableIterator<WunderbaumNode>`
+         * @see {@link WunderbaumNode.visit}.
          *
          * @param {function} callback the callback function.
          *     Return false to stop iteration, return "skip" to skip this node and
@@ -8385,10 +8713,70 @@
          *
          * Previous data is cleared. Note that also column- and type defintions may
          * be passed with the `source` object.
+         * @see {@link Wunderbaum.reload} for a shortcut to reload the last ajax request
+         * and restore the previous state.
          */
-        load(source) {
+        async load(source) {
             this.clear();
+            this._initialSource = source;
             return this.root.load(source);
+        }
+        /** Reload the tree and optionally restore state.
+         * Source defaults to last ajax url if any.
+         * Restoring the active node requires stable keys
+         * @see {@link WunderbaumOptions.autoKeys}
+         * @see {@link Wunderbaum.load}
+         * @experimental
+         */
+        async reload(options = {}) {
+            const { source = this._initialSource, reactivate = true } = options;
+            if (!source) {
+                this.logWarn("No previous ajax source to reload.");
+                return;
+            }
+            if (!reactivate) {
+                return this.load(source);
+            }
+            const state = this.getState();
+            await this.load(source);
+            return this.setState(state);
+        }
+        /**
+         * Make sure that all nodes in the given keyList are accessible.
+         * This may include loading lazy parent nodes.
+         * Recursively load (and optionally expand) all requested node paths.
+         */
+        async _loadLazyNodes(keyList, options = {}) {
+            const { expand = true } = options;
+            const keySet = new Set(keyList);
+            // Make sure that all parent nodes are loaded (and expand if requested)
+            while (keySet.size > 0) {
+                const pendingNodes = [];
+                const curSet = new Set(keySet);
+                for (const key of curSet) {
+                    const node = this.findKey(key);
+                    if (!node) {
+                        continue; // key not yet found (need to load lazy parent?)
+                    }
+                    keySet.delete(key);
+                    if (expand) {
+                        pendingNodes.push(node.setExpanded(true));
+                    }
+                    else if (node.isUnloaded()) {
+                        pendingNodes.push(node.loadLazy());
+                    }
+                    if (node._rowElem) {
+                        node._render(); // show spinner even is update is suppressed
+                    }
+                }
+                if (pendingNodes.length === 0) {
+                    // will not load any more nodes, so if if there are still keys
+                    // left in the set, we will never find them
+                    this.logWarn(`Could not expand ${keySet.size} nodes:`, keySet);
+                    break;
+                }
+                await Promise.allSettled(pendingNodes);
+            }
         }
         /**
          * Disable render requests during operations that would trigger many updates.
@@ -8487,9 +8875,21 @@
     }
     Wunderbaum.sequence = 0;
     /** Wunderbaum release version number "MAJOR.MINOR.PATCH". */
-    Wunderbaum.version = "v0.13.0"; // Set to semver by 'grunt release'
+    Wunderbaum.version = "v0.14.1"; // Set to semver by 'grunt release'
     /** Expose some useful methods of the util.ts module as `Wunderbaum.util`. */
     Wunderbaum.util = util;
+    /** A map of default iconMaps.
+     * May be used as default, when passing partial icon definition maps:
+     * ```js
+     * const tree = new mar10.Wunderbaum({
+     *   ...
+     *   iconMap: Object.assign(Wunderbaum.iconMaps.bootstrap, {
+     *     folder: "bi bi-archive",
+     *   }),
+     * });
+     * ```
+     */
+    Wunderbaum.iconMaps = defaultIconMaps;
 
     exports.Wunderbaum = Wunderbaum;
 

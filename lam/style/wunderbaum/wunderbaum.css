@@ -68,16 +68,6 @@ div.wunderbaum {
   background-clip: content-box;
   overflow-x: auto;
   overflow-y: scroll;
-  /* --- FIXED-COLUMN --- */
-  /* Fixed column must be opaque, i.e. have the bg color set. */
-  /* --- GRID --- */
-  /* --- FILTER --- */
-  /* --- DND --- */
-  /* --- SPECIAL EFFECTS --- */
-  /* Colorize indentation levels. */
-  /* Fade out expanders, when container is not hovered or active */
-  /* Skeleton */
-  /* Auto-hide checkboxes unless selected or hovered */
 }
 div.wunderbaum:focus, div.wunderbaum:focus-within {
   border-color: var(--wb-focus-border-color);
@@ -89,6 +79,9 @@ div.wunderbaum.wb-disabled {
 div.wunderbaum div.wb-list-container {
   position: relative;
   min-height: 4px;
+}
+div.wunderbaum {
+  /* --- FIXED-COLUMN --- */
 }
 div.wunderbaum div.wb-header {
   position: sticky;
@@ -107,6 +100,9 @@ div.wunderbaum div.wb-row {
   height: var(--wb-row-outer-height);
   line-height: var(--wb-row-outer-height);
   border: 1px solid transparent;
+}
+div.wunderbaum {
+  /* Fixed column must be opaque, i.e. have the bg color set. */
 }
 div.wunderbaum.wb-fixed-col span.wb-col:first-of-type {
   position: sticky;
@@ -234,7 +230,6 @@ div.wunderbaum span.wb-col:last-of-type {
 div.wunderbaum span.wb-node {
   -webkit-user-select: none;
   user-select: none;
-  /* Fix Bootstrap Icon alignment */
 }
 div.wunderbaum span.wb-node i.wb-checkbox,
 div.wunderbaum span.wb-node i.wb-expander,
@@ -249,6 +244,9 @@ div.wunderbaum span.wb-node i.wb-expander,
 div.wunderbaum span.wb-node i.wb-icon {
   background-repeat: no-repeat;
   background-size: contain;
+}
+div.wunderbaum span.wb-node {
+  /* Fix Bootstrap Icon alignment */
 }
 div.wunderbaum span.wb-node i.bi::before {
   vertical-align: baseline;
@@ -275,6 +273,9 @@ div.wunderbaum span.wb-node span.wb-title {
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+div.wunderbaum {
+  /* --- GRID --- */
 }
 div.wunderbaum.wb-grid div.wb-header div.wb-row span.wb-col:hover {
   background-color: var(--wb-active-header-column-color);
@@ -339,6 +340,9 @@ div.wunderbaum.wb-grid.wb-alternate div.wb-node-list div.wb-row:nth-of-type(even
 div.wunderbaum.wb-grid:not(:focus-within) div.wb-node-list div.wb-row, div.wunderbaum.wb-grid:not(:focus) div.wb-node-list div.wb-row {
   border-bottom-color: var(--wb-grid-color-grayscale);
 }
+div.wunderbaum {
+  /* --- FILTER --- */
+}
 div.wunderbaum.wb-ext-filter-dim div.wb-node-list div.wb-row, div.wunderbaum.wb-ext-filter-hide div.wb-node-list div.wb-row {
   color: var(--wb-filter-dim-color);
 }
@@ -350,6 +354,9 @@ div.wunderbaum.wb-ext-filter-dim div.wb-node-list div.wb-row.wb-match, div.wunde
 }
 div.wunderbaum.wb-ext-filter-hide.wb-ext-filter-hide-expanders div.wb-node-list div.wb-row:not(.wb-submatch) i.wb-expander {
   visibility: hidden;
+}
+div.wunderbaum {
+  /* --- DND --- */
 }
 div.wunderbaum div.wb-row.wb-drag-source {
   opacity: 0.5;
@@ -384,6 +391,10 @@ div.wunderbaum div.wb-row.wb-drop-target.wb-drop-after .wb-node .wb-icon::after 
 div.wunderbaum div.wb-row.wb-drop-target.wb-drop-after .wb-node .wb-icon::after {
   top: calc((22px - var(--wb-icon-height)) / 2 + 11px);
 }
+div.wunderbaum {
+  /* --- SPECIAL EFFECTS --- */
+  /* Colorize indentation levels. */
+}
 div.wunderbaum.wb-rainbow i.wb-expander:nth-child(4n+1),
 div.wunderbaum.wb-rainbow i.wb-indent:nth-child(4n+1) {
   background: rgb(255, 255, 201);
@@ -400,6 +411,9 @@ div.wunderbaum.wb-rainbow i.wb-expander:nth-child(4n+4),
 div.wunderbaum.wb-rainbow i.wb-indent:nth-child(4n+4) {
   background: rgb(204, 250, 250);
 }
+div.wunderbaum {
+  /* Fade out expanders, when container is not hovered or active */
+}
 div.wunderbaum.wb-fade-expander i.wb-expander {
   transition: color 1.5s;
   color: rgba(86, 83, 76, 0);
@@ -409,12 +423,18 @@ div.wunderbaum.wb-fade-expander [class*=wb-statusnode-] i.wb-expander {
   transition: color 0.6s;
   color: var(--wb-node-text-color);
 }
+div.wunderbaum {
+  /* Skeleton */
+}
 div.wunderbaum div.wb-row.wb-skeleton span.wb-title,
 div.wunderbaum div.wb-row.wb-skeleton i.wb-icon {
   animation: wb-skeleton-animation 1s linear infinite alternate;
   border-radius: 0.25em;
   color: transparent;
   opacity: 0.7;
+}
+div.wunderbaum {
+  /* Auto-hide checkboxes unless selected or hovered */
 }
 div.wunderbaum.wb-checkbox-auto-hide i.wb-checkbox {
   visibility: hidden;
