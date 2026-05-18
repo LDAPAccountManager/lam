@@ -27,10 +27,13 @@ use Aws\Endpoint\UseFipsEndpoint\ConfigurationProvider as UseFipsConfigProvider;
 use Aws\EndpointDiscovery\ConfigurationInterface;
 use Aws\EndpointDiscovery\ConfigurationProvider;
 use Aws\EndpointV2\EndpointDefinitionProvider;
+use Aws\EndpointV2\EndpointProviderV2;
 use Aws\Exception\AwsException;
 use Aws\Exception\InvalidRegionException;
 use Aws\Retry\ConfigurationInterface as RetryConfigInterface;
 use Aws\Retry\ConfigurationProvider as RetryConfigProvider;
+use Aws\Retry\V3\OptIn as NewRetriesOptIn;
+use Aws\Retry\V3\RetryMiddleware as RetryV3Middleware;
 use Aws\Signature\SignatureProvider;
 use Aws\Token\Token;
 use Aws\Token\TokenInterface;
@@ -547,28 +550,42 @@ class ClientResolver
     public static function _apply_retries($value, array &$args, HandlerList $list)
     {
         // A value of 0 for the config option disables retries
-        if ($value) {
-            $config = RetryConfigProvider::unwrap($value);
-
-            if ($config->getMode() === 'legacy') {
-                // # of retries is 1 less than # of attempts
-                $decider = RetryMiddleware::createDefaultDecider(
-                    $config->getMaxAttempts() - 1
-                );
-                $list->appendSign(
-                    Middleware::retry($decider, null, $args['stats']['retries']),
-                    'retry'
-                );
-            } else {
-                $list->appendSign(
-                    RetryMiddlewareV2::wrap(
-                        $config,
-                        ['collect_stats' => $args['stats']['retries']]
-                    ),
-                    'retry'
-                );
-            }
+        if (!$value) {
+            return;
         }
+
+        $config = RetryConfigProvider::unwrap($value);
+
+        if ($config->getMode() === 'legacy') {
+            // # of retries is 1 less than # of attempts
+            $decider = RetryMiddleware::createDefaultDecider(
+                $config->getMaxAttempts() - 1
+            );
+            $list->appendSign(
+                Middleware::retry($decider, null, $args['stats']['retries']),
+                'retry'
+            );
+            return;
+        }
+
+        if (NewRetriesOptIn::isEnabled()) {
+            $list->appendSign(
+                RetryV3Middleware::wrap($config, [
+                    'collect_stats' => $args['stats']['retries'],
+                    'service'       => $args['service'],
+                ]),
+                'retry'
+            );
+            return;
+        }
+
+        $list->appendSign(
+            RetryMiddlewareV2::wrap(
+                $config,
+                ['collect_stats' => $args['stats']['retries']]
+            ),
+            'retry'
+        );
     }
 
     public static function _apply_defaults($value, array &$args, HandlerList $list)
@@ -791,7 +808,7 @@ class ClientResolver
     public static function _apply_endpoint_provider($value, array &$args)
     {
         if (!isset($args['endpoint'])) {
-            if ($value instanceof \Aws\EndpointV2\EndpointProviderV2) {
+            if ($value instanceof EndpointProviderV2) {
                 $options = self::getEndpointProviderOptions($args);
                 $value = PartitionEndpointProvider::defaultProvider($options)
                     ->getPartition($args['region'], $args['service']);
@@ -1112,14 +1129,13 @@ class ClientResolver
         if (self::isValidService($serviceName)
             && self::isValidApiVersion($serviceName, $apiVersion)
         ) {
-            $ruleset = EndpointDefinitionProvider::getEndpointRuleset(
+            $partitions = EndpointDefinitionProvider::getPartitions();
+            $parsed = EndpointDefinitionProvider::getParsedRuleset(
                 $service->getServiceName(),
-                $service->getApiVersion()
+                $service->getApiVersion(),
+                $partitions
             );
-            return new \Aws\EndpointV2\EndpointProviderV2(
-                $ruleset,
-                EndpointDefinitionProvider::getPartitions()
-            );
+            return new EndpointProviderV2($parsed, $partitions);
         }
         $options = self::getEndpointProviderOptions($args);
         return PartitionEndpointProvider::defaultProvider($options)
