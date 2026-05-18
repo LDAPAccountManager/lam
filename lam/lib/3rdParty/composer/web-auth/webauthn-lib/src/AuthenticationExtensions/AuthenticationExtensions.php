@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace Webauthn\AuthenticationExtensions;
 
+use function array_key_exists;
 use ArrayAccess;
 use ArrayIterator;
+use function count;
+use const COUNT_NORMAL;
 use Countable;
+use function is_string;
 use Iterator;
 use IteratorAggregate;
-use Webauthn\Exception\AuthenticationExtensionException;
-use function array_key_exists;
-use function count;
-use function is_string;
 use function sprintf;
-use const COUNT_NORMAL;
+use Webauthn\Exception\AuthenticationExtensionException;
 
 /**
- * @implements IteratorAggregate<AuthenticationExtension>
+ * @implements IteratorAggregate<string, AuthenticationExtension>
+ * @implements ArrayAccess<string, AuthenticationExtension>
  */
 final class AuthenticationExtensions implements Countable, IteratorAggregate, ArrayAccess
 {
     /**
      * @var array<string, AuthenticationExtension>
-     * @readonly
      */
     public array $extensions;
 
@@ -79,6 +79,9 @@ final class AuthenticationExtensions implements Countable, IteratorAggregate, Ar
         return new ArrayIterator($this->extensions);
     }
 
+    /**
+     * @param 0|1 $mode
+     */
     public function count(int $mode = COUNT_NORMAL): int
     {
         return count($this->extensions, $mode);
@@ -89,7 +92,7 @@ final class AuthenticationExtensions implements Countable, IteratorAggregate, Ar
         return array_key_exists($offset, $this->extensions);
     }
 
-    public function offsetGet(mixed $offset): mixed
+    public function offsetGet(mixed $offset): AuthenticationExtension
     {
         return $this->extensions[$offset];
     }

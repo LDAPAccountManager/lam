@@ -4,37 +4,37 @@ declare(strict_types=1);
 
 namespace Webauthn\CeremonyStep;
 
+use function count;
+use function in_array;
 use InvalidArgumentException;
+use function is_array;
+use function is_string;
+use function sprintf;
+use function trigger_deprecation;
 use Webauthn\AuthenticationExtensions\AuthenticationExtensions;
 use Webauthn\AuthenticatorAssertionResponse;
 use Webauthn\AuthenticatorAttestationResponse;
+use Webauthn\CredentialRecord;
 use Webauthn\Exception\AuthenticatorResponseVerificationException;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialSource;
-use function count;
-use function in_array;
-use function is_array;
-use function is_string;
-use function sprintf;
-use function strlen;
-use function substr;
 
 final readonly class CheckAllowedOrigins implements CeremonyStep
 {
     /**
-     * Full origin entries (scheme://host[:port]) from allowed origins that include a scheme.
+     * Full origin entries (scheme://host[:port]) from allowed origins.
      *
      * @var string[]
      */
     private array $fullOrigins;
 
     /**
-     * Host-only entries from allowed origins without a scheme (backward compatibility).
+     * Non-URL facet identifiers (e.g. android:apk-key-hash:...) matched verbatim against clientDataJSON.origin.
      *
      * @var string[]
      */
-    private array $hostOrigins;
+    private array $rawOrigins;
 
     /**
      * @param string[] $allowedOrigins
@@ -46,30 +46,46 @@ final readonly class CheckAllowedOrigins implements CeremonyStep
         private array $securedRelyingPartyId = [],
     ) {
         $fullOrigins = [];
-        $hostOrigins = [];
+        $rawOrigins = [];
         foreach ($allowedOrigins as $allowedOrigin) {
             $parsed = parse_url($allowedOrigin);
             $parsed !== false || throw new InvalidArgumentException(sprintf('Invalid origin: %s', $allowedOrigin));
             if (isset($parsed['scheme'], $parsed['host'])) {
                 $fullOrigins[] = self::buildOrigin($parsed['scheme'], $parsed['host'], $parsed['port'] ?? null);
+            } elseif (isset($parsed['scheme'])) {
+                $rawOrigins[] = $allowedOrigin;
             } else {
-                $hostOrigins[] = $parsed['host'] ?? $allowedOrigin;
+                // Host-only entries are normalized to https:// since WebAuthn requires TLS
+                $host = $parsed['host'] ?? $allowedOrigin;
+                $fullOrigins[] = self::buildOrigin('https', $host, null);
             }
         }
 
         $this->fullOrigins = array_unique($fullOrigins);
-        $this->hostOrigins = array_unique($hostOrigins);
+        $this->rawOrigins = array_unique($rawOrigins);
     }
 
     public function process(
-        PublicKeyCredentialSource $publicKeyCredentialSource,
+        CredentialRecord $credentialRecord,
         AuthenticatorAssertionResponse|AuthenticatorAttestationResponse $authenticatorResponse,
         PublicKeyCredentialRequestOptions|PublicKeyCredentialCreationOptions $publicKeyCredentialOptions,
         ?string $userHandle,
         string $host
     ): void {
+        if ($credentialRecord instanceof PublicKeyCredentialSource) {
+            trigger_deprecation(
+                'web-auth/webauthn-lib',
+                '5.3',
+                'Passing a PublicKeyCredentialSource to "%s::process()" is deprecated, pass a CredentialRecord instead.',
+                self::class
+            );
+        }
         $authData = $authenticatorResponse instanceof AuthenticatorAssertionResponse ? $authenticatorResponse->authenticatorData : $authenticatorResponse->attestationObject->authData;
         $C = $authenticatorResponse->clientDataJSON;
+
+        if (in_array($C->origin, $this->rawOrigins, true)) {
+            return;
+        }
 
         $parsedOrigin = parse_url($C->origin);
         is_array($parsedOrigin) || throw AuthenticatorResponseVerificationException::create(
@@ -77,7 +93,7 @@ final readonly class CheckAllowedOrigins implements CeremonyStep
         );
         $originHost = $parsedOrigin['host'] ?? $C->origin;
 
-        $hasAllowedOrigins = count($this->fullOrigins) !== 0 || count($this->hostOrigins) !== 0;
+        $hasAllowedOrigins = count($this->fullOrigins) !== 0 || count($this->rawOrigins) !== 0;
 
         if ($hasAllowedOrigins) {
             // Full origin match (scheme + host + port)
@@ -92,15 +108,8 @@ final readonly class CheckAllowedOrigins implements CeremonyStep
                 }
             }
 
-            // Host-only match (backward compatibility for entries without scheme)
-            if (in_array($originHost, $this->hostOrigins, true)) {
-                return;
-            }
-
             // Subdomain matching
-            $isFullOriginSubdomain = $this->isSubdomainOfFullOrigins($parsedOrigin);
-            $isHostSubdomain = $this->isSubdomain($this->hostOrigins, $originHost);
-            $isSubDomain = $isFullOriginSubdomain || $isHostSubdomain;
+            $isSubDomain = $this->isSubdomainOfFullOrigins($parsedOrigin);
 
             if ($this->allowSubdomains && $isSubDomain) {
                 return;
@@ -193,7 +202,7 @@ final readonly class CheckAllowedOrigins implements CeremonyStep
 
     private function isSubdomainOf(string $subdomain, string $domain): bool
     {
-        return substr('.' . $subdomain, -strlen('.' . $domain)) === '.' . $domain;
+        return str_ends_with('.' . $subdomain, '.' . $domain);
     }
 
     private function getFacetId(
@@ -213,18 +222,5 @@ final readonly class CheckAllowedOrigins implements CeremonyStep
             ->value;
 
         return (is_string($appId) && $wasUsed === true) ? $appId : $rpId;
-    }
-
-    /**
-     * @param string[] $origins
-     */
-    private function isSubdomain(array $origins, string $domain): bool
-    {
-        foreach ($origins as $allowedOrigin) {
-            if ($this->isSubdomainOf($domain, $allowedOrigin)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

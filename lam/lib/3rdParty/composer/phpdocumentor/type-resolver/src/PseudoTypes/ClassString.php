@@ -11,28 +11,25 @@ declare(strict_types=1);
  * @link      http://phpdoc.org
  */
 
-namespace phpDocumentor\Reflection\Types;
+namespace phpDocumentor\Reflection\PseudoTypes;
 
-use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\PseudoType;
 use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\String_;
 
 /**
- * Value Object representing the type 'string'.
+ * Value Object representing the type 'class-string'.
  *
  * @psalm-immutable
  */
 final class ClassString extends String_ implements PseudoType
 {
-    /** @var Fqsen|null */
-    private $fqsen;
+    /** @var Type|null */
+    private $genericType;
 
-    /**
-     * Initializes this representation of a class string with the given Fqsen.
-     */
-    public function __construct(?Fqsen $fqsen = null)
+    public function __construct(?Type $genericType = null)
     {
-        $this->fqsen = $fqsen;
+        $this->genericType = $genericType;
     }
 
     public function underlyingType(): Type
@@ -40,12 +37,9 @@ final class ClassString extends String_ implements PseudoType
         return new String_();
     }
 
-    /**
-     * Returns the FQSEN associated with this object.
-     */
-    public function getFqsen(): ?Fqsen
+    public function getGenericType(): ?Type
     {
-        return $this->fqsen;
+        return $this->genericType;
     }
 
     /**
@@ -53,10 +47,10 @@ final class ClassString extends String_ implements PseudoType
      */
     public function __toString(): string
     {
-        if ($this->fqsen === null) {
+        if ($this->genericType === null) {
             return 'class-string';
         }
 
-        return 'class-string<' . (string) $this->fqsen . '>';
+        return 'class-string<' . (string) $this->genericType . '>';
     }
 }

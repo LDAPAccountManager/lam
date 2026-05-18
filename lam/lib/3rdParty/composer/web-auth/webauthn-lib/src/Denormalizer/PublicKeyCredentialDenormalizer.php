@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webauthn\Denormalizer;
 
+use function array_key_exists;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
@@ -12,14 +13,17 @@ use Webauthn\AuthenticatorResponse;
 use Webauthn\Exception\InvalidDataException;
 use Webauthn\PublicKeyCredential;
 use Webauthn\Util\Base64;
-use function array_key_exists;
 
 final class PublicKeyCredentialDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
 {
     use DenormalizerAwareTrait;
 
+    /**
+     * @throws InvalidDataException
+     */
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
+        /** @var array{id?: string, rawId: string, type: string, response: array<string, mixed>} $data */
         if (! array_key_exists('id', $data)) {
             return $data;
         }
@@ -28,11 +32,15 @@ final class PublicKeyCredentialDenormalizer implements DenormalizerInterface, De
         hash_equals($id, $rawId) || throw InvalidDataException::create($data, 'Invalid ID');
         $data['rawId'] = $rawId;
 
-        return PublicKeyCredential::create(
-            $data['type'],
-            $data['rawId'],
-            $this->denormalizer->denormalize($data['response'], AuthenticatorResponse::class, $format, $context),
+        /** @var AuthenticatorResponse $response */
+        $response = $this->denormalizer->denormalize(
+            $data['response'],
+            AuthenticatorResponse::class,
+            $format,
+            $context
         );
+
+        return PublicKeyCredential::create($data['type'], $data['rawId'], $response);
     }
 
     public function supportsDenormalization(

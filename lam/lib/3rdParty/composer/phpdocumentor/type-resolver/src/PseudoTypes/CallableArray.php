@@ -11,32 +11,33 @@ declare(strict_types=1);
  * @link      http://phpdoc.org
  */
 
-namespace phpDocumentor\Reflection\Types;
+namespace phpDocumentor\Reflection\PseudoTypes;
 
 use phpDocumentor\Reflection\PseudoType;
 use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\Integer;
+use phpDocumentor\Reflection\Types\Mixed_;
 
 /**
- * Value Object representing a array-key Type.
- *
- * A array-key Type is the supertype (but not a union) of int and string.
+ * Value Object representing the type 'callable-array'.
  *
  * @psalm-immutable
  */
-class ArrayKey extends AggregatedType implements PseudoType
+final class CallableArray extends Array_ implements PseudoType
 {
     public function __construct()
     {
-        parent::__construct([new String_(), new Integer()], '|');
+        parent::__construct(new Mixed_(), new Integer());
     }
 
     public function underlyingType(): Type
     {
-        return new Compound([new String_(), new Integer()]);
+        return new Array_(new Mixed_(), new Integer());
     }
 
     public function __toString(): string
     {
-        return 'array-key';
+        return 'callable-array';
     }
 }

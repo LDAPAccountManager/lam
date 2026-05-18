@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
-use Webauthn\Exception\InvalidDataException;
 use function array_key_exists;
 use function sprintf;
+use Webauthn\Exception\InvalidDataException;
 
 class AttestationStatementSupportManager
 {
@@ -18,6 +18,9 @@ class AttestationStatementSupportManager
     ) {
         $this->add(new NoneAttestationStatementSupport());
         foreach ($attestationStatementSupports as $attestationStatementSupport) {
+            if ($attestationStatementSupport instanceof AttestationStatementSupportManagerAwareInterface) {
+                $attestationStatementSupport->setAttestationStatementSupportManager($this);
+            }
             $this->add($attestationStatementSupport);
         }
     }

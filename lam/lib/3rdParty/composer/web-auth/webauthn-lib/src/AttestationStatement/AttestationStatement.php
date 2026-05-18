@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
-use Webauthn\Exception\InvalidDataException;
-use Webauthn\TrustPath\TrustPath;
 use function array_key_exists;
 use function sprintf;
+use Webauthn\Exception\InvalidDataException;
+use Webauthn\TrustPath\TrustPath;
 
 class AttestationStatement
 {
@@ -32,6 +32,9 @@ class AttestationStatement
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $attStmt
+     */
     public static function create(string $fmt, array $attStmt, string $type, TrustPath $trustPath): self
     {
         return new self($fmt, $attStmt, $type, $trustPath);

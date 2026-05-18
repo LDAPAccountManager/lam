@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
+use function array_key_exists;
 use CBOR\Decoder;
 use CBOR\Normalizable;
 use Cose\Key\Ec2Key;
 use Cose\Key\Key;
 use Cose\Key\RsaKey;
+use function count;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
@@ -26,8 +28,6 @@ use Webauthn\Exception\InvalidAttestationStatementException;
 use Webauthn\MetadataService\CertificateChain\CertificateToolbox;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
-use function array_key_exists;
-use function count;
 
 final class AppleAttestationStatementSupport implements AttestationStatementSupport, CanDispatchEvents
 {
@@ -67,11 +67,14 @@ final class AppleAttestationStatementSupport implements AttestationStatementSupp
             $attestation,
             'Invalid attestation object'
         );
-        array_key_exists('x5c', $attestation['attStmt']) || throw AttestationStatementLoadingException::create(
+        /** @var array<string, mixed> $attStmt */
+        $attStmt = $attestation['attStmt'];
+        array_key_exists('x5c', $attStmt) || throw AttestationStatementLoadingException::create(
             $attestation,
             'The attestation statement value "x5c" is missing.'
         );
-        $certificates = $attestation['attStmt']['x5c'];
+        /** @var array<string> $certificates */
+        $certificates = $attStmt['x5c'];
         (is_countable($certificates) ? count(
             $certificates
         ) : 0) > 0 || throw AttestationStatementLoadingException::create(
@@ -80,9 +83,11 @@ final class AppleAttestationStatementSupport implements AttestationStatementSupp
         );
         $certificates = CertificateToolbox::convertAllDERToPEM($certificates);
 
+        /** @var string $fmt */
+        $fmt = $attestation['fmt'];
         $attestationStatement = AttestationStatement::createAnonymizationCA(
-            $attestation['fmt'],
-            $attestation['attStmt'],
+            $fmt,
+            $attStmt,
             CertificateTrustPath::create($certificates)
         );
         $this->dispatcher->dispatch(AttestationStatementLoaded::create($attestationStatement));
@@ -137,7 +142,9 @@ final class AppleAttestationStatementSupport implements AttestationStatementSupp
             'Invalid public key data. Presence of extra bytes.'
         );
         $publicDataStream->close();
-        $publicKey = Key::createFromData($coseKey->normalize());
+        /** @var array<int, mixed> $coseKeyData */
+        $coseKeyData = $coseKey->normalize();
+        $publicKey = Key::createFromData($coseKeyData);
 
         ($publicKey instanceof Ec2Key) || ($publicKey instanceof RsaKey) || throw AttestationStatementVerificationException::create(
             'Unsupported key type'

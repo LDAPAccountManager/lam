@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Webauthn\MetadataService;
 
+use function is_array;
+use const JSON_ERROR_NONE;
 use JsonException;
 use LogicException;
+use const PHP_QUERY_RFC3986;
 use Psr\Http\Client\ClientInterface as Psr18ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface as Psr17RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Psr17ResponseInterface;
@@ -13,12 +16,12 @@ use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactoryInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
-use function is_array;
-use const JSON_ERROR_NONE;
-use const PHP_QUERY_RFC3986;
 
 class Psr18HttpClient implements HttpClientInterface
 {
+    /**
+     * @var array<string, string>
+     */
     private array $options = [];
 
     public function __construct(
@@ -28,11 +31,14 @@ class Psr18HttpClient implements HttpClientInterface
     ) {
     }
 
+    /**
+     * @param array{base_uri?: string, query?: array<string, string>, body?: string, headers?: array<string, string>, ...} $options
+     */
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
         $baseUri = $options['base_uri'] ?? '';
         $query = $options['query'] ?? [];
-        if ($query) {
+        if ($query !== []) {
             $url .= (! str_contains($url, '?') ? '?' : '&') . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
         }
         $request = $this->requestFactory->createRequest($method, $baseUri . $url);
@@ -59,6 +65,9 @@ class Psr18HttpClient implements HttpClientInterface
         throw new LogicException('Not implemented');
     }
 
+    /**
+     * @param array<string, string> $options
+     */
     public function withOptions(array $options): static
     {
         $this->options = $options;
@@ -67,6 +76,7 @@ class Psr18HttpClient implements HttpClientInterface
 
     protected static function fromPsr17(Psr17ResponseInterface $response): ResponseInterface
     {
+        /** @var array<string, list<string>> $headers */
         $headers = $response->getHeaders();
         $content = $response->getBody()
             ->getContents();
@@ -74,7 +84,7 @@ class Psr18HttpClient implements HttpClientInterface
 
         return new class($status, $headers, $content) implements ResponseInterface {
             /**
-             * @param array<array-key, string[]> $headers
+             * @param array<string, list<string>> $headers
              */
             public function __construct(
                 private readonly int $status,
@@ -89,7 +99,7 @@ class Psr18HttpClient implements HttpClientInterface
             }
 
             /**
-             * @return array<array-key, string[]>
+             * @return array<string, list<string>>
              */
             public function getHeaders(bool $throw = true): array
             {

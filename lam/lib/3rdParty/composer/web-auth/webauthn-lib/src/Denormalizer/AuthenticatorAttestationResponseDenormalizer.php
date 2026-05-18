@@ -11,23 +11,30 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Webauthn\AttestationStatement\AttestationObject;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\CollectedClientData;
+use Webauthn\Exception\InvalidDataException;
 use Webauthn\Util\Base64;
 
 final class AuthenticatorAttestationResponseDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface
 {
     use DenormalizerAwareTrait;
 
+    /**
+     * @throws InvalidDataException
+     */
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
+        /** @var array{clientDataJSON: string, attestationObject: string, transports?: string[]} $data */
         $data['clientDataJSON'] = Base64UrlSafe::decodeNoPadding($data['clientDataJSON']);
         $data['attestationObject'] = Base64::decode($data['attestationObject']);
 
+        /** @var CollectedClientData $clientDataJSON */
         $clientDataJSON = $this->denormalizer->denormalize(
             $data['clientDataJSON'],
             CollectedClientData::class,
             $format,
             $context
         );
+        /** @var AttestationObject $attestationObject */
         $attestationObject = $this->denormalizer->denormalize(
             $data['attestationObject'],
             AttestationObject::class,

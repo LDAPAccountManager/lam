@@ -115,7 +115,52 @@ final class CeremonyStepManagerFactory
         $this->topOriginValidator = $topOriginValidator;
     }
 
+    public function requestCeremony(): CeremonyStepManager
+    {
+        /* @see https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion */
+        return new CeremonyStepManager([
+            new CheckAllowedCredentialList(),
+            new CheckUserHandle(),
+            new CheckClientDataCollectorType(),
+            new CheckChallenge(),
+            $this->allowedOrigins === null ? new CheckOrigin(
+                $this->securedRelyingPartyId ?? []
+            ) : new CheckAllowedOrigins(
+                $this->allowedOrigins,
+                $this->allowSubdomains,
+                $this->securedRelyingPartyId ?? []
+            ),
+            new CheckTopOrigin($this->topOriginValidator),
+            new CheckRelyingPartyIdIdHash(),
+            new CheckUserWasPresent(),
+            new CheckUserVerification(),
+            new CheckBackupBitsAreConsistent(),
+            new CheckExtensions($this->extensionOutputCheckerHandler),
+            new CheckSignature($this->algorithmManager),
+            new CheckCounter($this->counterChecker),
+        ]);
+    }
+
     public function creationCeremony(): CeremonyStepManager
+    {
+        return $this->buildCreationCeremony(true);
+    }
+
+    /**
+     * Create a ceremony manager for Conditional Create (auto-register)
+     *
+     * Use this when creating credentials with mediation: 'conditional',
+     * where user presence may be false after password authentication.
+     *
+     * @see https://github.com/w3c/webauthn/wiki/Explainer:-Conditional-Create
+     * @see https://github.com/web-auth/webauthn-framework/issues/719
+     */
+    public function conditionalCreateCeremony(): CeremonyStepManager
+    {
+        return $this->buildCreationCeremony(false);
+    }
+
+    private function buildCreationCeremony(bool $requireUserPresence): CeremonyStepManager
     {
         $metadataStatementChecker = new CheckMetadataStatement();
         if ($this->certificateChainValidator !== null) {
@@ -142,7 +187,7 @@ final class CeremonyStepManagerFactory
             ),
             new CheckTopOrigin($this->topOriginValidator),
             new CheckRelyingPartyIdIdHash(),
-            new CheckUserWasPresent(),
+            new CheckUserWasPresent($requireUserPresence),
             new CheckUserVerification(),
             new CheckBackupBitsAreConsistent(),
             new CheckAlgorithm(),
@@ -151,32 +196,6 @@ final class CeremonyStepManagerFactory
             new CheckHasAttestedCredentialData(),
             $metadataStatementChecker,
             new CheckCredentialId(),
-        ]);
-    }
-
-    public function requestCeremony(): CeremonyStepManager
-    {
-        /* @see https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion */
-        return new CeremonyStepManager([
-            new CheckAllowedCredentialList(),
-            new CheckUserHandle(),
-            new CheckClientDataCollectorType(),
-            new CheckChallenge(),
-            $this->allowedOrigins === null ? new CheckOrigin(
-                $this->securedRelyingPartyId ?? []
-            ) : new CheckAllowedOrigins(
-                $this->allowedOrigins,
-                $this->allowSubdomains,
-                $this->securedRelyingPartyId ?? []
-            ),
-            new CheckTopOrigin(),
-            new CheckRelyingPartyIdIdHash(),
-            new CheckUserWasPresent(),
-            new CheckUserVerification(),
-            new CheckBackupBitsAreConsistent(),
-            new CheckExtensions($this->extensionOutputCheckerHandler),
-            new CheckSignature($this->algorithmManager),
-            new CheckCounter($this->counterChecker),
         ]);
     }
 }

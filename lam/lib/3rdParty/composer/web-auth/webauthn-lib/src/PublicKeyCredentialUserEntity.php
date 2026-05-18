@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Webauthn;
 
-use Webauthn\Exception\InvalidDataException;
 use function strlen;
+use Webauthn\Exception\InvalidDataException;
 
 class PublicKeyCredentialUserEntity extends PublicKeyCredentialEntity
 {
@@ -17,9 +17,10 @@ class PublicKeyCredentialUserEntity extends PublicKeyCredentialEntity
         public readonly string $displayName,
         ?string $icon = null
     ) {
-        parent::__construct($name, $icon);
+        parent::__construct('', $icon);
         strlen($id) <= 64 || throw InvalidDataException::create($id, 'User ID max length is 64 bytes');
         $this->id = $id;
+        $this->name = $name;
     }
 
     public static function create(string $name, string $id, string $displayName, ?string $icon = null): self

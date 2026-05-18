@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Webauthn\Counter;
 
-use Webauthn\PublicKeyCredentialSource;
+use Webauthn\CredentialRecord;
 
 interface CounterChecker
 {
-    public function check(PublicKeyCredentialSource $publicKeyCredentialSource, int $currentCounter): void;
+    public function check(CredentialRecord $credentialRecord, int $currentCounter): void;
 }

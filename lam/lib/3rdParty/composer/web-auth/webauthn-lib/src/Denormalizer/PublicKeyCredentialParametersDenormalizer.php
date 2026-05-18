@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Webauthn\Denormalizer;
 
+use function array_key_exists;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Webauthn\Exception\InvalidDataException;
 use Webauthn\PublicKeyCredentialParameters;
-use function array_key_exists;
 
 final class PublicKeyCredentialParametersDenormalizer implements DenormalizerInterface
 {
+    /**
+     * @throws InvalidDataException
+     */
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
+        /** @var array{type?: string, alg?: int} $data */
         if (! array_key_exists('type', $data) || ! array_key_exists('alg', $data)) {
             throw new InvalidDataException($data, 'Missing type or alg');
         }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Webauthn\Denormalizer;
 
+use function assert;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Webauthn\AuthenticationExtensions\AuthenticationExtension;
-use function assert;
 
 final class AuthenticationExtensionNormalizer implements NormalizerInterface
 {
@@ -27,7 +27,10 @@ final class AuthenticationExtensionNormalizer implements NormalizerInterface
     {
         assert($object instanceof AuthenticationExtension);
 
-        return $object->value;
+        /** @var array<mixed> $value */
+        $value = $object->value;
+
+        return $value;
     }
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool

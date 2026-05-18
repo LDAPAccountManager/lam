@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Webauthn;
 
-use ParagonIE\ConstantTime\Base64UrlSafe;
-use Webauthn\Exception\InvalidDataException;
 use function array_key_exists;
 use function is_array;
 use function is_string;
-use function sprintf;
 use const JSON_THROW_ON_ERROR;
+use ParagonIE\ConstantTime\Base64UrlSafe;
+use function sprintf;
+use Webauthn\Exception\InvalidDataException;
 
 class CollectedClientData
 {
@@ -62,8 +62,12 @@ class CollectedClientData
         );
         $this->origin = $origin;
 
-        $this->topOrigin = $data['topOrigin'] ?? null;
-        $this->crossOrigin = $data['crossOrigin'] ?? false;
+        /** @var string|null $topOrigin */
+        $topOrigin = $data['topOrigin'] ?? null;
+        $this->topOrigin = $topOrigin;
+        /** @var bool $crossOrigin */
+        $crossOrigin = $data['crossOrigin'] ?? false;
+        $this->crossOrigin = $crossOrigin;
 
         $tokenBinding = $data['tokenBinding'] ?? null;
         $tokenBinding === null || is_array($tokenBinding) || throw InvalidDataException::create(
@@ -82,6 +86,9 @@ class CollectedClientData
         return new self($rawData, $data);
     }
 
+    /**
+     * @deprecated Since 5.3.0 and will be removed in 6.0.0. No replacement as not used anymore.
+     */
     public static function createFormJson(string $data): self
     {
         $rawData = Base64UrlSafe::decodeNoPadding($data);

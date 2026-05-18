@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Webauthn\MetadataService\Service;
 
+use function array_key_exists;
+use function is_array;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\KeyManagement\JWKFactory;
 use Jose\Component\Signature\Algorithm\ES256;
@@ -12,6 +14,7 @@ use Jose\Component\Signature\JWSVerifier;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function sprintf;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -27,9 +30,6 @@ use Webauthn\MetadataService\CertificateChain\CertificateChainValidator;
 use Webauthn\MetadataService\CertificateChain\CertificateToolbox;
 use Webauthn\MetadataService\Statement\MetadataStatement;
 use Webauthn\MetadataService\Statement\StatusReport;
-use function array_key_exists;
-use function is_array;
-use function sprintf;
 
 final class FidoAllianceCompliantMetadataService implements MetadataService, CanDispatchEvents
 {
@@ -41,7 +41,7 @@ final class FidoAllianceCompliantMetadataService implements MetadataService, Can
     private array $statements = [];
 
     /**
-     * @var array<string, array<int, StatusReport>>
+     * @var array<string, StatusReport[]>
      */
     private array $statusReports = [];
 
@@ -145,6 +145,7 @@ final class FidoAllianceCompliantMetadataService implements MetadataService, Can
         try {
             $payload = $this->getJwsPayload($content, $jwtCertificates);
             $this->validateCertificates(...$jwtCertificates);
+            /** @var MetadataBLOBPayload $blob */
             $blob = $this->serializer->deserialize($payload, MetadataBLOBPayload::class, JsonEncoder::FORMAT);
             foreach ($blob->entries as $entry) {
                 $mds = $entry->metadataStatement;
@@ -205,8 +206,10 @@ final class FidoAllianceCompliantMetadataService implements MetadataService, Can
         is_array($header['x5c']) || throw MetadataStatementLoadingException::create(
             'The "x5c" parameter should be an array.'
         );
-        $key = JWKFactory::createFromX5C($header['x5c']);
-        $rootCertificates = $header['x5c'];
+        /** @var string[] $x5c */
+        $x5c = $header['x5c'];
+        $key = JWKFactory::createFromX5C($x5c);
+        $rootCertificates = $x5c;
 
         $verifier = new JWSVerifier(new AlgorithmManager([new ES256(), new RS256()]));
         $isValid = $verifier->verifyWithKey($jws, $key, 0);

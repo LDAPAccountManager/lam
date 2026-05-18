@@ -41,7 +41,7 @@ use Webauthn\PublicKeyCredentialDescriptor;
 use Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialRpEntity;
-use Webauthn\PublicKeyCredentialSource;
+use Webauthn\CredentialRecord;
 use Webauthn\PublicKeyCredentialUserEntity;
 use function LAM\PERSISTENCE\dbTableExists;
 
@@ -416,9 +416,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 * Finds the public key for the given credential id.
 	 *
 	 * @param string $publicKeyCredentialId credential id
-	 * @return PublicKeyCredentialSource|null credential source
+	 * @return CredentialRecord|null credential source
 	 */
-	public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource {
+	public function findOneByCredentialId(string $publicKeyCredentialId): ?CredentialRecord {
 		try {
 			$pdo = $this->getPDO();
 			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where credentialId = :credentialid');
@@ -432,7 +432,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 				}
 				$manager = new WebauthnManager();
 				$factory = $manager->createPublicKeyCredentialLoader();
-				return $factory->deserialize($jsonString, PublicKeyCredentialSource::class, 'json');
+				return $factory->deserialize($jsonString, CredentialRecord::class, 'json');
 			}
 		}
 		catch (PDOException $e) {
@@ -445,7 +445,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	 * Finds all credential entries for the given user.
 	 *
 	 * @param string $userDn user DN
-	 * @return PublicKeyCredentialSource[] credential sources
+	 * @return CredentialRecord[] credential sources
 	 */
 	public function findAllForUserDn(string $userDn): array {
 		$credentials = [];
@@ -462,7 +462,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 				if (!is_array($jsonArray)) {
 					return $credentials;
 				}
-				$credentials[] = $factory->deserialize($jsonString, PublicKeyCredentialSource::class, 'json');
+				$credentials[] = $factory->deserialize($jsonString, CredentialRecord::class, 'json');
 			}
 		}
 		catch (PDOException $e) {
@@ -474,9 +474,9 @@ abstract class PublicKeyCredentialSourceRepositoryBase {
 	/**
 	 * Saves the given credential in the database.
 	 *
-	 * @param PublicKeyCredentialSource $publicKeyCredentialSource credential
+	 * @param CredentialRecord $publicKeyCredentialSource credential
 	 */
-	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
+	public function saveCredentialSource(CredentialRecord $publicKeyCredentialSource): void {
 		$webauthnManager = new WebauthnManager();
 		$loader = $webauthnManager->createPublicKeyCredentialLoader();
 		$json = $loader->serialize($publicKeyCredentialSource, 'json');

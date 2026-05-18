@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
+use function array_key_exists;
 use CBOR\Decoder;
 use CBOR\MapObject;
 use Cose\Algorithms;
@@ -11,7 +12,9 @@ use Cose\Key\Ec2Key;
 use Cose\Key\Key;
 use Cose\Key\OkpKey;
 use Cose\Key\RsaKey;
+use function count;
 use DateTimeImmutable;
+use function openssl_verify;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use Psr\Clock\ClockInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -21,7 +24,9 @@ use SpomkyLabs\Pki\CryptoEncoding\PEM;
 use SpomkyLabs\Pki\X509\Certificate\Certificate;
 use SpomkyLabs\Pki\X509\Certificate\Extension\UnknownExtension;
 use SpomkyLabs\Pki\X509\Certificate\TBSCertificate;
+use function sprintf;
 use Symfony\Component\Clock\NativeClock;
+use function unpack;
 use Webauthn\AuthenticatorData;
 use Webauthn\Event\AttestationStatementLoaded;
 use Webauthn\Event\CanDispatchEvents;
@@ -32,11 +37,6 @@ use Webauthn\Exception\InvalidAttestationStatementException;
 use Webauthn\MetadataService\CertificateChain\CertificateToolbox;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
-use function array_key_exists;
-use function count;
-use function openssl_verify;
-use function sprintf;
-use function unpack;
 
 final class TPMAttestationStatementSupport implements AttestationStatementSupport, CanDispatchEvents
 {
@@ -78,40 +78,46 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
             $attestation,
             'Invalid attestation object'
         );
+        /** @var array<string, mixed> $attStmt */
+        $attStmt = $attestation['attStmt'];
         foreach (['ver', 'ver', 'sig', 'alg', 'certInfo', 'pubArea'] as $key) {
-            array_key_exists($key, $attestation['attStmt']) || throw AttestationStatementLoadingException::create(
+            array_key_exists($key, $attStmt) || throw AttestationStatementLoadingException::create(
                 $attestation,
                 sprintf('The attestation statement value "%s" is missing.', $key)
             );
         }
-        $attestation['attStmt']['ver'] === '2.0' || throw AttestationStatementLoadingException::create(
+        $attStmt['ver'] === '2.0' || throw AttestationStatementLoadingException::create(
             $attestation,
             'Invalid attestation object'
         );
 
-        $certInfo = $this->checkCertInfo($attestation['attStmt']['certInfo']);
-        bin2hex((string) $certInfo['type']) === '8017' || throw AttestationStatementLoadingException::create(
+        /** @var string $certInfoData */
+        $certInfoData = $attStmt['certInfo'];
+        $certInfo = $this->checkCertInfo($certInfoData);
+        bin2hex($certInfo['type']) === '8017' || throw AttestationStatementLoadingException::create(
             $attestation,
             'Invalid attestation object'
         );
 
-        $pubArea = $this->checkPubArea($attestation['attStmt']['pubArea']);
-        $pubAreaAttestedNameAlg = substr((string) $certInfo['attestedName'], 0, 2);
-        $pubAreaHash = hash(
-            $this->getTPMHash($pubAreaAttestedNameAlg),
-            (string) $attestation['attStmt']['pubArea'],
-            true
-        );
+        /** @var string $pubAreaData */
+        $pubAreaData = $attStmt['pubArea'];
+        $pubArea = $this->checkPubArea($pubAreaData);
+        $pubAreaAttestedNameAlg = substr($certInfo['attestedName'], 0, 2);
+        /** @var string $pubAreaRaw */
+        $pubAreaRaw = $attStmt['pubArea'];
+        $pubAreaHash = hash($this->getTPMHash($pubAreaAttestedNameAlg), $pubAreaRaw, true);
         $attestedName = $pubAreaAttestedNameAlg . $pubAreaHash;
         $attestedName === $certInfo['attestedName'] || throw AttestationStatementLoadingException::create(
             $attestation,
             'Invalid attested name'
         );
 
-        $attestation['attStmt']['parsedCertInfo'] = $certInfo;
-        $attestation['attStmt']['parsedPubArea'] = $pubArea;
+        $attStmt['parsedCertInfo'] = $certInfo;
+        $attStmt['parsedPubArea'] = $pubArea;
 
-        $certificates = CertificateToolbox::convertAllDERToPEM($attestation['attStmt']['x5c']);
+        /** @var array<string> $x5c */
+        $x5c = $attStmt['x5c'];
+        $certificates = CertificateToolbox::convertAllDERToPEM($x5c);
         count($certificates) > 0 || throw AttestationStatementLoadingException::create(
             $attestation,
             'The attestation statement value "x5c" must be a list with at least one certificate.'
@@ -119,7 +125,7 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
 
         $attestationStatement = AttestationStatement::createAttCA(
             $this->name(),
-            $attestation['attStmt'],
+            $attStmt,
             CertificateTrustPath::create($certificates)
         );
         $this->dispatcher->dispatch(AttestationStatementLoaded::create($attestationStatement));
@@ -133,14 +139,13 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         AuthenticatorData $authenticatorData
     ): bool {
         $attToBeSigned = $authenticatorData->authData . $clientDataJSONHash;
-        $attToBeSignedHash = hash(
-            Algorithms::getHashAlgorithmFor((int) $attestationStatement->get('alg')),
-            $attToBeSigned,
-            true
-        );
-        $attestationStatement->get(
-            'parsedCertInfo'
-        )['extraData'] === $attToBeSignedHash || throw InvalidAttestationStatementException::create(
+        /** @var int|string $algRaw */
+        $algRaw = $attestationStatement->get('alg');
+        $alg = (int) $algRaw;
+        $attToBeSignedHash = hash(Algorithms::getHashAlgorithmFor($alg), $attToBeSigned, true);
+        /** @var array{extraData: string} $parsedCertInfo */
+        $parsedCertInfo = $attestationStatement->get('parsedCertInfo');
+        $parsedCertInfo['extraData'] === $attToBeSignedHash || throw InvalidAttestationStatementException::create(
             $attestationStatement,
             'Invalid attestation hash'
         );
@@ -149,7 +154,9 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
             $attestationStatement,
             'Not credential public key available in the attested credential data'
         );
-        $this->checkUniquePublicKey($attestationStatement->get('parsedPubArea')['unique'], $credentialPublicKey);
+        /** @var array{unique: string} $parsedPubArea */
+        $parsedPubArea = $attestationStatement->get('parsedPubArea');
+        $this->checkUniquePublicKey($parsedPubArea['unique'], $credentialPublicKey);
 
         return match (true) {
             $attestationStatement->trustPath instanceof CertificateTrustPath => $this->processWithCertificate(
@@ -195,6 +202,9 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
     /**
      * @return mixed[]
      */
+    /**
+     * @return array{magic: string, type: string, qualifiedSigner: string, extraData: string, clockInfo: string, firmwareVersion: string, attestedName: string, attestedQualifiedName: string}
+     */
     private function checkCertInfo(string $data): array
     {
         $certInfo = new StringStream($data);
@@ -206,21 +216,25 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
 
         $type = $certInfo->read(2);
 
-        $qualifiedSignerLength = unpack('n', $certInfo->read(2))[1];
-        $qualifiedSigner = $certInfo->read($qualifiedSignerLength); //Ignored
+        /** @var array{1: int} $qualifiedSignerLengthData */
+        $qualifiedSignerLengthData = unpack('n', $certInfo->read(2));
+        $qualifiedSigner = $certInfo->read($qualifiedSignerLengthData[1]); //Ignored
 
-        $extraDataLength = unpack('n', $certInfo->read(2))[1];
-        $extraData = $certInfo->read($extraDataLength);
+        /** @var array{1: int} $extraDataLengthData */
+        $extraDataLengthData = unpack('n', $certInfo->read(2));
+        $extraData = $certInfo->read($extraDataLengthData[1]);
 
         $clockInfo = $certInfo->read(17); //Ignore
 
         $firmwareVersion = $certInfo->read(8);
 
-        $attestedNameLength = unpack('n', $certInfo->read(2))[1];
-        $attestedName = $certInfo->read($attestedNameLength);
+        /** @var array{1: int} $attestedNameLengthData */
+        $attestedNameLengthData = unpack('n', $certInfo->read(2));
+        $attestedName = $certInfo->read($attestedNameLengthData[1]);
 
-        $attestedQualifiedNameLength = unpack('n', $certInfo->read(2))[1];
-        $attestedQualifiedName = $certInfo->read($attestedQualifiedNameLength); //Ignore
+        /** @var array{1: int} $attestedQualifiedNameLengthData */
+        $attestedQualifiedNameLengthData = unpack('n', $certInfo->read(2));
+        $attestedQualifiedName = $certInfo->read($attestedQualifiedNameLengthData[1]); //Ignore
         $certInfo->isEOF() || throw AttestationStatementVerificationException::create(
             'Invalid certificate information. Presence of extra bytes.'
         );
@@ -251,8 +265,9 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
 
         $objectAttributes = $pubArea->read(4);
 
-        $authPolicyLength = unpack('n', $pubArea->read(2))[1];
-        $authPolicy = $pubArea->read($authPolicyLength);
+        /** @var array{1: int} $authPolicyLengthData */
+        $authPolicyLengthData = unpack('n', $pubArea->read(2));
+        $authPolicy = $pubArea->read($authPolicyLengthData[1]);
 
         $parameters = $this->getParameters($type, $pubArea);
 
@@ -278,12 +293,7 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
     private function getParameters(string $type, StringStream $stream): array
     {
         return match (bin2hex($type)) {
-            '0001' => [
-                'symmetric' => $stream->read(2),
-                'scheme' => $stream->read(2),
-                'keyBits' => unpack('n', $stream->read(2))[1],
-                'exponent' => $this->getExponent($stream->read(4)),
-            ],
+            '0001' => $this->getRsaParameters($stream),
             '0023' => [
                 'symmetric' => $stream->read(2),
                 'scheme' => $stream->read(2),
@@ -298,17 +308,38 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
     {
         switch (bin2hex($type)) {
             case '0001':
-                $uniqueLength = unpack('n', $stream->read(2))[1];
-                return $stream->read($uniqueLength);
+                /** @var array{1: int} $uniqueLengthData */
+                $uniqueLengthData = unpack('n', $stream->read(2));
+                return $stream->read($uniqueLengthData[1]);
             case '0023':
-                $xLen = unpack('n', $stream->read(2))[1];
-                $x = $stream->read($xLen);
-                $yLen = unpack('n', $stream->read(2))[1];
-                $y = $stream->read($yLen);
+                /** @var array{1: int} $xLenData */
+                $xLenData = unpack('n', $stream->read(2));
+                $x = $stream->read($xLenData[1]);
+                /** @var array{1: int} $yLenData */
+                $yLenData = unpack('n', $stream->read(2));
+                $y = $stream->read($yLenData[1]);
                 return "\04" . $x . $y;
             default:
                 throw AttestationStatementVerificationException::create('Unsupported type');
         }
+    }
+
+    /**
+     * @return array{symmetric: string, scheme: string, keyBits: int, exponent: string}
+     */
+    private function getRsaParameters(StringStream $stream): array
+    {
+        $symmetric = $stream->read(2);
+        $scheme = $stream->read(2);
+        /** @var array{1: int} $keyBitsData */
+        $keyBitsData = unpack('n', $stream->read(2));
+
+        return [
+            'symmetric' => $symmetric,
+            'scheme' => $scheme,
+            'keyBits' => $keyBitsData[1],
+            'exponent' => $this->getExponent($stream->read(4)),
+        ];
     }
 
     private function getExponent(string $exponent): string
@@ -342,15 +373,16 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         $this->checkCertificate($certificates[0], $authenticatorData);
 
         // Get the COSE algorithm identifier and the corresponding OpenSSL one
-        $coseAlgorithmIdentifier = (int) $attestationStatement->get('alg');
+        /** @var int|string $algRaw */
+        $algRaw = $attestationStatement->get('alg');
+        $coseAlgorithmIdentifier = (int) $algRaw;
         $opensslAlgorithmIdentifier = Algorithms::getOpensslAlgorithmFor($coseAlgorithmIdentifier);
 
-        $result = openssl_verify(
-            $attestationStatement->get('certInfo'),
-            $attestationStatement->get('sig'),
-            $certificates[0],
-            $opensslAlgorithmIdentifier
-        );
+        /** @var string $certInfo */
+        $certInfo = $attestationStatement->get('certInfo');
+        /** @var string $sig */
+        $sig = $attestationStatement->get('sig');
+        $result = openssl_verify($certInfo, $sig, $certificates[0], $opensslAlgorithmIdentifier);
 
         return $result === 1;
     }

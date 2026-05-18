@@ -9,7 +9,7 @@ use const OPENSSL_ALGO_SHA256;
 
 final class ES256K extends ECDSA
 {
-    public const ID = -46;
+    public const ID = -47;
 
     public static function create(): self
     {

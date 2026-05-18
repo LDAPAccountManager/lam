@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 namespace Webauthn\Denormalizer;
 
+use function array_key_exists;
+use function assert;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Webauthn\Exception\InvalidDataException;
 use Webauthn\PublicKeyCredentialUserEntity;
 use Webauthn\Util\Base64;
-use function array_key_exists;
-use function assert;
 
 final class PublicKeyCredentialUserEntityDenormalizer implements DenormalizerInterface, NormalizerInterface
 {
+    /**
+     * @throws InvalidDataException
+     */
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
+        /** @var array{id?: string, name: string, displayName: string} $data */
         if (! array_key_exists('id', $data)) {
             return $data;
         }
