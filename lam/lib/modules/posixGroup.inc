@@ -821,7 +821,7 @@ class posixGroup extends baseModule implements passwordService {
 				if (!isset($this->orig['gidNumber'][0])) {
 					$newGID = $this->getNextGIDs(1, $errors, $this->getAccountContainer()->get_type());
 					if (is_array($newGID)) {
-						$this->attributes['gidNumber'][0] = $newGID[0];
+						$this->attributes['gidNumber'][0] = (string) $newGID[0];
 					}
 					else {
 						$errors[] = $this->messages['gidNumber'][3];
