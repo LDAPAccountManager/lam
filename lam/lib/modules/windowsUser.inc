@@ -4882,7 +4882,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'jpegphoto' => _('Photo'),
 			'thumbnailphoto' => _('Thumbnail'),
 			'memberof' => _('Member of'),
-			'memberof_count' => _('Member of count'),
+			'memberof_count' => _('Membership count'),
 		];
 	}
 

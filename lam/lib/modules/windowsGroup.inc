@@ -1099,7 +1099,7 @@ class windowsGroup extends baseModule {
 			'member' => _('Members'),
 			'member_count' => _('Member count'),
 			'memberof' => _('Member of'),
-			'memberof_count' => _('Member of count'),
+			'memberof_count' => _('Membership count'),
 			'managedby' => _('Managed by'),
 			'grouptype' => _('Group type'),
 			'groupscope' => _('Group scope'),
