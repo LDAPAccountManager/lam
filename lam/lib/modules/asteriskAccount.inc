@@ -583,8 +583,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * {@inheritDoc}
 	 */
 	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
-		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
-		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY));
 	}
 
 	/**

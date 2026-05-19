@@ -162,8 +162,7 @@ class ldapPublicKey extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = []): void {
-		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, [$this->getAttributeName()]);
-		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, [$this->getAttributeName()]));
 	}
 
 	/**
