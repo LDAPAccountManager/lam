@@ -1,7 +1,7 @@
 /*!
  * jodit - Jodit is an awesome and useful wysiwyg editor with filebrowser
  * Author: Chupurnov <chupurnov@gmail.com> (https://xdsoft.net/jodit/)
- * Version: v4.9.14
+ * Version: v4.12.2
  * Url: https://xdsoft.net/jodit/
  * License(s): MIT
  */
@@ -751,12 +751,19 @@
 .jodit-ui-tooltip.jodit-ui-tooltip_visible_true {
   opacity: 1;
 }
+.jodit-ui-tooltip.jodit-ui-tooltip_above_true {
+  transform: translate(-50%, calc(var(--jd-padding-default) / -2));
+}
 
 .jodit-ui-block {
   display: flex;
   align-items: center;
   justify-content: stretch;
   margin-bottom: var(--jd-padding-default);
+}
+.jodit-ui-block > .jodit-ui-input,
+.jodit-ui-block > .jodit-ui-select {
+  flex: 1;
 }
 .jodit-ui-block_width_full {
   width: 100%;
@@ -1296,7 +1303,7 @@
 }
 .jodit-progress-bar {
   position: absolute;
-  z-index: 2147483647;
+  z-index: var(--jd-z-index-tooltip);
   top: 0;
   left: 0;
   height: 2px;
@@ -1331,6 +1338,21 @@
   right: 0;
   width: 20px;
   clip: rect(-6px, 22px, 14px, var(--jd-padding-default));
+}
+.jodit-progress-bar__file-animation {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 2147483647;
+  transform: scale(1);
+  transition: left 800ms ease-in, top 800ms ease-in, opacity 800ms ease-in, transform 800ms ease-in;
+}
+.jodit-progress-bar__file-animation svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--jd-color-background-progress);
 }
 
 /*!
@@ -2215,11 +2237,11 @@
 .jodit-file-browser-tree__item:hover {
   background-color: var(--jd-color-background-button-hover);
 }
-.jodit-file-browser-tree__item:hover-title {
-  color: var(--jd-color-text);
-}
 .jodit-file-browser-tree__item:hover i.jodit-icon_folder {
   opacity: 0.6;
+}
+.jodit-file-browser-tree__item:hover .jodit-file-browser-tree__item-title {
+  color: var(--jd-color-text);
 }
 .jodit-file-browser-tree__source-title {
   position: relative;
@@ -3975,7 +3997,9 @@ html.jodit_fullsize-box_true {
   padding: var(--jd-padding-default);
 }
 .jodit-ui-image-position-tab__imageView,
-.jodit-ui-image-properties-form__imageView {
+.jodit-ui-image-properties-form__imageView,
+.jodit-ui-image-position-tab .jodit-properties_image_view,
+.jodit-ui-image-properties-form .jodit-properties_image_view {
   display: flex;
   height: var(--jd-width-default);
   align-items: center;
@@ -3985,12 +4009,16 @@ html.jodit_fullsize-box_true {
   background-color: var(--jd-color-background-light-gray);
 }
 .jodit-ui-image-position-tab__imageView img,
-.jodit-ui-image-properties-form__imageView img {
+.jodit-ui-image-properties-form__imageView img,
+.jodit-ui-image-position-tab .jodit-properties_image_view img,
+.jodit-ui-image-properties-form .jodit-properties_image_view img {
   max-width: 100%;
   max-height: 100%;
 }
 .jodit-ui-image-position-tab__imageSizes.jodit-form__group,
-.jodit-ui-image-properties-form__imageSizes.jodit-form__group {
+.jodit-ui-image-properties-form__imageSizes.jodit-form__group,
+.jodit-ui-image-position-tab .jodit-properties_image_sizes.jodit-form__group,
+.jodit-ui-image-properties-form .jodit-properties_image_sizes.jodit-form__group {
   min-width: auto;
   flex-direction: row;
   align-items: center;
@@ -3998,7 +4026,9 @@ html.jodit_fullsize-box_true {
   margin: 0;
 }
 .jodit-ui-image-position-tab__imageSizes.jodit-form__group a,
-.jodit-ui-image-properties-form__imageSizes.jodit-form__group a {
+.jodit-ui-image-properties-form__imageSizes.jodit-form__group a,
+.jodit-ui-image-position-tab .jodit-properties_image_sizes.jodit-form__group a,
+.jodit-ui-image-properties-form .jodit-properties_image_sizes.jodit-form__group a {
   display: inline-block;
   cursor: pointer;
 }
@@ -4012,6 +4042,10 @@ html.jodit_fullsize-box_true {
 }
 .jodit-dialog_theme_dark .jodit-ui-image-properties-form__imageView,
 .jodit_theme_dark .jodit-ui-image-properties-form__imageView {
+  background-color: var(--jd-dark-background-color);
+}
+.jodit-dialog_theme_dark .jodit-properties_image_view,
+.jodit_theme_dark .jodit-properties_image_view {
   background-color: var(--jd-dark-background-color);
 }
 .jodit-ui-image-properties-form_lock_true::before {
@@ -4470,6 +4504,8 @@ html.jodit_fullsize-box_true {
   --jd-button-df-size: calc((var(--jd-button-icon-size) - 4px) * 2);
   --jd-button-size: calc(var(--jd-button-icon-size) + var(--jd-button-df-size) + var(--jd-margin-v) * 2);
   --jd-focus-input-box-shadow: 0 0 0 0.05rem rgba(0, 123, 255, 0.25);
+  --jd-icon-transform-origin: center;
+  --jd-icon-transform-scale: 1;
 }
 /*!
  * Jodit Editor (https://xdsoft.net/jodit/)
@@ -4958,7 +4994,8 @@ input:focus + .jodit-switcher__slider {
   background-size: contain;
   fill: var(--jd-color-icon);
   stroke: var(--jd-color-icon);
-  transform-origin: 0 0 !important;
+  transform-origin: var(--jd-icon-transform-origin);
+  transform: scale(var(--jd-icon-transform-scale, 1));
 }
 .jodit-icon_close {
   stroke: var(--jd-color-icon);
