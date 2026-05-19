@@ -1,10 +1,10 @@
 {
   "bomFormat" : "CycloneDX",
   "specVersion" : "1.5",
-  "serialNumber" : "urn:uuid:1577ae2b-6715-4803-a332-ffd34447ef1f",
+  "serialNumber" : "urn:uuid:c8c32eb5-1cd3-4bd1-811b-40a7a9385798",
   "version" : 1,
   "metadata" : {
-    "timestamp" : "2026-04-01T13:36:08Z",
+    "timestamp" : "2026-05-19T05:44:01Z",
     "tools" : [
       {
         "vendor" : "OWASP",
@@ -17,7 +17,7 @@
       "bom-ref" : "c2095505-c3af-4958-af68-6a61f216807d",
       "group" : "ldap-account-manager",
       "name" : "ldap-account-manager",
-      "version" : "9.5.2"
+      "version" : "9.6"
     }
   },
   "components" : [
@@ -56,7 +56,7 @@
       "bom-ref" : "d0142b40-7a81-4f6b-b681-af8ab91ea836",
       "group" : "cdx:npm:package:bundled",
       "name" : "cropperjs",
-      "version" : "2.1.0",
+      "version" : "2.1.1",
       "licenses" : [
         {
           "license" : {
@@ -64,7 +64,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/cropperjs@2.1.0"
+      "purl" : "pkg:npm/cropperjs@2.1.1"
     },
     {
       "type" : "library",
@@ -101,7 +101,7 @@
       "bom-ref" : "b5831dd1-9cc8-4af8-9c56-2511e92b9f7e",
       "group" : "cdx:npm:package:bundled",
       "name" : "jodit",
-      "version" : "4.9.14",
+      "version" : "4.12.2",
       "licenses" : [
         {
           "license" : {
@@ -109,7 +109,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/jodit@4.9.14"
+      "purl" : "pkg:npm/jodit@4.12.2"
     },
     {
       "type" : "library",
@@ -131,7 +131,7 @@
       "bom-ref" : "b1e652b5-d76e-4b07-acab-2d1a0908a96f",
       "group" : "cdx:npm:package:bundled",
       "name" : "sweetalert2",
-      "version" : "11.26.21",
+      "version" : "11.26.24",
       "licenses" : [
         {
           "license" : {
@@ -139,22 +139,22 @@
           }
         }
       ],
-      "purl" : "pkg:npm/sweetalert2@11.26.21"
+      "purl" : "pkg:npm/sweetalert2@11.26.24"
     },
     {
       "type" : "library",
       "bom-ref" : "78b9ccbd-dbc9-4f40-9b44-338a721cbf8a",
       "group" : "cdx:npm:package:bundled",
       "name" : "tabulator-tables",
-      "version" : "6.3.1",
-      "purl" : "pkg:npm/tabulator-tables@6.3.1"
+      "version" : "6.4.0",
+      "purl" : "pkg:npm/tabulator-tables@6.4.0"
     },
     {
       "type" : "library",
       "bom-ref" : "72240acd-7de4-4058-b56f-e64638babcbf",
       "group" : "cdx:composer:package",
       "name" : "tecnickcom/tcpdf",
-      "version" : "6.9.3",
+      "version" : "6.11.3",
       "licenses" : [
         {
           "license" : {
@@ -162,14 +162,14 @@
           }
         }
       ],
-      "purl" : "pkg:composer/tecnickcom/tcpdf@6.9.3"
+      "purl" : "pkg:composer/tecnickcom/tcpdf@6.11.3"
     },
     {
       "type" : "library",
       "bom-ref" : "71b9c8ed-21a8-418b-a0a5-7fc886f4d7e7",
       "group" : "cdx:npm:package:bundled",
       "name" : "wunderbaum",
-      "version" : "0.13.0",
+      "version" : "0.14.1",
       "licenses" : [
         {
           "license" : {
@@ -177,7 +177,7 @@
           }
         }
       ],
-      "purl" : "pkg:npm/wunderbaum@0.13.0"
+      "purl" : "pkg:npm/wunderbaum@0.14.1"
     }
   ],
   "dependencies" : [
