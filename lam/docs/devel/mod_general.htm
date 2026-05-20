@@ -24,10 +24,7 @@ The types are specified with <span style="font-weight: bold;">can_manage()</span
 Our <span style="font-style: italic;">ieee802Device</span>
 module will be used only for host accounts.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns true if this module can manage accounts of the current type, otherwise false.<br>
 &nbsp;&nbsp;&nbsp; * <br>
 &nbsp;&nbsp;&nbsp; * @return boolean true if module fits<br>
@@ -35,10 +32,7 @@ module will be used only for host accounts.<br>
 &nbsp;&nbsp;&nbsp; public function <span style="color: red;">can_manage()</span> {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;get_scope() == 'host';<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>2. Base modules<br>
@@ -58,10 +52,7 @@ therefore is a <span style="font-weight: bold;">base module</span>.<br>
 If your module is not a base module you can skip the meta data for
 this, default is <span style="font-style: italic;">false</span>.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -75,10 +66,7 @@ get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; $return["is_base"] = true;</span><br style="color: rgb(255, 0, 0);">
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>3. Alias name</h2>
@@ -98,10 +86,7 @@ or <span style="font-weight: bold;">meta['alias']</span>.<br>
 Our <span style="font-style: italic;">ieee802Device</span>
 module will get the alias MAC address.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -115,10 +100,7 @@ get_metaData() {<br>
 &nbsp;&nbsp; &nbsp;$return["alias"] = _("MAC address");</span><br style="color: rgb(255, 0, 0);">
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>4. Dependencies</h2>
@@ -135,10 +117,7 @@ Our <span style="font-style: italic;">ieee802Device</span>
 module depends on the account module (because it is the only structural
 module at this time).<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -153,10 +132,7 @@ get_metaData() {<br>
 array('account'), 'conflicts' =&gt; array());</span><br style="color: rgb(255, 0, 0);">
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>5. Messages</h2>
@@ -174,10 +150,7 @@ at construction time.<br>
 Now let our <span style="font-style: italic;">ieee802Device</span>
 module define a message.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * This function fills the error message array with
 messages<br>
 &nbsp;&nbsp;&nbsp; */<br>
@@ -186,10 +159,7 @@ messages<br>
 array('ERROR', 'MAC address is invalid!');&nbsp; // third array value
 is set dynamically<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>6. Managed object classes<br>
@@ -205,10 +175,7 @@ smbldap-tools) also create accounts and the spelling is different.<br>
 The <span style="font-style: italic;">ieee802Device</span> module
 manages one object class.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -222,10 +189,7 @@ get_metaData() {<br>
 &nbsp;&nbsp; &nbsp;$return['objectClasses'] = array('ieee802Device');</span><br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>7. Known LDAP aliases<br>
@@ -244,10 +208,7 @@ the "cn" attribute. This attribute is also known under the alias
 This way the module will never see attributes called "commonName"
 because LAM renames them as soon as the LDAP entry is loaded.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -262,10 +223,7 @@ get_metaData() {<br>
 'cn');</span><br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <span style="font-weight: bold;"></span>
@@ -288,11 +246,7 @@ The <span style="font-style: italic;">posixGroup</span> module uses the "tux.png
 
 <br>
 
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -304,10 +258,7 @@ get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color: rgb(255, 0, 0);">$return['icon'] = 'tux.png';</span><br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 
 <br>
 

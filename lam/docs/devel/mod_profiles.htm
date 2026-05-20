@@ -32,10 +32,7 @@ title and employee type.<br>
 The other attributes are account specific and not useful as profile
 options.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -52,10 +49,7 @@ null, 'title'),<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; new htmlTableExtendedInputField(_('Employee type'), 'inetOrgPerson_employeeType', null, 'employeeType')<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 This defines two text boxes in the profile editor, one for the job
 title and one for the employee type.<br>
@@ -79,10 +73,7 @@ The <span style="font-style: italic;">inetOrgPerson</span> module only
 needs some regular expression checks on the input. This can be done by
 the <span style="font-style: italic;">baseModule</span>.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -108,10 +99,7 @@ array(<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;'error_message' =&gt; $this-&gt;messages['employeeType'][0]);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 The type <span style="font-weight: bold;">"ext_preg"</span> means that
 the <span style="font-style: italic;">baseModule</span> will use the <span style="font-style: italic;">get_preg()</span> function in <span style="font-style: italic;">lib/account.inc</span> for the syntax
@@ -136,10 +124,7 @@ module only
 needs a static mapping. This can be done by
 the <span style="font-style: italic;">baseModule</span>.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -154,10 +139,7 @@ get_metaData() {<br>
 &nbsp;'inetLocalMailRecipient_host' =&gt; 'mailHost'<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 In this example the profile option "inetLocalMailRecipient_host" is
 stored as LDAP attribute "mailHost".<br>

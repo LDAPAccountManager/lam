@@ -26,10 +26,7 @@ or <span style="font-weight: bold;">meta['upload_columns']</span>.<br>
 The <span style="font-style: italic;">ieee802Device</span>
 module has only one attribute and therefore one column: the MAC address.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -64,10 +61,7 @@ get_metaData() {<br>
 &nbsp;&nbsp; );</span><br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>2. Building the accounts<br>
@@ -86,10 +80,7 @@ module has only one LDAP attribute - <span style="font-style: italic;">'macAddre
 - and the <span style="font-style: italic;">'ieee802Device'</span>
 objectClass which is added to all accounts.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * In this function the LDAP account is built up.<br>
 &nbsp;&nbsp;&nbsp; *<br>
 &nbsp;&nbsp;&nbsp; * @param array $rawAccounts list of hash arrays
@@ -147,10 +138,7 @@ $errMsg;<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $messages;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <br>

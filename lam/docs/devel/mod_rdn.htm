@@ -28,11 +28,7 @@ offers to create accounts with DNs uid=foo,dc=.... and cn=foo,dc=...<br>
 The uid attribute has a higher priority as it is the usual attribute
 for Unix accounts.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -45,10 +41,7 @@ get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return["RDN"] = array("uid"
 =&gt; "normal", "cn" =&gt; "low");<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <br>

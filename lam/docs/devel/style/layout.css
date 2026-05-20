@@ -2,7 +2,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2006  Roland Gruber
+  Copyright (C) 2004 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,33 +25,27 @@ $Id$
 
 
 h1,h2,h3,h4 {
-  color:#0c12b7;
+  color:#000080;
 }
 
 /* links */
 a {
-	color:blue;
+	color:#000080;
 	text-decoration:none;
 }
 
 a:visited {
-	color:blue;
+	color:#000080;
 	text-decoration:none;
 }
 
 a:hover {
-	color:red;
-	text-decoration:none;
+	text-decoration-line: underline;
 }
-
-a:active {
-	color:red;
-	text-decoration:none;
-}
-
 
 /* module HowTo */
 
-table.mod-code {
-	background-color:#fffde2;
+div.mod-code {
+	background-color: #f4f4f4;
+    padding: 1rem;
 }

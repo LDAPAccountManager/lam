@@ -32,10 +32,7 @@ The <span style="font-style: italic;">ieee802Device</span> uses an
 object class and the <span style="font-style: italic;">'macAddress'</span>
 attribute. Therefore we will save these two values.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * This function loads all needed attributes into the
 object.<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -65,10 +62,7 @@ $this-&gt;orig['macAddress'] = $attr['macAddress'];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>2. Page display</h2>
@@ -93,10 +87,7 @@ second an input field for new values.<br>
 The variable <span style="font-style: italic;">$this-&gt;attributes</span>
 contains the LDAP attributes which are useful for this module.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * This function will create the meta HTML code to
 show a page with all attributes.<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -137,10 +128,7 @@ true);<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return-&gt;addElement(new htmlHiddenInput('mac_number', $macCount));<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>3. Processing input data<br>
@@ -164,10 +152,7 @@ and therefore only <span style="font-style: italic;">process_attributes()</span>
 The function checks the input fields and fills the LDAP attributes. If
 all is ok it will enable the user to move to another module page.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Write variables into object and do some regex
 checks<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -235,10 +220,7 @@ $this-&gt;attributes['macAddress'] =
 array_unique($this-&gt;attributes['macAddress']);<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $errors;<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>4. Defining that your module is ready for user input and LDAP
@@ -271,10 +253,7 @@ and <span style="font-style: italic;">gidNumber</span> before it can
 accept input and the account needs a <span style="font-style: italic;">sambaSID</span>
 before it can be saved.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * This function is used to check if this module page
 can be displayed.<br>
 &nbsp;&nbsp;&nbsp; * It returns false if a module depends on data from
@@ -308,10 +287,7 @@ return false;<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return true;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>5. Saving the LDAP attributes<br>
@@ -331,10 +307,7 @@ The <span style="font-style: italic;">kolabUser</span> module uses
 this function to make sure that its object class is saved. Other
 modules (e.g. quota) use it build the lamdaemon commands.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns a list of modifications which have to be
 made to the LDAP account.<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -363,10 +336,7 @@ $this-&gt;attributes['objectClass'][] = 'kolabInetOrgPerson';<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return parent::save_attributes();<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <span style="font-weight: bold;"></span>

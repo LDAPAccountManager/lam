@@ -25,10 +25,7 @@ canSelfServiceFieldBeReadOnly() or <span style="font-weight: bold;">meta['selfSe
 The <span style="font-style: italic;">inetOrgPerson</span> module
 provides lots of possible input fields for the self-service.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -72,10 +69,7 @@ site'),<br>
 'state', 'officeName', 'businessCategory', 'departmentNumber',
 'initials', 'title', 'labeledURI', 'userCertificate');<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 In very rare cases you need to specify self-service search attributes.
@@ -90,11 +84,7 @@ The <span style="font-style: italic;">inetOrgPerson</span> module specifies seve
 
 <br>
 
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -107,10 +97,7 @@ get_metaData() {<br>
 &nbsp;$return['selfServiceSearchAttributes'] = array('uid', 'mail',
 'cn', 'surname', 'givenName', 'employeeNumber');<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 
 <br>
 
@@ -138,12 +125,7 @@ field is more complex.<br>
 <br>
 
 
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-
-
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; &nbsp;* Returns the meta HTML code for each input field.<br>
 &nbsp;&nbsp;&nbsp; &nbsp;* format: array(&lt;field1&gt; =&gt; array(&lt;META HTML&gt;), ...)<br>
 &nbsp;&nbsp;&nbsp; &nbsp;* It is not possible to display help links.<br>
@@ -167,10 +149,7 @@ $this-&gt;addSimpleSelfServiceTextField($return,
 'physicalDeliveryOfficeName', _('Office name'), $fields, $attributes,
 $readOnlyFields);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 
 
 <br>
@@ -198,13 +177,7 @@ The <span style="font-style: italic;">inetOrgPerson</span> module has a field fo
 
 
 
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-
-
-
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; &nbsp;* Checks if all input values are correct and returns the LDAP attributes which should be changed.<br>
 &nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;Return values:<br>
 &nbsp;&nbsp;&nbsp; &nbsp;* &lt;br&gt;messages: array of parameters to create status messages<br>
@@ -253,8 +226,7 @@ $_POST['inetOrgPerson_firstName'];<br>
 (isset($attributes['givenName'])) unset($attributesNew['givenName']);<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-</td></tr></tbody>
-</table>
+</div>
 <br>
 <br>
 The self-service also supports configuration settings for each module. See <span style="font-weight: bold;">getSelfServiceSettings() </span>or <span style="font-weight: bold;">meta['selfServiceSettings'] </span>to specify the options.<br>

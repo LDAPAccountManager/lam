@@ -28,11 +28,7 @@ with <span style="font-weight: bold;">getDefaultListAttributes()</span><span
 Our <span style="font-style: italic;">smbDomain</span> type will show
 the attributes "#sambaDomainName;#sambaSID" by default.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns the default attribute list for this
 account type.<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -43,10 +39,7 @@ account type.<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
 "#sambaDomainName;#sambaSID";<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>2. Pretranslated attribute descriptions<br>
@@ -64,11 +57,7 @@ The descriptions are specified with <span style="font-weight: bold;">getListAttr
 Our <span style="font-style: italic;">smbDomain</span> type has
 descriptions for sambaSID and sambaDomainName.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns a list of attributes which have a
 translated description.<br>
 &nbsp;&nbsp;&nbsp; * This is used for the head row in the list view.<br>
@@ -84,10 +73,7 @@ translated description.<br>
 "sambaDomainName" =&gt; _("Domain name")<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <br>
@@ -117,11 +103,7 @@ displayed then the <span style="font-weight: bold;">showPage()</span>
 function is called. You can overwrite this function to display a
 completely new list or just one of the other functions.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">/**<br>
+<div class="mod-code">
 * Returns the class name for the list object.<br>
 *<br>
 * @return string class name<br>
@@ -166,10 +148,7 @@ _("%s domain(s) found"),<br>
 &nbsp;&nbsp;&nbsp; }<br>
       <br>
 }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <br>

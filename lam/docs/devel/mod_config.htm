@@ -31,10 +31,7 @@ or <span style="font-weight: bold;">meta['config_options']</span>.<br>
 <br>
 The <span style="font-style: italic;">posixGroup</span> module offers several configuration options including the min/maximum values for GIDs.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -58,10 +55,7 @@ htmlTableExtendedInputField(_('Maximum GID number'),
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $configContainer-&gt;addElement($maxGidInput, true);<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return[<span style="color: red;">'config_options'</span>][<span style="color: red;">'group'</span>] = $configContainer;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 The min/maximum GID numbers are defined with simple text boxes.<br><br>
 <h2>2. Checking user input</h2>
@@ -80,10 +74,7 @@ The <span style="font-style: italic;">posixGroup</span> module only
 needs to check if the GID numbers are correct. The password hash type
 needs not to be checked as it is a selection.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp; &nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -127,10 +118,7 @@ array (<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;'error_message' =&gt; $this-&gt;messages['gidNumber'][7]);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 The type <span style="font-weight: bold;">"ext_preg"</span> means that
 the <span style="font-style: italic;">baseModule</span> will use the <span style="font-style: italic;">get_preg()</span> function in <span style="font-style: italic;">lib/account.inc</span> for the syntax

@@ -33,11 +33,7 @@ needs the group name to set the default <span
  style="font-style: italic;">displayName</span>. Therefore it depends
 on the <span style="font-style: italic;">posixGroup</span> module<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
 class<br>
 &nbsp;&nbsp;&nbsp; *<br>
@@ -51,10 +47,7 @@ get_metaData() {<br>
  style="color: rgb(255, 0, 0);">'upload_preDepends'</span>] =
 array('posixGroup');<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 <br>
 <h2>2. Upload post actions<br>
@@ -75,11 +68,7 @@ The <span style="font-style: italic;">posixAccount</span> module
 offers to put the user account in additional groups. This is done in
 the post actions.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+<div class="mod-code">
 &nbsp;&nbsp;&nbsp; * This function executes one post upload action.<br>
 &nbsp;&nbsp;&nbsp; *<br>
 &nbsp;&nbsp;&nbsp; * @param array $data array containing one account in
@@ -104,10 +93,7 @@ of parameters for StatusMessage&gt;)<br>
 $failed, &amp;$temp) {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
 &nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 Please make sure that the actions in one call of <span
  style="font-weight: bold;">doUploadPostActions()</span> are not very
