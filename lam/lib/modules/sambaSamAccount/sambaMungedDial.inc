@@ -346,7 +346,7 @@ class sambaMungedDial {
 	/** Sets Terminal-Server-Login value: enabled/disabled
 	 * @param bool $checked checked
 	 */
-	function setTsLogin($checked): void {
+	public function setTsLogin($checked): void {
 		$flag = (int) substr($this->ctx['CtxCfgFlags1'], 5, 1);
 
 		if ($checked) {
