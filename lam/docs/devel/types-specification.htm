@@ -4,22 +4,7 @@
   <meta content="text/html; charset=ISO-8859-15"
  http-equiv="content-type">
   <title>Type specification</title>
-  <style>
-<!--
-	h2 {
-		color:#000080;
-	}
-	h3 {
-		color:#000080;
-	}
-	h4 {
-		color:#000080;
-	}
-	table {
-		background-color:#bdcaff;
-	}
--->
-  </style>
+    <link rel="stylesheet" type="text/css" href="style/layout.css">
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
@@ -44,15 +29,10 @@ All type classes should extend the baseType class.<br>
 <h3>2.1. getAlias<br>
 </h3>
 <br>
-<table border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top; text-align: center;"><span
+<div class="mod-code">
+<span
  style="font-weight: bold;">function getAlias()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 Returns <span style="font-style: italic;"></span>the alias name for
 this type. E.g. the alias for smbDomain is "Samba domains".<br>
@@ -60,15 +40,10 @@ this type. E.g. the alias for smbDomain is "Samba domains".<br>
 <h3>2.2. getDescription<br>
 </h3>
 <br>
-<table border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top; text-align: center;"><span
+<div class="mod-code">
+<span
  style="font-weight: bold;">function getDescription()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 Returns <span style="font-style: italic;"></span>a description for the
 account type. This should be a short sentence describing the account
@@ -77,15 +52,10 @@ type.<br>
 <h3>2.3. getListClassName<br>
 </h3>
 <br>
-<table border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top; text-align: center;"><span
+<div class="mod-code">
+<span
  style="font-weight: bold;">function getListClassName()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 Here you can specify your own class to handle the list view. The class
 must be a subclass of <span style="font-weight: bold;">lamList</span>.<br>
@@ -93,15 +63,10 @@ must be a subclass of <span style="font-weight: bold;">lamList</span>.<br>
 <h3>2.4. getDefaultListAttributes<br>
 </h3>
 <br>
-<table border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top; text-align: center;"><span
+<div class="mod-code">
+<span
  style="font-weight: bold;">function getDefaultListAttributes()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 Returns <span style="font-style: italic;"></span>the default setting
 for the displayed list attributes. It is used as default for config and
@@ -110,15 +75,10 @@ the syntax is equal to the config setting.<br>
 <h3>2.5. getListAttributeDescriptions<br>
 </h3>
 <br>
-<table border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top; text-align: center;"><span
+<div class="mod-code">
+<span
  style="font-weight: bold;">function getListAttributeDescriptions()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
+</div>
 <br>
 Returns a hash array which contains predefined, translated descriptions
 of LDAP attributes.<br>
