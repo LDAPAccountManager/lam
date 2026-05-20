@@ -2217,7 +2217,7 @@ class accountContainer {
 	 * @param string|null $dn DN
 	 * @return string RDN
 	 */
-	function getRDN(?string $dn): string {
+	public function getRDN(?string $dn): string {
 		if (($dn === "") || ($dn === null)) {
 			return "";
 		}

@@ -47,7 +47,7 @@ class SchemaItem {
 	protected $description;
 
 	/** Initialize class members to default values. */
-	function initVars(): void {
+	protected function initVars(): void {
 		$this->oid = null;
 		$this->description = null;
 	}
@@ -60,28 +60,28 @@ class SchemaItem {
 	/**
 	 * @param string|null $new_oid oid
 	 */
-	function setOID($new_oid): void {
+	public function setOID($new_oid): void {
 		$this->oid = $new_oid;
 	}
 
 	/**
 	 * @param string|null $new_desc description
 	 */
-	function setDescription($new_desc): void {
+	public function setDescription($new_desc): void {
 		$this->description = $new_desc;
 	}
 
 	/**
 	 * @return string|null oid
 	 */
-	function getOID() {
+	public function getOID() {
 		return $this->oid;
 	}
 
 	/**
 	 * @return string|null description
 	 */
-	function getDescription() {
+	public function getDescription() {
 		return $this->description;
 	}
 }
@@ -108,7 +108,7 @@ class ObjectClass extends SchemaItem {
 	protected array $children_objectclasses = [];
 
 	/** Initialize the class' member variables */
-	function initVars(): void {
+	protected function initVars(): void {
 		parent::initVars();
 		$this->oid = null;
 		$this->name = null;
@@ -300,7 +300,7 @@ class ObjectClass extends SchemaItem {
 	 * @see getMayAttrs
 	 * @see getMayAttrNames
 	 */
-	function getMustAttrs($oclasses = NULL) {
+	public function getMustAttrs($oclasses = NULL) {
 		$all_must_attrs = $this->must_attrs;
 		foreach ($this->sup_classes as $sup_class) {
 			if ($oclasses != null
@@ -331,7 +331,7 @@ class ObjectClass extends SchemaItem {
 	 * @see getMayAttrNames
 	 * @see AttributeType
 	 */
-	function getMayAttrs($oclasses = NULL) {
+	public function getMayAttrs($oclasses = NULL) {
 		$all_may_attrs = $this->may_attrs;
 		foreach ($this->sup_classes as $sup_class_name) {
 			if ($oclasses != null
@@ -362,7 +362,7 @@ class ObjectClass extends SchemaItem {
 	 * @see getMayAttrs
 	 * @see getMayAttrNames
 	 */
-	function getMustAttrNames($oclasses = null): array {
+	public function getMustAttrNames($oclasses = null): array {
 		$attrs = $this->getMustAttrs($oclasses);
 		$attr_names = [];
 		foreach ($attrs as $attr)
@@ -385,7 +385,7 @@ class ObjectClass extends SchemaItem {
 	 * @see getMayAttrs
 	 * @see getMustAttrNames
 	 */
-	function getMayAttrNames($oclasses = null): array {
+	public function getMayAttrNames($oclasses = null): array {
 		$attrs = $this->getMayAttrs($oclasses);
 		$attr_names = [];
 		foreach ($attrs as $attr)
@@ -399,7 +399,7 @@ class ObjectClass extends SchemaItem {
 	 * @param string $object_class_name The name of the objectClass to add
 	 * @return bool Returns true on success or false on failure (objectclass already existed for example)
 	 */
-	function addChildObjectClass($object_class_name) {
+	public function addChildObjectClass($object_class_name) {
 		$object_class_name = trim($object_class_name);
 		foreach ($this->children_objectclasses as $existing_objectclass)
 			if (0 === strcasecmp($object_class_name, $existing_objectclass)) {
@@ -413,7 +413,7 @@ class ObjectClass extends SchemaItem {
 	 * Returns the array of objectClass names which inherit from this objectClass.
 	 * @return string[] Names of objectClasses which inherit from this objectClass.
 	 */
-	function getChildObjectClasses() {
+	public function getChildObjectClasses() {
 		return $this->children_objectclasses;
 	}
 
@@ -421,7 +421,7 @@ class ObjectClass extends SchemaItem {
 	 * Gets the name of this objectClass (ie, "inetOrgPerson")
 	 * @return string The name of the objectClass
 	 */
-	function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -430,7 +430,7 @@ class ObjectClass extends SchemaItem {
 	 *
 	 * @return string[] objectClass names
 	 */
-	function getSupClasses(): array {
+	public function getSupClasses(): array {
 		return $this->sup_classes;
 	}
 
@@ -439,7 +439,7 @@ class ObjectClass extends SchemaItem {
 	 *
 	 * @return string type
 	 */
-	function getType() {
+	public function getType() {
 		return $this->type;
 	}
 
@@ -448,7 +448,7 @@ class ObjectClass extends SchemaItem {
 	 *
 	 * @return bool obsolete
 	 */
-	function getIsObsolete() {
+	public function getIsObsolete() {
 		return $this->is_obsolete;
 	}
 
@@ -488,7 +488,7 @@ class ObjectClassAttribute {
 	 *
 	 * @return string name
 	 */
-	function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -496,7 +496,7 @@ class ObjectClassAttribute {
 	 * Gets the name of the ObjectClass which originally specified this attribute.
 	 * @return string source
 	 */
-	function getSource() {
+	public function getSource() {
 		return $this->source;
 	}
 }
@@ -546,7 +546,7 @@ class AttributeType extends SchemaItem {
 	/**
 	 * Initialize the class' member variables
 	 */
-	function initVars(): void {
+	protected function initVars(): void {
 		parent::initVars();
 		$this->oid = null;
 		$this->name = null;
@@ -709,7 +709,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's name
 	 * @return string
 	 */
-	function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -717,7 +717,7 @@ class AttributeType extends SchemaItem {
 	 * Gets whether this attribute has been flagged as obsolete by the LDAP server
 	 * @return bool
 	 */
-	function getIsObsolete() {
+	public function getIsObsolete() {
 		return $this->is_obsolete;
 	}
 
@@ -725,7 +725,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's usage string as defined by the LDAP server
 	 * @return string
 	 */
-	function getUsage() {
+	public function getUsage() {
 		return $this->usage;
 	}
 
@@ -734,7 +734,7 @@ class AttributeType extends SchemaItem {
 	 * inherit from another attribute, null is returned.
 	 * @return string|null parent attribute name
 	 */
-	function getSupAttribute(): ?string {
+	public function getSupAttribute(): ?string {
 		return $this->sup_attribute;
 	}
 
@@ -742,7 +742,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's equality string
 	 * @return string
 	 */
-	function getEquality() {
+	public function getEquality() {
 		return $this->equality;
 	}
 
@@ -750,7 +750,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's ordering specification.
 	 * @return string
 	 */
-	function getOrdering() {
+	public function getOrdering() {
 		return $this->ordering;
 	}
 
@@ -758,7 +758,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's substring matching specification
 	 * @return string
 	 */
-	function getSubstr() {
+	public function getSubstr() {
 		return $this->sub_str;
 	}
 
@@ -767,7 +767,7 @@ class AttributeType extends SchemaItem {
 	 * @return string[] An array of names of attributes which alias this attribute or
 	 *          an empty array if no attribute aliases this object.
 	 */
-	function getAliases(): array {
+	public function getAliases(): array {
 		return $this->aliases;
 	}
 
@@ -776,7 +776,7 @@ class AttributeType extends SchemaItem {
 	 * @param string $attr_name The name of the attribute to check.
 	 * @return bool True if the specified attribute is an alias for this one, or false otherwise.
 	 */
-	function isAliasFor($attr_name) {
+	public function isAliasFor($attr_name) {
 		foreach ($this->aliases as $alias_attr_name)
 			if (0 === strcasecmp($alias_attr_name, $attr_name)) {
 				return true;
@@ -789,7 +789,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's raw syntax string (ie: "1.2.3.4{16}").
 	 * @return string The raw syntax string
 	 */
-	function getSyntaxString() {
+	public function getSyntaxString() {
 		return $this->syntax;
 	}
 
@@ -800,7 +800,7 @@ class AttributeType extends SchemaItem {
 	 * "1.2.3.4".
 	 * @return string The syntax OID string.
 	 */
-	function getSyntaxOID() {
+	public function getSyntaxOID() {
 		return $this->syntax_oid;
 	}
 
@@ -808,7 +808,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's the maximum length. If no maximum is defined by the LDAP server, null is returned.
 	 * @return string|null The maximum length (in characters) of this attribute or null if no maximum is specified.
 	 */
-	function getMaxLength() {
+	public function getMaxLength() {
 		return $this->max_length;
 	}
 
@@ -817,7 +817,7 @@ class AttributeType extends SchemaItem {
 	 * is returned. If this attribute supports multiple values, false is returned.
 	 * @return bool Returns true if this attribute is single-valued or false otherwise.
 	 */
-	function getIsSingleValue() {
+	public function getIsSingleValue() {
 		return $this->is_single_value;
 	}
 
@@ -825,7 +825,7 @@ class AttributeType extends SchemaItem {
 	 * Sets whether this attribute is single-valued.
 	 * @param bool $is_single_value
 	 */
-	function setIsSingleValue($is_single_value): void {
+	public function setIsSingleValue($is_single_value): void {
 		$this->is_single_value = $is_single_value;
 	}
 
@@ -833,7 +833,7 @@ class AttributeType extends SchemaItem {
 	 * Gets whether this attribute is collective.
 	 * @return bool Returns true if this attribute is collective and false otherwise.
 	 */
-	function getIsCollective() {
+	public function getIsCollective() {
 		return $this->is_collective;
 	}
 
@@ -841,7 +841,7 @@ class AttributeType extends SchemaItem {
 	 * Gets whether this attribute is not modifiable by users.
 	 * @return bool Returns true if this attribute is not modifiable by users.
 	 */
-	function getIsNoUserModification() {
+	public function getIsNoUserModification() {
 		return $this->is_no_user_modification;
 	}
 
@@ -849,7 +849,7 @@ class AttributeType extends SchemaItem {
 	 * Gets this attribute's type
 	 * @return string The attribute's type.
 	 */
-	function getType() {
+	public function getType() {
 		return $this->type;
 	}
 
@@ -859,7 +859,7 @@ class AttributeType extends SchemaItem {
 	 * @return bool true on success or false on failure (ie, if the specified
 	 *           attribute name is not found in this attribute's list of aliases)
 	 */
-	function removeAlias($remove_alias_name) {
+	public function removeAlias($remove_alias_name) {
 		foreach ($this->aliases as $i => $alias_name) {
 			if (0 === strcasecmp($alias_name, $remove_alias_name)) {
 				unset($this->aliases[$i]);
@@ -874,7 +874,7 @@ class AttributeType extends SchemaItem {
 	 * Adds an attribute name to the alias array.
 	 * @param string $new_alias_name The name of a new attribute to add to this attribute's list of aliases.
 	 */
-	function addAlias($new_alias_name): void {
+	public function addAlias($new_alias_name): void {
 		$this->aliases[] = $new_alias_name;
 	}
 
@@ -882,7 +882,7 @@ class AttributeType extends SchemaItem {
 	 * Sets this attriute's name.
 	 * @param string $new_name The new name to give this attribute.
 	 */
-	function setName($new_name): void {
+	public function setName($new_name): void {
 		$this->name = $new_name;
 	}
 
@@ -890,7 +890,7 @@ class AttributeType extends SchemaItem {
 	 * Sets this attriute's SUP attribute (ie, the attribute from which this attribute inherits).
 	 * @param string $new_sup_attr The name of the new parent (SUP) attribute
 	 */
-	function setSupAttribute($new_sup_attr): void {
+	public function setSupAttribute($new_sup_attr): void {
 		$this->sup_attribute = $new_sup_attr;
 	}
 
@@ -898,7 +898,7 @@ class AttributeType extends SchemaItem {
 	 * Sets this attribute's list of aliases.
 	 * @param string[] $new_aliases The array of alias names (strings)
 	 */
-	function setAliases($new_aliases): void {
+	public function setAliases($new_aliases): void {
 		$this->aliases = $new_aliases;
 	}
 
@@ -906,7 +906,7 @@ class AttributeType extends SchemaItem {
 	 * Sets this attribute's type.
 	 * @param string $new_type The new type.
 	 */
-	function setType($new_type): void {
+	public function setType($new_type): void {
 		$this->type = $new_type;
 	}
 
@@ -916,7 +916,7 @@ class AttributeType extends SchemaItem {
 	 * @param string $object_class_name The name of the objectClass to add.
 	 * @return bool false if already added
 	 */
-	function addUsedInObjectClass($object_class_name) {
+	public function addUsedInObjectClass($object_class_name) {
 		foreach ($this->used_in_object_classes as $used_in_object_class)
 			if (0 === strcasecmp($used_in_object_class, $object_class_name)) {
 				return false;
@@ -930,7 +930,7 @@ class AttributeType extends SchemaItem {
 	 * which provide this attribute.
 	 * @return string[] An array of names of objectclasses (strings) which provide this attribute
 	 */
-	function getUsedInObjectClasses(): array {
+	public function getUsedInObjectClasses(): array {
 		return $this->used_in_object_classes;
 	}
 
@@ -940,7 +940,7 @@ class AttributeType extends SchemaItem {
 	 * @param string $object_class_name The name of the objectClass to add.
 	 * @return bool false if already added
 	 */
-	function addRequiredByObjectClass($object_class_name) {
+	public function addRequiredByObjectClass($object_class_name) {
 		foreach ($this->required_by_object_classes as $required_by_object_class)
 			if (0 === strcasecmp($required_by_object_class, $object_class_name)) {
 				return false;
@@ -954,7 +954,7 @@ class AttributeType extends SchemaItem {
 	 * which provide must have attribute.
 	 * @return string[] An array of names of objectclasses (strings) which provide this attribute
 	 */
-	function getRequiredByObjectClasses() {
+	public function getRequiredByObjectClasses() {
 		return $this->required_by_object_classes;
 	}
 
@@ -991,7 +991,7 @@ class AttributeType extends SchemaItem {
  */
 class Syntax extends SchemaItem {
 	/** Initializes the class' member variables */
-	function initVars(): void {
+	protected function initVars(): void {
 		parent::initVars();
 		$this->oid = null;
 		$this->description = null;
@@ -1049,7 +1049,7 @@ class MatchingRule extends SchemaItem {
 	protected $used_by_attrs;
 
 	/** Initialize the class' member variables */
-	function initVars(): void {
+	protected function initVars(): void {
 		parent::initVars();
 		$this->oid = null;
 		$this->name = null;
@@ -1138,7 +1138,7 @@ class MatchingRule extends SchemaItem {
 	 * Sets the list of used_by_attrs to the array specified by $attrs;
 	 * @param string[] $attrs The array of attribute names (strings) which use this MatchingRule
 	 */
-	function setUsedByAttrs($attrs): void {
+	public function setUsedByAttrs($attrs): void {
 		$this->used_by_attrs = $attrs;
 	}
 
@@ -1148,7 +1148,7 @@ class MatchingRule extends SchemaItem {
 	 * @param string $new_attr_name attribute name
 	 * @return bool true if the attribute was added and false otherwise (already in the list)
 	 */
-	function addUsedByAttr($new_attr_name): bool {
+	public function addUsedByAttr($new_attr_name): bool {
 		foreach ($this->used_by_attrs as $attr_name)
 			if (0 === strcasecmp($attr_name, $new_attr_name)) {
 				return false;
@@ -1161,7 +1161,7 @@ class MatchingRule extends SchemaItem {
 	 * Gets this MatchingRule's name.
 	 * @return string The name.
 	 */
-	function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -1169,7 +1169,7 @@ class MatchingRule extends SchemaItem {
 	 * Gets whether this MatchingRule is flagged as obsolete by the LDAP server.
 	 * @return bool True if this MatchingRule is obsolete and false otherwise.
 	 */
-	function getIsObsolete() {
+	public function getIsObsolete() {
 		return $this->is_obsolete;
 	}
 
@@ -1177,7 +1177,7 @@ class MatchingRule extends SchemaItem {
 	 * Gets an array of attribute names (strings) which use this MatchingRule
 	 * @return string[] The array of attribute names (strings).
 	 */
-	function getUsedByAttrs() {
+	public function getUsedByAttrs() {
 		return $this->used_by_attrs;
 	}
 }
@@ -1195,7 +1195,7 @@ class MatchingRuleUse extends SchemaItem {
 	protected $used_by_attrs;
 
 	/** Initialize the class' member variables */
-	function initVars(): void {
+	protected function initVars(): void {
 		parent::initVars();
 		$this->oid = null;
 		$this->name = null;
@@ -1279,7 +1279,7 @@ class MatchingRuleUse extends SchemaItem {
 	 * Gets this MatchingRuleUse's name
 	 * @return string The name
 	 */
-	function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -1287,7 +1287,7 @@ class MatchingRuleUse extends SchemaItem {
 	 * Gets an array of attribute names (strings) which use this MatchingRuleUse object.
 	 * @return string[] The array of attribute names (strings).
 	 */
-	function getUsedByAttrs() {
+	public function getUsedByAttrs() {
 		return $this->used_by_attrs;
 	}
 }
@@ -1650,7 +1650,7 @@ function get_schema_attributes($dn = null, $use_cache = true) {
 			continue;
 		}
 		$attr = new AttributeType($attr_string);
-		if (isset($syntaxes[$attr->getSyntaxOID()])) {
+		if (!empty($attr->getSyntaxOID()) && isset($syntaxes[$attr->getSyntaxOID()])) {
 			$syntax = $syntaxes[$attr->getSyntaxOID()];
 			$attr->setType($syntax->getDescription());
 		}
