@@ -979,35 +979,35 @@ interface SelfServiceLoginHandler {
 	 *
 	 * @return string ID
 	 */
-	function getId(): string;
+	public function getId(): string;
 
 	/**
 	 * Adds necessary fields to the login dialog (e.g. user + password).
 	 *
 	 * @param htmlResponsiveRow $content dialog content
 	 */
-	function addLoginFields(htmlResponsiveRow $content): void;
+	public function addLoginFields(htmlResponsiveRow $content): void;
 
 	/**
 	 * Returns the login name.
 	 *
 	 * @return string login name
 	 */
-	function getLoginName(): string;
+	public function getLoginName(): string;
 
 	/**
 	 * Returns the login password.
 	 *
 	 * @return string password
 	 */
-	function getLoginPassword(): string;
+	public function getLoginPassword(): string;
 
 	/**
 	 * Returns if the login handler manages authentication on its own.
 	 *
 	 * @return bool manages authentication
 	 */
-	function managesAuthentication(): bool;
+	public function managesAuthentication(): bool;
 
 	/**
 	 * Returns if the authentication was successful.
@@ -1016,7 +1016,7 @@ interface SelfServiceLoginHandler {
 	 * @return bool authentication successful
 	 * @throws LAMException error during authentication
 	 */
-	function isAuthenticationSuccessful(): bool;
+	public function isAuthenticationSuccessful(): bool;
 
 	/**
 	 * Authorizes an user that was provided by 2FA provider.
@@ -1024,7 +1024,7 @@ interface SelfServiceLoginHandler {
 	 * @param string $userName user name
 	 * @throws LAMException error during authentication
 	 */
-	function authorize2FaUser(string $userName): void;
+	public function authorize2FaUser(string $userName): void;
 
 }
 
@@ -1049,14 +1049,14 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 	/**
 	 * @inheritDoc
 	 */
-	function getId(): string {
+	public function getId(): string {
 		return self::ID;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function addLoginFields(htmlResponsiveRow $content): void {
+	public function addLoginFields(htmlResponsiveRow $content): void {
 		// user name
 		$userNameVal = empty($_POST['username']) ? '' : $_POST['username'];
 		$userField = new htmlResponsiveInputField($this->profile->loginAttributeText, 'username', $userNameVal);
@@ -1076,35 +1076,35 @@ class SelfServiceUserPasswordLoginHandler implements SelfServiceLoginHandler {
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginName(): string {
+	public function getLoginName(): string {
 		return $_POST['username'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginPassword(): string {
+	public function getLoginPassword(): string {
 		return $_POST['password'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function managesAuthentication(): bool {
+	public function managesAuthentication(): bool {
 		return false;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function isAuthenticationSuccessful(): bool {
+	public function isAuthenticationSuccessful(): bool {
 		throw new LAMException('Not implemented');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function authorize2FaUser(string $userName): void {
+	public function authorize2FaUser(string $userName): void {
 		// no action
 	}
 
@@ -1131,14 +1131,14 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 	/**
 	 * @inheritDoc
 	 */
-	function getId(): string {
+	public function getId(): string {
 		return self::ID;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function addLoginFields(htmlResponsiveRow $content): void {
+	public function addLoginFields(htmlResponsiveRow $content): void {
 		// user name
 		$userLabel = new htmlLabel('username', $this->profile->loginAttributeText);
 		$content->addLabel($userLabel);
@@ -1159,35 +1159,35 @@ class SelfServiceHttpAuthLoginHandler implements SelfServiceLoginHandler {
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginName(): string {
+	public function getLoginName(): string {
 		return $_SERVER['PHP_AUTH_USER'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginPassword(): string {
+	public function getLoginPassword(): string {
 		return $_SERVER['PHP_AUTH_PW'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function managesAuthentication(): bool {
+	public function managesAuthentication(): bool {
 		return false;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function isAuthenticationSuccessful(): bool {
+	public function isAuthenticationSuccessful(): bool {
 		throw new LAMException('Not implemented');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function authorize2FaUser(string $userName): void {
+	public function authorize2FaUser(string $userName): void {
 		// no action
 	}
 
@@ -1214,42 +1214,42 @@ class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
 	/**
 	 * @inheritDoc
 	 */
-	function getId(): string {
+	public function getId(): string {
 		return self::ID;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function addLoginFields(htmlResponsiveRow $content): void {
+	public function addLoginFields(htmlResponsiveRow $content): void {
 		// no input fields
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginName(): string {
+	public function getLoginName(): string {
 		return '';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getLoginPassword(): string {
+	public function getLoginPassword(): string {
 		return '';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function managesAuthentication(): bool {
+	public function managesAuthentication(): bool {
 		return true;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function isAuthenticationSuccessful(): bool {
+	public function isAuthenticationSuccessful(): bool {
 		if (($this->profile->twoFactorAuthentication !== TwoFactorProviderService::TWO_FACTOR_OKTA)
 			&& ($this->profile->twoFactorAuthentication !== TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			logNewMessage(LOG_ERR, 'Unsupported 2FA provider: ' . $this->profile->twoFactorAuthentication);
@@ -1266,7 +1266,7 @@ class SelfService2FaLoginHandler implements SelfServiceLoginHandler {
 	/**
 	 * @inheritDoc
 	 */
-	function authorize2FaUser(string $userName): void {
+	public function authorize2FaUser(string $userName): void {
 		$bindUser = $this->profile->LDAPUser;
 		if (empty($bindUser)) {
 			throw new LAMException('SelfService2FaLoginHandler', 'No bind user set');
