@@ -1917,7 +1917,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_delete() {
+	public function display_html_delete() {
 		$return = new htmlResponsiveRow();
 		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null)) {
 			$return->add(new htmlResponsiveInputCheckbox('deletehomedir', true, _('Delete home directory'), 'deletehomedir'));
@@ -2049,7 +2049,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_homedir() {
+	public function display_html_homedir() {
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		$return = new htmlResponsiveRow();
@@ -3190,7 +3190,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @param string $typeId type id (e.g. user)
 	 * @return string[]|null null if no UIDs are free else an array of free UIDs.
 	 */
-	function getNextUIDs($count, &$errors, $typeId): ?array {
+	private function getNextUIDs($count, &$errors, $typeId): ?array {
 		// check if UIDs should be taken from Samba pool entry
 		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool')) {
 			return $this->getNextSambaPoolUIDs($count, $typeId);

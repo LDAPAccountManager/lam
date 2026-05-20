@@ -416,7 +416,7 @@ class courierMailAccount extends baseModule {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function module_ready() {
+	public function module_ready(): bool {
 		$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 		return isset($attrs['mail'][0]);
 	}

@@ -690,10 +690,10 @@ class asteriskExtension extends baseModule {
 	 * and false otherwise.
 	 * Equal extension names are allowed in different OUs.
 	 *
-	 * @param String $extension extension name
-	 * @return boolean true if there are entries with this extension name.
+	 * @param string $extension extension name
+	 * @return bool true if there are entries with this extension name.
 	 */
-	function isThisExtensionPresented($extension) {
+	private function isThisExtensionPresented($extension): bool {
 		$searchClass = "AsteriskExtension";
 		$searchScope = 'asteriskExt';
 
@@ -715,9 +715,9 @@ class asteriskExtension extends baseModule {
 	 * The generation algorithm is the naive one, so only work when extension is numbers.
 	 * All extension name is sorted and new extension name will be greates on + 1.
 	 *
-	 * @return String suggested extension name
+	 * @return string suggested extension name
 	 */
-	function generateNextExtensionName() {
+	private function generateNextExtensionName() {
 		$searchClass = "AsteriskExtension";
 		$searchScope = 'asteriskExt';
 		if (isset($this->extensionRows[0]['astextension'][0])) {
@@ -838,7 +838,7 @@ class asteriskExtension extends baseModule {
 	 * @param array<string, string[]|string> $row attributes of original extension
 	 * @return array<string|string[]>[] list of error messages
 	 */
-	function moveExtentionToNewSuffix($row): array {
+	private function moveExtentionToNewSuffix($row): array {
 		$errors = [];
 		if ($this->isMoveToNewSuffix()) {
 			$oldDN = "cn=" . $row["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);

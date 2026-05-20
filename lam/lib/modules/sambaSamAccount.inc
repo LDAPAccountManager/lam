@@ -576,12 +576,9 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	}
 
 	/**
-	 * This function is used to check if this module page can be displayed.
-	 * It returns false if a module depends on data from other modules which was not yet entered.
-	 *
-	 * @return boolean true, if page can be displayed
+	 * {@inheritDoc}
 	 */
-	function module_ready() {
+	public function module_ready(): bool {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 		return isset($attrs['gidNumber'][0]) && isset($attrs['uidNumber'][0]) && isset($attrs['uid'][0]);
 	}
@@ -1273,7 +1270,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_sambaUserWorkstations() {
+	public function display_html_sambaUserWorkstations() {
 		$return = new htmlResponsiveRow();
 		if ($this->get_scope() == 'user') {
 			// Get list of all hosts.
@@ -1316,7 +1313,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_logonHours() {
+	public function display_html_logonHours() {
 		$return = new htmlResponsiveRow();
 		$timeZone = getTimeZoneOffsetHours();
 		$titles = [_('Time'), _('Sunday'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'),
@@ -1380,7 +1377,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_time() {
+	public function display_html_time() {
 		$return = new htmlResponsiveRow();
 		$attr = 'sambaKickoffTime';
 		$text = _('Account expiration date');
@@ -1442,7 +1439,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_terminalServer() {
+	public function display_html_terminalServer() {
 		$return = new htmlResponsiveRow();
 		$mDial = new sambaMungedDial();
 		if (isset($this->attributes['sambaMungedDial'][0])) {

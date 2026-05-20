@@ -168,7 +168,7 @@ class quota extends baseModule {
 	 * @param string $userName user/group name
 	 * @param RemoteServerConfiguration[] $lamdaemonServers server configurations
 	 */
-	function initQuotas($userName = null, $lamdaemonServers = null): void {
+	private function initQuotas($userName = null, $lamdaemonServers = null): void {
 		if ($this->quota !== null) {
 			return;
 		}
@@ -364,12 +364,9 @@ class quota extends baseModule {
 	}
 
 	/**
-	 * This function is used to check if this module page can be displayed.
-	 * It returns false if a module depends on data from other modules which was not yet entered.
-	 *
-	 * @return boolean true, if page can be displayed
+	 * {@inheritDoc}
 	 */
-	function module_ready() {
+	public function module_ready(): bool {
 		if ($this->get_scope() == 'user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 			if (empty($attrs['uid'][0])) {
@@ -636,7 +633,7 @@ class quota extends baseModule {
 	 * @param string $input input string
 	 * @return string output string
 	 */
-	function replaceSpecialChars($input) {
+	private function replaceSpecialChars($input) {
 		return str_replace(".", "_", $input);
 	}
 

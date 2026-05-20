@@ -265,7 +265,7 @@ class posixGroup extends baseModule implements passwordService {
 	 *
 	 * @return htmlElement meta HTML output
 	 */
-	function display_html_user() {
+	public function display_html_user() {
 		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['memberUid'])) {
 			$this->attributes['memberUid'] = [];

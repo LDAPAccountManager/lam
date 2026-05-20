@@ -281,7 +281,7 @@ class imapAccess extends baseModule {
 	 * @param htmlStatusMessage|null $message status message
 	 * @return htmlResponsiveRow HTML meta data
 	 */
-	function display_html_password($message = null) {
+	public function display_html_password($message = null) {
 		$return = new htmlResponsiveRow();
 		if ($message !== null) {
 			$return->add($message);
@@ -305,7 +305,7 @@ class imapAccess extends baseModule {
 	 * @param String $username username to connect to IMAP server
 	 * @return htmlResponsiveRow table with added information about user quotas or controls to add quota
 	 */
-	function renderQuotasForMailbox($container, $client, $username) {
+	private function renderQuotasForMailbox($container, $client, $username) {
 		if (($this->profileQuotaLimit !== null) && ($this->profileQuotaLimit !== '')) {
 			try {
 				$this->runSetQuotaCommand($client, $username, $this->profileQuotaLimit);
@@ -620,7 +620,7 @@ class imapAccess extends baseModule {
 	 *
 	 * @return array<string|string[]>[] list of error messages
 	 */
-	function doLogin(): array {
+	private function doLogin(): array {
 		$errors = [];
 		$adminUser = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && $_POST['ImapAdminPassword'] != "") {
@@ -694,9 +694,9 @@ class imapAccess extends baseModule {
 	 * This function returns the prefix for mailboxes.
 	 * If no prefix was given during configuration then "user" will be used (default for Cyrus).
 	 *
-	 * @return String prefix
+	 * @return string prefix
 	 */
-	function getMailboxPrefix() {
+	private function getMailboxPrefix() {
 		if (!isset($this->moduleSettings['ImapAccess_ImapUserPrefix'][0]) || ($this->moduleSettings['ImapAccess_ImapUserPrefix'][0] == '')) {
 			return "user";
 		}
@@ -712,7 +712,7 @@ class imapAccess extends baseModule {
 	 * @param String $email_domain email domain
 	 * @return boolean true if domains match
 	 */
-	function isWrongDomain($email_domain) {
+	private function isWrongDomain($email_domain) {
 		if (isset($this->moduleSettings['ImapAccess_ImapDomain'][0])) {
 			$domain_list_string = $this->moduleSettings['ImapAccess_ImapDomain'][0];
 			if (empty($domain_list_string) || ($domain_list_string == '*')) {

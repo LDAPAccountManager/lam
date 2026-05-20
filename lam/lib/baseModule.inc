@@ -1116,7 +1116,7 @@ abstract class baseModule {
 	 *
 	 * @return bool true, if page can be displayed
 	 */
-	public function module_ready() {
+	public function module_ready(): bool {
 		return true;
 	}
 

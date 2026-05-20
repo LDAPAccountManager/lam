@@ -580,7 +580,7 @@ class sambaGroupMapping extends baseModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	function module_ready() {
+	public function module_ready(): bool {
 		return ($this->getGID() !== null) && ($this->getGID() !== '');
 	}
 

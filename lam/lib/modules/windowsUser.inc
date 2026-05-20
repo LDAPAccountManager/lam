@@ -2119,7 +2119,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return htmlElement meta HTML code
 	 */
-	function display_html_accountexpires(): htmlElement {
+	public function display_html_accountexpires(): htmlElement {
 		$return = new htmlResponsiveRow();
 		$attr = 'accountexpires';
 		$datetime = new DateTime('now', getTimeZone());
@@ -2161,7 +2161,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 *
 	 * @return array<string|string[]>[] list of info/error messages
 	 */
-	function process_accountexpires(): array {
+	public function process_accountexpires(): array {
 		$return = [];
 		// find button name
 		$buttonName = '';
