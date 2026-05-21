@@ -66,7 +66,7 @@ setlanguage();
 // if not: load login page
 if (!isset($_SESSION['conf_config'])) {
 	/** go back to login if password is invalid */
-	require(__DIR__ . '/conflogin.php');
+	require_once(__DIR__ . '/conflogin.php');
 	exit;
 }
 
