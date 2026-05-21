@@ -109,7 +109,7 @@ elseif (isset($_POST['upload'])) {
 	exit();
 }
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_POST['typeId']);
 $typeManager = new TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
@@ -332,7 +332,7 @@ else {
 parseHtml(null, $container, [], false);
 
 echo '</div>';
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Prints a back button to the page where the user enters a file to upload.

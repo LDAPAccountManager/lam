@@ -57,7 +57,7 @@ use ServerProfilePersistenceManager;
 include_once(__DIR__ . "/../lib/status.inc");
 
 /** check environment */
-include __DIR__ . '/../lib/checkEnvironment.inc';
+include_once __DIR__ . '/../lib/checkEnvironment.inc';
 
 /** security functions */
 include_once(__DIR__ . "/../lib/security.inc");

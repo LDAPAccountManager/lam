@@ -6,7 +6,7 @@ use \htmlStatusMessage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,14 +61,14 @@ if ($dn !== null) {
 }
 else {
 	// print error message if user was not found
-	include __DIR__ . '/../../lib/adminHeader.inc';
+	include_once __DIR__ . '/../../lib/adminHeader.inc';
 	$container = new htmlResponsiveRow();
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlStatusMessage("ERROR", _("This user was not found!"), htmlspecialchars($user)), 12);
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlLink(_("Back to group list"), 'javascript:history.back()'), 12);
 	parseHtml(null, $container, [], false);
-	include __DIR__ . '/../../lib/adminFooter.inc';
+	include_once __DIR__ . '/../../lib/adminFooter.inc';
 }
 
 

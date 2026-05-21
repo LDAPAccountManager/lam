@@ -1048,7 +1048,7 @@ class lamList {
 	 * Prints the header part of the page.
 	 */
 	private function printHeader(): void {
-		include __DIR__ . '/adminHeader.inc';
+		include_once __DIR__ . '/adminHeader.inc';
 		$row = new htmlResponsiveRow();
 		$row->setCSSClasses(['maxrow']);
 		$row->add(new htmlTitle($this->type->getAlias()));
@@ -1068,7 +1068,7 @@ class lamList {
 	 */
 	private function printFooter(): void {
 		$this->printFooterContent();
-		include __DIR__ . '/adminFooter.inc';
+		include_once __DIR__ . '/adminFooter.inc';
 	}
 
 	/**

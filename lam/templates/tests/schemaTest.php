@@ -59,7 +59,7 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 
 $container = new htmlResponsiveRow();
@@ -102,7 +102,7 @@ else {
 parseHtml(null, $container, [], true);
 
 echo "</div>\n";
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Checks if the object classes and attributes for this module are available.

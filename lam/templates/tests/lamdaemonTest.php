@@ -60,7 +60,7 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
 
@@ -112,7 +112,7 @@ parseHtml(null, $container, [], false);
 
 echo "</form>\n";
 echo "</div>\n";
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 
 /**

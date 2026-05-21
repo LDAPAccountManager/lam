@@ -28,7 +28,7 @@ use LAMException;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2025  Roland Gruber
+                2007 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -194,7 +194,7 @@ foreach ($sortedModules as $module => $title) {
 $modules = implode(',', $modules);
 
 // print header
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 ?>
     <div class="smallPaddingContent">
 	<?php
@@ -485,7 +485,7 @@ if ((count($saveErrors) === 0) && isset($_POST['scrollPositionTop']) && get_preg
 parseHtml(null, $container, [], false);
 
 echo '</form></div>';
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 
 /**

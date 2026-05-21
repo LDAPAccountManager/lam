@@ -14,7 +14,7 @@ use htmlTitle;
 
 /*
 
-  Copyright (C) 2018 - 2025 Roland Gruber
+  Copyright (C) 2018 - 2026 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ checkIfToolIsActive('toolSchemaBrowser');
 
 setlanguage();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 
 $availableViews = ['objectClass', 'attribute', 'syntax', 'rule'];
@@ -94,7 +94,7 @@ elseif( $selectedView == 'objectClass' ) {
 parseHtml(null, $row, [], false);
 
 echo '</div>';
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Displays the syntax list.

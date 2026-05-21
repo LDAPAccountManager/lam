@@ -337,7 +337,7 @@ foreach ($templateClasses as $templateClass) {
 		exit;
 	}
 }
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 
 ?>
 <div class="smallPaddingContent">
@@ -680,7 +680,7 @@ if (!empty($globalPdfLogos)) {
 
 echo "</div>\n";
 
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 
 /**

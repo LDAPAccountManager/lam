@@ -12,7 +12,7 @@ use htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2025  Roland Gruber
+  Copyright (C) 2021 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ checkIfToolIsActive('TreeViewTool');
 
 setlanguage();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo '<link rel="stylesheet" href="../../style/wunderbaum/wunderbaum.css" />';
 echo '<script src="../lib/extra/wunderbaum/wunderbaum.umd.js"></script>';
 echo '<link rel="stylesheet" href="../../style/bootstrap-icons/bootstrap-icons.css" />';
@@ -66,7 +66,7 @@ else {
 }
 
 echo '</div>';
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 function showTree(): void {
 	$openInitial = [];

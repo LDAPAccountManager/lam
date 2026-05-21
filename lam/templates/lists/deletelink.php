@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2024  Roland Gruber
+  Copyright (C) 2007 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ if (!empty($dn) && !empty($type)) {
 }
 else {
 	// print error message if arguments are missing
-	include __DIR__ . '/../../lib/adminHeader.inc';
+	include_once __DIR__ . '/../../lib/adminHeader.inc';
 	StatusMessage("ERROR", "No account or type given.");
-	include __DIR__ . '/../../lib/adminFooter.inc';
+	include_once __DIR__ . '/../../lib/adminFooter.inc';
 }

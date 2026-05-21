@@ -58,7 +58,7 @@ checkIfToolIsActive('toolWebauthn');
 
 setlanguage();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="smallPaddingContent">';
 echo "<form id='webauthnform' action=\"webauthn.php\" method=\"post\">\n";
 $container = new htmlResponsiveRow();
@@ -152,7 +152,7 @@ parseHtml(null, $container, [], false);
 
 echo '</form>';
 echo '</div>';
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Checks if a new device should be registered and adds it.

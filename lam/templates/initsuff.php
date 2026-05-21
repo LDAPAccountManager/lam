@@ -141,7 +141,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			}
 		}
 	}
-	include __DIR__ . '/../lib/adminHeader.inc';
+	include_once __DIR__ . '/../lib/adminHeader.inc';
 	// print error/success messages
 	if (isset($_POST['add_suff'])) {
 		if ($failedDNs !== []) {
@@ -160,12 +160,12 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 		// no suffixes were created
 		StatusMessage("INFO", "", _("No changes were made."));
 	}
-	include __DIR__ . '/../lib/adminFooter.inc';
+	include_once __DIR__ . '/../lib/adminFooter.inc';
 	exit;
 }
 
 // first show of page
-include __DIR__ . '/../lib/adminHeader.inc';
+include_once __DIR__ . '/../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
@@ -188,4 +188,4 @@ include __DIR__ . '/../lib/adminHeader.inc';
 
 	echo "</form><br>\n";
 	echo "</div>\n";
-include __DIR__ . '/../lib/adminFooter.inc';
+include_once __DIR__ . '/../lib/adminFooter.inc';

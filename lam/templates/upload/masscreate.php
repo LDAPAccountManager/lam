@@ -106,7 +106,7 @@ if (isset($_GET['getCSV'])) {
 
 Uploader::cleanSession();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 
 // get possible types and remove those which do not support file upload
 $typeManager = new TypeManager();
@@ -259,7 +259,7 @@ parseHtml(null, $row, [], false);
 echo "</form>\n";
 
 echo '</div>';
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Displays the account type specific main page of the upload.
@@ -490,6 +490,6 @@ function showMainPage(ConfiguredType $type, array $selectedModules): void {
 	$_SESSION['mass_csv'] = $sampleCSV;
 
 	echo '</div>';
-	include __DIR__ . '/../../lib/adminFooter.inc';
+	include_once __DIR__ . '/../../lib/adminFooter.inc';
 	die;
 }

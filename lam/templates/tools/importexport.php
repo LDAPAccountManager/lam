@@ -87,7 +87,7 @@ if (isset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR])) {
 	unset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR]);
 }
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 
 $tabImportClass = 'lam-tab-active';
 $tabExportClass = '';
@@ -428,4 +428,4 @@ function checkExportData(): void {
 	}
 }
 
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';

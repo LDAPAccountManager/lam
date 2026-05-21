@@ -7,7 +7,7 @@ use htmlTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2024  Roland Gruber
+  Copyright (C) 2006 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 
 $container = new htmlResponsiveRow();
@@ -67,4 +67,4 @@ $container->add(new htmlOutputText(_("Check if quotas and homedirectories can be
 parseHtml(null, $container, [], true);
 
 echo "</div>\n";
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';

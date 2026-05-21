@@ -17,7 +17,7 @@ use moduleCache;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2025  Roland Gruber
+	Copyright (C) 2007 - 2026  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	//load account
 	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
 	// Show HTML Page
-	include __DIR__ . '/../lib/adminHeader.inc';
+	include_once __DIR__ . '/../lib/adminHeader.inc';
 	echo "<div class=\"smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
@@ -169,7 +169,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	parseHtml(null, $buttonContainer, [], false);
 	echo "</form>\n";
 	echo "</div>\n";
-	include __DIR__ . '/../lib/adminFooter.inc';
+	include_once __DIR__ . '/../lib/adminFooter.inc';
 }
 
 if (isset($_POST['cancel'])) {
@@ -193,7 +193,7 @@ if (isset($_POST['delete'])) {
 		die();
 	}
 	// Show HTML Page
-	include __DIR__ . '/../lib/adminHeader.inc';
+	include_once __DIR__ . '/../lib/adminHeader.inc';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<div class=\"smallPaddingContent\"><br>\n";
 	$container = new htmlResponsiveRow();
@@ -342,7 +342,7 @@ if (isset($_POST['delete'])) {
 	parseHtml(null, $container, [], false);
 	echo "</div>\n";
 	echo "</form>\n";
-	include __DIR__ . '/../lib/adminFooter.inc';
+	include_once __DIR__ . '/../lib/adminFooter.inc';
 
 }
 

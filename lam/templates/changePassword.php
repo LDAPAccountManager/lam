@@ -114,7 +114,7 @@ printContent($message);
  * @param bool $showPasswordInputs show password input fields
  */
 function printContent($message = null, $showPasswordInputs = true): void {
-	include __DIR__ . '/../lib/adminHeader.inc';
+	include_once __DIR__ . '/../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"changePassword.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
@@ -142,5 +142,5 @@ function printContent($message = null, $showPasswordInputs = true): void {
 
 	echo "</form><br>\n";
 	echo "</div>\n";
-	include __DIR__ . '/../lib/adminFooter.inc';
+	include_once __DIR__ . '/../lib/adminFooter.inc';
 }

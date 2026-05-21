@@ -8,7 +8,7 @@ use LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2025  Roland Gruber
+                2005 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -101,11 +101,11 @@ if (!empty($_GET['DN'])) {
 	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
 	$result = $_SESSION[$sessionKey]->load_account($dn);
 	if (count($result) > 0) {
-		include __DIR__ . '/../../lib/adminHeader.inc';
+		include_once __DIR__ . '/../../lib/adminHeader.inc';
 		foreach ($result as $message) {
 			call_user_func_array(StatusMessage(...), $message);
 		}
-		include __DIR__ . '/../../lib/adminFooter.inc';
+		include_once __DIR__ . '/../../lib/adminFooter.inc';
 		die();
 	}
 }

@@ -15,7 +15,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -147,7 +147,7 @@ if (isset($_POST['save'])) {
 }
 
 // print header
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="smallPaddingContent">';
 
 // print error messages if any
@@ -261,6 +261,6 @@ $_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(n
 </form>
 </div>
 <?php
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 ?>

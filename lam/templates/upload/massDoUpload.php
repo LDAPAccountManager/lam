@@ -3,7 +3,7 @@ namespace LAM\UPLOAD;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2025  Roland Gruber
+  Copyright (C) 2004 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_SESSION['mass_typeId']);
 $typeManager = new TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
@@ -93,4 +93,4 @@ $contentDiv = new htmlDiv('uploadContent', $javaScript, ['smallPaddingContent'])
 $container->add($contentDiv);
 parseHtml(null, $container, [], false);
 
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';

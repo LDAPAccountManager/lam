@@ -28,7 +28,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2025  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -222,7 +222,7 @@ foreach ($profileClasses as $profileClass) {
 	}
 }
 
-include __DIR__ . '/../../lib/adminHeader.inc';
+include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"smallPaddingContent\">\n";
 echo "<form name=\"profilemainForm\" action=\"profilemain.php\" method=\"post\">\n";
 echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
@@ -446,7 +446,7 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 echo '</form></div>';
 
-include __DIR__ . '/../../lib/adminFooter.inc';
+include_once __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Imports the selected account profiles.
