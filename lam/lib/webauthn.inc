@@ -372,6 +372,7 @@ class WebauthnManager {
 		try {
 			$loader = $this->createPublicKeyCredentialLoader();
 			$publicKeyCredentialRequestOptions = $loader->deserialize($_SESSION['webauthn_authentication'], PublicKeyCredentialRequestOptions::class, 'json');
+			unset($_SESSION['webauthn_authentication']);
 			$credential = $database->findOneByCredentialId($publicKeyCredential->rawId);
 			if ($credential === null) {
 				throw new LAMException('', 'Unable to find credential');
