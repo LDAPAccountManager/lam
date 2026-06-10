@@ -1660,7 +1660,8 @@ abstract class lamListOption {
 	 */
 	public function setValue(string $value): void {
 		if ((strpos($value, '=') > -1) || (strpos($value, ';') > -1)) {
-			user_error("Invalid value for list option: " . $value, E_ERROR);
+			logNewMessage(LOG_ERR, "Invalid value for list option: " . $value);
+            die();
 		}
 		$this->value = $value;
 	}
