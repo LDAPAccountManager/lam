@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'ldap-account-manager/ldap-account-manager',
-        'pretty_version' => '9.5.2',
-        'version' => '9.5.2.0',
+        'pretty_version' => '9.6',
+        'version' => '9.6.0.0',
         'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../../../',
@@ -200,8 +200,8 @@
             'dev_requirement' => false,
         ),
         'ldap-account-manager/ldap-account-manager' => array(
-            'pretty_version' => '9.5.2',
-            'version' => '9.5.2.0',
+            'pretty_version' => '9.6',
+            'version' => '9.6.0.0',
             'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../../../',
@@ -335,9 +335,9 @@
             'dev_requirement' => false,
         ),
         'phpseclib/phpseclib' => array(
-            'pretty_version' => '3.0.52',
-            'version' => '3.0.52.0',
-            'reference' => '2adaefc83df2ec548558307690f376dd7d4f4fce',
+            'pretty_version' => '3.0.53',
+            'version' => '3.0.53.0',
+            'reference' => '511ddc8e352d5d1f1e33bea468b6f4ef48438cf9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpseclib/phpseclib',
             'aliases' => array(),
