@@ -22,6 +22,8 @@ class Parser
         T::T_EOF               => 0,
         T::T_QUOTED_IDENTIFIER => 0,
         T::T_IDENTIFIER        => 0,
+        T::T_UNKNOWN           => 0,
+        T::T_LITERAL           => 0,
         T::T_RBRACKET          => 0,
         T::T_RPAREN            => 0,
         T::T_COMMA             => 0,
@@ -272,6 +274,10 @@ class Parser
 
     private function led_lparen(array $left)
     {
+        if (!isset($left['value'])) {
+            throw $this->syntax('Invalid function name');
+        }
+
         $args = [];
         $this->next();
 
@@ -347,6 +353,10 @@ class Parser
         if ($this->token['type'] == T::T_LBRACKET) {
             $this->next();
             return $this->parseMultiSelectList();
+        } elseif ($this->token['type'] == T::T_LBRACE) {
+            // Like the multi-select list above, a multi-select hash ends any
+            // projection: tokens that follow apply to the projected list.
+            return $this->nud_lbrace();
         }
 
         return $this->expr($bp);
