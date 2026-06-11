@@ -861,7 +861,6 @@ function checkPwdWithExternalPasswordService($cfg, $password) {
 			. '. ' . curl_error($curl));
 		return true;
 	}
-	curl_close($curl);
 	if (empty($results)) {
 		return true;
 	}

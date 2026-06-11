@@ -77,7 +77,6 @@ class SmsboxSms implements SmsProvider {
 		]);
 		$response = curl_exec($curl);
 		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		curl_close($curl);
 		logNewMessage(LOG_DEBUG, 'SMS gateway response: ' . $response);
 		if (($httpCode !== 200) || ($response !== 'OK')) {
 			logNewMessage(LOG_ERR, 'Unable to send SMS: ' . $response);

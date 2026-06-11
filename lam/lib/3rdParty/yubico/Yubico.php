@@ -7,7 +7,7 @@
  * @author Simon Josefsson <simon@yubico.com>, Olov Danielson <olov@yubico.com>
  * @author Roland Gruber
  * @copyright 2007-2015 Yubico AB
- * @copyright 2018 - 2023 Roland Gruber
+ * @copyright 2018 - 2026 Roland Gruber
  * @license https://opensource.org/licenses/bsd-license.php New BSD License
  * @version 2.0
  * @link https://www.yubico.com/
@@ -72,7 +72,7 @@ class Auth_Yubico {
 	 *
 	 * @param string Input string to parse
 	 * @param string Optional delimiter re-class, default is '[:]'
-	 * @return array Keyed array with fields
+	 * @return array|false Keyed array with fields
 	 */
 	private function parsePasswordOTP($str, $delim = '[:]') {
 		if (!preg_match("/^((.*)" . $delim . ")?(([cbdefghijklnrtuv]{0,12})([cbdefghijklnrtuv]{32}))$/i", $str, $matches)) {
@@ -149,10 +149,8 @@ class Auth_Yubico {
 		curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
 
 		/* Execute and read request. */
-		$this->response = null;
 		$str = curl_exec($handle);
 		$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-		curl_close($handle);
 		logNewMessage(LOG_DEBUG, 'Server answer: ' . $str);
 		if (is_string($str) && ($httpCode == 200) && preg_match("/status=([a-zA-Z0-9_]+)/", $str, $out)) {
 			$status = $out[1];

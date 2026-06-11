@@ -220,7 +220,6 @@ class PrivacyIDEAProvider extends BaseProvider {
 		];
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
 		$json = curl_exec($curl);
-		curl_close($curl);
 		if (empty($json)) {
 			throw new Exception("Unable to get server response from $url.");
 		}
@@ -271,7 +270,6 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$header = ['Authorization: ' . $token, 'Accept: application/json'];
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 		$json = curl_exec($curl);
-		curl_close($curl);
 		if (empty($json)) {
 			throw new Exception("Unable to get server response from $url.");
 		}
@@ -315,7 +313,6 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$header = ['Authorization: ' . $token, 'Accept: application/json'];
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 		$json = curl_exec($curl);
-		curl_close($curl);
 		$output = json_decode($json);
 		if (empty($output) || !isset($output->result) || !isset($output->result->status) || !isset($output->result->value)) {
 			throw new Exception("Unable to get json from $url.");
@@ -719,7 +716,6 @@ class OktaProvider extends BaseProvider {
 		$results = curl_exec($curl);
 		$returnCode = curl_errno($curl);
 		logNewMessage(LOG_DEBUG, 'Okta responded with ' . $returnCode . ': ' . $results);
-		curl_close($curl);
 		if ($returnCode !== 0) {
 			logNewMessage(LOG_ERR, 'Error calling Okta ' . $url
 				. '. ' . $returnCode);

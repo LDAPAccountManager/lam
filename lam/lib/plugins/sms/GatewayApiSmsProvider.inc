@@ -80,7 +80,6 @@ class GatewayApiSmsProvider implements SmsProvider {
 		]);
 		$response = curl_exec($curl);
 		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		curl_close($curl);
 		logNewMessage(LOG_DEBUG, 'SMS gateway response: ' . $response);
 		$responseJson = json_decode($response, true);
 		if ($httpCode !== 200) {
