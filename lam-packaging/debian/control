@@ -1,8 +1,7 @@
 Source: ldap-account-manager
 Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
-Priority: optional
-Standards-Version: 4.7.2
+Standards-Version: 4.7.4
 Build-Depends: debhelper (>= 12), debhelper-compat (= 12), po-debconf, cleancss (>= 5.2), terser (>= 5.0)
 Homepage: https://www.ldap-account-manager.org/
 Rules-Requires-Root: binary-targets
