@@ -4685,8 +4685,11 @@ class htmlForm extends htmlElement {
 	 * {@inheritDoc}
 	 */
 	public function generateHTML($module, $input, $values, $restricted): array {
-		$return = [];
-		echo '<form name="' . $this->name . '" action="' . $this->action . '" method="post" enctype="multipart/form-data">';
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<form name="' . $this->name . '" action="' . $this->action . '"' . $classesValue . ' method="post" enctype="multipart/form-data">';
 		$return = $this->content->generateHTML($module, $input, $values, $restricted);
 		echo '</form>';
 		return $return;

@@ -117,71 +117,47 @@ if (!empty($_GET['invalidLicense']) && ($_GET['invalidLicense'] == '2')) {
 }
 ?>
 <br>
-<!-- form to change main options -->
-<form action="mainlogin.php" method="post" autocomplete="off">
-    <table align="center">
-        <tr>
-            <td>
-                <table align="center" border="0" rules="none" bgcolor="white" class="roundedShadowBox"
-                       style="padding: 20px;">
-                    <tr>
-                        <td>
-							<?php
-							$spacer = new htmlSpacer('20px', '20px');
-							$group = new htmlGroup();
-							$row = new htmlResponsiveRow();
-							$row->add(new htmlOutputText(_("Please enter the master password to change the general preferences:")), 12);
-							$group->addElement($row);
-							// print message if login was incorrect or no config profiles are present
-							if (isset($message)) {
-								$messageField = new htmlStatusMessage('ERROR', $message);
-								$row = new htmlResponsiveRow();
-								$row->add($messageField, 12);
-								$group->addElement($spacer);
-								$group->addElement($row);
-							}
-							$group->addElement($spacer);
-							// password input
-							$label = new htmlOutputText(_('Master password'));
-							$passwordGroup = new htmlGroup();
-							$passwordField = new htmlInputField('passwd');
-							$passwordField->setFieldSize(15);
-							$passwordField->setIsPassword(true);
-							$passwordField->setCSSClasses(['lam-initial-focus']);
-							$passwordGroup->addElement($passwordField);
-							$passwordGroup->addElement(new htmlHelpLink('236'));
-							$passwordDiv = new htmlDiv(null, $passwordGroup);
-							$passwordDiv->setCSSClasses(['nowrap']);
-							$row = new htmlResponsiveRow($label, $passwordDiv);
-							$group->addElement($row);
-							// button
-							$group->addElement($spacer);
-							$okButton = new htmlButton('submit', _("Ok"));
-							$okButton->setCSSClasses(['lam-primary']);
-							$row = new htmlResponsiveRow();
-							$row->add($okButton, 12);
-							$row->setCSSClasses(['']);
-							$group->addElement($row);
+    <?php
+    $content = new htmlResponsiveRow();
+	$content->setCSSClasses(['limitWidth']);
+    $box = new htmlResponsiveRow();
+    $box->setCSSClasses(['padding1', 'roundedShadowBox']);
 
-							$div = new htmlDiv(null, $group);
-							$div->setCSSClasses(['centeredTable']);
+	$box->add(new htmlOutputText(_("Please enter the master password to change the general preferences:")), 12);
+    // print message if login was incorrect or no config profiles are present
+    if (isset($message)) {
+		$box->addVerticalSpacer('1rem');
+		$box->add(new htmlStatusMessage('ERROR', $message));
+    }
+	$box->addVerticalSpacer('1rem');
+    // password input
+    $label = new htmlOutputText(_('Master password'));
+    $passwordGroup = new htmlGroup();
+    $passwordField = new htmlInputField('passwd');
+    $passwordField->setFieldSize(15);
+    $passwordField->setIsPassword(true);
+    $passwordField->setCSSClasses(['lam-initial-focus']);
+    $passwordGroup->addElement($passwordField);
+    $passwordGroup->addElement(new htmlHelpLink('236'));
+    $passwordDiv = new htmlDiv(null, $passwordGroup);
+    $passwordDiv->setCSSClasses(['nowrap']);
+	$box->addLabel($label);
+	$box->addField($passwordDiv);
+    // button
+	$box->addVerticalSpacer('1rem');
+    $okButton = new htmlButton('submit', _("Ok"));
+    $okButton->setCSSClasses(['lam-primary']);
+	$box->add($okButton);
+    $content->add($box);
 
-							parseHtml(null, $div, [], false);
-							?>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td align="left">
-                <br><a href="../login.php"><?php echo _("Back to login"); ?></a>
-            </td>
-        </tr>
-    </table>
-</form>
+    $content->addVerticalSpacer('1rem');
+	$content->add(new htmlLink(_("Back to login"), '../login.php'), 12, null, null, 'text-left');
+	$content->addVerticalSpacer('2rem');
 
-<p><br><br></p>
+    $form = new htmlForm('loginform', 'mainlogin.php', $content);
+    $form->setCSSClasses(['text-center']);
+    parseHtml(null, $form, [], false);
+    ?>
 
 </body>
 </html>
