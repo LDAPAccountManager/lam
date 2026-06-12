@@ -196,12 +196,6 @@ echo "<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"pos
 
 printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
-?>
-    <input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
-    <input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="123">
-    <input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="321">
-	<?php
-
 $row = new htmlResponsiveRow();
 
 $serverSettings = new htmlSubTitle(_("Server settings"), '../../graphics/world.svg', null, true);
