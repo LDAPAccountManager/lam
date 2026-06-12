@@ -125,12 +125,6 @@ echo "<form id=\"inputForm\" action=\"moduleSettings.php\" method=\"post\" autoc
 
 printConfigurationPageTabs(ConfigurationPageTab::MODULE_SETTINGS);
 
-?>
-    <input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
-    <input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="123">
-    <input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="321">
-	<?php
-
 
 // module settings
 $typeManager = new TypeManager($conf);
