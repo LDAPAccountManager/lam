@@ -19,7 +19,7 @@ Depends: php (>= 8.1), php-ldap,
  apache2 (>= 2.4.0) | httpd,
  gettext, fonts-dejavu,
  php-phpseclib3, php-monolog,
- libphp-phpmailer (<< 7.0),
+ libphp-phpmailer,
  debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
 Recommends: php-opcache, php-apcu
 Suggests: ldap-server, php-mcrypt, ldap-account-manager-lamdaemon, perl
