@@ -2,6 +2,8 @@
 
 namespace LAM\LOGIN;
 
+use htmlForm;
+use htmlHorizontalLine;
 use htmlLabel;
 use htmlResponsiveSelect;
 use LAM\ENV\LAMLicenseValidator;
@@ -274,7 +276,6 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
                 <table border="0" rules="none" bgcolor="white">
                     <tr>
                         <td style="border-style:none">
-                            <form action="login.php" method="post">
 								<?php
 								$row = new htmlResponsiveRow();
 								// user name
@@ -371,9 +372,9 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$loginButton->setCSSClasses(['lam-primary']);
 								$row->add($loginButton);
 
-								parseHtml(null, $row, [], false);
+								$loginForm = new htmlForm('loginform', 'login.php', $row);
+								parseHtml(null, $loginForm, [], false);
 								?>
-                            </form>
                         </td>
                         <td class="loginRightBox hide-for-small" style="border-style:none">
                         </td>
@@ -392,28 +393,22 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$extraMessage = new htmlStatusMessage('INFO', $extraMessage);
 								$row->add($extraMessage);
 							}
-							parseHtml(null, $row, [], false);
-							?>
-                            <hr class="margin20">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border-style:none;">
-                            <form action="login.php" method="post">
-								<?php
-								$row = new htmlResponsiveRow();
-								$row->addLabel(new htmlOutputText(_("LDAP server")));
-								$serverUrl = new htmlOutputText($config_object->getServerDisplayNameGUI());
-								$serverUrlDiv = new htmlDiv(null, $serverUrl);
-								$serverUrlDiv->setCSSClasses(['text-left', 'margin3']);
-								$row->addField($serverUrlDiv);
-								$profileSelect = new htmlResponsiveSelect('profile', $profiles, [$_SESSION['config']->getName()], _("Server profile"));
-								$profileSelect->setOnchangeEvent('loginProfileChanged(this)');
-								$row->add($profileSelect);
 
-								parseHtml(null, $row, [], true);
-								?>
-                            </form>
+                            $row->add(new htmlHorizontalLine());
+                            $row->addVerticalSpacer('1rem');
+
+                            $row->addLabel(new htmlOutputText(_("LDAP server")));
+                            $serverUrl = new htmlOutputText($config_object->getServerDisplayNameGUI());
+                            $serverUrlDiv = new htmlDiv(null, $serverUrl);
+                            $serverUrlDiv->setCSSClasses(['text-left', 'margin3']);
+                            $row->addField($serverUrlDiv);
+                            $profileSelect = new htmlResponsiveSelect('profile', $profiles, [$_SESSION['config']->getName()], _("Server profile"));
+                            $profileSelect->setOnchangeEvent('loginProfileChanged(this)');
+                            $row->add($profileSelect);
+
+                            $profileForm = new htmlForm('profileform', 'login.php', $row);
+                            parseHtml(null, $profileForm, [], true);
+                            ?>
                         </td>
                         <td class="loginRightBox hide-for-small" style="border-style:none">
                         </td>
