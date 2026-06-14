@@ -335,6 +335,11 @@ table.accountlist > tbody > tr:hover a {
 	padding: 1em;
 }
 
+.padding-sides-largest {
+    padding-left: var(--lam-largest-space);
+    padding-right: var(--lam-largest-space);
+}
+
 .spacing5 {
 	border-spacing: 5px;
 	border-collapse: separate;

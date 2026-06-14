@@ -271,152 +271,138 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 	if (!empty($config_object)) {
 		?>
         <br><br><br>
-        <div class="centeredTable">
-            <div class="roundedShadowBox limitWidth" style="position:relative; z-index:5;">
-                <table border="0" rules="none" bgcolor="white">
-                    <tr>
-                        <td style="border-style:none">
-								<?php
-								$row = new htmlResponsiveRow();
-								// user name
-								$row->addLabel(new htmlLabel('username', _("User name")));
-								if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
-									$admins = $config_object->get_Admins();
-									$adminList = [];
-									foreach ($admins as $admin) {
-										$text = explode(",", (string) $admin);
-										$text = explode("=", $text[0]);
-										if (isset($text[1])) {
-											$adminList[$text[1]] = $admin;
-										}
-										else {
-											$adminList[$text[0]] = $admin;
-										}
-									}
-									$selectedAdmin = [];
-									if (isset($_POST['username']) && in_array($_POST['username'], $adminList)) {
-										$selectedAdmin = [$_POST['username']];
-									}
-									$userSelect = new htmlSelect('username', $adminList, $selectedAdmin);
-									$userSelect->setHasDescriptiveElements(true);
-									$userSelect->setTransformSingleSelect(false);
-									if (empty($_COOKIE['lam_login_name'])) {
-										$userSelect->setCSSClasses(['lam-initial-focus']);
-									}
-									$row->addField(new htmlDiv(null, $userSelect));
-								}
-                                elseif ($config_object->getHttpAuthentication() == 'true') {
-									$httpAuth = new htmlDiv(null, new htmlOutputText($_SERVER['PHP_AUTH_USER'] . '&nbsp;', false));
-									$httpAuth->setCSSClasses(['text-left', 'margin3']);
-									$row->addField($httpAuth);
-								}
-								else {
-									$user = '';
-									if (isset($_COOKIE["lam_login_name"])) {
-										$user = (string) $_COOKIE["lam_login_name"];
-									}
-									$userNameInput = new htmlInputField('username', $user);
-									if (empty($_COOKIE['lam_login_name'])) {
-										$userNameInput->setCSSClasses(['lam-initial-focus']);
-									}
-									$userInput = new htmlDiv(null, $userNameInput);
-									$row->addField($userInput);
-								}
-								// password
-								$row->addLabel(new htmlLabel('passwd', _("Password")));
-								if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() == 'true')) {
-									$passwordInputFake = new htmlDiv(null, new htmlOutputText('**********'));
-									$passwordInputFake->setCSSClasses(['text-left', 'margin3']);
-									$row->addField($passwordInputFake);
-								}
-								else {
-									$passwordInput = new htmlInputField('passwd');
-									$passwordInput->setIsPassword(true);
-									if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && !empty($_COOKIE['lam_login_name'])) {
-										$passwordInput->setCSSClasses(['lam-initial-focus']);
-									}
-									$row->addField($passwordInput);
-								}
-								// language
-								$row->addLabel(new htmlLabel('language', _("Language")));
-								$possibleLanguages = getLanguages();
-								$languageList = [];
-								$defaultLanguage = [];
-								foreach ($possibleLanguages as $lang) {
-									$languageList[$lang->description] = $lang->code;
-									if (str_starts_with(trim((string) $_SESSION["language"]), $lang->code)) {
-										$defaultLanguage[] = $lang->code;
-									}
-								}
-								$languageSelect = new htmlSelect('language', $languageList, $defaultLanguage);
-								$languageSelect->setHasDescriptiveElements(true);
-								$row->addField($languageSelect);
-								// remember login user
-								if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() != 'true')) {
-									$row->add(new htmlOutputText('&nbsp;', false), 0, 6, 6);
-									$rememberGroup = new htmlGroup();
-									$doRemember = false;
-									if (isset($_COOKIE["lam_login_name"])) {
-										$doRemember = true;
-									}
-									$rememberGroup->addElement(new htmlInputCheckbox('rememberLogin', $doRemember));
-									$rememberGroup->addElement(new htmlSpacer('1px', null));
-									$rememberGroup->addElement(new htmlOutputText(_('Remember user name')));
-									$rememberDiv = new htmlDiv(null, $rememberGroup);
-									$rememberDiv->setCSSClasses(['text-left', 'margin3']);
-									$row->add($rememberDiv, 12, 6, 6);
-								}
-								// login button
-								$row->add(new htmlSpacer(null, '20px'));
-								$loginButton = new htmlButton('checklogin', _("Login"));
-								$loginButton->setCSSClasses(['lam-primary']);
-								$row->add($loginButton);
+        <?php
+        $content = new htmlResponsiveRow();
+        $row = new htmlResponsiveRow();
+        // user name
+        $row->addLabel(new htmlLabel('username', _("User name")));
+        if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
+            $admins = $config_object->get_Admins();
+            $adminList = [];
+            foreach ($admins as $admin) {
+                $text = explode(",", (string) $admin);
+                $text = explode("=", $text[0]);
+                if (isset($text[1])) {
+                    $adminList[$text[1]] = $admin;
+                }
+                else {
+                    $adminList[$text[0]] = $admin;
+                }
+            }
+            $selectedAdmin = [];
+            if (isset($_POST['username']) && in_array($_POST['username'], $adminList)) {
+                $selectedAdmin = [$_POST['username']];
+            }
+            $userSelect = new htmlSelect('username', $adminList, $selectedAdmin);
+            $userSelect->setHasDescriptiveElements(true);
+            $userSelect->setTransformSingleSelect(false);
+            if (empty($_COOKIE['lam_login_name'])) {
+                $userSelect->setCSSClasses(['lam-initial-focus']);
+            }
+            $row->addField(new htmlDiv(null, $userSelect));
+        }
+        elseif ($config_object->getHttpAuthentication() == 'true') {
+            $httpAuth = new htmlDiv(null, new htmlOutputText($_SERVER['PHP_AUTH_USER'] . '&nbsp;', false));
+            $httpAuth->setCSSClasses(['text-left', 'margin3']);
+            $row->addField($httpAuth);
+        }
+        else {
+            $user = '';
+            if (isset($_COOKIE["lam_login_name"])) {
+                $user = (string) $_COOKIE["lam_login_name"];
+            }
+            $userNameInput = new htmlInputField('username', $user);
+            if (empty($_COOKIE['lam_login_name'])) {
+                $userNameInput->setCSSClasses(['lam-initial-focus']);
+            }
+            $userInput = new htmlDiv(null, $userNameInput);
+            $row->addField($userInput);
+        }
+        // password
+        $row->addLabel(new htmlLabel('passwd', _("Password")));
+        if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() == 'true')) {
+            $passwordInputFake = new htmlDiv(null, new htmlOutputText('**********'));
+            $passwordInputFake->setCSSClasses(['text-left', 'margin3']);
+            $row->addField($passwordInputFake);
+        }
+        else {
+            $passwordInput = new htmlInputField('passwd');
+            $passwordInput->setIsPassword(true);
+            if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && !empty($_COOKIE['lam_login_name'])) {
+                $passwordInput->setCSSClasses(['lam-initial-focus']);
+            }
+            $row->addField($passwordInput);
+        }
+        // language
+        $row->addLabel(new htmlLabel('language', _("Language")));
+        $possibleLanguages = getLanguages();
+        $languageList = [];
+        $defaultLanguage = [];
+        foreach ($possibleLanguages as $lang) {
+            $languageList[$lang->description] = $lang->code;
+            if (str_starts_with(trim((string) $_SESSION["language"]), $lang->code)) {
+                $defaultLanguage[] = $lang->code;
+            }
+        }
+        $languageSelect = new htmlSelect('language', $languageList, $defaultLanguage);
+        $languageSelect->setHasDescriptiveElements(true);
+        $row->addField($languageSelect);
+        // remember login user
+        if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() != 'true')) {
+            $row->add(new htmlOutputText('&nbsp;', false), 0, 6, 6);
+            $rememberGroup = new htmlGroup();
+            $doRemember = false;
+            if (isset($_COOKIE["lam_login_name"])) {
+                $doRemember = true;
+            }
+            $rememberGroup->addElement(new htmlInputCheckbox('rememberLogin', $doRemember));
+            $rememberGroup->addElement(new htmlSpacer('1px', null));
+            $rememberGroup->addElement(new htmlOutputText(_('Remember user name')));
+            $rememberDiv = new htmlDiv(null, $rememberGroup);
+            $rememberDiv->setCSSClasses(['text-left', 'margin3']);
+            $row->add($rememberDiv, 12, 6, 6);
+        }
+        // login button
+        $row->addVerticalSpacer('0.5rem');
+        $loginButton = new htmlButton('checklogin', _("Login"));
+        $loginButton->setCSSClasses(['lam-primary']);
+        $row->add($loginButton);
+        $row->addVerticalSpacer('0.5rem');
 
-								$loginForm = new htmlForm('loginform', 'login.php', $row);
-								parseHtml(null, $loginForm, [], false);
-								?>
-                        </td>
-                        <td class="loginRightBox hide-for-small" style="border-style:none">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="border-style:none;">
-							<?php
-							$row = new htmlResponsiveRow();
-							// error message
-							if (!empty($error_message)) {
-								$row->add(new htmlSpacer(null, '5px'));
-								$message = new htmlStatusMessage('ERROR', $error_message, $errorDetails);
-								$row->add($message);
-							}
-							if (!empty($extraMessage)) {
-								$extraMessage = new htmlStatusMessage('INFO', $extraMessage);
-								$row->add($extraMessage);
-							}
+        $loginForm = new htmlForm('loginform', 'login.php', $row);
+        $loginForm->setCSSClasses(['padding-sides-largest']);
+        $content->add($loginForm);
 
-                            $row->add(new htmlHorizontalLine());
-                            $row->addVerticalSpacer('1rem');
+        $lowerRow = new htmlResponsiveRow();
+        // error message
+        if (!empty($error_message)) {
+            $message = new htmlStatusMessage('ERROR', $error_message, $errorDetails);
+            $lowerRow->add($message);
+        }
+        if (!empty($extraMessage)) {
+            $extraMessage = new htmlStatusMessage('INFO', $extraMessage);
+            $lowerRow->add($extraMessage);
+        }
 
-                            $row->addLabel(new htmlOutputText(_("LDAP server")));
-                            $serverUrl = new htmlOutputText($config_object->getServerDisplayNameGUI());
-                            $serverUrlDiv = new htmlDiv(null, $serverUrl);
-                            $serverUrlDiv->setCSSClasses(['text-left', 'margin3']);
-                            $row->addField($serverUrlDiv);
-                            $profileSelect = new htmlResponsiveSelect('profile', $profiles, [$_SESSION['config']->getName()], _("Server profile"));
-                            $profileSelect->setOnchangeEvent('loginProfileChanged(this)');
-                            $row->add($profileSelect);
+        $lowerRow->add(new htmlHorizontalLine());
+        $lowerRow->addVerticalSpacer('1rem');
 
-                            $profileForm = new htmlForm('profileform', 'login.php', $row);
-                            parseHtml(null, $profileForm, [], true);
-                            ?>
-                        </td>
-                        <td class="loginRightBox hide-for-small" style="border-style:none">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-		<?php
+        $lowerRow->addLabel(new htmlOutputText(_("LDAP server")));
+        $serverUrl = new htmlOutputText($config_object->getServerDisplayNameGUI());
+        $serverUrlDiv = new htmlDiv(null, $serverUrl);
+        $serverUrlDiv->setCSSClasses(['text-left', 'margin3']);
+        $lowerRow->addField($serverUrlDiv);
+        $profileSelect = new htmlResponsiveSelect('profile', $profiles, [$_SESSION['config']->getName()], _("Server profile"));
+        $profileSelect->setOnchangeEvent('loginProfileChanged(this)');
+        $lowerRow->add($profileSelect);
+
+        $profileForm = new htmlForm('profileform', 'login.php', $lowerRow);
+        $profileForm->setCSSClasses(['padding-sides-largest']);
+        $content->add($profileForm);
+
+        $shadowBoxDiv = new htmlDiv(null, $content, ['roundedShadowBox', 'limitWidth']);
+        $centerDiv = new htmlDiv(null, $shadowBoxDiv, ['centeredTable']);
+        parseHtml(null, $centerDiv, [], false);
 	}
 	?>
     <br><br>
