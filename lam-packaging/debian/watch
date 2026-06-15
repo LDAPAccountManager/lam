@@ -1,5 +1,9 @@
 # format version number, currently 2; this line is compulsory!
 version=4
 
-# LDAP Account Manager at Sourceforge
-http://sf.net/lam/ldap-account-manager-([0-9]\.[0-9](\.[0-9])?)\.tar\.bz2
+# LDAP Account Manager at github.com
+opts=filenamemangle=s%.*/@ANY_VERSION@%@PACKAGE@-$1.tar.bz2%,\
+  downloadurlmangle=s%api.github.com/repos/([^/]+/[^/]+)/git/refs/tags/@ANY_VERSION@%github.com/$1/releases/download/$2/ldap-account-manager-$2.tar.bz2%g,\
+  searchmode=plain \
+   https://api.github.com/repos/LDAPAccountManager/lam/git/matching-refs/tags/ \
+   https://api.github.com/repos/[^/]+/[^/]+/git/refs/tags/@ANY_VERSION@
