@@ -24,7 +24,7 @@
 
     "christian-riesen/base32": "^1.6",
 
-    "facile-it/php-openid-client": "^0",
+    "facile-it/php-openid-client": "^1",
 
     "monolog/monolog": "^3",
 

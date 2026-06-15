@@ -14,22 +14,15 @@ use function is_int;
 /**
  * @internal
  */
-final class AuthTimeChecker implements ClaimChecker
+final readonly class AuthTimeChecker implements ClaimChecker
 {
     private const CLAIM_NAME = 'auth_time';
 
-    private int $maxAge;
-
-    private int $allowedTimeDrift;
-
-    private ClockInterface $clock;
-
-    public function __construct(int $maxAge, int $allowedTimeDrift = 0, ?ClockInterface $clock = null)
-    {
-        $this->maxAge = $maxAge;
-        $this->allowedTimeDrift = $allowedTimeDrift;
-        $this->clock = $clock ?? new InternalClock();
-    }
+    public function __construct(
+        private int $maxAge,
+        private int $allowedTimeDrift = 0,
+        private ClockInterface $clock = new InternalClock(),
+    ) {}
 
     /**
      * @throws InvalidClaimException

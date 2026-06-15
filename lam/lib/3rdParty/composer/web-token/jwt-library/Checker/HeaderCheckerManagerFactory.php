@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Jose\Component\Checker;
 
 use InvalidArgumentException;
+use function sprintf;
 
 /**
+ * This class is a factory to create Header Checker Managers. It allows to add header parameter checkers and token type
+ * supports. The factory is responsible to create a Header Checker Manager with the header parameter checkers found based
+ * on the alias. If the alias is not supported, an InvalidArgumentException is thrown.
  * @see \Jose\Tests\Component\Checker\HeaderCheckerManagerFactoryTest
  */
 class HeaderCheckerManagerFactory

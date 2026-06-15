@@ -6,8 +6,9 @@ namespace Jose\Component\Core;
 
 use InvalidArgumentException;
 use function array_key_exists;
+use function sprintf;
 
-class AlgorithmManager
+final class AlgorithmManager
 {
     /**
      * @var array<string, Algorithm>

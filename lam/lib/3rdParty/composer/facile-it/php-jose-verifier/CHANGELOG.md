@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Here we write upgrading notes for brands. It's a team effort to make them as
 straightforward as possible.
 
+## [1.0.0] - 2026-06-12
+ - Drop support for PHP 8.1
+ - [BC] Upgrade to `web-token/jwt-library` 4.x - since this contains breaking changes, refer to the [upgrade guide](https://web-token.spomky-labs.com/migration/from-v3.x-to-v4.0)
+ - [Internal] Adopt Rector
+
+## [0.5.2] - 2026-01-12
+### Fixed
+- Fix deprecation coming from `web-token/jwt-library`
+
 ## [0.5.1] - 2026-01-08
 
 ### Fixed

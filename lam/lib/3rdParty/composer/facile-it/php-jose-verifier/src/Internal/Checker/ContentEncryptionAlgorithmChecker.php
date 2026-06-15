@@ -13,23 +13,17 @@ use Jose\Component\Checker\InvalidHeaderException;
  *
  * @internal
  */
-final class ContentEncryptionAlgorithmChecker implements HeaderChecker
+final readonly class ContentEncryptionAlgorithmChecker implements HeaderChecker
 {
     private const HEADER_NAME = 'enc';
-
-    private bool $protectedHeader;
-
-    /** @var string[] */
-    private array $supportedAlgorithms;
 
     /**
      * @param string[] $supportedAlgorithms
      */
-    public function __construct(array $supportedAlgorithms, bool $protectedHeader = false)
-    {
-        $this->supportedAlgorithms = $supportedAlgorithms;
-        $this->protectedHeader = $protectedHeader;
-    }
+    public function __construct(
+        private array $supportedAlgorithms,
+        private bool $protectedHeader = false,
+    ) {}
 
     /**
      * @param mixed $value

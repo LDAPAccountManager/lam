@@ -24,10 +24,8 @@ function jose_secret_key(string $secret, ?string $alg = null): JWK
         return derived_key($secret, (int) ($matches[2] ?? $matches[1]));
     }
 
-    $key = new JWK([
+    return new JWK([
         'k' => Base64Url::encode($secret),
         'kty' => 'oct',
     ]);
-
-    return $key;
 }

@@ -6,6 +6,7 @@ namespace Jose\Component\Console;
 
 use InvalidArgumentException;
 use Jose\Component\KeyManagement\JWKFactory;
+use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,17 +17,15 @@ use function is_string;
 #[AsCommand(name: 'key:load:p12', description: 'Load a key from a P12 certificate file.',)]
 final class P12CertificateLoaderCommand extends GeneratorCommand
 {
-    protected static $defaultName = 'key:load:p12';
-
-    protected static $defaultDescription = 'Load a key from a P12 certificate file.';
-
+    #[Override]
     protected function configure(): void
     {
         parent::configure();
         $this->addArgument('file', InputArgument::REQUIRED, 'Filename of the P12 certificate.')
-            ->addOption('secret', 's', InputOption::VALUE_OPTIONAL, 'Secret if the key is encrypted.', null);
+            ->addOption('secret', 's', InputOption::VALUE_OPTIONAL, 'Secret if the key is encrypted.');
     }
 
+    #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $file = $input->getArgument('file');

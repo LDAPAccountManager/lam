@@ -6,6 +6,7 @@ namespace Jose\Component\Encryption\Algorithm\KeyEncryption\Util;
 
 use InvalidArgumentException;
 use Jose\Component\Core\Util\Base64UrlSafe;
+use function strlen;
 use const STR_PAD_LEFT;
 
 /**
@@ -13,7 +14,7 @@ use const STR_PAD_LEFT;
  *
  * @see https://tools.ietf.org/html/rfc7518#section-4.6.2
  */
-final class ConcatKDF
+final readonly class ConcatKDF
 {
     /**
      * Key Derivation Function.
@@ -36,9 +37,9 @@ final class ConcatKDF
         $encryption_segments = [
             self::toInt32Bits(1),                                  // Round number 1
             $Z,                                                          // Z (shared secret)
-            self::toInt32Bits(mb_strlen($algorithm, '8bit')) . $algorithm, // Size of algorithm's name and algorithm
-            self::toInt32Bits(mb_strlen($apu, '8bit')) . $apu,             // PartyUInfo
-            self::toInt32Bits(mb_strlen($apv, '8bit')) . $apv,             // PartyVInfo
+            self::toInt32Bits(strlen($algorithm)) . $algorithm, // Size of algorithm's name and algorithm
+            self::toInt32Bits(strlen($apu)) . $apu,             // PartyUInfo
+            self::toInt32Bits(strlen($apv)) . $apv,             // PartyVInfo
             self::toInt32Bits($encryption_key_size),                     // SuppPubInfo (the encryption key size)
             '',                                                          // SuppPrivInfo
         ];
@@ -46,7 +47,7 @@ final class ConcatKDF
         $input = implode('', $encryption_segments);
         $hash = hash('sha256', $input, true);
 
-        return mb_substr($hash, 0, $encryption_key_size / 8, '8bit');
+        return substr($hash, 0, $encryption_key_size / 8);
     }
 
     /**

@@ -42,7 +42,7 @@ final class AuthorizationResponseVerifierBuilder extends AbstractTokenVerifierBu
             $this->getExpectedAzp(),
             $this->getExpectedAlg(),
             $this->getJwksProvider(),
-            $this->buildDecrypter()
+            $this->buildDecrypter(),
         );
     }
 

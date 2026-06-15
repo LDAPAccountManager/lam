@@ -17,10 +17,10 @@ use Jose\Component\Encryption\Algorithm\KeyEncryption\KeyAgreementWithKeyWrappin
 use Jose\Component\Encryption\Algorithm\KeyEncryption\KeyEncryption;
 use Jose\Component\Encryption\Algorithm\KeyEncryption\KeyWrapping;
 use Jose\Component\Encryption\Algorithm\KeyEncryptionAlgorithm;
-use Jose\Component\Encryption\Compression\CompressionMethodManager;
 use Throwable;
-use function array_key_exists;
 use function is_string;
+use function sprintf;
+use function strlen;
 
 class JWEDecrypter
 {
@@ -28,40 +28,20 @@ class JWEDecrypter
 
     private readonly AlgorithmManager $contentEncryptionAlgorithmManager;
 
-    public function __construct(
-        AlgorithmManager $algorithmManager,
-        null|AlgorithmManager $contentEncryptionAlgorithmManager,
-        private readonly null|CompressionMethodManager $compressionMethodManager = null
-    ) {
-        if ($compressionMethodManager !== null) {
-            trigger_deprecation(
-                'web-token/jwt-library',
-                '3.3.0',
-                'The parameter "$compressionMethodManager" is deprecated and will be removed in 4.0.0. Compression is not recommended for JWE. Please set "null" instead.'
-            );
-        }
-        if ($contentEncryptionAlgorithmManager !== null) {
-            trigger_deprecation(
-                'web-token/jwt-library',
-                '3.3.0',
-                'The parameter "$contentEncryptionAlgorithmManager" is deprecated and will be removed in 4.0.0. Please set all algorithms in the first argument and set "null" instead.'
-            );
-            $this->keyEncryptionAlgorithmManager = $algorithmManager;
-            $this->contentEncryptionAlgorithmManager = $contentEncryptionAlgorithmManager;
-        } else {
-            $keyEncryptionAlgorithms = [];
-            $contentEncryptionAlgorithms = [];
-            foreach ($algorithmManager->all() as $key => $algorithm) {
-                if ($algorithm instanceof KeyEncryptionAlgorithm) {
-                    $keyEncryptionAlgorithms[$key] = $algorithm;
-                }
-                if ($algorithm instanceof ContentEncryptionAlgorithm) {
-                    $contentEncryptionAlgorithms[$key] = $algorithm;
-                }
+    public function __construct(AlgorithmManager $algorithmManager)
+    {
+        $keyEncryptionAlgorithms = [];
+        $contentEncryptionAlgorithms = [];
+        foreach ($algorithmManager->all() as $key => $algorithm) {
+            if ($algorithm instanceof KeyEncryptionAlgorithm) {
+                $keyEncryptionAlgorithms[$key] = $algorithm;
             }
-            $this->keyEncryptionAlgorithmManager = new AlgorithmManager($keyEncryptionAlgorithms);
-            $this->contentEncryptionAlgorithmManager = new AlgorithmManager($contentEncryptionAlgorithms);
+            if ($algorithm instanceof ContentEncryptionAlgorithm) {
+                $contentEncryptionAlgorithms[$key] = $algorithm;
+            }
         }
+        $this->keyEncryptionAlgorithmManager = new AlgorithmManager($keyEncryptionAlgorithms);
+        $this->contentEncryptionAlgorithmManager = new AlgorithmManager($contentEncryptionAlgorithms);
     }
 
     /**
@@ -78,15 +58,6 @@ class JWEDecrypter
     public function getContentEncryptionAlgorithmManager(): AlgorithmManager
     {
         return $this->contentEncryptionAlgorithmManager;
-    }
-
-    /**
-     * Returns the compression method manager.
-     * @deprecated This method is deprecated and will be removed in v4.0. Compression is not recommended for JWE.
-     */
-    public function getCompressionMethodManager(): null|CompressionMethodManager
-    {
-        return $this->compressionMethodManager;
     }
 
     /**
@@ -175,7 +146,7 @@ class JWEDecrypter
                     $completeHeader
                 );
                 $this->checkCekSize($cek, $key_encryption_algorithm, $content_encryption_algorithm);
-                $payload = $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $completeHeader);
+                $payload = $this->decryptPayload($jwe, $cek, $content_encryption_algorithm);
                 $successJwk = $recipientKey;
 
                 return $payload;
@@ -196,7 +167,7 @@ class JWEDecrypter
         if ($keyEncryptionAlgorithm instanceof DirectEncryption || $keyEncryptionAlgorithm instanceof KeyAgreement) {
             return;
         }
-        if (mb_strlen($cek, '8bit') * 8 !== $algorithm->getCEKSize()) {
+        if (strlen($cek) * 8 !== $algorithm->getCEKSize()) {
             throw new InvalidArgumentException('Invalid CEK size');
         }
     }
@@ -206,7 +177,7 @@ class JWEDecrypter
         if ($iv === null && $requiredIvSize !== 0) {
             throw new InvalidArgumentException('Invalid IV size');
         }
-        if (is_string($iv) && mb_strlen($iv, '8bit') !== $requiredIvSize / 8) {
+        if (is_string($iv) && strlen($iv) !== $requiredIvSize / 8) {
             throw new InvalidArgumentException('Invalid IV size');
         }
     }
@@ -262,9 +233,8 @@ class JWEDecrypter
         JWE $jwe,
         string $cek,
         ContentEncryptionAlgorithm $content_encryption_algorithm,
-        array $completeHeader
     ): string {
-        $payload = $content_encryption_algorithm->decryptContent(
+        return $content_encryption_algorithm->decryptContent(
             $jwe->getCiphertext() ?? '',
             $cek,
             $jwe->getIV() ?? '',
@@ -272,19 +242,6 @@ class JWEDecrypter
             $jwe->getEncodedSharedProtectedHeader(),
             $jwe->getTag() ?? ''
         );
-
-        return $this->decompressIfNeeded($payload, $completeHeader);
-    }
-
-    private function decompressIfNeeded(string $payload, array $completeHeaders): string
-    {
-        if ($this->compressionMethodManager === null || ! array_key_exists('zip', $completeHeaders)) {
-            return $payload;
-        }
-
-        $compression_method = $this->compressionMethodManager->get($completeHeaders['zip']);
-
-        return $compression_method->uncompress($payload);
     }
 
     private function checkCompleteHeader(array $completeHeaders): void

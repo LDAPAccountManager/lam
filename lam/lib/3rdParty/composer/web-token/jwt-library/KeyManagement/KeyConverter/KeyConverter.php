@@ -10,6 +10,8 @@ use Jose\Component\Core\Util\Base64UrlSafe;
 use OpenSSLCertificate;
 use ParagonIE\Sodium\Core\Ed25519;
 use RuntimeException;
+use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
+use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\CryptoEncoding\PEM;
 use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\AlgorithmIdentifier;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PrivateKey;
@@ -23,6 +25,7 @@ use function extension_loaded;
 use function in_array;
 use function is_array;
 use function is_string;
+use function sprintf;
 use const E_ERROR;
 use const E_PARSE;
 use const OPENSSL_KEYTYPE_EC;
@@ -33,8 +36,11 @@ use const PREG_PATTERN_ORDER;
 /**
  * @internal
  */
-final class KeyConverter
+final readonly class KeyConverter
 {
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function loadKeyFromCertificateFile(string $file): array
     {
         if (! file_exists($file)) {
@@ -48,6 +54,9 @@ final class KeyConverter
         return self::loadKeyFromCertificate($content);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function loadKeyFromCertificate(string $certificate): array
     {
         if (! extension_loaded('openssl')) {
@@ -73,6 +82,9 @@ final class KeyConverter
         return self::loadKeyFromX509Resource($res);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function loadKeyFromX509Resource(OpenSSLCertificate $res): array
     {
         if (! extension_loaded('openssl')) {
@@ -112,6 +124,9 @@ final class KeyConverter
         throw new InvalidArgumentException('Unable to load the certificate');
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function loadFromKeyFile(string $file, ?string $password = null): array
     {
         $content = file_get_contents($file);
@@ -122,6 +137,9 @@ final class KeyConverter
         return self::loadFromKey($content, $password);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function loadFromKey(string $key, ?string $password = null): array
     {
         try {
@@ -134,6 +152,9 @@ final class KeyConverter
     /**
      * Be careful! The certificate chain is loaded, but it is NOT VERIFIED by any mean! It is mandatory to verify the
      * root CA or intermediate  CA are trusted. If not done, it may lead to potential security issues.
+     *
+     * @param array<array-key, mixed> $x5c
+     * @return array<array-key, mixed>
      */
     public static function loadFromX5C(array $x5c): array
     {
@@ -144,8 +165,9 @@ final class KeyConverter
             throw new InvalidArgumentException('The certificate chain is empty');
         }
         foreach ($x5c as $id => $cert) {
+            assert(is_string($cert), 'Invalid certificate chain');
             $x5c[$id] = '-----BEGIN CERTIFICATE-----' . "\n" . chunk_split(
-                (string) $cert,
+                $cert,
                 64,
                 "\n"
             ) . '-----END CERTIFICATE-----';
@@ -162,6 +184,9 @@ final class KeyConverter
         return self::loadKeyFromCertificate(reset($x5c));
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     private static function loadKeyFromDER(string $der, ?string $password = null): array
     {
         $pem = self::convertDerToPem($der);
@@ -169,6 +194,9 @@ final class KeyConverter
         return self::loadKeyFromPEM($pem, $password);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     private static function loadKeyFromPEM(string $pem, ?string $password = null): array
     {
         if (! extension_loaded('openssl')) {
@@ -202,46 +230,155 @@ final class KeyConverter
         }
 
         return match ($details['type']) {
-            OPENSSL_KEYTYPE_EC => self::tryToLoadECKey($pem),
+            OPENSSL_KEYTYPE_EC => self::tryToLoadECKey($details, $pem),
             OPENSSL_KEYTYPE_RSA => RSAKey::createFromPEM($pem)->toArray(),
-            -1 => self::tryToLoadOtherKeyTypes($pem),
+            4 => self::tryToLoadX25519Key($details), // OPENSSL_KEYTYPE_X25519
+            5 => self::tryToLoadED25519Key($details), // OPENSSL_KEYTYPE_ED25519
+            6 => self::tryToLoadX448Key($details), // OPENSSL_KEYTYPE_X448
+            7 => self::tryToLoadED448Key($details), // OPENSSL_KEYTYPE_ED448
+            -1 => self::tryToLoadOtherKeyTypes($details, $pem),
             default => throw new InvalidArgumentException('Unsupported key type'),
         };
     }
 
     /**
      * This method tries to load Ed448, X488, Ed25519 and X25519 keys.
+     *
+     * @param array{type: int, key: string} $details
+     *
+     * @return array<array-key, mixed>
      */
-    private static function tryToLoadECKey(string $input): array
+    private static function tryToLoadECKey(array $details, string $input): array
     {
         try {
             return ECKey::createFromPEM($input)->toArray();
         } catch (Throwable) {
+            // no break
         }
         try {
-            return self::tryToLoadOtherKeyTypes($input);
+            return self::tryToLoadOtherKeyTypes($details, $input);
         } catch (Throwable) {
+            // no break
         }
         throw new InvalidArgumentException('Unable to load the key.');
     }
 
     /**
-     * This method tries to load Ed448, X488, Ed25519 and X25519 keys.
+     * @param array{bits: int, type: int, key: string, x25519: array{pub_key?: string, priv_key?: string}} $input
+     *
+     * @return array<array-key, mixed>
      */
-    private static function tryToLoadOtherKeyTypes(string $input): array
+    private static function tryToLoadX25519Key(array $input): array
+    {
+        $values = [
+            'kty' => 'OKP',
+            'crv' => 'X25519',
+        ];
+        if (array_key_exists('pub_key', $input['x25519'])) {
+            $values['x'] = Base64UrlSafe::encodeUnpadded($input['x25519']['pub_key']);
+        } else {
+            $values['x'] = self::tryToLoadOtherKeyTypes($input, $input['key'])['x'];
+        }
+        if (array_key_exists('priv_key', $input['x25519'])) {
+            $values['d'] = Base64UrlSafe::encodeUnpadded($input['x25519']['priv_key']);
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param array{bits: int, type: int, key: string, ed25519: array{pub_key?: string, priv_key?: string}} $input
+     *
+     * @return array<array-key, mixed>
+     */
+    private static function tryToLoadED25519Key(array $input): array
+    {
+        $values = [
+            'kty' => 'OKP',
+            'crv' => 'Ed25519',
+        ];
+        if (array_key_exists('pub_key', $input['ed25519'])) {
+            $values['x'] = Base64UrlSafe::encodeUnpadded($input['ed25519']['pub_key']);
+        } else {
+            $values['x'] = self::tryToLoadOtherKeyTypes($input, $input['key'])['x'];
+        }
+        if (array_key_exists('priv_key', $input['ed25519'])) {
+            $values['d'] = Base64UrlSafe::encodeUnpadded($input['ed25519']['priv_key']);
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param array{bits: int, type: int, key: string, x448: array{pub_key?: string, priv_key?: string}} $input
+     *
+     * @return array<array-key, mixed>
+     */
+    private static function tryToLoadX448Key(array $input): array
+    {
+        $values = [
+            'kty' => 'OKP',
+            'crv' => 'X448',
+        ];
+        if (array_key_exists('pub_key', $input['x448'])) {
+            $values['x'] = Base64UrlSafe::encodeUnpadded($input['x448']['pub_key']);
+        } else {
+            $values['x'] = self::tryToLoadOtherKeyTypes($input, $input['key'])['x'];
+        }
+        if (array_key_exists('priv_key', $input['x448'])) {
+            $values['d'] = Base64UrlSafe::encodeUnpadded($input['x448']['priv_key']);
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param array{bits: int, type: int, key: string, ed448: array{pub_key?: string, priv_key?: string}} $input
+     *
+     * @return array<array-key, mixed>
+     */
+    private static function tryToLoadED448Key(array $input): array
+    {
+        $values = [
+            'kty' => 'OKP',
+            'crv' => 'Ed448',
+        ];
+        if (array_key_exists('pub_key', $input['ed448'])) {
+            $values['x'] = Base64UrlSafe::encodeUnpadded($input['ed448']['pub_key']);
+        } else {
+            $values['x'] = self::tryToLoadOtherKeyTypes($input, $input['key'])['x'];
+        }
+        if (array_key_exists('priv_key', $input['ed448'])) {
+            $values['d'] = Base64UrlSafe::encodeUnpadded($input['ed448']['priv_key']);
+        }
+
+        return $values;
+    }
+
+    /**
+     * This method tries to load Ed448, X488, Ed25519 and X25519 keys.
+     * Only needed on PHP8.3 and earlier.
+     *
+     * @param array{key: string} $details
+     *
+     * @return array<array-key, mixed>
+     */
+    private static function tryToLoadOtherKeyTypes(array $details, string $input): array
     {
         $pem = PEM::fromString($input);
         return match ($pem->type()) {
             PEM::TYPE_PUBLIC_KEY => self::loadPublicKey($pem),
-            PEM::TYPE_PRIVATE_KEY => self::loadPrivateKey($pem),
+            PEM::TYPE_PRIVATE_KEY => self::loadPrivateKey($details, $pem),
             default => throw new InvalidArgumentException('Unsupported key type'),
         };
     }
 
     /**
+     * @param array{key: string} $details
+     *
      * @return array<string, mixed>
      */
-    private static function loadPrivateKey(PEM $pem): array
+    private static function loadPrivateKey(array $details, PEM $pem): array
     {
         try {
             $key = PrivateKey::fromPEM($pem);
@@ -264,12 +401,15 @@ final class KeyConverter
                 case AlgorithmIdentifier::OID_X25519:
                 case AlgorithmIdentifier::OID_X448:
                     $curve = self::getCurve($key->algorithmIdentifier()->oid());
-                    $values = [
+                    $publicKey = PEM::fromString($details['key']);
+                    /** @var UnspecifiedType $publicKeyBits */
+                    $publicKeyBits = Sequence::fromDER($publicKey->data())->at(1);
+                    return [
                         'kty' => 'OKP',
                         'crv' => $curve,
+                        'x' => Base64UrlSafe::encodeUnpadded($publicKeyBits->asBitString()->string()),
                         'd' => Base64UrlSafe::encodeUnpadded($key->privateKeyData()),
                     ];
-                    return self::populatePoints($key, $values);
                 default:
                     throw new InvalidArgumentException('Unsupported key type');
             }
@@ -304,37 +444,6 @@ final class KeyConverter
     private static function convertDecimalToBas64Url(string $decimal): string
     {
         return Base64UrlSafe::encodeUnpadded(BigInteger::fromBase($decimal, 10)->toBytes());
-    }
-
-    /**
-     * @param array<string, mixed> $values
-     * @return array<string, mixed>
-     */
-    private static function populatePoints(PrivateKey $key, array $values): array
-    {
-        $crv = $values['crv'] ?? null;
-        assert(is_string($crv), 'Unsupported key type.');
-        $x = self::getPublicKey($key, $crv);
-        if ($x !== null) {
-            $values['x'] = Base64UrlSafe::encodeUnpadded($x);
-        }
-
-        return $values;
-    }
-
-    private static function getPublicKey(PrivateKey $key, string $crv): ?string
-    {
-        switch ($crv) {
-            case 'Ed25519':
-                return Ed25519::publickey_from_secretkey($key->privateKeyData());
-            case 'X25519':
-                if (extension_loaded('sodium')) {
-                    return sodium_crypto_scalarmult_base($key->privateKeyData());
-                }
-                // no break
-            default:
-                return null;
-        }
     }
 
     private static function checkType(string $curve): void
@@ -386,7 +495,7 @@ final class KeyConverter
         }
 
         $iv = pack('H*', trim($matches[2]));
-        $iv_sub = mb_substr($iv, 0, 8, '8bit');
+        $iv_sub = substr($iv, 0, 8);
         $symkey = pack('H*', md5($password . $iv_sub));
         $symkey .= pack('H*', md5($symkey . $password . $iv_sub));
         $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
@@ -395,7 +504,7 @@ final class KeyConverter
             throw new InvalidArgumentException('Unable to encode the data.');
         }
 
-        $decoded = openssl_decrypt($ciphertext, mb_strtolower($matches[1]), $symkey, OPENSSL_RAW_DATA, $iv);
+        $decoded = openssl_decrypt($ciphertext, strtolower($matches[1]), $symkey, OPENSSL_RAW_DATA, $iv);
         if ($decoded === false) {
             throw new RuntimeException('Unable to decrypt the key');
         }

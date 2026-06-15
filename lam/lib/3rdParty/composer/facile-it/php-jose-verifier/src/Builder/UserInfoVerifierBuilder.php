@@ -42,7 +42,7 @@ final class UserInfoVerifierBuilder extends AbstractTokenVerifierBuilder
             $this->getExpectedAzp(),
             $this->getExpectedAlg(),
             $this->getJwksProvider(),
-            $this->buildDecrypter()
+            $this->buildDecrypter(),
         );
     }
 

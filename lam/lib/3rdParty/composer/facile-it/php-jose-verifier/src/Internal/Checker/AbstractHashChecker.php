@@ -19,31 +19,20 @@ use function substr;
  */
 abstract class AbstractHashChecker implements ClaimChecker
 {
-    private string $valueToCheck;
-
-    private string $alg;
-
-    /**
-     * SHashChecker constructor.
-     */
-    public function __construct(string $valueToCheck, string $alg)
-    {
-        $this->valueToCheck = $valueToCheck;
-        $this->alg = $alg;
-    }
+    public function __construct(
+        private readonly string $valueToCheck,
+        private readonly string $alg,
+    ) {}
 
     private function getShaSize(string $alg): string
     {
         $size = substr($alg, -3);
 
-        switch ($size) {
-            case '512':
-                return 'sha512';
-            case '384':
-                return 'sha384';
-            default:
-                return 'sha256';
-        }
+        return match ($size) {
+            '512' => 'sha512',
+            '384' => 'sha384',
+            default => 'sha256',
+        };
     }
 
     /**

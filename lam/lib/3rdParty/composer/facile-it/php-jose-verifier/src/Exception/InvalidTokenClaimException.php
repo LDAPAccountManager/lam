@@ -11,19 +11,16 @@ use Throwable;
  */
 class InvalidTokenClaimException extends RuntimeException implements InvalidTokenExceptionInterface
 {
-    private string $claim;
-
-    /** @var mixed */
-    private $value;
-
     /**
      * @param mixed $value
      */
-    public function __construct(string $message, string $claim, $value, ?Throwable $previous = null)
-    {
+    public function __construct(
+        string $message,
+        private readonly string $claim,
+        private $value,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct($message, 0, $previous);
-        $this->claim = $claim;
-        $this->value = $value;
     }
 
     public function getClaim(): string

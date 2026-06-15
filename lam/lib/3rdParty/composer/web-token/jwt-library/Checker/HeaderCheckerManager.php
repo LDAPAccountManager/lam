@@ -9,7 +9,14 @@ use Jose\Component\Core\JWT;
 use function array_key_exists;
 use function count;
 use function is_array;
+use function sprintf;
 
+/**
+ * This class is a factory to create Header Checker Managers.
+ *
+ * It allows to add header parameter checkers and token type supports.
+ * The factory is responsible to create a Header Checker Manager with the header parameter checkers found based
+ */
 class HeaderCheckerManager
 {
     /**
@@ -23,8 +30,6 @@ class HeaderCheckerManager
     private array $tokenTypes = [];
 
     /**
-     * HeaderCheckerManager constructor.
-     *
      * @param HeaderChecker[] $checkers
      * @param TokenTypeSupport[] $tokenTypes
      */

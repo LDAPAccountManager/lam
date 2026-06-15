@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\JWKSet;
 use Jose\Component\Core\Util\JsonConverter;
+use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,21 +17,20 @@ use function count;
 use function is_array;
 use function is_string;
 
-#[AsCommand(name: 'keyset:rotate', description: 'Rotate a key set.',)]
+#[AsCommand(name: 'keyset:rotate', description: 'Rotate a key set.')]
 final class RotateKeysetCommand extends ObjectOutputCommand
 {
-    protected static $defaultName = 'keyset:rotate';
-
-    protected static $defaultDescription = 'Rotate a key set.';
-
+    #[Override]
     protected function configure(): void
     {
         parent::configure();
-        $this->setHelp('This command removes the last key in a key set a place a new one at the beginning.')
+        $this
+            ->setHelp('This command removes the last key in a key set a place a new one at the beginning.')
             ->addArgument('jwkset', InputArgument::REQUIRED, 'The JWKSet object')
             ->addArgument('jwk', InputArgument::REQUIRED, 'The new JWK object');
     }
 
+    #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $jwkset = $this->getKeyset($input)

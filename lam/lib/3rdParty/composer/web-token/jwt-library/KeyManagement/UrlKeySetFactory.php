@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Jose\Component\KeyManagement;
 
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use RuntimeException;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -22,28 +20,14 @@ abstract class UrlKeySetFactory
     private int $expiresAfter = 3600;
 
     public function __construct(
-        private readonly ClientInterface|HttpClientInterface $client,
-        private readonly null|RequestFactoryInterface $requestFactory = null
+        private readonly HttpClientInterface $client,
     ) {
-        if ($this->client instanceof ClientInterface) {
-            trigger_deprecation(
-                'web-token/jwt-library',
-                '3.3',
-                'Using "%s" with an instance of "%s" is deprecated, use "%s" instead.',
-                self::class,
-                ClientInterface::class,
-                HttpClientInterface::class
-            );
-        }
-        if (! $this->client instanceof HttpClientInterface && $this->requestFactory === null) {
-            throw new RuntimeException(sprintf(
-                'The request factory must be provided when using an instance of "%s" as client.',
-                ClientInterface::class
-            ));
-        }
         $this->cacheItemPool = new NullAdapter();
     }
 
+    /**
+     * @deprecated since 4.1 and will be removed in 5.0. Please use the Http Client to cache the responses instead.
+     */
     public function enabledCache(CacheItemPoolInterface $cacheItemPool, int $expiresAfter = 3600): void
     {
         $this->cacheItemPool = $cacheItemPool;
@@ -88,26 +72,5 @@ abstract class UrlKeySetFactory
         }
 
         return $response->getContent();
-    }
-
-    /**
-     * @param array<string, string|string[]> $header
-     */
-    private function sendPsrRequest(string $url, array $header = []): string
-    {
-        assert($this->client instanceof ClientInterface);
-        assert($this->requestFactory instanceof RequestFactoryInterface);
-        $request = $this->requestFactory->createRequest('GET', $url);
-        foreach ($header as $k => $v) {
-            $request = $request->withHeader($k, $v);
-        }
-        $response = $this->client->sendRequest($request);
-
-        if ($response->getStatusCode() >= 400) {
-            throw new RuntimeException('Unable to get the key set.', $response->getStatusCode());
-        }
-
-        return $response->getBody()
-            ->getContents();
     }
 }

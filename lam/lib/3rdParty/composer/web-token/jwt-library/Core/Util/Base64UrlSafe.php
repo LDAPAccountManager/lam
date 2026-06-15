@@ -4,6 +4,21 @@ declare(strict_types=1);
 
 namespace Jose\Component\Core\Util;
 
+use InvalidArgumentException;
+use RangeException;
+use SensitiveParameter;
+use SodiumException;
+use function extension_loaded;
+use function pack;
+use function rtrim;
+use function sodium_base642bin;
+use function sodium_bin2base64;
+use function strlen;
+use function substr;
+use function unpack;
+use const SODIUM_BASE64_VARIANT_URLSAFE;
+use const SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING;
+
 /**
  *  Copyright (c) 2016 - 2022 Paragon Initiative Enterprises.
  *  Copyright (c) 2014 Steve "Sc00bz" Thomas (steve at tobtu dot com)
@@ -27,16 +42,9 @@ namespace Jose\Component\Core\Util;
  *  SOFTWARE.
  */
 
-use InvalidArgumentException;
-use RangeException;
-use SodiumException;
-
-/**
- * @readonly
- */
-final class Base64UrlSafe
+final readonly class Base64UrlSafe
 {
-    public static function encode(string $binString): string
+    public static function encode(#[SensitiveParameter] string $binString): string
     {
         if (extension_loaded('sodium')) {
             try {
@@ -48,7 +56,7 @@ final class Base64UrlSafe
         return static::doEncode($binString, true);
     }
 
-    public static function encodeUnpadded(string $src): string
+    public static function encodeUnpadded(#[SensitiveParameter] string $src): string
     {
         if (extension_loaded('sodium')) {
             try {
@@ -60,7 +68,7 @@ final class Base64UrlSafe
         return static::doEncode($src, false);
     }
 
-    public static function decode(string $encodedString, bool $strictPadding = false): string
+    public static function decode(#[SensitiveParameter] string $encodedString, bool $strictPadding = false): string
     {
         $srcLen = self::safeStrlen($encodedString);
         if ($srcLen === 0) {
@@ -147,7 +155,7 @@ final class Base64UrlSafe
         return $dest;
     }
 
-    public static function decodeNoPadding(string $encodedString): string
+    public static function decodeNoPadding(#[SensitiveParameter] string $encodedString): string
     {
         $srcLen = self::safeStrlen($encodedString);
         if ($srcLen === 0) {
@@ -161,7 +169,7 @@ final class Base64UrlSafe
         return static::decode($encodedString, true);
     }
 
-    private static function doEncode(string $src, bool $pad = true): string
+    private static function doEncode(#[SensitiveParameter] string $src, bool $pad = true): string
     {
         $dest = '';
         $srcLen = self::safeStrlen($src);
@@ -226,16 +234,16 @@ final class Base64UrlSafe
         return pack('C', $src + $diff);
     }
 
-    private static function safeStrlen(string $str): int
+    private static function safeStrlen(#[SensitiveParameter] string $str): int
     {
-        return mb_strlen($str, '8bit');
+        return strlen($str);
     }
 
-    private static function safeSubstr(string $str, int $start = 0, $length = null): string
+    private static function safeSubstr(#[SensitiveParameter] string $str, int $start = 0, $length = null): string
     {
         if ($length === 0) {
             return '';
         }
-        return mb_substr($str, $start, $length, '8bit');
+        return substr($str, $start, $length);
     }
 }

@@ -19,21 +19,12 @@ use function json_encode;
  */
 final class CachedJwksProvider extends AbstractJwksProvider
 {
-    private JwksProviderInterface $provider;
-
-    private CacheInterface $cache;
-
-    private string $cacheKey;
-
-    private ?int $ttl;
-
-    public function __construct(JwksProviderInterface $provider, CacheInterface $cache, string $cacheKey, ?int $ttl)
-    {
-        $this->provider = $provider;
-        $this->cache = $cache;
-        $this->cacheKey = $cacheKey;
-        $this->ttl = $ttl;
-    }
+    public function __construct(
+        private readonly JwksProviderInterface $provider,
+        private readonly CacheInterface $cache,
+        private readonly string $cacheKey,
+        private readonly ?int $ttl,
+    ) {}
 
     /**
      * @throws RuntimeException Whenever a runtime error occurred

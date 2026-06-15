@@ -20,29 +20,15 @@ use function json_decode;
  */
 final class RemoteJwksProvider extends AbstractJwksProvider
 {
-    private ClientInterface $client;
-
-    private RequestFactoryInterface $requestFactory;
-
-    private string $uri;
-
-    /** @var array<string, string|string[]> */
-    private array $headers;
-
     /**
      * @param array<string, string|string[]> $headers
      */
     public function __construct(
-        ClientInterface $client,
-        RequestFactoryInterface $requestFactory,
-        string $uri,
-        array $headers = []
-    ) {
-        $this->client = $client;
-        $this->requestFactory = $requestFactory;
-        $this->uri = $uri;
-        $this->headers = $headers;
-    }
+        private ClientInterface $client,
+        private RequestFactoryInterface $requestFactory,
+        private string $uri,
+        private array $headers = [],
+    ) {}
 
     /**
      * @param array<string, string|string[]> $headers

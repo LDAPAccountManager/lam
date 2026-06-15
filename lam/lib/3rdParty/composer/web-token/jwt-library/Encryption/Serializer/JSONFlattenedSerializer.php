@@ -9,24 +9,28 @@ use Jose\Component\Core\Util\Base64UrlSafe;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\Encryption\JWE;
 use Jose\Component\Encryption\Recipient;
+use Override;
 use function array_key_exists;
 use function count;
 use function is_array;
 
-final class JSONFlattenedSerializer implements JWESerializer
+final readonly class JSONFlattenedSerializer implements JWESerializer
 {
     public const NAME = 'jwe_json_flattened';
 
+    #[Override]
     public function displayName(): string
     {
         return 'JWE JSON Flattened';
     }
 
+    #[Override]
     public function name(): string
     {
         return self::NAME;
     }
 
+    #[Override]
     public function serialize(JWE $jwe, ?int $recipientIndex = null): string
     {
         if ($recipientIndex === null) {
@@ -57,6 +61,7 @@ final class JSONFlattenedSerializer implements JWESerializer
         return JsonConverter::encode($data);
     }
 
+    #[Override]
     public function unserialize(string $input): JWE
     {
         $data = JsonConverter::decode($input);

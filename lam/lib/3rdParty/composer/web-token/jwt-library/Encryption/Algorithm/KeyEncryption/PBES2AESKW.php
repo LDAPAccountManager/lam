@@ -11,13 +11,14 @@ use AESKW\Wrapper as WrapperInterface;
 use InvalidArgumentException;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\Base64UrlSafe;
+use Override;
 use RuntimeException;
 use function in_array;
 use function is_int;
 use function is_string;
 use function sprintf;
 
-abstract class PBES2AESKW implements KeyWrapping
+abstract readonly class PBES2AESKW implements KeyWrapping
 {
     public const DEFAULT_MAX_COUNT = 1_000_000;
 
@@ -31,6 +32,7 @@ abstract class PBES2AESKW implements KeyWrapping
         }
     }
 
+    #[Override]
     public function allowedKeyTypes(): array
     {
         return ['oct'];
@@ -40,6 +42,7 @@ abstract class PBES2AESKW implements KeyWrapping
      * @param array<string, mixed> $completeHeader
      * @param array<string, mixed> $additionalHeader
      */
+    #[Override]
     public function wrapKey(JWK $key, string $cek, array $completeHeader, array &$additionalHeader): string
     {
         $password = $this->getKey($key);
@@ -68,6 +71,7 @@ abstract class PBES2AESKW implements KeyWrapping
     /**
      * @param array<string, mixed> $completeHeader
      */
+    #[Override]
     public function unwrapKey(JWK $key, string $encrypted_cek, array $completeHeader): string
     {
         $password = $this->getKey($key);
@@ -87,6 +91,7 @@ abstract class PBES2AESKW implements KeyWrapping
         return $wrapper::unwrap($derived_key, $encrypted_cek);
     }
 
+    #[Override]
     public function getKeyManagementMode(): string
     {
         return self::MODE_WRAP;

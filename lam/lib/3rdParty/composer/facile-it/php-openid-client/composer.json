@@ -12,6 +12,9 @@
     "minimum-stability": "stable",
     "config": {
         "sort-packages": true,
+        "platform": {
+            "php": "8.2.99"
+        },
         "allow-plugins": {
             "facile-it/facile-coding-standard": true,
             "laminas/laminas-component-installer": true,
@@ -28,9 +31,9 @@
         "identity"
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-json": "*",
-        "facile-it/php-jose-verifier": "^0.5.0",
+        "facile-it/php-jose-verifier": "^1.0",
         "php-http/discovery": "^1.6",
         "psr/http-client": "^1.0",
         "psr/http-client-implementation": "^1.0",
@@ -41,7 +44,7 @@
         "psr/http-server-middleware": "^1.0",
         "spomky-labs/aes-key-wrap": "^7.0",
         "symfony/polyfill-php83": "^1.33",
-        "web-token/jwt-library": "^3.4.3"
+        "web-token/jwt-library": "^4.0"
     },
     "autoload": {
         "files": [

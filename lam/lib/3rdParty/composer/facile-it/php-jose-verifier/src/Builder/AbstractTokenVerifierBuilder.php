@@ -28,20 +28,6 @@ use Facile\JoseVerifier\TokenVerifierInterface;
  */
 abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInterface
 {
-    /**
-     * @var array<string, mixed>
-     *
-     * @psalm-var ClientMetadataType
-     */
-    protected array $clientMetadata;
-
-    /**
-     * @var array<string, mixed>
-     *
-     * @psalm-var IssuerMetadataType
-     */
-    protected array $issuerMetadata;
-
     protected int $clockTolerance = 0;
 
     protected bool $aadIssValidation = false;
@@ -55,14 +41,16 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
     protected ?JwksProviderBuilder $jwksProviderBuilder = null;
 
     /**
+     * @param array<string, mixed> $issuerMetadata
+     * @param array<string, mixed> $clientMetadata
+     *
      * @psalm-param IssuerMetadataType $issuerMetadata
      * @psalm-param ClientMetadataType $clientMetadata
      */
-    protected function __construct(array $issuerMetadata, array $clientMetadata)
-    {
-        $this->issuerMetadata = $issuerMetadata;
-        $this->clientMetadata = $clientMetadata;
-    }
+    protected function __construct(
+        protected array $issuerMetadata,
+        protected array $clientMetadata,
+    ) {}
 
     public function withClockTolerance(int $clockTolerance): static
     {
@@ -111,11 +99,7 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
 
     protected function getJwksProvider(): JwksProviderInterface
     {
-        if ($this->jwksProvider) {
-            return $this->jwksProvider;
-        }
-
-        return $this->jwksProvider = $this->buildJwksProvider();
+        return $this->jwksProvider ??= $this->buildJwksProvider();
     }
 
     /**
@@ -136,11 +120,7 @@ abstract class AbstractTokenVerifierBuilder implements TokenVerifierBuilderInter
 
     protected function getClientJwksProvider(): JwksProviderInterface
     {
-        if ($this->clientJwksProvider) {
-            return $this->clientJwksProvider;
-        }
-
-        return $this->clientJwksProvider = $this->buildClientJwksProvider();
+        return $this->clientJwksProvider ??= $this->buildClientJwksProvider();
     }
 
     protected function buildClientJwksProvider(): JwksProviderInterface

@@ -9,6 +9,7 @@ use Jose\Component\Core\JWKSet;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\KeyManagement\KeyConverter\KeyConverter;
 use RuntimeException;
+use function assert;
 use function is_array;
 use function is_string;
 
@@ -16,6 +17,8 @@ class X5UFactory extends UrlKeySetFactory
 {
     /**
      * This method will try to fetch the url a retrieve the key set. Throws an exception in case of failure.
+     *
+     * @param array<string, string|string[]> $header
      */
     public function loadFromUrl(string $url, array $header = []): JWKSet
     {
@@ -27,7 +30,8 @@ class X5UFactory extends UrlKeySetFactory
 
         $keys = [];
         foreach ($data as $kid => $cert) {
-            if (mb_strpos((string) $cert, '-----BEGIN CERTIFICATE-----') === false) {
+            assert(is_string($cert), 'Invalid content.');
+            if (! str_contains($cert, '-----BEGIN CERTIFICATE-----')) {
                 $cert = '-----BEGIN CERTIFICATE-----' . "\n" . $cert . "\n" . '-----END CERTIFICATE-----';
             }
             $jwk = KeyConverter::loadKeyFromCertificate($cert);

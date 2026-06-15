@@ -32,7 +32,7 @@
         "access token"
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-json": "*",
         "nyholm/psr7": "^1.8",
         "psr/clock": "^1.0",
@@ -43,7 +43,7 @@
         "symfony/http-client": "^6.0 || ^7.0 || ^8.0",
         "symfony/polyfill-mbstring": "^1.15",
         "symfony/polyfill-php83": "^1.33",
-        "web-token/jwt-library": "^3.4"
+        "web-token/jwt-library": "^4.0"
     },
     "autoload": {
         "files": [
@@ -60,21 +60,25 @@
         }
     },
     "require-dev": {
-        "facile-it/facile-coding-standard": "^1.4.1",
+        "facile-it/facile-coding-standard": "1.5.0",
         "friendsofphp/php-cs-fixer": "^3.92.3",
         "phpspec/prophecy-phpunit": "^2.0.1",
         "phpunit/phpunit": "^10.5.60 || ^11.5.46 || ^12.0.0",
+        "rector/rector": "2.3.9",
         "spomky-labs/aes-key-wrap": "^7.0",
         "vimeo/psalm": "^6.14.3"
     },
     "scripts": {
+        "rector-check": "rector --dry-run",
+        "rector-fix": "rector",
         "cs-check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
         "cs-fix": "php-cs-fixer fix --diff --allow-risky=yes",
         "psalm": "psalm",
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-text",
         "check": [
-            "@cs-check",
+            "@rector-check",
+            "@cs-fix",
             "@psalm",
             "@test"
         ]

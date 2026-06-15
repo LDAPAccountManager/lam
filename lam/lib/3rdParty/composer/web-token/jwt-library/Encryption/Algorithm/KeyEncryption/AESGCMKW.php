@@ -8,13 +8,15 @@ use AESKW\Wrapper as WrapperInterface;
 use InvalidArgumentException;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\Base64UrlSafe;
+use Override;
 use RuntimeException;
 use function extension_loaded;
 use function in_array;
 use function is_string;
+use function sprintf;
 use const OPENSSL_RAW_DATA;
 
-abstract class AESGCMKW implements KeyWrapping
+abstract readonly class AESGCMKW implements KeyWrapping
 {
     public function __construct()
     {
@@ -26,6 +28,7 @@ abstract class AESGCMKW implements KeyWrapping
         }
     }
 
+    #[Override]
     public function allowedKeyTypes(): array
     {
         return ['oct'];
@@ -35,6 +38,7 @@ abstract class AESGCMKW implements KeyWrapping
      * @param array<string, mixed> $completeHeader
      * @param array<string, mixed> $additionalHeader
      */
+    #[Override]
     public function wrapKey(JWK $key, string $cek, array $completeHeader, array &$additionalHeader): string
     {
         $kek = $this->getKey($key);
@@ -55,6 +59,7 @@ abstract class AESGCMKW implements KeyWrapping
     /**
      * @param array<string, mixed> $completeHeader
      */
+    #[Override]
     public function unwrapKey(JWK $key, string $encrypted_cek, array $completeHeader): string
     {
         $kek = $this->getKey($key);
@@ -77,6 +82,7 @@ abstract class AESGCMKW implements KeyWrapping
         return $cek;
     }
 
+    #[Override]
     public function getKeyManagementMode(): string
     {
         return self::MODE_WRAP;

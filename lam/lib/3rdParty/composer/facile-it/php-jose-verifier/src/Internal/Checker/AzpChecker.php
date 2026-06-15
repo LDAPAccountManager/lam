@@ -12,16 +12,13 @@ use function sprintf;
 /**
  * @internal
  */
-final class AzpChecker implements ClaimChecker
+final readonly class AzpChecker implements ClaimChecker
 {
     private const CLAIM_NAME = 'azp';
 
-    private string $azp;
-
-    public function __construct(string $azp)
-    {
-        $this->azp = $azp;
-    }
+    public function __construct(
+        private string $azp,
+    ) {}
 
     /**
      * @param mixed $value

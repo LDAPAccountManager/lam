@@ -107,7 +107,7 @@ $refreshToken = $tokenSet->getRefreshToken(); // Refresh token, if returned
 if ($idToken) {
     $claims = $tokenSet->claims(); // IdToken claims
 } else {
-    throw new \RuntimeException('Unauthorized')
+    throw new \RuntimeException('Unauthorized');
 }
 
 

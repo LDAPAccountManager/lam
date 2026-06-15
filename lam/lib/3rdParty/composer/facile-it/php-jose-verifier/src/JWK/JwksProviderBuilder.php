@@ -113,15 +113,15 @@ final class JwksProviderBuilder
         $provider = new RemoteJwksProvider(
             $this->buildHttpClient(),
             $this->buildRequestFactory(),
-            $this->jwksUri
+            $this->jwksUri,
         );
 
-        if (null !== $this->cache) {
+        if ($this->cache instanceof CacheInterface) {
             $provider = new CachedJwksProvider(
                 $provider,
                 $this->cache,
-                substr(sha1(__CLASS__ . $this->jwksUri), 0, 65),
-                $this->cacheTtl
+                substr(sha1(self::class . $this->jwksUri), 0, 65),
+                $this->cacheTtl,
             );
         }
 

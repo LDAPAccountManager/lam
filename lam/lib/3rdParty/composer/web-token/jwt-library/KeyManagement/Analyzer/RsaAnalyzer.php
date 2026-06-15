@@ -7,11 +7,15 @@ namespace Jose\Component\KeyManagement\Analyzer;
 use InvalidArgumentException;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\Base64UrlSafe;
+use Override;
 use function is_array;
 use function is_string;
+use function strlen;
+use const STR_PAD_RIGHT;
 
-final class RsaAnalyzer implements KeyAnalyzer
+final readonly class RsaAnalyzer implements KeyAnalyzer
 {
+    #[Override]
     public function analyze(JWK $jwk, MessageBag $bag): void
     {
         if ($jwk->get('kty') !== 'RSA') {
@@ -30,7 +34,7 @@ final class RsaAnalyzer implements KeyAnalyzer
 
             return;
         }
-        $exponent = unpack('l', str_pad(Base64UrlSafe::decodeNoPadding($e), 4, "\0"));
+        $exponent = unpack('l', str_pad(Base64UrlSafe::decodeNoPadding($e), 4, "\0", STR_PAD_RIGHT));
         if (! is_array($exponent) || ! isset($exponent[1])) {
             throw new InvalidArgumentException('Unable to get the private key');
         }
@@ -47,7 +51,7 @@ final class RsaAnalyzer implements KeyAnalyzer
 
             return;
         }
-        $n = 8 * mb_strlen(Base64UrlSafe::decodeNoPadding($n), '8bit');
+        $n = 8 * strlen(Base64UrlSafe::decodeNoPadding($n));
         if ($n < 2048) {
             $bag->add(Message::high('The key length is less than 2048 bits.'));
         }

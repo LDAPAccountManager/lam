@@ -10,14 +10,11 @@ use Psr\Clock\ClockInterface;
 /**
  * @internal
  */
-final class InternalClock implements ClockInterface
+final readonly class InternalClock implements ClockInterface
 {
-    private ?DateTimeImmutable $now;
-
-    public function __construct(?DateTimeImmutable $dateTime = null)
-    {
-        $this->now = $dateTime;
-    }
+    public function __construct(
+        private ?DateTimeImmutable $now = null,
+    ) {}
 
     public function now(): DateTimeImmutable
     {

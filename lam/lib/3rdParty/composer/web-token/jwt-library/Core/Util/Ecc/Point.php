@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jose\Component\Core\Util\Ecc;
 
 use Brick\Math\BigInteger;
+use function strlen;
 use const STR_PAD_LEFT;
 
 /**
@@ -27,7 +28,7 @@ use const STR_PAD_LEFT;
 /**
  * @internal
  */
-final class Point
+final readonly class Point
 {
     private function __construct(
         private BigInteger $x,
@@ -90,7 +91,7 @@ final class Point
 
     private static function cswapBigInteger(BigInteger &$sa, BigInteger &$sb, int $cond): void
     {
-        $size = max(mb_strlen($sa->toBase(2), '8bit'), mb_strlen($sb->toBase(2), '8bit'));
+        $size = max(strlen($sa->toBase(2)), strlen($sb->toBase(2)));
         $mask = (string) (1 - $cond);
         $mask = str_pad('', $size, $mask, STR_PAD_LEFT);
         $mask = BigInteger::fromBase($mask, 2);

@@ -79,7 +79,7 @@ final class TokenDecrypter implements TokenDecrypterInterface
             if (class_exists($algorithmClass)) {
                 try {
                     $this->algorithms[] = new $algorithmClass();
-                } catch (Throwable $throwable) {
+                } catch (Throwable) {
                     // does nothing
                 }
             }
@@ -130,16 +130,15 @@ final class TokenDecrypter implements TokenDecrypterInterface
             new JWESerializerManager([new CompactSerializer()]),
             new JWEDecrypter(
                 new AlgorithmManager($this->algorithms),
-                new AlgorithmManager($this->algorithms)
             ),
-            $headerChecker
+            $headerChecker,
         );
 
         try {
             return $jweLoader->loadAndDecryptWithKeySet(
                 $jwt,
                 $this->buildJwks($jwt),
-                $recipient
+                $recipient,
             )->getPayload();
         } catch (Throwable $e) {
             throw new InvalidTokenException('Unable to decrypt JWE', 0, $e);
@@ -159,7 +158,7 @@ final class TokenDecrypter implements TokenDecrypterInterface
             KeyEncryption\A128GCMKW::class,
             KeyEncryption\A192GCMKW::class,
             KeyEncryption\A256GCMKW::class,
-            ...(class_exists('AESKW\Wrapper') ? [
+            ...(class_exists(\AESKW\Wrapper::class) ? [
                 KeyEncryption\A128KW::class,
                 KeyEncryption\A192KW::class,
                 KeyEncryption\A256KW::class,

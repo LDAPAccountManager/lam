@@ -38,22 +38,6 @@ use function str_replace;
  */
 abstract class AbstractTokenVerifier implements TokenVerifierInterface
 {
-    protected string $issuer;
-
-    protected string $clientId;
-
-    protected ?string $clientSecret;
-
-    protected ?string $expectedAzp;
-
-    protected ?string $expectedAlg;
-
-    protected int $clockTolerance;
-
-    protected bool $authTimeRequired;
-
-    protected bool $aadIssValidation;
-
     protected JwksProviderInterface $jwksProvider;
 
     protected TokenDecrypterInterface $decrypter;
@@ -70,26 +54,18 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
      * @psalm-internal \Facile\JoseVerifier
      */
     final public function __construct(
-        string $issuer,
-        string $clientId,
-        ?string $clientSecret = null,
-        bool $authTimeRequired = false,
-        int $clockTolerance = 0,
-        bool $aadIssValidation = false,
-        ?string $expectedAzp = null,
-        ?string $expectedAlg = null,
+        protected string $issuer,
+        protected string $clientId,
+        protected ?string $clientSecret = null,
+        protected bool $authTimeRequired = false,
+        protected int $clockTolerance = 0,
+        protected bool $aadIssValidation = false,
+        protected ?string $expectedAzp = null,
+        protected ?string $expectedAlg = null,
         ?JwksProviderInterface $jwksProvider = null,
         ?TokenDecrypterInterface $decrypter = null,
         ?ClockInterface $clock = null,
     ) {
-        $this->issuer = $issuer;
-        $this->clientId = $clientId;
-        $this->clientSecret = $clientSecret;
-        $this->authTimeRequired = $authTimeRequired;
-        $this->clockTolerance = $clockTolerance;
-        $this->aadIssValidation = $aadIssValidation;
-        $this->expectedAzp = $expectedAzp;
-        $this->expectedAlg = $expectedAlg;
         $this->jwksProvider = $jwksProvider ?? new MemoryJwksProvider();
         $this->decrypter = $decrypter ?? new NullTokenDecrypter();
         $this->clock = $clock ?? new InternalClock();
@@ -133,10 +109,10 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
         $validator = Validate::withToken($jwt)
             ->withJWKSet($this->buildJwks($jwt))
             ->withClaim(new IssuerChecker([$expectedIssuer], true))
-            ->withClaim(new IssuedAtChecker($this->clockTolerance, true, $this->clock))
+            ->withClaim(new IssuedAtChecker($this->clock, $this->clockTolerance, true))
             ->withClaim(new AudienceChecker($this->clientId, true))
-            ->withClaim(new ExpirationTimeChecker($this->clockTolerance, false, $this->clock))
-            ->withClaim(new NotBeforeChecker($this->clockTolerance, true, $this->clock));
+            ->withClaim(new ExpirationTimeChecker($this->clock, $this->clockTolerance, false))
+            ->withClaim(new NotBeforeChecker($this->clock, $this->clockTolerance, true));
 
         if (null !== $this->expectedAzp) {
             $validator = $validator->withClaim(new AzpChecker($this->expectedAzp));
@@ -238,12 +214,12 @@ abstract class AbstractTokenVerifier implements TokenVerifierInterface
         $jwks = JWKSet::createFromKeyData($this->jwksProvider->getJwks());
         $jwk = $jwks->selectKey('sig', null, ['kid' => $kid]);
 
-        if (null === $jwk) {
+        if (! $jwk instanceof JWK) {
             $jwks = JWKSet::createFromKeyData($this->jwksProvider->reload()->getJwks());
             $jwk = $jwks->selectKey('sig', null, ['kid' => $kid]);
         }
 
-        if (null === $jwk) {
+        if (! $jwk instanceof JWK) {
             throw new InvalidTokenException('Unable to find the jwk with the provided kid: ' . $kid);
         }
 

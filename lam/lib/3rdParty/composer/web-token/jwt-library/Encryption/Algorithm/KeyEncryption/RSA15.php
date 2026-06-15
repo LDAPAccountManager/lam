@@ -8,9 +8,10 @@ use InvalidArgumentException;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\RSAKey;
 use Jose\Component\Encryption\Algorithm\KeyEncryption\Util\RSACrypt;
+use Override;
 use function is_string;
 
-final class RSA15 extends RSA
+final readonly class RSA15 extends RSA
 {
     /**
      * @var array<string, int>
@@ -24,6 +25,7 @@ final class RSA15 extends RSA
         'A256CBC-HS512' => 64,
     ];
 
+    #[Override]
     public function name(): string
     {
         return 'RSA1_5';
@@ -32,6 +34,7 @@ final class RSA15 extends RSA
     /**
      * @param array<string, mixed> $header
      */
+    #[Override]
     public function decryptKey(JWK $key, string $encrypted_cek, array $header): string
     {
         $this->checkKey($key);
@@ -49,11 +52,13 @@ final class RSA15 extends RSA
         );
     }
 
+    #[Override]
     protected function getEncryptionMode(): int
     {
         return RSACrypt::ENCRYPTION_PKCS1;
     }
 
+    #[Override]
     protected function getHashAlgorithm(): ?string
     {
         return null;

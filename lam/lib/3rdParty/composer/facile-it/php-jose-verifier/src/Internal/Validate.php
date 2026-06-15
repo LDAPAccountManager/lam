@@ -24,8 +24,6 @@ use Throwable;
  */
 final class Validate
 {
-    private string $token;
-
     private JWKSet $jwkset;
 
     /** @var Checker\HeaderChecker[] */
@@ -40,16 +38,16 @@ final class Validate
     /** @var string[] */
     private array $mandatoryClaims = [];
 
-    private function __construct(string $token)
-    {
-        $this->token = $token;
+    private function __construct(
+        private string $token,
+    ) {
         $this->jwkset = new JWKSet([]);
 
         foreach ($this->getAlgorithmMap() as $algorithmClass) {
             if (class_exists($algorithmClass)) {
                 try {
                     $this->algorithms[] = new $algorithmClass();
-                } catch (Throwable $throwable) {
+                } catch (Throwable) {
                     // does nothing
                 }
             }
@@ -58,7 +56,7 @@ final class Validate
 
     public static function withToken(string $token): static
     {
-        return new static($token);
+        return new self($token);
     }
 
     /**
@@ -82,7 +80,7 @@ final class Validate
             /** @var array<string, mixed> $claims */
             $claims = JsonConverter::decode($jws->getPayload() ?? '{}');
         } catch (JsonException $e) {
-            throw new InvalidTokenException('Unable to decode JWT payload');
+            throw new InvalidTokenException('Unable to decode JWT payload', $e->getCode(), $e);
         }
 
         $claimChecker = new Checker\ClaimCheckerManager($this->claimCheckers);
@@ -92,9 +90,7 @@ final class Validate
             throw new InvalidTokenException($e->getMessage(), 0, $e);
         } catch (Checker\InvalidClaimException $e) {
             throw new InvalidTokenClaimException($e->getMessage(), $e->getClaim(), $e->getValue(), $e);
-        } catch (Checker\MissingMandatoryHeaderParameterException $e) {
-            throw new InvalidTokenException($e->getMessage(), 0, $e);
-        } catch (Checker\MissingMandatoryClaimException $e) {
+        } catch (Checker\MissingMandatoryHeaderParameterException|Checker\MissingMandatoryClaimException $e) {
             throw new InvalidTokenException($e->getMessage(), 0, $e);
         } catch (Throwable $e) {
             throw new InvalidTokenException('An error occurred validating JWT', 0, $e);
