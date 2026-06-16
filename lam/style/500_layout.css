@@ -98,6 +98,17 @@ a.icon-active img {
 	filter: invert(58%) sepia(70%) saturate(467%) hue-rotate(162deg) brightness(92%) contrast(99%);
 }
 
+button.icon {
+    border: none;
+    background: transparent;
+    padding: var(--lam-small-space);
+}
+
+button.icon img {
+    width: var(--lam-icon-size);
+    height: var(--lam-icon-size);
+}
+
 .show-pointer {
     cursor: pointer;
 }

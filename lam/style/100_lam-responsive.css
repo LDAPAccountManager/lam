@@ -317,7 +317,7 @@ table.lam-account-edit-table {
 		position: relative;
 	}
 
-	.lam-header.lam-header-open a.lam-menu-icon {
+	.lam-header.lam-header-open .lam-menu-icon {
 		position: absolute;
 		right: 0;
 		top: 0;
