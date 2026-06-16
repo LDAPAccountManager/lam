@@ -1988,7 +1988,7 @@ window.lam.webauthn = window.lam.webauthn || {};
  * @returns {number} character
  */
 window.lam.webauthn.charAt = function (c) {
-	return c.charCodeAt(0);
+	return c.codePointAt(0);
 }
 
 /**
@@ -2202,7 +2202,7 @@ window.lam.webauthn.authenticate = function(publicKey) {
  * @returns base64 string
  */
 window.lam.webauthn.arrayToBase64String = function(input) {
-	return btoa(String.fromCharCode(...input))
+	return btoa(String.fromCodePoint(...input))
         .replaceAll("=", "")
         .replaceAll("+", "-")
         .replaceAll("/", "_");
