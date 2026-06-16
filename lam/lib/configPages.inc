@@ -78,11 +78,11 @@ function printConfigurationPageHeaderBar(LAMConfig $conf): void {
 		<?php
 		if (is_dir(__DIR__ . '/../docs/manual')) {
 			?>
-            <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon"
+            <button class="lam-header-right lam-menu-icon hide-on-tablet icon"
                onclick="window.lam.topmenu.toggle();">
                 <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
                 <span class="padding0">&nbsp;</span>
-            </a>
+            </button>
             <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
                 <span class="padding0"><?php echo _("Help") ?></span>
             </a>
