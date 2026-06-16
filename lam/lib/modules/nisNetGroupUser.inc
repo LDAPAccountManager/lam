@@ -342,11 +342,11 @@ class nisNetGroupUser extends baseModule {
 				$triples = array_merge($changeSet['add'], $triples);
 			}
 			$triples = array_values(array_unique($triples));
-			$attributes = [
+			$attributesNew = [
 				'nisnetgrouptriple' => $triples
 			];
-			logNewMessage(LOG_DEBUG, 'Updating ' . $dn . ' with ' . print_r($attributes, true));
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
+			logNewMessage(LOG_DEBUG, 'Updating ' . $dn . ' with ' . print_r($attributesNew, true));
+			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributesNew);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

@@ -5,7 +5,7 @@ use htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2024  Roland Gruber
+  Copyright (C) 2003 - 2026  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,10 +68,10 @@ $content = new htmlResponsiveRow();
 	        <?php
 	        if (is_dir(__DIR__ . '/../../docs/manual')) {
 		        ?>
-                <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
+                <button class="lam-header-right lam-menu-icon hide-on-tablet icon" onclick="window.lam.topmenu.toggle();">
                     <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
                     <span class="padding0">&nbsp;</span>
-                </a>
+                </button>
                 <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
                     <span class="padding0"><?php echo _("Help") ?></span>
                 </a>

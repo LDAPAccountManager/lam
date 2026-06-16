@@ -2120,12 +2120,11 @@ window.lam.webauthn.register = function(publicKey, successCallback, errorCallbac
 		publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), window.lam.webauthn.charAt);
 		publicKey.rp.icon = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + publicKey.rp.icon;
 		if (publicKey.excludeCredentials) {
-			for (var i = 0; i < publicKey.excludeCredentials.length; i++) {
-				var idOrig = publicKey.excludeCredentials[i]['id'];
-				idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
-				var idOrigDecoded = atob(idOrig);
-				var idArray = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt)
-				publicKey.excludeCredentials[i]['id'] = idArray;
+			for (let i = 0; i < publicKey.excludeCredentials.length; i++) {
+                let idOrig = publicKey.excludeCredentials[i]['id'];
+                idOrig = idOrig.replaceAll('-', "+").replaceAll('_', "/");
+                const idOrigDecoded = atob(idOrig);
+                publicKey.excludeCredentials[i]['id'] = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt);
 			}
 		}
 	}
@@ -2154,12 +2153,11 @@ window.lam.webauthn.register = function(publicKey, successCallback, errorCallbac
  */
 window.lam.webauthn.authenticate = function(publicKey) {
 	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), window.lam.webauthn.charAt);
-	for (var i = 0; i < publicKey.allowCredentials.length; i++) {
+	for (let i = 0; i < publicKey.allowCredentials.length; i++) {
 		let idOrig = publicKey.allowCredentials[i]['id'];
-		idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
+		idOrig = idOrig.replaceAll('-', "+").replaceAll('_', "/");
 		const idOrigDecoded = atob(idOrig);
-		const idArray = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt)
-		publicKey.allowCredentials[i]['id'] = idArray;
+        publicKey.allowCredentials[i]['id'] = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt);
 	}
 	navigator.credentials.get({publicKey: publicKey})
 		.then(function(data) {

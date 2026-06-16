@@ -455,11 +455,11 @@ function displayLoginHeader(): void {
 			}
 			?>
         </div>
-        <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon"
+        <button class="lam-header-right lam-menu-icon hide-on-tablet icon"
            onclick="window.lam.topmenu.toggle();">
             <img class="align-middle" width="16" height="16" alt="menu" src="../graphics/menu.svg">
             <span class="padding0"></span>
-        </a>
+        </button>
         <div class="lam-header-right lam-header-menublock">
             <a class="lam-menu-entry" href="config/index.php" target="_top">
                 <span class="padding0"><?php echo _("LAM configuration") ?></span>
