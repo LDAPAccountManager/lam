@@ -1,3 +1,9 @@
+17.06.2026 9.6.1
+ - Fixed bugs:
+  -> Custom scripts: wildcards that include a dot are not replaced
+  -> Group of Names: memberships cannot be managed
+
+
 12.06.2026 9.6
  - PHP 8.5 compatibility
  - Wildcards for Unix groups and group of names (674)
