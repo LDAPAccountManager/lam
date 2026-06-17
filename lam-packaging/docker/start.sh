@@ -42,7 +42,6 @@ if [[ "$LAM_SKIP_PRECONFIGURE" != "true" ]]; then
   echo "Configuring LAM"
 
   LAM_LANG="${LAM_LANG:-en_US}"
-  LAM_PASSWORD="${LAM_PASSWORD:-lam}"
   LDAP_SERVER="${LDAP_SERVER:-ldap://ldap:389}"
   LDAP_DOMAIN="${LDAP_DOMAIN:-my-domain.com}"
   LDAP_BASE_DN="${LDAP_BASE_DN:-dc=${LDAP_DOMAIN//\./,dc=}}"
