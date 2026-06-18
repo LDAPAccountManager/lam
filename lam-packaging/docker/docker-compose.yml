@@ -1,4 +1,3 @@
-version: '3.5'
 services:
   ldap-account-manager:
     build:
@@ -9,13 +8,17 @@ services:
       - "8080:80"
     volumes:
       - lamconfig:/var/lib/ldap-account-manager/config
+      - lammainconfig:/etc/ldap-account-manager
     environment:
+      - LAM_SKIP_PRECONFIGURE=${LAM_SKIP_PRECONFIGURE}
       - LAM_PASSWORD=${LAM_PASSWORD}
-      - LAM_LANG=en_US
+      - LAM_LANG=${LAM_LANG}
       - LDAP_SERVER=${LDAP_SERVER}
       - LDAP_DOMAIN=${LDAP_DOMAIN}
       - LDAP_BASE_DN=${LDAP_BASE_DN}
       - LDAP_USER=cn=admin,${LDAP_BASE_DN}
+      - LDAP_USERS_DN=${LDAP_USERS_DN}
+      - LDAP_GROUPS_DN=${LDAP_GROUPS_DN}
       - DEBUG=true
     hostname: ldap-account-manager
   ldap:
@@ -42,6 +45,7 @@ services:
 
 volumes:
   lamconfig:
+  lammainconfig:
   ldap:
   slapd:
 
