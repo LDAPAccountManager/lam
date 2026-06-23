@@ -442,6 +442,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionLakeFormation(array $args = [])
  * @method \Aws\Lambda\LambdaClient createLambda(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionLambda(array $args = [])
+ * @method \Aws\LambdaCore\LambdaCoreClient createLambdaCore(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionLambdaCore(array $args = [])
+ * @method \Aws\LambdaMicrovms\LambdaMicrovmsClient createLambdaMicrovms(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionLambdaMicrovms(array $args = [])
  * @method \Aws\LaunchWizard\LaunchWizardClient createLaunchWizard(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionLaunchWizard(array $args = [])
  * @method \Aws\LexModelBuildingService\LexModelBuildingServiceClient createLexModelBuildingService(array $args = [])
@@ -857,7 +861,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.384.9';
+    const VERSION = '3.386.1';
 
     /** @var array Arguments for creating clients */
     private $args;
