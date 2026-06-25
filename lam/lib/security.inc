@@ -333,6 +333,40 @@ function logNewMessage($level, $message): void {
 }
 
 /**
+ * Logs a message to a remote logging service.
+ *
+ * @param int $level log level
+ * @param string $message log message
+ * @param LAMCfgMain $cfgMain main configuration
+ */
+function lamLogRemoteMessage($level, $message, $cfgMain): void {
+	include_once __DIR__ . '/3rdParty/composer/autoload.php';
+	$remoteParts = explode(':', $cfgMain->logDestination);
+	$server = $remoteParts[1];
+	$port = intval($remoteParts[2]);
+	$output = "%channel%.%level_name%: %message%";
+	$formatter = new Monolog\Formatter\LineFormatter($output);
+	$logger = new Monolog\Logger('lam');
+	$syslogHandler = new Monolog\Handler\SyslogUdpHandler($server, $port);
+	$syslogHandler->setFormatter($formatter);
+	$logger->pushHandler($syslogHandler);
+	switch ($level) {
+		case LOG_DEBUG:
+			$logger->debug($message);
+			break;
+		case LOG_NOTICE:
+			$logger->notice($message);
+			break;
+		case LOG_WARNING:
+			$logger->warning($message);
+			break;
+		case LOG_ERR:
+			$logger->error($message);
+			break;
+	}
+}
+
+/**
  * Checks if write access to LDAP is allowed.
  *
  * @param String $scope account type (e.g. user)
@@ -1049,40 +1083,6 @@ function lamEncryptionAlgo() {
 		return 'AES-256-CBC';
 	}
 	return 'AES256';
-}
-
-/**
- * Logs a message to a remote logging service.
- *
- * @param int $level log level
- * @param string $message log message
- * @param LAMCfgMain $cfgMain main configuration
- */
-function lamLogRemoteMessage($level, $message, $cfgMain): void {
-	include_once __DIR__ . '/3rdParty/composer/autoload.php';
-	$remoteParts = explode(':', $cfgMain->logDestination);
-	$server = $remoteParts[1];
-	$port = intval($remoteParts[2]);
-	$output = "%channel%.%level_name%: %message%";
-	$formatter = new Monolog\Formatter\LineFormatter($output);
-	$logger = new Monolog\Logger('lam');
-	$syslogHandler = new Monolog\Handler\SyslogUdpHandler($server, $port);
-	$syslogHandler->setFormatter($formatter);
-	$logger->pushHandler($syslogHandler);
-	switch ($level) {
-		case LOG_DEBUG:
-			$logger->debug($message);
-			break;
-		case LOG_NOTICE:
-			$logger->notice($message);
-			break;
-		case LOG_WARNING:
-			$logger->warning($message);
-			break;
-		case LOG_ERR:
-			$logger->error($message);
-			break;
-	}
 }
 
 /**
