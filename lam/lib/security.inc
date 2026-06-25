@@ -366,6 +366,40 @@ function lamLogRemoteMessage($level, $message, $cfgMain): void {
 	}
 }
 
+function logAuditMessage($message): void {
+	if (isset($_SESSION['cfgMain'])) {
+		$cfg = $_SESSION['cfgMain'];
+	}
+	else {
+		$cfg = new LAMCfgMain();
+		$_SESSION['cfgMain'] = $cfg;
+	}
+	// check if logging is disabled
+	if ($cfg->auditLogType === LOG_FILE_TARGET::NONE->name) {
+		return;
+	}
+	$message = "LDAP Account Manager AuditLog (" . session_id() . ' - ' . getClientIPForLogging() . ' - ' . getLamLdapUser() . ") - " . $message;
+	if ($cfg->auditLogType === LOG_FILE_TARGET::SYSLOG->name) {
+		syslog(LOG_NOTICE, str_replace(["\n", "\r"], ['', ''], $message));
+	}
+	elseif (($cfg->auditLogType === LOG_FILE_TARGET::FILE->name) && LAMCfgMain::isValidLogFilename($cfg->auditLogTarget)) {
+		@touch($cfg->auditLogTarget);
+		if (is_writable($cfg->auditLogTarget)) {
+			$file = fopen($cfg->auditLogTarget, 'a');
+			if ($file) {
+				$timeZone = 'UTC';
+				$sysTimeZone = @date_default_timezone_get();
+				if (!empty($sysTimeZone)) {
+					$timeZone = $sysTimeZone;
+				}
+				$time = new DateTime('now', new DateTimeZone($timeZone));
+				fwrite($file, $time->format('Y-m-d H:i:s') . ' ' . $message . "\n");
+				fclose($file);
+			}
+		}
+	}
+}
+
 /**
  * Checks if write access to LDAP is allowed.
  *

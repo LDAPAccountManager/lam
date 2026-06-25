@@ -615,6 +615,7 @@ if (isset($_POST['checklogin'])) {
 		addSecurityTokenToSession();
 		// logging
 		logNewMessage(LOG_NOTICE, 'User ' . $username . ' (' . $clientSource . ') successfully logged in.');
+        logAuditMessage('Login to server profile: ' . $_SESSION['config']->getName());
 		// Load main frame or 2 factor page
 		if ($_SESSION['config']->getTwoFactorAuthentication() == TwoFactorProviderService::TWO_FACTOR_NONE) {
 			metaRefresh("./main.php");
