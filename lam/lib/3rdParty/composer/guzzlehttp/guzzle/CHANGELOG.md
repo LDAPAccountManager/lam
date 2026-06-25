@@ -3,6 +3,31 @@
 Please refer to [UPGRADING](UPGRADING.md) guide for upgrading to a major version.
 
 
+## 7.12.3 - 2026-06-23
+
+### Changed
+
+- Adjusted `guzzlehttp/psr7` version constraint to `^2.12.3`
+
+### Security
+
+- Treat IP and numeric cookie domains as exact-match-only (GHSA-g446-98w2-8p5w)
+
+
+## 7.12.2 - 2026-06-23
+
+### Fixed
+
+- Clamp out-of-range `Max-Age` so a very large value no longer overflows to an already-expired timestamp
+- Use strict comparison in `CookieJar` conflict resolution so distinct numeric-string names don't overwrite
+- Store a cookie whose `Domain` has a trailing dot on the origin host instead of silently discarding it
+- Fix `StreamHandler` hard-failing on bracketed IPv6 literal hosts when `force_ip_resolve` is set
+- Use strict cookie `Path` comparison so `CookieJar::clear()` with a numeric path keeps a distinct-path cookie
+- Fixed cookie handling for falsey `Domain`, `Max-Age`, path, and name values
+- Fixed `decode_content` handling for falsey string values
+- Fixed deprecated request option values reaching built-in handlers before normalization
+
+
 ## 7.12.1 - 2026-06-18
 
 ### Changed

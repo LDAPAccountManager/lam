@@ -17,8 +17,6 @@
 
     "phpmailer/phpmailer": "^7",
 
-    "guzzlehttp/psr7": "^2",
-
     "phpseclib/phpseclib": "^3.0",
     "paragonie/random_compat": "^2.0",
 
