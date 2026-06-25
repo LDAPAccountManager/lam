@@ -32,6 +32,7 @@ use htmlHiddenInput;
 use LAMConfig;
 use LAMException;
 use LamTemporaryFilesManager;
+use LOG_FILE_TARGET;
 use PDO;
 
 /*
@@ -295,18 +296,6 @@ if (isset($_POST['submitFormData'])) {
 	}
 	else {
 		$isValidLogFile = isset($_POST['logFile']) && LAMCfgMain::isValidLogFilename($_POST['logFile']);
-		$blockedPrefixes = ['/usr', '/etc', '/dev', '/boot', '/lib', '/proc', '/root', '/run', '/sys', '/snap'];
-		if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-			$blockedPrefixes[] = $_SERVER['DOCUMENT_ROOT'];
-		}
-		foreach ($blockedPrefixes as $blockedPrefix) {
-			if (!$isValidLogFile) {
-				break;
-			}
-			if (str_starts_with($_POST['logFile'], $blockedPrefix)) {
-				$isValidLogFile = false;
-			}
-		}
 		if ($isValidLogFile) {
 			$cfg->logDestination = $_POST['logFile'];
 		}
@@ -314,6 +303,29 @@ if (isset($_POST['submitFormData'])) {
 			$errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, ., _ and -. The file must end with '.log' or '.txt'.");
 		}
 	}
+    // audit log
+    if (LOG_FILE_TARGET::tryFrom($_POST['auditLogType']) !== null) {
+        $cfg->auditLogType = $_POST['auditLogType'];
+        if ($cfg->auditLogType === LOG_FILE_TARGET::FILE->name) {
+			$isValidLogFile = isset($_POST['auditLogFile']) && LAMCfgMain::isValidLogFilename($_POST['auditLogFile']);
+			if ($isValidLogFile) {
+				$cfg->auditLogTarget = $_POST['auditLogFile'];
+			}
+			else {
+				$errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, ., _ and -. The file must end with '.log' or '.txt'.");
+			}
+        }
+        elseif ($cfg->auditLogType === LOG_FILE_TARGET::REMOTE->name) {
+			$remoteParts = explode(':', $_POST['auditLogRemote']);
+			if ((count($remoteParts) !== 2) || !get_preg($remoteParts[0], 'DNSname') || !get_preg($remoteParts[1], 'digit')) {
+				$errors[] = _("Please enter a valid remote server in format \"server:port\".");
+			}
+            else {
+				$cfg->auditLogTarget = $_POST['auditLogRemote'];
+            }
+		}
+    }
+
 	// password policies
 	$cfg->passwordMinLength = intval($_POST['passwordMinLength']);
 	$cfg->passwordMinLower = intval($_POST['passwordMinLower']);
@@ -706,6 +718,30 @@ if (isset($_POST['submitFormData'])) {
 	$errorLogSelect = new htmlResponsiveSelect('errorReporting', $errorLogOptions, [$cfg->errorReporting], _('PHP error reporting'), '244');
 	$errorLogSelect->setHasDescriptiveElements(true);
 	$row->add($errorLogSelect);
+    // audit log
+	$auditDestinationOptions = [
+		_("No logging") => LOG_FILE_TARGET::NONE->name,
+		_("System logging") => LOG_FILE_TARGET::SYSLOG->name,
+		_("File") => LOG_FILE_TARGET::FILE->name,
+		_("Remote") => LOG_FILE_TARGET::REMOTE->name,
+	];
+	$auditLogDestinationSelect = new htmlResponsiveSelect('auditLogType', $auditDestinationOptions, [$cfg->auditLogType], _("Audit log destination"), '240');
+	$auditLogDestinationSelect->setTableRowsToHide([
+		LOG_FILE_TARGET::NONE->name => ['auditLogFile', 'auditLogRemote'],
+		LOG_FILE_TARGET::SYSLOG->name => ['auditLogFile', 'auditLogRemote'],
+		LOG_FILE_TARGET::REMOTE->name => ['auditLogFile'],
+		LOG_FILE_TARGET::FILE->name => ['auditLogRemote']
+	]);
+	$auditLogDestinationSelect->setTableRowsToShow([
+		LOG_FILE_TARGET::FILE->name => ['auditLogFile'],
+		LOG_FILE_TARGET::REMOTE->name => ['auditLogRemote']
+	]);
+	$auditLogDestinationSelect->setHasDescriptiveElements(true);
+	$row->add($auditLogDestinationSelect);
+    $auditLogFile = $cfg->auditLogType === LOG_FILE_TARGET::FILE->name ? $cfg->auditLogTarget : '';
+	$row->add(new htmlResponsiveInputField(_('File'), 'auditLogFile', $auditLogFile));
+	$auditLogRemote = $cfg->auditLogType === LOG_FILE_TARGET::REMOTE->name ? $cfg->auditLogTarget : '';
+	$row->add(new htmlResponsiveInputField(_('Remote server'), 'auditLogRemote', $auditLogRemote, '251'));
 
 	// mail options
 	if (isLAMProVersion()) {
