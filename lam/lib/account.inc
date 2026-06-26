@@ -1188,6 +1188,23 @@ function moveDn(string $oldDn, string $targetDn): void {
 }
 
 /**
+ * Adds a new LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]> $entry attributes
+ * @return bool the operation was successful
+ */
+function ldapAddNewEntry(Connection $connection, string $dn, array $entry): bool {
+	logNewMessage(LOG_DEBUG, 'Adding new entry: ' . $dn . ' with attributes: ' . json_encode($entry, JSON_PRETTY_PRINT));
+	logAuditMessage('Adding new entry: ' . $dn . ' with attributes: ' . json_encode($entry, JSON_PRETTY_PRINT));
+	$result = @ldap_add($connection, $dn, $entry);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	return $result;
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array<string|string[]>|null parameters for StatusMessage or null if all was ok

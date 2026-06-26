@@ -137,10 +137,9 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			$found = ldapGetDN($new_dn);
 			if ($found === null) {
 				// add new ou
-				$ou = [];
-				$ou['objectClass'] = "organizationalunit";
-				$ou['ou'] = $_POST['newOU'];
-				$ret = @ldap_add($_SESSION['ldap']->server(), $new_dn, $ou);
+				$ou['objectClass'][] = "organizationalunit";
+				$ou['ou'][] = $_POST['newOU'];
+				$ret = ldapAddNewEntry($_SESSION['ldap']->server(), $new_dn, $ou);
 				if ($ret) {
 					$message = _("New OU created successfully.");
 					refreshOus($optionsToInsert, $optionsToDelete);
