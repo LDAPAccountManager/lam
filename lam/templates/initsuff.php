@@ -74,20 +74,20 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			$end = implode(",", $tmp);
 			if ($name[0] !== "ou") {  // add root entry
 				$attr = [];
-				$attr[$name[0]] = $name[1];
-				$attr['objectClass'] = 'organization';
+				$attr[$name[0]] = [$name[1]];
+				$attr['objectClass'] = ['organization'];
 				$dn = $suff;
-				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+				if (!ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attr)) {
 					$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
 				}
 			}
 			else {  // add organizational unit
 				$name = $name[1];
 				$attr = [];
-				$attr['objectClass'] = "organizationalunit";
-				$attr['ou'] = $name;
+				$attr['objectClass'] = ["organizationalunit"];
+				$attr['ou'] = [$name];
 				$dn = $suff;
-				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+				if (!ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attr)) {
 					// check if we have to add parent entries
 					if (ldap_errno($_SESSION['ldap']->server()) === 32) {
 						$dnParts = explode(",", $suff);
@@ -115,19 +115,19 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 								$headarray = explode("=", $suffarray[0]);
 								$attr = [];
 								if ($headarray[0] === "ou") {  // add ou entry
-									$attr['objectClass'] = 'organizationalunit';
+									$attr['objectClass'] = ['organizationalunit'];
 									$attr['ou'] = $headarray[1];
 								}
 								else {  // add root entry
 									$attr['objectClass'][] = 'organization';
 									$attr[$headarray[0]] = $headarray[1];
 									if ($headarray[0] === "dc") {
-										$attr['o'] = $headarray[1];
+										$attr['o'] = [$headarray[1]];
 										$attr['objectClass'][] = 'dcObject';
 									}
 								}
 								$dn = $subsuffs[$k];
-								if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+								if (!ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attr)) {
 									$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
 									break;
 								}
