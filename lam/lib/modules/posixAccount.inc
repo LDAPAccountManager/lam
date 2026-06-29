@@ -669,7 +669,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					else {
 						$attributesNewGroup = [
 							'cn' => [$newGroupName],
-							'gidNumber' => $nextGid[0],
+							'gidNumber' => [(string) $nextGid[0]],
 							'objectClass' => ['posixGroup'],
 						];
 					}
