@@ -1988,7 +1988,7 @@ class accountContainer {
 				if (isset($attributes[$this->finalDN]['modify']) && is_array($attributes[$this->finalDN]['modify'])) {
 					$attr = array_merge_recursive($attr, $attributes[$this->finalDN]['modify']);
 				}
-				$success = @ldap_add($_SESSION['ldap']->server(), $this->finalDN, $attr);
+				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $this->finalDN, $attr);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to create DN: ' . $this->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 						. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));

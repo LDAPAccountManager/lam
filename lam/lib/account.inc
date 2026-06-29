@@ -1158,7 +1158,7 @@ function copyDnRecursive(string $oldDn, string $targetDn): void {
 			unset($attributes[$systemAttributeToSkip]);
 		}
 	}
-	$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
+	$success = ldapAddNewEntry($_SESSION['ldap']->server(), $newDn, $attributes);
 	if (!$success) {
 		logNewMessage(LOG_ERR, sprintf(_('Was unable to create DN: %s.'), unescapeLdapSpecialCharacters($oldDn)) . ' ' .
 			getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
@@ -1200,7 +1200,7 @@ function ldapAddNewEntry(Connection $connection, string $dn, array $entry): bool
 	logAuditMessage('Adding new entry: ' . $dn . ' with attributes: ' . json_encode($entry, JSON_PRETTY_PRINT));
 	$result = @ldap_add($connection, $dn, $entry);
 	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
-	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
 	return $result;
 }
 

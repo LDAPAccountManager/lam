@@ -461,7 +461,7 @@ class AddEntryTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_add($ldap, $this->dn, $this->attributes);
+		$success = ldapAddNewEntry($ldap, $this->dn, $this->attributes);
 		if ($success) {
 			return Importer::formatMessage('INFO', _('Entry created'), htmlspecialchars($this->dn));
 		}

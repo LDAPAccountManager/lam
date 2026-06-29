@@ -1418,7 +1418,7 @@ class TreeView {
 		}
 		$rdn = $rdnAttribute . '=' . ldap_escape($attributes[$rdnAttribute][0], '', LDAP_ESCAPE_DN);
 		$newDn = $rdn . ',' . $dn;
-		$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
+		$success = ldapAddNewEntry($_SESSION['ldap']->server(), $newDn, $attributes);
 		if (!$success) {
 			return $this->createNewNodeCheckObjectClassesStep($dn, getExtendedLDAPErrorMessage($_SESSION['ldap']->server()), $rdnAttribute, $attributes);
 		}

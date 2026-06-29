@@ -901,7 +901,7 @@ class asteriskExtension extends baseModule {
 		// add new config rows
 		for ($rowCounter = count($this->extensionRowsOrig); $rowCounter < count($this->extensionRows); $rowCounter++) {
 			$row = $this->extensionRows[$rowCounter];
-			ldap_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
+			ldapAddNewEntry($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
 		}
 
 		//a trick for Edit again to work
