@@ -1104,7 +1104,7 @@ class TreeView {
 			$newModules = array_delete($attributes['olcmoduleload'], $ldapChanges['olcmoduleload']);
 			unset($ldapChanges['olcmoduleload']);
 			if (!empty($newModules)) {
-				$isOk = ldap_mod_add($_SESSION['ldap']->server(), $dn, ['olcmoduleload' => $newModules]);
+				$isOk = ldapAddAttributes($_SESSION['ldap']->server(), $dn, ['olcmoduleload' => $newModules]);
 				if (!$isOk) {
 					logNewMessage(LOG_ERR, 'Changing olcmoduleload at ' . $dn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 				}

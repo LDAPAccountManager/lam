@@ -1221,6 +1221,23 @@ function ldapDeleteEntry(Connection $connection, string $dn): bool {
 }
 
 /**
+ * Modifies an LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]> $attributes attributes
+ * @return bool the operation was successful
+ */
+function ldapAddAttributes(Connection $connection, string $dn, array $attributes): bool {
+	logNewMessage(LOG_DEBUG, 'Adding new attributes to ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	logAuditMessage('Adding new attributes to ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	$result = @ldap_mod_add($connection, $dn, $attributes);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array<string|string[]>|null parameters for StatusMessage or null if all was ok

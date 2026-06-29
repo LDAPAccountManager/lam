@@ -620,7 +620,7 @@ class AddAttributesTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_mod_add($ldap, $this->dn, $this->attributes);
+		$success = ldapAddAttributes($ldap, $this->dn, $this->attributes);
 		if ($success) {
 			return '';
 		}

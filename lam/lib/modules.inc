@@ -2026,7 +2026,7 @@ class accountContainer {
 				}
 				// add attributes
 				if (!empty($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+					$success = ldapAddAttributes($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to add attributes to DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));

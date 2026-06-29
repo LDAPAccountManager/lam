@@ -467,7 +467,7 @@ class nisMailAliasUser extends baseModule {
 		}
 		// add recipients
 		foreach ($this->recipientsToAdd as $dn => $recipients) {
-			$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
+			$success = ldapAddAttributes($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to add recipients ' . implode(', ', $recipients) . ' to  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

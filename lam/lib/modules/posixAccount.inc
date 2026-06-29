@@ -921,7 +921,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
 						$attrName = 'uniquemember';
 					}
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], [$attrName => [$accountContainer->finalDN]]);
+					$success = ldapAddAttributes($_SESSION['ldap']->server(), $toAdd[$i], [$attrName => [$accountContainer->finalDN]]);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to add user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -3061,7 +3061,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$errors = [];
 				if (!empty($memberUid)) {
 					$toAdd = ['memberUID' => $memberUid];
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $dnToUpdate, $toAdd);
+					$success = ldapAddAttributes($_SESSION['ldap']->server(), $dnToUpdate, $toAdd);
 					if (!$success) {
 						$errors[] = [
 							"ERROR",
@@ -3133,7 +3133,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 			$errors = [];
 			if (!empty($gonAttrToAdd)) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttrToAdd);
+				$success = ldapAddAttributes($_SESSION['ldap']->server(), $gonDn, $gonAttrToAdd);
 				if (!$success) {
 					$errors[] = [
 						"ERROR",
