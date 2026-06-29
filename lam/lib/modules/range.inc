@@ -603,7 +603,7 @@ class range extends baseModule {
 				if (isset($pool['dn'])) {
 					unset($pool['dn']);
 				}
-				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $pool);
+				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $pool);
 				if (!$success) {
 					$msg = sprintf(_('Was unable to create DN: %s.'), $dn);
 					logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));

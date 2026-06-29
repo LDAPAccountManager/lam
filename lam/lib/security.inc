@@ -366,7 +366,12 @@ function lamLogRemoteMessage($level, $message, $cfgMain): void {
 	}
 }
 
-function logAuditMessage($message): void {
+/**
+ * Logs a new audit message.
+ *
+ * @param string $message message
+ */
+function logAuditMessage(string $message): void {
 	if (isset($_SESSION['cfgMain'])) {
 		$cfg = $_SESSION['cfgMain'];
 	}

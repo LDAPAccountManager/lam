@@ -912,7 +912,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (empty($result)) {
 				$attrs = [
 					'objectClass' => ['organizationalUnit'],
-					'ou' => 'addressbook'
+					'ou' => ['addressbook']
 				];
 				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attrs);
 				if (!$success) {
@@ -2584,7 +2584,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook')) {
 				$attrs = [
 					'objectClass' => ['organizationalUnit'],
-					'ou' => 'addressbook'
+					'ou' => ['addressbook']
 				];
 				$dn = 'ou=addressbook,' . $accounts[$temp['counter']]['dn'];
 				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attrs);

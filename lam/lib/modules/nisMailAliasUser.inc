@@ -456,7 +456,7 @@ class nisMailAliasUser extends baseModule {
 		// create new aliases
 		foreach ($this->aliasesToAdd as $dn => $attrs) {
 			unset($attrs['dn']);
-			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+			$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attrs);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to create mail alias ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to create DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

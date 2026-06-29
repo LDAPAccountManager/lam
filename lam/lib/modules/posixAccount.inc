@@ -673,7 +673,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 							'objectClass' => ['posixGroup'],
 						];
 					}
-					$newGroupSuccess = @ldap_add(getLDAPServerHandle(), $dnNewGroup, $attributesNewGroup);
+					$newGroupSuccess = ldapAddNewEntry(getLDAPServerHandle(), $dnNewGroup, $attributesNewGroup);
 					if ($newGroupSuccess) {
 						logNewMessage(LOG_NOTICE, 'Created new group: ' . $newGroupName);
 						$this->attributes['gidNumber'][0] = (string) $nextGid[0];

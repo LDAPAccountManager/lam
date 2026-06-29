@@ -677,17 +677,17 @@ class fixed_ip extends baseModule {
 
 			foreach ($add as $arr) {
 				$attr = [];
-				$attr['cn'] = $arr['cn'];
-				$attr['objectClass'][0] = 'top';
-				$attr['objectClass'][1] = 'dhcpHost';
-				$attr['dhcpHWAddress'] = 'ethernet ' . $arr['mac'];
+				$attr['cn'][] = $arr['cn'];
+				$attr['objectClass'][] = 'top';
+				$attr['objectClass'][] = 'dhcpHost';
+				$attr['dhcpHWAddress'][] = 'ethernet ' . $arr['mac'];
 				if ($arr['ip'] != '') {
 					$attr['dhcpStatements'][] = 'fixed-address ' . $arr['ip'];
 				}
 				if ($arr['active'] === false) {
 					$attr['dhcpStatements'][] = 'deny booting';
 				}
-				$attr['dhcpOption'] = 'host-name "' . $arr['cn'] . '"';
+				$attr['dhcpOption'][] = 'host-name "' . $arr['cn'] . '"';
 				if (!empty($arr['description'])) {
 					$attr['dhcpComments'][] = $arr['description'];
 				}
