@@ -1112,7 +1112,7 @@ function deleteDN($dn, $recursive): array {
 		}
 	}
 	// delete parent DN
-	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+	$success = ldapDeleteEntry($_SESSION['ldap']->server(), $dn);
 	if (!$success) {
 		logNewMessage(LOG_ERR, 'Unable to delete DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 		$errors[] = ['ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -1199,6 +1199,22 @@ function ldapAddNewEntry(Connection $connection, string $dn, array $entry): bool
 	logNewMessage(LOG_DEBUG, 'Adding new entry: ' . $dn . ' with attributes: ' . json_encode($entry, JSON_PRETTY_PRINT));
 	logAuditMessage('Adding new entry: ' . $dn . ' with attributes: ' . json_encode($entry, JSON_PRETTY_PRINT));
 	$result = @ldap_add($connection, $dn, $entry);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
+ * Deletes an LDAP entry.
+ *
+ * @param Connection $connection connection
+ * @param string $dn DN
+ * @return bool success
+ */
+function ldapDeleteEntry(Connection $connection, string $dn): bool {
+	logNewMessage(LOG_DEBUG, 'Deleting entry: ' . $dn);
+	logAuditMessage('Deleting entry: ' . $dn);
+	$result = @ldap_delete($connection, $dn);
 	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
 	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
 	return $result;

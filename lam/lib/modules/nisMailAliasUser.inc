@@ -433,7 +433,7 @@ class nisMailAliasUser extends baseModule {
 		$errors = [];
 		// delete complete aliases
 		foreach ($this->aliasesToDelete as $dn) {
-			$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+			$success = ldapDeleteEntry($_SESSION['ldap']->server(), $dn);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to delete ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

@@ -670,7 +670,7 @@ class range extends baseModule {
 			if (!$found) {
 				// delete pool
 				$dn = 'cn=' . $poolOrig['cn'][0] . ',' . $this->getAccountContainer()->finalDN;
-				$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+				$success = ldapDeleteEntry($_SESSION['ldap']->server(), $dn);
 				if (!$success) {
 					$msg = sprintf(_('Was unable to delete DN: %s.'), $dn);
 					logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));

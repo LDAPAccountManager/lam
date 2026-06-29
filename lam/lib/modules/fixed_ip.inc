@@ -672,7 +672,7 @@ class fixed_ip extends baseModule {
 			}
 
 			foreach ($delete as $cn) {
-				ldap_delete($_SESSION['ldap']->server(), 'cn=' . $cn . $ldapSuffix);
+				ldapDeleteEntry($_SESSION['ldap']->server(), 'cn=' . $cn . $ldapSuffix);
 			}
 
 			foreach ($add as $arr) {

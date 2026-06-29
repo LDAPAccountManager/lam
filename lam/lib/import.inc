@@ -533,7 +533,7 @@ class DeleteEntryTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_delete($ldap, $this->dn);
+		$success = ldapDeleteEntry($ldap, $this->dn);
 		if ($success) {
 			return Importer::formatMessage('INFO', sprintf(_('Successfully deleted DN %s'), $this->dn), '');
 		}

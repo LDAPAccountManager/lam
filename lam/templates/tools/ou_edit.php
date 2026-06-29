@@ -159,7 +159,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	}
 	// delete ou, user was sure
 	elseif (isset($_POST['deleteOU']) && isset($_POST['sure']) && in_array_ignore_case($_POST['deletename'], $validDeletableDns)) {
-		$ret = ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
+		$ret = ldapDeleteEntry($_SESSION['ldap']->server(), $_POST['deletename']);
 		if ($ret) {
 			$message = _("OU deleted successfully.");
 			refreshOus($optionsToInsert, $optionsToDelete);

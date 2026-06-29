@@ -895,7 +895,7 @@ class asteriskExtension extends baseModule {
 				$this->moveExtentionToNewSuffix($row);
 			}
 			else {
-				ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig));
+				ldapDeleteEntry($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig));
 			}
 		}
 		// add new config rows
@@ -925,7 +925,7 @@ class asteriskExtension extends baseModule {
 		for ($rowCounter = 0; $rowCounter < count($entries); $rowCounter++) {
 			$rowOrig = $entries[$rowCounter];
 			if ($rowOrig["astpriority"][0] > 1) {
-				ldap_delete($_SESSION['ldap']->server(), $rowOrig['dn']);
+				ldapDeleteEntry($_SESSION['ldap']->server(), $rowOrig['dn']);
 			}
 		}
 		return [];
