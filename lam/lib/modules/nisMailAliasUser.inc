@@ -444,7 +444,7 @@ class nisMailAliasUser extends baseModule {
 		}
 		// delete recipient entries
 		foreach ($this->recipientsToDelete as $dn => $recipients) {
-			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
+			$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to remove recipients ' . implode(', ', $recipients) . ' from  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

@@ -1225,13 +1225,30 @@ function ldapDeleteEntry(Connection $connection, string $dn): bool {
  *
  * @param Connection $connection LDAP connection
  * @param string $dn DN
- * @param array<string, string[]> $attributes attributes
+ * @param array<string, string[]|string> $attributes attributes to add
  * @return bool the operation was successful
  */
 function ldapAddAttributes(Connection $connection, string $dn, array $attributes): bool {
 	logNewMessage(LOG_DEBUG, 'Adding new attributes to ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
 	logAuditMessage('Adding new attributes to ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
 	$result = @ldap_mod_add($connection, $dn, $attributes);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
+ * Modifies an LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]|string> $attributes attributes to remove
+ * @return bool the operation was successful
+ */
+function ldapDeleteAttributes(Connection $connection, string $dn, array $attributes): bool {
+	logNewMessage(LOG_DEBUG, 'Removing attributes from ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	logAuditMessage('Removing attributes from ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	$result = @ldap_mod_del($connection, $dn, $attributes);
 	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
 	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
 	return $result;

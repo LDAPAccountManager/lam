@@ -2039,7 +2039,7 @@ class accountContainer {
 				}
 				// remove attributes
 				if (!empty($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+					$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to delete attributes from DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));

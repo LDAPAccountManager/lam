@@ -679,7 +679,7 @@ class DeleteAttributesTask implements ImporterTask {
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		if (!empty($this->attributes)) {
-			$success = @ldap_mod_del($ldap, $this->dn, $this->attributes);
+			$success = ldapDeleteAttributes($ldap, $this->dn, $this->attributes);
 		}
 		else {
 			$success = @ldap_modify($ldap, $this->dn, [$this->attributeName => []]);
