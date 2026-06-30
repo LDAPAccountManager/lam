@@ -275,7 +275,7 @@ if (isset($_POST['delete'])) {
 					}
 					// add attributes
 					if (isset($attributes[$dn]['add']) && !$stopProcessing) {
-						$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, $attributes[$dn]['add']);
+						$success = ldapAddAttributes($_SESSION['ldap']->server(), $dn, $attributes[$dn]['add']);
 						if (!$success) {
 							$errors[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;

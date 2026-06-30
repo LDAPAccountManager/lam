@@ -1020,7 +1020,7 @@ class windowsGroup extends baseModule {
 		// add groups
 		for ($i = 0; $i < count($toAdd); $i++) {
 			if (in_array($toAdd[$i], $groups)) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
+				$success = ldapAddAttributes($_SESSION['ldap']->server(), $toAdd[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to add group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
