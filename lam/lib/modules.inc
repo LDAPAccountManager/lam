@@ -2007,7 +2007,7 @@ class accountContainer {
 				logNewMessage(LOG_DEBUG, 'Attribute changes for ' . $DNs[$i] . ":\n" . print_r($attributes[$DNs[$i]], true));
 				// modify attributes
 				if (!empty($attributes[$DNs[$i]]['modify'])) {
-					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+					$success = ldapModifyAttributes($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));

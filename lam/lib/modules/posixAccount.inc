@@ -903,7 +903,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 						}
 						if ($found) {
 							$attributesToModify = [$searchAttr => $newOwners];
-							$success = @ldap_mod_replace($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], $attributesToModify);
+							$success = ldapModifyAttributes($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], $attributesToModify);
 							if (!$success) {
 								$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 								logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . $ldapError . ').');

@@ -879,7 +879,7 @@ class asteriskExtension extends baseModule {
 				}
 				if (!empty($ldapChanges)) {
 					if (!isset($ldapChanges['cn'])) {
-						ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $ldapChanges);
+						ldapModifyAttributes($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $ldapChanges);
 					}
 					else {
 						$origDN = "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
@@ -887,7 +887,7 @@ class asteriskExtension extends baseModule {
 						ldap_rename($_SESSION['ldap']->server(), $origDN, $newRDN, extractDNSuffix($this->getAccountContainer()->dn_orig), true);
 						unset($ldapChanges['cn']);
 						if (!empty($ldapChanges)) {
-							ldap_mod_replace($_SESSION['ldap']->server(), $newRDN . "," . extractDNSuffix($this->getAccountContainer()->dn_orig), $ldapChanges);
+							ldapModifyAttributes($_SESSION['ldap']->server(), $newRDN . "," . extractDNSuffix($this->getAccountContainer()->dn_orig), $ldapChanges);
 						}
 					}
 				}

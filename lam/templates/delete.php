@@ -266,7 +266,7 @@ if (isset($_POST['delete'])) {
 				if (!$stopProcessing) {
 					// modify attributes
 					if (isset($attributes[$dn]['modify'])) {
-						$success = ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
+						$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
 						if (!$success) {
 							$errors[] = ['ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;

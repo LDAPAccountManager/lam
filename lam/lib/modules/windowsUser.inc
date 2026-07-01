@@ -3543,7 +3543,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// force password change
 		elseif (count($temp['pwdChange']) > 0) {
 			$dn = array_pop($temp['pwdChange']);
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, ['pwdLastSet' => '0']);
+			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, ['pwdLastSet' => '0']);
 			$errors = [];
 			if (!$success) {
 				$errors[] = [
