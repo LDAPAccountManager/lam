@@ -284,7 +284,7 @@ if (isset($_POST['delete'])) {
 					}
 					// remove attributes
 					if (isset($attributes[$dn]['remove']) && !$stopProcessing) {
-						$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, $attributes[$dn]['remove']);
+						$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $dn, $attributes[$dn]['remove']);
 						if (!$success) {
 							$errors[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;

@@ -1033,7 +1033,7 @@ class windowsGroup extends baseModule {
 		// remove groups
 		for ($i = 0; $i < count($toRem); $i++) {
 			if (in_array($toRem[$i], $groups)) {
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], ['member' => [$this->getAccountContainer()->dn_orig]]);
+				$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $toRem[$i], ['member' => [$this->getAccountContainer()->dn_orig]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to delete group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

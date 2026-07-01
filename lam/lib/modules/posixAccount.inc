@@ -938,7 +938,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
 						$attrName = 'uniquemember';
 					}
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], [$attrName => [$accountContainer->dn_orig]]);
+					$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $toRem[$i], [$attrName => [$accountContainer->dn_orig]]);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to delete user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -1079,7 +1079,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$result = searchLDAPByAttribute('sudoUser', $this->attributes['uid'][0], 'sudoRole', ['dn'], ['sudo']);
 			foreach ($result as $attrs) {
 				$dn = $attrs['dn'];
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, ['sudoUser' => [$this->attributes['uid'][0]]]);
+				$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $dn, ['sudoUser' => [$this->attributes['uid'][0]]]);
 				if (!$success) {
 					$return[] = ['ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
@@ -4324,7 +4324,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			foreach ($groups as $group) {
 				logNewMessage(LOG_DEBUG, 'Removing ' . $attributes['dn'] . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
 				$attributesToDelete = [$searchAttr => [$attributes['dn']]];
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
+				$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
 				if (!$success) {
 					$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 					logNewMessage(LOG_ERR, 'Unable to delete attributes of DN: ' . $group['dn'] . ' (' . $ldapError . ').');
@@ -4348,7 +4348,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		foreach ($groups as $group) {
 			logNewMessage(LOG_DEBUG, 'Removing ' . $uid . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
 			$attributesToDelete = [$searchAttr => [$uid]];
-			$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
+			$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
 			if (!$success) {
 				$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 				logNewMessage(LOG_ERR, 'Unable to delete attributes of DN: ' . $group['dn'] . ' (' . $ldapError . ').');
