@@ -1074,7 +1074,7 @@ class TreeView {
 		if (!empty($ldapChanges)) {
 			$this->handleSpecialAttributes($dn, $ldapChanges, $attributes, $schemaAttributes);
 			logNewMessage(LOG_DEBUG, 'LDAP changes to DN ' . $dn . ': ' . print_r($ldapChanges, true));
-			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);
+			$saved = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $ldapChanges);
 			if ($saved) {
 				$message = new htmlStatusMessage('INFO', _('All changes were successful.'));
 			}

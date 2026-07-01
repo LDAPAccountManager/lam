@@ -1188,7 +1188,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($attrs['gidnumber'][0]) && ($attrs['gidnumber'][0] != '')) {
 			$newValue = intval($attrs['gidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldap_modify($ldapHandle, $dn, ['gidnumber' => [$newValue]]);
+			ldapModifyAttributes($ldapHandle, $dn, ['gidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
@@ -1216,7 +1216,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($attrs['mssfu30maxgidnumber'][0]) && ($attrs['mssfu30maxgidnumber'][0] != '')) {
 			$newValue = intval($attrs['mssfu30maxgidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldap_modify($ldapHandle, $dn, ['mssfu30maxgidnumber' => [$newValue]]);
+			ldapModifyAttributes($ldapHandle, $dn, ['mssfu30maxgidnumber' => [$newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with GID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with GID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));

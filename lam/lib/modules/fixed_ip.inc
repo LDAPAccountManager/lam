@@ -697,7 +697,7 @@ class fixed_ip extends baseModule {
 			}
 			// entries to modify
 			foreach ($mod as $dn => $attrs) {
-				ldap_modify($_SESSION['ldap']->server(), $dn, $attrs);
+				ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $attrs);
 			}
 		}
 		return [];

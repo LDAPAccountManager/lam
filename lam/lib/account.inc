@@ -1255,6 +1255,23 @@ function ldapDeleteAttributes(Connection $connection, string $dn, array $attribu
 }
 
 /**
+ * Modifies an LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]|string> $attributes attributes to change
+ * @return bool the operation was successful
+ */
+function ldapModifyAttributes(Connection $connection, string $dn, array $attributes): bool {
+	logNewMessage(LOG_DEBUG, 'Replacing attributes in ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	logAuditMessage('Replacing attributes in ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	$result = @ldap_mod_replace($connection, $dn, $attributes);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array<string|string[]>|null parameters for StatusMessage or null if all was ok

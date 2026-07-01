@@ -3010,7 +3010,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// force password change if needed
 		if ($this->pwdLastSet !== null) {
 			$attrs = ['pwdLastSet' => [$this->pwdLastSet]];
-			$success = @ldap_modify($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $attrs);
+			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $attrs);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to change pwdLastSet for ' . $this->getAccountContainer()->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $this->getAccountContainer()->finalDN), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

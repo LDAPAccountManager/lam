@@ -647,7 +647,7 @@ class range extends baseModule {
 					}
 					if (!empty($mod)) {
 						$dn = 'cn=' . $pool['cn'][0] . ',' . $this->getAccountContainer()->finalDN;
-						$success = @ldap_modify($_SESSION['ldap']->server(), $dn, $mod);
+						$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $mod);
 						if (!$success) {
 							$msg = sprintf(_('Was unable to modify attributes of DN: %s.'), $dn);
 							logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));

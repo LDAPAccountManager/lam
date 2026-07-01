@@ -682,7 +682,7 @@ class DeleteAttributesTask implements ImporterTask {
 			$success = ldapDeleteAttributes($ldap, $this->dn, $this->attributes);
 		}
 		else {
-			$success = @ldap_modify($ldap, $this->dn, [$this->attributeName => []]);
+			$success = ldapModifyAttributes($ldap, $this->dn, [$this->attributeName => []]);
 		}
 		if ($success) {
 			return '';
@@ -747,7 +747,7 @@ class ReplaceAttributesTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_modify($ldap, $this->dn, $this->attributes);
+		$success = ldapModifyAttributes($ldap, $this->dn, $this->attributes);
 		if ($success) {
 			return '';
 		}
