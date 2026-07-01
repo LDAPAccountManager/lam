@@ -3296,7 +3296,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (isset($attrs['uidnumber'][0]) && ($attrs['uidnumber'][0] != '')) {
 			$newValue = intval($attrs['uidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldapModifyAttributes($ldapHandle, $dn, ['uidnumber' => [$newValue]]);
+			ldapModifyAttributes($ldapHandle, $dn, ['uidnumber' => [(string) $newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
@@ -3329,7 +3329,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!empty($attrs['mssfu30maxuidnumber'][0])) {
 			$newValue = intval($attrs['mssfu30maxuidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldapModifyAttributes($ldapHandle, $dn, ['mssfu30maxuidnumber' => [$newValue]]);
+			ldapModifyAttributes($ldapHandle, $dn, ['mssfu30maxuidnumber' => [(string) $newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
