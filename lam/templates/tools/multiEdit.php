@@ -557,8 +557,5 @@ function getMessageHTML(htmlStatusMessage $msg): string {
 	parseHtml(null, $msg, [], true);
 	$content = ob_get_contents();
 	ob_end_clean();
-	if ($content === false) {
-		return '';
-	}
 	return $content;
 }
