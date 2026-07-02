@@ -593,6 +593,7 @@ if (isset($_POST['checklogin'])) {
 			if (!$searchSuccess) {
 				$error_message = $searchError;
 				$searchLDAP->close();
+				logAuditMessage('Login failed for server profile: ' . $_SESSION['config']->getName());
 				display_LoginPage($licenseValidator, $error_message);
 				exit();
 			}
@@ -600,6 +601,7 @@ if (isset($_POST['checklogin'])) {
 		}
 		catch (LAMException $e) {
 			$searchLDAP->close();
+			logAuditMessage('Login failed for server profile: ' . $_SESSION['config']->getName());
 			display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage());
 			exit();
 		}
@@ -639,6 +641,7 @@ if (isset($_POST['checklogin'])) {
 		if ($cfgMain->isHideLoginErrorDetails()) {
 			$message = null;
 		}
+		logAuditMessage('Login failed for server profile: ' . $_SESSION['config']->getName());
 		display_LoginPage($licenseValidator, $e->getTitle(), $message, $extraMessage);
 		exit();
 	}
