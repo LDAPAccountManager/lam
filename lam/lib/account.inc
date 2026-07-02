@@ -1276,7 +1276,7 @@ function ldapModifyAttributes(Connection $connection, string $dn, array $attribu
  *
  * @param Connection $connection LDAP connection
  * @param string $dn DN
- * @param array<string, string[]|string>[] $attributes attribute operations to perform in batch mode
+ * @param array<string, string[]|string|int>[] $attributes attribute operations to perform in batch mode
  * @return bool the operation was successful
  */
 function ldapModifyAttributesBatch(Connection $connection, string $dn, array $attributes): bool {
