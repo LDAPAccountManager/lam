@@ -3939,7 +3939,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				'values' => [$newPasswordVal]
 			]
 		];
-		@ldap_modify_batch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
+		ldapModifyAttributesBatch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
 		$returnCode = ldap_errno($_SESSION['ldapHandle']->getServer());
 		if ($returnCode !== 0) {
 			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));

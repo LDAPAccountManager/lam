@@ -1464,7 +1464,7 @@ class TreeView {
 				'values' => [$rdn . ',' . $targetDn]
 			],
 		];
-		$success = ldap_modify_batch(getLDAPServerHandle(), $dn, $changes, getCommonLdapControls());
+		$success = ldapModifyAttributesBatch(getLDAPServerHandle(), $dn, $changes);
 		if ($success) {
 			return json_encode([]);
 		}
