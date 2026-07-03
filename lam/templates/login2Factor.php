@@ -132,11 +132,13 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) // WebAuthn
             if ($e->getPrevious() !== null) {
                 $errorMessage .= ' - ' . $e->getPrevious()->getMessage();
             }
+			logAuditMessage('Login to server profile failed at 2FA: ' . $config->getName() . ' - ' . $user);
 			logNewMessage(LOG_WARNING, '2-factor verification failed: ' . $errorMessage);
 			header("HTTP/1.1 403 Forbidden");
 		}
 		if ($twoFactorValid) {
 			unset($_SESSION['2factorRequired']);
+			logAuditMessage('Login to server profile successful at 2FA: ' . $config->getName() . ' - ' . $user);
 			metaRefresh("main.php");
 			die();
 		}
