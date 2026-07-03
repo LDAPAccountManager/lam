@@ -241,23 +241,20 @@ class baseType {
 		// show radio buttons for lock/unlock
 		$radioDisabled = true;
 		$selectedRadio = 'unlock';
-		$onchange = '';
 		if ($hasLockOptions && $hasUnlockOptions) {
 			$radioDisabled = false;
-			$onchange = 'window.lam.accountLists.lockUnlockRadioChange();';
 		}
 		if (!$hasUnlockOptions) {
 			$selectedRadio = 'lock';
 		}
 		if (!$radioDisabled) {
 			$radio = new htmlRadio('lam_accountStatusAction', [_('Lock') => 'lock', _('Unlock') => 'unlock'], $selectedRadio);
-			$radio->setOnchangeEvent($onchange);
+			$radio->setOnchangeEvent('window.lam.accountLists.lockUnlockRadioChange();');
 			$container->add($radio);
 		}
 		else {
-			$radio = new htmlRadio('lam_accountStatusActionDisabled', [_('Lock') => 'lock', _('Unlock') => 'unlock'], $selectedRadio);
-			$radio->setIsEnabled(false);
-			$container->add($radio);
+			$label = ($selectedRadio === 'lock') ? _('Lock') : _('Unlock');
+			$container->add(new htmlSubTitle($label));
 			$container->add(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio));
 		}
 		$container->addVerticalSpacer('1rem');
