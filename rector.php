@@ -37,7 +37,6 @@ return RectorConfig::configure()
 		NullToStrictStringFuncCallArgRector::class,
 		ReadOnlyPropertyRector::class,
 		ClassPropertyAssignToConstructorPromotionRector::class,
-		StaticCallOnNonStaticToInstanceCallRector::class,
 		StringifyStrNeedlesRector::class,
 		RestoreDefaultNullToNullableTypePropertyRector::class,
 		ForRepeatedCountToOwnVariableRector::class,
