@@ -933,6 +933,7 @@ div.lam-help {
     width: max-content;
     font-size: 95%;
     font-weight: normal;
+    color: var(--lam-text-color-default);
 }
 
 div.lam-help h4 {
