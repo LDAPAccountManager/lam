@@ -2665,17 +2665,18 @@ class htmlImage extends htmlElement {
 		if ($this->onClick != null) {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
-		$helpTitleValue = '';
-		$helpContentValue = '';
+		$helpMouseEvents = '';
 		if ($this->helpTitle !== null) {
-			$helpTitleValue = ' helptitle="' . $this->helpTitle . '"';
+			$helpMouseEvents = "onmouseenter='window.lam.tooltip.show(this);' onmouseleave='window.lam.tooltip.hide(this);'";
 			ob_start();
 			$this->helpContent->generateHTML($module, $input, $values, $restricted);
 			$helpContentString = ob_get_contents();
 			ob_end_clean();
-			$helpContentValue = ' helpdata="' . htmlspecialchars($helpContentString) . '"';
 		}
-		echo '<img' . $idValue . $path . $width . $height . $alt . $title . $classes . $onClick . $helpTitleValue . $helpContentValue . $this->getDataAttributesAsString() . ">";
+		echo '<img' . $idValue . $path . $width . $height . $alt . $title . $classes . $onClick . $helpMouseEvents . $this->getDataAttributesAsString() . ">";
+		if ($this->helpTitle !== null) {
+			echo "<div class='lam-help hidden'><h4>$this->helpTitle</h4>$helpContentString</div>";
+		}
 		if ($this->lightbox) {
 			echo '</a>';
 		}

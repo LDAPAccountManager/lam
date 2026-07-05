@@ -190,30 +190,27 @@ class baseType {
 		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, null, null, $altText);
 		$statusIcon->setCSSClasses(['icon']);
 		if (!empty($accountStatus->getDetails()) || !empty($lockableOptions)) {
-			$detailsTable = new htmlTable();
+			$detailsContent = new htmlResponsiveRow();
 			foreach ($accountStatus->getDetails() as $detail) {
-				$label = new htmlOutputText($detail->getDetails());
-				$label->setNoWrap(true);
-				$detailsTable->addElement($label);
 				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
 				$statusDetailIcon->setCSSClasses(['fixed-size-16']);
-				$detailsTable->addElement($statusDetailIcon);
-				$detailsTable->addNewLine();
+				$detailsContent->addLabel($statusDetailIcon);
+				$label = new htmlOutputText($detail->getDetails());
+				$label->setNoWrap(true);
+				$detailsContent->addField($label);
 			}
 			if (empty($accountStatus->getDetails())) {
-				$detailsTable->addElement(new htmlOutputText(_('Unlocked')));
 				$statusDetailIcon = new htmlImage('../../graphics/unlocked.svg', '16px', '16px');
 				$statusDetailIcon->setCSSClasses(['fixed-size-16']);
-				$detailsTable->addElement($statusDetailIcon);
-				$detailsTable->addNewLine();
+				$detailsContent->addLabel($statusDetailIcon);
+				$detailsContent->addField(new htmlOutputText(_('Unlocked')));
 			}
-			$detailsTable->addElement(new htmlSpacer(null, '1rem'), true);
+			$detailsContent->addVerticalSpacer('1rem');
 			$hintGroup = new htmlGroup();
-			$hintGroup->colspan = 2;
 			$hintGroup->addElement(new htmlImage('../../graphics/light.svg', '16px', '16px'));
 			$hintGroup->addElement(new htmlOutputText(_('Please click to lock/unlock this account.')));
-			$detailsTable->addElement($hintGroup);
-			$statusIcon->setHelpData(_('Account status'), $detailsTable);
+			$detailsContent->add($hintGroup);
+			$statusIcon->setHelpData(_('Account status'), $detailsContent);
 			if (checkIfWriteAccessIsAllowed($container->get_type()->getScope())) {
 				$statusIcon->setOnClick("window.lam.dialog.showModal('.modal-account-status')");
 				$statusIcon->setCSSClasses(['clickable', 'icon']);

@@ -932,6 +932,7 @@ div.lam-help {
     padding: var(--lam-regular-space);
     width: max-content;
     font-size: 95%;
+    font-weight: normal;
 }
 
 div.lam-help h4 {
