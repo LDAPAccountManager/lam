@@ -1,6 +1,7 @@
 September 2026 9.7
  - Fixed bugs:
   -> Account status tooltip was not shown (734)
+  -> Request access: wildcard replacement (742)
 
 
 17.06.2026 9.6.1
