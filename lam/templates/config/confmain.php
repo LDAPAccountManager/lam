@@ -83,7 +83,7 @@ if (isset($_POST['passwd'])) {
 
 // check if password was entered
 // if not: load login page
-if (!isset($passwd) && !(isset($_SESSION['conf_isAuthenticated']) && isset($_SESSION['conf_config']))) {
+if (!isset($passwd) && (!isset($_SESSION['conf_isAuthenticated']) || !isset($_SESSION['conf_config']))) {
 	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("No password was entered!"));
 	/** go back to login if password is empty */
 	metaRefresh('conflogin.php');
