@@ -521,7 +521,7 @@ function doModify(): array {
 		$changes = $_SESSION['multiEdit_status']['actions'][$dn];
 		$_SESSION['multiEdit_status']['modContent'] .= htmlspecialchars($dn) . "<br>";
 		// run LDAP commands
-		$success = ldap_modify($_SESSION['ldap']->server(), $dn, $changes);
+		$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $changes);
 		if (!$success || isset($_REQUEST['multiEdit_error'])) {
 			$msg = new htmlStatusMessage('ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			$_SESSION['multiEdit_status']['modContent'] .= getMessageHTML($msg);
@@ -557,8 +557,5 @@ function getMessageHTML(htmlStatusMessage $msg): string {
 	parseHtml(null, $msg, [], true);
 	$content = ob_get_contents();
 	ob_end_clean();
-	if ($content === false) {
-		return '';
-	}
 	return $content;
 }

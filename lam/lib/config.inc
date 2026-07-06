@@ -2893,6 +2893,12 @@ class LAMCfgMain {
 	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none, "REMOTE":server:port) */
 	public string $logDestination = "SYSLOG";
 
+	/** type of audit log */
+	public string $auditLogType = 'NONE';
+
+	/** target of audit log */
+	public string $auditLogTarget = '';
+
 	/** list of hosts which may access LAM */
 	public string $allowedHosts = "";
 
@@ -3034,6 +3040,7 @@ class LAMCfgMain {
 	/** @var string[] $settings list of data fields to save in config file */
 	private array $settings = ["password", "default", "sessionTimeout", "hideLoginErrorDetails",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
+		'auditLogType', 'auditLogTarget',
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
@@ -3703,11 +3710,34 @@ class LAMCfgMain {
 	 * @return bool is valid
 	 */
 	public static function isValidLogFilename(string $path): bool {
-		return !empty($path)
-			&& preg_match("/^[a-z0-9\\/._-]+$/i", $path)
-			&& (str_ends_with($path, '.log') || str_ends_with($path, '.txt'))
-			&& !str_contains($path, '..')
-			&& !str_starts_with($path, './');
+		$realPath = file_exists($path) ? realpath($path) : $path;
+		$blockedPrefixes = ['/usr', '/etc', '/dev', '/boot', '/lib', '/proc', '/root', '/run', '/sys', '/snap'];
+		if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+			$blockedPrefixes[] = $_SERVER['DOCUMENT_ROOT'];
+		}
+		foreach ($blockedPrefixes as $blockedPrefix) {
+			if (str_starts_with($realPath, $blockedPrefix)) {
+				return false;
+			}
+		}
+		return !empty($realPath)
+			&& preg_match("/^[a-z0-9\\/._-]+$/i", $realPath)
+			&& (str_ends_with($realPath, '.log') || str_ends_with($realPath, '.txt'))
+			&& !str_contains($realPath, '..')
+			&& !str_starts_with($realPath, './');
 	}
+
+}
+
+enum LOG_FILE_TARGET: string {
+
+	/** audit log entries are sent to file */
+	case FILE = 'FILE';
+	/** audit log entries are sent to remote server */
+	case REMOTE = 'REMOTE';
+	/** audit log entries are sent to syslog */
+	case SYSLOG = 'SYSLOG';
+	/** audit log is disabled */
+	case NONE = 'NONE';
 
 }

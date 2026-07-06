@@ -168,7 +168,7 @@ class Uploader {
 				return;
 			}
 			// add LDAP entry
-			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+			$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attrs);
 			if (!$success) {
 				$errorMessage = [
 					"ERROR",

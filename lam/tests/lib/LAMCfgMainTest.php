@@ -215,7 +215,7 @@ class LAMCfgMainTest extends TestCase {
 	}
 
 	public function testModuleSettings() {
-		$settings = ['abc' => 123];
+		$settings = ['posixAccount' => ['key' => '123']];
 		$this->conf->setModuleSettings($settings);
 
 		$this->assertEquals($settings, $this->conf->getModuleSettings());

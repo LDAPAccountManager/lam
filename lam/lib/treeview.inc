@@ -1074,7 +1074,7 @@ class TreeView {
 		if (!empty($ldapChanges)) {
 			$this->handleSpecialAttributes($dn, $ldapChanges, $attributes, $schemaAttributes);
 			logNewMessage(LOG_DEBUG, 'LDAP changes to DN ' . $dn . ': ' . print_r($ldapChanges, true));
-			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);
+			$saved = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $ldapChanges);
 			if ($saved) {
 				$message = new htmlStatusMessage('INFO', _('All changes were successful.'));
 			}
@@ -1104,7 +1104,7 @@ class TreeView {
 			$newModules = array_delete($attributes['olcmoduleload'], $ldapChanges['olcmoduleload']);
 			unset($ldapChanges['olcmoduleload']);
 			if (!empty($newModules)) {
-				$isOk = ldap_mod_add($_SESSION['ldap']->server(), $dn, ['olcmoduleload' => $newModules]);
+				$isOk = ldapAddAttributes($_SESSION['ldap']->server(), $dn, ['olcmoduleload' => $newModules]);
 				if (!$isOk) {
 					logNewMessage(LOG_ERR, 'Changing olcmoduleload at ' . $dn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 				}
@@ -1418,7 +1418,7 @@ class TreeView {
 		}
 		$rdn = $rdnAttribute . '=' . ldap_escape($attributes[$rdnAttribute][0], '', LDAP_ESCAPE_DN);
 		$newDn = $rdn . ',' . $dn;
-		$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
+		$success = ldapAddNewEntry($_SESSION['ldap']->server(), $newDn, $attributes);
 		if (!$success) {
 			return $this->createNewNodeCheckObjectClassesStep($dn, getExtendedLDAPErrorMessage($_SESSION['ldap']->server()), $rdnAttribute, $attributes);
 		}
@@ -1464,7 +1464,7 @@ class TreeView {
 				'values' => [$rdn . ',' . $targetDn]
 			],
 		];
-		$success = ldap_modify_batch(getLDAPServerHandle(), $dn, $changes, getCommonLdapControls());
+		$success = ldapModifyAttributesBatch(getLDAPServerHandle(), $dn, $changes);
 		if ($success) {
 			return json_encode([]);
 		}

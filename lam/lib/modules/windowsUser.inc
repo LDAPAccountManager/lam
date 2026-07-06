@@ -2983,7 +2983,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// add groups
 		for ($i = 0; $i < count($toAdd); $i++) {
 			if (in_array($toAdd[$i], $groups)) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
+				$success = ldapAddAttributes($_SESSION['ldap']->server(), $toAdd[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to add user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -2997,7 +2997,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		for ($i = 0; $i < count($toRem); $i++) {
 			if (in_array($toRem[$i], $groups)) {
 				// membership is removed with potentially new DN as Windows updates group automatically on user move
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
+				$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $toRem[$i], ['member' => [$this->getAccountContainer()->finalDN]]);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to delete user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -3010,7 +3010,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// force password change if needed
 		if ($this->pwdLastSet !== null) {
 			$attrs = ['pwdLastSet' => [$this->pwdLastSet]];
-			$success = @ldap_modify($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $attrs);
+			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, $attrs);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to change pwdLastSet for ' . $this->getAccountContainer()->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $this->getAccountContainer()->finalDN), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -3520,7 +3520,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			$keys = array_keys($temp['members']);
 			$group = $keys[0];
 			$member = array_pop($temp['members'][$group]);
-			$success = @ldap_mod_add($_SESSION['ldap']->server(), $group, ['member' => $member]);
+			$success = ldapAddAttributes($_SESSION['ldap']->server(), $group, ['member' => $member]);
 			$errors = [];
 			if (!$success) {
 				$errors[] = [
@@ -3543,7 +3543,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		// force password change
 		elseif (count($temp['pwdChange']) > 0) {
 			$dn = array_pop($temp['pwdChange']);
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, ['pwdLastSet' => '0']);
+			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, ['pwdLastSet' => '0']);
 			$errors = [];
 			if (!$success) {
 				$errors[] = [
@@ -3939,7 +3939,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				'values' => [$newPasswordVal]
 			]
 		];
-		@ldap_modify_batch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
+		ldapModifyAttributesBatch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
 		$returnCode = ldap_errno($_SESSION['ldapHandle']->getServer());
 		if ($returnCode !== 0) {
 			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));

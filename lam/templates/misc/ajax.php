@@ -532,9 +532,6 @@ class Ajax {
 		parseHtml(null, $mainRow, [], false);
 		$out = ob_get_contents();
 		ob_end_clean();
-		if ($out === false) {
-			return '';
-		}
 		return $out;
 	}
 

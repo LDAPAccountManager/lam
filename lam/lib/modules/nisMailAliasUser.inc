@@ -433,7 +433,7 @@ class nisMailAliasUser extends baseModule {
 		$errors = [];
 		// delete complete aliases
 		foreach ($this->aliasesToDelete as $dn) {
-			$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+			$success = ldapDeleteEntry($_SESSION['ldap']->server(), $dn);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to delete ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -444,7 +444,7 @@ class nisMailAliasUser extends baseModule {
 		}
 		// delete recipient entries
 		foreach ($this->recipientsToDelete as $dn => $recipients) {
-			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
+			$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to remove recipients ' . implode(', ', $recipients) . ' from  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -456,7 +456,7 @@ class nisMailAliasUser extends baseModule {
 		// create new aliases
 		foreach ($this->aliasesToAdd as $dn => $attrs) {
 			unset($attrs['dn']);
-			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+			$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attrs);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to create mail alias ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to create DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -467,7 +467,7 @@ class nisMailAliasUser extends baseModule {
 		}
 		// add recipients
 		foreach ($this->recipientsToAdd as $dn => $recipients) {
-			$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
+			$success = ldapAddAttributes($_SESSION['ldap']->server(), $dn, ['rfc822mailmember' => $recipients]);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to add recipients ' . implode(', ', $recipients) . ' to  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

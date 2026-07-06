@@ -669,11 +669,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					else {
 						$attributesNewGroup = [
 							'cn' => [$newGroupName],
-							'gidNumber' => $nextGid[0],
+							'gidNumber' => [(string) $nextGid[0]],
 							'objectClass' => ['posixGroup'],
 						];
 					}
-					$newGroupSuccess = @ldap_add(getLDAPServerHandle(), $dnNewGroup, $attributesNewGroup);
+					$newGroupSuccess = ldapAddNewEntry(getLDAPServerHandle(), $dnNewGroup, $attributesNewGroup);
 					if ($newGroupSuccess) {
 						logNewMessage(LOG_NOTICE, 'Created new group: ' . $newGroupName);
 						$this->attributes['gidNumber'][0] = (string) $nextGid[0];
@@ -903,7 +903,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 						}
 						if ($found) {
 							$attributesToModify = [$searchAttr => $newOwners];
-							$success = @ldap_mod_replace($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], $attributesToModify);
+							$success = ldapModifyAttributes($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], $attributesToModify);
 							if (!$success) {
 								$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 								logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . $ldapError . ').');
@@ -921,7 +921,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
 						$attrName = 'uniquemember';
 					}
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], [$attrName => [$accountContainer->finalDN]]);
+					$success = ldapAddAttributes($_SESSION['ldap']->server(), $toAdd[$i], [$attrName => [$accountContainer->finalDN]]);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to add user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -938,7 +938,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
 						$attrName = 'uniquemember';
 					}
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], [$attrName => [$accountContainer->dn_orig]]);
+					$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $toRem[$i], [$attrName => [$accountContainer->dn_orig]]);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to delete user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -1079,7 +1079,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			$result = searchLDAPByAttribute('sudoUser', $this->attributes['uid'][0], 'sudoRole', ['dn'], ['sudo']);
 			foreach ($result as $attrs) {
 				$dn = $attrs['dn'];
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, ['sudoUser' => [$this->attributes['uid'][0]]]);
+				$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $dn, ['sudoUser' => [$this->attributes['uid'][0]]]);
 				if (!$success) {
 					$return[] = ['ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 				}
@@ -3061,7 +3061,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 				$errors = [];
 				if (!empty($memberUid)) {
 					$toAdd = ['memberUID' => $memberUid];
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $dnToUpdate, $toAdd);
+					$success = ldapAddAttributes($_SESSION['ldap']->server(), $dnToUpdate, $toAdd);
 					if (!$success) {
 						$errors[] = [
 							"ERROR",
@@ -3133,7 +3133,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			}
 			$errors = [];
 			if (!empty($gonAttrToAdd)) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttrToAdd);
+				$success = ldapAddAttributes($_SESSION['ldap']->server(), $gonDn, $gonAttrToAdd);
 				if (!$success) {
 					$errors[] = [
 						"ERROR",
@@ -3296,7 +3296,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (isset($attrs['uidnumber'][0]) && ($attrs['uidnumber'][0] != '')) {
 			$newValue = intval($attrs['uidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldap_modify($ldapHandle, $dn, ['uidnumber' => [$newValue]]);
+			ldapModifyAttributes($ldapHandle, $dn, ['uidnumber' => [(string) $newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating Samba ID pool ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
@@ -3329,7 +3329,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!empty($attrs['mssfu30maxuidnumber'][0])) {
 			$newValue = intval($attrs['mssfu30maxuidnumber'][0]) + $count;
 			$ldapHandle = $_SESSION['ldap']->server();
-			ldap_modify($ldapHandle, $dn, ['mssfu30maxuidnumber' => [$newValue]]);
+			ldapModifyAttributes($ldapHandle, $dn, ['mssfu30maxuidnumber' => [(string) $newValue]]);
 			logNewMessage(LOG_DEBUG, 'Updated domain info ' . $dn . ' with UID number ' . $newValue . ' and LDAP code ' . ldap_errno($ldapHandle));
 			if (ldap_errno($ldapHandle) !== 0) {
 				logNewMessage(LOG_NOTICE, 'Updating domain info ' . $dn . ' with UID number ' . $newValue . ' failed. ' . ldap_error($ldapHandle));
@@ -4324,7 +4324,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			foreach ($groups as $group) {
 				logNewMessage(LOG_DEBUG, 'Removing ' . $attributes['dn'] . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
 				$attributesToDelete = [$searchAttr => [$attributes['dn']]];
-				$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
+				$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
 				if (!$success) {
 					$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 					logNewMessage(LOG_ERR, 'Unable to delete attributes of DN: ' . $group['dn'] . ' (' . $ldapError . ').');
@@ -4348,7 +4348,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		foreach ($groups as $group) {
 			logNewMessage(LOG_DEBUG, 'Removing ' . $uid . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
 			$attributesToDelete = [$searchAttr => [$uid]];
-			$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
+			$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
 			if (!$success) {
 				$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 				logNewMessage(LOG_ERR, 'Unable to delete attributes of DN: ' . $group['dn'] . ' (' . $ldapError . ').');

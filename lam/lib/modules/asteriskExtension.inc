@@ -879,7 +879,7 @@ class asteriskExtension extends baseModule {
 				}
 				if (!empty($ldapChanges)) {
 					if (!isset($ldapChanges['cn'])) {
-						ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $ldapChanges);
+						ldapModifyAttributes($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $ldapChanges);
 					}
 					else {
 						$origDN = "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
@@ -887,7 +887,7 @@ class asteriskExtension extends baseModule {
 						ldap_rename($_SESSION['ldap']->server(), $origDN, $newRDN, extractDNSuffix($this->getAccountContainer()->dn_orig), true);
 						unset($ldapChanges['cn']);
 						if (!empty($ldapChanges)) {
-							ldap_mod_replace($_SESSION['ldap']->server(), $newRDN . "," . extractDNSuffix($this->getAccountContainer()->dn_orig), $ldapChanges);
+							ldapModifyAttributes($_SESSION['ldap']->server(), $newRDN . "," . extractDNSuffix($this->getAccountContainer()->dn_orig), $ldapChanges);
 						}
 					}
 				}
@@ -895,13 +895,13 @@ class asteriskExtension extends baseModule {
 				$this->moveExtentionToNewSuffix($row);
 			}
 			else {
-				ldap_delete($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig));
+				ldapDeleteEntry($_SESSION['ldap']->server(), "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig));
 			}
 		}
 		// add new config rows
 		for ($rowCounter = count($this->extensionRowsOrig); $rowCounter < count($this->extensionRows); $rowCounter++) {
 			$row = $this->extensionRows[$rowCounter];
-			ldap_add($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
+			ldapAddNewEntry($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $row);
 		}
 
 		//a trick for Edit again to work
@@ -925,7 +925,7 @@ class asteriskExtension extends baseModule {
 		for ($rowCounter = 0; $rowCounter < count($entries); $rowCounter++) {
 			$rowOrig = $entries[$rowCounter];
 			if ($rowOrig["astpriority"][0] > 1) {
-				ldap_delete($_SESSION['ldap']->server(), $rowOrig['dn']);
+				ldapDeleteEntry($_SESSION['ldap']->server(), $rowOrig['dn']);
 			}
 		}
 		return [];

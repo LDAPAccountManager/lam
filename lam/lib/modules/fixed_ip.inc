@@ -672,32 +672,32 @@ class fixed_ip extends baseModule {
 			}
 
 			foreach ($delete as $cn) {
-				ldap_delete($_SESSION['ldap']->server(), 'cn=' . $cn . $ldapSuffix);
+				ldapDeleteEntry($_SESSION['ldap']->server(), 'cn=' . $cn . $ldapSuffix);
 			}
 
 			foreach ($add as $arr) {
 				$attr = [];
-				$attr['cn'] = $arr['cn'];
-				$attr['objectClass'][0] = 'top';
-				$attr['objectClass'][1] = 'dhcpHost';
-				$attr['dhcpHWAddress'] = 'ethernet ' . $arr['mac'];
+				$attr['cn'][] = $arr['cn'];
+				$attr['objectClass'][] = 'top';
+				$attr['objectClass'][] = 'dhcpHost';
+				$attr['dhcpHWAddress'][] = 'ethernet ' . $arr['mac'];
 				if ($arr['ip'] != '') {
 					$attr['dhcpStatements'][] = 'fixed-address ' . $arr['ip'];
 				}
 				if ($arr['active'] === false) {
 					$attr['dhcpStatements'][] = 'deny booting';
 				}
-				$attr['dhcpOption'] = 'host-name "' . $arr['cn'] . '"';
+				$attr['dhcpOption'][] = 'host-name "' . $arr['cn'] . '"';
 				if (!empty($arr['description'])) {
 					$attr['dhcpComments'][] = $arr['description'];
 				}
 				if ($attr['cn'] != "") {
-					ldap_add($_SESSION['ldap']->server(), 'cn=' . $arr['cn'] . $ldapSuffix, $attr);
+					ldapAddNewEntry($_SESSION['ldap']->server(), 'cn=' . $arr['cn'] . $ldapSuffix, $attr);
 				}
 			}
 			// entries to modify
 			foreach ($mod as $dn => $attrs) {
-				ldap_modify($_SESSION['ldap']->server(), $dn, $attrs);
+				ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $attrs);
 			}
 		}
 		return [];

@@ -333,6 +333,79 @@ function logNewMessage($level, $message): void {
 }
 
 /**
+ * Logs a message to a remote logging service.
+ *
+ * @param int $level log level
+ * @param string $message log message
+ * @param LAMCfgMain $cfgMain main configuration
+ */
+function lamLogRemoteMessage($level, $message, $cfgMain): void {
+	include_once __DIR__ . '/3rdParty/composer/autoload.php';
+	$remoteParts = explode(':', $cfgMain->logDestination);
+	$server = $remoteParts[1];
+	$port = intval($remoteParts[2]);
+	$output = "%channel%.%level_name%: %message%";
+	$formatter = new Monolog\Formatter\LineFormatter($output);
+	$logger = new Monolog\Logger('lam');
+	$syslogHandler = new Monolog\Handler\SyslogUdpHandler($server, $port);
+	$syslogHandler->setFormatter($formatter);
+	$logger->pushHandler($syslogHandler);
+	switch ($level) {
+		case LOG_DEBUG:
+			$logger->debug($message);
+			break;
+		case LOG_NOTICE:
+			$logger->notice($message);
+			break;
+		case LOG_WARNING:
+			$logger->warning($message);
+			break;
+		case LOG_ERR:
+			$logger->error($message);
+			break;
+	}
+}
+
+/**
+ * Logs a new audit message.
+ *
+ * @param string $message message
+ */
+function logAuditMessage(string $message): void {
+	if (isset($_SESSION['cfgMain'])) {
+		$cfg = $_SESSION['cfgMain'];
+	}
+	else {
+		$cfg = new LAMCfgMain();
+		$_SESSION['cfgMain'] = $cfg;
+	}
+	// check if logging is disabled
+	if ($cfg->auditLogType === LOG_FILE_TARGET::NONE->name) {
+		return;
+	}
+	$message = "LDAP Account Manager AuditLog (" . session_id() . ' - ' . getClientIPForLogging() . ' - ' . getLamLdapUser() . ") - " . $message;
+	if ($cfg->auditLogType === LOG_FILE_TARGET::SYSLOG->name) {
+		syslog(LOG_NOTICE, str_replace(["\n", "\r"], ['', ''], $message));
+	}
+	elseif (($cfg->auditLogType === LOG_FILE_TARGET::FILE->name) && LAMCfgMain::isValidLogFilename($cfg->auditLogTarget)) {
+		@touch($cfg->auditLogTarget);
+		if (is_writable($cfg->auditLogTarget)) {
+			$file = fopen($cfg->auditLogTarget, 'a');
+			if ($file) {
+				$timeZone = 'UTC';
+				$sysTimeZone = @date_default_timezone_get();
+				if (!empty($sysTimeZone)) {
+					$timeZone = $sysTimeZone;
+				}
+				$time = new DateTime('now', new DateTimeZone($timeZone));
+				fwrite($file, $time->format('Y-m-d H:i:s') . ' ' . $message . "\n");
+				fclose($file);
+			}
+		}
+	}
+}
+
+/**
  * Checks if write access to LDAP is allowed.
  *
  * @param String $scope account type (e.g. user)
@@ -1049,40 +1122,6 @@ function lamEncryptionAlgo() {
 		return 'AES-256-CBC';
 	}
 	return 'AES256';
-}
-
-/**
- * Logs a message to a remote logging service.
- *
- * @param int $level log level
- * @param string $message log message
- * @param LAMCfgMain $cfgMain main configuration
- */
-function lamLogRemoteMessage($level, $message, $cfgMain): void {
-	include_once __DIR__ . '/3rdParty/composer/autoload.php';
-	$remoteParts = explode(':', $cfgMain->logDestination);
-	$server = $remoteParts[1];
-	$port = intval($remoteParts[2]);
-	$output = "%channel%.%level_name%: %message%";
-	$formatter = new Monolog\Formatter\LineFormatter($output);
-	$logger = new Monolog\Logger('lam');
-	$syslogHandler = new Monolog\Handler\SyslogUdpHandler($server, $port);
-	$syslogHandler->setFormatter($formatter);
-	$logger->pushHandler($syslogHandler);
-	switch ($level) {
-		case LOG_DEBUG:
-			$logger->debug($message);
-			break;
-		case LOG_NOTICE:
-			$logger->notice($message);
-			break;
-		case LOG_WARNING:
-			$logger->warning($message);
-			break;
-		case LOG_ERR:
-			$logger->error($message);
-			break;
-	}
 }
 
 /**

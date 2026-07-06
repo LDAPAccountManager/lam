@@ -1112,7 +1112,7 @@ function deleteDN($dn, $recursive): array {
 		}
 	}
 	// delete parent DN
-	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+	$success = ldapDeleteEntry($_SESSION['ldap']->server(), $dn);
 	if (!$success) {
 		logNewMessage(LOG_ERR, 'Unable to delete DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 		$errors[] = ['ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -1158,7 +1158,7 @@ function copyDnRecursive(string $oldDn, string $targetDn): void {
 			unset($attributes[$systemAttributeToSkip]);
 		}
 	}
-	$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
+	$success = ldapAddNewEntry($_SESSION['ldap']->server(), $newDn, $attributes);
 	if (!$success) {
 		logNewMessage(LOG_ERR, sprintf(_('Was unable to create DN: %s.'), unescapeLdapSpecialCharacters($oldDn)) . ' ' .
 			getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
@@ -1185,6 +1185,107 @@ function moveDn(string $oldDn, string $targetDn): void {
 	if (!$success) {
 		throw new LAMException(sprintf(_('Was unable to rename DN: %s.'), $oldDn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 	}
+}
+
+/**
+ * Adds a new LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]> $entry attributes
+ * @return bool the operation was successful
+ */
+function ldapAddNewEntry(Connection $connection, string $dn, array $entry): bool {
+	logNewMessage(LOG_DEBUG, 'Adding new entry: ' . $dn . ' with attributes: ' . json_encode($entry, JSON_PRETTY_PRINT));
+	logAuditMessage('Adding new entry: ' . $dn . ' with attributes: ' . json_encode($entry, JSON_PRETTY_PRINT));
+	$result = @ldap_add($connection, $dn, $entry);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
+ * Deletes an LDAP entry.
+ *
+ * @param Connection $connection connection
+ * @param string $dn DN
+ * @return bool success
+ */
+function ldapDeleteEntry(Connection $connection, string $dn): bool {
+	logNewMessage(LOG_DEBUG, 'Deleting entry: ' . $dn);
+	logAuditMessage('Deleting entry: ' . $dn);
+	$result = @ldap_delete($connection, $dn);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
+ * Modifies an LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]|string> $attributes attributes to add
+ * @return bool the operation was successful
+ */
+function ldapAddAttributes(Connection $connection, string $dn, array $attributes): bool {
+	logNewMessage(LOG_DEBUG, 'Adding new attributes to ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	logAuditMessage('Adding new attributes to ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	$result = @ldap_mod_add($connection, $dn, $attributes);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
+ * Modifies an LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]|string> $attributes attributes to remove
+ * @return bool the operation was successful
+ */
+function ldapDeleteAttributes(Connection $connection, string $dn, array $attributes): bool {
+	logNewMessage(LOG_DEBUG, 'Removing attributes from ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	logAuditMessage('Removing attributes from ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	$result = @ldap_mod_del($connection, $dn, $attributes);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
+ * Modifies an LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]|string> $attributes attributes to change
+ * @return bool the operation was successful
+ */
+function ldapModifyAttributes(Connection $connection, string $dn, array $attributes): bool {
+	logNewMessage(LOG_DEBUG, 'Replacing attributes in ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	logAuditMessage('Replacing attributes in ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	$result = @ldap_mod_replace($connection, $dn, $attributes);
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
+}
+
+/**
+ * Modifies an LDAP entry.
+ *
+ * @param Connection $connection LDAP connection
+ * @param string $dn DN
+ * @param array<string, string[]|string|int>[] $attributes attribute operations to perform in batch mode
+ * @return bool the operation was successful
+ */
+function ldapModifyAttributesBatch(Connection $connection, string $dn, array $attributes): bool {
+	logNewMessage(LOG_DEBUG, 'Replacing attributes in ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	logAuditMessage('Replacing attributes in ' . $dn . ': ' . json_encode($attributes, JSON_PRETTY_PRINT));
+	$result = @ldap_modify_batch($connection, $dn, $attributes, getCommonLdapControls());
+	logNewMessage(LOG_DEBUG, 'Operation ' . ($result ? 'was successful' : 'failed') . '.');
+	logAuditMessage('Operation ' . ($result ? 'was successful' : 'failed') . '. Server returned ' . ldap_errno($connection) . ' - ' . ldap_error($connection));
+	return $result;
 }
 
 /**

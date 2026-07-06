@@ -346,7 +346,7 @@ class nisNetGroupUser extends baseModule {
 				'nisnetgrouptriple' => $triples
 			];
 			logNewMessage(LOG_DEBUG, 'Updating ' . $dn . ' with ' . print_r($attributesNew, true));
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributesNew);
+			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $attributesNew);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$messages[] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -392,7 +392,7 @@ class nisNetGroupUser extends baseModule {
 			$attributes = [
 				'nisnetgrouptriple' => $triples
 			];
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
+			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $attributes);
 			if (!$success) {
 				logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$return[$this->getAccountContainer()->dn_orig]['errors'][] = ['ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -554,7 +554,7 @@ class nisNetGroupUser extends baseModule {
 			$attributes = [
 				'nisnetgrouptriple' => $triples
 			];
-			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
+			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $attributes);
 			if (!$success) {
 				$errors[] = [
 					"ERROR",

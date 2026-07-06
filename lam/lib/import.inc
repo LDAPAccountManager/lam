@@ -461,7 +461,7 @@ class AddEntryTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_add($ldap, $this->dn, $this->attributes);
+		$success = ldapAddNewEntry($ldap, $this->dn, $this->attributes);
 		if ($success) {
 			return Importer::formatMessage('INFO', _('Entry created'), htmlspecialchars($this->dn));
 		}
@@ -533,7 +533,7 @@ class DeleteEntryTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_delete($ldap, $this->dn);
+		$success = ldapDeleteEntry($ldap, $this->dn);
 		if ($success) {
 			return Importer::formatMessage('INFO', sprintf(_('Successfully deleted DN %s'), $this->dn), '');
 		}
@@ -620,7 +620,7 @@ class AddAttributesTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_mod_add($ldap, $this->dn, $this->attributes);
+		$success = ldapAddAttributes($ldap, $this->dn, $this->attributes);
 		if ($success) {
 			return '';
 		}
@@ -679,10 +679,10 @@ class DeleteAttributesTask implements ImporterTask {
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
 		if (!empty($this->attributes)) {
-			$success = @ldap_mod_del($ldap, $this->dn, $this->attributes);
+			$success = ldapDeleteAttributes($ldap, $this->dn, $this->attributes);
 		}
 		else {
-			$success = @ldap_modify($ldap, $this->dn, [$this->attributeName => []]);
+			$success = ldapModifyAttributes($ldap, $this->dn, [$this->attributeName => []]);
 		}
 		if ($success) {
 			return '';
@@ -747,7 +747,7 @@ class ReplaceAttributesTask implements ImporterTask {
 	 */
 	public function run(): string {
 		$ldap = $_SESSION['ldap']->server();
-		$success = @ldap_modify($ldap, $this->dn, $this->attributes);
+		$success = ldapModifyAttributes($ldap, $this->dn, $this->attributes);
 		if ($success) {
 			return '';
 		}

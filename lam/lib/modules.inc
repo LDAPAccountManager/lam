@@ -1988,7 +1988,7 @@ class accountContainer {
 				if (isset($attributes[$this->finalDN]['modify']) && is_array($attributes[$this->finalDN]['modify'])) {
 					$attr = array_merge_recursive($attr, $attributes[$this->finalDN]['modify']);
 				}
-				$success = @ldap_add($_SESSION['ldap']->server(), $this->finalDN, $attr);
+				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $this->finalDN, $attr);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to create DN: ' . $this->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 						. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
@@ -2007,7 +2007,7 @@ class accountContainer {
 				logNewMessage(LOG_DEBUG, 'Attribute changes for ' . $DNs[$i] . ":\n" . print_r($attributes[$DNs[$i]], true));
 				// modify attributes
 				if (!empty($attributes[$DNs[$i]]['modify'])) {
-					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+					$success = ldapModifyAttributes($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
@@ -2026,7 +2026,7 @@ class accountContainer {
 				}
 				// add attributes
 				if (!empty($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+					$success = ldapAddAttributes($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to add attributes to DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
@@ -2039,7 +2039,7 @@ class accountContainer {
 				}
 				// remove attributes
 				if (!empty($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+					$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to delete attributes from DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));

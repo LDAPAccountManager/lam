@@ -912,9 +912,9 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if (empty($result)) {
 				$attrs = [
 					'objectClass' => ['organizationalUnit'],
-					'ou' => 'addressbook'
+					'ou' => ['addressbook']
 				];
-				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attrs);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to add addressbook for user ' . $accountContainer->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = ['ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
@@ -2584,10 +2584,10 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook')) {
 				$attrs = [
 					'objectClass' => ['organizationalUnit'],
-					'ou' => 'addressbook'
+					'ou' => ['addressbook']
 				];
 				$dn = 'ou=addressbook,' . $accounts[$temp['counter']]['dn'];
-				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
+				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $attrs);
 				if (!$success) {
 					logNewMessage(LOG_ERR, 'Unable to add addressbook for user ' . $accounts[$temp['counter']]['dn'] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$errors[] = ['ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server())];

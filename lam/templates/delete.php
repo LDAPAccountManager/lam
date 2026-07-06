@@ -266,7 +266,7 @@ if (isset($_POST['delete'])) {
 				if (!$stopProcessing) {
 					// modify attributes
 					if (isset($attributes[$dn]['modify'])) {
-						$success = ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
+						$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
 						if (!$success) {
 							$errors[] = ['ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;
@@ -275,7 +275,7 @@ if (isset($_POST['delete'])) {
 					}
 					// add attributes
 					if (isset($attributes[$dn]['add']) && !$stopProcessing) {
-						$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, $attributes[$dn]['add']);
+						$success = ldapAddAttributes($_SESSION['ldap']->server(), $dn, $attributes[$dn]['add']);
 						if (!$success) {
 							$errors[] = ['ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;
@@ -284,7 +284,7 @@ if (isset($_POST['delete'])) {
 					}
 					// remove attributes
 					if (isset($attributes[$dn]['remove']) && !$stopProcessing) {
-						$success = ldap_mod_del($_SESSION['ldap']->server(), $dn, $attributes[$dn]['remove']);
+						$success = ldapDeleteAttributes($_SESSION['ldap']->server(), $dn, $attributes[$dn]['remove']);
 						if (!$success) {
 							$errors[] = ['ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())];
 							$stopProcessing = true;

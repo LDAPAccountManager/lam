@@ -593,6 +593,7 @@ if (isset($_POST['checklogin'])) {
 			if (!$searchSuccess) {
 				$error_message = $searchError;
 				$searchLDAP->close();
+				logAuditMessage('Login failed for server profile: ' . $_SESSION['config']->getName());
 				display_LoginPage($licenseValidator, $error_message);
 				exit();
 			}
@@ -600,6 +601,7 @@ if (isset($_POST['checklogin'])) {
 		}
 		catch (LAMException $e) {
 			$searchLDAP->close();
+			logAuditMessage('Login failed for server profile: ' . $_SESSION['config']->getName());
 			display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage());
 			exit();
 		}
@@ -615,6 +617,7 @@ if (isset($_POST['checklogin'])) {
 		addSecurityTokenToSession();
 		// logging
 		logNewMessage(LOG_NOTICE, 'User ' . $username . ' (' . $clientSource . ') successfully logged in.');
+        logAuditMessage('Login to server profile: ' . $_SESSION['config']->getName());
 		// Load main frame or 2 factor page
 		if ($_SESSION['config']->getTwoFactorAuthentication() == TwoFactorProviderService::TWO_FACTOR_NONE) {
 			metaRefresh("./main.php");
@@ -638,6 +641,7 @@ if (isset($_POST['checklogin'])) {
 		if ($cfgMain->isHideLoginErrorDetails()) {
 			$message = null;
 		}
+		logAuditMessage('Login failed for server profile: ' . $_SESSION['config']->getName());
 		display_LoginPage($licenseValidator, $e->getTitle(), $message, $extraMessage);
 		exit();
 	}

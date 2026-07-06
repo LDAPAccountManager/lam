@@ -603,7 +603,7 @@ class range extends baseModule {
 				if (isset($pool['dn'])) {
 					unset($pool['dn']);
 				}
-				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $pool);
+				$success = ldapAddNewEntry($_SESSION['ldap']->server(), $dn, $pool);
 				if (!$success) {
 					$msg = sprintf(_('Was unable to create DN: %s.'), $dn);
 					logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));
@@ -647,7 +647,7 @@ class range extends baseModule {
 					}
 					if (!empty($mod)) {
 						$dn = 'cn=' . $pool['cn'][0] . ',' . $this->getAccountContainer()->finalDN;
-						$success = @ldap_modify($_SESSION['ldap']->server(), $dn, $mod);
+						$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, $mod);
 						if (!$success) {
 							$msg = sprintf(_('Was unable to modify attributes of DN: %s.'), $dn);
 							logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));
@@ -670,7 +670,7 @@ class range extends baseModule {
 			if (!$found) {
 				// delete pool
 				$dn = 'cn=' . $poolOrig['cn'][0] . ',' . $this->getAccountContainer()->finalDN;
-				$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+				$success = ldapDeleteEntry($_SESSION['ldap']->server(), $dn);
 				if (!$success) {
 					$msg = sprintf(_('Was unable to delete DN: %s.'), $dn);
 					logNewMessage(LOG_ERR, $msg . getDefaultLDAPErrorString($_SESSION['ldap']->server()));
