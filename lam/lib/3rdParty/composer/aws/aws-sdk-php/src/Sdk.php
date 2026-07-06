@@ -386,10 +386,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionInvoicing(array $args = [])
  * @method \Aws\IoTDeviceAdvisor\IoTDeviceAdvisorClient createIoTDeviceAdvisor(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIoTDeviceAdvisor(array $args = [])
- * @method \Aws\IoTEvents\IoTEventsClient createIoTEvents(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionIoTEvents(array $args = [])
- * @method \Aws\IoTEventsData\IoTEventsDataClient createIoTEventsData(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionIoTEventsData(array $args = [])
  * @method \Aws\IoTFleetWise\IoTFleetWiseClient createIoTFleetWise(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIoTFleetWise(array $args = [])
  * @method \Aws\IoTJobsDataPlane\IoTJobsDataPlaneClient createIoTJobsDataPlane(array $args = [])
@@ -582,8 +578,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionPCS(array $args = [])
  * @method \Aws\PI\PIClient createPI(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPI(array $args = [])
- * @method \Aws\Panorama\PanoramaClient createPanorama(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionPanorama(array $args = [])
  * @method \Aws\PartnerCentralAccount\PartnerCentralAccountClient createPartnerCentralAccount(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPartnerCentralAccount(array $args = [])
  * @method \Aws\PartnerCentralBenefits\PartnerCentralBenefitsClient createPartnerCentralBenefits(array $args = [])
@@ -756,8 +750,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionSignerData(array $args = [])
  * @method \Aws\Signin\SigninClient createSignin(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSignin(array $args = [])
- * @method \Aws\SimSpaceWeaver\SimSpaceWeaverClient createSimSpaceWeaver(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionSimSpaceWeaver(array $args = [])
  * @method \Aws\SimpleDBv2\SimpleDBv2Client createSimpleDBv2(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSimpleDBv2(array $args = [])
  * @method \Aws\SnowBall\SnowBallClient createSnowBall(array $args = [])
@@ -784,6 +776,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionSupport(array $args = [])
  * @method \Aws\SupportApp\SupportAppClient createSupportApp(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSupportApp(array $args = [])
+ * @method \Aws\SupportAuthZ\SupportAuthZClient createSupportAuthZ(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionSupportAuthZ(array $args = [])
  * @method \Aws\Sustainability\SustainabilityClient createSustainability(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSustainability(array $args = [])
  * @method \Aws\Swf\SwfClient createSwf(array $args = [])
@@ -861,7 +855,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.386.1';
+    const VERSION = '3.387.2';
 
     /** @var array Arguments for creating clients */
     private $args;

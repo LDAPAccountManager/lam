@@ -11,9 +11,12 @@
 
 namespace Symfony\Contracts\Service;
 
+use Psr\Container\ContainerInterface;
+
 /**
- * @deprecated use ContainerProviderInterface instead
+ * Implemented by objects that expose a service container.
  */
-interface ContainerAwareInterface extends ContainerProviderInterface
+interface ContainerProviderInterface
 {
+    public function getContainer(): ContainerInterface;
 }

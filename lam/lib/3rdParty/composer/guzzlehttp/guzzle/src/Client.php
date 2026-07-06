@@ -3,6 +3,7 @@
 namespace GuzzleHttp;
 
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\InvalidArgumentException;
 use GuzzleHttp\Handler\CurlShareHandleState;
@@ -259,7 +260,11 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
             $uri = Utils::idnUriConvert($uri, $idnOptions);
         }
 
-        return $uri->getScheme() === '' && $uri->getHost() !== '' ? $uri->withScheme('http') : $uri;
+        if ($uri->getScheme() === '' && $uri->getHost() !== '') {
+            $uri = $uri->withScheme('http');
+        }
+
+        return $uri;
     }
 
     /**
@@ -510,7 +515,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
      */
     private static function normalizeDeprecatedIntegerOptionValues(array &$options): void
     {
-        foreach (['crypto_method', 'retries'] as $option) {
+        foreach (['crypto_method', 'crypto_method_max', 'retries'] as $option) {
             if (!\array_key_exists($option, $options)) {
                 continue;
             }
@@ -548,6 +553,8 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
 
         if (isset($options['allow_redirects']) && \is_array($options['allow_redirects'])) {
             self::warnAboutInvalidAllowRedirectsOptionTypes($options['allow_redirects']);
+        } elseif (isset($options['allow_redirects']) && !\is_bool($options['allow_redirects'])) {
+            self::warnInvalidRequestOptionType('allow_redirects', 'bool|array', $options['allow_redirects'], '7.13');
         }
 
         if (isset($options['auth'])) {
@@ -562,9 +569,16 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         self::warnIfPresentAndNotString($options, 'cert_type');
         self::warnIfPresentAndNotNumber($options, 'connect_timeout');
         self::warnIfPresentAndNotInt($options, 'crypto_method');
+        self::warnIfPresentAndNotInt($options, 'crypto_method_max', null, '7.13');
         self::warnIfPresentAndNotBoolOrResource($options, 'debug');
         self::warnIfPresentAndNotBoolOrString($options, 'decode_content');
         self::warnIfPresentAndNotNumber($options, 'delay');
+        if (isset($options['delay']) && \is_numeric($options['delay'])) {
+            $delay = (float) $options['delay'];
+            if (!\is_finite($delay) || $delay < 0.0) {
+                self::warnInvalidRequestOptionType('delay', 'finite int|float greater than or equal to 0', $options['delay'], '7.13');
+            }
+        }
         self::warnIfPresentAndNotBoolOrInt($options, 'expect');
 
         if (isset($options['form_params'])) {
@@ -573,6 +587,15 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
 
         if (isset($options['force_ip_resolve']) && !\is_string($options['force_ip_resolve'])) {
             self::warnInvalidRequestOptionType('force_ip_resolve', 'string', $options['force_ip_resolve']);
+        }
+
+        if (
+            isset($options['force_ip_resolve'])
+            && \is_string($options['force_ip_resolve'])
+            && $options['force_ip_resolve'] !== 'v4'
+            && $options['force_ip_resolve'] !== 'v6'
+        ) {
+            self::warnInvalidRequestOptionType('force_ip_resolve', '"v4"|"v6"', $options['force_ip_resolve'], '7.13');
         }
 
         if (isset($options['headers'])) {
@@ -589,6 +612,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         self::warnIfPresentAndNotCallable($options, 'on_stats');
         self::warnIfPresentAndNotCallable($options, 'progress');
         self::warnIfPresentAndNotStringArray($options, 'protocols', true);
+        self::warnAboutInvalidProtocolValues($options, 'protocols');
         self::warnAboutInvalidProxyOptionTypes($options);
 
         self::warnIfPresentAndNotNumber($options, 'read_timeout');
@@ -611,6 +635,15 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         if (isset($options['cookies']) && $options['cookies'] === true) {
             self::warnInvalidRequestOptionType('cookies', 'false|CookieJarInterface', $options['cookies']);
         }
+
+        if (
+            isset($options['cookies'])
+            && $options['cookies'] !== false
+            && $options['cookies'] !== true
+            && !($options['cookies'] instanceof CookieJarInterface)
+        ) {
+            self::warnInvalidRequestOptionType('cookies', 'false|CookieJarInterface', $options['cookies'], '7.13');
+        }
     }
 
     private static function warnAboutInvalidAllowRedirectsOptionTypes(array $allowRedirects): void
@@ -619,6 +652,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         self::warnIfPresentAndNotBool($allowRedirects, 'strict', 'allow_redirects.strict');
         self::warnIfPresentAndNotBool($allowRedirects, 'referer', 'allow_redirects.referer');
         self::warnIfPresentAndNotStringArray($allowRedirects, 'protocols', true, 'allow_redirects.protocols');
+        self::warnAboutInvalidProtocolValues($allowRedirects, 'protocols', 'allow_redirects.protocols');
         self::warnIfPresentAndNotCallable($allowRedirects, 'on_redirect', 'allow_redirects.on_redirect');
         self::warnIfPresentAndNotBool($allowRedirects, 'track_redirects', 'allow_redirects.track_redirects');
     }
@@ -881,10 +915,14 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         }
     }
 
-    private static function warnIfPresentAndNotInt(array $options, string $option, ?string $path = null): void
-    {
+    private static function warnIfPresentAndNotInt(
+        array $options,
+        string $option,
+        ?string $path = null,
+        string $since = '7.11'
+    ): void {
         if (\array_key_exists($option, $options) && !\is_int($options[$option])) {
-            self::warnInvalidRequestOptionType($path ?? $option, 'int', $options[$option]);
+            self::warnInvalidRequestOptionType($path ?? $option, 'int', $options[$option], $since);
         }
     }
 
@@ -926,6 +964,24 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         }
     }
 
+    /**
+     * @param array<array-key, mixed> $options
+     */
+    private static function warnAboutInvalidProtocolValues(array $options, string $option, ?string $path = null): void
+    {
+        if (!isset($options[$option]) || !\is_array($options[$option])) {
+            return;
+        }
+
+        $path = $path ?? $option;
+
+        foreach ($options[$option] as $index => $protocol) {
+            if (\is_string($protocol) && $protocol !== 'http' && $protocol !== 'https') {
+                self::warnInvalidRequestOptionType($path.'.'.(string) $index, '"http"|"https"', $protocol, '7.13');
+            }
+        }
+    }
+
     private static function warnIfPresentAndNotStringOrNumber(array $options, string $option): void
     {
         if (
@@ -941,11 +997,11 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
     /**
      * @param mixed $value
      */
-    private static function warnInvalidRequestOptionType(string $option, string $expected, $value): void
+    private static function warnInvalidRequestOptionType(string $option, string $expected, $value, string $since = '7.11'): void
     {
         \trigger_deprecation(
             'guzzlehttp/guzzle',
-            '7.11',
+            $since,
             'Passing %s to request option "%s" is deprecated; guzzlehttp/guzzle 8.0 requires %s.',
             \get_debug_type($value),
             $option,
