@@ -193,7 +193,7 @@ class TreeView {
 		$children = ldapListDN($dn, '(objectClass=*)', ['objectClass', 'hassubordinates']);
 		$childNodes = [];
 		foreach ($children as $child) {
-			$childHasChildren = !isset($child['hassubordinates'][0]) || ($child['hassubordinates'][0] === 'TRUE');
+			$childHasChildren = !isset($child['hassubordinates'][0]) || (strtolower($child['hassubordinates'][0]) === 'true');
 			$childNodes[] = $this->createNodeData($child, false, false, [], $childHasChildren);
 		}
 		$this->sortNodes($childNodes);
@@ -223,7 +223,7 @@ class TreeView {
 		if (!empty($children)) {
 			$childData = [];
 			foreach ($children as $child) {
-				$childHasChildren = !isset($child['hassubordinates'][0]) || ($child['hassubordinates'][0] === 'TRUE');
+				$childHasChildren = !isset($child['hassubordinates'][0]) || (strtolower($child['hassubordinates'][0]) === 'true');
 				$childData[] = $this->createNodeData($child, false, false, [], $childHasChildren);
 			}
 			$this->sortNodes($childData);
