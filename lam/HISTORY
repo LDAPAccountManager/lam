@@ -1,4 +1,5 @@
 September 2026 9.7
+ - Optional audit log can track all LDAP changes (716)
  - Fixed bugs:
   -> Account status tooltip was not shown (734)
   -> Request access: wildcard replacement (742)
