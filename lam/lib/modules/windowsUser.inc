@@ -4883,6 +4883,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			'thumbnailphoto' => _('Thumbnail'),
 			'memberof' => _('Member of'),
 			'memberof_count' => _('Membership count'),
+			'useraccountcontrol' => _('Account flags'),
 		];
 	}
 
@@ -4956,6 +4957,21 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 					$count = count($values);
 				}
 				return new htmlOutputText((string) $count);
+			};
+		}
+		elseif ($attributeName === 'useraccountcontrol') {
+			return function(array $entry, string $attribute): htmlElement {
+				$flags = [];
+				if (windowsUser::isNeverExpiring($entry)) {
+					$flags[] = _('Password does not expire');
+				}
+				if (windowsUser::isSmartCardRequired($entry)) {
+					$flags[] = _('Require smartcard');
+				}
+				if (windowsUser::isDeactivated($entry)) {
+					$flags[] = _('Deactivated');
+				}
+				return new htmlOutputText(implode(', ', $flags));
 			};
 		}
 		return null;
