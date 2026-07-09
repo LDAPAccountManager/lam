@@ -111,18 +111,36 @@ RUN wget --max-redirect=0 https://letsencrypt.org/certs/isrgrootx1.pem \
     wget --max-redirect=0 https://letsencrypt.org/certs/isrg-root-x2.pem \
     -O /usr/local/share/ca-certificates/isrg-root-x2.pem && \
     openssl x509 -in /usr/local/share/ca-certificates/isrg-root-x2.pem -inform PEM -out /usr/local/share/ca-certificates/isrg-root-x2.crt && \
-    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-r3.pem \
-    -O /usr/local/share/ca-certificates/lets-encrypt-r3.pem && \
-    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-r3.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-r3.crt && \
-    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-e1.pem \
-    -O /usr/local/share/ca-certificates/lets-encrypt-e1.pem && \
-    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e1.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e1.crt && \
-    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-r4.pem \
-    -O /usr/local/share/ca-certificates/lets-encrypt-r4.pem && \
-    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-r4.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-r4.crt && \
-    wget --max-redirect=0 https://letsencrypt.org/certs/lets-encrypt-e2.pem \
-    -O /usr/local/share/ca-certificates/lets-encrypt-e2.pem && \
-    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e2.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e2.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/gen-y/root-ye-by-x2.pem \
+    -O /usr/local/share/ca-certificates/root-ye-by-x2.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/root-ye-by-x2.pem -inform PEM -out /usr/local/share/ca-certificates/root-ye-by-x2.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/gen-y/root-yr-by-x1.pem \
+    -O /usr/local/share/ca-certificates/root-yr-by-x1.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/root-yr-by-x1.pem -inform PEM -out /usr/local/share/ca-certificates/root-yr-by-x1.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/gen-y/int-yr1.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-int-yr1.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-int-yr1.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-int-yr1.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/gen-y/int-yr2.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-int-yr2.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-int-yr2.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-int-yr2.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/gen-y/int-ye1.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-int-ye1.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-int-ye1.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-int-ye1.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/gen-y/int-ye2.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-int-ye2.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-int-ye2.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-int-ye2.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/2024/r12.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-r12.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-r12.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-r12.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/2024/r13.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-r13.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-r13.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-r13.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/2024/e7-cross.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-e7-cross.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e7-cross.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e7-cross.crt && \
+    wget --max-redirect=0 https://letsencrypt.org/certs/2024/e8-cross.pem \
+    -O /usr/local/share/ca-certificates/lets-encrypt-e8-cross.pem && \
+    openssl x509 -in /usr/local/share/ca-certificates/lets-encrypt-e8-cross.pem -inform PEM -out /usr/local/share/ca-certificates/lets-encrypt-e8-cross.crt && \
     update-ca-certificates
 
 # install LAM
