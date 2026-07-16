@@ -27,8 +27,6 @@ usr/share/ldap-account-manager/templates/lists
 usr/share/ldap-account-manager/templates/pdfedit
 usr/share/ldap-account-manager/templates/profedit
 usr/share/ldap-account-manager/templates/schema
-usr/share/ldap-account-manager/templates/tree
-usr/share/ldap-account-manager/templates/tree/templates
 etc/ldap-account-manager
 var/lib/ldap-account-manager
 var/lib/ldap-account-manager/config

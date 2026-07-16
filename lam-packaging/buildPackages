@@ -70,17 +70,27 @@ rm -r lam/po
 rm -r lam/tests
 rm -f lam/lib/3rdParty/tcpdf/fonts/*.ttf
 rm -r lam/lib/3rdParty/composer/nesbot/carbon/bin
+rm -r lam/lib/3rdParty/composer/webklex/php-imap/examples
+rm -rf lam/lib/3rdParty/composer/mtdowling/jmespath.php/bin
 chmod -R -x+X lam/lib/3rdParty
 rm lam/composer*
 rm lam/sbom-*
 find . -name .svnignore -exec rm {} \;
 find . -name .gitignore -exec rm {} \;
 find lam/lib/3rdParty -name LICENSE -exec rm {} \;
+find lam/lib/3rdParty -name LICENSE.md -exec rm {} \;
+find lam/lib/3rdParty -name LICENSE.txt -exec rm {} \;
+find lam/lib/3rdParty -name UPGRADING.md -exec rm {} \;
+find lam/lib/3rdParty -name RELEASES.md -exec rm {} \;
 find lam/lib/3rdParty -name README.md -exec rm {} \;
+find lam/lib/3rdParty -name README.rst -exec rm {} \;
 find lam/lib/3rdParty -name readme.md -exec rm {} \;
 find lam/lib/3rdParty -name SECURITY.md -exec rm {} \;
+find lam/lib/3rdParty -name BACKERS.md -exec rm {} \;
+find lam/lib/3rdParty -name CONTRIBUTING.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.txt -exec rm {} \;
+find lam/lib/3rdParty -name CHANGELOG.TXT -exec rm {} \;
 find lam/lib/3rdParty -name CODE_OF_CONDUCT.md -exec rm {} \;
 find lam/lib/3rdParty -name .github | xargs rm -r
 find lam/lib/3rdParty -name .gitattributes | xargs rm -r
