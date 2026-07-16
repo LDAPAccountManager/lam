@@ -280,4 +280,4 @@ rm -r Debian
 rm -r RPM
 
 # run lintian
-lintian --tag-display-limit 0 LAM-packages/Debian-Upload/*.dsc
+lintian -i --pedantic --tag-display-limit 0 LAM-packages/Debian-Upload/*.dsc
