@@ -1,0 +1,100 @@
+{
+    "name": "tecnickcom/tc-lib-barcode",
+    "description": "PHP library to generate linear and bidimensional barcodes",
+    "type": "library",
+    "homepage": "https://tcpdf.org",
+    "license": "LGPL-3.0-or-later",
+    "keywords": [
+        "tc-lib-barcode",
+        "barcode",
+        "3 of 9",
+        "ANSI MH10.8M-1983",
+        "AZTEC",
+        "barcode",
+        "CBC",
+        "CODABAR",
+        "CODE 11",
+        "CODE 128 A B C",
+        "CODE 39",
+        "CODE 93",
+        "Datamatrix",
+        "EAN 13",
+        "EAN 8",
+        "ECC200",
+        "Intelligent Mail Barcode",
+        "Interleaved 2 of 5",
+        "ISO IEC 15438 2006",
+        "ISO IEC 16022",
+        "ISO IEC 24778 2008",
+        "KIX",
+        "Klant",
+        "MSI",
+        "Onecode",
+        "PDF417",
+        "PHARMACODE TWO-TRACKS",
+        "PHARMACODE",
+        "PLANET",
+        "POSTNET",
+        "QR-Code",
+        "RMS4CC",
+        "Royal Mail",
+        "Standard 2 of 5",
+        "tc-lib-barcode",
+        "UPC-A",
+        "UPC-E",
+        "UPC",
+        "USD-3",
+        "USPS-B-3200",
+        "USS-93"
+    ],
+    "authors": [
+        {
+            "name": "Nicola Asuni",
+            "email": "info@tecnick.com",
+            "role": "lead"
+        }
+    ],
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/tecnickcom"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-bcmath": "*",
+        "ext-gd": "*",
+        "tecnickcom/tc-lib-color": "^2.12"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require-dev": {
+        "pdepend/pdepend": "^2.16",
+        "phpunit/phpunit": "^11.5 || ^12.5 || ^13.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Com\\Tecnick\\Barcode\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "test"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
+        "source": "https://github.com/tecnickcom/tc-lib-barcode"
+    },
+    "scripts": {
+        "test": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr test",
+        "analyse": ["@analyse:src", "@analyse:test"],
+        "analyse:src": "mago --config mago.src.toml analyze src",
+        "analyse:test": "mago --config mago.test.toml analyze test",
+        "cs-check": ["@cs-check:src", "@cs-check:test"],
+        "cs-check:src": "mago --config mago.src.toml lint src",
+        "cs-check:test": "mago --config mago.test.toml lint test",
+        "cs-fix": "mago fmt src test",
+        "qa": ["@cs-check", "@analyse", "@test"]
+    }
+}

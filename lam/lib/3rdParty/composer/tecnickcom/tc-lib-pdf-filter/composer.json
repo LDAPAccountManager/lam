@@ -1,0 +1,65 @@
+{
+    "name": "tecnickcom/tc-lib-pdf-filter",
+    "description": "PHP library to decode PDF compression and encryption filters",
+    "type": "library",
+    "homepage": "https://tcpdf.org",
+    "license": "LGPL-3.0-or-later",
+    "keywords": [
+        "tc-lib-pdf-filter",
+        "PDF",
+        "filter",
+        "encryption",
+        "compression"
+    ],
+    "authors": [
+        {
+            "name": "Nicola Asuni",
+            "email": "info@tecnick.com",
+            "role": "lead"
+        }
+    ],
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/tecnickcom"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-zlib": "*"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require-dev": {
+        "pdepend/pdepend": "^2.16",
+        "phpunit/phpunit": "^11.5 || ^12.5 || ^13.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Com\\Tecnick\\Pdf\\Filter\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "test"
+        }
+    },
+    "suggest": {
+        "ext-imagick": "Required for JPXDecode (JPEG 2000) filter support"
+    },
+    "support": {
+        "issues": "https://github.com/tecnickcom/tc-lib-pdf-filter/issues",
+        "source": "https://github.com/tecnickcom/tc-lib-pdf-filter"
+    },
+    "scripts": {
+        "test": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr test",
+        "analyse": ["@analyse:src", "@analyse:test"],
+        "analyse:src": "mago --config mago.src.toml analyze src",
+        "analyse:test": "mago --config mago.test.toml analyze test",
+        "cs-check": ["@cs-check:src", "@cs-check:test"],
+        "cs-check:src": "mago --config mago.src.toml lint src",
+        "cs-check:test": "mago --config mago.test.toml lint test",
+        "cs-fix": "mago fmt src test",
+        "qa": ["@cs-check", "@analyse", "@test"]
+    }
+}

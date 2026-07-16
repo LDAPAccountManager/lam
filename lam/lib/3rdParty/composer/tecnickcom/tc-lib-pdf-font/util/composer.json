@@ -1,0 +1,62 @@
+{
+  "name": "tecnickcom/tc-lib-pdf-font",
+  "description": "Import TTF font files to be converted for tc-lib-pdf",
+  "type": "library",
+  "homepage": "http://www.tecnick.com",
+  "keywords": [
+    "tc-lib-pdf-font-data",
+    "PDF",
+    "font",
+    "TTF",
+    "AFM",
+    "PFB",
+    "import"
+  ],
+  "authors": [
+    {
+      "name": "Nicola Asuni",
+      "email": "info@tecnick.com",
+      "role": "lead"
+    }
+  ],
+  "require": {
+    "tecnickcom/tc-font-mirror": "^2.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "require-dev": {},
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "tecnickcom/tc-font-mirror",
+        "version": "2.1.0",
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/tecnickcom/tc-font-mirror/archive/refs/tags/2.1.0.zip",
+          "reference": "main"
+        },
+        "autoload": {
+          "classmap": [
+            "."
+          ]
+        }
+      }
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/tecnickcom/tc-lib-pdf-font/issues",
+    "source": "https://github.com/tecnickcom/tc-lib-pdf-font"
+  },
+  "scripts": {
+    "test": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --stderr test",
+    "cs-check": "./vendor/bin/phpcs --standard=phpcs.xml",
+    "cs-fix": "./vendor/bin/phpcbf --ignore=\"./vendor/\" --standard=psr12 src test",
+    "analyse": "./vendor/phpstan.phar analyse"
+  }
+}

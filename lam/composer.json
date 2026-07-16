@@ -28,7 +28,9 @@
 
     "duosecurity/duo_universal_php": "^1.0",
 
-    "aws/aws-sdk-php": "^3"
+    "aws/aws-sdk-php": "^3",
+
+    "tecnickcom/tc-lib-pdf": "^8"
   },
   "scripts": {
     "pre-autoload-dump": "Aws\\Script\\Composer\\Composer::removeUnusedServices"

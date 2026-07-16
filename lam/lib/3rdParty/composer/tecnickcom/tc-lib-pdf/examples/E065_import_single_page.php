@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * E065_import_single_page.php
+ *
+ * @since       2026-05-03
+ * @category    Library
+ * @package     Pdf
+ * @author      Nicola Asuni <info@tecnick.com>
+ * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link        https://github.com/tecnickcom/tc-lib-pdf
+ *
+ * This file is part of tc-lib-pdf software library.
+ */
+
+// NOTE: run make deps fonts in the project root to generate the dependencies and example fonts.
+
+// autoloader when using Composer
+require __DIR__ . '/../vendor/autoload.php';
+
+// define fonts directory
+\define('K_PATH_FONTS', \realpath(__DIR__ . '/../vendor/tecnickcom/tc-lib-pdf-font/target/fonts'));
+
+// ---- Step 1: create a source PDF to import from ----
+
+$src = new \Com\Tecnick\Pdf\Tcpdf();
+$src->setCreator('tc-lib-pdf');
+$src->setAuthor('Nicola Asuni');
+$src->setSubject('tc-lib-pdf example: 065 source');
+$src->setTitle('Import Single Page - Source');
+$src->setKeywords('TCPDF tc-lib-pdf import single page source template');
+$src->setPDFFilename('065_import_single_page_src.pdf');
+$bfont = $src->font->insert($src->pon, 'helvetica', '', 14);
+
+$srcPage = $src->addPage();
+$src->page->addContent($bfont['out']);
+$src->addHTMLCell(html: '<h1>Source document</h1><p>This page will be imported.</p>', posx: 15, posy: 20, width: 160);
+
+$sourcePdfData = $src->getOutPDFString();
+
+// ---- Step 2: create a new document and import the source page ----
+
+$pdf = new \Com\Tecnick\Pdf\Tcpdf();
+$pdf->setCreator('tc-lib-pdf');
+$pdf->setAuthor('Nicola Asuni');
+$pdf->setSubject('tc-lib-pdf example: 065');
+$pdf->setTitle('Import Single Page - Destination');
+$pdf->setKeywords('TCPDF tc-lib-pdf import single page destination cropbox template');
+$pdf->setPDFFilename('065_import_single_page.pdf');
+
+$bfont = $pdf->font->insert($pdf->pon, 'helvetica', '', 12);
+
+// Register the source document from its raw bytes.
+$sourceId = $pdf->setImportSourceData($sourcePdfData);
+
+// Count pages available in the source.
+$pageCount = $pdf->getSourcePageCount($sourceId);
+
+// Import page 1 as a reusable Form XObject template.
+$tpl = $pdf->importPage(sourceId: $sourceId, pageNum: 1);
+
+// Add a new page to the destination document.
+$page = $pdf->addPage();
+$pdf->page->addContent($bfont['out']);
+
+// Place the imported page as a thumbnail (100 mm wide) at (20, 20).
+// The height is computed automatically to preserve the aspect ratio.
+$placed = $pdf->useImportedPage(tpl: $tpl, xpos: 20, ypos: 20, width: 140);
+
+// Add an annotation below the imported page.
+$pdf->addHTMLCell(
+    html: '<p>Imported ' . $pageCount . ' page(s). Placed page 1 above (scaled).</p>',
+    posx: 15,
+    posy: (float) $placed['y'] + (float) $placed['height'] + 5,
+    width: 160,
+);
+
+// Get and render the PDF content.
+$rawpdf = $pdf->getOutPDFString();
+$pdf->renderPDF(rawpdf: $rawpdf);
