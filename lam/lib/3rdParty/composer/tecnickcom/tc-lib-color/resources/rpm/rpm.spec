@@ -27,8 +27,8 @@ PHP library to manipulate various color representations (GRAY, RGB, HSL, CMYK) a
 #(cd %{_current_directory} && make build)
 
 %install
-rm -rf %{buildroot}
-(cd %{_current_directory} && make install DESTDIR=%{buildroot})
+rm -rf "%{buildroot}"
+(cd "%{_current_directory}" && make install DESTDIR="%{buildroot}")
 
 %files
 %attr(-,root,root) %{_libpath}

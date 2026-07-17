@@ -14,7 +14,7 @@
  * This file is part of tc-lib-pdf software library.
  */
 
-// NOTE: run make deps fonts in the project root to generate the dependencies and example fonts.
+// NOTE: run make fonts in the project root to generate the dependencies and example fonts.
 
 // autoloader when using Composer
 require __DIR__ . '/../vendor/autoload.php';
@@ -54,7 +54,13 @@ $pdf->enableDefaultPageContent();
 // Insert fonts
 
 $bfont1 = $pdf->font->insert($pdf->pon, 'dejavusans', '', 12);
-$bfont2 = $pdf->font->insert($pdf->pon, 'dejavusans', 'B', 18);
+
+// The bold heading font is derived from the base font with cloneFont() instead of being inserted
+// explicitly: the bold definition file (dejavusansb.json) is resolved from the requested style,
+// so the headings below and the top-level entries of the generated TOC (that addTOC() renders by
+// cloning the current font with the 'B' style) are really bold and not just the regular glyphs.
+$bfont2 = $pdf->font->cloneFont($pdf->pon, null, 'B', 18);
+
 $bfont3 = $pdf->font->insert($pdf->pon, 'dejavusans', '', 10);
 
 // test images directory

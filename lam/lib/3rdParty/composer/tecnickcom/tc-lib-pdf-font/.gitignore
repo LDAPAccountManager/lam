@@ -19,4 +19,6 @@ phpunit.xml
 rector.php
 resources/util/vendor
 src/fonts
+target
+target/fonts
 vendor

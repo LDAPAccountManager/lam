@@ -293,6 +293,89 @@ class StackTest extends TestUtil
     }
 
     /**
+     * Cloning a font with a different style must load the definition file of the
+     * requested style, not reuse the one of the source font (issue #19).
+     *
+     * @throws FileException
+     * @throws FontException
+     * @throws \RangeException
+     */
+    public function testCloneFontLoadsStyledDefinitionFile(): void
+    {
+        $this->prepareTestEnvironment();
+        $indir = \dirname(__DIR__) . '/util/vendor/tecnickcom/tc-font-mirror/';
+        $objnum = 1;
+
+        $stack = new \Com\Tecnick\Pdf\Font\Stack(0.75, true, true, true);
+        new \Com\Tecnick\Pdf\Font\Import($indir . 'freefont/FreeSans.ttf');
+        new \Com\Tecnick\Pdf\Font\Import($indir . 'freefont/FreeSansBold.ttf');
+        new \Com\Tecnick\Pdf\Font\Import($indir . 'freefont/FreeSansBoldOblique.ttf');
+
+        $regular = $stack->insert($objnum, 'freesans', '', 12);
+        $this->assertEquals('freesans', $regular['key']);
+
+        // the bold style has never been loaded before: the clone must load it from
+        // the bold definition file found in the same directory of the source font
+        $clone = $stack->cloneFont($objnum, null, 'B', 12);
+        $this->assertEquals('freesansB', $clone['key']);
+        $this->assertEquals('B', $clone['style']);
+
+        $font = $stack->getFont('freesansB');
+        $this->assertEquals('FreeSansBold', $font['name']);
+        $this->assertEquals('freesansb.json', \basename($font['ifile']));
+        $this->assertFalse($font['fakestyle']);
+
+        // the real bold glyphs are wider than the regular ones
+        $regularWidth = $regular['cw'][65] ?? 0.0;
+        $cloneWidth = $clone['cw'][65] ?? 0.0;
+        $this->assertGreaterThan(0.0, $regularWidth);
+        $this->assertGreaterThan($regularWidth, $cloneWidth);
+
+        // decoration-only style letters must be ignored when resolving the file
+        $clone = $stack->cloneFont($objnum, 0, 'BIUDO', 14);
+        $this->assertEquals('freesansBI', $clone['key']);
+        $this->assertEquals('BIUDO', $clone['style']);
+
+        $font = $stack->getFont('freesansBI');
+        $this->assertEquals('FreeSansBoldOblique', $font['name']);
+        $this->assertEquals('freesansbi.json', \basename($font['ifile']));
+        $this->assertFalse($font['fakestyle']);
+    }
+
+    /**
+     * Cloning a font with a different style whose definition file does not exist
+     * must fall back to the autodetection with the artificial style emulation.
+     *
+     * @throws FileException
+     * @throws FontException
+     * @throws \RangeException
+     */
+    public function testCloneFontFallsBackToArtificialStyleWhenStyledFileIsMissing(): void
+    {
+        $this->prepareTestEnvironment();
+        $indir = \dirname(__DIR__) . '/util/vendor/tecnickcom/tc-font-mirror/';
+        $objnum = 1;
+
+        $stack = new \Com\Tecnick\Pdf\Font\Stack(0.75, true, true, true);
+        new \Com\Tecnick\Pdf\Font\Import($indir . 'freefont/FreeSans.ttf');
+
+        $regular = $stack->insert($objnum, 'freesans', '', 12);
+        $clone = $stack->cloneFont($objnum, null, 'B', 12);
+        $this->assertEquals('freesansB', $clone['key']);
+
+        $font = $stack->getFont('freesansB');
+        $this->assertEquals('freesans.json', \basename($font['ifile']));
+        $this->assertTrue($font['fakestyle']);
+        $this->assertTrue($font['mode']['bold']);
+
+        // artificial bold reuses the regular glyph widths
+        $regularWidth = $regular['cw'][65] ?? 0.0;
+        $cloneWidth = $clone['cw'][65] ?? 0.0;
+        $this->assertGreaterThan(0.0, $regularWidth);
+        $this->bcAssertEqualsWithDelta($regularWidth, $cloneWidth, 0.0001);
+    }
+
+    /**
      * @throws FileException
      * @throws FontException
      * @throws \RangeException

@@ -12,6 +12,6 @@ Vcs-Browser: https://github.com/~#VENDOR#~/~#PROJECT#~
 Package: ~#PKGNAME#~
 Provides: php-~#PROJECT#~
 Architecture: all
-Depends: php (>= 8.2.0), php-mbstring, php-tecnickcom-tc-lib-unicode-data (<< 3.0.0), php-tecnickcom-tc-lib-unicode-data (>= 2.6.3), ${misc:Depends}
+Depends: php (>= 8.2.0), php-mbstring, php-tecnickcom-tc-lib-unicode-data (<< 3.0.0), php-tecnickcom-tc-lib-unicode-data (>= 2.6.4), ${misc:Depends}
 Description: PHP Unicode methods.
  PHP library containing Unicode methods.

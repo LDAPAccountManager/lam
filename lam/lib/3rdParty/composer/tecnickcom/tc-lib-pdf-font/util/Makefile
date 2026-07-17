@@ -56,7 +56,7 @@ PATHINSTFONT=$(DESTDIR)/$(FONTPATH)
 PATHINSTDOC=$(DESTDIR)/$(DOCPATH)
 
 # Current directory
-CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+CURRENTDIR=$(CURDIR)/
 
 # RPM Packaging path (where RPMs will be stored)
 PATHRPMPKG=$(CURRENTDIR)/../target/RPM_FONTS/$(PKGFONTDIR)
@@ -120,29 +120,30 @@ update:
 ## Install this application
 .PHONY: install
 install: uninstall
-	mkdir -p $(PATHINSTFONT)
-	cp -rf ../target/fonts/$(PKGFONTDIR)/*.json $(PATHINSTFONT)
-	cp -rf ../target/fonts/$(PKGFONTDIR)/*.z $(PATHINSTFONT) | true
-	find $(PATHINSTFONT) -type d -exec chmod 755 {} \;
-	find $(PATHINSTFONT) -type f -exec chmod 644 {} \;
-	mkdir -p $(PATHINSTDOC)
-	cp -f ../target/fonts/$(PKGFONTDIR)/LICENSE $(PATHINSTDOC)
-	cp -f ../target/fonts/$(PKGFONTDIR)/README $(PATHINSTDOC)
-	cp -f ../VERSION $(PATHINSTDOC)
-	cp -f ../RELEASE $(PATHINSTDOC)
-	chmod -R 644 $(PATHINSTDOC)*
+	mkdir -p "$(PATHINSTFONT)"
+	cp -rf "../target/fonts/$(PKGFONTDIR)/"*".json" "$(PATHINSTFONT)"
+	cp -rf "../target/fonts/$(PKGFONTDIR)/"*".z" "$(PATHINSTFONT)" | true
+	find "$(PATHINSTFONT)" -type d -exec chmod 755 {} \;
+	find "$(PATHINSTFONT)" -type f -exec chmod 644 {} \;
+	mkdir -p "$(PATHINSTDOC)"
+	cp -f "../target/fonts/$(PKGFONTDIR)/LICENSE" "$(PATHINSTDOC)"
+	cp -f "../target/fonts/$(PKGFONTDIR)/README" "$(PATHINSTDOC)"
+	cp -f ../VERSION "$(PATHINSTDOC)"
+	cp -f ../RELEASE "$(PATHINSTDOC)"
+	chmod -R 644 "$(PATHINSTDOC)"*
 
 ## Remove all installed files
 .PHONY: uninstall
 uninstall:
-	rm -rf $(PATHINSTFONT)
+	rm -rf "$(PATHINSTFONT)"
 
 # --- PACKAGING ---
 
 ## Build the RPM package for RedHat-like Linux distributions
 .PHONY: rpm
 rpm:
-	rm -rf $(PATHRPMPKG)
+	@test $(words $(CURDIR)) -eq 1 || { echo "ERROR: rpmbuild does not support spaces in the project path: $(CURDIR)"; exit 1; }
+	rm -rf "$(PATHRPMPKG)"
 	rpmbuild --define \
 	"_topdir $(PATHRPMPKG)" \
 	--define "_vendor $(VENDOR)" \
@@ -161,30 +162,30 @@ rpm:
 ## Build the DEB package for Debian-like Linux distributions
 .PHONY: deb
 deb:
-	echo resources/fonts/control/$(DEBCOPYRIGHT)
-	rm -rf $(PATHDEBPKG)
-	make install DESTDIR=$(PATHDEBPKG)/$(PKGNAME)-$(VERSION) PKGFONTDIR=$(PKGFONTDIR)
-	tar -zcvf $(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz -C $(PATHDEBPKG)/ $(PKGNAME)-$(VERSION)
-	cp -rf ../resources/fonts/debian $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#DATE#~/`date -R`/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#VENDOR#~/$(VENDOR)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#PROJECT#~/$(PROJECT)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#PKGNAME#~/$(PKGNAME)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#VERSION#~/$(VERSION)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#RELEASE#~/$(RELEASE)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#FONT#~/$(PKGFONTDIR)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#LICENSE#~/$(PKGFONTLICENSE)/" {} \;
-	echo $(FONTPATH) > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs
-	echo "$(FONTPATH)* $(FONTPATH)" > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
-	echo $(DOCPATH) >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs
-	echo "$(DOCPATH)* $(DOCPATH)" >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
-	echo "new-package-should-close-itp-bug" > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).lintian-overrides
-	echo "extra-license-file $(DOCPATH)LICENSE.gz" >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).lintian-overrides
-	cd $(PATHDEBPKG)/$(PKGNAME)-$(VERSION) && debuild -us -uc
+	echo "resources/fonts/control/$(DEBCOPYRIGHT)"
+	rm -rf "$(PATHDEBPKG)"
+	make install DESTDIR="$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)" PKGFONTDIR="$(PKGFONTDIR)"
+	tar -zcvf "$(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz" -C "$(PATHDEBPKG)/" "$(PKGNAME)-$(VERSION)"
+	cp -rf ../resources/fonts/debian "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian"
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#DATE#~/`date -R`/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#VENDOR#~/$(VENDOR)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#PROJECT#~/$(PROJECT)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#PKGNAME#~/$(PKGNAME)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#VERSION#~/$(VERSION)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#RELEASE#~/$(RELEASE)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#FONT#~/$(PKGFONTDIR)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#LICENSE#~/$(PKGFONTLICENSE)/" {} \;
+	echo "$(FONTPATH)" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(FONTPATH)* $(FONTPATH)" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
+	echo "$(DOCPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(DOCPATH)* $(DOCPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
+	echo "new-package-should-close-itp-bug" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).lintian-overrides"
+	echo "extra-license-file $(DOCPATH)LICENSE.gz" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).lintian-overrides"
+	cd "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)" && debuild -us -uc
 
 ## Build a compressed bz2 archive
 .PHONY: bz2
 bz2:
-	rm -rf $(PATHBZ2PKG)
-	make install DESTDIR=$(PATHBZ2PKG) PKGFONTDIR=$(PKGFONTDIR)
-	tar -jcvf $(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2 -C $(PATHBZ2PKG) $(DATADIR)
+	rm -rf "$(PATHBZ2PKG)"
+	make install DESTDIR="$(PATHBZ2PKG)" PKGFONTDIR="$(PKGFONTDIR)"
+	tar -jcvf "$(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2" -C "$(PATHBZ2PKG)" "$(DATADIR)"

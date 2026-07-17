@@ -67,6 +67,7 @@ return array(
     'Cose\\' => array($vendorDir . '/web-auth/cose-lib/src'),
     'Com\\Tecnick\\Unicode\\Data\\' => array($vendorDir . '/tecnickcom/tc-lib-unicode-data/src'),
     'Com\\Tecnick\\Unicode\\' => array($vendorDir . '/tecnickcom/tc-lib-unicode/src'),
+    'Com\\Tecnick\\Pdf\\Sign\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-sign/src'),
     'Com\\Tecnick\\Pdf\\Parser\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-parser/src'),
     'Com\\Tecnick\\Pdf\\Page\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-page/src'),
     'Com\\Tecnick\\Pdf\\Image\\' => array($vendorDir . '/tecnickcom/tc-lib-pdf-image/src'),

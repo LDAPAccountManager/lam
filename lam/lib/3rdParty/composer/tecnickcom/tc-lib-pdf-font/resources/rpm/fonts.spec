@@ -25,11 +25,11 @@ This package contains data extracted from the %{_fontdir} fonts for the tc-lib-p
 #(cd %{_current_directory} && make build)
 
 %install
-rm -rf $RPM_BUILD_ROOT
-(cd %{_current_directory} && make install DESTDIR=$RPM_BUILD_ROOT PKGFONTDIR=%{_fontdir})
+rm -rf "$RPM_BUILD_ROOT"
+(cd "%{_current_directory}" && make install DESTDIR="$RPM_BUILD_ROOT" PKGFONTDIR="%{_fontdir}")
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf "$RPM_BUILD_ROOT"
 #(cd %{_current_directory} && make clean)
 
 %files

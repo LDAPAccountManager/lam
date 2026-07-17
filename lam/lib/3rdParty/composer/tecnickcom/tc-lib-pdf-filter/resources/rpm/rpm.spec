@@ -28,8 +28,8 @@ PHP library to decode PDF compression and encryption filters
 #(cd %{_current_directory} && make build)
 
 %install
-rm -rf %{buildroot}
-(cd %{_current_directory} && make install DESTDIR=%{buildroot})
+rm -rf "%{buildroot}"
+(cd "%{_current_directory}" && make install DESTDIR="%{buildroot}")
 
 %files
 %attr(-,root,root) %{_libpath}

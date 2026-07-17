@@ -26,8 +26,8 @@ PHP library containing Unicode definitions
 #(cd %{_current_directory} && make build)
 
 %install
-rm -rf %{buildroot}
-(cd %{_current_directory} && make install DESTDIR=%{buildroot})
+rm -rf "%{buildroot}"
+(cd "%{_current_directory}" && make install DESTDIR="%{buildroot}")
 
 %files
 %attr(-,root,root) %{_libpath}

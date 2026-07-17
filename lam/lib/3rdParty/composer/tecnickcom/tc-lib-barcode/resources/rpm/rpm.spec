@@ -16,7 +16,7 @@ BuildArch: noarch
 
 Requires:  php(language) >= 8.2.0
 Requires:  php-composer(%{c_vendor}/tc-lib-color) < 3.0.0
-Requires:  php-composer(%{c_vendor}/tc-lib-color) >= 2.12.4
+Requires:  php-composer(%{c_vendor}/tc-lib-color) >= 2.12.5
 Requires:  php-bcmath
 Requires:  php-date
 Requires:  php-gd
@@ -41,8 +41,8 @@ Optional dependency: php-pecl-imagick
 #(cd %{_current_directory} && make build)
 
 %install
-rm -rf %{buildroot}
-(cd %{_current_directory} && make install DESTDIR=%{buildroot})
+rm -rf "%{buildroot}"
+(cd "%{_current_directory}" && make install DESTDIR="%{buildroot}")
 
 %files
 %attr(-,root,root) %{_libpath}

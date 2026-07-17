@@ -61,9 +61,6 @@ class LAMTCPDF extends TCPDF {
 		$this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 		$this->SetMargins(10, 35, 10);
 		// generic PDF information
-		$this->setTitle($this->structure->getTitle());
-		$this->setCreator("LDAP Account Manager");
-		$this->setAuthor("LDAP Account Manager");
 		// footer
 		$this->setPrintFooter(true);
 	}

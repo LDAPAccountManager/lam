@@ -57,10 +57,10 @@ PATHINSTCFG=$(DESTDIR)/$(CONFIGPATH)
 PATHINSTDOC=$(DESTDIR)/$(DOCPATH)
 
 # Current directory
-CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+CURRENTDIR=$(CURDIR)/
 
 # Target directory
-TARGETDIR=$(CURRENTDIR)target
+TARGETDIR=target
 
 # RPM Packaging path (where RPMs will be stored)
 PATHRPMPKG=$(TARGETDIR)/RPM
@@ -130,41 +130,41 @@ buildall: deps format qa bz2 rpm deb
 ## Package the library in a compressed bz2 archive
 .PHONY: bz2
 bz2:
-	rm -rf $(PATHBZ2PKG)
-	make install DESTDIR=$(PATHBZ2PKG)
-	tar -jcvf $(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2 -C $(PATHBZ2PKG) $(DATADIR)
+	rm -rf "$(PATHBZ2PKG)"
+	make install DESTDIR="$(PATHBZ2PKG)"
+	tar -jcvf "$(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2" -C "$(PATHBZ2PKG)" "$(DATADIR)"
 
 ## Delete the vendor and target directories
 .PHONY: clean
 clean:
-	rm -rf ./vendor $(TARGETDIR)
+	rm -rf ./vendor "$(TARGETDIR)"
 
 ## Build a DEB package for Debian-like Linux distributions
 .PHONY: deb
 deb:
-	rm -rf $(PATHDEBPKG)
-	$(MAKE) install DESTDIR=$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)
-	rm -f $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/$(DOCPATH)LICENSE
-	tar -zcvf $(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz -C $(PATHDEBPKG)/ $(PKGNAME)-$(VERSION)
-	cp -rf ./resources/debian $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -name '*.bak' -delete
-	chmod 755 $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/rules
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#DATE#~/`date -R`/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#VENDOR#~/$(VENDOR)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#PROJECT#~/$(PROJECT)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#PKGNAME#~/$(PKGNAME)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#VERSION#~/$(VERSION)/" {} \;
-	find $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/ -type f -exec sed $(SEDINPLACE) "s/~#RELEASE#~/$(RELEASE)/" {} \;
-	echo $(LIBPATH) > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs
-	echo "$(LIBPATH)* $(LIBPATH)" > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
-	echo $(DOCPATH) >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs
-	echo "$(DOCPATH)* $(DOCPATH)" >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
+	rm -rf "$(PATHDEBPKG)"
+	$(MAKE) install DESTDIR="$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)"
+	rm -f "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/$(DOCPATH)LICENSE"
+	tar -zcvf "$(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz" -C "$(PATHDEBPKG)/" "$(PKGNAME)-$(VERSION)"
+	cp -rf ./resources/debian "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian"
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -name '*.bak' -delete
+	chmod 755 "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/rules"
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#DATE#~/`date -R`/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#VENDOR#~/$(VENDOR)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#PROJECT#~/$(PROJECT)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#PKGNAME#~/$(PKGNAME)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#VERSION#~/$(VERSION)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#RELEASE#~/$(RELEASE)/" {} \;
+	echo "$(LIBPATH)" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(LIBPATH)* $(LIBPATH)" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
+	echo "$(DOCPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(DOCPATH)* $(DOCPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
 ifneq ($(strip $(CONFIGPATH)),)
-	echo $(CONFIGPATH) >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs
-	echo "$(CONFIGPATH)* $(CONFIGPATH)" >> $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install
+	echo "$(CONFIGPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(CONFIGPATH)* $(CONFIGPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
 endif
-	echo "new-package-should-close-itp-bug" > $(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).lintian-overrides
-	cd $(PATHDEBPKG)/$(PKGNAME)-$(VERSION) && debuild -us -uc
+	echo "new-package-should-close-itp-bug" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).lintian-overrides"
+	cd "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)" && debuild -us -uc
 
 ## Clean all artifacts and download all dependencies
 .PHONY: deps
@@ -176,36 +176,36 @@ deps: ensuretarget
 ## Generate source code documentation
 .PHONY: doc
 doc: ensuretarget
-	rm -rf $(TARGETDIR)/doc
-	$(PHPDOC) -d ./src -t $(TARGETDIR)/doc/
+	rm -rf "$(TARGETDIR)/doc"
+	$(PHPDOC) -d ./src -t "$(TARGETDIR)/doc/"
 
 ## Create missing target directories for test and build artifacts
 .PHONY: ensuretarget
 ensuretarget:
-	mkdir -p $(TARGETDIR)/test
-	mkdir -p $(TARGETDIR)/report
-	mkdir -p $(TARGETDIR)/doc
+	mkdir -p "$(TARGETDIR)/test"
+	mkdir -p "$(TARGETDIR)/report"
+	mkdir -p "$(TARGETDIR)/doc"
 
 ## Install this application
 .PHONY: install
 install: uninstall
-	mkdir -p $(PATHINSTBIN)
-	cp -rf ./src/* $(PATHINSTBIN)
-	cp -f ./resources/autoload.php $(PATHINSTBIN)
-	find $(PATHINSTBIN) -type d -exec chmod 755 {} \;
-	find $(PATHINSTBIN) -type f -exec chmod 644 {} \;
-	mkdir -p $(PATHINSTDOC)
-	cp -f ./LICENSE $(PATHINSTDOC)
-	cp -f ./README.md $(PATHINSTDOC)
-	cp -f ./VERSION $(PATHINSTDOC)
-	cp -f ./RELEASE $(PATHINSTDOC)
-	chmod -R 644 $(PATHINSTDOC)*
+	mkdir -p "$(PATHINSTBIN)"
+	cp -rf ./src/* "$(PATHINSTBIN)"
+	cp -f ./resources/autoload.php "$(PATHINSTBIN)"
+	find "$(PATHINSTBIN)" -type d -exec chmod 755 {} \;
+	find "$(PATHINSTBIN)" -type f -exec chmod 644 {} \;
+	mkdir -p "$(PATHINSTDOC)"
+	cp -f ./LICENSE "$(PATHINSTDOC)"
+	cp -f ./README.md "$(PATHINSTDOC)"
+	cp -f ./VERSION "$(PATHINSTDOC)"
+	cp -f ./RELEASE "$(PATHINSTDOC)"
+	chmod -R 644 "$(PATHINSTDOC)"*
 ifneq ($(strip $(CONFIGPATH)),)
-	mkdir -p $(PATHINSTCFG)
-	touch -c $(PATHINSTCFG)*
-	cp -ru ./resources/${CONFIGPATH}* $(PATHINSTCFG)
-	find $(PATHINSTCFG) -type d -exec chmod 755 {} \;
-	find $(PATHINSTCFG) -type f -exec chmod 644 {} \;
+	mkdir -p "$(PATHINSTCFG)"
+	touch -c "$(PATHINSTCFG)"*
+	cp -ru "./resources/${CONFIGPATH}"* "$(PATHINSTCFG)"
+	find "$(PATHINSTCFG)" -type d -exec chmod 755 {} \;
+	find "$(PATHINSTCFG)" -type f -exec chmod 644 {} \;
 endif
 
 ## Format the source code
@@ -228,18 +228,19 @@ qa: ensuretarget lint test report
 ## Generate various reports
 .PHONY: report
 report: ensuretarget
-	./vendor/bin/pdepend --jdepend-xml=$(TARGETDIR)/report/dependencies.xml --summary-xml=$(TARGETDIR)/report/metrics.xml --jdepend-chart=$(TARGETDIR)/report/dependecies.svg --overview-pyramid=$(TARGETDIR)/report/overview-pyramid.svg --ignore=vendor ./src
+	./vendor/bin/pdepend --jdepend-xml="$(TARGETDIR)/report/dependencies.xml" --summary-xml="$(TARGETDIR)/report/metrics.xml" --jdepend-chart="$(TARGETDIR)/report/dependecies.svg" --overview-pyramid="$(TARGETDIR)/report/overview-pyramid.svg" --ignore=vendor ./src
 	#./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run src/ > $(TARGETDIR)/report/phpcompatinfo.txt
 
 ## Build the RPM package for RedHat-like Linux distributions
 .PHONY: rpm
 rpm:
-	rm -rf $(PATHRPMPKG)
-	mkdir -p $(RPMDBPATH) $(PATHRPMPKG)/tmp
+	@test $(words $(CURDIR)) -eq 1 || { echo "ERROR: rpmbuild does not support spaces in the project path: $(CURDIR)"; exit 1; }
+	rm -rf "$(PATHRPMPKG)"
+	mkdir -p "$(RPMDBPATH)" "$(PATHRPMPKG)/tmp"
 	rpmbuild \
-	--define "_topdir $(PATHRPMPKG)" \
-	--define "_dbpath $(RPMDBPATH)" \
-	--define "_tmppath $(PATHRPMPKG)/tmp" \
+	--define "_topdir $(CURRENTDIR)$(PATHRPMPKG)" \
+	--define "_dbpath $(CURRENTDIR)$(RPMDBPATH)" \
+	--define "_tmppath $(CURRENTDIR)$(PATHRPMPKG)/tmp" \
 	--define "_vendor $(VENDOR)" \
 	--define "_owner $(OWNER)" \
 	--define "_project $(PROJECT)" \
@@ -275,8 +276,8 @@ test:
 ## Remove all installed files
 .PHONY: uninstall
 uninstall:
-	rm -rf $(PATHINSTBIN)
-	rm -rf $(PATHINSTDOC)
+	rm -rf "$(PATHINSTBIN)"
+	rm -rf "$(PATHINSTDOC)"
 
 ## Increase the version patch number
 .PHONY: versionup

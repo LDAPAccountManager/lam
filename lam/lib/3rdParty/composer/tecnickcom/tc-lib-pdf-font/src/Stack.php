@@ -283,9 +283,36 @@ class Stack extends \Com\Tecnick\Pdf\Font\Buffer
             $size,
             $spacing,
             $stretching,
-            $data['ifile'],
+            $this->getStyleFontFile($data, $style),
             $data['subset'],
         );
+    }
+
+    /**
+     * Returns the font definition file to use to load a different style of an already loaded font.
+     *
+     * The 'ifile' entry of a loaded font is the definition file of its own style,
+     * so it cannot be reused as is for a different style.
+     * The definition file of the requested style is searched in the same directory of the source one;
+     * if it is not there, an empty string is returned to trigger the standard autodetection,
+     * that also provides the artificial style fallback when no styled definition file exists.
+     *
+     * @param TFontData $data  Data of the source font.
+     * @param string    $style Requested font style.
+     *
+     * @return string The font definition file, or an empty string for autodetection.
+     */
+    protected function getStyleFontFile(array $data, string $style): string
+    {
+        if ($data['dir'] === '') {
+            return '';
+        }
+
+        $style = \strtoupper($style);
+        $suffix = (\str_contains($style, 'B') ? 'B' : '') . (\str_contains($style, 'I') ? 'I' : '');
+        $ifile = $data['dir'] . DIRECTORY_SEPARATOR . \strtolower($data['family'] . $suffix) . '.json';
+
+        return \is_readable($ifile) ? $ifile : '';
     }
 
     /**
