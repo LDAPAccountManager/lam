@@ -51,6 +51,8 @@ define('LAMPDF_LINEWIDTH', 190);
 define('LAMPDF_LINEHEIGHT', 5);
 /** width of a label */
 define('LAMPDF_LABELWIDTH', 50);
+/** width of an image */
+define('LAMPDF_IMAGE_WIDTH', 40);
 /** font size */
 define('LAMPDF_FONT_SIZE', 7);
 /** font size for bigger text */
@@ -119,14 +121,13 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 	$pdf->setAuthor("LDAP Account Manager");
 	$normalFont = $pdf->font->insert($pdf->pon, $font, '', LAMPDF_FONT_SIZE);
 	$normalFontBold = $pdf->font->insert($pdf->pon, $font, 'B', LAMPDF_FONT_SIZE);
-	$bigFont = $pdf->font->insert($pdf->pon, $font, '', LAMPDF_FONT_SIZE_BIG);
 	$bigFontBold = $pdf->font->insert($pdf->pon, $font, 'B', LAMPDF_FONT_SIZE_BIG);
 
 	// Loop over each account and add a new page in the PDF file for it
 	foreach ($accounts as $account) {
 
 		// Start a new page for each account
-		$pdf->addPage();
+		$pageData = $pdf->addPage();
 
 		// Get PDF entries for the current account
 		$entries = $account->get_pdfEntries($pdfKeys, $account_type->getId());
@@ -178,7 +179,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 								printTable($pdf, $valueEntry, $font);
 							}
 							elseif ($valueEntry instanceof PDFImage) {
-								printImage($pdf, $valueEntry);
+								printImage($pdf, $valueEntry, $pageData);
 							}
 						}
 					}
@@ -223,7 +224,6 @@ function getSectionHeadline($entry) {
  */
 function printLabelValue($pdf, PDFLabelValue $valueEntry, array $fontLabel, array $fontValue): void {
 	$pdf->page->addContent($fontLabel['out']);
-	$pdf->page->addContent($pdf->color->getPdfColor('rgb(0,0,255)'));
 	$posY = $pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD;
 	$pdf->addTextCell(
 		txt: replaceSpecialCharacters($valueEntry->getLabel()) . ':',
@@ -231,7 +231,7 @@ function printLabelValue($pdf, PDFLabelValue $valueEntry, array $fontLabel, arra
 		posy: $posY,
 		width: LAMPDF_LABELWIDTH,
 		halign: 'R',
-		drawcell: true);
+		drawcell: false);
 	$pdf->page->addContent($fontValue['out']);
 	$pdf->addTextCell(
 		txt: replaceSpecialCharacters($valueEntry->getValue()),
@@ -285,18 +285,17 @@ function printTable(&$pdf, $table, $fontName): void {
  * @param Tcpdf $pdf PDF
  * @param PDFImage $imageEntry entry
  */
-function printImage(&$pdf, $imageEntry): void {
+function printImage($pdf, $imageEntry, $pageData): void {
 	include_once __DIR__ . '/imageutils.inc';
 	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
-	$height = $imageManipulator->getHeight() / 2.9;
-	if ($height > 40) {
-		$height = 40;
-	}
-	$pdf->Image('@' . $imageManipulator->getImageData(), null, null, 0, $height,
-		'JPG', null, 'T', true, 300, 'R',
-		false, false, 0, false, false, false);
-	$pdf->Ln($height);
-	$pdf->Ln(LAMPDF_LINEHEIGHT);
+	$imageManipulator->thumbnail(200, 400);
+	$imageId = $pdf->image->add('@' . $imageManipulator->getImageData(), 200);
+	$height = $imageManipulator->getHeight() / ($imageManipulator->getWidth() / LAMPDF_IMAGE_WIDTH);
+	$out = $pdf->image->getSetImage(
+		$imageId,
+		LAMPDF_LINEWIDTH - LAMPDF_IMAGE_WIDTH,
+		$pdf->getLastBBox()['y'], LAMPDF_IMAGE_WIDTH, $height, $pageData['height']);
+	$pdf->page->addContent($out);
 	$imageManipulator = null;
 }
 
