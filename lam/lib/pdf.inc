@@ -45,6 +45,8 @@ define('LAMPDF_MARGIN', 10);
 define('LAMPDF_SPACE_SECTION', 15);
 /** space between fields */
 define('LAMPDF_SPACE_FIELD', 5);
+/** space between field label and value */
+define('LAMPDF_SPACE_LABEL_VALUE', 2);
 /** line width */
 define('LAMPDF_LINEWIDTH', 190);
 /** line height */
@@ -119,9 +121,6 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 	$pdf->setTitle($structure->getTitle());
 	$pdf->setCreator("LDAP Account Manager");
 	$pdf->setAuthor("LDAP Account Manager");
-	$normalFont = $pdf->font->insert($pdf->pon, $font, '', LAMPDF_FONT_SIZE);
-	$normalFontBold = $pdf->font->insert($pdf->pon, $font, 'B', LAMPDF_FONT_SIZE);
-	$bigFontBold = $pdf->font->insert($pdf->pon, $font, 'B', LAMPDF_FONT_SIZE_BIG);
 
 	// Loop over each account and add a new page in the PDF file for it
 	foreach ($accounts as $account) {
@@ -135,7 +134,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 		// Now create the PDF file according to the structure with the submitted values
 		foreach ($structure->getSections() as $section) {
 			if ($section instanceof PDFTextSection) {
-				$pdf->page->addContent($normalFont['out']);
+				changeFont($pdf, $font);
 				$info_string = str_replace("\r", "", $section->getText());
 				$pdf->addTextCell(
 					txt: trim($info_string),
@@ -156,7 +155,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 				else {
 					$section_headline = $section->getTitle();
 				}
-				$pdf->page->addContent($bigFontBold['out']);
+				changeFont($pdf, $font, LAMPDF_FONT_SIZE_BIG, 'B');
 				$pdf->addTextCell(
 					txt: trim($section_headline),
 					posx: LAMPDF_MARGIN,
@@ -173,7 +172,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 						// Loop over all rows of this entry (most of the time this will be just one)
 						foreach ($valueEntries as $valueEntry) {
 							if ($valueEntry instanceof PDFLabelValue) {
-								printLabelValue($pdf, $valueEntry, $normalFontBold, $normalFont);
+								printLabelValue($pdf, $valueEntry, $font);
 							}
 							elseif ($valueEntry instanceof PDFTable) {
 								printTable($pdf, $valueEntry, $font);
@@ -205,6 +204,19 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 }
 
 /**
+ * Changes the current font in the PDF.
+ *
+ * @param Tcpdf $pdf PDF
+ * @param string $fontName font name
+ * @param float $fontSize size
+ * @param string $style style (e.g. 'B')
+ */
+function changeFont(Tcpdf $pdf, string $fontName, float $fontSize = LAMPDF_FONT_SIZE, string $style = '') {
+	$font = $pdf->font->insert($pdf->pon, $fontName, $style, $fontSize);
+	$pdf->page->addContent($font['out']);
+}
+
+/**
  * Creates a section headline.
  *
  * @param PDFEntry $entry content entry
@@ -222,8 +234,8 @@ function getSectionHeadline($entry) {
  * @param PDFLabelValue $valueEntry entry
  * @param string $fontName font name
  */
-function printLabelValue($pdf, PDFLabelValue $valueEntry, array $fontLabel, array $fontValue): void {
-	$pdf->page->addContent($fontLabel['out']);
+function printLabelValue($pdf, PDFLabelValue $valueEntry, string $fontName): void {
+	changeFont($pdf, $fontName, LAMPDF_FONT_SIZE, 'B');
 	$posY = $pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD;
 	$pdf->addTextCell(
 		txt: replaceSpecialCharacters($valueEntry->getLabel()) . ':',
@@ -232,12 +244,12 @@ function printLabelValue($pdf, PDFLabelValue $valueEntry, array $fontLabel, arra
 		width: LAMPDF_LABELWIDTH,
 		halign: 'R',
 		drawcell: false);
-	$pdf->page->addContent($fontValue['out']);
+	changeFont($pdf, $fontName);
 	$pdf->addTextCell(
 		txt: replaceSpecialCharacters($valueEntry->getValue()),
-		posx: (LAMPDF_MARGIN * 2) + LAMPDF_LABELWIDTH,
+		posx: LAMPDF_MARGIN + LAMPDF_LABELWIDTH + LAMPDF_SPACE_LABEL_VALUE,
 		posy: $posY,
-		width: LAMPDF_LINEWIDTH - LAMPDF_LABELWIDTH - LAMPDF_MARGIN,
+		width: LAMPDF_LINEWIDTH - LAMPDF_LABELWIDTH - LAMPDF_SPACE_LABEL_VALUE,
 		halign: 'L',
 		drawcell: false);
 }
