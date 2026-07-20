@@ -59,9 +59,13 @@ define('LAMPDF_IMAGE_WIDTH', 40);
 define('LAMPDF_FONT_SIZE', 7);
 /** font size for bigger text */
 define('LAMPDF_FONT_SIZE_BIG', 10);
+/** font location */
+define('K_PATH_FONTS', __DIR__ . '/3rdParty/composer/tecnickcom/tc-lib-pdf-font/target/fonts');
 
 /** access to PDF configuration files */
 include_once(__DIR__ . '/pdfstruct.inc');
+/** composer */
+include_once(__DIR__ . '/3rdParty/composer/autoload.php');
 
 /**
  * This function creates the PDF output of one or more accounts.
@@ -100,6 +104,43 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
 }
 
 /**
+ * Header, footer and folding marks.
+ */
+class LamTcpdf extends Tcpdf {
+
+	private PDFStructure $structure;
+
+	/**
+	 * Constructor
+	 *
+	 * @param PDFStructure $structure PDF structure
+	 */
+	public function __construct(PDFStructure $structure) {
+		parent::__construct();
+		$this->structure = $structure;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function defaultPageContent(int $pid = -1): string {
+		$out = '';
+		// folding marks
+		if ($this->structure->getFoldingMarks() === PDFStructure::FOLDING_STANDARD) {
+			$lineStyle = [
+				'lineWidth' => 0.2,
+			];
+			$foldingMarks = [97, 202];
+			foreach ($foldingMarks as $mark) {
+				$out .= $this->graph->getLine(0, $mark, 3, $mark, $lineStyle);
+			}
+		}
+		return $out;
+	}
+
+}
+
+/**
  * This function creates the PDF output of one or more accounts using TCPDF.
  *
  * @param PDFStructure $structure PDF structure
@@ -115,9 +156,8 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 	if (!in_array($font, getPdfFonts())) {
 		logNewMessage(LOG_ERR, 'Invalid font specified: ' . $font);
 	}
-	include_once(__DIR__ . '/3rdParty/composer/autoload.php');
-	define('K_PATH_FONTS', __DIR__ . '/3rdParty/composer/tecnickcom/tc-lib-pdf-font/target/fonts');
-	$pdf = new Tcpdf();
+	$pdf = new LamTcpdf($structure);
+	$pdf->enableDefaultPageContent();
 	$pdf->setTitle($structure->getTitle());
 	$pdf->setCreator("LDAP Account Manager");
 	$pdf->setAuthor("LDAP Account Manager");
