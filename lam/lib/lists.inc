@@ -944,7 +944,9 @@ class lamList {
 		$container->addVerticalSpacer('2rem');
 		$container->addLabel(new htmlOutputText('&nbsp;', false));
 		$buttonContainer = new htmlGroup();
-		$buttonContainer->addElement(new htmlButton('createPDFok', _('Ok')));
+        $okButton = new htmlButton('createPDFok', _('Ok'));
+        $okButton->setCSSClasses(['lam-primary']);
+		$buttonContainer->addElement($okButton);
 		$buttonContainer->addElement(new htmlSpacer('0.5rem', null));
 		$buttonContainer->addElement(new htmlButton('createPDFCancel', _('Cancel')));
 		$container->addField($buttonContainer);
