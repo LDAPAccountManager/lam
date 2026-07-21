@@ -55,10 +55,14 @@ define('LAMPDF_LINEHEIGHT', 5);
 define('LAMPDF_LABELWIDTH', 50);
 /** width of an image */
 define('LAMPDF_IMAGE_WIDTH', 40);
+/** height of logo image */
+define('LAMPDF_LOGO_HEIGHT', 15);
 /** font size */
 define('LAMPDF_FONT_SIZE', 7);
 /** font size for bigger text */
 define('LAMPDF_FONT_SIZE_BIG', 10);
+/** font size for page title text */
+define('LAMPDF_FONT_SIZE_TITLE', 20);
 /** font location */
 define('K_PATH_FONTS', __DIR__ . '/3rdParty/composer/tecnickcom/tc-lib-pdf-font/target/fonts');
 
@@ -66,6 +70,8 @@ define('K_PATH_FONTS', __DIR__ . '/3rdParty/composer/tecnickcom/tc-lib-pdf-font/
 include_once(__DIR__ . '/pdfstruct.inc');
 /** composer */
 include_once(__DIR__ . '/3rdParty/composer/autoload.php');
+/** image functions */
+include_once __DIR__ . '/imageutils.inc';
 
 /**
  * This function creates the PDF output of one or more accounts.
@@ -104,43 +110,6 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
 }
 
 /**
- * Header, footer and folding marks.
- */
-class LamTcpdf extends Tcpdf {
-
-	private PDFStructure $structure;
-
-	/**
-	 * Constructor
-	 *
-	 * @param PDFStructure $structure PDF structure
-	 */
-	public function __construct(PDFStructure $structure) {
-		parent::__construct();
-		$this->structure = $structure;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function defaultPageContent(int $pid = -1): string {
-		$out = '';
-		// folding marks
-		if ($this->structure->getFoldingMarks() === PDFStructure::FOLDING_STANDARD) {
-			$lineStyle = [
-				'lineWidth' => 0.2,
-			];
-			$foldingMarks = [97, 202];
-			foreach ($foldingMarks as $mark) {
-				$out .= $this->graph->getLine(0, $mark, 3, $mark, $lineStyle);
-			}
-		}
-		return $out;
-	}
-
-}
-
-/**
  * This function creates the PDF output of one or more accounts using TCPDF.
  *
  * @param PDFStructure $structure PDF structure
@@ -156,8 +125,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 	if (!in_array($font, getPdfFonts())) {
 		logNewMessage(LOG_ERR, 'Invalid font specified: ' . $font);
 	}
-	$pdf = new LamTcpdf($structure);
-	$pdf->enableDefaultPageContent();
+	$pdf = new Tcpdf();
 	$pdf->setTitle($structure->getTitle());
 	$pdf->setCreator("LDAP Account Manager");
 	$pdf->setAuthor("LDAP Account Manager");
@@ -167,6 +135,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 
 		// Start a new page for each account
 		$pageData = $pdf->addPage();
+		addPageHeader($pdf, $structure, $font, $pageData);
 
 		// Get PDF entries for the current account
 		$entries = $account->get_pdfEntries($pdfKeys, $account_type->getId());
@@ -240,6 +209,59 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 	}
 	else {
 		return $out;
+	}
+}
+
+/**
+ * Adds the page header.
+ *
+ * @param Tcpdf $pdf PDF object
+ * @param PDFStructure $structure PDF structure
+ * @param string $fontName font name
+ */
+function addPageHeader(Tcpdf $pdf, PDFStructure $structure, string $fontName, array $pageData): void {
+	// folding marks
+	if ($structure->getFoldingMarks() === PDFStructure::FOLDING_STANDARD) {
+		$lineStyle = [
+			'lineWidth' => 0.2,
+		];
+		$foldingMarks = [97, 202];
+		foreach ($foldingMarks as $mark) {
+			$marksOut = $pdf->graph->getLine(0, $mark, 3, $mark, $lineStyle);
+			$pdf->page->addContent($marksOut);
+		}
+	}
+	// title
+	changeFont($pdf, $fontName, LAMPDF_FONT_SIZE_TITLE);
+	$pdf->addTextCell(
+		txt: replaceSpecialCharacters($structure->getTitle()),
+		posx: LAMPDF_MARGIN,
+		posy: LAMPDF_MARGIN,
+		width: LAMPDF_LINEWIDTH,
+		halign: 'R',
+		drawcell: false);
+	// logo
+	$logoFile = $structure->getLogo();
+	if (!empty($logoFile) && ($logoFile !== PDFStructure::NO_LOGO)) {
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$logoBinary = $pdfStructurePersistenceManager->getPdfLogoBinary($_SESSION['config']->getName(), $logoFile);
+		if (!empty($logoBinary)) {
+			$imageConverter = ImageManipulationFactory::getImageManipulator($logoBinary);
+			$imageConverter->convertToJpeg();
+			$imageId = $pdf->image->add('@' . $imageConverter->getImageData(), 200);
+			$width = $imageConverter->getWidth() / ($imageConverter->getHeight() / LAMPDF_LOGO_HEIGHT);
+			$imageOut = $pdf->image->getSetImage(
+				$imageId,
+				LAMPDF_MARGIN,
+				LAMPDF_MARGIN,
+				$width,
+				LAMPDF_LOGO_HEIGHT,
+				$pageData['height']);
+			$pdf->page->addContent($imageOut);
+		}
+		else {
+			logNewMessage(LOG_ERR, 'Unable to read PDF logo ' . $logoFile);
+		}
 	}
 }
 
@@ -338,14 +360,13 @@ function printTable(&$pdf, $table, $fontName): void {
  * @param PDFImage $imageEntry entry
  */
 function printImage($pdf, $imageEntry, $pageData): void {
-	include_once __DIR__ . '/imageutils.inc';
 	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
 	$imageManipulator->thumbnail(200, 400);
 	$imageId = $pdf->image->add('@' . $imageManipulator->getImageData(), 200);
 	$height = $imageManipulator->getHeight() / ($imageManipulator->getWidth() / LAMPDF_IMAGE_WIDTH);
 	$out = $pdf->image->getSetImage(
 		$imageId,
-		LAMPDF_LINEWIDTH - LAMPDF_IMAGE_WIDTH,
+		LAMPDF_MARGIN + LAMPDF_LINEWIDTH - LAMPDF_IMAGE_WIDTH,
 		$pdf->getLastBBox()['y'], LAMPDF_IMAGE_WIDTH, $height, $pageData['height']);
 	$pdf->page->addContent($out);
 	$imageManipulator = null;
