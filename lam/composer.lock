@@ -484,16 +484,16 @@
         },
         {
             "name": "duosecurity/duo_universal_php",
-            "version": "1.1.2",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/duosecurity/duo_universal_php.git",
-                "reference": "68e699c52d41f681df07dc0f98e2ba551bef2fd3"
+                "reference": "7045587e8a0a850355ed55f019090a033e49b29a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/68e699c52d41f681df07dc0f98e2ba551bef2fd3",
-                "reference": "68e699c52d41f681df07dc0f98e2ba551bef2fd3",
+                "url": "https://api.github.com/repos/duosecurity/duo_universal_php/zipball/7045587e8a0a850355ed55f019090a033e49b29a",
+                "reference": "7045587e8a0a850355ed55f019090a033e49b29a",
                 "shasum": ""
             },
             "require": {
@@ -521,9 +521,9 @@
             "support": {
                 "email": "support@duosecurity.com",
                 "issues": "https://github.com/duosecurity/duo_universal_php/issues",
-                "source": "https://github.com/duosecurity/duo_universal_php/tree/1.1.2"
+                "source": "https://github.com/duosecurity/duo_universal_php/tree/1.2.0"
             },
-            "time": "2026-02-04T19:44:44+00:00"
+            "time": "2026-07-22T15:31:07+00:00"
         },
         {
             "name": "facile-it/php-jose-verifier",
@@ -5837,5 +5837,5 @@
     "platform-overrides": {
         "php": "8.2"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
