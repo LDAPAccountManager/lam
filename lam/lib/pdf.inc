@@ -333,34 +333,46 @@ function printLabelValue($pdf, PDFLabelValue $valueEntry, string $fontName, int 
  * @param PDFTable $table entry
  * @param string $fontName font name
  */
-function printTable(&$pdf, $table, $fontName): void {
-	return;
+function printTable($pdf, $table, $fontName): void {
 	$headline = $table->getHeadline();
+	$extraTopMargin = LAMPDF_SPACE_TITLE_FIELD;
 	if (!empty($headline)) {
-		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($headline) . ':',
-			0, 0, 'L');
-		$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-		$pdf->Ln(LAMPDF_LINEHEIGHT);
+		changeFont($pdf, $fontName);
+		$pdf->addTextCell(
+			txt: replaceSpecialCharacters($headline) . ':',
+			posx: LAMPDF_MARGIN,
+			posy: $pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin,
+			width: LAMPDF_LINEWIDTH,
+			halign: 'L',
+			drawcell: false);
+		$extraTopMargin = LAMPDF_SPACE_TITLE_FIELD;
 	}
+	changeFont($pdf, $fontName);
 	foreach ($table->rows as $row) {
+		$posY = $pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin;
+		$posX = LAMPDF_MARGIN;
 		foreach ($row->cells as $cell) {
-			$width = $cell->width;
+			$width = $cell->width ?? LAMPDF_LINEWIDTH;
 			if (!empty($width) && (str_contains($width, '%'))) {
 				$width = ceil(LAMPDF_LINEWIDTH * ((int) substr($width, 0, -1)) / 100);
 			}
 			if ($cell->bold) {
-				$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
+				changeFont($pdf, $fontName, LAMPDF_FONT_SIZE, 'B');
 			}
-			$pdf->Cell($width, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($cell->content), 0,
-				0, $cell->align, false, '', 1);
-			if ($cell->bold) {
-				$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-			}
+			$pdf->addTextCell(
+				txt: replaceSpecialCharacters($cell->content),
+				posx: $posX,
+				posy: $posY,
+				width: $width,
+				height: LAMPDF_FONT_SIZE,
+				halign: $cell->align,
+				drawcell: false,
+				fit: 'F');
+			changeFont($pdf, $fontName);
+			$posX += $width;
 		}
-		$pdf->Ln(LAMPDF_LINEHEIGHT);
+		$extraTopMargin = 0;
 	}
-	$pdf->Ln(LAMPDF_LINEHEIGHT);
 }
 
 /**
