@@ -50,6 +50,8 @@ define('LAMPDF_SPACE_TITLE_FIELD', 2);
 /** space between field label and value */
 define('LAMPDF_SPACE_LABEL_VALUE', 1);
 /** line width */
+define('LAMPDF_Y_MAX', 297 - (2 * LAMPDF_MARGIN));
+/** line width */
 define('LAMPDF_LINEWIDTH', 190);
 /** line height */
 define('LAMPDF_LINEHEIGHT', 5);
@@ -150,7 +152,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 				$pdf->addTextCell(
 					txt: trim($info_string),
 					posx: LAMPDF_MARGIN,
-					posy: $pdf->getLastBBox()['y'] + LAMPDF_SPACE_SECTION + $extraTopMargin,
+					posy: getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_SECTION + $extraTopMargin, $pdf),
 					width: LAMPDF_LINEWIDTH,
 					halign: 'L',
 					drawcell: false);
@@ -171,7 +173,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 				$pdf->addTextCell(
 					txt: trim($section_headline),
 					posx: LAMPDF_MARGIN,
-					posy: $pdf->getLastBBox()['y'] + LAMPDF_SPACE_SECTION + $extraTopMargin,
+					posy: getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_SECTION + $extraTopMargin, $pdf),
 					width: LAMPDF_LINEWIDTH,
 					halign: 'L',
 					drawcell: false);
@@ -309,7 +311,7 @@ function getSectionHeadline($entry) {
  */
 function printLabelValue($pdf, PDFLabelValue $valueEntry, string $fontName, int $extraTopMargin): void {
 	changeFont($pdf, $fontName);
-	$posY = $pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin;
+	$posY = getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin, $pdf);
 	$pdf->addTextCell(
 		txt: replaceSpecialCharacters($valueEntry->getLabel()) . ':',
 		posx: LAMPDF_MARGIN,
@@ -341,7 +343,7 @@ function printTable($pdf, $table, $fontName): void {
 		$pdf->addTextCell(
 			txt: replaceSpecialCharacters($headline) . ':',
 			posx: LAMPDF_MARGIN,
-			posy: $pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin,
+			posy: getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin, $pdf),
 			width: LAMPDF_LINEWIDTH,
 			halign: 'L',
 			drawcell: false);
@@ -349,7 +351,7 @@ function printTable($pdf, $table, $fontName): void {
 	}
 	changeFont($pdf, $fontName);
 	foreach ($table->rows as $row) {
-		$posY = $pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin;
+		$posY = getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin, $pdf);
 		$posX = LAMPDF_MARGIN;
 		foreach ($row->cells as $cell) {
 			$width = $cell->width ?? LAMPDF_LINEWIDTH;
@@ -389,9 +391,26 @@ function printImage($pdf, $imageEntry, $pageData): void {
 	$out = $pdf->image->getSetImage(
 		$imageId,
 		LAMPDF_MARGIN + LAMPDF_LINEWIDTH - LAMPDF_IMAGE_WIDTH,
-		$pdf->getLastBBox()['y'], LAMPDF_IMAGE_WIDTH, $height, $pageData['height']);
+		getYWithoutOverflow($pdf->getLastBBox()['y'], $pdf),
+		LAMPDF_IMAGE_WIDTH,
+		$height,
+		$pageData['height']);
 	$pdf->page->addContent($out);
 	$imageManipulator = null;
+}
+
+/**
+ * Returns the y-position to use for new cells
+ *
+ * @param float|int $posY calculated y-position of cell
+ * @return float position to use
+ */
+function getYWithoutOverflow(float|int $posY, Tcpdf $pdf): float {
+	if ($posY > LAMPDF_Y_MAX) {
+		$pdf->addPage();
+		return LAMPDF_MARGIN;
+	}
+	return $posY;
 }
 
 /**
