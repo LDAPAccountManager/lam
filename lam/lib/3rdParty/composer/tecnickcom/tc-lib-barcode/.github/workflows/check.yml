@@ -1,0 +1,60 @@
+name: check
+
+env:
+  XDEBUG_MODE: coverage
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+    test-php:
+        name: Test on php ${{ matrix.php-version }} and ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+        continue-on-error: ${{ matrix.experimental }}
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ["8.2", "8.3", "8.4", "8.5"]
+                experimental: [false]
+                os: [ubuntu-latest]
+                coverage-extension: [xdebug]
+        steps:
+            - uses: actions/checkout@v7
+            - name: Use php ${{ matrix.php-version }}
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-version }}
+                  coverage: ${{ matrix.coverage-extension }}
+                  extensions: xdebug, bcmath, curl, date, gd, hash, imagick, json, mbstring, openssl, pcre, zlib
+                  ini-values: display_errors=on, error_reporting=-1, zend.assertions=1
+            - name: List php modules
+              run: php -m
+            - name: List php modules using "no php ini" mode
+              run: php -m -n
+            - name: Cache module
+              uses: actions/cache@v6
+              with:
+                  path: ~/.composer/cache/
+                  key: composer-cache
+            - name: Install dependencies
+              env:
+                GH_TOKEN: ${{ github.token }}
+              run: make deps
+            - name: Check code formatting
+              run: ./vendor/bin/mago fmt --check src test example
+            - name: Run all tests
+              run: make qa
+            - name: Send coverage
+              uses: codecov/codecov-action@v7
+              with:
+                flags: php-${{ matrix.php-version }}-${{ matrix.os }}
+                name: php-${{ matrix.php-version }}-${{ matrix.os }}

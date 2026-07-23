@@ -5,7 +5,7 @@ namespace GuzzleHttp;
 /**
  * This class contains a list of built-in Guzzle request options.
  *
- * @see https://github.com/guzzle/guzzle/blob/7.13/docs/request-options.md
+ * @see https://github.com/guzzle/guzzle/blob/7.14/docs/request-options.md
  */
 final class RequestOptions
 {
@@ -203,6 +203,22 @@ final class RequestOptions
     public const MULTIPART = 'multipart';
 
     /**
+     * multiplex: (string) Controls how an HTTP/2 request sent through a
+     * built-in cURL handler pursues a shared, multiplexed connection. When the
+     * option is not set, multiplexing is left to libcurl: nothing waits, and
+     * established multiplex-capable connections are still shared. Use
+     * Multiplexing::EAGER to explicitly never wait for pending connections,
+     * Multiplexing::WAIT to wait on libcurl-eligible pending connections with
+     * CURLOPT_PIPEWAIT, normally to the same origin,
+     * Multiplexing::REQUIRE_EAGER to fail unless a multiplexed protocol is
+     * guaranteed while dialing eagerly, or Multiplexing::REQUIRE_WAIT for the
+     * same guarantee while also waiting on pending connections. The stream
+     * handler ignores EAGER and WAIT, and rejects the required family;
+     * CurlHandler has no multi handle to multiplex over.
+     */
+    public const MULTIPLEX = 'multiplex';
+
+    /**
      * on_headers: (callable) A callable that is invoked when the HTTP headers
      * of the response have been received but the body has not yet begun to
      * download.
@@ -219,6 +235,16 @@ final class RequestOptions
      * taken to send the request.
      */
     public const ON_STATS = 'on_stats';
+
+    /**
+     * on_trailers: (callable) A callable that is invoked once per successful
+     * transfer, after the response body has been received, with an
+     * associative array of the parsed HTTP trailers followed by the response.
+     * Malformed trailer field lines are discarded before parsing. Trailer
+     * fields are reported separately from response headers and are never
+     * merged into the response.
+     */
+    public const ON_TRAILERS = 'on_trailers';
 
     /**
      * progress: (callable) Defines a function to invoke when transfer

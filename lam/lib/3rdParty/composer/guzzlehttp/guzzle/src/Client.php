@@ -7,6 +7,7 @@ use GuzzleHttp\Cookie\CookieJarInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\InvalidArgumentException;
 use GuzzleHttp\Handler\CurlShareHandleState;
+use GuzzleHttp\Handler\CurlVersion;
 use GuzzleHttp\Promise as P;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
@@ -53,6 +54,10 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
      *   into relative URIs. Can be a string or instance of UriInterface.
      * - transport_sharing: (string|null) Transport sharing mode for the
      *   default handler. Accepts TransportSharing::* or null. Defaults to null.
+     * - max_host_connections: (int|null) Maximum concurrent connections per
+     *   host for the default cURL multi handler.
+     * - max_total_connections: (int|null) Maximum concurrent connections for
+     *   the default cURL multi handler.
      * - **: any request option
      *
      * @param array $config Client configuration settings.
@@ -61,16 +66,33 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
      */
     public function __construct(array $config = [])
     {
+        $handlerOptions = [];
+        foreach (['max_host_connections', 'max_total_connections'] as $capOption) {
+            if (\array_key_exists($capOption, $config)) {
+                if ($config[$capOption] !== null) {
+                    $handlerOptions[$capOption] = $config[$capOption];
+                }
+
+                unset($config[$capOption]);
+            }
+        }
+
         $transportSharing = \array_key_exists('transport_sharing', $config) ? $config['transport_sharing'] : null;
         $transportSharingMode = CurlShareHandleState::normalizeMode($transportSharing, 'transport_sharing');
         unset($config['transport_sharing']);
 
         if (!isset($config['handler'])) {
-            $config['handler'] = $transportSharingMode === TransportSharing::NONE
+            if ($transportSharingMode !== TransportSharing::NONE) {
+                $handlerOptions['transport_sharing'] = $transportSharingMode;
+            }
+
+            $config['handler'] = $handlerOptions === []
                 ? HandlerStack::create()
-                : HandlerStack::create(Utils::chooseHandler(['transport_sharing' => $transportSharingMode]));
+                : HandlerStack::create(Utils::chooseHandler($handlerOptions));
         } elseif (!\is_callable($config['handler'])) {
             throw new InvalidArgumentException('handler must be a callable');
+        } elseif ($handlerOptions !== []) {
+            throw new InvalidArgumentException('The "max_host_connections" and "max_total_connections" client options require Guzzle to create the default handler. Configure the option on CurlMultiHandler when providing a custom handler.');
         } elseif ($transportSharingMode === TransportSharing::HANDLER_REQUIRE) {
             throw new InvalidArgumentException('The "transport_sharing" client option can only require sharing when Guzzle creates the default handler. Configure the "transport_sharing" option on CurlHandler or CurlMultiHandler when providing a custom cURL handler.');
         }
@@ -610,6 +632,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
 
         self::warnIfPresentAndNotCallable($options, 'on_headers');
         self::warnIfPresentAndNotCallable($options, 'on_stats');
+        self::warnIfPresentAndNotCallable($options, 'on_trailers', null, '7.14');
         self::warnIfPresentAndNotCallable($options, 'progress');
         self::warnIfPresentAndNotStringArray($options, 'protocols', true);
         self::warnAboutInvalidProtocolValues($options, 'protocols');
@@ -908,10 +931,14 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         }
     }
 
-    private static function warnIfPresentAndNotCallable(array $options, string $option, ?string $path = null): void
-    {
+    private static function warnIfPresentAndNotCallable(
+        array $options,
+        string $option,
+        ?string $path = null,
+        string $since = '7.11'
+    ): void {
         if (\array_key_exists($option, $options) && !\is_callable($options[$option])) {
-            self::warnInvalidRequestOptionType($path ?? $option, 'callable', $options[$option]);
+            self::warnInvalidRequestOptionType($path ?? $option, 'callable', $options[$option], $since);
         }
     }
 
@@ -1124,8 +1151,11 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
                     \trigger_deprecation(
                         'guzzlehttp/guzzle',
                         '7.12',
-                        'Passing "ntlm" as the built-in auth type is deprecated; guzzlehttp/guzzle 8.0 will no longer apply NTLM through the "auth" request option. Configure NTLM with cURL HTTP authentication options instead.'
+                        'Passing "ntlm" as the built-in auth type is deprecated; guzzlehttp/guzzle 8.0 will no longer apply NTLM through the "auth" request option. NTLM is also deprecated by curl/libcurl and may be unavailable in current or future libcurl builds. Avoid NTLM; if you must use it temporarily, configure cURL HTTP authentication options directly with a libcurl build that still supports NTLM.'
                     );
+                    if (!CurlVersion::supportsNtlm()) {
+                        throw new InvalidArgumentException('NTLM authentication is not available because the installed curl/libcurl build does not provide NTLM support.');
+                    }
                     $options['curl'][\CURLOPT_HTTPAUTH] = \CURLAUTH_NTLM;
                     $options['curl'][\CURLOPT_USERPWD] = "$value[0]:$value[1]";
                     break;

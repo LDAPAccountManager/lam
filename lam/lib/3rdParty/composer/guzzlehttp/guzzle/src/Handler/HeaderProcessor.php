@@ -44,7 +44,7 @@ final class HeaderProcessor
             throw new \RuntimeException('HTTP status code missing from header data');
         }
 
-        if (!\preg_match('/^\d{3}$/', $status)) {
+        if (!\preg_match('/^\d{3}$/D', $status)) {
             throw new \RuntimeException('HTTP status code is invalid');
         }
 
@@ -60,6 +60,21 @@ final class HeaderProcessor
     public static function isStatusLineCandidate(string $line): bool
     {
         return \preg_match('/^HTTP\/[0-9]+(?:\.[0-9]+)? [0-9]{3}(?: [^\r\n]*)?(?:\r\n|\r|\n)?$/iD', $line) === 1;
+    }
+
+    public static function isValidHeaderFieldLine(string $line): bool
+    {
+        $parts = \explode(':', $line, 2);
+
+        if (!isset($parts[1])) {
+            return false;
+        }
+
+        if (!\preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/D', $parts[0])) {
+            return false;
+        }
+
+        return \preg_match('/^[\x20\x09\x21-\x7E\x80-\xFF]*(?:\r\n|\r|\n)?$/D', \trim($parts[1], " \t")) === 1;
     }
 
     /**

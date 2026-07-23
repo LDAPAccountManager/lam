@@ -1,4 +1,4 @@
-This software is copyright (c) 2003 - 2025 by Roland Gruber
+This software is copyright (c) 2003 - 2026 by Roland Gruber
 
 If you purchased a copy of LDAP Account Manager Pro then the following
 files are licensed under the conditions which you accepted at purchase
@@ -1099,7 +1099,8 @@ lib/3rdParty/composer/web-token                                      B        Fl
 lib/3rdParty/composer/webklex                                        B  2016  Webklex                                        https://github.com/Webklex/php-imap
 lib/3rdParty/composer/webmozart                                      B        Bernhard Schussek                              https://github.com/webmozarts
 lib/3rdParty/tcpdf                                                   D  2022  Nicola Asuni - Tecnick.com LTD                 https://github.com/tecnickcom/TCPDF
-lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah   https://github.com/dejavu-fonts/dejavu-fonts
+lib/3rdParty/composer/tecnickcom                                     D  2022  Nicola Asuni - Tecnick.com LTD                 https://github.com/tecnickcom/TCPDF
+lib/3rdParty/composer/tecnickcom/tc-lib-pdf-font/target/fonts/dejavu/dejavu*.z A        Public Domain, Bitstream, Inc., Tavmjong Bah   https://github.com/dejavu-fonts/dejavu-fonts
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB                                      https://github.com/Yubico/php-yubico
 style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal            https://github.com/csstools/normalize.css
 style/050_grid.css                                                   B                                                       https://foundation.zurb.com/sites/docs/v/5.5.3/components/grid.html

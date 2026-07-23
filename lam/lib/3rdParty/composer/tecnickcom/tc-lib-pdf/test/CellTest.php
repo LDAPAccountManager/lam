@@ -1,0 +1,341 @@
+<?php
+
+/**
+ * CellTest.php
+ *
+ * @since       2002-08-03
+ * @category    Library
+ * @package     Pdf
+ * @author      Nicola Asuni <info@tecnick.com>
+ * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @link        https://github.com/tecnickcom/tc-lib-pdf
+ *
+ * This file is part of tc-lib-pdf software library.
+ */
+
+namespace Test;
+
+/**
+ * @phpstan-import-type TCellDef from \Com\Tecnick\Pdf\Cell
+ */
+class CellTest extends TestUtil
+{
+    /** @throws \Throwable */
+    protected function getTestObject(): \Com\Tecnick\Pdf\Tcpdf
+    {
+        return new \Com\Tecnick\Pdf\Tcpdf();
+    }
+
+    /** @throws \Throwable */
+    protected function getInternalTestObject(): TestableCell
+    {
+        return new TestableCell();
+    }
+
+    /** @throws \Throwable */
+    public function testSetDefaultCellMarginStoresPointValues(): void
+    {
+        $obj = $this->getTestObject();
+        $obj->setDefaultCellMargin(1.0, 2.0, 3.0, 4.0);
+
+        /** @var TCellDef $defcell */
+        $defcell = $this->getObjectProperty($obj, 'defcell');
+        $this->bcAssertEqualsWithDelta($obj->toPoints(1.0), $defcell['margin']['T']);
+        $this->bcAssertEqualsWithDelta($obj->toPoints(2.0), $defcell['margin']['R']);
+        $this->bcAssertEqualsWithDelta($obj->toPoints(3.0), $defcell['margin']['B']);
+        $this->bcAssertEqualsWithDelta($obj->toPoints(4.0), $defcell['margin']['L']);
+    }
+
+    /** @throws \Throwable */
+    public function testSetDefaultCellPaddingStoresPointValues(): void
+    {
+        $obj = $this->getTestObject();
+        $obj->setDefaultCellPadding(0.5, 1.5, 2.5, 3.5);
+
+        /** @var TCellDef $defcell */
+        $defcell = $this->getObjectProperty($obj, 'defcell');
+        $this->bcAssertEqualsWithDelta($obj->toPoints(0.5), $defcell['padding']['T']);
+        $this->bcAssertEqualsWithDelta($obj->toPoints(1.5), $defcell['padding']['R']);
+        $this->bcAssertEqualsWithDelta($obj->toPoints(2.5), $defcell['padding']['B']);
+        $this->bcAssertEqualsWithDelta($obj->toPoints(3.5), $defcell['padding']['L']);
+    }
+
+    /** @throws \Throwable */
+    public function testSetDefaultCellBorderPosStoresValidValueAndDefaultsInvalid(): void
+    {
+        $obj = $this->getTestObject();
+        $obj->setDefaultCellBorderPos(\Com\Tecnick\Pdf\Base::BORDERPOS_INTERNAL);
+
+        /** @var TCellDef $defcell */
+        $defcell = $this->getObjectProperty($obj, 'defcell');
+        $this->assertSame(\Com\Tecnick\Pdf\Base::BORDERPOS_INTERNAL, $defcell['borderpos']);
+
+        $obj->setDefaultCellBorderPos(99.0);
+        /** @var TCellDef $defcell */
+        $defcell = $this->getObjectProperty($obj, 'defcell');
+        $this->assertSame(\Com\Tecnick\Pdf\Base::BORDERPOS_DEFAULT, $defcell['borderpos']);
+    }
+
+    /** @throws \Throwable */
+    public function testAdjustMinCellPaddingIncreasesPaddingWithBorderStyle(): void
+    {
+        $obj = $this->getInternalTestObject();
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+        $cell['padding'] = ['T' => 0.0, 'R' => 0.0, 'B' => 0.0, 'L' => 0.0];
+        $styles = ['all' => ['lineWidth' => 1.0]];
+
+        $out = $obj->exposeAdjustMinCellPadding($styles, $cell);
+
+        $this->assertGreaterThanOrEqual(0.0, $out['padding']['T']);
+        $this->assertGreaterThanOrEqual(0.0, $out['padding']['R']);
+    }
+
+    /** @throws \Throwable */
+    public function testAdjustMinCellPaddingSupportsSideSpecificWidths(): void
+    {
+        $obj = $this->getInternalTestObject();
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+        $cell['padding'] = ['T' => 0.0, 'R' => 0.0, 'B' => 0.0, 'L' => 0.0];
+
+        $styles = [
+            0 => ['lineWidth' => 0.5],
+            1 => ['lineWidth' => 1.0],
+            2 => ['lineWidth' => 1.5],
+            3 => ['lineWidth' => 2.0],
+        ];
+
+        $out = $obj->exposeAdjustMinCellPadding($styles, $cell);
+
+        $this->assertGreaterThan(0.0, $out['padding']['T']);
+        $this->assertGreaterThan(0.0, $out['padding']['R']);
+        $this->assertGreaterThan(0.0, $out['padding']['B']);
+        $this->assertGreaterThan(0.0, $out['padding']['L']);
+    }
+
+    /** @throws \Throwable */
+    public function testAdjustMinCellPaddingUsesCurrentStyleAndInvalidStyleFallback(): void
+    {
+        $obj = $this->getInternalTestObject();
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+
+        $outCurrent = $obj->exposeAdjustMinCellPadding([], $cell);
+        $outInvalid = $obj->exposeAdjustMinCellPadding(['all' => []], $cell);
+
+        $this->assertArrayHasKey('padding', $outCurrent);
+        $this->assertSame($cell, $outInvalid);
+    }
+
+    /** @throws \Throwable */
+    public function testCellMinHeightReturnsPositiveForCenterAlign(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+
+        $out = $obj->exposeCellMinHeight(10.0, 'C');
+
+        $this->assertGreaterThan(0.0, $out);
+    }
+
+    /** @throws \Throwable */
+    public function testCellMinWidthHandlesCenterAlignment(): void
+    {
+        $obj = $this->getInternalTestObject();
+
+        $out = $obj->exposeCellMinWidth(20.0, 'C');
+
+        $this->assertGreaterThanOrEqual(20.0, $out);
+    }
+
+    /** @throws \Throwable */
+    public function testCellPositionHelpersReturnFloats(): void
+    {
+        $obj = $this->getInternalTestObject();
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+
+        $verticalPos = $obj->exposeCellVPos(10.0, 5.0, 'T', $cell);
+        $horizontalPos = $obj->exposeCellHPos(10.0, 5.0, 'L', $cell);
+
+        $this->assertGreaterThan(-1000000.0, $verticalPos);
+        $this->assertGreaterThan(-1000000.0, $horizontalPos);
+    }
+
+    /** @throws \Throwable */
+    public function testCellTextAlignHelpersReturnFloats(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+
+        $verticalAlign = $obj->exposeCellTextVAlign(20.0, 10.0, 'C', $cell);
+        $horizontalAlign = $obj->exposeCellTextHAlign(30.0, 12.0, 'C', $cell);
+
+        $this->assertGreaterThan(-1000000.0, $verticalAlign);
+        $this->assertGreaterThan(-1000000.0, $horizontalAlign);
+    }
+
+    /** @throws \Throwable */
+    public function testCellAlignmentBranchesHandleAllVariants(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellMinHeight(10.0, 'T', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellMinHeight(0.0, 'C'));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellMinHeight(10.0, 'L', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellMinHeight(10.0, 'A', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellMinHeight(10.0, 'D', $cell));
+
+        $this->assertGreaterThanOrEqual(20.0, $obj->exposeCellMinWidth(20.0, 'J'));
+
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellVPos(10.0, 5.0, 'C', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellVPos(10.0, 5.0, 'B', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellVPos(10.0, 5.0, 'X', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellVPos(10.0, 5.0, 'T'));
+
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellHPos(10.0, 5.0, 'R', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellHPos(10.0, 5.0, 'C', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellHPos(10.0, 5.0, 'J', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellHPos(10.0, 5.0, 'L'));
+
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextVAlign(20.0, 10.0, 'T', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextVAlign(20.0, 10.0, 'B', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextVAlign(20.0, 10.0, 'L', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextVAlign(20.0, 10.0, 'A', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextVAlign(20.0, 10.0, 'D', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextVAlign(20.0, 0.0, 'C'));
+
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextHAlign(30.0, 12.0, 'R', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextHAlign(30.0, 12.0, 'J', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeCellTextHAlign(30.0, 12.0, 'L'));
+
+        $this->assertGreaterThan(0.0, $obj->exposeCellMaxWidth(0.0));
+        $this->assertGreaterThan(0.0, $obj->exposeTextMaxWidth(50.0));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeTextMaxHeight(50.0, 'B', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeTextMaxHeight(50.0, 'L', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeTextMaxHeight(50.0, 'A', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeTextMaxHeight(50.0, 'D', $cell));
+        $this->assertGreaterThan(-1000000.0, $obj->exposeTextMaxHeight(50.0, 'C', $cell));
+    }
+
+    /** @throws \Throwable */
+    public function testCellAndTextPositionConversionsAreCallable(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+
+        $cellVerticalPos = $obj->exposeCellVPosFromText(10.0, 20.0, 10.0, 'C', $cell);
+        $cellHorizontalPos = $obj->exposeCellHPosFromText(10.0, 30.0, 12.0, 'L', $cell);
+        $textVerticalPos = $obj->exposeTextVPosFromCell(10.0, 20.0, 10.0, 'C', $cell);
+        $textHorizontalPos = $obj->exposeTextHPosFromCell(10.0, 30.0, 12.0, 'L', $cell);
+
+        $this->assertGreaterThan(-1000000.0, $cellVerticalPos);
+        $this->assertGreaterThan(-1000000.0, $cellHorizontalPos);
+        $this->assertGreaterThan(-1000000.0, $textVerticalPos);
+        $this->assertGreaterThan(-1000000.0, $textHorizontalPos);
+    }
+
+    /** @throws \Throwable */
+    public function testCellAndTextMaxHelpersReturnPositiveValues(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+        /** @var TCellDef $cell */
+        $cell = $this->getObjectProperty($obj, 'defcell');
+
+        $cellMax = $obj->exposeCellMaxWidth(0.0, $cell);
+        $txtW = $obj->exposeTextMaxWidth(50.0, $cell);
+        $txtH = $obj->exposeTextMaxHeight(50.0, 'T', $cell);
+
+        $this->assertGreaterThan(0.0, $cellMax);
+        $this->assertGreaterThan(0.0, $txtW);
+        $this->assertGreaterThan(0.0, $txtH);
+    }
+
+    /** @throws \Throwable */
+    public function testDrawCellReturnsEmptyWhenNoFillOrBorder(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+
+        $out = $obj->exposeDrawCell(10.0, 10.0, 20.0, 8.0, ['all' => []]);
+
+        $this->assertSame('', $out);
+    }
+
+    /** @throws \Throwable */
+    public function testDrawCellHandlesFillAndBorderBranches(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+
+        $fillAndBorder = $obj->exposeDrawCell(10.0, 10.0, 20.0, 8.0, ['all' => [
+            'fillColor' => 'gray',
+            'lineWidth' => 0.2,
+        ]]);
+        $this->assertNotSame('', $fillAndBorder);
+
+        $fillOnly = $obj->exposeDrawCell(10.0, 10.0, 20.0, 8.0, ['all' => ['fillColor' => 'gray']]);
+        $this->assertNotSame('', $fillOnly);
+
+        $perSideBorder = $obj->exposeDrawCell(10.0, 10.0, 20.0, 8.0, [
+            0 => ['lineWidth' => 0.2],
+            1 => ['lineWidth' => 0.3],
+            2 => ['lineWidth' => 0.4],
+            3 => ['lineWidth' => 0.5],
+            'all' => ['fillColor' => ''],
+        ]);
+        $this->assertNotSame('', $perSideBorder);
+
+        $fallbackAdjustBorder = $obj->exposeDrawCell(10.0, 10.0, 20.0, 8.0, [
+            1 => ['lineWidth' => 0.3],
+            'all' => [],
+        ]);
+        $this->assertNotSame('', $fallbackAdjustBorder);
+    }
+
+    /** @throws \Throwable */
+    public function testDrawCellIgnoresZeroWidthSideBorders(): void
+    {
+        $obj = $this->getInternalTestObject();
+        $this->initFontAndPage($obj);
+
+        $rightSideOnly = $obj->exposeDrawCell(10.0, 10.0, 20.0, 8.0, [
+            1 => ['lineWidth' => 0.3],
+            'all' => ['fillColor' => ''],
+        ]);
+
+        $rightWithZeroSides = $obj->exposeDrawCell(10.0, 10.0, 20.0, 8.0, [
+            0 => ['lineWidth' => 0.0],
+            1 => ['lineWidth' => 0.3],
+            2 => ['lineWidth' => 0.0],
+            3 => ['lineWidth' => 0.0],
+            'all' => ['fillColor' => ''],
+        ]);
+
+        $this->assertNotSame('', $rightSideOnly);
+        $this->assertSame($rightSideOnly, $rightWithZeroSides);
+    }
+
+    /** @throws \Throwable */
+    public function testGetOutTextStringReturnsEscapedStringAndBomChangesOutput(): void
+    {
+        $obj = $this->getInternalTestObject();
+
+        $textWithoutBom = $obj->exposeGetOutTextString('Hello', 1, false);
+        $textWithBom = $obj->exposeGetOutTextString('Hello', 1, true);
+
+        $this->assertNotSame('', $textWithoutBom);
+        $this->assertNotSame('', $textWithBom);
+        $this->assertNotSame($textWithoutBom, $textWithBom);
+    }
+}

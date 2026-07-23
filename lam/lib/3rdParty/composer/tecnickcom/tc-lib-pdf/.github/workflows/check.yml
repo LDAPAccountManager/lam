@@ -1,0 +1,93 @@
+name: check
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  test-php:
+    name: Test on php ${{ matrix.php-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["8.2", "8.3", "8.4", "8.5"]
+    steps:
+      - uses: actions/checkout@v7
+      #- name: Install pdfinfo
+      #  run: sudo apt-get install -y poppler-utils
+      - name: Use php ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: pcov
+          extensions: bcmath, curl, date, gd, hash, imagick, json, mbstring, openssl, pcre, zlib
+          ini-values: display_errors=on, error_reporting=-1, zend.assertions=1
+      - name: List php modules
+        run: php -m
+      - name: List php modules using "no php ini" mode
+        run: php -m -n
+      - name: Cache module
+        uses: actions/cache@v6
+        with:
+          path: ~/.composer/cache/
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php-version }}-composer-
+      - name: Install dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: make deps
+      - name: Install qpdf
+        if: matrix.php-version == '8.4'
+        run: sudo apt-get update && sudo apt-get install -y qpdf
+      - name: Run preflight
+        if: matrix.php-version == '8.4'
+        run: make preflight
+      - name: Run all tests
+        run: make qa
+      #- name: Generate CSS renderability reports
+      #  if: matrix.php-version == '8.4'
+      #  run: |
+      #    php resources/css/renderability_score.php \
+      #      --corpus=test/fixtures/html/real_pages/corpus.json \
+      #      --json=target/report/renderability-score.json \
+      #      --markdown=target/report/renderability-score.md
+      #    php resources/css/renderability_trend.php \
+      #      --score=target/report/renderability-score.json \
+      #      --history=target/report/renderability-trend.json \
+      #      --markdown=target/report/renderability-trend.md \
+      #      --sha=${{ github.sha }} \
+      #      --ref=${{ github.ref_name }} \
+      #      --run-id=${{ github.run_id }}
+      #    cat target/report/renderability-score.md >> "$GITHUB_STEP_SUMMARY"
+      #    cat target/report/renderability-trend.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload CSS renderability reports
+        if: matrix.php-version == '8.4'
+        uses: actions/upload-artifact@v4
+        with:
+          name: css-renderability-reports-${{ github.run_id }}
+          path: |
+            target/report/renderability-score.json
+            target/report/renderability-score.md
+            target/report/renderability-trend.json
+            target/report/renderability-trend.md
+      - name: Send coverage
+        if: matrix.php-version == '8.4'
+        uses: codecov/codecov-action@v7
+        with:
+          flags: php-${{ matrix.php-version }}-ubuntu-latest
+          name: php-${{ matrix.php-version }}-ubuntu-latest

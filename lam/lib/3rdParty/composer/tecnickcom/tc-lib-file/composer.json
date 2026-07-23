@@ -1,0 +1,68 @@
+{
+    "name": "tecnickcom/tc-lib-file",
+    "description": "PHP library to read byte-level data from files",
+    "type": "library",
+    "homepage": "https://tcpdf.org",
+    "license": "LGPL-3.0-or-later",
+    "keywords": [
+        "tc-lib-file",
+        "file",
+        "byte",
+        "bit",
+        "read",
+        "short",
+        "long",
+        "double"
+    ],
+    "authors": [
+        {
+            "name": "Nicola Asuni",
+            "email": "info@tecnick.com",
+            "role": "lead"
+        }
+    ],
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/tecnickcom"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-curl": "*"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "require-dev": {
+        "pdepend/pdepend": "^2.16",
+        "phpunit/phpunit": "^13.2 || ^12.5 || ^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Com\\Tecnick\\File\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "test"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/tecnickcom/tc-lib-file/issues",
+        "source": "https://github.com/tecnickcom/tc-lib-file"
+    },
+    "scripts": {
+        "test": "@php -d xdebug.mode=coverage vendor/bin/phpunit --stderr test",
+        "analyse": ["@analyse:src", "@analyse:test"],
+        "analyse:src": "mago --config mago.src.toml analyze src",
+        "analyse:test": "mago --config mago.test.toml analyze test",
+        "cs-check": ["@cs-check:src", "@cs-check:test"],
+        "cs-check:src": "mago --config mago.src.toml lint src",
+        "cs-check:test": "mago --config mago.test.toml lint test",
+        "cs-fix": "mago fmt src test",
+        "qa": ["@cs-check", "@analyse", "@test"]
+    }
+}

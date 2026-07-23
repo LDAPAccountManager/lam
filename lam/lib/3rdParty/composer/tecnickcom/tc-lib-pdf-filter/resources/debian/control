@@ -1,0 +1,17 @@
+Source: ~#PKGNAME#~
+Maintainer: Nicola Asuni <info@tecnick.com>
+Section: php
+Priority: optional
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+Homepage: https://github.com/~#VENDOR#~/~#PROJECT#~
+Vcs-Git: https://github.com/~#VENDOR#~/~#PROJECT#~.git
+Vcs-Browser: https://github.com/~#VENDOR#~/~#PROJECT#~
+
+Package: ~#PKGNAME#~
+Provides: php-~#PROJECT#~
+Architecture: all
+Depends: php (>= 8.2.0), ${misc:Depends}
+Description: PHP PDF Filter Library
+ PHP library to decode PDF compression and encryption filters.

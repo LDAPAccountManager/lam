@@ -1,0 +1,280 @@
+# makefile
+#
+# @since       2015-07-13
+# @category    Library
+# @package     Unicode
+# @author      Nicola Asuni <info@tecnick.com>
+# @copyright   2011-2026 Nicola Asuni - Tecnick.com LTD
+# @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+# @link        https://github.com/tecnickcom/tc-lib-unicode
+#
+# This file is part of tc-lib-unicode software library.
+# ----------------------------------------------------------------------------------------------------------------------
+
+SHELL=/bin/bash
+.SHELLFLAGS=-o pipefail -c
+
+# Project owner
+OWNER=tecnickcom
+
+# Project vendor
+VENDOR=${OWNER}
+
+# Project name
+PROJECT=tc-lib-unicode
+
+# Project version
+VERSION=$(shell cat VERSION)
+
+# Project release number (packaging build number)
+RELEASE=$(shell cat RELEASE)
+
+# Name of RPM or DEB package
+PKGNAME=php-${OWNER}-${PROJECT}
+
+# Data dir
+DATADIR=usr/share
+
+# PHP home folder
+PHPHOME=${DATADIR}/php/Com/Tecnick
+
+# Default installation path for code
+LIBPATH=${PHPHOME}/Unicode/
+
+# Path for configuration files (etc/$(PKGNAME)/)
+CONFIGPATH=
+
+# Default installation path for documentation
+DOCPATH=${DATADIR}/doc/$(PKGNAME)/
+
+# Installation path for the code
+PATHINSTBIN=$(DESTDIR)/$(LIBPATH)
+
+# Installation path for the configuration files
+PATHINSTCFG=$(DESTDIR)/$(CONFIGPATH)
+
+# Installation path for documentation
+PATHINSTDOC=$(DESTDIR)/$(DOCPATH)
+
+# Current directory
+CURRENTDIR=$(CURDIR)/
+
+# Target directory
+TARGETDIR=target
+
+# RPM Packaging path (where RPMs will be stored)
+PATHRPMPKG=$(TARGETDIR)/RPM
+
+# RPM local database path (avoid host rpmdb permission issues)
+RPMDBPATH=$(PATHRPMPKG)/.rpmdb
+
+# DEB Packaging path (where DEBs will be stored)
+PATHDEBPKG=$(TARGETDIR)/DEB
+
+# BZ2 Packaging path (where BZ2s will be stored)
+PATHBZ2PKG=$(TARGETDIR)/BZ2
+
+# sed argument for in-place substitutions
+SEDINPLACE=-i
+ifeq ($(shell uname -s),Darwin)
+	SEDINPLACE=-i ''
+endif
+
+# Default port number for the example server
+PORT?=8000
+
+# PHP binary
+PHP=$(shell which php)
+
+# Composer executable (disable APC to as a work-around of a bug)
+COMPOSER=$(PHP) -d "apc.enable_cli=0" $(shell which composer)
+
+# phpDocumentor executable file
+PHPDOC=$(shell which phpDocumentor)
+
+# Mago version
+MAGOVERSION=1.43.0
+
+# --- MAKE TARGETS ---
+
+# Display general help about this command
+.PHONY: help
+help:
+	@echo ""
+	@echo "$(PROJECT) Makefile."
+	@echo "The following commands are available:"
+	@echo ""
+	@awk '/^## /{desc=substr($$0,4)} /^\.PHONY:/{if(NF>1) {target=$$2; if(desc) printf "  make %-15s: %s\n",target,desc; desc=""}}' Makefile
+	@echo ""
+	@echo "To test and build everything from scratch, use the shortcut:"
+	@echo "    make x"
+	@echo ""
+
+# alias for help target
+.PHONY: all
+all: help
+
+# Full build and test sequence
+.PHONY: x
+x: buildall
+
+## Full build and test sequence
+.PHONY: buildall
+buildall: deps format qa bz2 rpm deb
+
+## Package the library in a compressed bz2 archive
+.PHONY: bz2
+bz2:
+	rm -rf "$(PATHBZ2PKG)"
+	make install DESTDIR="$(PATHBZ2PKG)"
+	tar -jcvf "$(PATHBZ2PKG)/$(PKGNAME)-$(VERSION)-$(RELEASE).tbz2" -C "$(PATHBZ2PKG)" "$(DATADIR)"
+
+## Delete the vendor and target directories
+.PHONY: clean
+clean:
+	rm -rf ./vendor "$(TARGETDIR)"
+
+## Build a DEB package for Debian-like Linux distributions
+.PHONY: deb
+deb:
+	rm -rf "$(PATHDEBPKG)"
+	$(MAKE) install DESTDIR="$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)"
+	rm -f "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/$(DOCPATH)LICENSE"
+	tar -zcvf "$(PATHDEBPKG)/$(PKGNAME)_$(VERSION).orig.tar.gz" -C "$(PATHDEBPKG)/" "$(PKGNAME)-$(VERSION)"
+	cp -rf ./resources/debian "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian"
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -name '*.bak' -delete
+	chmod 755 "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/rules"
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#DATE#~/`date -R`/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#VENDOR#~/$(VENDOR)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#PROJECT#~/$(PROJECT)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#PKGNAME#~/$(PKGNAME)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#VERSION#~/$(VERSION)/" {} \;
+	find "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/" -type f -exec sed $(SEDINPLACE) "s/~#RELEASE#~/$(RELEASE)/" {} \;
+	echo "$(LIBPATH)" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(LIBPATH)* $(LIBPATH)" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
+	echo "$(DOCPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(DOCPATH)* $(DOCPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
+ifneq ($(strip $(CONFIGPATH)),)
+	echo "$(CONFIGPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).dirs"
+	echo "$(CONFIGPATH)* $(CONFIGPATH)" >> "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/install"
+endif
+	echo "new-package-should-close-itp-bug" > "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)/debian/$(PKGNAME).lintian-overrides"
+	cd "$(PATHDEBPKG)/$(PKGNAME)-$(VERSION)" && debuild -us -uc
+
+## Clean all artifacts and download all dependencies
+.PHONY: deps
+deps: ensuretarget
+	rm -rf ./vendor/*
+	($(COMPOSER) install -vvv --no-interaction)
+	curl --proto '=https' --tlsv1.2 --silent --show-error --fail --location https://carthage.software/mago.sh | bash -s -- --install-dir=./vendor/bin --version=$(MAGOVERSION)
+
+## Generate source code documentation
+.PHONY: doc
+doc: ensuretarget
+	rm -rf "$(TARGETDIR)/doc"
+	$(PHPDOC) -d ./src -t "$(TARGETDIR)/doc/"
+
+## Create missing target directories for test and build artifacts
+.PHONY: ensuretarget
+ensuretarget:
+	mkdir -p "$(TARGETDIR)/test"
+	mkdir -p "$(TARGETDIR)/report"
+	mkdir -p "$(TARGETDIR)/doc"
+
+## Install this application
+.PHONY: install
+install: uninstall
+	mkdir -p "$(PATHINSTBIN)"
+	cp -rf ./src/* "$(PATHINSTBIN)"
+	cp -f ./resources/autoload.php "$(PATHINSTBIN)"
+	find "$(PATHINSTBIN)" -type d -exec chmod 755 {} \;
+	find "$(PATHINSTBIN)" -type f -exec chmod 644 {} \;
+	mkdir -p "$(PATHINSTDOC)"
+	cp -f ./LICENSE "$(PATHINSTDOC)"
+	cp -f ./README.md "$(PATHINSTDOC)"
+	cp -f ./VERSION "$(PATHINSTDOC)"
+	cp -f ./RELEASE "$(PATHINSTDOC)"
+	chmod -R 644 "$(PATHINSTDOC)"*
+ifneq ($(strip $(CONFIGPATH)),)
+	mkdir -p "$(PATHINSTCFG)"
+	touch -c "$(PATHINSTCFG)"*
+	cp -ru "./resources/${CONFIGPATH}"* "$(PATHINSTCFG)"
+	find "$(PATHINSTCFG)" -type d -exec chmod 755 {} \;
+	find "$(PATHINSTCFG)" -type f -exec chmod 644 {} \;
+endif
+
+## Format the source code
+.PHONY: format
+format:
+	./vendor/bin/mago fmt src test example
+
+## Analyze and Lint the source code
+.PHONY: lint
+lint:
+	./vendor/bin/mago --config ./mago.src.toml analyze src
+	./vendor/bin/mago --config ./mago.test.toml analyze test
+	./vendor/bin/mago --config ./mago.src.toml lint src
+	./vendor/bin/mago --config ./mago.test.toml lint test
+
+## Run all tests and reports
+.PHONY: qa
+qa: ensuretarget lint test report
+
+## Generate various reports
+.PHONY: report
+report: ensuretarget
+	./vendor/bin/pdepend --jdepend-xml="$(TARGETDIR)/report/dependencies.xml" --summary-xml="$(TARGETDIR)/report/metrics.xml" --jdepend-chart="$(TARGETDIR)/report/dependecies.svg" --overview-pyramid="$(TARGETDIR)/report/overview-pyramid.svg" --ignore=vendor ./src
+	#./vendor/bartlett/php-compatinfo/bin/phpcompatinfo --no-ansi analyser:run src/ > $(TARGETDIR)/report/phpcompatinfo.txt
+
+## Build the RPM package for RedHat-like Linux distributions
+.PHONY: rpm
+rpm:
+	@test $(words $(CURDIR)) -eq 1 || { echo "ERROR: rpmbuild does not support spaces in the project path: $(CURDIR)"; exit 1; }
+	rm -rf "$(PATHRPMPKG)"
+	mkdir -p "$(RPMDBPATH)" "$(PATHRPMPKG)/tmp"
+	rpmbuild \
+	--define "_topdir $(CURRENTDIR)$(PATHRPMPKG)" \
+	--define "_dbpath $(CURRENTDIR)$(RPMDBPATH)" \
+	--define "_tmppath $(CURRENTDIR)$(PATHRPMPKG)/tmp" \
+	--define "_vendor $(VENDOR)" \
+	--define "_owner $(OWNER)" \
+	--define "_project $(PROJECT)" \
+	--define "_package $(PKGNAME)" \
+	--define "_version $(VERSION)" \
+	--define "_release $(RELEASE)" \
+	--define "_current_directory $(CURRENTDIR)" \
+	--define "_libpath /$(LIBPATH)" \
+	--define "_docpath /$(DOCPATH)" \
+	--define "_configpath /$(CONFIGPATH)" \
+	-bb resources/rpm/rpm.spec
+
+## Start the development server
+.PHONY: server
+server:
+	$(PHP) -t example -S localhost:$(PORT)
+
+## Tag this GIT version
+.PHONY: tag
+tag:
+	git checkout main && \
+	git tag -a ${VERSION} -m "Release ${VERSION}" && \
+	git push origin --tags && \
+	git pull
+
+## Run unit tests
+.PHONY: test
+test:
+	cp phpunit.xml.dist phpunit.xml
+	#./vendor/bin/phpunit --migrate-configuration || true
+	XDEBUG_MODE=coverage $(PHP) -d zend.assertions=1 -d assert.exception=1 ./vendor/bin/phpunit --stderr test
+
+## Remove all installed files
+.PHONY: uninstall
+uninstall:
+	rm -rf "$(PATHINSTBIN)"
+	rm -rf "$(PATHINSTDOC)"
+
+## Increase the version patch number
+.PHONY: versionup
+versionup:
+	echo ${VERSION} | gawk -F. '{printf("%d.%d.%d\n",$$1,$$2,(($$3+1)));}' > VERSION

@@ -3,6 +3,7 @@
 namespace LAM\PDF;
 
 use accountContainer;
+use Com\Tecnick\Pdf\Tcpdf;
 use LAM\ImageUtils\ImageManipulationFactory;
 use LAM\TYPES\ConfiguredType;
 use LAMException;
@@ -38,19 +39,43 @@ use LamTemporaryFilesManager;
  * @package PDF
  */
 
+/** margin */
+define('LAMPDF_MARGIN', 10);
+/** space between sections */
+define('LAMPDF_SPACE_SECTION', 15);
+/** space between fields */
+define('LAMPDF_SPACE_FIELD', 5);
+/** space between title and first field */
+define('LAMPDF_SPACE_TITLE_FIELD', 2);
+/** space between field label and value */
+define('LAMPDF_SPACE_LABEL_VALUE', 1);
+/** line width */
+define('LAMPDF_Y_MAX', 297 - (2 * LAMPDF_MARGIN));
 /** line width */
 define('LAMPDF_LINEWIDTH', 190);
 /** line height */
 define('LAMPDF_LINEHEIGHT', 5);
 /** width of a label */
 define('LAMPDF_LABELWIDTH', 50);
+/** width of an image */
+define('LAMPDF_IMAGE_WIDTH', 40);
+/** height of logo image */
+define('LAMPDF_LOGO_HEIGHT', 15);
 /** font size */
 define('LAMPDF_FONT_SIZE', 7);
 /** font size for bigger text */
 define('LAMPDF_FONT_SIZE_BIG', 10);
+/** font size for page title text */
+define('LAMPDF_FONT_SIZE_TITLE', 20);
+/** font location */
+define('K_PATH_FONTS', __DIR__ . '/3rdParty/composer/tecnickcom/tc-lib-pdf-font/target/fonts');
 
 /** access to PDF configuration files */
 include_once(__DIR__ . '/pdfstruct.inc');
+/** composer */
+include_once(__DIR__ . '/3rdParty/composer/autoload.php');
+/** image functions */
+include_once __DIR__ . '/imageutils.inc';
 
 /**
  * This function creates the PDF output of one or more accounts.
@@ -65,13 +90,12 @@ include_once(__DIR__ . '/pdfstruct.inc');
  * @return string PDF file name
  * @throws LAMException error creating PDF
  */
-function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = false): string {
+function createModulePDF(array $accounts, string $pdf_structure, string $font, bool $returnAsString = false): string {
 	$account_type = $accounts[0]->get_type();
-	// Get PDF structure from xml file
 	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 	$structure = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
 		$account_type->getId(), $pdf_structure);
-	// get list of PDF keys
+	// get the list of PDF keys
 	$pdfKeys = [];
 	foreach ($structure->getSections() as $section) {
 		if (!$section instanceof PDFEntrySection) {
@@ -92,27 +116,30 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
  * This function creates the PDF output of one or more accounts using TCPDF.
  *
  * @param PDFStructure $structure PDF structure
- * @param accountContainer[] $accounts A numbered array containing all accounts the PDF page should
- * be created for. The entries of the array must be AccountContainer objects.
+ * @param accountContainer[] $accounts A numbered array containing all accounts for the PDF page.
+ * The entries of the array must be AccountContainer objects.
  * @param string[] $pdfKeys list of elements in PDF
  * @param ConfiguredType $account_type account type
  * @param string $font font to use
- * @param boolean $returnAsString returns the PDF output as String value instead of writing it to a file
+ * @param bool $returnAsString returns the PDF output as a string value instead of writing it to a file
  * @return string PDF file name
  */
-function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString): string {
+function createPdf(PDFStructure $structure, array $accounts, array $pdfKeys, ConfiguredType $account_type, string $font, bool $returnAsString): string {
 	if (!in_array($font, getPdfFonts())) {
 		logNewMessage(LOG_ERR, 'Invalid font specified: ' . $font);
 	}
-	/** PDF generator class */
-	include_once(__DIR__ . "/lamtcpdf.inc");
-	$pdf = new LAMTCPDF($structure, $font);
+	$pdf = new Tcpdf();
+	$pdf->setTitle($structure->getTitle());
+	$pdf->setCreator("LDAP Account Manager");
+	$pdf->setAuthor("LDAP Account Manager");
 
 	// Loop over each account and add a new page in the PDF file for it
 	foreach ($accounts as $account) {
 
 		// Start a new page for each account
-		$pdf->AddPage();
+		$pageData = $pdf->addPage();
+		$extraTopMargin = 0;
+		addPageHeader($pdf, $structure, $font, $pageData, $extraTopMargin);
 
 		// Get PDF entries for the current account
 		$entries = $account->get_pdfEntries($pdfKeys, $account_type->getId());
@@ -120,14 +147,16 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 		// Now create the PDF file according to the structure with the submitted values
 		foreach ($structure->getSections() as $section) {
 			if ($section instanceof PDFTextSection) {
-				$pdf->setFont($font, "", LAMPDF_FONT_SIZE);
+				changeFont($pdf, $font);
 				$info_string = str_replace("\r", "", $section->getText());
-				$info_string = explode("\n", $info_string);
-				foreach ($info_string as $text) {
-					$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, trim($text), 0, "L");
-					$pdf->Ln(0);
-				}
-				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
+				$pdf->addTextCell(
+					txt: trim($info_string),
+					posx: LAMPDF_MARGIN,
+					posy: getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_SECTION + $extraTopMargin, $pdf),
+					width: LAMPDF_LINEWIDTH,
+					halign: 'L',
+					drawcell: false);
+				$extraTopMargin = 0;
 			}
 			elseif ($section instanceof PDFEntrySection) {
 				// section headline
@@ -140,36 +169,43 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 				else {
 					$section_headline = $section->getTitle();
 				}
-				$pdf->setFont($font, "B", LAMPDF_FONT_SIZE_BIG);
-				$pdf->Write(0, $section_headline, '', false, 'L', true);
-				$pdf->Ln(LAMPDF_LINEHEIGHT);
+				changeFont($pdf, $font, LAMPDF_FONT_SIZE_BIG);
+				$pdf->addTextCell(
+					txt: trim($section_headline),
+					posx: LAMPDF_MARGIN,
+					posy: getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_SECTION + $extraTopMargin, $pdf),
+					width: LAMPDF_LINEWIDTH,
+					halign: 'L',
+					drawcell: false);
+				$extraTopMargin = LAMPDF_SPACE_TITLE_FIELD;
 				// entries
 				foreach ($section->getEntries() as $entry) {
 					// skip non-existent entries
-					if (isset($entries[$entry->getKey()])) {
-						// Get current entry
-						$valueEntries = $entries[$entry->getKey()];
-						// Loop over all rows of this entry (most of the time this will be just one)
-						foreach ($valueEntries as $valueEntry) {
-							if ($valueEntry instanceof PDFLabelValue) {
-								printLabelValue($pdf, $valueEntry, $font);
-							}
-							elseif ($valueEntry instanceof PDFTable) {
-								printTable($pdf, $valueEntry, $font);
-							}
-							elseif ($valueEntry instanceof PDFImage) {
-								printImage($pdf, $valueEntry);
-							}
+					if (!isset($entries[$entry->getKey()])) {
+						continue;
+					}
+					$valueEntries = $entries[$entry->getKey()];
+					// loop over all rows of this entry (most of the time this will be just one)
+					foreach ($valueEntries as $valueEntry) {
+						if ($valueEntry instanceof PDFLabelValue) {
+							printLabelValue($pdf, $valueEntry, $font, $extraTopMargin);
+							$extraTopMargin = 0;
+						}
+						elseif ($valueEntry instanceof PDFTable) {
+							printTable($pdf, $valueEntry, $font);
+							$extraTopMargin = 0;
+						}
+						elseif ($valueEntry instanceof PDFImage) {
+							printImage($pdf, $valueEntry, $pageData);
 						}
 					}
 				}
-				// section end
-				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
+				$extraTopMargin = 0;
 			}
 		}
 	}
 
-	$out = $pdf->Output('out.pdf', 'S');
+	$out = $pdf->getOutPDFString();
 	if (!$returnAsString) {
 		$tempFilesManager = new LamTemporaryFilesManager();
 		$fileName = $tempFilesManager->registerTemporaryFile('.pdf');
@@ -186,89 +222,195 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 }
 
 /**
+ * Adds the page header.
+ *
+ * @param Tcpdf $pdf PDF object
+ * @param PDFStructure $structure PDF structure
+ * @param string $fontName font name
+ * @param array<string, string|int|bool> $pageData page data
+ * @param int $extraTopMargin y-position on PDF page
+ */
+function addPageHeader(Tcpdf $pdf, PDFStructure $structure, string $fontName, array $pageData, int &$extraTopMargin): void {
+	// folding marks
+	if ($structure->getFoldingMarks() === PDFStructure::FOLDING_STANDARD) {
+		$lineStyle = [
+			'lineWidth' => 0.2,
+		];
+		$foldingMarks = [97, 202];
+		foreach ($foldingMarks as $mark) {
+			$marksOut = $pdf->graph->getLine(0, $mark, 3, $mark, $lineStyle);
+			$pdf->page->addContent($marksOut);
+		}
+	}
+	// title
+	changeFont($pdf, $fontName, LAMPDF_FONT_SIZE_TITLE);
+	$pdf->addTextCell(
+		txt: replaceSpecialCharacters($structure->getTitle()),
+		posx: LAMPDF_MARGIN,
+		posy: LAMPDF_MARGIN,
+		width: LAMPDF_LINEWIDTH,
+		halign: 'R',
+		drawcell: false);
+	// logo
+	$logoFile = $structure->getLogo();
+	if (!empty($logoFile) && ($logoFile !== PDFStructure::NO_LOGO)) {
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$logoBinary = $pdfStructurePersistenceManager->getPdfLogoBinary($_SESSION['config']->getName(), $logoFile);
+		if (!empty($logoBinary)) {
+			$imageConverter = ImageManipulationFactory::getImageManipulator($logoBinary);
+			$imageConverter->convertToJpeg();
+			$imageId = $pdf->image->add('@' . $imageConverter->getImageData(), 200);
+			$width = $imageConverter->getWidth() / ($imageConverter->getHeight() / LAMPDF_LOGO_HEIGHT);
+			$imageOut = $pdf->image->getSetImage(
+				$imageId,
+				LAMPDF_MARGIN,
+				LAMPDF_MARGIN,
+				$width,
+				LAMPDF_LOGO_HEIGHT,
+				$pageData['height']);
+			$pdf->page->addContent($imageOut);
+			$extraTopMargin = LAMPDF_MARGIN;
+		}
+		else {
+			logNewMessage(LOG_ERR, 'Unable to read PDF logo ' . $logoFile);
+		}
+	}
+}
+
+/**
+ * Changes the current font in the PDF.
+ *
+ * @param Tcpdf $pdf PDF
+ * @param string $fontName font name
+ * @param float $fontSize size
+ * @param string $style style (e.g. 'B')
+ */
+function changeFont(Tcpdf $pdf, string $fontName, float $fontSize = LAMPDF_FONT_SIZE, string $style = ''): void {
+	$font = $pdf->font->insert($pdf->pon, $fontName, $style, $fontSize);
+	$pdf->page->addContent($font['out']);
+}
+
+/**
  * Creates a section headline.
  *
  * @param PDFEntry $entry content entry
  *
  * @return string headline
  */
-function getSectionHeadline($entry) {
-	return $entry->getHeadline();
+function getSectionHeadline(PDFEntry $entry): string {
+	return $entry->getHeadline() ?? '';
 }
 
 /**
  * Prints a PDFLabelValue entry.
  *
- * @param LAMTCPDF $pdf PDF
+ * @param Tcpdf $pdf PDF
  * @param PDFLabelValue $valueEntry entry
  * @param string $fontName font name
+ * @param int $extraTopMargin extra top margin
  */
-function printLabelValue(&$pdf, $valueEntry, $fontName): void {
-	$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-	$pdf->MultiCell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($valueEntry->getLabel()) . ':',
-		0, 'R', false, 0);
-	$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-	$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($valueEntry->getValue()),
-		0, 'L', false, 1, null, null, true, 0, false,
-		true, 0, 'M');
-	$pdf->Ln(0);
+function printLabelValue(Tcpdf $pdf, PDFLabelValue $valueEntry, string $fontName, int $extraTopMargin): void {
+	changeFont($pdf, $fontName);
+	$posY = getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin, $pdf);
+	$pdf->addTextCell(
+		txt: replaceSpecialCharacters($valueEntry->getLabel()) . ':',
+		posx: LAMPDF_MARGIN,
+		posy: $posY,
+		width: LAMPDF_LABELWIDTH,
+		halign: 'R',
+		drawcell: false);
+	$pdf->addTextCell(
+		txt: replaceSpecialCharacters($valueEntry->getValue()),
+		posx: LAMPDF_MARGIN + LAMPDF_LABELWIDTH + LAMPDF_SPACE_LABEL_VALUE,
+		posy: $posY,
+		width: LAMPDF_LINEWIDTH - LAMPDF_LABELWIDTH - LAMPDF_SPACE_LABEL_VALUE,
+		halign: 'L',
+		drawcell: false);
 }
 
 /**
  * Prints a PDFTable entry.
  *
- * @param LAMTCPDF $pdf PDF
+ * @param Tcpdf $pdf PDF
  * @param PDFTable $table entry
  * @param string $fontName font name
  */
-function printTable(&$pdf, $table, $fontName): void {
+function printTable(Tcpdf $pdf, PDFTable $table, string $fontName): void {
 	$headline = $table->getHeadline();
+	$extraTopMargin = LAMPDF_SPACE_TITLE_FIELD;
 	if (!empty($headline)) {
-		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($headline) . ':',
-			0, 0, 'L');
-		$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-		$pdf->Ln(LAMPDF_LINEHEIGHT);
+		changeFont($pdf, $fontName);
+		$pdf->addTextCell(
+			txt: replaceSpecialCharacters($headline) . ':',
+			posx: LAMPDF_MARGIN,
+			posy: getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin, $pdf),
+			width: LAMPDF_LINEWIDTH,
+			halign: 'L',
+			drawcell: false);
+		$extraTopMargin = LAMPDF_SPACE_TITLE_FIELD;
 	}
+	changeFont($pdf, $fontName);
 	foreach ($table->rows as $row) {
+		$posY = getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin, $pdf);
+		$posX = LAMPDF_MARGIN;
 		foreach ($row->cells as $cell) {
-			$width = $cell->width;
+			$width = $cell->width ?? LAMPDF_LINEWIDTH;
 			if (!empty($width) && (str_contains($width, '%'))) {
 				$width = ceil(LAMPDF_LINEWIDTH * ((int) substr($width, 0, -1)) / 100);
 			}
 			if ($cell->bold) {
-				$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
+				changeFont($pdf, $fontName, LAMPDF_FONT_SIZE, 'B');
 			}
-			$pdf->Cell($width, LAMPDF_LINEHEIGHT, replaceSpecialCharacters($cell->content), 0,
-				0, $cell->align, false, '', 1);
-			if ($cell->bold) {
-				$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-			}
+			$pdf->addTextCell(
+				txt: replaceSpecialCharacters($cell->content),
+				posx: $posX,
+				posy: $posY,
+				width: $width,
+				height: LAMPDF_FONT_SIZE,
+				halign: $cell->align,
+				drawcell: false,
+				fit: 'F');
+			changeFont($pdf, $fontName);
+			$posX += $width;
 		}
-		$pdf->Ln(LAMPDF_LINEHEIGHT);
+		$extraTopMargin = 0;
 	}
-	$pdf->Ln(LAMPDF_LINEHEIGHT);
 }
 
 /**
  * Prints an image entry.
  *
- * @param LAMTCPDF $pdf PDF
+ * @param Tcpdf $pdf PDF
  * @param PDFImage $imageEntry entry
+ * @param array<string, string|int|bool> $pageData page data
  */
-function printImage(&$pdf, $imageEntry): void {
-	include_once __DIR__ . '/imageutils.inc';
+function printImage(Tcpdf $pdf, PDFImage $imageEntry, array $pageData): void {
 	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
-	$height = $imageManipulator->getHeight() / 2.9;
-	if ($height > 40) {
-		$height = 40;
+	$imageManipulator->thumbnail(200, 400);
+	$imageId = $pdf->image->add('@' . $imageManipulator->getImageData(), 200);
+	$height = $imageManipulator->getHeight() / ($imageManipulator->getWidth() / LAMPDF_IMAGE_WIDTH);
+	$out = $pdf->image->getSetImage(
+		$imageId,
+		LAMPDF_MARGIN + LAMPDF_LINEWIDTH - LAMPDF_IMAGE_WIDTH,
+		getYWithoutOverflow($pdf->getLastBBox()['y'], $pdf),
+		LAMPDF_IMAGE_WIDTH,
+		$height,
+		$pageData['height']);
+	$pdf->page->addContent($out);
+}
+
+/**
+ * Returns the y-position to use for new cells
+ *
+ * @param float|int $posY calculated y-position of cell
+ * @return float position to use
+ */
+function getYWithoutOverflow(float|int $posY, Tcpdf $pdf): float {
+	if ($posY > LAMPDF_Y_MAX) {
+		$pdf->addPage();
+		return LAMPDF_MARGIN;
 	}
-	$pdf->Image('@' . $imageManipulator->getImageData(), null, null, 0, $height,
-		'JPG', null, 'T', true, 300, 'R',
-		false, false, 0, false, false, false);
-	$pdf->Ln($height);
-	$pdf->Ln(LAMPDF_LINEHEIGHT);
-	$imageManipulator = null;
+	return $posY;
 }
 
 /**

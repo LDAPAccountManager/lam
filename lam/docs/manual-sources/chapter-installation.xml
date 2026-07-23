@@ -609,6 +609,16 @@
       intermediate release.</para>
 
       <section>
+        <title>9.6 -&gt; 9.7</title>
+
+        <para>The library for PDF generation changed. Please recheck your PDF
+        exports if you use this feature. Images (e.g. user photo) no longer
+        take the space of a full line but are placed on the right. It is
+        recommended to set the field as first one after the section
+        headline.</para>
+      </section>
+
+      <section>
         <title>9.5 -&gt; 9.6</title>
 
         <para><emphasis role="bold">LAM Pro: Custom fields
