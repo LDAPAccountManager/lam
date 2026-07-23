@@ -397,7 +397,6 @@ function printImage(Tcpdf $pdf, PDFImage $imageEntry, array $pageData): void {
 		$height,
 		$pageData['height']);
 	$pdf->page->addContent($out);
-	$imageManipulator = null;
 }
 
 /**
