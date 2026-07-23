@@ -90,7 +90,7 @@ include_once __DIR__ . '/imageutils.inc';
  * @return string PDF file name
  * @throws LAMException error creating PDF
  */
-function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = false): string {
+function createModulePDF(array $accounts, string $pdf_structure, string $font, bool $returnAsString = false): string {
 	$account_type = $accounts[0]->get_type();
 	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 	$structure = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
@@ -121,10 +121,10 @@ function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = fal
  * @param string[] $pdfKeys list of elements in PDF
  * @param ConfiguredType $account_type account type
  * @param string $font font to use
- * @param boolean $returnAsString returns the PDF output as a string value instead of writing it to a file
+ * @param bool $returnAsString returns the PDF output as a string value instead of writing it to a file
  * @return string PDF file name
  */
-function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString): string {
+function createPdf(PDFStructure $structure, array $accounts, array $pdfKeys, ConfiguredType $account_type, string $font, bool $returnAsString): string {
 	if (!in_array($font, getPdfFonts())) {
 		logNewMessage(LOG_ERR, 'Invalid font specified: ' . $font);
 	}
@@ -227,7 +227,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
  * @param Tcpdf $pdf PDF object
  * @param PDFStructure $structure PDF structure
  * @param string $fontName font name
- * @param array $pageData page properties
+ * @param array<string, string|int|bool> $pageData page data
  * @param int $extraTopMargin y-position on PDF page
  */
 function addPageHeader(Tcpdf $pdf, PDFStructure $structure, string $fontName, array $pageData, int &$extraTopMargin): void {
@@ -285,7 +285,7 @@ function addPageHeader(Tcpdf $pdf, PDFStructure $structure, string $fontName, ar
  * @param float $fontSize size
  * @param string $style style (e.g. 'B')
  */
-function changeFont(Tcpdf $pdf, string $fontName, float $fontSize = LAMPDF_FONT_SIZE, string $style = '') {
+function changeFont(Tcpdf $pdf, string $fontName, float $fontSize = LAMPDF_FONT_SIZE, string $style = ''): void {
 	$font = $pdf->font->insert($pdf->pon, $fontName, $style, $fontSize);
 	$pdf->page->addContent($font['out']);
 }
@@ -297,8 +297,8 @@ function changeFont(Tcpdf $pdf, string $fontName, float $fontSize = LAMPDF_FONT_
  *
  * @return string headline
  */
-function getSectionHeadline($entry) {
-	return $entry->getHeadline();
+function getSectionHeadline(PDFEntry $entry): string {
+	return $entry->getHeadline() ?? '';
 }
 
 /**
@@ -309,7 +309,7 @@ function getSectionHeadline($entry) {
  * @param string $fontName font name
  * @param int $extraTopMargin extra top margin
  */
-function printLabelValue($pdf, PDFLabelValue $valueEntry, string $fontName, int $extraTopMargin): void {
+function printLabelValue(Tcpdf $pdf, PDFLabelValue $valueEntry, string $fontName, int $extraTopMargin): void {
 	changeFont($pdf, $fontName);
 	$posY = getYWithoutOverflow($pdf->getLastBBox()['y'] + LAMPDF_SPACE_FIELD + $extraTopMargin, $pdf);
 	$pdf->addTextCell(
@@ -335,7 +335,7 @@ function printLabelValue($pdf, PDFLabelValue $valueEntry, string $fontName, int 
  * @param PDFTable $table entry
  * @param string $fontName font name
  */
-function printTable($pdf, $table, $fontName): void {
+function printTable(Tcpdf $pdf, PDFTable $table, string $fontName): void {
 	$headline = $table->getHeadline();
 	$extraTopMargin = LAMPDF_SPACE_TITLE_FIELD;
 	if (!empty($headline)) {
@@ -382,8 +382,9 @@ function printTable($pdf, $table, $fontName): void {
  *
  * @param Tcpdf $pdf PDF
  * @param PDFImage $imageEntry entry
+ * @param array<string, string|int|bool> $pageData page data
  */
-function printImage($pdf, $imageEntry, $pageData): void {
+function printImage(Tcpdf $pdf, PDFImage $imageEntry, array $pageData): void {
 	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
 	$imageManipulator->thumbnail(200, 400);
 	$imageId = $pdf->image->add('@' . $imageManipulator->getImageData(), 200);
