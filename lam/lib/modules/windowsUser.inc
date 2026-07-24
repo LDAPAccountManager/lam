@@ -391,19 +391,19 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			],
 			'ou' => [
 				"Headline" => _("Organisational unit"), 'attr' => 'ou',
-				"Text" => _("The user's organisational unit.")
+				"Text" => _("The organisational unit of this entry.")
 			],
 			'ouList' => [
 				"Headline" => _("Organisational unit"), 'attr' => 'ou',
-				"Text" => _("The user's organisational unit.") . ' ' . _('Multiple values are separated by semicolon.')
+				"Text" => _("The organisational unit of this entry.") . ' ' . _('Multiple values are separated by semicolon.')
 			],
 			'o' => [
 				"Headline" => _("Organisation"), 'attr' => 'o',
-				"Text" => _("The user's organisation name.")
+				"Text" => _("The organisation name of this entry.")
 			],
 			'oList' => [
 				"Headline" => _("Organisation"), 'attr' => 'o',
-				"Text" => _("The user's organisation name.") . ' ' . _('Multiple values are separated by semicolon.')
+				"Text" => _("The organisation name of this entry.") . ' ' . _('Multiple values are separated by semicolon.')
 			],
 			'manager' => [
 				"Headline" => _("Manager"), 'attr' => 'manager',
