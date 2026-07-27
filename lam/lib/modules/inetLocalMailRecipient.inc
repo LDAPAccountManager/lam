@@ -316,7 +316,7 @@ class inetLocalMailRecipient extends baseModule {
 			if (isset($attributes['mailLocalAddress'])) {
 				$mailLocalAddress = $attributes['mailLocalAddress'];
 			}
-			array_map(htmlspecialchars(...), $mailLocalAddress);
+			$mailLocalAddress = array_map(htmlspecialchars(...), $mailLocalAddress);
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('mailLocalAddress', _('Local address'))));
 			$row->addField(new htmlOutputText(implode('<br>', $mailLocalAddress), false));

@@ -1385,7 +1385,7 @@ abstract class baseModule {
 		$val = '&nbsp;';
 		if (!empty($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
-			array_map(htmlspecialchars(...), $values);
+			$values = array_map(htmlspecialchars(...), $values);
 			$val = implode('<br>', $values);
 		}
 		$labelBox = new htmlOutputText($label);

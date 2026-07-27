@@ -1450,7 +1450,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'];
-			array_map(trim(...), $namesToIgnore);
+			$namesToIgnore = array_map(trim(...), $namesToIgnore);
 		}
 		// remove all groups that are not in Unix
 		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
@@ -1503,7 +1503,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'];
-			array_map(trim(...), $namesToIgnore);
+			$namesToIgnore = array_map(trim(...), $namesToIgnore);
 		}
 		// remove all groups that are not in group of names
 		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
@@ -1553,7 +1553,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'];
-			array_map(trim(...), $namesToIgnore);
+			$namesToIgnore = array_map(trim(...), $namesToIgnore);
 		}
 		// remove all groups that are not in Windows groups
 		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
