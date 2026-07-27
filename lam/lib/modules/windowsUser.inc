@@ -2365,7 +2365,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
-			array_map(trim(...), $namesToIgnore);
+			$namesToIgnore = array_map(trim(...), $namesToIgnore);
 		}
 		foreach ($unixGroups as $unixGroup) {
 			if (in_array($unixGroup, $namesToIgnore)) {
@@ -2418,7 +2418,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		$namesToIgnore = [];
 		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
 			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
-			array_map(trim(...), $namesToIgnore);
+			$namesToIgnore = array_map(trim(...), $namesToIgnore);
 		}
 		foreach ($gonGroups as $gonGroup) {
 			if (in_array($gonGroup, $namesToIgnore)) {
@@ -3841,7 +3841,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (isset($attributes['proxyAddresses'])) {
 				$proxyAddresses = $attributes['proxyAddresses'];
 			}
-			array_map(htmlspecialchars(...), $proxyAddresses);
+			$proxyAddresses = array_map(htmlspecialchars(...), $proxyAddresses);
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('proxyAddresses', _('Proxy-Addresses'))));
 			$row->addField(new htmlOutputText(implode('<br>', $proxyAddresses), false));
@@ -3852,7 +3852,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			if (isset($attributes['otherMailbox'])) {
 				$otherMailbox = $attributes['otherMailbox'];
 			}
-			array_map(htmlspecialchars(...), $otherMailbox);
+			$otherMailbox = array_map(htmlspecialchars(...), $otherMailbox);
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('otherMailbox', _('Email alias'))));
 			$row->addField(new htmlOutputText(implode('<br>', $otherMailbox), false));
