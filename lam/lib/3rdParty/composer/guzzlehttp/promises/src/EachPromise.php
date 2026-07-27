@@ -8,31 +8,39 @@ namespace GuzzleHttp\Promise;
  * Represents a promise that iterates over many promises and invokes
  * side-effect functions in the process.
  *
+ * @template TKey of array-key
+ * @template TValue
+ * @template TReason
+ *
+ * @implements PromisorInterface<mixed, mixed>
+ *
  * @final
  */
 class EachPromise implements PromisorInterface
 {
-    private $pending = [];
+    use NonSerializableTrait;
 
-    private $nextPendingIndex = 0;
+    /** @var array<int, PromiseInterface<mixed, mixed>>|null */
+    private ?array $pending = [];
 
-    /** @var \Iterator|null */
-    private $iterable;
+    private int $nextPendingIndex = 0;
 
-    /** @var callable|int|null */
+    /** @var \Iterator<TKey, TValue|PromiseInterface<TValue, TReason>>|null */
+    private ?\Iterator $iterable;
+
+    /** @var (callable(int): int)|int|null */
     private $concurrency;
 
-    /** @var callable|null */
+    /** @var (callable(TValue, TKey, PromiseInterface<mixed, mixed>): mixed)|null */
     private $onFulfilled;
 
-    /** @var callable|null */
+    /** @var (callable(TReason, TKey, PromiseInterface<mixed, mixed>): mixed)|null */
     private $onRejected;
 
-    /** @var Promise|null */
-    private $aggregate;
+    /** @var Promise<mixed, mixed>|null */
+    private ?Promise $aggregate = null;
 
-    /** @var bool|null */
-    private $mutex;
+    private ?bool $mutex = null;
 
     /**
      * Configuration hash can include the following key value pairs:
@@ -52,23 +60,15 @@ class EachPromise implements PromisorInterface
      *   allowed number of outstanding concurrently executing promises,
      *   creating a capped pool of promises. There is no limit by default.
      *
-     * @param mixed $iterable Promises or values to iterate.
-     * @param array $config   Configuration options
+     * @param iterable<TKey, TValue|PromiseInterface<TValue, TReason>> $iterable Promises or values to iterate.
+     * @param array{
+     *     fulfilled?: callable(TValue, TKey, PromiseInterface<mixed, mixed>): mixed,
+     *     rejected?: callable(TReason, TKey, PromiseInterface<mixed, mixed>): mixed,
+     *     concurrency?: int|(callable(int): int)
+     * } $config Configuration options
      */
-    public function __construct($iterable, array $config = [])
+    public function __construct(iterable $iterable, array $config = [])
     {
-        if (!is_iterable($iterable)) {
-            \trigger_deprecation(
-                'guzzlehttp/promises',
-                '2.5',
-                'Passing a non-iterable to %s::%s() is deprecated; guzzlehttp/promises 3.0 will require an iterable.',
-                __CLASS__,
-                __FUNCTION__
-            );
-
-            $iterable = [$iterable];
-        }
-
         $this->iterable = Create::iterFor($iterable);
 
         if (isset($config['concurrency'])) {
@@ -84,7 +84,9 @@ class EachPromise implements PromisorInterface
         }
     }
 
-    /** @psalm-suppress InvalidNullableReturnType */
+    /**
+     * @return PromiseInterface<mixed, mixed>
+     */
     public function promise(): PromiseInterface
     {
         if ($this->aggregate) {
@@ -93,7 +95,6 @@ class EachPromise implements PromisorInterface
 
         try {
             $this->createPromise();
-            /** @psalm-assert Promise $this->aggregate */
             $this->iterable->rewind();
             $this->refillPending();
             if (!$this->pending) {
@@ -113,9 +114,6 @@ class EachPromise implements PromisorInterface
             $this->aggregate->reject($e);
         }
 
-        /**
-         * @psalm-suppress NullableReturnStatement
-         */
         return $this->aggregate;
     }
 

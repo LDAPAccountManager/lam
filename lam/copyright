@@ -1090,7 +1090,6 @@ lib/3rdParty/composer/phpmailer                                      G          
 lib/3rdParty/composer/phpseclib                                      B  2019  TerraFrost and other contributors              https://github.com/phpseclib/phpseclib
 lib/3rdParty/composer/phpstan                                        B        PHPStan s.r.o.                                 https://github.com/phpstan
 lib/3rdParty/composer/psr                                            B        PHP Framework Interoperability Group           https://github.com/php-fig
-lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar                                  https://github.com/ralouphie/getallheaders
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs                                    https://github.com/Spomky-Labs
 lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier                               https://github.com/symfony
 lib/3rdParty/composer/voku                                           B  2019 Lars Moelleken                                  https://github.com/voku/portable-ascii
