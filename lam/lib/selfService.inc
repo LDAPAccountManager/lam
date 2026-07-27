@@ -704,7 +704,7 @@ class selfServiceProfile {
 	public string $additionalCSS = '';
 
 	/** describing text for user login */
-	public string $loginCaption = '';
+	public string $loginCaption;
 
 	/** describing text for user login */
 	public ?string $loginFooter = '';
@@ -713,7 +713,7 @@ class selfServiceProfile {
 	public ?string $passwordLabel = '';
 
 	/** describing text for search attribute */
-	public string $loginAttributeText = '';
+	public string $loginAttributeText;
 
 	/** additional LDAP filter for accounts */
 	public ?string $additionalLDAPFilter = '';
@@ -731,7 +731,7 @@ class selfServiceProfile {
 	 * <br> array(array('name' => <group name 2>, 'fields' => array(<field3>, <field4>)))
 	 * <br> )
 	 */
-	public array $inputFields = [];
+	public array $inputFields;
 
 	/**
 	 * @var string[] $readOnlyFields list of fields that are set in read-only mode.
