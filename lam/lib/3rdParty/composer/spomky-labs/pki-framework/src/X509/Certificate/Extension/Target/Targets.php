@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate\Extension\Target;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
+use function count;
 
 /**
  * Implements *Targets* ASN.1 type as a *SEQUENCE OF Target*.

@@ -40,7 +40,7 @@ You can also use the extended hex alphabet by using the `Base32Hex` class instea
 About
 =====
 
-Initially created to work with the [one time password project](https://github.com/ChristianRiesen/otp), yet it can stand alone just as well as [Jordi Boggiano](http://seld.be/) kindly pointed out. It's the only Base32 implementation that passes the test vectors and contains unit tests as well.
+Initially created to work with the [one time password project](https://github.com/ChristianRiesen/otp), yet it can stand alone just as well as [Jordi Boggiano](https://seld.be/) kindly pointed out. It's the only Base32 implementation that passes the test vectors and contains unit tests as well.
 
 Goal
 ----
@@ -56,7 +56,7 @@ Tests run on PHPUnit 9.5, with PHP 7.3 and later. For PHP 7.2, tests use an olde
 Author
 ------
 
-Christian Riesen <chris.riesen@gmail.com> http://christianriesen.com
+Christian Riesen <chris.riesen@gmail.com> https://christianriesen.com
 
 Acknowledgements
 ----------------

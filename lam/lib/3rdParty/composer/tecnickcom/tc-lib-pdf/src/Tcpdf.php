@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -25,7 +25,13 @@ use Com\Tecnick\Pdf\Exception as PdfException;
 use Com\Tecnick\Pdf\Import\Importer as ObjImporter;
 use Com\Tecnick\Pdf\Import\ImporterInterface;
 use Com\Tecnick\Pdf\Import\PageTemplateInterface;
+use Com\Tecnick\Pdf\Page\PageDisplayMode;
+use Com\Tecnick\Pdf\Page\PageLayout;
+use Com\Tecnick\Pdf\Page\TransparencyGroupMode;
+use Com\Tecnick\Pdf\Page\Unit;
 use Com\Tecnick\Pdf\Sign\Config as SignConfig;
+use Com\Tecnick\Pdf\Signature\ExternalSignatureEncoding;
+use Com\Tecnick\Pdf\Signature\SignatureAppearanceMode;
 
 /**
  * Com\Tecnick\Pdf\Tcpdf
@@ -37,7 +43,7 @@ use Com\Tecnick\Pdf\Sign\Config as SignConfig;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type StyleDataOpt from \Com\Tecnick\Pdf\Graph\Base
@@ -69,7 +75,7 @@ use Com\Tecnick\Pdf\Sign\Config as SignConfig;
  * @property string $pdffilename
  * @property string $encpdffilename
  * @property array{r: string, p: string, m: string} $spaceregexp
- * @property array{zoom: int|string, layout: string, page: string} $display
+ * @property array{zoom: int|string, layout: string, mode: string} $display
  * @property array<string, string> $lang
  * @property TUserRights $userrights
  * @property TSignature $signature
@@ -95,12 +101,12 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     /**
      * Initialize a new PDF object.
      *
-     * @param string      $unit        Unit of measure ('pt', 'mm', 'cm', 'in').
+     * @param string|Unit $unit        Unit of measure ('pt', 'mm', 'cm', 'in') or a Unit enum case.
      * @param bool        $isunicode   True if the document is in Unicode mode.
      * @param bool        $subsetfont  If true subset the embedded fonts to remove the unused characters.
      * @param bool        $compress    Set to false to disable stream compression.
-     * @param string      $mode        PDF mode: "pdfa1", "pdfa2", "pdfa3", "pdfx", "pdfx1a", "pdfx3",
-     *                                 "pdfx4", "pdfx5", "pdfua", "pdfua1", "pdfua2" or empty.
+     * @param string|PdfConformance $mode PDF mode: "pdfa1", "pdfa2", "pdfa3", "pdfx", "pdfx1a", "pdfx3",
+     *                                 "pdfx4", "pdfx5", "pdfua", "pdfua1", "pdfua2", empty, or a PdfConformance case.
      * @param ?ObjEncrypt $objEncrypt  Encryption object.
      * @param TFileOptions|null $fileOptions Optional configuration for the shared file helper used
      *                                       to load external resources (images, fonts, SVG, etc.).
@@ -140,11 +146,11 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @throws \Random\RandomException
      */
     public function __construct(
-        string $unit = 'mm',
+        string|Unit $unit = 'mm',
         bool $isunicode = true,
         bool $subsetfont = false,
         bool $compress = true,
-        string $mode = '',
+        string|PdfConformance $mode = '',
         ?ObjEncrypt $objEncrypt = null,
         ?array $fileOptions = null,
         ?ObjExtCache $cache = null,
@@ -162,7 +168,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
             }
         }
         $this->setPDFFilename($this->fileid . '.pdf');
-        $this->unit = $unit;
+        $this->unit = $unit instanceof Unit ? $unit->value : $unit;
         $this->setUnicodeMode($isunicode);
         $this->subsetfont = $subsetfont;
         $this->setPDFMode($mode);
@@ -186,10 +192,14 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * - 'b': Basic (visual appearance only)
      * - 'u': Unicode (basic + Unicode mapping, PDF/A-2 and PDF/A-3 only)
      *
-     * @param string $mode Input PDF conformance mode.
+     * @param string|PdfConformance $mode Input PDF conformance mode (or enum case).
      */
-    protected function setPDFMode(string $mode): void
+    protected function setPDFMode(string|PdfConformance $mode): void
     {
+        if ($mode instanceof PdfConformance) {
+            $mode = $mode->value;
+        }
+
         $normalizedMode = \trim(\strtolower($mode));
 
         $this->pdfx = false;
@@ -250,7 +260,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     }
 
     /**
-     * Set the decimal separator.
+     * Set the Unicode mode.
      *
      * @param bool $isunicode True when using Unicode mode.
      */
@@ -323,7 +333,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     }
 
     /**
-     * Set regular expression to detect withespaces or word separators.
+     * Set regular expression to detect whitespaces or word separators.
      * The pattern delimiter must be the forward-slash character "/".
      * Some example patterns are:
      * <pre>
@@ -376,12 +386,16 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *
      * Has no effect in PDF/A mode, where the group is already suppressed.
      *
-     * @param string $mode One of 'auto', 'always', 'never'.
+     * @param string|TransparencyGroupMode $mode One of 'auto', 'always', 'never', or a TransparencyGroupMode case.
      *
      * @throws \Com\Tecnick\Pdf\Exception If the mode is not recognized.
      */
-    public function setPageTransparencyGroup(string $mode = 'auto'): static
+    public function setPageTransparencyGroup(string|TransparencyGroupMode $mode = 'auto'): static
     {
+        if ($mode instanceof TransparencyGroupMode) {
+            $mode = $mode->value;
+        }
+
         $normalized = \strtolower(\trim($mode));
         if (!\in_array($normalized, ['auto', 'always', 'never'], true)) {
             throw new PdfException('Invalid page transparency group mode: ' . $mode);
@@ -394,14 +408,14 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     /**
      * Defines the way the document is to be displayed by the viewer.
      *
-     * @param int|string $zoom   The zoom to use.
+     * @param int|string|DisplayZoom $zoom The zoom to use (or a DisplayZoom enum case).
      *                           It can be one of the following string values or a number indicating the
      *                           zooming factor to use.
      *                           * fullpage: displays the entire page on screen * fullwidth: uses
      *                           maximum width of window
      *                           * real: uses real size (equivalent to 100% zoom) * default: uses
      *                           viewer default mode
-     * @param string     $layout The page layout. Possible values are:
+     * @param string|PageLayout $layout The page layout (or a PageLayout enum case). Possible values are:
      *                           * SinglePage Display one page at a time
      *                           * OneColumn Display the pages in one column
      *                           * TwoColumnLeft Display the pages in two columns,
@@ -413,7 +427,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *                           with odd-numbered pages on the left
      *                           * TwoPageRight Display the pages two at a time,
      *                           with odd-numbered pages on the right
-     * @param string     $mode   A name object specifying how the document should be displayed when opened:
+     * @param string|PageDisplayMode $mode A name object (or PageDisplayMode enum case) for how the document is displayed:
      *                           * UseNone Neither document outline nor thumbnail images visible
      *                           * UseOutlines Document outline visible
      *                           * UseThumbs Thumbnail images visible
@@ -423,10 +437,14 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *                           * UseAttachments (PDF 1.6) Attachments panel visible
      */
     public function setDisplayMode(
-        int|string $zoom = 'default',
-        string $layout = 'SinglePage',
-        string $mode = 'UseNone',
+        int|string|DisplayZoom $zoom = 'default',
+        string|PageLayout $layout = 'SinglePage',
+        string|PageDisplayMode $mode = 'UseNone',
     ): static {
+        if ($zoom instanceof DisplayZoom) {
+            $zoom = $zoom->value;
+        }
+
         $this->display['zoom'] = \is_numeric($zoom) || \in_array($zoom, $this::VALIDZOOM, true) ? $zoom : 'default';
         $this->display['layout'] = $this->page->getLayout($layout);
         $this->display['mode'] = $this->page->getDisplay($mode);
@@ -547,7 +565,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      *            - page (int) Page number.
      *            - rect (array) Rectangle of the signature field.
      *            - xobj (string) Optional Form XObject ID to auto-fit as normal appearance.
-     *        - approval (bool) Enable approval signature eg. for PDF incremental update.
+     *        - approval (string) Set to 'A' to enable the approval signature eg. for PDF incremental update.
      *        - cert_type (int) The access permissions granted for this document. Valid values shall be:
      *            1 = No changes to the document shall be permitted;
      *                any change to the document shall invalidate the signature;
@@ -727,7 +745,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @param string $preparedPdf Prepared PDF returned by getExternalSignaturePreparation().
      * @param array{int,int,int,int} $byteRange ByteRange returned by getExternalSignaturePreparation().
      * @param string $signature External signature data.
-     * @param string $encoding Signature encoding: binary, base64, or hex.
+     * @param string|ExternalSignatureEncoding $encoding Signature encoding: binary, base64, hex, or enum case.
      *
      * @return string Fully signed PDF document.
      *
@@ -739,7 +757,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         string $preparedPdf,
         array $byteRange,
         string $signature,
-        string $encoding = 'binary',
+        string|ExternalSignatureEncoding $encoding = 'binary',
     ): string {
         $rangeCount = \count($byteRange);
         if ($rangeCount !== 4) {
@@ -751,7 +769,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
             throw new PdfException('Invalid ByteRange insertion position');
         }
 
-        $encoding = \strtolower(\trim($encoding));
+        $encoding = ExternalSignatureEncoding::fromLoose($encoding)->value;
         $hexSignature = '';
 
         if ($encoding === 'hex') {
@@ -766,10 +784,8 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
             }
 
             $hexSignature = \bin2hex($binarySignature);
-        } elseif ($encoding === 'binary') {
-            $hexSignature = \bin2hex($signature);
         } else {
-            throw new PdfException('Invalid signature encoding');
+            $hexSignature = \bin2hex($signature);
         }
 
         $contentsLength = $this->signatureContentsLength();
@@ -794,9 +810,9 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     }
 
     /**
-     * Enable or disable the the Signature Approval
+     * Enable or disable the Signature Approval
      *
-     * @param bool $enabled It true enable the Signature Approval
+     * @param bool $enabled If true enable the Signature Approval
      */
     protected function enableSignatureApproval(bool $enabled = true): static
     {
@@ -898,7 +914,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * @param float $posx Abscissa of the upper-left corner.
      * @param float $posy Ordinate of the upper-left corner.
      * @param float $width Width of the signature area.
-     * @param float $heigth Height of the signature area.
+     * @param float $height Height of the signature area.
      * @param int $page Page number (pid).
      * @param string $name Name of the signature.
      *
@@ -914,7 +930,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         float $posx = 0,
         float $posy = 0,
         float $width = 0,
-        float $heigth = 0,
+        float $height = 0,
         int $page = -1,
         string $name = '',
     ): array {
@@ -924,9 +940,9 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         $sigapp['name'] = $name === '' ? 'Signature' : $name;
 
         $pntx = $this->toPoints($posx);
-        $pnty = $this->toYUnit($posy + $heigth, $this->page->getPage($sigapp['page'])['pheight']);
+        $pnty = $this->toYUnit($posy + $height, $this->page->getPage($sigapp['page'])['pheight']);
         $pntw = $this->toPoints($width);
-        $pnth = $this->toPoints($heigth);
+        $pnth = $this->toPoints($height);
 
         $sigapp['rect'] = \sprintf('%F %F %F %F', $pntx, $pnty, $pntx + $pntw, $pnty + $pnth);
 
@@ -934,13 +950,13 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     }
 
     /**
-     * Set the digital signature appearance (a cliccable rectangle area to get signature properties).
+     * Set the digital signature appearance (a clickable rectangle area to get signature properties).
      *
      * @param float $posx Abscissa of the upper-left corner.
      * @param float $posy Ordinate of the upper-left corner.
      * @param float $width Width of the signature area.
-     * @param float $heigth Height of the signature area.
-     * @param int $page option page number (if < 0 the current page is used).
+     * @param float $height Height of the signature area.
+     * @param int $page optional page number (if < 0 the current page is used).
      * @param string $name Name of the signature.
      *
      * @throws \Com\Tecnick\Pdf\Page\Exception
@@ -951,11 +967,11 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         float $posx = 0,
         float $posy = 0,
         float $width = 0,
-        float $heigth = 0,
+        float $height = 0,
         int $page = -1,
         string $name = '',
     ): void {
-        $data = $this->getSignatureAppearanceArray($posx, $posy, $width, $heigth, $page, $name);
+        $data = $this->getSignatureAppearanceArray($posx, $posy, $width, $height, $page, $name);
         $this->signature['appearance']['page'] = $data['page'];
         $this->signature['appearance']['name'] = $data['name'];
         $this->signature['appearance']['rect'] = $data['rect'];
@@ -966,23 +982,23 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
      * Set a custom appearance stream for the signature widget annotation.
      *
      * @param string $stream Appearance stream content.
-     * @param string $mode Appearance mode: N (normal), R (rollover), D (down).
+     * @param string|SignatureAppearanceMode $mode Appearance mode: N (normal), R (rollover), D (down), or enum case.
      * @param string $state Optional appearance state name.
      *
      * @throws PdfException
      *
      * Also available through the fluent API: signature()->appearance()->stream().
      */
-    public function setSignatureAppearanceStream(string $stream, string $mode = 'N', string $state = ''): void
-    {
+    public function setSignatureAppearanceStream(
+        string $stream,
+        string|SignatureAppearanceMode $mode = 'N',
+        string $state = '',
+    ): void {
         if ($stream === '') {
             throw new PdfException('The signature appearance stream cannot be empty');
         }
 
-        $mode = \strtolower($mode);
-        if (!\in_array($mode, ['n', 'r', 'd'], true)) {
-            throw new PdfException('Invalid signature appearance mode (expected N, R, or D)');
-        }
+        $mode = \strtolower(SignatureAppearanceMode::fromLoose($mode)->value);
 
         if (!isset($this->signature['appearance']['ap']) || !\is_array($this->signature['appearance']['ap'])) {
             $this->signature['appearance']['ap'] = [];
@@ -1026,13 +1042,13 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
     }
 
     /**
-     * Add an empty digital signature appearance (a cliccable rectangle area to get signature properties).
+     * Add an empty digital signature appearance (a clickable rectangle area to get signature properties).
      *
      * @param float $posx Abscissa of the upper-left corner.
      * @param float $posy Ordinate of the upper-left corner.
      * @param float $width Width of the signature area.
-     * @param float $heigth Height of the signature area.
-     * @param int $page option page number (if < 0 the current page is used).
+     * @param float $height Height of the signature area.
+     * @param int $page optional page number (if < 0 the current page is used).
      * @param string $name Name of the signature.
      *
      * @throws \Com\Tecnick\Pdf\Page\Exception
@@ -1043,12 +1059,12 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         float $posx = 0,
         float $posy = 0,
         float $width = 0,
-        float $heigth = 0,
+        float $height = 0,
         int $page = -1,
         string $name = '',
     ): void {
         ++$this->pon;
-        $data = $this->getSignatureAppearanceArray($posx, $posy, $width, $heigth, $page, $name);
+        $data = $this->getSignatureAppearanceArray($posx, $posy, $width, $height, $page, $name);
         $this->signature['appearance']['empty'][] = [
             'objid' => $this->pon,
             'name' => $data['name'],
@@ -1135,6 +1151,11 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         return ' /OC /' . $layer . ' BDC' . "\n";
     }
 
+    /**
+     * Close the current optional content (layer) marked-content sequence.
+     *
+     * @return string PDF marked-content operator that ends the layer opened by newLayer().
+     */
     public function closeLayer(): string
     {
         return 'EMC' . "\n";
@@ -1144,12 +1165,12 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
 
     /**
      * Add a Table of Contents (TOC) to the document.
-     * The bookmars are created via the setBookmark() method.
+     * The bookmarks are created via the setBookmark() method.
      *
      * @param int   $page  Page number.
      * @param float $posx  Abscissa of the upper-left corner.
      * @param float $posy  Ordinate of the upper-left corner.
-     * @param float $width Width of the signature area.
+     * @param float $width Width of the TOC area.
      * @param bool  $rtl   Right-To-Left - If true prints the TOC in RTL mode.
      * @param StyleDataOpt $linestyle Line style for the space filler.
      *
@@ -1186,7 +1207,7 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
         /** @var array{cw: array<int, numeric>, dw: numeric, idx: int, size: numeric, spacing: float, stretching: float} $curfont */
         $curfont = $this->font->getCurrentFont();
 
-        // width to accomodate the number (max 9 digits space).
+        // width to accommodate the number (max 9 digits space).
         $cwVal = (float) ($curfont['cw'][48] ?? $curfont['dw']);
         $chrw = $this->toUnit($cwVal); // 48 ASCII = '0'.
         $indent = 2 * $chrw; // each level is indented by 2 characters.
@@ -1416,6 +1437,9 @@ class Tcpdf extends \Com\Tecnick\Pdf\Output
 
     /**
      * Return the total number of pages in a registered source document.
+     *
+     * The count reflects the pages actually reachable through the /Kids page
+     * tree; the declared /Count entry of the /Pages dictionary is ignored.
      *
      * @param string $sourceId Source document identifier.
      *

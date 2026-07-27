@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\CertificationPath\PathBuilding;
 
-use function count;
 use SpomkyLabs\Pki\X509\Certificate\Certificate;
 use SpomkyLabs\Pki\X509\Certificate\CertificateBundle;
 use SpomkyLabs\Pki\X509\CertificationPath\CertificationPath;
 use SpomkyLabs\Pki\X509\CertificationPath\Exception\PathBuildingException;
+use function count;
 
 /**
  * Class for resolving certification paths.

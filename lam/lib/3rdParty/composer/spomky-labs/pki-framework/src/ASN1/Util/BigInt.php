@@ -8,6 +8,7 @@ use Brick\Math\BigInteger;
 use InvalidArgumentException;
 use Stringable;
 use Throwable;
+use function mb_strlen;
 
 /**
  * Class to wrap an integer of arbirtary length.
@@ -62,7 +63,7 @@ final class BigInt implements Stringable
      */
     public static function fromUnsignedOctets(string $octets): self
     {
-        if ($octets === '') {
+        if (mb_strlen($octets, '8bit') === 0) {
             throw new InvalidArgumentException('Empty octets.');
         }
         return self::create(BigInteger::fromBytes($octets, false));
@@ -73,7 +74,7 @@ final class BigInt implements Stringable
      */
     public static function fromSignedOctets(string $octets): self
     {
-        if ($octets === '') {
+        if (mb_strlen($octets, '8bit') === 0) {
             throw new InvalidArgumentException('Empty octets.');
         }
 

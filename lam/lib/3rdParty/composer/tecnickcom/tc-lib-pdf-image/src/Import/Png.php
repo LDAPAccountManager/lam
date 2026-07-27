@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * This file is part of tc-lib-pdf-image software library.
@@ -29,7 +29,7 @@ use Com\Tecnick\Pdf\Image\Exception as ImageException;
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * @phpstan-import-type ImageBaseData from \Com\Tecnick\Pdf\Image\Import
@@ -151,7 +151,7 @@ class Png implements ImageImportInterface
             $data['colspace'] = $chcmap[$chc];
         } else {
             // @codeCoverageIgnoreStart
-            throw new ImageException('Unknownn color mode');
+            throw new ImageException('Unknown color mode');
 
             // @codeCoverageIgnoreEnd
         }
@@ -213,11 +213,11 @@ class Png implements ImageImportInterface
      * Extract the PLTE chunk data.
      *
      * The palette chunk (PLTE) stores the colormap data associated with the image data.
-     * This chunk is presentonly if the image data uses a color palette and must appear before the image data chunk.
+     * This chunk is present only if the image data uses a color palette and must appear before the image data chunk.
      *
      * @param ImageBaseData $data   Image raw data.
      * @param int   $offset Current byte offset.
-     * @param int   $len    NUmber of bytes in this chunk.
+     * @param int   $len    Number of bytes in this chunk.
      *
      * @return ImageBaseData Image raw data array.
      */
@@ -234,7 +234,7 @@ class Png implements ImageImportInterface
      *
      * @param ImageBaseData $data   Image raw data.
      * @param int   $offset Current byte offset.
-     * @param int   $len    NUmber of bytes in this chunk.
+     * @param int   $len    Number of bytes in this chunk.
      *
      * @return ImageBaseData Image raw data array.
      */
@@ -268,7 +268,7 @@ class Png implements ImageImportInterface
      *
      * @param ImageBaseData $data   Image raw data.
      * @param int   $offset Current byte offset.
-     * @param int   $len    NUmber of bytes in this chunk.
+     * @param int   $len    Number of bytes in this chunk.
      *
      * @return ImageBaseData Image raw data array.
      */
@@ -286,7 +286,7 @@ class Png implements ImageImportInterface
      * @param Byte  $byte   Byte class object.
      * @param ImageBaseData $data   Image raw data.
      * @param int   $offset Current byte offset.
-     * @param int   $len    NUmber of bytes in this chunk.
+     * @param int   $len    Number of bytes in this chunk.
      *
      * @return ImageBaseData Image raw data array.
      *
@@ -304,7 +304,7 @@ class Png implements ImageImportInterface
         // get compression method
         if ($byte->getByte($offset++) !== 0) {
             // @codeCoverageIgnoreStart
-            throw new ImageException('Unknownn filter method');
+            throw new ImageException('Unknown filter method');
 
             // @codeCoverageIgnoreEnd
         }

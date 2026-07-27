@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve25519;
 
-use function mb_strlen;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\RFC8410PublicKey;
 use UnexpectedValueException;
+use function mb_strlen;
 
 /**
  * Implements an intermediary object to store a public key using Curve25519.

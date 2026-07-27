@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfGraph
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * This file is part of tc-lib-pdf-graph software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Pdf\Graph\Exception as GraphException;
  * @package   PdfGraph
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * @phpstan-import-type StyleDataOpt from \Com\Tecnick\Pdf\Graph\Base
@@ -70,7 +70,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float        $posy2 Ordinate of control point 2.
      * @param float        $posx3 Abscissa of end point.
      * @param float        $posy3 Ordinate of end point.
-     * @param string       $mode  Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp       $mode  Mode of rendering. @see getPathPaintOp()
      * @param StyleDataOpt $style Style.
      *
      * @return string PDF command
@@ -86,7 +86,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $posy2,
         float $posx3,
         float $posy3,
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $style = [],
     ): string {
         return (
@@ -104,7 +104,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float               $posx0    Abscissa of start point.
      * @param float               $posy0    Ordinate of start point.
      * @param array<array<float>> $segments An array of bezier descriptions. Format: array(x1, y1, x2, y2, x3, y3).
-     * @param string              $mode     Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp              $mode     Mode of rendering. @see getPathPaintOp()
      * @param StyleDataOpt        $style    Style.
      *
      * @return string PDF command
@@ -113,7 +113,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $posx0,
         float $posy0,
         array $segments,
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $style = [],
     ): string {
         $out = $this->getStyleCmd($style) . $this->getRawPoint($posx0, $posy0);
@@ -145,7 +145,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float        $angle Angle oriented (anti-clockwise). Default value: 0.
      * @param float        $angs  Angle in degrees at which starting drawing.
      * @param float        $angf  Angle in degrees at which stop drawing.
-     * @param string       $mode  Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp       $mode  Mode of rendering. @see getPathPaintOp()
      * @param StyleDataOpt $style Style.
      * @param int          $ncv   Number of curves used to draw a 90 degrees portion of ellipse.
      *
@@ -161,7 +161,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $angle = 0,
         float $angs = 0,
         float $angf = 360,
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $style = [],
         int $ncv = 2,
     ): string {
@@ -198,7 +198,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float        $rad   Radius.
      * @param float        $angs  Angle in degrees at which starting drawing.
      * @param float        $angf  Angle in degrees at which stop drawing.
-     * @param string       $mode  Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp       $mode  Mode of rendering. @see getPathPaintOp()
      * @param StyleDataOpt $style Style.
      * @param int          $ncv   Number of curves used to draw a 90 degrees portion of ellipse.
      *
@@ -210,7 +210,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $rad,
         float $angs = 0,
         float $angf = 360,
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $style = [],
         int $ncv = 2,
     ): string {
@@ -225,7 +225,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float        $rad   Radius.
      * @param float        $angs  Angle in degrees at which starting drawing.
      * @param float        $angf  Angle in degrees at which stop drawing.
-     * @param string       $mode  Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp       $mode  Mode of rendering. @see getPathPaintOp()
      * @param StyleDataOpt $style Style.
      * @param int          $ncv   Number of curves used to draw a 90 degrees portion of ellipse.
      *
@@ -237,7 +237,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $rad,
         float $angs = 0,
         float $angf = 360,
-        string $mode = 'FD',
+        string|PathPaintOp $mode = 'FD',
         array $style = [],
         int $ncv = 2,
     ): string {
@@ -252,12 +252,12 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * Draws a basic polygon.
      *
      * @param array<float> $points Points - array containing 4 points for each segment: (x0, y0, x1, y1, x2, y2, ...)
-     * @param string       $mode   Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp       $mode   Mode of rendering. @see getPathPaintOp()
      * @param StyleDataOpt $style  Style.
      *
      * @return string PDF command
      */
-    public function getBasicPolygon(array $points, string $mode = 'S', array $style = []): string
+    public function getBasicPolygon(array $points, string|PathPaintOp $mode = 'S', array $style = []): string
     {
         $nco = \count($points); // number of coordinates
         if ($nco < 4 || ($points[0] ?? null) === null || ($points[1] ?? null) === null) {
@@ -301,7 +301,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * Draws a polygon with a different style for each segment.
      *
      * @param array<float>        $points Points - array with values (x0, y0, x1, y1,..., x(n-1), y(n-1))
-     * @param string              $mode   Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp              $mode   Mode of rendering. @see getPathPaintOp()
      * @param array<StyleDataOpt> $styles Array of styles -
      *        one style entry for each polygon segment and/or one global "all" entry.
      *
@@ -310,8 +310,12 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      * @SuppressWarnings("PHPMD.NPathComplexity")
      */
-    public function getPolygon(array $points, string $mode = 'S', array $styles = []): string
+    public function getPolygon(array $points, string|PathPaintOp $mode = 'S', array $styles = []): string
     {
+        if ($mode instanceof PathPaintOp) {
+            $mode = $mode->value;
+        }
+
         $nco = \count($points); // number of points
         if ($nco < 6 || ($points[0] ?? null) === null || ($points[1] ?? null) === null) {
             return ''; // we need at least 3 points
@@ -406,10 +410,10 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float               $radius   Radius of inscribed circle.
      * @param int                 $sides    Number of sides.
      * @param float               $angle    Angle of the orientation (anti-clockwise).
-     * @param string              $mode     Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp              $mode     Mode of rendering. @see getPathPaintOp()
      * @param array<StyleDataOpt> $styles   Array of styles -
      *        one style entry for each polygon segment and/or one global "all" entry.
-     * @param string              $cirmode  Mode of rendering of the inscribed circle (if any). @see getPathPaintOp()
+     * @param string|PathPaintOp              $cirmode  Mode of rendering of the inscribed circle (if any). @see getPathPaintOp()
      * @param StyleDataOpt        $cirstyle Style of inscribed circle.
      *
      * @return string PDF command
@@ -420,9 +424,9 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $radius,
         int $sides,
         float $angle = 0,
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $styles = [],
-        string $cirmode = '',
+        string|PathPaintOp $cirmode = '',
         array $cirstyle = [],
     ): string {
         if ($sides < 3) { // triangle is the minimum polygon
@@ -453,10 +457,10 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param int                 $nvert    Number of vertices.
      * @param int                 $ngaps    Number of gaps (if ($ngaps % $nvert = 1) then is a regular polygon).
      * @param float               $angle    Angle oriented (anti-clockwise).
-     * @param string              $mode     Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp              $mode     Mode of rendering. @see getPathPaintOp()
      * @param array<StyleDataOpt> $styles   Array of styles -
      *        one style entry for each polygon segment and/or one global "all" entry.
-     * @param string              $cirmode  Mode of rendering of the inscribed circle (if any). @see getPathPaintOp()
+     * @param string|PathPaintOp              $cirmode  Mode of rendering of the inscribed circle (if any). @see getPathPaintOp()
      * @param StyleDataOpt        $cirstyle Style of inscribed circle.
      *
      * @return string PDF command
@@ -470,9 +474,9 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         int $nvert,
         int $ngaps,
         float $angle = 0,
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $styles = [],
-        string $cirmode = '',
+        string|PathPaintOp $cirmode = '',
         array $cirstyle = [],
     ): string {
         if ($nvert < 2) {
@@ -509,7 +513,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float               $posy   Ordinate of upper-left corner.
      * @param float               $width  Width.
      * @param float               $height Height.
-     * @param string              $mode   Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp              $mode   Mode of rendering. @see getPathPaintOp()
      * @param array<StyleDataOpt> $styles Array of styles -
      *        one style entry for each side (T,R,B,L) and/or one global "all" entry.
      *
@@ -520,7 +524,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $posy,
         float $width,
         float $height,
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $styles = [],
     ): string {
         $points = [
@@ -548,9 +552,9 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
      * @param float        $hrad   X-axis radius of the ellipse used to round off the corners of the rectangle.
      * @param float        $vrad   Y-axis radius of the ellipse used to round off the corners of the rectangle.
      * @param string       $corner Round corners to draw: 0 (square i-corner) or 1 (rounded i-corner) in i-position.
-     *                             Positions are int the following order: top right, bottom right, bottom left and
+     *                             Positions are in the following order: top right, bottom right, bottom left and
      *                             top left.
-     * @param string       $mode   Mode of rendering. @see getPathPaintOp()
+     * @param string|PathPaintOp       $mode   Mode of rendering. @see getPathPaintOp()
      * @param StyleDataOpt $style  Style.
      *
      * @return string PDF command
@@ -566,7 +570,7 @@ class Draw extends \Com\Tecnick\Pdf\Graph\Gradient
         float $hrad,
         float $vrad,
         string $corner = '1111',
-        string $mode = 'S',
+        string|PathPaintOp $mode = 'S',
         array $style = [],
     ): string {
         if ($corner === '0000' || $hrad === 0.0 && $vrad === 0.0) {

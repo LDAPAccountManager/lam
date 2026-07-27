@@ -8,7 +8,7 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -3416,7 +3416,7 @@ class OutputTest extends TestUtil
                 ], 77);
                 $this->fail('Expected missing image key exception for mk.' . $ikey);
             } catch (\Com\Tecnick\Pdf\Image\Exception $e) {
-                $this->assertStringContainsString('Unknownn key', $e->getMessage());
+                $this->assertStringContainsString('Unknown key', $e->getMessage());
             }
         }
     }

@@ -8,7 +8,7 @@
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * This file is part of tc-lib-pdf-image software library.
@@ -24,7 +24,7 @@ namespace Test;
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * @phpstan-import-type ImageBaseData from \Com\Tecnick\Pdf\Image\Import

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfGraph
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * This file is part of tc-lib-pdf-graph software library.
@@ -29,7 +29,7 @@ use Com\Tecnick\Pdf\Encrypt\Encrypt;
  * @package   PdfGraph
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * @phpstan-type TTMatrix array{
@@ -184,6 +184,7 @@ abstract class Base
      * @param float    $pagew    Page width.
      * @param float    $pageh    Page height.
      * @param PdfColor $pdfColor Color object.
+     * @param Encrypt  $encrypt  Encrypt object.
      * @param bool     $pdfa     True if we are in PDF/A mode.
      * @param bool     $compress Set to false to disable stream compression.
      */
@@ -324,7 +325,7 @@ abstract class Base
     }
 
     /**
-     * Returns the last extgstate ID to be used with XOBjects.
+     * Returns the last extgstate ID to be used with XObjects.
      *
      * @return ?int
      */
@@ -419,7 +420,7 @@ abstract class Base
     }
 
     /**
-     * Get the PDF output string for ExtGState Resource Dictionary for XOBjects.
+     * Get the PDF output string for ExtGState Resource Dictionary for XObjects.
      *
      * @param array<int> $keys Array of extgstates keys.
      *
@@ -630,7 +631,7 @@ abstract class Base
      * Get the PDF output string for the pattern and shading object
      *
      * @param GradientData $grad   Array of gradient colors
-     * @param int          $objref Refrence object number
+     * @param int          $objref Reference object number
      *
      * @return string PDF command
      *

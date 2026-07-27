@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\AttributeCertificate\Validation;
 
 use DateTimeImmutable;
-use Psr\Clock\ClockInterface;
 use SpomkyLabs\Pki\X509\Certificate\Extension\Target\Target;
 use SpomkyLabs\Pki\X509\CertificationPath\CertificationPath;
 
@@ -32,19 +31,15 @@ final class ACValidationConfig
      */
     private function __construct(
         private readonly CertificationPath $holderPath,
-        private readonly CertificationPath $issuerPath,
-        ?ClockInterface $clock = null,
+        private readonly CertificationPath $issuerPath
     ) {
-        $this->evalTime = $clock !== null ? $clock->now() : new DateTimeImmutable();
+        $this->evalTime = new DateTimeImmutable();
         $this->targets = [];
     }
 
-    public static function create(
-        CertificationPath $holderPath,
-        CertificationPath $issuerPath,
-        ?ClockInterface $clock = null,
-    ): self {
-        return new self($holderPath, $issuerPath, $clock);
+    public static function create(CertificationPath $holderPath, CertificationPath $issuerPath): self
+    {
+        return new self($holderPath, $issuerPath);
     }
 
     /**

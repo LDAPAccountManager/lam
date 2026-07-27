@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * This file is part of tc-lib-pdf-encrypt software library.
@@ -28,7 +28,7 @@ namespace Com\Tecnick\Pdf\Encrypt;
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * @phpstan-type TEncryptData array{
@@ -259,11 +259,11 @@ abstract class Output
             $out .= '4' . "\n";
         }
 
-        if ($this->encryptdata['V'] < 2) { // RC-40
+        if ($this->encryptdata['V'] < 2) { // RC4-40
             $out .= '2' . "\n";
         }
 
-        if ($this->encryptdata['V'] >= 2 && $this->encryptdata['V'] < 4) { // RC-128
+        if ($this->encryptdata['V'] >= 2 && $this->encryptdata['V'] < 4) { // RC4-128
             $out .= '3' . "\n";
         }
 
@@ -296,6 +296,9 @@ abstract class Output
         return $value ? 'true' : 'false';
     }
 
+    /**
+     * Copy the EncryptMetadata flag into the crypt filter dictionary before output.
+     */
     protected function setMissingValues(): void
     {
         $this->encryptdata['CF']['EncryptMetadata'] = $this->encryptdata['EncryptMetadata'];

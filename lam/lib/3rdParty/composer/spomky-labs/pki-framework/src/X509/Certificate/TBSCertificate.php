@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate;
 
 use Brick\Math\BigInteger;
-use function count;
 use LogicException;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
@@ -22,8 +21,9 @@ use SpomkyLabs\Pki\X509\Certificate\Extension\AuthorityKeyIdentifierExtension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\Extension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\SubjectKeyIdentifierExtension;
 use SpomkyLabs\Pki\X509\CertificationRequest\CertificationRequest;
-use function strval;
 use UnexpectedValueException;
+use function count;
+use function strval;
 
 /**
  * Implements *TBSCertificate* ASN.1 type.

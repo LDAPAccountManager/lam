@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * This file is part of tc-lib-pdf-font software library.
@@ -31,7 +31,7 @@ use Com\Tecnick\Pdf\Font\Exception as FontException;
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * @phpstan-import-type TFontData from \Com\Tecnick\Pdf\Font\Load
@@ -785,7 +785,7 @@ class TrueType
         // Skip the Table version number (Version16Dot16 = 4 bytes).
         $this->offset += 4;
 
-        // get the the number of glyphs in the font.
+        // get the number of glyphs in the font.
         $this->fdt['numGlyphs'] = $this->fbyte->getUShort($this->offset);
     }
 
@@ -1196,7 +1196,7 @@ class TrueType
      *
      * SequentialMapGroup Record (12 bytes):
      *  0      - uint32                startCharCode  First character code in this group (high byte set to \0 if ia32=0)
-     *  4      - uint32                startCharCode  Last character code in this group (high byte set to \0 if ia32=0)
+     *  4      - uint32                endCharCode    Last character code in this group (high byte set to \0 if ia32=0)
      *  8      - uint32                startGlyphID   Glyph index corresponding to the starting character code
      */
     protected function processFormat8(): void

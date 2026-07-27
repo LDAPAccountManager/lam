@@ -30,11 +30,22 @@
  *   a           → Link
  */
 
+// NOTE: local file reads (images, fonts, attachments) are restricted to an allowlist of
+// trusted paths that covers this package tree, so run the examples in place. To read assets
+// from other locations, list them in the 'allowedPaths' entry of the fileOptions constructor
+// parameter (see E047_remote_resources_security.php).
+
 require __DIR__ . '/../vendor/autoload.php';
 
 \define('K_PATH_FONTS', \realpath(__DIR__ . '/../vendor/tecnickcom/tc-lib-pdf-font/target/fonts'));
 
-$pdf = new \Com\Tecnick\Pdf\Tcpdf(unit: 'mm', isunicode: true, subsetfont: false, compress: true, mode: 'pdfua1');
+$pdf = new \Com\Tecnick\Pdf\Tcpdf(
+    unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
+    isunicode: true,
+    subsetfont: false,
+    compress: true,
+    mode: \Com\Tecnick\Pdf\PdfConformance::Pdfua1,
+);
 $pdf->setCreator('tc-lib-pdf');
 $pdf->setAuthor('Nicola Asuni');
 $pdf->setTitle('PDF/UA-1 Auto-Tagged HTML');

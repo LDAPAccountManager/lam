@@ -8,11 +8,16 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
  */
+
+// NOTE: local file reads (images, fonts, attachments) are restricted to an allowlist of
+// trusted paths that covers this package tree, so run the examples in place. To read assets
+// from other locations, list them in the 'allowedPaths' entry of the fileOptions constructor
+// parameter (see E047_remote_resources_security.php).
 
 // NOTE: run make fonts in the project root to generate the dependencies and example fonts.
 
@@ -27,11 +32,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // main TCPDF object
 $pdf = new \Com\Tecnick\Pdf\Tcpdf(
-    unit: 'mm',
+    unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
     isunicode: true,
     subsetfont: false,
     compress: true,
-    mode: '',
+    mode: \Com\Tecnick\Pdf\PdfConformance::None,
     objEncrypt: null,
 );
 
@@ -90,7 +95,15 @@ foreach ($corefonts as $fontcfg) {
 
     // title
     $pdf->page->addContent($titlefont['out']);
-    $title = $pdf->getTextCell('FONT: ' . $fontname, 15, 15, 180, 10, valign: 'C', halign: 'C');
+    $title = $pdf->getTextCell(
+        'FONT: ' . $fontname,
+        15,
+        15,
+        180,
+        10,
+        valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+        halign: \Com\Tecnick\Pdf\TextHAlign::Center,
+    );
     $pdf->page->addContent($title);
 
     // glyph table font
@@ -105,7 +118,15 @@ foreach ($corefonts as $fontcfg) {
         $posy = 30 + ($row * 11.25);
 
         $txt = $pdf->uniconv->chr($i);
-        $cell = $pdf->getTextCell($txt, $posx, $posy, 11.25, 11.25, valign: 'C', halign: 'C');
+        $cell = $pdf->getTextCell(
+            $txt,
+            $posx,
+            $posy,
+            11.25,
+            11.25,
+            valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+            halign: \Com\Tecnick\Pdf\TextHAlign::Center,
+        );
         $pdf->page->addContent($cell);
     }
 
@@ -115,8 +136,8 @@ foreach ($corefonts as $fontcfg) {
         220,
         180,
         8,
-        valign: 'C',
-        halign: 'C',
+        valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+        halign: \Com\Tecnick\Pdf\TextHAlign::Center,
     );
     $pdf->page->addContent($pangram);
 }

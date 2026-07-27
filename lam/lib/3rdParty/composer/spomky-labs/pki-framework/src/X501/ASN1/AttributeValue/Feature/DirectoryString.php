@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X501\ASN1\AttributeValue\Feature;
 
-use function array_key_exists;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\BMPString;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\PrintableString;
@@ -17,8 +16,9 @@ use SpomkyLabs\Pki\X501\DN\DNParser;
 use SpomkyLabs\Pki\X501\MatchingRule\CaseIgnoreMatch;
 use SpomkyLabs\Pki\X501\MatchingRule\MatchingRule;
 use SpomkyLabs\Pki\X501\StringPrep\TranscodeStep;
-use function sprintf;
 use UnexpectedValueException;
+use function array_key_exists;
+use function sprintf;
 
 /**
  * Base class for attribute values having *(Unbounded)DirectoryString* as a syntax.

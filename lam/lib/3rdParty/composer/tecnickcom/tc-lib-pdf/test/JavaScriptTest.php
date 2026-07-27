@@ -8,7 +8,7 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -880,7 +880,7 @@ class JavaScriptTest extends TestUtil
         $this->assertStringContainsString("fbtn.setAction('MouseUp'", $jsScript);
         $this->assertStringContainsString("fchk=this.addField('chk','checkbox'", $jsScript);
         $this->assertStringContainsString('fcmb.setItems(', $jsScript);
-        $this->assertStringContainsString("flst.\\setItems(", $jsScript);
+        $this->assertStringContainsString('flst.setItems(', $jsScript);
         $this->assertStringContainsString("frad=this.addField('rad','radiobutton'", $jsScript);
         $this->assertStringContainsString("ftxt=this.addField('txt','text'", $jsScript);
     }
@@ -908,7 +908,7 @@ class JavaScriptTest extends TestUtil
         /** @var string $jsScript */
         $jsScript = $this->getObjectProperty($obj, 'javascript');
         $this->assertStringContainsString("fcmb2.setItems(['Alpha','A'],['Beta','B']);", $jsScript);
-        $this->assertStringContainsString("flst2.\\setItems(['Ex','X'],['Why','Y']);", $jsScript);
+        $this->assertStringContainsString("flst2.setItems(['Ex','X'],['Why','Y']);", $jsScript);
     }
 
     /**

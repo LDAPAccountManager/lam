@@ -11,7 +11,7 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -49,11 +49,11 @@ if (defined('CURLOPT_SSL_VERIFYPEER')) {
 }
 
 $pdf = new \Com\Tecnick\Pdf\Tcpdf(
-    unit: 'mm',
+    unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
     isunicode: true,
     subsetfont: false,
     compress: true,
-    mode: '',
+    mode: \Com\Tecnick\Pdf\PdfConformance::None,
     objEncrypt: null,
     fileOptions: [
         'allowedHosts' => ['assets.example.com'],
@@ -88,8 +88,8 @@ $pdf->page->addContent($pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 1,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 ));
 
 $pdf->page->addContent($textfont['out']);
@@ -103,8 +103,8 @@ $pdf->page->addContent($pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 1.3,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 ));
 
 $localImage = $imgdir . '/200x100_RGB.png';
@@ -127,8 +127,8 @@ $pdf->page->addContent($pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 1,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 ));
 
 $probe = false;
@@ -154,8 +154,8 @@ $pdf->page->addContent($pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 1.2,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 ));
 
 $pdf->page->addContent($textfont['out']);
@@ -172,8 +172,8 @@ $pdf->page->addContent($pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 1.35,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 ));
 
 $rawpdf = $pdf->getOutPDFString();

@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Encrypt.php
+ * Data.php
  *
  * @since     2008-01-02
  * @category  Library
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * This file is part of tc-lib-pdf-encrypt software library.
@@ -28,7 +28,7 @@ namespace Com\Tecnick\Pdf\Encrypt;
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  */
 abstract class Data extends \Com\Tecnick\Pdf\Encrypt\Output

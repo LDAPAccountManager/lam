@@ -7,7 +7,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -17,6 +16,7 @@ use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
+use function count;
 
 /**
  * Base class for the constructed types.

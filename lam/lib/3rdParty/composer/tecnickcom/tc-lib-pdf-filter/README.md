@@ -18,7 +18,7 @@
 
 `tc-lib-pdf-filter` decodes compression and transformation filters defined by the PDF specification.
 
-It is intended for both generation and parsing workflows where PDF streams must be encoded or decoded according to the standard filter pipeline. By isolating filter logic in one component, callers get predictable behavior and easier testing across different document inputs.
+It is intended for parsing workflows where encoded PDF streams must be decoded according to the standard filter pipeline. By isolating filter logic in one component, callers get predictable behavior and easier testing across different document inputs.
 
 | | |
 |---|---|

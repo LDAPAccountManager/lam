@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\CertificationPath;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -17,6 +16,7 @@ use SpomkyLabs\Pki\X509\CertificationPath\PathBuilding\CertificationPathBuilder;
 use SpomkyLabs\Pki\X509\CertificationPath\PathValidation\PathValidationConfig;
 use SpomkyLabs\Pki\X509\CertificationPath\PathValidation\PathValidationResult;
 use SpomkyLabs\Pki\X509\CertificationPath\PathValidation\PathValidator;
+use function count;
 
 /**
  * Implements certification path structure.

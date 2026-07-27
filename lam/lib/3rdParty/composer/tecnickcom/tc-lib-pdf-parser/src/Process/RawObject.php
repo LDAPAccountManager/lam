@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * This file is part of tc-lib-pdf-parser software library.
@@ -28,7 +28,7 @@ namespace Com\Tecnick\Pdf\Parser\Process;
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * @phpstan-type RawObjectArray array{
@@ -223,7 +223,7 @@ abstract class RawObject
                         ++$strpos;
                         break;
                     case '(':
-                        // LEFT PARENHESIS (28h)
+                        // LEFT PARENTHESIS (28h)
                         ++$open_bracket;
                         break;
                     case ')':
@@ -244,10 +244,10 @@ abstract class RawObject
      * Process array content
      * \x5B LEFT SQUARE BRACKET and \x5D RIGHT SQUARE BRACKET
      *
-     * @param string      $char    Symbol to process
-     * @param-out int     $offset  Offset after processing
-     * @param-out string  $objtype Object type after processing
-     * @param-out array   $objval  Object content after processing
+     * @param string           $char    Symbol to process
+     * @param-out int          $offset  Offset after processing
+     * @param-out string       $objtype Object type after processing
+     * @param-out string|array $objval  Object content after processing
      */
     protected function processBracket(string $char, int &$offset, string &$objtype, string|array &$objval): void
     {
@@ -328,7 +328,7 @@ abstract class RawObject
      * @param-out string         $objtype Object type after processing
      * @param-out RawObjectValue $objval  Object content after processing
      *
-     * @return bool True in case of match, flase otherwise
+     * @return bool True in case of match, false otherwise
      */
     protected function processDefaultName(int &$offset, string &$objtype, string|array &$objval): bool
     {

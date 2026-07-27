@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * This file is part of tc-lib-pdf-page software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * @phpstan-import-type RegionData from \Com\Tecnick\Pdf\Page\Box
@@ -183,7 +183,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
         $pid = $this->sanitizePageID($pid);
         $page = $this->page[$pid] ?? null;
         if ($page === null) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         return $page;
@@ -203,7 +203,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         $ret = $this->page[$pid]['pheight'];
@@ -226,7 +226,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         $ret = $this->page[$pid]['pwidth'];
@@ -251,7 +251,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
         }
 
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         return $pid;
@@ -271,7 +271,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         $columns = (int) $this->page[$pid]['columns'];
@@ -296,7 +296,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
         $currentRegion = $page['currentRegion'];
         $regions = $page['region'];
         if (!\array_key_exists($currentRegion, $regions)) {
-            throw new PageException('The current region with index ' . $currentRegion . ' do not exist.');
+            throw new PageException('The current region with index ' . $currentRegion . ' does not exist.');
         }
 
         return $regions[$currentRegion];
@@ -342,7 +342,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         $nextid = (int) $this->page[$pid]['currentRegion'] + 1;
@@ -387,7 +387,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         return $this->page[$pid]['autobreak'];
@@ -405,7 +405,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         $this->page[$pid]['autobreak'] = $isenabled;
@@ -508,12 +508,12 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         $currentRegion = (int) $this->page[$pid]['currentRegion'];
         if (!\array_key_exists($currentRegion, $this->page[$pid]['region'])) {
-            throw new PageException('The current region with index ' . $currentRegion . ' do not exist.');
+            throw new PageException('The current region with index ' . $currentRegion . ' does not exist.');
         }
 
         $this->page[$pid]['region'][$currentRegion]['x'] = $xpos;
@@ -532,12 +532,12 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!\array_key_exists($pid, $this->page)) {
-            throw new PageException('The page with index ' . $pid . ' do not exist.');
+            throw new PageException('The page with index ' . $pid . ' does not exist.');
         }
 
         $currentRegion = (int) $this->page[$pid]['currentRegion'];
         if (!\array_key_exists($currentRegion, $this->page[$pid]['region'])) {
-            throw new PageException('The current region with index ' . $currentRegion . ' do not exist.');
+            throw new PageException('The current region with index ' . $currentRegion . ' does not exist.');
         }
 
         $this->page[$pid]['region'][$currentRegion]['y'] = $ypos;
@@ -672,7 +672,7 @@ abstract class Region extends \Com\Tecnick\Pdf\Page\Settings
     {
         $pid = $this->sanitizePageID($pid);
         if (!isset($this->nowrite[$pid]['areas'][$index])) {
-            throw new PageException('The no-write region with index ' . $index . ' do not exist.');
+            throw new PageException('The no-write region with index ' . $index . ' does not exist.');
         }
 
         unset($this->nowrite[$pid]['areas'][$index]);

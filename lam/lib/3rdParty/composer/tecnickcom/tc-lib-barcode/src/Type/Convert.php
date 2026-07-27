@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -31,7 +31,7 @@ use Com\Tecnick\Color\Model\Rgb as Color;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 abstract class Convert
@@ -114,7 +114,7 @@ abstract class Convert
     protected float $width_ratio = 0;
 
     /**
-     * Ratio between the barcode height and the number of columns
+     * Ratio between the barcode height and the number of rows
      */
     protected float $height_ratio = 0;
 

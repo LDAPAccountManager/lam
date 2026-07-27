@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X501\ASN1;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use RangeException;
@@ -15,6 +14,7 @@ use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\AttributeValue\AttributeValue;
 use SpomkyLabs\Pki\X501\DN\DNParser;
 use Stringable;
+use function count;
 
 /**
  * Implements *Name* ASN.1 type.

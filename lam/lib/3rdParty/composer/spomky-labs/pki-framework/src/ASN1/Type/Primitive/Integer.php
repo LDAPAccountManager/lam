@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use Brick\Math\BigInteger;
-use function gettype;
 use InvalidArgumentException;
-use function is_int;
-use function is_scalar;
-use function is_string;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Element;
@@ -17,6 +13,10 @@ use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
 use SpomkyLabs\Pki\ASN1\Util\BigInt;
+use function gettype;
+use function is_int;
+use function is_scalar;
+use function is_string;
 
 /**
  * Implements *INTEGER* type.

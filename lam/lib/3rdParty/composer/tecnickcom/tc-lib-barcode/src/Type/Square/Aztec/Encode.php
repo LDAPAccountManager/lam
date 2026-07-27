@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2023-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2023-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class Encode extends \Com\Tecnick\Barcode\Type\Square\Aztec\Bitstream
@@ -306,7 +306,7 @@ class Encode extends \Com\Tecnick\Barcode\Type\Square\Aztec\Bitstream
             $scol = -5;
         }
 
-        $skip = 0; // skip reference grid while drwaing dominoes
+        $skip = 0; // skip reference grid while drawing dominoes
         $bit = $this->totbits - 1; // index of last bitstream bit (first to draw)
         for ($layer = 0; $layer < $this->numlayers; ++$layer) {
             // top

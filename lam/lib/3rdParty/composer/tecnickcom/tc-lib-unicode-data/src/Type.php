@@ -17815,4 +17815,19 @@ class Type
         1_048_576 => 'L',
         1_114_109 => 'L',
     ];
+
+    /**
+     * Get the simple (non-explicit) bidirectional class of a Unicode code point
+     * as a typed enum case.
+     *
+     * Returns null when the code point is unmapped or maps to an explicit
+     * formatting code (LRE, LRO, RLE, RLO, PDF), which are not part of the
+     * strong/weak/neutral BidiClass set.
+     *
+     * @param int $ord Unicode code point.
+     */
+    public static function getBidiClass(int $ord): ?BidiClass
+    {
+        return BidiClass::tryFrom(self::UNI[$ord] ?? '');
+    }
 }

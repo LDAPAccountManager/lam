@@ -8,11 +8,16 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
  */
+
+// NOTE: local file reads (images, fonts, attachments) are restricted to an allowlist of
+// trusted paths that covers this package tree, so run the examples in place. To read assets
+// from other locations, list them in the 'allowedPaths' entry of the fileOptions constructor
+// parameter (see E047_remote_resources_security.php).
 
 // NOTE: run make fonts in the project root to generate the dependencies and example fonts.
 
@@ -29,11 +34,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // main TCPDF object
 $pdf = new \Com\Tecnick\Pdf\Tcpdf(
-    unit: 'mm',
+    unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
     isunicode: true,
     subsetfont: false,
     compress: true,
-    mode: '',
+    mode: \Com\Tecnick\Pdf\PdfConformance::None,
     objEncrypt: null,
 );
 
@@ -112,7 +117,7 @@ $txt2 = $pdf->getTextLine(
     linethrough: false,
     overline: false,
     clip: false,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     txtanchor: 'S',
     shadow: [
         'xoffset' => 0.5,
@@ -160,8 +165,8 @@ $txtbox = $pdf->getTextCell(
     height: 0,
     offset: 15,
     linespace: 1,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
     cell: null,
     styles: [],
     strokewidth: 0,
@@ -176,7 +181,7 @@ $txtbox = $pdf->getTextCell(
     overline: false,
     clip: false,
     drawcell: false,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 $pdf->page->addContent($txtbox);
@@ -212,8 +217,8 @@ $txtcell1 = $pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 0,
-    valign: 'C',
-    halign: 'C',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Center,
     cell: null,
     styles: $style_cell,
     strokewidth: 0,
@@ -228,7 +233,7 @@ $txtcell1 = $pdf->getTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 $pdf->page->addContent($txtcell1);
@@ -242,8 +247,8 @@ $txtcell2 = $pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 0,
-    valign: 'C',
-    halign: 'C',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Center,
     cell: null,
     styles: $style_cell,
     strokewidth: 0,
@@ -258,7 +263,7 @@ $txtcell2 = $pdf->getTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 $pdf->page->addContent($txtcell2);
@@ -272,8 +277,8 @@ $txtcell2 = $pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 0,
-    valign: 'C',
-    halign: 'C',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Center,
     cell: null,
     styles: $style_cell,
     strokewidth: 0,
@@ -288,7 +293,7 @@ $txtcell2 = $pdf->getTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 $pdf->page->addContent($txtcell2);
@@ -320,8 +325,8 @@ $txtcell3 = $pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 0,
-    valign: 'C',
-    halign: 'C',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Center,
     cell: null,
     styles: $bstyle,
     strokewidth: 0,
@@ -336,7 +341,7 @@ $txtcell3 = $pdf->getTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 $pdf->page->addContent($txtcell3);
@@ -351,8 +356,8 @@ $txtcell2 = $pdf->getTextCell(
     height: 0,
     offset: 0,
     linespace: 0,
-    valign: 'C',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
     cell: null,
     styles: $style_cell,
     strokewidth: 0,
@@ -367,7 +372,7 @@ $txtcell2 = $pdf->getTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 $pdf->page->addContent($txtcell2);
@@ -399,8 +404,8 @@ $pdf->addTextCell(
     height: 0,
     offset: 15,
     linespace: 1,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
     cell: null,
     styles: $style_cell_b,
     strokewidth: 0,
@@ -415,7 +420,7 @@ $pdf->addTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 
@@ -433,8 +438,8 @@ $pdf->addTextCell(
     height: 0,
     offset: 0,
     linespace: 0,
-    valign: 'C',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
     cell: null,
     styles: $style_cell,
     strokewidth: 0,
@@ -449,7 +454,7 @@ $pdf->addTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 
@@ -463,8 +468,8 @@ $pdf->addTextCell(
     height: 0,
     offset: 0,
     linespace: 0,
-    valign: 'C',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Center,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
     cell: null,
     styles: $style_cell,
     strokewidth: 0,
@@ -479,7 +484,7 @@ $pdf->addTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 
@@ -500,8 +505,8 @@ $pdf->addTextCell(
     height: 0,
     offset: 15,
     linespace: 1,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
     cell: null,
     styles: $style_cell,
     strokewidth: 0,
@@ -516,7 +521,7 @@ $pdf->addTextCell(
     overline: false,
     clip: false,
     drawcell: true,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 
@@ -529,8 +534,8 @@ $pdf->addTextCell(
     height: 0,
     offset: 0,
     linespace: 1,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
     cell: null,
     styles: [],
     strokewidth: 0,
@@ -545,7 +550,7 @@ $pdf->addTextCell(
     overline: true,
     clip: false,
     drawcell: false,
-    forcedir: '',
+    forcedir: \Com\Tecnick\Unicode\TextDirection::Auto,
     shadow: null,
 );
 
@@ -553,8 +558,8 @@ $pdf->addTextCell(
     txt: 'addTextCell()' . PHP_EOL . 'First line.' . PHP_EOL . 'Second Line.',
     posx: 15,
     posy: 70,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
     drawcell: false,
 );
 
@@ -562,8 +567,8 @@ $pdf->page->addContent($pdf->getTextCell(
     txt: 'getTextCell()' . PHP_EOL . 'First line.' . PHP_EOL . 'Second Line.',
     posx: 15,
     posy: 90,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 ));
 
 // =============================================================

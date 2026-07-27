@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * This file is part of tc-lib-pdf-parser software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Pdf\Parser\Exception as PPException;
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * @phpstan-import-type RawObjectArray from \Com\Tecnick\Pdf\Parser\Process\RawObject
@@ -209,7 +209,7 @@ abstract class XrefStream extends \Com\Tecnick\Pdf\Parser\Process\RawObject
                         break;
                     default:
                         // PNG prediction (on encoding, PNG optimum)
-                        throw new PPException('Unknownn PNG predictor');
+                        throw new PPException('Unknown PNG predictor');
                 }
             }
 

@@ -6,8 +6,6 @@ namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use function intval;
-use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
 use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
@@ -17,6 +15,8 @@ use SpomkyLabs\Pki\ASN1\Type\PrimitiveType;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
 use Throwable;
 use UnexpectedValueException;
+use function intval;
+use function mb_strlen;
 
 /**
  * Implements *GeneralizedTime* type.

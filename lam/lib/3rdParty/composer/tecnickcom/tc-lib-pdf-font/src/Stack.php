@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * This file is part of tc-lib-pdf-font software library.
@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace Com\Tecnick\Pdf\Font;
 
 use Com\Tecnick\Pdf\Font\Exception as FontException;
+use Com\Tecnick\Unicode\Data\BidiClass;
 use Com\Tecnick\Unicode\Data\Type as UnicodeType;
 
 /**
@@ -29,7 +30,7 @@ use Com\Tecnick\Unicode\Data\Type as UnicodeType;
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * @phpstan-import-type TFontData from Load
@@ -555,17 +556,20 @@ class Stack extends \Com\Tecnick\Pdf\Font\Buffer
             }
 
             $unitype = UnicodeType::UNI[$ord] ?? '';
+            $bidiClass = BidiClass::tryFrom($unitype);
             // Inline the width lookup using the already-resolved $curfont metric: calling
             // getCharWidth() here would re-resolve getFontMetric($this->index) per character.
             $chrwidth = match ($ord) {
                 173, 8203 => 0.0, // 173 = SHY (hyphenation), 8203 = ZWSP: not printed
                 default => $curfont['cwu'][$ord] ?? $curfont['cw'][$ord] ?? $curfont['dw'],
             };
-            // 'B' Paragraph Separator
-            // 'S' Segment Separator
-            // 'WS' Whitespace
-            // 'BN' Boundary Neutral
-            if ($unitype === 'B' || $unitype === 'S' || $unitype === 'WS' || $unitype === 'BN') {
+            // Split on paragraph/segment separators (B, S), whitespace (WS) and boundary neutrals (BN).
+            if (
+                $bidiClass === BidiClass::B
+                || $bidiClass === BidiClass::S
+                || $bidiClass === BidiClass::WS
+                || $bidiClass === BidiClass::BN
+            ) {
                 $currenttotwidth = $totwidth + ($fact * ($idx - 1));
                 $split[$words] = [
                     'pos' => $idx,
@@ -578,7 +582,7 @@ class Stack extends \Com\Tecnick\Pdf\Font\Buffer
                 ];
                 $prevtotwidth = $currenttotwidth;
                 $words++;
-                if ($unitype === 'WS') {
+                if ($bidiClass === BidiClass::WS) {
                     ++$spaces;
                     $totspacewidth += $chrwidth;
                 }
@@ -715,7 +719,7 @@ class Stack extends \Com\Tecnick\Pdf\Font\Buffer
         $fonttype = $data['type'];
         $outfont = \sprintf('/F%d %F Tf', (int) $data['i'], $fontsize); // PDF output string
         $tbox = \array_pad(\explode(' ', \substr($fontbbox, 1, -1)), 4, '0');
-        // add this font in the stack wit metrics in internal units
+        // add this font in the stack with metrics in internal units
         $this->metric[$mkey] = [
             'ascent' => $ascent * $cratio,
             'avgwidth' => $avgwidth * $cratio * $fontstretching,

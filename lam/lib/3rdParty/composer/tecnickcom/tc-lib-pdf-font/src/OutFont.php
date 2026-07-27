@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * This file is part of tc-lib-pdf-font software library.
@@ -32,7 +32,7 @@ use Com\Tecnick\Unicode\Data\Identity;
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * @phpstan-import-type TFontData from Load
@@ -350,7 +350,7 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
      *
      * @param TFontData $font Font to process
      *
-     * return string
+     * @return string
      */
     protected function getCore(array $font): string
     {
@@ -377,11 +377,11 @@ abstract class OutFont extends \Com\Tecnick\Pdf\Font\OutUtil
     }
 
     /**
-     * Get the PDF output string for a Core font.
+     * Get the PDF output string for a TrueType font.
      *
      * @param TFontData $font Font to process
      *
-     * return string
+     * @return string
      */
     protected function getTrueType(array $font): string
     {

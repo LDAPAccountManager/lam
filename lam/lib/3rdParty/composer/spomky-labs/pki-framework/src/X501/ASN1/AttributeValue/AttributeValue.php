@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X501\ASN1\AttributeValue;
 
-use function array_key_exists;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\Attribute;
@@ -12,6 +11,7 @@ use SpomkyLabs\Pki\X501\ASN1\AttributeType;
 use SpomkyLabs\Pki\X501\ASN1\AttributeTypeAndValue;
 use SpomkyLabs\Pki\X501\MatchingRule\MatchingRule;
 use Stringable;
+use function array_key_exists;
 
 /**
  * Base class for attribute values.

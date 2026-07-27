@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -22,6 +22,7 @@ use Com\Tecnick\Barcode\Barcode as ObjBarcode;
 use Com\Tecnick\File\Cache as ObjCache;
 use Com\Tecnick\File\File as ObjFile;
 use Com\Tecnick\Pdf\Cache\CacheInterface as ObjExtCache;
+use Com\Tecnick\Pdf\Cache\CacheType;
 use Com\Tecnick\Pdf\Cache\FontSubsetCacheAdapter;
 use Com\Tecnick\Pdf\Cache\ImageCacheAdapter;
 use Com\Tecnick\Pdf\Cache\SelectiveCacheInterface;
@@ -44,7 +45,7 @@ use Com\Tecnick\Unicode\Convert as ObjUniConvert;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type PageInputData from \Com\Tecnick\Pdf\Page\Box
@@ -680,7 +681,7 @@ abstract class Base
     /**
      * TCPDF version.
      */
-    protected string $version = '8.66.0';
+    protected string $version = '8.67.2';
 
     /**
      * Encrypt object.
@@ -744,12 +745,12 @@ abstract class Base
     public ObjImage $image;
 
     /**
-     * Time is seconds since EPOCH when the document was created.
+     * Time in seconds since EPOCH when the document was created.
      */
     protected int $doctime = 0;
 
     /**
-     *  Time is seconds since EPOCH when the document was modified.
+     *  Time in seconds since EPOCH when the document was modified.
      */
     protected int $docmodtime = 0;
 
@@ -812,7 +813,7 @@ abstract class Base
      *    False = LTR = Left-To-Right.
      *    True = RTL = Right-To-Left.
      *
-     * @val bool
+     * @var bool
      */
     protected bool $rtl = false;
 
@@ -821,7 +822,7 @@ abstract class Base
      *    False = LTR = Left-To-Right.
      *    True = RTL = Right-To-Left.
      *
-     * @val bool
+     * @var bool
      */
     protected bool $tmprtl = false;
 
@@ -882,7 +883,7 @@ abstract class Base
     ];
 
     /**
-     * Ration for small font.
+     * Ratio for small font.
      *
      * @var float
      */
@@ -896,7 +897,7 @@ abstract class Base
     protected const FONT_MONO = 'courier';
 
     /**
-     * Default eference values for unit conversion.
+     * Default reference values for unit conversion.
      *
      * @var TRefUnitValues
      */
@@ -1066,14 +1067,14 @@ abstract class Base
     protected array $embeddedfiles = [];
 
     /**
-     * Annotations indexed bu object IDs.
+     * Annotations indexed by object IDs.
      *
      * @var array<int, TAnnot>
      */
     protected array $annotation = [];
 
     /**
-     * Array containing the regular expression used to identify withespaces or word separators.
+     * Array containing the regular expression used to identify whitespaces or word separators.
      *
      * @var array{
      *         r: string,
@@ -1093,7 +1094,7 @@ abstract class Base
     protected string $pdffilename;
 
     /**
-     * Raw encoded fFile name of the PDF document.
+     * Raw encoded File name of the PDF document.
      */
     protected string $encpdffilename;
 
@@ -1296,7 +1297,7 @@ abstract class Base
     protected bool $defPageContentEnabled = false;
 
     /**
-     * Default font for defautl page content.
+     * Default font for default page content.
      *
      * @var ?TFontMetric
      */
@@ -1323,7 +1324,7 @@ abstract class Base
     /**
      * Default values for cell boundaries.
      *
-     * @const TCellBound
+     * @var TCellBound
      */
     public const ZEROCELLBOUND = [
         'T' => 0.0,
@@ -1335,7 +1336,7 @@ abstract class Base
     /**
      * Default values for cell.
      *
-     * @const TCellDef
+     * @var TCellDef
      */
     public const ZEROCELL = [
         'margin' => self::ZEROCELLBOUND,
@@ -1570,7 +1571,12 @@ abstract class Base
     {
         $allowedPaths = [];
 
-        $candidatePaths = [__DIR__ . '/../', __DIR__ . '/../../../vendor/tecnickcom/'];
+        $candidatePaths = [__DIR__ . '/../'];
+
+        $vendorSiblings = $this->vendorSiblingPackagesPath(__DIR__);
+        if ($vendorSiblings !== null) {
+            $candidatePaths[] = $vendorSiblings;
+        }
 
         if ($includeSystemTemp) {
             \array_unshift($candidatePaths, \sys_get_temp_dir());
@@ -1585,6 +1591,24 @@ abstract class Base
         }
 
         return \array_values(\array_unique($allowedPaths));
+    }
+
+    /**
+     * Return the directory holding the sibling tecnickcom packages when this
+     * package is installed as a Composer dependency
+     * (<project>/vendor/tecnickcom/tc-lib-pdf), or null for any other layout,
+     * such as a standalone repository checkout, so the default allowlist is
+     * not widened beyond the package tree.
+     *
+     * @param string $srcDir Path of the directory containing this source file.
+     */
+    protected function vendorSiblingPackagesPath(string $srcDir): ?string
+    {
+        if (\basename(\dirname($srcDir, 3)) !== 'vendor') {
+            return null;
+        }
+
+        return \dirname($srcDir, 2);
     }
 
     /**
@@ -1889,16 +1913,18 @@ abstract class Base
      * A plain external cache caches every type; a SelectiveCacheInterface
      * decides per type. Returns false when no external cache is configured.
      *
-     * @param ObjExtCache::TYPE_* $type Subsystem type to query.
+     * @param string|CacheType $type Subsystem type to query.
+     *
+     * @throws \Com\Tecnick\Pdf\Exception if the type is not a known cache type.
      */
-    protected function extCacheEnabledFor(string $type): bool
+    protected function extCacheEnabledFor(string|CacheType $type): bool
     {
         if ($this->extCache === null) {
             return false;
         }
 
         if ($this->extCache instanceof SelectiveCacheInterface) {
-            return $this->extCache->supports($type);
+            return $this->extCache->supports(CacheType::fromLoose($type)->value);
         }
 
         return true;
@@ -1910,7 +1936,7 @@ abstract class Base
      */
     protected function imageCacheAdapter(): ?ImageCacheAdapter
     {
-        if ($this->extCache === null || !$this->extCacheEnabledFor(ObjExtCache::TYPE_IMAGE)) {
+        if ($this->extCache === null || !$this->extCacheEnabledFor(CacheType::Image)) {
             return null;
         }
 
@@ -1923,7 +1949,7 @@ abstract class Base
      */
     protected function fontSubsetCacheAdapter(): ?FontSubsetCacheAdapter
     {
-        if ($this->extCache === null || !$this->extCacheEnabledFor(ObjExtCache::TYPE_FONT)) {
+        if ($this->extCache === null || !$this->extCacheEnabledFor(CacheType::Font)) {
             return null;
         }
 

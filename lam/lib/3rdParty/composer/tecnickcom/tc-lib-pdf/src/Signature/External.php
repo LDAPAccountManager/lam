@@ -5,13 +5,13 @@ declare(strict_types=1);
 /**
  * External.php
  *
- * @since       2002-08-03
- * @category    Library
- * @package     Pdf
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf
+ * @since     2002-08-03
+ * @category  Library
+ * @package   Pdf
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
  */
@@ -29,13 +29,13 @@ use Com\Tecnick\Pdf\Tcpdf;
  *
  * @phpstan-import-type TSignature from \Com\Tecnick\Pdf\Base
  *
- * @since       2002-08-03
- * @category    Library
- * @package     Pdf
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf
+ * @since     2002-08-03
+ * @category  Library
+ * @package   Pdf
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf
  */
 final class External
 {
@@ -84,14 +84,18 @@ final class External
      * @param string                 $preparedPdf Prepared PDF returned by prepare().
      * @param array{int,int,int,int} $byteRange   ByteRange returned by prepare().
      * @param string                 $signature   External signature data.
-     * @param string                 $encoding    Signature encoding: binary, base64, or hex.
+     * @param string|ExternalSignatureEncoding $encoding Signature encoding: binary, base64, hex, or enum case.
      *
      * @return string Fully signed PDF document.
      *
      * @throws \Com\Tecnick\Pdf\Exception
      */
-    public function apply(string $preparedPdf, array $byteRange, string $signature, string $encoding = 'binary'): string
-    {
+    public function apply(
+        string $preparedPdf,
+        array $byteRange,
+        string $signature,
+        string|ExternalSignatureEncoding $encoding = 'binary',
+    ): string {
         return $this->pdf->applyExternalSignature($preparedPdf, $byteRange, $signature, $encoding);
     }
 }

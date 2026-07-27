@@ -8,11 +8,16 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
  */
+
+// NOTE: local file reads (images, fonts, attachments) are restricted to an allowlist of
+// trusted paths that covers this package tree, so run the examples in place. To read assets
+// from other locations, list them in the 'allowedPaths' entry of the fileOptions constructor
+// parameter (see E047_remote_resources_security.php).
 
 // NOTE: run make fonts in the project root to generate the dependencies and example fonts.
 
@@ -82,11 +87,11 @@ require __DIR__ . '/../vendor/autoload.php';
  */
 
 $pdf = new \Com\Tecnick\Pdf\Tcpdf(
-    unit: 'mm',
+    unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
     isunicode: true,
     subsetfont: false,
     compress: true,
-    mode: 'pdfua1',
+    mode: \Com\Tecnick\Pdf\PdfConformance::Pdfua1,
     objEncrypt: null,
 );
 
@@ -153,8 +158,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -170,7 +175,17 @@ $intro =
     . 'logical order.';
 
 $pdf->beginStructElem(role: 'P', pid: $pid1);
-$pdf->addTextCell($intro, $pid1, $leftMargin, 32.0, 0.0, 0.0, drawcell: false, valign: 'T', halign: 'J');
+$pdf->addTextCell(
+    $intro,
+    $pid1,
+    $leftMargin,
+    32.0,
+    0.0,
+    0.0,
+    drawcell: false,
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
+);
 $pdf->endStructElem();
 
 // --- Section 1: H2 + P ---
@@ -185,8 +200,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -200,7 +215,17 @@ $sec1body =
     . 'structure elements logged by endStructElem().';
 
 $pdf->beginStructElem(role: 'P', pid: $pid1);
-$pdf->addTextCell($sec1body, $pid1, $leftMargin, 64.0, 0.0, 0.0, drawcell: false, valign: 'T', halign: 'J');
+$pdf->addTextCell(
+    $sec1body,
+    $pid1,
+    $leftMargin,
+    64.0,
+    0.0,
+    0.0,
+    drawcell: false,
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
+);
 $pdf->endStructElem();
 
 // --- Sub-section: H3 ---
@@ -215,8 +240,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -233,8 +258,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -250,8 +275,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -268,8 +293,8 @@ $pdf->addTextCell(
     150,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -305,8 +330,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'C',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Center,
 );
 $pdf->endStructElem();
 
@@ -328,8 +353,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -347,8 +372,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -366,8 +391,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -382,8 +407,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'R',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Right,
 );
 $pdf->endStructElem();
 
@@ -409,7 +434,17 @@ $paras = [
 $yPos = 85.0;
 foreach ($paras as $para) {
     $pdf->beginStructElem(role: 'P', pid: $pid2);
-    $pdf->addTextCell($para, $pid2, $leftMargin, $yPos, 0.0, 0.0, drawcell: false, valign: 'T', halign: 'J');
+    $pdf->addTextCell(
+        $para,
+        $pid2,
+        $leftMargin,
+        $yPos,
+        0.0,
+        0.0,
+        drawcell: false,
+        valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+        halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
+    );
     $pdf->endStructElem();
     $yPos += 25.0;
 }
@@ -432,8 +467,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -452,8 +487,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -470,8 +505,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -482,7 +517,17 @@ $pdf->beginStructElem(role: 'Art', pid: $pid3);
 
 $setFont($pdf, 'helvetica', 'B', 13);
 $pdf->beginStructElem(role: 'H3', pid: $pid3);
-$pdf->addTextCell('3.2 — Art Container', $pid3, $leftMargin, 65.0, 0.0, 0.0, drawcell: false, valign: 'T', halign: 'L');
+$pdf->addTextCell(
+    '3.2 — Art Container',
+    $pid3,
+    $leftMargin,
+    65.0,
+    0.0,
+    0.0,
+    drawcell: false,
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+);
 $pdf->endStructElem();
 
 $setFont($pdf, 'helvetica', '', 10);
@@ -498,8 +543,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -516,8 +561,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -532,8 +577,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -553,12 +598,32 @@ foreach ($listItems as [$label, $body]) {
 
     $setFont($pdf, 'helvetica', 'B', 10);
     $pdf->beginStructElem(role: 'Lbl', pid: $pid3);
-    $pdf->addTextCell('• ' . $label, $pid3, $leftMargin, $itemY, 65.0, 0.0, drawcell: false, valign: 'T', halign: 'L');
+    $pdf->addTextCell(
+        '• ' . $label,
+        $pid3,
+        $leftMargin,
+        $itemY,
+        65.0,
+        0.0,
+        drawcell: false,
+        valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+        halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+    );
     $pdf->endStructElem(); // Lbl
 
     $setFont($pdf, 'helvetica', '', 10);
     $pdf->beginStructElem(role: 'LBody', pid: $pid3);
-    $pdf->addTextCell($body, $pid3, $leftMargin + 65.0, $itemY, 0.0, 0.0, drawcell: false, valign: 'T', halign: 'J');
+    $pdf->addTextCell(
+        $body,
+        $pid3,
+        $leftMargin + 65.0,
+        $itemY,
+        0.0,
+        0.0,
+        drawcell: false,
+        valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+        halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
+    );
     $pdf->endStructElem(); // LBody
 
     $pdf->endStructElem(); // LI
@@ -584,8 +649,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -602,8 +667,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -641,7 +706,17 @@ foreach ($tableHeaders as $idx => $hdr) {
         'ID' => $tableHeaderIds[$idx],
         'Scope' => 'Column',
     ]);
-    $pdf->addTextCell($hdr, $pid4, $colX[$idx], $tableY, $colW[$idx], 0.0, drawcell: false, valign: 'T', halign: 'L');
+    $pdf->addTextCell(
+        $hdr,
+        $pid4,
+        $colX[$idx],
+        $tableY,
+        $colW[$idx],
+        0.0,
+        drawcell: false,
+        valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+        halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+    );
     $pdf->endStructElem(); // TH
 }
 $pdf->endStructElem(); // TR (header)
@@ -664,8 +739,8 @@ foreach ($tableRows as $row) {
             $colW[$idx],
             0.0,
             drawcell: false,
-            valign: 'T',
-            halign: 'L',
+            valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+            halign: \Com\Tecnick\Pdf\TextHAlign::Left,
         );
         $pdf->endStructElem(); // TD
     }
@@ -687,8 +762,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'L',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
 );
 $pdf->endStructElem();
 
@@ -707,8 +782,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'J',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Justify,
 );
 $pdf->endStructElem();
 
@@ -744,8 +819,8 @@ $pdf->addTextCell(
     0.0,
     0.0,
     drawcell: false,
-    valign: 'T',
-    halign: 'C',
+    valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Center,
 );
 $pdf->endStructElem();
 

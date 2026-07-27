@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * @phpstan-import-type Item from \Com\Tecnick\Barcode\Type\Square\QrCode\Estimate
@@ -50,7 +50,7 @@ class Split
     /**
      * Initialize
      *
-     * @param ByteStream $encodingMode ByteStream Class object
+     * @param EncodingMode $encodingMode EncodingMode class object
      * @param int          $hint    Encoding mode
      * @param int          $version Code version
      */

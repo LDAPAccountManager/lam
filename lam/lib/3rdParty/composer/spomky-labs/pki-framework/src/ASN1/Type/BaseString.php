@@ -6,8 +6,8 @@ namespace SpomkyLabs\Pki\ASN1\Type;
 
 use InvalidArgumentException;
 use SpomkyLabs\Pki\ASN1\Element;
-use function sprintf;
 use Stringable;
+use function sprintf;
 
 /**
  * Base class for all string types.

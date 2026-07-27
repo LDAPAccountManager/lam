@@ -8,11 +8,16 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
  */
+
+// NOTE: local file reads (images, fonts, attachments) are restricted to an allowlist of
+// trusted paths that covers this package tree, so run the examples in place. To read assets
+// from other locations, list them in the 'allowedPaths' entry of the fileOptions constructor
+// parameter (see E047_remote_resources_security.php).
 
 // NOTE: run make fonts in the project root to generate the dependencies and example fonts.
 
@@ -27,11 +32,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // main TCPDF object
 $pdf = new \Com\Tecnick\Pdf\Tcpdf(
-    unit: 'mm',
+    unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
     isunicode: true,
     subsetfont: false,
     compress: false,
-    mode: '',
+    mode: \Com\Tecnick\Pdf\PdfConformance::None,
     objEncrypt: null,
 );
 
@@ -90,19 +95,55 @@ $pdf->addHTMLCell(
 );
 
 $pdf->setRTL(false);
-$pdf->page->addContent($pdf->getTextCell(txt: $txtEngPersian, posx: $psx, posy: 40, width: $lnw, halign: 'L'));
+$pdf->page->addContent($pdf->getTextCell(
+    txt: $txtEngPersian,
+    posx: $psx,
+    posy: 40,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+));
 $pdf->setRTL(true);
-$pdf->page->addContent($pdf->getTextCell(txt: $txtPersian, posx: $psx, posy: 80, width: $lnw, halign: 'R'));
+$pdf->page->addContent($pdf->getTextCell(
+    txt: $txtPersian,
+    posx: $psx,
+    posy: 80,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Right,
+));
 
 $pdf->setRTL(false);
-$pdf->page->addContent($pdf->getTextCell(txt: $txtEngArabic, posx: $psx, posy: 120, width: $lnw, halign: 'L'));
+$pdf->page->addContent($pdf->getTextCell(
+    txt: $txtEngArabic,
+    posx: $psx,
+    posy: 120,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+));
 $pdf->setRTL(true);
-$pdf->page->addContent($pdf->getTextCell(txt: $txtArabic, posx: $psx, posy: 160, width: $lnw, halign: 'R'));
+$pdf->page->addContent($pdf->getTextCell(
+    txt: $txtArabic,
+    posx: $psx,
+    posy: 160,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Right,
+));
 
 $pdf->setRTL(false);
-$pdf->page->addContent($pdf->getTextCell(txt: $txtEngHebrew, posx: $psx, posy: 200, width: $lnw, halign: 'L'));
+$pdf->page->addContent($pdf->getTextCell(
+    txt: $txtEngHebrew,
+    posx: $psx,
+    posy: 200,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+));
 $pdf->setRTL(true);
-$pdf->page->addContent($pdf->getTextCell(txt: $txtHebrew, posx: $psx, posy: 240, width: $lnw, halign: 'R'));
+$pdf->page->addContent($pdf->getTextCell(
+    txt: $txtHebrew,
+    posx: $psx,
+    posy: 240,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Right,
+));
 
 // ----------
 
@@ -114,19 +155,61 @@ $pdf->setRTL(false);
 $pdf->addHTMLCell(html: '<h2>2. addTextCell()</h2>', posx: $psx, posy: 15, width: $lnw);
 
 $pdf->setRTL(false);
-$pdf->addTextCell(txt: $txtEngPersian, posx: $psx, posy: 40, width: $lnw, halign: 'L', drawcell: false);
+$pdf->addTextCell(
+    txt: $txtEngPersian,
+    posx: $psx,
+    posy: 40,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+    drawcell: false,
+);
 $pdf->setRTL(true);
-$pdf->addTextCell(txt: $txtPersian, posx: $psx, posy: 80, width: $lnw, halign: 'R', drawcell: false);
+$pdf->addTextCell(
+    txt: $txtPersian,
+    posx: $psx,
+    posy: 80,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Right,
+    drawcell: false,
+);
 
 $pdf->setRTL(false);
-$pdf->addTextCell(txt: $txtEngArabic, posx: $psx, posy: 120, width: $lnw, halign: 'L', drawcell: false);
+$pdf->addTextCell(
+    txt: $txtEngArabic,
+    posx: $psx,
+    posy: 120,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+    drawcell: false,
+);
 $pdf->setRTL(true);
-$pdf->addTextCell(txt: $txtArabic, posx: $psx, posy: 160, width: $lnw, halign: 'R', drawcell: false);
+$pdf->addTextCell(
+    txt: $txtArabic,
+    posx: $psx,
+    posy: 160,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Right,
+    drawcell: false,
+);
 
 $pdf->setRTL(false);
-$pdf->addTextCell(txt: $txtEngHebrew, posx: $psx, posy: 200, width: $lnw, halign: 'L', drawcell: false);
+$pdf->addTextCell(
+    txt: $txtEngHebrew,
+    posx: $psx,
+    posy: 200,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Left,
+    drawcell: false,
+);
 $pdf->setRTL(true);
-$pdf->addTextCell(txt: $txtHebrew, posx: $psx, posy: 240, width: $lnw, halign: 'R', drawcell: false);
+$pdf->addTextCell(
+    txt: $txtHebrew,
+    posx: $psx,
+    posy: 240,
+    width: $lnw,
+    halign: \Com\Tecnick\Pdf\TextHAlign::Right,
+    drawcell: false,
+);
 
 // ----------
 

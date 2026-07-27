@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -44,7 +44,7 @@ use Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\Data;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\Compaction
@@ -75,12 +75,12 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
     protected int $row_height = 2;
 
     /**
-     * Horizontal quiet zone in modules
+     * Vertical quiet zone in modules
      */
     protected int $quiet_vertical = 2;
 
     /**
-     * Vertical quiet zone in modules
+     * Horizontal quiet zone in modules
      */
     protected int $quiet_horizontal = 2;
 
@@ -233,7 +233,7 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
      *
      * @param int $rows number of rows
      * @param int $cols number of columns
-     * @param int $ecl eroor correction level
+     * @param int $ecl error correction level
      *
      * @return array<int, int>
      *
@@ -257,7 +257,7 @@ class PdfFourOneSeven extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\C
         // count number of codewords
         $numcw = \count($codewords);
         if ($numcw > 925) {
-            throw new BarcodeException('The maximum codeword capaciy has been reached: ' . $numcw . ' > 925');
+            throw new BarcodeException('The maximum codeword capacity has been reached: ' . $numcw . ' > 925');
         }
 
         $macrocw = $this->getMacroBlock($numcw);

@@ -32,6 +32,7 @@ no-else-clause = { enabled = false }
 no-empty = { enabled = true }
 too-many-properties = { enabled = false }
 too-many-methods = { enabled = false }
+too-many-enum-cases = { enabled = false }
 no-isset = { enabled = true, allow-array-checks = true }
 
 [analyzer]

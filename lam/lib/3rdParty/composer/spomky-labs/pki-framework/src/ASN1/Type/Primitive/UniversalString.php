@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Type\Primitive;
 
-use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Type\PrimitiveString;
 use SpomkyLabs\Pki\ASN1\Type\UniversalClass;
+use function mb_strlen;
 
 /**
  * Implements *UniversalString* type.

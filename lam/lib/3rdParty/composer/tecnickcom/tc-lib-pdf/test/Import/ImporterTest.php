@@ -8,7 +8,7 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -108,6 +108,47 @@ class ImporterTest extends TestCase
         return new Importer($xobjects, $pon, $this->makeObjFile());
     }
 
+    /**
+     * Build a minimal classic-xref donor PDF with a configurable declared
+     * /Count and a configurable number of real pages, to verify that the
+     * declared value never drives page counting or import loops.
+     * Only small values must ever be used here.
+     */
+    private function buildDonorPdf(?int $declaredCount, int $realPages): string
+    {
+        $objects = [];
+        $objects[1] = "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+
+        $kids = [];
+        for ($idx = 0; $idx < $realPages; ++$idx) {
+            $kids[] = (3 + $idx) . ' 0 R';
+        }
+
+        $countEntry = $declaredCount === null ? '' : ' /Count ' . $declaredCount;
+        $objects[2] = "2 0 obj\n<< /Type /Pages /Kids [" . implode(' ', $kids) . ']' . $countEntry . " >>\nendobj\n";
+        for ($idx = 0; $idx < $realPages; ++$idx) {
+            $num = 3 + $idx;
+            $objects[$num] =
+                $num . " 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] /Resources << >> >>\nendobj\n";
+        }
+
+        $pdf = "%PDF-1.7\n";
+        $offsets = [];
+        foreach ($objects as $num => $text) {
+            $offsets[$num] = strlen($pdf);
+            $pdf .= $text;
+        }
+
+        $xrefStart = strlen($pdf);
+        $size = count($objects) + 1;
+        $pdf .= "xref\n0 {$size}\n0000000000 65535 f \n";
+        foreach (array_keys($objects) as $num) {
+            $pdf .= sprintf("%010d 00000 n \n", $offsets[$num]);
+        }
+
+        return $pdf . "trailer\n<< /Size {$size} /Root 1 0 R >>\nstartxref\n{$xrefStart}\n%%EOF";
+    }
+
     /** @throws \Throwable */
     public function testSetImportSourceDataReturnsSha256Id(): void
     {
@@ -188,6 +229,32 @@ class ImporterTest extends TestCase
         $importer = $this->makeImporter();
         $this->expectException(ImportSourceNotFoundException::class);
         $importer->getSourcePageCount('invalid-source-id');
+    }
+
+    /** @throws \Throwable */
+    public function testGetSourcePageCountIgnoresForgedOversizedCount(): void
+    {
+        // The donor declares /Count 50 but only one page is reachable
+        // through /Kids; the declared value must not be trusted.
+        $importer = $this->makeImporter();
+        $srcId = $importer->setImportSourceData($this->buildDonorPdf(50, 1));
+        $this->assertSame(1, $importer->getSourcePageCount($srcId));
+    }
+
+    /** @throws \Throwable */
+    public function testGetSourcePageCountIgnoresUndersizedCount(): void
+    {
+        $importer = $this->makeImporter();
+        $srcId = $importer->setImportSourceData($this->buildDonorPdf(1, 2));
+        $this->assertSame(2, $importer->getSourcePageCount($srcId));
+    }
+
+    /** @throws \Throwable */
+    public function testGetSourcePageCountWorksWithoutDeclaredCount(): void
+    {
+        $importer = $this->makeImporter();
+        $srcId = $importer->setImportSourceData($this->buildDonorPdf(null, 2));
+        $this->assertSame(2, $importer->getSourcePageCount($srcId));
     }
 
     /** @throws \Throwable */
@@ -371,6 +438,17 @@ class ImporterTest extends TestCase
         $importer->getSourcePageCount($srcId);
     }
 
+    /** @throws \Throwable */
+    public function testCleanUpClearsPageIndexCache(): void
+    {
+        $data = $this->fixtureData();
+        $importer = $this->makeImporter();
+        $srcId = $importer->setImportSourceData($data);
+        $this->assertSame(1, $importer->getSourcePageCount($srcId));
+        $importer->cleanUp();
+        $this->assertSame([], $this->getObjectProperty($importer, 'pageIndexes'));
+    }
+
     public function testSelectBoxFallsBackToMediaBoxWhenRequestedBoxIsMissing(): void
     {
         $importer = $this->makeImporter();
@@ -422,54 +500,6 @@ class ImporterTest extends TestCase
     }
 
     /** @throws \Throwable */
-    public function testParseSimpleDictSkipsMalformedEntriesAndCollectsScalarValues(): void
-    {
-        $importer = $this->makeImporter();
-
-        /** @var array<string, mixed> $dict */
-        $dict = $this->invokeImporterMethod($importer, 'parseSimpleDict', [
-            'junk-token',
-            ['stream', 'ignored'],
-            [
-                '<<',
-                [
-                    ['not-a-name', 'Skip'],
-                    ['numeric', 1],
-                    ['/'],
-                    ['numeric', 2],
-                    ['/', []],
-                    ['numeric', 3],
-                    ['/', 'MissingInner'],
-                    ['string'],
-                    ['/', 'Pages'],
-                    ['objref', '2 0 R'],
-                    ['/', 'Count'],
-                    2,
-                ],
-            ],
-        ]);
-        $this->assertSame(
-            [
-                'Pages' => '2 0 R',
-                'Count' => '2',
-            ],
-            $dict,
-        );
-    }
-
-    /** @throws \Throwable */
-    public function testParseSimpleDictThrowsWhenDictionaryTokenIsMissing(): void
-    {
-        $importer = $this->makeImporter();
-
-        $this->expectException(ImportCorruptedSourceException::class);
-        $this->invokeImporterMethod($importer, 'parseSimpleDict', [
-            'junk-token',
-            ['stream', 'ignored'],
-        ]);
-    }
-
-    /** @throws \Throwable */
     public function testGetSourcePageCountThrowsWhenRootDictionaryHasNoPagesEntry(): void
     {
         $importer = $this->makeImporter();
@@ -495,7 +525,40 @@ class ImporterTest extends TestCase
     }
 
     /** @throws \Throwable */
-    public function testGetSourcePageCountReturnsZeroWhenPagesCountIsMissing(): void
+    public function testGetSourcePageCountReturnsZeroForEmptyPageTree(): void
+    {
+        $importer = $this->makeImporter();
+        $sourceId = 'stub-source';
+        $src = $this->createStub(SourceDocument::class);
+
+        $src->method('getTrailer')->willReturn(['root' => '1 0 R']);
+        $src->method('getObject')->willReturnCallback(static fn(string $ref): array => match ($ref) {
+            '1_0' => [[
+                '<<',
+                [
+                    ['/', 'Pages'],
+                    ['objref', '2 0 R'],
+                ],
+            ]],
+            '2_0' => [[
+                '<<',
+                [
+                    ['/', 'Type'],
+                    ['/', 'Pages'],
+                    ['/', 'Kids'],
+                    ['[', []],
+                ],
+            ]],
+            default => [],
+        });
+
+        $this->setObjectProperty($importer, 'sources', [$sourceId => $src]);
+
+        $this->assertSame(0, $importer->getSourcePageCount($sourceId));
+    }
+
+    /** @throws \Throwable */
+    public function testGetSourcePageCountThrowsWhenPagesNodeHasNoKids(): void
     {
         $importer = $this->makeImporter();
         $sourceId = 'stub-source';
@@ -522,7 +585,62 @@ class ImporterTest extends TestCase
 
         $this->setObjectProperty($importer, 'sources', [$sourceId => $src]);
 
-        $this->assertSame(0, $importer->getSourcePageCount($sourceId));
+        $this->expectException(ImportCorruptedSourceException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('/Kids', '/') . '/');
+        $importer->getSourcePageCount($sourceId);
+    }
+
+    /** @throws \Throwable */
+    public function testGetSourcePageCountIsCachedPerSource(): void
+    {
+        $importer = $this->makeImporter();
+        $sourceId = 'stub-source';
+        $src = $this->createStub(SourceDocument::class);
+        $calls = 0;
+
+        $src->method('getTrailer')->willReturn(['root' => '1 0 R']);
+        $src->method('getObject')->willReturnCallback(static function (string $ref) use (&$calls): array {
+            ++$calls;
+            return match ($ref) {
+                '1_0' => [[
+                    '<<',
+                    [
+                        ['/', 'Pages'],
+                        ['objref', '2 0 R'],
+                    ],
+                ]],
+                '2_0' => [[
+                    '<<',
+                    [
+                        ['/', 'Type'],
+                        ['/', 'Pages'],
+                        ['/', 'Kids'],
+                        [
+                            '[',
+                            [
+                                ['objref', '3 0 R'],
+                            ],
+                        ],
+                    ],
+                ]],
+                '3_0' => [[
+                    '<<',
+                    [
+                        ['/', 'Type'],
+                        ['/', 'Page'],
+                    ],
+                ]],
+                default => [],
+            };
+        });
+
+        $this->setObjectProperty($importer, 'sources', [$sourceId => $src]);
+
+        $this->assertSame(1, $importer->getSourcePageCount($sourceId));
+        $callsAfterFirst = $calls;
+        $this->assertGreaterThan(0, $callsAfterFirst);
+        $this->assertSame(1, $importer->getSourcePageCount($sourceId));
+        $this->assertSame($callsAfterFirst, $calls);
     }
 
     // -------------------------------------------------------------------------
@@ -540,6 +658,32 @@ class ImporterTest extends TestCase
         $this->assertCount(1, $templates);
         assert(isset($templates[0]), "\$templates[0] must be set");
         $this->assertInstanceOf(PageTemplate::class, $templates[0]);
+    }
+
+    /** @throws \Throwable */
+    public function testImportPagesNullRangeIgnoresForgedOversizedCount(): void
+    {
+        // With a forged /Count the null range must import only the pages
+        // actually reachable through /Kids, without materializing any
+        // /Count-sized structure.
+        $importer = $this->makeImporter();
+        $srcId = $importer->setImportSourceData($this->buildDonorPdf(50, 1));
+        $templates = $importer->importPages($srcId, null);
+        $this->assertCount(1, $templates);
+        assert(isset($templates[0]), "\$templates[0] must be set");
+        $this->assertInstanceOf(PageTemplate::class, $templates[0]);
+    }
+
+    /** @throws \Throwable */
+    public function testImportPagesRangeBeyondReachablePagesThrows(): void
+    {
+        // The bounds check must use the verified page count, not the
+        // forged declared /Count.
+        $importer = $this->makeImporter();
+        $srcId = $importer->setImportSourceData($this->buildDonorPdf(50, 1));
+        $this->expectException(ImportPageOutOfRangeException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('out of range [1,1]', '/') . '/');
+        $importer->importPages($srcId, [2]);
     }
 
     /** @throws \Throwable */
@@ -569,6 +713,41 @@ class ImporterTest extends TestCase
         assert(isset($batch[0]), "\$batch[0] must be set");
         // Same page imported again (cache hit) — must return the exact same template.
         $this->assertSame($single->getXobjId(), $batch[0]->getXobjId());
+    }
+
+    /**
+     * Counting the pages and importing all of them must walk the page tree
+     * exactly once per source: the flattened page index built on first use is
+     * reused for every subsequent page resolution.
+     *
+     * @throws \Throwable
+     */
+    public function testImportPagesWalksPageTreeOnlyOnce(): void
+    {
+        $importer = $this->makeImporter();
+        $src = new class($this->buildDonorPdf(null, 2)) extends SourceDocument {
+            /** @var array<string, int> */
+            public array $fetches = [];
+
+            public function getObject(string $ref): array
+            {
+                $this->fetches[$ref] = ($this->fetches[$ref] ?? 0) + 1;
+                return parent::getObject($ref);
+            }
+        };
+        $sourceId = 'counting-source';
+        $this->setObjectProperty($importer, 'sources', [$sourceId => $src]);
+
+        $this->assertSame(2, $importer->getSourcePageCount($sourceId));
+        $templates = $importer->importPages($sourceId);
+
+        $this->assertCount(2, $templates);
+        // Catalog, /Pages node, and each page leaf fetched exactly once for
+        // the count plus the whole batch import.
+        $this->assertSame(1, $src->fetches['1_0'] ?? 0);
+        $this->assertSame(1, $src->fetches['2_0'] ?? 0);
+        $this->assertSame(1, $src->fetches['3_0'] ?? 0);
+        $this->assertSame(1, $src->fetches['4_0'] ?? 0);
     }
 
     /** @throws \Throwable */

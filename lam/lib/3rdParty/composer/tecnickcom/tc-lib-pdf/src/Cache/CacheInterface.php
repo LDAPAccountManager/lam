@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -38,7 +38,7 @@ namespace Com\Tecnick\Pdf\Cache;
  * never breaks PDF generation.
  *
  * Keys are already namespaced and schema-versioned by each sub-library
- * (e.g. "tc-lib-pdf-font:subset:v1:..." and "tc-lib-pdf-image:v1:..."), so a
+ * (e.g. "tc-lib-pdf-font:subset:v2:..." and "tc-lib-pdf-image:v2:..."), so a
  * single shared store is collision-safe.
  *
  * Security: the cache store is a trust boundary. Cached values are embedded
@@ -52,7 +52,7 @@ namespace Com\Tecnick\Pdf\Cache;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  */
 interface CacheInterface

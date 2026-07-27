@@ -23,10 +23,10 @@ final class DoublePrecisionFloatObject extends Base implements Normalizable
     public static function createFromFloat(float $number): self
     {
         $value = match (true) {
-            is_nan($number) => hex2bin('7FF8000000000000'),
-            is_infinite($number) && $number > 0 => hex2bin('7FF0000000000000'),
-            is_infinite($number) && $number < 0 => hex2bin('FFF0000000000000'),
-            default => (fn (): string => unpack('S', "\x01\x00")[1] === 1 ? strrev(pack('d', $number)) : pack(
+            is_nan($number) => self::hex2binSafe('7FF8000000000000'),
+            is_infinite($number) && $number > 0 => self::hex2binSafe('7FF0000000000000'),
+            is_infinite($number) && $number < 0 => self::hex2binSafe('FFF0000000000000'),
+            default => (static fn (): string => unpack('S', "\x01\x00")[1] === 1 ? strrev(pack('d', $number)) : pack(
                 'd',
                 $number
             ))(),
@@ -89,5 +89,14 @@ final class DoublePrecisionFloatObject extends Base implements Normalizable
         $sign = Utils::binToBigInteger($data)->shiftedRight(63);
 
         return $sign->isEqualTo(BigInteger::one()) ? -1 : 1;
+    }
+
+    private static function hex2binSafe(string $hex): string
+    {
+        $result = hex2bin($hex);
+        if ($result === false) {
+            throw new InvalidArgumentException('Invalid hex string');
+        }
+        return $result;
     }
 }

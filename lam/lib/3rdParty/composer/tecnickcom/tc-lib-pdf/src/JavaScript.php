@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Pdf\Exception as PdfException;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type TAnnotOpts from \Com\Tecnick\Pdf\Base
@@ -131,7 +131,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
     ];
 
     /**
-     * Deafult Javascript Annotation properties.
+     * Default Javascript Annotation properties.
      * Possible values are described on official Javascript for Acrobat API reference.
      * Annotation options can be directly specified using the 'aopt' entry.
      *
@@ -650,7 +650,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
      *
      * @param string $file  File name (absolute or relative path).
      * @param string $mime  MIME type of the file (e.g., 'application/xml').
-     * @param string $afrel AFRelationship value (Source, Data, Alternative, Supplement, Unspecified).
+     * @param string|AFRelationship $afrel AFRelationship value (Source, Data, Alternative, Supplement, Unspecified) or enum.
      * @param string $desc  Optional description of the file.
      *
      * @throws PdfException in case of error.
@@ -658,9 +658,13 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
     public function addEmbeddedFile(
         string $file,
         string $mime = 'application/octet-stream',
-        string $afrel = 'Source',
+        string|AFRelationship $afrel = 'Source',
         string $desc = '',
     ): void {
+        if ($afrel instanceof AFRelationship) {
+            $afrel = $afrel->value;
+        }
+
         if ($this->pdfa === 1 || $this->pdfa === 2) {
             throw new PdfException('Embedded files are not allowed in PDF/A mode version 1 and 2');
         }
@@ -697,7 +701,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
      * @param string $file    File name to be used a key for the embedded file.
      * @param string $content Content of the embedded file.
      * @param string $mime  MIME type of the file (e.g., 'application/xml').
-     * @param string $afrel AFRelationship value (Source, Data, Alternative, Supplement, Unspecified).
+     * @param string|AFRelationship $afrel AFRelationship value (Source, Data, Alternative, Supplement, Unspecified) or enum.
      * @param string $desc  Optional description of the file.
      *
      * @throws PdfException in case of error.
@@ -706,9 +710,13 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
         string $file,
         string $content,
         string $mime = 'application/octet-stream',
-        string $afrel = 'Source',
+        string|AFRelationship $afrel = 'Source',
         string $desc = '',
     ): void {
+        if ($afrel instanceof AFRelationship) {
+            $afrel = $afrel->value;
+        }
+
         if ($this->pdfa === 1 || $this->pdfa === 2) {
             throw new PdfException('Embedded files are not allowed in PDF/A mode version 1 and 2');
         }
@@ -1208,7 +1216,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
      * Add the specified Image ID to the XObject template.
      *
      * @param string  $tid  The XObject Template object as returned by the newXObjectTemplate method.
-     * @param int     $key  TheImage key to add.
+     * @param int     $key  The Image key to add.
      */
     public function addXObjectImageID(string $tid, int $key): void
     {
@@ -1287,7 +1295,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
     // ===| ANNOTATION FORM FIELDS |=======================================================
 
     /**
-     * Retyurns the PDF command to ser the default fill color from the style stack.
+     * Returns the PDF command to set the default fill color from the style stack.
      *
      * @return string
      * @throws \Com\Tecnick\Color\Exception
@@ -1925,7 +1933,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
         return $this->setAnnotation($posx, $posy, $width, $height, $name, $annotOpt);
     }
 
-    // ==| JS Fiedls |==
+    // ==| JS Fields |==
 
     /**
      * Adds a JavaScript button form field.
@@ -1937,9 +1945,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
      * @param float $height height in user units.
      * @param string $caption caption.
      * @param string $action action triggered by pressing the button.
-     *                      Use a string to specify a javascript action.
-     *                      Use an array to specify a form action options
-     *                      as in section 12.7.5 of PDF32000_2008.
+     *                      A string specifying the JavaScript action to run.
      * @param array<string, string> $jsp javascript field properties (see: Javascript for Acrobat API reference).
      * @throws PdfException in case of error.
      * @throws \Com\Tecnick\Pdf\Font\Exception
@@ -2050,7 +2056,7 @@ abstract class JavaScript extends \Com\Tecnick\Pdf\CSS
                 $itm .= ',[\'' . \addslashes($value) . '\',\'' . \addslashes($value) . '\']';
             }
         }
-        $this->javascript .= 'f' . $name . '.\setItems(' . \substr($itm, 1) . ');' . "\n";
+        $this->javascript .= 'f' . $name . '.setItems(' . \substr($itm, 1) . ');' . "\n";
     }
 
     /**

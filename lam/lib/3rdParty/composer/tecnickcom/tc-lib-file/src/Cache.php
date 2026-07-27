@@ -10,16 +10,16 @@ declare(strict_types=1);
  * @package   File
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link      https://github.com/tecnickcom/tc-lib-pdf-filecache
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link      https://github.com/tecnickcom/tc-lib-file
  *
- * This file is part of tc-lib-pdf-filecache software library.
+ * This file is part of tc-lib-file software library.
  */
 
 namespace Com\Tecnick\File;
 
 /**
- * Com\Tecnick\Pdf\File\Cache
+ * Com\Tecnick\File\Cache
  *
  * File caching system with per-instance path and prefix.
  * Each Cache instance maintains its own cache directory path and file prefix.
@@ -29,8 +29,8 @@ namespace Com\Tecnick\File;
  * @package   File
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link      https://github.com/tecnickcom/tc-lib-pdf-filecache
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link      https://github.com/tecnickcom/tc-lib-file
  */
 class Cache
 {

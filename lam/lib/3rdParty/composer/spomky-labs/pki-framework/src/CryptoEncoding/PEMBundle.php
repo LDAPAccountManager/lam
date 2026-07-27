@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\CryptoEncoding;
 
 use ArrayIterator;
-use function count;
 use Countable;
-use function is_string;
 use IteratorAggregate;
 use LogicException;
-use const PREG_SET_ORDER;
 use RuntimeException;
 use Stringable;
 use UnexpectedValueException;
+use function count;
+use function is_string;
+use const PREG_SET_ORDER;
 
 /**
  * Container for multiple PEM objects.

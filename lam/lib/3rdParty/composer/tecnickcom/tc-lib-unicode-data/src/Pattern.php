@@ -32,7 +32,7 @@ namespace Com\Tecnick\Unicode\Data;
 class Pattern
 {
     /**
-     * Pattern to test RTL (Righ-To-Left) strings using regular expressions.
+     * Pattern to test RTL (Right-To-Left) strings using regular expressions.
      * (excluding Arabic)
      */
     public const RTL = "/(

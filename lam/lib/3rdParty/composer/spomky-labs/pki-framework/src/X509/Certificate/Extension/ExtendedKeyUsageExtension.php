@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate\Extension;
 
 use ArrayIterator;
-use function count;
 use Countable;
-use function in_array;
 use IteratorAggregate;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\ObjectIdentifier;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
+use function count;
+use function in_array;
 
 /**
  * Implements 'Extended Key Usage' certificate extension.

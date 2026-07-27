@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -22,6 +22,8 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
 use Com\Tecnick\Barcode\Type\Square\QrCode\ByteStream;
 use Com\Tecnick\Barcode\Type\Square\QrCode\Data;
 use Com\Tecnick\Barcode\Type\Square\QrCode\Encoder;
+use Com\Tecnick\Barcode\Type\Square\QrCode\QrEccLevel;
+use Com\Tecnick\Barcode\Type\Square\QrCode\QrEncodingMode;
 use Com\Tecnick\Barcode\Type\Square\QrCode\Split;
 
 /**
@@ -34,7 +36,7 @@ use Com\Tecnick\Barcode\Type\Square\QrCode\Split;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class QrCode extends \Com\Tecnick\Barcode\Type\Square
@@ -134,18 +136,14 @@ class QrCode extends \Com\Tecnick\Barcode\Type\Square
         parent::setParameters();
 
         // level
-        if (($this->params[0] ?? null) === null || !\array_key_exists(\strval($this->params[0]), Data::ECC_LEVELS)) {
-            $this->params[0] = 'L';
-        }
-
-        $this->level = $this->getEccLevel(\strval($this->params[0]));
+        $eccLevel = QrEccLevel::fromLoose(\strval($this->params[0] ?? ''));
+        $this->params[0] = $eccLevel->value;
+        $this->level = $this->getEccLevel($eccLevel->value);
 
         // hint
-        if (($this->params[1] ?? null) === null || !\array_key_exists(\strval($this->params[1]), Data::ENC_MODES)) {
-            $this->params[1] = '8B';
-        }
-
-        $this->hint = $this->getHintMode(\strval($this->params[1]));
+        $encMode = QrEncodingMode::fromLoose(\strval($this->params[1] ?? ''));
+        $this->params[1] = $encMode->value;
+        $this->hint = $this->getHintMode($encMode->value);
 
         // version
         if (

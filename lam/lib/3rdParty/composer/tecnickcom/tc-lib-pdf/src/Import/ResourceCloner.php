@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -29,7 +29,7 @@ namespace Com\Tecnick\Pdf\Import;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type RawObjectArray from \Com\Tecnick\Pdf\Parser\Process\RawObject
@@ -47,7 +47,7 @@ class ResourceCloner
     /**
      * Constructor.
      *
-     * @param int $pon Current PDF object number (passed by value; use allocate() to update externally).
+     * @param int $pon Current PDF object number (passed by value; read the updated counter back via getPon()).
      */
     public function __construct(int $pon)
     {
@@ -67,8 +67,8 @@ class ResourceCloner
     /**
      * Extract the raw bytes of the merged content stream for a page.
      *
-     * Phase 1: single content stream only.
-     * Phase 2 (future): array of /Contents refs decoded and concatenated.
+     * Handles a single /Contents reference as well as an array of references,
+     * which are decoded and concatenated into one stream.
      *
      * @param array<string, mixed> $pageDict Effective page dictionary.
      * @param SourceDocument       $src      Source document.
@@ -90,7 +90,7 @@ class ResourceCloner
             return $this->extractSingleStream(SourceDocument::refToKey($pageDict['Contents']), $src);
         }
 
-        // Array of references — for Phase 1 we require exactly one element.
+        // Array of references: a single element is extracted directly.
         if (\is_array($pageDict['Contents'])) {
             $contents = \array_values($pageDict['Contents']);
             if (\count($contents) === 1) {
@@ -254,6 +254,10 @@ class ResourceCloner
     }
 
     /**
+     * Clone a referenced source object into the destination document.
+     *
+     * @param string         $srcRef Source object reference key (see SourceDocument::refToKey()).
+     * @param SourceDocument $src    Source document.
      * @param ObjectMap      $map    Object map.
      *
      * @return int Allocated destination object number.

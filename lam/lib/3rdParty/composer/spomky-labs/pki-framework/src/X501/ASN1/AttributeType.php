@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X501\ASN1;
 
-use function array_key_exists;
 use OutOfBoundsException;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\ObjectIdentifier;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\PrintableString;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\UTF8String;
 use SpomkyLabs\Pki\ASN1\Type\StringType;
+use function array_key_exists;
 
 /**
  * Implements *AttributeType* ASN.1 type.

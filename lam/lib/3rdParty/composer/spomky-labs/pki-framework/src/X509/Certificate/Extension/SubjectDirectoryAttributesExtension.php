@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate\Extension;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -14,6 +13,7 @@ use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X501\ASN1\Attribute;
 use SpomkyLabs\Pki\X501\ASN1\Collection\SequenceOfAttributes;
 use UnexpectedValueException;
+use function count;
 
 /**
  * Implements 'Subject Directory Attributes' certificate extension.

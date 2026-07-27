@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoTypes\Asymmetric;
 
-use function chr;
-use function ord;
 use RuntimeException;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
@@ -21,6 +19,8 @@ use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve448\Ed448PublicKey;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve448\X448PublicKey;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RSA\RSAPublicKey;
 use UnexpectedValueException;
+use function chr;
+use function ord;
 
 /**
  * Implements X.509 SubjectPublicKeyInfo ASN.1 type.

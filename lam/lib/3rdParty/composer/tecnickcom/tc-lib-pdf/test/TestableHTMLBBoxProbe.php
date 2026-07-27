@@ -8,7 +8,7 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -51,8 +51,8 @@ class TestableHTMLBBoxProbe extends TestableHTML
         float $height = 0,
         float $offset = 0,
         float $linespace = 0,
-        string $valign = 'C',
-        string $halign = 'C',
+        string|\Com\Tecnick\Pdf\TextVAlign $valign = 'C',
+        string|\Com\Tecnick\Pdf\TextHAlign $halign = 'C',
         ?array $cell = null,
         array $styles = [],
         float $strokewidth = 0,
@@ -67,9 +67,9 @@ class TestableHTMLBBoxProbe extends TestableHTML
         bool $overline = false,
         bool $clip = false,
         bool $drawcell = true,
-        string $forcedir = '',
+        string|\Com\Tecnick\Unicode\TextDirection $forcedir = '',
         ?array $shadow = null,
-        string $fit = '',
+        string|\Com\Tecnick\Pdf\TextFitMode $fit = '',
     ): string {
         $out = parent::getTextCell(
             $txt,

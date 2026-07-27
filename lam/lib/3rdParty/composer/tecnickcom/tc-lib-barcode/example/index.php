@@ -8,7 +8,7 @@
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -125,7 +125,7 @@ echo
         <style>
             body {font-family:Arial, Helvetica, sans-serif;margin:30px;}
             table {border: 1px solid black;}
-            th {border: 1px solid black;padding:4px;background-barcode:cornsilk;}
+            th {border: 1px solid black;padding:4px;background-color:cornsilk;}
             td {border: 1px solid black;padding:4px;}
             h3 {color:darkblue;}
             h4 {color:darkgreen;}
@@ -134,7 +134,7 @@ echo
     </head>
     <body>
         <h1>Usage example of tc-lib-barcode library</h1>
-        <p>This is an usage example of <a href="https://github.com/tecnickcom/tc-lib-barcode" title="tc-lib-barcode: PHP library to generate linear and bidimensional barcodes">tc-lib-barcode</a> library.</p>
+        <p>This is a usage example of <a href="https://github.com/tecnickcom/tc-lib-barcode" title="tc-lib-barcode: PHP library to generate linear and bidimensional barcodes">tc-lib-barcode</a> library.</p>
         <h2>Output Formats</h2>
         <h3>PNG Image</h3>
         <p><img alt="Embedded Image" src="data:image/png;base64,'

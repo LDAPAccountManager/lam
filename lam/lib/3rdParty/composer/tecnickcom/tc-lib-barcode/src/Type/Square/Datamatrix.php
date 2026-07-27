@@ -8,11 +8,9 @@ declare(strict_types=1);
  * @since     2015-02-21
  * @category  Library
  * @package   Barcode
- *
- * @throws BarcodeException in case of error
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -22,6 +20,8 @@ namespace Com\Tecnick\Barcode\Type\Square;
 
 use Com\Tecnick\Barcode\Exception as BarcodeException;
 use Com\Tecnick\Barcode\Type\Square\Datamatrix\Data;
+use Com\Tecnick\Barcode\Type\Square\Datamatrix\DatamatrixEncoding;
+use Com\Tecnick\Barcode\Type\Square\Datamatrix\DatamatrixShape;
 use Com\Tecnick\Barcode\Type\Square\Datamatrix\Encode;
 
 /**
@@ -35,7 +35,7 @@ use Com\Tecnick\Barcode\Type\Square\Datamatrix\Encode;
  * @package   Barcode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  */
 class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
@@ -93,16 +93,15 @@ class Datamatrix extends \Com\Tecnick\Barcode\Type\Square
         parent::setParameters();
 
         // shape
-        if (($this->params[0] ?? null) === 'R') {
-            $this->shape = 'R';
-        }
+        $this->shape = DatamatrixShape::fromLoose(\strval($this->params[0] ?? ''))->value;
 
         // mode
         $this->gsonemode = ($this->params[1] ?? null) === 'GS1';
 
         // encoding
         if (($this->params[2] ?? null) !== null) {
-            $this->defenc = Data::ENCOPTS[\strval($this->params[2])] ?? Data::ENC_ASCII;
+            $this->defenc =
+                Data::ENCOPTS[DatamatrixEncoding::fromLoose(\strval($this->params[2]))->value] ?? Data::ENC_ASCII;
         }
     }
 

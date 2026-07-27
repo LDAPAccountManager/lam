@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Unicode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * This file is part of tc-lib-unicode software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Unicode\Exception as UniException;
  * @package   Unicode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-unicode
  */
 class Convert extends \Com\Tecnick\Unicode\Convert\Encoding
@@ -115,7 +115,7 @@ class Convert extends \Com\Tecnick\Unicode\Convert\Encoding
     }
 
     /**
-     * Converts an array of UTF-8 code points array of chars
+     * Converts an array of UTF-8 code points to an array of chars
      *
      * @param array<int> $ords Array of UTF-8 code points
      *

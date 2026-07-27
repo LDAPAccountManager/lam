@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * This file is part of tc-lib-pdf-image software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Pdf\Image\Exception as ImageException;
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * @phpstan-type TFileOptions array{
@@ -158,7 +158,7 @@ abstract class Output
     ): string {
         $img = $this->image[$iid] ?? null;
         if ($img === null) {
-            throw new ImageException('Unknownn image ID: ' . $iid);
+            throw new ImageException('Unknown image ID: ' . $iid);
         }
 
         $out = 'q';

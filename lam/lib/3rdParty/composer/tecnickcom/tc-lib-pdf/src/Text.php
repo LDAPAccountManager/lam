@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -23,6 +23,7 @@ use Com\Tecnick\Unicode\Bidi;
 use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
 use Com\Tecnick\Unicode\Data\Type as UnicodeType;
 use Com\Tecnick\Unicode\Substitution;
+use Com\Tecnick\Unicode\TextDirection;
 
 /**
  * Com\Tecnick\Pdf\Text
@@ -34,7 +35,7 @@ use Com\Tecnick\Unicode\Substitution;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type TTextDims from \Com\Tecnick\Pdf\Font\Stack
@@ -129,7 +130,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     protected array $hyphen_patterns = [];
 
     /**
-     * Dafault value for $dim array.
+     * Default value for $dim array.
      *
      * @var TTextDims
      */
@@ -172,8 +173,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param float       $height      Height.
      * @param float       $offset      Horizontal offset to apply to the line start.
      * @param float       $linespace   Additional space to add between lines.
-     * @param string      $valign      Text vertical alignment inside the cell: T=top; C=center; B=bottom.
-     * @param string      $halign      Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify.
+     * @param string|TextVAlign $valign Text vertical alignment inside the cell: T=top; C=center; B=bottom (or enum case).
+     * @param string|TextHAlign $halign Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify (or enum).
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
      * @param TextCellStylesInput $styles Cell border styles (see: getCurrentStyleArray).
      * @param float       $strokewidth Stroke width.
@@ -188,9 +189,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param bool        $overline    If true overline the text.
      * @param bool        $clip        If true activate clipping mode.
      * @param bool        $drawcell    If true draw the cell border.
-     * @param string      $forcedir    If 'R' forces RTL, if 'L' forces LTR.
+     * @param string|TextDirection $forcedir    If 'R' forces RTL, if 'L' forces LTR.
      * @param ?TextShadow $shadow      Text shadow parameters.
-     * @param string      $fit         Option to fit the overflowing text in the given cell dimensions.
+     * @param string|TextFitMode $fit  Option to fit the overflowing text in the given cell dimensions (or enum case).
      *                                 Supported values:
      *                                 - '': disabled (default)
      *                                 - 'T': truncate text to fit width and height
@@ -211,8 +212,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         float $height = 0,
         float $offset = 0,
         float $linespace = 0,
-        string $valign = 'C',
-        string $halign = 'C',
+        string|TextVAlign $valign = 'C',
+        string|TextHAlign $halign = 'C',
         ?array $cell = null,
         array $styles = [],
         float $strokewidth = 0,
@@ -227,10 +228,13 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         bool $overline = false,
         bool $clip = false,
         bool $drawcell = true,
-        string $forcedir = '',
+        string|TextDirection $forcedir = '',
         ?array $shadow = null,
-        string $fit = '',
+        string|TextFitMode $fit = '',
     ): string {
+        $valign = $valign instanceof TextVAlign ? $valign->value : $valign;
+        $halign = $halign instanceof TextHAlign ? $halign->value : $halign;
+
         if ($txt === '') {
             return '';
         }
@@ -372,8 +376,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param float       $height      Height.
      * @param float       $offset      Horizontal offset to apply to the line start.
      * @param float       $linespace   Additional space to add between lines.
-     * @param string      $valign      Text vertical alignment inside the cell: T=top; C=center; B=bottom.
-     * @param string      $halign      Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify.
+     * @param string|TextVAlign $valign Text vertical alignment inside the cell: T=top; C=center; B=bottom (or enum case).
+     * @param string|TextHAlign $halign Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify (or enum).
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
      * @param TextCellStylesInput $styles Cell border styles (see: getCurrentStyleArray).
      * @param float       $strokewidth Stroke width.
@@ -388,9 +392,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param bool        $overline    If true overline the text.
      * @param bool        $clip        If true activate clipping mode.
      * @param bool        $drawcell    If true draw the cell border.
-     * @param string      $forcedir    If 'R' forces RTL, if 'L' forces LTR.
+     * @param string|TextDirection $forcedir    If 'R' forces RTL, if 'L' forces LTR.
      * @param ?TextShadow $shadow      Text shadow parameters.
-     * @param string      $fit         Option to fit the overflowing text in the given cell dimensions.
+     * @param string|TextFitMode $fit  Option to fit the overflowing text in the given cell dimensions (or enum case).
      *                                 Supported values:
      *                                 - '': disabled (default)
      *                                 - 'T': truncate text to fit width and height
@@ -412,8 +416,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         float $height = 0,
         float $offset = 0,
         float $linespace = 0,
-        string $valign = 'T',
-        string $halign = '',
+        string|TextVAlign $valign = 'T',
+        string|TextHAlign $halign = '',
         ?array $cell = null,
         array $styles = [],
         float $strokewidth = 0,
@@ -428,9 +432,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         bool $overline = false,
         bool $clip = false,
         bool $drawcell = true,
-        string $forcedir = '',
+        string|TextDirection $forcedir = '',
         ?array $shadow = null,
-        string $fit = '',
+        string|TextFitMode $fit = '',
     ): void {
         $region = $this->page->getRegion($pid);
         $rposx = $posx - $region['RX'];
@@ -478,8 +482,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param float       $height      Height.
      * @param float       $offset      Horizontal offset to apply to the line start.
      * @param float       $linespace   Additional space to add between lines.
-     * @param string      $valign      Text vertical alignment inside the cell: T=top; C=center; B=bottom.
-     * @param string      $halign      Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify.
+     * @param string|TextVAlign $valign Text vertical alignment inside the cell: T=top; C=center; B=bottom (or enum case).
+     * @param string|TextHAlign $halign Text horizontal alignment inside the cell: L=left; C=center; R=right; J=justify (or enum).
      * @param ?TCellDef   $cell        Optional to overwrite cell parameters for padding, margin etc.
      * @param TextCellStylesInput $styles Cell border styles (see: getCurrentStyleArray).
      * @param float       $strokewidth Stroke width.
@@ -494,9 +498,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param bool        $overline    If true overline the text.
      * @param bool        $clip        If true activate clipping mode.
      * @param bool        $drawcell    If true draw the cell border.
-     * @param string      $forcedir    If 'R' forces RTL, if 'L' forces LTR.
+     * @param string|TextDirection $forcedir    If 'R' forces RTL, if 'L' forces LTR.
      * @param ?TextShadow $shadow      Text shadow parameters.
-     * @param string      $fit         Option to fit the overflowing text in the given cell dimensions.
+     * @param string|TextFitMode $fit  Option to fit the overflowing text in the given cell dimensions (or enum case).
      *                                 Supported values:
      *                                 - '': disabled (default)
      *                                 - 'T': truncate text to fit width and height
@@ -518,8 +522,8 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         float $height = 0,
         float $offset = 0,
         float $linespace = 0,
-        string $valign = 'T',
-        string $halign = '',
+        string|TextVAlign $valign = 'T',
+        string|TextHAlign $halign = '',
         ?array $cell = null,
         array $styles = [],
         float $strokewidth = 0,
@@ -534,10 +538,13 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         bool $overline = false,
         bool $clip = false,
         bool $drawcell = true,
-        string $forcedir = '',
+        string|TextDirection $forcedir = '',
         ?array $shadow = null,
-        string $fit = '',
+        string|TextFitMode $fit = '',
     ): void {
+        $valign = $valign instanceof TextVAlign ? $valign->value : $valign;
+        $halign = $halign instanceof TextHAlign ? $halign->value : $halign;
+
         if ($txt === '') {
             return;
         }
@@ -923,6 +930,10 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * Pass raw drawing/image operators (for example from graph or image helpers)
      * to associate them with a Figure structure element and optional /Alt text.
      *
+     * @param string $content Raw drawing/image operators to place inside the Figure.
+     * @param int    $pid     Page identifier the content is added to.
+     * @param string $alt     Optional alternate text written as the Figure /Alt entry.
+     *
      * @throws \Com\Tecnick\Pdf\Page\Exception
      */
     public function addTaggedFigureContent(string $content, int $pid, string $alt = ''): void
@@ -1010,13 +1021,9 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     /**
      * Normalize text-cell fit mode. Unknown values disable auto-fit.
      */
-    protected function normalizeTextCellFitMode(string $fit): string
+    protected function normalizeTextCellFitMode(string|TextFitMode $fit): string
     {
-        $fit = \strtoupper(\trim($fit));
-        return match ($fit) {
-            'T', 'S', 'F' => $fit,
-            default => '',
-        };
+        return TextFitMode::fromLoose($fit)->value;
     }
 
     /**
@@ -1053,7 +1060,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @throws \Com\Tecnick\Pdf\Font\Exception
      */
     protected function resolveTextCellFitState(
-        string $fit,
+        string|TextFitMode $fit,
         array $ordarr,
         array $dim,
         float $txt_pwidth,
@@ -2125,7 +2132,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param bool        $linethrough If true line through the text.
      * @param bool        $overline    If true overline the text.
      * @param bool        $clip        If true activate clipping mode.
-     * @param string      $forcedir    If 'R' forces RTL, if 'L' forces LTR.
+     * @param string|TextDirection $forcedir    If 'R' forces RTL, if 'L' forces LTR.
      * @param string      $txtanchor   Text anchor position: 'S'=start (default), 'M'=middle, 'E'=end.
      * @param ?TextShadow $shadow      Text shadow parameters.
      *
@@ -2148,10 +2155,12 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         bool $linethrough = false,
         bool $overline = false,
         bool $clip = false,
-        string $forcedir = '',
+        string|TextDirection $forcedir = '',
         string $txtanchor = '',
         ?array $shadow = null,
     ): string {
+        $forcedir = $forcedir instanceof TextDirection ? $forcedir->value : $forcedir;
+
         if ($txt === '') {
             return '';
         }
@@ -2353,7 +2362,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      * @param string          $txt      Clean text string to be processed.
      * @param array<int, int> $ordarr   Array of UTF-8 codepoints (integer values).
      * @param TTextDims $dim Array of dimensions
-     * @param string          $forcedir If 'R' forces RTL, if 'L' forces LTR.
+     * @param string|TextDirection $forcedir If 'R' forces RTL, if 'L' forces LTR.
      * @param bool            $baseRtl  Out-param: set to true when the paragraph base
      *                                  direction is RTL and the codepoints were Bidi
      *                                  reordered into visual order (so splitLines() must
@@ -2366,9 +2375,11 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         string &$txt,
         array &$ordarr,
         array &$dim,
-        string $forcedir = '',
+        string|TextDirection $forcedir = '',
         bool &$baseRtl = false,
     ): void {
+        $forcedir = $forcedir instanceof TextDirection ? $forcedir->value : $forcedir;
+
         $baseRtl = false;
 
         if ($txt === '') {
@@ -2699,7 +2710,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     }
 
     /**
-     * Returns the last text fragment bounding box [llx, lly, urx, ury].
+     * Returns the last text fragment bounding box as {x, y, w, h} (left, top, width, height).
      *
      * @return TBBox  Array of bounding box values.
      */
@@ -2717,7 +2728,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     }
 
     /**
-     * Returns the last Text bounding box [llx, lly, urx, ury].
+     * Returns the last Text bounding box as {x, y, w, h} (left, top, width, height).
      *
      * @return TBBox  Array of bounding box values.
      */
@@ -2735,7 +2746,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     }
 
     /**
-     * Returns the last Cell bounding box [llx, lly, urx, ury].
+     * Returns the last Cell bounding box as {x, y, w, h} (left, top, width, height).
      *
      * @return TBBox  Array of bounding box values.
      */
@@ -2753,7 +2764,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
     }
 
     /**
-     * Remove special chacters from the text string:
+     * Remove special characters from the text string:
      *     - 'CARRIAGE RETURN' (U+000D)
      *     - 'NO-BREAK SPACE' (U+00A0)
      *     - 'SHY' (U+00AD) SOFT HYPHEN
@@ -3054,12 +3065,12 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
         return $sub->replaceChars($ordarr);
     }
 
-    // ===| HYPENATION |====================================================
+    // ===| HYPHENATION |====================================================
 
     /**
      * Returns an array of hyphenation patterns.
      *
-     * @param string $file TEX file containing hypenation patterns.
+     * @param string $file TEX file containing hyphenation patterns.
      *                     TEX patterns can be downloaded from
      *                     https://www.ctan.org/tex-archive/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex
      *                     See https://www.ctan.org/tex-archive/language/hyph-utf8/ for more information.
@@ -3205,7 +3216,7 @@ abstract class Text extends \Com\Tecnick\Pdf\Cell
      *
      * @param array<int, int> $ordarr  Array of UTF-8 codepoints (integer values).
      *
-     * @return array<int, int> The modified array with SOFT-HYPHEN (U+00AD) characters.
+     * @return array<int, int> The modified array with ZERO-WIDTH-SPACE (U+200B) characters inserted.
      */
     protected function addOrdArrBreakPoints(array $ordarr): array
     {

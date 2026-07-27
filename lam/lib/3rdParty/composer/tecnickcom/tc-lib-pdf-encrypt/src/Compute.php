@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * This file is part of tc-lib-pdf-encrypt software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Pdf\Encrypt\Exception as EncException;
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * @SuppressWarnings("PHPMD.ExcessiveClassComplexity")
@@ -63,7 +63,7 @@ abstract class Compute extends \Com\Tecnick\Pdf\Encrypt\Data
                 $key = $this->getObjectKey($objnum);
             }
 
-            if ($this->encryptdata['mode'] >= 3) { // mode >= 3: AES-256 (R5 or R6) — use the full document key
+            if ($this->encryptdata['mode'] >= 3) { // mode >= 3: AES-256 (R5 or R6), use the full document key
                 $key = $this->encryptdata['key'];
             }
         }

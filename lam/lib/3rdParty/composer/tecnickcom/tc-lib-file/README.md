@@ -134,9 +134,9 @@ host filesystem; a few platform behaviors are worth knowing.
 
 Allowlist matching follows the filesystem's case rules:
 
-- **Linux** — case-sensitive.
-- **Windows** — case-insensitive.
-- **macOS** — per-volume: the default APFS/HFS+ volume is case-insensitive, but
+- **Linux**: case-sensitive.
+- **Windows**: case-insensitive.
+- **macOS**: per-volume, the default APFS/HFS+ volume is case-insensitive, but
   case-sensitive volumes exist. The library probes the actual volume and falls
   back to case-insensitive when it cannot.
 
@@ -155,7 +155,7 @@ $file->setCaseSensitivePaths(true);
 ```
 
 The same override makes the behavior testable on any host (the CI runs on Linux
-only — Windows and macOS are validated locally).
+only: Windows and macOS are validated locally).
 
 ### Unicode (macOS)
 
@@ -176,7 +176,7 @@ These inputs are intentionally **not** treated as trusted/canonical and are not
 specially expanded before allowlist matching: 8.3 short names (`PROGRA~1`),
 Alternate Data Streams (`file.txt:stream`, `::$DATA`), trailing dots/spaces, and
 reserved device names (`CON`, `NUL`, ...). UNC paths (`\\server\share`) are
-matched only when explicitly allowlisted — note the network-access implication.
+matched only when explicitly allowlisted (note the network-access implication).
 
 ---
 

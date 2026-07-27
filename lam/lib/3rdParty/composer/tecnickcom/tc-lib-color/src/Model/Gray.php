@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
@@ -28,7 +28,7 @@ namespace Com\Tecnick\Color\Model;
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
 class Gray extends \Com\Tecnick\Color\Model
@@ -118,7 +118,7 @@ class Gray extends \Com\Tecnick\Color\Model
 
     /**
      * Get the color format used in Acrobat JavaScript
-     * NOTE: the alpha channel is omitted from this representation unless is 0 = transparent
+     * NOTE: the alpha channel is omitted from this representation unless it is 0 = transparent
      */
     public function getJsPdfColor(): string
     {
@@ -156,7 +156,7 @@ class Gray extends \Com\Tecnick\Color\Model
     /**
      * Get an array with Gray color components
      *
-     * @return array<string, float> with keys ('gray')
+     * @return array<string, float> with keys ('gray', 'alpha')
      */
     public function toGrayArray(): array
     {

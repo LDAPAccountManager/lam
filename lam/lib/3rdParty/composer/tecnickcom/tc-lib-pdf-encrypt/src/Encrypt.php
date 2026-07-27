@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * This file is part of tc-lib-pdf-encrypt software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Pdf\Encrypt\Exception as EncException;
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * @phpstan-import-type TEncryptData from Output
@@ -44,7 +44,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      *        If you don't set any password, the document will open as usual.
      *        If you set a user password, the PDF viewer will ask for it before displaying the document.
      *        The master password, if different from the user one, can be used to get full access.
-     *        Protecting a document requires to encrypt it, which requires long processign time and may cause timeouts.
+     *        Protecting a document requires to encrypt it, which requires long processing time and may cause timeouts.
      *
      * @param bool   $enabled     False if the encryption is disabled (i.e. the document is in PDF/A mode)
      * @param string $file_id     File ID
@@ -185,7 +185,7 @@ class Encrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
     {
         if ($mode === 0 || $mode === 1) {
             \trigger_error(
-                'RC4 encryption (modes 0 and 1) is deprecated and cryptographically broken; use AES (mode 2 or 3)',
+                'RC4 encryption (modes 0 and 1) is deprecated and cryptographically broken; use AES (mode 2, 3, or 4)',
                 E_USER_DEPRECATED,
             );
         }

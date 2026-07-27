@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\ASN1\Type\Constructed;
 
-use function count;
 use LogicException;
 use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Component\Length;
@@ -13,6 +12,7 @@ use SpomkyLabs\Pki\ASN1\Exception\DecodeException;
 use SpomkyLabs\Pki\ASN1\Type\StringType;
 use SpomkyLabs\Pki\ASN1\Type\Structure;
 use Stringable;
+use function count;
 
 /**
  * Implements constructed type of simple strings.

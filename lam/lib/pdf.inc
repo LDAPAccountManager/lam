@@ -68,7 +68,7 @@ define('LAMPDF_FONT_SIZE_BIG', 10);
 /** font size for page title text */
 define('LAMPDF_FONT_SIZE_TITLE', 20);
 /** font location */
-define('K_PATH_FONTS', __DIR__ . '/3rdParty/composer/tecnickcom/tc-lib-pdf-font/target/fonts');
+define('K_PATH_FONTS', __DIR__ . '/3rdParty/fonts');
 
 /** access to PDF configuration files */
 include_once(__DIR__ . '/pdfstruct.inc');

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\GeneralName;
 
 use LogicException;
-use function mb_strlen;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
 use SpomkyLabs\Pki\ASN1\Type\Tagged\ImplicitlyTaggedType;
 use SpomkyLabs\Pki\ASN1\Type\TaggedType;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use UnexpectedValueException;
+use function mb_strlen;
 
 /**
  * Implements *iPAddress* CHOICE type of *GeneralName*.

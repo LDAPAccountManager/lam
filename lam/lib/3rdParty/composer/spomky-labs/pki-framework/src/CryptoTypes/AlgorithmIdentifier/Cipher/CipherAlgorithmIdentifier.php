@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Cipher;
 
-use function mb_strlen;
 use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\SpecificAlgorithmIdentifier;
 use UnexpectedValueException;
+use function mb_strlen;
 
 /**
  * Base class for cipher algorithm identifiers.

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  *
  * This file is part of tc-lib-pdf-filter software library.
@@ -31,7 +31,7 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  */
 class AsciiHex implements \Com\Tecnick\Pdf\Filter\Type\Template

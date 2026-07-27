@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * This file is part of tc-lib-pdf-page software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  */
 abstract class Format
@@ -481,16 +481,20 @@ abstract class Format
      * Get page dimensions.
      *
      * @param string $format      The page format name.
-     * @param string $orientation Page orientation ('P' = portrait; 'L' = landscape, '' = default).
-     * @param string $unit        Unit name (default points).
+     * @param string|Orientation $orientation Page orientation ('P' portrait; 'L' landscape; '' default) or enum case.
+     * @param string|Unit        $unit        Unit name (default points) or Unit enum case.
      * @param int    $dec         Number of decimals to return.
      *
      * @return array{0:float, 1:float, 2:string} Page width, height and orientation in specified unit.
      *
      * @throws PageException
      */
-    public function getPageFormatSize(string $format, string $orientation = '', string $unit = '', int $dec = 6): array
-    {
+    public function getPageFormatSize(
+        string $format,
+        string|Orientation $orientation = '',
+        string|Unit $unit = '',
+        int $dec = 6,
+    ): array {
         $formatSize = self::FORMAT[$format] ?? null;
         if ($formatSize === null) {
             throw new PageException('unknown page format: ' . $format);
@@ -508,12 +512,16 @@ abstract class Format
      *
      * @param float  $width       Page width.
      * @param float  $height      Page height.
-     * @param string $orientation Page orientation ('P' = portrait; 'L' = landscape, '' = default).
+     * @param string|Orientation $orientation Page orientation ('P' portrait; 'L' landscape; '' default) or enum case.
      *
      * @return array{0:float, 1:float, 2:string} Page width, height in points and orientation.
      */
-    public function getPageOrientedSize(float $width, float $height, string $orientation = ''): array
+    public function getPageOrientedSize(float $width, float $height, string|Orientation $orientation = ''): array
     {
+        if ($orientation instanceof Orientation) {
+            $orientation = $orientation->value;
+        }
+
         if ($orientation === 'P') {
             return [\min($width, $height), \max($width, $height), 'P'];
         }
@@ -546,12 +554,16 @@ abstract class Format
     /**
      * Get the unit ratio for the specified unit of measure.
      *
-     * @param string $unit Name of the unit of measure.
+     * @param string|Unit $unit Name of the unit of measure, or a Unit enum case.
      *
      * @throws PageException
      */
-    public function getUnitRatio(string $unit): float
+    public function getUnitRatio(string|Unit $unit): float
     {
+        if ($unit instanceof Unit) {
+            $unit = $unit->value;
+        }
+
         $unit = \strtolower($unit);
         $ratio = self::UNITRATIO[$unit] ?? null;
         if (!is_float($ratio)) {
@@ -565,12 +577,12 @@ abstract class Format
      * Convert Points to another unit.
      *
      * @param float  $points Value to convert.
-     * @param string $unit   Name of the unit to convert to.
+     * @param string|Unit $unit Name of the unit to convert to, or a Unit enum case.
      * @param int    $dec    Number of decimals to return.
      *
      * @throws PageException
      */
-    public function convertPoints(float $points, string $unit, int $dec = 6): float
+    public function convertPoints(float $points, string|Unit $unit, int $dec = 6): float
     {
         return \round($points / $this->getUnitRatio($unit), $dec);
     }

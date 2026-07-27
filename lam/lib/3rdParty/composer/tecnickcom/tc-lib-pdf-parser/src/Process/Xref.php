@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * This file is part of tc-lib-pdf-parser software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Pdf\Parser\Exception as PPException;
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * @phpstan-import-type RawObjectArray from \Com\Tecnick\Pdf\Parser\Process\RawObject
@@ -103,7 +103,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     /**
      * Get Cross-Reference (xref) table and trailer data from PDF document data.
      *
-     * @param int           $offset Xref offset (if know).
+     * @param int           $offset Xref offset (if known).
      * @param XrefDataInput $xref   Previous xref array (if any).
      *
      * @return XrefData Xref and trailer data.
@@ -362,7 +362,7 @@ abstract class Xref extends \Com\Tecnick\Pdf\Parser\Process\XrefStream
     }
 
     /**
-     * Decode the Cross-Reference section
+     * Decode the PDF trailer dictionary data
      *
      * @param XrefDataPartial $xref         Previous xref array (if any).
      * @param string          $trailer_data Trailer content string.

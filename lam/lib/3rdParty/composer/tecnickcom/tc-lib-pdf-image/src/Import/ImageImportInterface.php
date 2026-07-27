@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfImage
  * @author    jmleroux <jmleroux.pro@gmail.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * This file is part of tc-lib-pdf-image software library.
@@ -19,14 +19,14 @@ declare(strict_types=1);
 namespace Com\Tecnick\Pdf\Image\Import;
 
 /**
- * Com\Tecnick\Pdf\Image\Import\Jpeg
+ * Com\Tecnick\Pdf\Image\Import\ImageImportInterface
  *
  * @since     2011-05-23
  * @category  Library
  * @package   PdfImage
  * @author    jmleroux <jmleroux.pro@gmail.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * @phpstan-import-type ImageBaseData from \Com\Tecnick\Pdf\Image\Import

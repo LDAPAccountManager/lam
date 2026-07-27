@@ -12,6 +12,6 @@ Vcs-Browser: https://github.com/~#VENDOR#~/~#PROJECT#~
 Package: ~#PKGNAME#~
 Provides: php-~#PROJECT#~
 Architecture: all
-Depends: php (>= 8.2.0), php-tecnickcom-tc-lib-pdf-filter (<< 2.0.0), php-tecnickcom-tc-lib-pdf-filter (>= 2.9.4), ${misc:Depends}
+Depends: php (>= 8.2.0), php-tecnickcom-tc-lib-pdf-filter (<< 2.0.0), php-tecnickcom-tc-lib-pdf-filter (>= 2.10.1), ${misc:Depends}
 Description: PHP PDF Parser Library
  PHP library to parse PDF documents.

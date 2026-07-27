@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * This file is part of tc-lib-pdf-page software library.
@@ -26,7 +26,7 @@ namespace Com\Tecnick\Pdf\Page;
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  */
 abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
@@ -67,12 +67,16 @@ abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
     /**
      * Get the canonical page layout name.
      *
-     * @param string $name Page layout name.
+     * @param string|PageLayout $name Page layout name or PageLayout enum case.
      *
      * @return string Canonical page layout name.
      */
-    public function getLayout(string $name = ''): string
+    public function getLayout(string|PageLayout $name = ''): string
     {
+        if ($name instanceof PageLayout) {
+            return $name->value;
+        }
+
         $name = \strtolower($name);
         return self::LAYOUT[$name] ?? 'SinglePage';
     }
@@ -80,12 +84,16 @@ abstract class Mode extends \Com\Tecnick\Pdf\Page\Format
     /**
      * Get the canonical page display mode.
      *
-     * @param string $mode A name object specifying how the document should be displayed when opened.
+     * @param string|PageDisplayMode $mode Display mode name or PageDisplayMode enum case.
      *
      * @return string Canonical page display mode.
      */
-    public function getDisplay(string $mode = ''): string
+    public function getDisplay(string|PageDisplayMode $mode = ''): string
     {
+        if ($mode instanceof PageDisplayMode) {
+            return $mode->value;
+        }
+
         $mode = \strtolower($mode);
         return self::DISPLAY[$mode] ?? 'UseNone';
     }

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfSign
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-sign
  *
  * This file is part of tc-lib-pdf-sign software library.
@@ -30,7 +30,7 @@ namespace Com\Tecnick\Pdf\Sign;
  * @package   PdfSign
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-sign
  */
 final class Config
@@ -81,21 +81,34 @@ final class Config
     public const DIGEST_ALGORITHMS = ['sha256', 'sha384', 'sha512'];
 
     /**
-     * @param string $profile         One of the PROFILE_* constants.
-     * @param string $digestAlgorithm One of the DIGEST_ALGORITHMS values.
-     * @param int    $certType        Certification level (DocMDP P value):
-     *                                0 = approval/UR signature,
-     *                                1 = no changes permitted,
-     *                                2 = form fill-in and signing permitted,
-     *                                3 = as 2 plus annotation changes.
+     * Selected signature profile (one of the PROFILE_* constants).
+     */
+    public readonly string $profile;
+
+    /**
+     * Selected CMS digest algorithm (one of the DIGEST_ALGORITHMS values).
+     */
+    public readonly string $digestAlgorithm;
+
+    /**
+     * @param string|SignatureProfile $profile         Profile identifier or enum case.
+     * @param string|DigestAlgorithm  $digestAlgorithm Digest algorithm name or enum case.
+     * @param int                     $certType        Certification level (DocMDP P value):
+     *                                                 0 = approval/UR signature,
+     *                                                 1 = no changes permitted,
+     *                                                 2 = form fill-in and signing permitted,
+     *                                                 3 = as 2 plus annotation changes.
      *
      * @throws Exception If any option is invalid.
      */
     public function __construct(
-        public readonly string $profile = self::PROFILE_LEGACY,
-        public readonly string $digestAlgorithm = 'sha256',
+        string|SignatureProfile $profile = self::PROFILE_LEGACY,
+        string|DigestAlgorithm $digestAlgorithm = 'sha256',
         public readonly int $certType = 2,
     ) {
+        $profile = $profile instanceof SignatureProfile ? $profile->value : $profile;
+        $digestAlgorithm = $digestAlgorithm instanceof DigestAlgorithm ? $digestAlgorithm->value : $digestAlgorithm;
+
         if (!\in_array($profile, self::PROFILES, true)) {
             throw new Exception('Invalid signature profile: ' . $profile);
         }
@@ -107,6 +120,9 @@ final class Config
         if ($certType < 0 || $certType > 3) {
             throw new Exception('Invalid certification level (cert_type): ' . $certType);
         }
+
+        $this->profile = $profile;
+        $this->digestAlgorithm = $digestAlgorithm;
     }
 
     /**
@@ -137,13 +153,13 @@ final class Config
     {
         /** @var mixed $profile */
         $profile = $data['profile'] ?? self::PROFILE_LEGACY;
-        if (!\is_string($profile)) {
+        if (!\is_string($profile) && !$profile instanceof SignatureProfile) {
             throw new Exception('Invalid signature profile');
         }
 
         /** @var mixed $digest */
         $digest = $data['digest_algorithm'] ?? 'sha256';
-        if (!\is_string($digest)) {
+        if (!\is_string($digest) && !$digest instanceof DigestAlgorithm) {
             throw new Exception('Invalid digest algorithm');
         }
 

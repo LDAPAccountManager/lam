@@ -8,7 +8,7 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -292,7 +292,31 @@ class BaseTest extends TestUtil
     }
 
     /** @throws \Throwable */
-    public function testDefaultFileAllowedPathsSkipsUnresolvedCandidates(): void
+    public function testVendorSiblingPackagesPathDetectsComposerDependencyLayout(): void
+    {
+        $obj = $this->getTestObject();
+
+        $this->assertSame('/proj/vendor/tecnickcom', $this->invokeBaseMethod(
+            $obj,
+            'vendorSiblingPackagesPath',
+            '/proj/vendor/tecnickcom/tc-lib-pdf/src',
+        ));
+
+        $this->assertNull($this->invokeBaseMethod(
+            $obj,
+            'vendorSiblingPackagesPath',
+            '/home/dev/github.com/tecnickcom/tc-lib-pdf/src',
+        ));
+
+        $this->assertNull($this->invokeBaseMethod(
+            $obj,
+            'vendorSiblingPackagesPath',
+            '/proj/custom-deps/tecnickcom/tc-lib-pdf/src',
+        ));
+    }
+
+    /** @throws \Throwable */
+    public function testDefaultFileAllowedPathsMatchVendorSiblingDetection(): void
     {
         $obj = $this->getTestObject();
         $paths = $obj->defaultFileAllowedPaths();
@@ -301,15 +325,24 @@ class BaseTest extends TestUtil
         $baseFile = $baseFileClass->getFileName();
         $this->assertIsString($baseFile);
 
-        $vendorCandidate = \dirname($baseFile) . '/../../../vendor/tecnickcom';
-        $resolvedVendorCandidate = \realpath($vendorCandidate);
+        $srcDir = \dirname($baseFile);
+        /** @var ?string $vendorSiblings */
+        $vendorSiblings = $this->invokeBaseMethod($obj, 'vendorSiblingPackagesPath', $srcDir);
 
-        if (!\is_string($resolvedVendorCandidate) || $resolvedVendorCandidate === '') {
-            $this->assertNotContains($vendorCandidate, $paths);
+        if ($vendorSiblings === null) {
+            $siblingsDir = \realpath(\dirname($srcDir, 2));
+            if (\is_string($siblingsDir) && $siblingsDir !== '') {
+                $this->assertNotContains($siblingsDir, $paths);
+            }
+
             return;
         }
 
-        $this->assertContains($resolvedVendorCandidate, $paths);
+        $this->assertIsString($vendorSiblings);
+        $resolvedVendorSiblings = \realpath($vendorSiblings);
+        if (\is_string($resolvedVendorSiblings) && $resolvedVendorSiblings !== '') {
+            $this->assertContains($resolvedVendorSiblings, $paths);
+        }
     }
 
     /** @throws \Throwable */

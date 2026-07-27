@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
@@ -32,7 +32,7 @@ use Com\Tecnick\Color\Model\Lab;
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * @phpstan-type TLabTriplet array{0: float, 1: float, 2: float}
@@ -200,7 +200,7 @@ class Spot extends \Com\Tecnick\Color\Web
     }
 
     /**
-     * Return the normalized case-insentitive version of the spot color name to be used as key.
+     * Return the normalized case-insensitive version of the spot color name to be used as key.
      *
      * @param string $name Full name of the spot color.
      */

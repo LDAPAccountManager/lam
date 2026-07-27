@@ -8,7 +8,7 @@
  * @package   Pdfparser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * This file is part of tc-lib-pdf-parser software library.
@@ -85,7 +85,7 @@ class XrefTest extends TestCase
         $this->assertSame(9, $decoded[0][0]);
 
         $this->expectException(PPException::class);
-        $this->expectExceptionMessageContains('Unknownn PNG predictor');
+        $this->expectExceptionMessageContains('Unknown PNG predictor');
         $decoded = [];
         $parser->pngUnpredictorPublic([[9, 1]], $decoded, 1, [0]);
     }

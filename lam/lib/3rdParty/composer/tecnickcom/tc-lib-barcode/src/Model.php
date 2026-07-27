@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Type.php
+ * Model.php
  *
  * @since     2015-02-21
  * @category  Library
  * @package   Barcode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -23,16 +23,16 @@ use Com\Tecnick\Color\Exception as ColorException;
 use Com\Tecnick\Color\Model\Rgb;
 
 /**
- * Com\Tecnick\Barcode\Type
+ * Com\Tecnick\Barcode\Model
  *
- * Barcode Type class
+ * Barcode Model interface
  *
  * @since     2015-02-21
  * @category  Library
  * @package   Barcode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  */
 interface Model
@@ -48,7 +48,7 @@ interface Model
      *                                           factor for each row.
      * @param array{int, int, int, int} $padding Additional padding to add around the barcode
      *                                           (top, right, bottom, left) in user units. A
-     *                                           negative value indicates the number or rows
+     *                                           negative value indicates the number of rows
      *                                           or columns.
      */
     public function setSize(int $width, int $height, array $padding = [0, 0, 0, 0]): static;

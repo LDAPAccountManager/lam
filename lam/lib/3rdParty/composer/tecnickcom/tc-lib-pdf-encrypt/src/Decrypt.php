@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * This file is part of tc-lib-pdf-encrypt software library.
@@ -42,7 +42,7 @@ use Com\Tecnick\Pdf\Encrypt\Type\AESnopad;
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * @phpstan-import-type TEncryptData from Output
@@ -100,7 +100,7 @@ class Decrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
 
         // Ensure encrypt()-based primitives (RC4, MD5-16) are active for key derivation.
         $this->encryptdata['encrypted'] = true;
-        // Clear the key — it must be recovered by a successful authenticate() call.
+        // Clear the key: it must be recovered by a successful authenticate() call.
         $this->encryptdata['key'] = '';
     }
 
@@ -143,7 +143,7 @@ class Decrypt extends \Com\Tecnick\Pdf\Encrypt\Compute
      *
      * Must be called after a successful authenticate() call.
      *
-     * For RC4 modes (0, 1) the operation is symmetric — the same method that
+     * For RC4 modes (0, 1) the operation is symmetric: the same method that
      * encrypts also decrypts.  For AES modes (2, 3, 4) the first 16 bytes of
      * $data are the random IV; the remainder is the ciphertext.  The PKCS#7
      * padding applied during encryption is stripped, so the exact original

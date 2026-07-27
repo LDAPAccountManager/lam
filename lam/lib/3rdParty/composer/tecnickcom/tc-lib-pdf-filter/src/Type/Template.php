@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  *
  * This file is part of tc-lib-pdf-filter software library.
@@ -19,16 +19,16 @@ declare(strict_types=1);
 namespace Com\Tecnick\Pdf\Filter\Type;
 
 /**
- * Com\Tecnick\Pdf\Filter\Type\Template.php
+ * Com\Tecnick\Pdf\Filter\Type\Template
  *
- * Template.php
+ * Interface implemented by all filter decoders (defines the decode() method).
  *
  * @since     2011-05-23
  * @category  Library
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  */
 interface Template

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -26,6 +25,7 @@ use SpomkyLabs\Pki\X509\Certificate\Extension\PolicyMappingsExtension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\SubjectAlternativeNameExtension;
 use SpomkyLabs\Pki\X509\Certificate\Extension\SubjectKeyIdentifierExtension;
 use Traversable;
+use function count;
 
 /**
  * Implements *Extensions* ASN.1 type.

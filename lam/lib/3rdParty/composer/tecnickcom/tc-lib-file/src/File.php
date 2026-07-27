@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   File
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-file
  *
  * This file is part of tc-lib-file software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\File\Exception as FileException;
  * @package   File
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-file
  *
  * @SuppressWarnings("PHPMD.ExcessiveClassComplexity")
@@ -634,29 +634,24 @@ class File
 
         \curl_setopt_array($curlHandle, $curlopts);
 
-        try {
-            $ret = \curl_exec($curlHandle);
+        $ret = \curl_exec($curlHandle);
 
-            if ($invalidRedirect) {
-                return false;
-            }
-
-            // Check if transfer was aborted due to size limit
-            $curlError = \curl_errno($curlHandle);
-            if ($curlError === 42) { // CURLE_ABORTED_BY_CALLBACK
-                throw new FileException(
-                    'remote file exceeds maximum allowed size of ' . $this->maxRemoteSize . ' bytes',
-                );
-            }
-
-            if ($ret === false) {
-                return false;
-            }
-
-            return $ret === true ? '' : $ret;
-        } finally {
-            // Let PHP close the cURL handle automatically at scope end.
+        if ($invalidRedirect) {
+            return false;
         }
+
+        // Check if transfer was aborted due to size limit
+        $curlError = \curl_errno($curlHandle);
+        if ($curlError === 42) { // CURLE_ABORTED_BY_CALLBACK
+            throw new FileException('remote file exceeds maximum allowed size of ' . $this->maxRemoteSize . ' bytes');
+        }
+
+        if ($ret === false) {
+            return false;
+        }
+
+        // The CurlHandle is released automatically when it goes out of scope.
+        return $ret === true ? '' : $ret;
     }
 
     /**
@@ -793,11 +788,11 @@ class File
     }
 
     /**
-     * Add missing local URL protocol.
+     * Get the local server path corresponding to a URL.
      *
-     * @param string $url Relative URL path
+     * @param string $url Absolute URL to convert to a local path
      *
-     * @return string local path or original $file
+     * @return string local path or original $url
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
@@ -1160,7 +1155,7 @@ class File
      *
      * @param string $path path to check
      *
-     * @return boolean true if the path is relative
+     * @return bool true if the path contains parent directory dots ('..')
      */
     protected function hasDoubleDots(string $path): bool
     {

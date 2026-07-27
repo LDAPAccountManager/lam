@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  *
  * This file is part of tc-lib-pdf-filter software library.
@@ -30,7 +30,7 @@ namespace Com\Tecnick\Pdf\Filter\Type;
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  */
 class Lzw implements \Com\Tecnick\Pdf\Filter\Type\Template
@@ -86,7 +86,7 @@ class Lzw implements \Com\Tecnick\Pdf\Filter\Type\Template
             'decoded' => $decoded,
         ];
 
-        // while we encounter EOD marker (257), read code_length bits
+        // until we encounter EOD marker (257), read code_length bits
         while ($data_length > 0 && ($index = (int) \bindec(\substr($bitstring, 0, $state['bitlen']))) !== 257) {
             // remove read bits from string
             $bitstring = \substr($bitstring, $state['bitlen']);

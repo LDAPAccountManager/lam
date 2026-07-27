@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Unicode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * This file is part of tc-lib-unicode software library.
@@ -29,7 +29,7 @@ use Com\Tecnick\Unicode\Data\Type as UniType;
  * @package   Unicode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * @phpstan-import-type SeqData from \Com\Tecnick\Unicode\Bidi\Shaping\Arabic
@@ -417,7 +417,7 @@ class StepX
     }
 
     /**
-     * Process the PDF type character
+     * Process the FSI type character
      *
      * @param int   $pos  Original character position in the input string
      * @param DssData $edss Last entry in the Directional Status Stack

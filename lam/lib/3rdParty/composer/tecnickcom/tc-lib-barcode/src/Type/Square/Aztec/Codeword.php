@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2023-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -28,7 +28,7 @@ namespace Com\Tecnick\Barcode\Type\Square\Aztec;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2023-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 abstract class Codeword
@@ -146,7 +146,7 @@ abstract class Codeword
      * Returns the PUNCT two-bytes code if the given two characters are a punctuation pair.
      * Punct codes 2–5 encode two bytes each.
      *
-     * @param int $ord The current curacter code.
+     * @param int $ord The current character code.
      * @param int $next The next character code.
      */
     protected function punctPairMode(int $ord, int $next): int

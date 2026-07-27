@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * This file is part of tc-lib-pdf-font software library.
@@ -36,7 +36,7 @@ use Com\Tecnick\Unicode\Data\Encoding;
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * @phpstan-import-type TFontData from Load
@@ -192,7 +192,8 @@ class Import
      * @param string $file        Font file to process
      * @param string $output_path Output path for generated font files (must be writeable by the web server).
      *                            Leave null for default font folder.
-     * @param string $type        Font type. Leave empty for autodetect mode. Valid values are:
+     * @param string|FontType $type Font type (or FontType enum case). Leave empty for autodetect mode.
+     *                            Valid values are:
      *                            Core (AFM - Adobe Font Metrics) TrueTypeUnicode TrueType
      *                            Type1 CID0JP (CID-0 Japanese) CID0KR (CID-0 Korean) CID0CS
      *                            (CID-0 Chinese Simplified) CID0CT (CID-0 Chinese Traditional)
@@ -228,7 +229,7 @@ class Import
     public function __construct(
         string $file,
         string $output_path = '',
-        string $type = '',
+        string|FontType $type = '',
         string $encoding = '',
         int $flags = 32,
         int $platform_id = 3,
@@ -271,6 +272,10 @@ class Import
         $this->font = $font;
 
         $this->fbyte = new Byte($this->font);
+
+        if ($type instanceof FontType) {
+            $type = $type->value;
+        }
 
         $this->fdt['settype'] = $type;
         $this->fdt['type'] = $this->getFontType($type);

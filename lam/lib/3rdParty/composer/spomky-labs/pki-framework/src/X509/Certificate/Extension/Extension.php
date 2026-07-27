@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\Certificate\Extension;
 
-use function array_key_exists;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Boolean;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\ObjectIdentifier;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\OctetString;
 use Stringable;
+use function array_key_exists;
 
 /**
  * Base class for certificate extensions.

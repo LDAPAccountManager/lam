@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Unicode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-unicode
  *
  * This file is part of tc-lib-unicode software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Unicode\Data\Bracket as UniBracket;
  * @package   Unicode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-unicode
  */
 class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
@@ -106,7 +106,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
         }
 
         if (array_key_exists($char, UniBracket::CLOSE)) {
-            // process closign bracket
+            // process closing bracket
             if ($char === 0x3009) {
                 $char = 0x232A;
             }
@@ -129,7 +129,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
     }
 
     /**
-     * Return the normalized chat type for the N0 step
+     * Return the normalized char type for the N0 step
      * Within this scope, bidirectional types EN and AN are treated as R.
      *
      * @param string $type Char type
@@ -275,11 +275,11 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
     }
 
     /**
-     * Get the next direction
+     * Get the previous direction
      *
      * @param int $bdx Position of the preceding character
      *
-     * @return string Previous position
+     * @return string Previous direction
      */
     protected function processN1prev(int &$bdx): string
     {
@@ -305,7 +305,7 @@ class StepN extends \Com\Tecnick\Unicode\Bidi\StepBase
      *
      * @param int $jdx Position of the next character
      *
-     * @return string Previous position
+     * @return string Next direction
      */
     protected function processN1next(int &$jdx): string
     {

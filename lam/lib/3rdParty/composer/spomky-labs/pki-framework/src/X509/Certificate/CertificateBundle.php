@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use SpomkyLabs\Pki\CryptoEncoding\PEM;
 use SpomkyLabs\Pki\CryptoEncoding\PEMBundle;
+use function count;
 
 /**
  * Implements a list of certificates.

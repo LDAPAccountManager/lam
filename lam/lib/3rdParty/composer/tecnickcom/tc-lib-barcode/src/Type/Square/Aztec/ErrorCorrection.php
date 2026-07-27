@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2023-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -28,7 +28,7 @@ namespace Com\Tecnick\Barcode\Type\Square\Aztec;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2023-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class ErrorCorrection
@@ -80,7 +80,7 @@ class ErrorCorrection
     protected int $tsize = 0;
 
     /**
-     * Initialize the the Reed-Solomon Error Correction.
+     * Initialize the Reed-Solomon Error Correction.
      *
      * @param int $wsize Size of a word in bits.
      */

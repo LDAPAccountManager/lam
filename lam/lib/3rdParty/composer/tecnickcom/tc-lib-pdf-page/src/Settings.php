@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * This file is part of tc-lib-pdf-page software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Pdf\Encrypt\Encrypt;
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * @phpstan-import-type PageBci from \Com\Tecnick\Pdf\Page\Box
@@ -150,7 +150,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
     }
 
     /**
-     * Sanitize or set the page modification time.
+     * Sanitize or set the page number.
      *
      * @param PageInputData $data Page data.
      */
@@ -514,7 +514,7 @@ abstract class Settings extends \Com\Tecnick\Pdf\Page\Box
         $marginBottom = (float) ($data['margin']['CB'] ?? 0);
 
         if (!empty($data['columns'])) {
-            // set eaual columns
+            // set equal columns
             $data['region'] = [];
             $numColumns = \max(1, (int) $data['columns']);
             $width = $contentWidth / $numColumns;

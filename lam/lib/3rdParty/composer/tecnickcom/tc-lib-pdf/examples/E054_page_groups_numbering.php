@@ -20,11 +20,16 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
  */
+
+// NOTE: local file reads (images, fonts, attachments) are restricted to an allowlist of
+// trusted paths that covers this package tree, so run the examples in place. To read assets
+// from other locations, list them in the 'allowedPaths' entry of the fileOptions constructor
+// parameter (see E047_remote_resources_security.php).
 
 // NOTE: run make fonts in the project root to generate the dependencies and example fonts.
 
@@ -33,11 +38,11 @@ require __DIR__ . '/../vendor/autoload.php';
 define('K_PATH_FONTS', (string) realpath(__DIR__ . '/../vendor/tecnickcom/tc-lib-pdf-font/target/fonts'));
 
 $pdf = new \Com\Tecnick\Pdf\Tcpdf(
-    unit: 'mm',
+    unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
     isunicode: true,
     subsetfont: false,
     compress: true,
-    mode: '',
+    mode: \Com\Tecnick\Pdf\PdfConformance::None,
     objEncrypt: null,
 );
 
@@ -50,7 +55,11 @@ $pdf->setPDFFilename('054_page_groups_numbering.pdf');
 $pdf->setViewerPreferences(['DisplayDocTitle' => true]);
 
 // Open with the outline panel visible and full-width zoom.
-$pdf->setDisplayMode(zoom: 'fullwidth', layout: 'SinglePage', mode: 'UseOutlines');
+$pdf->setDisplayMode(
+    zoom: \Com\Tecnick\Pdf\DisplayZoom::FullWidth,
+    layout: \Com\Tecnick\Pdf\Page\PageLayout::SinglePage,
+    mode: \Com\Tecnick\Pdf\Page\PageDisplayMode::UseOutlines,
+);
 
 $pdf->enableDefaultPageContent();
 
@@ -110,8 +119,8 @@ $addPageFooter = static function (\Com\Tecnick\Pdf\Tcpdf $pdf, int $pid, string 
             height: 0,
             offset: 0,
             linespace: 1,
-            valign: 'T',
-            halign: 'C',
+            valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+            halign: \Com\Tecnick\Pdf\TextHAlign::Center,
         ),
         $pid,
     );
@@ -146,8 +155,8 @@ $pdf->page->addContent(
         height: 0,
         offset: 0,
         linespace: 1,
-        valign: 'T',
-        halign: 'C',
+        valign: \Com\Tecnick\Pdf\TextVAlign::Top,
+        halign: \Com\Tecnick\Pdf\TextHAlign::Center,
     ),
     $tocPage['pid'],
 );

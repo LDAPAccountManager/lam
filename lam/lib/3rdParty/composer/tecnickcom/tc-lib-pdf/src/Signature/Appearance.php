@@ -5,13 +5,13 @@ declare(strict_types=1);
 /**
  * Appearance.php
  *
- * @since       2002-08-03
- * @category    Library
- * @package     Pdf
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf
+ * @since     2002-08-03
+ * @category  Library
+ * @package   Pdf
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
  */
@@ -27,13 +27,13 @@ use Com\Tecnick\Pdf\Tcpdf;
  * Tcpdf::signature()->appearance(). It forwards to the existing appearance
  * methods on Tcpdf while returning $this for chaining.
  *
- * @since       2002-08-03
- * @category    Library
- * @package     Pdf
- * @author      Nicola Asuni <info@tecnick.com>
- * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
- * @link        https://github.com/tecnickcom/tc-lib-pdf
+ * @since     2002-08-03
+ * @category  Library
+ * @package   Pdf
+ * @author    Nicola Asuni <info@tecnick.com>
+ * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
+ * @link      https://github.com/tecnickcom/tc-lib-pdf
  */
 final class Appearance
 {
@@ -69,12 +69,12 @@ final class Appearance
      * Set a custom appearance stream for the signature widget annotation.
      *
      * @param string $stream Appearance stream content.
-     * @param string $mode   Appearance mode: N (normal), R (rollover), D (down).
+     * @param string|SignatureAppearanceMode $mode Appearance mode: N (normal), R (rollover), D (down), or enum case.
      * @param string $state  Optional appearance state name.
      *
      * @throws \Com\Tecnick\Pdf\Exception
      */
-    public function stream(string $stream, string $mode = 'N', string $state = ''): self
+    public function stream(string $stream, string|SignatureAppearanceMode $mode = 'N', string $state = ''): self
     {
         $this->pdf->setSignatureAppearanceStream($stream, $mode, $state);
         return $this;

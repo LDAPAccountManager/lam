@@ -64,7 +64,7 @@
         "php": ">=8.2",
         "ext-bcmath": "*",
         "ext-gd": "*",
-        "tecnickcom/tc-lib-color": "^2.12"
+        "tecnickcom/tc-lib-color": "^2.13"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

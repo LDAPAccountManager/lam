@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use LogicException;
 use SpomkyLabs\Pki\CryptoEncoding\PEM;
 use SpomkyLabs\Pki\CryptoEncoding\PEMBundle;
 use SpomkyLabs\Pki\X509\CertificationPath\CertificationPath;
+use function count;
 
 /**
  * Ordered list of certificates from the end-entity to the trust anchor.

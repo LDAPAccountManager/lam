@@ -39,8 +39,8 @@ The package encapsulates PDF security mechanics behind a focused API so consumin
 
 | Mode | Algorithm | Security |
 |------|-----------|----------|
-| 0    | RC4-40    | **Broken — do not use** |
-| 1    | RC4-128   | **Broken — do not use** |
+| 0    | RC4-40    | **Broken: do not use** |
+| 1    | RC4-128   | **Broken: do not use** |
 | 2    | AES-128   | Acceptable for legacy compatibility |
 | 3    | AES-256 R5 (PDF 1.7 ext.) | Recommended |
 | 4    | AES-256 R6 (PDF 2.0 / ISO 32000-2) | Recommended (most current) |
@@ -96,7 +96,7 @@ composer require tecnickcom/tc-lib-pdf-encrypt
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-// AES-256 R6 (mode 4 — recommended)
+// AES-256 R6 (mode 4, recommended)
 $encrypt = new \Com\Tecnick\Pdf\Encrypt\Encrypt(
     enabled: true,
     file_id: md5('unique-file-id'),

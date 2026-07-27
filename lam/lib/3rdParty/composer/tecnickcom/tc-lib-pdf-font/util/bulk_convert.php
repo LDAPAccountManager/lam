@@ -8,7 +8,7 @@
  * @package     PdfFont
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * This file is part of tc-lib-pdf-font software library.
@@ -140,7 +140,7 @@ foreach ($fontdir as $dir) {
     $readme = '# '.$dir.' font files for tc-lib-pdf-font'."\n\n"
         .'This folder contains font files and/or font data extracted from:'."\n"
         .$font_url[$dir]."\n"
-        .'using the "bulk_convert.php" utility in https://github.com/tecnickcom/tc-font-pdf-font'."\n\n"
+        .'using the "bulk_convert.php" utility in https://github.com/tecnickcom/tc-lib-pdf-font'."\n\n"
         .'The original files (if present) have been renamed and compressed using the ZLIB data format (.z files).'."\n"
         .'The font files are subject to the conditions stated in the LICENSE file.'."\n"
         .'For further information please consult the original documentation at the link above.'."\n";

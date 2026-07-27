@@ -10,15 +10,13 @@ declare(strict_types=1);
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  *
  * This file is part of tc-lib-pdf-filter software library.
  */
 
 namespace Com\Tecnick\Pdf\Filter;
-
-use Com\Tecnick\Pdf\Filter\Exception as PPException;
 
 /**
  * Com\Tecnick\Pdf\Filter\Filter
@@ -30,7 +28,7 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  */
 class Filter
@@ -38,7 +36,7 @@ class Filter
     /**
      * Decode data using the specified filter type.
      *
-     * @param string              $filter Filter name.
+     * @param string|FilterType    $filter Filter name or FilterType enum case.
      * @param string              $data   Data to decode.
      * @param array<string, mixed> $params Optional DecodeParms dictionary for the filter.
      *
@@ -46,24 +44,27 @@ class Filter
      *
      * @throws \Com\Tecnick\Pdf\Filter\Exception
      */
-    public function decode(string $filter, string $data, array $params = []): string
+    public function decode(string|FilterType $filter, string $data, array $params = []): string
     {
-        if ($filter === '') {
-            return $data;
+        if (\is_string($filter)) {
+            if ($filter === '') {
+                return $data;
+            }
+
+            $filter = FilterType::fromLoose($filter);
         }
 
         $obj = match ($filter) {
-            'ASCIIHexDecode' => new Type\AsciiHex(),
-            'ASCII85Decode' => new Type\AsciiEightFive(),
-            'LZWDecode' => new Type\Lzw(),
-            'FlateDecode' => new Type\Flate(),
-            'RunLengthDecode' => new Type\RunLength(),
-            'CCITTFaxDecode' => new Type\CcittFax($params),
-            'JBIG2Decode' => new Type\JbigTwo(),
-            'DCTDecode' => new Type\Dct(),
-            'JPXDecode' => new Type\Jpx(),
-            'Crypt' => new Type\Crypt(),
-            default => throw new PPException('unknown filter: ' . $filter),
+            FilterType::AsciiHexDecode => new Type\AsciiHex(),
+            FilterType::Ascii85Decode => new Type\AsciiEightFive(),
+            FilterType::LzwDecode => new Type\Lzw(),
+            FilterType::FlateDecode => new Type\Flate(),
+            FilterType::RunLengthDecode => new Type\RunLength(),
+            FilterType::CcittFaxDecode => new Type\CcittFax($params),
+            FilterType::Jbig2Decode => new Type\JbigTwo(),
+            FilterType::DctDecode => new Type\Dct(),
+            FilterType::JpxDecode => new Type\Jpx(),
+            FilterType::Crypt => new Type\Crypt(),
         };
 
         return $obj->decode($data, $params);
@@ -72,7 +73,7 @@ class Filter
     /**
      * Decode the input data using multiple filters
      *
-     * @param array<string>       $filters Array of decoding filters to apply in order
+     * @param array<string|FilterType> $filters Array of decoding filters to apply in order
      * @param string              $data    Data to decode.
      * @param array<string, mixed> $params  Optional DecodeParms dictionary.
      *

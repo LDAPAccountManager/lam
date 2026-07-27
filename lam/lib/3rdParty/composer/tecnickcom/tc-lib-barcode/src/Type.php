@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Barcode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -33,7 +33,7 @@ use Com\Tecnick\Color\Pdf;
  * @package   Barcode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  *
  * @SuppressWarnings("PHPMD.ExcessiveClassComplexity")
@@ -55,7 +55,7 @@ abstract class Type extends \Com\Tecnick\Barcode\Type\Convert implements Model
      * @param array<int|float|string>   $params  Array containing extra parameters for the specified barcode type
      * @param array{int, int, int, int} $padding Additional padding to add around the barcode
      *                                           (top, right, bottom, left) in user units. A
-     *                                           negative value indicates the number or rows
+     *                                           negative value indicates the number of rows
      *                                           or columns.
      *
      * @throws BarcodeException in case of error
@@ -99,7 +99,7 @@ abstract class Type extends \Com\Tecnick\Barcode\Type\Convert implements Model
      *                                           factor for each row.
      * @param array{int, int, int, int} $padding Additional padding to add around the barcode
      *                                           (top, right, bottom, left) in user units. A
-     *                                           negative value indicates the number or rows
+     *                                           negative value indicates the number of rows
      *                                           or columns.
      *
      * @throws BarcodeException in case of an empty barcode or invalid padding
@@ -133,7 +133,7 @@ abstract class Type extends \Com\Tecnick\Barcode\Type\Convert implements Model
      *
      * @param array{int, int, int, int} $padding Additional padding to add around the barcode
      *                                           (top, right, bottom, left) in user units.
-     *                                           A negative value indicates the number or rows or columns.
+     *                                           A negative value indicates the number of rows or columns.
      *
      * @throws BarcodeException in case of error
      */

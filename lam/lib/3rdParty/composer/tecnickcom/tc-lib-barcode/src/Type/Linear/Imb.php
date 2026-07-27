@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -33,7 +33,7 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  *    This shall be two digits, with the second digit in the range of 0–4. The allowable encoding ranges shall be
  *    00–04, 10–14, 20–24, 30–34, 40–44, 50–54, 60–64, 70–74, 80–84, and 90–94.
  *  * The Service Type Identifier shall be assigned by USPS for any combination of services requested on the mailpiece.
- *    The allowable encoding range shall be 000http://it2.php.net/manual/en/function.dechex.php–999.
+ *    The allowable encoding range shall be 000–999.
  *    Each 3-digit value shall correspond to a particular mail class with a particular combination of service(s).
  *    Each service program, such as OneCode Confirm and OneCode ACS, shall provide the list of Service Type Identifier
  *    values.
@@ -45,14 +45,14 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  *    when used with a 9 digit Mailer ID. e. The Delivery Point ZIP Code shall be assigned by the mailer for routing
  *    the mailpiece. This shall replace POSTNET for routing the mailpiece to its final delivery point.
  *    The length may be 0, 5, 9, or 11 digits. The allowable encoding ranges shall be no ZIP Code, 00000–99999,
- *    000000000–999999999, and 00000000000–99999999999. An hyphen '-' is required before the zip/delivery point.
+ *    000000000–999999999, and 00000000000–99999999999. A hyphen '-' is required before the zip/delivery point.
  *
  * @since       2015-02-21
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class Imb extends \Com\Tecnick\Barcode\Type\Linear
@@ -359,7 +359,7 @@ class Imb extends \Com\Tecnick\Barcode\Type\Linear
     /**
      * Reverse unsigned short value
      *
-     * @param int $num Value to reversr
+     * @param int $num Value to reverse
      *
      * @return int reversed value
      */

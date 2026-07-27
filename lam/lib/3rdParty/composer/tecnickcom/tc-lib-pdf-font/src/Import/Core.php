@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * This file is part of tc-lib-pdf-font software library.
@@ -30,7 +30,7 @@ use Com\Tecnick\Unicode\Data\Encoding;
  * @package   PdfFont
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-font
  *
  * @phpstan-import-type TFontData from \Com\Tecnick\Pdf\Font\Load
@@ -505,7 +505,7 @@ class Core
      * Extract Metrics
      *
      * @param array<int, string> $col Array containing row elements to process
-     * @param array<int, int>    $cwd Array contianing cid widths
+     * @param array<int, int>    $cwd Array containing cid widths
      *
      * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */

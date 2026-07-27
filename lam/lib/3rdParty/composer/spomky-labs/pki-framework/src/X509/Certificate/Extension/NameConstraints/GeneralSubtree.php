@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\Certificate\Extension\NameConstraints;
 
-use function count;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
 use SpomkyLabs\Pki\ASN1\Type\Tagged\ImplicitlyTaggedType;
 use SpomkyLabs\Pki\X509\GeneralName\GeneralName;
+use function count;
 
 /**
  * Implements *GeneralSubtree* ASN.1 type used by 'Name Constraints' certificate extension.

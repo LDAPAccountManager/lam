@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoTypes\Asymmetric\EC;
 
-use function array_key_exists;
-use function in_array;
 use InvalidArgumentException;
 use LogicException;
-use function mb_strlen;
-use function ord;
 use RuntimeException;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\BitString;
 use SpomkyLabs\Pki\ASN1\Type\Primitive\Integer;
@@ -21,6 +17,10 @@ use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierTy
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKey;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo;
 use UnexpectedValueException;
+use function array_key_exists;
+use function in_array;
+use function mb_strlen;
+use function ord;
 
 /**
  * Implements elliptic curve public key type as specified by RFC 5480.

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  *
  * This file is part of tc-lib-color software library.
@@ -30,13 +30,13 @@ use Com\Tecnick\Color\Exception as ColorException;
  * @package   Color
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2015-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-color
  */
 class Web extends \Com\Tecnick\Color\Css
 {
     /**
-     * Maps WEB safe color names with theur hexadecimal representation (#RRGGBBAA).
+     * Maps WEB safe color names with their hexadecimal representation (#RRGGBBAA).
      *
      * @var array<string, string>
      */
@@ -355,7 +355,7 @@ class Web extends \Com\Tecnick\Color\Css
     }
 
     /**
-     * Parse the input color string and return the correspondent color Object
+     * Parse the input color string and return the corresponding color object
      *
      * @param string $color String containing web color definition
      *

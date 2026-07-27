@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -31,7 +31,7 @@ use Com\Tecnick\Unicode\Data\Constant as UnicodeConstant;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type BorderStyle from \Com\Tecnick\Pdf\CSS
@@ -489,14 +489,14 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
     protected const HTML_TAG_PATTERN = '/(<[^>]+>)/';
 
     /**
-     * Verical shift ratio for HTML sub tag.
+     * Vertical shift ratio for HTML sub tag.
      *
      * @var float
      */
     protected const VERT_SHIFT_SUB = 0.1;
 
     /**
-     * Verical shift ratio for HTML sup tag.
+     * Vertical shift ratio for HTML sup tag.
      *
      * @var float
      */
@@ -2802,11 +2802,21 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
         }
     }
 
+    /**
+     * Return true when the CSS display value is supported by the HTML renderer.
+     *
+     * @param string $display Normalized CSS display value.
+     */
     protected function isSupportedHTMLDisplayValue(string $display): bool
     {
         return \in_array($display, self::HTML_SUPPORTED_DISPLAY_VALUES, true);
     }
 
+    /**
+     * Return true when the CSS display value produces a block-like box (not inline or none).
+     *
+     * @param string $display Normalized CSS display value.
+     */
     protected function isHTMLDisplayBlockLike(string $display): bool
     {
         return !\in_array($display, ['inline', 'none'], true);
@@ -2908,7 +2918,6 @@ abstract class HTML extends \Com\Tecnick\Pdf\JavaScript
      *
      * @throws PdfException
      */
-
     protected function parseHTMLStylePositionOffsetProperties(array &$dom, int $key, int $parentkey): void
     {
         $position = isset($dom[$key]['position']) && $dom[$key]['position'] !== ''

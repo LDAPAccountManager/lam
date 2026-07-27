@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -32,7 +32,7 @@ use Com\Tecnick\File\File as ObjFile;
  * @package   Pdf
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf
  *
  * @phpstan-import-type TXOBject from \Com\Tecnick\Pdf\Base
@@ -68,6 +68,14 @@ class Importer implements ImporterInterface
      * @var array<string, PageTemplate>
      */
     private array $templateCache = [];
+
+    /**
+     * Flattened page index per source ID: one effective page dictionary per
+     * reachable page, in document order (sources are immutable after parsing).
+     *
+     * @var array<string, array<int, array<string, mixed>>>
+     */
+    private array $pageIndexes = [];
 
     /**
      * Raw PDF object bytes queued for deferred write, keyed by XObject template ID.
@@ -171,6 +179,11 @@ class Importer implements ImporterInterface
     /**
      * Return the total number of pages in a registered source document.
      *
+     * The count is derived from the page tree actually reachable through
+     * /Kids; the declared /Count entry is intentionally ignored because it
+     * is under the control of whoever produced the source file and must
+     * never size an allocation or bound a loop.
+     *
      * @param string $sourceId Source document identifier.
      *
      * @return int Total page count.
@@ -180,27 +193,7 @@ class Importer implements ImporterInterface
      */
     public function getSourcePageCount(string $sourceId): int
     {
-        $src = $this->requireSource($sourceId);
-        $trailer = $src->getTrailer();
-        $rootRef = SourceDocument::refToKey($trailer['root']);
-        $rootObj = $src->getObject($rootRef);
-        $rootDict = $this->parseSimpleDict($rootObj);
-        if (!isset($rootDict['Pages'])) {
-            throw new ImportCorruptedSourceException('PDF /Root is missing /Pages entry.');
-        }
-
-        $pagesRef = SourceDocument::refToKey(\is_string($rootDict['Pages']) ? $rootDict['Pages'] : '');
-        $pagesObj = $src->getObject($pagesRef);
-        $pagesDict = $this->parseSimpleDict($pagesObj);
-        if (isset($pagesDict['Count']) && \is_int($pagesDict['Count'])) {
-            return $pagesDict['Count'];
-        }
-
-        if (isset($pagesDict['Count']) && \is_numeric($pagesDict['Count'])) {
-            return (int) $pagesDict['Count'];
-        }
-
-        return 0;
+        return \count($this->getPageIndex($sourceId));
     }
 
     /**
@@ -208,7 +201,7 @@ class Importer implements ImporterInterface
      *
      * @param string        $sourceId  Source document identifier.
      * @param int           $pageNum   1-based page number.
-     * @param array<string, mixed> $options Import options (box, groupXObject, cache).
+     * @param array<string, mixed> $options Import options (box, groupXObject, cache, respectRotation).
      *
      * @return PageTemplateInterface Imported page template.
      *
@@ -244,7 +237,7 @@ class Importer implements ImporterInterface
 
         $src = $this->requireSource($sourceId);
         $resolver = new PageResolver();
-        $resolved = $resolver->resolve($src, $pageNum);
+        $resolved = $resolver->resolveFromIndex($src, $this->getPageIndex($sourceId), $pageNum);
 
         $box = $this->selectBox($resolved, $useBox);
         $rotate = $respectRotation ? $resolved['rotate'] : 0;
@@ -364,23 +357,25 @@ class Importer implements ImporterInterface
     {
         $total = $this->getSourcePageCount($sourceId);
 
+        $templates = [];
         if ($range === null) {
-            // A missing or non-positive /Count would make \range(1, $total)
-            // produce a descending/invalid sequence (e.g. [1, 0]); there is
-            // simply nothing to import in that case.
-            $range = $total < 1 ? [] : \range(1, $total);
-        } else {
-            foreach ($range as $pageNum) {
-                $num = (int) $pageNum;
-                if ($num < 1 || $num > $total) {
-                    throw new ImportPageOutOfRangeException(
-                        'Page number ' . $num . ' is out of range [1,' . $total . '].',
-                    );
-                }
+            // $total is the verified number of reachable pages, so every page
+            // number in 1..$total is resolvable; no array of page numbers is
+            // materialized up front.
+            for ($pageNum = 1; $pageNum <= $total; ++$pageNum) {
+                $templates[] = $this->importPage($sourceId, $pageNum, $options);
+            }
+
+            return $templates;
+        }
+
+        foreach ($range as $pageNum) {
+            $num = (int) $pageNum;
+            if ($num < 1 || $num > $total) {
+                throw new ImportPageOutOfRangeException('Page number ' . $num . ' is out of range [1,' . $total . '].');
             }
         }
 
-        $templates = [];
         foreach ($range as $pageNum) {
             $templates[] = $this->importPage($sourceId, (int) $pageNum, $options);
         }
@@ -407,13 +402,38 @@ class Importer implements ImporterInterface
 
     /**
      * Release parser memory and cached resources.
-     * Should be called after getOutPDFBody() completes.
+     * Should be called after getOutImportedObjects() completes.
      */
     public function cleanUp(): void
     {
         $this->sources = [];
         $this->objectMaps = [];
         $this->rawObjects = [];
+        $this->pageIndexes = [];
+    }
+
+    /**
+     * Return the flattened page index for a registered source, building and
+     * caching it on first use so batch imports walk the page tree only once.
+     *
+     * @param string $sourceId Source document identifier.
+     *
+     * @return array<int, array<string, mixed>> Effective page dictionaries in document order.
+     *
+     * @throws ImportSourceNotFoundException If the source ID is not registered.
+     * @throws ImportCorruptedSourceException If the page tree is malformed.
+     */
+    private function getPageIndex(string $sourceId): array
+    {
+        $index = $this->pageIndexes[$sourceId] ?? null;
+        if ($index === null) {
+            $src = $this->requireSource($sourceId);
+            $resolver = new PageResolver();
+            $index = $resolver->buildPageIndex($src);
+            $this->pageIndexes[$sourceId] = $index;
+        }
+
+        return $index;
     }
 
     /**
@@ -508,80 +528,5 @@ class Importer implements ImporterInterface
             270 => [0.0, 1.0, -1.0, 0.0, $hgt, 0.0],
             default => [1.0, 0.0, 0.0, 1.0, 0.0, 0.0],
         };
-    }
-
-    /**
-     * Extract a minimal key->value dict from a raw parsed object (for trailer-level lookups).
-     *
-     * @param array<int, mixed> $objData Raw object data.
-     *
-     * @return array<string, mixed>
-     *
-     * @throws ImportCorruptedSourceException If no dictionary found.
-     */
-    private function parseSimpleDict(array $objData): array
-    {
-        $objItems = \array_values($objData);
-        $objCount = \count($objItems);
-        for ($objIdx = 0; $objIdx < $objCount; ++$objIdx) {
-            $objItemSlice = \array_slice($objItems, $objIdx, 1);
-            if (\count($objItemSlice) !== 1 || !\is_array($objItemSlice[0])) {
-                continue;
-            }
-
-            $objItem = $objItemSlice[0];
-
-            if (($objItem[0] ?? null) !== '<<' || !\is_array($objItem[1] ?? null)) {
-                continue;
-            }
-
-            $dict = [];
-            $raw = \array_values($objItem[1]);
-            $cnt = \count($raw);
-            for ($idx = 0; $idx < ($cnt - 1); $idx += 2) {
-                $pair = \array_slice($raw, $idx, 2);
-                if (\count($pair) < 2) {
-                    continue;
-                }
-
-                if (!\is_array($pair[0] ?? null) || ($pair[0][0] ?? null) !== '/') {
-                    continue;
-                }
-
-                if (!\array_key_exists(1, $pair)) {
-                    continue;
-                }
-
-                if (!\array_key_exists(1, $pair[0])) {
-                    continue;
-                }
-
-                if (!\is_string($pair[0][1])) {
-                    continue;
-                }
-
-                $key = \ltrim($pair[0][1], '/');
-
-                if (\is_array($pair[1])) {
-                    if (!\array_key_exists(1, $pair[1])) {
-                        continue;
-                    }
-
-                    if (!\is_array($pair[1][1]) && \is_scalar($pair[1][1])) {
-                        $dict[$key] = (string) $pair[1][1];
-                    }
-
-                    continue;
-                }
-
-                if (!\is_array($pair[1]) && \is_scalar($pair[1])) {
-                    $dict[$key] = (string) $pair[1];
-                }
-            }
-
-            return $dict;
-        }
-
-        throw new ImportCorruptedSourceException('Expected dictionary object but none found.');
     }
 }

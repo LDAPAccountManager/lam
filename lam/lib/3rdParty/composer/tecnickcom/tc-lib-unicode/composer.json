@@ -27,7 +27,7 @@
     "require": {
         "php": ">=8.2",
         "ext-mbstring": "*",
-        "tecnickcom/tc-lib-unicode-data": "^2.6"
+        "tecnickcom/tc-lib-unicode-data": "^2.7"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

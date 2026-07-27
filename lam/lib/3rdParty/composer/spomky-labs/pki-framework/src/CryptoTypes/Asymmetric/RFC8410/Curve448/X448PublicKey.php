@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\Curve448;
 
-use function mb_strlen;
 use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Asymmetric\X448AlgorithmIdentifier;
 use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierType;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\RFC8410\RFC8410PublicKey;
 use UnexpectedValueException;
+use function mb_strlen;
 
 /**
  * Implements an intermediary class to store X448 public key.

@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
- * RoyalMailFourCC.php
+ * RoyalMailFourCc.php
  *
  * @since       2015-02-21
  * @category    Library
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -23,7 +23,7 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
 /**
  * Com\Tecnick\Barcode\Type\Linear\RoyalMailFourCc;
  *
- * RoyalMailFourCC Barcode type class
+ * RoyalMailFourCc Barcode type class
  * RMS4CC (Royal Mail 4-state Customer Bar Code)
  *
  * @since       2015-02-21
@@ -31,7 +31,7 @@ use Com\Tecnick\Barcode\Exception as BarcodeException;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 class RoyalMailFourCc extends \Com\Tecnick\Barcode\Type\Linear

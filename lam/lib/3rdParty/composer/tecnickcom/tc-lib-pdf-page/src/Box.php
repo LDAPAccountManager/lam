@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * This file is part of tc-lib-pdf-page software library.
@@ -29,7 +29,7 @@ use Com\Tecnick\Pdf\Page\Exception as PageException;
  * @package   PdfPage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-page
  *
  * @phpstan-type PageBci array{
@@ -262,7 +262,7 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
      * Set page boundaries.
      *
      * @param array<string, PageBox> $dims Array of page dimensions to modify.
-     * @param string                 $type Box type: MediaBox, CropBox, BleedBox, TrimBox, ArtBox.
+     * @param string|PageBoxType     $type Box type: MediaBox, CropBox, BleedBox, TrimBox, ArtBox, or enum case.
      * @param float                  $llx  Lower-left x coordinate in user units.
      * @param float                  $lly  Lower-left y coordinate in user units.
      * @param float                  $urx  Upper-right x coordinate in user units.
@@ -275,13 +275,17 @@ abstract class Box extends \Com\Tecnick\Pdf\Page\Mode
      */
     public function setBox(
         array $dims,
-        string $type,
+        string|PageBoxType $type,
         float $llx,
         float $lly,
         float $urx,
         float $ury,
         ?array $bci = null,
     ): array {
+        if ($type instanceof PageBoxType) {
+            $type = $type->value;
+        }
+
         if (!\in_array($type, self::BOX, true)) {
             throw new PageException('unknown page box type: ' . $type);
         }

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * This file is part of tc-lib-pdf-parser software library.
@@ -31,7 +31,7 @@ use Com\Tecnick\Pdf\Parser\Exception as PPException;
  * @package   PdfParser
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-parser
  *
  * @SuppressWarnings("PHPMD.ExcessiveClassComplexity")
@@ -62,12 +62,9 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
      * Initialize the PDF parser
      *
      * @param array<string, bool> $cfg Array of configuration parameters:
-     *                                 'ignore_filter_decoding_errors'  :
+     *                                 'ignore_filter_errors' :
      *                                 if true ignore filter decoding
      *                                 errors;
-     *                                 'ignore_missing_filter_decoders' :
-     *                                 if true ignore missing filter
-     *                                 decoding errors;
      *                                 'decode_streams':
      *                                 if true, decode stream payloads while parsing
      *                                 regular indirect objects.
@@ -324,7 +321,7 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * Get the content of object, resolving indect object reference if necessary.
+     * Get the content of object, resolving indirect object reference if necessary.
      *
      * @param RawObjectArray $obj Object value.
      *
@@ -687,7 +684,7 @@ class Parser extends \Com\Tecnick\Pdf\Parser\Process\Xref
     }
 
     /**
-     * Get Filters
+     * Get declared stream length
      *
      * @param string            $stream  Stream
      * @param int               $slength Stream length

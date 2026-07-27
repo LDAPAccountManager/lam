@@ -8,7 +8,7 @@
  * @package     Pdf
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2002-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-pdf
  *
  * This file is part of tc-lib-pdf software library.
@@ -636,7 +636,347 @@ class PageResolverTest extends TestCase
         ]);
 
         $this->expectException(ImportCorruptedSourceException::class);
-        $this->expectExceptionMessageMatches('/' . preg_quote('Cyclic reference', '/') . '/');
+        $this->expectExceptionMessageMatches('/' . preg_quote('Duplicate or cyclic reference', '/') . '/');
         $resolver->resolve($doc, 1);
+    }
+
+    /**
+     * A /Pages node listing the same kid twice is malformed (every node has a
+     * single /Parent) and, if tolerated, would multiply the traversal
+     * exponentially with tree depth besides corrupting page numbering.
+     *
+     * @throws \Throwable
+     */
+    public function testResolveThrowsOnDuplicateSiblingReference(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+                ['/', 'Kids'],
+                [
+                    '[',
+                    [
+                        ['objref', '3 0 R'],
+                        ['objref', '3 0 R'],
+                    ],
+                ],
+            ]),
+            '3_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Page'],
+            ]),
+        ]);
+
+        $this->expectException(ImportCorruptedSourceException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('Duplicate or cyclic reference', '/') . '/');
+        $resolver->resolve($doc, 2);
+    }
+
+    // -------------------------------------------------------------------------
+    // countPages
+    // -------------------------------------------------------------------------
+
+    /** @throws \Throwable */
+    public function testCountPagesReturnsReachablePageCount(): void
+    {
+        $resolver = new PageResolver();
+        $this->assertSame(1, $resolver->countPages($this->loadDoc()));
+    }
+
+    /** @throws \Throwable */
+    public function testCountPagesThrowsWhenRootPagesEntryIsMissing(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Catalog'],
+            ]),
+        ]);
+
+        $this->expectException(ImportCorruptedSourceException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('missing /Pages entry', '/') . '/');
+        $resolver->countPages($doc);
+    }
+
+    /** @throws \Throwable */
+    public function testCountPagesReturnsZeroForEmptyKidsArray(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+                ['/', 'Kids'],
+                ['[', []],
+            ]),
+        ]);
+
+        $this->assertSame(0, $resolver->countPages($doc));
+    }
+
+    /** @throws \Throwable */
+    public function testCountPagesThrowsOnDuplicateKidReference(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+                ['/', 'Kids'],
+                [
+                    '[',
+                    [
+                        ['objref', '3 0 R'],
+                        ['objref', '3 0 R'],
+                    ],
+                ],
+            ]),
+            '3_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Page'],
+            ]),
+        ]);
+
+        $this->expectException(ImportCorruptedSourceException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('Duplicate or cyclic reference', '/') . '/');
+        $resolver->countPages($doc);
+    }
+
+    /** @throws \Throwable */
+    public function testCountPagesThrowsWhenNodeBudgetExceeded(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+                ['/', 'Kids'],
+                [
+                    '[',
+                    [
+                        ['objref', '3 0 R'],
+                    ],
+                ],
+            ]),
+            '3_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Page'],
+            ]),
+        ]);
+
+        $this->expectException(ImportCorruptedSourceException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('maximum node budget', '/') . '/');
+        $resolver->countPages($doc, 1);
+    }
+
+    /** @throws \Throwable */
+    public function testCountPagesThrowsForUnexpectedNodeType(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Catalog'],
+            ]),
+        ]);
+
+        $this->expectException(ImportCorruptedSourceException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('Unexpected page tree node type', '/') . '/');
+        $resolver->countPages($doc);
+    }
+
+    /** @throws \Throwable */
+    public function testCountPagesThrowsForPagesNodeWithoutKids(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+            ]),
+        ]);
+
+        $this->expectException(ImportCorruptedSourceException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('missing /Kids', '/') . '/');
+        $resolver->countPages($doc);
+    }
+
+    // -------------------------------------------------------------------------
+    // buildPageIndex / resolveFromIndex
+    // -------------------------------------------------------------------------
+
+    /** @throws \Throwable */
+    public function testBuildPageIndexReturnsPagesInDocumentOrderWithInheritedAttributes(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->mockDoc([
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+                ['/', 'Kids'],
+                [
+                    '[',
+                    [
+                        ['objref', '3 0 R'],
+                        ['objref', '6 0 R'],
+                    ],
+                ],
+                ['/', 'MediaBox'],
+                [
+                    '[',
+                    [
+                        ['numeric', 0],
+                        ['numeric', 0],
+                        ['numeric', 300],
+                        ['numeric', 500],
+                    ],
+                ],
+            ]),
+            '3_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+                ['/', 'Kids'],
+                [
+                    '[',
+                    [
+                        ['objref', '4 0 R'],
+                        ['objref', '5 0 R'],
+                    ],
+                ],
+            ]),
+            '4_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Page'],
+                ['/', 'Rotate'],
+                ['numeric', 90],
+            ]),
+            '5_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Page'],
+                ['/', 'Rotate'],
+                ['numeric', 180],
+            ]),
+            '6_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Page'],
+                ['/', 'Rotate'],
+                ['numeric', 270],
+            ]),
+        ]);
+
+        $index = $resolver->buildPageIndex($doc);
+
+        $this->assertCount(3, $index);
+        // Leaves of the nested /Pages node come before the root's second kid.
+        $this->assertSame([90, 180, 270], \array_column($index, 'Rotate'));
+        // The root /Pages MediaBox is inherited by every leaf.
+        foreach ($index as $pageDict) {
+            $this->assertSame([0, 0, 300, 500], $pageDict['MediaBox'] ?? null);
+        }
+    }
+
+    /** @throws \Throwable */
+    public function testResolveFromIndexThrowsForPageZero(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->loadDoc();
+        $index = $resolver->buildPageIndex($doc);
+        $this->expectException(ImportPageOutOfRangeException::class);
+        $resolver->resolveFromIndex($doc, $index, 0);
+    }
+
+    /** @throws \Throwable */
+    public function testResolveFromIndexThrowsForPageBeyondIndex(): void
+    {
+        $resolver = new PageResolver();
+        $doc = $this->loadDoc();
+        $index = $resolver->buildPageIndex($doc);
+        $this->expectException(ImportPageOutOfRangeException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('document has fewer pages', '/') . '/');
+        $resolver->resolveFromIndex($doc, $index, 2);
+    }
+
+    /** @throws \Throwable */
+    public function testResolveFromIndexDoesNotWalkTheTreeAgain(): void
+    {
+        $resolver = new PageResolver();
+        $calls = 0;
+        $objects = [
+            '1_0' => $this->dictObject([
+                ['/', 'Pages'],
+                ['objref', '2 0 R'],
+            ]),
+            '2_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Pages'],
+                ['/', 'Kids'],
+                [
+                    '[',
+                    [
+                        ['objref', '3 0 R'],
+                    ],
+                ],
+                ['/', 'MediaBox'],
+                [
+                    '[',
+                    [
+                        ['numeric', 0],
+                        ['numeric', 0],
+                        ['numeric', 200],
+                        ['numeric', 200],
+                    ],
+                ],
+            ]),
+            '3_0' => $this->dictObject([
+                ['/', 'Type'],
+                ['/', 'Page'],
+            ]),
+        ];
+        $doc = $this->createStub(SourceDocument::class);
+        $doc->method('getTrailer')->willReturn(['root' => '1 0 R']);
+        $doc->method('getObject')->willReturnCallback(static function (string $ref) use ($objects, &$calls): array {
+            ++$calls;
+            return $objects[$ref] ?? [];
+        });
+
+        $index = $resolver->buildPageIndex($doc);
+        $callsAfterBuild = $calls;
+        $this->assertGreaterThan(0, $callsAfterBuild);
+
+        $resolved = $resolver->resolveFromIndex($doc, $index, 1);
+
+        $this->assertSame([0.0, 0.0, 200.0, 200.0], $resolved['mediaBox']);
+        $this->assertSame($callsAfterBuild, $calls);
     }
 }

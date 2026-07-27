@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfGraph
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * This file is part of tc-lib-pdf-graph software library.
@@ -28,7 +28,7 @@ use Com\Tecnick\Pdf\Graph\Exception as GraphException;
  * @package   PdfGraph
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-graph
  *
  * @phpstan-import-type TTMatrix from \Com\Tecnick\Pdf\Graph\Base
@@ -78,7 +78,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     }
 
     /**
-     * Stops a 2D tranformation restoring previous graphic state.
+     * Stops a 2D transformation restoring previous graphic state.
      * This function must be called after calling transformation methods.
      */
     public function getStopTransform(): string
@@ -94,7 +94,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     }
 
     /**
-     * Get the tranformation matrix (CTM) PDF string
+     * Get the transformation matrix (CTM) PDF string
      *
      * @param TTMatrix $ctm Transformation matrix array.
      */
@@ -360,10 +360,10 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
     }
 
     /**
-     * Get the product of two Tranformation Matrix.
+     * Get the product of two Transformation Matrix.
      *
-     * @param TTMatrix $tma First  Tranformation Matrix.
-     * @param TTMatrix $tmb Second Tranformation Matrix.
+     * @param TTMatrix $tma First  Transformation Matrix.
+     * @param TTMatrix $tmb Second Transformation Matrix.
      *
      * @return TTMatrix CTM Transformation Matrix.
      */
@@ -385,7 +385,7 @@ abstract class Transform extends \Com\Tecnick\Pdf\Graph\Style
      *
      * @param float $deg Angular value in degrees.
      *
-     * @return float Angle in radiants
+     * @return float Angle in radians
      */
     public function degToRad(float $deg): float
     {

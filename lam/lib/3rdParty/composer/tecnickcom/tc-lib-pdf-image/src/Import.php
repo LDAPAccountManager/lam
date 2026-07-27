@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * This file is part of tc-lib-pdf-image software library.
@@ -29,7 +29,7 @@ use Com\Tecnick\Pdf\Image\Import\ImageImportInterface;
  * @package   PdfImage
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-image
  *
  * @phpstan-type ImageBaseData array{
@@ -222,7 +222,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     {
         $cache = $this->cache[$key] ?? null;
         if ($cache === null) {
-            throw new ImageException('Unknownn key');
+            throw new ImageException('Unknown key');
         }
 
         return $cache;
@@ -495,7 +495,11 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     /**
      * Add plain/mask variants when required by mask mode or alpha splitting.
      *
-     * @param ImageRawData $data Image raw data.
+     * @param ImageRawData $data    Image raw data.
+     * @param int          $width   Width in pixels.
+     * @param int          $height  Height in pixels.
+     * @param int          $quality Quality for JPEG files.
+     * @param bool         $ismask  True if the image is a transparency mask.
      *
      * @return ImageRawData
      *
@@ -523,6 +527,9 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
 
     /**
      * @param ImageBaseData $basedata Image base data.
+     * @param int           $width    Width in pixels.
+     * @param int           $height   Height in pixels.
+     * @param int           $quality  Quality for JPEG files.
      *
      * @return ImageBaseData
      *
@@ -538,6 +545,9 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
 
     /**
      * @param ImageBaseData $basedata Image base data.
+     * @param int           $width    Width in pixels.
+     * @param int           $height   Height in pixels.
+     * @param int           $quality  Quality for JPEG files.
      *
      * @return ImageBaseData
      *
@@ -758,7 +768,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
      * Get the resized image raw data
      * (always convert the image type to a native format: PNG or JPEG).
      *
-     * @param ImageBaseData $data   Image raw data as returned by getImageRawData.
+     * @param ImageBaseData $data   Image raw data as returned by getRawData.
      * @param int          $width   New width in pixels.
      * @param int          $height  New height in pixels.
      * @param bool         $alpha   If true save the alpha channel information,
@@ -842,7 +852,7 @@ class Import extends \Com\Tecnick\Pdf\Image\Output
     /**
      * Extract the alpha channel as separate image to be used as a mask.
      *
-     * @param ImageBaseData $data Image raw data as returned by getImageRawData.
+     * @param ImageBaseData $data Image raw data as returned by getRawData.
      *
      * @return ImageRawData Image raw data array.
      *

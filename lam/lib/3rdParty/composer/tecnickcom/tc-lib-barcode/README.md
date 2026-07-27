@@ -70,8 +70,7 @@ It focuses on deterministic output and specification-driven encoding, making it 
 | DATAMATRIX | DATAMATRIX (ISO/IEC 16022) |
 | PDF417 | PDF417 (ISO/IEC 15438:2006) |
 | QRCODE | QR-CODE |
-| RAW | 2D RAW MODE comma-separated rows |
-| RAW2 | 2D RAW MODE rows enclosed in square parentheses |
+| SRAW | 2D RAW MODE (comma-separated rows of 01 strings) |
 
 ### Postal
 

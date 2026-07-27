@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -26,7 +26,7 @@ namespace Com\Tecnick\Barcode\Type\Square\QrCode;
  * @package     Barcode
  * @author      Nicola Asuni <info@tecnick.com>
  * @copyright   2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license     https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link        https://github.com/tecnickcom/tc-lib-barcode
  */
 abstract class Mask extends \Com\Tecnick\Barcode\Type\Square\QrCode\MaskNum
@@ -89,7 +89,7 @@ abstract class Mask extends \Com\Tecnick\Barcode\Type\Square\QrCode\MaskNum
      *                            otherwise the value indicates the number of masks to be checked,
      *                            mask ids are random
      * @param bool $qr_find_best_mask If true, estimates best mask (slow)
-     * @param int $qr_default_mask Default mask used when $fbm is false
+     * @param int $qr_default_mask Default mask used when $qr_find_best_mask is false
      */
     public function __construct(
         /**

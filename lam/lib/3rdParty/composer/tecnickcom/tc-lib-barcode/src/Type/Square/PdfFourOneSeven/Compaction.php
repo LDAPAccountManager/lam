@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Process.php
+ * Compaction.php
  *
  * @since     2015-02-21
  * @category  Library
  * @package   Barcode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  *
  * This file is part of tc-lib-barcode software library.
@@ -21,14 +21,14 @@ namespace Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven;
 /**
  * Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\Compaction
  *
- * Process for PdfFourOneSeven Barcode type class
+ * Compaction methods for PdfFourOneSeven Barcode type class
  *
  * @since     2015-02-21
  * @category  Library
  * @package   Barcode
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2010-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-barcode
  */
 abstract class Compaction extends \Com\Tecnick\Barcode\Type\Square\PdfFourOneSeven\Sequence

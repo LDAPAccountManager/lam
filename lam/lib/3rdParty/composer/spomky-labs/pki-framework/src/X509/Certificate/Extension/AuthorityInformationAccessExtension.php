@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SpomkyLabs\Pki\X509\Certificate\Extension;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use SpomkyLabs\Pki\ASN1\Element;
@@ -13,6 +12,7 @@ use SpomkyLabs\Pki\ASN1\Type\Constructed\Sequence;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
 use SpomkyLabs\Pki\X509\Certificate\Extension\AccessDescription\AccessDescription;
 use SpomkyLabs\Pki\X509\Certificate\Extension\AccessDescription\AuthorityAccessDescription;
+use function count;
 
 /**
  * Implements 'Authority Information Access' extension.

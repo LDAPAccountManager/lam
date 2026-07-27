@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\CertificationPath\PathValidation;
 
-use function count;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\CryptoTypes\AlgorithmIdentifier\Feature\AlgorithmIdentifierType;
 use SpomkyLabs\Pki\CryptoTypes\Asymmetric\PublicKeyInfo;
 use SpomkyLabs\Pki\X509\Certificate\Certificate;
 use SpomkyLabs\Pki\X509\Certificate\Extension\CertificatePolicy\PolicyInformation;
 use SpomkyLabs\Pki\X509\CertificationPath\Policy\PolicyTree;
+use function count;
 
 /**
  * Result of the path validation process.

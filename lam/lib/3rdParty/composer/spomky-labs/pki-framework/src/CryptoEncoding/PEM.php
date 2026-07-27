@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\CryptoEncoding;
 
-use function is_string;
 use RuntimeException;
 use Stringable;
 use UnexpectedValueException;
+use function is_string;
 
 /**
  * Implements PEM file encoding and decoding.

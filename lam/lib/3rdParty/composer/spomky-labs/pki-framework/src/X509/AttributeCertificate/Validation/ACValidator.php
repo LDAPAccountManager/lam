@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SpomkyLabs\Pki\X509\AttributeCertificate\Validation;
 
-use function count;
 use SpomkyLabs\Pki\CryptoBridge\Crypto;
 use SpomkyLabs\Pki\X509\AttributeCertificate\AttributeCertificate;
 use SpomkyLabs\Pki\X509\AttributeCertificate\Validation\Exception\ACValidationException;
@@ -14,6 +13,7 @@ use SpomkyLabs\Pki\X509\Certificate\Extension\Target\Targets;
 use SpomkyLabs\Pki\X509\Certificate\Extension\TargetInformationExtension;
 use SpomkyLabs\Pki\X509\CertificationPath\Exception\PathValidationException;
 use SpomkyLabs\Pki\X509\CertificationPath\PathValidation\PathValidationConfig;
+use function count;
 
 /**
  * Implements attribute certificate validation conforming to RFC 5755.

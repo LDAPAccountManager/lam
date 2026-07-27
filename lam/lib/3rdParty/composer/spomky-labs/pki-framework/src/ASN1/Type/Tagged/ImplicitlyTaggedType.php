@@ -9,8 +9,8 @@ use SpomkyLabs\Pki\ASN1\Component\Identifier;
 use SpomkyLabs\Pki\ASN1\Element;
 use SpomkyLabs\Pki\ASN1\Feature\ElementBase;
 use SpomkyLabs\Pki\ASN1\Type\UnspecifiedType;
-use function sprintf;
 use UnexpectedValueException;
+use function sprintf;
 
 /**
  * Implements implicit tagging mode.

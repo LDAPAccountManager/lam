@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  *
  * This file is part of tc-lib-pdf-filter software library.
@@ -23,7 +23,7 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
 /**
  * Com\Tecnick\Pdf\Filter\Type\Jpx
  *
- * JPXDecode filter (PDF 32000-2008 §7.4.10).
+ * JPXDecode filter (PDF 32000-2008 §7.4.9).
  * Decompresses JPEG 2000 (JP2/JPX) encoded image data using the Imagick
  * extension (ext-imagick). If Imagick is not available a PPException is thrown.
  *
@@ -34,7 +34,7 @@ use Com\Tecnick\Pdf\Filter\Exception as PPException;
  * @package   PdfFilter
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-filter
  */
 class Jpx implements \Com\Tecnick\Pdf\Filter\Type\Template

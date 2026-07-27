@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  *
  * This file is part of tc-lib-pdf-encrypt software library.
@@ -28,7 +28,7 @@ namespace Com\Tecnick\Pdf\Encrypt\Type;
  * @package   PdfEncrypt
  * @author    Nicola Asuni <info@tecnick.com>
  * @copyright 2011-2026 Nicola Asuni - Tecnick.com LTD
- * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE.TXT)
+ * @license   https://www.gnu.org/copyleft/lesser.html GNU-LGPL v3 (see LICENSE)
  * @link      https://github.com/tecnickcom/tc-lib-pdf-encrypt
  */
 class Seed
@@ -57,7 +57,7 @@ class Seed
             && \function_exists('openssl_random_pseudo_bytes')
             && \strtoupper(\substr(PHP_OS, 0, 3)) !== 'WIN'
         ) {
-            // this is not used on windows systems because it is very slow for a know bug
+            // this is not used on windows systems because it is very slow for a known bug
             $rnd .= \openssl_random_pseudo_bytes(512);
 
             return $rnd . $data . __DIR__ . __FILE__ . $key . \serialize($_SERVER) . microtime(true);
