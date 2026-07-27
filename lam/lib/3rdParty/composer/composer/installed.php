@@ -74,9 +74,9 @@
             'dev_requirement' => false,
         ),
         'duosecurity/duo_universal_php' => array(
-            'pretty_version' => '1.1.2',
-            'version' => '1.1.2.0',
-            'reference' => '68e699c52d41f681df07dc0f98e2ba551bef2fd3',
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
+            'reference' => '7045587e8a0a850355ed55f019090a033e49b29a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../duosecurity/duo_universal_php',
             'aliases' => array(),
