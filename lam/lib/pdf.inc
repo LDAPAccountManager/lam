@@ -502,13 +502,13 @@ class PDFTableCell {
 	public const ALIGN_CENTER = 'C';
 
 	/** content text of cell */
-	public string $content = '';
+	public string $content;
 	/** text alignment */
-	public string $align = self::ALIGN_LEFT;
+	public string $align;
 	/** cell width (e.g. "20%") */
 	public ?string $width;
 	/** bold text */
-	public bool $bold = false;
+	public bool $bold;
 
 	/**
 	 * Constructor.
@@ -520,7 +520,7 @@ class PDFTableCell {
 	 */
 	public function __construct(?string $content, ?string $width = null, ?string $align = null, bool $bold = false) {
 		$this->content = empty($content) ? ' ' : $content;
-		$this->align = ($align == null) ? self::ALIGN_LEFT : $align;
+		$this->align = $align ?? self::ALIGN_LEFT;
 		$this->width = $width;
 		$this->bold = $bold;
 	}
