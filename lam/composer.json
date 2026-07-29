@@ -20,7 +20,7 @@
     "phpseclib/phpseclib": "^3.0",
     "paragonie/random_compat": "^2.0",
 
-    "christian-riesen/base32": "^1.6",
+    "christian-riesen/base32": "^2",
 
     "facile-it/php-openid-client": "^1",
 
