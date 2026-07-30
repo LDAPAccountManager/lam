@@ -27,7 +27,7 @@ window.lam = window.lam || {};
  * @param box checkbox name
  */
 function list_click(box) {
-	var cbox = document.getElementsByName(box)[0];
+	const cbox = document.getElementsByName(box)[0];
 	cbox.checked = !cbox.checked;
 }
 
@@ -376,8 +376,7 @@ window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, can
  * @param cancelText text for Cancel button
  */
 window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, cancelText) {
-	var selectedLogo = document.getElementById('logo').value;
-	document.getElementById('exportLogoName').value = selectedLogo;
+    document.getElementById('exportLogoName').value = document.getElementById('logo').value;
 	window.lam.dialog.showSimpleDialog(title, okText, cancelText, 'logoExportForm', 'logoExportDiv');
 }
 
@@ -2130,7 +2129,7 @@ window.lam.webauthn.register = function(publicKey, successCallback, errorCallbac
 	}
 	navigator.credentials.create({publicKey: publicKey})
 		.then(function (data) {
-			var publicKeyCredential = {
+			const publicKeyCredential = {
 				id: data.id,
 				type: data.type,
 				rawId: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.rawId)),
@@ -3379,7 +3378,7 @@ window.lam.treeview.setComparisonDNs = function(dnList) {
  * @param json JSON response
  */
 window.lam.treeview.checkSession = function(json) {
-	if (json && (json.sessionExpired == 'true')) {
+	if (json && (json.sessionExpired === 'true')) {
 		location.href = '../login.php?expired=yes';
 	}
 }
@@ -3458,8 +3457,8 @@ window.lam.topmenu = window.lam.topmenu || {};
  * Toggles the top navigation menu.
  */
 window.lam.topmenu.toggle = function() {
-	var topnav = document.getElementById('lam-topnav');
-	if (topnav.className == 'lam-header') {
+	const topnav = document.getElementById('lam-topnav');
+	if (topnav.className === 'lam-header') {
 		topnav.className = 'lam-header lam-header-open';
 	}
 	else {
@@ -4071,7 +4070,7 @@ window.lam.utility.restoreScrollPosition = function(topValue, leftValue) {
  * @param element element
  */
 window.lam.utility.isHidden = function(element) {
-	return !element.offsetWidth || !element.offsetHeight || (element.getClientRects().length == 0);
+	return !element.offsetWidth || !element.offsetHeight || (element.getClientRects().length === 0);
 }
 
 
@@ -4097,10 +4096,10 @@ window.lam.utility.documentReady(function() {
  */
 if ("serviceWorker" in navigator) {
 	if (!navigator.serviceWorker.controller) {
-		var basePath = document.currentScript.src;
-		basePath = basePath.replace(/\/[^/]+\.js/gi, '');
-		var workerJS = basePath + '/../../pwa_worker.js';
-		navigator.serviceWorker.register(workerJS, {
+        let basePath = document.currentScript.src;
+        basePath = basePath.replace(/\/[^/]+\.js/gi, '');
+        const workerJS = basePath + '/../../pwa_worker.js';
+        navigator.serviceWorker.register(workerJS, {
 			scope : basePath + "../../"
 		});
 	}
