@@ -93,7 +93,7 @@ if (!($cfg instanceof LAMCfgMain)) {
 
 // check if user is logged in
 if (!isset($_SESSION["mainconf_password"]) || (!$cfg->checkPassword($_SESSION["mainconf_password"]))) {
-	require_once(__DIR__ . '/mainlogin.php');
+	require_once __DIR__ . '/mainlogin.php';
 	exit();
 }
 

@@ -55,7 +55,7 @@ setlanguage();
 if (!isset($_SESSION['conf_isAuthenticated']) || ($_SESSION['conf_config']->getName() !== $_SESSION['conf_isAuthenticated'])) {
 	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("No password was entered!"));
 	/** go back to login if password is empty */
-	require_once(__DIR__ . '/conflogin.php');
+	require_once __DIR__ . '/conflogin.php';
 	exit;
 }
 
