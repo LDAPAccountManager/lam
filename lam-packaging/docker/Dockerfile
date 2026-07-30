@@ -92,6 +92,7 @@ RUN apt-get install --no-install-recommends -y \
         cron \
         libcap2-bin \
     && \
+    apt-get clean && \
     rm /etc/apache2/sites-enabled/*default* && \
     rm -rf /var/cache/apt /var/lib/apt/lists/*
 
@@ -145,9 +146,9 @@ RUN wget --max-redirect=0 https://letsencrypt.org/certs/isrgrootx1.pem \
 
 # install LAM
 RUN wget https://github.com/LDAPAccountManager/lam/releases/download/${LAM_RELEASE}/ldap-account-manager_${LAM_RELEASE}-1_all.deb \
-    -O /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
-    dpkg -i /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
-    rm -f /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb
+    -O "/tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb" && \
+    dpkg -i "/tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb" && \
+    rm -f "/tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb"
 
 RUN chown www-data:www-data /etc/ldap-account-manager
 
