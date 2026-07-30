@@ -41,11 +41,11 @@ use LAMException;
 */
 
 /** security functions */
-include_once(__DIR__ . "/../lib/security.inc");
+include_once __DIR__ . "/../lib/security.inc";
 /** access to configuration settings */
-include_once(__DIR__ . "/../lib/config.inc");
+include_once __DIR__ . "/../lib/config.inc";
 /** status messages */
-include_once(__DIR__ . "/../lib/status.inc");
+include_once __DIR__ . "/../lib/status.inc";
 
 // set session save path
 if (isFileBasedSession()) {

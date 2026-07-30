@@ -29,11 +29,11 @@
 
 
 /** security functions */
-include_once(__DIR__ . "/../lib/security.inc");
+include_once __DIR__ . "/../lib/security.inc";
 /** Used to display status messages */
-include_once(__DIR__ . "/../lib/status.inc");
+include_once __DIR__ . "/../lib/status.inc";
 /** LDAP settings are deleted at logout */
-include_once(__DIR__ . "/../lib/ldap.inc");
+include_once __DIR__ . "/../lib/ldap.inc";
 
 // delete key and iv in cookie
 $cookieOptions = lamDefaultCookieOptions();

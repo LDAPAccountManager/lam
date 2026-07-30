@@ -37,7 +37,7 @@ use LDAP\Connection;
 
 /** terminals server options */
 
-include_once(__DIR__ . '/sambaSamAccount/sambaMungedDial.inc');
+include_once __DIR__ . '/sambaSamAccount/sambaMungedDial.inc';
 
 /**
  * Manages the object class "sambaSamAccount" for users and hosts.

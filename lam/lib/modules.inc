@@ -40,23 +40,23 @@ use function LAM\TYPES\getScopeFromTypeId;
  */
 
 /** self-service functions */
-include_once(__DIR__ . "/selfService.inc");
+include_once __DIR__ . "/selfService.inc";
 if (isLAMProVersion()) {
 	/** job interface */
-	include_once(__DIR__ . "/jobs.inc");
+	include_once __DIR__ . "/jobs.inc";
 }
 /** some helper functions */
-include_once(__DIR__ . "/account.inc");
+include_once __DIR__ . "/account.inc";
 /** parent class of account modules */
-include_once(__DIR__ . "/baseModule.inc");
+include_once __DIR__ . "/baseModule.inc";
 /** access to LDAP server */
-include_once(__DIR__ . "/ldap.inc");
+include_once __DIR__ . "/ldap.inc";
 /** remote functions */
-include_once(__DIR__ . "/remote.inc");
+include_once __DIR__ . "/remote.inc";
 /** security functions */
-include_once(__DIR__ . "/security.inc");
+include_once __DIR__ . "/security.inc";
 /** meta HTML classes */
-include_once(__DIR__ . "/html.inc");
+include_once __DIR__ . "/html.inc";
 
 /**
  * This includes all module files.
@@ -66,7 +66,7 @@ $modulesINC_dir = dir($modulesINC_dirname);
 // get module names.
 while ($entry = $modulesINC_dir->read()) {
 	if ((substr($entry, strlen($entry) - 4, 4) === '.inc') && is_file($modulesINC_dirname . '/' . $entry)) {
-		include_once($modulesINC_dirname . '/' . $entry);
+		include_once $modulesINC_dirname . '/' . $entry;
 	}
 }
 
@@ -413,7 +413,7 @@ function getHelp($module, $helpID): ?array {
 	global $helpArray;
 	if (in_array($module, [null, '', 'main'], true)) {
 		if (!isset($helpArray)) {
-			include_once(__DIR__ . '/../help/help.inc');
+			include_once __DIR__ . '/../help/help.inc';
 		}
 		return $helpArray[$helpID];
 	}

@@ -51,9 +51,9 @@ use LAMConfig;
 
 
 /** Access to config functions */
-include_once(__DIR__ . '/../../lib/config.inc');
+include_once __DIR__ . '/../../lib/config.inc';
 /** Access to module lists */
-include_once(__DIR__ . '/../../lib/modules.inc');
+include_once __DIR__ . '/../../lib/modules.inc';
 /** common functions */
 include_once __DIR__ . '/../../lib/configPages.inc';
 

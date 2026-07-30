@@ -41,17 +41,17 @@ use LAMException;
  */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** helper functions for profiles */
-include_once(__DIR__ . "/../../lib/profiles.inc");
+include_once __DIR__ . "/../../lib/profiles.inc";
 /** access to LDAP server */
-include_once(__DIR__ . "/../../lib/ldap.inc");
+include_once __DIR__ . "/../../lib/ldap.inc";
 /** access to configuration options */
-include_once(__DIR__ . "/../../lib/config.inc");
+include_once __DIR__ . "/../../lib/config.inc";
 /** access to account modules */
-include_once(__DIR__ . "/../../lib/modules.inc");
+include_once __DIR__ . "/../../lib/modules.inc";
 /** Used to display status messages */
-include_once(__DIR__ . "/../../lib/status.inc");
+include_once __DIR__ . "/../../lib/status.inc";
 
 // start session
 startSecureSession();

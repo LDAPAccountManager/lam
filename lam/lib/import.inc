@@ -34,7 +34,7 @@ use LAMException;
  */
 
 /** LDAP handle */
-include_once(__DIR__ . '/ldap.inc');
+include_once __DIR__ . '/ldap.inc';
 
 /**
  * Imports LDIF files.

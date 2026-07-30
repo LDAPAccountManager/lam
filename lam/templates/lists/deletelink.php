@@ -30,11 +30,11 @@
 */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** Needed to find DNs of users */
-include_once(__DIR__ . "/../../lib/ldap.inc");
+include_once __DIR__ . "/../../lib/ldap.inc";
 /** Used to display error messages */
-include_once(__DIR__ . "/../../lib/status.inc");
+include_once __DIR__ . "/../../lib/status.inc";
 
 // start session
 startSecureSession();

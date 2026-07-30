@@ -38,9 +38,9 @@ use function LAM\PDF\createModulePDF;
  */
 
 /** LDAP handle */
-include_once(__DIR__ . '/ldap.inc');
+include_once __DIR__ . '/ldap.inc';
 /** PDF */
-include_once(__DIR__ . '/pdf.inc');
+include_once __DIR__ . '/pdf.inc';
 
 /**
  * Creates LDAP accounts for file upload.

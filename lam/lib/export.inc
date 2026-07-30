@@ -35,7 +35,7 @@ use LamTemporaryFilesManager;
  */
 
 /** LDAP handle */
-include_once(__DIR__ . '/ldap.inc');
+include_once __DIR__ . '/ldap.inc';
 
 /**
  * Creates LDAP accounts for file upload.

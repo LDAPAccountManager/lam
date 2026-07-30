@@ -35,9 +35,9 @@ use ServerProfilePersistenceManager;
  */
 
 /** config */
-include_once(__DIR__ . "/config.inc");
+include_once __DIR__ . "/config.inc";
 /** cron runner */
-include_once(__DIR__ . "/cronRunner.inc");
+include_once __DIR__ . "/cronRunner.inc";
 
 // check parameters
 $isDryRun = isset($argv) && (in_array('--dryRun', $argv) || in_array('--dry-run', $argv));

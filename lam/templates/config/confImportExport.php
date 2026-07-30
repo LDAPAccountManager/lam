@@ -47,9 +47,9 @@ use ZipArchive;
 
 
 /** Access to persistence functions */
-include_once(__DIR__ . '/../../lib/persistence.inc');
+include_once __DIR__ . '/../../lib/persistence.inc';
 /** account modules */
-include_once(__DIR__ . '/../../lib/modules.inc');
+include_once __DIR__ . '/../../lib/modules.inc';
 
 // start session
 if (isFileBasedSession()) {

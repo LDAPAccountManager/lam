@@ -27,9 +27,9 @@
 * @package tools
 */
 
-include_once(__DIR__ . "/../../lib/account.inc");
-include_once(__DIR__ . "/../../lib/modules.inc");
-include_once(__DIR__ . "/../../lib/html.inc");
+include_once __DIR__ . "/../../lib/account.inc";
+include_once __DIR__ . "/../../lib/modules.inc";
+include_once __DIR__ . "/../../lib/html.inc";
 
 echo "<!DOCTYPE html>\n";
 echo '<head>';

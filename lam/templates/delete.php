@@ -45,19 +45,19 @@ use moduleCache;
 
 
 /** security functions */
-include_once(__DIR__ . "/../lib/security.inc");
+include_once __DIR__ . "/../lib/security.inc";
 /** account functions */
-include_once(__DIR__ . '/../lib/account.inc');
+include_once __DIR__ . '/../lib/account.inc';
 /** current configuration options */
-include_once(__DIR__ . '/../lib/config.inc');
+include_once __DIR__ . '/../lib/config.inc';
 /** message displaying */
-include_once(__DIR__ . '/../lib/status.inc');
+include_once __DIR__ . '/../lib/status.inc';
 /** LDAP connection */
-include_once(__DIR__ . '/../lib/ldap.inc');
+include_once __DIR__ . '/../lib/ldap.inc';
 /** remote interface */
-include_once(__DIR__ . '/../lib/remote.inc');
+include_once __DIR__ . '/../lib/remote.inc';
 /** module interface */
-include_once(__DIR__ . '/../lib/modules.inc');
+include_once __DIR__ . '/../lib/modules.inc';
 
 // Start session
 startSecureSession();

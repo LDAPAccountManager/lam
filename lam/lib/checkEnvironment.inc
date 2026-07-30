@@ -38,13 +38,13 @@ use function LAM\LOGIN\displayLoginHeader;
  */
 
 /** status messages */
-include_once(__DIR__ . "/../lib/status.inc");
+include_once __DIR__ . "/../lib/status.inc";
 
 /** config */
-include_once(__DIR__ . "/../lib/config.inc");
+include_once __DIR__ . "/../lib/config.inc";
 
 /** persistence */
-include_once(__DIR__ . "/../lib/persistence.inc");
+include_once __DIR__ . "/../lib/persistence.inc";
 
 // check PHP version
 if (version_compare(phpversion(), '8.2.0') < 0) {

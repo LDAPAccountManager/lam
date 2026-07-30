@@ -28,7 +28,7 @@
  */
 
 /** include parent class */
-include_once(__DIR__ . "/ldapPublicKey.inc");
+include_once __DIR__ . "/ldapPublicKey.inc";
 
 /**
  * Manages SSH public keys on Windows/Samba 4.

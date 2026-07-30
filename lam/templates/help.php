@@ -36,13 +36,13 @@ use ScopeAndModuleValidation;
  */
 
 /** LDAP connection */
-include_once(__DIR__ . "/../lib/ldap.inc");
+include_once __DIR__ . "/../lib/ldap.inc";
 
 /** configuration */
-include_once(__DIR__ . "/../lib/config.inc");
+include_once __DIR__ . "/../lib/config.inc";
 
 /** self-service functions */
-include_once(__DIR__ . "/../lib/selfService.inc");
+include_once __DIR__ . "/../lib/selfService.inc";
 if (!empty($_GET['selfService']) && ($_GET['selfService'] === '1')) {
 	session_name('SELFSERVICE');
 }
@@ -53,12 +53,12 @@ if (isFileBasedSession()) {
 lam_start_session();
 
 /** status messages */
-include_once(__DIR__ . "/../lib/status.inc");
+include_once __DIR__ . "/../lib/status.inc";
 
 setlanguage();
 
 /** help data */
-include_once(__DIR__ . "/../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
+include_once __DIR__ . "/../help/help.inc"; // Include help/help.inc which provides $helpArray where the help pages are stored
 
 
 /**
@@ -118,7 +118,7 @@ $helpEntry = [];
 
 // module help
 if (isset($_GET['module']) && ($_GET['module'] != 'main') && ($_GET['module'] != '')) {
-	include_once(__DIR__ . "/../lib/modules.inc");
+	include_once __DIR__ . "/../lib/modules.inc";
 	$moduleName = $_GET['module'];
 	if (!ScopeAndModuleValidation::isValidModuleName($moduleName)) {
 		logNewMessage(LOG_ERR, 'Invalid module name: ' . $moduleName);

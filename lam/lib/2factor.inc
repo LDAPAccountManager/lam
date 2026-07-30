@@ -379,7 +379,7 @@ class YubicoProvider extends BaseProvider {
 	 * @see TwoFactorProvider::verify2ndFactor
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
-		include_once(__DIR__ . "/3rdParty/yubico/Yubico.php");
+		include_once __DIR__ . "/3rdParty/yubico/Yubico.php";
 		$serialData = $this->getSerials($user, $password);
 		if (empty($serialData)) {
 			return false;

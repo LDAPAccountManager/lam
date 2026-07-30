@@ -35,11 +35,11 @@ use function LAM\PDF\getPdfFonts;
  */
 
 /** Used to get type information. */
-include_once(__DIR__ . "/types.inc");
+include_once __DIR__ . "/types.inc";
 /** Used to get PDF information. */
-include_once(__DIR__ . "/pdfstruct.inc");
+include_once __DIR__ . "/pdfstruct.inc";
 /** Used to create PDF files. */
-include_once(__DIR__ . "/pdf.inc");
+include_once __DIR__ . "/pdf.inc";
 
 
 /**

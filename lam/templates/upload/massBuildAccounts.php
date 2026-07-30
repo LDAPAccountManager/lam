@@ -40,13 +40,13 @@ use function LAM\PDF\getPdfFonts;
 */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** access to configuration */
-include_once(__DIR__ . '/../../lib/config.inc');
+include_once __DIR__ . '/../../lib/config.inc';
 /** status messages */
-include_once(__DIR__ . '/../../lib/status.inc');
+include_once __DIR__ . '/../../lib/status.inc';
 /** account modules */
-include_once(__DIR__ . '/../../lib/modules.inc');
+include_once __DIR__ . '/../../lib/modules.inc';
 
 
 // Start session

@@ -37,17 +37,17 @@ use LAM\TYPES\TypeManager;
 */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** configuration options */
-include_once(__DIR__ . '/../../lib/config.inc');
+include_once __DIR__ . '/../../lib/config.inc';
 /** functions to load and save profiles */
-include_once(__DIR__ . '/../../lib/profiles.inc');
+include_once __DIR__ . '/../../lib/profiles.inc';
 /** Return error-message */
-include_once(__DIR__ . '/../../lib/status.inc');
+include_once __DIR__ . '/../../lib/status.inc';
 /** Return a pdf-file */
-include_once(__DIR__ . '/../../lib/pdf.inc');
+include_once __DIR__ . '/../../lib/pdf.inc';
 /** module functions */
-include_once(__DIR__ . '/../../lib/modules.inc');
+include_once __DIR__ . '/../../lib/modules.inc';
 
 // Start session
 startSecureSession();

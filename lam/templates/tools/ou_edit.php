@@ -44,13 +44,13 @@ use LAM\TYPES\TypeManager;
  */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** access to configuration data */
-include_once(__DIR__ . "/../../lib/config.inc");
+include_once __DIR__ . "/../../lib/config.inc";
 /** access LDAP server */
-include_once(__DIR__ . "/../../lib/ldap.inc");
+include_once __DIR__ . "/../../lib/ldap.inc";
 /** used to print status messages */
-include_once(__DIR__ . "/../../lib/status.inc");
+include_once __DIR__ . "/../../lib/status.inc";
 
 // start session
 startSecureSession();

@@ -29,9 +29,9 @@ namespace LAM\PWA;
 */
 
 /** security functions */
-include_once(__DIR__ . "/../lib/security.inc");
+include_once __DIR__ . "/../lib/security.inc";
 /** common functions */
-include_once(__DIR__ . "/../lib/account.inc");
+include_once __DIR__ . "/../lib/account.inc";
 
 if (!headers_sent()) {
 	header('Content-Type: application/json; charset=utf-8');

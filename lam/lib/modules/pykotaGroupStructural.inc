@@ -28,7 +28,7 @@
  */
 
 /** include parent class */
-include_once(__DIR__ . "/pykotaGroup.inc");
+include_once __DIR__ . "/pykotaGroup.inc";
 
 /**
  * Manages PyKota group accounts.

@@ -34,11 +34,11 @@ use LAMConfig;
  */
 
 /** parent class of account types */
-include_once(__DIR__ . "/baseType.inc");
+include_once __DIR__ . "/baseType.inc";
 /** parent class of list views */
-include_once(__DIR__ . "/lists.inc");
+include_once __DIR__ . "/lists.inc";
 /** Used to check if this is a LAM Pro release. */
-include_once(__DIR__ . "/selfService.inc");
+include_once __DIR__ . "/selfService.inc";
 
 
 /**
@@ -49,7 +49,7 @@ $typesINC_dir = dir($typesINC_dirname);
 // get module names.
 while ($entry = $typesINC_dir->read()) {
 	if ((str_ends_with($entry, '.inc')) && is_file($typesINC_dirname . '/' . $entry)) {
-		include_once($typesINC_dirname . '/' . $entry);
+		include_once $typesINC_dirname . '/' . $entry;
 	}
 }
 

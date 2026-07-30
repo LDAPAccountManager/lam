@@ -43,9 +43,9 @@ use LAMException;
 */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** access to configuration options */
-include_once(__DIR__ . "/../../lib/config.inc");
+include_once __DIR__ . "/../../lib/config.inc";
 
 // start session
 startSecureSession();

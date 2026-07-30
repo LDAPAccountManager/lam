@@ -28,11 +28,11 @@
  */
 
 /** configuration options */
-include_once(__DIR__ . '/config.inc');
+include_once __DIR__ . '/config.inc';
 /** ldap connection */
-include_once(__DIR__ . '/ldap.inc');
+include_once __DIR__ . '/ldap.inc';
 /** common functions */
-include_once(__DIR__ . '/account.inc');
+include_once __DIR__ . '/account.inc';
 
 // check client IP address
 checkClientIP();

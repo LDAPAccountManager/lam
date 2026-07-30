@@ -32,7 +32,7 @@ use LamTemporaryFilesManager;
  */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 
 // start session
 if (isset($_GET['selfservice'])) {

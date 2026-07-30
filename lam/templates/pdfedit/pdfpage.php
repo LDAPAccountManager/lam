@@ -56,15 +56,15 @@ use LAMException;
  */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** access to PDF configuration files */
-include_once(__DIR__ . '/../../lib/pdfstruct.inc');
+include_once __DIR__ . '/../../lib/pdfstruct.inc';
 /** LDAP object */
-include_once(__DIR__ . '/../../lib/ldap.inc');
+include_once __DIR__ . '/../../lib/ldap.inc';
 /** LAM configuration */
-include_once(__DIR__ . '/../../lib/config.inc');
+include_once __DIR__ . '/../../lib/config.inc';
 /** module functions */
-include_once(__DIR__ . '/../../lib/modules.inc');
+include_once __DIR__ . '/../../lib/modules.inc';
 
 // start session
 startSecureSession();

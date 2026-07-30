@@ -24,7 +24,7 @@ namespace LAM\TOOLS\MULTI_EDIT;
 
 use PHPUnit\Framework\TestCase;
 
-include_once (__DIR__ . '/../../../lib/multiEditTool.inc');
+include_once __DIR__ . '/../../../lib/multiEditTool.inc';
 
 /**
  * Checks code in multiEdit.php.

@@ -31,7 +31,7 @@
 
 use LDAP\Connection;
 
-include_once(__DIR__ . "/config.inc");
+include_once __DIR__ . "/config.inc";
 
 /**
  * Ldap manages connection to LDAP and includes several helper functions.

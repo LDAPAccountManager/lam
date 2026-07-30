@@ -43,7 +43,7 @@ use LAM\PDF\PDFImage;
  */
 
 /** PDF functions */
-include_once(__DIR__ . '/pdf.inc');
+include_once __DIR__ . '/pdf.inc';
 
 /**
  * Parent class of all account modules.

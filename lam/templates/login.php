@@ -56,17 +56,17 @@ use ServerProfilePersistenceManager;
  */
 
 /** status messages */
-include_once(__DIR__ . "/../lib/status.inc");
+include_once __DIR__ . "/../lib/status.inc";
 
 /** check environment */
 include_once __DIR__ . '/../lib/checkEnvironment.inc';
 
 /** security functions */
-include_once(__DIR__ . "/../lib/security.inc");
+include_once __DIR__ . "/../lib/security.inc";
 /** self-service functions */
-include_once(__DIR__ . "/../lib/selfService.inc");
+include_once __DIR__ . "/../lib/selfService.inc";
 /** access to configuration options */
-include_once(__DIR__ . "/../lib/config.inc");
+include_once __DIR__ . "/../lib/config.inc";
 
 $cfgMain = new LAMCfgMain();
 
@@ -78,7 +78,7 @@ if (!$cfgMain->hasPasswordSet()) {
 
 $licenseValidator = null;
 if (isLAMProVersion()) {
-	include_once(__DIR__ . "/../lib/env.inc");
+	include_once __DIR__ . "/../lib/env.inc";
 	$licenseValidator = new LAMLicenseValidator();
 	$licenseValidator->validateAndRedirect('config/mainlogin.php?invalidLicense=1', 'config/mainlogin.php?invalidLicense=2');
 }
@@ -482,7 +482,7 @@ function displayLoginHeader(): void {
 
 // checking if the submitted username/password is correct.
 if (isset($_POST['checklogin'])) {
-	include_once(__DIR__ . "/../lib/ldap.inc"); // Include ldap.php which provides Ldap class
+	include_once __DIR__ . "/../lib/ldap.inc"; // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
 

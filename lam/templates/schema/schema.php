@@ -42,13 +42,13 @@ use htmlTitle;
 
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** access to LDAP server */
-include_once(__DIR__ . "/../../lib/ldap.inc");
+include_once __DIR__ . "/../../lib/ldap.inc";
 /** access to configuration options */
-include_once(__DIR__ . "/../../lib/config.inc");
+include_once __DIR__ . "/../../lib/config.inc";
 /** schema functions */
-require_once(__DIR__ . "/../../lib/schema.inc");
+require_once __DIR__ . "/../../lib/schema.inc";
 
 // start session
 startSecureSession();

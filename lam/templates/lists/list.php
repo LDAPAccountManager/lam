@@ -29,11 +29,11 @@
 */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** Used to get type information. */
-include_once(__DIR__ . "/../../lib/types.inc");
+include_once __DIR__ . "/../../lib/types.inc";
 /** Access to configuration options */
-include_once(__DIR__ . "/../../lib/config.inc");
+include_once __DIR__ . "/../../lib/config.inc";
 
 // start session
 startSecureSession();

@@ -62,7 +62,7 @@ class ExtraInvalidCredentials {
 			if ((str_starts_with($entry, '.')) || ($entry === basename(__FILE__))) {
 				continue;
 			}
-			include_once(__DIR__ . '/' . $entry);
+			include_once __DIR__ . '/' . $entry;
 		}
 	}
 

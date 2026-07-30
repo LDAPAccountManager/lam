@@ -33,7 +33,7 @@ use htmlResponsiveRow;
 
 
 /** Access to config functions */
-include_once(__DIR__ . '/../../lib/config.inc');
+include_once __DIR__ . '/../../lib/config.inc';
 
 // start session
 if (isFileBasedSession()) {
@@ -110,7 +110,7 @@ $content = new htmlResponsiveRow();
 
 		<?php
 		if (isLAMProVersion()) {
-			include_once(__DIR__ . "/../../lib/env.inc");
+			include_once __DIR__ . "/../../lib/env.inc";
 			$printer = new \LAM\ENV\LAMLicenseInfoPrinter();
 			$content->add($printer->getLicenseInfo());
 			$content->addVerticalSpacer('2rem');

@@ -50,9 +50,9 @@ use LAMException;
  */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** LDIF import */
-include_once(__DIR__ . "/../../lib/import.inc");
+include_once __DIR__ . "/../../lib/import.inc";
 /** schema for tree view */
 include_once __DIR__ . "/../../lib/schema.inc";
 /** tree view tool */
@@ -147,7 +147,7 @@ class Ajax {
 			die();
 		}
 		if ($function === 'whitePages') {
-			include_once(__DIR__ . "/../../lib/whitePagesData.inc");
+			include_once __DIR__ . "/../../lib/whitePagesData.inc";
 			$wpHandler = new WhitePagesAjaxHandler();
 			$wpHandler->dispatchAjaxRequest();
 			die();
@@ -157,7 +157,7 @@ class Ajax {
 			$this->managePasswordChange(json_decode((string) $_POST['jsonInput'], true, 512, JSON_THROW_ON_ERROR));
 		}
 		elseif ($function === 'import') {
-			include_once(__DIR__ . '/../../lib/import.inc');
+			include_once __DIR__ . '/../../lib/import.inc';
 			$importer = new Importer();
 			ob_start();
 			$jsonOut = $importer->doImport();
@@ -165,7 +165,7 @@ class Ajax {
 			echo $jsonOut;
 		}
 		elseif ($function === 'export') {
-			include_once(__DIR__ . '/../../lib/export.inc');
+			include_once __DIR__ . '/../../lib/export.inc';
 			$attributes = (string) $_POST['attributes'];
 			$baseDn = (string) $_POST['baseDn'];
 			$ending = (string) $_POST['ending'];
@@ -181,7 +181,7 @@ class Ajax {
 			echo $jsonOut;
 		}
 		elseif ($function === 'upload') {
-			include_once(__DIR__ . '/../../lib/upload.inc');
+			include_once __DIR__ . '/../../lib/upload.inc';
 			$typeManager = new TypeManager();
 			$type = $typeManager->getConfiguredType($_GET['typeId']);
 			if ($type === null) {
@@ -204,7 +204,7 @@ class Ajax {
 			$this->manageWebauthnOwnDevices();
 		}
 		elseif ($function === 'treeview') {
-			include_once(__DIR__ . "/../../lib/treeview.inc");
+			include_once __DIR__ . "/../../lib/treeview.inc";
 			$treeView = new TreeView();
 			ob_start();
 			$jsonOut = $treeView->answerAjaxCall();

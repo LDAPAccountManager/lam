@@ -43,9 +43,9 @@ use htmlSubTitle;
 
 
 /** Access to config functions */
-include_once(__DIR__ . '/../../lib/config.inc');
+include_once __DIR__ . '/../../lib/config.inc';
 /** Access to account types */
-include_once(__DIR__ . '/../../lib/types.inc');
+include_once __DIR__ . '/../../lib/types.inc';
 /** common functions */
 include_once __DIR__ . '/../../lib/configPages.inc';
 

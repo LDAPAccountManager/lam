@@ -36,9 +36,9 @@ use ServerProfilePersistenceManager;
 
 
 /** Access to config functions */
-include_once(__DIR__ . "/../../lib/config.inc");
+include_once __DIR__ . "/../../lib/config.inc";
 /** access to module settings */
-include_once(__DIR__ . "/../../lib/modules.inc");
+include_once __DIR__ . "/../../lib/modules.inc";
 /** common functions */
 include_once __DIR__ . '/../../lib/configPages.inc';
 

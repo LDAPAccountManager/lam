@@ -56,17 +56,17 @@ use function LAM\TYPES\getScopeFromTypeId;
  */
 
 /** security functions */
-include_once(__DIR__ . "/../../lib/security.inc");
+include_once __DIR__ . "/../../lib/security.inc";
 /** access to configuration */
-include_once(__DIR__ . '/../../lib/config.inc');
+include_once __DIR__ . '/../../lib/config.inc';
 /** status messages */
-include_once(__DIR__ . '/../../lib/status.inc');
+include_once __DIR__ . '/../../lib/status.inc';
 /** account modules */
-include_once(__DIR__ . '/../../lib/modules.inc');
+include_once __DIR__ . '/../../lib/modules.inc';
 /** Used to get PDF information. */
-include_once(__DIR__ . '/../../lib/pdfstruct.inc');
+include_once __DIR__ . '/../../lib/pdfstruct.inc';
 /** upload functions */
-include_once(__DIR__ . '/../../lib/upload.inc');
+include_once __DIR__ . '/../../lib/upload.inc';
 
 // Start session
 startSecureSession();

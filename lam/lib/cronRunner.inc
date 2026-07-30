@@ -43,11 +43,11 @@ use ServerProfilePersistenceManager;
  */
 
 /** access to configuration data */
-include_once(__DIR__ . "/config.inc");
+include_once __DIR__ . "/config.inc";
 /** access to ldap data */
-include_once(__DIR__ . "/ldap.inc");
+include_once __DIR__ . "/ldap.inc";
 /** access to modules */
-include_once(__DIR__ . "/modules.inc");
+include_once __DIR__ . "/modules.inc";
 
 /**
  * Executes cron jobs.
@@ -117,7 +117,7 @@ class CronRunner {
 	 */
 	public function runSingleServerProfileActions(string $serverProfileName): void {
 		/** Access to database */
-		include_once(__DIR__ . "/database.inc");
+		include_once __DIR__ . "/database.inc";
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		$this->validateServerProfileName($serverProfileName, $serverProfilePersistenceManager);
 		if ($this->isDryRun) {

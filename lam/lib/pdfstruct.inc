@@ -42,7 +42,7 @@ use function LAM\PERSISTENCE\dbTableExists;
  */
 
 /** LAM configuration */
-include_once(__DIR__ . "/config.inc");
+include_once __DIR__ . "/config.inc";
 
 /**
  * Use as server profile name to manage global templates.
@@ -50,7 +50,7 @@ include_once(__DIR__ . "/config.inc");
 const GLOBAL_PROFILE = '__GLOBAL__';
 
 /** LDAP object */
-include_once(__DIR__ . "/ldap.inc");
+include_once __DIR__ . "/ldap.inc";
 
 /**
  * Manages the persistence of PDF structures.

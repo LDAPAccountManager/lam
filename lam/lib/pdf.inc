@@ -71,9 +71,9 @@ define('LAMPDF_FONT_SIZE_TITLE', 20);
 define('K_PATH_FONTS', __DIR__ . '/3rdParty/fonts');
 
 /** access to PDF configuration files */
-include_once(__DIR__ . '/pdfstruct.inc');
+include_once __DIR__ . '/pdfstruct.inc';
 /** composer */
-include_once(__DIR__ . '/3rdParty/composer/autoload.php');
+include_once __DIR__ . '/3rdParty/composer/autoload.php';
 /** image functions */
 include_once __DIR__ . '/imageutils.inc';
 
