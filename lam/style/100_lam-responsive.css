@@ -315,6 +315,7 @@ table.lam-account-edit-table {
 
 	.lam-header.lam-header-open {
 		position: relative;
+        padding-bottom: var(--lam-large-space);
 	}
 
 	.lam-header.lam-header-open .lam-menu-icon {
@@ -329,11 +330,7 @@ table.lam-account-edit-table {
 		text-align: left;
 		border: 1px solid var(--lam-border-color);
 		border-width: 0px 1px 1px 1px;
-		margin: 0px;
-	}
-
-	.lam-header.lam-header-open {
-		padding-bottom: var(--lam-large-space);
+		margin: 0;
 	}
 
 	.lam-header.lam-header-open div.lam-menu-stay {
