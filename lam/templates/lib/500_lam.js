@@ -514,7 +514,7 @@ function updateModulePositions(inputId, containerId) {
 	const container = document.getElementById(containerId);
 	const childLiElements = container.children;
 	for (let i = 0; i < childLiElements.length; i++) {
-		positions[i] = childLiElements[i].getAttribute('data-position-orig');
+		positions[i] = childLiElements[i].dataset.positionOrig;
 	}
 	input.value = positions.join(',');
 }
