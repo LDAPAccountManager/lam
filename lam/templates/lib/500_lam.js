@@ -415,22 +415,20 @@ function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
 	const fieldRef = document.getElementById(fieldIDReference);
 	const check =
 		function() {
-			const value = field.value;
-			const valueRef = fieldRef.value;
-			if ((value == '') && (valueRef == '')) {
+			const value = field.value ?? '';
+			const valueRef = fieldRef.value ?? '';
+			if ((value === '') && (valueRef === '')) {
 				field.classList.remove('markFail');
 				field.classList.remove('markOk');
 			}
-			else {
-				if (value == valueRef) {
-					field.classList.remove('markFail');
-					field.classList.add('markOk');
-				}
-				else {
-					field.classList.add('markFail');
-					field.classList.remove('markOk');
-				}
-			}
+			else if (value === valueRef) {
+                field.classList.remove('markFail');
+                field.classList.add('markOk');
+            }
+            else {
+                field.classList.add('markFail');
+                field.classList.remove('markOk');
+            }
 		};
 	field.addEventListener('keyup', check);
 	fieldRef.addEventListener('keyup', check);
