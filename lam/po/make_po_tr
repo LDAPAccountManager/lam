@@ -1,7 +1,6 @@
 #!/bin/bash
-# $Id: make_po_it 3354 2009-11-09 18:49:17Z gruberroland $
 #
-# Copyright (C) 2013  Roland Gruber
+# Copyright (C) 2013 - 2026  Roland Gruber
 # This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 
 # This script is run after make_po to merge the existing Turkish translations to messages.po

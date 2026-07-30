@@ -1,7 +1,6 @@
 #!/bin/bash
-# $Id$
 #
-# Copyright (C) 2009 - 2014  Roland Gruber
+# Copyright (C) 2009 - 2026  Roland Gruber
 # This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 
 # This script is run to create the LAM manual.
