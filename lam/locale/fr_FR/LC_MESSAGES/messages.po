@@ -8305,7 +8305,7 @@ msgstr "Niveau de journalisation"
 
 #: ../templates/tools/multiEdit.php:478
 msgid "Log output"
-msgstr "Sotie du log"
+msgstr "Sortie du log"
 
 #: ../templates/config/mainmanage.php:528
 msgid "Logging"
