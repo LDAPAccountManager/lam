@@ -1,2 +1,3 @@
 Tests: login
 Depends: @, wget
+Restrictions: isolation-container
