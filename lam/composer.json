@@ -17,7 +17,7 @@
 
     "phpmailer/phpmailer": "^7",
 
-    "phpseclib/phpseclib": "^3.0",
+    "phpseclib/phpseclib": "^4.0",
     "paragonie/random_compat": "^2.0",
 
     "christian-riesen/base32": "^2",
