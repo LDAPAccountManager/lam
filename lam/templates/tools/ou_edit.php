@@ -2,17 +2,17 @@
 
 namespace LAM\TOOLS\OU_EDIT;
 
-use \htmlSpacer;
-use \htmlOutputText;
-use \htmlButton;
-use \htmlHiddenInput;
-use \htmlTitle;
-use \htmlSubTitle;
-use \htmlStatusMessage;
-use \htmlResponsiveRow;
-use \htmlResponsiveSelect;
-use \htmlResponsiveInputField;
-use \htmlGroup;
+use htmlSpacer;
+use htmlOutputText;
+use htmlButton;
+use htmlHiddenInput;
+use htmlTitle;
+use htmlSubTitle;
+use htmlStatusMessage;
+use htmlResponsiveRow;
+use htmlResponsiveSelect;
+use htmlResponsiveInputField;
+use htmlGroup;
 use LAM\TYPES\TypeManager;
 
 /*
@@ -172,10 +172,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	elseif (isset($_POST['deleteOU']) && in_array_ignore_case($_POST['deleteableOU'], $validDeletableDns)) {
 		// check for subentries
 		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "(objectClass=*)", [""]);
-		if ($sr === false) {
-			$error = _("OU is not empty or invalid!");
-		}
-		else {
+		if ($sr !== false) {
 			$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 			if (($info !== false) && ($info['count'] === 0)) {
 				// print header
@@ -185,11 +182,11 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$container = new htmlResponsiveRow();
 				$label = new htmlOutputText(_("Do you really want to delete this OU?"));
 				$label->colspan = 5;
-				$container->add($label, 12);
+				$container->add($label);
 				$container->addVerticalSpacer('1rem');
 				$dnLabel = new htmlOutputText(getAbstractDN($_POST['deleteableOU']));
 				$dnLabel->colspan = 5;
-				$container->add($dnLabel, 12);
+				$container->add($dnLabel);
 				$container->addVerticalSpacer('1rem');
 				$buttonGroup = new htmlGroup();
 				$deleteButton = new htmlButton('sure', _("Delete"));
@@ -197,9 +194,9 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$buttonGroup->addElement($deleteButton);
 				$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 				$buttonGroup->addElement(new htmlButton('abort', _("Cancel")));
-				$container->add($buttonGroup, 12);
-				$container->add(new htmlHiddenInput('deleteOU', 'submit'), 12);
-				$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']), 12);
+				$container->add($buttonGroup);
+				$container->add(new htmlHiddenInput('deleteOU', 'submit'));
+				$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']));
 				addSecurityTokenToMetaHTML($container);
 				parseHtml(null, $container, [], false);
 				echo "</form>";
@@ -207,10 +204,8 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				include_once __DIR__ . '/../../lib/adminFooter.inc';
 				exit();
 			}
-			else {
-				$error = _("OU is not empty or invalid!");
-			}
 		}
+		$error = _("OU is not empty or invalid!");
 	}
 }
 
@@ -231,16 +226,16 @@ function display_main(?string $message, ?string $error, array $optionsToInsert, 
 	echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlTitle(_("OU editor")), 12);
+	$container->add(new htmlTitle(_("OU editor")));
 	if ($error !== null) {
 		$msg = new htmlStatusMessage("ERROR", "", $error);
 		$msg->colspan = 5;
-		$container->add($msg, 12);
+		$container->add($msg);
 	}
 	elseif ($message !== null) {
 		$msg = new htmlStatusMessage("INFO", "", $message);
 		$msg->colspan = 5;
-		$container->add($msg, 12);
+		$container->add($msg);
 	}
 
 	if (!empty($optionsToInsert)) {
