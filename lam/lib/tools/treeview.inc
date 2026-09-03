@@ -135,12 +135,9 @@ class TreeViewTool extends LAMTool {
 	 */
 	public static function getRootDns(?array $settings = null): array {
 		$roots = [];
-		$toolSettings = $settings;
-		if ($toolSettings === null) {
-			$toolSettings = $_SESSION['config']->getToolSettings();
-		}
+		$toolSettings = $settings ?? $_SESSION['config']->getToolSettings();
 		if (!empty($toolSettings[self::TREE_SUFFIX_CONFIG])) {
-			$roots = explode(';', $toolSettings[self::TREE_SUFFIX_CONFIG]);
+			return explode(';', $toolSettings[self::TREE_SUFFIX_CONFIG]);
 		}
 		return $roots;
 	}

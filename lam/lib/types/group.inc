@@ -255,7 +255,7 @@ class lamGroupList extends lamList {
 	 * @see lamList::getTableCellContent()
 	 */
 	protected function getTableCellContent(&$entry, &$attribute): ?htmlElement {
-		if ($attribute == "memberuid") {
+		if ($attribute === "memberuid") {
 			// $gid is used for linking primary group members
 			$gid = -1;
 			$use_primary = false;
@@ -326,9 +326,7 @@ class lamGroupList extends lamList {
 			return new htmlDiv(null, new htmlGroup($linklist), [htmlShowMore::CLASS_SHOW_MORE_ROOT]);
 		}
 		// print all other attributes
-		else {
-			return parent::getTableCellContent($entry, $attribute);
-		}
+		return parent::getTableCellContent($entry, $attribute);
 	}
 
 	/**

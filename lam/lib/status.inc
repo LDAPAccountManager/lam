@@ -84,8 +84,6 @@ function StatusMessage($MessageTyp, $MessageHeadline, $MessageText = '', array|s
 	if ($returnOutput) {
 		return $output;
 	}
-	else {
-		echo $output;
-	}
+	echo $output;
 	return '';
 }

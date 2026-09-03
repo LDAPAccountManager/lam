@@ -184,7 +184,7 @@ class lamDHCPList extends lamList {
 			}
 			return false;
 		}
-		elseif ($filterAttribute === "dhcprange") {
+		if ($filterAttribute === "dhcprange") {
 			if (isset($data['dhcprange'])) {
 				foreach ($data['dhcprange'] as $range) {
 					if (preg_match($regex, $range)) {
@@ -227,8 +227,6 @@ class lamDHCPList extends lamList {
 			metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&DN='" . $this->type->getSuffix() . "'");
 			die();
 		}
-		else {
-			return $fragment;
-		}
+		return $fragment;
 	}
 }
