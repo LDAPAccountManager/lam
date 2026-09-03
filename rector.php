@@ -8,15 +8,12 @@ use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
-use Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
-use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 
 return RectorConfig::configure()
@@ -34,14 +31,12 @@ return RectorConfig::configure()
 	])
 	->withSkip([
 		__DIR__ . '/lam/lib/3rdParty',
-		NullToStrictStringFuncCallArgRector::class,
 		ReadOnlyPropertyRector::class,
 		ClassPropertyAssignToConstructorPromotionRector::class,
 		StringifyStrNeedlesRector::class,
 		RestoreDefaultNullToNullableTypePropertyRector::class,
 		ForRepeatedCountToOwnVariableRector::class,
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
-		DisallowedEmptyRuleFixerRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		InlineArrayReturnAssignRector::class,
 		SafeDeclareStrictTypesRector::class,
