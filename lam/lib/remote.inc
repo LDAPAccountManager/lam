@@ -159,9 +159,7 @@ class Remote {
 			if (empty($keyPassword)) {
 				return PublicKeyLoader::load($keyData);
 			}
-			else {
-				return PublicKeyLoader::load($keyData, $keyPassword);
-			}
+			return PublicKeyLoader::load($keyData, $keyPassword);
 		}
 		catch (NoKeyLoadedException $e) {
 			logNewMessage(LOG_ERR, sprintf('Unable to load key %s: %s', $keyPath, $e->getMessage()));

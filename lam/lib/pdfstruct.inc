@@ -1261,7 +1261,7 @@ class PDFStructureReader {
 				|| (($xml->name === 'pdf') && ($xml->nodeType == XMLReader::END_ELEMENT))) {
 				continue;
 			}
-			elseif ($xml->name === 'text') {
+			if ($xml->name === 'text') {
 				$xml->read();
 				$sections[] = new PDFTextSection($xml->value);
 				$xml->read();

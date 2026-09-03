@@ -658,7 +658,7 @@ class TreeView {
 		if (!$isMultiValue) {
 			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0, $readOnly);
 			if (!$readOnly) {
-				$field = $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
+				return $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
 			}
 			return $field;
 		}
@@ -720,7 +720,7 @@ class TreeView {
 		}
 		$valueList->setCSSClasses($listClasses);
 		if (!$readOnly) {
-			$valueList = $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
+			return $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
 		}
 		return $valueList;
 	}
@@ -1262,7 +1262,7 @@ class TreeView {
 		if ($structuralObjectClassesCount === 0) {
 			return $this->createNewNodeGetObjectClassesStep($dn, _('No structural object class selected.'));
 		}
-		elseif ($structuralObjectClassesCount > 1) {
+		if ($structuralObjectClassesCount > 1) {
 			return $this->createNewNodeGetObjectClassesStep($dn, _('Multiple structural object classes selected.'));
 		}
 		$row = new htmlResponsiveRow();
@@ -1518,9 +1518,7 @@ class TreeView {
 	 * @return AttributeType[] attributes
 	 */
 	private function getSchemaAttributes(): array {
-		if ($this->schemaAttributes === null) {
-			$this->schemaAttributes = get_schema_attributes();
-		}
+		$this->schemaAttributes ??= get_schema_attributes();
 		return $this->schemaAttributes;
 	}
 
@@ -1530,9 +1528,7 @@ class TreeView {
 	 * @return ObjectClass[] object classes
 	 */
 	private function getSchemaObjectClasses(): array {
-		if ($this->schemaObjectClasses === null) {
-			$this->schemaObjectClasses = get_schema_objectclasses();
-		}
+		$this->schemaObjectClasses ??= get_schema_objectclasses();
 		return $this->schemaObjectClasses;
 	}
 

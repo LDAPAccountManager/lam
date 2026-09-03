@@ -1979,9 +1979,7 @@ function get_cached_schema($schema_type) {
 		$cache[$schema_type] = $schema;
 		return $schema;
 	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 /**

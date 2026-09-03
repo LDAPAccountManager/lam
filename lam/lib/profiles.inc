@@ -456,13 +456,8 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 				fclose($file);
 				return $settings;
 			}
-			else {
-				throw new LAMException(_("Unable to load profile!"), $fileName);
-			}
 		}
-		else {
-			throw new LAMException(_("Unable to load profile!"), $fileName);
-		}
+		throw new LAMException(_("Unable to load profile!"), $fileName);
 	}
 
 	/**

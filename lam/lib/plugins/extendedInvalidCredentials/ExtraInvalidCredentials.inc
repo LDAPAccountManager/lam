@@ -103,13 +103,13 @@ class ExtraInvalidCredentials {
 	 * @param string $userDn user DN
 	 * @param string[] $attributes attribute names
 	 * @param Connection $ldap LDAP handle
-	 * @return array<string, string[]|string>|null attribute values
+	 * @return array<string, string[]|string> attribute values
 	 */
 	protected function getLdapData(string $userDn, array $attributes, $ldap) {
 		$data = ldapGetDN($userDn, $attributes, $ldap);
 		logNewMessage(LOG_DEBUG, 'Extra invalid credentials - LDAP data: ' . print_r($data, true));
 		if ($data === null) {
-			$data = [];
+			return [];
 		}
 		return $data;
 	}
