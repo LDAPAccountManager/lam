@@ -1009,12 +1009,8 @@ class windowsGroup extends baseModule {
 		$messages = [];
 		// set groups
 		$groups = $this->findGroups();
-		if (!isset($this->orig['memberOf'])) {
-			$this->orig['memberOf'] = [];
-		}
-		if (!isset($this->attributes['memberOf'])) {
-			$this->attributes['memberOf'] = [];
-		}
+		$this->orig['memberOf'] ??= [];
+		$this->attributes['memberOf'] ??= [];
 		$toAdd = array_values(array_diff($this->attributes['memberOf'], $this->orig['memberOf']));
 		$toRem = array_values(array_diff($this->orig['memberOf'], $this->attributes['memberOf']));
 		// add groups
@@ -1121,10 +1117,10 @@ class windowsGroup extends baseModule {
 				return new htmlOutputText($value);
 			};
 		}
-		elseif (($attributeName === 'managedby') || ($attributeName === 'member')) {
+		if (($attributeName === 'managedby') || ($attributeName === 'member')) {
 			return $this->listRenderDnList(...);
 		}
-		elseif (($attributeName === 'member_count') || ($attributeName === 'memberof_count')) {
+		if (($attributeName === 'member_count') || ($attributeName === 'memberof_count')) {
 			return function(array $entry, string $attribute) use ($type): htmlElement {
 				$count = 0;
 				$realAttributeName = str_replace('_count', '', $attribute);

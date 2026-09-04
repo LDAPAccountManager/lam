@@ -3761,9 +3761,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		}
 		// no password expiration
 		if (isset($profile['windowsUser_pwdNoExpire'][0]) && ($profile['windowsUser_pwdNoExpire'][0] === "true")) {
-			if (!isset($this->attributes['useraccountcontrol'][0])) {
-				$this->attributes['useraccountcontrol'][0] = self::DEFAULT_ACCOUNT_CONTROL;
-			}
+			$this->attributes['useraccountcontrol'][0] ??= self::DEFAULT_ACCOUNT_CONTROL;
 			windowsUser::setIsNeverExpiring($this->attributes, true);
 		}
 		// force password change
@@ -4294,7 +4292,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 		if (!empty($attributes['pwdlastset'][0])) {
 			return $this->formatFileTime($attributes['pwdlastset'][0]);
 		}
-		elseif (empty($attributes['pwdLastSet'][0])) {
+		if (empty($attributes['pwdLastSet'][0])) {
 			return ' - ';
 		}
 		return $this->formatFileTime($attributes['pwdLastSet'][0]);
@@ -4791,9 +4789,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @inheritDoc
 	 */
 	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$details = [];
 		if (self::isDeactivated($attributes)) {
 			$details[] = AccountStatusDetails::newLocked(_('Deactivated'), self::STATUS_ACCOUNT_LOCKED);
@@ -4819,9 +4815,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 * @inheritDoc
 	 */
 	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$options = [];
 		if (!self::isDeactivated($attributes)) {
 			$options[] = AccountStatusDetails::newLocked(_('Deactivated'), self::STATUS_ACCOUNT_LOCKED);
@@ -4901,7 +4895,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				return $group;
 			};
 		}
-		elseif (($attributeName === 'jpegphoto') || ($attributeName === 'thumbnailphoto')) {
+		if (($attributeName === 'jpegphoto') || ($attributeName === 'thumbnailphoto')) {
 			return function(array $entry, string $attribute): htmlElement {
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] !== '')) {
 					if (strlen($entry[$attribute][0]) < 100) {
@@ -4929,10 +4923,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				return new htmlGroup();
 			};
 		}
-		elseif ($attributeName === 'accountexpires') {
+		if ($attributeName === 'accountexpires') {
 			return fn(array $entry, string $attribute): htmlElement => new htmlOutputText($this->formatAccountExpires($entry));
 		}
-		elseif (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
+		if (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
 			return function(array $entry, string $attribute): htmlElement {
 				$value = ' - ';
 				if (!empty($entry[$attribute][0])) {
@@ -4941,10 +4935,10 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				return new htmlOutputText($value);
 			};
 		}
-		elseif (in_array($attributeName, ['manager', 'memberof'])) {
+		if (in_array($attributeName, ['manager', 'memberof'])) {
 			return $this->listRenderDnList(...);
 		}
-		elseif ($attributeName === 'memberof_count') {
+		if ($attributeName === 'memberof_count') {
 			return function(array $entry, string $attribute): htmlElement {
 				$count = 0;
 				$realAttributeName = str_replace('_count', '', $attribute);
@@ -4955,7 +4949,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 				return new htmlOutputText((string) $count);
 			};
 		}
-		elseif ($attributeName === 'useraccountcontrol') {
+		if ($attributeName === 'useraccountcontrol') {
 			return function(array $entry, string $attribute): htmlElement {
 				$flags = [];
 				if (windowsUser::isNeverExpiring($entry)) {

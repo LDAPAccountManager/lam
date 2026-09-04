@@ -511,9 +511,7 @@ function doModify(): array {
 		$_SESSION['multiEdit_status']['dnList'] = array_keys($_SESSION['multiEdit_status']['actions']);
 	}
 	// initial content
-	if (!isset($_SESSION['multiEdit_status']['modContent'])) {
-		$_SESSION['multiEdit_status']['modContent'] = '';
-	}
+	$_SESSION['multiEdit_status']['modContent'] ??= '';
 	// run 10 modifications in each call
 	$localCount = 0;
 	while (($localCount < 10) && ($_SESSION['multiEdit_status']['index'] < count($_SESSION['multiEdit_status']['dnList']))) {

@@ -102,9 +102,9 @@ if (isset($_POST['showldif'])) {
 		}
 		echo "\n";
 	}
-	exit;
+	exit();
 }
-elseif (isset($_POST['upload'])) {
+if (isset($_POST['upload'])) {
 	metaRefresh('massDoUpload.php');
 	exit();
 }
