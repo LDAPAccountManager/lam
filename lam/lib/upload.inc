@@ -104,13 +104,13 @@ class Uploader {
 		if (!isset($_SESSION['mass_counter'])) {
 			return $this->startUpload();
 		}
-		elseif ($_SESSION['mass_counter'] < count($this->accounts)) {
+		if ($_SESSION['mass_counter'] < count($this->accounts)) {
 			return $this->continueUpload();
 		}
-		elseif (!isset($_SESSION['mass_postActions']['finished'])) {
+		if (!isset($_SESSION['mass_postActions']['finished'])) {
 			return $this->runPostActions();
 		}
-		elseif (($_SESSION['mass_pdf']['structure'] != null) && !isset($_SESSION['mass_pdf']['finished'])) {
+		if (($_SESSION['mass_pdf']['structure'] != null) && !isset($_SESSION['mass_pdf']['finished'])) {
 			return $this->createPDF();
 		}
 		return $this->buildUploadStatus(100, true, '', 100, true, 100);

@@ -61,9 +61,7 @@ if (isset($_POST['passwd'])) {
 		metaRefresh("mainmanage.php");
 		exit();
 	}
-	else {
-		$message = _("The password is invalid! Please try again.");
-	}
+	$message = _("The password is invalid! Please try again.");
 }
 
 if (isset($_SESSION['header'])) {

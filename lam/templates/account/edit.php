@@ -116,7 +116,7 @@ elseif (empty($_POST)) {
 		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $_GET['type']);
 		die();
 	}
-	elseif (!checkIfNewEntriesAreAllowed($type->getId())) {
+	if (!checkIfNewEntriesAreAllowed($type->getId())) {
 		logNewMessage(LOG_ERR, 'User tried to create entry of forbidden account type: ' . $type->getId());
 		die();
 	}

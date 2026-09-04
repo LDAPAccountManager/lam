@@ -2700,9 +2700,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 	 */
 	public function display_html_manager(): htmlElement {
 		$return = new htmlResponsiveRow();
-		if (!isset($this->attributes['manager'])) {
-			$this->attributes['manager'] = [];
-		}
+		$this->attributes['manager'] ??= [];
 		// show list of possible new managers
 		$options = [];
 		$filter = get_ldap_filter('user');
@@ -3516,7 +3514,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			];
 		}
 		// add users to groups
-		elseif (count($temp['members']) > 0) {
+		if (count($temp['members']) > 0) {
 			$keys = array_keys($temp['members']);
 			$group = $keys[0];
 			$member = array_pop($temp['members'][$group]);
@@ -3541,7 +3539,7 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			];
 		}
 		// force password change
-		elseif (count($temp['pwdChange']) > 0) {
+		if (count($temp['pwdChange']) > 0) {
 			$dn = array_pop($temp['pwdChange']);
 			$success = ldapModifyAttributes($_SESSION['ldap']->server(), $dn, ['pwdLastSet' => '0']);
 			$errors = [];
@@ -3561,13 +3559,11 @@ class windowsUser extends baseModule implements passwordService, AccountStatusPr
 			];
 		}
 		// all modifications are done
-		else {
-			return [
-				'status' => 'finished',
-				'progress' => 100,
-				'errors' => []
-			];
-		}
+		return [
+			'status' => 'finished',
+			'progress' => 100,
+			'errors' => []
+		];
 	}
 
 	/**

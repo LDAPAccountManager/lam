@@ -399,7 +399,7 @@ class windowsHost extends baseModule {
 				return new htmlOutputText($value);
 			};
 		}
-		elseif ($attributeName === 'managedby') {
+		if ($attributeName === 'managedby') {
 			return $this->listRenderDnList(...);
 		}
 		return null;

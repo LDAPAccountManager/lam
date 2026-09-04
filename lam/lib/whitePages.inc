@@ -769,13 +769,8 @@ class WhitePagesPersistenceStrategyFileSystem implements WhitePagesPersistenceSt
 				fclose($file);
 				return $profile;
 			}
-			else {
-				throw new LAMException(_("Unable to load profile!"), $name);
-			}
 		}
-		else {
-			throw new LAMException(_("Unable to load profile!"), $name);
-		}
+		throw new LAMException(_("Unable to load profile!"), $name);
 	}
 
 	/**

@@ -216,9 +216,7 @@ function createPdf(PDFStructure $structure, array $accounts, array $pdfKeys, Con
 		// return PDF file name
 		return $fileName;
 	}
-	else {
-		return $out;
-	}
+	return $out;
 }
 
 /**

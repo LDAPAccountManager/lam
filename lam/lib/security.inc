@@ -994,7 +994,7 @@ function getLamLdapUser() {
 	if (isset($_SESSION['ldap'])) {
 		return $_SESSION['ldap']->getUserName();
 	}
-	elseif (isset($_SESSION['selfService_clientDN'])) {
+	if (isset($_SESSION['selfService_clientDN'])) {
 		return lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
 	}
 	return '';
@@ -1113,12 +1113,12 @@ function lamDecrypt($data, $prefix = '') {
  *
  * @return string algorithm name
  */
-function lamEncryptionAlgo() {
+function lamEncryptionAlgo(): string {
 	$possibleAlgos = openssl_get_cipher_methods();
 	if (in_array('AES-256-CTR', $possibleAlgos)) {
 		return 'AES-256-CTR';
 	}
-	elseif (in_array('AES-256-CBC', $possibleAlgos)) {
+	if (in_array('AES-256-CBC', $possibleAlgos)) {
 		return 'AES-256-CBC';
 	}
 	return 'AES256';

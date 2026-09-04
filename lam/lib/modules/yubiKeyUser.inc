@@ -179,7 +179,7 @@ class yubiKeyUser extends baseModule {
 			return [];
 		}
 		// remove extension
-		elseif (isset($_POST['remObjectClass'])) {
+		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete([$objectClass], $this->attributes['objectClass']);
 			if (!empty($this->attributes[$attributeName])) {
 				unset($this->attributes[$attributeName]);
@@ -521,7 +521,7 @@ class yubiKeyUser extends baseModule {
 		if (!empty($this->moduleSettings['yubiKeyUser_objectClass'][0])) {
 			return $this->moduleSettings['yubiKeyUser_objectClass'][0];
 		}
-		elseif (!empty($this->selfServiceSettings->moduleSettings['yubiKeyUser_objectClass'][0])) {
+		if (!empty($this->selfServiceSettings->moduleSettings['yubiKeyUser_objectClass'][0])) {
 			return $this->selfServiceSettings->moduleSettings['yubiKeyUser_objectClass'][0];
 		}
 		return null;
@@ -536,7 +536,7 @@ class yubiKeyUser extends baseModule {
 		if (!empty($this->moduleSettings['yubiKeyUser_attributeName'][0])) {
 			return strtolower($this->moduleSettings['yubiKeyUser_attributeName'][0]);
 		}
-		elseif (!empty($this->selfServiceSettings->moduleSettings['yubiKeyUser_attributeName'][0])) {
+		if (!empty($this->selfServiceSettings->moduleSettings['yubiKeyUser_attributeName'][0])) {
 			return strtolower($this->selfServiceSettings->moduleSettings['yubiKeyUser_attributeName'][0]);
 		}
 		return 'yubikeyid';

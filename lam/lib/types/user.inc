@@ -262,18 +262,12 @@ class lamUserList extends lamList {
 			return parent::getTableCellContent($entry, $attribute);
 		}
 		// translate GID to group name
-		if (($attribute == "gidnumber") && ($this->trans_primary == "on")) {
-			if (isset($this->trans_primary_hash[$entry[$attribute][0]])) {
-				return new htmlOutputText($this->trans_primary_hash[$entry[$attribute][0]]);
-			}
-			else {
-				return parent::getTableCellContent($entry, $attribute);
-			}
+		if (($attribute === "gidnumber") && ($this->trans_primary == "on")
+			&& isset($this->trans_primary_hash[$entry[$attribute][0]])) {
+			return new htmlOutputText($this->trans_primary_hash[$entry[$attribute][0]]);
 		}
 		// print all other attributes
-		else {
-			return parent::getTableCellContent($entry, $attribute);
-		}
+		return parent::getTableCellContent($entry, $attribute);
 	}
 
 	/**
