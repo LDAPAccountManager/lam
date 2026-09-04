@@ -650,7 +650,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			return [];
 		}
 		// remove extension
-		elseif (isset($_POST['remObjectClass'])) {
+		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['sambaSamAccount'], $this->attributes['objectClass']);
 			$attrKeys = array_keys($this->attributes);
 			for ($k = 0; $k < count($attrKeys); $k++) {
@@ -663,7 +663,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			}
 			return [];
 		}
-		// skip processing if extension is not active
+		// skip processing if the extension is not active
 		if (!$this->isExtensionEnabled()) {
 			return [];
 		}
@@ -2332,22 +2332,20 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
 				return $return;
 			}
-			elseif (!get_preg($_POST['posixAccount_password'], 'password')) {
+			if (!get_preg($_POST['posixAccount_password'], 'password')) {
 				return $return;
 			}
-			else {
-				$setPassword = false;
-				// sync password
-				if (in_array('syncNTPassword', $fields)) {
-					$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['posixAccount_password']);
-					$setPassword = true;
-				}
-				if ($setPassword) {
-					$return['info']['sambaUserPasswordClearText'][0] = $_POST['posixAccount_password'];
-					$this->doSelfServicePasswordHistoryAndMinAge($attributes, $return);
-					if (in_array('syncSambaPwdLastSet', $fields)) {
-						$return['mod']['sambaPwdLastSet'][0] = time();
-					}
+			$setPassword = false;
+			// sync password
+			if (in_array('syncNTPassword', $fields)) {
+				$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['posixAccount_password']);
+				$setPassword = true;
+			}
+			if ($setPassword) {
+				$return['info']['sambaUserPasswordClearText'][0] = $_POST['posixAccount_password'];
+				$this->doSelfServicePasswordHistoryAndMinAge($attributes, $return);
+				if (in_array('syncSambaPwdLastSet', $fields)) {
+					$return['mod']['sambaPwdLastSet'][0] = time();
 				}
 			}
 		}
@@ -2686,9 +2684,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @return bool account is locked
 	 */
 	public function isLocked(?array $attributes = null): bool {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		if (!isset($attributes['sambaacctflags'][0])) {
 			return false;
 		}
@@ -2702,9 +2698,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @return bool account is deactivated
 	 */
 	public function isDeactivated(?array $attributes = null): bool {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		if (!isset($attributes['sambaacctflags'][0])) {
 			return false;
 		}
@@ -2717,9 +2711,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 */
 	public function deactivate(array &$attributes): void {
-		if (!isset($attributes['sambaacctflags'][0])) {
-			$attributes['sambaacctflags'][0] = ($this->get_scope() === 'host') ? '[W          ]' : '[ XU        ]';
-		}
+		$attributes['sambaacctflags'][0] ??= ($this->get_scope() === 'host') ? '[W          ]' : '[ XU        ]';
 		$flags = $attributes['sambaacctflags'][0];
 		if (!str_contains($flags, 'D')) {
 			$flags[strpos($flags, ' ')] = 'D';
@@ -2733,9 +2725,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @param array<string, string[]|string> $attributes LDAP attributes
 	 */
 	public function activate(array &$attributes): void {
-		if (!isset($attributes['sambaacctflags'][0])) {
-			$attributes['sambaacctflags'][0] = ($this->get_scope() === 'host') ? '[W          ]' : '[ XU        ]';
-		}
+		$attributes['sambaacctflags'][0] ??= ($this->get_scope() === 'host') ? '[W          ]' : '[ XU        ]';
 		$attributes['sambaacctflags'][0] = str_replace('D', ' ', $attributes['sambaacctflags'][0]);
 	}
 
@@ -2908,9 +2898,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @inheritDoc
 	 */
 	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$details = [];
 		if (self::isDeactivated($attributes)) {
 			$details[] = AccountStatusDetails::newPartiallyLocked(_('Samba') . ': ' . _('Deactivated'), self::STATUS_ACCOUNT_DEACTIVATED);
@@ -2932,9 +2920,7 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 	 * @inheritDoc
 	 */
 	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$options = [];
 		if (!self::isDeactivated($attributes)) {
 			$options[] = AccountStatusDetails::newPartiallyLocked(_('Samba'), self::STATUS_ACCOUNT_DEACTIVATED);
@@ -3003,10 +2989,8 @@ class sambaSamAccount extends baseModule implements passwordService, AccountStat
 					if ($entry[$attribute][0] > 2147483648) {
 						return new htmlOutputText("∞");
 					}
-					else {
-						$date = new DateTime('@' . $entry[$attribute][0], new DateTimeZone('UTC'));
-						return new htmlOutputText($date->format('d.m.Y'));
-					}
+					$date = new DateTime('@' . $entry[$attribute][0], new DateTimeZone('UTC'));
+					return new htmlOutputText($date->format('d.m.Y'));
 				}
 				return new htmlGroup();
 			};

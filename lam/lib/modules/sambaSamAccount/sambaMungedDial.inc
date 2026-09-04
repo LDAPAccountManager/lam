@@ -316,9 +316,7 @@ class sambaMungedDial {
 	public function getMunged(): string {
 		// Do extra check for valid timeParams (they must be set to 0 if disabled)
 		foreach ($this->timeParams as $value) {
-			if (!isset($this->ctx[$value])) {
-				$this->ctx[$value] = 0;
-			}
+			$this->ctx[$value] ??= 0;
 		}
 		return base64_encode($this->encode_munged($this->ctx));
 	}

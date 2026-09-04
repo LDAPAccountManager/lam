@@ -897,9 +897,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * @inheritDoc
 	 */
 	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$details = [];
 		if (self::isAccountExpired($attributes)) {
 			$details[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Account expiration'), self::STATUS_ACCOUNT_EXPIRED);
@@ -921,9 +919,7 @@ class shadowAccount extends baseModule implements passwordService, AccountStatus
 	 * @inheritDoc
 	 */
 	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$options = [];
 		if (!self::isAccountExpired($attributes)) {
 			$options[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Account expiration'), self::STATUS_ACCOUNT_EXPIRED);
