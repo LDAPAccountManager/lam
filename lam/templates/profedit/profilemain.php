@@ -209,7 +209,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // check if new profile should be created
-elseif (isset($_POST['createProfileButton'])) {
+if (isset($_POST['createProfileButton'])) {
 	metaRefresh("profilepage.php?type=" . htmlspecialchars($_POST['createProfile']));
 	exit;
 }

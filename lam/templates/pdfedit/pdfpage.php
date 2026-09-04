@@ -506,9 +506,7 @@ function translateFieldIDToName($id, $scope, $availablePDFFields): ?string {
 				if ($module == 'main') {
 					return _('Main') . ': ' . $label;
 				}
-				else {
-					return getModuleAlias($module, $scope) . ': ' . $label;
-				}
+				return getModuleAlias($module, $scope) . ': ' . $label;
 			}
 		}
 	}
