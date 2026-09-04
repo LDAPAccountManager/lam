@@ -145,22 +145,22 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 			exit;
 		}
 		// go to modules page
-        elseif (isset($_POST['editmodules'])) {
+        if (isset($_POST['editmodules'])) {
 			metaRefresh("confmodules.php");
 			exit;
 		}
 		// go to types page
-        elseif (isset($_POST['edittypes'])) {
+        if (isset($_POST['edittypes'])) {
 			metaRefresh("conftypes.php");
 			exit;
 		}
 		// go to module settings page
-        elseif (isset($_POST['moduleSettings'])) {
+        if (isset($_POST['moduleSettings'])) {
 			metaRefresh("moduleSettings.php");
 			exit;
 		}
 		// go to jobs page
-        elseif (isset($_POST['jobs'])) {
+        if (isset($_POST['jobs'])) {
 			metaRefresh("jobs.php");
 			exit;
 		}

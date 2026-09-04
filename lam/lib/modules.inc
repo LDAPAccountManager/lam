@@ -528,7 +528,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 			continue;
 		}
 		// this point should never be reached, LAM was unable to find a correct module order
-		$container->add(new htmlStatusMessage("ERROR", "Internal Error: Unable to find correct module order."), 12);
+		$container->add(new htmlStatusMessage("ERROR", "Internal Error: Unable to find correct module order."));
 		return false;
 	}
 	// give raw data to modules
@@ -566,7 +566,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 		for ($i = 0; (($i < count($errors)) && ($i < 50)); $i++) {
 			$text = empty($errors[$i][2]) ? null : $errors[$i][2];
 			$values = empty($errors[$i][3]) ? null : $errors[$i][3];
-			$container->add(new htmlStatusMessage($errors[$i][0], $errors[$i][1], $text, $values), 12);
+			$container->add(new htmlStatusMessage($errors[$i][0], $errors[$i][1], $text, $values));
 		}
 	}
 	if ($stopUpload) {
@@ -1028,7 +1028,7 @@ class accountContainer {
 		$titleBarSubtitleText = new htmlOutputText($this->titleBarSubtitle, false);
 		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, ['titleBarSubtitle', 'responsiveLabel']), 12, 12, 8);
 		$titleBarSuffixRdn = new htmlResponsiveRow();
-		$titleBarSuffixRdn->add(new htmlHorizontalLine(), 12);
+		$titleBarSuffixRdn->add(new htmlHorizontalLine());
 		// suffix
 		$suffixList = [];
 		foreach ($this->getOUs() as $suffix) {
@@ -1946,7 +1946,7 @@ class accountContainer {
 			if ($this->dn_orig != '') {
 				$removeOldRDN = $_SESSION['ldap']->isActiveDirectory();
 				if (isset($attributes[$this->finalDN]['modify'])) {
-					$attributes[$this->finalDN]['modify'] = array_change_key_case($attributes[$this->finalDN]['modify'], CASE_LOWER);
+					$attributes[$this->finalDN]['modify'] = array_change_key_case($attributes[$this->finalDN]['modify']);
 				}
 				$rdnAttr = strtolower(extractRDNAttribute($this->finalDN));
 				if (isset($attributes[$this->finalDN]['modify'][$rdnAttr])

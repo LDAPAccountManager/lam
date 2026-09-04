@@ -5,20 +5,20 @@ namespace LAM\AJAX;
 use htmlResponsiveTable;
 use htmlSpacer;
 use htmlStatusMessage;
-use \LAM\TOOLS\IMPORT_EXPORT\Importer;
-use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
+use LAM\TOOLS\IMPORT_EXPORT\Importer;
+use LAM\TOOLS\IMPORT_EXPORT\Exporter;
 use LAM\TOOLS\TREEVIEW\TreeView;
 use LAM\TOOLS\TREEVIEW\TreeViewTool;
-use \LAM\TYPES\TypeManager;
-use \htmlResponsiveRow;
-use \htmlLink;
-use \htmlOutputText;
-use \htmlButton;
-use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use LAM\TYPES\TypeManager;
+use htmlResponsiveRow;
+use htmlLink;
+use htmlOutputText;
+use htmlButton;
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\UPLOAD\Uploader;
 use LAM\WHITE_PAGES\WhitePagesAjaxHandler;
 use LAM_INTERFACE;
-use \LAMCfgMain;
+use LAMCfgMain;
 use LAMException;
 
 /*
@@ -102,12 +102,11 @@ class Ajax {
 					die();
 				}
 				$module = $_SESSION[$sessionKey]->getAccountModule($_GET['module']);
-				$module->handleAjaxRequest();
 			}
 			else {
 				$module = new $_GET['module']($_GET['scope']);
-				$module->handleAjaxRequest();
 			}
+			$module->handleAjaxRequest();
 			die();
 		}
 		if (!isset($_GET['function'])) {
@@ -328,7 +327,7 @@ class Ajax {
 		$row = new htmlResponsiveRow();
 		$row->addVerticalSpacer('0.5rem');
 		if (empty($results)) {
-			$row->add(new htmlStatusMessage('INFO', _('No devices found.')), 12);
+			$row->add(new htmlStatusMessage('INFO', _('No devices found.')));
 		}
 		else {
 			$titles = [
@@ -359,7 +358,7 @@ class Ajax {
 				$id++;
 			}
 			$table = new htmlResponsiveTable($titles, $data);
-			$row->add($table, 12);
+			$row->add($table);
 		}
 		$row->addVerticalSpacer('2rem');
 		ob_start();
@@ -388,7 +387,7 @@ class Ajax {
 		}
 		$row = new htmlResponsiveRow();
 		$row->addVerticalSpacer('0.5rem');
-		$row->add($message, 12);
+		$row->add($message);
 		$row->addVerticalSpacer('2rem');
 		ob_start();
 		$row->generateHTML(null, [], [], true);
@@ -526,7 +525,7 @@ class Ajax {
 			$button = new htmlButton($buttonId, _('Ok'));
 			$button->setOnClick('window.lam.html.selectDn(this, \'' . htmlspecialchars($fieldId) . '\')');
 			$row->add($button, 12, 3, 3, 'text-left');
-			$mainRow->add($row, 12);
+			$mainRow->add($row);
 		}
 		ob_start();
 		parseHtml(null, $mainRow, [], false);

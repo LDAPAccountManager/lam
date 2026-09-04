@@ -96,13 +96,12 @@ if (isset($_POST['changePassword'])) {
 		$_SESSION['ldap']->tryAndApplyNewPassword($password1);
 		$message = new htmlStatusMessage('INFO', _('Password changed.'));
 		printContent($message, false);
-		exit();
 	}
 	else {
 		$message = new htmlStatusMessage('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 		printContent($message);
-		exit();
 	}
+	exit();
 }
 
 printContent($message);
@@ -120,7 +119,7 @@ function printContent($message = null, $showPasswordInputs = true): void {
 	$container = new htmlResponsiveRow();
 	if ($message !== null) {
 		$container->addVerticalSpacer('1rem');
-		$container->add($message, 12);
+		$container->add($message);
 	}
 	$container->addVerticalSpacer('2rem');
 	if ($showPasswordInputs) {
@@ -128,11 +127,11 @@ function printContent($message = null, $showPasswordInputs = true): void {
 		$container->addVerticalSpacer('2rem');
 		$pwdInput1 = new htmlResponsiveInputField(_('New password'), 'password1', '');
 		$pwdInput1->setIsPassword(true, true, true);
-		$container->add($pwdInput1, 12);
+		$container->add($pwdInput1);
 		$pwdInput2 = new htmlResponsiveInputField(_('Repeat password'), 'password2', '');
 		$pwdInput2->setIsPassword(true);
 		$pwdInput2->setSameValueFieldID('password1');
-		$container->add($pwdInput2, 12);
+		$container->add($pwdInput2);
 		$container->addVerticalSpacer('1rem');
 		$container->add(new htmlButton('changePassword', _("Submit")), 12, 12, 12, 'text-center');
 		addSecurityTokenToMetaHTML($container);

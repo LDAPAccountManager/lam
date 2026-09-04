@@ -2894,7 +2894,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$captureButton = new htmlLink(_('Use webcam'), '#', '../../graphics/webcam.png');
 			$captureButton->setId('btn_lam-webcam-capture');
 			$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
-			$webcamContent->add($captureButton, 12, 12, 12);
+			$webcamContent->add($captureButton);
 			$video = new htmlVideo('lam-webcam-video');
 			$video->setCSSClasses(['hidden']);
 			$webcamContent->add($video, 12, 12, 12, 'text-center');
@@ -2904,7 +2904,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 			$webcamUploadButton->setCSSClasses(['btn-lam-webcam-upload', 'hidden']);
 			$webcamUploadButton->setOnClick('window.lam.tools.webcam.uploadSelfService(event, "' . getSecurityTokenName()
 				. '", "' . getSecurityTokenValue() . '", "inetOrgPerson", "user", "' . _('File upload failed!') . '", "inetOrgPersonPhotoUploadContent");');
-			$webcamContent->add($webcamUploadButton, 12, 12, 12);
+			$webcamContent->add($webcamUploadButton);
 			$canvas = new htmlCanvas('lam-webcam-canvas');
 			$canvas->setCSSClasses(['hidden']);
 			$webcamContent->add($canvas);

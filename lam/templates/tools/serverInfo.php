@@ -90,15 +90,15 @@ if ($result) {
 $monitorResults = searchLDAP('cn=monitor', '(objectClass=*)', ['*', '+']);
 $monitorEntries = [];
 foreach ($monitorResults as $monitorResult) {
-	$monitorEntries[$monitorResult['dn']] = array_change_key_case($monitorResult, CASE_LOWER);
+	$monitorEntries[$monitorResult['dn']] = array_change_key_case($monitorResult);
 }
-$monitorEntries = array_change_key_case($monitorEntries, CASE_LOWER);
+$monitorEntries = array_change_key_case($monitorEntries);
 
 include_once __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="smallPaddingContent">';
 $container = new htmlResponsiveRow();
 
-$container->add(new htmlTitle(_("Server information")), 12);
+$container->add(new htmlTitle(_("Server information")));
 
 if (!empty($namingContexts)) {
 	$container->addLabel(new htmlOutputText('<b>' . _("Managed suffixes") . '</b>', false));
@@ -168,7 +168,7 @@ if (isset($monitorEntries['cn=max file descriptors,cn=connections,cn=monitor']))
 
 // server statistics
 if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=statistics,cn=monitor']) || isset($monitorEntries['cn=monitor']['currenttime'])) {
-	$container->add(new htmlSubTitle(_('Server statistics')), 12);
+	$container->add(new htmlSubTitle(_('Server statistics')));
 	if (isset($monitorEntries['cn=entries,cn=statistics,cn=monitor'])) {
 		$container->addLabel(new htmlOutputText('<b>' . _("LDAP entries") . '</b>', false));
 		$container->addField(new htmlOutputText(implode(', ', $monitorEntries['cn=entries,cn=statistics,cn=monitor']['monitorcounter'])));
@@ -211,7 +211,7 @@ if (isset($monitorEntries['cn=time,cn=monitor']) || isset($monitorEntries['cn=st
 
 // connection statistics
 if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries['cn=statistics,cn=monitor']) || isset($monitorEntries['cn=monitor']['currentconnections'])) {
-	$container->add(new htmlSubTitle(_('Connection statistics')), 12);
+	$container->add(new htmlSubTitle(_('Connection statistics')));
 	if (isset($monitorEntries['cn=current,cn=connections,cn=monitor'])) {
 		$container->addLabel(new htmlOutputText('<b>' . _("Current connections") . '</b>', false));
 		$container->addField(new htmlOutputText(implode(', ', $monitorEntries['cn=current,cn=connections,cn=monitor']['monitorcounter'])));
@@ -250,7 +250,7 @@ if (isset($monitorEntries['cn=connections,cn=monitor']) || isset($monitorEntries
 
 // operation statistics (OpenLDAP)
 if (isset($monitorEntries['cn=operations,cn=monitor'])) {
-	$container->add(new htmlSubTitle(_('Operation statistics')), 12);
+	$container->add(new htmlSubTitle(_('Operation statistics')));
 	$data = [];
 	if (isset($monitorEntries['cn=bind,cn=operations,cn=monitor'])) {
 		$data[] = [
@@ -330,11 +330,11 @@ if (isset($monitorEntries['cn=operations,cn=monitor'])) {
 		];
 	}
 	$opStats = new htmlResponsiveTable(['', _("Initiated"), _("Completed")], $data);
-	$container->add($opStats, 12);
+	$container->add($opStats);
 }
 // operation statistics (389 server)
 elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
-	$container->add(new htmlSubTitle(_('Operation statistics')), 12);
+	$container->add(new htmlSubTitle(_('Operation statistics')));
 	$container->addLabel(new htmlOutputText('<b>' . _("Initiated") . '</b>', false));
 	$container->addField(new htmlOutputText(implode(', ', $monitorEntries['cn=monitor']['opsinitiated'])));
 	$container->addLabel(new htmlOutputText('<b>' . _("Completed") . '</b>', false));

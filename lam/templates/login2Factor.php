@@ -142,9 +142,7 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) // WebAuthn
 			metaRefresh("main.php");
 			die();
 		}
-		else {
-			$errorMessage = _('Verification failed.');
-		}
+		$errorMessage = _('Verification failed.');
 	}
 }
 

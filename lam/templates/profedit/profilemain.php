@@ -4,23 +4,23 @@ use htmlDiv;
 use htmlForm;
 use htmlResponsiveInputField;
 use htmlResponsiveSelect;
-use \htmlTitle;
-use \htmlStatusMessage;
+use htmlTitle;
+use htmlStatusMessage;
 use LAM\PROFILES\AccountProfilePersistenceManager;
-use \LAMCfgMain;
-use \htmlSubTitle;
-use \htmlSpacer;
-use \htmlSelect;
-use \htmlButton;
-use \htmlImage;
-use \htmlLink;
-use \htmlOutputText;
-use \htmlHelpLink;
-use \htmlHiddenInput;
-use \htmlInputField;
-use \htmlResponsiveRow;
-use \htmlGroup;
-use \LAM\TYPES\TypeManager;
+use LAMCfgMain;
+use htmlSubTitle;
+use htmlSpacer;
+use htmlSelect;
+use htmlButton;
+use htmlImage;
+use htmlLink;
+use htmlOutputText;
+use htmlHelpLink;
+use htmlHiddenInput;
+use htmlInputField;
+use htmlResponsiveRow;
+use htmlGroup;
+use LAM\TYPES\TypeManager;
 use LAMConfig;
 use LAMException;
 use ServerProfilePersistenceManager;
@@ -83,7 +83,7 @@ $typeManager = new TypeManager();
 $types = $typeManager->getConfiguredTypes();
 
 $container = new htmlResponsiveRow();
-$container->add(new htmlTitle(_("Profile editor")), 12);
+$container->add(new htmlTitle(_("Profile editor")));
 
 $accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 
@@ -97,11 +97,11 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	try {
 		$accountProfilePersistenceManager->deleteAccountProfile($_POST['profileDeleteType'], $_POST['profileDeleteName'], $_SESSION['config']->getName());
 		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$container->add($message, 12);
+		$container->add($message);
 	}
 	catch (LAMException $e) {
 		$message = new htmlStatusMessage('ERROR', $e->getTitle(), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$container->add($message, 12);
+		$container->add($message);
 	}
 }
 
@@ -109,7 +109,7 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelete'])) {
 	$cfg = new LAMCfgMain();
 	if (empty($_POST['globalTemplateDeletePassword']) || !$cfg->checkPassword($_POST['globalTemplateDeletePassword'])) {
-		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')));
 	}
 	else {
 		$selectedOptions = explode(':', $_POST['globalTemplatesDelete']);
@@ -117,9 +117,9 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 		$selectedName = $selectedOptions[1];
 		try {
 			$accountProfilePersistenceManager->deleteAccountProfileTemplate($selectedScope, $selectedName);
-			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName), 12);
+			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName));
 		} catch (LAMException $e) {
-			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 		}
 	}
 }
@@ -153,7 +153,7 @@ if (!empty($_POST['import'])) {
 		$errMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
 	if ($errMessage !== null) {
-		$container->add($errMessage, 12);
+		$container->add($errMessage);
 	}
 }
 // export profiles
@@ -175,7 +175,7 @@ if (!empty($_POST['export'])) {
 		$errMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
 	}
 	if ($errMessage !== null) {
-		$container->add($errMessage, 12);
+		$container->add($errMessage);
 	}
 }
 
@@ -229,12 +229,12 @@ echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getS
 
 if (isset($_GET['savedSuccessfully'])) {
 	$message = new htmlStatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
-	$container->add($message, 12);
+	$container->add($message);
 }
 
 // new profile
 if (!empty($profileClasses)) {
-	$container->add(new htmlSubTitle(_('Create a new profile')), 12);
+	$container->add(new htmlSubTitle(_('Create a new profile')));
 	$sortedTypes = [];
 	foreach ($profileClasses as $profileClass) {
 		$sortedTypes[$profileClass['title']] = $profileClass['typeId'];
@@ -251,7 +251,7 @@ if (!empty($profileClasses)) {
 $container->addVerticalSpacer('1rem');
 
 // existing profiles
-$container->add(new htmlSubTitle(_('Manage existing profiles')), 12);
+$container->add(new htmlSubTitle(_('Manage existing profiles')));
 
 foreach ($profileClasses as $profileClass) {
 	$labelGroup = new htmlGroup();
@@ -360,7 +360,7 @@ foreach ($profileClasses as $profileClass) {
 	echo "<form id=\"importDialogForm_$typeId\" method=\"post\" action=\"profilemain.php\">\n";
 
 	$containerProfiles = new htmlResponsiveRow();
-	$containerProfiles->add(new htmlOutputText(_('Profiles')), 12);
+	$containerProfiles->add(new htmlOutputText(_('Profiles')));
 
 	$select = new htmlSelect('importProfiles', $importOptions, [], count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
 	$select->setMultiSelect(true);
@@ -372,7 +372,7 @@ foreach ($profileClasses as $profileClass) {
 
 	$containerProfiles->addVerticalSpacer('2rem');
 
-	$containerProfiles->add(new htmlOutputText(_("Master password")), 12);
+	$containerProfiles->add(new htmlOutputText(_("Master password")));
 	$exportPasswd = new htmlInputField('passwd_i_' . $typeId);
 	$exportPasswd->setIsPassword(true);
 	$containerProfiles->add($exportPasswd, 11);
@@ -392,7 +392,7 @@ foreach ($profileClasses as $profileClass) {
 
 	$containerTarget = new htmlResponsiveRow();
 
-	$containerTarget->add(new htmlOutputText(_("Target server profile")), 12);
+	$containerTarget->add(new htmlOutputText(_("Target server profile")));
 	$exportOptions = [];
 	foreach ($configProfiles as $profile) {
 		$typeManagerExport = new TypeManager($serverProfiles[$profile]);
@@ -418,7 +418,7 @@ foreach ($profileClasses as $profileClass) {
 
 	$containerTarget->addVerticalSpacer('2rem');
 
-	$containerTarget->add(new htmlOutputText(_("Master password")), 12);
+	$containerTarget->add(new htmlOutputText(_("Master password")));
 	$exportPasswd = new htmlInputField('passwd_e_' . $typeId);
 	$exportPasswd->setIsPassword(true);
 	$containerTarget->add($exportPasswd, 11);

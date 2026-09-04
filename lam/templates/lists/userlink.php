@@ -1,8 +1,8 @@
 <?php
 namespace LAM\ACCOUNTLIST;
 use htmlLink;
-use \htmlResponsiveRow;
-use \htmlStatusMessage;
+use htmlResponsiveRow;
+use htmlStatusMessage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -64,9 +64,9 @@ else {
 	include_once __DIR__ . '/../../lib/adminHeader.inc';
 	$container = new htmlResponsiveRow();
 	$container->addVerticalSpacer('1rem');
-	$container->add(new htmlStatusMessage("ERROR", _("This user was not found!"), htmlspecialchars($user)), 12);
+	$container->add(new htmlStatusMessage("ERROR", _("This user was not found!"), htmlspecialchars($user)));
 	$container->addVerticalSpacer('1rem');
-	$container->add(new htmlLink(_("Back to group list"), 'javascript:history.back()'), 12);
+	$container->add(new htmlLink(_("Back to group list"), 'javascript:history.back()'));
 	parseHtml(null, $container, [], false);
 	include_once __DIR__ . '/../../lib/adminFooter.inc';
 }
@@ -83,7 +83,5 @@ function search_username(string $name): ?string {
 	if (count($entries) > 0 ) {
 		return $entries[0]['dn'];
 	}
-	else {
-		return null;
-	}
+	return null;
 }

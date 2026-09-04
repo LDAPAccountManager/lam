@@ -89,22 +89,22 @@ if ((isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 		exit;
 	}
 	// go to types page
-    elseif (isset($_POST['edittypes'])) {
+    if (isset($_POST['edittypes'])) {
 		metaRefresh("conftypes.php");
 		exit;
 	}
 	// go to modules page
-    elseif (isset($_POST['editmodules'])) {
+    if (isset($_POST['editmodules'])) {
 		metaRefresh("confmodules.php");
 		exit;
 	}
 	// go to the types page
-    elseif (isset($_POST['generalSettingsButton'])) {
+    if (isset($_POST['generalSettingsButton'])) {
 		metaRefresh("confmain.php");
 		exit;
 	}
 	// go to the jobs page
-    elseif (isset($_POST['jobs'])) {
+    if (isset($_POST['jobs'])) {
 		metaRefresh("jobs.php");
 		exit;
 	}

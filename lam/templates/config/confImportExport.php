@@ -169,7 +169,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		$loginContent = new htmlResponsiveRow();
 		$loginContent->setCSSClasses(['maxrow fullwidth roundedShadowBox spacing5']);
 		if ($message !== null) {
-		    $loginContent->add($message, 12);
+		    $loginContent->add($message);
         }
 		$pwdInput = new htmlResponsiveInputField(_("Master password"), 'password', '', '236');
 		$pwdInput->setIsPassword(true);
@@ -219,12 +219,12 @@ printHeaderContents(_("Import and export configuration"), '../..');
     function displayImportExport(): void {
 	    $content = new htmlResponsiveRow();
 
-	    $content->add(new htmlSubTitle(_('Export')), 12);
+	    $content->add(new htmlSubTitle(_('Export')));
 	    $exportButton = new htmlButton('exportConfig', _('Export'));
 	    $exportButton->setCSSClasses(['lam-primary']);
 	    $content->add($exportButton);
 
-	    $content->add(new htmlSubTitle(_('Import')), 12);
+	    $content->add(new htmlSubTitle(_('Import')));
 	    renderImportPart($content);
 
 	    parseHtml(null, $content, [], false);
@@ -283,13 +283,13 @@ printHeaderContents(_("Import and export configuration"), '../..');
             }
         }
         if (!isset($_POST['importConfigConfirm']) && !$validUpload) {
-	        $content->add(new htmlInputFileUpload('import-file'), 12);
+	        $content->add(new htmlInputFileUpload('import-file'));
 	        $submitButton = new htmlButton('importConfig', _('Submit'));
 	        $submitButton->setCSSClasses(['lam-secondary']);
 	        $content->add($submitButton);
         }
         elseif (isset($_POST['importConfig'])) {
-            $content->add(new htmlOutputText(_('Import steps')), 12);
+            $content->add(new htmlOutputText(_('Import steps')));
             foreach ($importSteps as $importStep) {
                 $stepKey = 'step_' . $importStep->getKey();
                 $stepCheckbox = new htmlResponsiveInputCheckbox($stepKey, true, $importStep->getLabel());

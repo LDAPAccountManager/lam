@@ -102,9 +102,9 @@ include_once __DIR__ . '/../../lib/adminFooter.inc';
  * @param htmlResponsiveRow $row row
  */
 function displaySyntaxList(htmlResponsiveRow &$row): void {
-	$schema_syntaxes = get_schema_syntaxes(null);
+	$schema_syntaxes = get_schema_syntaxes();
 	if (!$schema_syntaxes) {
-		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
+		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")));
 		return;
 	}
 	$data = [];
@@ -131,9 +131,9 @@ function displaySyntaxList(htmlResponsiveRow &$row): void {
  * @param htmlResponsiveRow $row row
  */
 function displayRuleList(htmlResponsiveRow &$row): void {
-    $rules = get_schema_matching_rules(null);
+    $rules = get_schema_matching_rules();
 	if (!$rules) {
-		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
+		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")));
 		return;
 	}
     $row->addLabel(new htmlOutputText(_('Jump to a matching rule')));
@@ -184,7 +184,7 @@ function displayRuleList(htmlResponsiveRow &$row): void {
 function displayObjectClassList(htmlResponsiveRow &$row): void {
 	$objectClasses = get_schema_objectclasses();
 	if (empty($objectClasses)) {
-		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
+		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")));
 		return;
 	}
     $row->addLabel(new htmlOutputText(_('Jump to an object class')));
@@ -222,7 +222,7 @@ function displayObjectClassList(htmlResponsiveRow &$row): void {
 		if (!empty($selectedClass[0]) && ($name !== strtolower($selectedClass[0]))) {
 			continue;
 		}
-		$row->add(new htmlSubTitle($objectClass->getName()), 12);
+		$row->add(new htmlSubTitle($objectClass->getName()));
 		$row->addLabel(new htmlOutputText(_('OID')), 'bold-mobile-only');
 		$row->addField(new htmlOutputText($objectClass->getOID()));
 		if (!empty($objectClass->getDescription())) {
@@ -276,9 +276,9 @@ function displayObjectClassList(htmlResponsiveRow &$row): void {
  * @param htmlResponsiveRow $row row
  */
 function displayAttributeList(htmlResponsiveRow $row): void {
-	$attributes = get_schema_attributes(null);
+	$attributes = get_schema_attributes();
 	if (!$attributes) {
-		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
+		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")));
 		return;
 	}
 	$row->addLabel(new htmlOutputText(_('Jump to an attribute type')));

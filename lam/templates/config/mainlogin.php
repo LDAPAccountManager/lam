@@ -121,7 +121,7 @@ if (!empty($_GET['invalidLicense']) && ($_GET['invalidLicense'] == '2')) {
     $box = new htmlResponsiveRow();
     $box->setCSSClasses(['padding1', 'roundedShadowBox']);
 
-	$box->add(new htmlOutputText(_("Please enter the master password to change the general preferences:")), 12);
+	$box->add(new htmlOutputText(_("Please enter the master password to change the general preferences:")));
     // print message if login was incorrect or no config profiles are present
     if (isset($message)) {
 		$box->addVerticalSpacer('1rem');
