@@ -1763,9 +1763,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 */
 	public function display_html_manager(): htmlElement {
 		$return = new htmlResponsiveRow();
-		if (!isset($this->attributes['manager'])) {
-			$this->attributes['manager'] = [];
-		}
+		$this->attributes['manager'] ??= [];
 		// show list of possible new managers
 		if (isset($_POST['form_subpage_' . static::class . '_manager_select'])) {
 			$return->add(new htmlSubTitle(_('Add entries')));
@@ -2560,9 +2558,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}
-		if (!isset($temp['counter'])) {
-			$temp['counter'] = 0;
-		}
+		$temp['counter'] ??= 0;
 		$errors = [];
 		$dataSize = count($data);
 		if (($temp['counter'] < $dataSize) && !in_array($temp['counter'], $failed)) {
@@ -2622,13 +2618,11 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				'errors' => $errors
 			];
 		}
-		else {
-			return [
-				'status' => 'finished',
-				'progress' => 100,
-				'errors' => $errors
-			];
-		}
+		return [
+			'status' => 'finished',
+			'progress' => 100,
+			'errors' => $errors
+		];
 	}
 
 
@@ -3856,9 +3850,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 	 * @return bool password is locked
 	 */
 	public function isLocked(?array $attributes = null): bool {
-		if ($attributes === null) {
-			$attributes = array_change_key_case($this->attributes);
-		}
+		$attributes ??= array_change_key_case($this->attributes);
 		return isset($attributes['userpassword'][0])
 			&& !pwd_is_enabled($attributes['userpassword'][0]);
 	}
@@ -3976,9 +3968,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if ($this->isUnixActive($type->getModules())) {
 			return [];
 		}
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$details = [];
 		if (self::isLocked($attributes)) {
 			$details[] = AccountStatusDetails::newLocked(_('Personal'), self::STATUS_PASSWORD_LOCKED);
@@ -4003,9 +3993,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 		if ($this->isUnixActive($type->getModules())) {
 			return [];
 		}
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$options = [];
 		if (!self::isLocked($attributes) && isset($attributes['userpassword'][0]) && pwd_is_lockable($attributes['userpassword'][0])) {
 			$options[] = AccountStatusDetails::newLocked(_('Personal'), self::STATUS_PASSWORD_LOCKED);
@@ -4099,7 +4087,7 @@ class inetOrgPerson extends baseModule implements passwordService, AccountStatus
 				return $group;
 			};
 		}
-		elseif ($attributeName === 'jpegphoto') {
+		if ($attributeName === 'jpegphoto') {
 			return function(array $entry, string $attribute): htmlElement {
 				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] !== '')) {
 					if (strlen($entry[$attribute][0]) < 100) {

@@ -535,7 +535,7 @@ class nisNetGroupUser extends baseModule {
 			];
 		}
 		// add users to groups
-		elseif ($temp['counter'] < count($temp['groupDNs'])) {
+		if ($temp['counter'] < count($temp['groupDNs'])) {
 			$errors = [];
 			$dn = $temp['groupDNs'][$temp['counter']];
 			$current = ldapGetDN($dn, ['nisnetgrouptriple']);
@@ -571,13 +571,11 @@ class nisNetGroupUser extends baseModule {
 			];
 		}
 		// all modifications are done
-		else {
-			return [
-				'status' => 'finished',
-				'progress' => 100,
-				'errors' => []
-			];
-		}
+		return [
+			'status' => 'finished',
+			'progress' => 100,
+			'errors' => []
+		];
 	}
 
 	/**
@@ -636,10 +634,10 @@ class nisNetGroupUser extends baseModule {
 		if ($first['name'] != $second['name']) {
 			return strnatcasecmp($first['name'], $second['name']);
 		}
-		elseif ($first['host'] != $second['host']) {
+		if ($first['host'] != $second['host']) {
 			return strnatcasecmp($first['host'], $second['host']);
 		}
-		elseif ($first['user'] != $second['user']) {
+		if ($first['user'] != $second['user']) {
 			return strnatcasecmp($first['user'], $second['user']);
 		}
 		return strnatcasecmp($first['domain'], $second['domain']);

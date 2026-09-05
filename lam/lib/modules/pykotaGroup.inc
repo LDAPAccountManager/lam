@@ -232,15 +232,11 @@ class pykotaGroup extends baseModule {
 	public function process_attributes(): array {
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
-			if (!isset($this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = [];
-			}
+			$this->attributes['objectClass'] ??= [];
 			if (!in_array('pykotaGroup', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'pykotaGroup';
 			}
-			if (!isset($this->attributes['pykotaGroupName'][0])) {
-				$this->attributes['pykotaGroupName'][0] = $this->getCurrentGroupName();
-			}
+			$this->attributes['pykotaGroupName'][0] ??= $this->getCurrentGroupName();
 			return $errors;
 		}
 		$modules = $this->getAccountContainer()->get_type()->getModules();

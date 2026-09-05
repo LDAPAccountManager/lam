@@ -700,9 +700,7 @@ class imapAccess extends baseModule {
 		if (!isset($this->moduleSettings['ImapAccess_ImapUserPrefix'][0]) || ($this->moduleSettings['ImapAccess_ImapUserPrefix'][0] == '')) {
 			return "user";
 		}
-		else {
-			return $this->moduleSettings['ImapAccess_ImapUserPrefix'][0];
-		}
+		return $this->moduleSettings['ImapAccess_ImapUserPrefix'][0];
 	}
 
 	/**
@@ -860,7 +858,7 @@ class imapAccess extends baseModule {
 			];
 		}
 		// add mailbox
-		elseif ($temp['counter'] < count($temp['users'])) {
+		if ($temp['counter'] < count($temp['users'])) {
 			$errors = [];
 			$data = $temp['users'][$temp['counter']];
 			$uid = $data['uid'];
@@ -896,13 +894,11 @@ class imapAccess extends baseModule {
 			];
 		}
 		// all modifications are done
-		else {
-			return [
-				'status' => 'finished',
-				'progress' => 100,
-				'errors' => []
-			];
-		}
+		return [
+			'status' => 'finished',
+			'progress' => 100,
+			'errors' => []
+		];
 	}
 
 	/**

@@ -277,23 +277,18 @@ function generateSalt($len): string {
  * @return string enabled password hash
  */
 function pwd_enable($hash) {
-	// check if password is disabled (old wrong LAM method)
+	// check if the password is disabled (old wrong LAM method)
 	if ((str_starts_with($hash, "!{")) || (str_starts_with($hash, "*{"))) {
 		return substr($hash, 1, strlen($hash));
 	}
-	elseif (str_starts_with($hash, "{")) {
+	if (str_starts_with($hash, "{")) {
 		$pos = strpos($hash, "}");
 		if ((substr($hash, $pos + 1, 1) === "!") || (substr($hash, $pos + 1, 1) === "*")) {
 			// enable hash
 			return substr($hash, 0, $pos + 1) . substr($hash, $pos + 2, strlen($hash));
 		}
-		else {
-			return $hash;  // not disabled
-		}
 	}
-	else {
-		return $hash;  // password is plain text
-	}
+	return $hash;
 }
 
 /**
@@ -307,19 +302,15 @@ function pwd_disable($hash) {
 	if ((str_starts_with($hash, "!{")) || (str_starts_with($hash, "*{"))) {
 		return $hash;
 	}
-	elseif (str_starts_with($hash, "{")) {
+	if (str_starts_with($hash, "{")) {
 		$pos = strpos($hash, "}");
 		if ((substr($hash, $pos + 1, 1) === "!") || (substr($hash, $pos + 1, 1) === "*")) {
 			// hash already disabled
 			return $hash;
 		}
-		else {
-			return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
-		}
+		return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
 	}
-	else {
-		return $hash;  // password is plain text
-	}
+	return $hash;  // password is plain text
 }
 
 /**
@@ -356,9 +347,7 @@ function pwd_is_enabled($hash) {
 		// check if hash starts with "!" or "*"
 		return ((substr($hash, $pos + 1, 1) !== "!") && (substr($hash, $pos + 1, 1) !== "*"));
 	}
-	else {
-		return true;
-	}
+	return true;
 }
 
 /**
@@ -485,7 +474,7 @@ function checkPasswordHash($type, $hash, $password) {
 				$pwdHash = crypt($password, '$' . $version . '$' . $salt);
 				return (strcmp($hash, $pwdHash) === 0);
 			}
-			elseif (count($parts) === 5) {
+			if (count($parts) === 5) {
 				$version = $parts[1];
 				$rounds = $parts[2];
 				$salt = $parts[3];
@@ -544,9 +533,7 @@ function search_domains(?Connection $server = null, ?string $suffix = null): arr
 		"sambaNextUserRid", "sambaAlgorithmicRidBase", 'sambaMinPwdAge', 'sambaMaxPwdAge',
 		'sambaPwdHistoryLength'
 	];
-	if ($server === null) {
-		$server = $_SESSION['ldap']->server();
-	}
+	$server ??= $_SESSION['ldap']->server();
 	$filter = '(objectclass=sambaDomain)';
 	$units = searchLDAPPaged($server, $suffix, $filter, $attr, 0, 0);
 	// extract attributes
@@ -954,10 +941,8 @@ function getLDAPServerHandle() {
 		// admin pages
 		return $_SESSION['ldap']->server();
 	}
-	else {
-		// self-service/white pages
-		return $_SESSION['ldapHandle']->getServer();
-	}
+	// self-service/white pages
+	return $_SESSION['ldapHandle']->getServer();
 }
 
 /**
@@ -982,9 +967,7 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 			cleanLDAPResult($entries);
 			return $entries;
 		}
-		else {
-			return [];
-		}
+		return [];
 	}
 	$pageSize = 999;
 	$cookie = '';
@@ -1702,12 +1685,10 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 			['INFO', sprintf(_('Mail successfully sent to %s.'), htmlspecialchars($mailTo))]
 		];
 	}
-	else {
-		logNewMessage(LOG_ERR, 'Unable to send password mail to ' . htmlspecialchars($mailTo));
-		return [
-			['ERROR', _('Unable to send mail!')]
-		];
-	}
+	logNewMessage(LOG_ERR, 'Unable to send password mail to ' . htmlspecialchars($mailTo));
+	return [
+		['ERROR', _('Unable to send mail!')]
+	];
 }
 
 /**
@@ -1817,13 +1798,13 @@ function parseEmailAddress(string $addressText): array {
 			'name' => trim($matches[1]),
 		];
 	}
-	elseif (preg_match('/\'([^\']+)\'\s*<([^<]+)>/', $addressText, $matches)) {
+	if (preg_match('/\'([^\']+)\'\s*<([^<]+)>/', $addressText, $matches)) {
 		return [
 			'address' => trim($matches[2]),
 			'name' => trim($matches[1]),
 		];
 	}
-	elseif (preg_match('/([^"\']+)\s*<([^<]+)>/', $addressText, $matches)) {
+	if (preg_match('/([^"\']+)\s*<([^<]+)>/', $addressText, $matches)) {
 		return [
 			'address' => trim($matches[2]),
 			'name' => trim($matches[1]),
@@ -2069,15 +2050,7 @@ function getDefaultLDAPErrorString($server) {
  */
 function ldapIsPasswordExpired($server): bool {
 	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
-	if (str_contains($extError, 'data 532,')) {
-		// password expired
-		return true;
-	}
-	elseif (str_contains($extError, 'data 773,')) {
-		// password change required
-		return true;
-	}
-	return false;
+	return str_contains($extError, 'data 532,') || str_contains($extError, 'data 773,');
 }
 
 /**
@@ -2307,7 +2280,7 @@ function convertUtf8ToUtf16Le(?string $input): ?string {
 	}
 	$output = iconv('UTF-8', 'UTF-16LE', $input);
 	if ($output == '') {
-		$output = mb_convert_encoding($input, 'UTF-8', 'UTF-16LE');
+		return mb_convert_encoding($input, 'UTF-8', 'UTF-16LE');
 	}
 	return $output;
 }
@@ -2317,7 +2290,7 @@ function convertUtf8ToUtf16Le(?string $input): ?string {
  *
  * @return string LAM version text
  */
-function getLAMVersionText() {
+function getLAMVersionText(): string {
 	$text = 'LDAP Account Manager';
 	if (isLAMProVersion()) {
 		$text .= ' Pro';

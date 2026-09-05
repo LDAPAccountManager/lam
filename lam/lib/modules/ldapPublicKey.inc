@@ -208,7 +208,7 @@ class ldapPublicKey extends baseModule {
 			return [];
 		}
 		// remove extension
-		elseif (isset($_POST['remObjectClass'])) {
+		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete([$this->getObjectClass()], $this->attributes['objectClass']);
 			if (!empty($this->attributes[$this->getAttributeName()])) {
 				unset($this->attributes[$this->getAttributeName()]);
@@ -684,9 +684,7 @@ class ldapPublicKey extends baseModule {
 	 * @return array<string, string> error response
 	 */
 	public static function invalidAjaxRequest($message = null): array {
-		if ($message === null) {
-			$message = _('Invalid request');
-		}
+		$message ??= _('Invalid request');
 		return ['errorsOccurred' => 'true', 'errormessage' => $message];
 	}
 

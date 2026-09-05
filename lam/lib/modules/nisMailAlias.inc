@@ -381,9 +381,7 @@ class nisMailAlias extends baseModule {
 	 */
 	public function process_select(): array {
 		if (isset($_POST['form_subpage_' . static::class . '_attributes_select'])) {
-			if (!isset($this->attributes['rfc822MailMember'])) {
-				$this->attributes['rfc822MailMember'] = [];
-			}
+			$this->attributes['rfc822MailMember'] ??= [];
 			$position = $_POST['position'];
 			if ($position == 'New') {
 				$this->attributes['rfc822MailMember'] = array_merge($this->attributes['rfc822MailMember'], $_POST['selectBox']);

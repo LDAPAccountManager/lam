@@ -405,18 +405,14 @@ class pykotaUser extends baseModule {
 	public function process_attributes(): array {
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
-			if (!isset($this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = [];
-			}
+			$this->attributes['objectClass'] ??= [];
 			if (!in_array('pykotaAccount', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'pykotaAccount';
 			}
 			if (!in_array('pykotaAccountBalance', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'pykotaAccountBalance';
 			}
-			if (!isset($this->attributes['pykotaUserName'][0])) {
-				$this->attributes['pykotaUserName'][0] = $this->getCurrentUserName();
-			}
+			$this->attributes['pykotaUserName'][0] ??= $this->getCurrentUserName();
 			return $errors;
 		}
 		$modules = $this->getAccountContainer()->get_type()->getModules();
