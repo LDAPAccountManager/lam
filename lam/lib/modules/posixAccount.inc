@@ -1097,9 +1097,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
-			if (!isset($this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = [];
-			}
+			$this->attributes['objectClass'] ??= [];
 			if (!in_array('posixAccount', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'posixAccount';
 			}
@@ -1298,12 +1296,8 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			if (!get_preg($this->attributes['uid'][0], 'hostname')) {
 				$errors[] = $this->messages['uid'][4];
 			}
-			if (!isset($this->attributes[$homedirAttrName][0])) {
-				$this->attributes[$homedirAttrName][0] = '/dev/null';
-			}
-			if (!isset($this->attributes['loginShell'][0])) {
-				$this->attributes['loginShell'][0] = '/bin/false';
-			}
+			$this->attributes[$homedirAttrName][0] ??= '/dev/null';
+			$this->attributes['loginShell'][0] ??= '/bin/false';
 		}
 		$attributeList = [$homedirAttrName];
 		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
@@ -1341,9 +1335,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @return bool creation is possible
 	 */
 	private function allowsToCreateGroupWithSameName(?string $typeId = null): bool {
-		if ($typeId === null) {
-			$typeId = $this->getAccountContainer()->get_type()->getId();
-		}
+		$typeId ??= $this->getAccountContainer()->get_type()->getId();
 		if (($this->get_scope() !== 'user')
 			|| $this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup')) {
 			return false;
@@ -3036,7 +3028,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			];
 		}
 		// get DNs of groups
-		elseif (!isset($temp['dn'])) {
+		if (!isset($temp['dn'])) {
 			$temp['dn'] = [];
 			$ldapEntries = searchLDAPByAttribute('cn', '*', 'posixGroup', ['dn', 'cn'], ['group']);
 			for ($i = 0; $i < count($ldapEntries); $i++) {
@@ -3049,7 +3041,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			];
 		}
 		// add users to groups
-		elseif ($temp['counter'] < count($temp['groups'])) {
+		if ($temp['counter'] < count($temp['groups'])) {
 			if (isset($temp['dn'][$temp['groups'][$temp['counter']]])) {
 				$memberUid = $temp['members'][$temp['groups'][$temp['counter']]];
 				$dnToUpdate = $temp['dn'][$temp['groups'][$temp['counter']]];
@@ -3078,17 +3070,15 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					'errors' => $errors
 				];
 			}
-			else {
-				$temp['counter']++;
-				return [
-					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop'])),
-					'errors' => [['ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]]]
-				];
-			}
+			$temp['counter']++;
+			return [
+				'status' => 'inProgress',
+				'progress' => ($temp['counter'] * 100) / (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop'])),
+				'errors' => [['ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]]]
+			];
 		}
 		// create home directories
-		elseif ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']))) {
+		if ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']))) {
 			$pos = $temp['createHomes'][$temp['counter'] - count($temp['groups'])];
 			try {
 				$remote = new Remote();
@@ -3117,7 +3107,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			];
 		}
 		// add users to group of names
-		elseif ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']))) {
+		if ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']))) {
 			$gonDn = $temp['dn_gon_keys'][$temp['counter'] - count($temp['groups']) - count($temp['createHomes'])];
 			$gonAttrToAdd = $temp['dn_gon'][$gonDn];
 			$gonAttrNames = array_keys($gonAttrToAdd);
@@ -3151,7 +3141,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			];
 		}
 		// run password exop commands
-		elseif ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop']))) {
+		if ($temp['counter'] < (count($temp['groups']) + count($temp['createHomes']) + count($temp['dn_gon']) + count($temp['exop']))) {
 			$data = $temp['exop'][$temp['counter'] - count($temp['groups']) - count($temp['createHomes']) - count($temp['dn_gon'])];
 			$dn = $data[0];
 			$password = $data[1];
@@ -3173,13 +3163,11 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 			];
 		}
 		// all modifications are done
-		else {
-			return [
-				'status' => 'finished',
-				'progress' => 100,
-				'errors' => []
-			];
-		}
+		return [
+			'status' => 'finished',
+			'progress' => 100,
+			'errors' => []
+		];
 	}
 
 	/**
@@ -3260,11 +3248,9 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 					if ($k > $maxID) {
 						return null;
 					}
-					else {
-						$ret[] = $k;
-						$uids[] = $k;
-						sort($uids, SORT_NUMERIC);
-					}
+					$ret[] = $k;
+					$uids[] = $k;
+					sort($uids, SORT_NUMERIC);
 					// show warning message
 					$errors[] = $this->messages['uidNumber'][2];
 				}
@@ -3515,9 +3501,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @return boolean manages password
 	 */
 	private function isPasswordManaged($typeId = null) {
-		if ($typeId === null) {
-			$typeId = $this->getAccountContainer()->get_type()->getId();
-		}
+		$typeId ??= $this->getAccountContainer()->get_type()->getId();
 		return !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidepassword')
 			&& (empty($this->moduleSettings['posixAccount_pwdHash'][0])
 				|| ($this->moduleSettings['posixAccount_pwdHash'][0] !== 'SASL'));
@@ -3876,9 +3860,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 	 * @return bool password is locked
 	 */
 	public function isLocked($modules, ?array $attributes = null): bool {
-		if ($attributes === null) {
-			$attributes = array_change_key_case($this->attributes);
-		}
+		$attributes ??= array_change_key_case($this->attributes);
 		$passwordAttribute = strtolower($this->getPasswordAttrName($modules));
 		return isset($attributes[$passwordAttribute][0])
 			&& !pwd_is_enabled($attributes[$passwordAttribute][0]);
@@ -3946,33 +3928,30 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		// Last character is no number
 		if (!preg_match('/^(\d)+$/', $lastchar)) {
 			// Last character is no number. Therefore we only have to add "2" to it.
-			$userName = $userName . '2' . $suffix;
+			return $userName . '2' . $suffix;
 		}
-		else {
-			/* Last character is a number -> we have to increase the number until we've
-			* found a groupname with trailing number which is not in use.
-			*
-			* $i will show us were we have to split groupname so we get a part
-			* with the groupname and a part with the trailing number
-			*/
-			$i = strlen($userName) - 1;
-			$mark = false;
-			// Set $i to the last character which is a number in $account_new->general_username
-			while (!$mark && ($i >= 0)) {
-				if (preg_match('/^(\d)+$/', substr($userName, $i, strlen($userName) - $i))) {
-					$i--;
-				}
-				else {
-					$mark = true;
-				}
+		/* Last character is a number -> we have to increase the number until we've
+		* found a groupname with trailing number which is not in use.
+		*
+		* $i will show us were we have to split groupname so we get a part
+		* with the groupname and a part with the trailing number
+		*/
+		$i = strlen($userName) - 1;
+		$mark = false;
+		// Set $i to the last character which is a number in $account_new->general_username
+		while (!$mark && ($i >= 0)) {
+			if (preg_match('/^(\d)+$/', substr($userName, $i, strlen($userName) - $i))) {
+				$i--;
 			}
-			// increase last number with one
-			$firstchars = substr($userName, 0, $i + 1);
-			$lastchars = substr($userName, $i + 1, strlen($userName) - $i);
-			// Put username together
-			$userName = $firstchars . (intval($lastchars) + 1) . $suffix;
+			else {
+				$mark = true;
+			}
 		}
-		return $userName;
+		// increase last number with one
+		$firstchars = substr($userName, 0, $i + 1);
+		$lastchars = substr($userName, $i + 1, strlen($userName) - $i);
+		// Put username together
+		return $firstchars . (intval($lastchars) + 1) . $suffix;
 	}
 
 	/**
@@ -4228,9 +4207,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!$this->isPasswordManaged($type->getId())) {
 			return [];
 		}
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$details = [];
 		if (self::isLocked($type->getModules(), $attributes)) {
 			if ($this->isWindows($type->getModules())) {
@@ -4260,9 +4237,7 @@ class posixAccount extends baseModule implements passwordService, AccountStatusP
 		if (!$this->isPasswordManaged($type->getId())) {
 			return [];
 		}
-		if ($attributes === null) {
-			$attributes = $this->attributes;
-		}
+		$attributes ??= $this->attributes;
 		$options = [];
 		$attributeName = $this->getPasswordAttrName($type->getModules());
 		if (!self::isLocked($type->getModules(), $attributes) && isset($attributes[$attributeName][0]) && pwd_is_lockable($attributes[$attributeName][0])) {

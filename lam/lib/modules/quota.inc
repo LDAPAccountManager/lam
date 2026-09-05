@@ -190,9 +190,7 @@ class quota extends baseModule {
 			}
 		}
 		// get list of lamdaemon servers
-		if ($lamdaemonServers === null) {
-			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
-		}
+		$lamdaemonServers ??= $_SESSION['config']->getConfiguredScriptServers();
 		foreach ($lamdaemonServers as $lamdaemonServer) {
 			$server = $lamdaemonServer->getServer();
 			// get quotas
@@ -861,9 +859,7 @@ class quota extends baseModule {
 			$this->addPDFTable($return, 'quotas', $pdfTable);
 			return $return;
 		}
-		else {
-			return [];
-		}
+		return [];
 	}
 
 	/**
@@ -1012,7 +1008,7 @@ class quota extends baseModule {
 			return ['status' => 'inProgress', 'progress' => 5, 'errors' => $errors];
 		}
 		// quotas are ready to set
-		elseif ($temp['counter'] < count($temp['accounts'])) {
+		if ($temp['counter'] < count($temp['accounts'])) {
 			$names = array_keys($temp['accounts']);
 			$name = $names[$temp['counter']];
 			$mountPoints = array_keys($temp['accounts'][$name]);

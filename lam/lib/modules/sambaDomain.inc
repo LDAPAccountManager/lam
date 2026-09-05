@@ -378,9 +378,7 @@ class sambaDomain extends baseModule {
 		$nextGroupRIDInput->setMinimumAndMaximumNumber();
 		$return->add($nextGroupRIDInput);
 		// RID base
-		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) {
-			$this->attributes['sambaAlgorithmicRidBase'][0] = 1000;
-		}
+		$this->attributes['sambaAlgorithmicRidBase'][0] ??= 1000;
 		if ($this->getAccountContainer()->isNewAccount) {
 			$ridBaseInput = new htmlResponsiveInputField(_('RID base'), 'RIDbase', $this->attributes['sambaAlgorithmicRidBase'][0], 'RIDbase');
 			$ridBaseInput->setRequired(true);

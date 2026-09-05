@@ -267,9 +267,7 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	public function display_html_user() {
 		$return = new htmlResponsiveRow();
-		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = [];
-		}
+		$this->attributes['memberUid'] ??= [];
 		// load list with all users
 		$userAndGIDs = $this->getUsers();
 		$users = [];
@@ -776,9 +774,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->getAccountContainer()->replaceWildcardsInPOST($this->getWildcardTargetAttributeNames());
 		$errors = [];
 		if (isset($_POST['addObjectClass'])) {
-			if (!isset($this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = [];
-			}
+			$this->attributes['objectClass'] ??= [];
 			if (!in_array('posixGroup', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'posixGroup';
 			}
@@ -938,9 +934,7 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	public function process_user(): array {
 		$return = [];
-		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = [];
-		}
+		$this->attributes['memberUid'] ??= [];
 		if (isset($_POST['members_2']) && isset($_POST['members_left'])) { // Add groups to list
 			// add new group
 			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $_POST['members_2']);
@@ -978,9 +972,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($gon == null) {
 			return $return;
 		}
-		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = [];
-		}
+		$this->attributes['memberUid'] ??= [];
 		$memberDNs = $gon->getMembers();
 		$users = $this->getUsers();
 		$oldValues = $this->attributes['memberUid'];
@@ -1017,9 +1009,7 @@ class posixGroup extends baseModule implements passwordService {
 		$delete = isset($_POST['syncWindows_delete']) && ($_POST['syncWindows_delete'] == 'on');
 		$return = [];
 		$windows = $this->getAccountContainer()->getAccountModule('windowsGroup');
-		if (!isset($this->attributes['memberUid'])) {
-			$this->attributes['memberUid'] = [];
-		}
+		$this->attributes['memberUid'] ??= [];
 		$windowsAttributes = $windows->getAttributes();
 		$memberDNs = [];
 		if (!empty($windowsAttributes['member'])) {
@@ -1157,11 +1147,9 @@ class posixGroup extends baseModule implements passwordService {
 					if ($k > $maxID) {
 						return null;
 					}
-					else {
-						$ret[] = $k;
-						$gids[] = $k;
-						sort($gids, SORT_NUMERIC);
-					}
+					$ret[] = $k;
+					$gids[] = $k;
+					sort($gids, SORT_NUMERIC);
 					// show warning message
 					$errors[] = $this->messages['gidNumber'][2];
 				}

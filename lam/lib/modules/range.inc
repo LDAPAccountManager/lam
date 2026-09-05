@@ -181,9 +181,7 @@ class range extends baseModule {
 			if (in_array($n, $this->overlapped)) {
 				return false;
 			}
-			else {
-				$this->overlapped[] = $n;
-			}
+			$this->overlapped[] = $n;
 		}
 		return true;
 	}
@@ -204,9 +202,7 @@ class range extends baseModule {
 		if (!$this->isRootNode()) {
 			return "enabled";
 		}
-		else {
-			return "hidden";
-		}
+		return "hidden";
 	}
 
 	/**
@@ -685,13 +681,12 @@ class range extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function save_attributes(): array {
-		$return = [];
-		// Get easy attributes
+		// get easy attributes
 		if (!$this->isRootNode()) {
-			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
+			return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		}
-		// Return attributes
-		return $return;
+		// return attributes
+		return [];
 	}
 
 	/**
