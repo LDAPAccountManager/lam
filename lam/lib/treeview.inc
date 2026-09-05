@@ -70,17 +70,17 @@ include_once __DIR__ . '/tools/treeview.inc';
  * @package LAM\TOOLS\TREEVIEW
  */
 class TreeView {
-	const AD_DELETED_DELIMITER = '\0ADEL:';
+	private const AD_DELETED_DELIMITER = '\0ADEL:';
 
 	/**
-	 * @var AttributeType[] schema attributes
+	 * @var AttributeType[]|null schema attributes
 	 */
-	private $schemaAttributes;
+	private ?array $schemaAttributes = null;
 
 	/**
-	 * @var ObjectClass[] schema object classes
+	 * @var ObjectClass[]|null schema object classes
 	 */
-	private $schemaObjectClasses;
+	private ?array $schemaObjectClasses = null;
 
 	/**
 	 * Returns the JSON to answer an AJAX request.
