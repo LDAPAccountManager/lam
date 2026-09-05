@@ -367,7 +367,7 @@ class eduPerson extends baseModule {
 			$this->attributes['objectClass'][] = 'eduPerson';
 			return [];
 		}
-		elseif (isset($_POST['remObjectClass'])) {
+		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['eduPerson'], $this->attributes['objectClass']);
 			for ($i = 0; $i < count($this->meta['attributes']); $i++) {
 				if (isset($this->attributes[$this->meta['attributes'][$i]])) {

@@ -219,19 +219,16 @@ class ddns extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function process_attributes(): array {
-		// Main Settings and Account have to different processes.
+		// Main Settings and Account have two different processes.
 		if ($this->isRootNode()) {
 			// main settings:
-			$errors = $this->process_attributes_mainSettings();
+			return $this->process_attributes_mainSettings();
 		}
-		else {
-			// account
-			if (!$this->check_if_ddns_is_enable()) {
-				return [];
-			}
-			$errors = $this->process_attributes_account();
+		// account
+		if (!$this->check_if_ddns_is_enable()) {
+			return [];
 		}
-		return $errors;
+		return $this->process_attributes_account();
 	}
 
 	/**

@@ -321,7 +321,7 @@ class courierMailAccount extends baseModule {
 			return [];
 		}
 		// remove extension
-		elseif (isset($_POST['remObjectClass'])) {
+		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete([
 				'courierMailAccount'
 			], $this->attributes['objectClass']);

@@ -287,7 +287,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			return [];
 		}
 		// remove extension
-		elseif (isset($_POST['remVoicemailObjectClass'])) {
+		if (isset($_POST['remVoicemailObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(['AsteriskVoiceMail'], $this->attributes['objectClass']);
 			$attrKeys = array_keys($this->attributes);
 			for ($k = 0; $k < count($attrKeys); $k++) {
@@ -479,13 +479,11 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			return $return;
 		}
 		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
-			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
+			if (($_POST['posixAccount_password'] != $_POST['posixAccount_password2'])
+				|| !get_preg($_POST['posixAccount_password'], 'password')) {
 				return $return;
 			}
-			elseif (!get_preg($_POST['posixAccount_password'], 'password')) {
-				return $return;
-			}
-			elseif (in_array('syncAsteriskVoicemailPassword', $fields)) {
+			if (in_array('syncAsteriskVoicemailPassword', $fields)) {
 				// sync password
 				$return['mod']['AstVoicemailPassword'][0] = $_POST['posixAccount_password'];
 			}

@@ -276,44 +276,42 @@ class Importer {
 			}
 			return new AddEntryTask($dn, $attributes);
 		}
-		else {
-			$type = $firstAttribute[Importer::VALUE];
-			if ($type === 'add') {
-				$attributes = [];
-				foreach ($entry as $line) {
-					$lineData = $this->getLineKeyValue($line);
-					$attributes[$lineData[Importer::KEY]][] = $lineData[Importer::VALUE];
-				}
-				return new AddEntryTask($dn, $attributes);
+		$type = $firstAttribute[Importer::VALUE];
+		if ($type === 'add') {
+			$attributes = [];
+			foreach ($entry as $line) {
+				$lineData = $this->getLineKeyValue($line);
+				$attributes[$lineData[Importer::KEY]][] = $lineData[Importer::VALUE];
 			}
-			if ($type === 'modrdn') {
-				return $this->createModRdnTask($dn, $entry);
-			}
-			if ($type === 'delete') {
-				if (!empty($entry)) {
-					throw new LAMException(_('Invalid data'), htmlspecialchars($dn));
-				}
-				return new DeleteEntryTask($dn);
-			}
-			if ($type !== 'modify') {
-				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changetype: ' . htmlspecialchars($type));
-			}
-			$subtasks = [];
-			$currentLines = [];
-			$linesCount = count($entry);
-			for ($i = 0; $i < $linesCount; $i++) {
-				$line = $entry[$i];
-				if ($line === '-') {
-					$subtasks[] = $this->getChangeTypeTask($dn, $currentLines);
-					$currentLines = [];
-				}
-				else {
-					$currentLines[] = $line;
-				}
-			}
-			$subtasks[] = $this->getChangeTypeTask($dn, $currentLines);
-			return new MultiTask($subtasks, $dn);
+			return new AddEntryTask($dn, $attributes);
 		}
+		if ($type === 'modrdn') {
+			return $this->createModRdnTask($dn, $entry);
+		}
+		if ($type === 'delete') {
+			if (!empty($entry)) {
+				throw new LAMException(_('Invalid data'), htmlspecialchars($dn));
+			}
+			return new DeleteEntryTask($dn);
+		}
+		if ($type !== 'modify') {
+			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changetype: ' . htmlspecialchars($type));
+		}
+		$subtasks = [];
+		$currentLines = [];
+		$linesCount = count($entry);
+		for ($i = 0; $i < $linesCount; $i++) {
+			$line = $entry[$i];
+			if ($line === '-') {
+				$subtasks[] = $this->getChangeTypeTask($dn, $currentLines);
+				$currentLines = [];
+			}
+			else {
+				$currentLines[] = $line;
+			}
+		}
+		$subtasks[] = $this->getChangeTypeTask($dn, $currentLines);
+		return new MultiTask($subtasks, $dn);
 	}
 
 	/**

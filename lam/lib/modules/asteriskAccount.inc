@@ -1156,13 +1156,11 @@ class asteriskAccount extends baseModule implements passwordService {
 			return $return;
 		}
 		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
-			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
+			if (($_POST['posixAccount_password'] != $_POST['posixAccount_password2'])
+				|| !get_preg($_POST['posixAccount_password'], 'password')) {
 				return $return;
 			}
-			elseif (!get_preg($_POST['posixAccount_password'], 'password')) {
-				return $return;
-			}
-			elseif (in_array('syncAsteriskPassword', $fields)) {
+			if (in_array('syncAsteriskPassword', $fields)) {
 				// sync password
 				$return['mod']['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($attributes, $this->selfServiceSettings->moduleSettings, $_POST['posixAccount_password']);
 			}

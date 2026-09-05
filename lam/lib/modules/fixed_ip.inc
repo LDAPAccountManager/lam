@@ -135,9 +135,7 @@ class fixed_ip extends baseModule {
 		if ($this->isRootNode()) {
 			return "hidden";
 		}
-		else {
-			return "enabled";
-		}
+		return "enabled";
 	}
 
 	/**

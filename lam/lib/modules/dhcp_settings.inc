@@ -47,18 +47,16 @@ if (!function_exists('check_ip')) {
 		if (count($part) !== 4) {
 			return false;
 		}
-		else {
-			// check each segment
-			for ($i = 0; $i < count($part); $i++) {
-				// only numbers are allowed
-				if (!is_numeric($part[$i])
-					|| ($part[$i] > 255)
-					// non-subnet must be > 0 on last digit
-					|| (!$subnet && ($i === 3) && ($part[$i] < 1))
-					// subnet must be >= 0 on last digit
-					|| ($subnet && ($i === 3) && ($part[$i] < 0))) {
-					return false;
-				}
+		// check each segment
+		for ($i = 0; $i < count($part); $i++) {
+			// only numbers are allowed
+			if (!is_numeric($part[$i])
+				|| ($part[$i] > 255)
+				// non-subnet must be > 0 on last digit
+				|| (!$subnet && ($i === 3) && ($part[$i] < 1))
+				// subnet must be >= 0 on last digit
+				|| ($subnet && ($i === 3) && ($part[$i] < 0))) {
+				return false;
 			}
 		}
 		return true;
@@ -628,9 +626,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$return->add(new htmlResponsiveInputField(_('DNS'), 'dns', $this->getDHCPOption(self::DOMAIN_NAME_SERVERS), 'dns'));
 		// domain search
 		$domainSearchEntries = $this->getDHCPOption(self::DOMAIN_SEARCH);
-		if ($domainSearchEntries === null) {
-			$domainSearchEntries = '';
-		}
+		$domainSearchEntries ??= '';
 		$domainSearchEntries = explode(', ', $domainSearchEntries);
 		$this->attributes['INFO_domain-search'] = $domainSearchEntries;
 		$this->addMultiValueInputTextField($return, 'INFO_domain-search', _('Search domains'));
@@ -816,9 +812,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @param string|null $time time
 	 */
 	private function setDefaultLeaseTime($time): void {
-		if (empty($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = [];
-		}
+		$this->attributes['dhcpStatements'] ??= [];
 		for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 			if (substr($this->attributes['dhcpStatements'][$i], 0, 19) === self::DEFAULT_LEASE_TIME . ' ') {
 				unset($this->attributes['dhcpStatements'][$i]);
@@ -855,9 +849,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @param string $option allow/deny
 	 */
 	private function setUnknownClients($option): void {
-		if (!isset($this->attributes['dhcpStatements'])) {
-			$this->attributes['dhcpStatements'] = [];
-		}
+		$this->attributes['dhcpStatements'] ??= [];
 		for ($i = 0; $i < count($this->attributes['dhcpStatements']); $i++) {
 			$val = $this->attributes['dhcpStatements'][$i];
 			if (strpos($val, self::UNKNOWN_CLIENTS) === (strlen($val) - strlen(self::UNKNOWN_CLIENTS))) {
