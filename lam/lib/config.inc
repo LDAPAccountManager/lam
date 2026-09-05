@@ -95,9 +95,7 @@ function setlanguage(): void {
 	$code = 'en_GB.utf8';
 	$fallbackCode = 'en_GB.UTF-8';
 	$encoding = 'UTF-8';
-	if (!isset($_SESSION['language'])) {
-		$_SESSION['language'] = "en_GB.utf8";
-	}
+	$_SESSION['language'] ??= "en_GB.utf8";
 	$possibleLanguages = getLanguages();
 	foreach ($possibleLanguages as $lang) {
 		if ($lang->code == $_SESSION['language']) {
@@ -1410,16 +1408,14 @@ class LAMConfig {
 			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 			return ($hash === $this->Passwd);
 		}
-		elseif (str_starts_with($this->Passwd, "{CRYPT-SHA512}")) {
+		if (str_starts_with($this->Passwd, "{CRYPT-SHA512}")) {
 			$value = substr($this->Passwd, strlen("{CRYPT-SHA512}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
 			return ($this->hashPassword($password, $salt) === $this->Passwd);
 		}
-		else {
-			// old nonhashed password
-			return ($password === $this->Passwd);
-		}
+		// old nonhashed password
+		return ($password === $this->Passwd);
 	}
 
 	/**
@@ -1433,9 +1429,7 @@ class LAMConfig {
 			$this->Passwd = $this->hashPassword($value, generateSalt(16));
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
@@ -1485,9 +1479,7 @@ class LAMConfig {
 	 * @return bool true if $value has correct format
 	 */
 	public function set_Suffix(string $typeId, ?string $value): bool {
-		if ($value === null) {
-			$value = "";
-		}
+		$value ??= "";
 		$this->typeSettings['suffix_' . $typeId] = $value;
 		return true;
 	}
@@ -1514,9 +1506,7 @@ class LAMConfig {
 			$this->typeSettings['attr_' . $typeId] = $value;
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
@@ -1721,10 +1711,8 @@ class LAMConfig {
 		if ($valid_ips !== []) {
 			return implode(";", $valid_ips);
 		}
-		else {
-			// The array is empty, there was no valid IP
-			return false;
-		}
+		// The array is empty, there was no valid IP
+		return false;
 	}
 
 	/**
@@ -1751,9 +1739,7 @@ class LAMConfig {
 			$this->scriptRights = $chmod;
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
@@ -1850,9 +1836,7 @@ class LAMConfig {
 			}
 			return $modules;
 		}
-		else {
-			return [];
-		}
+		return [];
 	}
 
 	/**
@@ -1882,9 +1866,7 @@ class LAMConfig {
 		if (empty($this->activeTypes)) {
 			return [];
 		}
-		else {
-			return explode(",", $this->activeTypes);
-		}
+		return explode(",", $this->activeTypes);
 	}
 
 	/**
@@ -3341,16 +3323,14 @@ class LAMCfgMain {
 			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 			return ($hash === $this->password);
 		}
-		elseif (str_starts_with($this->password, "{CRYPT-SHA512}")) {
+		if (str_starts_with($this->password, "{CRYPT-SHA512}")) {
 			$value = substr($this->password, strlen("{CRYPT-SHA512}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
 			return ($this->hashPassword($password, $salt) === $this->password);
 		}
-		else {
-			// old nonhashed password
-			return ($password === $this->password);
-		}
+		// old nonhashed password
+		return ($password === $this->password);
 	}
 
 	/**
@@ -3567,9 +3547,7 @@ class LAMCfgMain {
 			if (str_starts_with($line, '-----BEGIN CERTIFICATE-----')) {
 				$pos++;
 			}
-			if (!isset($list[$pos])) {
-				$list[$pos] = '';
-			}
+			$list[$pos] ??= '';
 			$list[$pos] .= $line . "\n";
 		}
 		return $list;

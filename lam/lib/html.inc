@@ -130,9 +130,7 @@ abstract class htmlElement {
 		if ($this->colspan === null) {
 			return '';
 		}
-		else {
-			return 'colspan="' . $this->colspan . '"';
-		}
+		return 'colspan="' . $this->colspan . '"';
 	}
 
 	/**
@@ -144,9 +142,7 @@ abstract class htmlElement {
 		if ($this->rowspan === null) {
 			return '';
 		}
-		else {
-			return 'rowspan="' . $this->rowspan . '"';
-		}
+		return 'rowspan="' . $this->rowspan . '"';
 	}
 
 	/**
@@ -843,9 +839,7 @@ class htmlInputField extends htmlElement {
 		if ($this->obfuscate) {
 			return [$this->fieldName => 'text_obfuscated'];
 		}
-		else {
-			return [$this->fieldName => 'text'];
-		}
+		return [$this->fieldName => 'text'];
 	}
 
 	/**
@@ -1427,9 +1421,7 @@ class htmlSelect extends htmlElement {
 		if ($this->multiSelect) {
 			return [$this->name => 'multiselect'];
 		}
-		else {
-			return [$this->name => 'select'];
-		}
+		return [$this->name => 'select'];
 	}
 
 	/**
