@@ -1096,12 +1096,7 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function get_help(string $id): ?array {
-		if (isset($this->meta['help'][$id])) {
-			return $this->meta['help'][$id];
-		}
-		else {
-			return null;
-		}
+		return $this->meta['help'][$id] ?? null;
 	}
 
 	/**
@@ -2236,9 +2231,7 @@ abstract class baseModule {
 		if ($this->base !== null && isset($_SESSION[$this->base])) {
 			return $_SESSION[$this->base];
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 	/**

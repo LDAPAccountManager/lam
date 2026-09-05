@@ -1051,11 +1051,9 @@ class WebauthnProvider extends BaseProvider {
 			}
 			return true;
 		}
-		else {
-			logNewMessage(LOG_DEBUG, 'Checking WebAuthn response of ' . $userDn);
-			$response = base64_decode($_POST['sig_response']);
-			return $webauthnManager->isValidAuthentication($response, $userDn);
-		}
+		logNewMessage(LOG_DEBUG, 'Checking WebAuthn response of ' . $userDn);
+		$response = base64_decode($_POST['sig_response']);
+		return $webauthnManager->isValidAuthentication($response, $userDn);
 	}
 
 	/**
@@ -1119,19 +1117,19 @@ class TwoFactorProviderService {
 		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
 			return new PrivacyIDEAProvider($this->config);
 		}
-		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
 			return new YubicoProvider($this->config);
 		}
-		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO) {
+		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO) {
 			return new DuoProvider($this->config);
 		}
-		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN) {
+		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN) {
 			return new WebauthnProvider($this->config);
 		}
-		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA) {
+		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA) {
 			return new OktaProvider($this->config);
 		}
-		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID) {
+		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID) {
 			return new OpenIdProvider($this->config);
 		}
 		throw new Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
