@@ -761,7 +761,7 @@ class lamList {
 				exit;
 			}
 			// delete account(s)
-            elseif (isset($_POST['del']) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
+            if (isset($_POST['del']) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
 				// build DN list

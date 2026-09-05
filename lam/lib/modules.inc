@@ -620,10 +620,8 @@ function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$a
 	}
 	$activeModule = $_SESSION['mass_postActions']['remainingModules'][0];
 	// initialize temporary variable
-	if (!isset($_SESSION['mass_postActions'][$activeModule])) {
-		$_SESSION['mass_postActions'][$activeModule] = [];
-	}
-	// let first module do one post action
+	$_SESSION['mass_postActions'][$activeModule] ??= [];
+	// let the first module do one post action
 	$module = moduleCache::getModule($activeModule, $type->getScope());
 	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule], $accounts, $selectedModules, $type);
 	// remove active module from list if already finished
@@ -2685,9 +2683,7 @@ class AccountStatusDetails {
 	 * @return AccountStatusDetails status entry
 	 */
 	public static function newExpired(string $details, string $id, ?string $icon = null): AccountStatusDetails {
-		if ($icon === null) {
-			$icon = 'expired.svg';
-		}
+		$icon ??= 'expired.svg';
 		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->expired = true;
 		return $details;
@@ -2702,9 +2698,7 @@ class AccountStatusDetails {
 	 * @return AccountStatusDetails status entry
 	 */
 	public static function newPartiallyExpired(string $details, string $id, ?string $icon = null): AccountStatusDetails {
-		if ($icon === null) {
-			$icon = 'expired.svg';
-		}
+		$icon ??= 'expired.svg';
 		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->partiallyExpired = true;
 		return $details;
@@ -2719,9 +2713,7 @@ class AccountStatusDetails {
 	 * @return AccountStatusDetails status entry
 	 */
 	public static function newLocked(string $details, string $id, ?string $icon = null): AccountStatusDetails {
-		if ($icon === null) {
-			$icon = 'locked.svg';
-		}
+		$icon ??= 'locked.svg';
 		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->locked = true;
 		return $details;
@@ -2736,9 +2728,7 @@ class AccountStatusDetails {
 	 * @return AccountStatusDetails status entry
 	 */
 	public static function newPartiallyLocked(string $details, string $id, ?string $icon = null): AccountStatusDetails {
-		if ($icon === null) {
-			$icon = 'partiallyLocked.svg';
-		}
+		$icon ??= 'partiallyLocked.svg';
 		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->partiallyLocked = true;
 		return $details;

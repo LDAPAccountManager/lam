@@ -83,9 +83,7 @@ class Importer {
 				if (empty($currentEntry)) {
 					throw new LAMException(_('Invalid data'), htmlspecialchars($line));
 				}
-				else {
-					$currentEntry[count($currentEntry) - 1] .= substr($line, 1);
-				}
+				$currentEntry[count($currentEntry) - 1] .= substr($line, 1);
 			}
 			elseif ($line === '-') {
 				$currentEntry[] = $line;
@@ -139,9 +137,7 @@ class Importer {
 				if ($stopOnError) {
 					return $this->stopImport($data, $e);
 				}
-				else {
-					$data .= Importer::formatMessage('ERROR', $e->getTitle(), $e->getMessage());
-				}
+				$data .= Importer::formatMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
 		}
 		return $this->getStatus($data);
@@ -290,16 +286,16 @@ class Importer {
 				}
 				return new AddEntryTask($dn, $attributes);
 			}
-			elseif ($type === 'modrdn') {
+			if ($type === 'modrdn') {
 				return $this->createModRdnTask($dn, $entry);
 			}
-			elseif ($type === 'delete') {
+			if ($type === 'delete') {
 				if (!empty($entry)) {
 					throw new LAMException(_('Invalid data'), htmlspecialchars($dn));
 				}
 				return new DeleteEntryTask($dn);
 			}
-			elseif ($type !== 'modify') {
+			if ($type !== 'modify') {
 				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changetype: ' . htmlspecialchars($type));
 			}
 			$subtasks = [];
@@ -368,10 +364,10 @@ class Importer {
 		if ($type === 'add') {
 			return new AddAttributesTask($dn, $attributes);
 		}
-		elseif ($type === 'delete') {
+		if ($type === 'delete') {
 			return new DeleteAttributesTask($dn, $attributeName, $attributes);
 		}
-		elseif ($type === 'replace') {
+		if ($type === 'replace') {
 			return new ReplaceAttributesTask($dn, $attributes);
 		}
 		throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - ' . htmlspecialchars($type));
