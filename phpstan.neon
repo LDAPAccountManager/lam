@@ -47,7 +47,6 @@ parameters:
 	ignoreErrors:
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Offset .preferred_username. does not exist on.*#'
-		- '#Strict comparison using !== between non-empty-list.*will always evaluate to true.*#'
 		- '#.*class LAM\\JOB\\.* not found.*#'
 		- '#.*class LAM\\ENV\\.* not found.*#'
 		- '#.*class LAM\\DB\\CronDatabase.* not found.*#'
