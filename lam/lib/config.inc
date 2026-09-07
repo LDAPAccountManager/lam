@@ -1707,12 +1707,7 @@ class LAMConfig {
 				return false;
 			}
 		}
-		// Check that the array is not empty
-		if ($valid_ips !== []) {
-			return implode(";", $valid_ips);
-		}
-		// The array is empty, there was no valid IP
-		return false;
+		return implode(";", $valid_ips);
 	}
 
 	/**
