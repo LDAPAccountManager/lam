@@ -11,6 +11,7 @@ use GuzzleHttp\Handler\CurlShareHandleState;
 use GuzzleHttp\Handler\CurlVersion;
 use GuzzleHttp\Handler\Proxy;
 use GuzzleHttp\Handler\StreamHandler;
+use GuzzleHttp\Handler\StreamTlsSessionCache;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -75,21 +76,35 @@ final class Utils
         $sharingRequired = self::isTransportSharingRequired($sharingMode);
         $connectionCapsRequired = self::hasConnectionCapOptions($handlerOptions);
 
-        if ($connectionCapsRequired && $sharingMode === TransportSharing::PERSISTENT_REQUIRE) {
-            throw new InvalidArgumentException('The "max_host_connections" and "max_total_connections" options cannot be combined with required persistent transport sharing because libcurl does not reliably apply connection caps to shared connection pools.');
+        $sharedPoolCapsSupported = CurlVersion::supportsSharedPoolConnectionCaps();
+
+        if ($connectionCapsRequired && !$sharedPoolCapsSupported && $sharingMode === TransportSharing::PERSISTENT_REQUIRE) {
+            throw new InvalidArgumentException(\sprintf('The "max_host_connections" and "max_total_connections" options cannot be combined with required persistent transport sharing because applying connection caps to shared connection pools requires libcurl %s or higher.', CurlVersion::SHARED_POOL_CONNECTION_CAP_VERSION));
         }
 
-        if ($connectionCapsRequired && $sharingMode === TransportSharing::PERSISTENT_PREFER) {
-            // libcurl does not apply cURL multi connection caps to transfers
-            // using a shared connection pool, so the best honorable offer for
-            // preferred persistent sharing is a handler-lifetime share.
+        if ($connectionCapsRequired && !$sharedPoolCapsSupported && $sharingMode === TransportSharing::PERSISTENT_PREFER) {
+            // libcurl below 8.22.0 does not apply cURL multi connection caps to
+            // transfers using a shared connection pool (curl #22265), so the
+            // best honorable offer for preferred persistent sharing is a
+            // handler-lifetime share.
             $sharingMode = TransportSharing::HANDLER_PREFER;
         }
 
         $handler = self::createCurlHandler($sharingMode, $handlerOptions);
 
+        // Handler-scoped required sharing can also be satisfied by the stream
+        // handler's TLS session resumption (PHP 8.6+); persistent required
+        // sharing is cURL-only.
+        $streamCanShareSessions = (bool) \ini_get('allow_url_fopen') && StreamTlsSessionCache::isSupported();
+
         if ($sharingRequired && $handler === null) {
-            throw new \RuntimeException('Required transport sharing requires the PHP cURL extension, curl_exec() or curl_multi_exec(), and a supported libcurl version with SSL support.');
+            if ($sharingMode === TransportSharing::PERSISTENT_REQUIRE) {
+                throw new \RuntimeException('Required persistent transport sharing requires the PHP cURL extension, curl_exec() or curl_multi_exec(), and a supported libcurl version with SSL support.');
+            }
+
+            if (!$streamCanShareSessions) {
+                throw new \RuntimeException('Required transport sharing requires the PHP cURL extension (curl_exec()/curl_multi_exec()) with a supported libcurl version and SSL support, or PHP 8.6+ with the OpenSSL TLS session API and the allow_url_fopen ini setting.');
+            }
         }
 
         if (\ini_get('allow_url_fopen')) {
@@ -128,6 +143,13 @@ final class Utils
     private static function createCurlHandler(string $sharingMode, array $handlerOptions): ?callable
     {
         if (!CurlVersion::supportsCurlHandler()) {
+            return null;
+        }
+
+        if ($sharingMode === TransportSharing::HANDLER_REQUIRE && !CurlShareHandleState::supportsHandlerRequireShare()) {
+            // Required handler sharing can also be satisfied by the stream
+            // handler's TLS session resumption, so a cURL install that cannot
+            // share is skipped instead of failing handler selection.
             return null;
         }
 

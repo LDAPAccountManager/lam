@@ -3,6 +3,53 @@
 Please refer to [UPGRADING](UPGRADING.md) guide for upgrading to a major version.
 
 
+## 8.2.0 - 2026-09-06
+
+### Changed
+
+- Allow connection caps to be combined with persistent transport sharing on libcurl 8.22.0+
+
+
+## 8.1.0 - 2026-08-24
+
+### Added
+
+- Add PHP 8.6+ stream TLS session sharing, while persistent sharing remains cURL-only
+- Add support for PHP 8.6
+- Add in-transfer resends of seekable streamed uploads when PHP exposes `CURLOPT_SEEKFUNCTION`
+
+### Changed
+
+- Adjusted `guzzlehttp/promises` version constraint to `^3.0.2`
+- Adjusted `guzzlehttp/psr7` version constraint to `^3.1`
+- Classify stream handler transport failures using PHP 8.6+ structured stream error codes
+- Hide URI credentials, queries, and fragments in automatic exception messages
+- Match `no_proxy` rules against IPv4 hosts written in the shorthand a transport reads as an address
+- Hold the cURL easy handle out of the reuse pool until a silent retry has been dispatched
+- Treat a deferred resolved with a pending retry promise as progress when waiting on cURL transfers
+
+
+## 8.0.3 - 2026-08-24
+
+### Changed
+
+- Adjusted `guzzlehttp/psr7` version constraint to `^3.0.1`
+
+
+## 8.0.2 - 2026-08-05
+
+### Changed
+
+- Adjusted `guzzlehttp/promises` version constraint to `^3.0.1`
+
+### Fixed
+
+- Fail a cURL multi handler wait with an attributable error when the transfer is no longer tracked
+- Fix `StreamHandler` resolving numeric IPv4 hosts differently from cURL handlers on macOS and Windows
+- Fix `StreamHandler` TLS peer names and proxy authorities for numeric IPv4 hosts on all platforms
+- Settle a cURL multi handler transfer displaced by a request reusing its native handle ID
+
+
 ## 8.0.1 - 2026-07-26
 
 ### Security

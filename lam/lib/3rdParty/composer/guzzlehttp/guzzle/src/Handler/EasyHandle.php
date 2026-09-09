@@ -53,6 +53,12 @@ final class EasyHandle
     public bool $usesPipewait = false;
 
     /**
+     * @var bool Whether processMessages() settled the deferred promise, which
+     *           a rewind retry settles with a still-pending promise
+     */
+    public bool $deferredSettled = false;
+
+    /**
      * @var ResponseInterface|null Received response (if any)
      */
     public ?ResponseInterface $response = null;
@@ -107,6 +113,16 @@ final class EasyHandle
      * @var TimeoutException|null Exception during request body read timeout.
      */
     public ?TimeoutException $bodyReadTimeoutException = null;
+
+    /**
+     * @var TimeoutException|null Exception during request body rewind timeout.
+     */
+    public ?TimeoutException $bodyRewindTimeoutException = null;
+
+    /**
+     * @var \Throwable|null Exception during request body rewind.
+     */
+    public ?\Throwable $bodyRewindException = null;
 
     /**
      * @var \Throwable|null Exception during request body read.

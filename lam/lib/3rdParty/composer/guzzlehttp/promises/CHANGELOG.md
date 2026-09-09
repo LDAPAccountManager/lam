@@ -1,6 +1,26 @@
 # CHANGELOG
 
 
+## 3.0.2 - 2026-08-24
+
+### Added
+
+- Added support for PHP 8.6
+
+
+## 3.0.1 - 2026-08-05
+
+### Changed
+
+- Changed the default `TReason` of `FulfilledPromise` and `Create::promiseFor()` to `never`
+- Changed the default `TValue` of `RejectedPromise` and `Create::rejectionFor()` to `never`
+
+### Fixed
+
+- Fixed `EachPromise` abandoning its aggregate when the pending window drains unsettled
+- Fixed `EachPromise` admitting new work after its aggregate has settled
+
+
 ## 3.0.0 - 2026-07-20
 
 ### Added

@@ -16,8 +16,14 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionAccessAnalyzer(array $args = [])
  * @method \Aws\Account\AccountClient createAccount(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAccount(array $args = [])
+ * @method \Aws\AccountAccess\AccountAccessClient createAccountAccess(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionAccountAccess(array $args = [])
  * @method \Aws\Acm\AcmClient createAcm(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAcm(array $args = [])
+ * @method \Aws\AgentRegistry\AgentRegistryClient createAgentRegistry(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionAgentRegistry(array $args = [])
+ * @method \Aws\AgentRegistryControl\AgentRegistryControlClient createAgentRegistryControl(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionAgentRegistryControl(array $args = [])
  * @method \Aws\Amplify\AmplifyClient createAmplify(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAmplify(array $args = [])
  * @method \Aws\AmplifyBackend\AmplifyBackendClient createAmplifyBackend(array $args = [])
@@ -362,6 +368,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionHealth(array $args = [])
  * @method \Aws\HealthLake\HealthLakeClient createHealthLake(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionHealthLake(array $args = [])
+ * @method \Aws\IAMToolbox\IAMToolboxClient createIAMToolbox(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionIAMToolbox(array $args = [])
  * @method \Aws\IVS\IVSClient createIVS(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIVS(array $args = [])
  * @method \Aws\IVSRealTime\IVSRealTimeClient createIVSRealTime(array $args = [])
@@ -616,6 +624,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionPolly(array $args = [])
  * @method \Aws\Pricing\PricingClient createPricing(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPricing(array $args = [])
+ * @method \Aws\PricingPlanManager\PricingPlanManagerClient createPricingPlanManager(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionPricingPlanManager(array $args = [])
  * @method \Aws\PrometheusService\PrometheusServiceClient createPrometheusService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPrometheusService(array $args = [])
  * @method \Aws\Proton\ProtonClient createProton(array $args = [])
@@ -857,7 +867,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.389.2';
+    const VERSION = '3.394.10';
 
     /** @var array Arguments for creating clients */
     private $args;
@@ -876,7 +886,10 @@ class Sdk
         $this->args = $args;
 
         if (!isset($args['handler']) && !isset($args['http_handler'])) {
-            $this->args['http_handler'] = default_http_handler();
+            $this->args['http_handler'] = default_http_handler(
+                $args['transport_sharing'] ?? null
+            );
+            unset($this->args['transport_sharing']);
         }
     }
 
