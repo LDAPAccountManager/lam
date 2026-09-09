@@ -38,7 +38,7 @@ existing code, etc.), `y` is incremented.
 
 **When a breaking change is introduced, a new `0.x` version cycle is always started.**
 
-It is therefore safe to lock your project to a given release cycle, such as `^0.17`.
+It is therefore safe to lock your project to a given release cycle, such as `^0.20`.
 
 If you need to upgrade to a newer release cycle, check the [release history](https://github.com/brick/math/releases)
 for a list of changes introduced by each further `0.x.0` version.
@@ -47,11 +47,11 @@ for a list of changes introduced by each further `0.x.0` version.
 
 This library provides the following public classes in the `Brick\Math` namespace:
 
-- [BigNumber](https://github.com/brick/math/blob/0.17.1/src/BigNumber.php): base class for `BigInteger`, `BigDecimal` and `BigRational`
-- [BigInteger](https://github.com/brick/math/blob/0.17.1/src/BigInteger.php): represents an arbitrary-precision integer number.
-- [BigDecimal](https://github.com/brick/math/blob/0.17.1/src/BigDecimal.php): represents an arbitrary-precision decimal number.
-- [BigRational](https://github.com/brick/math/blob/0.17.1/src/BigRational.php): represents an arbitrary-precision rational number (fraction), always reduced to lowest terms.
-- [RoundingMode](https://github.com/brick/math/blob/0.17.1/src/RoundingMode.php): enum representing all available rounding modes.
+- [BigNumber](https://github.com/brick/math/blob/0.20.0/src/BigNumber.php): base class for `BigInteger`, `BigDecimal` and `BigRational`
+- [BigInteger](https://github.com/brick/math/blob/0.20.0/src/BigInteger.php): represents an arbitrary-precision integer number.
+- [BigDecimal](https://github.com/brick/math/blob/0.20.0/src/BigDecimal.php): represents an arbitrary-precision decimal number.
+- [BigRational](https://github.com/brick/math/blob/0.20.0/src/BigRational.php): represents an arbitrary-precision rational number (fraction), always reduced to lowest terms.
+- [RoundingMode](https://github.com/brick/math/blob/0.20.0/src/RoundingMode.php): enum representing all available rounding modes.
 
 And [exceptions](#exceptions) in the `Brick\Math\Exception` namespace.
 
@@ -104,6 +104,40 @@ BigRational::of('1.15'); // 23/20 (reduced to lowest terms)
 > BigDecimal::fromFloatShortest(0.1); // 0.1
 > ```
 
+#### Parsing untrusted input
+
+`of()` places no hard limits on its input: a string with millions of digits is accepted as is, and a number in
+exponential notation is expanded to its full length, so a string as short as `1e1000000000` yields a number with
+a billion digits.
+
+If your input comes from an untrusted source, such as an HTTP request, use `parse()` instead, which requires you
+to specify the allowed syntax and a maximum number of digits:
+
+```php
+use Brick\Math\NumberSyntax;
+
+BigDecimal::parse($input, allowedSyntax: NumberSyntax::DECIMAL, maxDigits: 20);
+```
+
+The `$allowedSyntax` parameter restricts the accepted notations. Plain integers such as `123` are always accepted,
+and each `NumberSyntax` case (`DecimalPoint`, `Exponent`, `Fraction`) allows one additional feature. The enum also
+provides constants for the most common combinations:
+
+- `NumberSyntax::INTEGER` — integers only: `123`
+- `NumberSyntax::DECIMAL` — integers and decimal numbers: `123`, `123.45`; typical for monetary input
+- `NumberSyntax::SCIENTIFIC` — integers, decimal numbers and exponents: `123`, `123.45`, `1.5e-3`; accepts every JSON number
+- `NumberSyntax::RATIONAL` — integers and fractions: `123`, `22/7`
+- `NumberSyntax::ALL` — the full syntax accepted by `of()`: `123`, `123.45`, `1.5e-3`, `22/7`
+
+The `$maxDigits` parameter limits the number of digits, counted both as written in the input and in the resulting number,
+so that a value such as `1e1000000000` is rejected before it is ever expanded:
+
+```php
+BigDecimal::parse('123.45', allowedSyntax: NumberSyntax::DECIMAL, maxDigits: 20); // 123.45
+BigDecimal::parse('1.2e3', allowedSyntax: NumberSyntax::DECIMAL, maxDigits: 20); // NumberFormatException (exponent not allowed)
+BigDecimal::parse('1e1000000000', allowedSyntax: NumberSyntax::SCIENTIFIC, maxDigits: 20); // NumberFormatException (too many digits)
+```
+
 #### Immutability & chaining
 
 The `BigInteger`, `BigDecimal` and `BigRational` classes are immutable: their value never changes,
@@ -148,6 +182,9 @@ echo BigInteger::of(2)->multipliedBy(BigDecimal::of('2.5')); // RoundingNecessar
 echo BigDecimal::of(2.5)->multipliedBy(BigInteger::of(2)); // 5.0
 ```
 
+These parameters are converted with `of()`, so the same rules apply: for untrusted strings, use
+[`parse()`](#parsing-untrusted-input) first, and pass the resulting number to the method.
+
 #### Division & rounding
 
 ##### BigInteger
@@ -160,7 +197,7 @@ echo BigInteger::of(999)->dividedBy(3); // 333
 echo BigInteger::of(1000)->dividedBy(3); // RoundingNecessaryException
 ```
 
-You can pass an optional [rounding mode](https://github.com/brick/math/blob/0.17.1/src/RoundingMode.php) to round the result, if necessary:
+You can pass an optional [rounding mode](https://github.com/brick/math/blob/0.20.0/src/RoundingMode.php) to round the result, if necessary:
 
 ```php
 echo BigInteger::of(1000)->dividedBy(3, RoundingMode::Down); // 333
@@ -183,7 +220,7 @@ You can even get both at the same time:
 ##### BigDecimal
 
 Dividing a `BigDecimal` always requires a scale to be specified. If the exact result of the division does not fit in
-the given scale, a [rounding mode](https://github.com/brick/math/blob/0.17.1/src/RoundingMode.php) must be provided.
+the given scale, a [rounding mode](https://github.com/brick/math/blob/0.20.0/src/RoundingMode.php) must be provided.
 
 ```php
 echo BigDecimal::of(1)->dividedBy('8', 3); // 0.125
@@ -248,6 +285,8 @@ If you need more granular control over the exceptions thrown, you can catch the 
 - `NegativeNumberException`
 - `NoInverseException`
 - `NumberFormatException`
+- `PlatformException`
+- `RandomSourceException`
 - `RoundingNecessaryException`
 
 #### Serialization

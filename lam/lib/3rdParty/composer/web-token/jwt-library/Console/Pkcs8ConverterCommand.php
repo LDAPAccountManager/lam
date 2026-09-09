@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Jose\Component\Core\JWK;
 use Jose\Component\Core\Util\ECKey;
 use Jose\Component\Core\Util\JsonConverter;
+use Jose\Component\Core\Util\OKPKey;
 use Jose\Component\Core\Util\RSAKey;
 use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -17,14 +18,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 use function is_array;
 use function is_string;
 
-#[AsCommand(name: 'key:convert:pkcs1', description: 'Converts a RSA or EC key into PKCS#1 key.')]
-final class PemConverterCommand extends ObjectOutputCommand
+#[AsCommand(name: 'key:convert:pkcs8', description: 'Converts a RSA, EC or OKP key into PKCS#8 key.')]
+final class Pkcs8ConverterCommand extends ObjectOutputCommand
 {
     #[Override]
     protected function configure(): void
     {
         parent::configure();
-        $this->addArgument('jwk', InputArgument::REQUIRED, 'The key');
+        $this
+            ->setHelp(
+                'This command converts a RSA, EC or OKP key into a PKCS#8 key. As PKCS#8 only covers private keys, public keys are converted into a SubjectPublicKeyInfo structure.'
+            )
+            ->addArgument('jwk', InputArgument::REQUIRED, 'The key');
     }
 
     #[Override]
@@ -42,8 +47,9 @@ final class PemConverterCommand extends ObjectOutputCommand
 
         $pem = match ($key->get('kty')) {
             'RSA' => RSAKey::createFromJWK($key)->toPEM(),
-            'EC' => ECKey::convertToPEM($key),
-            default => throw new InvalidArgumentException('Not a RSA or EC key.'),
+            'EC' => ECKey::convertToPKCS8PEM($key),
+            'OKP' => OKPKey::convertToPKCS8PEM($key),
+            default => throw new InvalidArgumentException('Not a RSA, EC or OKP key.'),
         };
         $output->write($pem);
 

@@ -2,11 +2,78 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.20.0](https://github.com/brick/math/releases/tag/0.20.0) - 2026-08-28
+
+💥 **Breaking changes**
+
+- Deprecated exception class `UnsupportedPlatformException` has been removed, catch `PlatformException` instead
+
+The following breaking change only affects you if you specifically catch `DivisionByZeroException` around calls to `of()` or to any method accepting strings:
+
+- `of()` now throws `NumberFormatException` instead of `DivisionByZeroException` when the string is a fraction with a denominator of zero, such as `'2/0'`
+
+✨ **New features**
+
+- New methods: `parse()` and `parseNullable()` safely parse untrusted input, by restricting the allowed syntax and limiting the number of digits
+- New enum: `NumberSyntax` lists the syntax features that `parse()` can accept, with constants for the most common combinations
+
+🐛 **Bug fixes**
+
+- `of()` no longer throws `PlatformException` on malformed input with many digits, crafted to trigger heavy backtracking in its parser; such input now throws `NumberFormatException` as documented
+
+👌 **Improvements**
+
+- `NumberFormatException` messages now escape control and non-ASCII characters, and truncate values longer than 40 bytes, instead of copying the raw input into the message
+
+## [0.19.1](https://github.com/brick/math/releases/tag/0.19.1) - 2026-08-08
+
+✨ **New features**
+
+- New exception class: `PlatformException` (replaces `UnsupportedPlatformException`)
+- `PlatformException` is now thrown when `preg_match()` fails due to improper PHP configuration
+- `PlatformException` is now thrown when `PHP_INT_SIZE` is an unsupported value
+
+🗑️ **Deprecations**
+
+- Exception class `UnsupportedPlatformException` is deprecated; catch `PlatformException` instead
+
+## [0.19.0](https://github.com/brick/math/releases/tag/0.19.0) - 2026-07-30
+
+✨ **New features**
+
+- New rounding mode: `RoundingMode::HalfOdd`
+- New method: `RoundingMode::fromNativeRoundingMode()` converts from a native PHP `RoundingMode` enum (PHP 8.4+)
+
+## [0.18.0](https://github.com/brick/math/releases/tag/0.18.0) - 2026-06-14
+
+💥 **Breaking changes**
+
+The following breaking change only affects you if you're using named arguments:
+
+- `BigInteger::fromBytes()` now uses `$bytes` as the parameter name
+
+🐛 **Bug fixes**
+
+- `of()` no longer accepts a trailing newline (`\n`) in the input string; such input now throws `NumberFormatException`
+- `of()` now consistently throws `NumberFormatException` for exponents too large to process, instead of `IntegerOverflowException` in some cases
+- `BigInteger::fromBase()` now reports the invalid character with its original case in the `NumberFormatException` message, instead of lower-casing it
+
+⚡️ **Performance improvements**
+
+- `BigInteger::gcd()` no longer exhausts memory on large inputs when the GMP extension is not installed
+- `BigInteger::modInverse()` no longer exhausts memory on large inputs, and is faster when the GMP extension is not installed
+
+👌 **Static analysis improvements**
+
+- Narrowed parameter and return types with static analysis annotations:
+  - `nthRoot()`'s `$n` is now `positive-int`
+  - `BigInteger::toBase()`, `toArbitraryBase()`, `toBytes()` and `BigRational::toRepeatingDecimalString()` now return `non-empty-string`
+
 ## [0.17.2](https://github.com/brick/math/releases/tag/0.17.2) - 2026-05-25
 
 ✨ **New features**
 
-- New methods: `BigInteger::nthRoot()` and `BigDecimal::nthRoot()` compute the nth root of a number.
+- New methods: `BigInteger::nthRoot()` and `BigDecimal::nthRoot()` compute the nth root of a number (#113 by @Pablo1Gustavo)
 
 ## [0.17.1](https://github.com/brick/math/releases/tag/0.17.1) - 2026-04-19
 

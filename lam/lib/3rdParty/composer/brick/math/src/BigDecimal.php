@@ -8,8 +8,8 @@ use Brick\Math\Exception\DivisionByZeroException;
 use Brick\Math\Exception\InvalidArgumentException;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NegativeNumberException;
+use Brick\Math\Exception\PlatformException;
 use Brick\Math\Exception\RoundingNecessaryException;
-use Brick\Math\Exception\UnsupportedPlatformException;
 use Brick\Math\Internal\CalculatorRegistry;
 use Brick\Math\Internal\DecimalHelper;
 use Brick\Math\Internal\Safe;
@@ -168,8 +168,8 @@ final readonly class BigDecimal extends BigNumber
      *
      * Note that BigDecimal has no concept of negative zero, so `-0.0` and `0.0` both convert to zero.
      *
-     * @throws InvalidArgumentException     If the value is NaN or infinite.
-     * @throws UnsupportedPlatformException If the platform uses a non-IEEE-754 double format.
+     * @throws InvalidArgumentException If the value is NaN or infinite.
+     * @throws PlatformException        If the platform uses a non-IEEE-754 double format.
      *
      * @pure
      */
@@ -183,7 +183,7 @@ final readonly class BigDecimal extends BigNumber
         }
 
         if (pack('E', 1.0) !== "\x3f\xf0\x00\x00\x00\x00\x00\x00") {
-            throw UnsupportedPlatformException::unsupportedFloatFormat();
+            throw PlatformException::unsupportedFloatFormat();
         }
 
         if (PHP_INT_SIZE >= 8) {
@@ -687,8 +687,14 @@ final readonly class BigDecimal extends BigNumber
                 $sqrt = $calculator->add($sqrt, '1');
             }
 
-            // Irrational sqrt cannot land exactly on a midpoint; treat tie-to-down modes as HalfUp.
-            elseif (in_array($roundingMode, [RoundingMode::HalfDown, RoundingMode::HalfEven, RoundingMode::HalfFloor], true)) {
+            // Irrational sqrt cannot land exactly on a midpoint; the intermediate approximation can,
+            // so rewrite every tie-sensitive mode that could round down on such a phantom tie to HalfUp.
+            elseif (in_array($roundingMode, [
+                RoundingMode::HalfDown,
+                RoundingMode::HalfFloor,
+                RoundingMode::HalfEven,
+                RoundingMode::HalfOdd,
+            ], true)) {
                 $roundingMode = RoundingMode::HalfUp;
             }
         }
@@ -708,7 +714,7 @@ final readonly class BigDecimal extends BigNumber
      * For odd $n, the operation is defined for negative inputs: the sign is preserved and the
      * magnitude of the root is |$this|^(1/$n).
      *
-     * @param int              $n            The root degree. Must be a strictly positive integer.
+     * @param positive-int     $n            The root degree. Must be a strictly positive integer.
      * @param non-negative-int $scale        The target scale. Must be non-negative.
      * @param RoundingMode     $roundingMode An optional rounding mode, defaults to Unnecessary.
      *
@@ -721,7 +727,7 @@ final readonly class BigDecimal extends BigNumber
      */
     public function nthRoot(int $n, int $scale, RoundingMode $roundingMode = RoundingMode::Unnecessary): BigDecimal
     {
-        if ($n < 1) {
+        if ($n < 1) { // @phpstan-ignore smaller.alwaysFalse
             throw InvalidArgumentException::nonPositiveNthRootDegree();
         }
 
@@ -796,9 +802,10 @@ final readonly class BigDecimal extends BigNumber
             // in magnitude) true value for both positive and negative inputs.
             elseif (in_array($roundingMode, [
                 RoundingMode::HalfDown,
-                RoundingMode::HalfEven,
-                RoundingMode::HalfFloor,
                 RoundingMode::HalfCeiling,
+                RoundingMode::HalfFloor,
+                RoundingMode::HalfEven,
+                RoundingMode::HalfOdd,
             ], true)) {
                 $roundingMode = RoundingMode::HalfUp;
             }
@@ -1160,6 +1167,13 @@ final readonly class BigDecimal extends BigNumber
     protected static function from(BigNumber $number): static
     {
         return $number->toBigDecimal();
+    }
+
+    #[Override]
+    protected function digitCount(): int
+    {
+        // At least one integral digit is written: 0.001 counts 4 digits.
+        return max($this->getPrecision(), $this->scale + 1);
     }
 
     /**

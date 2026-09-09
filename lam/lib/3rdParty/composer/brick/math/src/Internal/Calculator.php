@@ -232,15 +232,11 @@ abstract readonly class Calculator
      */
     public function gcd(string $a, string $b): string
     {
-        if ($a === '0') {
-            return $this->abs($b);
+        while ($b !== '0') {
+            [$a, $b] = [$b, $this->divR($a, $b)];
         }
 
-        if ($b === '0') {
-            return $this->abs($a);
-        }
-
-        return $this->gcd($b, $this->divR($a, $b));
+        return $this->abs($a);
     }
 
     /**
@@ -483,64 +479,30 @@ abstract readonly class Calculator
             return $this->cmp($r, $b);
         };
 
-        $increment = false;
+        $lastDigitIsEven = (int) $quotient[-1] % 2 === 0;
 
-        switch ($roundingMode) {
-            case RoundingMode::Unnecessary:
-                if ($hasDiscardedFraction) {
-                    return null;
-                }
+        $increment = match ($roundingMode) {
+            RoundingMode::Unnecessary => $hasDiscardedFraction ? null : false,
+            RoundingMode::Up => $hasDiscardedFraction,
+            RoundingMode::Down => false,
+            RoundingMode::Ceiling => $hasDiscardedFraction && $isPositiveOrZero,
+            RoundingMode::Floor => $hasDiscardedFraction && ! $isPositiveOrZero,
+            RoundingMode::HalfUp => $discardedFractionSign() >= 0,
+            RoundingMode::HalfDown => $discardedFractionSign() > 0,
+            RoundingMode::HalfCeiling => $isPositiveOrZero ? $discardedFractionSign() >= 0 : $discardedFractionSign() > 0,
+            RoundingMode::HalfFloor => $isPositiveOrZero ? $discardedFractionSign() > 0 : $discardedFractionSign() >= 0,
+            RoundingMode::HalfEven => $lastDigitIsEven ? $discardedFractionSign() > 0 : $discardedFractionSign() >= 0,
+            RoundingMode::HalfOdd => $lastDigitIsEven ? $discardedFractionSign() >= 0 : $discardedFractionSign() > 0,
+        };
 
-                break;
-
-            case RoundingMode::Up:
-                $increment = $hasDiscardedFraction;
-
-                break;
-
-            case RoundingMode::Down:
-                break;
-
-            case RoundingMode::Ceiling:
-                $increment = $hasDiscardedFraction && $isPositiveOrZero;
-
-                break;
-
-            case RoundingMode::Floor:
-                $increment = $hasDiscardedFraction && ! $isPositiveOrZero;
-
-                break;
-
-            case RoundingMode::HalfUp:
-                $increment = $discardedFractionSign() >= 0;
-
-                break;
-
-            case RoundingMode::HalfDown:
-                $increment = $discardedFractionSign() > 0;
-
-                break;
-
-            case RoundingMode::HalfCeiling:
-                $increment = $isPositiveOrZero ? $discardedFractionSign() >= 0 : $discardedFractionSign() > 0;
-
-                break;
-
-            case RoundingMode::HalfFloor:
-                $increment = $isPositiveOrZero ? $discardedFractionSign() > 0 : $discardedFractionSign() >= 0;
-
-                break;
-
-            case RoundingMode::HalfEven:
-                $lastDigit = (int) $quotient[-1];
-                $lastDigitIsEven = ($lastDigit % 2 === 0);
-                $increment = $lastDigitIsEven ? $discardedFractionSign() > 0 : $discardedFractionSign() >= 0;
-
-                break;
+        if ($increment === null) {
+            return null;
         }
 
         if ($increment) {
-            return $this->add($quotient, $isPositiveOrZero ? '1' : '-1');
+            return $isPositiveOrZero
+                ? $this->add($quotient, '1')
+                : $this->sub($quotient, '1');
         }
 
         return $quotient;
@@ -604,22 +566,27 @@ abstract readonly class Calculator
     }
 
     /**
-     * @return array{string, string, string} GCD, X, Y
+     * @param string $a Must be non-negative.
+     * @param string $b Must be non-negative.
+     *
+     * @return array{string, string} GCD, X
      *
      * @pure
      */
     private function gcdExtended(string $a, string $b): array
     {
-        if ($a === '0') {
-            return [$b, '0', '1'];
+        // Iterative extended Euclidean algorithm; recursion would exhaust memory on large inputs.
+        [$r0, $r1] = [$a, $b];
+        [$x0, $x1] = ['1', '0'];
+
+        while ($r1 !== '0') {
+            [$q, $r] = $this->divQR($r0, $r1);
+
+            [$r0, $r1] = [$r1, $r];
+            [$x0, $x1] = [$x1, $this->sub($x0, $this->mul($q, $x1))];
         }
 
-        [$gcd, $x1, $y1] = $this->gcdExtended($this->mod($b, $a), $a);
-
-        $x = $this->sub($y1, $this->mul($this->divQ($b, $a), $x1));
-        $y = $x1;
-
-        return [$gcd, $x, $y];
+        return [$r0, $x0];
     }
 
     /**

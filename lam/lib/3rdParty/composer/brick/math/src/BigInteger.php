@@ -11,6 +11,7 @@ use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NegativeNumberException;
 use Brick\Math\Exception\NoInverseException;
 use Brick\Math\Exception\NumberFormatException;
+use Brick\Math\Exception\PlatformException;
 use Brick\Math\Exception\RandomSourceException;
 use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Math\Internal\Calculator;
@@ -37,7 +38,6 @@ use function preg_quote;
 use function random_bytes;
 use function str_repeat;
 use function strlen;
-use function strtolower;
 use function substr;
 
 use const FILTER_VALIDATE_INT;
@@ -126,9 +126,15 @@ final readonly class BigInteger extends BigNumber
             return new BigInteger($sign . '1');
         }
 
-        $pattern = '/[^' . substr(Calculator::ALPHABET, 0, $base) . ']/';
+        $pattern = '/[^' . substr(Calculator::ALPHABET, 0, $base) . ']/i';
 
-        if (preg_match($pattern, strtolower($number), $matches) === 1) {
+        $result = preg_match($pattern, $number, $matches);
+
+        if ($result === false) {
+            throw PlatformException::pcreFailure();
+        }
+
+        if ($result === 1) {
             throw NumberFormatException::charNotValidInBase($matches[0], $base);
         }
 
@@ -176,7 +182,13 @@ final readonly class BigInteger extends BigNumber
 
         $pattern = '/[^' . preg_quote($alphabet, '/') . ']/';
 
-        if (preg_match($pattern, $number, $matches) === 1) {
+        $result = preg_match($pattern, $number, $matches);
+
+        if ($result === false) {
+            throw PlatformException::pcreFailure();
+        }
+
+        if ($result === 1) {
             throw NumberFormatException::charNotInAlphabet($matches[0]);
         }
 
@@ -196,7 +208,7 @@ final readonly class BigInteger extends BigNumber
      *
      * This method can be used to retrieve a number exported by `toBytes()`, as long as the `$signed` flags match.
      *
-     * @param non-empty-string $value  The byte string.
+     * @param non-empty-string $bytes  The byte string.
      * @param bool             $signed Whether to interpret as a signed number in two's-complement representation with a leading
      *                                 sign bit.
      *
@@ -204,23 +216,23 @@ final readonly class BigInteger extends BigNumber
      *
      * @pure
      */
-    public static function fromBytes(string $value, bool $signed = true): BigInteger
+    public static function fromBytes(string $bytes, bool $signed = true): BigInteger
     {
-        if ($value === '') { // @phpstan-ignore identical.alwaysFalse
+        if ($bytes === '') { // @phpstan-ignore identical.alwaysFalse
             throw NumberFormatException::emptyByteString();
         }
 
         $twosComplement = false;
 
         if ($signed) {
-            $x = ord($value[0]);
+            $x = ord($bytes[0]);
 
             if (($twosComplement = ($x >= 0x80))) {
-                $value = ~$value;
+                $bytes = ~$bytes;
             }
         }
 
-        $number = self::fromBase(bin2hex($value), 16);
+        $number = self::fromBase(bin2hex($bytes), 16);
 
         if ($twosComplement) {
             return $number->plus(1)->negated();
@@ -893,6 +905,7 @@ final readonly class BigInteger extends BigNumber
         //   - HalfUp, HalfCeiling => $cmp >= 0
         //   - HalfDown, HalfFloor => $cmp > 0
         //   - HalfEven => $cmp > 0 || ($cmp === 0 && $sqrt % 2 === 1)
+        //   - HalfOdd => $cmp > 0 || ($cmp === 0 && $sqrt % 2 === 0)
         // But 2*remainder is always even and 2*s + 1 is always odd, so $cmp is never zero.
         // Therefore, all Half* modes simplify to:
         if ($cmp > 0) {
@@ -908,7 +921,7 @@ final readonly class BigInteger extends BigNumber
      * For odd $n, the operation is defined for negative inputs: the sign is preserved and the
      * magnitude of the root is |$this|^(1/$n).
      *
-     * @param int          $n            The root degree. Must be a strictly positive integer.
+     * @param positive-int $n            The root degree. Must be a strictly positive integer.
      * @param RoundingMode $roundingMode An optional rounding mode, defaults to Unnecessary.
      *
      * @throws InvalidArgumentException   If $n is less than 1.
@@ -919,7 +932,7 @@ final readonly class BigInteger extends BigNumber
      */
     public function nthRoot(int $n, RoundingMode $roundingMode = RoundingMode::Unnecessary): BigInteger
     {
-        if ($n < 1) {
+        if ($n < 1) { // @phpstan-ignore smaller.alwaysFalse
             throw InvalidArgumentException::nonPositiveNthRootDegree();
         }
 
@@ -966,7 +979,7 @@ final readonly class BigInteger extends BigNumber
         } else {
             // Half* modes: increment iff |$this| > (|truncated| + 0.5)^n, equivalently
             // 2^n * |$this| > (2*|truncated| + 1)^n. The rhs is odd while the lhs is even
-            // (n ≥ 2 here, so 2^n is even), so a midpoint tie is impossible and all five
+            // (n ≥ 2 here, so 2^n is even), so a midpoint tie is impossible and all six
             // Half* modes collapse to the same comparison.
             $absValue = $calculator->abs($this->value);
             $absTruncated = $calculator->abs($truncatedRoot);
@@ -1252,6 +1265,8 @@ final readonly class BigInteger extends BigNumber
      *
      * @param int<2, 36> $base
      *
+     * @return non-empty-string
+     *
      * @throws InvalidArgumentException If the base is out of range.
      *
      * @pure
@@ -1259,6 +1274,7 @@ final readonly class BigInteger extends BigNumber
     public function toBase(int $base): string
     {
         if ($base === 10) {
+            /** @var non-empty-string */
             return $this->value;
         }
 
@@ -1266,6 +1282,7 @@ final readonly class BigInteger extends BigNumber
             throw InvalidArgumentException::baseOutOfRange($base);
         }
 
+        /** @var non-empty-string */
         return CalculatorRegistry::get()->toBase($this->value, $base);
     }
 
@@ -1279,6 +1296,8 @@ final readonly class BigInteger extends BigNumber
      * a NegativeNumberException will be thrown when attempting to call this method on a negative number.
      *
      * @param non-empty-string $alphabet The alphabet, for example '01' for base 2, or '01234567' for base 8.
+     *
+     * @return non-empty-string
      *
      * @throws InvalidArgumentException If the alphabet does not contain at least 2 chars, or contains duplicates.
      * @throws NegativeNumberException  If this number is negative.
@@ -1301,6 +1320,7 @@ final readonly class BigInteger extends BigNumber
             throw NegativeNumberException::toArbitraryBaseOfNegativeNumber();
         }
 
+        /** @var non-empty-string */
         return CalculatorRegistry::get()->toArbitraryBase($this->value, $alphabet, $base);
     }
 
@@ -1319,6 +1339,8 @@ final readonly class BigInteger extends BigNumber
      * This representation is compatible with the `fromBytes()` factory method, as long as the `$signed` flags match.
      *
      * @param bool $signed Whether to output a signed number in two's-complement representation with a leading sign bit.
+     *
+     * @return non-empty-string
      *
      * @throws NegativeNumberException If $signed is false, and the number is negative.
      *
@@ -1366,6 +1388,7 @@ final readonly class BigInteger extends BigNumber
         $result = hex2bin($hex);
         assert($result !== false);
 
+        /** @var non-empty-string */
         return $result;
     }
 
@@ -1415,6 +1438,12 @@ final readonly class BigInteger extends BigNumber
     protected static function from(BigNumber $number): static
     {
         return $number->toBigInteger();
+    }
+
+    #[Override]
+    protected function digitCount(): int
+    {
+        return strlen($this->value) - (int) ($this->value[0] === '-');
     }
 
     /**

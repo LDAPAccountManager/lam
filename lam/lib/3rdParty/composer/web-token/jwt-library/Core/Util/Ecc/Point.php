@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jose\Component\Core\Util\Ecc;
 
 use Brick\Math\BigInteger;
+use InvalidArgumentException;
 use function strlen;
 use const STR_PAD_LEFT;
 
@@ -70,31 +71,48 @@ final readonly class Point
         return $this->y;
     }
 
-    public static function cswap(self $a, self $b, int $cond): void
+    /**
+     * Returns both points, swapped when the condition is 1 and unchanged when it is 0.
+     *
+     * The points are rebuilt instead of being mutated in place: this class is readonly, so its properties cannot be
+     * taken by reference.
+     *
+     * @return array{self, self}
+     */
+    public static function cswap(self $a, self $b, int $cond): array
     {
-        self::cswapBigInteger($a->x, $b->x, $cond);
-        self::cswapBigInteger($a->y, $b->y, $cond);
-        self::cswapBigInteger($a->order, $b->order, $cond);
-        self::cswapBoolean($a->infinity, $b->infinity, $cond);
+        [$xA, $xB] = self::cswapBigInteger($a->x, $b->x, $cond);
+        [$yA, $yB] = self::cswapBigInteger($a->y, $b->y, $cond);
+        [$orderA, $orderB] = self::cswapBigInteger($a->order, $b->order, $cond);
+        [$infinityA, $infinityB] = self::cswapBoolean($a->infinity, $b->infinity, $cond);
+
+        return [new self($xA, $yA, $orderA, $infinityA), new self($xB, $yB, $orderB, $infinityB)];
     }
 
-    private static function cswapBoolean(bool &$a, bool &$b, int $cond): void
+    /**
+     * @return array{bool, bool}
+     */
+    private static function cswapBoolean(bool $a, bool $b, int $cond): array
     {
-        $sa = BigInteger::of((int) $a);
-        $sb = BigInteger::of((int) $b);
+        [$sa, $sb] = self::cswapBigInteger(BigInteger::of((int) $a), BigInteger::of((int) $b), $cond);
 
-        self::cswapBigInteger($sa, $sb, $cond);
-
-        $a = (bool) $sa->toBase(10);
-        $b = (bool) $sb->toBase(10);
+        return [(bool) $sa->toBase(10), (bool) $sb->toBase(10)];
     }
 
-    private static function cswapBigInteger(BigInteger &$sa, BigInteger &$sb, int $cond): void
+    /**
+     * The mask is as wide as the longer of the two operands, so it is never empty; the guard is there because
+     * `BigInteger::fromBase()` requires a non-empty string and the width cannot be proven statically.
+     *
+     * @return array{BigInteger, BigInteger}
+     */
+    private static function cswapBigInteger(BigInteger $sa, BigInteger $sb, int $cond): array
     {
         $size = max(strlen($sa->toBase(2)), strlen($sb->toBase(2)));
-        $mask = (string) (1 - $cond);
-        $mask = str_pad('', $size, $mask, STR_PAD_LEFT);
-        $mask = BigInteger::fromBase($mask, 2);
+        $bits = str_pad('', $size, (string) (1 - $cond), STR_PAD_LEFT);
+        if ($bits === '') {
+            throw new InvalidArgumentException('Unable to compute the mask');
+        }
+        $mask = BigInteger::fromBase($bits, 2);
         $taA = $sa->and($mask);
         $taB = $sb->and($mask);
         $sa = $sa->xor($sb)
@@ -103,5 +121,7 @@ final readonly class Point
             ->xor($taA);
         $sa = $sa->xor($sb)
             ->xor($taB);
+
+        return [$sa, $sb];
     }
 }

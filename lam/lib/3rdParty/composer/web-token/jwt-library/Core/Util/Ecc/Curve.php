@@ -139,7 +139,6 @@ final readonly class Curve implements Stringable
             return Point::infinity();
         }
 
-        /** @var BigInteger $zero */
         $zero = BigInteger::zero();
         if ($one->getOrder()->compareTo($zero) > 0) {
             $n = $n->mod($one->getOrder());
@@ -157,10 +156,10 @@ final readonly class Curve implements Stringable
 
         for ($i = 0; $i < $k; ++$i) {
             $j = $n1[$i];
-            Point::cswap($r[0], $r[1], $j ^ 1);
+            [$r[0], $r[1]] = Point::cswap($r[0], $r[1], $j ^ 1);
             $r[0] = $this->add($r[0], $r[1]);
             $r[1] = $this->getDouble($r[1]);
-            Point::cswap($r[0], $r[1], $j ^ 1);
+            [$r[0], $r[1]] = Point::cswap($r[0], $r[1], $j ^ 1);
         }
 
         $this->validate($r[0]);
@@ -244,7 +243,7 @@ final readonly class Curve implements Stringable
     {
         $max = $this->generator->getOrder();
         $numBits = $this->bnNumBits($max);
-        $numBytes = (int) ceil($numBits / 8);
+        $numBytes = max(1, intdiv($numBits + 7, 8));
         // Generate an integer of size >= $numBits
         $bytes = BigInteger::randomBits($numBytes);
         $mask = BigInteger::of(2)->power($numBits)->minus(1);
@@ -256,6 +255,8 @@ final readonly class Curve implements Stringable
      * Returns the number of bits used to store this number. Non-significant upper bits are not counted.
      *
      * @see https://www.openssl.org/docs/crypto/BN_num_bytes.html
+     *
+     * @return int<0, max>
      */
     private function bnNumBits(BigInteger $x): int
     {
