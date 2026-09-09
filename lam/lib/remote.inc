@@ -4,9 +4,9 @@ namespace LAM\REMOTE;
 
 use Exception;
 use \LAMException;
-use \phpseclib3\Net\SSH2;
-use \phpseclib3\Crypt\PublicKeyLoader;
-use \phpseclib3\Exception\NoKeyLoadedException;
+use \phpseclib4\Net\SSH2;
+use \phpseclib4\Crypt\PublicKeyLoader;
+use \phpseclib4\Exception\NoKeyLoadedException;
 
 /*
 
@@ -146,7 +146,7 @@ class Remote {
 	 *
 	 * @param string $keyPath file name
 	 * @param string $keyPassword password
-	 * @return \phpseclib3\Crypt\Common\AsymmetricKey key object
+	 * @return \phpseclib4\Crypt\Common\AsymmetricKey key object
 	 * @throws LAMException error loading key
 	 */
 	public function loadKey($keyPath, $keyPassword) {
